@@ -100,7 +100,7 @@
 					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_tax" style="border-bottom:1px solid #777">
-					<td class="aright"> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
+					<td class="aright"> <span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 				</tr>
 				<tr>

@@ -5554,11 +5554,18 @@ class Order extends DB_Table {
 	}
 
 	function get_formated_tax_info() {
+		$selection_type=$this->data['Order Tax Selection Type'];
+		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>';
+		return $formated_tax_info;
+	}
+	
+	function get_formated_tax_info_with_operations() {
 		$operations=$this->data['Order Tax Operations'];
 		$selection_type=$this->data['Order Tax Selection Type'];
 		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>'.$operations;
 		return $formated_tax_info;
 	}
+	
 
 	function get_formated_dispatch_state() {
 		return get_order_formated_dispatch_state($this->data['Order Current Dispatch State'],$this->id);
