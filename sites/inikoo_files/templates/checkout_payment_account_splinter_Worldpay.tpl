@@ -38,6 +38,10 @@
 <input type="hidden" name="MC_PaymentAccountKey" value="" id="Worldpay_Payment_Service_Provider_Key"> 
 <input type="hidden" name="MC_Payment_Key" value="" id="Worldpay_Payment_Key"> 
 <input type="hidden" name="MC_Order_Key" value="" id="Worldpay_Order_Key"> 
+<input type="hidden" name="MC_callback" value="" id="Worldpay_Callback_URL"> 
+
+
+
 </form>
 <div id="payment_account_info_Worldpay" style="display:none">
 	<h2 style="padding-bottom:10px">
