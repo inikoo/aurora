@@ -1384,8 +1384,17 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 function post_item_updated_actions(branch,r){
 
+
+
+
 key=r.key;
 newvalue=r.newvalue;
+
+
+
+if(key=='tax_number'){
+	show_dialog_check_tax_number();
+}
 
 if(r.action=='other_email_added' || r.action=='other_telephone_added'  || r.action=='other_fax_added' || r.action=='other_mobile_added' ){
 setTimeout("location.reload(true)", 100);

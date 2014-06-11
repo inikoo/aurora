@@ -44,7 +44,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $contador=0;
 $lap_time0=date('U');
-$sql="select `Customer Key` from `Customer Dimension`   order by `Customer Net Balance` desc ";
+$sql="select `Customer Key` from `Customer Dimension` where `Customer Key`=163004  order by `Customer Net Balance` desc ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -52,7 +52,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$contador++;
 	//$customer->update_location_type();
 	//$customer->update_web_data();
-	$customer->update_orders();
+
+$address=new Address($customer->data['Customer Billing Address Key']);
+$address->update_parents();
+//	$customer->update_orders();
 	//$customer->update_activity();
 	//$customer->update_is_new();
 	//$customer->update_rankings();
@@ -63,7 +66,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 }
 
-
+//exit;
 
 $sql="select * from `Store Dimension`";
 $result=mysql_query($sql);

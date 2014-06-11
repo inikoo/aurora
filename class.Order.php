@@ -3574,7 +3574,7 @@ class Order extends DB_Table {
 		}
 
 
-		$sql=sprintf("select * from `Insurance Dimension` where `Insurance Trigger`='Order' and (`Insurance Trigger Key`=%d  or `Insurance Trigger Key` is null) and `Insurance Store Key`-%d"
+		$sql=sprintf("select * from `Insurance Dimension` where `Insurance Trigger`='Order' and (`Insurance Trigger Key`=%d  or `Insurance Trigger Key` is null) and `Insurance Store Key`=%d"
 			,$this->id
 			,$this->data['Order Store Key']
 		);
@@ -3881,8 +3881,9 @@ class Order extends DB_Table {
 		}
 
 
-		$sql=sprintf("select `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and   `Shipping Secondary Destination Check`='None'   "
+		$sql=sprintf("select `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and   `Shipping Secondary Destination Check`='None'  and `Store Key`=%d  "
 			,prepare_mysql($this->data['Order Ship To Country Code'])
+			,$this->data['Order Store Key']
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {

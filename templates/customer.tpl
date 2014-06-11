@@ -64,7 +64,7 @@
 					</td>
 					{/if} 
 					<td valign="top"> 
-					<table class="customer_show_data" border=1>
+					<table class="customer_show_data" border=0>
 						{if $customer->get('Customer Registration Number')} 
 						<tr id="registration_number_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
 							<td id="registration_number" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>

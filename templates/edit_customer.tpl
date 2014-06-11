@@ -145,7 +145,7 @@
 			
 			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:890px;margin-bottom:20px;">
 			
-				<table border="1" class="edit" style="width:100%">
+				<table border="0" class="edit" style="width:100%;>
 					<tr class="title">
 					<td colspan=2>{t}Billing Information{/t}</td>
 					</tr>
@@ -164,13 +164,14 @@
 					</tr>
 					
 					<tr>
-						<td style="width:150px" class="label">{t}Tax Number{/t}:</td>
+						<td style="width:150px" class="label"><span id="Customer_Tax_Number_msg"></span> {t}Tax Number{/t}:</td>
 						<td style="text-align:left;width:280px"> 
 						<div>
 							<input style="text-align:left;width:100%" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
 							<div id="Customer_Tax_Number_Container">
 							</div>
 						</div>
+						
 						</td>
 						
 					
@@ -178,11 +179,11 @@
 						</td>
 						
 						<td rowspan=2 id="Customer_Tax_Number_Valid">
-						<table style="font-size:90%">
+						<table style="font-size:90%;border:1px solid #ccc"">
 						<tr><td colspan=2><span id="tax_number_valid" style="font-weight:800">{$customer->get('Tax Number Valid')}</span> <img id="check_tax_number" onclick="show_dialog_check_tax_number(Dom.get('Customer_Tax_Number').value)" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" 
 							src="art/validate.png" ></td></tr>
 
-						<tr id="tax_number_validation_date_tr" style="{if $customer->data['Customer Tax Number Validation Date']==''}display:none{/if}"><td>{t}Validation date{/t}:</td><td id="tax_number_validated_date" >{$customer->get('Tax Number Validation Date')}</td></tr>
+						<tr id="tax_number_validation_date_tr" style="{if $customer->data['Customer Tax Number Validation Date']==''}display:none{/if}"><td>{t}Checked{/t}:</td><td id="tax_number_validated_date" >{$customer->get('Tax Number Validation Date')}</td></tr>
 						<tbody id="tax_number_registered_data_tbody"  style="{if $customer->data['Customer Tax Number Valid']!='Yes'}display:none{/if}">
 
 						<tr><td>{t}Match address{/t}:</td><td id="tax_number_details_match" >{$customer->get('Tax Number Details Match')}</td></tr>

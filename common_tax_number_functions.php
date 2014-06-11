@@ -44,7 +44,7 @@ function check_tax_number($tax_number,$country_2alpha_code) {
 			'Tax Number Validation Date'=>'',
 			'Tax Number Associated Name'=>'',
 			'Tax Number Associated Address'=>'',
-			'msg'=>_("Can't verify the tax numbers in this country")
+			'msg'=>_("Can't verify the tax numbers in this country").' ('.$country_2alpha_code.')'
 		);
 		return $response;
 
