@@ -3812,9 +3812,11 @@ function number_store_pending_orders_in_interval($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 	
-	if( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed'))  ){
+	if( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship'))  ){
 	continue;
 	}
+	
+		
 	
 		$elements_numbers[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
 	}

@@ -24,7 +24,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   	{key:"total_amount", label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
 				   {key:"date", label:"<?php echo _('Order Date')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				     {key:"dispatch_state",label:"<?php echo _('Dispatch')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				     {key:"dispatch_state",label:"<?php echo _('State')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				     {key:"payment_state",label:"<?php echo _('Payment')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       //{key:"weight", label:"<?php echo _('Weight')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       //{key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
@@ -252,7 +252,7 @@ function get_store_pending_orders_numbers(from, to) {
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
                     for (i in r.elements_numbers) {
-                    	//alert('elements_' + i + '_number')
+                    	alert('elements_' + i + '_number')
                         Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                     }
                 }
