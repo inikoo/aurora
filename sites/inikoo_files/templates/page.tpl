@@ -44,7 +44,7 @@
 <input type="hidden" id="selfurl" value="{$selfurl}" />
 <input type="hidden" id="checkout_order_button_url" value="{$checkout_order_button_url}" />
 <input type="hidden" id="checkout_order_list_url" value="{$checkout_order_list_url}" />
-<input type="hidden" id="site_locale" value="{$site->get('Site Locale')}" />
+<input type="hidden" id="site_locale" value="{$site_locale}" />
 
 
 

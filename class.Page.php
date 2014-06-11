@@ -2038,12 +2038,12 @@ class Page extends DB_Table {
 			$form_id='order_button_'.$product->pid;
 
 			if ($quantity) {
-				$button_image_source='art/ordered_'.$this->site->data['Site Locale'].'.png';
+				$button_image_source='art/ordered_'.$_SESSION['site_locale'].'.png';
 				$button_alt=_('Order Product');
 				$feedback_class="accepted";
 
 			}else {
-				$button_image_source='art/ordernow_'.$this->site->data['Site Locale'].'.png';
+				$button_image_source='art/ordernow_'.$_SESSION['site_locale'].'.png';
 				$button_alt=_('Order Product');
 				$feedback_class="empty";
 			}
@@ -2092,7 +2092,7 @@ class Page extends DB_Table {
 			'Product Unit Type'=>$product->data['Product Unit Type'],
 			'Label'=>_('Price').':',
 
-			'locale'=>$this->site->data['Site Locale']);
+			'locale'=>$_SESSION['site_locale']);
 
 		$price= '<span class="price">'.$this->get_formated_price($price_data).'</span><br>';
 
@@ -2103,7 +2103,7 @@ class Page extends DB_Table {
 			'Product Unit Type'=>$product->data['Product Unit Type'],
 			'Label'=>_('RRP').":",
 
-			'locale'=>$this->site->data['Site Locale']);
+			'locale'=>$_SESSION['site_locale']);
 
 		$rrp= '<span class="rrp">'.$this->get_formated_price($rrp_data).'</span><br>';
 
@@ -2702,6 +2702,10 @@ class Page extends DB_Table {
 		//$form='<form><table id="list_'.$form_id.'" border=1>';
 		$form='<tbody id="list_'.$form_id.'" >';
 		$counter=1;
+		
+		
+		$number_fields_with_ordered_products=0;
+		
 		foreach ($products as $product) {
 
 
@@ -2794,7 +2798,8 @@ class Page extends DB_Table {
 					$old_qty='';
 				}
 
-				$input=sprintf('<input  maxlength=6  id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >',
+				$input=sprintf('<input  onKeyUp="order_product_from_list_changed(\'%s\')"  maxlength=6  id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >',
+						$form_id,
 					$form_id,
 					$product['Product ID'],
 					$old_qty,
@@ -2802,6 +2807,9 @@ class Page extends DB_Table {
 				);
 
 
+			}
+			if($old_qty!=''){
+			$number_fields_with_ordered_products++;
 			}
 
 			$tr_style='';
@@ -2867,16 +2875,15 @@ class Page extends DB_Table {
 
 		$form.=sprintf('
                        <tr><td colspan=1></td><td colspan="3">
-                       <img id="list_order_button_submit_%s" onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="order_from_list(\''.$form_id.'\',\''.$order_key.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
+                       <img id="list_order_button_submit_%s"    onClick="order_from_list(\''.$form_id.'\',\''.$order_key.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')" style="height:30px;cursor:pointer" src="art/'.($number_fields_with_ordered_products?'ordered':'ordernow').'_%s.png" alt="'._('Order Product').'">
                         <img class="list_feedback" src="art/loading.gif" style="display:none" id="waiting_%s">
                         <img class="list_feedback" src="art/icons/accept.png" style="display:none" id="done_%s">
                         </td></tr>
                        </tbody>
                        ',
 			$form_id,
-			$this->site->data['Site Locale'],
-			$this->site->data['Site Locale'],
-			$this->site->data['Site Locale'],
+		
+			$_SESSION['site_locale'],
 			$form_id,
 			$form_id
 		);

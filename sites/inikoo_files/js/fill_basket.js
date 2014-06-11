@@ -8,20 +8,66 @@ function button_changed(product_pid) {
     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != '') {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-            Dom.get('order_button_' + product_pid).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
+       
+          Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
 
         }
+    }else{
+     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
+       
+          Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+        } else {
+            Dom.get('order_button_' + product_pid).src = 'art/ordernow_hover_' + Dom.get('site_locale').value + '.png'
+
+        }
+    
     }
 }
 
-function order_product_from_list_changed(product_pid) {
-    if (Dom.get('qty' + product_pid).getAttribute('ovalue') != Dom.get('qty' + product_pid).value) {
-        Dom.setStyle('list_button' + product_pid, 'visibility', 'visible')
-    } else {
-        Dom.setStyle('list_button' + product_pid, 'visibility', 'hidden')
-    }
+
+
+
+function order_product_from_list_changed(code) {
+var changed=false;
+var number_fields_with_products=0;
+    items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
+var i;
+
+    for (i = 0; i < items.length; ++i) {
+    
+          counter = items[i].getAttribute('counter')
+
+        if (Dom.get('qty_' + code + '_' + counter) != undefined && Dom.get('qty_' + code + '_' + counter).value != Dom.get('qty_' + code + '_' + counter).getAttribute('ovalue')) {
+changed=true;
+
+}
+
+if(Dom.get('qty_' + code + '_' + counter) != undefined &&  Dom.get('qty_' + code + '_' + counter).value>0){
+number_fields_with_products++;
+}
+
+}
+
+if(changed){
+          Dom.get('list_order_button_submit_' + code).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+
+}else{
+		if(number_fields_with_products==0){
+
+            Dom.get('list_order_button_submit_' + code).src = 'art/ordernow_' + Dom.get('site_locale').value + '.png'
+}else{
+            Dom.get('list_order_button_submit_' + code).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
+
+}
+
+
+}
+    
+    
+
+
 
 }
 
@@ -35,7 +81,8 @@ function order_from_list(code, order_key, page_key, page_section_type) {
 
     Dom.setStyle('waiting_' + code, 'display', '')
     Dom.setStyle('done_' + code, 'opacity', '1')
-
+    
+ 
     var products_to_update = {};
 
     var i;
@@ -112,6 +159,7 @@ var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_d
                 myAnim.onComplete.subscribe(removeElement);
                 myAnim.animate();
 
+            Dom.get('list_order_button_submit_' + code).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
 
                 for (i in r.updated_transactions) {
                     qty = r.updated_transactions[i]['qty'];
@@ -179,7 +227,7 @@ function over_order_button(product_pid) {
     } else {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-            Dom.get('order_button_' + product_pid).src = 'art/updated_hover_' + Dom.get('site_locale').value + '.png'
+            Dom.get('order_button_' + product_pid).src = 'art/update_hover_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_hover_' + Dom.get('site_locale').value + '.png'
 
@@ -201,7 +249,7 @@ function out_order_button(product_pid) {
     } else {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-            Dom.get('order_button_' + product_pid).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
+            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
 
