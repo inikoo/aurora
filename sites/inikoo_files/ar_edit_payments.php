@@ -210,6 +210,7 @@ function create_payment($data) {
 		'Payment_Account_Return_Link_Good'=>'http://'.$site->data['Site URL']."/thanks.php?id=".$order->id,
 		'Payment_Account_Return_Link_Bad'=>'http://'.$site->data['Site URL']."/return_cancelled_Paypal.php?payment_key=".$payment->id,
 		'Paypal_Callback_URL'=>'http://'.$site->data['Site URL']."/callback_payment_Paypal.php",
+		'Worldpay_Callback_URL'=>'http://'.$site->data['Site URL']."/callback_payment_Worldpay.php",
 
 		'Payment_Random_String'=>$payment->data['Payment Random String'],
 		'Payment_Currency_Code'=>$payment->data['Payment Currency Code'],
