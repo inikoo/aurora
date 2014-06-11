@@ -192,6 +192,10 @@ function fill_Paypal_payment_form(payment_data) {
     Dom.get('Paypal_Customer_Billing_Address_Town').value = payment_data.Billing_To_Line2
     Dom.get('Paypal_Customer_Billing_Address_Postal_Code').value = payment_data.xxx
     Dom.get('Paypal_Customer_Main_Plain_Email').value = payment_data.Customer_Main_Plain_Email
+    Dom.get('Paypal_Callback_URL').value = payment_data.Paypal_Callback_URL
+    
+    
+    
 }
 
 

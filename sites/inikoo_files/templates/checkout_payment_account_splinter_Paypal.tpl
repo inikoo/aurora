@@ -29,6 +29,10 @@
 	<input type="hidden" name="city" value="" id='Paypal_Customer_Billing_Address_Town'>
 	<input type="hidden" name="zip" value="" id='Paypal_Customer_Billing_Address_Postal_Code'>
 	<input type="hidden" name="email" value="" id='Paypal_Customer_Main_Plain_Email'>
+	<input type="hidden" name="notify_url" value="" id='Paypal_Callback_URL'>
+	
+	
+	
 </form>
 <div id="payment_account_info_Paypal" style="display:none">
 	<h2 style="padding-bottom:10px">
