@@ -252,7 +252,7 @@ function get_store_pending_orders_numbers(from, to) {
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
                     for (i in r.elements_numbers) {
-                    	alert('elements_' + i + '_number')
+                    	if(Dom.get('elements_' + i + '_number')!=undefined)
                         Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                     }
                 }

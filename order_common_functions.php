@@ -88,6 +88,13 @@ function get_orders_operations($row,$user) {
 
 function get_order_formated_dispatch_state($state,$order_key) {
 	switch ($state) {
+	case 'In Process by Customer':
+		$dispatch_state=_('In Website');
+		break;
+		case 'Submitted by Customer':
+		$dispatch_state= _('Submitted');
+		break;
+			
 	case 'Packed Done':
 		return _('Packed & Checked');
 		break;

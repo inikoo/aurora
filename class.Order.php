@@ -498,7 +498,7 @@ class Order extends DB_Table {
 		if (!$date)
 			$date=gmdate('Y-m-d H:i:s');
 
-		if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
+		if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submitted by Customer')) {
 			$this->error=true;
 			$this->msg='Order is not in process';
 			return;

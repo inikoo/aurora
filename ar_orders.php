@@ -3812,18 +3812,25 @@ function number_store_pending_orders_in_interval($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 	
-	if( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship'))  ){
+	if( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ){
 	continue;
 	}
 	
-		
+	$_key=preg_replace('/\s/','',$row['Order Current Dispatch State']);
 	
-		$elements_numbers[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
+	
+
+	
+		$elements_numbers[$_key]=$row['num'];
 	}
 
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['InProcessbyCustomer']=$row['num'];
+	}
 
-
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Picking & Packing','Ready to Ship','Packed') ",$where);
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Picking & Packing','Ready to Ship','Packed','Packing') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InWarehouse']=$row['num'];

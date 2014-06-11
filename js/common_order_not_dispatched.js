@@ -416,7 +416,7 @@ function create_delivery_note_from_list(o, order_key) {
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //  alert(o.responseText);
+             // alert(o.responseText);
             //return;
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
@@ -427,7 +427,7 @@ function create_delivery_note_from_list(o, order_key) {
                 get_store_pending_orders_numbers(Dom.get('from').value, Dom.get('to').value)
 
             } else {
-                Dom.get('send_to_warehouse_img').src = 'art/icons/cart_go.png'
+                Dom.get('send_to_warehouse_img_'+ r.order_key).src = 'art/icons/cart_go.png'
 
 
             }

@@ -703,7 +703,7 @@ function send_to_warehouse($order_key) {
 		);
 		echo json_encode($response);
 	} else {
-		$response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->data['Order Number Items']);
+		$response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->data['Order Number Items'],'order_key'=>$order->id);
 		echo json_encode($response);
 
 	}
