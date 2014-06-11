@@ -23,6 +23,10 @@ if (!$page->id) {
 	exit;
 }
 
+
+
+
+
 $template_suffix='';
 update_page_key_visit_log($page->id,$user_click_key);
 
@@ -167,6 +171,12 @@ if (!isset($_REQUEST['id'])) {
 
 	}else {
 
+		
+if (  $order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+	header('Location: waiting_payment_confirmation.php');
+	exit;
+
+}
 
 
 
