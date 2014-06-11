@@ -86,7 +86,7 @@ function update_payment_table() {
                 if (r.state == 200) {
                     // Dom.get('basket_total').innerHTML = r.data.order_total
                     if (r.pending_payments == 0) {
-                        location.href = Don.get('redirect').value
+                        location.href = Dom.get('redirect').value
                     } else {
 
                         if (r.status != 'Pending') {
