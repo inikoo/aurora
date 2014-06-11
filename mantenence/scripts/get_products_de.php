@@ -612,7 +612,7 @@ foreach ($__cols as $cols) {
 					$deal_component=$deal_gold->add_component($deals[$_deal_key]['component']);
 					$deal_component->update_status('Active');
 
-
+é
 				}elseif ($deal_data['Deal Code']=='Bogof') {
 					$deals[$_deal_key]['Deal Code']='Bogof.'.$family->data['Product Family Code'];
 					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Bogof';
@@ -632,7 +632,6 @@ foreach ($__cols as $cols) {
 
 
 				}
-
 
 
 
