@@ -266,6 +266,7 @@ if (isset($_REQUEST['lang']) and  in_array($_REQUEST['lang'],array('de_DE','fr_F
 
 
 
+$smarty->assign('site_locale',$site_locale);
 
 
 $language=substr($site_locale,0,2);
