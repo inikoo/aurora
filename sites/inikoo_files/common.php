@@ -426,7 +426,7 @@ if (isset($not_found_current_page)) {
 }
 
 
-if($customer->data['Customer Store Key']!=$site->data['Site Store Key']){
+if($logged_in and ($customer->data['Customer Store Key']!=$site->data['Site Store Key'])){
 header('Location:  logout.php');
 exit;
 }
