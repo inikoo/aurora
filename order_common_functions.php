@@ -129,12 +129,15 @@ function get_invoice_operations($row,$user,$class='left') {
 
 }
 
-function get_dn_operations($row,$user,$parent='order') {
+function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 $class='left';
 
-	$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
+	$operations=$row['Delivery Note State'].'<div  id="operations'.$row['Delivery Note Key'].'">';
+		$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
+
 	if ($row['Delivery Note State']=='Ready to be Picked') {
+	
 		$operations.='<div class="buttons small '.$class.'">';
 
 		if ($user->can_edit('assign_pp')) {
@@ -164,13 +167,24 @@ $class='left';
 	elseif ($row['Delivery Note State']=='Packer Assigned') {
 
 		$operations.='<div class="buttons small '.$class.'">';
+		
+		
 		$operations.='<span style="float:left;;margin-left:7px"><img style="height:12px;width:12px" src="art/icons/user_red.png" title="'._('Packing assigned to').'"/> <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
 		if ($user->can_edit('assign_pp')) {
 			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 		}
+		
+			
+		
 		$operations.='</span>';
 		if ($row['Delivery Note Assigned Packer Key']==$user->get_staff_key())
-			$operations.='<button onClick="start_packing('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"  ><img id="start_packing_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="art/icons/briefcase.png"> '._('Start Packing')."</button>";
+			$operations.='<button  onClick="start_packing('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"  ><img id="start_packing_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="art/icons/briefcase.png"> '._('Start Packing')."</button>";
+		
+		
+		if ($user->data['User Type']!='Warehouse') {
+			
+			$operations.='<button  style="margin-left:5px" onClick="location.href=\'order_pack_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Packing Aid')."</button>";
+		}
 		$operations.='</div>';
 
 		// $operations.='<b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('pack order')."</a>";
@@ -267,13 +281,12 @@ $class='left';
 
 		$operations.='<div class="buttons small '.$class.'">';
 
-		$operations.='<button  onClick="location.href=\'order_pack_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Packing Aid')."</button>";
 
 
 		if ($user->can_edit('orders')){
-			if($parent=='order'){
-			$operations.=' <button onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\'dn\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
-			}
+			//if($parent=='order'){
+			$operations.=' <button onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
+			//}
 			$operations.='</div>';
 	}else {
 		$operations.='</div>';
@@ -284,7 +297,7 @@ $class='left';
 
 }elseif ($row['Delivery Note State']=='Approved') {
 	$operations.='<div class="buttons small '.$class.'">
-		<button  onClick="set_as_dispatched('.$row['Delivery Note Key'].','.$user->get_staff_key().',\'warehouse_orders\')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Set as Dispatched')."</button>
+		<button  onClick="set_as_dispatched('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>
 		</div>";
 }
 else {

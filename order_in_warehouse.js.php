@@ -358,27 +358,7 @@ scope:this
     }
     );
 }
-function approve_dispatching() {
 
-    Dom.get('approve_dispatching_img').src = 'art/loading.gif';
-
-    ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=approve_dispatching_order&order_key=' + Dom.get('order_key').value;
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-            //alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-                //window.location='dn.php?id='+Dom.get('dn_key').value;
-                location.reload();
-            }
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-}
 
 function close_process_order_dialog(){
 

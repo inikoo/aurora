@@ -202,14 +202,32 @@ function init() {
 
     init_search('products_store');
 
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
-    oAutoComp.minQueryLength = 0;
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    
+    
+    Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    
+    
+    
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+    
+    
+    
     YAHOO.util.Event.addListener("done", "click", create_delivery_note);
+
 
 }
 

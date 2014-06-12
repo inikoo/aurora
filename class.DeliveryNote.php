@@ -1751,7 +1751,7 @@ class DeliveryNote extends DB_Table {
 	function assign_picker($staff_key) {
 		$this->assigned=false;
 
-		if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
+		if (!preg_match('/^(Ready to be Picked|Picker Assigned|Picking)$/',$this->data ['Delivery Note State'])) {
 			$this->error=true;
 			$this->msg=$this->data ['Delivery Note State'].' '._('Delivery Note can not be assigned to a picker,because has already been picked');
 			return;

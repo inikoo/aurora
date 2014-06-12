@@ -567,6 +567,7 @@ function save_edit_custom_field() {
 }
 
 function save_edit_supplier() {
+
     save_edit_general('supplier_product_supplier');
 }
 

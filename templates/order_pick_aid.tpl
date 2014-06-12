@@ -16,6 +16,9 @@
 			<div style="float:left">
 				<span class="main_title no_buttons">{t}Pick Aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 			</div>
+			
+		
+			
 			<div class="buttons" style="float:right">
 				<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> 
 				<button id="pick_all"  onClick="pick_all({$delivery_note->id},{$user->get_staff_key()},'pick_aid')"   style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="pick_all_img_{$delivery_note->id}" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> 				
@@ -46,9 +49,28 @@
 				<h2 style="padding:0">
 					{$delivery_note->get('Delivery Note Customer Name')} (<a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a>) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
 				</h2>
+				
+					<table border="0" class="info_block" style="margin-top:10px">
+					
+					<tr>
+					<td>{t}Delivery Note{/t}:</td>
+					<td class="aright"><a  href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></td>
+				</tr>
+					
+				<tr>
+					<td>{t}Created{/t}:</td>
+					<td class="aright">{$delivery_note->get('Date Created')}</td>
+				</tr>
+			</table>
+				
 				<div style="clear:both">
 				</div>
 			</div>
+			
+				
+			
+			
+			
 			<div style="border:0px solid #ddd;width:400px;float:right;">
 				<table border=0 style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 					<tbody id="resend" style="xdisplay:none">
