@@ -139,7 +139,7 @@ function add_insurance($data) {
 		'data'=>$updated_data,
 		'order_key'=>$order->id,
 		'ship_to'=>$order->get('Order XHTML Ship Tos'),
-		'tax_info'=>$order->get_formated_tax_info(),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'onptf_key'=>$onptf_key,
 		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
 
@@ -177,7 +177,7 @@ function remove_insurance($data) {
 		'data'=>$updated_data,
 		'order_key'=>$order->id,
 		'ship_to'=>$order->get('Order XHTML Ship Tos'),
-		'tax_info'=>$order->get_formated_tax_info(),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 
 		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
 
@@ -265,7 +265,7 @@ function edit_new_order_shipping_type() {
 				'shipping'=>money($_SESSION['set_currency_exchange']*$order->new_value,$_SESSION['set_currency']),
 				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
 				'ship_to'=>$order->get('Order XHTML Ship Tos'),
-				'tax_info'=>$order->get_formated_tax_info()
+				'tax_info'=>$order->get_formated_tax_info_with_operations()
 			);
 
 		} else {
@@ -500,7 +500,7 @@ function update_ship_to_key_from_address($data) {
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
 			'ship_to'=>$order->get('Order XHTML Ship Tos'),
-			'tax_info'=>$order->get_formated_tax_info()
+			'tax_info'=>$order->get_formated_tax_info_with_operations()
 
 		);
 
@@ -548,7 +548,7 @@ function update_billing_to_key_from_address($data) {
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
 			'billing_to'=>$order->get('Order XHTML Billing Tos'),
-			'tax_info'=>$order->get_formated_tax_info()
+			'tax_info'=>$order->get_formated_tax_info_with_operations()
 
 
 		);

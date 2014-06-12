@@ -51,7 +51,13 @@
 					</div>
 				</div>
 				
-								<div id="shipping_address" style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
+				
+				
+				
+				
+				
+				
+				<div  style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
 
 				<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
 					{t}Delivery Address{/t}: 
@@ -114,7 +120,10 @@
 					</tr>
 					<tr id="tr_order_tax" style="border-bottom:1px solid #777">
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> 
-						<span id="tax_info">{$order->get_formated_tax_info()}</span></td>
+					
+
+					
+					<span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
 					<tr>

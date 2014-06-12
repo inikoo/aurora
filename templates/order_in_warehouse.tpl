@@ -19,7 +19,7 @@
 			{if isset($order_prev)}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title">Order <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span> </span> 
 		</div>
 		<div class="buttons">
-			{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order">{t}Modify Order{/t}</button> {/if}   <button style="display:none" id="process_order">{t}Process Order{/t}</button>  <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+			{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order"><img style='position:relative;top:1px' src='art/icons/cart_edit.png'> {t}Amend Order{/t}</button> {/if}   <button style="display:none" id="process_order">{t}Process Order{/t}</button>  <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -27,34 +27,52 @@
 	<div style="clear:both">
 	</div>
 	<div id="control_panel" >
-		<div id="addresses">
-			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
-			</h2>
-			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
-				{$customer->get('Customer Main Contact Name')} 
-				<div style="margin-top:5px">
-					{$customer->get('Customer XHTML Billing Address')} 
+	<div id="addresses">
+				<h2 style="padding:0">
+					<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+				</h2>
+				<h3>{$customer->get('Customer Main Contact Name')} </h3>
+				
+				<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
+					
+					<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
+					<div style="margin-top:5px" id="billing_address">
+						{$order->get('Order XHTML Billing Tos')}
+					</div>
+					<div class="buttons small left" style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}">
+						<button id="change_billing_address" class="state_details" style="display:block;margin-top:10px">{t}Change{/t}</button> 
+					</div>
 				</div>
-			</div>
-			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
-				<div style="margin-top:5px" id="delivery_address">
+				
+				
+				
+				
+				
+				
+				
+				<div  style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
+
+				<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+					{t}Delivery Address{/t}: 
+				</div>
+				<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+					<b>{t}For collection{/t}</b> 
+				</div>
+				<div class="address_box" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
 				</div>
-				<div class="buttons small left">
-					<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> <button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
+				<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes' or $order->get('Order Invoiced')=='Yes'}display:none{/if};margin-top:2px" class="buttons left small">
+					<button id="change_delivery_address">{t}Change{/t}</button> <br/><button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
 				</div>
-			</div>
-			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span>{t}For collection{/t}</span> 
-				<div class="buttons small left">
-					<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
+				<div id="for_collection" style="{if $order->get('Order For Collection')=='No' or $order->get('Order Invoiced')=='Yes'}display:none;{/if};margin-top:2px" class="buttons left small">
+					<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
 				</div>
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
+				
+				</div>
+				
+				
+				
+				</div>
 		<div id="totals">
 			<div style="{if $order->data['Order Invoiced']=='Yes'}display:none{/if}">
 				<table border="0" class="info_block">

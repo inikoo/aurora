@@ -21,20 +21,51 @@
 	<div id="control_panel">
 	
 		<div id="addresses">
-			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a> 
-			</h2>
-			<div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444">
-				<span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br />
-				{$customer->get('Customer Main XHTML Address')} </span> 
-			</div>
-			<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444">
-				<span style="font-weight:500;color:#000">{t}Shipped to{/t}</span>:<br />
-				{$order->get('Order XHTML Ship Tos')} 
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
+				<h2 style="padding:0">
+					<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+				</h2>
+				<h3>{$customer->get('Customer Main Contact Name')} </h3>
+				
+				<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
+					
+					<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
+					<div style="margin-top:5px" id="billing_address">
+						{$order->get('Order XHTML Billing Tos')}
+					</div>
+					<div class="buttons small left" style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}">
+						<button id="change_billing_address" class="state_details" style="display:block;margin-top:10px">{t}Change{/t}</button> 
+					</div>
+				</div>
+				
+				
+				
+				
+				
+				
+				
+				<div  style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
+
+				<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+					{t}Delivery Address{/t}: 
+				</div>
+				<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+					<b>{t}For collection{/t}</b> 
+				</div>
+				<div class="address_box" id="delivery_address">
+					{$order->get('Order XHTML Ship Tos')} 
+				</div>
+				<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes' or $order->get('Order Invoiced')=='Yes'}display:none{/if};margin-top:2px" class="buttons left small">
+					<button id="change_delivery_address">{t}Change{/t}</button> <br/><button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
+				</div>
+				<div id="for_collection" style="{if $order->get('Order For Collection')=='No' or $order->get('Order Invoiced')=='Yes'}display:none;{/if};margin-top:2px" class="buttons left small">
+					<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
+				</div>
+				
+				</div>
+				
+				
+				
+				</div>
 		<div id="totals">
 			<table border="0" class="info_block">
 				

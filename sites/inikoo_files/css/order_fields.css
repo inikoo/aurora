@@ -17,4 +17,5 @@
 .button_feedback.accepted {opacity:.6;-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)"}
 .button_feedback.empty {opacity:0;-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"}
 
+.order_but{width:180px !important}
 

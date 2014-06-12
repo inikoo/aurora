@@ -4,6 +4,8 @@ require_once 'class.Timer.php';
 require_once 'common.php';
 require_once 'class.Company.php';
 require_once 'class.Supplier.php';
+require_once 'class.SupplierProduct.php';
+
 require_once 'ar_edit_common.php';
 
 

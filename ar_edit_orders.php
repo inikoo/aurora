@@ -2,6 +2,8 @@
 require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
+require_once 'class.Staff.php';
+
 require_once 'class.User.php';
 include_once 'class.PartLocation.php';
 require_once 'order_common_functions.php';
@@ -18,7 +20,24 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('add_insurance'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'insurance_key'=>array('type'=>'key')
 
+		));
+	add_insurance($data);
+
+	break;
+case('remove_insurance'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'onptf_key'=>array('type'=>'key')
+
+		));
+	remove_insurance($data);
+
+	break;
 case('update_order_special_intructions'):
 
 $data=prepare_values($_REQUEST,array(
@@ -751,7 +770,7 @@ function edit_new_order_shipping_type() {
 				'shipping'=>money($order->new_value),
 				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
 				'ship_to'=>$order->get('Order XHTML Ship Tos'),
-				'tax_info'=>$order->get_formated_tax_info()
+				'tax_info'=>$order->get_formated_tax_info_with_operations()
 			);
 
 		} else {
@@ -2058,6 +2077,68 @@ function list_store_pending_orders() {
 
 
 		$operations=get_orders_operations($row,$user);
+		
+		$order=new Order($row['Order Key']);
+		
+		
+	$dns_data=array();
+	foreach ($order->get_delivery_notes_objects() as $dn) {
+		$current_delivery_note_key=$dn->id;
+
+		$missing_dn_data=false;
+		$missing_dn_str='';
+		$dn_data='';
+		if ($dn->data['Delivery Note Weight']) {
+			$dn_data=$dn->get('Weight');
+		}else {
+			$missing_dn_data=true;
+			$missing_dn_str=_('weight');
+
+		}
+
+		if ($dn->data['Delivery Note Number Parcels']!='') {
+			$dn_data.=', '.$dn->get_formated_parcels();
+		}else {
+			$missing_dn_data=true;
+			$missing_dn_str.=', '._('parcels');
+		}
+		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+
+
+		if ($dn->data['Delivery Note Shipper Consignment']!='') {
+			$dn_data.=', '. $dn->get('Consignment');
+		}else {
+			$missing_dn_data=true;
+			$missing_dn_str.=', '._('consignment');
+		}
+		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+		$dn_data=preg_replace('/^,/','',$dn_data);
+
+
+		if ($missing_dn_data) {
+			//$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img src="art/icons/edit.gif"> ';
+		}
+
+		$dns_data[]=array(
+			'key'=>$dn->id,
+			'number'=>$dn->data['Delivery Note ID'],
+			'state'=>$dn->data['Delivery Note XHTML State'],
+			'data'=>$dn_data,
+			'operations'=>$dn->get_operations($user,''),
+		);
+	}
+	$number_dns=count($dns_data);
+	if ($number_dns!=1) {
+		$current_delivery_note_key='';
+	}
+	
+	$dn_operations='<div style="clear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
+	foreach($dns_data as $dn_data){
+		$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
+		$dn_operations.=sprintf('<tr style="border:none;"><td colspan=2">%s</td></tr>',$dn_data['operations']);
+	}
+	$dn_operations.='</table></div>';
+		$operations.=$dn_operations;
 
 
 		$public_id=sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
@@ -3159,7 +3240,7 @@ function update_ship_to_key_from_address($data) {
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
 			'ship_to'=>$order->get('Order XHTML Ship Tos'),
-			'tax_info'=>$order->get_formated_tax_info()
+			'tax_info'=>$order->get_formated_tax_info_with_operations()
 
 		);
 
@@ -3185,6 +3266,88 @@ function update_billing_to_key($data) {
 		echo json_encode($response);
 
 	}
+
+
+}
+
+
+
+function add_insurance($data) {
+
+	$order= new Order($data['order_key']);
+	$onptf_key=$order->add_insurance($data['insurance_key']);
+
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_insurance'=>$order->get('Insurance Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'ordered_products_number'=>$order->get('Number Products'),
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+	);
+
+	$response= array(
+		'state'=>200,
+
+		'data'=>$updated_data,
+		'order_key'=>$order->id,
+		'ship_to'=>$order->get('Order XHTML Ship Tos'),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
+		'onptf_key'=>$onptf_key,
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+
+	);
+
+
+	echo json_encode($response);
+
+}
+function remove_insurance($data) {
+
+	$order= new Order($data['order_key']);
+	$order->remove_insurance($data['onptf_key']);
+
+	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_insurance'=>$order->get('Insurance Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'ordered_products_number'=>$order->get('Number Products'),
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+	);
+
+	$response= array(
+		'state'=>200,
+
+		'data'=>$updated_data,
+		'order_key'=>$order->id,
+		'ship_to'=>$order->get('Order XHTML Ship Tos'),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
+
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+
+	);
+
+
+	echo json_encode($response);
+
+
 
 
 }
@@ -3222,7 +3385,7 @@ function update_billing_to_key_from_address($data) {
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
 			'billing_to'=>$order->get('Order XHTML Billing Tos'),
-			'tax_info'=>$order->get_formated_tax_info()
+			'tax_info'=>$order->get_formated_tax_info_with_operations()
 
 
 		);

@@ -294,7 +294,7 @@ function change_shipping_type(new_value) {
             if (r.state == 200) {
                 if (r.result == 'updated') {
 
-                    if (r.new_value == 'Yes') {
+                      if (r.new_value == 'Yes') {
                         Dom.setStyle('tr_order_shipping', 'display', 'none');
                         Dom.setStyle(['shipping_address', 'title_delivery_address'], 'display', 'none');
                         Dom.setStyle(['for_collection', 'title_for_collection'], 'display', '');
@@ -1337,6 +1337,82 @@ function show_dialog_add_credit() {
 
 function set_tax_number() {
 
+}
+
+
+function set_as_dispatched(dn_key, staff_key,referrer,referrer_key) {
+  if( Dom.get('set_as_dispatched_img_'+dn_key) != undefined)
+		Dom.get('set_as_dispatched_img_'+dn_key).src = 'art/loading.gif';
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=set_as_dispatched_dn&dn_key=' + dn_key+'&staff_key='+staff_key;
+  
+    
+    if(referrer=='order' ){
+    request+='&order_key='+referrer_key
+    }
+  alert(request);return;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+          //  alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+              	
+                if (referrer == 'warehouse_orders') {
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                    get_warehouse_orders_numbers('','')
+
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                }
+              	
+            }
+
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
+}
+
+function approve_dispatching(dn_key, staff_key,referrer,referrer_key) {
+  if( Dom.get('approve_dispatching_img_'+dn_key) != undefined)
+		Dom.get('approve_dispatching_img_'+dn_key).src = 'art/loading.gif';
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=approve_dispatching_dn&dn_key=' + dn_key+'&staff_key='+staff_key+'';
+    
+    if(referrer=='order' ){
+    request+='&order_key='+referrer_key
+    }
+    
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+               
+                 if (referrer == 'warehouse_orders') {
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                }else if (referrer == 'order') {
+                    Dom.get('operations_container'+r.dn_key).innerHTML=r.order_operations;
+                }
+               
+               
+            }
+
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
 }
 
 function init_common_order_not_dispatched() {

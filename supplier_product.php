@@ -3,6 +3,7 @@ include_once 'common.php';
 include_once 'common_date_functions.php';
 include_once 'class.SupplierProduct.php';
 include_once 'class.Supplier.php';
+include_once 'class.Part.php';
 
 $view_suppliers=$user->can_view('suppliers');
 
