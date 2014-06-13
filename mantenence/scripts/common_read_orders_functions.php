@@ -1261,7 +1261,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 			adjust_invoice($invoice,$order);
 
 
-
+			
 
 			$invoice->pay('full',array(
 					'Invoice Paid Date'=>$date_inv,
