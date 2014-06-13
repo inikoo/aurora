@@ -150,6 +150,21 @@
 						<td>{t}Last updated{/t}:</td>
 						<td class="aright">{$order->get('Last Updated Date')}</td>
 					</tr>
+					
+					
+					
+				</table>
+				<table border="0" class="info_block">
+					
+					<td>{t}Payment{/t}:</td>
+						<td class="aright">{$order->get('Order Current XHTML Payment State')}</td>
+					</tr>
+					<td>{t}Paid Amount{/t}:</td>
+						<td class="aright">{$order->get('Payments Amount')}</td>
+					</tr>
+					<td>{t}To Pay{/t}:</td>
+						<td class="aright"><b>{$order->get('To Pay Amount')}</b></td>
+					</tr>
 				</table>
 			</div>
 			<div style="clear:both">

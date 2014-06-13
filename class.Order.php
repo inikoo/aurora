@@ -403,20 +403,20 @@ class Order extends DB_Table {
 
 		// 'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
 
-		$this->data['Order Current Payment State']='Waiting Payment';
-		$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
 
-		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=NULL,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
+
+		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=NULL,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s where `Order Key`=%d"
 
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML Payment State'])
-			,prepare_mysql($this->data['Order Current Payment State'])
+
 
 			,$this->id
 		);
 
 		mysql_query($sql);
+
+		$this->update_payment_state();
 
 	}
 
@@ -441,22 +441,19 @@ class Order extends DB_Table {
 
 		// 'Not Invoiced','Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
 
-		$this->data['Order Current Payment State']='Waiting Payment';
-		$this->data['Order Current XHTML Payment State']=_('Waiting Payment');
 
-		$sql=sprintf("update `Order Dimension` set `Order Checkout Submitted Payment Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order Current Payment State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Checkout Submitted Payment Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML Payment State'])
-			,prepare_mysql($this->data['Order Current Payment State'])
+
 
 			,$this->id
 		);
 
 		mysql_query($sql);
-
+		$this->update_payment_state();
 	}
 
 
@@ -474,14 +471,15 @@ class Order extends DB_Table {
 		//TODO make it using $this->calculate_state();
 		$this->data['Order Current XHTML Dispatch State']='Submitted by Customer';
 		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
-		$this->data['Order Current XHTML Payment State']='todo';
 
-		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
+
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 
 			,$this->id
 		);
@@ -489,7 +487,7 @@ class Order extends DB_Table {
 
 
 		mysql_query($sql);
-
+		$this->update_payment_state();
 	}
 
 	function send_to_warehouse($date=false,$extra_data=false) {
@@ -1520,7 +1518,7 @@ class Order extends DB_Table {
 			return _('TBC');
 		}
 
-		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges |Insurance )?Net).*(Amount)$/',$key)) {
+		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|(Shipping |Charges |Insurance )?Net).*(Amount)$/',$key)) {
 			$amount='Order '.$key;
 			return money($this->exchange*$this->data[$amount],$this->currency_code);
 		}
@@ -2005,8 +2003,8 @@ class Order extends DB_Table {
 
 		$sql = sprintf("select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
-		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" , 
-		$this->id);
+		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
+			$this->id);
 		// print "$sql\n";
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
@@ -2290,7 +2288,14 @@ class Order extends DB_Table {
 
 		$this->data['Order Invoiced Refund Notes']=preg_replace('/<br\/>/','',$this->data['Order Invoiced Refund Notes']);
 
+
+		$this->data['Order To Pay Amount']=$this->data['Order Balance Total Amount']-$this->data['Order Payments Amount'];
+
 		$sql=sprintf("update `Order Dimension` set
+
+		`Order To Pay Amount`=%.2f,
+		`Order Payments Amount`=%.2f,
+
                      `Order Invoiced Balance Net Amount`=%.2f,`Order Invoiced Balance Tax Amount`=%.2f,`Order Invoiced Balance Total Amount`=%.2f,
                      `Order Invoiced Outstanding Balance Net Amount`=%.2f,`Order Invoiced Outstanding Balance Tax Amount`=%.2f,`Order Invoiced Outstanding Balance Total Amount`=%.2f,
                      `Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,
@@ -2319,6 +2324,9 @@ class Order extends DB_Table {
 
 
                      where `Order Key`=%d",
+			$this->data['Order To Pay Amount'],
+
+			$this->data['Order Payments Amount'],
 			$this->data['Order Invoiced Balance Net Amount'],
 			$this->data['Order Invoiced Balance Tax Amount'],
 			$this->data['Order Invoiced Balance Total Amount'],
@@ -2741,68 +2749,8 @@ class Order extends DB_Table {
 
 
 
-	function translate_payment_state($array_payment_state) {
 
 
-		$payment_state='Unknown';
-		if (count($array_payment_state)==1) {
-			switch (array_pop($array_payment_state)) {
-
-			case 'No Applicable':
-				$payment_state='No Applicable';
-				break;
-
-			case 'Paid':
-				$payment_state='Paid';
-				break;
-			case 'Waiting Payment':
-				$payment_state='Waiting Payment';
-				break;
-			default:
-				$payment_state='Unknown';
-				break;
-			}
-
-
-		}elseif (count($array_payment_state)>1) {
-			if (in_array('No Applicable',$array_payment_state)) {
-				unset($array_payment_state['No Applicable']);
-				return $this->translate_payment_state($array_payment_state);
-			}
-
-
-		}
-
-		return $payment_state;
-	}
-
-	function update_payment_state() {
-		$array_payment_state=array();
-
-		$sql = sprintf("select `Current Payment State` as payment_state from `Order Transaction Fact` where `Order Key`=%d ",
-			$this->id);
-
-		$result = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-			$array_payment_state[$row['payment_state']]=$row['payment_state'];
-		}
-		$sql = sprintf("select `Current Payment State` as payment_state from `Order No Product Transaction Fact` where `Order Key`=%d ",
-			$this->id);
-
-		$result = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-			$array_payment_state[$row['payment_state']]=$row['payment_state'];
-		}
-
-		$this->data['Order Current Payment State']=$this->translate_payment_state($array_payment_state);
-		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML Payment State`=%s  where `Order Key`=%d  "
-			,prepare_mysql($this->data['Order Current Payment State'])
-			,prepare_mysql($this->calculate_state())
-			,$this->id);
-		mysql_query($sql);
-		//  print "$sql\n";
-
-	}
 
 
 	function calculate_state($invoice_extra_info='') {
@@ -2850,7 +2798,9 @@ class Order extends DB_Table {
 			$dispatch_state=$this->data['Order Current Dispatch State'];
 		}
 
+		$state=$dispatch_state;
 
+		/*
 		if ($this->data['Order Invoiced']=='Yes') {
 			$payment_state=_('Invoiced');
 			if ($invoice_extra_info) {
@@ -2870,12 +2820,12 @@ class Order extends DB_Table {
 
 		}
 
-		$state=$dispatch_state;
+
 		if ($state!='' and $payment_state!='') {
 			$state.=', '.$payment_state;
 
 		}
-
+*/
 		return $state;
 	}
 
@@ -3863,7 +3813,7 @@ class Order extends DB_Table {
 		$sql=sprintf("select `Shipping Destination Metadata`,`Shipping Key`,`Shipping Metadata`,`Shipping Price Method`  from `Shipping Dimension`  where (select %s like `Shipping Destination Metadata` ) and  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s  and `Shipping Secondary Destination Check`='Post Code' and `Store Key`=%d "
 			,prepare_mysql($postcode)
 			,prepare_mysql($this->data['Order Ship To Country Code'])
-						,$this->data['Order Store Key']
+			,$this->data['Order Store Key']
 
 		);
 
@@ -4364,7 +4314,7 @@ class Order extends DB_Table {
 
 	function get_allowances_from_order_trigger() {
 
-$deals_component_data=array();
+		$deals_component_data=array();
 
 		$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Trigger`='Order'   and `Deal Component Status`='Active' "
 
@@ -5558,14 +5508,14 @@ $deals_component_data=array();
 		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>';
 		return $formated_tax_info;
 	}
-	
+
 	function get_formated_tax_info_with_operations() {
 		$operations=$this->data['Order Tax Operations'];
 		$selection_type=$this->data['Order Tax Selection Type'];
 		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>'.$operations;
 		return $formated_tax_info;
 	}
-	
+
 
 	function get_formated_dispatch_state() {
 		return get_order_formated_dispatch_state($this->data['Order Current Dispatch State'],$this->id);
@@ -5628,41 +5578,41 @@ $deals_component_data=array();
 
 
 
-		
 
-			
+
+
 
 
 			while ($row=mysql_fetch_assoc($res)) {
-			
-			
-				switch($row['Tax Category Name']){
-			case 'Outside the scope of VAT':
-			$tax_category_name=_('Outside the scope of VAT');
-			break;
-			case 'VAT 17.5%':
-			$tax_category_name=_('VAT 17.5%');
-			break;
-			case 'VAT 20%':
-			$tax_category_name=_('VAT 20%');
-			break;
-			case 'VAT 15%':
-			$tax_category_name=_('VAT 15%');
-			break;
-			case 'No Tax':
-			$tax_category_name=_('No Tax');
-			break;
-			case 'Exempt from VAT':
-			$tax_category_name=_('Exempt from VAT');
-			break;
-			
-			
-			default:
-			$tax_category_name=$row['Tax Category Name'];
-			}
-			
-			
-			
+
+
+				switch ($row['Tax Category Name']) {
+				case 'Outside the scope of VAT':
+					$tax_category_name=_('Outside the scope of VAT');
+					break;
+				case 'VAT 17.5%':
+					$tax_category_name=_('VAT 17.5%');
+					break;
+				case 'VAT 20%':
+					$tax_category_name=_('VAT 20%');
+					break;
+				case 'VAT 15%':
+					$tax_category_name=_('VAT 15%');
+					break;
+				case 'No Tax':
+					$tax_category_name=_('No Tax');
+					break;
+				case 'Exempt from VAT':
+					$tax_category_name=_('Exempt from VAT');
+					break;
+
+
+				default:
+					$tax_category_name=$row['Tax Category Name'];
+				}
+
+
+
 				$tax_category[$row['Tax Category Type']]= array(
 					'code'=>$row['Tax Category Code'],
 					'name'=>$tax_category_name,
@@ -5942,6 +5892,75 @@ $deals_component_data=array();
 
 		return $greeting;
 	}
+
+
+
+
+	function update_payment_state() {
+		$payments_amount=0;
+		$payments_info='';
+		$number_payments=0;
+		$sql=sprintf("select * from `Payment Dimension` P left join `Payment Service Provider Dimension` PSPD on (P.`Payment Service Provider Key`=PSPD.`Payment Service Provider Key`) where `Payment Order Key`=%d and `Payment Transaction Status`='Completed'",$this->id);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$number_payments++;
+			$payments_amount+=$row['Payment Balance'];
+
+			$payments_info.=sprintf('<div>%s (%s), ',
+
+				$row['Payment Service Provider Name'],
+				money($row['Payment Balance'],$row['Payment Currency Code'])
+
+			);
+			if ($row['Payment Transaction ID']!='')
+				$payments_info.=sprintf('%s: %s',
+					_('Reference'),
+					$row['Payment Transaction ID']
+
+				);
+			$payments_info.='</div>';
+
+		}
+
+
+		if ($payments_amount==$this->data['Order Balance Total Amount']) {
+			$payment_state='Paid';
+		}elseif ($payments_amount<$this->data['Order Balance Total Amount']) {
+			$payment_state='Partially Paid';
+
+		}elseif ($payments_amount>$this->data['Order Balance Total Amount']) {
+			$payment_state='Paid';
+
+		}
+
+
+		if (!$number_payments) {
+			$payment_state='Waiting Payment';
+
+			$payments_info=_('Waiting payment');
+
+		}
+
+		$this->data['Order Current Payment State']=$payment_state;
+		$this->data['Order Current XHTML Payment State']=$payments_info;
+
+		$this->data['Order Payments Amount']=$payments_amount;
+		$this->data['Order To Pay Amount']=$this->data['Order Balance Total Amount']-$payments_amount;
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML Payment State`=%s , `Order Payments Amount`=%.2f ,`Order To Pay Amount`=%.2f where `Order Key`=%d  "
+			,prepare_mysql($this->data['Order Current Payment State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
+			,$this->data['Order Payments Amount']
+			,$this->data['Order To Pay Amount']
+			,$this->id);
+		mysql_query($sql);
+		//  print "$sql\n";
+
+	}
+
+
 
 
 

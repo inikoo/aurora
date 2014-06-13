@@ -94,11 +94,14 @@ function submit_order($data) {
 	$order->checkout_submit_order();
 
 
+ $xhtml_payment_state=_('Waiting Payment').' ('.$payment_account->data['Payment Account Name'].')';
+
 	$order->update(
 		array(
 			'Order Payment Account Key'=>$payment_account->id,
 			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
-			'Order Payment Method'=>$payment_account->data['Payment Type']
+			'Order Payment Method'=>$payment_account->data['Payment Type'],
+			'Order Current XHTML Payment State'=>$xhtml_payment_state
 		));
 
 
