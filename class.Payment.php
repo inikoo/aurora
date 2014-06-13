@@ -243,4 +243,55 @@ class Payment extends DB_Table {
 		return $info;
 	}
 
+function get_formated_short_info() {
+		$info='';
+		$this->load_payment_account();
+		$this->load_payment_service_provider();
+		switch ($this->data['Payment Transaction Status']) {
+
+		case 'Pending':
+			$info=sprintf("%s, %s",
+				
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('payment in process')
+
+			);
+
+			break;
+		case 'Completed':
+			$info=sprintf("%s, %s, %s: ",
+			
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('payment completed sucessfully'),
+				_('Reference'),
+				$this->data['Payment Transaction ID']
+
+			);
+
+			break;
+		case 'Cancelled':
+				$info=sprintf("%s, %s",
+				
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('payment in cancelled')
+
+			);
+
+
+			break;
+		case 'Error':
+			$info=sprintf("%s %s",
+				
+				$this->payment_service_provider->data['Payment Service Provider Name'],
+				_('payment has had an error')
+
+			);
+
+			break;
+
+		}
+		return $info;
+	}
+
+
 }
