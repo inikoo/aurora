@@ -10,6 +10,8 @@ include_once '../../class.DeliveryNote.php';
 include_once '../../class.Email.php';
 include_once '../../class.PartLocation.php';
 include_once '../../class.Deal.php';
+include_once '../../class.SupplierProduct.php';
+include_once '../../class.Staff.php';
 
 include_once '../../class.CurrencyExchange.php';
 include_once 'common_read_orders_functions.php';
@@ -107,7 +109,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'    order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0001%.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0193%.xls'  order by filename";
 
 
 $contador=0;

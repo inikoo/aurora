@@ -207,7 +207,7 @@ class Payment extends DB_Table {
 				_('using'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment service provider'),
-				_('has been completed sucessfuly'),
+				_('has been completed sucessfully'),
 				_('Reference'),
 				$this->data['Payment Transaction ID']
 

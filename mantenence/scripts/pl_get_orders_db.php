@@ -8,6 +8,8 @@ include_once '../../class.Family.php';
 include_once '../../class.Product.php';
 include_once '../../class.PartLocation.php';
 include_once '../../class.Deal.php';
+include_once '../../class.SupplierProduct.php';
+include_once '../../class.Staff.php';
 
 include_once '../../class.Supplier.php';
 include_once '../../class.Order.php';

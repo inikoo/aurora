@@ -2003,17 +2003,17 @@ class Order extends DB_Table {
 
 
 
-		$sql = "select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
+		$sql = sprintf("select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
-		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
+		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" , 
+		$this->id);
 		// print "$sql\n";
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-			$total_items_net = $row ['gross']  - $row ['discount'];
 
 			$this->data ['Order Items Gross Amount'] = $row ['gross'];
 			$this->data ['Order Items Discount Amount'] = $row ['discount'];
-			$this->data ['Order Items Net Amount'] = $total_items_net;
+			$this->data ['Order Items Net Amount'] = $row ['total_items_net'];
 			$this->data ['Order Items Tax Amount']= $row ['tax'];
 			$this->data ['Order Items Total Amount']= $this->data ['Order Items Net Amount'] +$this->data ['Order Items Tax Amount'];
 			$this->data ['Order Estimated Weight']= $row ['estimated_weight'];
@@ -2973,7 +2973,6 @@ class Order extends DB_Table {
 		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount'];
 
 		$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
-		$this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
 
 		$this->data ['Order Items Adjust Amount']=0;
 
@@ -2982,8 +2981,8 @@ class Order extends DB_Table {
 
 		$sql = sprintf( "update `Order Dimension` set
                          `Order Total Net Amount`=%.2f
-                         ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f
-                         , `Order Invoiced Balance Total Amount`=%.2f
+                         ,`Order Total Tax Amount`=%.2f ,
+                         `Order Total Amount`=%.2f
                          ,`Order Estimated Weight`=%f
                          ,`Order Dispatched Estimated Weight`=%f
 
@@ -2993,7 +2992,6 @@ class Order extends DB_Table {
 
 
 			, $this->data ['Order Total Amount']
-			, $this->data ['Order Total To Pay Amount']
 			, $this->data ['Order Estimated Weight']
 			, $this->data ['Order Dispatched Estimated Weight']
 			, $this->id
@@ -4365,6 +4363,8 @@ class Order extends DB_Table {
 	}
 
 	function get_allowances_from_order_trigger() {
+
+$deals_component_data=array();
 
 		$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Trigger`='Order'   and `Deal Component Status`='Active' "
 

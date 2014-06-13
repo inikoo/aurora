@@ -994,7 +994,7 @@ class Page extends DB_Table {
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$this->msg.=' '._('Code already usen on this website')."\n";
+			$this->msg.=' '._('Code already used on this website')."\n";
 			$this->error_updated=true;
 			$this->error=true;
 

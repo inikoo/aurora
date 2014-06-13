@@ -2273,8 +2273,8 @@ class Customer extends DB_Table {
 
 
 		if ($this->associated) {
-			$note=_('Contact Associted with Customer');
-			$details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
+			$note=_('Contact associated with customer');
+			$details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
 			$history_data=array(
 				'Indirect Object'=>'Customer Name'
 				,'History Details'=>$details
@@ -2570,6 +2570,11 @@ class Customer extends DB_Table {
 		$this->data['Customer Tax Balance']=0;
 		$this->data['Customer Tax Refunds']=0;
 		$this->data['Customer Tax Payments']=0;
+
+		$this->data['Customer Total Balance']=0;
+		$this->data['Customer Total Refunds']=0;
+		$this->data['Customer Total Payments']=0;
+
 		$this->data['Customer Profit']=0;
 		$this->data['Customer With Orders']='No';
 
@@ -2581,7 +2586,8 @@ class Customer extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Customer Orders Cancelled']=$row['num'];
 		}
-		$sql=sprintf("select count(*) as num ,
+	
+	$sql=sprintf("select count(*) as num ,
 		min(`Order Date`) as first_order_date ,
 		max(`Order Date`) as last_order_date
 
@@ -2620,6 +2626,7 @@ class Customer extends DB_Table {
 		}
 
 
+		//get payments data directly from payment
 
 
 		$sql=sprintf("select
