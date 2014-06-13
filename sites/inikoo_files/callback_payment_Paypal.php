@@ -50,7 +50,7 @@ $payment_amount = $_POST['mc_gross'];
 $payment_currency = $_POST['mc_currency'];
 $payment_transaction_id = $_POST['txn_id'];
 //$payment_transaction_id = $_POST['receiver_id'];
- 			//	@mail("raul@inikoo.com", "paypal transaction id","$payment_transaction_id $payment_transaction_id");
+// @mail("raul@inikoo.com", "paypal transaction id","$payment_transaction_id $payment_transaction_id");
 
 
 $receiver_email = $_POST['receiver_email'];
@@ -141,18 +141,24 @@ if (!$fp) {
 
 						$payment->update($data_to_update);
 						$order=new Order($payment->data['Payment Order Key']);
-							
-		$order->update(
-		array(
-			'Order Payment Account Key'=>$payment_account->id,
-			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
-			'Order Payment Method'=>$payment_account->data['Payment Type'],
-			'Order Payment Key'=>$payment->id,
-			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
-		));
-						
+
+						$order->update(
+							array(
+								'Order Payment Account Key'=>$payment_account->id,
+								'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+								'Order Payment Method'=>$payment_account->data['Payment Type'],
+								'Order Payment Key'=>$payment->id,
+								'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+							));
+
 						$order->checkout_submit_order();
-	send_confirmation_email($order);
+						
+						
+						
+						
+						
+						
+						send_confirmation_email($order);
 
 
 					}
@@ -164,7 +170,7 @@ if (!$fp) {
 				}
 
 
-		
+
 
 
 
@@ -205,7 +211,7 @@ function check_if_valid($login,$amount,$currency,$payment,$payment_account) {
 
 	}
 
-/*
+	/*
 	if ($payment->data['Payment Balance'] != $amount) {
 		$valid=false;
 		$error_type='payment_amount_not_match';
