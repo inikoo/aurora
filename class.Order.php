@@ -210,10 +210,10 @@ class Order extends DB_Table {
 
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
-			$this->data ['Order Current XHTML Payment State'] = 'In Process by Customer';
+			$this->data ['Order Current XHTML Payment State'] = _('Waiting for payment');
 		}else {
 			$this->data ['Order Current Dispatch State'] = 'In Process';
-			$this->data ['Order Current XHTML Payment State'] = 'In Process';
+			$this->data ['Order Current XHTML Payment State'] = _('Waiting for payment');
 		}
 
 
@@ -534,11 +534,9 @@ class Order extends DB_Table {
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
-		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
-		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,$this->id
 		);
 
@@ -650,7 +648,7 @@ class Order extends DB_Table {
 			$this->data ['Order Current Dispatch State'] = $state;
 
 			$this->data ['Order Current XHTML Dispatch State'] = _('Cancelled');
-			$this->data ['Order Current XHTML Payment State'] = _ ( 'Order Cancelled' );
+			$this->data ['Order Current XHTML Payment State'] = _ ( 'Order cancelled' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
 			$this->data ['Order Invoiced Balance Total Amount'] = 0;
@@ -1485,7 +1483,18 @@ class Order extends DB_Table {
 		}
 
 	}
+function update_xhtml_state() {
+		$xhtml_state=$this->calculate_state();
+		$this->data['Order Current XHTML State']=$xhtml_state;
 
+		$sql=sprintf("update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d",
+			prepare_mysql($xhtml_state,false),
+			$this->id
+		);
+
+		mysql_query($sql);
+
+	}
 
 	function set_display_currency($currency_code,$exchange) {
 		$this->currency_code=$currency_code;
@@ -2451,73 +2460,9 @@ class Order extends DB_Table {
 
 	}
 
-	function update_xhtml_state() {
-		$xhtml_state=$this->calculate_state();
-		$this->data['Order Current XHTML Payment State']=$xhtml_state;
-
-		$sql=sprintf("update `Order Dimension` set `Order Current XHTML Payment State`=%s where `Order Key`=%d",
-			prepare_mysql($xhtml_state,false),
-			$this->id
-		);
-
-		mysql_query($sql);
-
-	}
 
 
-	function update_xhtml_dispatch_state() {
-
-		$xhtml_dispatch_state='';
-
-		$sql=sprintf("select DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Fraction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Fraction Packed`,`Delivery Note Assigned Packer Alias` from `Order Transaction Fact` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`) where `Order Key`=%d group by B.`Delivery Note Key`",$this->id);
-
-
-		$res = mysql_query( $sql );
-		$delivery_notes=array();
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Delivery Note Key']) {
-				$status='';
-				if ($row['Delivery Note Assigned Picker Alias']) {
-
-					if ($row['Delivery Note Fraction Picked']==1) {
-						$_tmp=_('Picked');
-					}else {
-						$_tmp=_('Picking').'('.percentage($row['Delivery Note Fraction Picked'],1,0).')';
-					}
-					$status.='<div id="dn_state'.$row['Delivery Note Key'].'">'.$_tmp.' <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> </div>';
-				}
-
-				if ($row['Delivery Note Assigned Packer Alias']) {
-
-					if ($row['Delivery Note Fraction Packed']==1) {
-						$_tmp=_('Packed');
-					}else {
-						$_tmp=_('Packing').'('.percentage($row['Delivery Note Fraction Packed'],1,0).')';
-					}
-					$status.='<div id="dn_state'.$row['Delivery Note Key'].'">'.$_tmp.' <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> </div>';
-				}
-
-
-
-
-
-				$xhtml_dispatch_state.=sprintf('<a href="dn.php?id=%d">%s</a> %s',$row['Delivery Note Key'],$row['Delivery Note ID'],$status);
-			}
-
-		}
-
-
-
-		$this->data['Order Current XHTML Dispatch State']=$xhtml_dispatch_state;
-
-		$sql=sprintf("update `Order Dimension` set `Order Current XHTML Dispatch State`=%s where `Order Key`=%d",
-			prepare_mysql($xhtml_dispatch_state,false),
-			$this->id
-		);
-		// print $sql;
-		mysql_query($sql);
-
-	}
+	
 
 
 
@@ -2593,12 +2538,10 @@ class Order extends DB_Table {
 		$this->data['Order Current Dispatch State']=$dispatch_state;
 
 
-		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
 		if ($old_dispatch_state!=$this->data['Order Current Dispatch State']) {
 
-			$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
+			$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s where `Order Key`=%d"
 				,prepare_mysql($this->data['Order Current Dispatch State'])
-				,prepare_mysql($this->data['Order Current XHTML Payment State'])
 
 				,$this->id
 			);
@@ -2679,13 +2622,10 @@ class Order extends DB_Table {
 
 		$this->data['Order Current Post Dispatch State']=$dispatch_state;
 
-		/* Decide if you want to do this fro post orders as well (Principalmente para los customer notes)*/
-		// $this->data['Order Current XHTML Payment State']=$this->calculate_state();
 		if ($old_dispatch_state!=$this->data['Order Current Dispatch State']) {
 
 			$sql=sprintf("update `Order Dimension` set `Order Current Post Dispatch State`=%s  where `Order Key`=%d"
 				,prepare_mysql($this->data['Order Current Post Dispatch State'])
-				//,prepare_mysql($this->data['Order Current XHTML Payment State'])
 
 				,$this->id
 			);
@@ -2706,13 +2646,11 @@ class Order extends DB_Table {
 
 		$this->data['Order Current Dispatch State']='Dispatched';
 		$this->data['Order Current XHTML Dispatch State']=_('Dispatched');
-		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
 
-		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,$this->id
 		);
 		mysql_query($sql);
@@ -2727,13 +2665,11 @@ class Order extends DB_Table {
 
 		$this->data['Order Current Dispatch State']='Dispatched';
 		$this->data['Order Current XHTML Dispatch State']=_('Dispatched');
-		$this->data['Order Current XHTML Payment State']=$this->calculate_state();
 
-		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML Payment State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current Dispatch State'])
-			,prepare_mysql($this->data['Order Current XHTML Payment State'])
 			,$this->id
 		);
 		mysql_query($sql);
