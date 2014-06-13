@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-12 15:40-0000\n"
-"PO-Revision-Date: 2014-06-12 17:13-0000\n"
+"PO-Revision-Date: 2014-06-13 13:50-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: /Users/raul/po_sites_sources\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: ar_contacts.php:228 ar_orders.php:57 ar_regions.php:66
@@ -3867,7 +3867,7 @@ msgstr "Menge"
 #: send_confirmation_email_function.php:73 smarty.php:23 smarty.php:170
 #: smarty.php:233 smarty.php:1946 smarty.php:2270
 msgid "Amount"
-msgstr "Menge"
+msgstr "Betrag"
 
 #: smarty.php:2 smarty.php:389
 msgid "No results found, try te a more comprensive search"
