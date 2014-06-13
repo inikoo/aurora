@@ -955,8 +955,8 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 	if (!isset($dn)) {
 
 
-		print " No transactions  ";
-
+		print " No transactions  cant not read\n";
+		return;
 
 		$invoice=$order->create_invoice($date_inv);
 		//print_r($invoice);
@@ -973,6 +973,8 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 			);
 			$invoice->add_credit_no_product_transaction($credit_data);
 		}
+		
+		/*
 		$_invoice_data=  array(
 			'Invoice Metadata'=>$store_code.$order_data_id,
 			'Invoice Shipping Net Amount'=>array(
@@ -992,7 +994,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 
 		$invoice->update($_invoice_data);
 		$invoice->update_totals();
-
+*/
 
 		adjust_invoice($invoice,$order);
 
@@ -1234,6 +1236,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				//print_r($credit_data);
 				$invoice->add_credit_no_product_transaction($credit_data);
 			}
+			/*
 			$_invoice_data=  array(
 				'Invoice Metadata'=>$store_code.$order_data_id,
 				'Invoice Shipping Net Amount'=>array(
@@ -1251,6 +1254,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 
 
 			$invoice->update($_invoice_data);
+*/
 			$invoice->update_totals();
 
 

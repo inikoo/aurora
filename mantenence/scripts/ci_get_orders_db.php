@@ -13,6 +13,8 @@ include_once '../../class.TimeSeries.php';
 include_once '../../class.TaxCategory.php';
 include_once '../../class.Deal.php';
 include_once '../../class.PartLocation.php';
+include_once '../../class.SupplierProduct.php';
+include_once '../../class.Staff.php';
 
 include_once 'common_read_orders_functions.php';
 

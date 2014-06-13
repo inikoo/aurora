@@ -367,7 +367,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 		}
 
 		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
-			return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." * $datetime",'ok'=>false);
+			return array('mysql_date'=>'','status'=>"Error, date time not recognised $datetime",'ok'=>false);
 		$ts=date('U',strtotime($datetime));
 		list($date,$time)=preg_split('/\s+/',$datetime);
 

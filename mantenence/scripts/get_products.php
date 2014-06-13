@@ -108,6 +108,13 @@ TRUNCATE `Order Transaction Deal Bridge`;
 
 */
 
+/*
+
+
+*/
+
+
+
 $campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Gold Reward','Deal Campaign Store Key'=>$store_key);
 $gold_camp=$store->add_campaign($campaign_data);
 $campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Volume Discount','Deal Campaign Store Key'=>$store_key);

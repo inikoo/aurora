@@ -2132,7 +2132,7 @@ function list_store_pending_orders() {
 		$current_delivery_note_key='';
 	}
 	
-	$dn_operations='<div style="clear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
+	$dn_operations='<div style="border:1px solid #cccclear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
 	foreach($dns_data as $dn_data){
 		$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
 		$dn_operations.=sprintf('<tr style="border:none;"><td colspan=2">%s</td></tr>',$dn_data['operations']);

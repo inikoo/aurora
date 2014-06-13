@@ -3553,8 +3553,8 @@ class product extends DB_Table {
 			$this->new_value='';
 			$editor_data=$this->get_editor_data();
 
-			$abstract=_('Product remove from Category')." ($cat_removed)";
-			$details=_('Product remove from Category');
+			$abstract=_('Product removed from category')." ($cat_removed)";
+			$details=_('Product removed from category');
 			$this->msg=$abstract;
 
 			$this->add_history(array(

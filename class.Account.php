@@ -49,12 +49,12 @@ class Account extends DB_Table{
 
 		$data['Account Company Key']=$company->id;
 		$data['Account Company Name']=$company->data['Company Name'];
-$data['Account Country Code']=$company->data['Company Main Country Code'];
+		$data['Account Country Code']=$company->data['Company Main Country Code'];
 
-$address=new Address($company->data['Company Main Address Key']);
+		$address=new Address($company->data['Company Main Address Key']);
 
-$data['Account Country Code']=$company->data['Company Main Country Code'];
-$data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
+		$data['Account Country Code']=$company->data['Company Main Country Code'];
+		$data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
 
 		$base_data=$this->base_data();
 
@@ -66,12 +66,12 @@ $data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Co
 		$keys='(';$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
-			
-			if($key=='Short Message')
-						$values.=prepare_mysql($value,false).",";
+
+			if ($key=='Short Message')
+				$values.=prepare_mysql($value,false).",";
 
 			else
-			$values.=prepare_mysql($value).",";
+				$values.=prepare_mysql($value).",";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -85,7 +85,13 @@ $data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Co
 			$this->new=true;
 
 
+			$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`)
+	VALUES ('Accounts', %s, 'Account');",
+				_('Internal customers accounts')
 
+			);
+
+			mysql_query($sql);
 			return;
 		}else {
 			$this->msg="Error can not create account\n";
@@ -165,13 +171,13 @@ $data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Co
 
 		}
 	}
-	
-	
-		function add_account_history($history_key,$type=false){
-			$this->post_add_history($history_key,$type=false);
-		}
-	
-		function post_add_history($history_key,$type=false) {
+
+
+	function add_account_history($history_key,$type=false) {
+		$this->post_add_history($history_key,$type=false);
+	}
+
+	function post_add_history($history_key,$type=false) {
 
 		if (!$type) {
 			$type='Changes';

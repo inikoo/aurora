@@ -138,7 +138,7 @@ class DealComponent extends DB_Table {
 		$values='values(';
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
-			if ($key=='Deal Component Replace' or $key=='Deal Component Allowance Target XHTML Label' or $key=='Deal Component Trigger XHTML Label')
+			if ( $key=='Deal Component XHTML Terms Description Label' or $key=='Deal Component XHTML Name Label' or  $key=='Deal Component Replace' or $key=='Deal Component Allowance Target XHTML Label' or $key=='Deal Component Trigger XHTML Label')
 				$values.=prepare_mysql($value,false).",";
 			else
 				$values.=prepare_mysql($value).",";
@@ -445,10 +445,10 @@ class DealComponent extends DB_Table {
 			return _("Active");
 			break;
 		case('Finish'):
-			return _("Finish");
+			return _("Finished");
 			break;
-		case('Wating'):
-			return _("Wating");
+		case('Waiting'):
+			return _("Waiting");
 			break;
 		case('Suspended'):
 			return _("Suspended");

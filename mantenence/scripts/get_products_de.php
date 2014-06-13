@@ -57,18 +57,61 @@ $count=0;
 $store=new Store("code","DE");
 $store_key=$store->id;
 
-$campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Gold Reward','Deal Campaign Store Key'=>$store_key);
+/*
+TRUNCATE `Campaign Deal Schema`;
+TRUNCATE `Deal Campaign Dimension`;
+TRUNCATE `Deal Component Dimension`;
+TRUNCATE `Deal Dimension`;
+TRUNCATE `Deal Target Bridge`;
+TRUNCATE `Order Deal Bridge`;
+TRUNCATE `Order Transaction Deal Bridge`;
+*/
+
+$reread_deals=true;
+if ($reread_deals) {
+
+
+	$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Store Key`=%d",$store_key);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$sql=sprintf("delete from `Deal Target Bridge` where `Deal Key`=%d",$row['Deal Key']);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Order Deal Bridge` where `Deal Key`=%d",$row['Deal Key']);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Deal Key`=%d",$row['Deal Key']);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Deal Key`=%d",$row['Deal Key']);
+		mysql_query($sql);
+	}
+
+	$sql=sprintf("delete from `Deal Target Bridge` where `Deal Store Key`=%d",$store_key);
+	mysql_query($sql);
+
+	$sql=sprintf("delete from `Deal Campaign Dimension` where `Deal Campaign Store Key`=%d",$store_key);
+	mysql_query($sql);
+	$sql=sprintf("delete from `Deal Component Dimension` where `Deal Component Store Key`=%d",$store_key);
+	mysql_query($sql);
+	$sql=sprintf("delete from `Deal Dimension` where `Deal Store Key`=%d",$store_key);
+	mysql_query($sql);
+
+
+}
+
+
+
+
+$campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Goldprämie','Deal Campaign Store Key'=>$store_key);
 $gold_camp=new DealCampaign('find create',$campaign_data);
-$campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Volume Discount','Deal Campaign Store Key'=>$store_key);
+$campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Mengenrabatt','Deal Campaign Store Key'=>$store_key);
 $vol_camp=new DealCampaign('find create',$campaign_data);
-$campaign_data=array('Deal Campaign Code'=>'Bogof','Deal Campaign Name'=>'Bogof','Deal Campaign Store Key'=>$store_key);
+$campaign_data=array('Deal Campaign Code'=>'Bogof','Deal Campaign Name'=>'1 Kaufen 1 Gratis','Deal Campaign Store Key'=>$store_key);
 $bogof_camp=new DealCampaign('find create',$campaign_data);
 
 $gold_deal_data=array(
 	'Deal Code'=>'GR.'.$store->data['Store Code'],
 	'Deal Store Key'=>$store_key,
-	'Deal Name'=>'Gold Reward',
-	'Deal Description'=>'Order within 30 days to receive a discount on selected products, no small order charge and Free Gold Reward Gift or bottle of fine wine (on orders over £100+vat).',
+	'Deal Name'=>'Goldprämie',
+	'Deal Description'=>'Bestellen Sie innerhalb von 30 Tagen erneut, um Rabatte auf ausgewählte Produkte sowie ein kleines Geschenk (bei Bestellungen über 100 Euro + MwSt.) zu erhalten',
 	'Deal Trigger'=>'Order',
 	'Deal Trigger Key'=>'0',
 	'Deal Trigger XHTML Label'=>'',
@@ -78,23 +121,10 @@ $gold_deal_data=array(
 
 $deal_gold=$gold_camp->add_deal($gold_deal_data);
 
-$_deal_component_data=array(
-	'Deal Component Name'=>'Charge Waiver',
-	'Deal Component Terms Description'=>'last order within 30 days',
-	'Deal Component Allowance Description'=>'no hanging charges',
-	'Deal Component Allowance Type'=>'Get Free',
-	'Deal Component Allowance Target'=>'Charge',
-	'Deal Component Allowance Target Key'=>''
-);
-
-$deal_component=$deal_gold->add_component($_deal_component_data);
-$deal_component->update_status('Active');
 
 
-$fam_promo=$fam_promo=new Family('code','Promo_UK',$store_key);
-$fam_promo_key=$fam_promo->id;
-$fam_products_no_family=new Family('code','PND_UK',$store_key);
-$fam_products_no_family_key=$fam_products_no_family->id;
+
+
 $current_promotion='';
 
 
@@ -108,7 +138,7 @@ $__cols=array();
 $inicio=false;
 while (($_cols = fgetcsv($handle_csv))!== false) {
 
-	if(count($_cols)<6)
+	if (count($_cols)<6)
 		continue;
 	$code=$_cols[3];
 
@@ -223,12 +253,12 @@ foreach ($__cols as $cols) {
 		}
 
 
-			$deals=array();
+		$deals=array();
 		$_deal_type='None';
-		
-	
-		
-	if (preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))) {
+
+
+
+		if (preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))) {
 			if (preg_match('/^\d+\% off/i',$current_promotion,$match))
 				$allowance=$match[0];
 			if (preg_match('/off.*more/i',$current_promotion,$match))
@@ -256,21 +286,26 @@ foreach ($__cols as $cols) {
 
 
 
-	if ($_deal_type=='GR/Vol') {
+		if ($_deal_type=='GR/Vol') {
+
+
 
 			$deals[]=array(
-				'Deal Code'=>'GR.UK',
+				'Deal Code'=>'GR.DE',
 				'Deal Store Key'=>$store_key,
-				'Deal Name'=>'Gold Reward',
-				'Deal Description'=>'Order within 30 days to receive a discount on selected products, no small order charge and Free Gold Reward Gift or bottle of fine wine (on orders over £100+vat).',
+				'Deal Name'=>'Goldprämie',
+				'Deal Description'=>'Bestellen Sie innerhalb von 30 Tagen erneut, um Rabatte auf ausgewählte Produkte sowie ein kleines Geschenk (bei Bestellungen über 100 Euro + MwSt.) zu erhalten',
 				'Deal Trigger'=>'Order',
 				'Deal Trigger Key'=>'0',
 				'Deal Trigger XHTML Label'=>'',
 				'Deal Terms Type'=>'Order Interval',
 				'component'=>array(
 					'Deal Component Name'=>'',
+					'Deal Component XHTML Name Label'=>'Goldprämie',
 					'Deal Component Terms Description'=>'last order within 30 days',
+					'Deal Component XHTML Terms Description Label'=>'',
 					'Deal Component Allowance Description'=>$allowance,
+					'Deal Component XHTML Allowance Description Label'=>preg_replace('/off/','Rabatt',$allowance),
 					'Deal Component Allowance Type'=>'Percentage Off',
 					'Deal Component Allowance Target'=>'Family',
 					'Deal Component Allowance Target Key'=>''
@@ -285,9 +320,14 @@ foreach ($__cols as $cols) {
 				'Deal Terms Type'=>'Family Quantity Ordered',
 				'component'=>array(
 					'Deal Component Name'=>'',
+					'Deal Component XHTML Name Label'=>'Mengenrabatt',
+
 					'Deal Component Trigger Key'=>'',
 					'Deal Component Terms Description'=>'order '.$terms,
+					'Deal Component XHTML Terms Description Label'=>'Bestellen '.preg_replace('/or more/','oder mehr',$terms),
+
 					'Deal Component Allowance Description'=>$allowance,
+					'Deal Component XHTML Allowance Description Label'=>preg_replace('/off/','Rabatt',$allowance),
 					'Deal Component Allowance Type'=>'Percentage Off',
 					'Deal Component Allowance Target'=>'Family',
 					'Deal Component Allowance Target Key'=>''
@@ -308,8 +348,14 @@ foreach ($__cols as $cols) {
 				'component'=>array(
 
 					'Deal Component Name'=>'',
+					'Deal Component XHTML Name Label'=>'',
 					'Deal Component Terms Description'=>'foreach '.$buy,
+					'Deal Component XHTML Terms Description Label'=>$buy.' Kaufen',
+
 					'Deal Component Allowance Description'=>$get.' free',
+					'Deal Component XHTML Allowance Description Label'=>$get.' Gratis',
+
+					
 					'Deal Component Allowance Type'=>'Get Free',
 					'Deal Component Allowance Target'=>'Product',
 					'Deal Component Allowance Target Key'=>'',
@@ -582,7 +628,7 @@ foreach ($__cols as $cols) {
 
 				if ($deal_data['Deal Code']=='Vol') {
 					$deals[$_deal_key]['Deal Code']='Vol.'.$family->data['Product Family Code'];
-					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Volume Discount';
+					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Mengenrabatt';
 					$deals[$_deal_key]['Deal Description']=$deals[$_deal_key]['component']['Deal Component Terms Description'].' '. $family->data['Product Family Code'].' family products and get '  .$deals[$_deal_key]['component']['Deal Component Allowance Description'];
 					$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 					$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
@@ -591,7 +637,7 @@ foreach ($__cols as $cols) {
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
 
-					$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Volume Discount';
+					$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Mengenrabatt';
 					$promotion='';
 					$current_promotion='';
 					$deal=$vol_camp->add_deal($deals[$_deal_key]);
@@ -601,21 +647,21 @@ foreach ($__cols as $cols) {
 
 				}
 				elseif ($deal_data['Deal Code']=='GR.'.$store->data['Store Code']) {
-				$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
-						$deals[$_deal_key]['component']['Deal Component Trigger']='Family';
+					$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
+					$deals[$_deal_key]['component']['Deal Component Trigger']='Family';
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$family->id;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
-					$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Gold Reward';
+					$deals[$_deal_key]['component']['Deal Component Name']=$family->data['Product Family Code'].' Goldprämie';
 					$promotion='';$current_promotion='';
 
 
 					$deal_component=$deal_gold->add_component($deals[$_deal_key]['component']);
 					$deal_component->update_status('Active');
 
-é
+					
 				}elseif ($deal_data['Deal Code']=='Bogof') {
 					$deals[$_deal_key]['Deal Code']='Bogof.'.$family->data['Product Family Code'];
-					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' Bogof';
+					$deals[$_deal_key]['Deal Name']=$family->data['Product Family Code'].' 1 Kaufen 1 Gratis';
 					$deals[$_deal_key]['Deal Trigger Key']=$family->id;
 					$deals[$_deal_key]['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',$family->id,$family->data['Product Family Code']);
 					$deals[$_deal_key]['component']['Deal Component Trigger Key']=$family->id;
@@ -623,7 +669,7 @@ foreach ($__cols as $cols) {
 					$deals[$_deal_key]['component']['Deal Component Allowance Target Key']=$product->pid;
 					$deals[$_deal_key]['component']['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->code);
 
-					$deals[$_deal_key]['component']['Deal Component Name']=$product->code.' Bogof';
+					$deals[$_deal_key]['component']['Deal Component Name']=$product->code.' 1 Kaufen 1 Gratis';
 
 
 					$deal=$bogof_camp->add_deal($deals[$_deal_key]);
@@ -662,31 +708,31 @@ foreach ($__cols as $cols) {
 
 
 		if (isset($cols[22]) and preg_match('/\d+\:\d+\%$/i',_trim($cols[22]))) {
-				$_deal_comps=preg_replace('/\%$/','',$cols[22]);
-				$_deal_comps=preg_split('/\:/',$_deal_comps);
-				$promotion=sprintf("%d%% off %d or more",$_deal_comps[1],$_deal_comps[0]);
-				$promotion=preg_replace('/^\s*order\s*/i','',$promotion);
-				$promotion=preg_replace('/discount\s*$/i','',$promotion);
-				$promotion=preg_replace('/\s*off\s*$/i','',$promotion);
+			$_deal_comps=preg_replace('/\%$/','',$cols[22]);
+			$_deal_comps=preg_split('/\:/',$_deal_comps);
+			$promotion=sprintf("%d%% off %d or more",$_deal_comps[1],$_deal_comps[0]);
+			$promotion=preg_replace('/^\s*order\s*/i','',$promotion);
+			$promotion=preg_replace('/discount\s*$/i','',$promotion);
+			$promotion=preg_replace('/\s*off\s*$/i','',$promotion);
 
-				$promotion=_trim($promotion);
-				$promotion_position=$column;
-			
-			}
+			$promotion=_trim($promotion);
+			$promotion_position=$column;
+
+		}
 		else if (isset($cols[22]) and preg_match('/^B\d+\:\d+$/i',_trim($cols[22]))) {
 				$_deal_comps=preg_replace('/^B$/','',$cols[22]);
 				$_deal_comps=preg_split('/\:/',$_deal_comps);
 				$promotion=sprintf("buy %d get %d free",$_deal_comps[0],$_deal_comps[1]);
 				$promotion=_trim($promotion);
 				$promotion_position=$column;
-				
+
 			}
-			
-			
-		
-		
-		
-		
+
+
+
+
+
+
 		if ($cols[3]=='' and $cols[6]=='') {
 			$blank_position=$column;
 		}

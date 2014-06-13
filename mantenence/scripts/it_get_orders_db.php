@@ -11,6 +11,8 @@ include_once '../../class.Order.php';
 include_once '../../class.Invoice.php';
 include_once '../../class.PartLocation.php';
 include_once '../../class.Deal.php';
+include_once '../../class.SupplierProduct.php';
+include_once '../../class.Staff.php';
 
 include_once '../../class.DeliveryNote.php';
 include_once '../../class.Email.php';
