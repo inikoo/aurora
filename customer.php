@@ -120,6 +120,7 @@ $js_files=array(
 	'edit_contact_name.js.php',
 	'edit_contact_email.js.php',
 	'js/notes.js',
+	'js/add_credit_note.js'
 );
 
 
@@ -542,6 +543,21 @@ $smarty->assign('number_categories_data',$number_categories_data);
 
 
 $smarty->assign('sticky_note',$customer->data['Customer Sticky Note']);
+
+
+	$tax_categories=array();
+	$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes' and `Tax Category Country Code`=%s ",
+	prepare_mysql($store->data['Store Tax Country Code'])
+	);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($store->data['Store Tax Category Code']==$row['Tax Category Code']?true:false));
+	}
+	$smarty->assign('tax_categories',$tax_categories);
+
+	$smarty->assign('zero_money',money(0,$customer->data['Customer Currency Code']));
+
+
 
 $smarty->display('customer.tpl');
 

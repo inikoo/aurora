@@ -2141,7 +2141,7 @@ function list_store_pending_orders() {
 		$operations.=$dn_operations;
 
 
-		$public_id=sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
+		$public_id=sprintf("<a href='order.php?id=%d&referral=spo'>%s</a>",$row['Order Key'],$row['Order Public ID']);
 
 
 $date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y", strtotime($row['Order Date'])).'</span>';

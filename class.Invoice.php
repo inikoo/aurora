@@ -132,7 +132,7 @@ class Invoice extends DB_Table {
 		$this->data ['Invoice Type']='Refund';
 
 		if (!isset($invoice_data['Invoice Date'])   ) {
-			$this->data ['Invoice Date']=date("Y-m-d H:i:s");
+			$this->data ['Invoice Date']=gmdate("Y-m-d H:i:s");
 		}
 
 		$customer=$this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
@@ -1931,7 +1931,7 @@ function update_main_payment_method() {
 function pay($tipo='full', $data) {
 
 	if (!array_key_exists('Invoice Paid Date',$data) or !$data['Invoice Paid Date']  ) {
-		$data['Invoice Paid Date']=date('Y-m-d H:i:s');
+		$data['Invoice Paid Date']=gmdate('Y-m-d H:i:s');
 	}
 
 	if ($tipo=='full' or $data['amount']==$this->data['Invoice Outstanding Total Amount']) {
@@ -2198,47 +2198,7 @@ function set_data_from_store($store_key) {
 	$this->data['Invoice XHTML Store']=sprintf("<a href='store.php?id=%d'>%s</a>",$store->id,$store->get('Store Name'));
 
 
-	/*
-
-         $store=new Store($this->data ['Invoice Store Key']);
-
-            $this->data ['Invoice Store Code'] = $store->data ['Store Code'];
-            if (isset($invoice_data['Invoice Currency'])) {
-                $this->data['Invoice Currency']=$invoice_data['Invoice Currency'];
-            } else {
-                $this->data['Invoice Currency']=$store->data['Store Currency Code'];
-            }
-
-            if ($corporate_currency!=$this->data['Invoice Currency']) {
-                //print $corporate_currency.' -> '.$this->data['Invoice Currency']."\n";
-                if (isset($invoice_data['Invoice Currency Exchange'])) {
-                    $this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exchange'];
-                } else {
-                    $exchange=1;
-
-
-                    $sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)"
-                                 ,prepare_mysql($this->data ['Invoice Date'] ));
-
-                    $res=mysql_query($sql);
-                    if ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
-                        $exchange=$row2['Exchange'];
-
-                    }
-                    $this->data['Invoice Currency Exchange']=$exchange;
-
-
-                }
-
-            } else
-                $this->data['Invoice Currency Exchange']=1;
-
-
-            $this->data ['Invoice XHTML Store'] = $order->data ['Order XHTML Store'];
-            $this->data ['Invoice Main Source Type'] = $order->data ['Order Main Source Type'];
-            $this->data ['Invoice For'] ='Customer';
-
-        */
+	
 
 
 

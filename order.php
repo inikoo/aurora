@@ -150,7 +150,9 @@ else {
 
 
 	$tax_categories=array();
-	$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes'");
+	$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes' and `Tax Category Country Code`=%s ",
+	prepare_mysql($store->data['Store Tax Country Code'])
+	);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($order->data['Order Tax Code']==$row['Tax Category Code']?true:false));
@@ -273,6 +275,8 @@ else {
 
 	case('In Process'):
 	case('Submitted by Customer'):
+		case('Waiting for Payment Confirmation'):
+
 $order->update_tax();
 		$js_files[]='js/edit_common.js';
 

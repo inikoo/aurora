@@ -4807,6 +4807,7 @@ function update_xhtml_state() {
 				$this->data ['Order Ship To Keys']=$ship_to_key;
 				$this->data ['Order XHTML Ship Tos']='<div>'.$ship_to->display('xhtml').'</div>';
 				$this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];
+				$this->data ['Order Ship To Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
 				$this->data ['Order Ship To World Region Code']=$ship_to->get('World Region Code');
 				$this->data ['Order Ship To Town']=$ship_to->data['Ship To Town'];
 				$this->data ['Order Ship To Postal Code']=$ship_to->data['Ship To Postal Code'];

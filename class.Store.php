@@ -1753,6 +1753,17 @@ include_once('common_stat_functions.php');
 		mysql_query($sql);
 
 	}
+function get_tax_rate() {
+		$rate=0;
+		$sql=sprintf("select `Tax Category Rate` from `Tax Category Dimension` where `Tax Category Code`=%s",
+			prepare_mysql($this->data['Store Tax Category Code']));
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			$rate=$row['Tax Category Rate'];
+		}
+		return $rate;
+	}
+
 
 }
 
