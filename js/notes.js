@@ -590,12 +590,7 @@ dialog_delete_history_record_from_list =  new YAHOO.widget.Dialog("dialog_delete
 
     Event.addListener("attach", "click", show_dialog_attach);
 
-    if (Dom.get('sticky_note_content').innerHTML == '') {
-        Dom.setStyle(['sticky_note_div', 'sticky_note_bis_tr'], 'display', 'none');
-    } else {
-        Dom.setStyle('sticky_note_div', 'display', '');
-    }
-
+  
 
 
 }

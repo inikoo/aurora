@@ -110,6 +110,8 @@ function add_customer($data,$args='') {
 	if ($customer->new) {
 		$store=new Store($customer->data['Customer Store Key']);
 
+		$customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
+
 
 		$customer->update_orders();
 

@@ -132,10 +132,10 @@ function number($a, $fixed, $force_fix) {
 }
 
 
-function money($amount,$locale,$force_sign){
+function money($amount,$currency_code,$force_sign){
     
-    if($locale== undefined)
-	$locale=false;
+    if($currency_code== undefined)
+	$currency_code=false;
     if($force_sign== undefined)
 	$force_sign=false;
 
@@ -149,14 +149,14 @@ function money($amount,$locale,$force_sign){
     $neg=false;
   $amount=abs($amount);
   
-  if(!$locale){
+  if(!$currency_code){
     $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point').value,YAHOO.util.Dom.get('thousands_sep').value);
         $symbol=Dom.get('currency_symbol').value;
 
     $amount=($neg?'-':$positive_sign)+$symbol+$amount;
     return $amount;
   }else{
-    switch($locale){
+    switch($currency_code){
     case('EUR'):
       $amount=number_format($amount,2,YAHOO.util.Dom.get('decimal_point').value,YAHOO.util.Dom.get('thousands_sep').value);
       $symbol='€';

@@ -67,7 +67,7 @@ TRUNCATE `Order Deal Bridge`;
 TRUNCATE `Order Transaction Deal Bridge`;
 */
 
-$reread_deals=true;
+$reread_deals=false;
 if ($reread_deals) {
 
 

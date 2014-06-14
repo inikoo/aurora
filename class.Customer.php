@@ -2871,11 +2871,12 @@ class Customer extends DB_Table {
 			return nl2br($this->data['Customer Sticky Note']);
 			break;
 		case('Net Balance'):
-			return money($this->data['Customer Net Balance']);
+		case('Account Balance'):
+			return money($this->data['Customer '.$key],$this->data['Customer Currency Code']);
 			break;
 		case('Total Net Per Order'):
 			if ($this->data['Customer Orders Invoiced']>0)
-				return money($this->data['Customer Net Balance']/$this->data['Customer Orders Invoiced']);
+				return money($this->data['Customer Net Balance']/$this->data['Customer Orders Invoiced'],$this->data['Customer Currency Code']);
 			else
 				return _('ND');
 			break;
@@ -2895,90 +2896,14 @@ class Customer extends DB_Table {
 					$order_interval=round($order_interval).' '._('days');
 				return $order_interval;
 			break;
-		case('order within'):
-
-			if (!$args)
-				$args='1 MONTH';
-			//get customer last invoice;
-			$sql="select count(*)as num  from `Order Dimension` where `Order Type`='Order' and `Order Current Dispatch State`!='Cancelled' and `Order Customer Key`=".$this->id." and DATE_SUB(CURDATE(),INTERVAL $args) <=`Order Date`  ";
-			// print $sql;
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				if ($row['num']>0)
-					return true;
-			}
-			return false;
-			break;
+	
 		case('Tax Rate'):
 			return $this->get_tax_rate();
 			break;
 		case('Tax Code'):
 			return $this->data['Customer Tax Category Code'];
 			break;
-		case('xhtml ship to'):
 
-
-			if (!$arg1)
-				$ship_to_key=$this->data['Customer Main Delivery Address Key'];
-			else
-				$ship_to_key=$arg1;
-
-			if (!$ship_to_key) {
-				print_r($this->data);
-				print "\n*** Warning no ship to key un customer.php\n";
-				sdsd();
-				exit("error in class customer\n");
-				return false;
-
-			}
-
-			if (!isset($this->ship_to[$ship_to_key]['ship to key']))
-				$this->load('ship to',$ship_to_key);
-
-
-			//print_r($this->ship_to);
-
-			if (isset($this->ship_to[$ship_to_key]['Ship To Key'])) {
-				$contact=$this->ship_to[$ship_to_key]['Ship To Contact Name'];
-				$company=$this->ship_to[$ship_to_key]['Ship To Company Name'];
-				$address=$this->ship_to[$ship_to_key]['Ship To XHTML Address'];
-				$tel=$this->ship_to[$ship_to_key]['Ship To Telephone'];
-				$ship_to='';
-				if ($contact!='')
-					$ship_to.='<b>'.$contact.'</b>';
-				if ($company!='')
-					$ship_to.='<br/>'.$company;
-				if ($address!='')
-					$ship_to.='<br/>'.$address;
-				if ($tel!='')
-					$ship_to.='<br/>'.$tel;
-				return $ship_to;
-			}
-
-			return false;
-			break;
-
-			//   case('customer main address key')
-
-
-			//   case('location'):
-			//      if(!isset($this->data['location']))
-			//        $this->load('location');
-			//      return $this->data['location']['country_code'].$this->data['location']['town'];
-			//      break;
-			//    case('super_total'):
-			//           return $this->data['total_nd']+$this->data['total'];
-			//    break;
-			//    case('orders'):
-			//      return $this->data['num_invoices']+$this->data['num_invoices_nd'];
-			//      break;
-			//    default:
-			//      if(isset($this->data[$key]))
-			//        return $this->data[$key];
-			//      else
-			//        return '';
 		}
 
 		$_key=ucwords($key);

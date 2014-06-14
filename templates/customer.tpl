@@ -7,21 +7,25 @@
 		<input type="hidden" id="history_table_id" value="0"> {include file='contacts_navigation.tpl'} 
 		
 		<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
+		<input type="hidden" id="currency_code" value="{$store->get('Store Currency Code')}"> 
 
-	
+			<input type="hidden" id="decimal_point" value="{$decimal_point}"> 
+		<input type="hidden" id="thousands_sep" value="{$thousands_sep}"> 
+
 		
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
 		</div>
 		<div id="top_page_menu" class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if}<span class="id main_title"><img src="art/icons/id.png" style="height:20px;position:relative;bottom:2px" /> {$id}</span> 
+				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if}
+				<span class="id main_title no_buttons"><img src="art/icons/id.png" style="height:20px;position:relative;bottom:2px" /> {$id}</span> 
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
-			<div class="buttons" style="float:right">
+			<div class="buttons small" style="float:right;position:relative;top:5px">
 				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
 				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button class="negative" id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order (dont use it){/t}</button> 
-				<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
+				<button id="add_credit_note"><img src="art/icons/add.png" alt=""> {t}Credit Note{/t}</button>  <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -166,7 +170,7 @@
 			</table>
 		</div>
 		<div style="margin-top:3px;width:370px;float:left">
-			<div id="sticky_note_div" class="sticky_note">
+			<div id="sticky_note_div" class="sticky_note" style="{if $customer->get('Sticky Note')==''}display:none{/if}">
 				<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
 				<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
 					{$customer->get('Sticky Note')} 
@@ -175,19 +179,19 @@
 			<div style="clear:both">
 			</div>
 			<div id="overviews" style="padding:20px;font-size:90%">
-				{if $customer->get_credits()>0} 
+				
 				<div id="customer_overview" style="float:left;margin-bottom:10px;">
 					<h2 style="font-size:100%;padding:0;font-weight:800">
-						{t}Balance{/t} 
+						{t}Current Balance{/t} 
 					</h2>
-					<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+					<table border=0 style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
 						<tr>
-							<td> {t}Credits{/t} </td>
-							<td> {$customer->get_credits_formated()} </td>
+							<td id="account_balance_label">{if $customer->get('Custoemr Account Balance')>0}{t}Debits{/t}{else}{t}Credits{/t}{/if}</td>
+							<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get('Account Balance')} </td>
 						</tr>
 					</table>
 				</div>
-				{/if} 
+				
 				<div id="orders_overview" style="float:left;;margin-right:40px;width:300px">
 					<h2 style="font-size:100%;padding:0;font-weight:800">
 						{t}Customer Overview{/t} 
@@ -1044,5 +1048,96 @@
 			</tr>
 		</table>
 	</div>
+	
+	
+	
+<div id="dialog_add_credit_note" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
+	<input type="hidden" id="add_credit_note_type" value="normal">
+	<table class="edit" style="margin:10px;width:600px" border="1">
+	
+		<tr>
+			<td class="label" style="padding-bottom:10px">{t}Description{/t}:</td>
+			<td colspan=2  style="padding-bottom:10px;"> 
+			<input id="add_credit_note_description" style="width:300px" value=""   onkeyup="can_save_add_credit_note()" />
+			</td>
+		</tr>
+	<tr id="add_credit_note_net_amount_tr">
+			<td class="label" style="padding-top:4px;width:120px">{t}Net Amount{/t}:</td>
+			<td colspan=2  style="padding-top:4px;"> 
+			<input id="add_credit_note_net_amount" style="text-align:right;width:80px" value="" onkeyup="add_credit_note_net_changed()" /> {$customer->get('Customer Currency Code')}
+			</td>
+		</tr>
+	
+	<tr id="credit_note_not_only_tax_tr">
+			<td class="label"><div class="buttons small left" id="credit_note_only_tax" onclick="credit_note_only_tax()"><button>{t}Only Tax{/t}</button></div> {t}Tax{/t}:</td>
+			<td  colspan=2 >
+			<div class="buttons left small" id="add_credit_note_tax_categories_options">
+				<input id="add_credit_note_tax_code" value="{$store->get('Store Tax Category Code')}" type="hidden" />
+				<input id="add_credit_note_tax_rate" value="{$store->get_tax_rate()}" type="hidden" />
+				
+				
+								
+
+				{foreach from=$tax_categories item=tax_category} 
+				<button rate="{$tax_category.rate}" tax_category_code="{$tax_category.code}" onclick="change_tax_category_add_credit(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button> {/foreach} 
+			</div>
+			</td>
+		</tr>
+		
+	<tr id="credit_note_only_tax_tr" style="display:none">
+			<td class="label"><div class="buttons small left" id="credit_note_only_tax" onclick="credit_note_not_only_tax()"><button>{t}Normal C.N.{/t}</button></div> {t}Tax{/t}:</td>
+			<td colspan=2 > 
+			<div class="buttons left small" id="add_credit_note_tax_categories_with_rate_options">
+				
+								
+
+				{foreach from=$tax_categories item=tax_category} 
+				{if $tax_category.rate>0}
+				{if $tax_category.selected}<input id="add_credit_note_tax_code_only_tax" value="{$tax_category.code}" type="hidden" />{/if}
+				<button tax_category_code="{$tax_category.code}" onclick="change_tax_category_add_credit_with_rate(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button>{/if} {/foreach} 
+			</div>
+			</td>
+		</tr>
+	<tr id="add_credit_note_tax_amount_tr" style="display:none">
+			<td class="label" style="padding-top:4px;width:120px">{t}Tax Amount{/t}:</td>
+			<td colspan=2 style="padding-top:4px;"> 
+			<input id="add_credit_note_tax_amount" style="text-align:right;width:80px" value=""onkeyup="add_credit_note_tax_changed()" /> {$customer->get('Customer Currency Code')}
+			</td>
+		</tr>
+			<tr>
+			<td class="label" style="padding-bottom:10px">{t}Total{/t}:</td>
+			
+			<td style="padding-bottom:10px;;width:70px" id="add_credit_note_total_formated">{$zero_money}</td>
+							<input id="add_credit_note_total" value="0" type="hidden" />
+
+			<td id="add_credit_note_msg">
+			<span style="display:none"  id="add_note_warning_negative_amount"><img src="art/icons/exclamation.png" > {t}Negative credit amount, to be used only to offset previous credits{/t}</span>
+			<span style="display:none" id="add_credit_note_error_fill_amount"><img src="art/icons/error.png" > {t}Please set up the amount to be credited{/t}</span>
+			<span style="display:none" id="add_credit_note_error_fill_description"><img src="art/icons/error.png" > {t}Please fill de description{/t}</span>
+			<span style="display:none" id="add_credit_note_error_fill_values"><img src="art/icons/error.png" > {t}Please fill de description and set up the amount to be credited{/t}</span>
+
+
+
+			</td>
+		</tr>
+	
+		<tr>
+		<td></td>
+			<td colspan=2 > 
+			<div class="buttons left">
+				<img id="save_add_credit_note_wait" style="display:none;float:right" src="art/loading.gif" alt="" />
+				<button id="close_add_credit" class="negative" onclick="close_dialog_add_credit_note()">{t}Close{/t}</button> 
+				<button id="add_credit_note_customer_account" class="positive disabled"  onclick="add_credit_note('customer_account')">{t}Add to customer account{/t}</button>
+				<button id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('other_payment_account')">{t}Create refund{/t}</button>
+
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+	
+	
 	{include file='notes_splinter.tpl'}
 	{include file='footer.tpl'} 
