@@ -202,7 +202,7 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 //set margins
-$pdf->SetMargins(10, 33, 15);
+$pdf->SetMargins(5, 33);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -232,16 +232,16 @@ $pdf->AddPage();
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-		array('w'=>30,'txt'=>_('Location'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>25,'txt'=>_('Location'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
 
-		array('w'=>30,'txt'=>_('Reference'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
-		array('w'=>55,'txt'=>_('Description'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>25,'txt'=>_('Reference'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>85,'txt'=>_('Description'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
 		array('w'=>20,'txt'=>_('Picks'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
 		array('w'=>20,'txt'=>_('No Picked'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
 				array('w'=>20,'txt'=>_('Stock'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
 
 		
-		array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+		array('w'=>5,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
 		//  array('w'=>15,'txt'=>'SKU','border'=>'TB','align'=>'L'),
 		// array('w'=>0,'txt'=>_('Observations'),'border'=>'TB','align'=>'L'),
          );
@@ -255,14 +255,14 @@ $sql=sprintf("select  `Part Current Stock`,`Part Reference`,`Picking Note`,ITF.`
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-$stock=$row['Part Current Stock'];
+$stock=floor($row['Part Current Stock']);
 
     $sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-    		array('w'=>30,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+    		array('w'=>25,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
 
-		array('w'=>30,'txt'=> strip_tags($row['Part Reference']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
-		array('w'=>55,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>25,'txt'=> strip_tags($row['Part Reference']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>85,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
 
 
 		array('w'=>20,'txt'=>$row['Required'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
@@ -270,7 +270,7 @@ $stock=$row['Part Current Stock'];
 		array('w'=>20,'txt'=>$stock,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
 
 
-array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+array('w'=>5,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
 		//  array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
 		// array('w'=>0,'txt'=>'','border'=>'T','align'=>'L')
 
