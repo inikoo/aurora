@@ -1901,7 +1901,7 @@ class Invoice extends DB_Table {
 
 	}
 
-function set_as_full_paid($data) {
+function set_as_full_paid($payment) {
 
 
 
@@ -1940,7 +1940,7 @@ function set_as_full_paid($data) {
 		//print "\n\n$sql\n";
 		while ($row=mysql_fetch_assoc($res)) {
 			$sql = sprintf( "update  `Order No Product Transaction Fact`  set `Payment Method`=%s,`Transaction Outstanding Net Amount Balance`=0,`Transaction Outstanding Tax Amount Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s where `Order No Product Transaction Fact Key`=%d "
-				,prepare_mysql($data['Payment Method'])
+				,prepare_mysql($payment->data['Payment Method'])
 				,prepare_mysql($this->data['Invoice Paid Date'])
 				,$row['Order No Product Transaction Fact Key']);
 
@@ -2423,4 +2423,5 @@ function set_as_full_paid($data) {
 
 	}
 
+}
 ?>
