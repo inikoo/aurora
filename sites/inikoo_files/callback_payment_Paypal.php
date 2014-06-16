@@ -9,21 +9,26 @@ include_once 'class.Payment_Account.php';
 include_once 'send_confirmation_email_function.php';
 
 
+//@mail("raul@inikoo.com", "paypalshit", var_export($_REQUEST, true));
+
+$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql(var_export($_REQUEST, true)));mysql_query($sql);
 
 if (!isset($_POST['custom']) or !isset($_POST['mc_gross'])  ) {
 	exit();
 }
 
-
-
 $req = 'cmd=_notify-validate';
-
 foreach ($_POST as $key => $value) {
 	$value = urlencode(stripslashes($value));
 	$req .= "&$key=$value";
 }
 
 // post back to PayPal system to validate
+
+	//@mail("raul@inikoo.com", "paypalshit req", "$req");
+
+$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($req));mysql_query($sql);
+
 
 $header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
 $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
@@ -95,6 +100,9 @@ $payment_fullName = $payment_first_name.' '.$payment_last_name;
 
 if (!$fp) {
 	// HTTP ERROR
+//	@mail("raul@inikoo.com", "paypalshit res", "HTTP ERROR");
+$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql("HTTP ERROR"));mysql_query($sql);
+
 } else {
 	fputs($fp, $header . $req);
 
@@ -103,10 +111,12 @@ if (!$fp) {
 		$res = fgets($fp, 1024);
 
 
-		$TOTEST = intval(strcmp($res, "VERIFIED") );
+	
+//@mail("raul@inikoo.com", "paypalshit res", "$res");
+$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql("$res"));mysql_query($sql);
 
 
-		if ($TOTEST > -1) {
+		if (strcmp($res, "VERIFIED")==0) {
 			// check the payment_status is Completed
 
 			if ($payment_status == 'Completed' ) {
@@ -114,9 +124,10 @@ if (!$fp) {
 				$payment=new Payment($payment_key);
 				$payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
-
+//@mail("raul@inikoo.com", "paypalshit", "$receiver_email,$payment_amount,$payment_currency,$payment,$payment_account");
 				list ($valid,$error,$error_info)=check_if_valid($receiver_email,$payment_amount,$payment_currency,$payment,$payment_account);
 
+$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql("$receiver_email,$payment_amount,$payment_currency ||| $valid,$error,$error_info"));mysql_query($sql);
 
 				if ($valid) {
 
@@ -220,7 +231,7 @@ function check_if_valid($login,$amount,$currency,$payment,$payment_account) {
 
 	}
 	*/
-
+/*
 	if (strcmp($payment->data['Payment Currency Code'],trim($currency))) {
 		$valid=false;
 		$error_type='payment_currency_not_match';
@@ -229,7 +240,7 @@ function check_if_valid($login,$amount,$currency,$payment,$payment_account) {
 
 	}
 
-
+*/
 	return array($valid,$error,$error_info);
 
 }

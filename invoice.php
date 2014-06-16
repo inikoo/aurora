@@ -5,7 +5,6 @@ include_once 'class.Staff.php';
 
 include_once 'class.Invoice.php';
 
-$_SESSION['views']['assets']='index';
 
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
@@ -25,36 +24,39 @@ $store=new Store($invoice->data['Invoice Store Key']);
 //print_r($invoice->data);
 
 $smarty->assign('search_label',_('Orders'));
-		$smarty->assign('search_scope','orders');
+$smarty->assign('search_scope','orders');
 
 if ($invoice->data['Invoice Type']=='Invoice') {
-//	if ($invoice->data['Invoice Paid']=='Yes') {
-		$js_file='invoice.js.php';
-		$template='invoice.tpl';
-//	} else {
-//		$js_file='invoice_in_process.js.php';
-//		$template='invoice_in_process.tpl';
+	$smarty->assign('invoice_type_label',_('Invoice'));
 
-//	}
+
 	$smarty->assign('title',_('Invoice').' '.$invoice->get('Invoice Public ID') );
 
 } else {
-	if ($invoice->data['Invoice Paid']=='Yes') {
-		$js_file='refund.js.php';
-		$template='refund.tpl';
-	} else {
-		$js_file='refund_in_process.js.php';
-		$template='refund_in_process.tpl';
-	}
+	$smarty->assign('invoice_type_label',_('Refund'));
+
 	$smarty->assign('title',_('Refund').' '.$invoice->get('Invoice Public ID') );
 
 }
+
+
+if(isset($_REQUEST['ref']) and in_array($_REQUEST['ref'],array('c')))  {
+		$smarty->assign('referrer',$_REQUEST['ref']);
+
+
+}else{
+	$smarty->assign('referrer','invoices');
+
+}
+
+$js_file='invoice.js.php';
+$template='invoice.tpl';
+
 $smarty->assign('invoice',$invoice);
 $smarty->assign('customer',$customer);
 $smarty->assign('store',$store);
 
 
-$smarty->assign('box_layout','yui-t0');
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -64,7 +66,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-		'css/order.css',
+	'css/order.css',
 
 	'theme.css.php'
 );

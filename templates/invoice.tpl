@@ -7,7 +7,7 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Invoice{/t} <span>{$invoice->get('Invoice Public ID')}</span></span> 
+			<span class="main_title">{$invoice_type_label} <span>{$invoice->get('Invoice Public ID')}</span></span> 
 		</div>
 		<div class="buttons">
 			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> <button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
@@ -15,9 +15,8 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="control_panel" >
+	<div id="control_panel">
 		<div id="addresses">
-			
 			<h2 style="padding:0">
 				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a> 
 			</h2>
@@ -28,9 +27,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div  id="totals">
-		
-		
+		<div id="totals">
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px">
 				{if $invoice->get('Invoice Items Discount Amount')!=0 } 
 				<tr>
@@ -96,97 +93,90 @@
 			{/if} 
 			<table border="0" class="info_block">
 				<tr>
-					<td>{t}Invoice Date{/t}:</td>
+					<td>{t}Date{/t}:</td>
 					<td class="aright">{$invoice->get('Date')}</td>
 				</tr>
 				<tr>
-					
 					<td class="aleft" style="font-weight:800;font-size:120%">{$invoice->get('Payment State')}</td>
-				
 					<td class="aright">{$invoice->get('Payment Method')}</td>
 				</tr>
 				<tr style="display:none">
 					<td>{t}Sales Rep{/t}:</td>
 					<td class="aright">{$invoice->get('Invoice XHTML Sales Representative')}</td>
 				</tr>
+			</table>
+			<table border="0" class="info_block with_title">
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan="2">{t}Orders{/t}:</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="aright">{$invoice->get('Invoice XHTML Orders')}</td>
+				</tr>
+			</table>
+			<table border="0" class="info_block with_title">
+				<tr style="border-bottom:1px solid #333;">
+					<td colspan="2">{t}Delivery Notes{/t}:</td>
+				</tr>
+				<tr>
+					<tr>
+						<td colspan="2" class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td>
+					</tr>
 				</table>
-							<table border="0" class="info_block with_title">
-<tr style="border-bottom:1px solid #333;">
-					<td colspan=2>{t}Orders{/t}:</td>
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		<div id="data_table">
+			<h2>
+				{t}Items{/t} 
+			</h2>
+			<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:90%">
+			</div>
+		</div>
+		{if isset($items_out_of_stock)} 
+		<div style="clear:both;margin:30px 0">
+			<h2>
+				{t}Items Out of Stock{/t} 
+			</h2>
+			<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
+			</div>
+		</div>
+		{/if} 
+		<div id="dialog_pay_invoice" style="padding:20px 20px 10px 20px">
+			<div id="type_of_payment" class="buttons left">
+				<button id="pay_by_creditcard"><img src="art/icons/creditcards.png" /> {t}Credit Card{/t}</button> <button id="pay_by_bank_transfer"><img src="art/icons/monitor_go.png" /> {t}Bank Transfer{/t}</button> <button id="pay_by_paypal"><img style="width:37px;height:15px" src="art/icons/paypal.png" /> PayPal</button> <button id="pay_by_cash"><img src="art/icons/money.png" /> {t}Cash{/t}</button> <button id="pay_by_cheque"><img src="art/icons/cheque.png" /> {t}Cheque{/t}</button> <button id="pay_by_other">{t}Other{/t}</button> 
+			</div>
+			<div style="clear:both;height:10px">
+			</div>
+			<input type="hidden" value="" id="payment_method"> 
+			<input type="hidden" value="{$invoice->get('Invoice Total Amount')}" id="invoce_full_amount"> 
+			<table>
+				<tr>
+					<td>{t}Amount Paid{/t}:</td>
+					<td style="text-align:right"><span id="amount_paid_total">{$invoice->get('Total Amount')}</span> 
+					<input type="text" style="display:none;text-align:right" id="amount_paid" value="{$invoice->get('Invoice Total Amount')}"></td>
+					<td> 
+					<div class="buttons small">
+						<button id="show_other_amount_field" onclick="show_other_amount_field()">{t}Other Amount{/t}</button> <button id="pay_all" style="display:none" onclick="pay_all()">{t}Pay All{/t}</button> 
+					</div>
+					</td>
 				</tr>
 				<tr>
-					
-					<td colspan=2 class="aright">{$invoice->get('Invoice XHTML Orders')}</td>
+					<td>{t}Reference{/t}:</td>
+					<td> 
+					<input id="payment_reference"></td>
 				</tr>
-				</table>
-							<table border="0" class="info_block with_title">
-<tr style="border-bottom:1px solid #333;">
-					<td colspan=2>{t}Delivery Notes{/t}:</td>
+				<tr style="height:5px">
+					<td colspan="2"></td>
 				</tr>
 				<tr>
-				
-				<tr>
-					
-					<td colspan=2 class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td>
+					<td colspan="2"> 
+					<div class="buttons">
+						<button class="positive disabled" id="save_paid" onclick="save_paid">{t}Save{/t}</button> <button class="negative" onclick="hide_dialog_pay_invoice()">{t}Cancel{/t}</button> 
+					</div>
+					</td>
 				</tr>
-				
-				
 			</table>
 		</div>
-		<div style="clear:both">
-		</div>
 	</div>
-	<div id="data_table">
-		<h2>
-			{t}Items{/t} 
-		</h2>
-		<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:90%">
-		</div>
-	</div>
-	{if isset($items_out_of_stock)} 
-	<div style="clear:both;margin:30px 0">
-		<h2>
-			{t}Items Out of Stock{/t} 
-		</h2>
-		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
-		</div>
-	</div>
-	{/if} 
-	<div id="dialog_pay_invoice" style="padding:20px 20px 10px 20px">
-		<div id="type_of_payment" class="buttons left">
-			<button id="pay_by_creditcard"><img src="art/icons/creditcards.png" /> {t}Credit Card{/t}</button> <button id="pay_by_bank_transfer"><img src="art/icons/monitor_go.png" /> {t}Bank Transfer{/t}</button> <button id="pay_by_paypal"><img style="width:37px;height:15px" src="art/icons/paypal.png" /> PayPal</button> <button id="pay_by_cash"><img src="art/icons/money.png" /> {t}Cash{/t}</button> <button id="pay_by_cheque"><img src="art/icons/cheque.png" /> {t}Cheque{/t}</button> <button id="pay_by_other">{t}Other{/t}</button> 
-		</div>
-		<div style="clear:both;height:10px">
-		</div>
-		<input type="hidden" value="" id="payment_method"> 
-		<input type="hidden" value="{$invoice->get('Invoice Total Amount')}" id="invoce_full_amount"> 
-		<table>
-			<tr>
-				<td>{t}Amount Paid{/t}:</td>
-				<td style="text-align:right"><span id="amount_paid_total">{$invoice->get('Total Amount')}</span> 
-				<input type="text" style="display:none;text-align:right" id="amount_paid" value="{$invoice->get('Invoice Total Amount')}"></td>
-				<td> 
-				<div class="buttons small">
-					<button id="show_other_amount_field" onclick="show_other_amount_field()">{t}Other Amount{/t}</button> <button id="pay_all" style="display:none" onclick="pay_all()">{t}Pay All{/t}</button> 
-				</div>
-				</td>
-			</tr>
-			<tr>
-				<td>{t}Reference{/t}:</td>
-				<td> 
-				<input id="payment_reference"></td>
-			</tr>
-			<tr style="height:5px">
-				<td colspan="2"></td>
-			</tr>
-			<tr>
-				<td colspan="2"> 
-				<div class="buttons">
-					<button class="positive disabled" id="save_paid" onclick="save_paid">{t}Save{/t}</button> <button class="negative" onclick="hide_dialog_pay_invoice()">{t}Cancel{/t}</button> 
-				</div>
-				</td>
-			</tr>
-		</table>
-	</div>
-</div>
-{include file='footer.tpl'} 
+	{include file='footer.tpl'} 

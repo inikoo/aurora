@@ -1,4 +1,8 @@
 <input type="hidden" id="order_key" value="{$order->id}">
+<input type="hidden" id="redirect" value="{$redirect}">
+
+
+
 <div style="padding:20px">
 	<div id="waiting_container">
 		<div style="float:left">

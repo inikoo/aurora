@@ -408,11 +408,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 $filter_menu=array(
-	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Invoice Number'),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
 	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
 	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
-	'country'=>array('db_key'=>'country','menu_label'=>'Orders from country code <i>xxx</i>','label'=>'Country Code')
 );
 $tipo_filter=$_SESSION['state']['customer']['orders']['f_field'];
 $filter_value=$_SESSION['state']['customer']['orders']['f_value'];
@@ -436,6 +434,32 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
 
+$filter_menu=array(
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Delivery Order Number'),
+);
+$tipo_filter=$_SESSION['state']['customer']['dns']['f_field'];
+$filter_value=$_SESSION['state']['customer']['dns']['f_value'];
+
+$smarty->assign('filter_value4',$filter_value);
+$smarty->assign('filter_menu4',$filter_menu);
+$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu4',$paginator_menu);
+
+
+$filter_menu=array(
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
+);
+$tipo_filter=$_SESSION['state']['customer']['invoices']['f_field'];
+$filter_value=$_SESSION['state']['customer']['invoices']['f_value'];
+
+$smarty->assign('filter_value5',$filter_value);
+$smarty->assign('filter_menu5',$filter_menu);
+$smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu);
 
 
 

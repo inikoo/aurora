@@ -393,9 +393,9 @@ class Store extends DB_Table {
 
 
 
-	function update_sales(){
-	$this->update_store_sales();
-			$this->update_sales_default_currency();
+	function update_sales() {
+		$this->update_store_sales();
+		$this->update_sales_default_currency();
 
 	}
 
@@ -610,7 +610,7 @@ class Store extends DB_Table {
 			$this->new=true;
 
 			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
-				
+
 				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Store',%d)",
 					$this->editor['User Key'],
 					$this->id
@@ -1409,13 +1409,13 @@ class Store extends DB_Table {
 
 
 		$data['Site Store Key']=$this->id;
-		
-	
-		
-		if($data['Site Name']=='')
+
+
+
+		if ($data['Site Name']=='')
 			$data['Site Name']=$this->data['Store Name'];
 
-		if($data['Site Code']=='')
+		if ($data['Site Code']=='')
 			$data['Site Code']=$this->data['Store Code'];
 
 		$site=new Site('new',$data);
@@ -1651,55 +1651,55 @@ class Store extends DB_Table {
 		return $campaign;
 
 	}
-	
-		function get_valid_to(){
-	/*
+
+	function get_valid_to() {
+		/*
 	To do discintinued Store
 	if($this->data['Store Record Type']=='Discontinued'){
 			return $this->data['Store Valid To'];
 		}else{
 			return gmdate("Y-m-d H:i:s");
 		}
-		
+
 		*/
-	return gmdate("Y-m-d H:i:s");
-	
+		return gmdate("Y-m-d H:i:s");
+
 	}
-	
+
 	function update_sales_averages() {
 
-include_once('common_stat_functions.php');
+		include_once 'common_stat_functions.php';
 
 		$sql=sprintf("select sum(`Sales`) as sales,sum(`Availability`) as availability  from `Order Spanshot Fact` where `Store Key`=%d   group by `Date`;",
 			$this->id
 		);
 		$res=mysql_query($sql);
-	
+
 		$counter_available=0;
 		$counter=0;
 		$sum=0;
-		while($row=mysql_fetch_assoc($res)) {
-				
-				$sum+=$row['sales'];
-				$counter++;
-				if($row['sales']==$row['availability']){
-					$counter_available++;
-				}
-				
-				
-		}	
-		
-		
-			if($counter>0){
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$sum+=$row['sales'];
+			$counter++;
+			if ($row['sales']==$row['availability']) {
+				$counter_available++;
+			}
+
+
+		}
+
+
+		if ($counter>0) {
 			$this->data['Store Number Days on Sale']=$counter;
 			$this->data['Store Avg Day Sales']=$sum/$counter;
-				$this->data['Store Number Days Available']=$counter_available;
-	
+			$this->data['Store Number Days Available']=$counter_available;
+
 		}else {
 			$this->data['Store Number Days on Sale']=0;
 			$this->data['Store Avg Day Sales']=0;
 			$this->data['Store Number Days Available']=0;
-			
+
 
 		}
 
@@ -1711,23 +1711,23 @@ include_once('common_stat_functions.php');
 		$max_value=0;
 		$counter=0;
 		$sum=0;
-		while($row=mysql_fetch_assoc($res)) {
-				$data_sales[]=$row['sales'];
-				$sum+=$row['sales'];
-				$counter++;
-				if($row['sales']>$max_value){
-					$max_value=$row['sales'];
-				}
-		}	
-			
-			
-			if($counter>0){
-			
-			
-			
-			
-			
-			
+		while ($row=mysql_fetch_assoc($res)) {
+			$data_sales[]=$row['sales'];
+			$sum+=$row['sales'];
+			$counter++;
+			if ($row['sales']>$max_value) {
+				$max_value=$row['sales'];
+			}
+		}
+
+
+		if ($counter>0) {
+
+
+
+
+
+
 			$this->data['Store Number Days with Sales']=$counter;
 			$this->data['Store Avg with Sale Day Sales']=$sum/$counter;
 			$this->data['Store STD with Sale Day Sales']=standard_deviation($data_sales);
@@ -1741,7 +1741,7 @@ include_once('common_stat_functions.php');
 		}
 
 		$sql=sprintf("update `Store Dimension` set `Store Number Days on Sale`=%d,`Store Avg Day Sales`=%d,`Store Number Days Available`=%f,`Store Number Days with Sales`=%d,`Store Avg with Sale Day Sales`=%f,`Store STD with Sale Day Sales`=%f,`Store Max Day Sales`=%f where `Store Key`=%d",
-		$this->data['Store Number Days on Sale'],
+			$this->data['Store Number Days on Sale'],
 			$this->data['Store Avg Day Sales'],
 			$this->data['Store Number Days Available'],
 			$this->data['Store Number Days with Sales'],
@@ -1753,15 +1753,30 @@ include_once('common_stat_functions.php');
 		mysql_query($sql);
 
 	}
-function get_tax_rate() {
+	function get_tax_rate() {
 		$rate=0;
 		$sql=sprintf("select `Tax Category Rate` from `Tax Category Dimension` where `Tax Category Code`=%s",
 			prepare_mysql($this->data['Store Tax Category Code']));
 		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
+		if ($row=mysql_fetch_assoc($res)) {
 			$rate=$row['Tax Category Rate'];
 		}
 		return $rate;
+	}
+
+	function get_payment_account_key() {
+		$payment_account_key=0;
+		$sql=sprintf("select PA.`Payment Account Key` from `Payment Account Dimension` PA left join `Payment Account Site Bridge` B on (PA.`Payment Account Key`=B.`Payment Account Key`)  where `Payment Type`='Account' and `Store Key`=%d ",
+			$this->id);
+		//	print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$payment_account_key=$row['Payment Account Key'];
+		}
+
+
+		return $payment_account_key;
+
 	}
 
 

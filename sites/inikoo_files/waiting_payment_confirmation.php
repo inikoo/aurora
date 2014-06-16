@@ -12,17 +12,6 @@ $page_key=$site->get_page_key_from_section('Payment Limbo');
 
 
 
-
-
-if (!isset($page_key) and isset($_REQUEST['id'])) {
-	$page_key=$_REQUEST['id'];
-}
-
-if (!isset($page_key)) {
-	header('Location: index.php?no_page_key');
-	exit;
-}
-
 $page=new Page($page_key);
 
 
@@ -39,20 +28,7 @@ if ($page->data['Page Site Key']!=$site->id) {
 	exit;
 }
 
-if ($page->data['Page State']=='Offline') {
 
-
-
-	$site_url=$site->data['Site URL'];
-	$url=$_SERVER['REQUEST_URI'];
-	$url=preg_replace('/^\//', '', $url);
-	$url=preg_replace('/\?.*$/', '', $url);
-
-	$original_url=$url;
-	header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
-
-	exit;
-}
 
 
 $template_suffix='';
@@ -192,13 +168,37 @@ else {
 
 
 
+	if(isset($_REQUEST['id'])){
+	
+				$smarty->assign('redirect','thanks.php?id='.$_REQUEST['id']);
 
+	
+	}else{
+	
+					$smarty->assign('redirect','index.php');
+
+	}
 
 
 
 $pending_payments=count($order_in_process->get_payment_keys('Pending'));
 
 if ($pending_payments==0) {
+
+	if(isset($_REQUEST['id'])){
+			header('Location: thanks.php?id='.$_REQUEST['id']);
+	exit;
+		
+	}
+
+
+	if(!$order_in_process->id){
+		header('Location: index.php');
+	exit;
+		
+
+}
+
 
 	if (  count($order_in_process->get_payment_keys('Completed'))) {
 

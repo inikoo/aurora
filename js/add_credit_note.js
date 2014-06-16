@@ -106,7 +106,7 @@ function add_credit_note_show_errors() {
 
 }
 
-function add_credit_note(payment_account) {
+function add_credit_note(refund_type) {
 
     if (Dom.hasClass('add_credit_note_' + payment_account, 'disabled')) {
         add_credit_note_show_errors()
@@ -121,7 +121,7 @@ function add_credit_note(payment_account) {
         }
 
 
-        var request = 'ar_edit_orders.php?tipo=new_refund&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value+'&description='+Dom.get('add_credit_note_description').value+'&payment_account='+payment_account
+        var request = 'ar_edit_orders.php?tipo=new_refund&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value+'&description='+Dom.get('add_credit_note_description').value+'&refund_type='+refund_type
         alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {

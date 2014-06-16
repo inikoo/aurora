@@ -419,7 +419,6 @@ Event.addListener(window, "load", function() {
 
 
 
-// ------------------------------------- orders start -------------------------------
 
  var tableid=2; // Change if you have more the 1 table
 		    var tableDivEL="table"+tableid;  
@@ -558,8 +557,146 @@ this.table2.table_id=tableid;
      this.table3.subscribe("renderEvent", myrenderEvent);
 	   
 	
-// -------------------------------------orders end ----------------------------------
 
+
+
+ var tableid=4; // Change if you have more the 1 table
+		    var tableDivEL="table"+tableid;  
+		   
+		    var ColumnDefs =  [
+				       {key:"public_id", label:"<?php echo _('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"current_state",label:"<?php echo _('Current State')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+                                        {key:"weight", label:"<?php echo _('Weight')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      {key:"parcels", label:"<?php echo _('Parcels')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 
+					
+					 ];
+request="ar_contacts.php?tipo=customer_dns&customer_key="+customer_key+"&sf=0&tid="+tableid
+
+		    this.dataSource4  = new YAHOO.util.DataSource(request);
+		    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    this.dataSource4.table_id=tableid;
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["public_id","date","current_state","weight","parcels"]};
+			  
+		    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource4
+								 , {
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['customer']['dns']['nr']?>,containers : 'paginator4', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['customer']['dns']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customer']['dns']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table4.filter={key:'<?php echo$_SESSION['state']['customer']['dns']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['dns']['f_value']?>'};
+this.table4.table_id=tableid;
+     this.table4.subscribe("renderEvent", myrenderEvent);
+	   
+
+
+
+var tableid=5; // Change if you have more the 1 table
+		    var tableDivEL="table"+tableid;  
+		   
+		    var ColumnDefs =  [
+				       {key:"public_id", label:"<?php echo _('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+
+				       {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"type", label:"<?php echo _('Type')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+
+				       {key:"current_state",label:"<?php echo _('Status')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+                                        {key:"total", label:"<?php echo _('Total')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				                                         {key:"to_pay", label:"<?php echo _('To pay')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+
+					
+					 ];
+request="ar_contacts.php?tipo=customer_invoices&customer_key="+customer_key+"&sf=0&tid="+tableid
+//alert(request)
+		    this.dataSource5  = new YAHOO.util.DataSource(request);
+		    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource5.connXhrMode = "queueRequests";
+	    this.dataSource5.table_id=tableid;
+	    this.dataSource5.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["public_id","date","current_state","total","to_pay","type"]};
+			  
+		    this.table5 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource5
+								 , {
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['customer']['invoices']['nr']?>,containers : 'paginator5', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['customer']['invoices']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customer']['invoices']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table5.filter={key:'<?php echo$_SESSION['state']['customer']['invoices']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['invoices']['f_value']?>'};
+this.table5.table_id=tableid;
+     this.table5.subscribe("renderEvent", myrenderEvent);
 
 
 

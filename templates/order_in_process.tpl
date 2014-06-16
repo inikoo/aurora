@@ -176,6 +176,29 @@
 			</div>
 		</div>
 	</div>
+	
+		<table id="pending_payment_confirmations">
+			<tr class="title">
+			<td>{t}Payment ID{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Date{/t}</td><td></td><td></td>
+			</tr>
+			{foreach from=$order->get_payment_objects('Pending',true,true) item=payment}
+			<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
+			<td >{$payment->get('Payment Key')}</td>
+			<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
+			<td id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</td>
+			<td id="payment_date_interval_{$payment->get('Payment Key')}">{$payment->get_formated_time_lapse('Created Date')}</td>
+			<td><div class="buttons small">
+			<button class="negative" onClick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button>
+			<button class="positive" onClick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button>
+			
+			</div></td>
+			
+			
+			</tr>
+			{/foreach}
+			</table>
+	
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Products')}</span>)</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>
@@ -321,5 +344,34 @@
 		</tr>
 	</table>
 </div>
+
+
+<div id="dialog_set_payment_as_competed" style="border:1px solid #ccc;text-align:left;padding:10px">
+	<div id="import_transactions_mals_e_msg">
+	</div>
+	<table style="margin:10px" border="1">
+		<tr>
+			<td> 
+			<div class="buttons small left">
+				<button class="selected">CSV</button><button>TSV</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+		<td>{t}Transaction ID{/t}</td>
+			<td style="padding-top:10px;width:300px;"> <input style="width:100%;height:200px" id="payment_as_completed_transaction_id"></td>
+		</tr>
+		<tr>
+			<td style="padding-top:10px"> 
+			<div class="buttons">
+						<button id="cancel_payment_as_completed">{t}Save{/t}</button> 
+	
+				<button id="close_payment_as_completed">{t}Close{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
 {include file='order_not_dispatched_dialogs_splinter.tpl'}
 {include file='footer.tpl'} 
