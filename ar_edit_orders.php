@@ -3,6 +3,8 @@ require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
 require_once 'class.Staff.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
 
 require_once 'class.User.php';
 include_once 'class.PartLocation.php';
@@ -20,6 +22,29 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('new_refund'):
+	$data=prepare_values($_REQUEST,array(
+			'net'=>array('type'=>'numeric'),
+			'tax'=>array('type'=>'numeric'),
+			'tax_category_code'=>array('type'=>'string'),
+			'customer_key'=>array('type'=>'key'),
+			'description'=>array('type'=>'string'),
+			'refund_type'=>array('type'=>'string')
+
+
+		));
+	new_refund($data);
+
+	break;
+
+case('set_payment_as_completed'):
+	$data=prepare_values($_REQUEST,array(
+			'payment_key'=>array('type'=>'key'),
+			'payment_transaction_id'=>array('type'=>'string')
+
+		));
+	set_payment_as_completed($data);
+	break;
 case('add_insurance'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -40,7 +65,7 @@ case('remove_insurance'):
 	break;
 case('update_order_special_intructions'):
 
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'value'=>array('type'=>'string')
 
@@ -2077,74 +2102,74 @@ function list_store_pending_orders() {
 
 
 		$operations=get_orders_operations($row,$user);
-		
+
 		$order=new Order($row['Order Key']);
-		
-		
-	$dns_data=array();
-	foreach ($order->get_delivery_notes_objects() as $dn) {
-		$current_delivery_note_key=$dn->id;
 
-		$missing_dn_data=false;
-		$missing_dn_str='';
-		$dn_data='';
-		if ($dn->data['Delivery Note Weight']) {
-			$dn_data=$dn->get('Weight');
-		}else {
-			$missing_dn_data=true;
-			$missing_dn_str=_('weight');
 
+		$dns_data=array();
+		foreach ($order->get_delivery_notes_objects() as $dn) {
+			$current_delivery_note_key=$dn->id;
+
+			$missing_dn_data=false;
+			$missing_dn_str='';
+			$dn_data='';
+			if ($dn->data['Delivery Note Weight']) {
+				$dn_data=$dn->get('Weight');
+			}else {
+				$missing_dn_data=true;
+				$missing_dn_str=_('weight');
+
+			}
+
+			if ($dn->data['Delivery Note Number Parcels']!='') {
+				$dn_data.=', '.$dn->get_formated_parcels();
+			}else {
+				$missing_dn_data=true;
+				$missing_dn_str.=', '._('parcels');
+			}
+			$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+
+
+			if ($dn->data['Delivery Note Shipper Consignment']!='') {
+				$dn_data.=', '. $dn->get('Consignment');
+			}else {
+				$missing_dn_data=true;
+				$missing_dn_str.=', '._('consignment');
+			}
+			$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+			$dn_data=preg_replace('/^,/','',$dn_data);
+
+
+			if ($missing_dn_data) {
+				//$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img src="art/icons/edit.gif"> ';
+			}
+
+			$dns_data[]=array(
+				'key'=>$dn->id,
+				'number'=>$dn->data['Delivery Note ID'],
+				'state'=>$dn->data['Delivery Note XHTML State'],
+				'data'=>$dn_data,
+				'operations'=>$dn->get_operations($user,''),
+			);
+		}
+		$number_dns=count($dns_data);
+		if ($number_dns!=1) {
+			$current_delivery_note_key='';
 		}
 
-		if ($dn->data['Delivery Note Number Parcels']!='') {
-			$dn_data.=', '.$dn->get_formated_parcels();
-		}else {
-			$missing_dn_data=true;
-			$missing_dn_str.=', '._('parcels');
+		$dn_operations='<div style="border:1px solid #cccclear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
+		foreach ($dns_data as $dn_data) {
+			$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
+			$dn_operations.=sprintf('<tr style="border:none;"><td colspan=2">%s</td></tr>',$dn_data['operations']);
 		}
-		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
-
-
-		if ($dn->data['Delivery Note Shipper Consignment']!='') {
-			$dn_data.=', '. $dn->get('Consignment');
-		}else {
-			$missing_dn_data=true;
-			$missing_dn_str.=', '._('consignment');
-		}
-		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
-		$dn_data=preg_replace('/^,/','',$dn_data);
-
-
-		if ($missing_dn_data) {
-			//$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img src="art/icons/edit.gif"> ';
-		}
-
-		$dns_data[]=array(
-			'key'=>$dn->id,
-			'number'=>$dn->data['Delivery Note ID'],
-			'state'=>$dn->data['Delivery Note XHTML State'],
-			'data'=>$dn_data,
-			'operations'=>$dn->get_operations($user,''),
-		);
-	}
-	$number_dns=count($dns_data);
-	if ($number_dns!=1) {
-		$current_delivery_note_key='';
-	}
-	
-	$dn_operations='<div style="border:1px solid #cccclear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
-	foreach($dns_data as $dn_data){
-		$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
-		$dn_operations.=sprintf('<tr style="border:none;"><td colspan=2">%s</td></tr>',$dn_data['operations']);
-	}
-	$dn_operations.='</table></div>';
+		$dn_operations.='</table></div>';
 		$operations.=$dn_operations;
 
 
 		$public_id=sprintf("<a href='order.php?id=%d&referral=spo'>%s</a>",$row['Order Key'],$row['Order Public ID']);
 
 
-$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y", strtotime($row['Order Date'])).'</span>';
+		$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y", strtotime($row['Order Date'])).'</span>';
 
 		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Order Key'],"See Picking Sheet");
 		$data[]=array(
@@ -4088,10 +4113,10 @@ function import_transactions_mals_e($_data) {
 }
 
 
-function update_order_special_intructions($data){
-$order=new Order($data['order_key']);
+function update_order_special_intructions($data) {
+	$order=new Order($data['order_key']);
 
-$order->update_field_switcher('Order Customer Message',strip_tags($data['value']),'no_history');
+	$order->update_field_switcher('Order Customer Message',strip_tags($data['value']),'no_history');
 
 
 
@@ -4783,7 +4808,158 @@ function edit_delivery_note($data) {
 
 	}
 
+
+
+
+}
+function set_payment_as_completed($data) {
+
+	$payment_transaction_id=$data['payment_transaction_id'];
+	$payment_key=$data['payment_key'];
+
+	$payment=new Payment($payment_key);
+	$payment_account=new Payment_Account($payment->data['Payment Account Key']);
+
+	$order_key=$payment->data['Payment Order Key'];
+	$order=new Order($order_key);
+	$data_to_update=array(
+
+		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction ID'=>$payment_transaction_id,
+
+	);
+
+
+	$payment->update($data_to_update);
+	$order=new Order($payment->data['Payment Order Key']);
+
+	$order->update(
+		array(
+			'Order Payment Account Key'=>$payment_account->id,
+			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+			'Order Payment Method'=>$payment_account->data['Payment Type'],
+			'Order Payment Key'=>$payment->id,
+			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+		));
+
+	$order->checkout_submit_order();
+
+
+
+
+
+
+	send_confirmation_email($order);
+
 }
 
+function new_refund($data) {
+
+	$net=$data['net'];
+	$tax=$data['tax'];
+	$tax_category_code=$data['tax_category_code'];
+	$customer_key=$data['customer_key'];
+	$description=$data['description'];
+	$refund_type=$data['refund_type'];
+
+	$customer=new Customer($customer_key);
+
+	$refund_data=array(
+		'Invoice Customer Key'=>$customer->id,
+		'Invoice Store Key'=>$customer->data['Customer Store Key'],
+
+
+	);
+	$refund=new Invoice('create refund',$refund_data);
+
+
+	$tax=-1*$tax;
+	$net=-1*$net;
+	$total=$tax+$net;
+	$credit_transaction_data=array(
+		'Affected Order Key'=>'',
+		'Order Key'=>'',
+		'Order Date'=>'',
+		'Transaction Type'=>$refund_type,
+		'Transaction Description'=>$description,
+		'Transaction Invoice Net Amount'=>$net,
+		'Transaction Invoice Tax Amount'=>$tax,
+		'Tax Category Code'=>$tax_category_code,
+		'Metadata'=>'',
+
+	);
+
+
+	$refund->add_credit_no_product_transaction($credit_transaction_data);
+
+
+	if ($refund_type=='Credit') {
+
+		$store=new Store($customer->data['Customer Store Key']);
+
+
+		$payment_account=new Payment_Account($store->get_payment_account_key());
+
+
+		$payment_data=array(
+			'Payment Account Key'=>$payment_account->id,
+			'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+
+			'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
+			'Payment Order Key'=>'',
+			'Payment Invoice Key'=>$refund->id,
+
+			'Payment Store Key'=>$store->id,
+			'Payment Site Key'=>'',
+			'Payment Customer Key'=>$customer->id,
+
+			'Payment Balance'=>$total,
+			'Payment Amount'=>0,
+			'Payment Refund'=>$total,
+			'Payment Currency Code'=>$refund->data['Invoice Currency'],
+			'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+			'Payment Random String'=>md5(mt_rand().date('U'))
+
+
+		);
+
+		$payment=new Payment('create',$payment_data);
+
+		$data_to_update=array(
+
+			'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+			'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+			'Payment Transaction Status'=>'Completed',
+			'Payment Transaction ID'=>$payment->id,
+
+		);
+
+
+		$payment->update($data_to_update);
+
+		$refund->update(
+			array(
+				'Invoice Payment Account Key'=>$payment_account->id,
+				'Invoice Payment Account Code'=>$payment_account->data['Payment Account Code'],
+				'Invoice Payment Method'=>$payment_account->data['Payment Type'],
+				'Invoice Payment Key'=>$payment->id,
+			));
+
+		$refund->pay_full_amount(array('Invoice Paid Date'=>gmdate('Y-m-d H:i:s'),'Payment Method'=>'Customer Account'));
+
+		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']+$total);
+
+
+		$response= array('state'=>200,'account_balance'=>$customer->get('Account Balance'));
+
+		echo json_encode($response);
+		return;
+
+
+	}
+
+}
 
 ?>

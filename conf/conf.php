@@ -2546,6 +2546,33 @@ $default_state=array(
 
 
 		),
+		
+			'dns'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>''
+
+
+		),
+		
+			'invoices'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>''
+
+
+		),
+		
 		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',

@@ -427,12 +427,38 @@
 		</div>
 	</div>
 	<div id="block_orders" class="data_block" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		
+		
+		
+		<div id="subblock_orders_orders">
 		<span class="clean_table_title">{t}Orders{/t}</span> 
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 		<div id="table2" class="data_table_container dtable btable">
 		</div>
+		</div>
+	
+	<div id="subblock_orders_dns">
+		<span class="clean_table_title">{t}Delivery Notes{/t}</span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
+		<div id="table4" class="data_table_container dtable btable">
+		</div>
+	</div>
+	
+	<div id="subblock_orders_invoices">
+		<span class="clean_table_title">{t}Invoices{/t}</span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5 } 
+		<div id="table5" class="data_table_container dtable btable">
+		</div>
+	</div>
+	
+	
+	
 	</div>
 </div>
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
@@ -1127,8 +1153,8 @@
 			<div class="buttons left">
 				<img id="save_add_credit_note_wait" style="display:none;float:right" src="art/loading.gif" alt="" />
 				<button id="close_add_credit" class="negative" onclick="close_dialog_add_credit_note()">{t}Close{/t}</button> 
-				<button id="add_credit_note_customer_account" class="positive disabled"  onclick="add_credit_note('customer_account')">{t}Add to customer account{/t}</button>
-				<button id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('other_payment_account')">{t}Create refund{/t}</button>
+				<button id="add_credit_note_customer_account" class="positive disabled"  onclick="add_credit_note('Credit')">{t}Add to customer account{/t}</button>
+				<button id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('Refund')">{t}Create refund{/t}</button>
 
 			</div>
 			</td>

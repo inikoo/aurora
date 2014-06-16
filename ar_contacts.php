@@ -210,8 +210,16 @@ case('customer_orders'):
 	if (!$user->can_view('orders'))
 		exit();
 	list_customer_orders();
-
-
+	break;
+case('customer_invoices'):
+	if (!$user->can_view('orders'))
+		exit();
+	list_customer_invoices();
+	break;
+case('customer_dns'):
+	if (!$user->can_view('orders'))
+		exit();
+	list_customer_dns();
 	break;
 case('customer_categories'):
 	list_customer_categories();
@@ -251,9 +259,10 @@ function list_customer_orders() {
 
 	if (isset( $_REQUEST['customer_key'])) {
 		$customer_id=$_REQUEST['customer_key'];
-		$_SESSION['state']['customer']['id']=$customer_id;
-	} else
-		$customer_id=$_SESSION['state']['customer']['id'];
+	} else {
+		exit();
+
+	}
 
 
 
@@ -524,7 +533,463 @@ function list_customer_orders() {
 
 }
 
+function list_customer_dns() {
+	$conf=$_SESSION['state']['customer']['dns'];
 
+
+	if (isset( $_REQUEST['customer_key'])) {
+		$customer_id=$_REQUEST['customer_key'];
+	} else {
+		exit();
+
+	}
+
+
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$conf['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$conf['to'];
+
+
+
+
+	if (isset( $_REQUEST['tid']))
+		$tableid=$_REQUEST['tid'];
+	else
+		$tableid=0;
+
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_SESSION['state']['customer']['dns']['order']=$order;
+	$_SESSION['state']['customer']['dns']['order_dir']=$order_direction;
+	$_SESSION['state']['customer']['dns']['nr']=$number_results;
+	$_SESSION['state']['customer']['dns']['sf']=$start_from;
+	$_SESSION['state']['customer']['dns']['f_field']=$f_field;
+	$_SESSION['state']['customer']['dns']['f_value']=$f_value;
+
+
+
+	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+	if ($date_interval['error']) {
+		exit("error in dates");
+	} else {
+		$_SESSION['state']['customer']['dns']['from']=$date_interval['from'];
+		$_SESSION['state']['customer']['dns']['to']=$date_interval['to'];
+	}
+
+
+
+
+	// $where=sprintf("    where `Current Dispatching State` not in ('Cancelled','Dispatched',) and `Customer Key`=%d  ",$customer_id);
+	$where=sprintf(" where true and `Delivery Note Customer Key`=%d  ",$customer_id);
+
+	//print "$f_field $f_value  " ;
+
+	$wheref='';
+	if ($f_field=='public_id' and $f_value!='')
+		$wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'   ";
+
+
+	$sql=sprintf("select count(*) as total from `Delivery Note Dimension` $where" );
+	//print $sql;
+	$total=0;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Delivery Note Dimension` $where  $wheref ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+
+	}
+
+	//print $sql;
+	$rtext=number($total_records)." ".ngettext('Delivery note','Delivery notes',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>0)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any delivery note with this number")." <b>".$f_value."*</b> ";
+			break;
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('delivery notes with number like')." <b>".$f_value."*</b>";
+			break;
+
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+	if ($order=='public_id') {
+
+		$order='`Delivery Note File As`';
+
+
+	}
+	elseif ($order=='date') {
+		$order='`Delivery Note Date`';
+	}
+	elseif ($order=='current_state') {
+		$order='`Delivery Note State`';
+	}
+
+	elseif ($order=='weight') {
+		$order='`Delivery Note Weight`';
+	}
+	elseif ($order=='parcels') {
+		$order='`Delivery Note Number Parcels`';
+	}
+
+
+
+
+
+	$adata=array();
+	$sql="select  * from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+
+	$res = mysql_query($sql);
+	//print_r($sql);
+	$total=mysql_num_rows($res);
+	//print $sql;
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		switch ($row['Delivery Note Parcel Type']) {
+		case('Pallet'):
+			$parcel_type='P';
+			break;
+		case('Envelope'):
+			$parcel_type='e';
+			break;
+		default:
+			$parcel_type='b';
+
+		}
+
+		if ($row['Delivery Note Number Parcels']=='') {
+			$parcels='?';
+		}
+		elseif ($row['Delivery Note Parcel Type']=='Pallet' and $row['Delivery Note Number Boxes']) {
+			$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type.' ('.$row['Delivery Note Number Boxes'].' b)';
+		}
+		else {
+			$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
+		}
+
+		if ($row['Delivery Note Weight']=='') {
+			$weight='<span style="font-style:italic">'.weight($row['Delivery Note Estimated Weight']).'</span>';
+		}else {
+			$weight=weight($row['Delivery Note Weight']);
+		}
+
+		$adata[]=array(
+			'public_id'=>sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']),
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Delivery Note Date'].' UTC')) ,
+			'current_state'=>$row['Delivery Note XHTML State'],
+			'weight'=>$weight,
+			'parcels'=>$parcels
+
+		);
+	}
+	mysql_free_result($res);
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+
+}
+
+function list_customer_invoices() {
+	$conf=$_SESSION['state']['customer']['invoices'];
+
+
+	if (isset( $_REQUEST['customer_key'])) {
+		$customer_id=$_REQUEST['customer_key'];
+	} else {
+		exit();
+
+	}
+
+
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$conf['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$conf['to'];
+
+
+
+
+	if (isset( $_REQUEST['tid']))
+		$tableid=$_REQUEST['tid'];
+	else
+		$tableid=0;
+
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_SESSION['state']['customer']['invoices']['order']=$order;
+	$_SESSION['state']['customer']['invoices']['order_dir']=$order_direction;
+	$_SESSION['state']['customer']['invoices']['nr']=$number_results;
+	$_SESSION['state']['customer']['invoices']['sf']=$start_from;
+	$_SESSION['state']['customer']['invoices']['f_field']=$f_field;
+	$_SESSION['state']['customer']['invoices']['f_value']=$f_value;
+
+
+
+	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+	if ($date_interval['error']) {
+		exit("error in dates");
+	} else {
+		$_SESSION['state']['customer']['invoices']['from']=$date_interval['from'];
+		$_SESSION['state']['customer']['invoices']['to']=$date_interval['to'];
+	}
+
+
+
+
+	$where=sprintf(" where true and `Invoice Customer Key`=%d  ",$customer_id);
+
+	//print "$f_field $f_value  " ;
+
+	$wheref='';
+	if ($f_field=='public_id' and $f_value!='')
+		$wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'   ";
+
+
+	$sql=sprintf("select count(*) as total from `Invoice Dimension` $where" );
+	//print $sql;
+	$total=0;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Invoice Dimension` $where  $wheref ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
+
+	}
+
+	//print $sql;
+	$rtext=number($total_records)." ".ngettext('Invoice','Invoice',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any invoice with this number")." <b>".$f_value."*</b> ";
+			break;
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('invoices with number like')." <b>".$f_value."*</b>";
+			break;
+
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+	if ($order=='public_id') {
+
+		$order='`Invoice File As`';
+
+
+	}
+	elseif ($order=='date') {
+		$order='`Invoice Date`';
+	}
+	elseif ($order=='current_state') {
+		$order='`Invoice Paid`';
+	}
+
+	elseif ($order=='total') {
+		$order='`Invoice Total Amount`';
+	}
+	elseif ($order=='to_pay') {
+		$order='`Invoice Outstanding Total Amount`';
+	}elseif ($order=='type') {
+		$order='`Invoice Type`';
+	}
+
+
+
+
+
+	$adata=array();
+	$sql="select  * from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+
+	$res = mysql_query($sql);
+	//print_r($sql);
+	$total=mysql_num_rows($res);
+	//print $sql;
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		if ($row['Invoice Paid']=='Yes')
+			$state=_('Paid');
+		elseif ($row['Invoice Paid']=='Partially')
+						$state=_('Partially Paid');
+
+		else
+			$state=_('No Paid');
+			
+			if ($row['Invoice Type']=='Invoice')
+				$type=_('Invoice');
+			else
+				$type=_('Refund');
+
+		$adata[]=array(
+			'public_id'=>sprintf("<a href='invoice.php?id=%d&ref=c'>%s</a>",$row['Invoice Key'],$row['Invoice Public ID']),
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Invoice Date'].' UTC')) ,
+			'current_state'=>$state,
+				'type'=>$type,
+			'total'=>money($row['Invoice Total Amount'],$row['Invoice Currency']),
+			'to_pay'=>money($row['Invoice Outstanding Total Amount'],$row['Invoice Currency'])
+
+		);
+	}
+	mysql_free_result($res);
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+
+}
 
 
 function list_assets_dispatched_to_customer() {
@@ -5551,7 +6016,7 @@ function get_address_data($data) {
 
 	switch ($data['subject']) {
 	case('customer'):
-		case('Customer'):
+	case('Customer'):
 
 		include_once 'class.Customer.php';
 		$customer=new Customer($data['subject_key']);
@@ -5562,7 +6027,7 @@ function get_address_data($data) {
 			exit();
 		}
 
-break;
+		break;
 	case('supplier'):
 		include_once 'class.Supplier.php';
 

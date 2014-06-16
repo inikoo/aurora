@@ -122,7 +122,7 @@ function update_payment_table() {
 
 
 function init() {
- loop=setInterval(update_payment_table, 5000);
+ loop=setInterval(update_payment_table, 1000);
    
 
 }

@@ -173,7 +173,7 @@ if (!isset($_REQUEST['id'])) {
 
 		
 if (  $order->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
-	header('Location: waiting_payment_confirmation.php');
+	header('Location: waiting_payment_confirmation.php?id='.$order->id);
 	exit;
 
 }

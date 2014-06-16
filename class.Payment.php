@@ -140,7 +140,9 @@ class Payment extends DB_Table {
 			$keys.=",`".$key."`";
 
 
-			if ($key=='Payment Completed Date' or $key=='Payment Last Updated Date' ) {
+			if ($key=='Payment Completed Date' or $key=='Payment Last Updated Date'  or $key=='Payment Cancelled Date'
+			or $key=='Payment Order Key' or $key=='Payment Invoice Key' or $key=='Payment Site Key'
+			) {
 				$values.=','.prepare_mysql($value,true);
 
 			}else {
@@ -218,7 +220,7 @@ class Payment extends DB_Table {
 			$info=sprintf("%s %s %s %s %s %s",
 				_('A payment of'),
 				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
-					_('using'),
+				_('using'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment service provider'),
 				_('has been cancelled')
@@ -230,7 +232,7 @@ class Payment extends DB_Table {
 			$info=sprintf("%s %s %s %s %s %s",
 				_('A payment of'),
 				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
-					_('using'),
+				_('using'),
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment service provider'),
 				_('has had an error')
@@ -243,7 +245,7 @@ class Payment extends DB_Table {
 		return $info;
 	}
 
-function get_formated_short_info() {
+	function get_formated_short_info() {
 		$info='';
 		$this->load_payment_account();
 		$this->load_payment_service_provider();
@@ -251,7 +253,7 @@ function get_formated_short_info() {
 
 		case 'Pending':
 			$info=sprintf("%s, %s",
-				
+
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment in process')
 
@@ -260,7 +262,7 @@ function get_formated_short_info() {
 			break;
 		case 'Completed':
 			$info=sprintf("%s, %s, %s: ",
-			
+
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment completed sucessfully'),
 				_('Reference'),
@@ -270,8 +272,8 @@ function get_formated_short_info() {
 
 			break;
 		case 'Cancelled':
-				$info=sprintf("%s, %s",
-				
+			$info=sprintf("%s, %s",
+
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment in cancelled')
 
@@ -281,7 +283,7 @@ function get_formated_short_info() {
 			break;
 		case 'Error':
 			$info=sprintf("%s %s",
-				
+
 				$this->payment_service_provider->data['Payment Service Provider Name'],
 				_('payment has had an error')
 

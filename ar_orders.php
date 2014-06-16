@@ -79,7 +79,7 @@ case('number_store_pending_orders_in_interval'):
 			'to'=>array('type'=>'string'),
 			'from'=>array('type'=>'string')
 		));
-	number_store_pending_orders_in_interval($data);	
+	number_store_pending_orders_in_interval($data);
 	break;
 case('orders_lists'):
 	$data=prepare_values($_REQUEST,array(
@@ -751,9 +751,39 @@ function list_transactions_in_invoice() {
 		//$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 
 
+switch($row['Transaction Type']){
+case('Credit'):
+$code=_('Credit');
+break;
+case('Refund'):
+$code=_('Refund');
+break;
+case('Shipping'):
+$code=_('Shipping');
+break;
+case('Charges'):
+$code=_('Charges');
+break;
+case('Adjust'):
+$code=_('Adjust');
+break;
+case('Other'):
+$code=_('Other');
+break;
+case('Deal'):
+$code=_('Deal');
+break;
+case('Insurance'):
+$code=_('Insurance');
+break;
+default:
+$code=$row['Transaction Type'];
+
+
+}
 		$data[]=array(
 
-			'code'=>'',
+			'code'=>$code,
 			'description'=>$row['Transaction Description'],
 			'tariff_code'=>'',
 			'quantity'=>'',
@@ -1590,7 +1620,7 @@ function list_delivery_notes() {
 				,'state'=>$row['Delivery Note XHTML State']
 				//,'orders'=>$row['Delivery Note XHTML Orders']
 				//,'invoices'=>$row['Delivery Note XHTML Invoices']
-				,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'
+				,'weight'=>weight($row['Delivery Note Weight'])
 				,'parcels'=>$parcels
 
 
@@ -1872,7 +1902,7 @@ function list_invoices() {
 		$order='`Invoice Total Net Amount`';
 
 	//
-//	$sql="select  `S4`,`S1`,`Invoice Total Tax Amount`,`Invoice Type`,`Invoice XHTML Delivery Notes`,`Invoice Shipping Net Amount`,`Invoice Total Net Amount`,`Invoice Items Net Amount`,`Invoice XHTML Orders`,`Invoice Total Amount`,I.`Invoice Key`,`Invoice Customer Name`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Date`,`Invoice Currency`,`Invoice Has Been Paid In Full` from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	// $sql="select  `S4`,`S1`,`Invoice Total Tax Amount`,`Invoice Type`,`Invoice XHTML Delivery Notes`,`Invoice Shipping Net Amount`,`Invoice Total Net Amount`,`Invoice Items Net Amount`,`Invoice XHTML Orders`,`Invoice Total Amount`,I.`Invoice Key`,`Invoice Customer Name`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Date`,`Invoice Currency`,`Invoice Has Been Paid In Full` from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
 
 	$sql="select  * from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref     order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
@@ -1896,22 +1926,26 @@ function list_invoices() {
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
 			$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
+
+
 			if ($row['Invoice Paid']=='Yes')
-				$state=_('Paid');
-			else if ($row['Invoice Paid']=='Partially')
-					$state=_('No Paid');
-				else
-					$state=_('Partially Paid');
+			$state=_('Paid');
+		elseif ($row['Invoice Paid']=='Partially')
+						$state=_('Partially Paid');
 
-				if ($row['Invoice Type']=='Invoice')
-					$type=_('Invoice');
-				else
-					$type=_('Refund');
+		else
+			$state=_('No Paid');
 
-				switch ($row['Invoice Main Payment Method']) {
-				default:
-					$method=$row['Invoice Main Payment Method'];
-				}
+
+			if ($row['Invoice Type']=='Invoice')
+				$type=_('Invoice');
+			else
+				$type=_('Refund');
+
+			switch ($row['Invoice Main Payment Method']) {
+			default:
+				$method=$row['Invoice Main Payment Method'];
+			}
 
 
 			$adata[]=array(
@@ -2393,7 +2427,7 @@ function list_transactions_in_order() {
 	else
 		exit("x");
 
-if (isset( $_REQUEST['parent']))
+	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
 	else
 		exit("x2");
@@ -2458,7 +2492,7 @@ if (isset( $_REQUEST['parent']))
 	$_SESSION['state'][$conf_table]['items']['sf']=$start_from;
 	$_SESSION['state'][$conf_table]['items']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['items']['f_value']=$f_value;
-	
+
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -2475,7 +2509,7 @@ if (isset( $_REQUEST['parent']))
 	$wheref='';
 	if ($f_field=='code'  and $f_value!='')
 		$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
-	
+
 
 
 	$sql="select count(*) as total from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) $where $wheref";
@@ -2520,7 +2554,7 @@ if (isset( $_REQUEST['parent']))
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>$f_value</b>*)";
 		break;
-	
+
 
 	}
 
@@ -2571,15 +2605,15 @@ if (isset( $_REQUEST['parent']))
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
 			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
 			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
-	
-	);
+
+		);
 	}
 
 
 
 
 
-$response=array('resultset'=>
+	$response=array('resultset'=>
 		array(
 			'state'=>200,
 			'data'=>$adata,
@@ -3696,7 +3730,7 @@ function number_invoices_in_interval($data) {
 	$res=mysql_query($sql);
 	$number_invoices=0;
 	while ($row=mysql_fetch_assoc($res)) {
-$number_invoices+=$row['number'];
+		$number_invoices+=$row['number'];
 		$elements_numbers['type'][$row['element']]=number($row['number']);
 	}
 
@@ -3788,9 +3822,9 @@ function number_orders_in_interval($data) {
 	}
 
 	//print_r($elements_numbers);
-	
-	
-	
+
+
+
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 
@@ -3806,21 +3840,21 @@ function number_store_pending_orders_in_interval($data) {
 	default:
 		$where=" where false";
 	}
-	
+
 	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0,'ReadytoPick'=>0);
 	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` %s  group by `Order Current Dispatch State` ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-	
-	if( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ){
-	continue;
-	}
-	
-	$_key=preg_replace('/\s/','',$row['Order Current Dispatch State']);
-	
-	
 
-	
+		if ( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ) {
+			continue;
+		}
+
+		$_key=preg_replace('/\s/','',$row['Order Current Dispatch State']);
+
+
+
+
 		$elements_numbers[$_key]=$row['num'];
 	}
 
@@ -3835,9 +3869,9 @@ function number_store_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InWarehouse']=$row['num'];
 	}
-	
+
 	//print_r($elements_numbers);
-	
+
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 

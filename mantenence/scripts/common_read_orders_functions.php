@@ -971,30 +971,50 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				'Transaction Invoice Tax Amount'=>$credit['value']*$tax_category_object->data['Tax Category Rate'],
 				'Metadata'=>$store_code.$order_data_id
 			);
-			$invoice->add_credit_no_product_transaction($credit_data);
+			//$invoice->add_credit_no_product_transaction($credit_data);
+		
+		$__order=new Order($credit_data['Order Key']);
+		if ($__order->id) {
+
+			$__order_date=$__order->data['Order Date'];
+		} else {
+			$__order_date='';
+
+		}
+
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   
+		values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+			prepare_mysql($credit_data['Affected Order Key']),
+			prepare_mysql($credit_data['Order Key']),
+			prepare_mysql($__order_date),
+			$invoice->id,
+			prepare_mysql($invoice->data['Invoice Date']),
+			prepare_mysql('Credit'),
+			prepare_mysql($credit_data['Transaction Description']),
+			$credit_data['Transaction Invoice Net Amount'],
+			prepare_mysql($credit_data['Tax Category Code']),
+			$credit_data['Transaction Invoice Tax Amount'],
+			$credit_data['Transaction Invoice Net Amount'],
+			$credit_data['Transaction Invoice Tax Amount'],
+			prepare_mysql($invoice->data['Invoice Currency']),
+			$invoice->data['Invoice Currency Exchange'],
+			prepare_mysql($credit_data['Metadata'])
+		);
+		mysql_query($sql);
+
+		$invoice->update_refund_totals();
+		
+		
+		
 		}
 		
-		/*
-		$_invoice_data=  array(
-			'Invoice Metadata'=>$store_code.$order_data_id,
-			'Invoice Shipping Net Amount'=>array(
-				'Amount'=>$shipping_net,
-				'tax_code'=>$tax_category_object->data['Tax Category Code']
-			),
-			'Invoice Charges Net Amount'=>array(
-				'Transaction Invoice Net Amount'=> $charges_net,
-				'Transaction Description'=>_('Charges')
-			)
-
-
-		);
-
+		
 
 
 
 		$invoice->update($_invoice_data);
 		$invoice->update_totals();
-*/
+
 
 		adjust_invoice($invoice,$order);
 
@@ -1234,27 +1254,55 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 					'Metadata'=>$store_code.$order_data_id
 				);
 				//print_r($credit_data);
-				$invoice->add_credit_no_product_transaction($credit_data);
+				//$invoice->add_credit_no_product_transaction($credit_data);
+				
+					$__order=new Order($credit_data['Order Key']);
+		if ($__order->id) {
+
+			$__order_date=$__order->data['Order Date'];
+		} else {
+			$__order_date='';
+
+		}
+
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   
+		values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+			prepare_mysql($credit_data['Affected Order Key']),
+			prepare_mysql($credit_data['Order Key']),
+			prepare_mysql($__order_date),
+			$invoice->id,
+			prepare_mysql($invoice->data['Invoice Date']),
+			prepare_mysql('Credit'),
+			prepare_mysql($credit_data['Transaction Description']),
+			$credit_data['Transaction Invoice Net Amount'],
+			prepare_mysql($credit_data['Tax Category Code']),
+			$credit_data['Transaction Invoice Tax Amount'],
+			$credit_data['Transaction Invoice Net Amount'],
+			$credit_data['Transaction Invoice Tax Amount'],
+			prepare_mysql($invoice->data['Invoice Currency']),
+			$invoice->data['Invoice Currency Exchange'],
+			prepare_mysql($credit_data['Metadata'])
+		);
+		mysql_query($sql);
+
+		$invoice->update_refund_totals();
+				
+				
 			}
-			/*
-			$_invoice_data=  array(
-				'Invoice Metadata'=>$store_code.$order_data_id,
-				'Invoice Shipping Net Amount'=>array(
-					'Amount'=>$shipping_net,
-					'tax_code'=>$tax_category_object->data['Tax Category Code']
-				),
-				'Invoice Charges Net Amount'=>array(
-					'Transaction Invoice Net Amount'=> $charges_net,
-					'Transaction Description'=>_('Charges')
-				)
-
-
-			);
-
-
-
-			$invoice->update($_invoice_data);
-*/
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 			$invoice->update_totals();
 
 

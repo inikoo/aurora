@@ -1174,6 +1174,7 @@ class Page extends DB_Table {
 			if ($see_also_page->id) {
 
 
+
 				switch ($row['Correlation Type']) {
 				case 'Manual':
 					$formated_correlation_type=_('Manual');
@@ -1187,8 +1188,13 @@ class Page extends DB_Table {
 					$formated_correlation_type=_('Semantic');
 					$formated_correlation_value=number($row['Correlation Value']);
 					break;
+				case 'New':
+					$formated_correlation_type=_('New');
+					$formated_correlation_value=number($row['Correlation Value']);
+					break;	
 				default:
 					$formated_correlation_type=$row['Correlation Type'];
+					$formated_correlation_value=number($row['Correlation Value']);
 					break;
 				}
 				//if ($site_url)

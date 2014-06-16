@@ -33,7 +33,7 @@ function prepare_values( $data, $value_names ) {
 	if ( !is_array( $data ) )
 		exit( json_encode( array( 'state'=>400, 'msg'=>'Error wrong value 1' ) ) );
 
-	// print_r($data);
+
 
 	foreach ( $value_names as $value_name=>$extra_data ) {
 		$optional=false;
