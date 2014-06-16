@@ -3788,6 +3788,9 @@ function number_orders_in_interval($data) {
 
 		if ($row['element']!='') {
 
+			if($row['element']=='Cancelled by Customer')
+				continue;
+
 			if ($row['element']=='In Process by Customer' or $row['element']=='Waiting for Payment Confirmation') {
 				$_element='InProcessCustomer';
 			}elseif ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
