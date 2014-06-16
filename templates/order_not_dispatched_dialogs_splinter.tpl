@@ -194,6 +194,8 @@
 		</tr>
 	</table>
 </div>
+
+
 <div id="dialog_edit_credits" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
 	<div id="edit_shipping_msg">
 	</div>
