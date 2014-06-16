@@ -257,7 +257,7 @@ else {
 		
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
-						'operations'=>'',//$invoice->get_operations($user),
+						'operations'=>$invoice->get_operations($user),
 
 			'number'=>$invoice->data['Invoice Public ID'],
 			'state'=>$invoice->get_xhtml_payment_state(),
