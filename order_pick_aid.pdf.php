@@ -25,6 +25,8 @@ require_once('external_libs/pdf/tcpdf.php');
 class MYPDF extends TCPDF {
 
     function Header() {
+    	global $dn;
+    
         if ($this->header_xobjid < 0) {
             // start a new XObject Template
             $this->header_xobjid = $this->startTemplate($this->w, $this->tMargin);
@@ -81,7 +83,7 @@ class MYPDF extends TCPDF {
                          'module_width' => 1, // width of a single module in points
                          'module_height' => 1 // height of a single module in points
                      );
-            $this->write2DBarcode('aw.inikoo.com/order_pick_aid.php?id=215167', 'QRCODE,Q', $cw, 0, 50, 50, $style, 'N');
+            $this->write2DBarcode('aw.inikoo.com/order_pick_aid.php?id='.$dn->id, 'QRCODE,Q', $cw, 0, 50, 50, $style, 'N');
 
 
             // print an ending header line
@@ -162,8 +164,11 @@ class MYPDF extends TCPDF {
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         // Page number
-	$this->Cell(0, 10, 'Powered by Inikoo ®', 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+//	$this->Cell(0, 10, 'Powered by Inikoo ®', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+     
+    	$this->Cell(0, 10, _('Document created').' '.date('Y-m-d H:i:s'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
+ 
+     $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 
     }
 
@@ -181,9 +186,13 @@ $pdf->SetTitle($dn->data['Delivery Note ID']);
 $pdf->SetSubject(_('Order Picking Aid'));
 
 
-$header_text=$dn->data['Delivery Note Customer Name'];
+$header_text=_('Customer').': '.$dn->data['Delivery Note Customer Name'].' (C'.$dn->data['Delivery Note Customer Key'].')';
+$header_text.="\n"._('In warehouse since').': '.$dn->data['Delivery Note Date Created'];
+$header_text.="\n"._('Picker').': '.$dn->data['Delivery Note Assigned Picker Alias'];
+$header_text.="\n"._('Weight').':';
+$header_text.="\n"._('Parcels').':';
 
-$pdf->SetHeaderData('../../../art/scs.jpg', 30.4, $dn->data['Delivery Note ID'], $header_text);
+$pdf->SetHeaderData('', 30.4, _('Order Pick Aid').' '.$dn->data['Delivery Note ID'], $header_text);
 
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -193,7 +202,7 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 //set margins
-$pdf->SetMargins(10, PDF_MARGIN_TOP, 10);
+$pdf->SetMargins(10, 33, 15);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -223,34 +232,46 @@ $pdf->AddPage();
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-		array('w'=>30,'txt'=>_('Code'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
-		array('w'=>40,'txt'=>_('Location'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
-		array('w'=>20,'txt'=>'Order','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
-array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+		array('w'=>30,'txt'=>_('Location'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+
+		array('w'=>30,'txt'=>_('Reference'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>55,'txt'=>_('Description'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>20,'txt'=>_('Picks'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+		array('w'=>20,'txt'=>_('No Picked'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+				array('w'=>20,'txt'=>_('Stock'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+
+		
+		array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
 		//  array('w'=>15,'txt'=>'SKU','border'=>'TB','align'=>'L'),
-		array('w'=>85,'txt'=>_('Product'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
 		// array('w'=>0,'txt'=>_('Observations'),'border'=>'TB','align'=>'L'),
          );
 
 $pdf->MultiRow($columns);
 
 
-$sql=sprintf("select  `Picking Note`,ITF.`Part SKU`,`Part Unit Description`,`Required`,`Location Code` from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d  ",
+$sql=sprintf("select  `Part Current Stock`,`Part Reference`,`Picking Note`,ITF.`Part SKU`,`Part Unit Description`,`Required`,`Location Code` from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d order by `Location Code` ",
              $dn->id
             );
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
+$stock=$row['Part Current Stock'];
 
     $sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-		array('w'=>30,'txt'=> strip_tags($row['Picking Note']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
-		array('w'=>40,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+    		array('w'=>30,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+
+		array('w'=>30,'txt'=> strip_tags($row['Part Reference']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>55,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+
+
 		array('w'=>20,'txt'=>$row['Required'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+		array('w'=>20,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+		array('w'=>20,'txt'=>$stock,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+
+
 array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
 		//  array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
-		array('w'=>85,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
 		// array('w'=>0,'txt'=>'','border'=>'T','align'=>'L')
 
 
