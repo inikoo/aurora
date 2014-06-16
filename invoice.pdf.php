@@ -363,7 +363,7 @@ $invoice_amounts='<table border="0" width="250px">
 $html='<div style="clear:both"></div>';
 
 
-$html.='<table border="0"><tr><td width="240px"><h3>'.$invoice->data['Invoice Customer Name'].'</h3> '.$invoice->data['Invoice XHTML Address'].'</td>
+$html.='<table border="0"><tr><td width="240px"><h3>'.$invoice->data['Invoice Customer Name'].' (C'.$invoice->data['Invoice Customer Key'].')</h3> '.$invoice->data['Invoice XHTML Address'].'</td>
 <td width="230px">'.$invoice_info.'</td>
 <td width="250px">'.$invoice_amounts.'</td>
 </tr></table>';
