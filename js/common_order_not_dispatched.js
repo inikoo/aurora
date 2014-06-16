@@ -1576,6 +1576,8 @@ function init_common_order_not_dispatched() {
     });
     dialog_edit_tax_category.render();
     YAHOO.util.Event.addListener("edit_button_tax", "click", show_dialog_edit_tax_category);
+    
+   
 
 }
 

@@ -347,8 +347,7 @@
 
 
 <div id="dialog_set_payment_as_competed" style="border:1px solid #ccc;text-align:left;padding:10px">
-	<div id="import_transactions_mals_e_msg">
-	</div>
+	<input id="set_payment_as_completed_payment_key" value="">
 	<table style="margin:10px" border="1">
 		<tr>
 			<td> 
@@ -359,14 +358,14 @@
 		</tr>
 		<tr>
 		<td>{t}Transaction ID{/t}</td>
-			<td style="padding-top:10px;width:300px;"> <input style="width:100%;height:200px" id="payment_as_completed_transaction_id"></td>
+			<td style="padding-top:10px;width:300px;"> <input style="width:100%;height:200px" id="set_payment_as_completed_payment_transaction_id"></td>
 		</tr>
 		<tr>
 			<td style="padding-top:10px"> 
 			<div class="buttons">
-						<button id="cancel_payment_as_completed">{t}Save{/t}</button> 
+						<button id="cancel_set_payment_as_completed">{t}Save{/t}</button> 
 	
-				<button id="close_payment_as_completed">{t}Close{/t}</button> 
+				<button id="close_set_payment_as_completed">{t}Close{/t}</button> 
 			</div>
 			</td>
 		</tr>
