@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-16 15:08-0000\n"
-"PO-Revision-Date: 2014-06-16 15:27-0000\n"
+"PO-Revision-Date: 2014-06-16 15:33-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -1077,7 +1077,7 @@ msgstr "Nicht zu Verkaufen"
 #: supplier.js.php:114 supplier.js.php:260 suppliers.js.php:227
 #: suppliers.js.php:295
 msgid "Total"
-msgstr "Gesamtanzahl"
+msgstr "Gesamtbetrag"
 
 #: ar_assets.php:1222 ar_assets.php:7076 ar_edit_assets.php:1337
 #: ar_edit_orders.php:1357 ar_edit_orders.php:1704 ar_edit_parts.php:506
@@ -8731,17 +8731,14 @@ msgid "Outside the scope of VAT"
 msgstr "MwSt"
 
 #: class.Order.php:5531
-#, fuzzy
 msgid "VAT 17.5%"
 msgstr "MwSt 17,5%"
 
 #: class.Order.php:5534
-#, fuzzy
 msgid "VAT 20%"
 msgstr "MwSt 20%"
 
 #: class.Order.php:5537
-#, fuzzy
 msgid "VAT 15%"
 msgstr "MwSt 15%"
 
@@ -15071,9 +15068,8 @@ msgid "Payment"
 msgstr "Eine Zahlung über"
 
 #: orders.js.php:25 orders_export_common.php:39
-#, fuzzy
 msgid "Total Balance"
-msgstr "Gesamtanzahl"
+msgstr "Gesamtbetrag"
 
 #: orders.php:132 part.php:245
 #, fuzzy
@@ -21779,9 +21775,8 @@ msgid "Name, Codes"
 msgstr "Name"
 
 #: smarty.php:8822
-#, fuzzy
 msgid "Price, Discounts"
-msgstr "Rabatte"
+msgstr "Preis, Rabatte"
 
 #: smarty.php:8858
 #, fuzzy
@@ -24805,9 +24800,8 @@ msgid "Refunds (N)"
 msgstr "Rückerstattungen"
 
 #: smarty.php:17213 smarty.php:17702
-#, fuzzy
 msgid "Total (N)"
-msgstr "Gesamtanzahl"
+msgstr "Gesamtbetrag"
 
 #: smarty.php:17216 smarty.php:17705
 #, fuzzy
