@@ -7,6 +7,7 @@ include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 include_once 'class.Payment_Service_Provider.php';
 
+
 include_once 'class.Store.php';
 
 include_once 'class.Order.php';
@@ -251,11 +252,15 @@ else {
 	$invoices_data=array();
 	foreach ($order->get_invoices_objects() as $invoice) {
 		$current_invoice_key=$invoice->id;
+		
+		//print_r($invoice);
+		
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
+						'operations'=>'',//$invoice->get_operations($user),
+
 			'number'=>$invoice->data['Invoice Public ID'],
 			'state'=>$invoice->get_xhtml_payment_state(),
-			'operations'=>$invoice->get_operations($user),
 			'data'=>'',
 
 		);
