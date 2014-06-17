@@ -141,8 +141,9 @@
 							<td class="label" style="width:150px">{t}Employes is working{/t}:</td>
 							<td class="label" style="width:700px">
 							<input type="hidden" id="Staff_Currently_Working" value="{$staff->get('Staff Currently Working')}" ovalue="{$staff->get('Staff Currently Working')}">
-							<div class="buttons small left" style="float:left" id="Staff_Currently_Working_options">
-								<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} option" onclick="change_is_working('Yes')" id="Staff_Currently_Working_Yes">{t}Yes{/t}</button> <button class="{if $staff->get('Staff_Currently_Working')=='No'}selected{/if} option" onclick="change_is_working('No')" id="Staff_Currently_Working_No">{t}No{/t}</button> 
+							<div class="buttons small left" style="float:left" id="Staff_Currently_Working_options"> 
+								<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} option" onclick="change_is_working('Yes')" id="Staff_Currently_Working_Yes">{t}Yes{/t}</button> 
+								<button class="{if $staff->get('Staff Currently Working')=='No'}selected{/if} option" onclick="change_is_working('No')" id="Staff_Currently_Working_No">{t}No{/t}</button> 
 							</div>
 							</td>
 							<td><span id="Staff_Currently_Working_msg"></span></td>

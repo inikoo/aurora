@@ -3,6 +3,8 @@ require_once 'class.Timer.php';
 
 require_once 'common.php';
 require_once 'class.Company.php';
+require_once 'class.Staff.php';
+
 require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
 include_once 'class.CompanyPosition.php';
@@ -131,7 +133,8 @@ function edit_employee($data) {
 	$translate_keys=array(
 	'id'=>'Staff ID',
 	'name'=>'Staff Name',
-	'staff_type'=>'Staff Type'
+	'staff_type'=>'Staff Type',
+	'is_working'=>'Staff Currently Working'
 	);
 
 	$staff->update(array($translate_keys[$data['key']]=>$data['newvalue']));

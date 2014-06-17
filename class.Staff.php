@@ -387,7 +387,14 @@ class Staff extends DB_Table{
 		if (is_string($value))
 			$value=_trim($value);
 
+
+
 		switch ($field) {
+		
+		case('Staff Currently Working'):
+		$this->update_is_working($value,$options);
+			break;
+		
 		case('Staff Alias'):
 		$this->update_alias($value);
 			break;
@@ -404,6 +411,26 @@ class Staff extends DB_Table{
 				$this->update_field($field,$value,$options);
 			}
 		}
+	}
+	
+	
+	function update_is_working($value,$options){
+	
+
+	if($value=='No' and $this->data['Staff Currently Working']=='Yes'){
+	
+
+	
+		//	$this->update_field('Staff Valid To',gmdate('Y-m-d H:i:s'),'no_history');
+			}
+	
+	
+			$this->update_field('Staff Currently Working',$value,$options);
+			
+			
+			
+			
+	
 	}
 
 
