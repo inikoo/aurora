@@ -421,7 +421,7 @@ class Staff extends DB_Table{
 	
 
 	
-		//	$this->update_field('Staff Valid To',gmdate('Y-m-d H:i:s'),'no_history');
+			$this->update_field('Staff Valid To',gmdate('Y-m-d H:i:s'),'no_history');
 			}
 	
 	
