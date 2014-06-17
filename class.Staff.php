@@ -403,7 +403,7 @@ class Staff extends DB_Table{
 			$this->update_name($value);
 			break;
 		case('Staff Position'):
-			$this->update_position($value);
+			$this->update_positions($value);
 			break;
 		default:
 			$base_data=$this->base_data();
@@ -439,32 +439,47 @@ class Staff extends DB_Table{
 	}
 
 
-	function update_position($value) {
-		$updated=false;
-		$sql=sprintf("select * from `Company Position Staff Bridge` where `Staff Key`=%d", $this->id);
-		$result=mysql_query($sql);
-		if (mysql_num_rows($result)) {
-			$sql=sprintf("update `Company Position Staff Bridge` set `Position Key`=%d where `Staff Key`=%d", $value, $this->id);
-			if (mysql_query($sql)) {
-				$updated=true;
-			}
-		}
-		else {
-			$sql=sprintf("insert into `Company Position Staff Bridge` (`Position Key`, `Staff Key`) values (%d, %d)", $value, $this->id);
-			if (mysql_query($sql)) {
-				$updated=true;
-			}
-		}
+function update_positions($values){
 
-		if ($updated) {
-			$this->updated=true;
-			$this->data['Staff Position']=_trim($value);
-		}
-		else {
-			$this->updated=false;
-			$this->msg="Error";
+	foreach($values as $key=>$value){
+		if($value){
+			$this->add_position($key);
+		}else{
+		$this->remove_position($key);
 		}
 	}
+	
+	
+}
+
+function remove_position($position_key){
+
+$sql=sprintf("delete from  `Company Position Staff Bridge` where `Position Key`=%d and `Staff Key`=%d", $position_key, $this->id);
+	
+	
+	if (mysql_query($sql)) {
+				$this->updated=true;
+			}
+			
+			
+}
+
+	function add_position($value) {
+		$updated=false;
+		
+		
+		
+		$sql=sprintf("insert into `Company Position Staff Bridge` (`Position Key`, `Staff Key`) values (%d, %d)   ON DUPLICATE KEY UPDATE  `Position Key`= %d", $value, $this->id, $value);
+		//	print $sql."\n";
+			if (mysql_query($sql)) {
+				$this->update=true;
+			}
+		
+		
+	
+	}
+	
+	
 	function get_other_telecoms_data($type='Telephone') {
 
 		$sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Staff' and `Subject Key`=%d ",

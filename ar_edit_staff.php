@@ -132,10 +132,20 @@ function edit_employee($data) {
 	$staff=new Staff($data['staff_key']);
 
 
+if($data['key']=='staff_position'){
+
+	$data['newvalue']= json_decode(base64_decode($data['newvalue']));
+
+
+	// TO DO whern this come back to js/edit_employee make i update the ovalus etc to work better
+
+}
+
 	$translate_keys=array(
 	'id'=>'Staff ID',
 	'name'=>'Staff Name',
 	'staff_type'=>'Staff Type',
+	'staff_position'=>'Staff Position',
 	'is_working'=>'Staff Currently Working'
 	);
 
