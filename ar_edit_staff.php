@@ -47,6 +47,8 @@ case('list_department_staff'):
 	list_department_staff();
 	break;
 
+case('edit_staff_contact'):
+
 case('edit_staff_employment'):
 case('edit_employee'):
 	$data=prepare_values($_REQUEST,array(
