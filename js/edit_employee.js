@@ -66,6 +66,7 @@ function change_employee_type(value){
 }
 
 function change_employee_position(position_key){
+	// TO DO whern this come back to js/edit_employee make i update the ovalus etc to work better
 
 
 var position_button=Dom.get('position_'+position_key)
