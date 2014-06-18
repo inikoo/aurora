@@ -32,8 +32,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
-
+case('get_dn_fields'):
+	$data=prepare_values($_REQUEST,array(
+			'dn_key'=>array('type'=>'key'),
+			
+		));
+	get_dn_fields($data);
+break;
 case('number_orders_in_interval'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
@@ -4418,6 +4423,26 @@ function get_order_details($data) {
 	}
 
 
+
+}
+
+
+function get_dn_fields($data){
+
+	$delivery_note=new DeliveryNote($data['dn_key']);
+
+	$dn_data=array(
+	'dn_key'=>$delivery_note->id,
+	'weight'=>$delivery_note->get('Weight For Edit'),
+	'number_parcels'=>($delivery_note->get('Delivery Note Number Parcels')?$delivery_note->get('Delivery Note Number Parcels'):''),
+	'parcel_type'=>($delivery_note->get('Delivery Note Parcel Type')?$delivery_note->get('Delivery Note Parcel Type'):''),
+	'courier'=>$delivery_note->get('Delivery Note Shipper Code'),
+	'consignment'=>$delivery_note->get('Delivery Note Shipper Consignment')
+
+	);
+
+	$response= array('state'=>200,'dn_data'=>$dn_data);
+	echo json_encode($response);
 
 }
 

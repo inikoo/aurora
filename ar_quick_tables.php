@@ -1970,7 +1970,7 @@ function active_staff_list() {
 	else$tableid=0;
 
 	if (isset( $_REQUEST['active']))$active=$_REQUEST['active'];
-	else $active='';
+	else $active='Yes';
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 	$_order=$order;
@@ -1979,11 +1979,8 @@ function active_staff_list() {
 
 
 
-	// if (!in_array($store_key,$user->stores)) {
-	//     $where=sprintf('where false ');
-	//  } else {
 	$where=sprintf('where `Staff Currently Working`=%s',prepare_mysql($active));
-	//   }
+	
 
 
 
@@ -1993,7 +1990,9 @@ function active_staff_list() {
 
 
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Staff Key` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'";
+		
+		
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Staff Name` like '".addslashes($f_value)."%'";
 
@@ -2019,7 +2018,7 @@ function active_staff_list() {
 	}
 
 
-	$rtext=number($total_records)." ".ngettext('Staff Member','Staff Members',$total_records);
+	$rtext=number($total_records)." ".ngettext('Employee','Employees',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

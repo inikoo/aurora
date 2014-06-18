@@ -237,7 +237,7 @@ function pack_it_fast(o,staff_key, dn_key) {
 
    YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                start_packing(r.dn_key, r.staff_key)
@@ -286,7 +286,7 @@ function assign_picker_save() {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-            	alert(o.responseText)
+            //	alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -323,7 +323,7 @@ function pick_it_save() {
     var sup_pwd = Dom.get('pick_it_pin').value;
     var dn_key = Dom.get('pick_it_dn_key').value;
     var request = 'ar_edit_orders.php?tipo=pick_it&dn_key=' + escape(dn_key) + '&staff_key=' + escape(staff_key) + '&pin=' + escape(sup_pwd);
-     alert(request)
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
@@ -452,7 +452,7 @@ function pack_it_save() {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-            alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -480,7 +480,7 @@ function approve_packing(dn_key,staff_key, referrer) {
 
     ar_file = 'ar_edit_orders.php';
     request = ar_file + '?tipo=approve_packing&dn_key=' + dn_key;
-alert(request)
+//alert(request)
 
 YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {

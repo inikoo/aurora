@@ -10,6 +10,12 @@
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
 		<input type="hidden" value="{$current_delivery_note_key}" id="current_delivery_note_key" />
+		
+				<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
+				<input type="hidden" value="{$decimal_point}" id="decimal_point" />
+				<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+
+		
 
 	<div class="branch ">
 		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
@@ -111,12 +117,23 @@
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
-					<tr>
-						<td class="aright">{t}Total{/t}</td>
-						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
+					<tr style="border-bottom:1px solid #777">
+						<td class="aright" >{t}Total{/t}</td>
+						<td id="order_total" width="100" class="aright" style="font-weight:800;">{$order->get('Balance Total Amount')}</td>
 					</tr>
+					
+					<tr style="color:#777">
+						<td class="aright">{t}Paid{/t}</td>
+						<td id="order_total" width="100" class="aright" >{$order->get('Payments Amount')}</td>
+					</tr>
+						<tr style="color:#777">
+						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div>  {t}To Pay{/t}</td>
+						<td id="order_total" width="100" class="aright" >{$order->get('To Pay Amount')}</td>
+					</tr>
+					
+					
 				</table>
-				<div class="buttons small" style="{if $has_credit}display:none;{/if}clear:both;margin:0px;padding-top:10px">
+				<div class="buttons small" style="display:none;{if $has_credit}display:none;{/if}clear:both;margin:0px;padding-top:10px">
 					<button id="add_credit" style="margin:0px;">{t}Add debit/credit{/t}</button> 
 				</div>
 			</div>
@@ -478,6 +495,160 @@
 {*}
 
 
+<div id="dialog_set_dn_data" style="width:710px;padding:20px 20px 0 20px;">
+
+
+		<table class="edit" border="0" style="margin-bottom:5px;width:700px">
+			
+			
+			<tr class="title">
+				<td>{t}Parcels{/t}</td>
+			</tr>	
+	
+			<tr class="first">
+				<td class="label" style="width:65px"><span id="parcels_weight_msg" class="edit_td_alert"></span> {t}Weight{/t}:</td>
+				
+				
+				
+				<td style="width:200px"  colspan=2> 
+							<div>
+								<input style="width:100px" id="parcels_weight" changed="0" type='text' class='text' value="" ovalue="" /> 
+								<span style="margin-left:10px">Kg</span>
+								<div id="parcels_weight_Container">
+								</div>
+							</div>
+							
+							</td>
+							
+				
+				
+				
+				
+			</tr>
+			<tr style="height:5px">
+				<td colspan="3"></td>
+			</tr>
+			<tr>
+				<td class="label" style="width:65px"><span id="number_parcels_msg" class="edit_td_alert"></span> {t}Parcels{/t}:</td>
+				<td style="text-align:left;width:30px"> 
+				
+				<div>
+					<input style="width:30px" id="number_parcels" changed="0" type='text' class='text' value="" ovalue="" />
+								<div id="number_parcels_Container">
+								</div>
+							</div>
+					
+
+				
+				
+				<td style="width:325px"> 
+				<input id="parcel_type" value="" ovalue="" type="hidden" />
+				<div class="buttons small left" id="parcel_type_options">
+					<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Pallet" valor="Pallet">{t}Pallet{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type " id="parcel_Envelope" valor="Envelope">{t}Envelope{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type " id="parcel_Small Parcel" valor="Small Parcel">{t}Small Parcel{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type " id="parcel_Box" valor="Box">{t}Box{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type "  id="parcel_None" valor="None">{t}None{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type "  id="parcel_Other" valor="Other">{t}Other{/t}</button> 
+				</div>
+				<span id="parcel_type_msg" class="edit_td_alert"></span>
+
+				</td>
+			</tr>
+				<tr class="title">
+				<td>{t}Courier{/t}</td>
+			</tr>	
+			
+			<tr>
+							<td class="label" style="width:65px">{t}Company{/t}:</td>
+
+				<td colspan=2> 
+
+				
+				<input type="hidden" id="shipper_code" value="" ovalue="">
+
+				<div class="buttons small left" id="shipper_code_options">
+								{foreach from=$shipper_data item=item key=key } 
+								<button style="margin-bottom:5px;min-width:120px"  class="{if $item.selected>0}selected{/if} option" id="shipper_code_{$item.code}" onclick="change_shipper('{$item.code}')"  >{$item.code}</button>
+								{/foreach} 
+								</div>
+				
+				</div>
+								<span id="shipper_code_msg" class="edit_td_alert"></span>
+
+				</td>
+			</tr>
+			
+			
+						<tr>
+				<td class="label" style="width:65px"> <span id="consignment_number_msg" class="edit_td_alert"></span> {t}Consignment{/t}:</td>
+				
+					<td style="width:200px"  colspan=2> 
+							<div>
+								<input style="width:250px" id="consignment_number" changed="0" type='text' class='text' value="" ovalue="" /> 
+								<div id="consignment_number_Container">
+								</div>
+							</div>
+							
+							</td>
+				
+			
+				
+				
+				
+				
+				
+				
+				</tr>
+				
+			<tr class="buttons">
+							<td></td>
+							<td colspan="2"> 
+							<div class="buttons left">
+								<button style="margin-right:10px;" id="reset_edit_delivery_note"  onClick="reset_edit_delivery_note()"  class="negative">{t}Close{/t}</button> 
+
+								<button style="margin-right:10px;" id="save_edit_delivery_note" onClick="save_edit_delivery_note()"  class="positive">{t}Save{/t}</button> 
+							</div>
+							</td>
+			</tr>
+		</table>
+		<table id="quick_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border="0">
+			<tr id="quick_invoice_invoice_buttons_tr">
+				<td> 
+				<div class="buttons">
+					<button class="positive" onclick="quick_invoice()">{t}Create Invoice{/t}</button> <button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:right;"> 
+				<div style="display:none" id="quick_invoice_invoice_wait">
+					<span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
+				</div>
+				</td>
+			</tr>
+		</table>
+		<table id="step_by_step_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border="0">
+			<tr id="step_by_step_invoice_buttons_tr">
+				<td> 
+				<div class="buttons">
+					<button class="positive" onclick="step_by_step_invoice()">{t}Create Invoice (Step by Step){/t}</button> <button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:right;"> 
+				<div style="display:none" id="step_by_step_invoice_wait">
+					<span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	
+</div>
+
+
+{include file='splinter_add_payment.tpl'}
 
 {include file='assign_picker_packer_splinter.tpl'}
 {include file='footer.tpl'} 

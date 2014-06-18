@@ -96,15 +96,15 @@
 						
 						<tr id="edit_parcels_tr" onmouseover="Dom.setStyle('edit_parcels','visibility','visible')" onmouseout="Dom.setStyle('edit_parcels','visibility','hidden')"> 
 							<td class="aright"><img id="edit_parcels" src="art/icons/edit.gif" style="visibility:hidden;cursor:pointer;{if $parcels==''}display:none{/if}"> {t}Parcels{/t}:</td>
-							<td class="aright"><span id="parcels">{if $parcels==''}<span style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
+							<td class="aright"><span id="parcels">{if $parcels==''}<span onClick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
 						</tr>
 						<tr id="edit_weight_tr" onmouseover="Dom.setStyle('edit_weight','visibility','visible')" onmouseout="Dom.setStyle('edit_weight','visibility','hidden')">
 							<td class="aright"><img id="edit_weight" src="art/icons/edit.gif" style="cursor:pointer;{if $weight==''}display:none{/if};visibility:hidden"> {t}Weight{/t}:</td>
-							<td class="aright"><span id="weight">{if $weight==''}<span style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}{else}{$weight}{/if}</span></span></td>
+							<td class="aright"><span id="weight">{if $weight==''}<span onClick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}{else}{$weight}{/if}</span></span></td>
 						</tr>
 						<tr id="edit_consignment_tr" onmouseover="Dom.setStyle('edit_consignment','visibility','visible')" onmouseout="Dom.setStyle('edit_consignment','visibility','hidden')">
 							<td class="aright"><img id="edit_consignment" src="art/icons/edit.gif" style="cursor:pointer;{if $consignment==''}display:none{/if};visibility:hidden"> {t}Courier{/t}:</td>
-							<td class="aright"><span id="consignment">{if $consignment==''}<span style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}{else}{$consignment}{/if}</span></span></td>
+							<td class="aright"><span id="consignment">{if $consignment==''}<span  onClick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}{else}{$consignment}{/if}</span></span></td>
 						</tr>
 						
 					</tbody>
