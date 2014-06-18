@@ -1935,9 +1935,6 @@ function list_store_pending_orders() {
 		$elements['InProcessbyCustomer']=$_REQUEST['elements_InProcessbyCustomer'];
 	}
 
-	if (isset( $_REQUEST['elements_ReadytoPick'])) {
-		$elements['ReadytoPick']=$_REQUEST['elements_ReadytoPick'];
-	}
 
 
 
@@ -1967,7 +1964,7 @@ function list_store_pending_orders() {
 			$elements_count++;
 
 			if ($_key=='InWarehouse') {
-				$_key="'Picking & Packing','Ready to Ship','Packed','Packing'";
+				$_key="'Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer'";
 			}if ($_key=='InProcess') {
@@ -1976,8 +1973,6 @@ function list_store_pending_orders() {
 				$_key="'In Process by Customer','Waiting for Payment Confirmation'";
 			}if ($_key=='PackedDone') {
 				$_key="'Packed Done'";
-			}if ($_key=='ReadytoPick') {
-				$_key="'Ready to Pick'";
 			}
 
 			$_elements.=','.$_key;
@@ -2157,10 +2152,10 @@ function list_store_pending_orders() {
 			$current_delivery_note_key='';
 		}
 
-		$dn_operations='<div style="border:1px solid #cccclear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
+		$dn_operations='<div style=";clear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
 		foreach ($dns_data as $dn_data) {
-			$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
-			$dn_operations.=sprintf('<tr style="border:none;"><td colspan=2">%s</td></tr>',$dn_data['operations']);
+			$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none;border-bottom:1px solid #ccc"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
+			$dn_operations.=sprintf('<tr style="border:none;"><td style="padding-top:3px"colspan=2">%s</td></tr>',$dn_data['operations']);
 		}
 		$dn_operations.='</table></div>';
 		$operations.=$dn_operations;
@@ -2169,7 +2164,7 @@ function list_store_pending_orders() {
 		$public_id=sprintf("<a href='order.php?id=%d&referral=spo'>%s</a>",$row['Order Key'],$row['Order Public ID']);
 
 
-		$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y", strtotime($row['Order Date'])).'</span>';
+		$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y %H:%M", strtotime($row['Order Date'])).'</span>';
 
 		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Order Key'],"See Picking Sheet");
 		$data[]=array(

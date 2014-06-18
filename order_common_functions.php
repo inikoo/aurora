@@ -11,7 +11,31 @@
 
 function get_orders_operations($row,$user) {
 	$operations='<div id="operations'.$row['Order Key'].'">';
-	if ($row['Order Current Dispatch State']=='Submitted by Customer') {
+	$class='left';
+	
+	
+	if ($row['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
+	
+		$operations.='<div class="buttons small '.$class.'">';
+				$operations.=' <button class="negative" onClick="cancel_payment(this,'.$row['Order Key'].')">'._('Cancel Payment')."</button>";
+				$operations.=' <button  class="positive"  onClick="conform_payment(this,'.$row['Order Key'].')">'._('Confirm Payment')."</button>";
+
+	$operations.='</div>';
+
+	}else if ($row['Order Current Dispatch State']=='In Process by Customer') {
+	
+		$operations.='<div class="buttons small '.$class.'">';
+		$operations.=sprintf("<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+$row['Order Key'],
+		$row['Order Public ID'],
+		$row['Order Customer Name'],
+		_('Delete')
+		);
+				$operations.=' <button   onClick="location.href=\`order.php?id='.$row['Order Key'].'&modify=1\`">'._('Modify Order in Basket')."</button>";
+
+	$operations.='</div>';
+
+	}elseif ($row['Order Current Dispatch State']=='Submitted by Customer') {
 		$operations.='<div class="buttons small left">';
 				$operations.=sprintf("<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
 				$row['Order Key'],
@@ -30,7 +54,7 @@ function get_orders_operations($row,$user) {
 		$operations.='</div>';
 
 	}
-	if ($row['Order Current Dispatch State']=='In Process') {
+	else if ($row['Order Current Dispatch State']=='In Process') {
 		$operations.='<div class="buttons small left">';
 				$operations.=sprintf("<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
 				$row['Order Key'],
