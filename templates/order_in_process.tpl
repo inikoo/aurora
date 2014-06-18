@@ -153,7 +153,7 @@
 					</tr>
 					<tr>
 						<td>{t}Submited{/t}:</td>
-						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
+						<td class="aright">{$order->get('Submitted by Customer')}</td>
 					</tr>
 					
 					
