@@ -160,7 +160,16 @@ $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_
 								'Order Payment Method'=>$payment_account->data['Payment Type'],
 								'Order Payment Key'=>$payment->id,
 								'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+								
 							));
+
+						$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%.2f) ON DUPLICATE KEY UPDATE `Anount`=%.2f ",
+						$order->id,
+						$payment->id,
+						$payment->data['Payment Amount'],
+						$payment->data['Payment Amount']
+						);
+						mysql_query($sql);
 
 						$order->checkout_submit_order();
 						

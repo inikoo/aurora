@@ -139,6 +139,12 @@ function get_order_formated_payment_state($data) {
 		$payment_state=_('Waiting Payment');
 
 		break;
+	case 'Paid':
+		$payment_state=_('Paid');
+case 'Partially Paid':
+		$payment_state=_('Partially Paid');
+
+		break;
 
 	default:
 		$payment_state=$data['Order Current Payment State'];

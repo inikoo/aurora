@@ -107,6 +107,14 @@ if ($valid) {
 
 
 			));
+			
+			$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%.2f) ON DUPLICATE KEY UPDATE `Anount`=%.2f ",
+						$order->id,
+						$payment->id,
+						$payment->data['Payment Amount'],
+						$payment->data['Payment Amount']
+						);
+						mysql_query($sql);
 
 
 		$order->checkout_submit_order();
