@@ -13,6 +13,23 @@ YAHOO.namespace ("invoice");
 
 var edit_delivery_address;
 
+function show_dialog_set_dn_data(){
+
+	
+	
+	return;
+	
+	region1 = Dom.getRegion('control_panel'); 
+    region2 = Dom.getRegion('dialog_set_dn_data'); 
+
+	var pos =[region1.right-region2.width,region1.top]
+	Dom.setXY('dialog_set_dn_data', pos);
+		
+
+	dialog_set_dn_data.show()
+
+
+}
 
 
 
@@ -184,18 +201,51 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+function assign_picker(o, dn_key) {
+    Dom.setStyle('assign_picker_dialog', 'display','');
+
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('assign_picker_dialog');
+    var pos = [region1.left , region1.bottom]
+    Dom.setXY('assign_picker_dialog', pos);
+
+    Dom.get('Assign_Picker_Staff_Name').focus();
+    Dom.get('assign_picker_dn_key').value = dn_key;
+    Dom.get('staff_list_parent_dialog').value = 'assign_picker';
+    assign_picker_dialog.show();
+}
+
+function reset_edit_delivery_note(){
+	 dialog_set_dn_data.hide();
+}
 
 function init() {
 
     init_search('orders_store');
 
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    
+    
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+    
+    
+    
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
     oAutoComp.minQueryLength = 0;
 
-    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
-    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 2;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+    
+
+
 
 
     Event.addListener("modify_order", "click", modify_order);
@@ -271,6 +321,15 @@ function init() {
     pick_it_dialog.render();
 
 
+  dialog_set_dn_data = new YAHOO.widget.Dialog("dialog_set_dn_data", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_set_dn_data.render();
+
+
     Event.addListener("process_dn_packing", "click", show_process_dn_packing_dialog);
 
     dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {
@@ -281,6 +340,7 @@ function init() {
         draggable: false
     });
     dialog_pack_it.render();
+
 
 
 
@@ -310,7 +370,8 @@ var order_key=Dom.get('order_key').value;
 		//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
-		        location.href='invoice.php?id='+r.invoice_key;
+		        //location.href='invoice.php?id='+r.invoice_key;
+		        location.reload(); 
 		  
 		}else{
 		alert(r.msg)
@@ -330,6 +391,61 @@ Dom.removeClass(Dom.getElementsByClassName('parcel_type', 'button', 'parcel_type
 Dom.addClass(o,'selected')
 
 
+}
+
+
+
+function show_dialog_set_dn_data_from_order(dn_key){
+
+
+
+   	request='ar_orders.php?tipo=get_dn_fields&dn_key='+dn_key
+   //alert(request)
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+	//	alert(o.responseText)
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     		
+     			Dom.get('parcels_weight').value=r.dn_data.weight
+         			Dom.get('parcels_weight').setAttribute('ovalue',r.dn_data.weight)
+         			Dom.get('number_parcels').value=r.dn_data.number_parcels
+         			Dom.get('number_parcels').setAttribute('ovalue',r.dn_data.number_parcels)
+ 			Dom.get('consignment_number').value=r.dn_data.consignment
+         			Dom.get('consignment_number').setAttribute('ovalue',r.dn_data.consignment)
+         				Dom.get('shipper_code').value=r.dn_data.courier
+         			Dom.get('shipper_code').setAttribute('ovalue',r.dn_data.courier)
+         				Dom.get('parcel_type').value=r.dn_data.parcel_type
+         			Dom.get('parcel_type').setAttribute('ovalue',r.dn_data.parcel_type)
+         			
+         			
+         			Dom.removeClass(Dom.getElementsByClassName('parcel_type','button','parcel_type_options'),'selected')
+         			Dom.addClass('parcel_'+r.dn_data.parcel_type,'selected')
+         			Dom.removeClass(Dom.getElementsByClassName('option','button','shipper_code_options'),'selected')
+         			Dom.addClass('shipper_code_'+r.dn_data.courier,'selected')
+         			
+         			
+         			region1 = Dom.getRegion('control_panel'); 
+    region2 = Dom.getRegion('dialog_set_dn_data'); 
+
+	var pos =[region1.right-region2.width,region1.top]
+	Dom.setXY('dialog_set_dn_data', pos);
+		
+
+	dialog_set_dn_data.show()
+         			
+         			
+            }
+
+        },
+failure: function (o) {
+          //  alert(o.statusText);
+        },
+scope:this
+    }
+    );
 }
 
 function set_as_dispatched(dn_key){

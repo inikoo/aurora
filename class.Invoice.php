@@ -427,6 +427,10 @@ class Invoice extends DB_Table {
 				//  print $sql;
 			}
 
+
+
+		
+
 		}
 
 
@@ -516,6 +520,7 @@ class Invoice extends DB_Table {
 			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $this->id,$key);
 			mysql_query( $sql );
 			$this->update_xhtml_delivery_notes();
+			$dn->update(array('Delivery Note Invoiced'=>'Yes'));
 			$dn->update_xhtml_invoices();
 		}
 
@@ -1873,10 +1878,10 @@ class Invoice extends DB_Table {
 		return $delivery_notes;
 	}
 
-function get_operations($user,$class='left') {
+function get_operations($user,$parent='order') {
 			include_once 'order_common_functions.php';
 
-			return get_invoice_operations($this->data,$user,$class);
+			return get_invoice_operations($this->data,$user,$parent);
 		}
 
 

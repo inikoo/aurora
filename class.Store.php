@@ -1778,6 +1778,29 @@ class Store extends DB_Table {
 		return $payment_account_key;
 
 	}
+	
+		function get_payment_accounts_data() {
+		$payment_accounts_data=array();
+		$sql=sprintf("select *from `Payment Account Dimension` PA left join `Payment Account Site Bridge` B on (PA.`Payment Account Key`=B.`Payment Account Key`) left join `Payment Service Provider Dimension` PSPD on (PSPD.`Payment Service Provider Key`=PA.`Payment Service Provider Key`)  where  `Status`='Active' and `Store Key`=%d ",
+			$this->id);
+		//	print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+		$payment_accounts_data[]=array(
+				'key'=>$row['Payment Account Key'],
+				'code'=>$row['Payment Account Code'],
+				'type'=>$row['Payment Type'],
+				'service_provider_code'=>$row['Payment Service Provider Code'],
+								'service_provider_name'=>$row['Payment Service Provider Name'],
+
+		);
+			
+		}
+
+
+		return $payment_accounts_data;
+
+	}
 
 
 }

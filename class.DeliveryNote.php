@@ -422,8 +422,24 @@ class DeliveryNote extends DB_Table {
 			return weight($this->data['Delivery Note Estimated Weight']);
 			break;
 		case('Weight'):
-			return weight($this->data['Delivery Note Weight']);
+			
+			if($this->data['Delivery Note Weight Source']=='Given')	
+					return weight($this->data['Delivery Note Weight']);
+
+			else
+			return "&#8494;" .weight($this->data['Delivery Note Estimated Weight'],'',0);
 			break;
+			
+		case('Weight For Edit'):
+			
+			if($this->data['Delivery Note Weight Source']=='Given')	
+				return $this->data['Delivery Note Weight'];
+
+			else
+			return "";
+			break;	
+		
+		
 		case('Consignment'):
 			$consignment=$this->data['Delivery Note Shipper Consignment'];
 			if ($this->data['Delivery Note Shipper Code']!='') {
@@ -2130,10 +2146,10 @@ class DeliveryNote extends DB_Table {
 	}
 
 
-	function get_operations($user,$parent='order') {
+	function get_operations($user,$parent='order',$parent_key='') {
 		include_once 'order_common_functions.php';
 
-		return get_dn_operations($this->data,$user,$parent);
+		return get_dn_operations($this->data,$user,$parent,$parent_key);
 	}
 
 	function get_number_picked_transactions() {

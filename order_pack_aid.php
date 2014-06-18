@@ -152,7 +152,7 @@ $smarty->assign( 'consignment', ($consignment?$dn->get('Consignment'):'') );
 
 $shipper_data=array();
 
-$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` order by `Shipper Name` ");
+$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
 $result=mysql_query($sql);
 while ($row=mysql_fetch_assoc($result)) {
 	$shipper_data[$row['Shipper Key']]=array(

@@ -84,6 +84,7 @@ if (isset($_REQUEST['new']) ) {
 	$order=new Order('new',$order_data);
 
 
+
 	if ($order->error)
 		exit('error');
 
@@ -137,12 +138,17 @@ if (isset($_REQUEST['referral'])) {
 }
 $smarty->assign('referral',$referral);
 
+
+
+
+
 $customer=new Customer($order->get('order customer key'));
 
 //$order->update_no_normal_totals();
 $order->update_totals_from_order_transactions();
 
 $store=new Store($order->data['Order Store Key']);
+//print_r($store->get_payment_accounts_data());
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 
@@ -226,9 +232,9 @@ else {
 		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
 		$dn_data=preg_replace('/^,/','',$dn_data);
 
-
-		if ($missing_dn_data) {
-			$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img src="art/icons/edit.gif"> ';
+//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+		if ($missing_dn_data  and in_array($order->data['Order Current Dispatch State'],array('Packed Done','Packed')) ) {
+			$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$dn->id.')" style="cursor:pointer;" src="art/icons/edit.gif"> ';
 		}
 
 		$dns_data[]=array(
@@ -236,7 +242,7 @@ else {
 			'number'=>$dn->data['Delivery Note ID'],
 			'state'=>$dn->data['Delivery Note XHTML State'],
 			'data'=>$dn_data,
-			'operations'=>$dn->get_operations($user,''),
+			'operations'=>$dn->get_operations($user,'order',$order->id),
 		);
 	}
 	$number_dns=count($dns_data);
@@ -257,7 +263,7 @@ else {
 		
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
-						'operations'=>$invoice->get_operations($user),
+						'operations'=>$invoice->get_operations($user,'order',$order->id),
 
 			'number'=>$invoice->data['Invoice Public ID'],
 			'state'=>$invoice->get_xhtml_payment_state(),
@@ -285,7 +291,7 @@ else {
 	case('Submitted by Customer'):
 		case('Waiting for Payment Confirmation'):
 
-$order->update_tax();
+     $order->update_tax();
 		$js_files[]='js/edit_common.js';
 
 
@@ -385,6 +391,27 @@ $order->update_shipping();
 	case('Picking & Packing'):
 	case('Packed Done'):
 	case('Ready to Ship'):
+
+$js_files[]='js/php.default.min.js';
+	$js_files[]='js/add_payment.js';
+
+
+
+$shipper_data=array();
+
+$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
+$result=mysql_query($sql);
+while ($row=mysql_fetch_assoc($result)) {
+	$shipper_data[$row['Shipper Key']]=array(
+	'shipper_key'=>$row['Shipper Key'],
+	'code'=>$row['Shipper Code'],
+	'name'=>$row['Shipper Name'],
+	'selected'=>0
+	);
+	
+	
+}
+$smarty->assign( 'shipper_data', $shipper_data );
 
 
 		if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {

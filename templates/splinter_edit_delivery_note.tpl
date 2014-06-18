@@ -15,7 +15,7 @@
 				
 				<td style="width:200px"  colspan=2> 
 							<div>
-								<input style="width:100px" id="parcels_weight" changed="0" type='text' class='text' value="{$delivery_note->get('Delivery Note Weight')}" ovalue="{$delivery_note->get('Delivery Note Weight')}" /> 
+								<input style="width:100px" id="parcels_weight" changed="0" type='text' class='text' value="{$delivery_note->get('Weight For Edit')}" ovalue="{$delivery_note->get('Weight For Edit')}" /> 
 								<span style="margin-left:110px">Kg</span>
 								<div id="parcels_weight_Container">
 								</div>
