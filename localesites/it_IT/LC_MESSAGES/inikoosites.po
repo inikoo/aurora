@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-18 14:00-0000\n"
-"PO-Revision-Date: 2014-06-18 14:00-0000\n"
+"PO-Revision-Date: 2014-06-18 15:18-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: Inikoo\n"
 "Language: it_IT\n"
@@ -133,51 +133,43 @@ msgid "Errors"
 msgstr "Errori"
 
 #: ar_contacts.php:652
-#, fuzzy
 msgid "Delivery note"
 msgid_plural "Delivery notes"
-msgstr[0] "Not"
-msgstr[1] "Not"
+msgstr[0] "Nota di consegna"
+msgstr[1] "Note di consegna"
 
 #: ar_contacts.php:664
-#, fuzzy
 msgid "There isn't any delivery note with this number"
-msgstr "Non c'è nessuna promozione con questo nome"
+msgstr "Non c'è una nota di consegna con questo numero"
 
 #: ar_contacts.php:672
-#, fuzzy
 msgid "delivery notes with number like"
-msgstr "Nota di consegna"
+msgstr "note di consegna come"
 
 #: ar_contacts.php:887 ar_contacts.php:961 class.Invoice.php:2410
 #: invoice.pdf.php:224 invoice.pdf.php:227
-#, fuzzy
 msgid "Invoice"
 msgid_plural "Invoice"
 msgstr[0] "Fattura"
-msgstr[1] "Fattura"
+msgstr[1] "Fatture"
 
 #: ar_contacts.php:899
-#, fuzzy
 msgid "There isn't any invoice with this number"
-msgstr "Non c'è nessuna promozione con questo nome"
+msgstr "Non ci sono fatture con questo nome"
 
 #: ar_contacts.php:907
-#, fuzzy
 msgid "invoices with number like"
-msgstr "Fattura"
+msgstr "fatture con numero"
 
 #: ar_contacts.php:953
-#, fuzzy
 msgid "Paid"
-msgstr "Non pagato"
+msgstr "Pagato"
 
 #: ar_contacts.php:955 class.Invoice.php:1789
 msgid "Partially Paid"
 msgstr "Parzialmente pagato"
 
 #: ar_contacts.php:958
-#, fuzzy
 msgid "No Paid"
 msgstr "Non pagato"
 
@@ -810,9 +802,8 @@ msgid "Customer"
 msgstr "Cliente"
 
 #: ar_edit_payments.php:319
-#, fuzzy
 msgid "Cancelled by customer"
-msgstr "Modifica Clienti"
+msgstr "Cancellato dal cliente"
 
 #: ar_orders.php:146
 msgid "order"
@@ -1003,9 +994,8 @@ msgid "Account Added"
 msgstr "Cliente aggiunto"
 
 #: class.Account.php:90
-#, fuzzy
 msgid "Internal customers accounts"
-msgstr "Interno"
+msgstr "Cliente interno"
 
 #: class.Address.php:874
 msgid "Error no address data"
@@ -1563,14 +1553,12 @@ msgid "Customer contact set to"
 msgstr "Contatto cliente impostato a"
 
 #: class.Customer.php:2276
-#, fuzzy
 msgid "Contact associated with customer"
-msgstr "Indirizzo contatto"
+msgstr "Contatto associato a cliente"
 
 #: class.Customer.php:2277
-#, fuzzy
 msgid "associated with customer:"
-msgstr "Modifica Clienti"
+msgstr "associato con cliente:"
 
 #: class.Customer.php:2343
 msgid "Company name changed"
@@ -1796,12 +1784,10 @@ msgid "Shipping Destination"
 msgstr "Indirizzo di spedizione"
 
 #: class.DealComponent.php:448
-#, fuzzy
 msgid "Finished"
 msgstr "Finito"
 
 #: class.DealComponent.php:451
-#, fuzzy
 msgid "Waiting"
 msgstr "In attesa"
 
@@ -2457,9 +2443,8 @@ msgstr[0] "Rimborso per ordine"
 msgstr[1] "Rimborso per ordini"
 
 #: class.Order.php:213 class.Order.php:216
-#, fuzzy
 msgid "Waiting for payment"
-msgstr "Metodo di pagamento"
+msgstr "In attesa di pagamento"
 
 #: class.Order.php:401 class.Order.php:1627 class.Order.php:2698
 #: class.Order.php:2701
@@ -2483,9 +2468,8 @@ msgid "Order can not be cancelled, because has already been dispatched"
 msgstr "L'ordine non può essere cancellato perchè già spedito"
 
 #: class.Order.php:651
-#, fuzzy
 msgid "Order cancelled"
-msgstr "Modifica Ordine"
+msgstr "Ordine cancellatoModifica Ordine"
 
 #: class.Order.php:715
 msgid "Order is not suspended"
@@ -2522,34 +2506,28 @@ msgid "Shipping"
 msgstr "Spedizione"
 
 #: class.Order.php:5528
-#, fuzzy
 msgid "Outside the scope of VAT"
-msgstr "VAT"
+msgstr "Non necessita VAT"
 
 #: class.Order.php:5531
-#, fuzzy
 msgid "VAT 17.5%"
-msgstr "VAT"
+msgstr "IVA 17.5%"
 
 #: class.Order.php:5534
-#, fuzzy
 msgid "VAT 20%"
-msgstr "VAT"
+msgstr "IVA 20%"
 
 #: class.Order.php:5537
-#, fuzzy
 msgid "VAT 15%"
-msgstr "VAT"
+msgstr "IVA 15%"
 
 #: class.Order.php:5540
-#, fuzzy
 msgid "No Tax"
-msgstr "Modif. Tax"
+msgstr "Nessuna tassa"
 
 #: class.Order.php:5543
-#, fuzzy
 msgid "Exempt from VAT"
-msgstr "VAT"
+msgstr "Esente da IVA"
 
 #: class.Order.php:5594
 msgid "Valid tax number"
@@ -2557,12 +2535,11 @@ msgstr "VAT valida"
 
 #: class.Order.php:5610
 msgid "You are exempt from VAT with a valid tax number"
-msgstr ""
+msgstr "La vostra partita IVA è valida, l'imposta verrà rimossa"
 
 #: class.Order.php:5610
-#, fuzzy
 msgid "Set up tax number"
-msgstr "Modifica numero VAT"
+msgstr "Inserisci IVA"
 
 #: class.Order.php:5626 smarty.php:35
 msgid "Invalid tax number"
@@ -2585,9 +2562,8 @@ msgid "Reference"
 msgstr "Referenza"
 
 #: class.Order.php:5878
-#, fuzzy
 msgid "Waiting payment"
-msgstr "Metodo di pagamento"
+msgstr "In attesa di pagamento"
 
 #: class.Page.php:851
 msgid "Header updated"
@@ -2607,9 +2583,8 @@ msgid "Invalid Code"
 msgstr "Codice non valido"
 
 #: class.Page.php:997
-#, fuzzy
 msgid "Code already used on this website"
-msgstr "Il codice è già in uso sul sito"
+msgstr "Il codice è già in usato sul sito"
 
 #: class.Page.php:1180
 msgid "Manual"
@@ -2624,9 +2599,8 @@ msgid "Semantic"
 msgstr "Semantica"
 
 #: class.Page.php:1192
-#, fuzzy
 msgid "New"
-msgstr "Nuova Password"
+msgstr "Nuova"
 
 #: class.Page.php:1622 class.PageDeleted.php:119
 msgid "Front Page Store"
@@ -2877,9 +2851,8 @@ msgid "is in process"
 msgstr "è in preparazione"
 
 #: class.Payment.php:212
-#, fuzzy
 msgid "has been completed sucessfully"
-msgstr "La sua password è stata cambiata"
+msgstr "è stata cambiata con successo"
 
 #: class.Payment.php:226
 msgid "has been cancelled"
@@ -2890,24 +2863,20 @@ msgid "has had an error"
 msgstr "c'è stato un'errore"
 
 #: class.Payment.php:258
-#, fuzzy
 msgid "payment in process"
-msgstr "Metodo di pagamento"
+msgstr "pagamento in corso"
 
 #: class.Payment.php:267
-#, fuzzy
 msgid "payment completed sucessfully"
-msgstr "Metodo di pagamento"
+msgstr "pagamento completato con successo"
 
 #: class.Payment.php:278
-#, fuzzy
 msgid "payment in cancelled"
-msgstr "Metodo di pagamento"
+msgstr "pagamento cancellato"
 
 #: class.Payment.php:288
-#, fuzzy
 msgid "payment has had an error"
-msgstr "c'è stato un'errore"
+msgstr "il pagamento ha un'errore"
 
 #: class.Payment_Account.php:222
 msgid "Beneficiary"
@@ -3135,9 +3104,8 @@ msgid "Error: Product Description could not be updated"
 msgstr "Errore: Descrizione prodotto non aggiornabile"
 
 #: class.Product.php:3556 class.Product.php:3557
-#, fuzzy
 msgid "Product removed from category"
-msgstr "Rimozione prodotto dalla categoria"
+msgstr "Prodotto rimosso dalla categoria"
 
 #: class.Product.php:3604
 msgid "Product already in Category"
@@ -3973,9 +3941,8 @@ msgid "your order will be cancelled"
 msgstr "l'ordine sarà cancellato"
 
 #: smarty.php:107
-#, fuzzy
 msgid "Special instructions"
-msgstr "Invio istruzioni"
+msgstr "Istruzioni speciali"
 
 #: smarty.php:110
 msgid "Saving"
@@ -4183,11 +4150,11 @@ msgstr "Irelanda"
 
 #: smarty.php:356 smarty.php:659
 msgid "Guernsey"
-msgstr ""
+msgstr "Guernsey"
 
 #: smarty.php:359 smarty.php:719
 msgid "Jersey"
-msgstr ""
+msgstr "Jersey"
 
 #: smarty.php:362 smarty.php:629 smarty.php:2150
 msgid "Germany"
@@ -5752,12 +5719,15 @@ msgid ""
 "Your payment is pending or stalled, if payment completes you will be "
 "redirected automatically"
 msgstr ""
+"Il vostro pagamento è in attesa, quando verrà completato verrete rediretti "
+"automaticamente"
 
 #: smarty.php:2366
 msgid ""
 "Alternatively click cancel to restart your payment - you will not be charged "
 "anything"
 msgstr ""
+"In alternativa fate click qui per riprovare, e l'operazione verrà interrotta."
 
 #: smarty.php:2378
 msgid "Set as cancelled"

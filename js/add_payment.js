@@ -13,7 +13,7 @@ function add_payment(parent, parent_key, max_amount) {
 function add_payment_show_other_amount_field(){
 
 Dom.setStyle(['amount_paid_total',,'show_other_amount_field'],'display','none')
-Dom.setStyle(['amount_paid','pay_all'],'display','')
+Dom.setStyle(['add_payment_amount','pay_all'],'display','')
 }
 
 function add_payment_to_order(order_key, max_amount) {

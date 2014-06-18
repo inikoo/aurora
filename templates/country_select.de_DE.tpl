@@ -1,3 +1,4 @@
+<option value="XX">---</option>
 <option value="EG">Ägypten</option>
 <option value="GQ">Äquatorialguinea</option>
 <option value="ET">Äthiopien</option>
