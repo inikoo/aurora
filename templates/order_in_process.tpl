@@ -149,11 +149,11 @@
 				<table border="0" class="info_block">
 						<tr>
 						<td>{t}Created{/t}:</td>
-						<td class="aright">{$order->get('Date')}</td>
+						<td class="aright">{$order->get('Created Date')}</td>
 					</tr>
 					<tr>
-						<td>{t}Last updated{/t}:</td>
-						<td class="aright">{$order->get('Last Updated Date')}</td>
+						<td>{t}Submited{/t}:</td>
+						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
 					</tr>
 					
 					
