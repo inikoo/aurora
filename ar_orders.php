@@ -3871,8 +3871,8 @@ function number_store_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InProcessbyCustomer']=$row['num'];
 	}
-
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Picking & Packing','Ready to Ship','Packed','Packing') ",$where);
+//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InWarehouse']=$row['num'];
