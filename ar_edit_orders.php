@@ -1954,6 +1954,8 @@ function list_store_pending_orders() {
 	$where.=sprintf(' and `Order Store Key`=%d  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") ',$parent_key);
 
 
+print_r($elements);
+exit;
 
 
 
@@ -1985,8 +1987,6 @@ function list_store_pending_orders() {
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}
 
-print_( $elements);
-exit;
 
 
 	$wheref='';
