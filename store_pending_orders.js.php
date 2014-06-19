@@ -244,7 +244,7 @@ function get_store_pending_orders_numbers(from, to) {
    
    
         var ar_file = 'ar_orders.php';
-        var request = 'tipo=number_store_pending_orders_in_interval&parent=store&parent_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
+        var request = 'tipo=number_pending_orders_in_interval&parent=store&parent_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
        // alert(request)
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
