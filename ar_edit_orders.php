@@ -1985,7 +1985,7 @@ function list_store_pending_orders() {
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}
 
-print $where;
+print_( $elements);
 exit;
 
 
