@@ -2002,7 +2002,7 @@ function list_store_pending_orders() {
 
 
 		$sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-	 print $sql ;
+	// print $sql ;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
