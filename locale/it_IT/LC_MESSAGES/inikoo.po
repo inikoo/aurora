@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-19 09:21-0000\n"
-"PO-Revision-Date: 2014-06-19 09:21-0000\n"
-"Last-Translator: Raul <raul@inikoo.com>\n"
+"PO-Revision-Date: 2014-06-19 13:38-0000\n"
+"Last-Translator: .\n"
 "Language-Team: Inikoo\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
@@ -1945,7 +1945,6 @@ msgstr "promozioni con descrizione come"
 #: smarty.php:17120 smarty.php:17399 smarty.php:17570 smarty.php:17669
 #: smarty.php:17873 smarty.php:18299 smarty.php:18359 smarty.php:18503
 #: smarty.php:18593
-#, fuzzy
 msgid "Net"
 msgstr "Netto"
 
@@ -1956,9 +1955,8 @@ msgstr "Netto"
 #: smarty.php:17708 smarty.php:18053 smarty.php:18074 smarty.php:20645
 #: smarty.php:20708 smarty.php:20813 smarty.php:22325 smarty.php:22328
 #: smarty.php:26723 smarty.php:27440
-#, fuzzy
 msgid "Tax"
-msgstr "Numero IVA"
+msgstr "IVA"
 
 #: ar_contacts.php:489 ar_orders.php:607 report_packers.js.php:42
 #: report_pickers.js.php:41 smarty.php:7214 smarty.php:8693 smarty.php:13316
@@ -1988,8 +1986,8 @@ msgstr "note di consegna come"
 #: invoice.php:30 invoice.php:33 smarty.php:17237
 msgid "Invoice"
 msgid_plural "Invoice"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fattura"
+msgstr[1] "Fatture"
 
 #: ar_contacts.php:899
 #, fuzzy
@@ -4189,9 +4187,8 @@ msgstr "Records importati"
 #: warehouse.js.php:84 warehouse.php:209 warehouse_area.js.php:28
 #: warehouse_orders.php:132 warehouses.js.php:14 world.js.php:30
 #: world.js.php:106 world.js.php:166 wregion.js.php:26
-#, fuzzy
 msgid "Code"
-msgstr "Cod."
+msgstr "Codice"
 
 #: ar_edit_sites.php:2384 ar_edit_sites.php:2823 ar_import.php:2004
 #: ar_import.php:2017 ar_import.php:2025 associate_product.js.php:88
@@ -4382,9 +4379,8 @@ msgstr "Nome"
 #: supplier_dn_received.js.php:205 supplier_dn_set_damages.js.php:218
 #: supplier_invoice.js.php:756 suppliers.js.php:142 upload_assets.js.php:86
 #: upload_assets.js.php:106 widgets.php:72
-#, fuzzy
 msgid "Description"
-msgstr "Descriz."
+msgstr "Descrizione"
 
 #: ar_edit_sites.php:2390 ar_edit_sites.php:2829 ar_import.php:2006
 #: class.Page.php:2099 class.Page.php:3774 common_store_functions.php:144
@@ -4740,8 +4736,8 @@ msgstr[1] ""
 #: ar_reports.php:2580
 msgid "invoice"
 msgid_plural "invoices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "fattura"
+msgstr[1] "fatture"
 
 #: ar_history.php:82
 msgid "Can not get history details"
@@ -5692,9 +5688,8 @@ msgstr ""
 #: smarty.php:23810 smarty.php:24395 smarty.php:24839 store.js.php:889
 #: supplier.js.php:509 supplier_category.js.php:432
 #: supplier_product.js.php:380
-#, fuzzy
 msgid "Invoices"
-msgstr "Fattura"
+msgstr "Fatture"
 
 #: ar_plot.php:679 ar_plot.php:1190 ar_plot.php:1259 class.TimeSeries.php:2786
 #, fuzzy
@@ -5841,7 +5836,7 @@ msgstr "Vendite"
 #: ar_plot.php:1467 smarty.php:22313 smarty.php:22316
 #, fuzzy
 msgid "Net Sales"
-msgstr "Netto"
+msgstr "Vendite Nette"
 
 #: ar_plot.php:1370 ar_plot.php:1371 ar_plot.php:1376 ar_plot.php:1464
 #: ar_plot.php:1467
@@ -8594,8 +8589,8 @@ msgstr "Pagato"
 #: class.Invoice.php:2420
 msgid "Invoice for order"
 msgid_plural "Invoice for orders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fattura per ordine"
+msgstr[1] "Fattura per ordini"
 
 #: class.Invoice.php:2422
 msgid "Refund for order"
@@ -8817,9 +8812,8 @@ msgid "TBC"
 msgstr "Da confermare"
 
 #: class.Order.php:5532
-#, fuzzy
 msgid "Outside the scope of VAT"
-msgstr "Non necessita VAT"
+msgstr "IVA rimossa"
 
 #: class.Order.php:5535
 #, fuzzy
@@ -8837,9 +8831,8 @@ msgid "VAT 15%"
 msgstr "IVA 15%"
 
 #: class.Order.php:5544
-#, fuzzy
 msgid "No Tax"
-msgstr "Numero IVA"
+msgstr "Nessua tassa"
 
 #: class.Order.php:5547
 #, fuzzy
@@ -8852,7 +8845,6 @@ msgid "Valid tax number"
 msgstr "VAT valida"
 
 #: class.Order.php:5614
-#, fuzzy
 msgid "You are exempt from VAT with a valid tax number"
 msgstr "La vostra partita IVA è valida, l'imposta verrà rimossa"
 
@@ -8968,7 +8960,6 @@ msgstr "Cerca"
 
 #: class.Page.php:1628 class.PageDeleted.php:125 smarty.php:278 smarty.php:356
 #: smarty.php:7661 smarty.php:9143 smarty.php:16928
-#, fuzzy
 msgid "Product Description"
 msgstr "Descrizione prodotto"
 
@@ -9770,22 +9761,18 @@ msgid "Error: Product Special Characteristic could not be updated"
 msgstr "Errore: le caratteristiche speciali non posssono essere cambiate"
 
 #: class.Product.php:3489
-#, fuzzy
 msgid "Product Description changed"
 msgstr "Descrizione prodotto cambiata"
 
 #: class.Product.php:3494 class.Product.php:3495
-#, fuzzy
 msgid "Product Description Created"
 msgstr "Descrizione prodotto creata"
 
 #: class.Product.php:3497 class.Product.php:3498
-#, fuzzy
 msgid "Product Description Changed"
 msgstr "Descrizione prodotto cambiata"
 
 #: class.Product.php:3520
-#, fuzzy
 msgid "Error: Product Description could not be updated"
 msgstr "Errore: Descrizione prodotto non aggiornabile"
 
@@ -11601,7 +11588,6 @@ msgid "Customer deleted"
 msgstr "Cliente cancellato"
 
 #: customer_split_view.php:276 customer_split_view.php:282 invoice.pdf.php:335
-#, fuzzy
 msgid "Customer ID"
 msgstr "ID Cliente"
 
@@ -12336,9 +12322,8 @@ msgid "Billing"
 msgstr "Pagamento"
 
 #: edit_campaign.js.php:59 edit_deal.js.php:59
-#, fuzzy
 msgid "Invalid Offer Description"
-msgstr "Descriz."
+msgstr "Descrizione offerta non valida"
 
 #: edit_campaign.js.php:60 edit_deal.js.php:60
 #, fuzzy
@@ -12385,7 +12370,6 @@ msgstr "Errore: Chiave Negozio errata"
 #: supplier_delivery.js.php:759 supplier_invoice.js.php:759
 #: supplier_product.js.php:58 supplier_product.js.php:462
 #: warehouse_stock_history.js.php:20
-#, fuzzy
 msgid "Qty"
 msgstr "Quantità"
 
@@ -12400,9 +12384,8 @@ msgid "Invalid Area Code"
 msgstr "Telefono non valido"
 
 #: edit_company_area.js.php:338
-#, fuzzy
 msgid "Invalid Area Description"
-msgstr "Descriz."
+msgstr "Descrizione area non valida"
 
 #: edit_company_area.php:88 smarty.php:5033
 #, fuzzy
@@ -12984,9 +12967,8 @@ msgstr "Non ci sono parti dcon descrizione come"
 
 #: edit_part.js.php:1115 edit_product.js.php:1551
 #: edit_supplier_product.js.php:1200
-#, fuzzy
 msgid "Invalid Tariff Code"
-msgstr "Codice tariffario"
+msgstr "Codice tariffario non valido"
 
 #: edit_part.js.php:1131
 #, fuzzy
@@ -14150,7 +14132,6 @@ msgid "Monthy (end of Month)"
 msgstr "Mese a data"
 
 #: invoice.js.php:29 invoice.pdf.php:387
-#, fuzzy
 msgid "Gross"
 msgstr "Lordo"
 
@@ -14162,7 +14143,6 @@ msgstr "Lordo"
 #: smarty.php:17486 smarty.php:17555 smarty.php:17654 smarty.php:17858
 #: smarty.php:17900 smarty.php:17936 smarty.php:18284 smarty.php:18344
 #: smarty.php:18488 smarty.php:18578 smarty.php:26810 smarty.php:27527
-#, fuzzy
 msgid "Discounts"
 msgstr "Sconti"
 
@@ -14201,34 +14181,29 @@ msgstr "Modif. Tax"
 
 #: invoice.pdf.php:340 smarty.php:15713 smarty.php:26741 smarty.php:26765
 #: smarty.php:27458 smarty.php:27482
-#, fuzzy
 msgid "Invoice Date"
-msgstr "Data fatt."
+msgstr "Data fattura"
 
 #: invoice.pdf.php:344
-#, fuzzy
 msgid "Payment State"
 msgstr "Stato pagamento"
 
 #: invoice.pdf.php:348 smarty.php:13709 smarty.php:17102 smarty.php:17378
 #: smarty.php:17552 smarty.php:17651 smarty.php:17855 smarty.php:18281
 #: smarty.php:18341 smarty.php:18485 smarty.php:18575
-#, fuzzy
 msgid "Items Gross"
-msgstr "Articoli lordi"
+msgstr "Costo Articoli (Lordi)"
 
 #: invoice.pdf.php:351 smarty.php:13715 smarty.php:17108 smarty.php:17384
 #: smarty.php:17558 smarty.php:17657 smarty.php:17861 smarty.php:18287
 #: smarty.php:18347 smarty.php:18491 smarty.php:18581
-#, fuzzy
 msgid "Items Net"
-msgstr "Articoli Netti"
+msgstr "Costo Articoli (Netto)"
 
 #: invoice.pdf.php:356 report_customers.js.php:52 report_sales_week.js.php:27
 #: smarty.php:13730 smarty.php:16358
-#, fuzzy
 msgid "Total Net"
-msgstr "Totale netto"
+msgstr "Costo Totale (Netto)"
 
 #: invoice.php:18
 #, fuzzy
@@ -15647,9 +15622,8 @@ msgstr ""
 #: porder_cancelled.js.php:22 porder_in_process.js.php:350
 #: porder_submitted.js.php:71 supplier_delivery.js.php:768
 #: supplier_dn_in_process.js.php:261 supplier_invoice.js.php:768
-#, fuzzy
 msgid "Net Cost"
-msgstr "Netto"
+msgstr "Costo Netto"
 
 #: porder_in_process.js.php:342 supplier_delivery.js.php:760
 #: supplier_dn_in_process.js.php:247 supplier_invoice.js.php:760
@@ -15673,9 +15647,8 @@ msgstr "Quantità"
 
 #: porder_in_process.js.php:351 supplier_delivery.js.php:769
 #: supplier_dn_in_process.js.php:262 supplier_invoice.js.php:769
-#, fuzzy
 msgid "Qty [U]"
-msgstr "Quantità"
+msgstr "Quantità [U]"
 
 #: porder_in_process.js.php:352 supplier_delivery.js.php:770
 #: supplier_dn_in_process.js.php:263 supplier_invoice.js.php:770
@@ -15808,7 +15781,7 @@ msgstr ""
 
 #: report_intrastat.php:55
 msgid "Tariff Code  <i>x</i>"
-msgstr ""
+msgstr "Codice Tariffario <i>x</i>"
 
 #: report_issue.php:57
 msgid "Issues"
