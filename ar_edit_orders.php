@@ -1964,7 +1964,7 @@ function list_store_pending_orders() {
 			$elements_count++;
 
 			if ($_key=='InWarehouse') {
-				$_key="'Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing','xx'";
+				$_key="'Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer'";
 			}if ($_key=='InProcess') {
@@ -1985,7 +1985,8 @@ function list_store_pending_orders() {
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}
 
-
+print $where;
+exit;
 
 
 	$wheref='';
