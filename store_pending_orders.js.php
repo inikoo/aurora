@@ -36,7 +36,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 
 request="ar_edit_orders.php?tipo=store_pending_orders&tableid=1&parent=store&parent_key="+Dom.get('store_key').value
-//alert(request)
+alert(request)
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
