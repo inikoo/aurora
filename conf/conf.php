@@ -131,7 +131,7 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array('PackedDone'=>1,'InWarehouse'=>1,'SubmittedbyCustomer'=>1,'InProcess'=>1,'InProcessbyCustomer'=>1,'ReadytoPick'=>1),
+			'elements'=>array('PackedDone'=>1,'InWarehouse'=>1,'SubmittedbyCustomer'=>1,'InProcess'=>1,'InProcessbyCustomer'=>1),
 
 		),
 		'correlations'=>array(

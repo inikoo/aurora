@@ -1951,11 +1951,8 @@ function list_store_pending_orders() {
 
 	//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
-	$where.=sprintf(' and `Order Store Key`=%d  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") ',$parent_key);
+	$where.=sprintf(' and `Order Store Key`=%d  ',$parent_key);
 
-
-print_r($elements);
-exit;
 
 
 
@@ -1985,6 +1982,9 @@ exit;
 		$where.=' and false' ;
 	} elseif ($elements_count<5) {
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
+	}else{
+	 $where.=' and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","" )';
+	
 	}
 
 
