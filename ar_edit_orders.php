@@ -2087,7 +2087,7 @@ function list_store_pending_orders() {
 
 
 	$sql="select *  from `Order Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-	 print $sql;
+	// print $sql;
 	global $myconf;
 
 	$data=array();
