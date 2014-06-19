@@ -1569,22 +1569,26 @@ function update_xhtml_state() {
 			return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
 			break;
 		case('Date'):
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Date'].' +0:00'));
+			case('Last Updated Date'):
+			case('Cancelled Date'):
+						case('Created Date'):
+
+						case('Suspended Date'):
+						case('Checkout Submitted Payment Date'):
+						case('Checkout Completed Payment Date'):
+						case('Submitted by Customer Date'):
+						case('Dispatched Date'):
+						case('Post Transactions Dispatched Date'):
+ 
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order '.$key].' +0:00'));
 			break;
-		case('Last Updated Date'):
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Last Updated Date'].' +0:00'));
-			break;
+		
 		case('Interval Last Updated Date'):
 			include_once 'common_natural_language.php';
 			return seconds_to_string(gmdate('U')-gmdate('U',strtotime($this->data['Order Last Updated Date'].' +0:00')));
 			break;
 
-		case('Cancel Date'):
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Cancelled Date'].' +0:00'));
-			break;
-		case('Suspended Date'):
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order Suspended Date'].' +0:00'));
-			break;
+		
 
 		case ('Order Main Ship To Key') :
 			$sql = sprintf( "select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1", $this->id );

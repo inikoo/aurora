@@ -131,10 +131,21 @@
 					<span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
-					<tr>
+					<tr style="border-bottom:1px solid #777">
 						<td class="aright">{t}Total{/t}</td>
 						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 					</tr>
+					
+						<tr style="color:#777">
+						<td class="aright">{t}Paid{/t}</td>
+						<td id="order_total" width="100" class="aright" >{$order->get('Payments Amount')}</td>
+					</tr>
+						<tr style="color:#777">
+						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div><img title="{$order->get('Order Current XHTML Payment State')}" src="art/icons/information.png" style="height:12.9px">  {t}To Pay{/t}</td>
+						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+					</tr>
+				
+					
 				</table>
 				<div class="buttons small" style="display:none;{if $has_credit}display:none;{/if}clear:both;margin:0px;padding-top:10px">
 					<button id="add_credit" style="margin:0px;">{t}Add debit/credit{/t}</button> 
@@ -153,7 +164,7 @@
 					</tr>
 					<tr>
 						<td>{t}Submited{/t}:</td>
-						<td class="aright">{$order->get('Submitted by Customer')}</td>
+						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
 					</tr>
 					
 					
@@ -177,16 +188,21 @@
 		</div>
 	</div>
 	
-		<table id="pending_payment_confirmations">
+	
+	<div style="padding: 0px 20px;font-size:90%;border:1px solid #ccc;margin-bottom:10px">
+		<table class="edit" id="pending_payment_confirmations" style="padding-top:0px;width:100%;{if $order->get_number_payments()==0}display:none{/if}">
 			<tr class="title">
-			<td>{t}Payment ID{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Date{/t}</td><td></td><td></td>
+			<td>{t}Payment ID{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Date{/t}</td><td></td><td>{t}Status{/t}</td><td></td>
 			</tr>
-			{foreach from=$order->get_payment_objects('Pending',true,true) item=payment}
+			{foreach from=$order->get_payment_objects('',true,true) item=payment}
 			<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
 			<td >{$payment->get('Payment Key')}</td>
+
 			<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
 			<td id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</td>
 			<td id="payment_date_interval_{$payment->get('Payment Key')}">{$payment->get_formated_time_lapse('Created Date')}</td>
+									<td>{$payment->get('Payment Transaction Status')}</td>
+
 			<td><div class="buttons small">
 			<button class="negative" onClick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button>
 			<button class="positive" onClick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button>
@@ -198,7 +214,7 @@
 			{/foreach}
 			</table>
 	
-	
+	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Products')}</span>)</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>

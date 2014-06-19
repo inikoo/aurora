@@ -394,6 +394,729 @@ gettext("here");
 /* ../templates//contacts_navigation.tpl */
 gettext("Search");
 
+/* ../templates//country_select.it_IT.tpl */
+gettext("Afghanistan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Albania");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Algeria");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("American Samoa");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Andorra");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Angola");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Anguilla");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Antarctica");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Antigua and Barbuda");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Argentina");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Armenia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Aruba");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Australia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Austria");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Azerbaidjan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bahamas");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bahrain");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bangladesh");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Barbados");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Belarus");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Belgium");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Belize");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Benin");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bermuda");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bhutan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bolivia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bosnia-Herzegovina");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Botswana");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bouvet Island");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Brazil");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("British Indian Ocean Territory");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Brunei Darussalam");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Bulgaria");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Burkina Faso");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Burundi");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cambodia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cameroon");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Canada");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cape Verde");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cayman Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Central African Republic");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Chad");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Chile");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("China");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Christmas Island");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cocos (Keeling) Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Colombia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Comoros");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Congo");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cook Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Costa Rica");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Croatia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cuba");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Cyprus");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Czech Republic");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Denmark");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Djibouti");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Dominica");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Dominican Republic");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("East Timor");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Ecuador");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Egypt");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("El Salvador");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Equatorial Guinea");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Eritrea");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Estonia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Ethiopia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Falkland Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Faroe Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Fiji");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Finland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("France");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("French Guyana");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("French Southern Territories");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Gabon");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Gambia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Georgia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Germany");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Ghana");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Gibraltar");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Great Britain");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Greece");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Greenland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Grenada");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guadeloupe (French)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guam (USA)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guatemala");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guernsey");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guinea");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guinea Bissau");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Guyana");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Haiti");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Heard and McDonald Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Honduras");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Hong Kong");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Hungary");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Iceland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("India");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Indonesia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Iran");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Iraq");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Ireland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Israel");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Italy");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Ivory Coast (Cote D&#39;Ivoire)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Jamaica");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Japan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Jersey");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Jordan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Kazakhstan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Kenya");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Kiribati");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Kuwait");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Kyrgyzstan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Laos");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Latvia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Lebanon");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Lesotho");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Liberia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Libya");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Liechtenstein");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Lithuania");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Luxembourg");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Macau");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Macedonia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Madagascar");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Malawi");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Malaysia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Maldives");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mali");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Malta");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Marshall Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Martinique (French)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mauritania");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mauritius");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mayotte");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mexico");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Micronesia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Moldavia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Monaco");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mongolia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Montserrat");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Morocco");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Mozambique");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Myanmar");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Namibia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Nauru");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Nepal");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Netherlands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Netherlands Antilles");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Neutral Zone");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("New Caledonia (French)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("New Zealand");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Nicaragua");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Niger");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Nigeria");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Niue");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Norfolk Island");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("North Korea");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Northern Mariana Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Norway");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Oman");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Pakistan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Palau");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Panama");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Papua New Guinea");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Paraguay");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Peru");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Philippines");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Pitcairn Island");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Poland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Polynesia (French)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Portugal");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Puerto Rico");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Qatar");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Reunion (French)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Romania");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Russian Federation");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Rwanda");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("S. Georgia & S. Sandwich I.");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Saint Helena");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Saint Kitts & Nevis Anguilla");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Saint Lucia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("St Pierre and Miquelon");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("St Tome & Principe");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("St Vincent & Grenadines");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Samoa");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("San Marino");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Saudi Arabia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Senegal");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Seychelles");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Sierra Leone");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Singapore");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Slovak Republic");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Slovenia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Solomon Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Somalia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("South Africa");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("South Korea");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Spain");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Sri Lanka");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Sudan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Suriname");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Svalbard and Jan Mayen I.");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Swaziland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Sweden");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Switzerland");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Syria");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Tadjikistan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Taiwan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Tanzania");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Thailand");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Togo");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Tokelau");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Tonga");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Trinidad and Tobago");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Tunisia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Turkey");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Turkmenistan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Turks and Caicos Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Tuvalu");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Uganda");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Ukraine");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("United Arab Emirates");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("United Kingdom");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("United States");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Uruguay");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("USA Minor Outlying Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Uzbekistan");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Vanuatu");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Vatican City State");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Venezuela");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Vietnam");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Virgin Islands (British)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Virgin Islands (USA)");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Wallis and Futuna Islands");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Western Sahara");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Yemen");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Zaire");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Zambia");
+
+/* ../templates//country_select.it_IT.tpl */
+gettext("Zimbabwe");
+
 /* ../templates//country_select.tpl */
 gettext("Afghanistan");
 
