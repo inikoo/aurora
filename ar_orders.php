@@ -77,14 +77,14 @@ case('number_warehouse_orders_in_interval'):
 		));
 	number_warehouse_orders_in_interval($data);
 	break;
-case('number_store_pending_orders_in_interval'):
+case('number_pending_orders_in_interval'):
 	$data=prepare_values($_REQUEST,array(
-			'parent_key'=>array('type'=>'key'),
+			'parent_key'=>array('type'=>'number'),
 			'parent'=>array('type'=>'string'),
 			'to'=>array('type'=>'string'),
 			'from'=>array('type'=>'string')
 		));
-	number_store_pending_orders_in_interval($data);
+	number_pending_orders_in_interval($data);
 	break;
 case('orders_lists'):
 	$data=prepare_values($_REQUEST,array(
@@ -3839,9 +3839,12 @@ function number_orders_in_interval($data) {
 }
 
 
-function number_store_pending_orders_in_interval($data) {
+function number_pending_orders_in_interval($data) {
 
 	switch ($data['parent']) {
+	case('stores'):
+		$where=sprintf(" where  true ");
+		break;
 	case('store'):
 		$where=sprintf(" where  `Order Store Key`=%d ",$data['parent_key']);
 		break;
@@ -3849,12 +3852,12 @@ function number_store_pending_orders_in_interval($data) {
 		$where=" where false";
 	}
 
-	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0,'ReadytoPick'=>0);
+	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0);
 	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` %s  group by `Order Current Dispatch State` ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
-		if ( in_array($row['Order Current Dispatch State'],array('Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ) {
+		if ( in_array($row['Order Current Dispatch State'],array('Ready to Pick','Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ) {
 			continue;
 		}
 

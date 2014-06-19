@@ -558,14 +558,7 @@ case('assign_packer'):
 case('start_picking'):
 case('pick_it'):
 
-	// if ($_REQUEST['staff_key']=='') {
-	//  $response=array(
-	//   'state'=>400,
-	//   'msg'=>'Required fields missing'
-	//  );
-	//  echo json_encode($response);
-	//  exit;
-	// }
+
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
@@ -593,8 +586,8 @@ case('pack_it'):
 	start_packing($data);
 	break;
 
-case('store_pending_orders'):
-	list_store_pending_orders();
+case('pending_orders'):
+	list_pending_orders();
 	break;
 case('warehouse_orders'):
 	list_warehouse_orders();
@@ -1868,18 +1861,39 @@ function post_transactions_to_process() {
 
 
 
-function list_store_pending_orders() {
+function list_pending_orders() {
 
 	include_once 'order_common_functions.php';
 
 	global $user;
 
-	$conf=$_SESSION['state']['customers']['pending_orders'];
-
-	if (isset( $_REQUEST['parent_key']))
-		$parent_key=$_REQUEST['parent_key'];
+	if(isset($_REQUEST['parent']))
+	$parent=$_REQUEST['parent'];
 	else
-		return;
+	exit('no parent');
+	
+		if(isset($_REQUEST['parent_key']))
+	$parent_key=$_REQUEST['parent_key'];
+	else
+	exit('no parent key');
+	
+
+	switch($parent){
+	case 'store':
+	$conf=$_SESSION['state']['customers']['pending_orders'];
+	$conf_field='customers';
+	break;
+	case 'stores':
+		$conf=$_SESSION['state']['stores']['pending_orders'];
+		$conf_field='stores';
+	break;
+	default:
+	exit();
+	}
+
+
+	
+
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -1940,20 +1954,27 @@ function list_store_pending_orders() {
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	$_SESSION['state']['customers']['pending_orders']['order']=$order;
-	$_SESSION['state']['customers']['pending_orders']['order_dir']=$order_direction;
-	$_SESSION['state']['customers']['pending_orders']['nr']=$number_results;
-	$_SESSION['state']['customers']['pending_orders']['sf']=$start_from;
-	$_SESSION['state']['customers']['pending_orders']['where']=$where;
-	$_SESSION['state']['customers']['pending_orders']['f_field']=$f_field;
-	$_SESSION['state']['customers']['pending_orders']['f_value']=$f_value;
-	$_SESSION['state']['customers']['pending_orders']['elements']=$elements;
+	$_SESSION['state'][$conf_field]['pending_orders']['order']=$order;
+	$_SESSION['state'][$conf_field]['pending_orders']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_field]['pending_orders']['nr']=$number_results;
+	$_SESSION['state'][$conf_field]['pending_orders']['sf']=$start_from;
+	$_SESSION['state'][$conf_field]['pending_orders']['where']=$where;
+	$_SESSION['state'][$conf_field]['pending_orders']['f_field']=$f_field;
+	$_SESSION['state'][$conf_field]['pending_orders']['f_value']=$f_value;
+	$_SESSION['state'][$conf_field]['pending_orders']['elements']=$elements;
 
 	//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
-	$where.=sprintf(' and `Order Store Key`=%d  ',$parent_key);
 
-
+	switch($parent){
+	case 'store':
+		$where=sprintf(' where `Order Store Key`=%d  ',$parent_key);
+	break;
+	case 'stores':
+			$where=sprintf(' where  true ');
+	break;
+	
+	}
 
 
 	$_elements='';
@@ -2165,6 +2186,7 @@ function list_store_pending_orders() {
 
 
 		$public_id=sprintf("<a href='order.php?id=%d&referral=spo'>%s</a>",$row['Order Key'],$row['Order Public ID']);
+		$store=sprintf("<a href='store_pending_orders.php?id=%d'>%s</a>",$row['Order Store Key'],$row['Order Store Code']);
 
 
 		$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y %H:%M", strtotime($row['Order Date'])).'</span>';
@@ -2175,6 +2197,7 @@ function list_store_pending_orders() {
 			'public_id'=>$public_id,
 			'customer'=>$row['Order Customer Name'],
 			'date'=>$date,
+			'store'=>$store,
 			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
 			'operations'=>$operations,
 			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php

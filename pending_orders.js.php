@@ -18,8 +18,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
+	    				       {key:"store", label:"<?php echo _('Store')?>", width:40,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+
 				       {key:"public_id", label:"<?php echo _('Order ID')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"customer", label:"<?php echo _('Customer')?>", width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"customer", label:"<?php echo _('Customer')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
 				   	{key:"total_amount", label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
@@ -30,12 +32,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //{key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      
 				      
-				      {key:"operations", label:"<?php echo _('Actions')?>", width:270,hidden:false,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      {key:"operations", label:"<?php echo _('Actions')?>", width:260,hidden:false,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      // {key:"see_link", label:"",sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 				];
 
-request="ar_edit_orders.php?tipo=pending_orders&tableid=1&parent=store&parent_key="+Dom.get('store_key').value
+request="ar_edit_orders.php?tipo=pending_orders&tableid=1&parent=stores&parent_key="
 //alert(request)
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
@@ -55,7 +57,7 @@ request="ar_edit_orders.php?tipo=pending_orders&tableid=1&parent=store&parent_ke
 		},
 		
 		fields: [
-			 "id","public_id",
+			 "id","public_id","store",
 			 "weight","picks",
 			 "customer",
 			 "date","picker","packer","dispatch_state","payment_state","operations","see_link","total_amount"
@@ -233,7 +235,7 @@ function save_cancel(){
 }
 
 
-function get_store_pending_orders_numbers(from, to) {
+function get_pending_orders_numbers(from, to) {
 		
     Dom.get('elements_InProcessbyCustomer_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
      Dom.get('elements_InProcess_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
@@ -244,7 +246,7 @@ function get_store_pending_orders_numbers(from, to) {
    
    
         var ar_file = 'ar_orders.php';
-        var request = 'tipo=number_store_pending_orders_in_interval&parent=store&parent_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
+        var request = 'tipo=number_pending_orders_in_interval&parent=stores&parent_key=&from=' + from + '&to=' + to;
        // alert(request)
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
@@ -287,7 +289,7 @@ var elements_type='';
 
 function change_elements_click(el,elements_type) {
 
-     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_ReadytoPick', 'elements_InProcess', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
+     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_InProcess', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
 
 
     if (Dom.hasClass(el, 'selected')) {
@@ -330,7 +332,7 @@ function change_elements_click(el,elements_type) {
 
 function change_elements_dblclick(el,elements_type) {
 
-     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_ReadytoPick', 'elements_InProcess', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
+     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_InProcess', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
 
 
     
@@ -359,9 +361,9 @@ function change_elements_dblclick(el,elements_type) {
 
 function init() {
 
-get_store_pending_orders_numbers('','')
+get_pending_orders_numbers('','')
 
-  init_search('orders_store');
+  init_search('orders');
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 1);
@@ -379,7 +381,7 @@ get_store_pending_orders_numbers('','')
     });
     dialog_cancel_from_list.render();
    
-     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_ReadytoPick', 'elements_InProcess', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
+     ids = ['elements_PackedDone', 'elements_InWarehouse',  'elements_InProcess', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
      Event.addListener(ids, "click", change_elements);
     
 

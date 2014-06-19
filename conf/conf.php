@@ -3523,6 +3523,22 @@ $default_state=array(
 		'marketing_block_view'=>'stores',
 		'orders_view'=>'orders',
 		'stats_view'=>'sales',
+		
+		
+			'pending_orders'=>array(
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('PackedDone'=>1,'InWarehouse'=>1,'SubmittedbyCustomer'=>1,'InProcess'=>1,'InProcessbyCustomer'=>1),
+
+		),
+		
 		'stores'=>array(
 			'percentages'=>false,
 			'view'=>'general',
