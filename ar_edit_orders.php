@@ -4971,8 +4971,14 @@ function new_refund($data) {
 
 		$refund->pay_full_amount(array('Invoice Paid Date'=>gmdate('Y-m-d H:i:s'),'Payment Method'=>'Customer Account'));
 
-		$sql=sprintf("insert into `Invoice Payment Bridge` values (%d,%d,%.2f)  ON DUPLICATE KEY UPDATE `Anount`=%.2f ",
-		$payment->id,$refund->id,$total,$total);
+		$sql=sprintf("insert into `Invoice Payment Bridge` values (%d,%d,%d,%d,%.2f)  ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+		$refund->id,
+		$payment->id,
+		$payment_account->id,
+		$payment_account->data['Payment Service Provider Key'],
+	     $total,$total);
+print $sql;
+		mysql_query($sql);
 
 		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']+$total);
 
