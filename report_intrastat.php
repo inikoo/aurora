@@ -94,6 +94,43 @@ $smarty->assign('to_little_edian',$to_little_edian);
 $smarty->assign('from_little_edian',$from_little_edian);
 $smarty->assign('calendar_id','sales');
 
+
+$total=0;
+$invoices=0;
+
+
+
+$date_interval=prepare_mysql_dates($from.' 00:00:00' ,$to.' 23:59:59','`Invoice Date`');
+
+
+	$where=sprintf("where `Current Dispatching State`='Dispatched' %s and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
+		$date_interval['mysql']
+	);
+
+
+
+$sql="select  
+
+	
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as value 
+	,count(distinct `Invoice Key`) as invoices
+	from
+	`Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+	$where  ";
+	//print $sql;
+	$result=mysql_query($sql);
+	$data=array();
+
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+		$total=$row['value'];
+		$invoices=$row['invoices'];
+	}
+
+
+$total=money($total,$corporate_currency);
+$smarty->assign('total',$total);
+$smarty->assign('invoices',$invoices);
+
 $smarty->display('report_intrastat.tpl');
 
 

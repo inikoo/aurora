@@ -5932,6 +5932,23 @@ class Order extends DB_Table {
 
 	}
 
+	function get_pending_payment_amount_from_account_balance(){
+$pending_amount=0;
+	$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+					$this->id
+
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$pending_amount=$row['Amount'];
+
+				}
+return $pending_amount;
+}
+	function get_formated_pending_payment_amount_from_account_balance(){
+		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Order Currency']);
+	}
+
 
 	function apply_payment_from_customer_account() {
 
@@ -5955,24 +5972,23 @@ class Order extends DB_Table {
 				}
 			
 			
+			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 			
 			
-			
-			if ($customer->data['Customer Account Balance']<0) {
-				$customer_account_amount=round(-1.0*$customer->data['Customer Account Balance'],2);
+			if ($customer_account_available_amount) {
 				$order_amount=$this->data['Order Balance Total Amount'];
 
-				if ($customer_account_amount==$order_amount) {
+				if ($customer_account_available_amount==$order_amount) {
 					$payment_amount=$order_amount;
 
 				}
-				elseif ($customer_account_amount>$order_amount) {
+				elseif ($customer_account_available_amount>$order_amount) {
 					$payment_amount=$order_amount;
 
 				}
 				else {
 
-					$payment_amount=$customer_account_amount;
+					$payment_amount=$customer_account_available_amount;
 				}
 				
 				
@@ -6060,7 +6076,7 @@ class Order extends DB_Table {
 						
 						$customer->update(
 							array(
-								'Customer Account Balance'=>round($original_customer_balance+$current_amount_in_customer_account_payments+$payment->data['Payment Amount'],2)
+								'Customer Account Balance'=>round($customer_account_available_amount-$payment->data['Payment Amount'],2)
 								
 								
 							));	

@@ -186,9 +186,16 @@
 					</h2>
 					<table border=0 style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
 						<tr>
-							<td id="account_balance_label">{if $customer->get('Custoemr Account Balance')>0}{t}Debits{/t}{else}{t}Credits{/t}{/if}</td>
+							<td id="account_balance_label">{if $customer->get('Customer Account Balance')>0}{t}Debits{/t}{else}{t}Credits{/t}{/if}</td>
 							<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get('Account Balance')} </td>
 						</tr>
+						
+						<tr style="{if $customer->get_pending_payment_amount_from_account_balance()==0}display:none{/if}" >
+							<td id="account_balance_label"  >{t}Payments in Process{/t}</td>
+							<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get_formated_pending_payment_amount_from_account_balance()} </td>
+						</tr>
+						
+						
 					</table>
 				</div>
 				

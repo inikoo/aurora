@@ -195,7 +195,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 	    
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_reports.php?tipo=tax_overview&tableid=2");
+	    request="ar_reports.php?tipo=tax_overview&tableid=2"
+	//    alert(request)
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {

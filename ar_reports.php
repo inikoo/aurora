@@ -2941,30 +2941,43 @@ function tax_overview_europe($country) {
 
 	if ($country=='GB') {
 		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
+		
+				$where_extra=" and `Destination Country 2 Alpha Code`  in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
+
+		
 	}else {
 		$where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
 	}
 
 
-	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
+	$sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
+$sql="select count(Distinct `Invoice Key`) as invoices, `Transaction Tax Rate`,`Transaction Tax Code`, 
+sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as net_hq ,
+sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`+`Invoice Transaction Tax Refund Items`+`Invoice Transaction Tax Refund Shipping`+`Invoice Transaction Tax Refund Charges`+`Invoice Transaction Tax Refund Insurance`)) as tax_hq 
+
+from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction Tax Code` ";
+
+
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$records++;
 		$sum_net+=$row['net_hq'];
 		$sum_tax+=$row['tax_hq'];
-		$sum_total+=$row['total_hq'];
+		$sum_total+=$row['tax_hq']+$row['net_hq'];
 		$sum_invoices+=$row['invoices'];
 
 		$data[]=array(
-			'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+			//'tax_code'=>$row['Transaction Tax Code'].' ('.$row['Tax Category Name'].')',
+						'tax_code'=>$row['Transaction Tax Code'],
+
 			'category'=>'EU (no '.$country.')',
 			'net'=>money($row['net_hq'],$corporate_currency),
 			'tax'=>money($row['tax_hq'],$corporate_currency),
-			'total'=>money($row['total_hq'],$corporate_currency),
+			'total'=>money($row['net_hq']+$row['tax_hq'],$corporate_currency),
 			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
 
-				$row['Invoice Tax Code'],$region,
+				$row['Transaction Tax Code'],$region,
 
 				number($row['invoices'])
 			)
@@ -2975,31 +2988,47 @@ function tax_overview_europe($country) {
 	if ($country=='GB') {
 		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
 
+		$where_extra=" and `Destination Country 2 Alpha Code` not in ('GB','IM','AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
+
+
+
 	}else {
 		$where_extra=sprintf(' and  `European Union`="No"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
 	}
 
 
 
-	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+//	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
+
+$sql="select count(Distinct `Invoice Key`) as invoices, `Transaction Tax Rate`,`Transaction Tax Code`, 
+sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as net_hq ,
+sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`+`Invoice Transaction Tax Refund Items`+`Invoice Transaction Tax Refund Shipping`+`Invoice Transaction Tax Refund Charges`+`Invoice Transaction Tax Refund Insurance`)) as tax_hq 
+
+from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction Tax Code`";
+
+
+//print $sql;
 	$res=mysql_query($sql);
+	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$records++;
 		$sum_net+=$row['net_hq'];
 		$sum_tax+=$row['tax_hq'];
-		$sum_total+=$row['total_hq'];
+		$sum_total+=$row['tax_hq']+$row['net_hq'];
 		$sum_invoices+=$row['invoices'];
 
 		$data[]=array(
-			'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+			//'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
+						'tax_code'=>$row['Transaction Tax Code'],
+
 			'category'=>'no EU',
 			'net'=>money($row['net_hq'],$corporate_currency),
 			'tax'=>money($row['tax_hq'],$corporate_currency),
-			'total'=>money($row['total_hq'],$corporate_currency),
+			'total'=>money($row['tax_hq']+$row['net_hq'],$corporate_currency),
 			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
 
-				$row['Invoice Tax Code'],'NOEU',
+				$row['Transaction Tax Code'],'NOEU',
 
 				number($row['invoices'])
 			)

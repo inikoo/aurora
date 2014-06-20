@@ -4980,7 +4980,7 @@ function new_refund($data) {
 //print $sql;
 		mysql_query($sql);
 
-		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']+$total);
+		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$total);
 
 
 		$response= array('state'=>200,'account_balance'=>$customer->get('Account Balance'));
