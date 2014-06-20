@@ -5864,7 +5864,7 @@ function update_xhtml_state() {
 
 		}
 
-
+$payments_amount=round($payment_amount,2);
 		if ($payments_amount==$this->data['Order Balance Total Amount']) {
 			$payment_state='Paid';
 		}elseif ($payments_amount<$this->data['Order Balance Total Amount']) {
@@ -5902,7 +5902,42 @@ function update_xhtml_state() {
 	}
 
 
+	function apply_payment_from_customer_account(){
+	
+		if($this->data['Order Apply Auto Customer Account Payment']=='Yes'){
+			$customer=new Customer($this->data['Order Customer Key']);
+			if($customer->data['Customer Account Balance']>0){
+				$customer_account_amount=$customer->data['Customer Account Balance'];
+				$order_amount=$this->data['Order Balance Total'];
 
+				if($customer_account_amount==$order_amount){
+					$payment_amount=$order_amount;
+				
+				}elseif($customer_account_amount>$order_amount){
+				$payment_amount=$order_amount;
+				
+				}else{
+				
+					$payment_amount=$customer_account_amount;
+				}
+				
+				
+				
+				
+				
+				
+
+			
+			}
+		
+		}else{
+		
+		
+		
+		}
+	
+	
+	}
 
 
 }
