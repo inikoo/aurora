@@ -82,14 +82,15 @@ $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
 		$_SESSION['state']['report_intrastat']['to']=$date_interval['to'];
 	}
 
-	if ($from)$from=$from.' 00:00:00';
-	if ($to)$to=$to.' 23:59:59';
 
 
+$date_interval=prepare_mysql_dates($from.' 00:00:00' ,$to.' 23:59:59','`Invoice Date`');
 
-$where=sprintf("where `Current Dispatching State`='Dispatched' %s and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
-$date_interval['mysql']
-);
+
+	$where=sprintf("where `Current Dispatching State`='Dispatched' %s and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
+		$date_interval['mysql']
+	);
+
 
 
 $wheref='';
@@ -113,10 +114,25 @@ else {
 }
 
 
-$sql="select sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus, sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Delivery Note Quantity`*`Product Package Weight`) as weight , LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir ";
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+
+
+$where=sprintf("where `Current Dispatching State`='Dispatched' %s and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
+$date_interval['mysql']
+);
+
+
+
+
+$sql="select sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus, 
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as value 
+, sum(`Delivery Note Quantity`*`Product Package Weight`) as weight , LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir ";
 $result=mysql_query($sql);
 $data=array();
-//print $sql;
+
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
 
