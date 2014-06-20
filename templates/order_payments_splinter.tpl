@@ -12,7 +12,7 @@
 					<td>{t}Amount{/t}</td>
 					<td>{t}Notes{/t}</td>
 				</tr>
-				{foreach from=$invoice->get_payment_objects('',true,true) item=payment} 
+				{foreach from=$order->get_payment_objects('',true,true) item=payment} 
 				<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
 					<td>{$payment->get('Payment Key')}</td>
 					<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
