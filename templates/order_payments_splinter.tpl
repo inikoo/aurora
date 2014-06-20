@@ -1,4 +1,5 @@
-		<div style="padding: 10px 10px 15px 10px;font-size:85%;;margin-bottom:10px;border:1px solid #ccc;margin-top:20px;{if $order->get_number_payments()==0}display:none{/if}">
+	{if $order->get_number_payments()>0}
+	<div style="padding: 10px 10px 15px 10px;font-size:85%;;margin-bottom:10px;border:1px solid #ccc;margin-top:20px;">
 			<table class="edit" id="pending_payment_confirmations" border="0" style="margin-top:0px;padding-top:0px;width:100%;">
 				<tr>
 					<td colspan="6"> <span id="table_title_items" class="clean_table_title" ">{t}Payments{/t}</span> </td>
@@ -27,3 +28,4 @@
 				{/foreach} 
 			</table>
 		</div>
+{/if}
