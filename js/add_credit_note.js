@@ -128,7 +128,7 @@ Dom.setStyle(['close_add_credit','add_credit_note_customer_account','add_credit_
        // alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-               alert(o.responseText)
+             //  alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 
                 

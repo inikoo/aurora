@@ -1079,7 +1079,7 @@
 	
 <div id="dialog_add_credit_note" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
 	<input type="hidden" id="add_credit_note_type" value="normal">
-	<table class="edit" style="margin:10px;width:600px" border="1">
+	<table class="edit" style="margin:10px;width:600px" border="0">
 	
 		<tr>
 			<td class="label" style="padding-bottom:10px">{t}Description{/t}:</td>
@@ -1151,7 +1151,7 @@
 		<td></td>
 			<td colspan=2 > 
 			<div class="buttons left">
-				<span><img id="save_add_credit_note_wait" style="display:none;float:right" src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span>
+				<span id="save_add_credit_note_wait" style="display:none"><img  src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span>
 				<button id="close_add_credit" class="negative" onclick="close_dialog_add_credit_note()">{t}Close{/t}</button> 
 				<button id="add_credit_note_customer_account" class="positive disabled"  onclick="add_credit_note('Credit')">{t}Add to customer account{/t}</button>
 				<button id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('Refund')">{t}Create refund{/t}</button>

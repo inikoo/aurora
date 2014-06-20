@@ -4977,7 +4977,7 @@ function new_refund($data) {
 		$payment_account->id,
 		$payment_account->data['Payment Service Provider Key'],
 	     $total,$total);
-print $sql;
+//print $sql;
 		mysql_query($sql);
 
 		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']+$total);
