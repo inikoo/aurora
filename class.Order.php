@@ -1330,6 +1330,8 @@ class Order extends DB_Table {
 			$this->update_totals_from_order_transactions();
 			$this->update_number_items();
 			$this->update_number_products();
+			
+			$this->apply_payment_from_customer_account();
 
 		}
 
@@ -1483,7 +1485,7 @@ class Order extends DB_Table {
 		}
 
 	}
-function update_xhtml_state() {
+	function update_xhtml_state() {
 		$xhtml_state=$this->calculate_state();
 		$this->data['Order Current XHTML State']=$xhtml_state;
 
@@ -1569,26 +1571,26 @@ function update_xhtml_state() {
 			return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
 			break;
 		case('Date'):
-			case('Last Updated Date'):
-			case('Cancelled Date'):
-						case('Created Date'):
+		case('Last Updated Date'):
+		case('Cancelled Date'):
+		case('Created Date'):
 
-						case('Suspended Date'):
-						case('Checkout Submitted Payment Date'):
-						case('Checkout Completed Payment Date'):
-						case('Submitted by Customer Date'):
-						case('Dispatched Date'):
-						case('Post Transactions Dispatched Date'):
- 
+		case('Suspended Date'):
+		case('Checkout Submitted Payment Date'):
+		case('Checkout Completed Payment Date'):
+		case('Submitted by Customer Date'):
+		case('Dispatched Date'):
+		case('Post Transactions Dispatched Date'):
+
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order '.$key].' +0:00'));
 			break;
-		
+
 		case('Interval Last Updated Date'):
 			include_once 'common_natural_language.php';
 			return seconds_to_string(gmdate('U')-gmdate('U',strtotime($this->data['Order Last Updated Date'].' +0:00')));
 			break;
 
-		
+
 
 		case ('Order Main Ship To Key') :
 			$sql = sprintf( "select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1", $this->id );
@@ -2466,7 +2468,7 @@ function update_xhtml_state() {
 
 
 
-	
+
 
 
 
@@ -5864,7 +5866,36 @@ function update_xhtml_state() {
 
 		}
 
-$payments_amount=round($payment_amount,2);
+
+		$sql=sprintf("select * from `Payment Dimension` P left join `Payment Service Provider Dimension` PSPD on (P.`Payment Service Provider Key`=PSPD.`Payment Service Provider Key`) where `Payment Order Key`=%d and `Payment Transaction Status`='Pending' and P.`Payment Method`='Account'",$this->id);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$number_payments++;
+			$payments_amount+=$row['Payment Balance'];
+
+			$payments_info.=sprintf('<div>%s (%s), ',
+
+				$row['Payment Service Provider Name'],
+				money($row['Payment Balance'],$row['Payment Currency Code'])
+
+			);
+			if ($row['Payment Transaction ID']!='')
+				$payments_info.=sprintf('%s: %s',
+					_('Reference'),
+					$row['Payment Transaction ID']
+
+				);
+			$payments_info.='</div>';
+
+		}
+
+
+		$payments_amount=round($payments_amount,2);
+		
+		//exit($payments_amount);
+		
+		
 		if ($payments_amount==$this->data['Order Balance Total Amount']) {
 			$payment_state='Paid';
 		}elseif ($payments_amount<$this->data['Order Balance Total Amount']) {
@@ -5902,41 +5933,151 @@ $payments_amount=round($payment_amount,2);
 	}
 
 
-	function apply_payment_from_customer_account(){
-	
-		if($this->data['Order Apply Auto Customer Account Payment']=='Yes'){
-			$customer=new Customer($this->data['Order Customer Key']);
-			if($customer->data['Customer Account Balance']>0){
-				$customer_account_amount=$customer->data['Customer Account Balance'];
-				$order_amount=$this->data['Order Balance Total'];
+	function apply_payment_from_customer_account() {
 
-				if($customer_account_amount==$order_amount){
-					$payment_amount=$order_amount;
-				
-				}elseif($customer_account_amount>$order_amount){
-				$payment_amount=$order_amount;
-				
+		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
+			
+			
+			$customer=new Customer($this->data['Order Customer Key']);
+			$original_customer_balance=$customer->data['Customer Account Balance'];
+			
+			
+			$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+					$this->id
+
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$current_amount_in_customer_account_payments=$row['Amount'];
+
 				}else{
-				
+				$current_amount_in_customer_account_payments=0;
+				}
+			
+			
+			
+			
+			
+			if ($customer->data['Customer Account Balance']<0) {
+				$customer_account_amount=round(-1.0*$customer->data['Customer Account Balance'],2);
+				$order_amount=$this->data['Order Balance Total Amount'];
+
+				if ($customer_account_amount==$order_amount) {
+					$payment_amount=$order_amount;
+
+				}
+				elseif ($customer_account_amount>$order_amount) {
+					$payment_amount=$order_amount;
+
+				}
+				else {
+
 					$payment_amount=$customer_account_amount;
 				}
 				
 				
+				$store=new Store($this->data['Order Store Key']);
+				$payment_account_key=$store->data['Store Customer Payment Account Key'];
+				$payment_account=new Payment_Account($payment_account_key);
+
+				$payment_key=0;
+				$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+					$this->id
+
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$payment_key=$row['Payment Key'];
+
+				}
+
+
+
+				if ($payment_key) {
+					$payment=new Payment($payment_key);
+					
+						$data_to_update=array(
+
+							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+						'Payment Balance'=>$payment_amount,
+						'Payment Amount'=>$payment_amount
+
+						);
+
+
+
+						$payment->update($data_to_update);
+					
+				}
+				else {
+					$payment_data=array(
+						'Payment Account Key'=>$payment_account->id,
+						'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+
+						'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
+						'Payment Order Key'=>$this->id,
+						'Payment Store Key'=>$this->data['Order Store Key'],
+						'Payment Site Key'=>$this->data['Order Site Key'],
+						'Payment Customer Key'=>$this->data['Order Customer Key'],
+
+						'Payment Balance'=>$payment_amount,
+						'Payment Amount'=>$payment_amount,
+						'Payment Refund'=>0,
+						'Payment Method'=>'Account',
+						'Payment Currency Code'=>$this->data['Order Currency'],
+						'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+						'Payment Random String'=>md5(mt_rand().date('U'))
+
+
+					);
+
+					$payment=new Payment('create',$payment_data);
+					
+					//print_r($payment);
+					//exit;
+				}
 				
-				
-				
-				
+				$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'Yes') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+					$this->id,
+					$payment->id,
+					$payment_account->id,
+					$payment_account->data['Payment Service Provider Key'],
+					$payment->data['Payment Amount'],
+					$payment->data['Payment Amount']
+				);
+				mysql_query($sql);
+			//	print $sql;
+		//		exit;
+		
+		
+				$this->update(
+							array(
+								'Order Payments Amount'=>$payment->data['Payment Amount']
+								
+								
+							));
+							
+						
+						$customer->update(
+							array(
+								'Customer Account Balance'=>round($original_customer_balance+$current_amount_in_customer_account_payments+$payment->data['Payment Amount'],2)
+								
+								
+							));	
+						
+							
+				$this->update_payment_state();
 
 			
 			}
-		
-		}else{
-		
-		
-		
+
+		}else {
+
+
+
 		}
-	
-	
+
+
 	}
 
 
