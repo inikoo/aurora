@@ -429,7 +429,7 @@ class Invoice extends DB_Table {
 
 
 
-		
+
 
 		}
 
@@ -1023,7 +1023,7 @@ class Invoice extends DB_Table {
 
 
 	}
-	
+
 
 	function update_shipping_old($data,$force_update=false) {
 
@@ -1336,8 +1336,8 @@ class Invoice extends DB_Table {
 		}
 
 	}
-	
-	
+
+
 	function distribute_charges_over_the_otf() {
 		$sql = sprintf("select `Order Transaction Fact Key`,`Order Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d" , $this->id);
 
@@ -1667,8 +1667,8 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 
 	}
-	
-	
+
+
 
 
 	function update_xhtml_delivery_notes() {
@@ -1810,6 +1810,31 @@ class Invoice extends DB_Table {
 	}
 
 
+	function get_number_orders() {
+
+		$number_orders=0;
+		$sql=sprintf("select count(*) as num from `Order Invoice Bridge` where `Invoice Key`=%d ",$this->id);
+
+		$res = mysql_query( $sql );
+
+		if ($row = mysql_fetch_assoc( $res )) {
+			$number_orders=$row['num'];
+		}
+		return $number_orders;
+	}
+
+function get_number_delivery_notes() {
+
+		$number_delivery_notes=0;
+		$sql=sprintf("select count(*) as num from `Invoice Delivery Note Bridge` where `Invoice Key`=%d ",$this->id);
+
+		$res = mysql_query( $sql );
+
+		if ($row = mysql_fetch_assoc( $res )) {
+			$number_delivery_notes=$row['num'];
+		}
+		return $number_delivery_notes;
+	}
 
 
 
@@ -1819,7 +1844,7 @@ class Invoice extends DB_Table {
 		//print "$sql\n";
 		$res = mysql_query( $sql );
 
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+		while ($row = mysql_fetch_assoc( $res )) {
 			if ($row['Order Key']>0) {
 				$orders[$row['Order Key']]=$row['Order Key'];
 			}
@@ -1831,7 +1856,7 @@ class Invoice extends DB_Table {
 
 		$res = mysql_query( $sql );
 
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+		while ($row = mysql_fetch_assoc( $res )) {
 			if ($row['Order Key']>0) {
 				$orders[$row['Order Key']]=$row['Order Key'];
 			}
@@ -1860,7 +1885,7 @@ class Invoice extends DB_Table {
 
 		$res = mysql_query( $sql );
 		$delivery_notes=array();
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+		while ($row = mysql_fetch_assoc( $res )) {
 			if ($row['Delivery Note Key']) {
 				$delivery_notes[$row['Delivery Note Key']]=$row['Delivery Note Key'];
 			}
@@ -1878,11 +1903,11 @@ class Invoice extends DB_Table {
 		return $delivery_notes;
 	}
 
-function get_operations($user,$parent='order') {
-			include_once 'order_common_functions.php';
+	function get_operations($user,$parent='order') {
+		include_once 'order_common_functions.php';
 
-			return get_invoice_operations($this->data,$user,$parent);
-		}
+		return get_invoice_operations($this->data,$user,$parent);
+	}
 
 
 	function apply_payment($payment) {
@@ -1913,336 +1938,336 @@ function get_operations($user,$parent='order') {
 
 
 		}
-		}
+	}
 
-		function set_as_full_paid($payment) {
+	function set_as_full_paid($payment) {
 
 
 
-			$this->data['Invoice Paid Date']=gmdate("Y-m-d H:i:s");
-			$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
-				$this->id);
+		$this->data['Invoice Paid Date']=gmdate("Y-m-d H:i:s");
+		$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+			$this->id);
 
-			$res=mysql_query($sql);
-			//print "$sql\n";
-			while ($row=mysql_fetch_assoc($res)) {
-				$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,
+		$res=mysql_query($sql);
+		//print "$sql\n";
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,
 			`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Order Transaction Fact Key`=%d "
-					,prepare_mysql($payment->data['Payment Method'])
-					,prepare_mysql($this->data['Invoice Paid Date'])
-					,$row['Order Transaction Fact Key']);
-
-				mysql_query( $sql );
-
-
-
-
-
-				//print "$sql\n";
-				$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
-					,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
-					,$row['Order Transaction Fact Key']);
-
-				mysql_query( $sql );
-				//print "$sql\n";
-			}
-
-			$sql=sprintf("select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
-				$this->id);
-
-			$res=mysql_query($sql);
-			//print "\n\n$sql\n";
-			while ($row=mysql_fetch_assoc($res)) {
-				$sql = sprintf( "update  `Order No Product Transaction Fact`  set `Payment Method`=%s,`Transaction Outstanding Net Amount Balance`=0,`Transaction Outstanding Tax Amount Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s where `Order No Product Transaction Fact Key`=%d "
-					,prepare_mysql($payment->data['Payment Method'])
-					,prepare_mysql($this->data['Invoice Paid Date'])
-					,$row['Order No Product Transaction Fact Key']);
-
-				mysql_query( $sql );
-
-
-			}
-
-
-
-			$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=0,`Invoice Paid Amount`=%f,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
-				,$this->data['Invoice Total Amount']
+				,prepare_mysql($payment->data['Payment Method'])
 				,prepare_mysql($this->data['Invoice Paid Date'])
+				,$row['Order Transaction Fact Key']);
 
-				,$this->id);
 			mysql_query( $sql );
 
-			$this->get_data('id',$this->id);
 
-			$this->update_main_payment_method();
 
-			$this->updated=true;
+
+
+			//print "$sql\n";
+			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
+				,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
+				,$row['Order Transaction Fact Key']);
+
+			mysql_query( $sql );
+			//print "$sql\n";
+		}
+
+		$sql=sprintf("select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+			$this->id);
+
+		$res=mysql_query($sql);
+		//print "\n\n$sql\n";
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql = sprintf( "update  `Order No Product Transaction Fact`  set `Payment Method`=%s,`Transaction Outstanding Net Amount Balance`=0,`Transaction Outstanding Tax Amount Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s where `Order No Product Transaction Fact Key`=%d "
+				,prepare_mysql($payment->data['Payment Method'])
+				,prepare_mysql($this->data['Invoice Paid Date'])
+				,$row['Order No Product Transaction Fact Key']);
+
+			mysql_query( $sql );
+
 
 		}
 
 
 
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=0,`Invoice Paid Amount`=%f,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
+			,$this->data['Invoice Total Amount']
+			,prepare_mysql($this->data['Invoice Paid Date'])
+
+			,$this->id);
+		mysql_query( $sql );
+
+		$this->get_data('id',$this->id);
+
+		$this->update_main_payment_method();
+
+		$this->updated=true;
+
+	}
 
 
-		// this function to be deleted (used by old read order from excel)
-		function pay_full_amount($data) {
-			$this->data['Invoice Paid Date']=$data['Invoice Paid Date'];
-			$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
-				$this->id);
 
-			$res=mysql_query($sql);
-			//print "$sql\n";
-			while ($row=mysql_fetch_assoc($res)) {
-				$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,
+
+
+	// this function to be deleted (used by old read order from excel)
+	function pay_full_amount($data) {
+		$this->data['Invoice Paid Date']=$data['Invoice Paid Date'];
+		$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+			$this->id);
+
+		$res=mysql_query($sql);
+		//print "$sql\n";
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,
 			`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Order Transaction Fact Key`=%d "
-					,prepare_mysql($data['Payment Method'])
-					,prepare_mysql($this->data['Invoice Paid Date'])
-					,$row['Order Transaction Fact Key']);
-
-				mysql_query( $sql );
-
-
-
-
-
-				//print "$sql\n";
-				$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
-					,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
-					,$row['Order Transaction Fact Key']);
-
-				mysql_query( $sql );
-				//print "$sql\n";
-			}
-
-			$sql=sprintf("select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
-				$this->id);
-
-			$res=mysql_query($sql);
-			//print "\n\n$sql\n";
-			while ($row=mysql_fetch_assoc($res)) {
-				$sql = sprintf( "update  `Order No Product Transaction Fact`  set `Payment Method`=%s,`Transaction Outstanding Net Amount Balance`=0,`Transaction Outstanding Tax Amount Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s where `Order No Product Transaction Fact Key`=%d "
-					,prepare_mysql($data['Payment Method'])
-					,prepare_mysql($this->data['Invoice Paid Date'])
-					,$row['Order No Product Transaction Fact Key']);
-
-				mysql_query( $sql );
-
-
-			}
-
-
-
-			$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=0,`Invoice Paid Amount`=%f,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
-				,$this->data['Invoice Total Amount']
+				,prepare_mysql($data['Payment Method'])
 				,prepare_mysql($this->data['Invoice Paid Date'])
+				,$row['Order Transaction Fact Key']);
 
-				,$this->id);
 			mysql_query( $sql );
 
-			$this->get_data('id',$this->id);
-
-			$this->update_main_payment_method();
-
-			$this->updated=true;
-
-		}
 
 
-		function get_main_payment_method() {
 
-			$method='Unknown';
 
-			$sql=sprintf("select count(*) as number, `Payment Method`   from `Order Transaction Fact` where `Invoice Key`=%d  and `Payment Method` not in ('NA','Unknown') order by number desc ",
-				$this->id);
+			//print "$sql\n";
+			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
+				,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
+				,$row['Order Transaction Fact Key']);
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-
-				$number=(float) $row['number'];
-				if ($number>0) {
-
-					$method=$row['Payment Method'];
-
-				}
-
-			}
-
-			return $method;
-
-		}
-
-		function update_main_payment_method() {
-
-			$main_payment_method=$this->get_main_payment_method();
-
-			$sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
-				,prepare_mysql($main_payment_method)
-				,prepare_mysql($this->data['Invoice Paid Date'])
-
-				,$this->id);
 			mysql_query( $sql );
 			//print "$sql\n";
-			$this->data['Invoice Main Payment Method']= $main_payment_method;
+		}
+
+		$sql=sprintf("select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+			$this->id);
+
+		$res=mysql_query($sql);
+		//print "\n\n$sql\n";
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql = sprintf( "update  `Order No Product Transaction Fact`  set `Payment Method`=%s,`Transaction Outstanding Net Amount Balance`=0,`Transaction Outstanding Tax Amount Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s where `Order No Product Transaction Fact Key`=%d "
+				,prepare_mysql($data['Payment Method'])
+				,prepare_mysql($this->data['Invoice Paid Date'])
+				,$row['Order No Product Transaction Fact Key']);
+
+			mysql_query( $sql );
 
 
 		}
 
 
 
-		function pay($tipo='full', $data) {
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=0,`Invoice Paid Amount`=%f,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
+			,$this->data['Invoice Total Amount']
+			,prepare_mysql($this->data['Invoice Paid Date'])
 
-			if (!array_key_exists('Invoice Paid Date',$data) or !$data['Invoice Paid Date']  ) {
-				$data['Invoice Paid Date']=gmdate('Y-m-d H:i:s');
-			}
+			,$this->id);
+		mysql_query( $sql );
 
-			if ($tipo=='full' or $data['amount']==$this->data['Invoice Outstanding Total Amount']) {
-				$this->pay_full_amount($data);
-			} else {
-				$this->pay_partial_amount($data);
-			}
+		$this->get_data('id',$this->id);
 
+		$this->update_main_payment_method();
 
+		$this->updated=true;
 
-
-			foreach ($this->get_orders_objects() as $key=>$order) {
-
-				// print_r($order);
-				//exit;
-
-				$order->update_payment_state();
-				$order->update_no_normal_totals();
-				$order->update_full_search();
-				$order->update_xhtml_invoices();
-				if ($this->data['Invoice Type']=='Refund') {
-					$customer=new Customer($this->data['Invoice Customer Key']);
-					$customer->add_history_order_refunded($this);
-
-				}
+	}
 
 
+	function get_main_payment_method() {
 
-			}
-			foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
-				$dn->update_xhtml_invoices();
+		$method='Unknown';
+
+		$sql=sprintf("select count(*) as number, `Payment Method`   from `Order Transaction Fact` where `Invoice Key`=%d  and `Payment Method` not in ('NA','Unknown') order by number desc ",
+			$this->id);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$number=(float) $row['number'];
+			if ($number>0) {
+
+				$method=$row['Payment Method'];
 
 			}
-		}
-
-
-		function pay_partial_amount($data) {
 
 		}
 
+		return $method;
 
-		function categorize($args='') {
+	}
+
+	function update_main_payment_method() {
+
+		$main_payment_method=$this->get_main_payment_method();
+
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
+			,prepare_mysql($main_payment_method)
+			,prepare_mysql($this->data['Invoice Paid Date'])
+
+			,$this->id);
+		mysql_query( $sql );
+		//print "$sql\n";
+		$this->data['Invoice Main Payment Method']= $main_payment_method;
 
 
-			$sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",
-				$this->data['Invoice Store Key']);
-			// print $sql;
-			$res=mysql_query($sql);
-			$function_code='';
-			while ($row=mysql_fetch_assoc($res)) {
-				if ($row['Category Function']!='') {
-					$function_code.=sprintf("%s return %d;",$row['Category Function'],$row['Category Key']);
-				}
+	}
 
 
-			}
-			$function_code.="return 0;";
-			//print $function_code."\n";exit;
-			$newfunc = create_function('$data',$function_code);
 
-			// $this->data['Invoice Customer Level Type'];
+	function pay($tipo='full', $data) {
 
-			$category_key=$newfunc($this->data);
+		if (!array_key_exists('Invoice Paid Date',$data) or !$data['Invoice Paid Date']  ) {
+			$data['Invoice Paid Date']=gmdate('Y-m-d H:i:s');
+		}
 
-			//print "Cat $category_key\n";
-
-			if ($category_key) {
-				$category=new Category($category_key);
-
-				if ($category->id) {
-					//print "HOLA";
-					$category->associate_subject($this->id);
-
-				}
-			}
-
+		if ($tipo=='full' or $data['amount']==$this->data['Invoice Outstanding Total Amount']) {
+			$this->pay_full_amount($data);
+		} else {
+			$this->pay_partial_amount($data);
 		}
 
 
 
 
+		foreach ($this->get_orders_objects() as $key=>$order) {
+
+			// print_r($order);
+			//exit;
+
+			$order->update_payment_state();
+			$order->update_no_normal_totals();
+			$order->update_full_search();
+			$order->update_xhtml_invoices();
+			if ($this->data['Invoice Type']=='Refund' or $this->data['Invoice Type']=='CreditNote') {
+				$customer=new Customer($this->data['Invoice Customer Key']);
+				$customer->add_history_order_refunded($this);
+
+			}
 
 
 
-		function add_credit_no_product_transaction($credit_transaction_data) {
+		}
+		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
+			$dn->update_xhtml_invoices();
+
+		}
+	}
 
 
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,
+	function pay_partial_amount($data) {
+
+	}
+
+
+	function categorize($args='') {
+
+
+		$sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",
+			$this->data['Invoice Store Key']);
+		// print $sql;
+		$res=mysql_query($sql);
+		$function_code='';
+		while ($row=mysql_fetch_assoc($res)) {
+			if ($row['Category Function']!='') {
+				$function_code.=sprintf("%s return %d;",$row['Category Function'],$row['Category Key']);
+			}
+
+
+		}
+		$function_code.="return 0;";
+		//print $function_code."\n";exit;
+		$newfunc = create_function('$data',$function_code);
+
+		// $this->data['Invoice Customer Level Type'];
+
+		$category_key=$newfunc($this->data);
+
+		//print "Cat $category_key\n";
+
+		if ($category_key) {
+			$category=new Category($category_key);
+
+			if ($category->id) {
+				//print "HOLA";
+				$category->associate_subject($this->id);
+
+			}
+		}
+
+	}
+
+
+
+
+
+
+
+	function add_credit_no_product_transaction($credit_transaction_data) {
+
+
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,
 		`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
 		values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-				prepare_mysql($credit_transaction_data['Affected Order Key']),
-				prepare_mysql($credit_transaction_data['Order Key']),
-				prepare_mysql($credit_transaction_data['Order Date']),
-				$this->id,
-				prepare_mysql($this->data['Invoice Date']),
-				prepare_mysql($credit_transaction_data['Transaction Type']),
-				prepare_mysql($credit_transaction_data['Transaction Description']),
+			prepare_mysql($credit_transaction_data['Affected Order Key']),
+			prepare_mysql($credit_transaction_data['Order Key']),
+			prepare_mysql($credit_transaction_data['Order Date']),
+			$this->id,
+			prepare_mysql($this->data['Invoice Date']),
+			prepare_mysql($credit_transaction_data['Transaction Type']),
+			prepare_mysql($credit_transaction_data['Transaction Description']),
 
-				$credit_transaction_data['Transaction Invoice Net Amount'],
-				prepare_mysql($credit_transaction_data['Tax Category Code']),
-				$credit_transaction_data['Transaction Invoice Tax Amount'],
-				$credit_transaction_data['Transaction Invoice Net Amount'],
-				$credit_transaction_data['Transaction Invoice Tax Amount'],
-				prepare_mysql($this->data['Invoice Currency']),
-				$this->data['Invoice Currency Exchange'],
-				prepare_mysql($credit_transaction_data['Metadata'])
-
-
-			);
-			mysql_query($sql);
-
-			$this->update_totals();
-			$this->update_refund_totals();
-		}
+			$credit_transaction_data['Transaction Invoice Net Amount'],
+			prepare_mysql($credit_transaction_data['Tax Category Code']),
+			$credit_transaction_data['Transaction Invoice Tax Amount'],
+			$credit_transaction_data['Transaction Invoice Net Amount'],
+			$credit_transaction_data['Transaction Invoice Tax Amount'],
+			prepare_mysql($this->data['Invoice Currency']),
+			$this->data['Invoice Currency Exchange'],
+			prepare_mysql($credit_transaction_data['Metadata'])
 
 
+		);
+		mysql_query($sql);
 
-
-
-		function add_orphan_refund_no_product_transaction($refund_transaction_data) {
-
-
-
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Affected Order Key`,`Refund Key`,`Refund Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-				prepare_mysql($refund_transaction_data['Order Key']),
-				prepare_mysql($refund_transaction_data['Affected Order Key']),
-				$this->id,
-				prepare_mysql($this->data['Invoice Date']),
-				prepare_mysql('Refund'),
-				prepare_mysql($refund_transaction_data['Transaction Description']),
-				$refund_transaction_data['Transaction Invoice Net Amount'],
-				prepare_mysql($refund_transaction_data['Tax Category Code']),
-				$refund_transaction_data['Transaction Invoice Tax Amount'],
-				$refund_transaction_data['Transaction Invoice Net Amount'],
-				$refund_transaction_data['Transaction Invoice Tax Amount'],
-				prepare_mysql($this->data['Invoice Currency']),
-				$this->data['Invoice Currency Exchange'],
-				prepare_mysql($this->data['Invoice Metadata'])
-			);
-			mysql_query($sql);
-			// print $sql;
-			$this->update_refund_totals();
-		}
-
-		function add_refund_transaction($refund_transaction_data) {
+		$this->update_totals();
+		$this->update_refund_totals();
+	}
 
 
 
 
-			$sql=sprintf("update `Order Transaction Fact` set `Refund Metadata`=%s,`Refund Key`=%d,
+
+	function add_orphan_refund_no_product_transaction($refund_transaction_data) {
+
+
+
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Affected Order Key`,`Refund Key`,`Refund Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+			prepare_mysql($refund_transaction_data['Order Key']),
+			prepare_mysql($refund_transaction_data['Affected Order Key']),
+			$this->id,
+			prepare_mysql($this->data['Invoice Date']),
+			prepare_mysql('Refund'),
+			prepare_mysql($refund_transaction_data['Transaction Description']),
+			$refund_transaction_data['Transaction Invoice Net Amount'],
+			prepare_mysql($refund_transaction_data['Tax Category Code']),
+			$refund_transaction_data['Transaction Invoice Tax Amount'],
+			$refund_transaction_data['Transaction Invoice Net Amount'],
+			$refund_transaction_data['Transaction Invoice Tax Amount'],
+			prepare_mysql($this->data['Invoice Currency']),
+			$this->data['Invoice Currency Exchange'],
+			prepare_mysql($this->data['Invoice Metadata'])
+		);
+		mysql_query($sql);
+		// print $sql;
+		$this->update_refund_totals();
+	}
+
+	function add_refund_transaction($refund_transaction_data) {
+
+
+
+
+		$sql=sprintf("update `Order Transaction Fact` set `Refund Metadata`=%s,`Refund Key`=%d,
 
                      `Invoice Transaction Net Refund Items`=%f,
                      `Invoice Transaction Net Refund Shipping`=%f,
@@ -2254,187 +2279,240 @@ function get_operations($user,$parent='order') {
                      `Invoice Transaction Net Refund Amount`=%f,
                      `Invoice Transaction Tax Refund Amount`=%f  ,
                      `Invoice Transaction Outstanding Refund Net Balance`=%f ,`Invoice Transaction Outstanding Refund Tax Balance`=%f where `Order Transaction Fact Key`=%d ",
-				prepare_mysql($refund_transaction_data['Refund Metadata']),
-				$this->id,
-				$refund_transaction_data['Invoice Transaction Net Refund Items'],
-				$refund_transaction_data['Invoice Transaction Net Refund Shipping'],
-				$refund_transaction_data['Invoice Transaction Net Refund Charges'],
-				$refund_transaction_data['Invoice Transaction Tax Refund Items'],
-				$refund_transaction_data['Invoice Transaction Tax Refund Shipping'],
-				$refund_transaction_data['Invoice Transaction Tax Refund Charges'],
+			prepare_mysql($refund_transaction_data['Refund Metadata']),
+			$this->id,
+			$refund_transaction_data['Invoice Transaction Net Refund Items'],
+			$refund_transaction_data['Invoice Transaction Net Refund Shipping'],
+			$refund_transaction_data['Invoice Transaction Net Refund Charges'],
+			$refund_transaction_data['Invoice Transaction Tax Refund Items'],
+			$refund_transaction_data['Invoice Transaction Tax Refund Shipping'],
+			$refund_transaction_data['Invoice Transaction Tax Refund Charges'],
 
 
-				$refund_transaction_data['Invoice Transaction Net Refund Amount'],
-				$refund_transaction_data['Invoice Transaction Tax Refund Amount'],
-				$refund_transaction_data['Invoice Transaction Net Refund Amount'],
-				$refund_transaction_data['Invoice Transaction Tax Refund Amount'],
-				$refund_transaction_data['Order Transaction Fact Key']
+			$refund_transaction_data['Invoice Transaction Net Refund Amount'],
+			$refund_transaction_data['Invoice Transaction Tax Refund Amount'],
+			$refund_transaction_data['Invoice Transaction Net Refund Amount'],
+			$refund_transaction_data['Invoice Transaction Tax Refund Amount'],
+			$refund_transaction_data['Order Transaction Fact Key']
 
-			);
-			mysql_query($sql);
-			//print $sql;
-			//print "$sql\n";
-			$this->update_refund_totals();
-		}
+		);
+		mysql_query($sql);
+		//print $sql;
+		//print "$sql\n";
+		$this->update_refund_totals();
+	}
 
-		function add_tax_item($code='UNK',$amount=0,$is_base='Yes') {
-
-
-			$sql=sprintf("update `Invoice Tax Dimension` set `%s`=%.2f where `Invoice Key`=%d",addslashes($code),$amount,$this->id );
-			mysql_query($sql);
-			// print "$sql\n";
-			$sql=sprintf("insert into `Invoice Tax Bridge` values (%d,%s,%.2f,%s) on duplicate key update `Tax Amount`=%.2f, `Tax Base`=%s"
-				,$this->id
-				,prepare_mysql($code)
-				,$amount
-				,prepare_mysql($is_base)
-				,$amount
-				,prepare_mysql($is_base)
-
-			);
-			// print "$sql\n";
-			mysql_query($sql);
-		}
+	function add_tax_item($code='UNK',$amount=0,$is_base='Yes') {
 
 
+		$sql=sprintf("update `Invoice Tax Dimension` set `%s`=%.2f where `Invoice Key`=%d",addslashes($code),$amount,$this->id );
+		mysql_query($sql);
+		// print "$sql\n";
+		$sql=sprintf("insert into `Invoice Tax Bridge` values (%d,%s,%.2f,%s) on duplicate key update `Tax Amount`=%.2f, `Tax Base`=%s"
+			,$this->id
+			,prepare_mysql($code)
+			,$amount
+			,prepare_mysql($is_base)
+			,$amount
+			,prepare_mysql($is_base)
 
-		function set_data_from_customer($customer_key,$store_key=false) {
-
-
-			$customer=new Customer($customer_key);
-			if (!$customer->id) {
-				$customer= new Customer('create anonymous');
-			} else
-				$store_key=$customer->data['Customer Store Key'];
+		);
+		// print "$sql\n";
+		mysql_query($sql);
+	}
 
 
 
-			$this->data['Invoice Customer Name']=$customer->get('Customer Name');
-			$this->data['Invoice Customer Contact Name']=$customer->get('Customer Main Contact Name');
+	function set_data_from_customer($customer_key,$store_key=false) {
+
+
+		$customer=new Customer($customer_key);
+		if (!$customer->id) {
+			$customer= new Customer('create anonymous');
+		} else
+			$store_key=$customer->data['Customer Store Key'];
 
 
 
-			$this->data['Invoice For Partner']='No';
-			$this->data['Invoice For']='Customer';
-
-			switch ($customer->data['Customer Level Type']) {
-			case'Partner':
-				$this->data['Invoice For Partner']='Yes';
-				break;
-			case'Staff':
-				$this->data['Invoice For']='Staff';
-				break;
-
-			}
-
-			$this->data['Invoice Customer Level Type']=$customer->data['Customer Level Type'];
+		$this->data['Invoice Customer Name']=$customer->get('Customer Name');
+		$this->data['Invoice Customer Contact Name']=$customer->get('Customer Main Contact Name');
 
 
 
-			$this->data['Invoice Main Payment Method']=$customer->get('Customer Last Payment Method');
+		$this->data['Invoice For Partner']='No';
+		$this->data['Invoice For']='Customer';
 
-			//print_r($this->data);
-			$this->set_data_from_store($store_key);
-
-
-			return $customer;
-
-
-
-		}
-		function set_data_from_store($store_key) {
-			$store=new Store($store_key);
-			if (!$store->id) {
-				$this->error=true;
-				return;
-			}
-
-
-
-			$this->data['Invoice Currency']=$store->data['Store Currency Code'];
-			$this->data['Invoice Store Code']=$store->data['Store Code'];
-			$this->data['Invoice XHTML Store']=sprintf("<a href='store.php?id=%d'>%s</a>",$store->id,$store->get('Store Name'));
-
-			$this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
-
-
-
-
+		switch ($customer->data['Customer Level Type']) {
+		case'Partner':
+			$this->data['Invoice For Partner']='Yes';
+			break;
+		case'Staff':
+			$this->data['Invoice For']='Staff';
+			break;
 
 		}
 
+		$this->data['Invoice Customer Level Type']=$customer->data['Customer Level Type'];
 
-		function prepare_file_as($number) {
 
-			$number=strtolower($number);
-			if (preg_match("/^\d+/",$number,$match)) {
-				$part_number=$match[0];
-				$file_as=preg_replace('/^\d+/',sprintf("%012d",$part_number),$number);
 
-			}
-			elseif (preg_match("/\d+$/",$number,$match)) {
-				$part_number=$match[0];
-				$file_as=preg_replace('/\d+$/',sprintf("%012d",$part_number),$number);
+		$this->data['Invoice Main Payment Method']=$customer->get('Customer Last Payment Method');
 
-			}
-			else {
-				$file_as=$number;
-			}
+		//print_r($this->data);
+		$this->set_data_from_store($store_key);
 
-			return $file_as;
+
+		return $customer;
+
+
+
+	}
+	function set_data_from_store($store_key) {
+		$store=new Store($store_key);
+		if (!$store->id) {
+			$this->error=true;
+			return;
 		}
 
-		function update_title() {
 
-			$this->data['Invoice Title']=$this->get_title();
 
-			$sql=sprintf("update `Invoice Dimension` set `Invoice Title`=%s where `Invoice Key`=%d",
-				prepare_mysql($this->data['Invoice Title']),
-				$this->id
-			);
-			mysql_query($sql);
+		$this->data['Invoice Currency']=$store->data['Store Currency Code'];
+		$this->data['Invoice Store Code']=$store->data['Store Code'];
+		$this->data['Invoice XHTML Store']=sprintf("<a href='store.php?id=%d'>%s</a>",$store->id,$store->get('Store Name'));
+
+		$this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+
+
+
+
+
+	}
+
+
+	function prepare_file_as($number) {
+
+		$number=strtolower($number);
+		if (preg_match("/^\d+/",$number,$match)) {
+			$part_number=$match[0];
+			$file_as=preg_replace('/^\d+/',sprintf("%012d",$part_number),$number);
+
+		}
+		elseif (preg_match("/\d+$/",$number,$match)) {
+			$part_number=$match[0];
+			$file_as=preg_replace('/\d+$/',sprintf("%012d",$part_number),$number);
+
+		}
+		else {
+			$file_as=$number;
 		}
 
-	
+		return $file_as;
+	}
+
+	function update_title() {
+
+		$this->data['Invoice Title']=$this->get_title();
+
+		$sql=sprintf("update `Invoice Dimension` set `Invoice Title`=%s where `Invoice Key`=%d",
+			prepare_mysql($this->data['Invoice Title']),
+			$this->id
+		);
+		mysql_query($sql);
+	}
 
 
 
-		function get_title() {
-
-			$orders=$this->get_orders_objects();
-
-			$number_of_orders=count($orders);
-
-			if ($number_of_orders==0) {
-				if ($this->data['Invoice Type']=='Invoice') {
-					$title=_("Invoice");
-				}else {
-					$title=_("Refund");
-
-				}
-				return $title;
-			}
 
 
+	function get_title() {
+
+		$orders=$this->get_orders_objects();
+
+		$number_of_orders=count($orders);
+
+		if ($number_of_orders==0) {
 			if ($this->data['Invoice Type']=='Invoice') {
-				$title=ngettext("Invoice for order","Invoice for orders",$number_of_orders).' ';
+				$title=_("Invoice");
+			}elseif ($this->data['Invoice Type']=='CreditNote') {
+				$title=_("Credit Note");
 			}else {
-				$title=ngettext("Refund for order","Refund for orders",$number_of_orders).' ';
+				$title=_("Refund");
 
 			}
-
-			foreach ($orders as $order) {
-				$title.=sprintf('<a class="id" href="order.php?id=%d">%s</a>, ',
-					$order->id,
-					$order->data['Order Public ID']
-				);
-			}
-
-			$title=preg_replace('/\, $/','',$title);
 			return $title;
 		}
 
-	
+
+		if ($this->data['Invoice Type']=='Invoice') {
+			$title=ngettext("Invoice for order","Invoice for orders",$number_of_orders).' ';
+		}elseif ($this->data['Invoice Type']=='CreditNote') {
+			$title=ngettext("Credit note for order","Credit note for orders",$number_of_orders).' ';
+		}else {
+			$title=ngettext("Refund for order","Refund for orders",$number_of_orders).' ';
+
+		}
+
+		foreach ($orders as $order) {
+			$title.=sprintf('<a class="id" href="order.php?id=%d">%s</a>, ',
+				$order->id,
+				$order->data['Order Public ID']
+			);
+		}
+
+		$title=preg_replace('/\, $/','',$title);
+		return $title;
+	}
+
+
+
+	function get_payment_keys($status='') {
+
+		$payments=array();
+
+		if ($status) {
+			$where=' and `Payment Transaction Status`='.prepare_mysql($status);
+		}else {
+			$where='';
+		}
+
+		$sql=sprintf("select `Payment Key` from `Payment Dimension` where `Payment Invoice Key`=%d %s",
+			$this->id,
+			$where
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$payments[$row['Payment Key']]=$row['Payment Key'];
+		}
+		return $payments;
+	}
+
+
+	function get_payment_objects($status='',$load_payment_account=false,$load_payment_service_provider=false) {
+
+		$payments=array();
+
+
+		foreach ($this->get_payment_keys($status) as $payment_key) {
+			$payment=new Payment($payment_key);
+			if ($load_payment_account)
+				$payment->load_payment_account();
+			if ($load_payment_service_provider)
+				$payment->load_payment_service_provider();
+			$payments[$payment_key]=$payment;
+		}
+
+
+		return $payments;
+	}
+
+	function get_number_payments($status='') {
+
+
+		return count($this->get_payment_keys($status));
+	}
+
+
 
 }
 ?>

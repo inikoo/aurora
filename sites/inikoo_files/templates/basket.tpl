@@ -109,7 +109,7 @@
 				</tr>
 			</table>
 			<div style="text-align:right;padding-top:4px;;clear:both;{if $distinct_set_currency}display:none{/if}">
-				<img src="art/info.png" style="height:14px;position:relative;bottom:-1px" /> {t}Please note, the prices are just a reference value, your payment will be in {/t} <b>{$store->get('Store Currency Code')}</b> {t}with a total of{t} <b><span id="store_currency_total_balance">{$total_in_store_currency}</span></b> 
+				<img src="art/info.png" style="height:14px;position:relative;bottom:-1px" /> {t}Please note, the prices are just a reference value, your payment will be in {/t} <b>{$store->get('Store Currency Code')}</b> {t}with a total of{/t} <b><span id="store_currency_total_balance">{$total_in_store_currency}</span></b> 
 			</div>
 		</div>
 		<div style="clear:both">

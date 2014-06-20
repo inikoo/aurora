@@ -4937,8 +4937,8 @@ function new_refund($data) {
 			'Payment Customer Key'=>$customer->id,
 
 			'Payment Balance'=>$total,
-			'Payment Amount'=>0,
-			'Payment Refund'=>$total,
+			'Payment Amount'=>$total,
+			'Payment Refund'=>0,
 			'Payment Currency Code'=>$refund->data['Invoice Currency'],
 			'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
 			'Payment Random String'=>md5(mt_rand().date('U'))
@@ -4966,9 +4966,13 @@ function new_refund($data) {
 				'Invoice Payment Account Code'=>$payment_account->data['Payment Account Code'],
 				'Invoice Payment Method'=>$payment_account->data['Payment Type'],
 				'Invoice Payment Key'=>$payment->id,
+				'Invoice Main Payment Method'=>'Customer Account'
 			));
 
 		$refund->pay_full_amount(array('Invoice Paid Date'=>gmdate('Y-m-d H:i:s'),'Payment Method'=>'Customer Account'));
+
+		$sql=sprintf("insert into `Invoice Payment Bridge` values (%d,%d,%.2f)  ON DUPLICATE KEY UPDATE `Anount`=%.2f ",
+		$payment->id,$refund->id,$total,$total);
 
 		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']+$total);
 

@@ -101,6 +101,10 @@
 		<div style="clear:both">
 		</div>
 	</div>
+{include file='order_payments_splinter.tpl'} 
+
+	
+	
 	<div style="margin-top:20px">
 	<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span>  
 			

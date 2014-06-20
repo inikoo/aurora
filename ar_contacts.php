@@ -959,6 +959,8 @@ function list_customer_invoices() {
 			
 			if ($row['Invoice Type']=='Invoice')
 				$type=_('Invoice');
+			elseif ($row['Invoice Type']=='CreditNote')
+				$type=_('Credit Note');	
 			else
 				$type=_('Refund');
 
