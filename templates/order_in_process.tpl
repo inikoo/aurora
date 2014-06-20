@@ -192,7 +192,7 @@
 	<div style="padding: 0px 20px;font-size:90%;border:1px solid #ccc;margin-bottom:10px">
 		<table class="edit" id="pending_payment_confirmations" border=1  style="padding-top:0px;width:100%;{if $order->get_number_payments()==0}display:none{/if}">
 			<tr class="title">
-			<td colspan=4>{t}{/t} </td>
+			<td colspan=4>{t}Payments{/t} </td>
 			</tr>
 			<tr class="title">
 			<td>{t}Payment ID{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Date{/t}</td><td></td><td>{t}Status{/t}</td><td></td>
@@ -253,6 +253,10 @@
 			<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
 			</div>
 		</div>
+		
+
+{include file='order_payments_splinter.tpl'} 
+
 		
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='products'}display:none{/if}" id="products_block" >
 			<span id="table_title_products" class="clean_table_title" >{t}Products{/t}</span> 

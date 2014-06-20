@@ -1906,13 +1906,10 @@ function list_invoices() {
 	elseif ($order=='net')
 		$order='`Invoice Total Net Amount`';
 
-	//
-	// $sql="select  `S4`,`S1`,`Invoice Total Tax Amount`,`Invoice Type`,`Invoice XHTML Delivery Notes`,`Invoice Shipping Net Amount`,`Invoice Total Net Amount`,`Invoice Items Net Amount`,`Invoice XHTML Orders`,`Invoice Total Amount`,I.`Invoice Key`,`Invoice Customer Name`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Date`,`Invoice Currency`,`Invoice Has Been Paid In Full` from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
 
 	$sql="select  * from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref     order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
-	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
 
 
 
@@ -1944,6 +1941,8 @@ function list_invoices() {
 
 			if ($row['Invoice Type']=='Invoice')
 				$type=_('Invoice');
+			elseif ($row['Invoice Type']=='CreditNote')
+				$type=_('Credit Note');	
 			else
 				$type=_('Refund');
 

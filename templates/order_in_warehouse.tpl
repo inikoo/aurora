@@ -287,7 +287,11 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div class="data_table" style="clear:both;margin-top:10px">
+
+{include file='order_payments_splinter.tpl'} 
+
+
+		<div style="margin-top:20px">
 		<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 		</div>

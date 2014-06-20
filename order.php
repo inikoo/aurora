@@ -741,51 +741,7 @@ $smarty->assign( 'shipper_data', $shipper_data );
 		$smarty->assign('items_view',$_SESSION['state']['order_cancelled']['items']['view']);
 
 		break;
-	case('Unknown'):
-		$css_files[]='css/edit.css';
-		$js_files[]='order_unknown.js.php';
 
-
-		$products_display_type='ordered_products';
-		$_SESSION['state']['order']['products']['display']=$products_display_type;
-
-		$products_display_type=$_SESSION['state']['order']['products']['display'];
-
-		$smarty->assign('products_display_type',$products_display_type);
-		$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
-
-
-
-
-		$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
-
-
-		$smarty->assign('filter0',$tipo_filter);
-		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
-		$filter_menu=array(
-			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
-			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
-			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
-
-		);
-		$smarty->assign('filter_menu0',$filter_menu);
-		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-
-
-		$paginator_menu=array(10,25,50,100);
-		$smarty->assign('paginator_menu0',$paginator_menu);
-
-		$smarty->assign('search_label',_('Orders'));
-		$smarty->assign('search_scope','orders');
-
-
-		$template='order_unknown.tpl';
-
-		break;
-		// case('Ready to Ship'):
-		//  $js_files[]='order_ready_to_ship.js.php';
-		//  $template='order_ready_to_ship.tpl';
-		//  break;
 	case 'In Process by Customer':
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');

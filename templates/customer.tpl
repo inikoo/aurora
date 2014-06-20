@@ -274,7 +274,7 @@
 		<li> <span class="item {if $view=='login_stat'}selected{/if}" id="login_stat"> <span> {t}Login Status{/t}</span></span></li>
 		{/if} 
 		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"><span> {t}Products Ordered{/t}</span></span></li>
-		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Order Details{/t}</span></span></li>
+		<li {if !$customer->get('Customer Orders')}style="xdisplay:none"{/if}> <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Order Details{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -1151,7 +1151,7 @@
 		<td></td>
 			<td colspan=2 > 
 			<div class="buttons left">
-				<img id="save_add_credit_note_wait" style="display:none;float:right" src="art/loading.gif" alt="" />
+				<span><img id="save_add_credit_note_wait" style="display:none;float:right" src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span>
 				<button id="close_add_credit" class="negative" onclick="close_dialog_add_credit_note()">{t}Close{/t}</button> 
 				<button id="add_credit_note_customer_account" class="positive disabled"  onclick="add_credit_note('Credit')">{t}Add to customer account{/t}</button>
 				<button id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('Refund')">{t}Create refund{/t}</button>

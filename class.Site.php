@@ -2150,7 +2150,7 @@ function get_payment_options_data(){
 	
 		$payment_options_data=array();
 	
-		$sql=sprintf("select * from `Payment Account Dimension` PA left join `Payment Service Provider Dimension` PSP on  (PA.`Payment Service Provider Key`=PSP.`Payment Service Provider Key`) left join `Payment Account Site Bridge`  B on (PA.`Payment Account Key`=B.`Payment Account Key`) where  `Show In Cart`='Yes' and `Site Key`=%d",
+		$sql=sprintf("select * from `Payment Account Dimension` PA left join `Payment Service Provider Dimension` PSP on  (PA.`Payment Service Provider Key`=PSP.`Payment Service Provider Key`) left join `Payment Account Site Bridge`  B on (PA.`Payment Account Key`=B.`Payment Account Key`) where  `Show In Cart`='Yes' and `Site Key`=%d order by `Show Cart Order`",
 		$this->id
 		
 		);

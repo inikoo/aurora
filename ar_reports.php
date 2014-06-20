@@ -43,7 +43,7 @@ case('get_tax_categories_elements_chooser'):
 			'to'=>array('type'=>'date'),
 			'regions'=>array('type'=>'string'),
 			'tax_category'=>array('type'=>'string')
-			
+
 		));
 
 	get_tax_categories_elements_chooser($data);
@@ -2433,7 +2433,7 @@ function list_invoices_with_no_tax() {
 
 
 
-	
+
 
 
 
@@ -2462,12 +2462,12 @@ function list_invoices_with_no_tax() {
 
 
 
-//$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+	//$stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
 
-//	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
+	// $where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
 
 
-$where=sprintf(' where  true ');
+	$where=sprintf(' where  true ');
 
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
@@ -2540,29 +2540,29 @@ $where=sprintf(' where  true ');
 
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
-	else if ($f_field=='min' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
-		elseif ($f_field=='customer_name' and $f_value!='')
-			$wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
-		elseif ( $f_field=='public_id' and $f_value!='')
-			$wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
+	elseif ($f_field=='customer_name' and $f_value!='')
+		$wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
+	elseif ( $f_field=='public_id' and $f_value!='')
+		$wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
 
-		else if ($f_field=='maxvalue' and is_numeric($f_value) )
-				$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
-			else if ($f_field=='minvalue' and is_numeric($f_value) )
-					$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
-
-
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
+	else if ($f_field=='minvalue' and is_numeric($f_value) )
+			$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
 
 
 
 
-				$sql="select count(*) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref ";
-			// print $sql;
-			$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-			$total=$row['total'];
-		}
+
+
+		$sql="select count(*) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref ";
+	// print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
 	mysql_free_result($res);
 	if ($where=='') {
 		$filtered=0;
@@ -3081,8 +3081,8 @@ function list_customers_by_tax_europe($country) {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	
-		
+
+
 	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
 		$_SESSION['state']['report_sales_with_no_tax']['from']=$from;
@@ -3154,7 +3154,7 @@ function list_customers_by_tax_europe($country) {
 	//print $where;
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order']=$order;
 	$_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;
@@ -3166,7 +3166,7 @@ function list_customers_by_tax_europe($country) {
 
 
 
-include_once('splinters/customers_by_tax_europe_prepare_list.php');
+	include_once 'splinters/customers_by_tax_europe_prepare_list.php';
 
 
 
@@ -4781,10 +4781,10 @@ function list_intrastat() {
 	}elseif ($order=='weight') {
 		$order="weight";
 	}elseif ($order=='items') {
-		$order="items";	
+		$order="items";
 	}elseif ($order=='bonus') {
-		$order="bonus";		
-		
+		$order="bonus";
+
 	}elseif ($order=='country_2alpha_code') {
 		$order="`Destination Country 2 Alpha Code` ";
 	}
@@ -4792,7 +4792,10 @@ function list_intrastat() {
 		$order='`Product Tariff Code`';
 	}
 
-	$sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(DISTINCT ' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value ,
+	$sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(DISTINCT ' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,
+	
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`)) as value ,
+	
 	sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code`
 	from
@@ -4997,12 +5000,12 @@ function get_tax_categories_elements_chooser($data) {
 	$elements_chooser_invoices='';
 
 	//$regions_selected=$_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions'];
-	
-	
-	
+
+
+
 	//$regions_selected=$data['regions'];
 	//print_r($_SESSION['state']['report_sales_with_no_tax'][$corporate_country_2alpha_code]['regions']);
-	
+
 	$regions_selected=json_decode(base64_decode($data['regions']),true);
 	$tax_category_selected=json_decode(base64_decode($data['tax_category']),true);
 
@@ -5013,11 +5016,11 @@ function get_tax_categories_elements_chooser($data) {
 	$tax_categories=array();
 	$sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",
 		$where_interval
-		
+
 	);
 
 	//print $sql;
-	
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		if ($row['Tax Category Code']=='UNK')
@@ -5027,8 +5030,8 @@ function get_tax_categories_elements_chooser($data) {
 		$tax_categories[$row['Tax Category Key']]=array(
 			'code'=>$row['Tax Category Code'],
 			'name'=>$description,
-			'selected'=>$tax_category_selected[$row['Tax Category Code']]  
-			);
+			'selected'=>$tax_category_selected[$row['Tax Category Code']]
+		);
 	}
 
 	$elements_tax_categories_customers_ids=array();
@@ -5048,7 +5051,7 @@ function get_tax_categories_elements_chooser($data) {
 	$elements_regions_invoices_ids=array();
 	switch ( $corporate_country_2alpha_code) {
 	case('GB'):
-	
+
 		$elements_chooser_customers.='<span onClick="change_elements(this,\'regions_customers\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']?'selected':'').'" id="elements_region_GBIM_customers">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['EU']?'selected':'').'" id="elements_region_EU_customers">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span  onClick="change_elements(this,\'regions_customers\')"  style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']?'selected':'').'" id="elements_region_NOEU_customers">No EU</span> ';
 		$elements_chooser_invoices.='<span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px;" class="'.($regions_selected['GBIM']?'selected':'').'" id="elements_region_GBIM_invoices">GB+IM</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['EU']?'selected':'').'" id="elements_region_EU_invoices">EU (no GB,IM)</span> <span style="float:right;margin-left:2px" >|</span> <span onClick="change_elements(this,\'regions_invoices\')" style="float:right;margin-left:2px" class="'.($regions_selected['NOEU']?'selected':'').'" id="elements_region_NOEU_invoices">No EU</span> ';
 		$elements_regions_customers_ids=array('elements_region_GBIM_customers','elements_region_EU_customers','elements_region_NOEU_customers');
@@ -5069,7 +5072,7 @@ function get_tax_categories_elements_chooser($data) {
 	$elements_chooser_invoices.='<span style="float:right;margin-left:0px" >[</span>';
 
 	$response= array(
-		
+
 		'state'=>200,
 		'elements_chooser_customers'=>$elements_chooser_customers,
 		'elements_chooser_invoices'=>$elements_chooser_invoices,
@@ -5137,25 +5140,25 @@ function get_tax_categories_numbers($data) {
 	$where.=" and ($where_elements_region) ";
 
 
-$elements_numbers=array();
+	$elements_numbers=array();
 
 	$sql=sprintf("select `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where true $where_interval group by `Invoice Tax Code`",
 		prepare_mysql($from),
 		prepare_mysql($to)
 	);
-//	print $sql;
+	// print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-	
-	$elements_numbers['invoices'][$row['Invoice Tax Code']]=0;
+
+		$elements_numbers['invoices'][$row['Invoice Tax Code']]=0;
 		$elements_numbers['customers'][$row['Invoice Tax Code']]=0;
-	
-		}
+
+	}
 
 
 
 
-	
+
 
 
 
@@ -6349,10 +6352,10 @@ function list_inventory_assets_sales_history() {
 		$table='`Inventory Transaction Fact`';
 		$where=sprintf(" where   `Part SKU`=%d  ",$parent_key);
 		break;
-		
-		case('part_categories'):
-		
-		
+
+	case('part_categories'):
+
+
 		$sql=sprintf("select Date(min(`Part Valid From`)) as date  from `Part Dimension`  left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`) where  `Category Key`=%d  ",$parent_key);
 		//print $sql;
 		$res=mysql_query($sql);
@@ -6362,13 +6365,13 @@ function list_inventory_assets_sales_history() {
 			}
 
 		}
-		
 
-			$table='`Inventory Transaction Fact` left join `Category Bridge` on (`Subject`="Part" and `Subject Key`=`Part SKU`)';
+
+		$table='`Inventory Transaction Fact` left join `Category Bridge` on (`Subject`="Part" and `Subject Key`=`Part SKU`)';
 		$where=sprintf(" where   `Category Key`=%d  ",$parent_key);
 		break;
-		
-		
+
+
 	case('supplier'):
 
 		$sql=sprintf("select Date(`Supplier Valid From`) as date  from `Supplier Dimension` where  `Supplier Key`=%d  ",$parent_key);
@@ -6565,11 +6568,11 @@ function list_inventory_assets_sales_history() {
 		$ddata[$data['date']]['sales']=money($data['sales']);
 		$ddata[$data['date']]['cost_sales']=money(-1*$data['cost_sales']);
 		$ddata[$data['date']]['out_of_stock_amount']=money($data['out_of_stock_amount']);
-		
-		
-		
-		
-		
+
+
+
+
+
 	}
 	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty  from $table $where $where_interval and  `Out of Stock Tag`='Yes'  $groupi";
 	$result=mysql_query($sql);
@@ -6697,7 +6700,7 @@ function list_picked_dns() {
 	$_SESSION['state'][$conf_tag]['to']=$to;
 
 
-$group='';
+	$group='';
 	$table='`Delivery Note Dimension` D';
 
 	switch ($parent) {
@@ -6714,11 +6717,11 @@ $group='';
 		$where='where false ';
 	}
 
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
 
-$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`');
-$where.=$where_interval['mysql'];
+	$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`');
+	$where.=$where_interval['mysql'];
 
 
 	$wheref='';
@@ -6981,7 +6984,7 @@ function list_packed_dns() {
 	$_SESSION['state'][$conf_tag]['to']=$to;
 
 
-$group='';
+	$group='';
 	$table='`Delivery Note Dimension` D';
 
 	switch ($parent) {
@@ -6999,11 +7002,11 @@ $group='';
 	}
 
 
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
 
-$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`');
-$where.=$where_interval['mysql'];
+	$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`');
+	$where.=$where_interval['mysql'];
 
 
 	$wheref='';

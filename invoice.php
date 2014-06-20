@@ -2,6 +2,9 @@
 include_once 'common.php';
 include_once 'class.Supplier.php';
 include_once 'class.Staff.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+include_once 'class.Payment_Service_Provider.php';
 
 include_once 'class.Invoice.php';
 
@@ -67,6 +70,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/order.css',
+	'css/edit.css',
 
 	'theme.css.php'
 );
