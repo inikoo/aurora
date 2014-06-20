@@ -53,7 +53,7 @@ var myonCellClick = function(oArgs) {
 
 
             if (Dom.get('todo_units').value < 0) {
-                alert("caca")
+               // alert("caca")
 
             } else {
 
@@ -164,7 +164,7 @@ var myonCellClick = function(oArgs) {
                     }
                 },
                 failure: function(o) {
-                    alert(o.statusText);
+                  //  alert(o.statusText);
                     // callback();
                 },
                 scope: this
@@ -264,7 +264,7 @@ var CellEdit = function(callback, newValue) {
                 }
             },
             failure: function(o) {
-                alert(o.statusText);
+                //alert(o.statusText);
                 callback();
             },
             scope: this
@@ -482,7 +482,7 @@ function save_no_dispatchable() {
     //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            alert(o.responseText);
+            //alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
