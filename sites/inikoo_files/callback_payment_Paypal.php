@@ -164,15 +164,7 @@ $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_
 								
 							));
 
-						$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Anount`=%.2f ",
-						$order->id,
-						$payment->id,
-						$payment_account->id,
-						$payment_account->data['Payment Service Provider Key'],
-						$payment->data['Payment Amount'],
-						$payment->data['Payment Amount']
-						);
-						mysql_query($sql);
+				
 
 						$order->checkout_submit_order();
 						

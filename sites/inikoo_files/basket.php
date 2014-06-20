@@ -1,6 +1,10 @@
 <?php
 
 include_once 'common.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+include_once 'class.Payment_Service_Provider.php';
+
 $page_key=$site->get_page_key_from_section('Basket');
 
 
@@ -253,7 +257,7 @@ if ( !$page->order->id) {
 	$paginator_menu=array(10,25,50,100);
 	$smarty->assign('paginator_menu0',$paginator_menu);
 
-
+$order_in_process->apply_payment_from_customer_account();
 
 	$smarty->assign('order',$order_in_process);
 	$smarty->assign('customer',$customer);
