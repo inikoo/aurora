@@ -170,18 +170,7 @@
 					
 					
 				</table>
-				<table border="0" class="info_block">
-					
-					<td>{t}Payment{/t}:</td>
-						<td class="aright">{$order->get('Order Current XHTML Payment State')}</td>
-					</tr>
-					<td>{t}Paid Amount{/t}:</td>
-						<td class="aright">{$order->get('Payments Amount')}</td>
-					</tr>
-					<td>{t}To Pay{/t}:</td>
-						<td class="aright"><b>{$order->get('To Pay Amount')}</b></td>
-					</tr>
-				</table>
+			
 			</div>
 			<div style="clear:both">
 			</div>
@@ -189,35 +178,7 @@
 	</div>
 	
 	
-	<div style="padding: 0px 20px;font-size:90%;border:1px solid #ccc;margin-bottom:10px">
-		<table class="edit" id="pending_payment_confirmations" border=1  style="padding-top:0px;width:100%;{if $order->get_number_payments()==0}display:none{/if}">
-			<tr class="title">
-			<td colspan=4>{t}Payments{/t} </td>
-			</tr>
-			<tr class="title">
-			<td>{t}Payment ID{/t}</td><td>{t}{t}Service Provider{/t}{/t}</td><td>{t}Date{/t}</td><td></td><td>{t}Status{/t}</td><td></td>
-			</tr>
-			{foreach from=$order->get_payment_objects('',true,true) item=payment}
-			<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
-			<td >{$payment->get('Payment Key')}</td>
-
-			<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
-			<td id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</td>
-			<td id="payment_date_interval_{$payment->get('Payment Key')}">{$payment->get_formated_time_lapse('Created Date')}</td>
-									<td>{$payment->get('Payment Transaction Status')}</td>
-
-			<td><div class="buttons small">
-			<button class="negative" onClick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button>
-			<button class="positive" onClick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button>
-			
-			</div></td>
-			
-			
-			</tr>
-			{/foreach}
-			</table>
-	
-	</div>
+	{include file='order_payments_splinter.tpl'} 
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Products')}</span>)</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>
@@ -255,7 +216,7 @@
 		</div>
 		
 
-{include file='order_payments_splinter.tpl'} 
+
 
 		
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='products'}display:none{/if}" id="products_block" >

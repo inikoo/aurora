@@ -239,6 +239,13 @@
 	</div>
 	{*} 
 	
+	
+	
+	
+	{include file='order_payments_splinter.tpl'} 
+	
+	
+	
 	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;" id="dispatched_post_transactions">
 		<div class="buttons small">
 			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> 
