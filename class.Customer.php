@@ -6486,5 +6486,23 @@ class Customer extends DB_Table {
 	}
 
 
+function get_pending_payment_amount_from_account_balance(){
+$pending_amount=0;
+	$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where `Is Account Payment`='Yes' and`Order Customer Key`=%d ",
+					$this->id
+
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$pending_amount=$row['Amount'];
+
+				}
+return $pending_amount;
+}
+	function get_formated_pending_payment_amount_from_account_balance(){
+		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Customer Currency Code']);
+	}
+
+
 }
 ?>

@@ -103,19 +103,19 @@
 					<td class="aright"> <span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 				</tr>
-				<tr>
+				<tr >
 					<td class="aright">{t}Total{/t}</td>
 					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
-				</tr>
+				</tr >
 				
-					<tr>
+					<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')!=0}display:none{/if}">
 					<td class="aright">{t}Paid{/t}</td>
-					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Payments Amount')}</td>
+					<td id="order_total_paid" width="100" class="aright" style="font-weight:800">{$order->get('Payments Amount')}</td>
 				</tr>
 				
-						<tr>
+						<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}">
 					<td class="aright">{t}To Pay{/t}</td>
-					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+					<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 				</tr>
 				
 				
@@ -173,8 +173,10 @@
 				<span id="special_instructions_wait" style="font-size:85%;color:#aaa;display:none"><img style="width:12px;position:relative;top:1.5px" src="art/loading.gif" />{t}Saving{/t}</span> <span id="special_instructions_saved" style="font-size:85%;color:#aaa;display:none">{t}Saved{/t}</span> 
 			</div>
 		</div>
-		<div class="buttons right" style="{if $order->get('Order Balance Total Amount')==0}display:none{/if}">
-			<button onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button> 
+		<div class="buttons right" >
+			<button id="button_proceed_to_checkout" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}" onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button> 
+			<button id="button_submit_order_paid" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}" onclick="submit_order_paid()" class="positive">{t}Place Order{/t}</button> 
+
 		</div>
 		<div style="clear:both">
 		</div>

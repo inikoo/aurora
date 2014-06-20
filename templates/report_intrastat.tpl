@@ -17,6 +17,17 @@
 	
 	</div>
 	
+	<div>
+	<table>
+	<tr>
+	<td>{t}Total{/t}:</td><td>{$total}</td>
+	</tr><tr>
+		<td>{t}Invoces{/t}:</td><td>{$invoices}</td>
+	</tr>
+	</table>
+	</div>
+	
+	
 	<div id="calendar_container" style="padding:0 0px;padding-bottom:0px;">
 			<div id="period_label_container" style="{if $period==''}display:none{/if}">
 				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
