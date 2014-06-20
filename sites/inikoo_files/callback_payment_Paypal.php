@@ -150,6 +150,7 @@ $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_
 						);
 
 
+
 						$payment->update($data_to_update);
 						$order=new Order($payment->data['Payment Order Key']);
 
