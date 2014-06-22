@@ -3357,7 +3357,9 @@ class DeliveryNote extends DB_Table {
 
 	}
 
-
+function get_date($field) {
+return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+}
 
 }
 

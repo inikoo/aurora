@@ -37,7 +37,7 @@ class Payment_Service_Provider extends DB_Table {
 	}
 
 
-	
+
 	function get_data($tipo,$tag) {
 
 		if ($tipo=='id')
@@ -147,12 +147,13 @@ class Payment_Service_Provider extends DB_Table {
 		foreach ($this->data as $key=>$value) {
 			if ($key=='Payment Service Provider XHTML Address')
 				continue;
-			
+
 			$keys.=",`".$key."`";
 			$values.=','.prepare_mysql($value,false);
-			
+
 
 		}
+
 
 
 
@@ -173,6 +174,14 @@ class Payment_Service_Provider extends DB_Table {
 		}
 	}
 
-	
+	function get_valid_payment_methods(){
+		$valid_payment_method=array();
+		$sql=sprintf("select `Payment Method` from `Payment Service Provider Payment Method Bridge` where `Payment Service Provider Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+		$valid_payment_method[]=$row['Payment Method'];
+		}
+		return $valid_payment_method;
+	}
 
 }

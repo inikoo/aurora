@@ -70,7 +70,7 @@
 				</tr>
 				{foreach from=$tax_data item=tax } 
 				<tr>
-					<td class="aright">{t}{$tax.name}{/t}</td>
+					<td class="aright">{$tax.name}</td>
 					<td width="100" class="aright">{$tax.amount}</td>
 				</tr>
 				{/foreach} {if $invoice->get('Invoice Total Tax Adjust Amount')!=0} 

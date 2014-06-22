@@ -652,7 +652,7 @@
 </div>
 
 
-{include file='splinter_add_payment.tpl'}
+{include file='add_payment_splinter.tpl'}
 
 {include file='assign_picker_packer_splinter.tpl'}
 {include file='footer.tpl'} 

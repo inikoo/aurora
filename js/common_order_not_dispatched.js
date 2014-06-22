@@ -16,7 +16,7 @@ function save_use_calculated_shipping() {
 
                 for (x in r.data) {
 
-                    Dom.get(x).innerHTML = r.data[x];
+                    if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
                 Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
                 Dom.get('shipping_amount').value = r.shipping_amount
@@ -49,7 +49,7 @@ function save_use_calculated_items_charges() {
 
                 for (x in r.data) {
 
-                    Dom.get(x).innerHTML = r.data[x];
+                    if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
                 // Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
                 Dom.get('items_charges_amount').value = r.items_charges_amount
@@ -84,7 +84,7 @@ function save_set_shipping() {
                 Dom.setStyle('save_set_shipping', 'display', '');
                 for (x in r.data) {
 
-                    Dom.get(x).innerHTML = r.data[x];
+                    if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
                 Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
                 Dom.get('shipping_amount').value = r.shipping_amount
@@ -124,7 +124,7 @@ function save_set_items_charges() {
                 Dom.setStyle('save_set_items_charges', 'display', '');
                 for (x in r.data) {
                     //alert(x+' '+r.data[x])
-                    Dom.get(x).innerHTML = r.data[x];
+                    if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
                 //  Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
                 Dom.get('items_charges_amount').value = r.items_charges_amount
@@ -213,7 +213,7 @@ function use_this_delivery_address_in_order(address_key, hide_edit_delivery_addr
                 Dom.setStyle('for_collection', 'display', 'none');
 
                 for (x in r.data) {
-                    Dom.get(x).innerHTML = r.data[x];
+                    if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
 
                 Dom.get('tax_info').innerHTML = r.tax_info
@@ -255,7 +255,7 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
 
                 for (x in r.data) {
 
-                    Dom.get(x).innerHTML = r.data[x];
+                    if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
 
                 Dom.get('tax_info').innerHTML = r.tax_info
@@ -307,7 +307,7 @@ function change_shipping_type(new_value) {
 
                     for (x in r.data) {
 
-                        Dom.get(x).innerHTML = r.data[x];
+                        if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                     }
 
                     Dom.get('tax_info').innerHTML = r.tax_info
@@ -528,7 +528,7 @@ function save_change_discount() {
 
                     for (x in r.data) {
 
-                        Dom.get(x).innerHTML = r.data[x];
+                        if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                     }
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
                     if (r.discounts) {
@@ -864,7 +864,7 @@ var myonCellClick = function(oArgs) {
                     if (r.state == 200) {
                         for (x in r.data) {
 
-                            Dom.get(x).innerHTML = r.data[x];
+                            if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                         }
                         Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
@@ -1040,7 +1040,7 @@ var CellEdit = function(callback, newValue) {
 
                     for (x in r.data) {
 
-                        Dom.get(x).innerHTML = r.data[x];
+                        if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                     }
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 

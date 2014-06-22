@@ -2519,7 +2519,8 @@ function get_number_delivery_notes() {
 		return count($this->get_payment_keys($status));
 	}
 
-
-
+function get_date($field) {
+return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+}
 }
 ?>

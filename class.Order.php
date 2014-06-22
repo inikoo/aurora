@@ -1333,7 +1333,7 @@ class Order extends DB_Table {
 			$this->update_totals_from_order_transactions();
 			$this->update_number_items();
 			$this->update_number_products();
-			
+
 			$this->apply_payment_from_customer_account();
 
 		}
@@ -2027,10 +2027,10 @@ class Order extends DB_Table {
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 
-			$this->data ['Order Items Gross Amount'] = $row ['gross'];
-			$this->data ['Order Items Discount Amount'] = $row ['discount'];
-			$this->data ['Order Items Net Amount'] = $row ['total_items_net'];
-			$this->data ['Order Items Tax Amount']= $row ['tax'];
+			$this->data ['Order Items Gross Amount'] = round($row ['gross'],2);
+			$this->data ['Order Items Discount Amount'] =  round($row ['discount'],2);
+			$this->data ['Order Items Net Amount'] =  round($row ['total_items_net'],2);
+			$this->data ['Order Items Tax Amount']=  round($row ['tax'],2);
 			$this->data ['Order Items Total Amount']= $this->data ['Order Items Net Amount'] +$this->data ['Order Items Tax Amount'];
 			$this->data ['Order Estimated Weight']= $row ['estimated_weight'];
 			$this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'];
@@ -2126,8 +2126,8 @@ class Order extends DB_Table {
 			//print $row['net'].'xx';
 
 
-			$this->data['Order Balance Net Amount']=$row['original_net']+$row['ref_net']-$total_not_dispatch_net;
-			$this->data['Order Balance Tax Amount']=$row['original_tax']+$row['ref_tax']-$total_not_dispatch_tax;
+			$this->data['Order Balance Net Amount']=round($row['original_net']+$row['ref_net']-$total_not_dispatch_net,2);
+			$this->data['Order Balance Tax Amount']=round($row['original_tax']+$row['ref_tax']-$total_not_dispatch_tax,2);
 			$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
 			$this->data['Order Outstanding Balance Net Amount']=$this->data['Order Balance Net Amount']-$this->data['Order Invoiced Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Net Amount'];
 			$this->data['Order Outstanding Balance Tax Amount']=$this->data['Order Balance Tax Amount']-$this->data['Order Invoiced Balance Tax Amount']+$this->data['Order Invoiced Outstanding Balance Tax Amount'];
@@ -2950,7 +2950,7 @@ class Order extends DB_Table {
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
-$this->apply_payment_from_customer_account();
+			$this->apply_payment_from_customer_account();
 		}
 
 	}
@@ -3021,7 +3021,7 @@ $this->apply_payment_from_customer_account();
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
-$this->apply_payment_from_customer_account();
+			$this->apply_payment_from_customer_account();
 
 
 
@@ -3409,7 +3409,7 @@ $this->apply_payment_from_customer_account();
 			$this->id
 		);
 		mysql_query($sql);
-		
+
 		$this->update_no_normal_totals('save');
 		$this->update_totals_from_order_transactions();
 		$this->apply_payment_from_customer_account();
@@ -3453,7 +3453,7 @@ $this->apply_payment_from_customer_account();
 				$this->update_no_normal_totals('save');
 				$this->update_totals_from_order_transactions();
 
-$this->apply_payment_from_customer_account();
+				$this->apply_payment_from_customer_account();
 			}else {
 				$onptf_key=$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
 			}
@@ -4435,8 +4435,8 @@ $this->apply_payment_from_customer_account();
 						$terms_ok=true;;
 						$this->deals['Family']['Terms']=true;
 
-
-
+						// i dont underestad below thing maybe it is wrong
+						if($deal_component_data['Deal Component Terms']!=0)
 						$deal_component_data['Deal Component Allowance']=$deal_component_data['Deal Component Allowance']*floor( $qty_product / $deal_component_data['Deal Component Terms']);
 
 						$this->get_allowances_from_deal_component_data($deal_component_data);
@@ -4731,7 +4731,8 @@ $this->apply_payment_from_customer_account();
 				mysql_query($sql);
 
 
-			} else {
+			}
+			else {
 				$customer=new Customer($this->data['Order Customer Key']);
 
 				$ship_to= $customer->set_current_ship_to('return object');
@@ -4762,7 +4763,13 @@ $this->apply_payment_from_customer_account();
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
+
+			//print_r($this->data);
+
 			$this->apply_payment_from_customer_account();
+
+
+
 		} else {
 			$this->msg=_('Nothing to change');
 
@@ -5901,10 +5908,10 @@ $this->apply_payment_from_customer_account();
 
 
 		$payments_amount=round($payments_amount,2);
-		
+
 		//exit($payments_amount);
-		
-		
+
+
 		if ($payments_amount==$this->data['Order Balance Total Amount']) {
 			$payment_state='Paid';
 		}elseif ($payments_amount<$this->data['Order Balance Total Amount']) {
@@ -5941,20 +5948,20 @@ $this->apply_payment_from_customer_account();
 
 	}
 
-	function get_pending_payment_amount_from_account_balance(){
-$pending_amount=0;
-	$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
-					$this->id
+	function get_pending_payment_amount_from_account_balance() {
+		$pending_amount=0;
+		$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+			$this->id
 
-				);
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_assoc($res)) {
-					$pending_amount=$row['Amount'];
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$pending_amount=$row['Amount'];
 
-				}
-return $pending_amount;
-}
-	function get_formated_pending_payment_amount_from_account_balance(){
+		}
+		return $pending_amount;
+	}
+	function get_formated_pending_payment_amount_from_account_balance() {
 		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Order Currency']);
 	}
 
@@ -5962,28 +5969,28 @@ return $pending_amount;
 	function apply_payment_from_customer_account() {
 
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
-			
-			
+
+
 			$customer=new Customer($this->data['Order Customer Key']);
 			$original_customer_balance=$customer->data['Customer Account Balance'];
-			
-			
+
+
 			$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
-					$this->id
+				$this->id
 
-				);
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_assoc($res)) {
-					$current_amount_in_customer_account_payments=$row['Amount'];
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$current_amount_in_customer_account_payments=$row['Amount'];
 
-				}else{
+			}else {
 				$current_amount_in_customer_account_payments=0;
-				}
-			
-			
+			}
+
+
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
-			
-			
+
+
 			if ($customer_account_available_amount) {
 				$order_amount=$this->data['Order Balance Total Amount'];
 
@@ -5999,8 +6006,8 @@ return $pending_amount;
 
 					$payment_amount=$customer_account_available_amount;
 				}
-				
-				
+
+
 				$store=new Store($this->data['Order Store Key']);
 				$payment_account_key=$store->data['Store Customer Payment Account Key'];
 				$payment_account=new Payment_Account($payment_account_key);
@@ -6020,19 +6027,19 @@ return $pending_amount;
 
 				if ($payment_key) {
 					$payment=new Payment($payment_key);
-					
-						$data_to_update=array(
 
-							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+					$data_to_update=array(
+
+						'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 						'Payment Balance'=>$payment_amount,
 						'Payment Amount'=>$payment_amount
 
-						);
+					);
 
 
 
-						$payment->update($data_to_update);
-					
+					$payment->update($data_to_update);
+
 				}
 				else {
 					$payment_data=array(
@@ -6057,11 +6064,11 @@ return $pending_amount;
 					);
 
 					$payment=new Payment('create',$payment_data);
-					
+
 					//print_r($payment);
 					//exit;
 				}
-				
+
 				$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'Yes') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
 					$this->id,
 					$payment->id,
@@ -6071,29 +6078,29 @@ return $pending_amount;
 					$payment->data['Payment Amount']
 				);
 				mysql_query($sql);
-			//	print $sql;
-		//		exit;
-		
-		
+				// print $sql;
+				//  exit;
+
+
 				$this->update(
-							array(
-								'Order Payments Amount'=>$payment->data['Payment Amount']
-								
-								
-							));
-							
-						
-						$customer->update(
-							array(
-								'Customer Account Balance'=>round($customer_account_available_amount-$payment->data['Payment Amount'],2)
-								
-								
-							));	
-						
-							
+					array(
+						'Order Payments Amount'=>$payment->data['Payment Amount']
+
+
+					));
+
+
+				$customer->update(
+					array(
+						'Customer Account Balance'=>round($customer_account_available_amount-$payment->data['Payment Amount'],2)
+
+
+					));
+
+
 				$this->update_payment_state();
 
-			
+
 			}
 
 		}else {
@@ -6104,7 +6111,9 @@ return $pending_amount;
 
 
 	}
-
+function get_date($field) {
+return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+}
 
 }
 

@@ -44,29 +44,29 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 		$metadata=preg_replace('/[^\d]/','',$row['Order Original Metadata']);
 
-		print "deleting  ".$row['Order Public ID']."  ".$row['Order Original Metadata']."  $metadata\n";
+		print "deleting  ".$row['Order Public ID']."  ".$row['Order Original Metadata']."  $metadata , invoice_id: ".$invoice->id."  \n";
 
 
 		if (preg_match('/^U/',$row['Order Original Metadata'])) {
 			$sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$metadata);
 			mysql_query($sql);
-			//print "$sql\n";
+			print "$sql\n";
 		}elseif (preg_match('/^D/',$row['Order Original Metadata'])) {
 			$sql=sprintf("update de_orders_data.orders set last_transcribed=NULL where id=%d",$metadata);
 			mysql_query($sql);
-			//print "$sql\n";
+			print "$sql\n";
 		}elseif (preg_match('/^F/i',$row['Order Original Metadata'])) {
 			$sql=sprintf("update fr_orders_data.orders set last_transcribed=NULL where id=%d",$metadata);
 			mysql_query($sql);
-			//print "$sql\n";
+			print "$sql\n";
 		}elseif (preg_match('/^I/i',$row['Order Original Metadata'])) {
 			$sql=sprintf("update it_orders_data.orders set last_transcribed=NULL where id=%d",$metadata);
 			mysql_query($sql);
-			//print "$sql\n";
+			print "$sql\n";
 		}elseif (preg_match('/^P/i',$row['Order Original Metadata'])) {
 			$sql=sprintf("update pl_orders_data.orders set last_transcribed=NULL where id=%d",$metadata);
 			mysql_query($sql);
-			//print "$sql\n";
+			print "$sql\n";
 		}
 
 
@@ -128,6 +128,58 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
+
+}
+
+$invoices_to_delete=array('1472267','1472265');
+
+foreach($invoices_to_delete as $invoice_key){
+		$sql=sprintf("delete from `Order Invoice Bridge` where `Invoice Key`=%d   ",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Sales Representative Bridge`  where   `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Processed By Bridge`  where   `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Charged By Bridge`  where   `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Tax Dimension` where `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Invoice Key`=%d   ",$invoice_key);
+		mysql_query($sql)  ;
+
+		$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Invoice' and `Direct Object Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+
+		$sql=sprintf("select `Category Key` from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$invoice_key);
+		$result_test_category_keys=mysql_query($sql);
+		
+		while ($row_test_category_keys=mysql_fetch_array($result_test_category_keys, MYSQL_ASSOC)) {
+			$_category_keys[]=$row_test_category_keys['Category Key'];
+		}
+		$sql=sprintf("delete from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		
+
+		$sql=sprintf("delete from `Order No Product Transaction Fact` where `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+
+
+		$sql=sprintf("delete from `Order Transaction Fact` where `Invoice Key`=%d",$invoice_key);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Dimension` where `Invoice Key`=%d",$invoice_key);
+	mysql_query($sql);
 
 }
 

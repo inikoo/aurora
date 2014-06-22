@@ -35,10 +35,10 @@ switch ($tipo) {
 case('get_dn_fields'):
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
-			
+
 		));
 	get_dn_fields($data);
-break;
+	break;
 case('number_orders_in_interval'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
@@ -756,36 +756,36 @@ function list_transactions_in_invoice() {
 		//$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 
 
-switch($row['Transaction Type']){
-case('Credit'):
-$code=_('Credit');
-break;
-case('Refund'):
-$code=_('Refund');
-break;
-case('Shipping'):
-$code=_('Shipping');
-break;
-case('Charges'):
-$code=_('Charges');
-break;
-case('Adjust'):
-$code=_('Adjust');
-break;
-case('Other'):
-$code=_('Other');
-break;
-case('Deal'):
-$code=_('Deal');
-break;
-case('Insurance'):
-$code=_('Insurance');
-break;
-default:
-$code=$row['Transaction Type'];
+		switch ($row['Transaction Type']) {
+		case('Credit'):
+			$code=_('Credit');
+			break;
+		case('Refund'):
+			$code=_('Refund');
+			break;
+		case('Shipping'):
+			$code=_('Shipping');
+			break;
+		case('Charges'):
+			$code=_('Charges');
+			break;
+		case('Adjust'):
+			$code=_('Adjust');
+			break;
+		case('Other'):
+			$code=_('Other');
+			break;
+		case('Deal'):
+			$code=_('Deal');
+			break;
+		case('Insurance'):
+			$code=_('Insurance');
+			break;
+		default:
+			$code=$row['Transaction Type'];
 
 
-}
+		}
 		$data[]=array(
 
 			'code'=>$code,
@@ -1931,18 +1931,18 @@ function list_invoices() {
 
 
 			if ($row['Invoice Paid']=='Yes')
-			$state=_('Paid');
-		elseif ($row['Invoice Paid']=='Partially')
-						$state=_('Partially Paid');
+				$state=_('Paid');
+			elseif ($row['Invoice Paid']=='Partially')
+				$state=_('Partially Paid');
 
-		else
-			$state=_('No Paid');
+			else
+				$state=_('No Paid');
 
 
 			if ($row['Invoice Type']=='Invoice')
 				$type=_('Invoice');
 			elseif ($row['Invoice Type']=='CreditNote')
-				$type=_('Credit Note');	
+				$type=_('Credit Note');
 			else
 				$type=_('Refund');
 
@@ -3771,6 +3771,7 @@ function number_orders_in_interval($data) {
 	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension` USE INDEX (`Main Source Type Store Key`)  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
 		$parent_key,$where_interval);
 	$res=mysql_query($sql);
+	//print $sql;
 	while ($row=mysql_fetch_assoc($res)) {
 
 		$elements_numbers['source'][$row['element']]=number($row['number']);
@@ -3792,7 +3793,7 @@ function number_orders_in_interval($data) {
 
 		if ($row['element']!='') {
 
-			if($row['element']=='Cancelled by Customer')
+			if ($row['element']=='Cancelled by Customer')
 				continue;
 
 			if ($row['element']=='In Process by Customer' or $row['element']=='Waiting for Payment Confirmation') {
@@ -3873,7 +3874,7 @@ function number_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InProcessbyCustomer']=$row['num'];
 	}
-//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -4429,17 +4430,17 @@ function get_order_details($data) {
 }
 
 
-function get_dn_fields($data){
+function get_dn_fields($data) {
 
 	$delivery_note=new DeliveryNote($data['dn_key']);
 
 	$dn_data=array(
-	'dn_key'=>$delivery_note->id,
-	'weight'=>$delivery_note->get('Weight For Edit'),
-	'number_parcels'=>($delivery_note->get('Delivery Note Number Parcels')?$delivery_note->get('Delivery Note Number Parcels'):''),
-	'parcel_type'=>($delivery_note->get('Delivery Note Parcel Type')?$delivery_note->get('Delivery Note Parcel Type'):''),
-	'courier'=>$delivery_note->get('Delivery Note Shipper Code'),
-	'consignment'=>$delivery_note->get('Delivery Note Shipper Consignment')
+		'dn_key'=>$delivery_note->id,
+		'weight'=>$delivery_note->get('Weight For Edit'),
+		'number_parcels'=>($delivery_note->get('Delivery Note Number Parcels')?$delivery_note->get('Delivery Note Number Parcels'):''),
+		'parcel_type'=>($delivery_note->get('Delivery Note Parcel Type')?$delivery_note->get('Delivery Note Parcel Type'):''),
+		'courier'=>$delivery_note->get('Delivery Note Shipper Code'),
+		'consignment'=>$delivery_note->get('Delivery Note Shipper Consignment')
 
 	);
 
