@@ -291,7 +291,12 @@ else {
 	case('Submitted by Customer'):
 		case('Waiting for Payment Confirmation'):
 
-     $order->update_tax();
+   //  $order->update_tax();
+     
+     $js_files[]='js/php.default.min.js';
+	$js_files[]='js/add_payment.js';
+     
+     
 		$js_files[]='js/edit_common.js';
 
 

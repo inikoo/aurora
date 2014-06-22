@@ -18,6 +18,12 @@
 		<input type="hidden" id="items_table_index" value="0" />
 
 		
+			<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
+				<input type="hidden" value="{$decimal_point}" id="decimal_point" />
+				<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+
+		
+		
 		<div class="branch ">
 		{if $referral=='spo'}
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
@@ -136,13 +142,13 @@
 						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 					</tr>
 					
-						<tr style="color:#777">
+				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')==0 }display:none{/if}">
 						<td class="aright">{t}Paid{/t}</td>
-						<td id="order_total" width="100" class="aright" >{$order->get('Payments Amount')}</td>
+						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
 					</tr>
-						<tr style="color:#777">
+				<tr id="tr_order_total_paid" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div><img title="{$order->get('Order Current XHTML Payment State')}" src="art/icons/information.png" style="height:12.9px">  {t}To Pay{/t}</td>
-						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				
 					
@@ -187,7 +193,7 @@
 	</div>
 	<div style="padding:0px 20px">
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='items'}display:none{/if}" id="items_block" >
-			<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span>  
+			<span id="table_title_items" class="clean_table_title" >{t}Items{/t}</span>  
 			
 			<div class="table_top_bar space">
 			</div>
@@ -199,7 +205,7 @@
 						<td class="{if $items_view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
 					</tr>
 				</table>
-				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $viitems_viewew!='sales' };display:none{/if}" class="options_mini">
+				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $items_view!='sales' };display:none{/if}" class="options_mini">
 					<tr>
 						<td class="{if $items_period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
 						<td class="{if $items_period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>
@@ -244,7 +250,7 @@
 						<td class="{if $products_view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
 					</tr>
 				</table>
-				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}" class="options_mini">
+				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $products_view!='sales' };display:none{/if}" class="options_mini">
 					<tr>
 						<td class="{if $products_period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
 						<td class="{if $products_period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>
@@ -330,6 +336,7 @@
 </div>
 
 
+{include file='add_payment_splinter.tpl'}
 
 
 {include file='order_not_dispatched_dialogs_splinter.tpl'}

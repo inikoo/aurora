@@ -5,6 +5,42 @@ var dialog_confirm_cancel;
 var dialog_set_tax;
 var dialog_check_tax_number;
 
+
+function submit_order_paid(){
+
+   if (Dom.hasClass('place_order', 'waiting')) {
+        return;
+    }
+    Dom.addClass('place_order', 'waiting')
+    Dom.get('place_order_img').src = "art/loading.gif"
+
+   
+
+    var request = 'ar_edit_payments.php?tipo=submit_order_nothing_to_pay&order_key=' + Dom.get('order_key').value
+
+  
+
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+             //    alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+
+                window.location = 'thanks.php?id=' + r.order_key
+
+            } else {
+				 Dom.get('place_order_img').src = "art/icons/arrow_right.png"
+				location.reload(); 
+            }
+        }
+    });
+
+	
+}
+
 function close_edit_delivery_address_dialog() {
     edit_delivery_address.hide();
 }
@@ -76,7 +112,13 @@ function use_this_delivery_address_in_order(address_key, hide_edit_delivery_addr
                 }
 
                 Dom.get('tax_info').innerHTML = r.tax_info
-
+if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
 
                 if (hide_edit_delivery_address) {
                     edit_delivery_address.hide()
@@ -115,6 +157,14 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
                 for (x in r.data) {
                     if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
                 }
+                
+                if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
 
                 Dom.get('tax_info').innerHTML = r.tax_info
 
@@ -138,14 +188,17 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
     );
 }
 
+
+
+
 function change_shipping_type(new_value) {
 
     var ar_file = 'ar_edit_orders.php';
     var request = 'tipo=edit_new_order_shipping_type&id=' + Dom.get('order_key').value + '&key=collection&newvalue=' + new_value;
-    // alert(request);
+   //  alert(ar_file+'?'+request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText)
+            alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.result == 'updated') {
@@ -164,7 +217,23 @@ function change_shipping_type(new_value) {
                     for (x in r.data) {
                         if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
                     }
+                    if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
 
+
+					if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
+					
                     Dom.get('tax_info').innerHTML = r.tax_info
 
 
@@ -241,6 +310,15 @@ function CellEdit(callback, newValue) {
                 for (x in r.data) {
                     if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
                 }
+                
+                if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
+                
                 Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
                 if (r.data['ordered_products_number'] > 0) {
@@ -572,6 +650,7 @@ function get_tax_info() {
                 }
 
 
+
             } else {
                 alert(r.state)
             }
@@ -735,6 +814,14 @@ function add_insurance(o) {
                     if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
                 }
 
+if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
+
                 Dom.get('tax_info').innerHTML = r.tax_info
                 if (r.order_insurance_amount == 0) {
                     Dom.setStyle('tr_order_insurance', 'display', 'none')
@@ -790,6 +877,14 @@ function remove_insurance(o) {
                 for (x in r.data) {
                     if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
                 }
+                
+                if(r.order_total_to_pay==0){
+						Dom.setStyle('button_proceed_to_checkout','display','none')
+						Dom.setStyle('button_submit_order_paid','display','')
+					}else{
+						Dom.setStyle('button_proceed_to_checkout','display','')
+						Dom.setStyle('button_submit_order_paid','display','none')
+					}
 
                 Dom.get('tax_info').innerHTML = r.tax_info
                 if (r.order_insurance_amount == 0) {

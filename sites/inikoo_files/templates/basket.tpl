@@ -108,7 +108,7 @@
 					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 				</tr >
 				
-					<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')!=0}display:none{/if}">
+				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')!=0}display:none{/if}">
 					<td class="aright">{t}Paid{/t}</td>
 					<td id="order_total_paid" width="100" class="aright" style="font-weight:800">{$order->get('Payments Amount')}</td>
 				</tr>
@@ -175,7 +175,7 @@
 		</div>
 		<div class="buttons right" >
 			<button id="button_proceed_to_checkout" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}" onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button> 
-			<button id="button_submit_order_paid" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}" onclick="submit_order_paid()" class="positive">{t}Place Order{/t}</button> 
+			<button id="button_submit_order_paid" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}" onclick="submit_order_paid()" class="positive">{t}Place Order{/t} <img id="place_order_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> 
 
 		</div>
 		<div style="clear:both">

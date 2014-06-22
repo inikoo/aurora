@@ -19,6 +19,7 @@ Dom.setStyle(['add_payment_amount','pay_all'],'display','')
 function add_payment_to_order(order_key, max_amount) {
 
     Dom.get('add_payment_max_amount').value = max_amount;
+  
     Dom.get('add_payment_amount_formated').innerHTML = money(max_amount, Dom.get('currency_code').value);
 
     Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'add_payment_payment_account_container'), 'selected')
@@ -40,25 +41,51 @@ function add_payment_to_order(order_key, max_amount) {
 
 function add_payment_change_account(payment_account_key) {
 
+
+var payment_account=Dom.get('add_payment_payment_account_'+payment_account_key)
+
     Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'add_payment_payment_account_container'), 'selected')
 
 
     Dom.addClass('add_payment_payment_account_' + payment_account_key, 'selected')
-    Dom.get('add_payment_payment_account_key').value = this.id;
+    Dom.get('add_payment_payment_account_key').value = payment_account.id;
 
-    Dom.removeClass(['add_payment_payment_method_creditcard', 'add_payment_payment_method_bank_transfer', 'add_payment_payment_method_paypal', 'add_payment_payment_method_cash', 'add_payment_payment_method_cheque', 'add_payment_payment_method_other'], 'selected')
-    Dom.get('add_payment_method').value = '';
 
+    Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'type_of_payment'), 'selected')
+    Dom.setStyle(Dom.getElementsByClassName('item', 'button', 'type_of_payment'), 'display','none')
+   // alert(payment_account.id)
+   var valid_payment_methods=payment_account.getAttribute('valid_payment_methods').split(","); 
+   var number_methods=0;
+   for (index = 0; index < valid_payment_methods.length; ++index) {
+    number_methods++;
+    if(index == 0){
+       	Dom.addClass('add_payment_payment_method_'+valid_payment_methods[index],'selected')
+ Dom.get('add_payment_method').value = Dom.get('add_payment_payment_method_'+valid_payment_methods[index]).getAttribute('tag');
+    }
+    
+   	Dom.setStyle('add_payment_payment_method_'+valid_payment_methods[index],'display','')
+}
+
+   
+
+
+
+
+if(number_methods>1){
+		Dom.setStyle('payment_methods','display','')
+}else{
+Dom.setStyle('payment_methods','display','none')
+}
 
     can_submit_payment()
 }
 
 function select_payment_method() {
 
-    Dom.removeClass(['add_payment_payment_method_creditcard', 'add_payment_payment_method_bank_transfer', 'add_payment_payment_method_paypal', 'add_payment_payment_method_cash', 'add_payment_payment_method_cheque', 'add_payment_payment_method_other'], 'selected')
+    Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'type_of_payment'), 'selected')
 
     Dom.addClass(this, 'selected')
-    Dom.get('add_payment_method').value = this.id;
+    Dom.get('add_payment_method').value = this.getAttribute('tag');
 
     can_submit_payment()
 
@@ -76,7 +103,10 @@ function can_submit_payment() {
 
 
 function init_add_payment() {
-    YAHOO.util.Event.addListener(['add_payment_payment_method_creditcard', 'add_payment_payment_method_bank_transfer', 'add_payment_payment_method_paypal', 'add_payment_payment_method_cash', 'add_payment_payment_method_cheque', 'add_payment_payment_method_other'], "click", select_payment_method);
+
+
+
+    YAHOO.util.Event.addListener(Dom.getElementsByClassName('item', 'button', 'type_of_payment'), "click", select_payment_method);
 
 
     dialog_add_payment = new YAHOO.widget.Dialog("dialog_add_payment", {

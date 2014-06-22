@@ -49,12 +49,99 @@ case('submit_order'):
 	submit_order($data);
 	break;
 
+case('submit_order_nothing_to_pay'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key')
+
+		));
+	submit_order($data);
+	break;
+
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
 	echo json_encode($response);
 
 }
 
+
+
+function submit_order_nothing_to_pay($data) {
+	global $user,$site,$language,$customer;
+
+	$order=new Order($data['order_key']);
+
+
+	if (!$order->id) {
+		$response=array('state'=>400,'msg'=>'error: order dont exists','type_error'=>'invalid_order_key');
+		echo json_encode($response);
+		return;
+	}
+
+
+	$payment_key=0;
+	$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+		$this->id
+
+	);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$payment_key=$row['Payment Key'];
+
+	}
+
+	$payment=new Payment($payment_key);
+
+	if ($payment->id) {
+$payment_account=new Payment_Account($payment->data['Payment Account Key']);
+
+
+	$data_to_update=array(
+							
+							'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+							'Payment Transaction Status'=>'Completed',
+							'Payment Transaction ID'=>$payment->id,
+
+						);
+
+
+
+						$payment->update($data_to_update);
+
+		$order->update(
+			array(
+				'Order Payment Account Key'=>$payment_account->id,
+				'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+				'Order Payment Method'=>$payment_account->data['Payment Type'],
+				'Order Payment Key'=>$payment->id,
+
+			));
+
+
+	}
+
+	$order->checkout_submit_order();
+
+
+
+
+
+
+	include_once 'send_confirmation_email_function.php';
+	send_confirmation_email($order);
+
+
+	$response=array('state'=>200,
+		'order_key'=>$order->id
+	);
+	echo json_encode($response);
+	return;
+
+
+
+
+
+}
 
 
 function submit_order($data) {
@@ -94,7 +181,7 @@ function submit_order($data) {
 	$order->checkout_submit_order();
 
 
- $xhtml_payment_state=_('Waiting Payment').' ('.$payment_account->data['Payment Account Name'].')';
+	$xhtml_payment_state=_('Waiting Payment').' ('.$payment_account->data['Payment Account Name'].')';
 
 	$order->update(
 		array(
@@ -190,16 +277,16 @@ function create_payment($data) {
 	);
 
 	$payment=new Payment('create',$payment_data);
-	
-			$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
-						$order->id,
-						$payment->id,
-						$payment_account->id,
-						$payment_account->data['Payment Service Provider Key'],
-						$payment->data['Payment Amount'],
-						$payment->data['Payment Amount']
-						);
-						mysql_query($sql);
+
+	$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+		$order->id,
+		$payment->id,
+		$payment_account->id,
+		$payment_account->data['Payment Service Provider Key'],
+		$payment->data['Payment Amount'],
+		$payment->data['Payment Amount']
+	);
+	mysql_query($sql);
 
 	$order->checkout_submit_payment();
 

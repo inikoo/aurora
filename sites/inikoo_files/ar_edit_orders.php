@@ -251,7 +251,7 @@ function edit_new_order_shipping_type() {
 	}
 	if ($order->id) {
 		$order->update_order_is_for_collection($value);
-		if ($order->updated) {
+		
 			$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 			$updated_data=array(
 				'order_items_gross'=>$order->get('Items Gross Amount'),
@@ -265,7 +265,7 @@ function edit_new_order_shipping_type() {
 				'order_total'=>$order->get('Total Amount'),
 				'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
 				'order_total_paid'=>$order->get('Payments Amount'),
-				'order_total_to_pay'=>$order->get('To Pay Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 			);
 
 
@@ -282,10 +282,7 @@ function edit_new_order_shipping_type() {
 				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 			);
 
-		} else {
-			$response=array('state'=>200,'result'=>'no_change');
-
-		}
+		
 
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);

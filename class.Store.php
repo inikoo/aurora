@@ -1786,12 +1786,16 @@ class Store extends DB_Table {
 		//	print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
+		
+		$payment_service_provider=new Payment_Service_Provider($row['Payment Service Provider Key']);
+		
 		$payment_accounts_data[]=array(
 				'key'=>$row['Payment Account Key'],
 				'code'=>$row['Payment Account Code'],
 				'type'=>$row['Payment Type'],
 				'service_provider_code'=>$row['Payment Service Provider Code'],
 								'service_provider_name'=>$row['Payment Service Provider Name'],
+								'valid_payment_methods'=>join(',',preg_replace('/\s/','',$payment_service_provider->get_valid_payment_methods()))
 
 		);
 			

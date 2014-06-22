@@ -775,7 +775,9 @@ function edit_new_order_shipping_type() {
 				'order_charges'=>$order->get('Charges Net Amount'),
 				'order_credits'=>$order->get('Net Credited Amount'),
 				'order_shipping'=>$order->get('Shipping Net Amount'),
-				'order_total'=>$order->get('Total Amount')
+				'order_total'=>$order->get('Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 
 			);
 
@@ -822,7 +824,9 @@ function use_calculated_shipping($data) {
 			'order_charges'=>$order->get('Charges Net Amount'),
 			'order_credits'=>$order->get('Net Credited Amount'),
 			'order_shipping'=>$order->get('Shipping Net Amount'),
-			'order_total'=>$order->get('Total Amount')
+			'order_total'=>$order->get('Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 
 		);
 		$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'order_shipping_method'=>$order->data['Order Shipping Method'],'data'=>$updated_data,'shipping'=>money($order->new_value),'shipping_amount'=>$order->data['Order Shipping Net Amount']);
@@ -850,7 +854,9 @@ function use_calculated_items_charges($data) {
 			'order_charges'=>$order->get('Charges Net Amount'),
 			'order_credits'=>$order->get('Net Credited Amount'),
 			'order_shipping'=>$order->get('Shipping Net Amount'),
-			'order_total'=>$order->get('Total Amount')
+			'order_total'=>$order->get('Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 
 		);
 		$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges'=>money($order->new_value),'items_charges_amount'=>$order->data['Order Charges Net Amount']);
@@ -882,7 +888,9 @@ function set_order_shipping($data) {
 				'order_charges'=>$order->get('Charges Net Amount'),
 				'order_credits'=>$order->get('Net Credited Amount'),
 				'order_shipping'=>$order->get('Shipping Net Amount'),
-				'order_total'=>$order->get('Balance Total Amount')
+				'order_total'=>$order->get('Balance Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 
 			);
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping_amount'=>$order->data['Order Shipping Net Amount'],'shipping'=>money($order->new_value),'order_shipping_method'=>$order->data['Order Shipping Method']);
@@ -925,7 +933,9 @@ function set_order_items_charges($data) {
 				'order_charges'=>$order->get('Charges Net Amount'),
 				'order_credits'=>$order->get('Net Credited Amount'),
 				'order_shipping'=>$order->get('Shipping Net Amount'),
-				'order_total'=>$order->get('Balance Total Amount')
+				'order_total'=>$order->get('Balance Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 
 			);
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges_amount'=>$order->data['Order Charges Net Amount'],'items_charges'=>money($order->new_value));
@@ -1094,6 +1104,8 @@ function edit_new_order() {
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 	);
 
 	$response= array(
@@ -1106,7 +1118,10 @@ function edit_new_order() {
 		'to_charge'=>$transaction_data['to_charge'],
 		'discount_data'=>$adata,
 		'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
-		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false),
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
 	echo json_encode($response);
@@ -3278,6 +3293,8 @@ function update_ship_to_key_from_address($data) {
 			'order_shipping'=>$order->get('Shipping Net Amount'),
 			'order_total'=>$order->get('Total Amount'),
 			'ordered_products_number'=>$order->get('Number Products'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 		);
 
 		$response= array(
@@ -3286,7 +3303,9 @@ function update_ship_to_key_from_address($data) {
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
 			'ship_to'=>$order->get('Order XHTML Ship Tos'),
-			'tax_info'=>$order->get_formated_tax_info_with_operations()
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 		);
 
@@ -3337,7 +3356,9 @@ function add_insurance($data) {
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
-		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 	);
 
 	$response= array(
@@ -3348,7 +3369,9 @@ function add_insurance($data) {
 		'ship_to'=>$order->get('Order XHTML Ship Tos'),
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'onptf_key'=>$onptf_key,
-		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 	);
 
@@ -3375,7 +3398,9 @@ function remove_insurance($data) {
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
-		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 	);
 
 	$response= array(
@@ -3386,7 +3411,9 @@ function remove_insurance($data) {
 		'ship_to'=>$order->get('Order XHTML Ship Tos'),
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 
-		'order_insurance_amount'=>$order->data['Order Insurance Net Amount']
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 	);
 
@@ -3423,6 +3450,8 @@ function update_billing_to_key_from_address($data) {
 			'order_shipping'=>$order->get('Shipping Net Amount'),
 			'order_total'=>$order->get('Total Amount'),
 			'ordered_products_number'=>$order->get('Number Products'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 		);
 
 		$response= array(
@@ -3431,8 +3460,9 @@ function update_billing_to_key_from_address($data) {
 			'data'=>$updated_data,
 			'order_key'=>$order->id,
 			'billing_to'=>$order->get('Order XHTML Billing Tos'),
-			'tax_info'=>$order->get_formated_tax_info_with_operations()
-
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 		);
 
@@ -4120,11 +4150,16 @@ function import_transactions_mals_e($_data) {
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 	);
 
 	$response= array(
 		'state'=>200,
 		'data'=>$updated_data,
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
 	echo json_encode($response);
@@ -4165,6 +4200,8 @@ function update_order() {
 
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 	);
 	$_SESSION['basket']['total']=$updated_data['order_total'];
 	$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
@@ -4223,55 +4260,7 @@ function pay_invoice($data) {
 }
 
 
-function cc_payment($data) {
-	$data=$data['json_values'];
-	require_once 'paypal/DoDirectPayment.php';
 
-
-	//print $data['firstName'];exit;
-	//print_r($data); exit;
-	// Set request-specific fields.
-	$paymentType = urlencode('Authorization');    // or 'Sale'
-	$firstName = urlencode($data['firstName']);
-	$lastName = urlencode($data['lastName']);
-	$creditCardType = urlencode($data['CCType']);
-	$creditCardNumber = urlencode($data['CCNo']);
-	$expDateMonth = $data['CCExpiresMonth'];
-	// Month must be padded with leading zero
-	$padDateMonth = urlencode(str_pad($expDateMonth, 2, '0', STR_PAD_LEFT));
-
-	$expDateYear = urlencode($data['CCExpiresYear']);
-	$cvv2Number = urlencode($data['CVV2']);
-	$address1 = urlencode($data['address1']);
-	$address2 = urlencode($data['address2']);
-	$city = urlencode($data['city']);
-	$state = urlencode($data['state']);
-	$zip = urlencode($data['zip']);
-	$country = urlencode($data['country']);    // US or other valid country code
-	$amount = urlencode('10');
-	$currencyID = urlencode('GBP');       // or other currency ('GBP', 'EUR', 'JPY', 'CAD', 'AUD')
-
-	// Add request-specific fields to the request string.
-	$nvpStr = "&PAYMENTACTION=$paymentType&AMT=$amount&CREDITCARDTYPE=$creditCardType&ACCT=$creditCardNumber".
-		"&EXPDATE=$padDateMonth$expDateYear&CVV2=$cvv2Number&FIRSTNAME=$firstName&LASTNAME=$lastName".
-		"&STREET=$address1&CITY=$city&STATE=$state&ZIP=$zip&COUNTRYCODE=$country&CURRENCYCODE=$currencyID";
-
-	// Execute the API operation; see the PPHttpPost function above.
-	$httpParsedResponseAr = PPHttpPost('DoDirectPayment', $nvpStr);
-
-
-	if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
-		//  exit('Direct Payment Completed Successfully: '.print_r($httpParsedResponseAr, true));
-		$httpParsedResponseAr['state']=200;
-	} else {
-		//exit('DoDirectPayment failed: ' . print_r($httpParsedResponseAr, true));
-		$httpParsedResponseAr['state']=400;
-	}
-
-	$response=$httpParsedResponseAr;
-
-	echo json_encode($response);
-}
 
 
 function update_percentage_discount($data) {
@@ -4306,6 +4295,8 @@ function update_percentage_discount($data) {
 		'order_shipping'=>$order->get('Shipping Net Amount'),
 		'order_total'=>$order->get('Total Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount')
 	);
 
 
@@ -4324,7 +4315,10 @@ function update_percentage_discount($data) {
 		//'discount_data'=>$adata,
 		'discounts'=>($discounts!=0?true:false),
 		//'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
-		'charges'=>$order->data['Order Charges Net Amount']
+		'charges'=>$order->data['Order Charges Net Amount'],
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 	echo json_encode($response);
 
