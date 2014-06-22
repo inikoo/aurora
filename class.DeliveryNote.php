@@ -3152,7 +3152,8 @@ class DeliveryNote extends DB_Table {
 			'Invoice Tax Shipping Code'=>$tax_code,
 			'Invoice Tax Charges Code'=>$tax_code,
 			'Invoice Sales Representative Keys'=>$sales_representatives,
-			'Invoice Billing To Key'=>$billing_to_key
+			'Invoice Billing To Key'=>$billing_to_key,
+			'Invoice Metadata'=>$this->data['Delivery Note Metadata']
 
 		);
 

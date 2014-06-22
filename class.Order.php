@@ -339,6 +339,7 @@ class Order extends DB_Table {
 			$this->get_data('id',$this->id);
 			$this->update_item_totals_from_order_transactions();
 			$this->update_totals_from_order_transactions();
+			$this->apply_payment_from_customer_account();
 		}
 	}
 
@@ -864,7 +865,9 @@ class Order extends DB_Table {
 			'Invoice Tax Code'=>$tax_code,
 			'Invoice Tax Shipping Code'=>$tax_code,
 			'Invoice Tax Charges Code'=>$tax_code,
-			'Invoice Sales Representative Keys'=>$this->get_sales_representative_keys()
+			'Invoice Sales Representative Keys'=>$this->get_sales_representative_keys(),
+			'Invoice Metadata'=>$this->data['Order Original Metadata']
+
 		);
 
 
@@ -2910,6 +2913,7 @@ class Order extends DB_Table {
 		$this->get_items_totals_by_adding_transactions();
 		$this->update_no_normal_totals('save');
 		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
 		$this->new_value=$this->data['Order Shipping Net Amount'];
 
 	}
@@ -2923,6 +2927,7 @@ class Order extends DB_Table {
 		$this->get_items_totals_by_adding_transactions();
 		$this->update_no_normal_totals('save');
 		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
 		$this->new_value=$this->data['Order Charges Net Amount'];
 
 	}
@@ -2945,7 +2950,7 @@ class Order extends DB_Table {
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
-
+$this->apply_payment_from_customer_account();
 		}
 
 	}
@@ -3016,7 +3021,7 @@ class Order extends DB_Table {
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
-
+$this->apply_payment_from_customer_account();
 
 
 
@@ -3204,6 +3209,7 @@ class Order extends DB_Table {
 		$this->update_no_normal_totals('save');
 		$this->update_item_totals_from_order_transactions() ;
 		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
 
 	}
 
@@ -3287,6 +3293,7 @@ class Order extends DB_Table {
 		$this->update_no_normal_totals('save');
 
 		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
 
 	}
 
@@ -3391,6 +3398,7 @@ class Order extends DB_Table {
 		}
 		$this->update_no_normal_totals('save');
 		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
 
 	}
 
@@ -3401,8 +3409,10 @@ class Order extends DB_Table {
 			$this->id
 		);
 		mysql_query($sql);
+		
 		$this->update_no_normal_totals('save');
 		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
 	}
 
 
@@ -3443,7 +3453,7 @@ class Order extends DB_Table {
 				$this->update_no_normal_totals('save');
 				$this->update_totals_from_order_transactions();
 
-
+$this->apply_payment_from_customer_account();
 			}else {
 				$onptf_key=$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
 			}
@@ -3920,6 +3930,7 @@ class Order extends DB_Table {
 			$this->update_no_normal_totals('save');
 
 			$this->update_totals_from_order_transactions();
+			$this->apply_payment_from_customer_account();
 			$deal_info='';
 			if ($amount>0  ) {
 				$deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
@@ -4751,9 +4762,7 @@ class Order extends DB_Table {
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
-
-
-
+			$this->apply_payment_from_customer_account();
 		} else {
 			$this->msg=_('Nothing to change');
 
