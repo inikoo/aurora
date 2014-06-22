@@ -396,6 +396,9 @@ function delete_old_data($delete_record=false) {
 
 
 	};
+
+
+
 	$sql=sprintf("select `Delivery Note Key`  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 	$result_test=mysql_query($sql);
 	while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
