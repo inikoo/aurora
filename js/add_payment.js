@@ -13,13 +13,37 @@ function add_payment(parent, parent_key, max_amount) {
 function add_payment_show_other_amount_field(){
 
 Dom.setStyle(['amount_paid_total',,'show_other_amount_field'],'display','none')
-Dom.setStyle(['add_payment_amount','pay_all'],'display','')
+Dom.setStyle(['add_payment_amount','add_payment_pay_max_amount'],'display','')
+
+Dom.get('add_payment_amount_formated').innerHTML=money(0, Dom.get('currency_code').value)
+ Dom.get('add_payment_amount').value='';
+ Dom.get('add_payment_amount').focus();
+
+
+}
+
+function update_add_payment_amount(o){
+Dom.get('add_payment_amount_formated').innerHTML=money(o.value, Dom.get('currency_code').value)
+
+}
+
+
+function add_payment_pay_max_amount(){
+Dom.setStyle(['amount_paid_total',,'show_other_amount_field'],'display','')
+Dom.setStyle(['add_payment_amount','add_payment_pay_max_amount'],'display','none')
+
+Dom.get('add_payment_amount_formated').innerHTML=money(Dom.get('add_payment_max_amount').value, Dom.get('currency_code').value)
+      Dom.get('add_payment_amount').value = Dom.get('add_payment_max_amount').value;
+
+
 }
 
 function add_payment_to_order(order_key, max_amount) {
 
-    Dom.get('add_payment_max_amount').value = max_amount;
-  
+    Dom.get('add_payment_reference').value = '';
+      Dom.get('add_payment_max_amount').value = max_amount;
+      Dom.get('add_payment_amount').value = max_amount;
+
     Dom.get('add_payment_amount_formated').innerHTML = money(max_amount, Dom.get('currency_code').value);
 
     Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'add_payment_payment_account_container'), 'selected')
@@ -93,7 +117,7 @@ function select_payment_method() {
 
 
 function can_submit_payment() {
-    if (Dom.get('add_payment_method').value != '' && Dom.get('add_payment_payment_account_key').value != '') {
+    if (Dom.get('add_payment_method').value != '' && Dom.get('add_payment_payment_account_key').value != ''  && Dom.get('add_payment_reference').value != '') {
         Dom.removeClass('save_add_payment', 'disabled')
     } else {
         Dom.addClass('save_add_payment', 'disabled')
@@ -101,6 +125,9 @@ function can_submit_payment() {
     }
 }
 
+function hide_add_payment(){
+dialog_add_payment.hide()
+}
 
 function init_add_payment() {
 
