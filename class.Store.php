@@ -1787,6 +1787,9 @@ class Store extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 		
+		
+		if($row['Payment Type']=='Account')
+			continue;
 		$payment_service_provider=new Payment_Service_Provider($row['Payment Service Provider Key']);
 		
 		$payment_accounts_data[]=array(

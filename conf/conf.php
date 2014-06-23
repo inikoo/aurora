@@ -123,7 +123,7 @@ $default_state=array(
 		'stats_view'=>'population',
 		'pending_orders'=>array(
 			'order'=>'date',
-			'order_dir'=>'',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'where true',
@@ -3527,7 +3527,7 @@ $default_state=array(
 		
 			'pending_orders'=>array(
 			'order'=>'date',
-			'order_dir'=>'',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'where true',
