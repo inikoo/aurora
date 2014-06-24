@@ -53,7 +53,7 @@ $js_files=array(
 );
 
 
-
+$corporation=new Account();
 
 if (isset($_REQUEST['new']) ) {
 	date_default_timezone_set('UTC');
@@ -574,15 +574,14 @@ $smarty->assign( 'shipper_data', $shipper_data );
 			$smarty->assign('search_label',_('Orders'));
 			$smarty->assign('search_scope','orders');
 
-			$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 		}
 
 
 
 
-		$company_area=new CompanyArea('code','WAH');
-		$pickers=$company_area->get_current_staff_with_position_code('PICK');
+
+		$pickers=$corporation->get_current_staff_with_position_code('PICK');
 		$number_cols=5;
 		$row=0;
 		$pickers_data=array();
@@ -601,7 +600,7 @@ $smarty->assign( 'shipper_data', $shipper_data );
 		$smarty->assign('pickers',$pickers_data);
 		$smarty->assign('number_pickers',count($pickers_data));
 
-		$packers=$company_area->get_current_staff_with_position_code('PACK');
+		$packers=$corporation->get_current_staff_with_position_code('PACK');
 		$number_cols=5;
 		$row=0;
 		$packers_data=array();
@@ -637,8 +636,7 @@ $smarty->assign( 'shipper_data', $shipper_data );
 		$template='order_dispatched.tpl';
 
 
-		$company_area=new CompanyArea('code','WAH');
-		$pickers=$company_area->get_current_staff_with_position_code('PICK');
+		$pickers=$corporation->get_current_staff_with_position_code('PICK');
 		$number_cols=5;
 		$row=0;
 		$pickers_data=array();
@@ -656,7 +654,7 @@ $smarty->assign( 'shipper_data', $shipper_data );
 
 		$smarty->assign('pickers',$pickers_data);
 
-		$packers=$company_area->get_current_staff_with_position_code('PACK');
+		$packers=$corporation->get_current_staff_with_position_code('PACK');
 		$number_cols=5;
 		$row=0;
 		$packers_data=array();

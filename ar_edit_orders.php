@@ -3026,7 +3026,7 @@ function picking_aid_sheet() {
 	$total_discounts=0;
 	$total_picks=0;
 
-	$order='`Location Code`';
+	$order='`Part Reference`';
 	$order_dir='';
 
 	$data=array();
@@ -5210,8 +5210,8 @@ function add_payment_to_order($data) {
 		'Payment Store Key'=>$order->data['Order Store Key'],
 		'Payment Customer Key'=>$order->data['Order Customer Key'],
 
-		'Payment Balance'=>$order->data['Order Balance Total Amount'],
-		'Payment Amount'=>$order->data['Order Balance Total Amount'],
+		'Payment Balance'=>$data['payment_amount'],
+		'Payment Amount'=>$data['payment_amount'],
 		'Payment Refund'=>0,
 		'Payment Currency Code'=>$order->data['Order Currency'],
 		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),

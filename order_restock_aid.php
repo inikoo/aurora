@@ -38,6 +38,7 @@ if ( isset( $_REQUEST['refresh'] ) ) {
 
 $dn->update_picking_percentage();
 
+$corporation=new Account();
 
 
 $warehouse= new Warehouse( $dn->data['Delivery Note Warehouse Key'] );
@@ -98,8 +99,7 @@ $js_files=array(
 	'edit_stock.js.php'
 );
 
-$warehouse_area=new CompanyArea('code','WAH');
-$packers=$warehouse_area->get_current_staff_with_position_code('PACK');
+$packers=$corporation->get_current_staff_with_position_code('PACK');
 $number_cols=5;
 $row=0;
 $packers_data=array();
@@ -157,7 +157,7 @@ $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
-$pickers=$warehouse_area->get_current_staff_with_position_code('PACK');
+$pickers=$corporation->get_current_staff_with_position_code('PACK');
 $number_cols=5;
 $row=0;
 $pickers_data=array();
