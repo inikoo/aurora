@@ -31,7 +31,7 @@ require_once '../../conf/conf.php';
 
 $corporation_currency_code='GBP';
 
-$sql=sprintf("select `Invoice Public ID`,`Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Store Key`!=1");
+$sql=sprintf("select `Invoice Public ID`,`Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Currency`!='GBP'");
 $result=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
