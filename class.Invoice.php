@@ -2596,11 +2596,7 @@ class Invoice extends DB_Table {
 		
 		$order->update_xhtml_invoices();
 		$order->update_no_normal_totals();
-			$order->update(
-			array(
-				
-			)
-			);
+		
 		
 		}
 
