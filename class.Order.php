@@ -222,6 +222,8 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 			$this->data ['Order Apply Auto Customer Account Payment'] =$data['Order Apply Auto Customer Account Payment'];
 		}
 
+print_r($this->data);
+
 		if (isset($data['Order Payment Method'])) {
 			$this->data ['Order Payment Method'] =$data['Order Payment Method'];
 		}else {
