@@ -3244,7 +3244,7 @@ class Order extends DB_Table {
 			$this->data['Order Shipping Tax Amount']=$shipping*$this->data['Order Tax Rate'];
 		}
 
-		//print "xxx $shipping xxx";
+		print "xxx $shipping xxx";
 
 
 		$this->update_shipping_method($shipping_method);
@@ -3266,6 +3266,7 @@ class Order extends DB_Table {
 		mysql_query($sql);
 
 
+		print "xssssxx $shipping xxx";
 
 		if (!($this->data['Order Shipping Net Amount']==0 and $this->data['Order Shipping Tax Amount']==0)) {
 			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,
@@ -3289,7 +3290,7 @@ class Order extends DB_Table {
 
 			);
 
-			print ("$sql\n");
+			//print ("$sql\n");
 			mysql_query($sql);
 		}
 
