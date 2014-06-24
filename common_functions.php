@@ -2509,7 +2509,7 @@ function deviation($array) {
 
 
 
-function currency_conversion($currency_from, $currency_to) {
+function currency_conversion($currency_from, $currency_to,$update_interval="-1 hour") {
 	$reload=false;
 	$in_db=false;
 	$exchange_rate=1;
@@ -2520,7 +2520,7 @@ function currency_conversion($currency_from, $currency_to) {
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	
 	
-		if (strtotime($row['Currency Exchange Last Updated'])<date("U",strtotime('-1 hour')))
+		if (strtotime($row['Currency Exchange Last Updated'])<date("U",strtotime($update_interval)))
 			$reload=true;
 		$exchange_rate=$row['Exchange'];
 	} else {

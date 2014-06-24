@@ -137,7 +137,9 @@
 					<span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
-					<tr style="border-bottom:1px solid #777">
+				
+				
+				<tr style="border-bottom:1px solid #777">
 						<td class="aright">{t}Total{/t}</td>
 						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 					</tr>

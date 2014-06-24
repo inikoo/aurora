@@ -291,7 +291,7 @@ class Invoice extends DB_Table {
 		}
 
 
-		$this->data ['Invoice Currency Exchange']=1;
+		$exchange=1;
 		$sql=sprintf("select `Account Currency` from `Account Dimension`");
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
@@ -300,10 +300,19 @@ class Invoice extends DB_Table {
 			$corporation_currency_code='GBP';
 		}
 		if ($this->data ['Invoice Currency']!=$corporation_currency_code) {
-			$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,$this->data['Invoice Date']);
-			$exchange= $currency_exchange->get_exchange();
-			$this->data ['Invoice Currency Exchange']=$exchange;
+
+			//take off this and only use curret exchenge whan get rid off excel
+			$date_difference=date('U')-strtotime($this->data['Invoice Date'].' +0:00');
+			if ($date_difference>3600) {
+				$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,$this->data['Invoice Date']);
+				$exchange= $currency_exchange->get_exchange();
+			}else {
+				$exchange=currency_conversion($this->data ['Invoice Currency'],$corporation_currency_code,'now');
+			}
+
 		}
+
+
 
 		$this->create_header();
 
@@ -2570,34 +2579,34 @@ class Invoice extends DB_Table {
 		}
 
 
-			$this->data ['Order Invoiced Balance Total Amount'] = 0;
-			$this->data ['Order Invoiced Balance Net Amount'] = 0;
-			$this->data ['Order Invoiced Balance Tax Amount'] = 0;
-			$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
-			$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
-			$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
-		
-		
-			$sql=sprintf("delete from `Order Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
+		$this->data ['Order Invoiced Balance Total Amount'] = 0;
+		$this->data ['Order Invoiced Balance Net Amount'] = 0;
+		$this->data ['Order Invoiced Balance Tax Amount'] = 0;
+		$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
+		$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
+		$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
+
+
+		$sql=sprintf("delete from `Order Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
 		mysql_query($sql);
-		
-			$sql=sprintf("update  `Order Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
+
+		$sql=sprintf("update  `Order Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
-		
-		
-			$sql=sprintf("delete from `Order No Product Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
+
+
+		$sql=sprintf("delete from `Order No Product Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
 		mysql_query($sql);
-		
-			$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
+
+		$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
-		
-		
-		foreach($orders as $order){
-		
-		$order->update_xhtml_invoices();
-		$order->update_no_normal_totals();
-		
-		
+
+
+		foreach ($orders as $order) {
+
+			$order->update_xhtml_invoices();
+			$order->update_no_normal_totals();
+
+
 		}
 
 

@@ -218,7 +218,7 @@ class Order extends DB_Table {
 
 
 
-if (isset($data['Order Apply Auto Customer Account Payment'])) {
+		if (isset($data['Order Apply Auto Customer Account Payment'])) {
 			$this->data ['Order Apply Auto Customer Account Payment'] =$data['Order Apply Auto Customer Account Payment'];
 		}
 
@@ -289,9 +289,22 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 
 
 
+
+
+
+
+
 		if ($this->data ['Order Currency']!=$corporation_currency_code) {
-			$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code,$this->data['Order Date']);
-			$exchange= $currency_exchange->get_exchange();
+		
+		
+					//take off this and only use curret exchenge whan get rid off excel
+			$date_difference=date('U')-strtotime($this->data['Order Date'].' +0:00');
+			if ($date_difference>3600) {
+				$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code,$this->data['Order Date']);
+				$exchange= $currency_exchange->get_exchange();
+			}else {
+				$exchange=currency_conversion($this->data ['Order Currency'],$corporation_currency_code,'now');
+			}
 			$this->data ['Order Currency Exchange']=$exchange;
 		}
 
@@ -1394,9 +1407,9 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 
 
 		$sql = sprintf( "insert into `Order Dimension` (
-		
+
 		`Order Apply Auto Customer Account Payment`,
-		
+
 		`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,
 		`Order Payment Method`,
 		`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
@@ -3303,12 +3316,12 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 			mysql_query($sql);
 		}
 
-	
+
 
 		$this->update_no_normal_totals('save');
 
 		$this->update_totals_from_order_transactions();
-		
+
 		$this->apply_payment_from_customer_account();
 
 	}
@@ -4452,8 +4465,8 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 						$this->deals['Family']['Terms']=true;
 
 						// i dont underestad below thing maybe it is wrong
-						if($deal_component_data['Deal Component Terms']!=0)
-						$deal_component_data['Deal Component Allowance']=$deal_component_data['Deal Component Allowance']*floor( $qty_product / $deal_component_data['Deal Component Terms']);
+						if ($deal_component_data['Deal Component Terms']!=0)
+							$deal_component_data['Deal Component Allowance']=$deal_component_data['Deal Component Allowance']*floor( $qty_product / $deal_component_data['Deal Component Terms']);
 
 						$this->get_allowances_from_deal_component_data($deal_component_data);
 					}
@@ -5997,7 +6010,7 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 				$this->id
 
 			);
-			
+
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 
@@ -6049,7 +6062,7 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 					$payment=new Payment($payment_key);
 
 					$data_to_update=array(
-'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+						'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
 						'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 						'Payment Balance'=>$payment_amount,
 						'Payment Amount'=>$payment_amount
@@ -6122,8 +6135,8 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 
 
 			}
-			
-			
+
+
 
 		}else {
 
@@ -6132,9 +6145,9 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 		}
 
 	}
-function get_date($field) {
-return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
-}
+	function get_date($field) {
+		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+	}
 
 }
 
