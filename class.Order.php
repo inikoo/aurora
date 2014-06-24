@@ -298,7 +298,7 @@ class Order extends DB_Table {
 			$this->next_public_id();
 		}
 
-
+print "creatinf hafer\n";
 
 		$this->create_order_header ();
 
