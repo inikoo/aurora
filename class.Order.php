@@ -222,7 +222,7 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 			$this->data ['Order Apply Auto Customer Account Payment'] =$data['Order Apply Auto Customer Account Payment'];
 		}
 
-print_r($this->data);
+
 
 		if (isset($data['Order Payment Method'])) {
 			$this->data ['Order Payment Method'] =$data['Order Payment Method'];
@@ -1393,8 +1393,11 @@ print_r($this->data);
 
 
 
-
-		$sql = sprintf( "insert into `Order Dimension` (`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,
+		$sql = sprintf( "insert into `Order Dimension` (
+		
+		`Order Apply Auto Customer Account Payment`,
+		
+		`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,
 		`Order Payment Method`,
 		`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
 
@@ -1403,9 +1406,10 @@ print_r($this->data);
                          `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
 
                          ) values
-                         (%s,%s,%s,%s,%d,%s,%f,
+                         (%s,%s,%s,%s,%s,%d,%s,%f,
 
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+			prepare_mysql ( $this->data ['Order Apply Auto Customer Account Payment'] ),
 			prepare_mysql ( $this->data ['Order Tax Number'] ),
 			prepare_mysql ( $this->data ['Order Tax Number Valid'] ),
 			prepare_mysql ( $this->data ['Order Created Date'] ),
