@@ -204,9 +204,9 @@ class Order extends DB_Table {
 		}
 
 
-
+print "creatinf hafer\n";
 		$this->set_data_from_customer($data['Customer Key']);
-
+print "creatinf hafer2\n";
 
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
@@ -298,7 +298,7 @@ class Order extends DB_Table {
 			$this->next_public_id();
 		}
 
-print "creatinf hafer\n";
+
 
 		$this->create_order_header ();
 
