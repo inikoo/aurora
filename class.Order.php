@@ -204,9 +204,8 @@ class Order extends DB_Table {
 		}
 
 
-print "creatinf hafer\n";
+
 		$this->set_data_from_customer($data['Customer Key']);
-print "creatinf hafer2\n";
 
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
@@ -281,6 +280,9 @@ print "creatinf hafer2\n";
 		//print "xxx $corporation_currency_code xx";
 		//print "xx -> corporation_currency_code ".this->data ['Order Currency']." <-  xxx\n";
 
+print "creatinf hafer2\n";
+
+
 		if ($this->data ['Order Currency']!=$corporation_currency_code) {
 			$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code,$this->data['Order Date']);
 			$exchange= $currency_exchange->get_exchange();
@@ -298,9 +300,11 @@ print "creatinf hafer2\n";
 			$this->next_public_id();
 		}
 
+print "creatinf hafer3\n";
 
 
 		$this->create_order_header ();
+print "creatinf hafer4\n";
 
 
 
