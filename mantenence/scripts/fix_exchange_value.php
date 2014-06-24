@@ -40,7 +40,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $currency_exchange = new CurrencyExchange($row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']);
 				$exchange= $currency_exchange->get_exchange();
 
-
+print "$row['Invoice Currency'].$corporation_currency_code\n";
 
 $sql=sprintf("update `Invoice Dimension` set `Invoice Currency Exchange`=%f where `Invoice Key`=%d ",
 $exchange,
