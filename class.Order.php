@@ -5987,8 +5987,7 @@ class Order extends DB_Table {
 				$this->id
 
 			);
-			
-			print $sql;
+			print "AAAA\n";
 			
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
@@ -6113,6 +6112,9 @@ class Order extends DB_Table {
 
 
 			}
+			
+			
+			print "XXXXX\n";
 
 		}else {
 
@@ -6120,7 +6122,7 @@ class Order extends DB_Table {
 
 		}
 
-
+print "YYYYY\n";
 	}
 function get_date($field) {
 return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
