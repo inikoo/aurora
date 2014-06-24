@@ -76,20 +76,20 @@ $js_files=array(
 	'js/common_assign_picker_packer.js',
 );
 
+$corporation=new Account();
 
 
-if($user->get('User Type')=='Warehouse')
+if($user->get('User Type')=='Warehouse'){
 $smarty->assign('parent','orders');
-
-else
+}else{
 $smarty->assign('parent','parts');
+}
 $smarty->assign('title', _('Warehouse Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$company_area=new CompanyArea('code','WAH');
-$pickers=$company_area->get_current_staff_with_position_code('PICK');
+$pickers=$corporation->get_current_staff_with_position_code('PICK');
 $number_cols=5;
 $row=0;
 $pickers_data=array();
@@ -108,7 +108,7 @@ foreach ($pickers as $picker) {
 $smarty->assign('pickers',$pickers_data);
 $smarty->assign('number_pickers',count($pickers_data));
 
-$packers=$company_area->get_current_staff_with_position_code('PACK');
+$packers=$corporation->get_current_staff_with_position_code('PACK');
 $number_cols=5;
 $row=0;
 $packers_data=array();

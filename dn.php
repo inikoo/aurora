@@ -95,7 +95,7 @@ if (!($user->can_view('stores') and in_array($dn->data['Delivery Note Store Key'
 
 //$dn->update_xhtml_invoices();
 
-
+$corporation=new Account();
 $customer=new Customer($dn->get('Delivery Note Customer Key'));
 $store=new Store($dn->get('Delivery Note Store Key'));
 $warehouse=new Warehouse($dn->data['Delivery Note Warehouse Key']);
@@ -134,8 +134,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$company_area=new CompanyArea('code','WAH');
-$pickers=$company_area->get_current_staff_with_position_code('PICK');
+$pickers=$corporation->get_current_staff_with_position_code('PICK');
 $number_cols=5;
 $row=0;
 $pickers_data=array();
@@ -154,7 +153,7 @@ foreach($pickers as $picker) {
 $smarty->assign('pickers',$pickers_data);
 $smarty->assign('number_pickers',count($pickers_data));
 
-$packers=$company_area->get_current_staff_with_position_code('PACK');
+$packers=$corporation->get_current_staff_with_position_code('PACK');
 $number_cols=5;
 $row=0;
 $packers_data=array();
