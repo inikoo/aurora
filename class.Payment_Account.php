@@ -178,6 +178,24 @@ class Payment_Account extends DB_Table {
 	}
 
 
+function in_store($site_key) {
+		$is_in_store=false;
+		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Store Key`=%d and `Payment Account Key`=%d ",
+			$site_key,
+			$this->id
+		);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']) {
+				$is_in_store=true;
+			}
+		}
+
+		return $is_in_store;
+	}
+
+
 	function in_site($site_key) {
 		$is_in_site=false;
 		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Site Key`=%d and `Payment Account Key`=%d ",

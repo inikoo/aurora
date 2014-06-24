@@ -44,7 +44,7 @@
 			</td>
 			<td style="padding-top:10px;width:65px"> 
 			<div class="buttons small">
-				<img id="save_set_shipping_wait" style="position:absolute;left:-1000px;position:relative;left:20px" src="art/loading.gif" alt="" /><button id="save_set_shipping" class="positive">{t}Save{/t}</button> 
+				<img id="save_set_shipping_wait" style="display:none" src="art/loading.gif" alt="" /><button id="save_set_shipping" class="positive">{t}Save{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -68,7 +68,7 @@
 			</td>
 			<td style="padding-top:10px;width:65px"> 
 			<div class="buttons">
-				<img id="save_set_items_charges_wait" style="position:absolute;left:-1000px;position:relative;left:20px" src="art/loading.gif" alt="" /><button id="save_set_items_charges">{t}Save{/t}</button> 
+				<img id="save_set_items_charges_wait" style="display:none;left:20px" src="art/loading.gif" alt="" /><button id="save_set_items_charges">{t}Save{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -188,7 +188,7 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<img id="save_add_credit_wait" style="position:absolute;left:-1000px;position:relative;left:20px" src="art/loading.gif" alt="" /> <button id="save_add_credit" class="positive">{t}Save{/t}</button> <button id="close_add_credit" class="negative" onclick="close_dialog_add_credit()">{t}Close{/t}</button> 
+				<img id="save_add_credit_wait" style="display:none;position:relative;left:20px" src="art/loading.gif" alt="" /> <button id="save_add_credit" class="positive">{t}Save{/t}</button> <button id="close_add_credit" class="negative" onclick="close_dialog_add_credit()">{t}Close{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -233,7 +233,7 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<img id="save_edit_credit_wait" style="position:absolute;left:-1000px;position:relative;left:20px" src="art/loading.gif" alt="" /> <button id="save_edit_credit" class="positive">{t}Save{/t}</button> <button id="close_edit_credit" class="negative" onclick="close_dialog_edit_credit()">{t}Close{/t}</button> 
+				<img id="save_edit_credit_wait" style="display:none;position:relative;left:20px" src="art/loading.gif" alt="" /> <button id="save_edit_credit" class="positive">{t}Save{/t}</button> <button id="close_edit_credit" class="negative" onclick="close_dialog_edit_credit()">{t}Close{/t}</button> 
 			</div>
 			</td>
 		</tr>

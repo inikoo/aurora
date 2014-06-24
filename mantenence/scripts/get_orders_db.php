@@ -275,7 +275,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			'User Key'=>0,
 		);
 
-
+print "caca";
 
 		$data['editor']=$editor;
 		if ($tipo_order==9) {

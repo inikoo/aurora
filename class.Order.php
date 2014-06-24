@@ -5866,14 +5866,14 @@ class Order extends DB_Table {
 			$number_payments++;
 			$payments_amount+=$row['Payment Balance'];
 
-			$payments_info.=sprintf('<div>%s (%s), ',
+			$payments_info.=sprintf('<div>%s (%s)',
 
 				$row['Payment Service Provider Name'],
 				money($row['Payment Balance'],$row['Payment Currency Code'])
 
 			);
 			if ($row['Payment Transaction ID']!='')
-				$payments_info.=sprintf('%s: %s',
+				$payments_info.=sprintf(', %s: %s',
 					_('Reference'),
 					$row['Payment Transaction ID']
 
@@ -5890,14 +5890,14 @@ class Order extends DB_Table {
 			$number_payments++;
 			$payments_amount+=$row['Payment Balance'];
 
-			$payments_info.=sprintf('<div>%s (%s), ',
+			$payments_info.=sprintf('<div>%s (%s)',
 
 				$row['Payment Service Provider Name'],
 				money($row['Payment Balance'],$row['Payment Currency Code'])
 
 			);
 			if ($row['Payment Transaction ID']!='')
-				$payments_info.=sprintf('%s: %s',
+				$payments_info.=sprintf(', %s: %s',
 					_('Reference'),
 					$row['Payment Transaction ID']
 
@@ -5968,6 +5968,9 @@ class Order extends DB_Table {
 
 	function apply_payment_from_customer_account() {
 
+
+
+
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
 
 
@@ -6029,7 +6032,7 @@ class Order extends DB_Table {
 					$payment=new Payment($payment_key);
 
 					$data_to_update=array(
-
+'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
 						'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 						'Payment Balance'=>$payment_amount,
 						'Payment Amount'=>$payment_amount

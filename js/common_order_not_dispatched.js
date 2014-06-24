@@ -18,6 +18,21 @@ function save_use_calculated_shipping() {
 
                     if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
+                	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+
+
+			if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
                 Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
                 Dom.get('shipping_amount').value = r.shipping_amount
             }
@@ -51,6 +66,20 @@ function save_use_calculated_items_charges() {
 
                     if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
+                	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+
+	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
                 // Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
                 Dom.get('items_charges_amount').value = r.items_charges_amount
             }
@@ -86,6 +115,20 @@ function save_set_shipping() {
 
                     if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
+                	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
                 Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
                 Dom.get('shipping_amount').value = r.shipping_amount
             }
@@ -126,6 +169,20 @@ function save_set_items_charges() {
                     //alert(x+' '+r.data[x])
                     if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
+                	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
                 //  Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
                 Dom.get('items_charges_amount').value = r.items_charges_amount
             }
@@ -215,6 +272,20 @@ function use_this_delivery_address_in_order(address_key, hide_edit_delivery_addr
                 for (x in r.data) {
                     if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
+                	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
 
                 Dom.get('tax_info').innerHTML = r.tax_info
 
@@ -257,6 +328,20 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
 
                     if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                 }
+                	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
 
                 Dom.get('tax_info').innerHTML = r.tax_info
 
@@ -309,6 +394,20 @@ function change_shipping_type(new_value) {
 
                         if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                     }
+                    	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
 
                     Dom.get('tax_info').innerHTML = r.tax_info
 
@@ -530,6 +629,21 @@ function save_change_discount() {
 
                         if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                     }
+                    	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
+                    
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
                     if (r.discounts) {
                         Dom.get('tr_order_items_gross').style.display = '';
@@ -607,6 +721,11 @@ function submit_edit_shipping(e) {
 
 
 function show_dialog_edit_shipping() {
+  region1 = Dom.getRegion('edit_button_shipping');
+    region2 = Dom.getRegion('dialog_edit_shipping');
+    var pos = [region1.left - region2.width+40, region1.top]
+    Dom.setXY('dialog_edit_shipping', pos);
+
     dialog_edit_shipping.show();
     Dom.get('shipping_amount').focus();
 }
@@ -866,6 +985,22 @@ var myonCellClick = function(oArgs) {
 
                             if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                         }
+                        	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
+                        
+                        
                         Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
                         if (r.data['ordered_products_number'] > 0) {
@@ -1033,7 +1168,7 @@ var CellEdit = function(callback, newValue) {
         //return;
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-                // alert('c'+o.responseText);
+              //   alert('c'+o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -1042,6 +1177,22 @@ var CellEdit = function(callback, newValue) {
 
                         if(Dom.get(x)!=undefined){ Dom.get(x).innerHTML = r.data[x];}
                     }
+                    	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+
+
+	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
+
+                    
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
                     if (r.data['ordered_products_number'] > 0) {
@@ -1051,6 +1202,21 @@ var CellEdit = function(callback, newValue) {
 
                     }
 
+
+			
+				  	for (x in r.payments_data) {
+                        if(Dom.get('payment_amount_'+x)!=undefined){ Dom.get('payment_amount_'+x).innerHTML = r.payments_data[x].amount}
+			            if(Dom.get('payment_status_'+x)!=undefined){ Dom.get('payment_status_'+x).innerHTML = r.payments_data[x].status}
+                        if(Dom.get('payment_date_'+x)!=undefined){ Dom.get('payment_date_'+x).innerHTML = r.payments_data[x].date}
+                    }
+                    
+                    	if(r.order_total_to_pay!=0){
+			if(Dom.get('tr_order_total_to_pay')!=undefined)
+			Dom.setStyle('tr_order_total_to_pay','display','')
+			}else{
+				Dom.setStyle('tr_order_total_to_pay','display','none')
+		
+			}
 
                     if (r.discounts) {
                         Dom.get('tr_order_items_gross').style.display = '';
@@ -1506,7 +1672,6 @@ function init_common_order_not_dispatched() {
 
 
     dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {
-        context: ["edit_button_shipping", "tr", "tl"],
         visible: false,
         close: true,
         underlay: "none",

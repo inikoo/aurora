@@ -6,7 +6,7 @@ var dialog_add_payment;
 
 function save_add_payment(){
 
- if (Dom.hasClass('add_credit_note_' + payment_account, 'disabled')) {
+ if (Dom.hasClass('save_add_payment' , 'disabled')) {
         add_credit_note_show_errors()
     }
     else {
@@ -16,24 +16,14 @@ function save_add_payment(){
         Dom.setStyle(['save_add_payment', 'close_add_payment'], 'display', 'none')
 
 
-        var request = 'ar_edit_orders.php?tipo=add_payment&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value + '&description=' + Dom.get('add_credit_note_description').value + '&refund_type=' + payment_account
-        // alert(request);
+        var request = 'ar_edit_orders.php?tipo=add_payment&payment_amount=' + Dom.get('add_payment_amount').value + "&payment_method=" + Dom.get('add_payment_method').value + "&payment_reference=" + Dom.get('add_payment_reference').value + "&payment_account_key=" + Dom.get('add_payment_payment_account_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
+        
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //  alert(o.responseText)
+                  alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
-
-                Dom.get('account_balance').innerHTML = r.account_balance
-
-
-
-                dialog_add_credit_note.hide()
-
-                Dom.setStyle('save_add_credit_note_wait', 'display', 'none')
-
-                Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account'], 'display', '')
-
+				location.reload()
 
                 if (r.state == 200) {
 
@@ -118,7 +108,7 @@ var payment_account=Dom.get('add_payment_payment_account_'+payment_account_key)
 
 
     Dom.addClass('add_payment_payment_account_' + payment_account_key, 'selected')
-    Dom.get('add_payment_payment_account_key').value = payment_account.id;
+    Dom.get('add_payment_payment_account_key').value = payment_account_key;
 
 
     Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'type_of_payment'), 'selected')

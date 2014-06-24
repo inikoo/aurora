@@ -133,7 +133,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
 	  request="ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display=products&order_key="+Dom.get('order_key').value+"&store_key="+Dom.get('store_key').value+'&tableid='+tableid+'&lookup_family='+Dom.get('lookup_family').value
-	// alert(request)
+	//alert(request)
 	  	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -228,6 +228,12 @@ function init() {
     
     YAHOO.util.Event.addListener("done", "click", create_delivery_note);
 
+
+myTooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
+    context: "order_paid_info",
+   
+    showDelay: 500
+});
 
 }
 
