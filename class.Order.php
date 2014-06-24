@@ -280,7 +280,6 @@ class Order extends DB_Table {
 		//print "xxx $corporation_currency_code xx";
 		//print "xx -> corporation_currency_code ".this->data ['Order Currency']." <-  xxx\n";
 
-print "creatinf hafer2\n";
 
 
 		if ($this->data ['Order Currency']!=$corporation_currency_code) {
@@ -300,11 +299,9 @@ print "creatinf hafer2\n";
 			$this->next_public_id();
 		}
 
-print "creatinf hafer3\n";
 
 
 		$this->create_order_header ();
-print "creatinf hafer4\n";
 
 
 
@@ -326,6 +323,7 @@ print "creatinf hafer4\n";
 			$this->update_shipping();
 
 		}
+print "creatinf hafer2\n";
 
 		$customer=new Customer($data['Customer Key']);
 		$customer->editor=$this->editor;
@@ -337,6 +335,7 @@ print "creatinf hafer4\n";
 
 		$store=new Store($this->data['Order Store Key']);
 		$store->update_orders();
+print "creatinf haferxx2\n";
 
 		$this->update_full_search();
 		if (!$this->ghost_order) {
