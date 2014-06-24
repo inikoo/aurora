@@ -6,6 +6,44 @@ var dialog_add_payment;
 
 function save_add_payment(){
 
+ if (Dom.hasClass('add_credit_note_' + payment_account, 'disabled')) {
+        add_credit_note_show_errors()
+    }
+    else {
+
+
+        Dom.setStyle('save_add_credit_note_wait', 'display', '')
+        Dom.setStyle(['save_add_payment', 'close_add_payment'], 'display', 'none')
+
+
+        var request = 'ar_edit_orders.php?tipo=add_payment&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value + '&description=' + Dom.get('add_credit_note_description').value + '&refund_type=' + payment_account
+        // alert(request);
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                //  alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+                Dom.get('account_balance').innerHTML = r.account_balance
+
+
+
+                dialog_add_credit_note.hide()
+
+                Dom.setStyle('save_add_credit_note_wait', 'display', 'none')
+
+                Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account'], 'display', '')
+
+
+                if (r.state == 200) {
+
+                } else {}
+
+            }
+        });
+
+    }
+
 
 }
 
