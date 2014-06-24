@@ -117,20 +117,20 @@
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
-					<tr style="border-bottom:1px solid #777">
-						<td class="aright" >{t}Total{/t}</td>
-						<td id="order_total" width="100" class="aright" style="font-weight:800;">{$order->get('Balance Total Amount')}</td>
+						<tr style="border-bottom:1px solid #777">
+						<td class="aright">{t}Total{/t}</td>
+						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 					</tr>
 					
-					<tr style="color:#777">
-						<td class="aright">{t}Paid{/t}</td>
-						<td id="order_total" width="100" class="aright" >{$order->get('Payments Amount')}</td>
+				<tr id="tr_order_total_paid" style="border-top:1px solid #777;">
+						<td class="aright"><img id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}">  {t}Paid{/t}</td>
+						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
 					</tr>
-						<tr style="color:#777">
+				<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div>  {t}To Pay{/t}</td>
-						<td id="order_total" width="100" class="aright" >{$order->get('To Pay Amount')}</td>
+						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
-					
+				
 					
 				</table>
 				<div class="buttons small" style="display:none;{if $has_credit}display:none;{/if}clear:both;margin:0px;padding-top:10px">
