@@ -315,15 +315,17 @@ class Order extends DB_Table {
 				mysql_query($sql);
 			}
 		}
+print "creatinf hafer2\n";
 
 		$this->get_data('id',$this->id);
 		$this->update_xhtml_sale_representatives();
 		$this->update_charges();
+		print "creatinf hafer3\n";
+
 		if ($this->data['Order Shipping Method']=='Calculated') {
 			$this->update_shipping();
 
 		}
-print "creatinf hafer2\n";
 
 		$customer=new Customer($data['Customer Key']);
 		$customer->editor=$this->editor;
@@ -335,7 +337,7 @@ print "creatinf hafer2\n";
 
 		$store=new Store($this->data['Order Store Key']);
 		$store->update_orders();
-print "creatinf haferxx2\n";
+
 
 		$this->update_full_search();
 		if (!$this->ghost_order) {
