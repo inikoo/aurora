@@ -933,7 +933,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
 	global $customer_service_rep_data,$packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 
-
+print "holax";
 	list($start_picking_date,$finish_picking_date,$start_packing_date,$finish_packing_date,$approve_date,$pickers_from_import,$packers_from_import)=get_pp_data($date_order,$store_code,$order_data_id);
 
 	if ($pickers_from_import) {
@@ -1012,7 +1012,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		}
 		
 		
-print "hola";
+
 
 
 		$invoice->update($_invoice_data);
