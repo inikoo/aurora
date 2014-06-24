@@ -5991,16 +5991,21 @@ class Order extends DB_Table {
 			
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
+			print "qeeXXXXX\n";
+
 				$current_amount_in_customer_account_payments=$row['Amount'];
 
 			}else {
+						print "q111eeXXXXX\n";
+
 				$current_amount_in_customer_account_payments=0;
 			}
+print "wXXXXX\n";
 
 
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
-
+print "qXXXXX\n";
 			if ($customer_account_available_amount) {
 				$order_amount=$this->data['Order Balance Total Amount'];
 
