@@ -5985,7 +5985,6 @@ if (isset($data['Order Apply Auto Customer Account Payment'])) {
 	function apply_payment_from_customer_account() {
 
 
-print $this->data['Order Apply Auto Customer Account Payment'].'xx';
 
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
 
@@ -5998,25 +5997,20 @@ print $this->data['Order Apply Auto Customer Account Payment'].'xx';
 				$this->id
 
 			);
-			print "AAAA\n";
 			
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-			print "qeeXXXXX\n";
 
 				$current_amount_in_customer_account_payments=$row['Amount'];
 
 			}else {
-						print "q111eeXXXXX\n";
 
 				$current_amount_in_customer_account_payments=0;
 			}
-print "wXXXXX\n";
 
 
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
-print "qXXX   $customer_account_available_amount XX\n";
 			if ($customer_account_available_amount) {
 				$order_amount=$this->data['Order Balance Total Amount'];
 
@@ -6130,7 +6124,6 @@ print "qXXX   $customer_account_available_amount XX\n";
 			}
 			
 			
-			print "XXXXX\n";
 
 		}else {
 
@@ -6138,7 +6131,6 @@ print "qXXX   $customer_account_available_amount XX\n";
 
 		}
 
-print "YYYYY\n";
 	}
 function get_date($field) {
 return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
