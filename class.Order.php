@@ -6005,7 +6005,7 @@ print "wXXXXX\n";
 
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
-print "qXXXXX\n";
+print "qXXX   $customer_account_available_amount XX\n";
 			if ($customer_account_available_amount) {
 				$order_amount=$this->data['Order Balance Total Amount'];
 
