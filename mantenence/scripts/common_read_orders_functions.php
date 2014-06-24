@@ -1012,7 +1012,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		}
 		
 		
-
+print "hola";
 
 
 		$invoice->update($_invoice_data);

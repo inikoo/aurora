@@ -391,7 +391,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {
 			$customer_data['Customer Tax Number']=$header_data['tax_number'];
-		}print "caca2";
+		}
 
 		foreach ($_customer_data as $_key =>$value) {
 			$key=$_key;
