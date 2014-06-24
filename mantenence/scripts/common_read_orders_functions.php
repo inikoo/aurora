@@ -659,11 +659,12 @@ function create_order($data) {
 
 	);
 	
-	print "holahola\n\n";
+	
 
 	//print "creating order\n";
 
 	$order=new Order('new',$order_data);
+	print "holahola\n\n";
 
 	if ($header_data['collection']=='Yes') {
 		$order->update_order_is_for_collection('Yes');
