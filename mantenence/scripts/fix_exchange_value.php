@@ -67,7 +67,7 @@ $_SESSION['locale_info'] = localeconv();
 
 $_SESSION['lang']=1;
 
-
+	chdir('../../');
 
 $corporation_currency_code='GBP';
 
