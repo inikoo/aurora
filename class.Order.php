@@ -672,7 +672,7 @@ class Order extends DB_Table {
 
 				, $this->id );
 			if (! mysql_query( $sql ))
-				exit ( "$sql arror can not update cancel\n" );
+				exit ( "$sql error can not update cancel\n" );
 
 			$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`=%s,`Current Payment State`=%s where `Order Key`=%d ",
 				prepare_mysql($state),

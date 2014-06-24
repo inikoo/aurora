@@ -22,6 +22,19 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('delete_invoice'):
+	$data=prepare_values($_REQUEST,array(
+
+			'invoice_key'=>array('type'=>'key'),
+			'note'=>array('type'=>'string')
+
+
+		));
+	delete_invoice($data);
+
+	break;
+
 case('new_refund'):
 	$data=prepare_values($_REQUEST,array(
 			'net'=>array('type'=>'numeric'),
@@ -671,6 +684,34 @@ default:
 }
 
 
+
+function delete_invoice($data) {
+
+	global $editor,$user;
+	$invoice_key=$data['invoice_key'];
+
+	$invoice=new Invoice($invoice_key);
+	$invoice->editor=$editor;
+	if (isset($_REQUEST['note']))
+		$note=stripslashes(urldecode($data['note']));
+	else
+		$note='';
+
+	$invoice->delete($note);
+	if ($invoice->deleteted) {
+		$response=array(
+			'state'=>200,
+			'invoice_key'=>$invoice->id,
+	
+		);
+		echo json_encode($response);
+	} else {
+		$response=array('state'=>400,'msg'=>$invoice->msg);
+		echo json_encode($response);
+
+	}
+
+}
 
 function cancel_order($data) {
 	include_once 'class.Deal.php';

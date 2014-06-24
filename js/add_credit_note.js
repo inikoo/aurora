@@ -90,8 +90,8 @@ function credit_note_not_only_tax() {
     calculate_add_credit_note_total()
     Dom.setStyle(['add_credit_note_net_amount_tr', 'credit_note_not_only_tax_tr'], 'display', '')
     Dom.setStyle(['add_credit_note_tax_amount_tr', 'credit_note_only_tax_tr'], 'display', 'none')
-    
-    
+
+
 }
 
 function add_credit_note_show_errors() {
@@ -113,8 +113,8 @@ function add_credit_note(payment_account) {
     } else {
 
 
-Dom.setStyle('save_add_credit_note_wait','display','')
-Dom.setStyle(['close_add_credit','add_credit_note_customer_account','add_credit_note_other_payment_account'],'display','none')
+        Dom.setStyle('save_add_credit_note_wait', 'display', '')
+        Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account'], 'display', 'none')
 
         if (Dom.get('add_credit_note_type').value == 'only_tax') {
             var tax_category_code = Dom.get('add_credit_note_tax_code_only_tax').value
@@ -124,29 +124,29 @@ Dom.setStyle(['close_add_credit','add_credit_note_customer_account','add_credit_
         }
 
 
-        var request = 'ar_edit_orders.php?tipo=new_refund&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value+'&description='+Dom.get('add_credit_note_description').value+'&refund_type='+payment_account
-       // alert(request);
+        var request = 'ar_edit_orders.php?tipo=new_refund&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value + '&description=' + Dom.get('add_credit_note_description').value + '&refund_type=' + payment_account
+        // alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-             //  alert(o.responseText)
+                //  alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
-                
-                
-                Dom.get('account_balance').innerHTML=r.account_balance
-                
-                
-                
-                dialog_add_credit_note.hide()
-                
-Dom.setStyle('save_add_credit_note_wait','display','none')
 
-               Dom.setStyle(['close_add_credit','add_credit_note_customer_account','add_credit_note_other_payment_account'],'display','')
+
+                Dom.get('account_balance').innerHTML = r.account_balance
+
+
+
+                dialog_add_credit_note.hide()
+
+                Dom.setStyle('save_add_credit_note_wait', 'display', 'none')
+
+                Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account'], 'display', '')
 
 
                 if (r.state == 200) {
-                   
+
                 } else {}
-                
+
             }
         });
 
@@ -154,34 +154,39 @@ Dom.setStyle('save_add_credit_note_wait','display','none')
 
 }
 
-function close_dialog_add_credit_note(){
-                    dialog_add_credit_note.hide()
+function close_dialog_add_credit_note() {
+    dialog_add_credit_note.hide()
 
 }
 
-function show_add_credit_note(){
- region1 = Dom.getRegion('add_credit_note');
-                    region2 = Dom.getRegion('dialog_add_credit_note');
-                    var pos = [region1.right - region2.width+350, region1.bottom]
-                    Dom.setXY('dialog_add_credit_note', pos);
+function show_add_credit_note() {
+    region1 = Dom.getRegion('add_credit_note');
+    region2 = Dom.getRegion('dialog_add_credit_note');
+    var pos = [region1.right - region2.width + 350, region1.bottom]
+    Dom.setXY('dialog_add_credit_note', pos);
 
-                    Dom.get('add_credit_note_description').value = ''
-                    Dom.get('add_credit_note_net_amount').value = ''
-                    Dom.get('add_credit_note_tax_amount').value = ''
-                    
-                    credit_note_not_only_tax()
-                    
-                    dialog_add_credit_note.show()
-                    
-                    
-                    Dom.get('add_credit_note_description').focus()
+    Dom.get('add_credit_note_description').value = ''
+    Dom.get('add_credit_note_net_amount').value = ''
+    Dom.get('add_credit_note_tax_amount').value = ''
+
+    credit_note_not_only_tax()
+
+    dialog_add_credit_note.show()
+
+
+    Dom.get('add_credit_note_description').focus()
 
 }
 
-function init_add_credit_note(){
-dialog_add_credit_note = new YAHOO.widget.Dialog("dialog_add_credit_note", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_add_credit_note.render();
-Event.addListener("add_credit_note", "click", show_add_credit_note , true);
+function init_add_credit_note() {
+    dialog_add_credit_note = new YAHOO.widget.Dialog("dialog_add_credit_note", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_add_credit_note.render();
+    Event.addListener("add_credit_note", "click", show_add_credit_note, true);
 
 
 

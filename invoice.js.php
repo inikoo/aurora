@@ -5,6 +5,8 @@ var Dom = YAHOO.util.Dom;
 include_once('common.php');?>
 
 
+var dialog_delete;
+
 YAHOO.namespace ("invoice"); 
 
 
@@ -127,6 +129,117 @@ pay_dialog.show();
 
 }
 
+
+function show_delete_invoice(){
+
+
+ region1 = Dom.getRegion('delete');
+    region2 = Dom.getRegion('dialog_delete');
+    var pos = [region1.left - region2.width, region1.top]
+    Dom.setXY('dialog_delete', pos);
+
+
+
+    Dom.get("delete_input").value = '';
+    Dom.addClass('delete_save', 'disabled')
+
+    dialog_delete.show();
+    Dom.get('delete_input').focus();
+
+}
+
+function save(tipo) {
+    //alert(tipo)
+    switch (tipo) {
+    case ('delete'):
+
+        if (Dom.hasClass('delete_save', 'disabled')) {
+            return;
+        }
+        Dom.setStyle('delete_buttons', 'display', 'none')
+        Dom.setStyle('delete_wait', 'display', '')
+        var value = encodeURIComponent(Dom.get("delete_input").value);
+        var ar_file = 'ar_edit_orders.php';
+        var request = 'tipo=delete_invoice&note=' + value + '&invoice_key=' + Dom.get('invoice_key').value;
+        alert(ar_file+'?'+request)
+        YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+            success: function(o) {
+                alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+
+                    window.location.reload();
+                } else {
+                    alert('EC23' + r.msg)
+                    Dom.setStyle('delete_buttons', 'display', '')
+                    Dom.setStyle('delete_wait', 'display', 'none')
+                }
+            },
+            failure: function(o) {
+                alert(o.statusText);
+
+            },
+            scope: this
+        }, request
+
+        );
+
+
+        break;
+    }
+
+}
+
+function change(e, o, tipo) {
+    switch (tipo) {
+    case ('delete'):
+
+
+        if (o.value != '') {
+            enable_save(tipo);
+
+            if (window.event) key = window.event.keyCode; //IE
+            else key = e.which; //firefox     
+            if (key == 13) save(tipo);
+
+
+        } else disable_save(tipo);
+        break;
+    }
+};
+
+function enable_save(tipo) {
+    switch (tipo) {
+    case ('delete'):
+
+        Dom.removeClass(tipo + '_save', 'disabled')
+
+        break;
+    }
+};
+
+function disable_save(tipo) {
+    switch (tipo) {
+    case ('delete'):
+        Dom.addClass(tipo + '_save', 'disabled')
+        break;
+    }
+};
+
+
+function close_dialog(tipo) {
+    switch (tipo) {
+
+
+    case ('delete'):
+
+
+        dialog_delete.hide();
+
+        break;
+    }
+};
+
 function init(){
  init_search('orders_store');
  YAHOO.util.Event.addListener(['pay_by_creditcard','pay_by_bank_transfer','pay_by_paypal','pay_by_cash','pay_by_cheque','pay_by_other'], "click", select_type_of_payment);
@@ -136,6 +249,18 @@ function init(){
 	pay_dialog.render();
 
 	 YAHOO.util.Event.addListener('charge', "click", show_dialog_pay_invoice);
+
+    dialog_delete = new YAHOO.widget.Dialog("dialog_delete", {
+
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_delete.render();
+
+
+
 
 }
 

@@ -1488,8 +1488,8 @@ class Invoice extends DB_Table {
                          `Invoice Currency Exchange`,
                          `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
                          `Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,
-                         
-                         
+
+
                          `Invoice Metadata`,
                          `Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`
                          ,`Invoice Charges Tax Amount`,
@@ -1830,7 +1830,7 @@ class Invoice extends DB_Table {
 		return $number_orders;
 	}
 
-function get_number_delivery_notes() {
+	function get_number_delivery_notes() {
 
 		$number_delivery_notes=0;
 		$sql=sprintf("select count(*) as num from `Invoice Delivery Note Bridge` where `Invoice Key`=%d ",$this->id);
@@ -2519,8 +2519,16 @@ function get_number_delivery_notes() {
 		return count($this->get_payment_keys($status));
 	}
 
-function get_date($field) {
-return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
-}
+	function get_date($field) {
+		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+	}
+	
+	
+	function delete(){
+	
+	
+	
+	}
+	
 }
 ?>
