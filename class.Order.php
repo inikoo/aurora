@@ -315,7 +315,7 @@ class Order extends DB_Table {
 				mysql_query($sql);
 			}
 		}
-print "creatinf hafer2\n";
+
 
 		$this->get_data('id',$this->id);
 		$this->update_xhtml_sale_representatives();
@@ -326,7 +326,7 @@ print "creatinf hafer2\n";
 			$this->update_shipping();
 
 		}
-
+print "creatinf hafer55\n";
 		$customer=new Customer($data['Customer Key']);
 		$customer->editor=$this->editor;
 
