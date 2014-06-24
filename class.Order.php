@@ -320,13 +320,11 @@ class Order extends DB_Table {
 		$this->get_data('id',$this->id);
 		$this->update_xhtml_sale_representatives();
 		$this->update_charges();
-		print "creatinf hafer3\n";
 
 		if ($this->data['Order Shipping Method']=='Calculated') {
 			$this->update_shipping();
 
 		}
-print "creatinf hafer55\n";
 		$customer=new Customer($data['Customer Key']);
 		$customer->editor=$this->editor;
 
@@ -3291,7 +3289,7 @@ print "creatinf hafer55\n";
 
 			);
 
-			//print ("$sql\n");
+			print ("$sql\n");
 			mysql_query($sql);
 		}
 
