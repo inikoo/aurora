@@ -3298,9 +3298,7 @@ class Order extends DB_Table {
 
 		$this->update_totals_from_order_transactions();
 		
-		print "caca\n";
 		$this->apply_payment_from_customer_account();
-		print "xxxxcaca\n";
 
 	}
 
@@ -5989,6 +5987,9 @@ class Order extends DB_Table {
 				$this->id
 
 			);
+			
+			print $sql;
+			
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$current_amount_in_customer_account_payments=$row['Amount'];
