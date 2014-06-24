@@ -293,6 +293,8 @@ else {
 
    //  $order->update_tax();
      
+     $order->apply_payment_from_customer_account();
+     
      $js_files[]='js/php.default.min.js';
 	$js_files[]='js/add_payment.js';
      
@@ -396,6 +398,9 @@ $order->update_shipping();
 	case('Picking & Packing'):
 	case('Packed Done'):
 	case('Ready to Ship'):
+
+     $order->apply_payment_from_customer_account();
+
 
 $js_files[]='js/php.default.min.js';
 	$js_files[]='js/add_payment.js';
@@ -748,6 +753,10 @@ $smarty->assign( 'shipper_data', $shipper_data );
 		break;
 
 	case 'In Process by Customer':
+	
+	     $order->apply_payment_from_customer_account();
+
+	
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$smarty->assign('store_id',$store->id);

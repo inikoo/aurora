@@ -385,7 +385,8 @@ $sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position St
 ,$this->id
 ,prepare_mysql($position_code)
 );
-;
+
+
 $smarty=false;
 if(preg_match('/smarty/i',$options))
   $smarty=true;

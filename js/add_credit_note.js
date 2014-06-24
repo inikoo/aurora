@@ -106,7 +106,7 @@ function add_credit_note_show_errors() {
 
 }
 
-function add_credit_note() {
+function add_credit_note(payment_account) {
 
     if (Dom.hasClass('save_add_payment', 'disabled')) {
         add_credit_note_show_errors()

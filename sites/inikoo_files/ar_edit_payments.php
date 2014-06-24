@@ -92,21 +92,21 @@ function submit_order_nothing_to_pay($data) {
 	$payment=new Payment($payment_key);
 
 	if ($payment->id) {
-$payment_account=new Payment_Account($payment->data['Payment Account Key']);
+		$payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
 
-	$data_to_update=array(
-							
-							'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
-							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-							'Payment Transaction Status'=>'Completed',
-							'Payment Transaction ID'=>$payment->id,
+		$data_to_update=array(
 
-						);
+			'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+			'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+			'Payment Transaction Status'=>'Completed',
+			'Payment Transaction ID'=>$payment->id,
+
+		);
 
 
 
-						$payment->update($data_to_update);
+		$payment->update($data_to_update);
 
 		$order->update(
 			array(
