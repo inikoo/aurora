@@ -2527,6 +2527,8 @@ class Invoice extends DB_Table {
 	function delete() {
 
 
+		$orders=$this->get_orders_objects();
+
 		$sql=sprintf("delete from `Order Invoice Bridge` where `Invoice Key`=%d   ",$this->id);
 		mysql_query($sql);
 
@@ -2565,6 +2567,41 @@ class Invoice extends DB_Table {
 			$_category=new Category($_category_key);
 			$_category->update_children_data();
 			$_category->update_subjects_data();
+		}
+
+
+			$this->data ['Order Invoiced Balance Total Amount'] = 0;
+			$this->data ['Order Invoiced Balance Net Amount'] = 0;
+			$this->data ['Order Invoiced Balance Tax Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
+		
+		
+			$sql=sprintf("delete from `Order Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
+		mysql_query($sql);
+		
+			$sql=sprintf("update  `Order Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+		
+		
+			$sql=sprintf("delete from `Order No Product Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
+		mysql_query($sql);
+		
+			$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+		
+		
+		foreach($orders as $order){
+		
+		$order->update_xhtml_invoices();
+		$order->update_no_normal_totals();
+			$order->update(
+			array(
+				
+			)
+			);
+		
 		}
 
 
