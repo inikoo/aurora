@@ -96,6 +96,9 @@ mysql_query($sql);
 
 	);
 	mysql_query($sql);
+	
+
+	
 	print "$sql\n";
 		$sql=sprintf("update `Order No Product Transaction Fact` set `Currency Exchange`=%f where `Invoice Key`=%d ",
 		$exchange,
@@ -117,6 +120,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$exchange= $currency_exchange->get_exchange();
 
 //	print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
+print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
 
 	$sql=sprintf("update `Order Dimension` set `Order Currency Exchange`=%f where `Order Key`=%d ",
 		$exchange,
