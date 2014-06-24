@@ -1,28 +1,28 @@
 var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
-var button_queue_size=0
+var button_queue_size = 0
 
 function button_changed(product_pid) {
 
     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != '') {
 
         if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-       
-          Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+
+            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
 
         }
-    }else{
-     if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
-       
-          Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+    } else {
+        if (Dom.get('but_qty' + product_pid).getAttribute('ovalue') != Dom.get('but_qty' + product_pid).value) {
+
+            Dom.get('order_button_' + product_pid).src = 'art/update_' + Dom.get('site_locale').value + '.png'
         } else {
             Dom.get('order_button_' + product_pid).src = 'art/ordernow_hover_' + Dom.get('site_locale').value + '.png'
 
         }
-    
+
     }
 }
 
@@ -30,42 +30,42 @@ function button_changed(product_pid) {
 
 
 function order_product_from_list_changed(code) {
-var changed=false;
-var number_fields_with_products=0;
+    var changed = false;
+    var number_fields_with_products = 0;
     items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
-var i;
+    var i;
 
     for (i = 0; i < items.length; ++i) {
-    
-          counter = items[i].getAttribute('counter')
+
+        counter = items[i].getAttribute('counter')
 
         if (Dom.get('qty_' + code + '_' + counter) != undefined && Dom.get('qty_' + code + '_' + counter).value != Dom.get('qty_' + code + '_' + counter).getAttribute('ovalue')) {
-changed=true;
+            changed = true;
 
-}
+        }
 
-if(Dom.get('qty_' + code + '_' + counter) != undefined &&  Dom.get('qty_' + code + '_' + counter).value>0){
-number_fields_with_products++;
-}
+        if (Dom.get('qty_' + code + '_' + counter) != undefined && Dom.get('qty_' + code + '_' + counter).value > 0) {
+            number_fields_with_products++;
+        }
 
-}
+    }
 
-if(changed){
-          Dom.get('list_order_button_submit_' + code).src = 'art/update_' + Dom.get('site_locale').value + '.png'
+    if (changed) {
+        Dom.get('list_order_button_submit_' + code).src = 'art/update_' + Dom.get('site_locale').value + '.png'
 
-}else{
-		if(number_fields_with_products==0){
+    } else {
+        if (number_fields_with_products == 0) {
 
             Dom.get('list_order_button_submit_' + code).src = 'art/ordernow_' + Dom.get('site_locale').value + '.png'
-}else{
+        } else {
             Dom.get('list_order_button_submit_' + code).src = 'art/ordered_' + Dom.get('site_locale').value + '.png'
 
-}
+        }
 
 
-}
-    
-    
+    }
+
+
 
 
 
@@ -76,13 +76,13 @@ if(changed){
 function order_from_list(code, order_key, page_key, page_section_type) {
 
     items = Dom.getElementsByClassName('product_item', 'tr', 'list_' + code)
-    
-    
+
+
 
     Dom.setStyle('waiting_' + code, 'display', '')
     Dom.setStyle('done_' + code, 'opacity', '1')
-    
- 
+
+
     var products_to_update = {};
 
     var i;
@@ -114,21 +114,14 @@ function order_from_list(code, order_key, page_key, page_section_type) {
     transactions_data = YAHOO.lang.JSON.stringify(products_to_update)
 
 
-    
-var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' 
-    + transactions_data 
-    + '&order_key=' 
-    + order_key 
-    + '&page_key=' 
-    + page_key 
-    + '&page_section_type=' 
-    + page_section_type
-   
-   
-   
+
+    var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_data=' + transactions_data + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
+
+
+
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-         //   alert(o.responseText)
+               alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -159,7 +152,7 @@ var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_d
                 myAnim.onComplete.subscribe(removeElement);
                 myAnim.animate();
 
-            Dom.get('list_order_button_submit_' + code).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
+                Dom.get('list_order_button_submit_' + code).src = 'art/updated_' + Dom.get('site_locale').value + '.png'
 
                 for (i in r.updated_transactions) {
                     qty = r.updated_transactions[i]['qty'];
@@ -181,7 +174,7 @@ var request = 'ar_basket.php?tipo=edit_multiple_order_transactios&transactions_d
 
         },
         failure: function(o) {
-           // alert(o.statusText);
+            // alert(o.statusText);
         },
         scope: this
     });
@@ -282,26 +275,20 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
     Dom.setStyle('done_' + product_pid, 'opacity', 1)
 
 
-//console.log (button_queue_size)
-
-//if(button_queue_size){
-
-//setTimeout(order_product_from_button(product_pid, order_key, page_key, page_section_type) ,100)
-//return;
-//}
-
-//button_queue_size++;
-
+    //console.log (button_queue_size)
+    //if(button_queue_size){
+    //setTimeout(order_product_from_button(product_pid, order_key, page_key, page_section_type) ,100)
+    //return;
+    //}
+    //button_queue_size++;
 
 
     var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + product_pid + '&qty=' + qty + '&order_key=' + order_key + '&page_key=' + page_key + '&page_section_type=' + page_section_type
-  // alert(request)
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             // alert("caca")
-            
-           // button_queue_size--;
-            
+            // button_queue_size--;
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -319,13 +306,13 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
                         //  Dom.setStyle(el, 'display', 'none')
                     }
 
-			  if (r.quantity == 0) r.quantity = '';
-			  
-			  if(r.quantity){
-			   to_opacity=.6
-			  }else{
-			   to_opacity=0
-			  }
+                if (r.quantity == 0) r.quantity = '';
+
+                if (r.quantity) {
+                    to_opacity = .6
+                } else {
+                    to_opacity = 0
+                }
 
                 var myAnim = new YAHOO.util.Anim('done_' + r.product_pid, {
                     opacity: {
@@ -338,7 +325,7 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
                 myAnim.onComplete.subscribe(removeElement);
                 myAnim.animate();
 
-              
+
 
 
                 Dom.get('but_qty' + r.product_pid).setAttribute('ovalue', r.quantity)
@@ -357,7 +344,7 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
 
                 //order_product_from_list_changed(r.product_pid)
             } else if (r.state == 201) {
-            
+
                 window.location.href = 'waiting_payment_confirmation.php?referral_key=' + Dom.get('page_key').value;
 
             } else {
@@ -369,8 +356,8 @@ function order_product_from_button(product_pid, order_key, page_key, page_sectio
 
         },
         failure: function(o) {
-      //  alert("cx")
-           // button_queue_size--;
+            //  alert("cx")
+            // button_queue_size--;
         },
         scope: this
     });
