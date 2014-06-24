@@ -5974,7 +5974,7 @@ class Order extends DB_Table {
 	function apply_payment_from_customer_account() {
 
 
-
+print $this->data['Order Apply Auto Customer Account Payment'].'xx';
 
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
 
