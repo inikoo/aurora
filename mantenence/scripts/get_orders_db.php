@@ -275,7 +275,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			'User Key'=>0,
 		);
 
-print "caca";
+
 
 		$data['editor']=$editor;
 		if ($tipo_order==9) {
@@ -391,7 +391,7 @@ print "caca";
 
 		if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {
 			$customer_data['Customer Tax Number']=$header_data['tax_number'];
-		}
+		}print "caca2";
 
 		foreach ($_customer_data as $_key =>$value) {
 			$key=$_key;
