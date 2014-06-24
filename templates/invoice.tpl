@@ -10,7 +10,10 @@
 			<span class="main_title">{$invoice_type_label} <span>{$invoice->get('Invoice Public ID')}</span></span> 
 		</div>
 		<div class="buttons">
-			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> <button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> 
+			<button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+			<button class="negative" id="delete" onclick="show_delete_invoice()">Delete</button> 
+		
 		</div>
 		<div style="clear:both">
 		</div>
@@ -148,7 +151,7 @@
 					<td id="payment_amount_{$payment->get('Payment Key')}">{$payment->get('Amount')}</td>
 					<td style="width:300px"> 
 					<div class="buttons small" style="{if $payment->get('Payment Transaction Status')!='Pending'}display:none{/if}">
-						<button class="negative" onclick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> <button class="positive" onclick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> 
+						<button class="negative" onclick="delete_payment({$payment->get('Payment Key')})">{t}Set as deleteled{/t}</button> <button class="positive" onclick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> 
 					</div>
 					</td>
 				</tr>
@@ -209,4 +212,35 @@
 			</table>
 		</div>
 	</div>
+	
+	<div id="dialog_delete" style="position:absolute;left:-1000px;padding:15px 20px 5px 10px;width:200px">
+	<div id="delete_msg">
+	</div>
+	<table class="edit" style="width:100%">
+		<tr class="title">
+			<td colspan="2">{t}Delete{/t}</td>
+		</tr>
+		<tr style="height:7px">
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			<td colspan="2">{t}Reason of deleting{/t}</td>
+		</tr>
+		<tr>
+			<td colspan="2"> <textarea style="height:100px;width:100%" id="delete_input" onkeyup="change(event,this,'delete')"></textarea> </td>
+		</tr>
+		<tr id="delete_buttons">
+			<td colspan="2"> 
+			<div class="buttons">
+				<button onclick="save('delete')" id="delete_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('delete')">{t}Go Back{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr style="height:22px;display:none" id="delete_wait">
+			<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
+		</tr>
+	</table>
+</div>
+	
+	
 	{include file='footer.tpl'} 

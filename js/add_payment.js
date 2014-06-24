@@ -2,6 +2,14 @@ var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_add_payment;
 
+
+
+function save_add_payment(){
+
+
+}
+
+
 function add_payment(parent, parent_key, max_amount) {
 
     if (parent == 'order') {
