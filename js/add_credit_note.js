@@ -106,14 +106,15 @@ function add_credit_note_show_errors() {
 
 }
 
-function add_credit_note(payment_account) {
+function add_credit_note() {
 
-    if (Dom.hasClass('add_credit_note_' + payment_account, 'disabled')) {
+    if (Dom.hasClass('save_add_payment', 'disabled')) {
         add_credit_note_show_errors()
-    } else {
+    }
+    else {
 
 
-        Dom.setStyle('save_add_credit_note_wait', 'display', '')
+        Dom.setStyle('save_add_payment_wait', 'display', '')
         Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account'], 'display', 'none')
 
         if (Dom.get('add_credit_note_type').value == 'only_tax') {

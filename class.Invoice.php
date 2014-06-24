@@ -2522,13 +2522,56 @@ class Invoice extends DB_Table {
 	function get_date($field) {
 		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
 	}
-	
-	
-	function delete(){
-	
-	
-	
+
+
+	function delete() {
+
+
+		$sql=sprintf("delete from `Order Invoice Bridge` where `Invoice Key`=%d   ",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Sales Representative Bridge`  where   `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Processed By Bridge`  where   `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Charged By Bridge`  where   `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Tax Dimension` where `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Invoice Key`=%d   ",$this->id);
+		mysql_query($sql)  ;
+
+		$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Invoice' and `Direct Object Key`=%d",$this->id);
+		mysql_query($sql);
+
+
+		$sql=sprintf("select `Category Key` from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$this->id);
+		$result_test_category_keys=mysql_query($sql);
+		$_category_keys=array();
+		while ($row_test_category_keys=mysql_fetch_array($result_test_category_keys, MYSQL_ASSOC)) {
+			$_category_keys[$row_test_category_keys['Category Key']]=$row_test_category_keys['Category Key'];
+		}
+		$sql=sprintf("delete from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$this->id);
+		mysql_query($sql);
+
+		foreach ($_category_keys as $_category_key) {
+			$_category=new Category($_category_key);
+			$_category->update_children_data();
+			$_category->update_subjects_data();
+		}
+
+
 	}
-	
+
+
+
+
 }
 ?>
