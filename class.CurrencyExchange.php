@@ -180,7 +180,7 @@ while($row=mysql_fetch_assoc($res)){
 		if (!$to)
 			$to=date("Ymd",strtotime($this->to));
 
-		// print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s\n",$from,$to,$this->currency_pair,$tmp_file);
+		//print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s\n",$from,$to,$this->currency_pair,$tmp_file);
 
 		exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
 

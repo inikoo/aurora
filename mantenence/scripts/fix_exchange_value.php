@@ -28,6 +28,40 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
+
+$corporation_currency_code='GBP';
+
+$sql=sprintf("select `Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Store Key`!=1");
+$result=mysql_query($sql);
+//print $sql;
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+$currency_exchange = new CurrencyExchange($row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']);
+				$exchange= $currency_exchange->get_exchange();
+
+
+
+$sql=sprintf("update `Invoice Dimension` set `Invoice Currency Exchange`=%f where `Invoice Key`=%d ",
+$exchange,
+$row['Invoice Key']
+
+);
+
+print "$sql\n";
+
+$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d ",
+$exchange,
+$row['Invoice Key']
+
+);
+
+}
+
+
+
+exit;
+
 $sql="select  `Invoice Paid`,`Invoice Currency Exchange`,`Invoice Key`  from `Invoice Dimension` where `Invoice Currency Exchange`!=1;  ";
 
 $result=mysql_query($sql);
