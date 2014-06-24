@@ -1,31 +1,71 @@
 <?php
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+//include("../../external_libs/adminpro/adminpro_config.php");
+error_reporting(E_ALL);
+
 include_once '../../app_files/db/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
-include_once '../../class.Part.php';
-include_once '../../class.Store.php';
-include_once '../../class.Customer.php';
+include_once '../../class.Order.php';
+include_once '../../class.Invoice.php';
+include_once '../../class.PartLocation.php';
+include_once '../../class.Deal.php';
+include_once '../../class.SupplierProduct.php';
+include_once '../../class.Staff.php';
 
-error_reporting(E_ALL);
+include_once '../../class.DeliveryNote.php';
+include_once '../../class.Email.php';
+include_once '../../class.CurrencyExchange.php';
+include_once 'common_read_orders_functions.php';
 
 
-date_default_timezone_set('UTC');
+$encrypt=false;
+$store_code='D';
+$__currency_code='EUR';
+
+$calculate_no_normal_every =500;
+$to_update=array(
+	'products'=>array(),
+	'products_id'=>array(),
+	'products_code'=>array(),
+	'families'=>array(),
+	'departments'=>array(),
+	'stores'=>array(),
+	'parts'=>array()
+
+);
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+if (!$con) {
+	print "Error can not connect with database server\n";
+	print "->End.(GO DE) ".date("r")."\n";
+	exit;
+}
 
-if (!$con) {print "Error can not connect with database server\n";exit;}
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
-if (!$db) {print "Error can not access the database\n";exit;}
-
-
+if (!$db) {
+	print "Error can not access the database\n";
+	print "->End.(GO DE) ".date("r")."\n";
+	exit;
+}
+date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
+require_once '../../conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+
+include_once '../../set_locales.php';
+
 require_once '../../conf/conf.php';
+require '../../locale.php';
+
+$_SESSION['locale_info'] = localeconv();
+
+
+$_SESSION['lang']=1;
 
 
 
