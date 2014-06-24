@@ -656,6 +656,7 @@ function create_order($data) {
 		'Order Date'=>$date_order,
 		'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
 		'Order Sales Representative Keys'=>$customer_service_rep_data,
+		'Order Apply Auto Customer Account Payment'=>'No'
 
 	);
 	
