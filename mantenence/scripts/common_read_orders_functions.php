@@ -659,7 +659,7 @@ function create_order($data) {
 
 	);
 	
-	
+	print "holahola\n\n";
 
 	//print "creating order\n";
 
@@ -677,7 +677,7 @@ function create_order($data) {
 	
 		$order->update_billing_to($billing_to->id);
 
-print "holahola\n\n";
+
 
 
 	//print_r($data_dn_transactions);
