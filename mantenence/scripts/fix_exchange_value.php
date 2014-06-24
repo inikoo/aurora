@@ -67,7 +67,7 @@ $_SESSION['locale_info'] = localeconv();
 
 $_SESSION['lang']=1;
 
-	chdir('../../');
+chdir('../../');
 
 $corporation_currency_code='GBP';
 
@@ -77,27 +77,55 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
-$currency_exchange = new CurrencyExchange($row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']);
-				$exchange= $currency_exchange->get_exchange();
+	$currency_exchange = new CurrencyExchange($row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']);
+	$exchange= $currency_exchange->get_exchange();
 
-print $row['Invoice Public ID'].' '.$row['Invoice Currency']."$corporation_currency_code ".$row['Invoice Date']."  \n";
+	//print $row['Invoice Public ID'].' '.$row['Invoice Currency']."$corporation_currency_code ".$row['Invoice Date']."  \n";
 
-$sql=sprintf("update `Invoice Dimension` set `Invoice Currency Exchange`=%f where `Invoice Key`=%d ",
-$exchange,
-$row['Invoice Key']
+	$sql=sprintf("update `Invoice Dimension` set `Invoice Currency Exchange`=%f where `Invoice Key`=%d ",
+		$exchange,
+		$row['Invoice Key']
 
-);
+	);
 
-print "$sql\n";
+	print "$sql\n";
 
-$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d ",
-$exchange,
-$row['Invoice Key']
+	$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d ",
+		$exchange,
+		$row['Invoice Key']
 
-);
+	);
+	
+	
+		$sql=sprintf("update `Order No Product Transaction Fact` set `Currency Exchange`=%f where `Invoice Key`=%d ",
+		$exchange,
+		$row['Invoice Key']
+
+	);
+	
 
 }
 
+
+$sql=sprintf("select `Order Public ID`,`Order Key`,`Order Date`,`Order Currency` from `Order Dimension` where (`Order Currency Exchange`=1  or `Order Currency Exchange`=0 ) and `Order Currency`!='GBP'");
+$result=mysql_query($sql);
+//print $sql;
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+	$currency_exchange = new CurrencyExchange($row['Order Currency'].$corporation_currency_code,$row['Order Date']);
+	$exchange= $currency_exchange->get_exchange();
+
+//	print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
+
+	$sql=sprintf("update `Order Dimension` set `Order Currency Exchange`=%f where `Order Key`=%d ",
+		$exchange,
+		$row['Order Key']
+
+	);
+
+	
+}
 
 
 exit;
