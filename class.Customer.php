@@ -6488,10 +6488,11 @@ class Customer extends DB_Table {
 
 function get_pending_payment_amount_from_account_balance(){
 $pending_amount=0;
-	$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where `Is Account Payment`='Yes' and`Order Customer Key`=%d ",
+	$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) left join `Payment Dimension` PD on (PD.`Payment Key`=B.`Payment Key`)  where `Is Account Payment`='Yes' and`Order Customer Key`=%d  and `Payment Transaction Status`='Pending' ",
 					$this->id
 
 				);
+				//print $sql;
 				$res=mysql_query($sql);
 				if ($row=mysql_fetch_assoc($res)) {
 					$pending_amount=$row['Amount'];

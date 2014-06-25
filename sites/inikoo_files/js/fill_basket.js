@@ -121,7 +121,7 @@ function order_from_list(code, order_key, page_key, page_section_type) {
 
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-               alert(o.responseText)
+            //   alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
 

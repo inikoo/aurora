@@ -108,12 +108,12 @@
 					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 				</tr >
 				
-				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')!=0}display:none{/if}">
+				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order Payments Amount')==0}display:none{/if}">
 					<td class="aright">{t}Paid{/t}</td>
 					<td id="order_total_paid" width="100" class="aright" style="font-weight:800">{$order->get('Payments Amount')}</td>
 				</tr>
 				
-						<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}">
+						<tr id="tr_order_total_to_pay" style="{if $order->get('Order Payments Amount')==0}display:none{/if}">
 					<td class="aright">{t}To Pay{/t}</td>
 					<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 				</tr>

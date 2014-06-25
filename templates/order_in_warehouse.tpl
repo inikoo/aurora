@@ -15,7 +15,9 @@
 				<input type="hidden" value="{$decimal_point}" id="decimal_point" />
 				<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
 
-		
+		 <iframe id="invoice_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"  ></iframe>
+		 <iframe id="dn_pdf_printout" width="0" height="0"   style="position:absolute;top:-100px" ></iframe>
+		 <iframe id="order_pick_aid_pdf_printout" width="0" height="0"  style="position:absolute;top:-100px"   ></iframe>
 
 	<div class="branch ">
 		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
@@ -228,6 +230,9 @@
 				<tr>
 				<td>
 				<a href="dn.php?id={$dn.key}">{$dn.number}</a>
+								<a target='_blank' href="dn.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> 
+				<img onclick="print_pdf('dn',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png">
+
 				</td>
 				<td class="right" style="text-align:right">
 				{$dn.state}
@@ -242,8 +247,22 @@
 				
 				
 				<tr>
-				<td colspan="2"  class="right" style="text-align:right" id="operations_container{$dn.key}" >{$dn.operations}</td>
+				<td colspan="2"  class="aright" style="text-align:right" id="operations_container{$dn.key}" >{$dn.operations}</td>
+
 				</tr>
+				<tr style="border-top:1px solid #ddd">
+							
+							<td  class="aleft"  id="pick_aid_container{$dn.key}" ><a href="order_pick_aid.php?id={$dn.key}">{t}Picking Aid{/t}</a>
+											<a target='_blank' href="order_pick_aid.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> 
+				<img onclick="print_pdf('order_pick_aid',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png">
+
+							
+							</td>
+	
+							<td  class="aright" style="text-align:right" id="pack_aid_container{$dn.key}" ><a href="order_pack_aid.php?id={$dn.key}">{t}Pack Aid{/t}</a></td>
+
+				</tr>
+				
 				{/foreach}
 				</table>
 					<table border="0" class="info_block with_title"  >
@@ -255,7 +274,9 @@
 				{foreach from=$invoices_data item=invoice}
 				<tr>
 				<td>
-				<a href="invoice.php?id={$invoice.key}">{$invoice.number}</a>
+				<a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> 
+				<a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> 
+				<img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png">
 				</td>
 				<td class="right" style="text-align:right">
 				{$invoice.state}
@@ -549,11 +570,11 @@
 				<input id="parcel_type" value="" ovalue="" type="hidden" />
 				<div class="buttons small left" id="parcel_type_options">
 					<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Pallet" valor="Pallet">{t}Pallet{/t}</button> 
-					<button onclick="change_parcel_type(this)"  class="parcel_type " id="parcel_Envelope" valor="Envelope">{t}Envelope{/t}</button> 
-					<button onclick="change_parcel_type(this)"  class="parcel_type " id="parcel_Small Parcel" valor="Small Parcel">{t}Small Parcel{/t}</button> 
-					<button onclick="change_parcel_type(this)"  class="parcel_type " id="parcel_Box" valor="Box">{t}Box{/t}</button> 
-					<button onclick="change_parcel_type(this)"  class="parcel_type "  id="parcel_None" valor="None">{t}None{/t}</button> 
-					<button onclick="change_parcel_type(this)"  class="parcel_type "  id="parcel_Other" valor="Other">{t}Other{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type" id="parcel_Envelope" valor="Envelope">{t}Envelope{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type" id="parcel_Small Parcel" valor="Small Parcel">{t}Small Parcel{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type" id="parcel_Box" valor="Box">{t}Box{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type"  id="parcel_None" valor="None">{t}None{/t}</button> 
+					<button onclick="change_parcel_type(this)"  class="parcel_type"  id="parcel_Other" valor="Other">{t}Other{/t}</button> 
 				</div>
 				<span id="parcel_type_msg" class="edit_td_alert"></span>
 

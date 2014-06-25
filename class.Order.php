@@ -523,12 +523,18 @@ class Order extends DB_Table {
 		if (!$date)
 			$date=gmdate('Y-m-d H:i:s');
 
-		if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submitted by Customer')) {
+		if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submitted by Customer'    or $this->data['Order Current Dispatch State']=='In Process by Customer' )) {
 			$this->error=true;
 			$this->msg='Order is not in process';
 			return;
 
 		}
+		
+		if($this->data['Order Current Dispatch State']=='Submitted by Customer'    or $this->data['Order Current Dispatch State']=='In Process by Customer'){
+			$this->update_field_switcher('Order Date',$date,'no_history');
+		
+		}
+		
 
 		if ($this->data['Order For Collection']=='Yes') {
 			$dispatch_method='Collection';
@@ -537,6 +543,7 @@ class Order extends DB_Table {
 		}
 		$data_dn=array(
 			'Delivery Note Date Created'=>$date,
+			'Delivery Note Order Date Placed'=>$this->data['Order Date'],
 			'Delivery Note ID'=>$this->data['Order Public ID'],
 			'Delivery Note File As'=>$this->data['Order File As'],
 			'Delivery Note Type'=>$this->data['Order Type'],
@@ -880,11 +887,25 @@ class Order extends DB_Table {
 
 		$tax_code=$this->data['Order Tax Code'];
 
+
+
+		
+	
+		$delivery_note_keys='';
+		foreach ($this->get_delivery_notes_ids()as $dn_key) {
+
+			$delivery_note_keys=$dn_key.',';
+			
+		}
+		$delivery_note_keys=preg_replace('/\,$/','',$delivery_note_keys);
+
+
+
 		$data_invoice=array(
 			'Invoice Date'=>$date,
 			'Invoice Type'=>'Invoice',
 			'Invoice Public ID'=>$this->data['Order Public ID'],
-			'Delivery Note Keys'=>'',
+			'Delivery Note Keys'=>$delivery_note_keys,
 			'Orders Keys'=>$this->id,
 			'Invoice Store Key'=>$this->data['Order Store Key'],
 			'Invoice Customer Key'=>$this->data['Order Customer Key'],
@@ -892,13 +913,13 @@ class Order extends DB_Table {
 			'Invoice Tax Shipping Code'=>$tax_code,
 			'Invoice Tax Charges Code'=>$tax_code,
 			'Invoice Sales Representative Keys'=>$this->get_sales_representative_keys(),
-			'Invoice Metadata'=>$this->data['Order Original Metadata']
+			'Invoice Metadata'=>$this->data['Order Original Metadata'],
+			'Invoice Billing To Key'=>$this->data['Order Billing To Key To Bill'],
 
 		);
 
 
-
-
+	
 
 		$invoice=new Invoice ('create',$data_invoice);
 
@@ -909,6 +930,10 @@ class Order extends DB_Table {
 
 		$this->update_xhtml_invoices();
 		$this->update_customer_history();
+		$this->update_xhtml_state();
+
+
+
 
 
 

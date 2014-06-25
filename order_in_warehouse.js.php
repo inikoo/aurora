@@ -350,7 +350,14 @@ myTooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
 
 }
 
+function print_pdf(subject,subject_key){
+ 
+       //Dom.get('invoice_pdf_printout').contentWindow.location = 'invoice.pdf.php?print=1&id='+invoice_key;
+       Dom.get(subject+'_pdf_printout').src = subject+'.pdf.php?print=1&id='+subject_key;
 
+// Dom.get('invoice_pdf_printout').focus();
+// Dom.get('invoice_pdf_printout').contentWindow.print();
+}
 
 function pick_it_delete(o, dn_key) {
 process_order_dialog.hide()

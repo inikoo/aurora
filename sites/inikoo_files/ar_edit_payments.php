@@ -178,6 +178,41 @@ function submit_order($data) {
 	}
 
 
+	
+				//======
+				
+				$account_payment_key=0;
+				$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+					$order->id
+
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$account_payment_key=$row['Payment Key'];
+
+				}
+
+
+
+				if ($account_payment_key) {
+					$account_payment=new Payment($account_payment_key);
+
+					$data_to_update=array(
+							'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+							'Payment Transaction Status'=>'Completed'
+
+					);
+
+
+
+					$account_payment->update($data_to_update);
+				}
+				
+				//====
+
+
+
 	$order->checkout_submit_order();
 
 
@@ -190,6 +225,10 @@ function submit_order($data) {
 			'Order Payment Method'=>$payment_account->data['Payment Type'],
 			'Order Current XHTML Payment State'=>$xhtml_payment_state
 		));
+
+
+
+
 
 
 	include_once 'send_confirmation_email_function.php';
@@ -266,8 +305,8 @@ function create_payment($data) {
 		'Payment Site Key'=>$site->id,
 		'Payment Customer Key'=>$order->data['Order Customer Key'],
 
-		'Payment Balance'=>$order->data['Order Balance Total Amount'],
-		'Payment Amount'=>$order->data['Order Balance Total Amount'],
+		'Payment Balance'=>$order->data['Order To Pay Amount'],
+		'Payment Amount'=>$order->data['Order To Pay Amount'],
 		'Payment Refund'=>0,
 		'Payment Currency Code'=>$order->data['Order Currency'],
 		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),

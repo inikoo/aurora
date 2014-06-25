@@ -11,7 +11,7 @@
 
 function get_orders_operations($row,$user) {
 	$operations='<div id="operations'.$row['Order Key'].'">';
-	$class='left';
+	$class='right';
 	
 	
 	if ($row['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
@@ -162,7 +162,13 @@ function get_invoice_operations($row,$user,$parent='order',$parent_key='') {
 
 function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
+if($parent=='order')
+$class='right';
+
+else
 $class='left';
+
+
 
 	$operations=$row['Delivery Note State'].'<div  id="operations'.$row['Delivery Note Key'].'">';
 		$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
