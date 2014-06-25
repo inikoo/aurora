@@ -59,8 +59,10 @@ div.inline { float:left; }
 <table width="100%" style="font-size: 9pt;" border="0">
 	<tr>
 		<tr>
+		{*}
 			{if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>{/if}
-			<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
+		{*}
+		<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
 			<div style="font-size:7pt">
 				{$store->get('Store Address')|nl2br} 
 			</div>

@@ -92,6 +92,14 @@ class DeliveryNote extends DB_Table {
 			$this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
 		else
 			$this->data ['Delivery Note Weight'] ='';
+			
+				if (isset($dn_data ['Delivery Note Order Date Placed']))
+			$this->data ['Delivery Note Order Date Placed'] = $dn_data ['Delivery Note Order Date Placed'];
+		else
+			$this->data ['Delivery Note Order Date Placed'] ='';
+			
+			
+			
 
 		if (isset($dn_data ['Delivery Note XHTML Pickers']))
 			$this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
@@ -346,14 +354,15 @@ class DeliveryNote extends DB_Table {
 
 
 	function create_header() {
-		$sql = sprintf("insert into `Delivery Note Dimension` (`Delivery Note Show in Warehouse Orders`,`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
+		$sql = sprintf("insert into `Delivery Note Dimension` (`Delivery Note Order Date Placed`,`Delivery Note Show in Warehouse Orders`,`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
                          `Delivery Note Country 2 Alpha Code`,
                          `Delivery Note Country Code`,
                          `Delivery Note World Region Code`,
                          `Delivery Note Town`,
                          `Delivery Note Postal Code`
 
-                        ) values (%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
+                        ) values (%s,%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
+			,prepare_mysql ($this->data ['Delivery Note Order Date Placed'])
 
 			,prepare_mysql ($this->data ['Delivery Note Show in Warehouse Orders'])
 			,$this->data ['Delivery Note Warehouse Key']
@@ -405,15 +414,16 @@ class DeliveryNote extends DB_Table {
 
 
 		case('Date'):
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Delivery Note Date']));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Delivery Note Date'].' +0:00'));
 			break;
 		case('Date Created'):
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Delivery Note Date Created']));
+			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Delivery Note Date Created'].' +0:00'));
 			break;
 		case('Date Start Picking'):
 		case('Date Finish Picking'):
 		case('Date Start Packing'):
 		case('Date Finish Packing'):
+		case('Order Date Placed'):
 			if ($this->data["Delivery Note $key"]=='')return'';
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data["Delivery Note $key"].' +0:00'));
 			break;
@@ -3161,7 +3171,6 @@ class DeliveryNote extends DB_Table {
 		$invoice->update_totals();
 
 		foreach ($orders as $order) {
-			$order->update_xhtml_state();
 			$order->update_xhtml_state();
 
 		}

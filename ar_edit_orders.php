@@ -3264,26 +3264,26 @@ function create_invoice($data) {
 
 
 function create_invoice_order($data) {
-
+global $user;
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
+	$invoice=$order->create_invoice();
+	
+$response=array(
+			'state'=>200,
+			'invoice_key'=>$invoice->id,
+			'order_key'=>$order->id,
+			'order_operations'=>get_orders_operations($order->data,$user),
+			'order_dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),
+			'order_payment_state'=>get_order_formated_payment_state($order->data)
+		);
 
-	$dn_keys=$order->get_delivery_notes_ids();
+		
 
-	$number_dns=count($dn_keys);
+	
 
-	if ($number_dns==0) {
-		$response= array('state'=>400,'msg'=>'no delivery notes associated with order');
 		echo json_encode($response);
-		return;
 
-	}elseif ($number_dns>1) {
-		$response= array('state'=>400,'msg'=>'multiple delivery notes associated with order');
-		echo json_encode($response);
-		return;
-	}
-	$data['dn_key']=array_pop($dn_keys);
-	create_invoice($data);
 
 }
 

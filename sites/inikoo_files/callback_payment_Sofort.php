@@ -109,7 +109,38 @@ if ($valid) {
 			));
 			
 	
+	
+				//======
+				
+				$account_payment_key=0;
+				$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+					$order->id
 
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+					$account_payment_key=$row['Payment Key'];
+
+				}
+
+
+
+				if ($account_payment_key) {
+					$account_payment=new Payment($account_payment_key);
+
+					$data_to_update=array(
+							'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+							'Payment Transaction Status'=>'Completed'
+
+					);
+
+
+
+					$account_payment->update($data_to_update);
+				
+				
+				//====
 
 		$order->checkout_submit_order();
 
