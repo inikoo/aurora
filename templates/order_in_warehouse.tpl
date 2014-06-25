@@ -208,10 +208,10 @@
 		</div>
 		<div id="dates">
 			{if $order->get_notes()} 
-			<div class="notes">
-				{ $order->get_notes()} 
-			</div>
-			{/if} 
+				<div class="notes" style="border:1px solid #ccc;padding:5px;margin-bottom:5px">
+					{$order->get_notes()}
+				</div>
+				{/if} 
 			<table border="0" class="info_block"  >
 				<tr>
 					<td>{t}Order Date{/t}:</td>
@@ -267,7 +267,7 @@
 				</table>
 					<table border="0" class="info_block with_title"  >
 
-				
+				{if $number_invoices>0  or $order->get('Order Current Dispatch State')=='Packed Done'  }
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan=2>{t}Invoices{/t}:</td>
 				</tr>
@@ -303,7 +303,11 @@
 				</td>
 				</tr>
 				
+				{/if}
+				
 			</table>
+			
+			
 		</div>
 		<div style="clear:both">
 		</div>

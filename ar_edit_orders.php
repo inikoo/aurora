@@ -3264,25 +3264,25 @@ function create_invoice($data) {
 
 
 function create_invoice_order($data) {
-global $user;
+	global $user;
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
 	$invoice=$order->create_invoice();
-	
-$response=array(
-			'state'=>200,
-			'invoice_key'=>$invoice->id,
-			'order_key'=>$order->id,
-			'order_operations'=>get_orders_operations($order->data,$user),
-			'order_dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),
-			'order_payment_state'=>get_order_formated_payment_state($order->data)
-		);
 
-		
+	$response=array(
+		'state'=>200,
+		'invoice_key'=>$invoice->id,
+		'order_key'=>$order->id,
+		'order_operations'=>get_orders_operations($order->data,$user),
+		'order_dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),
+		'order_payment_state'=>get_order_formated_payment_state($order->data)
+	);
 
-	
 
-		echo json_encode($response);
+
+
+
+	echo json_encode($response);
 
 
 }

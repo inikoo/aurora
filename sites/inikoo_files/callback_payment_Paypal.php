@@ -196,7 +196,7 @@ $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_
 
 					$account_payment->update($data_to_update);
 				
-				
+				}
 				//====
 				
 				
