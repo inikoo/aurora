@@ -54,7 +54,7 @@ case('submit_order_nothing_to_pay'):
 			'order_key'=>array('type'=>'key')
 
 		));
-	submit_order($data);
+	submit_order_nothing_to_pay($data);
 	break;
 
 default:
@@ -80,7 +80,7 @@ function submit_order_nothing_to_pay($data) {
 
 	$payment_key=0;
 	$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
-		$this->id
+		$order->id
 
 	);
 	$res=mysql_query($sql);

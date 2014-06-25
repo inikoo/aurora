@@ -4,6 +4,10 @@ require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
 require_once 'class.Customer.php';
 require_once 'class.User.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+include_once 'class.Payment_Service_Provider.php';
+
 
 
 if (!isset($_REQUEST['tipo'])) {

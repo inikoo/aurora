@@ -90,6 +90,12 @@
 		</div>
 		<div id="dates">
 				
+				{if $order->get_notes()} 
+				<div class="notes" style="border:1px solid #ccc;padding:5px;margin-bottom:5px">
+					{$order->get_notes()}
+				</div>
+				{/if} 
+				
 				<table border="0" class="info_block">
 					<tr>
 						<td>{t}Created{/t}:</td>

@@ -926,6 +926,9 @@ class Order extends DB_Table {
 
 
 
+
+
+
 		$invoice->update_totals();
 
 		$this->update_xhtml_invoices();
@@ -1019,6 +1022,9 @@ class Order extends DB_Table {
 			$tax_code=$data['tax_code'];
 		if (array_key_exists('tax_rate',$data))
 			$tax_rate=$data['tax_rate'];
+
+
+		//print "xx->$tax_code<-xx"	;
 
 		if (isset($data['Order Type']))
 			$order_type=$data['Order Type'];
@@ -1313,7 +1319,7 @@ class Order extends DB_Table {
 				mysql_query( $sql );
 
 				$otf_key=mysql_insert_id();
-
+				//print $sql;
 				if (!$otf_key) {
 					print "Error xxx";
 				}
@@ -5508,7 +5514,12 @@ class Order extends DB_Table {
 	}
 
 	function get_notes() {
-		$notes=$this->data['Order Customer Sevices Note'];
+	
+	$notes='';
+		if($this->data['Order Customer Sevices Note']!='')
+		$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Note').":</div>".$this->data['Order Customer Sevices Note']."</div>";
+		if($this->data['Order Customer Message']!='')
+		$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Customer Note').":</div>".$this->data['Order Customer Message']."</div>";
 
 		return $notes;
 
@@ -5769,7 +5780,11 @@ class Order extends DB_Table {
 		$payments=array();
 
 		if ($status) {
-			$where=' and `Payment Transaction Status`='.prepare_mysql($status);
+		if($status=='Pending')
+			$where=sprintf(' and `Payment Transaction Status`=%s  and `Payment Method`!="Account" ',prepare_mysql($status));
+
+		else
+			$where=sprintf(' and `Payment Transaction Status`=%s',prepare_mysql($status));
 		}else {
 			$where='';
 		}
