@@ -66,7 +66,7 @@ height:1px;
 <!--mpdf
 <htmlpageheader name="myheader">
 <table width="100%"><tr>
-<td width="50%" style="color:#000;"><span style="font-weight: bold; font-size: 14pt;">Order Pick Aid DE04657</span><br />(C1356432) Customer James Hill <br /></td>
+<td width="50%" style="color:#000;"><span style="font-weight: bold; font-size: 14pt;">{t}Order Pick Aid{/t} {$delivery_note->get('Delivery Note ID')}</span><br />(C{$delivery_note->get('Delivery Note Customer Key')})  {$delivery_note->get('Delivery Note Customer Name')}<br /></td>
 <td width="50%" style="text-align: right;">
 {if $delivery_note->get('Delivery Note Order Date Placed')}
 <div style="text-align: right">{t}Order Date{/t}: {$delivery_note->get('Order Date Placed')}</div>

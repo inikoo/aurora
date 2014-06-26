@@ -1929,34 +1929,132 @@ class Invoice extends DB_Table {
 	function apply_payment($payment) {
 
 
+		if ($this->data['Invoice Outstanding Total Amount']>0) {
 
-		if ($this->data['Invoice Outstanding Total Balance']>0) {
+			//print $payment->data['Payment Balance'].'='.$this->data['Invoice Outstanding Total Amount']." xx";
 
-			if ($payment->data['Payment Amount']>$this->data['Invoice Outstanding Total Balance']) {
+			if ($payment->data['Payment Balance']>=$this->data['Invoice Outstanding Total Amount']) {
+
+				$to_pay=$this->data['Invoice Outstanding Total Amount'];
 
 
+				$payment_amount_not_used=$payment->data['Payment Balance']-$to_pay;
+				$payment_amount_used=$to_pay;
+			}else {
+				$this->set_as_parcially_paid($payment);
+				$payment_amount_not_used= 0;
+				$payment_amount_used=$payment->data['Payment Balance'];
 			}
-		}else {
-
-			if ($payment->data['Payment Amount']==$this->data['Invoice Outstanding Total Balance']) {
-				$this->set_as_full_paid($payment);
-
-			}else if ($payment->data['Payment Amount']<$this->data['Invoice Outstanding Total Balance']) {
-
-
-				}else {
 
 
 
 
 
+
+		}
+		else {// Refund
+
+			if ($payment->data['Payment Balance']<=$this->data['Invoice Outstanding Total Amount']) {
+
+				$to_pay=$this->data['Invoice Outstanding Total Amount'];
+
+
+				$payment_amount_not_used=$payment->data['Payment Balance']-$to_pay;
+				$payment_amount_used=$to_pay;
+			}else {
+				$this->set_as_parcially_paid($payment);
+				$payment_amount_not_used= 0;
+				$payment_amount_used=$payment->data['Payment Balance'];
 			}
 
 
 		}
+
+		$payment_date_to_update=array(
+			'Payment Invoice Key'=>$this->id,
+			'Payment Balance'=>$payment_amount_not_used,
+			'Payment Amount Invoiced'=>$payment_amount_used
+		);
+		//print_r($payment_date_to_update);
+		$payment->update($payment_date_to_update);
+
+		$sql=sprintf("insert into `Invoice Payment Bridge`  (`Invoice Key`,`Payment Key`,`Payment Account Key`,`Payment Service Provider Key`,`Amount`) values (%d,%d,%d,%d,%.2f) ",
+			$this->id,
+			$payment->id,
+			$payment->data['Payment Account Key'],
+			$payment->data['Payment Service Provider Key'],
+			$payment_amount_used
+		);
+		mysql_query($sql);
+
+
+
+		$paid_amount=0;
+		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` where `Invoice Key`=%d",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$paid_amount=$row['amount'];
+		}
+
+		$this->data['Invoice Paid Amount']=$paid_amount;
+		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
+		$this->data['Invoice Main Payment Method']=$this->get_main_payment_method();
+
+
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=%.2f, `Invoice Paid Amount`=%.2f,`Invoice Main Payment Method`=%s where `Invoice Key`=%d",
+			$this->data['Invoice Outstanding Total Amount'],
+			$this->data['Invoice Paid Amount'],
+			prepare_mysql($this->data['Invoice Main Payment Method']),
+
+			$this->id);
+		mysql_query( $sql );
+
+
+		if ($this->data['Invoice Total Amount']>=0) {
+
+			if ($this->data['Invoice Outstanding Total Amount']==0) {
+
+				$this->set_as_full_paid();
+
+			}elseif ($this->data['Invoice Paid Amount']>0) {
+				$this->set_as_parcially_paid();
+			}
+
+		}
+		else {//refund
+			if ($this->data['Invoice Outstanding Total Amount']==0) {
+
+				$this->set_as_full_paid();
+
+			}elseif ($this->data['Invoice Paid Amount']<0) {
+				$this->set_as_parcially_paid();
+			}
+
+		}
+
+
+		return $payment_amount_not_used;
+
 	}
 
-	function set_as_full_paid($payment) {
+	function set_as_parcially_paid() {
+
+		$this->data['Invoice Paid']='Partially';
+		$this->data['Invoice Has Been Paid In Full']='No';
+
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%swhere `Invoice Key`=%d",
+			prepare_mysql($this->data['Invoice Paid']),
+			prepare_mysql($this->data['Invoice Has Been Paid In Full'])
+			,$this->id);
+		mysql_query( $sql );
+
+
+	}
+
+
+	function set_as_full_paid() {
 
 
 
@@ -1965,11 +2063,10 @@ class Invoice extends DB_Table {
 			$this->id);
 
 		$res=mysql_query($sql);
-		//print "$sql\n";
 		while ($row=mysql_fetch_assoc($res)) {
 			$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,
 			`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Order Transaction Fact Key`=%d "
-				,prepare_mysql($payment->data['Payment Method'])
+				,prepare_mysql($this->data['Invoice Main Payment Method'])
 				,prepare_mysql($this->data['Invoice Paid Date'])
 				,$row['Order Transaction Fact Key']);
 
@@ -1995,7 +2092,7 @@ class Invoice extends DB_Table {
 		//print "\n\n$sql\n";
 		while ($row=mysql_fetch_assoc($res)) {
 			$sql = sprintf( "update  `Order No Product Transaction Fact`  set `Payment Method`=%s,`Transaction Outstanding Net Amount Balance`=0,`Transaction Outstanding Tax Amount Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s where `Order No Product Transaction Fact Key`=%d "
-				,prepare_mysql($payment->data['Payment Method'])
+				,prepare_mysql($this->data['Invoice Main Payment Method'])
 				,prepare_mysql($this->data['Invoice Paid Date'])
 				,$row['Order No Product Transaction Fact Key']);
 
@@ -2004,20 +2101,16 @@ class Invoice extends DB_Table {
 
 		}
 
+		$this->data['Invoice Paid']='Yes';
+		$this->data['Invoice Has Been Paid In Full']='Yes';
 
-
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=0,`Invoice Paid Amount`=%f,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
-			,$this->data['Invoice Total Amount']
-			,prepare_mysql($this->data['Invoice Paid Date'])
-
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid Date`=%s,`Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%swhere `Invoice Key`=%d",
+			prepare_mysql($this->data['Invoice Paid Date']),
+			prepare_mysql($this->data['Invoice Paid']),
+			prepare_mysql($this->data['Invoice Has Been Paid In Full'])
 			,$this->id);
 		mysql_query( $sql );
 
-		$this->get_data('id',$this->id);
-
-		$this->update_main_payment_method();
-
-		$this->updated=true;
 
 	}
 
@@ -2082,37 +2175,7 @@ class Invoice extends DB_Table {
 
 		$this->get_data('id',$this->id);
 
-		$this->update_main_payment_method();
 
-		$this->updated=true;
-
-	}
-
-
-	function get_main_payment_method() {
-
-		$method='Unknown';
-
-		$sql=sprintf("select count(*) as number, `Payment Method`   from `Order Transaction Fact` where `Invoice Key`=%d  and `Payment Method` not in ('NA','Unknown') order by number desc ",
-			$this->id);
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$number=(float) $row['number'];
-			if ($number>0) {
-
-				$method=$row['Payment Method'];
-
-			}
-
-		}
-
-		return $method;
-
-	}
-
-	function update_main_payment_method() {
 
 		$main_payment_method=$this->get_main_payment_method();
 
@@ -2126,10 +2189,32 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Main Payment Method']= $main_payment_method;
 
 
+		$this->updated=true;
+
 	}
 
 
+	function get_main_payment_method() {
 
+		$method='Unknown';
+
+		$sql=sprintf("select `Payment Method`   from `Invoice Payment Bridge` B left join `Payment Dimension` P on (B.`Payment Key`=P.`Payment Key`) where `Invoice Key`=%d  group by `Payment Method` order by sum(ABS(`Amount`)) desc limit 1  ",
+			$this->id);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$method=$row['Payment Method'];
+		}
+
+
+
+
+		return $method;
+
+	}
+
+
+	// this function has to go after retire excel
 	function pay($tipo='full', $data) {
 
 		if (!array_key_exists('Invoice Paid Date',$data) or !$data['Invoice Paid Date']  ) {
@@ -2491,7 +2576,7 @@ class Invoice extends DB_Table {
 			$where='';
 		}
 
-		$sql=sprintf("select `Payment Key` from `Payment Dimension` where `Payment Invoice Key`=%d %s",
+		$sql=sprintf("select B.`Payment Key` from `Payment Dimension` PD left join `Invoice Payment Bridge` B on (B.`Payment Key`=PD.`Payment Key`)  where `Invoice Key`=%d %s",
 			$this->id,
 			$where
 		);
@@ -2506,20 +2591,42 @@ class Invoice extends DB_Table {
 
 	function get_payment_objects($status='',$load_payment_account=false,$load_payment_service_provider=false) {
 
-		$payments=array();
 
+	$payments=array();
 
-		foreach ($this->get_payment_keys($status) as $payment_key) {
-			$payment=new Payment($payment_key);
+		if ($status) {
+			$where=' and `Payment Transaction Status`='.prepare_mysql($status);
+		}else {
+			$where='';
+		}
+
+		$sql=sprintf("select `Payment Currency Code`,B.`Payment Key`,`Amount` from `Payment Dimension` PD left join `Invoice Payment Bridge` B on (B.`Payment Key`=PD.`Payment Key`)  where `Invoice Key`=%d %s",
+			$this->id,
+			$where
+		);
+		
+		
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+		
+			$payment=new Payment($row['Payment Key']);
 			if ($load_payment_account)
 				$payment->load_payment_account();
 			if ($load_payment_service_provider)
 				$payment->load_payment_service_provider();
-			$payments[$payment_key]=$payment;
+		
+		$payment->amount=$row['Amount'];
+				$payment->formated_invoice_amount=money($row['Amount'],$row['Payment Currency Code']);
+
+		
+		
+			$payments[$row['Payment Key']]=$payment;
 		}
-
-
 		return $payments;
+
+
+
 	}
 
 	function get_number_payments($status='') {
@@ -2563,6 +2670,30 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 
 
+		$payments=array();
+		$sql=sprintf("select * from `Invoice Payment Bridge` where `Invoice Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$payment=new Payment($row['Payment Key']);
+			$payments[]=$payment;
+
+		}
+
+
+
+		$sql=sprintf("delete from `Invoice Payment Bridge`  where    `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+
+		$sql=sprintf("update `Payment Dimension`  set `Invoice Key`=NULL   where `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+
+		foreach ($payments as $payment) {
+			$payment->update_balance();
+		}
+
+
 		$sql=sprintf("select `Category Key` from `Category Bridge`  where   `Subject`='Invoice' and `Subject Key`=%d",$this->id);
 		$result_test_category_keys=mysql_query($sql);
 		$_category_keys=array();
@@ -2601,6 +2732,14 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 
 
+		$sql=sprintf("delete from `Invoice Dimension`  where  `Invoice Key`=%d",$this->id);
+		mysql_query($sql);
+
+
+
+
+
+
 		foreach ($orders as $order) {
 
 			$order->update_xhtml_invoices();
@@ -2609,7 +2748,7 @@ class Invoice extends DB_Table {
 
 		}
 
-
+		$this->deleted=true;
 	}
 
 

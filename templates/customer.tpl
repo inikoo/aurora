@@ -1161,7 +1161,7 @@
 				<span id="save_add_credit_note_wait" style="display:none"><img  src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span>
 				<button id="close_add_credit" class="negative" onclick="close_dialog_add_credit_note()">{t}Close{/t}</button> 
 				<button id="add_credit_note_customer_account" class="positive disabled"  onclick="add_credit_note('Credit')">{t}Add to customer account{/t}</button>
-				<button id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('Refund')">{t}Create refund{/t}</button>
+				<button style="display:none" id="add_credit_note_other_payment_account" class="positive disabled"   onclick="add_credit_note('Refund')">{t}Create refund{/t}</button>
 
 			</div>
 			</td>

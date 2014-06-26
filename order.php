@@ -241,6 +241,7 @@ else {
 			'key'=>$dn->id,
 			'number'=>$dn->data['Delivery Note ID'],
 			'state'=>$dn->data['Delivery Note XHTML State'],
+			'dispatch_state'=>$dn->data['Delivery Note State'],
 			'data'=>$dn_data,
 			'operations'=>$dn->get_operations($user,'order',$order->id),
 		);
