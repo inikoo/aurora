@@ -141,7 +141,7 @@ class Payment extends DB_Table {
 
 
 			if ($key=='Payment Completed Date' or $key=='Payment Last Updated Date'  or $key=='Payment Cancelled Date'
-			or $key=='Payment Order Key' or $key=='Payment Invoice Key' or $key=='Payment Site Key'
+				or $key=='Payment Order Key' or $key=='Payment Invoice Key' or $key=='Payment Site Key'
 			) {
 				$values.=','.prepare_mysql($value,true);
 
@@ -293,7 +293,31 @@ class Payment extends DB_Table {
 
 		}
 		return $info;
+		
 	}
 
+	function update_balance() {
+		$invoiced_amount=0;
+		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` where `Invoice Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$invoiced_amount=$row['amount'];
+		}
+		
+		$this->data['Payment Amount Invoiced']=$invoiced_amount;
+		
+		$this->data['Payment Balance']=$this->data['Payment Amount']-$this->data['Payment Refund']-$this->data['Payment Amount Invoiced'];
+
+
+		$sql=sprintf("update `Payment Dimension` set `Payment Amount Invoiced`=%.2f,`Payment Balance`=%.2f where `Payment Key`=%d",
+		$this->data['Payment Amount Invoiced'],
+		$this->data['Payment Balance'],
+		$this->id
+		
+		);
+		//print $sql;
+		mysql_query($sql);
+
+	}
 
 }

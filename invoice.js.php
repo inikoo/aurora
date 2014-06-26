@@ -161,14 +161,14 @@ function save(tipo) {
         var value = encodeURIComponent(Dom.get("delete_input").value);
         var ar_file = 'ar_edit_orders.php';
         var request = 'tipo=delete_invoice&note=' + value + '&invoice_key=' + Dom.get('invoice_key').value;
-        alert(ar_file+'?'+request)
+        //alert(ar_file+'?'+request)
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-                alert(o.responseText);
+              alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
-                    window.location.reload();
+                    window.location.href=r.redirect;
                 } else {
                     alert('EC23' + r.msg)
                     Dom.setStyle('delete_buttons', 'display', '')

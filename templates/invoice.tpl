@@ -12,7 +12,7 @@
 		<div class="buttons">
 			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> 
 			<button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-			<button class="negative" id="delete" onclick="show_delete_invoice()">Delete (dont use it yet)</button> 
+			<button class="negative" id="delete" onclick="show_delete_invoice()">Delete</button> 
 		
 		</div>
 		<div style="clear:both">
@@ -129,6 +129,8 @@
 			<div style="clear:both">
 			</div>
 		</div>
+		
+	
 		<div style="padding: 10px 10px 15px 10px;font-size:85%;;margin-bottom:10px;border:1px solid #ccc;margin-top:20px;{if $invoice->get_number_payments()==0}display:none{/if}">
 			<table class="edit" id="pending_payment_confirmations" border="0" style="margin-top:0px;padding-top:0px;width:100%;">
 				<tr>
@@ -148,7 +150,7 @@
 					<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
 					<td id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</td>
 					<td>{$payment->get('Payment Transaction Status')}</td>
-					<td id="payment_amount_{$payment->get('Payment Key')}">{$payment->get('Amount')}</td>
+					<td id="payment_amount_{$payment->get('Payment Key')}">{$payment->formated_invoice_amount}</td>
 					<td style="width:300px"> 
 					<div class="buttons small" style="{if $payment->get('Payment Transaction Status')!='Pending'}display:none{/if}">
 						<button class="negative" onclick="delete_payment({$payment->get('Payment Key')})">{t}Set as deleteled{/t}</button> <button class="positive" onclick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> 

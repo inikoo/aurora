@@ -95,7 +95,6 @@ $js_files=array(
 
 
 
-
 $smarty->assign('parent','orders');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

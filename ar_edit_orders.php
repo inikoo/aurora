@@ -721,11 +721,22 @@ function delete_invoice($data) {
 	else
 		$note='';
 
+
+$order_keys=$invoice->get_orders_ids();
+if(count($order_keys)>0){
+$order_key=array_pop($order_keys);
+	$redirect='order.php?id='.$order_key;
+
+
+}else{
+$redirect='orders.php?store='.$invoice->data['Invoice Store Key'];
+}
+
 	$invoice->delete($note);
-	if ($invoice->deleteted) {
+	if ($invoice->deleted) {
 		$response=array(
 			'state'=>200,
-			'invoice_key'=>$invoice->id,
+			'redirect'=>$redirect
 
 		);
 		echo json_encode($response);
@@ -3279,7 +3290,14 @@ function create_invoice_order($data) {
 	);
 
 
-
+	$payments=$order->get_payment_objects('Completed');
+	foreach($payments as $payment){
+		$paymnet_balance=$invoice->apply_payment($payment);
+		if($paymnet_balance!=0){
+			break;
+		}
+	
+	}
 
 
 	echo json_encode($response);
@@ -5132,6 +5150,15 @@ function new_refund($data) {
 
 
 		$payment->update($data_to_update);
+		
+		
+		
+		
+		$refund->apply_payment($payment);
+		
+		
+
+/*
 
 		$refund->update(
 			array(
@@ -5152,7 +5179,7 @@ function new_refund($data) {
 			$total,$total);
 		//print $sql;
 		mysql_query($sql);
-
+*/
 		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$total);
 
 

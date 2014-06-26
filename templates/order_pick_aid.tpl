@@ -50,18 +50,22 @@
 					{$delivery_note->get('Delivery Note Customer Name')} (<a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a>) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
 				</h2>
 				
-					<table border="0" class="info_block" style="margin-top:10px">
-					
+						<table border="0" style="margin-top:10px;width:250px;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:left">
 					<tr>
-					<td>{t}Delivery Note{/t}:</td>
-					<td class="aright"><a  href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></td>
-				</tr>
-					
-				<tr>
-					<td>{t}Created{/t}:</td>
-					<td class="aright">{$delivery_note->get('Date Created')}</td>
-				</tr>
-			</table>
+						<td>{t}Delivery Note{/t}:</td>
+						<td class="aright"><a href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a></td>
+					</tr>
+					<tr>
+						<td>{t}Orders{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note XHTML Orders')}</td>
+					</tr>
+					{if $delivery_note->get('Delivery Note XHTML Invoices')!=''} 
+					<tr>
+						<td>{t}Invoices{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note XHTML Invoices')}</td>
+					</tr>
+					{/if} 
+				</table>
 				
 				<div style="clear:both">
 				</div>
