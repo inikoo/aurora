@@ -149,7 +149,7 @@
 						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
 					</tr>
 				<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div>  {t}To Pay{/t}</td>
+						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div>  {t}To Pay{/t}</td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				
@@ -241,7 +241,7 @@
 							<input id="lookup_family_query" style="width:100px;float:right" value="{$lookup_family}" />
 							<span id="clear_lookup_family"  onClick="clear_lookup_family()" style="cursor:pointer;float:right;margin-right:5px;color:#777;font-style:italic;font-size:80%;{if $lookup_family==''}display:none{/if}" >{t}Clear{/t}</span>
 
-							<button id="show_all_products" onClick="show_all_products()" style="margin-right:50px" >{t}Display all products{/t}</button> 
+							<button id="show_all_products" onClick="clear_lookup_family()" style="margin-right:50px" >{t}Display all products{/t}</button> 
 
 			</div>
 			</div>
