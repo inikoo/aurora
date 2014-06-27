@@ -3009,7 +3009,7 @@ class Order extends DB_Table {
 	function update_shipping_amount($value) {
 		$value=sprintf("%.2f",$value);
 
-		if ($value!=$this->data['Order Shipping Net Amount'] or $this->data['Order Shipping Method']!='Set') {
+	//	if ($value!=$this->data['Order Shipping Net Amount'] or $this->data['Order Shipping Method']!='Set') {
 			$this->update_shipping_method('Set');
 			$this->data['Order Shipping Net Amount']=$value;
 			$this->update_shipping();
@@ -3022,7 +3022,7 @@ class Order extends DB_Table {
 			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
 			$this->apply_payment_from_customer_account();
-		}
+	//	}
 
 	}
 
@@ -3808,7 +3808,7 @@ class Order extends DB_Table {
 
 	function get_shipping($dn_key=false) {
 
-
+print "x";
 		if ($this->data['Order Number Items']==0) {
 			return array(0,0,'No Applicable');
 		}
@@ -3820,6 +3820,8 @@ class Order extends DB_Table {
 		if ($this->data['Order Shipping Method']=='Set') {
 			return array(($this->data['Order Shipping Net Amount']==''?0:$this->data['Order Shipping Net Amount']),0,'Set');
 		}
+
+
 
 
 		if (in_array($this->data['Order Ship To Country Code'],array('GBR','JEY','GGY','IMN'))) {
