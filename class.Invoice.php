@@ -1926,6 +1926,61 @@ class Invoice extends DB_Table {
 	}
 
 
+function update_payment_state(){
+
+
+		$paid_amount=0;
+		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` where `Invoice Key`=%d",
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$paid_amount=$row['amount'];
+		}
+
+		$this->data['Invoice Paid Amount']=$paid_amount;
+		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
+		$this->data['Invoice Main Payment Method']=$this->get_main_payment_method();
+
+
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=%.2f, `Invoice Paid Amount`=%.2f,`Invoice Main Payment Method`=%s where `Invoice Key`=%d",
+			$this->data['Invoice Outstanding Total Amount'],
+			$this->data['Invoice Paid Amount'],
+			prepare_mysql($this->data['Invoice Main Payment Method']),
+
+			$this->id);
+		mysql_query( $sql );
+
+
+		if ($this->data['Invoice Total Amount']>=0) {
+
+			if($this->data['Invoice Paid Amount']==0){
+		$this->set_as_not_paid();
+
+			}elseif ($this->data['Invoice Outstanding Total Amount']==0) {
+
+				$this->set_as_full_paid();
+
+			}elseif ($this->data['Invoice Paid Amount']>0) {
+				$this->set_as_parcially_paid();
+			}
+
+		}
+		else {//refund
+			if ($this->data['Invoice Outstanding Total Amount']==0) {
+
+				$this->set_as_full_paid();
+
+			}elseif ($this->data['Invoice Paid Amount']<0) {
+				$this->set_as_parcially_paid();
+			}
+
+		}
+
+
+
+}
+
 	function apply_payment($payment) {
 
 
@@ -1988,52 +2043,7 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 
 
-
-		$paid_amount=0;
-		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` where `Invoice Key`=%d",
-			$this->id
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$paid_amount=$row['amount'];
-		}
-
-		$this->data['Invoice Paid Amount']=$paid_amount;
-		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
-		$this->data['Invoice Main Payment Method']=$this->get_main_payment_method();
-
-
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=%.2f, `Invoice Paid Amount`=%.2f,`Invoice Main Payment Method`=%s where `Invoice Key`=%d",
-			$this->data['Invoice Outstanding Total Amount'],
-			$this->data['Invoice Paid Amount'],
-			prepare_mysql($this->data['Invoice Main Payment Method']),
-
-			$this->id);
-		mysql_query( $sql );
-
-
-		if ($this->data['Invoice Total Amount']>=0) {
-
-			if ($this->data['Invoice Outstanding Total Amount']==0) {
-
-				$this->set_as_full_paid();
-
-			}elseif ($this->data['Invoice Paid Amount']>0) {
-				$this->set_as_parcially_paid();
-			}
-
-		}
-		else {//refund
-			if ($this->data['Invoice Outstanding Total Amount']==0) {
-
-				$this->set_as_full_paid();
-
-			}elseif ($this->data['Invoice Paid Amount']<0) {
-				$this->set_as_parcially_paid();
-			}
-
-		}
-
+		$this->update_payment_state();
 
 		return $payment_amount_not_used;
 
@@ -2044,7 +2054,21 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Paid']='Partially';
 		$this->data['Invoice Has Been Paid In Full']='No';
 
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%swhere `Invoice Key`=%d",
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%s where `Invoice Key`=%d",
+			prepare_mysql($this->data['Invoice Paid']),
+			prepare_mysql($this->data['Invoice Has Been Paid In Full'])
+			,$this->id);
+		mysql_query( $sql );
+
+
+	}
+
+	function set_as_not_paid() {
+
+		$this->data['Invoice Paid']='No';
+		$this->data['Invoice Has Been Paid In Full']='No';
+
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%s where `Invoice Key`=%d",
 			prepare_mysql($this->data['Invoice Paid']),
 			prepare_mysql($this->data['Invoice Has Been Paid In Full'])
 			,$this->id);
@@ -2104,7 +2128,7 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Paid']='Yes';
 		$this->data['Invoice Has Been Paid In Full']='Yes';
 
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid Date`=%s,`Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%swhere `Invoice Key`=%d",
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid Date`=%s,`Invoice Paid`=%s,`Invoice Has Been Paid In Full`=%s where `Invoice Key`=%d",
 			prepare_mysql($this->data['Invoice Paid Date']),
 			prepare_mysql($this->data['Invoice Paid']),
 			prepare_mysql($this->data['Invoice Has Been Paid In Full'])
