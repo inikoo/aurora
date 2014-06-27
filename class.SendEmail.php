@@ -350,7 +350,7 @@ var $from=false;
 				exit;
 			}
 
-			require('class.MadMimi.php');
+			include_once('class.MadMimi.php');
 /*
 			$body_array = array(
 			'some_placeholder' => 'some content here' // This will replace "{some_placeholder}" in your promotion with "some content here".
