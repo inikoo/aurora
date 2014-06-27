@@ -701,6 +701,14 @@ function show_dialog_edit_credits() {
 
 
 function show_dialog_edit_items_charges() {
+
+ region1 = Dom.getRegion('edit_button_items_charges');
+    region2 = Dom.getRegion('dialog_edit_items_charges');
+    var pos = [region1.left - region2.width+40, region1.top]
+    Dom.setXY('dialog_edit_items_charges', pos);
+
+   
+
     dialog_edit_items_charges.show();
     Dom.get('items_charges_amount').focus();
 }
