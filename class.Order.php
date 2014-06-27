@@ -3330,6 +3330,8 @@ class Order extends DB_Table {
 
 
 		}
+		
+		print $sql;
 		mysql_query($sql);
 
 
