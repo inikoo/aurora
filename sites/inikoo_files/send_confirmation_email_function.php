@@ -53,9 +53,9 @@ function send_confirmation_email($order) {
 		if ($payment_service_provider->data['Payment Service Provider Type']=='Bank') {
 
 			$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
-	$payment_paid_info=_('To be paid by bank transfer');
-	
-	}
+			$payment_paid_info=_('To be paid by bank transfer');
+
+		}
 	}
 
 
@@ -159,26 +159,26 @@ function send_confirmation_email($order) {
 		$order->get('Balance Total Amount')
 
 	);
-	
-	if($order->get('Order Payments Amount')!=0){
-	
+
+	if ($order->get('Order Payments Amount')!=0) {
+
 		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-		_('Paid'),
-		$order->get('Payments Amount')
+			_('Paid'),
+			$order->get('Payments Amount')
 
-	);
+		);
 		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
-		_('To Pay Amount'),
-		$order->get('To Pay Amount')
+			_('To Pay Amount'),
+			$order->get('To Pay Amount')
 
-	);
-}
+		);
+	}
 
 	$order_info.='</table>';
 
@@ -208,72 +208,79 @@ function send_confirmation_email($order) {
 	$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
 
 	$result=$send_email->send();
-	
-	
+
+
 	//notification email
-	
-	$message_data['from_name']=$site->data['Site Name'];
-	$message_data['method']='smtp';
-	$message_data['type']='HTML';
-	$message_data['to']=$site->data['Site Order Notification Email Recipients'];
-	$message_data['subject']='Order notification'.' '.$store->data['Store Code'];
-	$message_data['html']='';
-	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
-	$message_data['email_matter']='Order Confirmation';
-	$message_data['email_matter_key']=$email_mailing_list_key;
-	$message_data['email_matter_parent_key']=$email_mailing_list_key;
-	$message_data['recipient_type']='User';
-	$message_data['recipient_key']=0;
-	$message_data['email_key']=0;
-	$message_data['plain']=null;
+
+	$notification_recipients=preg_split('/,/',$site->data['Site Order Notification Email Recipients']);
+
+	foreach ($notification_recipients as $notification_recipient) {
+
+		$message_data['from_name']=$site->data['Site Name'];
+		$message_data['method']='smtp';
+		$message_data['type']='HTML';
+		$message_data['to']=$notification_recipient;
+		$message_data['subject']='Order notification'.' '.$store->data['Store Code'];
+		$message_data['html']='';
+		$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+		$message_data['email_matter']='Order Confirmation';
+		$message_data['email_matter_key']=$email_mailing_list_key;
+		$message_data['email_matter_parent_key']=$email_mailing_list_key;
+		$message_data['recipient_type']='User';
+		$message_data['recipient_key']=0;
+		$message_data['email_key']=0;
+		$message_data['plain']=null;
 
 
 
 
 
-	$message_data['email_placeholders']=array(
+		$message_data['email_placeholders']=array(
 			'Order_Public_ID'=>$order->get('Order Public ID'),
 
-		'Balance_Total_Amount' => $order->get('Balance Total Amount'),
-		'Order_Number_Products'=>$order->get('Order Number Products'),
-		'Created_Date'=>$order->get('Created Date'),
-		'Submitted_by_Customer_Date'=>$order->get('Submitted by Customer Date'),
-		'Order_Customer_Name'=>$order->get('Order Customer Name'),
-		'Order_Customer_Contact_Name'=>$order->get('Order Customer Contact Name'),
-		'Order_Customer_Key'=>$order->get('Order Customer Key'),
-		'Order_Tax_Number'=>($order->get('Order Tax Number')==''?' ':$order->get('Order Tax Number')),
-		'Order_Tax_Number_Valid'=>$order->get('Order Tax Number Valid'),
-		'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
-		'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
-		'Order_Customer_Message'=>$order->get('Order Customer Message'),
-'Order_Voucher_Code'=>' ',
+			'Balance_Total_Amount' => $order->get('Balance Total Amount'),
+			'Order_Number_Products'=>$order->get('Order Number Products'),
+			'Created_Date'=>$order->get('Created Date'),
+			'Submitted_by_Customer_Date'=>$order->get('Submitted by Customer Date'),
+			'Order_Customer_Name'=>$order->get('Order Customer Name'),
+			'Order_Customer_Contact_Name'=>$order->get('Order Customer Contact Name'),
+			'Order_Customer_Key'=>$order->get('Order Customer Key'),
+			'Order_Tax_Number'=>($order->get('Order Tax Number')==''?'ND':$order->get('Order Tax Number')),
+			'Tax_Number_OK'=>($order->get('Order Tax Number Valid')==''?'ND':$order->get('Order Tax Number Valid')),
+			'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
+			'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
+			'Order_Customer_Message'=>($order->get('Order Customer Message')==''?'ND':$order->get('Order Customer Message')),
+			'Order_Voucher_Code'=>'ND',
 
 
-		'PAYMENT_EXTRA_INFO'=>$payment_paid_info,
-		'ORDER_DATA'=>$order_info
-	);
+			'PAYMENT_EXTRA_INFO'=>$payment_paid_info,
+			'ORDER_DATA'=>$order_info
+		);
 
 
-	$message_data['promotion_name']=$site->data['Site Order Notification Email Code'];
+		$message_data['promotion_name']=$site->data['Site Order Notification Email Code'];
 
-	if ($site->data['Site Direct Subscribe Madmimi']) {
-		$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
+		if ($site->data['Site Direct Subscribe Madmimi']) {
+			$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
+		}
+
+		//$send_email->bcc=$site->data['Site Order Notification Email Recipients'];
+
+		$send_email=new SendEmail();
+
+		$send_email->track=false;
+		$send_email->secret_key=CKEY;
+
+		//print_r($message_data);
+
+		$send_email->set($message_data);
+
+		$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
+
+		$result=$send_email->send();
 	}
 
-	$send_email=new SendEmail();
 
-	$send_email->track=false;
-	$send_email->secret_key=CKEY;
-
-	//print_r($message_data);
-
-	$send_email->set($message_data);
-
-	$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
-
-	$result=$send_email->send();
-	
-	
 }
 
 ?>

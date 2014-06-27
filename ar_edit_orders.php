@@ -2368,7 +2368,7 @@ function list_pending_orders() {
 		$store=sprintf("<a href='store_pending_orders.php?id=%d'>%s</a>",$row['Order Store Key'],$row['Order Store Code']);
 
 
-		$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'])).'" >'.strftime("%e %b %Y %H:%M", strtotime($row['Order Date'])).'</span>';
+		$date='<span title="'.strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Date'].' +0:00')).'" >'.strftime("%e %b %Y %H:%M:%s %Z", strtotime($row['Order Date'].' +0:00')).'</span>';
 
 		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Order Key'],"See Picking Sheet");
 		$data[]=array(

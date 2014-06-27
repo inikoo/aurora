@@ -13,7 +13,7 @@ require_once 'class.EmailCredentials.php';
 class SendEmail extends DB_Table {
 
 var $from=false;
-
+var $bcc='';
 	function SendEmail($data=false) {
 
 	}
@@ -81,6 +81,7 @@ var $from=false;
 
 			$this->to='';
 			$this->subject='';
+			$this->bcc='';
 			$this->message='';
 			$this->additional_headers='';
 			$this->additional_parameters='';
@@ -362,7 +363,8 @@ var $from=false;
 				'promotion_name' => $promotion_name, 
 				'recipients' => $to,
 				'from' => $from,
-				'subject' => $subject
+				'subject' => $subject,
+				'bcc'=>$this->bcc
 			);
 
 			//print_r($body_array);
@@ -452,6 +454,7 @@ var $from=false;
 			'Email Credential Key'=>$data['email_credentials_key'],
 			'Email Type'=>$data['type'],
 			'Email Send To'=>$data['to'],
+			
 			'Email Send HTML'=>$data['html'],
 			'Email Send Plain'=>$data['plain'],
 			'Email Send Subject'=>$data['subject'],
