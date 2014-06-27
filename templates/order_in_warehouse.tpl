@@ -209,7 +209,9 @@
 				</tr>
 				{foreach from=$dns_data item=dn} 
 				<tr>
-					<td> <a href="dn.php?id={$dn.key}">{$dn.number}</a> <a target='_blank' href="dn.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('dn',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
+					<td> <a href="dn.php?id={$dn.key}">{$dn.number}</a> 
+					<a target='_blank' href="dn.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('dn',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> 
+					</td>
 					<td class="right" style="text-align:right"> {$dn.state} </td>
 				</tr>
 				<tr>
@@ -238,7 +240,8 @@
 				</tr>
 				{foreach from=$invoices_data item=invoice} 
 				<tr>
-					<td> <a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> <a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
+					<td> <a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> 
+					<a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
 					<td class="right" style="text-align:right"> {$invoice.state} </td>
 				</tr>
 				<tr>

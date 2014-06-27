@@ -629,7 +629,9 @@ $smarty->assign( 'shipper_data', $shipper_data );
 
 	case('Dispatched'):
 
-
+    
+     $js_files[]='js/php.default.min.js';
+	$js_files[]='js/add_payment.js';
 
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
@@ -802,7 +804,8 @@ $smarty->assign('customer',$customer);
 
 
 
-
+//$order->update_payment_state();
+//exit;
 
 
 $smarty->assign('parent','orders');

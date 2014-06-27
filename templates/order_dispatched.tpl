@@ -1,6 +1,9 @@
 {include file='header.tpl'} 
 <div id="bd">
 	<input type="hidden" id="order_key" value="{$order->id}" />
+		<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
+	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
+	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
 	{include file='orders_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
@@ -176,13 +179,14 @@
 				{/foreach} 
 			</table>
 			<table border="0" class="info_block with_title">
-				{if $number_invoices>0 or $order->get('Order Current Dispatch State')=='Packed Done' } 
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan="2">{t}Invoices{/t}:</td>
 				</tr>
 				{foreach from=$invoices_data item=invoice} 
 				<tr>
-					<td> <a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> <a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
+					<td> <a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> 
+					<a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png">
+					</td>
 					<td class="right" style="text-align:right"> {$invoice.state} </td>
 				</tr>
 				<tr>
@@ -192,14 +196,14 @@
 					<td colspan="2" class="right" style="text-align:right" id="operations_container{$invoice.key}">{$invoice.operations}</td>
 				</tr>
 				{/foreach} 
-				<tr style="{if !($order->get('Order Current Dispatch State')=='Packed Done' and $order->get_number_invoices()==0)}display:none{/if}">
+				<tr style="{if !( $order->get_number_invoices()==0)}display:none{/if}">
 					<td colspan="2" class="right" style="text-align:right"> 
 					<div class="buttons small right">
 						<button id="create_invoice"><img id="create_invoice_img" src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
 					</div>
 					</td>
 				</tr>
-				{/if} 
+				
 			</table>
 		
 </div>
@@ -379,4 +383,5 @@
 		</div>
 	</div>
 </div>
+{include file='add_payment_splinter.tpl'}
 {include file='footer.tpl'} 

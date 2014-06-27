@@ -26,7 +26,6 @@ include("external_libs/mpdf/mpdf.php");
 
 $mpdf=new mPDF('win-1252','A4','','',15,15,22,25,10,10);
 $mpdf->useOnlyCoreFonts = true;    // false is default
-$mpdf->SetProtection(array('print'));
 $mpdf->SetTitle(_('Picking Aid').' '.$delivery_note->data['Delivery Note ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
 

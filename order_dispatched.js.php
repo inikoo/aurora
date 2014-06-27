@@ -10,6 +10,33 @@ Dom.setStyle('msg_dispatched_post_transactions','display','none');
 
 }
 
+function create_invoice(){
+
+Dom.get('create_invoice_img').src='art/loading.gif'
+var order_key=Dom.get('order_key').value;
+
+
+    var request='ar_edit_orders.php?tipo=create_invoice_order&order_key='+escape(order_key);
+//  alert(request); //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+			//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		        //location.href='invoice.php?id='+r.invoice_key;
+		        location.reload(); 
+		  
+		}else{
+		alert(r.msg)
+		  
+	    }
+	    }
+	});    
+
+}
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
     YAHOO.invoice.XHR_JSON = new function() {
 
@@ -100,6 +127,7 @@ function get_dn_invoices_info(){
 function init() {
     init_search('orders_store');
    	get_dn_invoices_info()
+    Event.addListener("create_invoice", "click", create_invoice);
 
 
 }

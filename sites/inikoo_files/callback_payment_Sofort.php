@@ -15,7 +15,7 @@ include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 
 include_once 'send_confirmation_email_function.php';
-@mail("raul@inikoo.com", "softshit", var_export($_REQUEST, true));
+//@mail("raul@inikoo.com", "softshit", var_export($_REQUEST, true));
 
 
 if (!isset($_POST['pass1']) or !isset($_POST['payment_key']) or !isset($_POST['tranid']) or !isset($_POST['fullamount'])  ) {

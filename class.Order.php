@@ -220,9 +220,9 @@ class Order extends DB_Table {
 
 		if (isset($data['Order Apply Auto Customer Account Payment'])) {
 			$this->data ['Order Apply Auto Customer Account Payment'] =$data['Order Apply Auto Customer Account Payment'];
-		}else{
-		$this->data ['Order Apply Auto Customer Account Payment']='Yes';
-		
+		}else {
+			$this->data ['Order Apply Auto Customer Account Payment']='Yes';
+
 		}
 
 
@@ -298,9 +298,9 @@ class Order extends DB_Table {
 
 
 		if ($this->data ['Order Currency']!=$corporation_currency_code) {
-		
-		
-					//take off this and only use curret exchenge whan get rid off excel
+
+
+			//take off this and only use curret exchenge whan get rid off excel
 			$date_difference=date('U')-strtotime($this->data['Order Date'].' +0:00');
 			if ($date_difference>3600) {
 				$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code,$this->data['Order Date']);
@@ -495,9 +495,7 @@ class Order extends DB_Table {
 
 		}
 		$this->data['Order Current Dispatch State']='Submitted by Customer';
-		//TODO make it using $this->calculate_state();
 		$this->data['Order Current XHTML Dispatch State']='Submitted by Customer';
-		//TODO make it using $this->calculate_state(); or calculate_payments new functuon
 
 
 
@@ -529,12 +527,12 @@ class Order extends DB_Table {
 			return;
 
 		}
-		
-		if($this->data['Order Current Dispatch State']=='Submitted by Customer'    or $this->data['Order Current Dispatch State']=='In Process by Customer'){
+
+		if ($this->data['Order Current Dispatch State']=='Submitted by Customer'    or $this->data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->update_field_switcher('Order Date',$date,'no_history');
-		
+
 		}
-		
+
 
 		if ($this->data['Order For Collection']=='Yes') {
 			$dispatch_method='Collection';
@@ -889,13 +887,13 @@ class Order extends DB_Table {
 
 
 
-		
-	
+
+
 		$delivery_note_keys='';
 		foreach ($this->get_delivery_notes_ids()as $dn_key) {
 
 			$delivery_note_keys=$dn_key.',';
-			
+
 		}
 		$delivery_note_keys=preg_replace('/\,$/','',$delivery_note_keys);
 
@@ -919,7 +917,7 @@ class Order extends DB_Table {
 		);
 
 
-	
+
 
 		$invoice=new Invoice ('create',$data_invoice);
 
@@ -1024,7 +1022,7 @@ class Order extends DB_Table {
 			$tax_rate=$data['tax_rate'];
 
 
-		//print "xx->$tax_code<-xx"	;
+		//print "xx->$tax_code<-xx" ;
 
 		if (isset($data['Order Type']))
 			$order_type=$data['Order Type'];
@@ -1768,6 +1766,18 @@ class Order extends DB_Table {
 		return $delivery_notes;
 	}
 
+
+	function get_invoices_to_pay_abs_amount() {
+		$invoices_to_pay_abs_amount=0;
+		$sql=sprintf("select sum(abs(`Invoice Outstanding Total Amount`)) as amount from `Order Invoice Bridge` B left join `Invoice Dimension` I on (I.`Invoice Key`=B.`Invoice Key`) where `Order Key`=%d",
+			$this->id
+		);
+		$res = mysql_query( $sql );
+		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+			$invoices_to_pay_abs_amount=$row['amount'];
+		}
+		return $invoices_to_pay_abs_amount;
+	}
 
 	function get_invoices_ids() {
 		$invoices=array();
@@ -2536,7 +2546,7 @@ class Order extends DB_Table {
 
 
 
-	function update_dispatch_state() {
+	function update_dispatch_state($force=false) {
 
 
 		//Line below has to be replaced, the calling functions have to decide instead, but to lazy now to do it
@@ -2545,9 +2555,10 @@ class Order extends DB_Table {
 			return;
 		}
 
-
-		if (in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','Submitted by Customer','Dispatched','Cancelled','Suspended')) )
-			return;
+		if (!$force) {
+			if (  in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','Submitted by Customer','Dispatched','Cancelled','Suspended')) )
+				return;
+		}
 
 		$old_dispatch_state=$this->data['Order Current Dispatch State'];
 
@@ -2593,7 +2604,7 @@ class Order extends DB_Table {
 		}
 		$this->data['Order Current XHTML Dispatch State']=$xhtml_dispatch_state;
 
-
+		//print $xhtml_dispatch_state;
 
 
 
@@ -2602,7 +2613,6 @@ class Order extends DB_Table {
 			$this->id
 		);
 		mysql_query($sql);
-
 
 
 		$this->data['Order Current Dispatch State']=$dispatch_state;
@@ -5514,12 +5524,12 @@ class Order extends DB_Table {
 	}
 
 	function get_notes() {
-	
-	$notes='';
-		if($this->data['Order Customer Sevices Note']!='')
-		$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Note').":</div>".$this->data['Order Customer Sevices Note']."</div>";
-		if($this->data['Order Customer Message']!='')
-		$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Customer Note').":</div>".$this->data['Order Customer Message']."</div>";
+
+		$notes='';
+		if ($this->data['Order Customer Sevices Note']!='')
+			$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Note').":</div>".$this->data['Order Customer Sevices Note']."</div>";
+		if ($this->data['Order Customer Message']!='')
+			$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Customer Note').":</div>".$this->data['Order Customer Message']."</div>";
 
 		return $notes;
 
@@ -5780,11 +5790,11 @@ class Order extends DB_Table {
 		$payments=array();
 
 		if ($status) {
-		if($status=='Pending')
-			$where=sprintf(' and `Payment Transaction Status`=%s  and `Payment Method`!="Account" ',prepare_mysql($status));
+			if ($status=='Pending')
+				$where=sprintf(' and `Payment Transaction Status`=%s  and `Payment Method`!="Account" ',prepare_mysql($status));
 
-		else
-			$where=sprintf(' and `Payment Transaction Status`=%s',prepare_mysql($status));
+			else
+				$where=sprintf(' and `Payment Transaction Status`=%s',prepare_mysql($status));
 		}else {
 			$where='';
 		}
