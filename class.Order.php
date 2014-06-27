@@ -3808,7 +3808,7 @@ class Order extends DB_Table {
 
 	function get_shipping($dn_key=false) {
 
-print "x";
+
 		if ($this->data['Order Number Items']==0) {
 			return array(0,0,'No Applicable');
 		}
@@ -3818,6 +3818,8 @@ print "x";
 			return array(0,0,'No Applicable');
 
 		if ($this->data['Order Shipping Method']=='Set') {
+		
+		print $this->data['Order Shipping Net Amount'].'xx';
 			return array(($this->data['Order Shipping Net Amount']==''?0:$this->data['Order Shipping Net Amount']),0,'Set');
 		}
 
