@@ -103,10 +103,10 @@ function save_set_shipping() {
     Dom.setStyle('save_set_shipping', 'display', 'none');
 
     //return;
-    alert(request);
+    //alert(request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText);
+            alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.setStyle('save_set_shipping_wait', 'display', 'none');
