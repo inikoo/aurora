@@ -3301,7 +3301,7 @@ class Order extends DB_Table {
 		}
 
 
-
+print "$shipping,$shipping_key,$shipping_method";
 		if (!is_numeric($shipping)) {
 
 			$this->data['Order Shipping Net Amount']=0;
