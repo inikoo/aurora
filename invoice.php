@@ -24,6 +24,8 @@ if (!$invoice->id)
 $customer=new Customer($invoice->data['Invoice Customer Key']);
 $store=new Store($invoice->data['Invoice Store Key']);
 
+
+$invoice->update_payment_state();
 //print_r($invoice->data);
 
 $smarty->assign('search_label',_('Orders'));
