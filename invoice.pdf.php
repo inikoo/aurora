@@ -5,7 +5,7 @@ require_once 'class.Store.php';
 
 require_once 'class.Invoice.php';
 
-
+require_once 'common_geography_functions.php';
 
 
 
@@ -94,7 +94,14 @@ if ($invoice->data['Invoice Type']=='Invoice') {
 	$smarty->assign('label_title_no',_('Refund No.'));
 }
 
+
+if ( in_array($invoice->data['Invoice Delivery Country 2 Alpha Code'],get_countries_EC_Fiscal_VAT_area())) {
 $print_tariff_code=false;
+}else{
+$print_tariff_code=true;
+
+}
+
 
 $transactions=array();
 $sql=sprintf("select `Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
