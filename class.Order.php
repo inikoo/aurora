@@ -3319,7 +3319,7 @@ class Order extends DB_Table {
 
 		if (!$dn_key) {
 
-			$sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Shipping"  and `Delivery Note Key` IS NULL and `Invoice Key` IS NULL',
+			$sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Shipping" ',
 				$this->id
 			);
 		} else {
@@ -3330,6 +3330,9 @@ class Order extends DB_Table {
 
 
 		}
+		
+	
+		
 		
 		//print $sql;
 		mysql_query($sql);
