@@ -2041,7 +2041,7 @@ function post_transactions_to_process() {
 
 
 function list_pending_orders() {
-
+date_default_timezone_set(TIMEZONE) ;
 	include_once 'order_common_functions.php';
 
 	global $user;
