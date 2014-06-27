@@ -39,9 +39,10 @@ $sql="select `Order Key` from `Order Dimension` order by `Order Key` desc";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-$order=new Order($row['Order Key']);
-$order->update_no_normal_totals();
-print $order->data['Order Date']." ".$order->data['Order Public ID']."  \r";
+	$order=new Order($row['Order Key']);
+	$order->update_no_normal_totals();
+	$order->update_payment_state();
+	print $order->data['Order Date']." ".$order->data['Order Public ID']."  \r";
 }
 
 

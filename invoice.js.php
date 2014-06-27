@@ -135,7 +135,7 @@ function show_delete_invoice(){
 
  region1 = Dom.getRegion('delete');
     region2 = Dom.getRegion('dialog_delete');
-    var pos = [region1.left - region2.width, region1.top]
+    var pos = [region1.left, region1.top]
     Dom.setXY('dialog_delete', pos);
 
 
@@ -164,7 +164,7 @@ function save(tipo) {
         //alert(ar_file+'?'+request)
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-              alert(o.responseText);
+             // alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -189,6 +189,19 @@ function save(tipo) {
     }
 
 }
+
+
+function show_invoice_details(){
+Dom.setStyle('invoice_details_panel','display','')
+Dom.setStyle('show_invoice_details','display','none')
+
+}
+
+function hide_invoice_details(){
+Dom.setStyle('invoice_details_panel','display','none')
+Dom.setStyle('show_invoice_details','display','')
+}
+
 
 function change(e, o, tipo) {
     switch (tipo) {
@@ -259,7 +272,8 @@ function init(){
     });
     dialog_delete.render();
 
-
+ Event.addListener("show_invoice_details", "click", show_invoice_details);
+    Event.addListener("hide_invoice_details", "click", hide_invoice_details);
 
 
 }

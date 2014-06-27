@@ -10,10 +10,7 @@
 			<span class="main_title">{$invoice_type_label} <span>{$invoice->get('Invoice Public ID')}</span></span> 
 		</div>
 		<div class="buttons">
-			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> 
-			<button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-			<button class="negative" id="delete" onclick="show_delete_invoice()">Delete</button> 
-		
+			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> <button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -112,25 +109,38 @@
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan="2">{t}Orders{/t}:</td>
 				</tr>
-				<tr>
-					<td colspan="2" class="aright">{$invoice->get('Invoice XHTML Orders')}</td>
-				</tr>
+					{foreach from=$invoice->get_orders_objects() item=order} 
+					<tr>
+						<td class="aleft"><a href="order.php?id={$order->id}">{$order->get('Order Public ID')}</a> 
+						<td class="aright"></td>
+					</tr>
+					{/foreach} 
 			</table>
 			<table border="0" class="info_block with_title" style="{if $invoice->get_number_delivery_notes()==0}display:none{/if}">
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan="2">{t}Delivery Notes{/t}:</td>
 				</tr>
 				<tr>
+					{foreach from=$invoice->get_delivery_notes_objects() item=dn} 
 					<tr>
-						<td colspan="2" class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td>
+						<td class="aleft"><a href="dn.php?id={$dn->id}">{$dn->get('Delivery Note ID')}</a> <a target='_blank' href="dn.pdf.php?id={$dn->id}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('dn',{$dn->id})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
+						<td class="aright">{$dn->get('Delivery Note XHTML State')}</td>
 					</tr>
+					{/foreach} 
 				</table>
 			</div>
 			<div style="clear:both">
 			</div>
+			<img id="show_invoice_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
+			<div id="invoice_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px">
+				<div class="buttons left">
+					<button class="negative" id="delete" onclick="show_delete_invoice()">{t}Delete{/t}</button> 
+				</div>
+				<div style="clear:both">
+				</div>
+				<img id="hide_invoice_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			</div>
 		</div>
-		
-	
 		<div style="padding: 10px 10px 15px 10px;font-size:85%;;margin-bottom:10px;border:1px solid #ccc;margin-top:20px;{if $invoice->get_number_payments()==0}display:none{/if}">
 			<table class="edit" id="pending_payment_confirmations" border="0" style="margin-top:0px;padding-top:0px;width:100%;">
 				<tr>
@@ -214,35 +224,32 @@
 			</table>
 		</div>
 	</div>
-	
 	<div id="dialog_delete" style="position:absolute;left:-1000px;padding:15px 20px 5px 10px;width:200px">
-	<div id="delete_msg">
+		<div id="delete_msg">
+		</div>
+		<table class="edit" style="width:100%">
+			<tr class="title">
+				<td colspan="2">{t}Delete{/t}</td>
+			</tr>
+			<tr style="height:7px">
+				<td colspan="2"></td>
+			</tr>
+			<tr>
+				<td colspan="2">{t}Reason of deleting{/t}</td>
+			</tr>
+			<tr>
+				<td colspan="2"> <textarea style="height:100px;width:100%" id="delete_input" onkeyup="change(event,this,'delete')"></textarea> </td>
+			</tr>
+			<tr id="delete_buttons">
+				<td colspan="2"> 
+				<div class="buttons">
+					<button onclick="save('delete')" id="delete_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('delete')">{t}Go Back{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr style="height:22px;display:none" id="delete_wait">
+				<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
+			</tr>
+		</table>
 	</div>
-	<table class="edit" style="width:100%">
-		<tr class="title">
-			<td colspan="2">{t}Delete{/t}</td>
-		</tr>
-		<tr style="height:7px">
-			<td colspan="2"></td>
-		</tr>
-		<tr>
-			<td colspan="2">{t}Reason of deleting{/t}</td>
-		</tr>
-		<tr>
-			<td colspan="2"> <textarea style="height:100px;width:100%" id="delete_input" onkeyup="change(event,this,'delete')"></textarea> </td>
-		</tr>
-		<tr id="delete_buttons">
-			<td colspan="2"> 
-			<div class="buttons">
-				<button onclick="save('delete')" id="delete_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('delete')">{t}Go Back{/t}</button> 
-			</div>
-			</td>
-		</tr>
-		<tr style="height:22px;display:none" id="delete_wait">
-			<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
-		</tr>
-	</table>
-</div>
-	
-	
 	{include file='footer.tpl'} 

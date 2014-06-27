@@ -92,14 +92,14 @@ class DeliveryNote extends DB_Table {
 			$this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
 		else
 			$this->data ['Delivery Note Weight'] ='';
-			
-				if (isset($dn_data ['Delivery Note Order Date Placed']))
+
+		if (isset($dn_data ['Delivery Note Order Date Placed']))
 			$this->data ['Delivery Note Order Date Placed'] = $dn_data ['Delivery Note Order Date Placed'];
 		else
 			$this->data ['Delivery Note Order Date Placed'] ='';
-			
-			
-			
+
+
+
 
 		if (isset($dn_data ['Delivery Note XHTML Pickers']))
 			$this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
@@ -432,24 +432,24 @@ class DeliveryNote extends DB_Table {
 			return weight($this->data['Delivery Note Estimated Weight']);
 			break;
 		case('Weight'):
-			
-			if($this->data['Delivery Note Weight Source']=='Given')	
-					return weight($this->data['Delivery Note Weight']);
+
+			if ($this->data['Delivery Note Weight Source']=='Given')
+				return weight($this->data['Delivery Note Weight']);
 
 			else
-			return "&#8494;" .weight($this->data['Delivery Note Estimated Weight'],'',0);
+				return "&#8494;" .weight($this->data['Delivery Note Estimated Weight'],'',0);
 			break;
-			
+
 		case('Weight For Edit'):
-			
-			if($this->data['Delivery Note Weight Source']=='Given')	
+
+			if ($this->data['Delivery Note Weight Source']=='Given')
 				return $this->data['Delivery Note Weight'];
 
 			else
-			return "";
-			break;	
-		
-		
+				return "";
+			break;
+
+
 		case('Consignment'):
 			$consignment=$this->data['Delivery Note Shipper Consignment'];
 			if ($this->data['Delivery Note Shipper Code']!='') {
@@ -1397,6 +1397,100 @@ class DeliveryNote extends DB_Table {
 
 
 
+	function undo_dispatch() {
+
+
+
+		$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Record Type`=%s and `Inventory Transaction Section`=%s and `Inventory Transaction Type`=%s and `Delivery Note Key`=%d",
+			"'Movement'",
+			"'Audit'",
+			"'Adjust'",
+			$this->id
+
+		);
+		mysql_query($sql);
+
+		$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type` = 'Order In Process',`Inventory Transaction Section`='OIP' where `Delivery Note Key`=%d and `Inventory Transaction Type` = 'No Dispatched' and `Inventory Transaction Section`='NoDispatched'  ",
+
+			$this->id
+
+		);
+		mysql_query($sql);
+
+
+		$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type` = 'Order In Process',`Inventory Transaction Section`='OIP' where `Delivery Note Key`=%d and `Inventory Transaction Type` = 'Sale' and `Inventory Transaction Section`='Out'  ",
+
+			$this->id
+
+		);
+		mysql_query($sql);
+
+
+		$sql=sprintf("select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+
+
+
+			if ($this->update_stock) {
+				$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+				$part_location->update_stock();
+			}
+
+		}
+		
+		
+
+
+		$sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State`='Dispatched'  ",
+			$this->id);
+
+		$result=mysql_query($sql);
+		$_data=array();
+		while ($row=mysql_fetch_array($result,MYSQL_ASSOC)  ) {
+
+			$sql = sprintf("update  `Order Transaction Fact` set `Actual Shipping Date`=NULL,`Shipped Quantity`=0, `Current Dispatching State`=%s where   `Order Transaction Fact Key`=%d",
+				prepare_mysql('Ready to Ship'),
+				$row['Order Transaction Fact Key']
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+		}
+
+
+		$this->data['Delivery Note State']='Packed Done';
+		$this->data['Delivery Note Date']=$this->data['Delivery Note Date Dispatched Approved'];
+
+		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Date`=%s where `Delivery Note Key`=%d",
+			prepare_mysql($this->data['Delivery Note State']),
+			prepare_mysql($this->data['Delivery Note Date']),
+			$this->id
+		);
+		mysql_query($sql);
+
+		$this->update_xhtml_state();
+		foreach ($this->get_orders_objects() as $key=>$order) {
+
+
+
+			if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
+				$order->update_post_dispatch_state();
+
+			}else {
+				$order->update_dispatch_state(true);;
+				
+			}
+
+			$order->update_xhtml_delivery_notes();
+
+		}
+
+		$store=new store($this->data['Delivery Note Store Key']);
+		$store->update_orders();
+
+	}
+
 	private function handle_to_customer($data) {
 
 
@@ -1521,6 +1615,8 @@ class DeliveryNote extends DB_Table {
 		$store->update_orders();
 
 	}
+
+
 
 	function dispatch($data) {
 
@@ -3131,9 +3227,9 @@ class DeliveryNote extends DB_Table {
 		$orders_ids='';
 		$sales_representatives=array();
 		$orders=$this->get_orders_objects();
-		
+
 		$billing_to_key=false;
-		
+
 		foreach ($orders as $order) {
 
 			$tax_code=$order->data['Order Tax Code'];
@@ -3143,7 +3239,7 @@ class DeliveryNote extends DB_Table {
 			}
 
 
-			if($order->data['Order Invoiced']=='No'){
+			if ($order->data['Order Invoiced']=='No') {
 				$billing_to_key=$order->data['Order Billing To Key To Bill'];
 			}
 
@@ -3366,9 +3462,9 @@ class DeliveryNote extends DB_Table {
 
 	}
 
-function get_date($field) {
-return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
-}
+	function get_date($field) {
+		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+	}
 
 }
 

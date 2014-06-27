@@ -49,6 +49,17 @@ case('add_payment'):
 	break;
 
 
+case('delivery_note_undo_dispatch'):
+	$data=prepare_values($_REQUEST,array(
+
+			'dn_key'=>array('type'=>'key'),
+
+
+		));
+	delivery_note_undo_dispatch($data);
+
+	break;
+
 case('delete_invoice'):
 	$data=prepare_values($_REQUEST,array(
 
@@ -60,6 +71,7 @@ case('delete_invoice'):
 	delete_invoice($data);
 
 	break;
+
 
 case('new_refund'):
 	$data=prepare_values($_REQUEST,array(
@@ -3293,6 +3305,7 @@ function create_invoice_order($data) {
 	$payments=$order->get_payment_objects('Completed');
 	foreach($payments as $payment){
 		$paymnet_balance=$invoice->apply_payment($payment);
+		print $paymnet_balance."x";
 		if($paymnet_balance!=0){
 			break;
 		}
@@ -5308,6 +5321,21 @@ function add_payment_to_order($data) {
 }
 
 
+function delivery_note_undo_dispatch($data){
+$dn_key=$data['dn_key'];
 
+$delivery_note=new DeliveryNote($dn_key);
+
+$delivery_note->undo_dispatch();
+
+$response=array('state'=>200,
+		'result'=>'updated',
+		'dn_key'=>$delivery_note->id
+		
+	);
+
+	echo json_encode($response);
+
+}
 
 ?>

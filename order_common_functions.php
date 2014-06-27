@@ -141,6 +141,7 @@ function get_order_formated_payment_state($data) {
 		break;
 	case 'Paid':
 		$payment_state=_('Paid');
+		break;
 case 'Partially Paid':
 		$payment_state=_('Partially Paid');
 

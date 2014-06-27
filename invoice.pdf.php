@@ -59,7 +59,6 @@ include "external_libs/mpdf/mpdf.php";
 $mpdf=new mPDF('win-1252','A4','','',20,15,38,25,10,10);
 
 $mpdf->useOnlyCoreFonts = true;    // false is default
-//$mpdf->SetProtection(array('print'));
 $mpdf->SetTitle(_('Invoice').' '.$invoice->data['Invoice Public ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
 
@@ -95,6 +94,8 @@ if ($invoice->data['Invoice Type']=='Invoice') {
 	$smarty->assign('label_title_no',_('Refund No.'));
 }
 
+$print_tariff_code=false;
+
 $transactions=array();
 $sql=sprintf("select `Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
 //print $sql;exit;
@@ -104,7 +105,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$row['Discount']=($row['Invoice Transaction Total Discount Amount']==0?'':percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount'],0));
 	
 	
-		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
+	if($print_tariff_code)
+			$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
+
 	$transactions[]=$row;
 
 }

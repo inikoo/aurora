@@ -10,44 +10,16 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:right">
-			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
-			{if $dn->get('Delivery Note Fraction Picked')==1 and $dn->get('Delivery Note Fraction Packed')==1} 
-				{if $dn->get('Delivery Note Approved Done')=='No'}
-				{if $user->get('User Type')!='Warehouse'}
-				<button id="approve_packing" onclick="approve_packing({$dn->id},{$user->get('User Parent Key')},'dn')" style="height:24px;"><img id="approve_packing_img_{$dn->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> 
-				{/if}
-				{else}
-					{if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button onclick="approve_dispatching({$dn->id},{$user->get('User Parent Key')},'dn')" ><img id="approve_dispatching_img_{$dn->id}" src="art/icons/package_green.png" alt=""> {t}Approve Dispatching{/t}</button> 
-					{else if $dn->get('Delivery Note State')!='Dispatched' } <button onclick="set_as_dispatched({$dn->id},{$user->get('User Parent Key')},'dn')"><img id="set_as_dispatched_img_{$dn->id}" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> 
-					{/if} 
-					{if !$dn->get_number_invoices() and $dn->get('Delivery Note Type')=='Order'} <button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
-					{/if} 
-				{/if} 
-			{else if $dn->get('Delivery Note Fraction Picked')==0 and $dn->get('Delivery Note Fraction Packed')==0} 
-				{if $dn->get('Delivery Note Assigned Picker Key')} <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
-				{else} <button style="height:24px;" id="pick_it_">{t}Process Delivery Note{/t} ({t}Picking{/t})</button> 
-				{/if} 
-			{else if $dn->get('Delivery Note Fraction Picked')>0 and $dn->get('Delivery Note Fraction Picked')<1 } <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
-				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
-				{if $dn->get('Delivery Note Fraction Packed')>0} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> 
-				{/if}
-				
-			{else if $dn->get('Delivery Note Fraction Picked')==1 } 
-				<button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
-				{if $dn->get('Delivery Note Assigned Packer Key')} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> 
-				{else} <button style="height:24px;" id="process_dn_packing">{t}Process Delivery Note{/t} ({t}Packing{/t})</button> 
-				{/if} 
-			{/if} 
+			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $dn->get('Delivery Note Fraction Picked')==1 and $dn->get('Delivery Note Fraction Packed')==1} {if $dn->get('Delivery Note Approved Done')=='No'} {if $user->get('User Type')!='Warehouse'} <button id="approve_packing" onclick="approve_packing({$dn->id},{$user->get('User Parent Key')},'dn')" style="height:24px;"><img id="approve_packing_img_{$dn->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> {/if} {else} {if $dn->get('Delivery Note Approved To Dispatch')=='No'} <button onclick="approve_dispatching({$dn->id},{$user->get('User Parent Key')},'dn')"><img id="approve_dispatching_img_{$dn->id}" src="art/icons/package_green.png" alt=""> {t}Approve Dispatching{/t}</button> {else if $dn->get('Delivery Note State')!='Dispatched' } <button onclick="set_as_dispatched({$dn->id},{$user->get('User Parent Key')},'dn')"><img id="set_as_dispatched_img_{$dn->id}" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button> {/if} {if !$dn->get_number_invoices() and $dn->get('Delivery Note Type')=='Order'} <button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> {/if} {/if} {else if $dn->get('Delivery Note Fraction Picked')==0 and $dn->get('Delivery Note Fraction Packed')==0} {if $dn->get('Delivery Note Assigned Picker Key')} <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> {else} <button style="height:24px;" id="pick_it_">{t}Process Delivery Note{/t} ({t}Picking{/t})</button> {/if} {else if $dn->get('Delivery Note Fraction Picked')>0 and $dn->get('Delivery Note Fraction Picked')<1 } <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> {if $dn->get('Delivery Note Fraction Packed')>0} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> {/if} {else if $dn->get('Delivery Note Fraction Picked')==1 } <button style="height:24px;" onclick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> {if $dn->get('Delivery Note Assigned Packer Key')} <button style="height:24px;" onclick="window.location='order_pack_aid.php?id={$dn->id}'"><img src="art/icons/package.png" alt=""> {t}Packing Aid Sheet{/t}</button> {else} <button style="height:24px;" id="process_dn_packing">{t}Process Delivery Note{/t} ({t}Packing{/t})</button> {/if} {/if} 
 		</div>
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Delivery Note{/t} <span >{$dn->get('Delivery Note ID')}</span> <span class="subtitle">({$dn->get_formated_state()})</span></span> {*} {if isset($referal) and $referal=='store_pending_orders'} <button onclick="window.location='$referal_url'"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pending Orders (Store){/t}</button> {else} <button onclick="window.location='warehouse_orders.php?id={$dn->get('Delivery Note Warehouse Key')}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} {*} 
+			<span class="main_title">{t}Delivery Note{/t} <span>{$dn->get('Delivery Note ID')}</span> <span class="subtitle">({$dn->get_formated_state()})</span></span> {*} {if isset($referal) and $referal=='store_pending_orders'} <button onclick="window.location='$referal_url'"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pending Orders (Store){/t}</button> {else} <button onclick="window.location='warehouse_orders.php?id={$dn->get('Delivery Note Warehouse Key')}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} {*} 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
 	<div id="control_panel">
 		<div id="dn_address">
-			
 			<h2 style="padding:0">
 				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$dn->get('Delivery Note Customer Name')} <a class="id" href="customer.php?id={$dn->get('Delivery Note Customer Key')}">{$customer->get_formated_id()}</a> 
 			</h2>
@@ -67,31 +39,25 @@
 					<td class="aright">{t}Parcels{/t}:</td>
 					<td width="200px" class="aright">{$dn->get_formated_parcels()}</td>
 				</tr>
-				{/if} {if $dn->get('Delivery Note Weight Source')=='Estimated'} 
-				<tr>
-					<td class="aright">&#8776; {t}Weight{/t}:</td>
-					<td width="200px" class="aright">{$dn->get('Estimated Weight')}</td>
-				</tr>
-				{else} 
+				{/if}
+			
 				<tr>
 					<td class="aright">{t}Weight{/t}:</td>
 					<td width="200px" class="aright">{$dn->get('Weight')}</td>
 				</tr>
-				{/if} {if $dn->get('Delivery Note Date Start Picking')!='' or $dn->get('Delivery Note Picker Assigned Alias')!=''} 
+				{if $dn->get('Delivery Note Date Start Picking')!='' or $dn->get('Delivery Note Picker Assigned Alias')!=''} 
 				<tr>
 					<td class="aright"> {if $dn->get('Delivery Note Date Finish Picking')==''}{t}Picking by{/t}{else}{t}Picked by{/t}{/if}: </td>
 					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Pickers')} </td>
 					{if $dn->get('Delivery Note Date Finish Picking')!=''} 
 					<tr>
 						<td class="aright">{t}Finish picking{/t}:</td>
-
 						<td class="aright">{$dn->get('Date Finish Picking')}</td>
 					</tr>
 					{else if $dn->get('Delivery Note Date Finish Picking')!=''} 
 					<tr>
-										<td class="aright">{t}Start picking{/t}:</td>
-
-						<td  class="aright">{$dn->get('Date Start Picking')}</td>
+						<td class="aright">{t}Start picking{/t}:</td>
+						<td class="aright">{$dn->get('Date Start Picking')}</td>
 					</tr>
 					{/if} 
 				</tr>
@@ -101,12 +67,12 @@
 					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Packers')} </td>
 					{if $dn->get('Delivery Note Date Finish Packing')!=''} 
 					<tr>
-					<td class="aright">{t}Finish packing{/t}:</td>
-						<td  class="aright">{$dn->get('Date Finish Packing')}</td>
+						<td class="aright">{t}Finish packing{/t}:</td>
+						<td class="aright">{$dn->get('Date Finish Packing')}</td>
 					</tr>
 					{else if $dn->get('Delivery Note Date Finish Packing')!=''} 
 					<tr>
-					<td class="aright">{t}Start packing{/t}:</td>
+						<td class="aright">{t}Start packing{/t}:</td>
 						<td class="aright">{$dn->get('Date Start Packing')}</td>
 					</tr>
 					{/if} 
@@ -129,32 +95,46 @@
 					<td class="aright">{$dn->get('Date Created')}</td>
 				</tr>
 			</table>
-			<table border="0" class="info_block with_title"  >
-				
-				
+			<table border="0" class="info_block with_title">
 				<tr style="border-bottom:1px solid #333;">
-					<td colspan=2>{t}Orders{/t}:</td>
+					<td colspan="2">{t}Orders{/t}:</td>
 				</tr>
 				
-				<tr>
-					
-					<td colspan=2 class="aright">{$dn->get('Delivery Note XHTML Orders')}</td>
-				</tr>
-				</table>
-				{if $dn->get('Delivery Note XHTML Invoices')!=''} 
-				
-				<table border="0" class="info_block with_title"  >
+					{foreach from=$dn->get_orders_objects() item=order} 
+					<tr>
+						<td class="aleft"><a href="order.php?id={$order->id}">{$order->get('Order Public ID')}</a> 
+						<td class="aright"></td>
+					</tr>
+					{/foreach} 
+			</table>
+			{if $dn->get_number_invoices()>0} 
+			<table border="0" class="info_block with_title">
 				<tr style="border-bottom:1px solid #333;">
-					<td colspan=2>{t}Invoices{/t}:</td>
+					<td colspan="2">{t}Invoices{/t}:</td>
 				</tr>
-				<tr>
-					<td></td>
-					<td class="aright">{$dn->get('Delivery Note XHTML Invoices')}</td>
-				</tr>
+				{foreach from=$dn->get_invoices_objects() item=invoice} 
+					<tr>
+						<td class="aleft"><a href="invoice.php?id={$invoice->id}">{$invoice->get('Invoice Public ID')}</a> 
+											<a target='_blank' href="invoice.pdf.php?id={$invoice->id}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice->id})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png">
+
+						<td class="aright">{$invoice->get_xhtml_payment_state()}</td>
+					</tr>
+					{/foreach} 
 				{/if} 
 			</table>
 		</div>
 		<div style="clear:both">
+		</div>
+		<img id="show_dn_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
+		<div id="dn_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px">
+			{if $dn->get('Delivery Note State')=='Dispatched'} 
+			<div class="buttons left">
+				<button onclick="undo_dispatch()"><img id="undo_dispatch_icon" src="art/icons/arrow_rotate_anticlockwise.png"> {t}Undo dispatch{/t}</button> 
+			</div>
+			{/if} 
+			<div style="clear:both">
+			</div>
+			<img id="hide_dn_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
 		</div>
 	</div>
 	<div class="data_table" style="clear:both">
