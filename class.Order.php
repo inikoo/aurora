@@ -3331,7 +3331,7 @@ class Order extends DB_Table {
 
 		}
 		
-		print $sql;
+		//print $sql;
 		mysql_query($sql);
 
 
