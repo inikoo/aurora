@@ -133,6 +133,19 @@ function send_confirmation_email($order) {
 
 	);
 
+if ($order->get('Order Insurance Net Amount')!=0) {
+		$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>',
+			_('Insurance'),
+			$order->get('Insurance Net Amount')
+
+		);
+	}
+
+
+
 	$order_info.=sprintf('<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>

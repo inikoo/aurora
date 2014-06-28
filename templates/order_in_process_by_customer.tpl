@@ -82,7 +82,8 @@
 						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
 					</tr>
 				<tr id="tr_order_total_paid" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div><img title="{$order->get('Order Current XHTML Payment State')}" src="art/icons/information.png" style="height:12.9px">  {t}To Pay{/t}</td>
+						<td class="aright">
+						{t}To Pay{/t}</td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				
@@ -105,8 +106,8 @@
 						<td>{t}Last updated{/t}:</td>
 						<td class="aright">{$order->get('Last Updated Date')}</td>
 					</tr>
-					<tr style="display:none">
-						<td></td>
+					<tr style="border-top:1px solid #ccc" >
+						<td>{t}On website{/t}:</td>
 						<td class="aright">{$order->get('Interval Last Updated Date')}</td>
 					</tr>
 					

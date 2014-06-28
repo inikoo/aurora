@@ -34,12 +34,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"description", label:"Description",width:480,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    // ,{key:"stock",label:"Stock", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
-					,{key:"add",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'add_object',object:'new_order'}
-					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'remove_object',object:'new_order'}
+					,{key:"add",label:"", width:5,sortable:false,action:'add_object',object:'new_order'}
+					,{key:"remove",label:"", width:5,sortable:false,action:'remove_object',object:'new_order'}
 			     ,{key:"to_charge",label:"Net", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 				//	     ,{key:"tax",label:"Tax", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 
-		,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:90,sortable:false,className:"aright"}
+		//,{key:"dispatching_status",label:"Status" ,width:90,sortable:false,className:"aright"}
 				,{key:"otf_key",label:"" ,hidden:true, width:1}
 	            ,{key:"discount_percentage",label:"" ,hidden:true, width:1}
 				];
@@ -119,14 +119,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"Description",width:480,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    // ,{key:"stock",label:"Stock", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    // ,{key:"stock",label:"Stock",width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
-					,{key:"add",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'add_object',object:'new_order'}
-					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'remove_object',object:'new_order'}
+					,{key:"add",label:"", width:5,sortable:false,action:'add_object',object:'new_order'}
+					,{key:"remove",label:"", width:5,sortable:false,action:'remove_object',object:'new_order'}
 			     ,{key:"to_charge",label:"Net", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 				//	     ,{key:"tax",label:"Tax", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 
-		,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:90,sortable:false,className:"aright"}
+		//,{key:"dispatching_status",label:"Status" ,width:90,sortable:false,className:"aright"}
 				,{key:"otf_key",label:"" ,hidden:true, width:1}
 	            ,{key:"discount_percentage",label:"" ,hidden:true, width:1}
 				];
@@ -197,7 +197,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-
 function init() {
 
     init_search('products_store');
@@ -205,13 +204,13 @@ function init() {
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
-    
-    
+
+
     Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
     Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
-    
-    
-    
+
+
+
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     oACDS.table_id = 0;
@@ -223,17 +222,17 @@ function init() {
     oACDS1.table_id = 1;
     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
     oAutoComp1.minQueryLength = 0;
-    
-    
-    
+
+
+
     YAHOO.util.Event.addListener("done", "click", create_delivery_note);
 
 
-myTooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
-    context: "order_paid_info",
-   
-    showDelay: 500
-});
+    myTooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
+        context: "order_paid_info",
+
+        showDelay: 500
+    });
 
 }
 
