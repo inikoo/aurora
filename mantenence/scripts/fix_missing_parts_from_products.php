@@ -40,9 +40,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	if ($product->get_number_of_parts()==0) {
-		print $row['Store Code'].' '.$product->data['Product Code'].' '.$product->data['Product ID']." ".$product->data['Product Sales Type']."  \n";
+		//print $row['Store Code'].' '.$product->data['Product Code'].' '.$product->data['Product ID']." ".$product->data['Product Sales Type']."  \n";
 
-		
+				print $row['Store Code'].' '.$product->data['Product Code']." \n";
+
 		continue;
 		
 		$supplier=new Supplier('code','UNK');
