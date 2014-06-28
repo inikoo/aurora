@@ -288,29 +288,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-	    //START OF THE TABLE=========================================================================================================================
 
 		var tableid=0;
-	    // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 
 
-	    var InvoiceColumnDefs = [
+	    var ColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true}
-								,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-								,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-								,{key:"description",label:"<?php echo _('Description')?>", width:378,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							//	,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								,{key:"reference",label:"<?php echo _('Reference')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								,{key:"description",label:"<?php echo _('Description')?>", width:378,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 							//	,{key:"packing_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 							// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 							//  ,{key:"location",label:"<?php echo _('Location')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 							//  ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"done",label:"", width:3,sortable:false,className:"aright"}
-								,{key:"packed",label:"<?php echo _('Packed')?>", width:30,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pack_aid'}
+								,{key:"packed",label:"<?php echo _('Packed')?>", width:30,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pack_aid'}
 								,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pack_aid'}
 								,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pack_aid'}
 								,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pack_aid'}
-								,{key:"picked",label:"<?php echo _('Picked')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"picked",label:"<?php echo _('Picked')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 								,{key:"out_of_stock",label:"", width:1,hidden:true}
 								,{key:"not_found",label:"", width:1,hidden:true}
@@ -318,34 +316,74 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				   ];
 
+request="ar_edit_orders.php?tipo=packing_aid_sheet&tableid="+tableid+"&dn_key="+Dom.get('dn_key').value+'&sf=0'
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 
-	    this.pack_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=packing_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
-	    //alert("ar_edit_orders.php?tipo=packing_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
-
-	    this.pack_aidDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.pack_aidDataSource.connXhrMode = "queueRequests";
-	    this.pack_aidDataSource.responseSchema = {
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data",
+		
+			metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
 		fields: [
 			 "sku"
 			 ,"used_in"
-			 ,"description","picked","picking_notes"
+			 ,"description","picked","picking_notes","reference"
 			 ,"location","packing_notes","done"
 			 ,"quantity","packed","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_packed_other","check_mark"
 
 			 ]};
-	    this.pack_aidDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
-								   this.pack_aidDataSource, {
-								       renderLoopSize: 50
-								   }
+	   
+	   
+	       this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource0
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['packing_aid']['items']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['packing_aid']['items']['order_dir']?>"
+								     },
+								     dynamicData : true
 
-								   );
+								  }
+								   
+								 );
+	
+	
+		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table0.request=request;
+  		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 
+ this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", myonCellClick);
+	
+		this.table0.filter={key:'<?php echo$_SESSION['state']['packing_aid']['items']['f_field']?>',value:'<?php echo$_SESSION['state']['packing_aid']['items']['f_value']?>'};
 
- this.pack_aidDataTable.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.pack_aidDataTable.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.pack_aidDataTable.subscribe("cellClickEvent", myonCellClick);
-
+	   
 
 
 
@@ -408,8 +446,47 @@ function init() {
 
 
 
-  
 
+
+   Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+  
+  
+  
+  
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+
+
+
+
+

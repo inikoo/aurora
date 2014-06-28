@@ -6033,8 +6033,7 @@ class Order extends DB_Table {
 		$this->data['Order Current XHTML Payment State']=$payments_info;
 
 		$this->data['Order Payments Amount']=$payments_amount;
-		$this->data['Order To Pay Amount']=$this->data['Order Balance Total Amount']-$payments_amount;
-
+		$this->data['Order To Pay Amount']=round($this->data['Order Balance Total Amount']-$payments_amount,2);
 
 		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML Payment State`=%s , `Order Payments Amount`=%.2f ,`Order To Pay Amount`=%.2f where `Order Key`=%d  "
 			,prepare_mysql($this->data['Order Current Payment State'])

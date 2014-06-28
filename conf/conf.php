@@ -2989,12 +2989,12 @@ $default_state=array(
 		'type'=>'dynamic',
 		'items'=>array(
 			'where'=>'where true',
-			'f_field'=>'sku',
+			'f_field'=>'reference',
 			'f_value'=>'','f_show'=>false,
-			'order'=>'sku',
+			'order'=>'reference',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>25,
+			'nr'=>500,
 			'from'=>'',
 			'to'=>'',
 			'elements'=>''
@@ -3005,13 +3005,12 @@ $default_state=array(
 
 		'type'=>'dynamic',
 		'items'=>array(
-			'where'=>'where true',
-			'f_field'=>'sku',
+			'f_field'=>'reference',
 			'f_value'=>'','f_show'=>false,
-			'order'=>'sku',
+			'order'=>'reference',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>25,
+			'nr'=>500,
 			'from'=>'',
 			'to'=>'',
 			'elements'=>''

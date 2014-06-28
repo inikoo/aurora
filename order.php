@@ -800,7 +800,7 @@ $smarty->assign('customer',$customer);
 
 
 
-//$order->update_payment_state();
+$order->update_payment_state();
 //exit;
 //exit($template);
 

@@ -279,32 +279,33 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 		
-	    //START OF THE TABLE=========================================================================================================================
 		
 		var tableid=0; 
-	    // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 
 
-	    var InvoiceColumnDefs = [
+	    var ColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     			//,{key:"sku", label:"<?php echo _('Part')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						     	,{key:"reference",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						     	,{key:"reference",label:"<?php echo _('Reference')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-								,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								//,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								
 								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-								,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?240:390),sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+								,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?240:390),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 							//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 							// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  				,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:180,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  				,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 								,{key:"done",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false}
-								,{key:"picked",label:"<?php echo _('Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
+								
+								,{key:"picked",label:"<?php echo _('Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:40,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
+								
 								,{key:"check_mark",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
 								,{key:"add",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'add_object',object:'pick_aid'}
 								,{key:"remove",label:"",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:3,sortable:false,action:'remove_object',object:'pick_aid'}
 								,{key:"formated_todo",label:"<?php echo _('Pending')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-								,{key:"notes",label:"<?php echo _('Notes')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+								,{key:"notes",label:"<?php echo _('Not Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
 								,{key:"out_of_stock",label:"", width:1,hidden:true}
 								,{key:"not_found",label:"", width:1,hidden:true}
 								,{key:"no_picked_other",label:"", width:1,hidden:true}
@@ -313,15 +314,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							//  ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
-
-		//alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
-	    this.pick_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
-	    //alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
+		request="ar_edit_orders.php?tipo=picking_aid_sheet&tableid="+tableid+"&dn_key="+Dom.get('dn_key').value+'&sf=0'
+		//alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	   
-	    this.pick_aidDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.pick_aidDataSource.connXhrMode = "queueRequests";
-	    this.pick_aidDataSource.responseSchema = {
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    
+	    
+	       this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
+		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
 		fields: [
 			 "sku"
 			 ,"used_in"
@@ -330,18 +343,45 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other","check_mark"
 			
 			 ]};
-	    this.pick_aidDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
-								   this.pick_aidDataSource, {
-								       renderLoopSize: 50
-								   }
-								   
-								   );
-	
+	    
+	  
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource0
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['picking_aid']['items']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['picking_aid']['items']['order_dir']?>"
+								     },
+								     dynamicData : true
 
- this.pick_aidDataTable.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.pick_aidDataTable.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.pick_aidDataTable.subscribe("cellClickEvent", myonCellClick);
+								  }
+								   
+								 );
 	
+	
+		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table0.request=request;
+  		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
+
+ this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", myonCellClick);
+	
+		this.table0.filter={key:'<?php echo$_SESSION['state']['picking_aid']['items']['f_field']?>',value:'<?php echo$_SESSION['state']['picking_aid']['items']['f_value']?>'};
 
 
 var tableid=2; 
@@ -500,7 +540,7 @@ function save_no_dispatchable() {
                         Dom.setStyle('continue_later', 'display', '');
                     }
 
-                    datatable = tables['pick_aidDataTable'];
+                    datatable = tables['table0'];
                     datatable.updateCell(updating_record, 'formated_todo', r.formated_todo);
                     datatable.updateCell(updating_record, 'notes', r.notes);
                     // datatable.updateCell(updating_record,'todo',r.todo);
@@ -744,10 +784,72 @@ function init() {
         draggable: false
     });
     dialog_other_staff.render();
+    
+    
+      Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+
+
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+
+
 
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+
+
+
 
 

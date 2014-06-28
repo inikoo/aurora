@@ -131,6 +131,8 @@ $tipo_filter=$_SESSION['state']['picking_aid']['items']['f_field'];
 $smarty->assign( 'filter0', $tipo_filter );
 $smarty->assign( 'filter_value0', $_SESSION['state']['picking_aid']['items']['f_value'] );
 $filter_menu=array(
+	'reference'=>array( 'db_key'=>'Part Reference', 'menu_label'=>_( 'Reference' ), 'label'=>_( 'Reference' ) ),
+
 	'sku'=>array( 'db_key'=>'SKU', 'menu_label'=>_( 'SKU' ), 'label'=>_( 'SKU' ) ),
 );
 $smarty->assign( 'filter_menu0', $filter_menu );

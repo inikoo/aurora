@@ -9,7 +9,7 @@
 					<td>{t}Service Provider{/t}</td>
 					<td>{t}Date{/t}</td>
 					<td>{t}Status{/t}</td>
-					<td>{t}Amount{/t}</td>
+					<td style="text-align:right">{t}Amount{/t}</td>
 					<td>{t}Reference{/t}</td>
 					<td>{t}Operations{/t}</td>
 				</tr>
@@ -19,7 +19,7 @@
 					<td>{$payment->payment_service_provider->get('Payment Service Provider Name')}</td>
 					<td><span id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</span></td>
 					<td><span id="payment_status_{$payment->get('Payment Key')}">{$payment->get('Payment Transaction Status')}</span></td>
-					<td><span  id="payment_amount_{$payment->get('Payment Key')}">{$payment->get('Amount')}</span></td>
+					<td style="text-align:right"><span  id="payment_amount_{$payment->get('Payment Key')}">{$payment->get('Amount')}</span></td>
 					<td><span  id="payment_reference_{$payment->get('Payment Key')}">{$payment->get('Payment Transaction ID')}</span></td>
 					
 					<td style="width:200px"> 

@@ -13,7 +13,10 @@
 			<span class="main_title no_buttons"> {t}Pack aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button id="picking_aid" onclick="window.location='order_pick_aid.php?id={$delivery_note->id}'" href="order_pick_aid.php?id={$delivery_note->id}" ><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</button> <span id="pack_all_container" style="{if $user->get('User Type')=='Warehouse'}display:none{/if}"><button id="pack_all" onclick="pack_all({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img id="pack_all_img_{$delivery_note->id}" src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button></span> <span style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp') or $user->get('User Type')=='Warehouse' }display:none{/if}"><button id="approve_packing" onclick="approve_packing({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img_{$delivery_note->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span> 
+			<button id="picking_aid" onclick="window.location='order_pick_aid.php?id={$delivery_note->id}'" href="order_pick_aid.php?id={$delivery_note->id}"><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</button> 
+				<button id="show_edit_dn_data" onclick="show_dialog_set_dn_data()" ><img src="art/icons/basket_edit.png" alt="" /> {t}Set Parcels Data{/t}</button> 
+		
+			<span id="pack_all_container" style="{if $user->get('User Type')=='Warehouse'}display:none{/if}"><button id="pack_all" onclick="pack_all({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img id="pack_all_img_{$delivery_note->id}" src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button></span> <span style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp') or $user->get('User Type')=='Warehouse' }display:none{/if}"><button id="approve_packing" onclick="approve_packing({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img_{$delivery_note->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -72,19 +75,20 @@
 					</tbody>
 				</table>
 			</div>
-			<div style="border:0px solid #ddd;width:290px;float:right;margin-right:20px;margin-top:20px">
+			<div style="{if $delivery_note->get('Delivery Note State')!='Packed Done'}display:none;{/if}border:0px solid #ddd;width:275px;float:right;margin-right:20px;margin-top:0px;padding:5px">
 				<table style="margin-top:20px;width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 					<tbody id="resend" style="margin-top:20px;">
-						<tr id="edit_parcels_tr" onmouseover="Dom.setStyle('edit_parcels','visibility','visible')" onmouseout="Dom.setStyle('edit_parcels','visibility','hidden')">
-							<td class="aright"><img id="edit_parcels" src="art/icons/edit.gif" style="visibility:hidden;cursor:pointer;{if $parcels==''}display:none{/if}"> {t}Parcels{/t}:</td>
-							<td class="aright"><span id="parcels">{if $parcels==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
-						</tr>
-						<tr id="edit_weight_tr" onmouseover="Dom.setStyle('edit_weight','visibility','visible')" onmouseout="Dom.setStyle('edit_weight','visibility','hidden')">
-							<td class="aright"><img id="edit_weight" src="art/icons/edit.gif" style="cursor:pointer;{if $weight==''}display:none{/if};visibility:hidden"> {t}Weight{/t}:</td>
+						<tr id="edit_weight_tr" ">
+							<td class="aright"> {t}Weight{/t}:</td>
 							<td class="aright"><span id="weight">{if $weight==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}{else}{$weight}{/if}</span></span></td>
 						</tr>
-						<tr id="edit_consignment_tr" onmouseover="Dom.setStyle('edit_consignment','visibility','visible')" onmouseout="Dom.setStyle('edit_consignment','visibility','hidden')">
-							<td class="aright"><img id="edit_consignment" src="art/icons/edit.gif" style="cursor:pointer;{if $consignment==''}display:none{/if};visibility:hidden"> {t}Courier{/t}:</td>
+						<tr id="edit_parcels_tr" >
+							<td class="aright"> {t}Parcels{/t}:</td>
+							<td class="aright"><span id="parcels">{if $parcels==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
+						</tr>
+						
+						<tr id="edit_consignment_tr" >
+							<td class="aright"> {t}Courier{/t}:</td>
 							<td class="aright"><span id="consignment">{if $consignment==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}{else}{$consignment}{/if}</span></span></td>
 						</tr>
 					</tbody>
@@ -94,11 +98,8 @@
 			</div>
 		</div>
 		<div class="data_table" style="clear:both">
-			<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
-			<div id="table_type" style="display:none">
-				<span id="set_pending_as_packed" style="float:right;color:brown" class="table_type state_details ">{t}Set pending as Packed{/t}</span> 
-			</div>
-			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
+			<span id="table_title" class="clean_table_title">{t}Parts{/t}</span> 
+			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 			<div id="table0" style="font-size:80%" class="data_table_container dtable btable">

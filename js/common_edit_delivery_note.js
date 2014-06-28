@@ -14,7 +14,7 @@ function validate_consignment_number(query) {
 
 
 function save_delivery_note() {
-    save_edit_general('delivery_note');
+    save_edit_general_bulk('delivery_note');
 }
 
 function reset_delivery_note() {
@@ -77,7 +77,20 @@ function post_save_actions(r) {
 
 
 
+
+window.setTimeout(hide_dialog_set_dn_data, 500);
+
+
+
+
 }
+
+
+function hide_dialog_set_dn_data(){
+dialog_set_dn_data.hide()
+}
+
+
 
 function show_dialog_set_dn_data(){
 
