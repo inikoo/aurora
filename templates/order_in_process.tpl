@@ -145,11 +145,17 @@
 					</tr>
 					
 				<tr id="tr_order_total_paid" style="border-top:1px solid #777;">
-						<td class="aright"><img id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}">  {t}Paid{/t}</td>
+						<td class="aright">
+						<img style="display:none" id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}">  {t}Paid{/t}</td>
 						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
 					</tr>
 				<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div>  {t}To Pay{/t}</td>
+						<td class="aright">
+						<div class="buttons small left">
+						<button  style="{$order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order"   amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img  src="art/icons/add.png"> {t}Payment{/t}</button>
+						<button  style="{$order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer"   amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img  src="art/icons/add.png"> {t}Credit{/t}</button>
+						
+						</div>  {t}To Pay{/t}</td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				
@@ -166,15 +172,31 @@
 				</div>
 				{/if} 
 				<table border="0" class="info_block">
-						<tr>
+					<tr>
 						<td>{t}Created{/t}:</td>
 						<td class="aright">{$order->get('Created Date')}</td>
 					</tr>
+					{if $order->get('Order Current Dispatch State')=='In Process by Customer'   }
 					<tr>
-						<td>{t}Submited{/t}:</td>
-						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
+						<td>{t}Last updated{/t}:</td>
+						<td class="aright">{$order->get('Last Updated Date')}</td>
+					</tr>
+					<tr style="border-top:1px solid #ccc" >
+						<td>{t}On website{/t}:</td>
+						<td class="aright">{$order->get('Interval Last Updated Date')}</td>
+					</tr>
+					{elseif $order->get('Order Current Dispatch State')=='Waiting for Payment Confirmation'}
+					<tr>
+						<td>{t}Submit Payment{/t}:</td>
+						<td class="aright">{$order->get('Checkout Submitted Payment Date')}</td>
 					</tr>
 					
+					{else}
+					<tr>
+						<td>{t}Submitted{/t}:</td>
+						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
+					</tr>
+					{/if}
 					
 					
 				</table>

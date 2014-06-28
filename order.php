@@ -161,7 +161,7 @@ else {
 
 	$tax_categories=array();
 	$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes' and `Tax Category Country Code`=%s ",
-	prepare_mysql($store->data['Store Tax Country Code'])
+		prepare_mysql($store->data['Store Tax Country Code'])
 	);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -189,15 +189,9 @@ else {
 
 
 	if (isset($_REQUEST['r'])) {
-
 		$referer=$_REQUEST['r'];
 		include_once 'order_navigation.php';;
-
-
 	}
-
-
-
 
 	$dns_data=array();
 	foreach ($order->get_delivery_notes_objects() as $dn) {
@@ -232,7 +226,7 @@ else {
 		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
 		$dn_data=preg_replace('/^,/','',$dn_data);
 
-//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+		//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 		if ($missing_dn_data  and in_array($order->data['Order Current Dispatch State'],array('Packed Done','Packed')) ) {
 			$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$dn->id.')" style="cursor:pointer;" src="art/icons/edit.gif"> ';
 		}
@@ -259,12 +253,12 @@ else {
 	$invoices_data=array();
 	foreach ($order->get_invoices_objects() as $invoice) {
 		$current_invoice_key=$invoice->id;
-		
+
 		//print_r($invoice);
-		
+
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
-						'operations'=>$invoice->get_operations($user,'order',$order->id),
+			'operations'=>$invoice->get_operations($user,'order',$order->id),
 
 			'number'=>$invoice->data['Invoice Public ID'],
 			'state'=>$invoice->get_xhtml_payment_state(),
@@ -283,34 +277,34 @@ else {
 
 	$order_current_dispatch_state=$order->get('Order Current Dispatch State');
 
-	if(isset($_REQUEST['modify']) and $_REQUEST['modify']==1 and $order_current_dispatch_state=='In Process by Customer')
+	if (isset($_REQUEST['modify']) and $_REQUEST['modify']==1 and $order_current_dispatch_state=='In Process by Customer')
 		$order_current_dispatch_state='In Process';
 
 	switch ($order_current_dispatch_state) {
 
 	case('In Process'):
 	case('Submitted by Customer'):
-		case('Waiting for Payment Confirmation'):
+	case('Waiting for Payment Confirmation'):
 
-   //  $order->update_tax();
-     
-     $order->apply_payment_from_customer_account();
-     
-     $js_files[]='js/php.default.min.js';
-	$js_files[]='js/add_payment.js';
-     
-     
+		//  $order->update_tax();
+
+		$order->apply_payment_from_customer_account();
+
+		$js_files[]='js/php.default.min.js';
+		$js_files[]='js/add_payment.js';
+
+
 		$js_files[]='js/edit_common.js';
 
 
 
-        $js_files[]='js/country_address_labels.js';
+		$js_files[]='js/country_address_labels.js';
 		$js_files[]='js/edit_address.js';
 
 		//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 		$js_files[]='js/edit_delivery_address_common.js';
-				$js_files[]='js/edit_billing_address_common.js';
+		$js_files[]='js/edit_billing_address_common.js';
 
 		$js_files[]='order_in_process.js.php';
 		$js_files[]='js/common_order_not_dispatched.js';
@@ -321,7 +315,7 @@ else {
 
 		$template='order_in_process.tpl';
 		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
-		$smarty->assign('default_country_2alpha','GB');
+		//$smarty->assign('default_country_2alpha','GB');
 
 
 		$products_display_type='ordered_products';
@@ -389,7 +383,7 @@ else {
 		$smarty->assign('lookup_family',$_SESSION['state']['order']['products']['lookup_family']);
 
 
-$order->update_shipping();
+		$order->update_shipping();
 
 		break;
 
@@ -400,29 +394,29 @@ $order->update_shipping();
 	case('Packed Done'):
 	case('Ready to Ship'):
 
-     $order->apply_payment_from_customer_account();
+		$order->apply_payment_from_customer_account();
 
 
-$js_files[]='js/php.default.min.js';
-	$js_files[]='js/add_payment.js';
+		$js_files[]='js/php.default.min.js';
+		$js_files[]='js/add_payment.js';
 
 
 
-$shipper_data=array();
+		$shipper_data=array();
 
-$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
-$result=mysql_query($sql);
-while ($row=mysql_fetch_assoc($result)) {
-	$shipper_data[$row['Shipper Key']]=array(
-	'shipper_key'=>$row['Shipper Key'],
-	'code'=>$row['Shipper Code'],
-	'name'=>$row['Shipper Name'],
-	'selected'=>0
-	);
-	
-	
-}
-$smarty->assign( 'shipper_data', $shipper_data );
+		$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$shipper_data[$row['Shipper Key']]=array(
+				'shipper_key'=>$row['Shipper Key'],
+				'code'=>$row['Shipper Code'],
+				'name'=>$row['Shipper Name'],
+				'selected'=>0
+			);
+
+
+		}
+		$smarty->assign( 'shipper_data', $shipper_data );
 
 
 		if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {
@@ -431,13 +425,13 @@ $smarty->assign( 'shipper_data', $shipper_data );
 			$js_files[]='js/edit_common.js';
 
 
-			  $js_files[]='js/country_address_labels.js';
-		$js_files[]='js/edit_address.js';
-		//	$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+			$js_files[]='js/country_address_labels.js';
+			$js_files[]='js/edit_address.js';
+			// $js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 			$js_files[]='js/edit_delivery_address_common.js';
 			$js_files[]='js/edit_billing_address_common.js';
-			
+
 			$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 			$js_files[]='js/common_order_not_dispatched.js';
 
@@ -507,10 +501,10 @@ $smarty->assign( 'shipper_data', $shipper_data );
 
 
 			$js_files[]='js/edit_common.js';
-			  $js_files[]='js/country_address_labels.js';
-		$js_files[]='js/edit_address.js';
-			
-			
+			$js_files[]='js/country_address_labels.js';
+			$js_files[]='js/edit_address.js';
+
+
 			//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 			$js_files[]='js/edit_delivery_address_common.js';
@@ -629,9 +623,9 @@ $smarty->assign( 'shipper_data', $shipper_data );
 
 	case('Dispatched'):
 
-    
-     $js_files[]='js/php.default.min.js';
-	$js_files[]='js/add_payment.js';
+
+		$js_files[]='js/php.default.min.js';
+		$js_files[]='js/add_payment.js';
 
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
@@ -754,10 +748,12 @@ $smarty->assign( 'shipper_data', $shipper_data );
 		break;
 
 	case 'In Process by Customer':
-	
-	     $order->apply_payment_from_customer_account();
 
 	
+
+		$order->apply_payment_from_customer_account();
+
+
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$smarty->assign('store_id',$store->id);
@@ -806,7 +802,7 @@ $smarty->assign('customer',$customer);
 
 //$order->update_payment_state();
 //exit;
-
+//exit($template);
 
 $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
