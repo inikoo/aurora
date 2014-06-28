@@ -1322,7 +1322,6 @@ class Order extends DB_Table {
 					print "Error xxx";
 				}
 
-				$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
 
 
 				if ($dn_key) {
@@ -1350,7 +1349,16 @@ class Order extends DB_Table {
 				$dn->update_item_totals();
 			}
 
+				$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
+			
+			if(
+			in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process'))
+			){
+			
+							$this->update_field('Order Date',gmdate('Y-m-d H:i:s'),'no_history');
 
+			}
+			
 
 		}
 

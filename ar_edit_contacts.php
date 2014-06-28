@@ -1417,9 +1417,9 @@ function update_main_address($data) {
 
 		}
 		elseif ($type=='Billing') {
-		
-		
-		
+
+
+
 			$subject_object->update_principal_billing_address($address_key);
 			if ($subject_object->error) {
 				$response=array('state'=>400,'msg'=>$subject_object->msg);
@@ -3618,7 +3618,7 @@ function new_company_department($data) {
 }
 
 function new_employee($data) {
-	include_once('class.Staff.php');
+	include_once 'class.Staff.php';
 
 	global $editor;
 	$staff_data=array();
@@ -3791,7 +3791,7 @@ function edit_corporation($data) {
 
 
 function edit_company_department() {
-include_once 'class.CompanyDepartment.php';
+	include_once 'class.CompanyDepartment.php';
 
 	$key=$_REQUEST['key'];
 
@@ -4247,9 +4247,9 @@ function update_tax_number_match($data) {
 
 
 	$response= array('state'=>200,'match'=>$match,
-			'tax_number_details_match'=>$customer->get('Tax Number Details Match'),
+		'tax_number_details_match'=>$customer->get('Tax Number Details Match'),
 
-	
+
 	);
 	echo json_encode($response);
 	return;
@@ -4280,9 +4280,8 @@ function check_customer_tax_number($data) {
 	$customer= new Customer($data['customer_key']);
 
 	include_once 'common_tax_number_functions.php';
-	
-	
-	
+
+//print_r($customer->data);
 	$tax_number_data=check_tax_number($customer->data['Customer Tax Number'],$customer->data['Customer Billing Address 2 Alpha Country Code']);
 
 
@@ -4295,8 +4294,8 @@ function check_customer_tax_number($data) {
 				'Customer Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
 				'Customer Tax Number Registered Name'=>$tax_number_data['Tax Number Associated Name'],
 				'Customer Tax Number Registered Address'=>$tax_number_data['Tax Number Associated Address'],
-				
-				
+
+
 			)
 		);
 
@@ -4310,10 +4309,10 @@ function check_customer_tax_number($data) {
 		'address'=>$tax_number_data['Tax Number Associated Address'],
 		'msg'=>$tax_number_data['msg'],
 		'tax_number_valid'=>$customer->get('Tax Number Valid'),
-			'formated_date'=>$customer->get('Tax Number Validation Date'),
+		'formated_date'=>$customer->get('Tax Number Validation Date'),
 		'date'=>$customer->data['Customer Tax Number Validation Date'],
 		'tax_number_details_match'=>$customer->get('Tax Number Details Match'),
-	
+
 
 
 	);
