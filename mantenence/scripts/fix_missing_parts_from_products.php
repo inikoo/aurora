@@ -33,7 +33,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Product Dimension` left join `Store Dimension` on (`Store Key`=`Product Store Key`) where `Product Record Type`='Normal' order by `Product Store Key`,`Product Code`";
+$sql="select * from `Product Dimension` left join `Store Dimension` on (`Store Key`=`Product Store Key`) where `Product Record Type`='Normal' and `Product Sales Type`='Public Sale' order by `Product Store Key`,`Product Code`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$product=new Product('pid',$row['Product ID']);
