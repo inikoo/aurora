@@ -27,18 +27,21 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-;
 
-$sql="select * from `Address Dimension` order by `Address Key`  desc ";
+
+$sql="select * from `Address Dimension`  order by `Address Key`  desc ";
 $result=mysql_query($sql);
 $num_rows = mysql_num_rows($result);
 $count=0;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
 $count++;
 	$address=new Address($row['Address Key']);
+	
+	
 	$address->update_parents();
 	
-	print percentage($count,$num_rows,3)."\r";
+	//print percentage($count,$num_rows,3)."\r";
 	
 
 }

@@ -4820,68 +4820,10 @@ class Address extends DB_Table {
 					mysql_query($sql);
 
 
-					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_array($res2)) {
-
-
-
-
-						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
-							,prepare_mysql($this->display('xhtml',$locale))
-							,prepare_mysql($this->display('lines',$locale),false)
-							,prepare_mysql($this->data['Address Town'],false)
-							,prepare_mysql($this->data['Address Country Name'])
-							,prepare_mysql($this->data['Address Postal Code'],false)
-							,prepare_mysql($this->data['Address Country Code'])
-							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-							,$this->data['Address Country Key']
-							,$row2['Customer Key']
-						);
-
-						mysql_query($sql);
-
-						//print $sql."\n";
-
-					}
-
-
-					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Billing Address Key`=%d group by `Customer Key`",$this->id);
 					
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_array($res2)) {
-						$lines=$this->display('3lines',$locale);
-
-
-						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
-						`Customer Billing Address Line 1`=%s,
-						`Customer Billing Address Line 2`=%s,
-						`Customer Billing Address Line 3`=%s,
-
-						`Customer Billing Address Town`=%s,
-												`Customer Billing Address Postal Code`=%s,
-
-						`Customer Billing Address Country Code`=%s,
-						`Customer Billing Address 2 Alpha Country Code`=%s
-
-						where `Customer Key`=%d '
-							,prepare_mysql($this->display('xhtml',$locale))
-							,prepare_mysql($this->display('lines',$locale),false)
-							,prepare_mysql($lines[1],false)
-							,prepare_mysql($lines[2],false)
-							,prepare_mysql($lines[3],false)
-							,prepare_mysql($this->data['Address Town'],false)
-							,prepare_mysql($this->data['Address Postal Code'],false)
-
-							,prepare_mysql($this->data['Address Country Code'])
-							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-
-
-							,$row2['Customer Key']
-						);
 					
-						mysql_query($sql);
-					}
+					
+					
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
 					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain',$locale);
 
@@ -4987,7 +4929,73 @@ class Address extends DB_Table {
 		}
 
 
+					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_array($res2)) {
 
+$customer=new Customer($row2['Customer Key']);
+$store=new Store($customer->data['Customer Store Key']);
+$locale=$store->data['Store Locale'];
+
+						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+							,prepare_mysql($this->display('xhtml',$locale))
+							,prepare_mysql($this->display('lines',$locale),false)
+							,prepare_mysql($this->data['Address Town'],false)
+							,prepare_mysql($this->data['Address Country Name'])
+							,prepare_mysql($this->data['Address Postal Code'],false)
+							,prepare_mysql($this->data['Address Country Code'])
+							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+							,$this->data['Address Country Key']
+							,$row2['Customer Key']
+						);
+
+						mysql_query($sql);
+
+						//print $sql."\n";
+
+					}
+
+
+					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Billing Address Key`=%d group by `Customer Key`",$this->id);
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_array($res2)) {
+					
+					$customer=new Customer($row2['Customer Key']);
+$store=new Store($customer->data['Customer Store Key']);
+$locale=$store->data['Store Locale'];
+					
+						$lines=$this->display('3lines',$locale);
+
+
+						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
+						`Customer Billing Address Line 1`=%s,
+						`Customer Billing Address Line 2`=%s,
+						`Customer Billing Address Line 3`=%s,
+
+						`Customer Billing Address Town`=%s,
+						`Customer Billing Address Postal Code`=%s,
+
+						`Customer Billing Address Country Code`=%s,
+						`Customer Billing Address 2 Alpha Country Code`=%s
+
+						where `Customer Key`=%d '
+							,prepare_mysql($this->display('xhtml',$locale))
+							,prepare_mysql($this->display('lines',$locale),false)
+							,prepare_mysql($lines[1],false)
+							,prepare_mysql($lines[2],false)
+							,prepare_mysql($lines[3],false)
+							,prepare_mysql($this->data['Address Town'],false)
+							,prepare_mysql($this->data['Address Postal Code'],false)
+
+							,prepare_mysql($this->data['Address Country Code'])
+							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+
+
+							,$row2['Customer Key']
+						);
+					
+						mysql_query($sql);
+					}
 
 
 	}

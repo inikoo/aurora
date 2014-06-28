@@ -639,8 +639,8 @@ var tableid=5; // Change if you have more the 1 table
 				       {key:"type", label:"<?php echo _('Type')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 				       {key:"current_state",label:"<?php echo _('Status')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-                                        {key:"total", label:"<?php echo _('Total')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				                                         {key:"to_pay", label:"<?php echo _('To pay')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+                        {key:"total", label:"<?php echo _('Total')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				        {key:"to_pay", label:"<?php echo _('To pay')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
 					
 					 ];
