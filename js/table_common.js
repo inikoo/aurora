@@ -203,6 +203,8 @@ var myRequestBuilder = function(oState, oSelf) {
         // Build custom request
         var request = "&o=" + sort + "&od=" + dir + "&sf=" + startIndex + "&nr=" + results;
 
+
+
         get_thumbnails(oSelf.table_id, request)
 
         return request;

@@ -126,8 +126,7 @@ case('update_order_special_intructions'):
 
 case('edit_delivery_note'):
 	$data=prepare_values($_REQUEST,array(
-			'key'=>array('type'=>'string'),
-			'newvalue'=>array('type'=>'string'),
+			'values'=>array('type'=>'json array'),
 			'dn_key'=>array('type'=>'key'),
 
 		));
@@ -734,15 +733,15 @@ function delete_invoice($data) {
 		$note='';
 
 
-$order_keys=$invoice->get_orders_ids();
-if(count($order_keys)>0){
-$order_key=array_pop($order_keys);
-	$redirect='order.php?id='.$order_key;
+	$order_keys=$invoice->get_orders_ids();
+	if (count($order_keys)>0) {
+		$order_key=array_pop($order_keys);
+		$redirect='order.php?id='.$order_key;
 
 
-}else{
-$redirect='orders.php?store='.$invoice->data['Invoice Store Key'];
-}
+	}else {
+		$redirect='orders.php?store='.$invoice->data['Invoice Store Key'];
+	}
 
 	$invoice->delete($note);
 	if ($invoice->deleted) {
@@ -1720,8 +1719,8 @@ function transactions_to_process() {
 			'pid'=>$row['Product ID'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].$deal_info,
-			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
+			'description'=>$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info,
+			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea').' '._('Stock').': <b>'.$stock.'</b>',
 			'family'=>$row['Product Family Name'],
 			'dept'=>$row['Product Main Department Name'],
 			'expcode'=>$row['Product Tariff Code'],
@@ -2041,7 +2040,7 @@ function post_transactions_to_process() {
 
 
 function list_pending_orders() {
-date_default_timezone_set(TIMEZONE) ;
+	date_default_timezone_set(TIMEZONE) ;
 	include_once 'order_common_functions.php';
 
 	global $user;
@@ -3033,28 +3032,156 @@ function set_picking_aid_sheet_pending_as_picked($data) {
 
 function picking_aid_sheet() {
 	if (isset( $_REQUEST['dn_key']) and is_numeric( $_REQUEST['dn_key']))
-		$order_id=$_REQUEST['dn_key'];
+		$dn_key=$_REQUEST['dn_key'];
 	else {
 
 		return;
 	}
 
-	$data=array('dn_key'=>$order_id, 'staff_key'=>1);
+	$conf=$_SESSION['state']['picking_aid']['items'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	$_SESSION['state']['picking_aid']['items']['order']=$order;
+	$_SESSION['state']['picking_aid']['items']['order_dir']=$order_direction;
+	$_SESSION['state']['picking_aid']['items']['nr']=$number_results;
+	$_SESSION['state']['picking_aid']['items']['sf']=$start_from;
+	$_SESSION['state']['picking_aid']['items']['f_field']=$f_field;
+	$_SESSION['state']['picking_aid']['items']['f_value']=$f_value;
+
+
+	$where=sprintf(' where `Delivery Note Key`=%d',$dn_key);
+	$wheref='';
+	if (($f_field=='sku')  and $f_value!='') {
+		$wheref="  and  ITF.`Part SKU` like '".addslashes($f_value)."%'";
+	}elseif (($f_field=='reference')  and $f_value!='') {
+		$wheref="  and  Part.`Part Reference` like '".addslashes($f_value)."%'";
+	}
+
+	$table='`Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`)';
+
+	$sql="select count(Distinct ITF.`Part SKU`) as total from $table   $where $wheref ";
+
+	// print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(Distinct ITF.`Part SKU`) as total_without_filters from $table  $where  ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with sku like")." <b>".$f_value."*</b>";
+			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with reference like")." <b>".$f_value."*</b>";
+			break;
+
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with sku like')." <b>".$f_value."*</b>";
+			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with reference like')." <b>".$f_value."*</b>";
+			break;
+
+		}
+	}
+	else
+		$filter_msg='';
 
 
 
-	$where=sprintf(' where `Delivery Note Key`=%d',$order_id);
 
-	$total_charged=0;
-	$total_discounts=0;
-	$total_picks=0;
 
-	$order='`Part Reference`';
-	$order_dir='';
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='reference')
+		$order='`Part Reference`';
+	elseif ($order=='location')
+		$order='`Location Code`';
+
+	elseif ($order=='description')
+		$order='`Part Unit Description`';
+	elseif ($order=='picked')
+		$order='`Picked`';
+	elseif ($order=='pending')
+		$order='`Required`';
+
+	else
+		$order='`Part Reference`';
+
+
+
+	
+
 
 	$data=array();
-	$sql="select `Part Reference`, Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Packed`,`Given`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) $where order by  $order $order_dir  ";
-	//   print $sql;
+	$sql="select `Picking Note`,`Part Reference`, Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Packed`,`Given`,`Location Code`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) $where $wheref order by  $order $order_direction  ";
+	// print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		//print_r($row);
@@ -3135,42 +3262,180 @@ function picking_aid_sheet() {
 
 	$response=array('resultset'=>
 		array('state'=>200,
-			'data'=>$data
-			//     'total_records'=>$total,
-			//     'records_offset'=>$start_from,
-			//     'records_returned'=>$start_from+$res->numRows(),
-			//     'records_perpage'=>$number_results,
-			//     'records_text'=>$rtext,
-			//     'records_order'=>$order,
-			//     'records_order_dir'=>$order_dir,
-			//     'filtered'=>$filtered
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
 		)
 	);
 	echo json_encode($response);
 }
 function packing_aid_sheet() {
 	if (isset( $_REQUEST['dn_key']) and is_numeric( $_REQUEST['dn_key']))
-		$order_id=$_REQUEST['dn_key'];
+		$dn_key=$_REQUEST['dn_key'];
 	else {
 
 		return;
 	}
 
-	$data=array('dn_key'=>$order_id, 'staff_key'=>1);
+	$conf=$_SESSION['state']['packing_aid']['items'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	$where=sprintf(' where `Delivery Note Key`=%d',$order_id);
+	$_SESSION['state']['packing_aid']['items']['order']=$order;
+	$_SESSION['state']['packing_aid']['items']['order_dir']=$order_direction;
+	$_SESSION['state']['packing_aid']['items']['nr']=$number_results;
+	$_SESSION['state']['packing_aid']['items']['sf']=$start_from;
+	$_SESSION['state']['packing_aid']['items']['f_field']=$f_field;
+	$_SESSION['state']['packing_aid']['items']['f_value']=$f_value;
 
-	$total_charged=0;
-	$total_discounts=0;
-	$total_picks=0;
 
-	$order='`Picking Note`';
-	$order_dir='';
+	$where=sprintf(' where `Delivery Note Key`=%d',$dn_key);
+	$wheref='';
+	if (($f_field=='sku')  and $f_value!='') {
+		$wheref="  and  ITF.`Part SKU` like '".addslashes($f_value)."%'";
+	}elseif (($f_field=='reference')  and $f_value!='') {
+		$wheref="  and  Part.`Part Reference` like '".addslashes($f_value)."%'";
+	}
+
+	$table='`Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)';
+
+
+	$where=sprintf(' where `Delivery Note Key`=%d',$dn_key);
+
+	
+	
+	$sql="select count(Distinct ITF.`Part SKU`) as total from $table   $where $wheref ";
+
+	// print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(Distinct ITF.`Part SKU`) as total_without_filters from $table  $where  ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with sku like")." <b>".$f_value."*</b>";
+			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with reference like")." <b>".$f_value."*</b>";
+			break;
+
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with sku like')." <b>".$f_value."*</b>";
+			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with reference like')." <b>".$f_value."*</b>";
+			break;
+
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='reference')
+		$order='`Part Reference`';
+	elseif ($order=='location')
+		$order='`Location Code`';
+
+	elseif ($order=='description')
+		$order='`Part Unit Description`';
+	elseif ($order=='packed')
+		$order='`Packed`';
+	elseif ($order=='picked')
+		$order='`Picked`';
+
+	else
+		$order='`Part Reference`';
+
+
+
+	
+	
 
 
 	$data=array();
-	$sql="select `Part Reference`,`Given`,`Packed`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  order by  $order $order_dir ";
+	$sql="select `Part Reference`,`Given`,`Packed`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from $table $where $wheref order by  $order $order_direction ";
 	//   print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3238,17 +3503,21 @@ function packing_aid_sheet() {
 
 
 
-	$response=array('resultset'=>
+$response=array('resultset'=>
 		array('state'=>200,
-			'data'=>$data
-			//     'total_records'=>$total,
-			//     'records_offset'=>$start_from,
-			//     'records_returned'=>$start_from+$res->numRows(),
-			//     'records_perpage'=>$number_results,
-			//     'records_text'=>$rtext,
-			//     'records_order'=>$order,
-			//     'records_order_dir'=>$order_dir,
-			//     'filtered'=>$filtered
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
 		)
 	);
 	echo json_encode($response);
@@ -3303,13 +3572,13 @@ function create_invoice_order($data) {
 
 
 	$payments=$order->get_payment_objects('Completed');
-	foreach($payments as $payment){
+	foreach ($payments as $payment) {
 		$paymnet_balance=$invoice->apply_payment($payment);
 		//print $paymnet_balance."x";
-		if($paymnet_balance!=0){
+		if ($paymnet_balance!=0) {
 			break;
 		}
-	
+
 	}
 
 
@@ -5163,15 +5432,15 @@ function new_refund($data) {
 
 
 		$payment->update($data_to_update);
-		
-		
-		
-		
-		$refund->apply_payment($payment);
-		
-		
 
-/*
+
+
+
+		$refund->apply_payment($payment);
+
+
+
+		/*
 
 		$refund->update(
 			array(
@@ -5321,17 +5590,17 @@ function add_payment_to_order($data) {
 }
 
 
-function delivery_note_undo_dispatch($data){
-$dn_key=$data['dn_key'];
+function delivery_note_undo_dispatch($data) {
+	$dn_key=$data['dn_key'];
 
-$delivery_note=new DeliveryNote($dn_key);
+	$delivery_note=new DeliveryNote($dn_key);
 
-$delivery_note->undo_dispatch();
+	$delivery_note->undo_dispatch();
 
-$response=array('state'=>200,
+	$response=array('state'=>200,
 		'result'=>'updated',
 		'dn_key'=>$delivery_note->id
-		
+
 	);
 
 	echo json_encode($response);

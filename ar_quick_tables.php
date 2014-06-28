@@ -73,7 +73,7 @@ case('category_list'):
 	break;
 case('supplier_list'):
 	supplier_list();
-	break;	
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -460,11 +460,11 @@ function department_list() {
 
 	switch ($f_field) {
 	case('code'):
-	if ($filtered>0  or  ($total==0 and $filtered>0))
+		if ($filtered>0  or  ($total==0 and $filtered>0))
 			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
 		break;
 	case('name'):
-	if ($filtered>0  or  ($total==0 and $filtered>0))
+		if ($filtered>0  or  ($total==0 and $filtered>0))
 			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
 		break;
 
@@ -660,7 +660,7 @@ function part_list() {
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -867,12 +867,12 @@ function family_list() {
 	$filter_msg='';
 
 	switch ($f_field) {
-		case('code'):
-	if ($filtered>0  or  ($total==0 and $filtered>0))
+	case('code'):
+		if ($filtered>0  or  ($total==0 and $filtered>0))
 			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
 		break;
 	case('name'):
-	if ($filtered>0  or  ($total==0 and $filtered>0))
+		if ($filtered>0  or  ($total==0 and $filtered>0))
 			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
 		break;
 
@@ -1040,11 +1040,11 @@ function product_list() {
 
 	switch ($f_field) {
 	case('code'):
-	if ($filtered>0  or  ($total==0 and $filtered>0))
+		if ($filtered>0  or  ($total==0 and $filtered>0))
 			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
 		break;
 	case('name'):
-	if ($filtered>0  or  ($total==0 and $filtered>0))
+		if ($filtered>0  or  ($total==0 and $filtered>0))
 			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
 		break;
 
@@ -1854,10 +1854,10 @@ function page_list() {
 	$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -1980,7 +1980,7 @@ function active_staff_list() {
 
 
 	$where=sprintf('where `Staff Currently Working`=%s',prepare_mysql($active));
-	
+
 
 
 
@@ -1991,8 +1991,8 @@ function active_staff_list() {
 
 	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'";
-		
-		
+
+
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Staff Name` like '".addslashes($f_value)."%'";
 
@@ -2030,15 +2030,15 @@ function active_staff_list() {
 	switch ($f_field) {
 	case('code'):
 		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any staff with code")." <b>".$f_value."*</b> ";
+			$filter_msg=_("None with alias")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('staffs with code like')." <b>$f_value</b>)";
+			$filter_msg="$total "._('with alias like')." <b>".$f_value."*</b> ";
 		break;
 	case('name'):
 		if ($total==0 and $filtered>0)
-			$filter_msg=_("There isn't any staff with name")." <b>".$f_value."*</b> ";
+			$filter_msg=_("None with name")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('staffs with name like')." <b>$f_value</b>)";
+			$filter_msg="$total "._('with name like')." <b>".$f_value."*</b> ";
 		break;
 
 	}
@@ -2055,7 +2055,7 @@ function active_staff_list() {
 	if ($order=='name')
 		$order='``Staff Name`';
 	else
-		$order='`Staff Key`';
+		$order='`Staff Alias`';
 
 
 
@@ -2289,12 +2289,12 @@ function category_list() {
 	else$tableid=0;
 
 	if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
-	else{
+	else {
 		exit('no store');
 	}
 
 	if (isset( $_REQUEST['subject']))$subject=$_REQUEST['subject'];
-	else{
+	else {
 		exit('no subject');
 	}
 
@@ -2382,7 +2382,7 @@ function category_list() {
 	if ($order=='label')
 		$order='`Category Label`';
 	if ($order=='tree')
-		$order='`Category Plain Branch Tree`';	
+		$order='`Category Plain Branch Tree`';
 	else
 		$order='`Category Code`';
 
@@ -2398,11 +2398,11 @@ function category_list() {
 
 	while ($row=mysql_fetch_array($res)) {
 
-	if($row['Category Label']!=$row['Category Label']){
-	$label=$row['Category Label'].' ('.$row['Category Code'].')';
-	}else{
-		$label=$row['Category Label'];
-	}
+		if ($row['Category Label']!=$row['Category Label']) {
+			$label=$row['Category Label'].' ('.$row['Category Code'].')';
+		}else {
+			$label=$row['Category Label'];
+		}
 
 
 		$adata[]=array(
@@ -2556,7 +2556,7 @@ function supplier_list() {
 
 			'name'=>$row['Supplier Name'],
 			'code'=>$row['Supplier Code'],
-			
+
 
 
 

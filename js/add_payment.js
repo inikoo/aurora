@@ -1,7 +1,7 @@
 var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_add_payment;
-
+var dialog_refund_payment;
 
 
 function save_add_payment() {
@@ -11,7 +11,7 @@ function save_add_payment() {
     } else {
 
 
-        Dom.setStyle('save_add_credit_note_wait', 'display', '')
+        Dom.setStyle('save_add_payment_wait', 'display', '')
         Dom.setStyle(['save_add_payment', 'close_add_payment'], 'display', 'none')
 
 
@@ -179,6 +179,15 @@ function init_add_payment() {
         draggable: false
     });
     dialog_add_payment.render();
+
+  dialog_refund_payment = new YAHOO.widget.Dialog("dialog_refund_payment", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_refund_payment.render();
+
 
 }
 Event.onDOMReady(init_add_payment);

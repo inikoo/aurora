@@ -15,7 +15,7 @@ include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 include_once 'send_confirmation_email_function.php';
 
-@mail("raul@inikoo.com", "worlpay", var_export($_REQUEST, true));
+//@mail("raul@inikoo.com", "worlpay", var_export($_REQUEST, true));
 
 if (!isset($_POST['MC_Payment_Key']) or !isset($_POST['MC_PaymentAccountKey'])  or !isset($_POST['cartId'])   ) {
 	exit();

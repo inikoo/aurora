@@ -133,6 +133,8 @@ $smarty->assign( 'filter0', $tipo_filter );
 $smarty->assign( 'filter_value0', $_SESSION['state']['packing_aid']['items']['f_value'] );
 $filter_menu=array(
 	'sku'=>array( 'db_key'=>'SKU', 'menu_label'=>_( 'SKU' ), 'label'=>_( 'SKU' ) ),
+		'reference'=>array( 'db_key'=>'Reference', 'menu_label'=>_( 'Reference' ), 'label'=>_( 'Reference' ) ),
+
 );
 $smarty->assign( 'filter_menu0', $filter_menu );
 $smarty->assign( 'filter_name0', $filter_menu[$tipo_filter]['label'] );
