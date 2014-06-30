@@ -425,6 +425,8 @@ else {
 
 		if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {
 
+	$order->update_item_totals_from_order_transactions();
+			$order->update_no_normal_totals('save');
 
 			$js_files[]='js/edit_common.js';
 
