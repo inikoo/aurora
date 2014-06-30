@@ -9,8 +9,11 @@
 		<div class="buttons" style="float:left">
 			<span class="main_title">{$invoice_type_label} <span>{$invoice->get('Invoice Public ID')}</span></span> 
 		</div>
-		<div class="buttons">
-			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> <button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> <button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+		<div class="buttons" style="display:none">
+			<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Outstanding Total Amount')}</span> 
+			
+			
+			<button style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span> <button style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
 		</div>
 		<div style="clear:both">
 		</div>
