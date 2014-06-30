@@ -2103,7 +2103,7 @@ class Order extends DB_Table {
 
 		$sql = sprintf("select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
-		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
+		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
 			$this->id);
 		// print "$sql\n";
 		$result = mysql_query( $sql );
@@ -4022,7 +4022,7 @@ class Order extends DB_Table {
 			$this->update_item_totals_from_order_transactions();
 			$this->update_no_normal_totals('save');
 
-			$this->update_totals_from_order_transactions();
+			//$this->update_totals_from_order_transactions();
 			$this->apply_payment_from_customer_account();
 			$deal_info='';
 			if ($amount>0  ) {
