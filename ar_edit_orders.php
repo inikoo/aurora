@@ -24,6 +24,39 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case('check_tax_number'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key')
+		));
+	check_order_tax_number($data);
+	break;
+case('add_insurance'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'insurance_key'=>array('type'=>'key')
+
+		));
+	add_insurance($data);
+
+	break;
+case('remove_insurance'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'onptf_key'=>array('type'=>'key')
+
+		));
+	remove_insurance($data);
+
+	break;
+case('update_order_special_intructions'):
+
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'value'=>array('type'=>'string')
+
+		));
+	update_order_special_intructions($data);
+	break;
 
 case('add_payment'):
 	$data=prepare_values($_REQUEST,array(
@@ -711,6 +744,16 @@ case('use_calculated_items_charges'):
 		));
 	use_calculated_items_charges($data);
 	break;
+	
+	
+case('edit_order'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array')
+		));
+	edit_order($data);
+	break;
+	
 
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
@@ -888,7 +931,9 @@ function edit_new_order_shipping_type() {
 				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
 				'ship_to'=>$order->get('Order XHTML Ship Tos'),
 				'tax_info'=>$order->get_formated_tax_info_with_operations(),
-				'payments_data'=>$payments_data
+				'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 			);
 
 		} else {
@@ -936,11 +981,26 @@ function use_calculated_shipping($data) {
 			);
 		}
 
+$response=array('state'=>200,
+				'result'=>'updated',
+				'new_value'=>$order->new_value,
+				'order_shipping_method'=>$order->data['Order Shipping Method'],
+				'data'=>$updated_data,
+				'shipping'=>money($order->new_value),
+				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+				'ship_to'=>$order->get('Order XHTML Ship Tos'),
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'payments_data'=>$payments_data,
+				'items_charges'=>money($order->new_value),
+				'items_charges_amount'=>$order->data['Order Charges Net Amount'],
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+			);
 
 
 
-		$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'order_shipping_method'=>$order->data['Order Shipping Method'],'data'=>$updated_data,'shipping'=>money($order->new_value),'shipping_amount'=>$order->data['Order Shipping Net Amount'],
-			'payments_data'=>$payments_data);
+
+		
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
 
@@ -980,10 +1040,25 @@ function use_calculated_items_charges($data) {
 		}
 
 
+$response=array('state'=>200,
+				'result'=>'updated',
+				'new_value'=>$order->new_value,
+				'order_shipping_method'=>$order->data['Order Shipping Method'],
+				'data'=>$updated_data,
+				'shipping'=>money($order->new_value),
+				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+				'ship_to'=>$order->get('Order XHTML Ship Tos'),
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'payments_data'=>$payments_data,
+				'items_charges'=>money($order->new_value),
+				'items_charges_amount'=>$order->data['Order Charges Net Amount'],
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+			);
 
 
-		$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges'=>money($order->new_value),'items_charges_amount'=>$order->data['Order Charges Net Amount'],
-			'payments_data'=>$payments_data);
+
+		
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
 
@@ -1030,7 +1105,9 @@ function set_order_shipping($data) {
 
 
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping_amount'=>$order->data['Order Shipping Net Amount'],'shipping'=>money($order->new_value),'order_shipping_method'=>$order->data['Order Shipping Method'],
-				'payments_data'=>$payments_data);
+				'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']);
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
 		}
@@ -1087,7 +1164,9 @@ function set_order_items_charges($data) {
 
 
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges_amount'=>$order->data['Order Charges Net Amount'],'items_charges'=>money($order->new_value),
-				'payments_data'=>$payments_data);
+				'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']);
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
 		}
@@ -1173,7 +1252,7 @@ function edit_new_order() {
 
 	$order=new Order($order_key);
 
-	if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
+	if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
 		$dispatching_state='Ready to Pick';
 	}else {
 
@@ -1212,7 +1291,7 @@ function edit_new_order() {
 	if (count($disconted_products)>0) {
 
 		$product_keys=join(',',$disconted_products);
-		$sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
+		$sql=sprintf("select (select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` group by  OTDB.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
 			$order->id,
 			$product_keys);
 
@@ -1284,7 +1363,9 @@ function edit_new_order() {
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data
+		'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
 	echo json_encode($response);
@@ -1481,12 +1562,13 @@ function transactions_to_process() {
 
 		}
 
-		$sql_qty=sprintf(' ,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
-			$order_object->data['Order Currency'],$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
+		$sql_qty=sprintf(' , 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
+			$order_object->data['Order Currency'],
+			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-			$sql_qty='`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$sql_qty=',`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1561,18 +1643,18 @@ function transactions_to_process() {
 	$order='`Product Code File As`';
 	if ($order=='stock')
 		$order='`Product Availability`';
-	if ($order=='code')
+	elseif ($order=='code')
 		$order='`Product Code File As`';
-	else if ($order=='name')
-			$order='`Product Name`';
-		else if ($order=='available_for')
-				$order='`Product Available Days Forecast`';
-			elseif ($order=='family') {
-				$order='`Product Family`Code';
-			}
-		elseif ($order=='dept') {
-			$order='`Product Main Department Code`';
-		}
+	elseif ($order=='name')
+		$order='`Product Name`';
+	elseif ($order=='available_for')
+		$order='`Product Available Days Forecast`';
+	elseif ($order=='family') {
+		$order='`Product Family`Code';
+	}
+	elseif ($order=='dept') {
+		$order='`Product Main Department Code`';
+	}
 	elseif ($order=='expcode') {
 		$order='`Product Tariff Code`';
 	}
@@ -1713,7 +1795,11 @@ function transactions_to_process() {
 		$quantity_notes='';
 
 
-
+if($row['Picked Quantity']>=$row['Order Quantity']  and $row['Order Quantity']>0){
+$remove='<img style="position:relative;top:2px" src="art/icons/lock_bw.png" title="'.$row['Picked Quantity'].' '._('picked').', '._("can't remove items").'">';
+}else{
+$remove='-';
+}
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
@@ -1733,10 +1819,11 @@ function transactions_to_process() {
 			//'quantity_formated'=>$quantity,
 			'state'=>$type,
 			'web'=>$web_state,
+			'picked'=>$row['Picked Quantity'],
 			//    'image'=>$row['Product Main Image'],
 			'type'=>'item',
 			'add'=>'+',
-			'remove'=>'-',
+			'remove'=>$remove,
 			//'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
 			'tax'=>percentage($row['Transaction Tax Rate'],1),
@@ -3176,7 +3263,7 @@ function picking_aid_sheet() {
 
 
 
-	
+
 
 
 	$data=array();
@@ -3344,8 +3431,8 @@ function packing_aid_sheet() {
 
 	$where=sprintf(' where `Delivery Note Key`=%d',$dn_key);
 
-	
-	
+
+
 	$sql="select count(Distinct ITF.`Part SKU`) as total from $table   $where $wheref ";
 
 	// print $sql;
@@ -3430,8 +3517,8 @@ function packing_aid_sheet() {
 
 
 
-	
-	
+
+
 
 
 	$data=array();
@@ -3503,7 +3590,7 @@ function packing_aid_sheet() {
 
 
 
-$response=array('resultset'=>
+	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$data,
 			'rtext'=>$rtext,
@@ -3757,7 +3844,9 @@ function update_ship_to_key_from_address($data) {
 			'tax_info'=>$order->get_formated_tax_info_with_operations(),
 			'order_total_paid'=>$order->data['Order Payments Amount'],
 			'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-			'payments_data'=>$payments_data
+			'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 		);
 
@@ -3834,7 +3923,9 @@ function add_insurance($data) {
 		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data
+		'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 	);
 
@@ -3889,7 +3980,9 @@ function remove_insurance($data) {
 		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data
+		'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 	);
 
@@ -3951,7 +4044,9 @@ function update_billing_to_key_from_address($data) {
 			'tax_info'=>$order->get_formated_tax_info_with_operations(),
 			'order_total_paid'=>$order->data['Order Payments Amount'],
 			'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-			'payments_data'=>$payments_data
+			'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 		);
 
@@ -4661,7 +4756,9 @@ function import_transactions_mals_e($_data) {
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data
+		'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
 	echo json_encode($response);
@@ -4797,7 +4894,9 @@ function update_percentage_discount($data) {
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data
+		'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 	echo json_encode($response);
 
@@ -5268,9 +5367,6 @@ function edit_delivery_note($data) {
 
 	$dn_key=$data['dn_key'];
 	$delivery_note=new DeliveryNote($dn_key);
-
-
-
 	$translate_keys=array(
 		'number_parcels'=>'Delivery Note Number Parcels',
 		'parcel_type'=>'Delivery Note Parcel Type',
@@ -5278,29 +5374,61 @@ function edit_delivery_note($data) {
 		'consignment_number'=>'Delivery Note Shipper Consignment',
 
 	);
-	$okey=$data['key'];
-	if (array_key_exists($data['key'],$translate_keys)) {
-		$key=$translate_keys[$data['key']];
-	}else {
-		$key=$data['key'];
+	$responses=array();
+	foreach ($data['values'] as $values) {
+
+
+
+		$okey=$values['okey'];
+		if (array_key_exists($okey,$translate_keys)) {
+			$key=$translate_keys[$okey];
+		}else {
+			$key=$okey;
+		}
+
+
+		$delivery_note->update(array($key=>$values['value']));
+
+
+		if (!$delivery_note->error) {
+
+
+
+			if ($okey=='number_parcels' or $okey=='parcel_type') {
+				$formated_value=$delivery_note->get_formated_parcels();
+
+			}elseif ($okey=='shipper_code' or $okey=='consignment_number') {
+				$formated_value=$delivery_note->get('Consignment');
+
+			}elseif ($okey=='parcels_weight') {
+				$formated_value=$delivery_note->get('Weight');
+
+			}else {
+				$formated_value='';
+			}
+
+
+			$responses[]= array('state'=>200,'msg'=>$delivery_note->msg,'newvalue'=>$delivery_note->new_value,'key'=>$okey,'formated_value'=>$formated_value);
+
+
+
+		}else {
+			$responses[]=  array('state'=>400,'dn_key'=>$delivery_note->id,'msg'=>$delivery_note->msg,'key'=>$okey);
+
+
+		}
+
+
+
+
 	}
 
+	echo json_encode($responses);
 
-	$delivery_note->update(array($key=>$data['newvalue']));
 
 
-	if (!$delivery_note->error) {
-		$response= array('state'=>200,'msg'=>$delivery_note->msg,'newvalue'=>$delivery_note->new_value,'key'=>$okey);
 
-		echo json_encode($response);
-		return;
 
-	}else {
-		$response= array('state'=>400,'dn_key'=>$delivery_note->id,'msg'=>$delivery_note->msg,'key'=>$okey);
-		echo json_encode($response);
-		return;
-
-	}
 
 
 
@@ -5582,7 +5710,9 @@ function add_payment_to_order($data) {
 		'shipping_amount'=>$order->data['Order Shipping Net Amount'],
 		'ship_to'=>$order->get('Order XHTML Ship Tos'),
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
-		'payments_data'=>$payments_data
+		'payments_data'=>$payments_data,
+					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
 	echo json_encode($response);
@@ -5606,5 +5736,109 @@ function delivery_note_undo_dispatch($data) {
 	echo json_encode($response);
 
 }
+
+function edit_order($data) {
+	$order_key=$data['order_key'];
+
+	if ($order_key==0) {
+		$response= array(
+			'state'=>200
+		);
+
+		echo json_encode($response);
+		exit;
+	}
+	$order=new Order($order_key);
+
+	$translate=array('tax_number'=>'Order Tax Number');
+
+	$responses=array();
+
+	foreach ($data['values'] as $key=>$value) {
+		if (array_key_exists($value['okey'],$translate))
+			$_key=$translate[$value['okey']];
+		else
+			$_key=$value['okey'];
+
+
+		$data_to_update=array($_key=>$value['value']);
+		//print_r($data_to_update);
+		$order->update($data_to_update);
+		//print_r($order);
+		if (!$order->error) {
+			if ($order->updated) {
+				$responses[]= array(
+					'state'=>200,
+					'key'=>$value['okey'],
+					'newvalue'=>$order->new_value,
+					'action'=>'updated'
+				);
+			}else {
+				$responses[]= array(
+					'state'=>200,
+					'key'=>$value['okey'],
+
+					'newvalue'=>$order->data[$_key],
+					'action'=>'no_change'
+
+				);
+
+			}
+		}else {
+			$responses[]= array(
+				'state'=>400,
+				'key'=>$value['okey'],
+				'msg'=>$order->msg
+
+			);
+		}
+
+
+	}
+
+
+
+	echo json_encode($responses);
+}
+
+
+
+function check_order_tax_number($data) {
+
+	$order= new Order($data['order_key']);
+
+	include_once 'common_tax_number_functions.php';
+	$tax_number_data=check_tax_number($order->data['Order Tax Number'],$order->data['Order Billing To Country 2 Alpha Code']);
+
+	$order->update(
+		array(
+			'Order Tax Number'=>$order->data['Order Tax Number'],
+			'Order Tax Number Valid'=>$tax_number_data['Tax Number Valid'],
+			'Order Tax Number Validation Date'=>$tax_number_data['Tax Number Validation Date'],
+			'Order Tax Number Associated Name'=>$tax_number_data['Tax Number Associated Name'],
+			'Order Tax Number Associated Address'=>$tax_number_data['Tax Number Associated Address'],
+		)
+	);
+
+
+	$order->update_tax();
+
+	$response= array(
+		'state'=>200,
+		'valid'=>$tax_number_data['Tax Number Valid'],
+		'name'=>$tax_number_data['Tax Number Associated Name'],
+		'addresss'=>$tax_number_data['Tax Number Associated Address'],
+		'msg'=>$tax_number_data['msg']
+
+
+	);
+
+
+	echo json_encode($response);
+
+
+}
+
+
 
 ?>

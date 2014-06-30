@@ -80,16 +80,16 @@
 					<tbody id="resend" style="margin-top:20px;">
 						<tr id="edit_weight_tr" ">
 							<td class="aright"> {t}Weight{/t}:</td>
-							<td class="aright"><span id="weight">{if $weight==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}{else}{$weight}{/if}</span></span></td>
+							<td class="aright"><span id="formated_parcels_weight">{if $weight==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}{else}{$weight}{/if}</span></span></td>
 						</tr>
 						<tr id="edit_parcels_tr" >
 							<td class="aright"> {t}Parcels{/t}:</td>
-							<td class="aright"><span id="parcels">{if $parcels==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
+							<td class="aright"><span id="formated_number_parcels">{if $parcels==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}{else}{$parcels}{/if}</span></span></td>
 						</tr>
 						
 						<tr id="edit_consignment_tr" >
 							<td class="aright"> {t}Courier{/t}:</td>
-							<td class="aright"><span id="consignment">{if $consignment==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}{else}{$consignment}{/if}</span></span></td>
+							<td class="aright"><span id="formated_consignment">{if $consignment==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}{else}{$consignment}{/if}</span></span></td>
 						</tr>
 					</tbody>
 				</table>

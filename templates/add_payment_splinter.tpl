@@ -71,7 +71,7 @@
 
 
 <div id="dialog_refund_payment" style="padding:20px 20px 10px 20px">
-	<div style="margin-bottom:5px">
+	
 
 	<input type="hidden" value="" id="refund_payment_key"> 
 	<input type="hidden" value="" id="refund_payment_max_amount"> 
