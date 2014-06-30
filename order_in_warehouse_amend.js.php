@@ -196,6 +196,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table1.subscribe("cellClickEvent", myonCellClick);
+	    
+
+    this.table1.rowHighlightDataTable.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow); 
+	        this.table1.rowHighlightDataTable.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow); 
+	 
+
 	    this.table1.table_id=tableid;
      		this.table1.subscribe("renderEvent", myrenderEvent);
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:''};

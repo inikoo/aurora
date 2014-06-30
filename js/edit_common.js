@@ -448,17 +448,17 @@ var highlightEditableCell = function(oArgs) {
         case ('edit_object'):
         case ('edit_pending'):
 
-            this.highlightCell(target);
+            this.highlightRow(target);
             break;
         case ('dialog'):
-            this.highlightCell(target);
+            this.highlightRow(target);
         case ('dialog_delete'):
             this.highlightRow(target);
             break;
         default:
 
             if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-                this.highlightCell(target);
+                this.highlightRow(target);
             }
         }
     };
@@ -477,11 +477,11 @@ var unhighlightEditableCell = function(oArgs) {
         case ('add_object'):
         case ('remove_object'):
         case ('edit_object'):
-            this.unhighlightCell(target);
+            this.unhighlightRow(target);
             break;
         default:
             if (YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-                this.unhighlightCell(target);
+                this.unhighlightRow(target);
             }
         }
     };
