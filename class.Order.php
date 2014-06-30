@@ -2108,7 +2108,7 @@ class Order extends DB_Table {
 		// print "$sql\n";
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-/print_r($row);
+print_r($row);
 			$this->data ['Order Items Gross Amount'] = round($row ['gross'],2);
 			$this->data ['Order Items Discount Amount'] =  round($row ['discount'],2);
 			$this->data ['Order Items Net Amount'] =  round($row ['total_items_net'],2);
