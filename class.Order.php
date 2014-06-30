@@ -3971,8 +3971,8 @@ class Order extends DB_Table {
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			$amount=$row['Order Transaction Gross Amount']*$percentage/100;
-			return $this->update_transaction_discount_amount($otf_key,$amount);
+			$discount_amount=($row['Order Transaction Gross Amount'])*$percentage/100;
+			return $this->update_transaction_discount_amount($otf_key,$discount_amount);
 		}else {
 			$this->error=true;
 			$this->msg='otf not found';
@@ -3980,7 +3980,7 @@ class Order extends DB_Table {
 
 	}
 
-	function update_transaction_discount_amount($otf_key,$amount,$deal_campaign_key=0,$deal_key=0,$deal_component_key=0) {
+	function update_transaction_discount_amount($otf_key,$discount_amount,$deal_campaign_key=0,$deal_key=0,$deal_component_key=0) {
 
 
 
@@ -3988,7 +3988,7 @@ class Order extends DB_Table {
 			$deal_info='';
 		}
 
-		$sql=sprintf('select OTF.`Product Family Key`,OTF.`Product ID`,`Product XHTML Short Description`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from  `Order Transaction Fact` OTF left join `Product Dimension` P on  (P.`Product ID`=OTF.`Product ID`) where `Order Transaction Fact Key`=%d ',
+		$sql=sprintf('select `Order Transaction Amount`,OTF.`Product Family Key`,OTF.`Product ID`,`Product XHTML Short Description`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from  `Order Transaction Fact` OTF left join `Product Dimension` P on  (P.`Product ID`=OTF.`Product ID`) where `Order Transaction Fact Key`=%d ',
 			$otf_key
 		);
 
@@ -3997,15 +3997,14 @@ class Order extends DB_Table {
 
 
 
-			if ($amount==$row['Order Transaction Total Discount Amount'] or $row['Order Transaction Gross Amount']==0) {
+			if ($discount_amount==$row['Order Transaction Total Discount Amount'] or $row['Order Transaction Gross Amount']==0) {
 				$this->msg='Nothing to Change';
 				$return_data= array(
 					'updated'=>true,
 					'otf_key'=>$otf_key,
 					'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
-					'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
-					'to_charge'=>money($row['Order Transaction Gross Amount']-
-						$amount,$this->data['Order Currency']),
+					'discount_percentage'=>percentage($discount_amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
+					'to_charge'=>money($row['Order Transaction Amount'],$this->data['Order Currency']),
 					'qty'=>$row['Order Quantity'],
 					'bonus qty'=>0
 				);
@@ -4015,10 +4014,10 @@ class Order extends DB_Table {
 			$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Transaction Fact Key` =%d",$otf_key);
 			mysql_query($sql);
 
-			$this->data['Order Transaction Total Discount Amount']=$amount;
-			$sql=sprintf('update `Order Transaction Fact` OTF set `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=%f where `Order Transaction Fact Key`=%d ',
-				$row['Order Transaction Gross Amount']+$row['Order Transaction Total Discount Amount']-$amount,
-				$amount,
+			
+			$sql=sprintf('update `Order Transaction Fact` OTF set `Order Transaction Amount`=%.2f, `Order Transaction Total Discount Amount`=%f where `Order Transaction Fact Key`=%d ',
+				$row['Order Transaction Gross Amount']-$discount_amount,
+				$discount_amount,
 				$otf_key
 			);
 			mysql_query($sql);
@@ -4029,8 +4028,8 @@ class Order extends DB_Table {
 			//$this->update_totals_from_order_transactions();
 			$this->apply_payment_from_customer_account();
 			$deal_info='';
-			if ($amount>0  ) {
-				$deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
+			if ($discount_amount>0  ) {
+				$deal_info=percentage($discount_amount,$row['Order Transaction Gross Amount']).' Off';
 
 
 
@@ -4044,8 +4043,8 @@ class Order extends DB_Table {
 					$deal_key,
 					$deal_component_key,
 					prepare_mysql($deal_info,false),
-					$amount,
-					($amount/$row['Order Transaction Gross Amount'])
+					$discount_amount,
+					($discount_amount/$row['Order Transaction Gross Amount'])
 				);
 				mysql_query($sql);
 				$this->updated=true;
@@ -4054,8 +4053,8 @@ class Order extends DB_Table {
 				'updated'=>true,
 				'otf_key'=>$otf_key,
 				'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
-				'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
-				'to_charge'=>money($row['Order Transaction Gross Amount']-$amount,$this->data['Order Currency']),
+				'discount_percentage'=>percentage($discount_amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
+				'to_charge'=>money($row['Order Transaction Gross Amount']-$discount_amount,$this->data['Order Currency']),
 				'qty'=>$row['Order Quantity'],
 				'bonus qty'=>0
 			);
