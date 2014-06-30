@@ -1134,7 +1134,8 @@ class Order extends DB_Table {
 		else {
 
 
-			if (!in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed')) ) {
+			//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+			if (!in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
 				return array(
 					'updated'=>false,
 
@@ -1143,7 +1144,7 @@ class Order extends DB_Table {
 
 
 
-			if (in_array($this->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
+			if (in_array($this->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
 
 
 				$dn_keys=$this->get_delivery_notes_ids();
@@ -1347,18 +1348,20 @@ class Order extends DB_Table {
 				$dn->update_inventory_transaction_fact($otf_key,$quantity);
 
 				$dn->update_item_totals();
+				$dn->update_picking_percentage();
+				$dn->update_packing_percentage();
 			}
 
-				$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
-			
-			if(
-			in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process'))
-			){
-			
-							$this->update_field('Order Date',gmdate('Y-m-d H:i:s'),'no_history');
+			$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
+
+			if (
+				in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process'))
+			) {
+				$this->update_field('Order Date',gmdate('Y-m-d H:i:s'),'no_history');
+
 
 			}
-			
+
 
 		}
 
@@ -3017,20 +3020,20 @@ class Order extends DB_Table {
 	function update_shipping_amount($value) {
 		$value=sprintf("%.2f",$value);
 
-	//	if ($value!=$this->data['Order Shipping Net Amount'] or $this->data['Order Shipping Method']!='Set') {
-			$this->update_shipping_method('Set');
-			$this->data['Order Shipping Net Amount']=$value;
-			$this->update_shipping();
+		// if ($value!=$this->data['Order Shipping Net Amount'] or $this->data['Order Shipping Method']!='Set') {
+		$this->update_shipping_method('Set');
+		$this->data['Order Shipping Net Amount']=$value;
+		$this->update_shipping();
 
-			$this->updated=true;
-			$this->new_value=$value;
+		$this->updated=true;
+		$this->new_value=$value;
 
-			$this->update_item_totals_from_order_transactions();
-			$this->get_items_totals_by_adding_transactions();
-			$this->update_no_normal_totals('save');
-			$this->update_totals_from_order_transactions();
-			$this->apply_payment_from_customer_account();
-	//	}
+		$this->update_item_totals_from_order_transactions();
+		$this->get_items_totals_by_adding_transactions();
+		$this->update_no_normal_totals('save');
+		$this->update_totals_from_order_transactions();
+		$this->apply_payment_from_customer_account();
+		// }
 
 	}
 
@@ -3309,7 +3312,7 @@ class Order extends DB_Table {
 		}
 
 
-//print "$shipping,$shipping_key,$shipping_method";
+		//print "$shipping,$shipping_key,$shipping_method";
 		if (!is_numeric($shipping)) {
 
 			$this->data['Order Shipping Net Amount']=0;
@@ -3338,10 +3341,10 @@ class Order extends DB_Table {
 
 
 		}
-		
-	
-		
-		
+
+
+
+
 		//print $sql;
 		mysql_query($sql);
 
@@ -3831,8 +3834,8 @@ class Order extends DB_Table {
 			return array(0,0,'No Applicable');
 
 		if ($this->data['Order Shipping Method']=='Set') {
-		
-		//print $this->data['Order Shipping Net Amount'].'xx';
+
+			//print $this->data['Order Shipping Net Amount'].'xx';
 			return array(($this->data['Order Shipping Net Amount']==''?0:$this->data['Order Shipping Net Amount']),0,'Set');
 		}
 
@@ -5724,7 +5727,7 @@ class Order extends DB_Table {
 							'name'=>$tax_category['Standard']['name'],
 							'rate'=>$tax_category['Standard']['rate'],
 							'state'=>'EC no tax number' ,
-							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('You are exempt from VAT with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
+							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
 
 						);
 

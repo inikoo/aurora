@@ -73,12 +73,12 @@ function change_shipper(value) {
 
 }
 
-function post_save_actions(r) {
+function post_bulk_save_actions() {
 
 
+    window.setTimeout(hide_dialog_set_dn_data, 500);
 
 
-window.setTimeout(hide_dialog_set_dn_data, 500);
 
 
 
@@ -86,22 +86,33 @@ window.setTimeout(hide_dialog_set_dn_data, 500);
 }
 
 
-function hide_dialog_set_dn_data(){
-dialog_set_dn_data.hide()
+function post_item_updated_actions(branch, r) {
+
+
+    if (r.key == 'number_parcels' || r.key == 'parcel_type') Dom.get('formated_number_parcels').innerHTML = r.formated_value
+    if (r.key == 'shipper_code' || r.key == 'consignment_number') Dom.get('formated_consignment').innerHTML = r.formated_value
+
+if (r.key == 'parcels_weight') Dom.get('formated_parcels_weight').innerHTML = r.formated_value
 }
 
 
 
-function show_dialog_set_dn_data(){
+function hide_dialog_set_dn_data() {
+    dialog_set_dn_data.hide()
+}
 
-	region1 = Dom.getRegion('control_panel'); 
-    region2 = Dom.getRegion('dialog_set_dn_data'); 
 
-	var pos =[region1.right-region2.width,region1.top]
-	Dom.setXY('dialog_set_dn_data', pos);
-		
 
-	dialog_set_dn_data.show()
+function show_dialog_set_dn_data() {
+
+    region1 = Dom.getRegion('control_panel');
+    region2 = Dom.getRegion('dialog_set_dn_data');
+
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_set_dn_data', pos);
+
+
+    dialog_set_dn_data.show()
 
 
 }
@@ -117,7 +128,7 @@ function init_common_edit_delivery_note() {
 
         'delivery_note': {
 
-        
+
             'parcels_weight': {
                 'changed': false,
                 'validated': true,
@@ -173,7 +184,7 @@ function init_common_edit_delivery_note() {
                 'name': 'consignment_number',
                 'ar': false,
                 'validation': [{
-                    'regexp': "[a-z\\d]+",
+                    'regexp': "[a-z\d]+",
                     'invalid_msg': Dom.get('label_invalid_number').value
                 }]
             }
@@ -231,15 +242,15 @@ function init_common_edit_delivery_note() {
         draggable: false
     });
     dialog_set_dn_data.render();
-    
-       Event.addListener('edit_parcels', "click", show_dialog_set_dn_data);
-       Event.addListener('edit_weight', "click", show_dialog_set_dn_data);
-       Event.addListener('edit_consignment', "click", show_dialog_set_dn_data);
+
+    Event.addListener('edit_parcels', "click", show_dialog_set_dn_data);
+    Event.addListener('edit_weight', "click", show_dialog_set_dn_data);
+    Event.addListener('edit_consignment', "click", show_dialog_set_dn_data);
 
 
 
 
-    
+
 }
 
 YAHOO.util.Event.onDOMReady(init_common_edit_delivery_note);

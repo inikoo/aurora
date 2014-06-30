@@ -448,7 +448,6 @@ else {
 			$_SESSION['state']['order']['products']['display']=$products_display_type;
 
 			$products_display_type=$_SESSION['state']['order']['block_view'];
-			$smarty->assign('products_display_type',$products_display_type);
 
 			$smarty->assign('products_display_type',$products_display_type);
 
@@ -486,7 +485,7 @@ else {
 			$paginator_menu=array(10,25,50,100);
 			$smarty->assign('paginator_menu1',$paginator_menu);
 
-			$smarty->assign('block_view',$_SESSION['state']['order']['block_view']);
+			$smarty->assign('block_view','items');
 			$smarty->assign('lookup_family',$_SESSION['state']['order']['products']['lookup_family']);
 
 			$smarty->assign('search_label',_('Orders'));

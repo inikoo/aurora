@@ -60,10 +60,10 @@ $payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
 if ($rep_transStatus=='C' or $rep_transStatus=='N' ) {
 
-	if($payment->data['Payment Transaction Status']=='Cancelled'){
+	if ($payment->data['Payment Transaction Status']=='Cancelled') {
 		exit;
 	}
-	
+
 
 	$data_to_update=array(
 
@@ -75,13 +75,13 @@ if ($rep_transStatus=='C' or $rep_transStatus=='N' ) {
 
 
 	);
-	
-//	@mail("raul@inikoo.com", "worldpay",var_export($data_to_update, true));
+
+	// @mail("raul@inikoo.com", "worldpay",var_export($data_to_update, true));
 	$payment->update($data_to_update);
 	$order=new Order($payment->data['Payment Order Key']);
 	$order->checkout_cancel_payment();
-	send_confirmation_email($order);
-
+	//send_confirmation_email($order);
+	exit();
 }
 
 if ($payment->data['Payment Transaction ID'] == $rep_transId) {
@@ -129,52 +129,52 @@ if ($valid) {
 		$payment_account=new Payment_Account($payment->data['Payment Account Key']);
 
 		$order=new Order($payment->data['Payment Order Key']);
-			
+
 		$order->update(
-		array(
-			'Order Payment Account Key'=>$payment_account->id,
-			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
-			'Order Payment Method'=>$payment_account->data['Payment Type'],
-			'Order Payment Key'=>$payment->id,
-			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
-		));
-		
-	
-				//======
-				
-				$account_payment_key=0;
-				$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
-					$order->id
-
-				);
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_assoc($res)) {
-					$account_payment_key=$row['Payment Key'];
-
-				}
+			array(
+				'Order Payment Account Key'=>$payment_account->id,
+				'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+				'Order Payment Method'=>$payment_account->data['Payment Type'],
+				'Order Payment Key'=>$payment->id,
+				'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+			));
 
 
+		//======
 
-				if ($account_payment_key) {
-					$account_payment=new Payment($account_payment_key);
+		$account_payment_key=0;
+		$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+			$order->id
 
-					$data_to_update=array(
-							'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
-							'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-							'Payment Transaction Status'=>'Completed'
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$account_payment_key=$row['Payment Key'];
 
-					);
+		}
 
 
 
-					$account_payment->update($data_to_update);
-				
-				}
-				//====
+		if ($account_payment_key) {
+			$account_payment=new Payment($account_payment_key);
 
-		
+			$data_to_update=array(
+				'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+				'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+				'Payment Transaction Status'=>'Completed'
+
+			);
+
+
+
+			$account_payment->update($data_to_update);
+
+		}
+		//====
+
+
 		$order->checkout_submit_order();
-	send_confirmation_email($order);
+		send_confirmation_email($order);
 
 
 

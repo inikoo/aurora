@@ -1106,7 +1106,7 @@ function save_edit_general_bulk(branch) {
 
 
                 } else {
-                    alert('error: ' + branch + ' ' + r.key);
+                    alert('error A1: ' + branch + ' ' + r.key);
                     validate_scope_data[branch][r.key].changed = true;
                     validate_scope_data[branch][r.key].validated = false;
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -1118,7 +1118,7 @@ function save_edit_general_bulk(branch) {
             }
             Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer')
 
-
+post_bulk_save_actions()
 
             validate_scope_edit(branch)
 
@@ -1133,6 +1133,9 @@ function save_edit_general_bulk(branch) {
 
 }
 
+function post_bulk_save_actions(){
+
+}
 
 function display_add_other(r) {
 

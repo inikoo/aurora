@@ -1,3 +1,33 @@
+<div id="dialog_send_to_warehouse" style="position:absolute;left:-1000px;padding:15px 20px 5px 10px;width:200px">
+	<div id="send_to_warehouse_msg">
+	</div>
+	<table class="edit" style="width:100%">
+		<tr class="title">
+			<td colspan="2">{t}Send to warehouse{/t}</td>
+		</tr>
+		<tr style="height:7px">
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			<td colspan="2">{t}Notes{/t}</td>
+		</tr>
+		<tr>
+			<td colspan="2"> <textarea style="height:100px;width:100%" id="send_to_warehouse_input" onkeyup="change(event,this,'send_to_warehouse')"></textarea> </td>
+		</tr>
+		<tr id="send_to_warehouse_buttons">
+			<td colspan="2"> 
+			<div class="buttons">
+				<button onclick="save('send_to_warehouse')" id="send_to_warehouse_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('send_to_warehouse')">{t}Go Back{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr style="height:22px;display:none" id="send_to_warehouse_wait">
+			<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
+		</tr>
+	</table>
+</div>
+
+
 <div id="dialog_cancel" style="position:absolute;left:-1000px;padding:15px 20px 5px 10px;width:200px">
 	<div id="cancel_msg">
 	</div>
@@ -17,7 +47,7 @@
 		<tr id="cancel_buttons">
 			<td colspan="2"> 
 			<div class="buttons">
-				<button onclick="save('cancel')" id="cancel_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('cancel')">{t}Go Back{/t}</button> 
+				<button onclick="save('cancel')" id="cancel_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('cancel')">{t}Close{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -252,12 +282,15 @@
 </div>
 
 <div id="dialog_set_tax" style="position:absolute;left:-1000px;padding:10px;width:400px">
+
+
+<input type="hidden" id="invalid_tax_number_label" value="{t}Invalid tax number{/t}"> 
 		<table style="margin:10px" border=0>
 			<tr>
 				<td>{t}Tax Number:{/t}</td>
 				<td style="width:220px"> 
 				<div >
-					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
+					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$customer->get('Order Tax Number')}" valid="0"> 
 					<div id="Customer_Tax_Number_Container">
 					</div>
 				</div>

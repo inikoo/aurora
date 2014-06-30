@@ -808,8 +808,6 @@ function init() {
     oAutoComp2.minQueryLength = 0;
 
 
-
-
 }
 
 YAHOO.util.Event.onDOMReady(init);
