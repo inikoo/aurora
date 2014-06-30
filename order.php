@@ -401,6 +401,7 @@ else {
 	$order->update_item_totals_from_order_transactions();
 			$order->update_no_normal_totals('save');
 
+
 		$order->apply_payment_from_customer_account();
 
 
