@@ -744,8 +744,8 @@ case('use_calculated_items_charges'):
 		));
 	use_calculated_items_charges($data);
 	break;
-	
-	
+
+
 case('edit_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -753,7 +753,7 @@ case('edit_order'):
 		));
 	edit_order($data);
 	break;
-	
+
 
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
@@ -932,8 +932,8 @@ function edit_new_order_shipping_type() {
 				'ship_to'=>$order->get('Order XHTML Ship Tos'),
 				'tax_info'=>$order->get_formated_tax_info_with_operations(),
 				'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']
 			);
 
 		} else {
@@ -981,26 +981,26 @@ function use_calculated_shipping($data) {
 			);
 		}
 
-$response=array('state'=>200,
-				'result'=>'updated',
-				'new_value'=>$order->new_value,
-				'order_shipping_method'=>$order->data['Order Shipping Method'],
-				'data'=>$updated_data,
-				'shipping'=>money($order->new_value),
-				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
-				'ship_to'=>$order->get('Order XHTML Ship Tos'),
-				'tax_info'=>$order->get_formated_tax_info_with_operations(),
-				'payments_data'=>$payments_data,
-				'items_charges'=>money($order->new_value),
-				'items_charges_amount'=>$order->data['Order Charges Net Amount'],
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
-			);
+		$response=array('state'=>200,
+			'result'=>'updated',
+			'new_value'=>$order->new_value,
+			'order_shipping_method'=>$order->data['Order Shipping Method'],
+			'data'=>$updated_data,
+			'shipping'=>money($order->new_value),
+			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info_with_operations(),
+			'payments_data'=>$payments_data,
+			'items_charges'=>money($order->new_value),
+			'items_charges_amount'=>$order->data['Order Charges Net Amount'],
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount']
+		);
 
 
 
 
-		
+
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
 
@@ -1040,25 +1040,25 @@ function use_calculated_items_charges($data) {
 		}
 
 
-$response=array('state'=>200,
-				'result'=>'updated',
-				'new_value'=>$order->new_value,
-				'order_shipping_method'=>$order->data['Order Shipping Method'],
-				'data'=>$updated_data,
-				'shipping'=>money($order->new_value),
-				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
-				'ship_to'=>$order->get('Order XHTML Ship Tos'),
-				'tax_info'=>$order->get_formated_tax_info_with_operations(),
-				'payments_data'=>$payments_data,
-				'items_charges'=>money($order->new_value),
-				'items_charges_amount'=>$order->data['Order Charges Net Amount'],
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-			);
+		$response=array('state'=>200,
+			'result'=>'updated',
+			'new_value'=>$order->new_value,
+			'order_shipping_method'=>$order->data['Order Shipping Method'],
+			'data'=>$updated_data,
+			'shipping'=>money($order->new_value),
+			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info_with_operations(),
+			'payments_data'=>$payments_data,
+			'items_charges'=>money($order->new_value),
+			'items_charges_amount'=>$order->data['Order Charges Net Amount'],
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+		);
 
 
 
-		
+
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
 
@@ -1106,8 +1106,8 @@ function set_order_shipping($data) {
 
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping_amount'=>$order->data['Order Shipping Net Amount'],'shipping'=>money($order->new_value),'order_shipping_method'=>$order->data['Order Shipping Method'],
 				'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']);
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']);
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
 		}
@@ -1165,8 +1165,8 @@ function set_order_items_charges($data) {
 
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges_amount'=>$order->data['Order Charges Net Amount'],'items_charges'=>money($order->new_value),
 				'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']);
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount']);
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
 		}
@@ -1364,7 +1364,7 @@ function edit_new_order() {
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
@@ -1795,11 +1795,11 @@ function transactions_to_process() {
 		$quantity_notes='';
 
 
-if($row['Picked Quantity']>=$row['Order Quantity']  and $row['Order Quantity']>0){
-$remove='<img style="position:relative;top:2px" src="art/icons/lock_bw.png" title="'.$row['Picked Quantity'].' '._('picked').', '._("can't remove items").'">';
-}else{
-$remove='-';
-}
+		if ($row['Picked Quantity']>=$row['Order Quantity']  and $row['Order Quantity']>0) {
+			$remove='<img style="position:relative;top:2px" src="art/icons/lock_bw.png" title="'.$row['Picked Quantity'].' '._('picked').', '._("can't remove items").'">';
+		}else {
+			$remove='-';
+		}
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
@@ -1825,7 +1825,7 @@ $remove='-';
 			'add'=>'+',
 			'remove'=>$remove,
 			//'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
-			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
+			'to_charge'=>'x'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
 			'tax'=>percentage($row['Transaction Tax Rate'],1),
 			'dispatching_status'=>$dispatching_status,
 			'discount_percentage'=>($row['Order Transaction Total Discount Amount']>0?percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''):'')
@@ -3845,8 +3845,8 @@ function update_ship_to_key_from_address($data) {
 			'order_total_paid'=>$order->data['Order Payments Amount'],
 			'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 			'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 		);
 
@@ -3924,7 +3924,7 @@ function add_insurance($data) {
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 	);
@@ -3981,7 +3981,7 @@ function remove_insurance($data) {
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 	);
@@ -4045,8 +4045,8 @@ function update_billing_to_key_from_address($data) {
 			'order_total_paid'=>$order->data['Order Payments Amount'],
 			'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 			'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount']
 
 		);
 
@@ -4757,7 +4757,7 @@ function import_transactions_mals_e($_data) {
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
@@ -4895,7 +4895,7 @@ function update_percentage_discount($data) {
 		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 	echo json_encode($response);
@@ -5711,7 +5711,7 @@ function add_payment_to_order($data) {
 		'ship_to'=>$order->get('Order XHTML Ship Tos'),
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'payments_data'=>$payments_data,
-					'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
 		'order_total_to_pay'=>$order->data['Order To Pay Amount']
 	);
 
