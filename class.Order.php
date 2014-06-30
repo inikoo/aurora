@@ -2161,7 +2161,7 @@ class Order extends DB_Table {
                sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,
                sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as net,
                sum(`Invoice Transaction Item Tax Amount`) as tax,
-                sum(`Order Transaction Amount`-`Order Transaction Total Discount Amount`) as original_net,
+                sum(`Order Transaction Amount`) as original_net,
                sum(`Order Transaction Amount`*`Transaction Tax Rate`) as original_tax,
                sum(`Invoice Transaction Net Refund Amount`) as ref_net,
                sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,
