@@ -4016,7 +4016,8 @@ class Order extends DB_Table {
 			mysql_query($sql);
 
 			$this->data['Order Transaction Total Discount Amount']=$amount;
-			$sql=sprintf('update `Order Transaction Fact` OTF set  `Order Transaction Total Discount Amount`=%f where `Order Transaction Fact Key`=%d ',
+			$sql=sprintf('update `Order Transaction Fact` OTF set `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=%f where `Order Transaction Fact Key`=%d ',
+				$row['Order Transaction Gross Amount']+$row['Order Transaction Total Discount Amount']-$amount,
 				$amount,
 				$otf_key
 			);
