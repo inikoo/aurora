@@ -698,7 +698,7 @@ function save_change_discount() {
         var ar_file = 'ar_edit_orders.php';
         var request = 'tipo=update_percentage_discount&order_transaction_key=' + Dom.get('change_discount_transaction_key').value + '&percentage=' + percentage + '&order_key=' + Dom.get('order_key').value;
 
-        alert(request);
+      //  alert(request);
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
                 	alert(o.responseText);

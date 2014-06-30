@@ -3971,7 +3971,7 @@ class Order extends DB_Table {
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			$discount_amount=($row['Order Transaction Gross Amount'])*$percentage/100;
+			$discount_amount=round(($row['Order Transaction Gross Amount'])*$percentage/100,2);
 			return $this->update_transaction_discount_amount($otf_key,$discount_amount);
 		}else {
 			$this->error=true;
