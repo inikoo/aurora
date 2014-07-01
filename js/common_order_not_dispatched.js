@@ -706,6 +706,10 @@ function save_change_discount() {
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
+
+
+alert(tables)
+
                     datatable = tables['table0'];
 
 
