@@ -344,15 +344,14 @@ class Invoice extends DB_Table {
 		if ($dn_keys!='') {
 
 			$tax_category=$this->data['Invoice Tax Code'];
-			$sql=sprintf('select `Product Key`,`Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
+			$sql=sprintf('select `Order Bonus Quantity`,`Product Key`,`Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
 				,$dn_keys);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
 				if ($row['Current Autorized to Sell Quantity']==0) {
 					continue;
 				}
-				$factor_actually_packed=$row['Delivery Note Quantity']/$row['Current Autorized to Sell Quantity'];
-
+				$factor_actually_packed=($row['Delivery Note Quantity']-$row['Order Bonus Quantity'])/$row['Current Autorized to Sell Quantity'];
 
 
 				$gross=$row['Order Transaction Gross Amount']*$factor_actually_packed;
