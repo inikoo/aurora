@@ -1828,7 +1828,7 @@ function transactions_to_process() {
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
 			'tax'=>percentage($row['Transaction Tax Rate'],1),
 			'dispatching_status'=>$dispatching_status,
-			'discount_percentage'=>($row['Order Transaction Total Discount Amount']>0?percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],$fixed=3,$error_txt='NA',$psign=''):'')
+			'discount_percentage'=>($row['Order Transaction Total Discount Amount']>0?percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],$fixed=0,$error_txt='NA',$psign=''):'')
 
 
 
