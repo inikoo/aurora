@@ -1181,7 +1181,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				print "showroom product \n";
 			}else {
 				print_r($value);
-				exit("==============\n  $key\n $sql    Error (x) no itf-otf map\n");
+				//exit("==============\n  $key\n $sql    Error (x) no itf-otf map\n");
 
 			}
 		}
