@@ -50,7 +50,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		//,{key:"dispatching_status",label:"Status" ,width:90,sortable:false,className:"aright"}
 				,{key:"otf_key",label:"" ,hidden:true, width:1}
-	            ,{key:"discount_percentage",label:"" ,hidden:false, width:50}
+	            ,{key:"discount_percentage",label:"" ,hidden:true, width:50}
 				];
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
