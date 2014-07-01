@@ -45,7 +45,7 @@ $transactions=array();
 
 
 
-$sql=sprintf("select  Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Part Current Stock`,`Part Reference` as reference,`Picking Note`,ITF.`Part SKU`,`Part Unit Description` as description,`Required` as qty,`Location Code` as location from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) where `Delivery Note Key`=%d order by `Location Code` ",
+$sql=sprintf("select  Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Part Current Stock`,`Part Reference` as reference,`Picking Note`,ITF.`Part SKU`,`Part Unit Description` as description,`Required` as qty,`Location Code` as location from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) where `Delivery Note Key`=%d order by `Location Code`,`Part Reference` ",
              $delivery_note->id
             );
 $result=mysql_query($sql);
