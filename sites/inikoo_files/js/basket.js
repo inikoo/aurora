@@ -1052,6 +1052,17 @@ function init_basket() {
     customer_tax_number_oAutoComp.minQueryLength = 0;
     customer_tax_number_oAutoComp.queryDelay = 0.1;
 
+  dialog_set_tax = new YAHOO.widget.Dialog("dialog_set_tax", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+
+    });
+    dialog_set_tax.render();
+
+
+
 
     Event.addListener('cancel_order', "click", cancel_order);
     Event.addListener('show_cancel_order_dialog', "click", show_cancel_order_dialog);
@@ -1070,15 +1081,7 @@ function init_basket() {
     dialog_confirm_cancel.render();
 
 
-    dialog_set_tax = new YAHOO.widget.Dialog("dialog_set_tax", {
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-
-    });
-    dialog_set_tax.render();
-
+  
     Event.addListener('special_instructions', "keydown", special_intructions_changed);
 
     var special_intructions_oACDS = new YAHOO.util.FunctionDataSource(save_special_intructions);
