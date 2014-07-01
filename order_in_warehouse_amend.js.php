@@ -26,7 +26,6 @@ window.location='order.php?id='+Dom.get('order_key').value;
 
 
 
-select `Order Transaction Fact Key` as otf_key,OTF.`Product Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount` as dif from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) where `Order Quantity`>0 and `Order Key`=1745914 order by `Product Code File As` limit 0,500;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
