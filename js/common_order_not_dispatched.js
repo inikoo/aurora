@@ -708,7 +708,6 @@ function save_change_discount() {
 
 
 
-alert(tables)
 
                     datatable = tables['table0'];
 
