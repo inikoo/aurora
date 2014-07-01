@@ -184,7 +184,7 @@ function init_common_edit_delivery_note() {
                 'name': 'consignment_number',
                 'ar': false,
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': Dom.get('label_invalid_number').value
                 }]
             }

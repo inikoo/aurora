@@ -4880,8 +4880,35 @@ class Order extends DB_Table {
 			$customer=new Customer($this->data['Order Customer Key']);
 			$ship_to= $customer->set_current_ship_to('return object');
 		} else {
-			//TODO
+			
 			$ship_to=new Ship_To($ship_to_key);
+			
+			
+			$ship_to->update(array('Ship To Email'=>$this->data['Order Email']));
+			if($ship_to->data['Ship To Telephone']==''){
+						$ship_to->update(array('Ship To Email'=>$this->data['Order Telephone']));
+
+			}
+			
+			
+			$contact_name=$this->data['Order Customer Contact Name'];
+			$company_name=$this->data['Order Customer Name'];
+			
+			if($company_name==$contact_name){
+			$company_name='';
+			}
+			
+			if($ship_to->data['Ship To Contact Name']==''){
+						$ship_to->update(array(
+						'Ship To Contact Name'=>$contact_name,
+						'Ship To Company Name'=>$company_name,
+			
+						));
+
+			}
+			
+			
+			
 		}
 
 

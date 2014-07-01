@@ -4747,13 +4747,13 @@ class Address extends DB_Table {
 		elseif (is_string($parents)) {
 			$parents=array($parents);
 		}
-		
-		
-		
+
+
+
 		foreach ($parents as $parent) {
 
 			$sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
-			
+
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 				$principal_address_changed=false;
@@ -4768,7 +4768,7 @@ class Address extends DB_Table {
 
 				}
 				elseif ($parent=='Customer') {
-				
+
 					$parent_object=new Customer($row['Parent Key']);
 					$old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
 					$store=new Store($parent_object->data['Customer Store Key']);
@@ -4820,10 +4820,10 @@ class Address extends DB_Table {
 					mysql_query($sql);
 
 
-					
-					
-					
-					
+
+
+
+
 					$parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml',$locale);
 					$parent_object->data[$parent.' Main Plain Address']=$this->display('plain',$locale);
 
@@ -4929,45 +4929,45 @@ class Address extends DB_Table {
 		}
 
 
-					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_array($res2)) {
+		$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+		$res2=mysql_query($sql);
+		while ($row2=mysql_fetch_array($res2)) {
 
-$customer=new Customer($row2['Customer Key']);
-$store=new Store($customer->data['Customer Store Key']);
-$locale=$store->data['Store Locale'];
+			$customer=new Customer($row2['Customer Key']);
+			$store=new Store($customer->data['Customer Store Key']);
+			$locale=$store->data['Store Locale'];
 
-						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
-							,prepare_mysql($this->display('xhtml',$locale))
-							,prepare_mysql($this->display('lines',$locale),false)
-							,prepare_mysql($this->data['Address Town'],false)
-							,prepare_mysql($this->data['Address Country Name'])
-							,prepare_mysql($this->data['Address Postal Code'],false)
-							,prepare_mysql($this->data['Address Country Code'])
-							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-							,$this->data['Address Country Key']
-							,$row2['Customer Key']
-						);
+			$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+				,prepare_mysql($this->display('xhtml',$locale))
+				,prepare_mysql($this->display('lines',$locale),false)
+				,prepare_mysql($this->data['Address Town'],false)
+				,prepare_mysql($this->data['Address Country Name'])
+				,prepare_mysql($this->data['Address Postal Code'],false)
+				,prepare_mysql($this->data['Address Country Code'])
+				,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+				,$this->data['Address Country Key']
+				,$row2['Customer Key']
+			);
 
-						mysql_query($sql);
+			mysql_query($sql);
 
-						//print $sql."\n";
+			//print $sql."\n";
 
-					}
-
-
-					$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Billing Address Key`=%d group by `Customer Key`",$this->id);
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_array($res2)) {
-					
-					$customer=new Customer($row2['Customer Key']);
-$store=new Store($customer->data['Customer Store Key']);
-$locale=$store->data['Store Locale'];
-					
-						$lines=$this->display('3lines',$locale);
+		}
 
 
-						$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
+		$sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Billing Address Key`=%d group by `Customer Key`",$this->id);
+		$res2=mysql_query($sql);
+		while ($row2=mysql_fetch_array($res2)) {
+
+			$customer=new Customer($row2['Customer Key']);
+			$store=new Store($customer->data['Customer Store Key']);
+			$locale=$store->data['Store Locale'];
+
+			$lines=$this->display('3lines',$locale);
+
+
+			$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
 						`Customer Billing Address Line 1`=%s,
 						`Customer Billing Address Line 2`=%s,
 						`Customer Billing Address Line 3`=%s,
@@ -4979,23 +4979,23 @@ $locale=$store->data['Store Locale'];
 						`Customer Billing Address 2 Alpha Country Code`=%s
 
 						where `Customer Key`=%d '
-							,prepare_mysql($this->display('xhtml',$locale))
-							,prepare_mysql($this->display('lines',$locale),false)
-							,prepare_mysql($lines[1],false)
-							,prepare_mysql($lines[2],false)
-							,prepare_mysql($lines[3],false)
-							,prepare_mysql($this->data['Address Town'],false)
-							,prepare_mysql($this->data['Address Postal Code'],false)
+				,prepare_mysql($this->display('xhtml',$locale))
+				,prepare_mysql($this->display('lines',$locale),false)
+				,prepare_mysql($lines[1],false)
+				,prepare_mysql($lines[2],false)
+				,prepare_mysql($lines[3],false)
+				,prepare_mysql($this->data['Address Town'],false)
+				,prepare_mysql($this->data['Address Postal Code'],false)
 
-							,prepare_mysql($this->data['Address Country Code'])
-							,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+				,prepare_mysql($this->data['Address Country Code'])
+				,prepare_mysql($this->data['Address Country 2 Alpha Code'])
 
 
-							,$row2['Customer Key']
-						);
-					
-						mysql_query($sql);
-					}
+				,$row2['Customer Key']
+			);
+
+			mysql_query($sql);
+		}
 
 
 	}
@@ -5676,20 +5676,26 @@ $locale=$store->data['Store Locale'];
 
 		include_once 'class.Ship_To.php';
 		$line=$this->display('3lines');
-		$shipping_addresses['Ship To Line 1']=$line[1];
-		$shipping_addresses['Ship To Line 2']=$line[2];
-		$shipping_addresses['Ship To Line 3']=$line[3];
-		$shipping_addresses['Ship To Town']=$this->data['Address Town'];
-		$shipping_addresses['Ship To Postal Code']=$this->data['Address Postal Code'];
-		$shipping_addresses['Ship To Country Name']=$this->data['Address Country Name'];
-		$shipping_addresses['Ship To Country Key']=$this->data['Address Country Key'];
-		$shipping_addresses['Ship To Country Code']=$this->data['Address Country Code'];
-		$shipping_addresses['Ship To Country 2 Alpha Code']=$this->data['Address Country 2 Alpha Code'];
-		$shipping_addresses['Ship To XHTML Address']=$this->display('xhtml');
+		$shipping_address['Ship To Line 1']=$line[1];
+		$shipping_address['Ship To Line 2']=$line[2];
+		$shipping_address['Ship To Line 3']=$line[3];
+		$shipping_address['Ship To Town']=$this->data['Address Town'];
+		$shipping_address['Ship To Postal Code']=$this->data['Address Postal Code'];
+		$shipping_address['Ship To Country Name']=$this->data['Address Country Name'];
+		$shipping_address['Ship To Country Key']=$this->data['Address Country Key'];
+		$shipping_address['Ship To Country Code']=$this->data['Address Country Code'];
+		$shipping_address['Ship To Country 2 Alpha Code']=$this->data['Address Country 2 Alpha Code'];
+		$shipping_address['Ship To XHTML Address']=$this->display('xhtml');
 
-		$shipping_addresses['Ship To Country First Division']=$this->data['Address Country First Division'];
-		$shipping_addresses['Ship To Country Second Division']=$this->data['Address Country Second Division'];
-		$ship_to= new Ship_To('find create',$shipping_addresses);
+		$shipping_address['Ship To Country First Division']=$this->data['Address Country First Division'];
+		$shipping_address['Ship To Country Second Division']=$this->data['Address Country Second Division'];
+		
+		
+		$shipping_address['Ship To Telephone']=$this->data['Address Main XHTML Telephone'];
+		$shipping_address['Ship To Contact Name']=$this->data['Address Contact'];
+
+		
+		$ship_to= new Ship_To('find create',$shipping_address);
 		return $ship_to->id;
 	}
 
@@ -5697,20 +5703,24 @@ $locale=$store->data['Store Locale'];
 
 		include_once 'class.Billing_To.php';
 		$line=$this->display('3lines');
-		$shipping_addresses['Billing To Line 1']=$line[1];
-		$shipping_addresses['Billing To Line 2']=$line[2];
-		$shipping_addresses['Billing To Line 3']=$line[3];
-		$shipping_addresses['Billing To Town']=$this->data['Address Town'];
-		$shipping_addresses['Billing To Postal Code']=$this->data['Address Postal Code'];
-		$shipping_addresses['Billing To Country Name']=$this->data['Address Country Name'];
-		$shipping_addresses['Billing To Country Key']=$this->data['Address Country Key'];
-		$shipping_addresses['Billing To Country Code']=$this->data['Address Country Code'];
-		$shipping_addresses['Billing To Country 2 Alpha Code']=$this->data['Address Country 2 Alpha Code'];
-		$shipping_addresses['Billing To XHTML Address']=$this->display('xhtml');
+		$billing_address['Billing To Line 1']=$line[1];
+		$billing_address['Billing To Line 2']=$line[2];
+		$billing_address['Billing To Line 3']=$line[3];
+		$billing_address['Billing To Town']=$this->data['Address Town'];
+		$billing_address['Billing To Postal Code']=$this->data['Address Postal Code'];
+		$billing_address['Billing To Country Name']=$this->data['Address Country Name'];
+		$billing_address['Billing To Country Key']=$this->data['Address Country Key'];
+		$billing_address['Billing To Country Code']=$this->data['Address Country Code'];
+		$billing_address['Billing To Country 2 Alpha Code']=$this->data['Address Country 2 Alpha Code'];
+		$billing_address['Billing To XHTML Address']=$this->display('xhtml');
 
-		$shipping_addresses['Billing To Country First Division']=$this->data['Address Country First Division'];
-		$shipping_addresses['Billing To Country Second Division']=$this->data['Address Country Second Division'];
-		$billing_to= new Billing_To('find create',$shipping_addresses);
+		$billing_address['Billing To Country First Division']=$this->data['Address Country First Division'];
+		$billing_address['Billing To Country Second Division']=$this->data['Address Country Second Division'];
+		
+		$billing_address['Billing To Telephone']=$this->data['Address Main XHTML Telephone'];
+		$billing_address['Billing To Contact Name']=$this->data['Address Contact'];
+		
+		$billing_to= new Billing_To('find create',$billing_address);
 		return $billing_to->id;
 	}
 

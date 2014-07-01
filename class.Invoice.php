@@ -2766,6 +2766,8 @@ function update_payment_state(){
 
 		foreach ($orders as $order) {
 
+			$order->update(array('Order Invoiced'=>'No'));
+
 			$order->update_xhtml_invoices();
 			$order->update_no_normal_totals();
 
