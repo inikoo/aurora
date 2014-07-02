@@ -9,6 +9,7 @@ include_once 'class.Payment_Account.php';
 include_once 'send_confirmation_email_function.php';
 
 
+
 //@mail("raul@inikoo.com", "paypalshit", var_export($_REQUEST, true));
 
 $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql(var_export($_REQUEST, true)));mysql_query($sql);

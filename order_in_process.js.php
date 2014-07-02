@@ -225,9 +225,9 @@ function init() {
 
 
 
-    YAHOO.util.Event.addListener("done", "click", create_delivery_note);
+   // YAHOO.util.Event.addListener("done", "click", create_delivery_note);
 
-//YAHOO.util.Event.addListener("done", "click", open_send_to_warehouse_dialog);
+YAHOO.util.Event.addListener("done", "click", open_send_to_warehouse_dialog);
 
 
 

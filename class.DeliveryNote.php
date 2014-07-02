@@ -2257,6 +2257,18 @@ class DeliveryNote extends DB_Table {
 
 		return get_dn_operations($this->data,$user,$parent,$parent_key);
 	}
+	
+		function get_notes() {
+
+		$notes='';
+		if ($this->data['Delivery Note Customer Sevices Note']!='')
+			$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Customer Services Notes').":</div>".$this->data['Delivery Note Customer Sevices Note']."</div>";
+		if ($this->data['Delivery Note Warehouse Note']!='')
+			$notes.="<div><div style='color:#777;font-size:90%;padding-bottom:5px'>"._('Warehouse Notes').":</div>".$this->data['Delivery Note Warehouse Note']."</div>";
+
+		return $notes;
+
+	}
 
 	function get_number_picked_transactions() {
 

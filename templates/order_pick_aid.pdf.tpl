@@ -125,7 +125,7 @@ mpdf-->
 <div style="height:70px;border:0.1mm  solid #000;margin-bottom:20px;padding:10px">
 <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span><br>
 
-{$delivery_note->get('Delivery Note Warehouse Note')}<br>
+{$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 
 </div>
 

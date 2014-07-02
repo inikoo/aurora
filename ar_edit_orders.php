@@ -685,11 +685,13 @@ case('cancel'):
 	cancel_order($data);
 	break;
 case('send_to_warehouse'):
-	if (isset($_REQUEST['order_key']) and is_numeric($_REQUEST['order_key']) )
-		$order_key=$_REQUEST['order_key'];
-	else
-		$order_key=$_SESSION['state']['order']['id'];
-	send_to_warehouse($order_key);
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'note'=>array('type'=>'string','optional'=>true)
+	
+		));	
+		
+	send_to_warehouse($data);
 	break;
 
 
@@ -836,7 +838,12 @@ function cancel_order($data) {
 
 
 
-function send_to_warehouse($order_key) {
+function send_to_warehouse($data) {
+
+$order_key=$data['order_key'];
+$note=$data['note'];
+
+
 	include_once 'class.PartLocation.php';
 	global $user;
 
@@ -859,7 +866,12 @@ function send_to_warehouse($order_key) {
 
 	$order->authorize_all();
 
-	$order->send_to_warehouse();
+	$dn=$order->send_to_warehouse();
+	
+	if($dn){
+	$dn->update(array('Delivery Note Warehouse Note'=>$note));
+	}
+	
 	if (!$order->error) {
 		$response=array(
 			'state'=>200,
@@ -868,6 +880,10 @@ function send_to_warehouse($order_key) {
 			'operations'=>get_orders_operations($order->data,$user)
 
 		);
+		
+		
+		
+		
 		echo json_encode($response);
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->data['Order Number Items'],'order_key'=>$order->id);
