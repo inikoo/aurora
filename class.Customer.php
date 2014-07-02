@@ -6048,7 +6048,7 @@ class Customer extends DB_Table {
 			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
 		);
 
-print $sql;
+//print $sql;
 
 		$res2=mysql_query($sql);
 		if ($_row=mysql_fetch_assoc($res2)) {
