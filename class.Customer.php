@@ -2586,8 +2586,8 @@ class Customer extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Customer Orders Cancelled']=$row['num'];
 		}
-	
-	$sql=sprintf("select count(*) as num ,
+
+		$sql=sprintf("select count(*) as num ,
 		min(`Order Date`) as first_order_date ,
 		max(`Order Date`) as last_order_date
 
@@ -2707,7 +2707,7 @@ class Customer extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-//print $sql;
+		//print $sql;
 
 
 	}
@@ -2816,7 +2816,7 @@ class Customer extends DB_Table {
 			}
 
 			break;
-		case('Tax Number Details Match'):	
+		case('Tax Number Details Match'):
 			switch ($this->data['Customer '.$key]) {
 			case 'Unknown':
 				return _('Unknown');
@@ -2896,7 +2896,7 @@ class Customer extends DB_Table {
 					$order_interval=round($order_interval).' '._('days');
 				return $order_interval;
 			break;
-	
+
 		case('Tax Rate'):
 			return $this->get_tax_rate();
 			break;
@@ -6031,14 +6031,41 @@ class Customer extends DB_Table {
 
 	function badge_state_gold() {
 
-		if ( $this->data['Customer With Orders']=='Yes' and $this->data['Customer Last Order Date']!='' and    strtotime($this->data['Customer Last Order Date'] .' +1 month')>time()) {
-			return true;
-		} else {
-			return false;
+
+		$state=false;
+
+		
+		$exclude_orders=$this->get_order_in_process_keys();
+		if(count($exclude_orders)>0){
+			$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
+		}else{
+			$where='';
 		}
+
+		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d  and `Order Date`>=%s $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
+			$this->id,
+			
+			prepare_mysql(date('Y-m-d',strtotime("now -30")).' 00:00:00')
+		);
+
+
+
+		$res2=mysql_query($sql);
+		if ($_row=mysql_fetch_assoc($res2)) {
+
+
+			if ($_row['num']>0) {
+				$state=true;
+			}
+		}
+
+		return $state;
+
 
 
 	}
+
+
 	function badge_caption_gold($state) {
 
 		if ($state) {
@@ -6236,19 +6263,19 @@ class Customer extends DB_Table {
 		if ($badge_key==1) {
 			$state= $this->badge_state_gold();
 			$caption= $this->badge_caption_gold($state);
-		} else if ($badge_key==2) {
-				$state= $this->badge_state_freedom();
-				$caption= $this->badge_caption_freedom($state);
-			} else if ($badge_key==3) {
-				$state= $this->badge_state_profile();
-				$caption= $this->badge_caption_profile($state);
-			}else if ($badge_key==4) {
-				$state= $this->badge_state_connected();
-				$caption= $this->badge_caption_connected($state);
-			}else if ($badge_key==5) {
-				$state= $this->badge_state_loyalty();
-				$caption= $this->badge_caption_loyalty($state);
-			}
+		} elseif ($badge_key==2) {
+			$state= $this->badge_state_freedom();
+			$caption= $this->badge_caption_freedom($state);
+		} elseif ($badge_key==3) {
+			$state= $this->badge_state_profile();
+			$caption= $this->badge_caption_profile($state);
+		}elseif ($badge_key==4) {
+			$state= $this->badge_state_connected();
+			$caption= $this->badge_caption_connected($state);
+		}elseif ($badge_key==5) {
+			$state= $this->badge_state_loyalty();
+			$caption= $this->badge_caption_loyalty($state);
+		}
 
 		if ($state) {
 			$html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>',$badge_data[$badge_key]['Badge Image On'],$caption);
@@ -6486,21 +6513,21 @@ class Customer extends DB_Table {
 	}
 
 
-function get_pending_payment_amount_from_account_balance(){
-$pending_amount=0;
-	$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) left join `Payment Dimension` PD on (PD.`Payment Key`=B.`Payment Key`)  where `Is Account Payment`='Yes' and`Order Customer Key`=%d  and `Payment Transaction Status`='Pending' ",
-					$this->id
+	function get_pending_payment_amount_from_account_balance() {
+		$pending_amount=0;
+		$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) left join `Payment Dimension` PD on (PD.`Payment Key`=B.`Payment Key`)  where `Is Account Payment`='Yes' and`Order Customer Key`=%d  and `Payment Transaction Status`='Pending' ",
+			$this->id
 
-				);
-				//print $sql;
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_assoc($res)) {
-					$pending_amount=$row['Amount'];
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$pending_amount=$row['Amount'];
 
-				}
-return $pending_amount;
-}
-	function get_formated_pending_payment_amount_from_account_balance(){
+		}
+		return $pending_amount;
+	}
+	function get_formated_pending_payment_amount_from_account_balance() {
 		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Customer Currency Code']);
 	}
 
