@@ -4389,7 +4389,7 @@ class Order extends DB_Table {
 
 			case('Order Interval'):
 
-				$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Date`>=%s and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
+				$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Dispatched Date`>=%s and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 					$this->data['Order Customer Key'],
 					$this->id,
 					prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')

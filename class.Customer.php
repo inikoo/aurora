@@ -6042,7 +6042,7 @@ class Customer extends DB_Table {
 			$where='';
 		}
 
-		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d  and `Order Date`>=%s $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
+		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d  and `Order Dispatched Date`>=%s $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 			$this->id,
 			
 			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
@@ -6069,9 +6069,28 @@ class Customer extends DB_Table {
 	function badge_caption_gold($state) {
 
 		if ($state) {
+	$exclude_orders=$this->get_order_in_process_keys();
+		if(count($exclude_orders)>0){
+			$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
+		}else{
+			$where='';
+		}
 
 
-			return _('Valid until').": ".gmdate('d-m-Y',strtotime($this->data['Customer Last Order Date'] .' +1 month'));
+$sql=sprintf("select `Order Dispatched Date` as date from `Order Dimension` where `Order Customer Key`=%d  $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes' order by `Order Dispatched Date` desc  ",
+			$this->id,
+			
+			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
+		);
+
+$res2=mysql_query($sql);
+		if ($_row=mysql_fetch_assoc($res2)) {
+					return _('Valid until').": ".strftime("%e %b %Y", strtotime($_row['date'].' +30 days'));
+
+		}else{
+			return '';
+		}
+
 
 
 
