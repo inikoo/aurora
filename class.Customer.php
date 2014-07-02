@@ -6045,7 +6045,7 @@ class Customer extends DB_Table {
 		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d  and `Order Date`>=%s $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 			$this->id,
 			
-			prepare_mysql(date('Y-m-d',strtotime("now -30")).' 00:00:00')
+			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
 		);
 
 print $sql;
