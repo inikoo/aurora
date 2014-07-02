@@ -31,7 +31,6 @@ if (!$logged_in) {
 	exit();
 }
 
-//$_SESSION['offset']='Europe/Warsaw';
 date_default_timezone_set($_SESSION['offset']);
 require_once 'conf/conf.php';
 

@@ -578,7 +578,7 @@ function cancel_change_discount() {
 
 function create_delivery_note_from_list(o, order_key) {
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=send_to_warehouse&order_key=' + order_key;
+    var request = 'tipo=send_to_warehouse&order_key=' + order_key+'&note=';
 
 
     if (Dom.hasClass('send_to_warehouse_button_' + order_key, 'disabled')) {
@@ -646,7 +646,7 @@ function create_delivery_note() {
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText);
+          //  alert(o.responseText);
             //return;
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
@@ -1250,9 +1250,9 @@ function change(e, o, tipo) {
         if (o.value != '') {
             enable_save(tipo);
 
-            if (window.event) key = window.event.keyCode; //IE
-            else key = e.which; //firefox     
-            if (key == 13) save(tipo);
+          //  if (window.event) key = window.event.keyCode; //IE
+          //  else key = e.which; //firefox     
+          //  if (key == 13) save(tipo);
 
 
         } else disable_save(tipo);

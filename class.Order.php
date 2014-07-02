@@ -524,7 +524,7 @@ class Order extends DB_Table {
 		if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submitted by Customer'    or $this->data['Order Current Dispatch State']=='In Process by Customer' )) {
 			$this->error=true;
 			$this->msg='Order is not in process';
-			return;
+			return false;
 
 		}
 
