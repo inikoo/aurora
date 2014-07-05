@@ -3493,14 +3493,33 @@ class Customer extends DB_Table {
 		if ($this->data['Customer Delivery Address Link']=='None') {
 
 			$address=new Address($this->data['Customer Main Delivery Address Key']);
+
 		}
 		// elseif ($this->data['Customer Delivery Address Link']=='Billing')
 		//  $address=new Address($this->data['Customer Billing Address Key']);
-		else
+		else {
 			$address=new Address($this->data['Customer Main Address Key']);
+		}
+
+		$contact_name=$this->data['Customer Main Contact Name'];
+		$company_name=$this->data['Customer Name'];
+
+		if ($company_name==$contact_name) {
+			$company_name='';
+		}
+		$ship_to_data=array(
+			'Ship To Contact Name'=>$contact_name,
+			'Ship To Company Name'=>$company_name,
+			'Ship To Telephone'=>$this->data['Customer Main XHTML Telephone'],
+			'Ship To Email'=>$this->data['Customer Main Plain Email']
+		);
 
 
-		$ship_to_key=$address->get_ship_to();
+
+		$ship_to_key=$address->get_ship_to($ship_to_data);
+
+
+
 
 		return $ship_to_key;
 
@@ -3531,12 +3550,37 @@ class Customer extends DB_Table {
 
 			$address=new Address($this->data['Customer Billing Address Key']);
 		}
-		else
+		else {
 			$address=new Address($this->data['Customer Main Address Key']);
 
+		}
+
+		$contact_name=$this->data['Customer Main Contact Name'];
+		if ($this->get_fiscal_name()=='') {
+			$company_name=$this->data['Order Customer Name'];
+
+		}else {
+			$company_name=$this->get_fiscal_name();
+		}
 
 
-		$billing_to_key=$address->get_billing_to();
+		if ($company_name==$contact_name) {
+			$contact_name='';
+		}
+
+		$billing_to_data=array(
+			'Billing To Contact Name'=>$contact_name,
+			'Billing To Company Name'=>$company_name,
+			'Billing To Telephone'=>$this->data['Customer Main XHTML Telephone'],
+			'Billing To Email'=>$this->data['Customer Main Plain Email']
+		);
+
+		$billing_to_key=$address->get_billing_to($billing_to_data);
+
+
+
+
+
 
 		return $billing_to_key;
 
@@ -4407,10 +4451,24 @@ class Customer extends DB_Table {
 	}
 
 
-
-
-
 	function get_ship_to($date=false) {
+
+		$ship_to= $this->set_current_ship_to('return object');
+
+		$data_ship_to=array(
+			'Ship To Key'=>$ship_to->id,
+			'Current Ship To Is Other Key'=>false,
+			'Date'=>$date
+		);
+
+		$this->update_ship_to($data_ship_to);
+
+		return $ship_to;
+
+	}
+
+
+	function get_ship_to_old($date=false) {
 
 		if (!$date) {
 			$date=gmdate("Y-m-d H:i:s");
@@ -4437,6 +4495,30 @@ class Customer extends DB_Table {
 	}
 
 	function get_billing_to($date=false) {
+
+
+		//print_r($this->data);
+
+		if (!$date) {
+			$date=gmdate("Y-m-d H:i:s");
+		}
+
+
+		$billing_to= $this->set_current_billing_to('return object');
+
+		$data_billing_to=array(
+			'Billing To Key'=>$billing_to->id,
+			'Current Billing To Is Other Key'=>false,
+			'Date'=>$date
+		);
+
+		$this->update_billing_to($data_billing_to);
+
+		return $billing_to;
+
+	}
+
+	function get_billing_to_old($date=false) {
 
 
 		//print_r($this->data);
@@ -6034,21 +6116,21 @@ class Customer extends DB_Table {
 
 		$state=false;
 
-		
+
 		$exclude_orders=$this->get_order_in_process_keys();
-		if(count($exclude_orders)>0){
+		if (count($exclude_orders)>0) {
 			$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
-		}else{
+		}else {
 			$where='';
 		}
 
 		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d  and `Order Dispatched Date`>=%s $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 			$this->id,
-			
+
 			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
 		);
 
-//print $sql;
+		//print $sql;
 
 		$res2=mysql_query($sql);
 		if ($_row=mysql_fetch_assoc($res2)) {
@@ -6069,27 +6151,27 @@ class Customer extends DB_Table {
 	function badge_caption_gold($state) {
 
 		if ($state) {
-	$exclude_orders=$this->get_order_in_process_keys();
-		if(count($exclude_orders)>0){
-			$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
-		}else{
-			$where='';
-		}
+			$exclude_orders=$this->get_order_in_process_keys();
+			if (count($exclude_orders)>0) {
+				$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
+			}else {
+				$where='';
+			}
 
 
-$sql=sprintf("select `Order Dispatched Date` as date from `Order Dimension` where `Order Customer Key`=%d  $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes' order by `Order Dispatched Date` desc  ",
-			$this->id,
-			
-			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
-		);
+			$sql=sprintf("select `Order Dispatched Date` as date from `Order Dimension` where `Order Customer Key`=%d  $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes' order by `Order Dispatched Date` desc  ",
+				$this->id,
 
-$res2=mysql_query($sql);
-		if ($_row=mysql_fetch_assoc($res2)) {
-					return _('Valid until').": ".strftime("%e %b %Y", strtotime($_row['date'].' +30 days'));
+				prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
+			);
 
-		}else{
-			return '';
-		}
+			$res2=mysql_query($sql);
+			if ($_row=mysql_fetch_assoc($res2)) {
+				return _('Valid until').": ".strftime("%e %b %Y", strtotime($_row['date'].' +30 days'));
+
+			}else {
+				return '';
+			}
 
 
 

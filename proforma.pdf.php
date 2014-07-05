@@ -54,11 +54,11 @@ $sql=sprintf("select * from `Order Transaction Fact` O  left join `Product Histo
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$row['Amount']=money(($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']),$row['Invoice Currency Code']);
-	$row['Discount']=($row['Invoice Transaction Total Discount Amount']==0?'':percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount'],0));
+	$row['Amount']=money(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']),$row['Order Currency Code']);
+	$row['Discount']=($row['Order Transaction Total Discount Amount']==0?'':percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],0));
 	
 	
-	
+
 
 	$transactions[]=$row;
 

@@ -25,8 +25,17 @@ if ( !$dn->id ) {
 
 }
 
+
+if ( isset( $_REQUEST['order_key'] )  and $_REQUEST['order_key']) {
+$order_key=$_REQUEST['order_key'];
+}else{
+$order_key=false;
+}
+$smarty->assign('order_key',$order_key);
+
+
 if($dn->data['Delivery Note Assigned Packer Alias']==''){
-		header( 'Location: order_pick_aid.php?id='.$dn->id );
+		header( 'Location: order_pick_aid.php?id='.$dn->id.'&order_key='.$order_key );
 		exit;
 }
 
@@ -36,6 +45,15 @@ if ( isset( $_REQUEST['refresh'] ) ) {
 }
 
 $dn->update_packing_percentage();
+
+
+if ( isset( $_REQUEST['order_key'] ) ) {
+$order_key=$_REQUEST['order_key'];
+}else{
+$order_key=false;
+}
+$smarty->assign('order_key',$order_key);
+
 
 
 
@@ -140,6 +158,22 @@ $smarty->assign( 'filter_menu0', $filter_menu );
 $smarty->assign( 'filter_name0', $filter_menu[$tipo_filter]['label'] );
 $paginator_menu=array( 10, 25, 50, 100, 500 );
 $smarty->assign( 'paginator_menu0', $paginator_menu );
+
+
+
+$tipo_filter2='alias';
+$filter_menu2=array(
+	'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
+$paginator_menu=array( 10, 25, 50, 100, 500 );
+$smarty->assign( 'paginator_menu2', $paginator_menu );
+
+
 
 $parcels=$dn->get_formated_parcels();
 $weight=$dn->data['Delivery Note Weight'];

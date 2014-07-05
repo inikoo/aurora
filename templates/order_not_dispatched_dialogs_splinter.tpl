@@ -17,7 +17,7 @@
 		<tr id="send_to_warehouse_buttons">
 			<td colspan="2"> 
 			<div class="buttons">
-				<button onclick="save('send_to_warehouse')" id="send_to_warehouse_save" class="positive disabled">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('send_to_warehouse')">{t}Go Back{/t}</button> 
+				<button onclick="save('send_to_warehouse')" id="send_to_warehouse_save" class="positive">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('send_to_warehouse')">{t}Go Back{/t}</button> 
 			</div>
 			</td>
 		</tr>

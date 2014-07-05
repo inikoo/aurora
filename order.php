@@ -79,7 +79,11 @@ if (isset($_REQUEST['new']) ) {
 		'editor'=>$editor
 
 	);
-
+/*
+	$ship_to=$customer->get_ship_to();
+print_r($ship_to);
+exit;
+*/
 
 	$order=new Order('new',$order_data);
 
@@ -228,7 +232,7 @@ else {
 
 		//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 		if ($missing_dn_data  and in_array($order->data['Order Current Dispatch State'],array('Packed Done','Packed')) ) {
-			$dn_data='<span style="font-style:italic;color:#777">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$dn->id.')" style="cursor:pointer;" src="art/icons/edit.gif"> ';
+			$dn_data='<img src="art/icons/exclamation.png" style="height:14px;vertical-align:-3px"> <span style="font-style:italic;color:#ea6c59">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$dn->id.')" style="cursor:pointer;display:none" src="art/icons/edit.gif"> ';
 		}
 
 		$dns_data[]=array(
@@ -290,7 +294,7 @@ else {
 			$order->update_no_normal_totals('save');
 
 
-		//  $order->update_tax();
+		 $order->update_tax();
 
 		$order->apply_payment_from_customer_account();
 
@@ -397,13 +401,13 @@ else {
 	case('Picking & Packing'):
 	case('Packed Done'):
 	case('Ready to Ship'):
-
+ $order->update_tax();
 	$order->update_item_totals_from_order_transactions();
 			$order->update_no_normal_totals('save');
 
 
 		$order->apply_payment_from_customer_account();
-
+$order->update_payment_state();
 
 		$js_files[]='js/php.default.min.js';
 		$js_files[]='js/add_payment.js';

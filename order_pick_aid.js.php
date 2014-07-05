@@ -350,7 +350,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:20,containers : 'paginator0', 
+									      rowsPerPage:<?php echo $_SESSION['state']['picking_aid']['items']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -819,6 +819,7 @@ YAHOO.util.Event.onContentReady("rppmenu0", function() {
     });
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
+  
 });
 
 YAHOO.util.Event.onContentReady("filtermenu0", function() {
@@ -831,6 +832,7 @@ YAHOO.util.Event.onContentReady("filtermenu0", function() {
 });
 
 YAHOO.util.Event.onContentReady("rppmenu2", function() {
+
     var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
         trigger: "rtext_rpp2"
     });

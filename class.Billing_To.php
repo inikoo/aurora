@@ -37,7 +37,7 @@ class Billing_To extends DB_Table {
 	}
 
 
-	
+
 	function get_data($tipo,$tag) {
 
 		if ($tipo=='id')
@@ -207,8 +207,26 @@ class Billing_To extends DB_Table {
 
 
 		$address='';
+
+
+		if ($this->data['Billing To Contact Name']!='') {
+			if ($tipo=='xhtml') {
+				$address.='<span style="text-decoration:underline">'._trim($this->data['Billing To Contact Name']).'</span>'.$separator;
+			}else {
+				$address.=_trim($this->data['Billing To Contact Name']).$separator;
+			}
+		}
+		if ($this->data['Billing To Company Name']!='')
+			$address.=_trim($this->data['Billing To Company Name']).$separator;
+
+
+		if ($address!='') {
+			$address='<div style="font-style:italic;color:#444;margin-bottom:5px">'.$address.'</div>';
+		}
+
+
 		if ($this->data['Billing To Line 1']!='')
-			$address=_trim($this->data['Billing To Line 1']).$separator;
+			$address.=_trim($this->data['Billing To Line 1']).$separator;
 		if ($this->data['Billing To Line 2']!='')
 			$address.=_trim($this->data['Billing To Line 2']).$separator;
 
@@ -224,7 +242,27 @@ class Billing_To extends DB_Table {
 		if ($ps_address!='')
 			$address.=$ps_address.$separator;
 
-		$address.=$this->data['Billing To Country Name'];
+
+		if ($tipo=='xhtml')
+			$address.='<b>'.$this->data['Billing To Country Name'].'</b>';
+		else
+			$address.=$this->data['Billing To Country Name'];
+
+		if ($tipo=='xhtml') {
+			if ($this->data['Billing To Telephone']!='') {
+				$address.='<div style="font-style:italic;color:#444;margin-top:5px">'._('Tel').': '._trim($this->data['Billing To Telephone']).'</div>';
+			}
+
+		}else {
+
+			if ($this->data['Billing To Telephone']!='' ) {
+				$address.=$separator.$separator;
+			}
+
+			if ($this->data['Billing To Telephone']!='')
+				$address.=_('Tel').': '._trim($this->data['Billing To Telephone']);
+		}
+
 
 		return _trim($address);
 

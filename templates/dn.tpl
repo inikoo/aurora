@@ -84,9 +84,9 @@
 			</div>
 		</div>
 		<div id="dates">
-			{if isset($note)} 
-			<div class="notes">
-				{$note} 
+			{if $dn->get_notes()} 
+			<div class="notes" style="border:1px solid #ccc;padding:5px;margin-bottom:5px">
+				{$dn->get_notes()|nl2br} 
 			</div>
 			{/if} 
 			<table border="0" class="info_block">

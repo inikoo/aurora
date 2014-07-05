@@ -144,7 +144,7 @@ function undo_dispatch(){
         Dom.get('undo_dispatch_icon').src='art/loading.gif'
         var ar_file = 'ar_edit_orders.php';
         var request = 'tipo=delivery_note_undo_dispatch&dn_key=' + Dom.get('dn_key').value;
-        alert(ar_file+'?'+request)
+       // alert(ar_file+'?'+request)
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
             //  alert(o.responseText);

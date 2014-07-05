@@ -5,6 +5,10 @@
 	<input value="{$warehouse->id}" id="warehouse_key" type="hidden" />
 	<input value="{$user->can_edit('assign_pp')}" id="can_assign_pp" type="hidden" />
 	<input value="{t}Invalid number{/t}" id="label_invalid_number" type="hidden" />
+					<input value="{$order_key}" id="order_key" type="hidden" />
+
+	
+	
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr;{if $user->get('User Type')!='Warehouse'} {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr;{/if} <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pack Aid{/t})</span> 
 	</div>
@@ -13,7 +17,6 @@
 			<span class="main_title no_buttons"> {t}Pack aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button id="picking_aid" onclick="window.location='order_pick_aid.php?id={$delivery_note->id}'" href="order_pick_aid.php?id={$delivery_note->id}"><img src="art/icons/basket.png" alt="" /> {t}Picking Aid{/t}</button> 
 				<button id="show_edit_dn_data" onclick="show_dialog_set_dn_data()" ><img src="art/icons/basket_edit.png" alt="" /> {t}Set Parcels Data{/t}</button> 
 		
 			<span id="pack_all_container" style="{if $user->get('User Type')=='Warehouse'}display:none{/if}"><button id="pack_all" onclick="pack_all({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img id="pack_all_img_{$delivery_note->id}" src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button></span> <span style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp') or $user->get('User Type')=='Warehouse' }display:none{/if}"><button id="approve_packing" onclick="approve_packing({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img_{$delivery_note->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span> 
@@ -21,7 +24,23 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="control_panel" style="clear:both;margin-top:15px">
+	
+	
+	<div >
+		<div class="buttons small left" style="margin:3px 0px">
+			<button id="picking_aid" onclick="window.location='order_pick_aid.php?id={$delivery_note->id}&order_key={$order_key}'"><img style="height:10px;width:14px;vertical-align:2px" src="art/back.png"/> {t}Picking Aid{/t} <img src="art/icons/basket.png" alt="" style="vertical-align:1px" /> </button> 
+				</div>
+				
+			<div class="buttons small right" style="margin:3px 0px">
+			<button  style="{if !$order_key}display:none{/if}" onclick="window.location='order.php?id={$order_key}'"> {t}Order{/t} <img style="height:10px;width:14px;vertical-align:2px" src="art/continue.png"/></button> 
+				</div>	
+				
+		<div style="clear:both">
+		</div>		
+				
+	</div>
+	
+	<div id="control_panel" style="clear:both;margin-top:3px">
 		<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 			<div style="xborder:1px solid #ddd;width:270px;float:left">
 				<h2 style="padding:0">
@@ -107,4 +126,46 @@
 		</div>
 	</div>
 </div>
+<div id="rppmenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},0)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu0" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu0 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},2)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
 {include file='splinter_edit_delivery_note.tpl'} {include file='footer.tpl'} 

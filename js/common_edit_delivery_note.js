@@ -105,10 +105,10 @@ function hide_dialog_set_dn_data() {
 
 function show_dialog_set_dn_data() {
 
-    region1 = Dom.getRegion('control_panel');
+    region1 = Dom.getRegion('show_edit_dn_data');
     region2 = Dom.getRegion('dialog_set_dn_data');
 
-    var pos = [region1.right - region2.width, region1.top]
+    var pos = [region1.right - region2.width, region1.bottom+4]
     Dom.setXY('dialog_set_dn_data', pos);
 
 

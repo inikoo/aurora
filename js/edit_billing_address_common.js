@@ -99,5 +99,7 @@ function init() {
     });
 
     YAHOO.util.Event.addListener('billing_reset_address_button', "click", hide_new_billing_address, 'billing_');
+
+
 }
 YAHOO.util.Event.onDOMReady(init);
