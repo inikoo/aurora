@@ -31,6 +31,15 @@ if ( isset( $_REQUEST['refresh'] )) {
 	$dn->actualize_inventory_transaction_facts();
 }
 
+if ( isset( $_REQUEST['order_key'] ) ) {
+$order_key=$_REQUEST['order_key'];
+}else{
+$order_key=false;
+}
+$smarty->assign('order_key',$order_key);
+
+
+
 $warehouse= new Warehouse( $dn->data['Delivery Note Warehouse Key'] );
 $smarty->assign( 'warehouse', $warehouse );
 

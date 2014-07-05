@@ -484,6 +484,13 @@ class Order extends DB_Table {
 	}
 
 
+	function send_to_basket(){
+	
+	
+	
+	}
+
+
 	function checkout_submit_order() {
 
 		$date=gmdate("Y-m-d H:i:s");
@@ -660,6 +667,30 @@ class Order extends DB_Table {
 
 		}
 		else {
+		
+		
+			$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+				$this->id
+
+			);
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$current_amount_in_customer_account_payments=$row['Amount'];
+
+			}else {
+
+				$current_amount_in_customer_account_payments=0;
+			}
+			
+			
+			$sql=sprintf("delete  from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+				$this->id
+
+			);
+			
+			mysql_query($sql);
 
 			if ($by_customer) {
 				$state = 'Cancelled by Customer';
@@ -725,8 +756,20 @@ class Order extends DB_Table {
 			}
 
 			$customer=new Customer($this->data['Order Customer Key']);
+			
+			
+			
 			$customer->editor=$this->editor;
 			$customer->add_history_order_cancelled($this);
+			
+			$customer->update(
+					array(
+						'Customer Account Balance'=>round($customer->data['Customer Account Balance']+$current_amount_in_customer_account_payments,2)
+
+
+					));
+			
+			
 			$store=new Store($this->data['Order Store Key']);
 			$store->update_orders();
 
@@ -1450,7 +1493,9 @@ class Order extends DB_Table {
 
 
 		$sql = sprintf( "insert into `Order Dimension` (
-
+		
+`Order Telephone`,`Order Customer Fiscal Name`,
+`Order Email`,
 		`Order Apply Auto Customer Account Payment`,
 
 		`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,
@@ -1462,9 +1507,14 @@ class Order extends DB_Table {
                          `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
 
                          ) values
-                         (%s,%s,%s,%s,%s,%d,%s,%f,
+                         (%s, %s,
+                         %s,
+                         %s,%s,%s,%s,%s,%d,%s,%f,
 
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+			prepare_mysql ( $this->data ['Order Telephone'] ),
+			prepare_mysql ( $this->data ['Order Customer Fiscal Name'] ),
+			prepare_mysql ( $this->data ['Order Email'] ),
 			prepare_mysql ( $this->data ['Order Apply Auto Customer Account Payment'] ),
 			prepare_mysql ( $this->data ['Order Tax Number'] ),
 			prepare_mysql ( $this->data ['Order Tax Number Valid'] ),
@@ -3144,6 +3194,11 @@ class Order extends DB_Table {
 		$this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
 		$this->data ['Order Tax Number'] = $customer->data ['Customer Tax Number'];
 		$this->data ['Order Tax Number Valid'] = $customer->data ['Customer Tax Number Valid'];
+		$this->data ['Order Customer Fiscal Name'] = $customer->get_fiscal_name();
+		$this->data ['Order Email'] = $customer->data ['Customer Main Plain Email'];
+		$this->data ['Order Telephone'] = $customer->data ['Customer Main XHTML Telephone'];
+
+
 
 
 
@@ -4885,28 +4940,6 @@ class Order extends DB_Table {
 			
 			
 			$ship_to->update(array('Ship To Email'=>$this->data['Order Email']));
-			if($ship_to->data['Ship To Telephone']==''){
-						$ship_to->update(array('Ship To Email'=>$this->data['Order Telephone']));
-
-			}
-			
-			
-			$contact_name=$this->data['Order Customer Contact Name'];
-			$company_name=$this->data['Order Customer Name'];
-			
-			if($company_name==$contact_name){
-			$company_name='';
-			}
-			
-			if($ship_to->data['Ship To Contact Name']==''){
-						$ship_to->update(array(
-						'Ship To Contact Name'=>$contact_name,
-						'Ship To Company Name'=>$company_name,
-			
-						));
-
-			}
-			
 			
 			
 		}
@@ -4973,8 +5006,12 @@ class Order extends DB_Table {
 			$customer=new Customer($this->data['Order Customer Key']);
 			$billing_to= $customer->set_current_billing_to('return object');
 		} else {
-			//TODO
+			
 			$billing_to=new Billing_To($billing_to_key);
+			
+	
+			
+			
 		}
 
 
@@ -5610,6 +5647,14 @@ class Order extends DB_Table {
 	}
 
 
+	function get_formated_payment_state() {
+		return get_order_formated_payment_state($this->data);
+
+	}
+
+
+
+
 
 	function set_as_invoiced() {
 
@@ -5653,6 +5698,9 @@ class Order extends DB_Table {
 
 		$store=new Store($this->data['Order Store Key']);
 		$customer=new Customer($this->data['Order Customer Key']);
+
+
+
 
 		switch ($store->data['Store Tax Country Code']) {
 		case 'GBR':
@@ -5733,15 +5781,17 @@ class Order extends DB_Table {
 			}
 			elseif ( in_array($this->data['Order Billing To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
 
+
+
 				if ($this->data['Order Tax Number Valid']=='Yes') {
 
 
 					$response= array(
 						'code'=>$tax_category['Outside']['code'],
-						'name'=>$tax_category['Outside']['name'],
+						'name'=>$tax_category['Outside']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
 						'rate'=>$tax_category['Outside']['rate'],
 						'state'=>'EC with valid tax number',
-						'operations'=>'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>'
+						'operations'=>''
 
 					);
 
@@ -5788,6 +5838,8 @@ class Order extends DB_Table {
 					}
 
 				}
+
+
 
 				return $response;
 
@@ -5995,13 +6047,14 @@ class Order extends DB_Table {
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
+		//print_r($row);
 			$number_payments++;
-			$payments_amount+=$row['Payment Balance'];
+			$payments_amount+=$row['Payment Amount'];
 
 			$payments_info.=sprintf('<div>%s (%s)',
 
 				$row['Payment Service Provider Name'],
-				money($row['Payment Balance'],$row['Payment Currency Code'])
+				money($row['Payment Amount'],$row['Payment Currency Code'])
 
 			);
 			if ($row['Payment Transaction ID']!='')
@@ -6020,12 +6073,12 @@ class Order extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$number_payments++;
-			$payments_amount+=$row['Payment Balance'];
+			$payments_amount+=$row['Payment Amount'];
 
 			$payments_info.=sprintf('<div>%s (%s)',
 
 				$row['Payment Service Provider Name'],
-				money($row['Payment Balance'],$row['Payment Currency Code'])
+				money($row['Payment Amount'],$row['Payment Currency Code'])
 
 			);
 			if ($row['Payment Transaction ID']!='')

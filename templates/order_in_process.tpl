@@ -18,6 +18,11 @@
 		<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
 		<input type="hidden" value="{$decimal_point}" id="decimal_point" />
 		<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+				<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
+					<input type="hidden" value="customer" id="subject" />
+
+		
+		
 		<div class="branch ">
 			{if $referral=='spo'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> {else} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> {/if} 
 		</div>
@@ -26,9 +31,14 @@
 				<span class="main_title">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 			</div>
 			<div class="buttons">
-			<button style="height:24px;" onclick="window.location='proforma.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> 
+						<button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> 
+
 				<button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if} onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
-				<button class="{if {$order->get('Order Number Products')}==0}disabled{/if}" id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> 
+											<button style="{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} "  id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to Basket{/t}</button> 
+
+			<button class="{if {$order->get('Order Number Products')}==0}disabled{/if}" id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> 
+
+
 			</div>
 			<div style="clear:both">
 			</div>
@@ -40,12 +50,14 @@
 				<h2 style="padding:0">
 					<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 				</h2>
-				<h3>
-					{$customer->get('Customer Main Contact Name')} 
-				</h3>
+				
 				<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
-					<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
-					<div style="margin-top:5px" id="billing_address">
+					
+					<div id="title_billing_address" style="border-bottom:1px solid #ccc;margin-bottom:5px">
+						{t}Billing to{/t}: 
+					</div>
+					
+					<div  id="billing_address">
 						{$order->get('Order XHTML Billing Tos')} 
 					</div>
 					<div class="buttons small left">
@@ -53,20 +65,20 @@
 					</div>
 				</div>
 				<div style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
-					<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
-						{t}Delivery Address{/t}: 
+					<div id="title_delivery_address" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+						{t}Delivering to{/t}: 
 					</div>
-					<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+					<div id="title_for_collection" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
 						<b>{t}For collection{/t}</b> 
 					</div>
 					<div class="address_box" id="delivery_address">
 						{$order->get('Order XHTML Ship Tos')} 
 					</div>
-					<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none{/if};margin-top:2px" class="buttons left small">
+					<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none{/if};margin-top:10px" class="buttons left small">
 						<button id="change_delivery_address">{t}Change{/t}</button> <br />
 						<button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
 					</div>
-					<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-top:2px" class="buttons left small">
+					<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-top:10px" class="buttons left small">
 						<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
 					</div>
 				</div>
@@ -134,6 +146,8 @@
 				<div class="buttons small" style="display:none;{if $has_credit}display:none;{/if}clear:both;margin:0px;padding-top:10px">
 					<button id="add_credit" style="margin:0px;">{t}Add debit/credit{/t}</button> 
 				</div>
+				<div style="clear:both">
+			</div>
 			</div>
 			<div id="dates">
 				{if $order->get_notes()} 
@@ -162,12 +176,78 @@
 					</tr>
 					{else} 
 					<tr>
-						<td>{t}Submitted{/t}:</td>
-						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
+						<td>{t}Last updated{/t}:</td>
+						<td class="aright">{$order->get('Last Updated Date')}</td>
 					</tr>
 					{/if} 
 				</table>
 			</div>
+			
+			
+			
+			
+			<div style="clear:both">
+			</div>
+			<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
+			<div id="order_details_panel" style="xdisplay:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+				
+				
+				<div style="width:450px">
+					<table border="0" class="info_block">
+					<tr>
+						<td>{t}Created{/t}:</td>
+						<td class="aright">{$order->get('Created Date')}</td>
+					</tr>
+					{if $order->get('Order Current Dispatch State')=='In Process by Customer' } 
+					<tr>
+						<td>{t}Last updated{/t}:</td>
+						<td class="aright">{$order->get('Last Updated Date')}</td>
+					</tr>
+					<tr style="border-top:1px solid #ccc">
+						<td>{t}On website{/t}:</td>
+						<td class="aright">{$order->get('Interval Last Updated Date')}</td>
+					</tr>
+					{elseif $order->get('Order Current Dispatch State')=='Waiting for Payment Confirmation'} 
+					<tr>
+						<td>{t}Submit Payment{/t}:</td>
+						<td class="aright">{$order->get('Checkout Submitted Payment Date')}</td>
+					</tr>
+					{else} 
+					<tr>
+						<td>{t}Last updated{/t}:</td>
+						<td class="aright">{$order->get('Last Updated Date')}</td>
+						<td class="aright">{$order->get('Interval Last Updated Date')}</td>
+					</tr>
+					{/if} 
+				</table>
+				
+				<table border="0" class="info_block">
+					<tr>
+						<td>{t}Customer Name{/t}:</td>
+						<td class="aright">{$order->get('Order Customer Name')}</td>
+					</tr>
+						<tr>
+						<td>{t}Contact Name{/t}:</td>
+						<td class="aright">{$order->get('Order Customer Contact Name')}</td>
+					</tr>
+						<tr>
+						<td>{t}Telephone{/t}:</td>
+						<td class="aright">{$order->get('Order Telephone')}</td>
+					</tr>
+						<tr>
+						<td>{t}Email{/t}:</td>
+						<td class="aright">{$order->get('Order Email')}</td>
+					</tr>
+				</table>
+				
+				
+				</div>
+				<div style="clear:both">
+				</div>
+				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			</div>
+			
+			
 			<div style="clear:both">
 			</div>
 		</div>

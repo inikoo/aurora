@@ -320,11 +320,16 @@ function init() {
     });
     pick_it_dialog.render();
 
-myTooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
+paid_info_Tooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
     context: "order_paid_info",
-   
     showDelay: 500
 });
+
+paid_info_invoied_Tooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
+    context: "order_paid_info_invoiced",
+    showDelay: 500
+});
+
   dialog_set_dn_data = new YAHOO.widget.Dialog("dialog_set_dn_data", {
         visible: false,
         close: true,

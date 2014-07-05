@@ -39,7 +39,7 @@ class Ship_To extends DB_Table {
 	}
 
 
-	
+
 
 	function get_data($tipo,$tag) {
 
@@ -211,8 +211,24 @@ class Ship_To extends DB_Table {
 
 
 		$address='';
+
+		if ($this->data['Ship To Contact Name']!='')
+			if ($tipo=='xhtml')
+				$address.='<span style="text-decoration:underline">'._trim($this->data['Ship To Contact Name']).'</span>'.$separator;
+
+			else
+				$address.=_trim($this->data['Ship To Contact Name']).$separator;
+
+			if ($this->data['Ship To Company Name']!='')
+				$address.=_trim($this->data['Ship To Company Name']).$separator;
+
+			if ($address!='') {
+				$address='<div style="font-style:italic;color:#444;margin-bottom:5px">'.$address.'</div>';
+			}
+
+
 		if ($this->data['Ship To Line 1']!='')
-			$address=_trim($this->data['Ship To Line 1']).$separator;
+			$address.=_trim($this->data['Ship To Line 1']).$separator;
 		if ($this->data['Ship To Line 2']!='')
 			$address.=_trim($this->data['Ship To Line 2']).$separator;
 
@@ -228,7 +244,26 @@ class Ship_To extends DB_Table {
 		if ($ps_address!='')
 			$address.=$ps_address.$separator;
 
-		$address.=$this->data['Ship To Country Name'];
+		if ($tipo=='xhtml')
+			$address.='<b>'.$this->data['Ship To Country Name'].'</b>';
+		else
+			$address.=$this->data['Ship To Country Name'];
+
+		if ($tipo=='xhtml') {
+			if ($this->data['Ship To Telephone']!='') {
+				$address.='<div style="font-style:italic;color:#444;margin-top:5px">'._('Tel').': '._trim($this->data['Ship To Telephone']).'</div>';
+			}
+
+		}else {
+
+			if ($this->data['Ship To Telephone']!='' ) {
+				$address.=$Ship.$separator;
+			}
+
+			if ($this->data['Ship To Telephone']!='')
+				$address.=_('Tel').': '._trim($this->data['Ship To Telephone']);
+		}
+
 
 		return _trim($address);
 

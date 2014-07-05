@@ -131,14 +131,26 @@ function get_order_formated_dispatch_state($state,$order_key) {
 }
 
 function get_order_formated_payment_state($data) {
+
+
+
+
 	switch ($data['Order Current Payment State']) {
-	case 'Not Invoiced':
-		$payment_state='<span style="opacity:.3">'._('Not Invoiced').'</span>';
+	case 'No Applicable':
+		$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
 		break;
 	case 'Waiting Payment':
 		$payment_state=_('Waiting Payment');
 
 		break;
+		case 'Overpaid':
+		$payment_state=_('Overpaid');
+
+		break;	
+			case 'Unknown':
+		$payment_state=_('Unknown');
+
+		break;	
 	case 'Paid':
 		$payment_state=_('Paid');
 		break;
@@ -152,7 +164,6 @@ function get_order_formated_payment_state($data) {
 	}
 	return '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
 }
-
 
 function get_invoice_operations($row,$user,$parent='order',$parent_key='') {
 	$operations='<div  id="operations'.$row['Invoice Key'].'">';
@@ -311,12 +322,13 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 	}
 	elseif ($row['Delivery Note State']=='Picking & Packing') {
+		if ($user->data['User Type']!='Warehouse'  and $parent!='order' ) {
 		$operations.='<b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
 		$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
 
 		$operations.=' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('packing order')."</a>";
 		$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
-
+       }
 
 	}elseif ($row['Delivery Note State']=='Packed Done') {
 

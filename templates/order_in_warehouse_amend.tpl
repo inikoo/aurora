@@ -13,6 +13,9 @@
 	<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
 	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
 	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+					<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
+					<input type="hidden" value="customer" id="subject" />
+
 	<div class="branch ">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
@@ -112,7 +115,8 @@
 					<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
 						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
+							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
+							<button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
 						</div>
 						{t}To Pay{/t}</td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>

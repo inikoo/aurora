@@ -484,7 +484,26 @@ function update_ship_to_key_from_address($data) {
 	$order=new Order($data['order_key']);
 	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 	$address=new Address($data['address_key']);
-	$ship_to_key=$address->get_ship_to();
+	
+	
+
+	$contact_name=$order->data['Order Customer Contact Name'];
+	$company_name=$order->data['Order Customer Name'];
+
+	if ($company_name==$contact_name) {
+		$company_name='';
+	}
+	$ship_to_data=array(
+		'Ship To Contact Name'=>$contact_name,
+		'Ship To Company Name'=>$company_name,
+		'Ship To Telephone'=>$order->data['Order Telephone'],
+		'Ship To Email'=>$order->data['Order Email']
+	);
+
+
+
+	$address=new Address($data['address_key']);
+	$ship_to_key=$address->get_ship_to($ship_to_data);
 
 	$order->update_ship_to($ship_to_key);
 
@@ -535,8 +554,35 @@ function update_billing_to_key_from_address($data) {
 
 	$order=new Order($data['order_key']);
 	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+	
+	
+	
 	$address=new Address($data['address_key']);
-	$billing_to_key=$address->get_billing_to();
+	
+	
+	$contact_name=$order->data['Order Customer Contact Name'];
+	if ($order->data['Order Customer Fiscal Name']=='') {
+		$company_name=$order->data['Order Customer Name'];
+
+	}else {
+		$company_name=$order->data['Order Customer Fiscal Name'];
+	}
+
+
+	if ($company_name==$contact_name) {
+		$contact_name='';
+	}
+
+	$billing_to_data=array(
+		'Billing To Contact Name'=>$contact_name,
+		'Billing To Company Name'=>$company_name,
+		'Billing To Telephone'=>$order->data['Order Telephone'],
+		'Billing To Email'=>$order->data['Order Email']
+	);
+
+	
+	
+	$billing_to_key=$address->get_billing_to($billing_to_data);
 
 	$order->update_billing_to($billing_to_key);
 

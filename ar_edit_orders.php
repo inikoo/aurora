@@ -688,9 +688,9 @@ case('send_to_warehouse'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'note'=>array('type'=>'string','optional'=>true)
-	
-		));	
-		
+
+		));
+
 	send_to_warehouse($data);
 	break;
 
@@ -840,8 +840,8 @@ function cancel_order($data) {
 
 function send_to_warehouse($data) {
 
-$order_key=$data['order_key'];
-$note=$data['note'];
+	$order_key=$data['order_key'];
+	$note=$data['note'];
 
 
 	include_once 'class.PartLocation.php';
@@ -867,11 +867,11 @@ $note=$data['note'];
 	$order->authorize_all();
 
 	$dn=$order->send_to_warehouse();
-	
-	if($dn){
-	$dn->update(array('Delivery Note Warehouse Note'=>$note));
+
+	if ($dn) {
+		$dn->update(array('Delivery Note Warehouse Note'=>$note));
 	}
-	
+
 	if (!$order->error) {
 		$response=array(
 			'state'=>200,
@@ -880,10 +880,10 @@ $note=$data['note'];
 			'operations'=>get_orders_operations($order->data,$user)
 
 		);
-		
-		
-		
-		
+
+
+
+
 		echo json_encode($response);
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->data['Order Number Items'],'order_key'=>$order->id);
@@ -1694,7 +1694,7 @@ function transactions_to_process() {
 
 	$sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
-//	print $sql;
+	// print $sql;
 	$res = mysql_query($sql);
 
 	$adata=array();
@@ -3678,6 +3678,8 @@ function create_invoice_order($data) {
 	foreach ($payments as $payment) {
 		$paymnet_balance=$invoice->apply_payment($payment);
 		//print $paymnet_balance."x";
+
+		//$invoice->data['Invoice '];
 		if ($paymnet_balance!=0) {
 			break;
 		}
@@ -3815,8 +3817,25 @@ function update_ship_to_key($data) {
 function update_ship_to_key_from_address($data) {
 
 	$order=new Order($data['order_key']);
+
+
+	$contact_name=$order->data['Order Customer Contact Name'];
+	$company_name=$order->data['Order Customer Name'];
+
+	if ($company_name==$contact_name) {
+		$company_name='';
+	}
+	$ship_to_data=array(
+		'Ship To Contact Name'=>$contact_name,
+		'Ship To Company Name'=>$company_name,
+		'Ship To Telephone'=>$order->data['Order Telephone'],
+		'Ship To Email'=>$order->data['Order Email']
+	);
+
+
+
 	$address=new Address($data['address_key']);
-	$ship_to_key=$address->get_ship_to();
+	$ship_to_key=$address->get_ship_to($ship_to_data);
 
 	$order->update_ship_to($ship_to_key);
 
@@ -3878,7 +3897,14 @@ function update_ship_to_key_from_address($data) {
 
 function update_billing_to_key($data) {
 
+
+
+
 	$order=new Order($data['order_key']);
+
+
+
+
 	$order->update_billing_to($data['billing_to_key']);
 	if ($order->updated) {
 		$response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
@@ -4013,8 +4039,32 @@ function remove_insurance($data) {
 function update_billing_to_key_from_address($data) {
 
 	$order=new Order($data['order_key']);
+
+
+
+	$contact_name=$order->data['Order Customer Contact Name'];
+	if ($order->data['Order Customer Fiscal Name']=='') {
+		$company_name=$order->data['Order Customer Name'];
+
+	}else {
+		$company_name=$order->data['Order Customer Fiscal Name'];
+	}
+
+
+	if ($company_name==$contact_name) {
+		$contact_name='';
+	}
+
+	$billing_to_data=array(
+		'Billing To Contact Name'=>$contact_name,
+		'Billing To Company Name'=>$company_name,
+		'Billing To Telephone'=>$order->data['Order Telephone'],
+		'Billing To Email'=>$order->data['Order Email']
+	);
+
+
 	$address=new Address($data['address_key']);
-	$billing_to_key=$address->get_billing_to();
+	$billing_to_key=$address->get_billing_to($billing_to_data);
 
 	$order->update_billing_to($billing_to_key);
 

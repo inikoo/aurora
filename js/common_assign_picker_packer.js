@@ -431,7 +431,13 @@ function assign_packer_save() {
                 close_dialog('assign_packer_dialog');
 
                 if (!Dom.get('operations' + dn_key)) {
-                    location.href = 'order_pack_aid.php?id=' + dn_key;
+                
+                var extra_argument='';
+                if(Dom.get('order_key')!=undefined){
+                	extra_argument='&order_key='+Dom.get('order_key').value
+                }
+                
+                    location.href = 'order_pack_aid.php?id=' + dn_key+extra_argument;
                 }
 
             } else {
@@ -529,7 +535,15 @@ function pack_all(dn_key,staff_key,referrer) {
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;
                 } else if (referrer == 'pack_aid') {
-                	window.location = 'order_pack_aid.php?id=' + r.dn_key;
+                                var extra_argument='';
+
+                
+                 if(Dom.get('order_key')!=undefined){
+                	extra_argument='&order_key='+Dom.get('order_key').value
+                }
+                
+                
+                	window.location = 'order_pack_aid.php?id=' + r.dn_key+extra_argument;
                 }            
             }
 

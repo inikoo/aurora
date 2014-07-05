@@ -45,6 +45,20 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 }
 
+$sql="select * from `Billing To Dimension`  ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$billing_to=new Billing_To($row['Billing To Key']);
+	$address=$billing_to->get_xhtml_address();
+	$sql=sprintf("update `Billing To Dimension` set `Billing To XHTML Address`=%s where `Billing To Key` =%d",
+		prepare_mysql($address),
+		$row['Billing To Key']
+
+	);
+	mysql_query($sql);
+
+}
+
 
 
 exit;

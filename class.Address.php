@@ -5672,7 +5672,7 @@ class Address extends DB_Table {
 
 
 
-	function get_ship_to() {
+	function get_ship_to($data) {
 
 		include_once 'class.Ship_To.php';
 		$line=$this->display('3lines');
@@ -5689,17 +5689,48 @@ class Address extends DB_Table {
 
 		$shipping_address['Ship To Country First Division']=$this->data['Address Country First Division'];
 		$shipping_address['Ship To Country Second Division']=$this->data['Address Country Second Division'];
-		
-		
-		$shipping_address['Ship To Telephone']=$this->data['Address Main XHTML Telephone'];
-		$shipping_address['Ship To Contact Name']=$this->data['Address Contact'];
 
-		
+
+		if ($this->data['Address Main XHTML Telephone']!='') {
+			$shipping_address['Ship To Telephone']=$this->data['Address Main XHTML Telephone'];
+		}else {
+			$shipping_address['Ship To Telephone']=$data['Ship To Telephone'];
+		}
+
+
+		$shipping_address['Ship To Email']=$data['Ship To Email'];
+
+
+
+
+
+		if ($this->data['Address Contact']==''  ) {
+
+			$contact_name=$data['Ship To Contact Name'];
+			$company_name=$data['Ship To Company Name'];
+
+			if ($company_name==$contact_name) {
+				$company_name='';
+			}
+
+			$shipping_address['Ship To Contact Name']=$contact_name;
+			$shipping_address['Ship To Company Name']=$company_name;
+
+
+		}else {
+			$shipping_address['Ship To Contact Name']=$this->data['Address Contact'];
+			$shipping_address['Ship To Company Name']='';
+
+		}
+
+
+
+
 		$ship_to= new Ship_To('find create',$shipping_address);
 		return $ship_to->id;
 	}
 
-	function get_billing_to() {
+	function get_billing_to($data) {
 
 		include_once 'class.Billing_To.php';
 		$line=$this->display('3lines');
@@ -5716,10 +5747,32 @@ class Address extends DB_Table {
 
 		$billing_address['Billing To Country First Division']=$this->data['Address Country First Division'];
 		$billing_address['Billing To Country Second Division']=$this->data['Address Country Second Division'];
+
+
+
+		if ($this->data['Address Main XHTML Telephone']!='')
+			$billing_address['Billing To Telephone']=$this->data['Address Main XHTML Telephone'];
+		else
+			$billing_address['Billing To Telephone']=$data['Billing To Telephone'];
+
+
+		if ($this->data['Address Contact']!=''){
+			$contact_name=$this->data['Address Contact'];
+		}else{
+			$contact_name=$data['Billing To Contact Name'];
+		}
 		
-		$billing_address['Billing To Telephone']=$this->data['Address Main XHTML Telephone'];
-		$billing_address['Billing To Contact Name']=$this->data['Address Contact'];
-		
+		if($data['Billing To Company Name']==$contact_name){
+			$contact_name='';
+		}
+
+
+
+		$billing_address['Billing To Contact Name']=$contact_name;
+		$billing_address['Billing To Company Name']=$data['Billing To Company Name'];
+		$billing_address['Billing To Email']=$data['Billing To Email'];
+
+
 		$billing_to= new Billing_To('find create',$billing_address);
 		return $billing_to->id;
 	}

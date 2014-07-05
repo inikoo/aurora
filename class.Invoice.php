@@ -1925,7 +1925,7 @@ class Invoice extends DB_Table {
 	}
 
 
-function update_payment_state(){
+	function update_payment_state() {
 
 
 		$paid_amount=0;
@@ -1934,11 +1934,11 @@ function update_payment_state(){
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$paid_amount=$row['amount'];
+			$paid_amount=round($row['amount'],2);
 		}
 
 		$this->data['Invoice Paid Amount']=$paid_amount;
-		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
+		$this->data['Invoice Outstanding Total Amount']=round($this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'],2);
 		$this->data['Invoice Main Payment Method']=$this->get_main_payment_method();
 
 
@@ -1950,11 +1950,11 @@ function update_payment_state(){
 			$this->id);
 		mysql_query( $sql );
 
-
+//print $this->data['Invoice Outstanding Total Amount'].'<-';
 		if ($this->data['Invoice Total Amount']>=0) {
 
-			if($this->data['Invoice Paid Amount']==0){
-		$this->set_as_not_paid();
+			if ($this->data['Invoice Paid Amount']==0) {
+				$this->set_as_not_paid();
 
 			}elseif ($this->data['Invoice Outstanding Total Amount']==0) {
 
@@ -1978,9 +1978,10 @@ function update_payment_state(){
 
 
 
-}
+	}
 
 	function apply_payment($payment) {
+
 
 
 		if ($this->data['Invoice Outstanding Total Amount']>0) {
@@ -1992,12 +1993,12 @@ function update_payment_state(){
 				$to_pay=$this->data['Invoice Outstanding Total Amount'];
 
 
-				$payment_amount_not_used=$payment->data['Payment Balance']-$to_pay;
-				$payment_amount_used=$to_pay;
+				$payment_amount_not_used=round($payment->data['Payment Balance']-$to_pay,2);
+				$payment_amount_used=round($to_pay,2);
 			}else {
 				$this->set_as_parcially_paid($payment);
-				$payment_amount_not_used= 0;
-				$payment_amount_used=$payment->data['Payment Balance'];
+				$payment_amount_not_used= round(0.00,2);
+				$payment_amount_used=round($payment->data['Payment Balance'],2);
 			}
 
 
@@ -2043,6 +2044,8 @@ function update_payment_state(){
 
 
 		$this->update_payment_state();
+
+
 
 		return $payment_amount_not_used;
 
@@ -2615,7 +2618,7 @@ function update_payment_state(){
 	function get_payment_objects($status='',$load_payment_account=false,$load_payment_service_provider=false) {
 
 
-	$payments=array();
+		$payments=array();
 
 		if ($status) {
 			$where=' and `Payment Transaction Status`='.prepare_mysql($status);
@@ -2627,23 +2630,23 @@ function update_payment_state(){
 			$this->id,
 			$where
 		);
-		
-		
+
+
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		
+
 			$payment=new Payment($row['Payment Key']);
 			if ($load_payment_account)
 				$payment->load_payment_account();
 			if ($load_payment_service_provider)
 				$payment->load_payment_service_provider();
-		
-		$payment->amount=$row['Amount'];
-				$payment->formated_invoice_amount=money($row['Amount'],$row['Payment Currency Code']);
 
-		
-		
+			$payment->amount=$row['Amount'];
+			$payment->formated_invoice_amount=money($row['Amount'],$row['Payment Currency Code']);
+
+
+
 			$payments[$row['Payment Key']]=$payment;
 		}
 		return $payments;
@@ -2667,6 +2670,7 @@ function update_payment_state(){
 
 
 		$orders=$this->get_orders_objects();
+		$dns=$this->get_delivery_notes_objects();
 
 		$sql=sprintf("delete from `Order Invoice Bridge` where `Invoice Key`=%d   ",$this->id);
 		mysql_query($sql);
@@ -2758,10 +2762,12 @@ function update_payment_state(){
 		$sql=sprintf("delete from `Invoice Dimension`  where  `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
 
+		foreach ($dns as $dn) {
+
+			$dn->update_xhtml_invoices();
 
 
-
-
+		}
 
 		foreach ($orders as $order) {
 
