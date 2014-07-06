@@ -574,22 +574,17 @@ function part_list() {
 
 
 
-	$elements=array('Keeping'=>1,'NotKeeping'=>0,'Discontinued'=>0,'LastStock'=>1);
-	if (isset( $_REQUEST['elements_Keeping'])) {
-		$elements['Keeping']=$_REQUEST['elements_Keeping'];
+	$elements=array('InUse'=>1,'NotInUse'=>0);
+	
+	
+	if (isset( $_REQUEST['elements_InUse'])) {
+		$elements['InUse']=$_REQUEST['elements_InUse'];
 	}
-	if (isset( $_REQUEST['elements_NotKeeping'])) {
-		$elements['NotKeeping']=$_REQUEST['elements_NotKeeping'];
+	
+	if (isset( $_REQUEST['elements_NotInUse'])) {
+		$elements['NotInUse']=$_REQUEST['elements_NotInUse'];
 	}
-
-	if (isset( $_REQUEST['elements_Discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_Discontinued'];
-	}
-	if (isset( $_REQUEST['elements_LastStock'])) {
-		$elements['LastStock']=$_REQUEST['elements_LastStock'];
-	}
-
-
+	
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -609,32 +604,43 @@ function part_list() {
 
 	$where='where true ';
 
-	/*
 
-     $_elements='';
-    foreach($elements as $_key=>$_value) {
-        if ($_value)
-            $_elements.=','.prepare_mysql($_key);
-    }
-    $_elements=preg_replace('/^\,/','',$_elements);
-    if ($_elements=='') {
-        $where.=' and false' ;
-    } else {
-        $where.=' and `Part Main State` in ('.$_elements.')' ;
-    }
-   */
+
+  	$_elements='';
+		$elements_count=0;
+		foreach ($elements as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
+
+				if ($_key=='InUse') {
+					$_key='In Use';
+				}else {
+					$_key='Not In Use';
+				}
+
+				$_elements.=','.prepare_mysql($_key);
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where.=' and false' ;
+		} elseif ($elements_count==1) {
+			$where.=' and `Part Status` in ('.$_elements.')' ;
+		}
+  
 
 	$filter_msg='';
 	$wheref='';
-
+if ($f_field=='reference' and $f_value!='')
+		$wheref.=" and  `Part Reference` like '".addslashes($f_value)."%'";
 	if ($f_field=='used_in' and $f_value!='')
 		$wheref.=" and  `Part Currently Used In` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+		$wheref.=sprintf(' and  `Part Unit Description` like  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 	elseif ($f_field=='supplied_by' and $f_value!='')
-		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Part XHTML Currently Supplied By` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='sku' and $f_value!='')
-		$wheref.=" and  `Part SKU` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Part SKU`='".addslashes($f_value)."'";
 
 	$sql="select count(DISTINCT `Part SKU`) as total from `Part Dimension` $where $wheref  ";
 	//print $sql;
@@ -667,7 +673,7 @@ function part_list() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with SKU")." <b>".sprintf("SKU%05d",$f_value)."</b> ";
 			break;
 
 		case('used_in'):
@@ -677,8 +683,11 @@ function part_list() {
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
 			break;
 		case('description'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>*".$f_value."*</b> ";
 			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with reference like ")." <b>".$f_value."*</b> ";
+			break;	
 		}
 	}
 	elseif ($filtered>0) {
@@ -686,11 +695,11 @@ function part_list() {
 
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with SKU')." <b>".sprintf("SKU%05d",$f_value)."</b>";
 			break;
 
 		case('used_in'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>*".$f_value."*</b>";
 			break;
 		case('supplied_by'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b>";
@@ -698,6 +707,9 @@ function part_list() {
 		case('description'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b>";
 			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with reference like')." <b>".$f_value."*</b>";
+			break;	
 		}
 	}
 	else
@@ -713,9 +725,11 @@ function part_list() {
 	$_order=$order;
 	$_dir=$order_direction;
 
-
-
-	if ($order=='description')
+if ($order=='reference')
+		$order='`Part Reference`';
+elseif ($order=='status')
+		$order='`Part Status`';
+	elseif ($order=='description')
 		$order='`Part Unit Description`';
 	else
 		$order='`Part SKU`';
@@ -725,7 +739,7 @@ function part_list() {
 
 
 	$adata=array();
-	$sql="select  `Part Status`,`Part SKU`,`Part Currently Used In`,`Part Unit Description` from `Part Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Part Reference`,`Part Status`,`Part SKU`,`Part Currently Used In`,`Part Unit Description` from `Part Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 	//print $sql;exit;
 
 	$res=mysql_query($sql);
@@ -734,11 +748,12 @@ function part_list() {
 
 		$adata[]=array(
 			'sku'=>$row['Part SKU'],
+			'reference'=>$row['Part Reference'],
 
-			'formated_sku'=>sprintf('SKU%05d',$row['Part SKU']),
+			'formated_sku'=>sprintf('%05d',$row['Part SKU']),
 			'description'=>$row['Part Unit Description'],
 			'used_in'=>$row['Part Currently Used In'],
-			'status'=>($row['Part Status']=='In Use'?'':_('Discontinued')),
+			'status'=>($row['Part Status']=='In Use'?'':_('No keeped')),
 
 
 		);

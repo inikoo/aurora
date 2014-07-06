@@ -30,8 +30,13 @@ if (!$logged_in) {
 	header('location: login.php');
 	exit();
 }
-
+if(isset($_SESSION['offset'])){
 date_default_timezone_set($_SESSION['offset']);
+}else{
+require_once 'conf/timezone.php';
+	date_default_timezone_set(TIMEZONE) ;
+}
+
 require_once 'conf/conf.php';
 
 

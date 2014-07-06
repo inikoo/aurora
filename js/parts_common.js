@@ -197,9 +197,6 @@ function change_parts_elements_use(e, table_id) {
         }
         return false;
 }
-
-
-
 function change_parts_elements_use_click(el, table_id) {
 
     ids = ['elements_InUse', 'elements_NotInUse'];
@@ -241,9 +238,6 @@ function change_parts_elements_use_click(el, table_id) {
     //alert(request);
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
-
-
-
 function change_parts_elements_use_dblclick(el, table_id) {
 
     ids = ['elements_InUse', 'elements_NotInUse','elements_InUse_bis', 'elements_NotInUse_bis'];

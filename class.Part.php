@@ -1121,7 +1121,7 @@ class part extends DB_Table {
 		}
 
 		function get_sku() {
-			return sprintf("SKU%05d",$this->sku);
+			return sprintf("%05d",$this->sku);
 
 		}
 

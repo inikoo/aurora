@@ -45,7 +45,7 @@ elseif ($parent=='list') {
 		}
 
 	} else {
-		
+
 	}
 }
 elseif ($parent=='category') {
@@ -164,10 +164,10 @@ if (!$awhere ) {
 			$where.=' and `Part Stock State` in ('.$_elements.')' ;
 		}
 		break;
-		
-		
-		
-			case 'next_shipment':
+
+
+
+	case 'next_shipment':
 
 		$_elements='';
 		$elements_count=0;
@@ -209,7 +209,7 @@ if (!$awhere ) {
 			$where.=' and `Part Next Shipment State` in ('.$_elements.')' ;
 		}
 		break;
-		
+
 	default:
 		$where.=' and false' ;
 

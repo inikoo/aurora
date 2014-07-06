@@ -28,7 +28,17 @@ table thead td { background-color: #EEEEEE;
      background-color: #FAFAFA;
 }
 
+.items tr.multiple_partsx td{
+    border-top: 0.5mm solid #000000;
+    border-bottom: 0.5mm solid #000000;
 
+}
+
+.items td.multiple_parts {
+    background-color: #FCFCFC;
+   
+    border: 0.5mm solid #000000;
+}
 
 .items td.blanktotal {
     background-color: #FFFFFF;
@@ -144,14 +154,14 @@ mpdf-->
 <tbody>
 
 {foreach from=$transactions item=transaction name=products} 
-<tr   class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} ">
+<tr   class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} {if $transaction.part_multiplicity>1}multiple_parts{/if}">
 <td align="left">{$transaction.location}</td>
-<td align="center">{$transaction.reference}</td>
+<td align="center"   >{$transaction.reference}</td>
 <td align="left">{$transaction.description}</td>
 <td align="left">{$transaction.stock}</td>
-<td align="center">{$transaction.qty}</td>
+<td align="center" class="{if $transaction.part_multiplicity>1}multiple_parts{/if}">{$transaction.qty}</td>
 <td align="right"></td>
-<td  align="left">{$transaction.notes}</td>
+<td  align="left" style="font-size: 6pt;">{if $transaction.part_multiplicity>1}<b>[{$transaction.multiple_parts_info|strip_tags} *]</b> {/if}{$transaction.notes}</td>
 </tr>
 {/foreach}
 

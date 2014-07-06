@@ -667,7 +667,7 @@ class DeliveryNote extends DB_Table {
 
 	function create_orphan_inventory_transaction_fact($date) {
 		$skus_data=array();
-		$sql=sprintf('select OTF.`Product Key`,`Product Package Weight`,`Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Current Dispatching State` in ("Submitted by Customer","In Process") and `Delivery Note Key`=%d '
+		$sql=sprintf('select  OTF.`Product Code`,OTF.`Product Key`,`Product Package Weight`,`Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Current Dispatching State` in ("Submitted by Customer","In Process") and `Delivery Note Key`=%d '
 			,$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -685,6 +685,9 @@ class DeliveryNote extends DB_Table {
 			mysql_query($sql);
 
 			$part_index=0;
+			$multipart_data=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
+			$multipart_data_multiplicity=count($part_list);
+			
 			foreach ($part_list as $part_data) {
 
 				$part = new Part ('sku',$part_data['Part SKU']);
@@ -734,8 +737,10 @@ class DeliveryNote extends DB_Table {
 
 
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-					(%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+					(%d,%s,%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						$multipart_data_multiplicity,
+						prepare_mysql ($multipart_data),
 						"'Movement'",
 						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
@@ -780,7 +785,7 @@ class DeliveryNote extends DB_Table {
 
 		$skus_data=array();
 
-		$sql=sprintf('select `Order Post Transaction Key`,OTF.`Product Key`,`Delivery Note Quantity`,OTF.`Order Transaction Fact Key` from  `Order Transaction Fact` OTF  left join `Order Post Transaction Dimension` POT on (POT.`Order Post Transaction Fact Key`=OTF.`Order Transaction Fact Key`)   where OTF.`Order Key`=%d  and `Order Transaction Type`="Resend" and `Current Dispatching State` in ("In Process")  '
+		$sql=sprintf('select OTF.`Product Code`,`Order Post Transaction Key`,OTF.`Product Key`,`Delivery Note Quantity`,OTF.`Order Transaction Fact Key` from  `Order Transaction Fact` OTF  left join `Order Post Transaction Dimension` POT on (POT.`Order Post Transaction Fact Key`=OTF.`Order Transaction Fact Key`)   where OTF.`Order Key`=%d  and `Order Transaction Type`="Resend" and `Current Dispatching State` in ("In Process")  '
 			,$order_key);
 		$res=mysql_query($sql);
 		//print $sql;
@@ -807,6 +812,11 @@ class DeliveryNote extends DB_Table {
 			mysql_query($sql);
 
 			$part_index=0;
+			
+			$multipart_data=sprintf('<a href="product.php?id=%d">%s</a>',$row['Product Key'],$row['Product Code']);
+			$multipart_data_multiplicity=count($part_list);
+			
+			
 			foreach ($part_list as $part_data) {
 				if ($part_data['Parts Per Product']!=1)
 					$map_to_otf_metadata=$part_data['Parts Per Product'];
@@ -854,8 +864,10 @@ class DeliveryNote extends DB_Table {
 
 					$note = $a;
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-					(%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
+					(%d,%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						$multipart_data_multiplicity,
+						prepare_mysql ($multipart_data),
 						"'Movement'",
 						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
@@ -963,7 +975,12 @@ class DeliveryNote extends DB_Table {
 					'otf'=>$row['Map To Order Transaction Fact Key'],
 					'product_key'=>$product_key,
 					'picking_note'=>$row['Picking Note'],
-					'parts_per_product'=>$parts_per_product);
+					'parts_per_product'=>$parts_per_product,
+					'parts_multiplicity'=>$row['Map To Order Transaction Fact Parts Multiplicity'],
+					'otf_info'=>$row['Map To Order Transaction Fact XHTML Info']
+					);
+					
+					
 				$inventory_to_actualize[$row['Map To Order Transaction Fact Key']][$row['Part SKU']]=$transaction_data;
 
 
@@ -1037,11 +1054,14 @@ class DeliveryNote extends DB_Table {
 
 
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,
                                      `Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,
                                      `Required`,`Given`,`Amount In`,
                                      `Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
-                                     (%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+                                     (%d,%s,%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						
+						$transaction_locations['parts_multiplicity'],
+						prepare_mysql ($transaction_locations['otf_info']),
 						"'Movement'",
 						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
@@ -1189,7 +1209,8 @@ class DeliveryNote extends DB_Table {
 		$part_index=0;
 
 
-
+			$multipart_data=sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->data['Product Code']);
+			$multipart_data_multiplicity=count($part_list);
 
 		foreach ($part_list as $part_data) {
 
@@ -1301,12 +1322,13 @@ class DeliveryNote extends DB_Table {
 
 					$note = $a;
 
-					$picking_note=$product->data['Product Code'];
-					if (_trim($part_data['Product Part List Note'])) {
-						$picking_note.=','.$part_data['Product Part List Note'];
-					}
-
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$picking_note=$part_data['Product Part List Note'];
+					
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) 
+					values (%d,%s,%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+						$multipart_data_multiplicity,
+						prepare_mysql ($multipart_data),
+						
 						"'Movement'","'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($picking_note),
@@ -1439,8 +1461,8 @@ class DeliveryNote extends DB_Table {
 			}
 
 		}
-		
-		
+
+
 
 
 		$sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State`='Dispatched'  ",
@@ -1479,7 +1501,7 @@ class DeliveryNote extends DB_Table {
 
 			}else {
 				$order->update_dispatch_state(true);;
-				
+
 			}
 
 			$order->update_xhtml_delivery_notes();
@@ -2257,8 +2279,8 @@ class DeliveryNote extends DB_Table {
 
 		return get_dn_operations($this->data,$user,$parent,$parent_key);
 	}
-	
-		function get_notes() {
+
+	function get_notes() {
 
 		$notes='';
 		if ($this->data['Delivery Note Customer Sevices Note']!='')
@@ -2695,8 +2717,9 @@ class DeliveryNote extends DB_Table {
 
 	function set_as_out_of_stock($itf_key,$qty,$date=false,$picker_key=false) {
 
-		if ($qty==0)return;
-
+		if ($qty==0) {
+		return;
+		}
 
 		$sql=sprintf("select `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata` from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
 			,$itf_key

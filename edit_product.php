@@ -246,6 +246,15 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
+$elements_use_numbers=array('InUse'=>0,'NotInUse'=>0);
+$sql=sprintf("select count(*) as number ,`Part Status` from `Part Dimension` group by `Part Status` ");
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+	$elements_use_numbers[preg_replace('/\s/','',$row['Part Status'])]=number($row['number']);
+}
+$smarty->assign('elements_use',array('InUse'=>1,'NotInUse'=>0));
+$smarty->assign('elements_use_numbers',$elements_use_numbers);
+
 
 $smarty->assign('filter1','reference');
 $smarty->assign('filter_value1','');
@@ -258,7 +267,7 @@ $filter_menu=array(
 
 );
 $smarty->assign('filter_menu1',$filter_menu);
-$smarty->assign('filter_name1',$filter_menu['used_in']['label']);
+$smarty->assign('filter_name1',$filter_menu['reference']['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
