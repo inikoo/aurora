@@ -641,80 +641,90 @@ select_part_from_list(data)
 }
 */
 
-function select_part_from_list(oArgs){
+function select_part_from_list(oArgs) {
 
-sku=tables.table1.getRecord(oArgs.target).getData('sku')
-
-
-formated_sku=tables.table1.getRecord(oArgs.target).getData('formated_sku')
-parts_per_product=1;
-note='';
-description=tables.table1.getRecord(oArgs.target).getData('description')
+    var sku = tables.table1.getRecord(oArgs.target).getData('sku')
 
 
-part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
+    var formated_sku = tables.table1.getRecord(oArgs.target).getData('formated_sku')
+        var reference = tables.table1.getRecord(oArgs.target).getData('reference')
+
+    var parts_per_product = 1;
+    var note = '';
+    var description = tables.table1.getRecord(oArgs.target).getData('description')
+
+
+    part_list['sku' + sku] = {
+        'sku': sku,
+        'new': true,
+        'deleted': false
+    };
 
 
 
 
- oTbl=Dom.get('part_editor_table');
-         
-
- 
-    oTR= oTbl.insertRow(-1);
+    var oTbl = Dom.get('part_editor_table');
     
-               
     
-    oTR.id='part_list'+sku;
-  
-    oTR.setAttribute('sku',sku);
- 
-    Dom.addClass(oTR,'top'); Dom.addClass(oTR,'title');
+       oTR = oTbl.insertRow(1);
+    oTR.id = "sup_tr3_" + sku;
+    Dom.addClass(oTR, 'last');
+    var oTD = oTR.insertCell(0);
+    oTD.innerHTML = Dom.get('label_note_for_pickers').value;
+    Dom.addClass(oTD, 'label');
+    var oTD = oTR.insertCell(1);
+    oTD.setAttribute('colspan', 3);
+    Dom.setStyle(oTD, 'text-align', 'left');
+    oTD.innerHTML = '<input id="pickers_note' + sku + '" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="' + note + '" ovalue="' + note + '" >';
 
-    var oTD= oTR.insertCell(0);
-    oTD.innerHTML=  '<?php echo _('Part')?>';
-    Dom.addClass(oTD,'label');
- 
-    var oTD= oTR.insertCell(1);
-    Dom.addClass(oTD,'sku');
-    oTD.innerHTML='<span class="id">'+formated_sku+'</span> '+description;
+    
+    
+    oTR = oTbl.insertRow(1);
+    oTR.id = "sup_tr2_" + sku;
+    var oTD = oTR.insertCell(0);
+    oTD.innerHTML = Dom.get('label_parts_per_product').value;
+    Dom.addClass(oTD, 'label');
+
+    var oTD = oTR.insertCell(1);
+    oTD.setAttribute('colspan', 3);
+    oTD.innerHTML = '<input style="padding-left:2px;text-align:left;width:3em" value="' + parts_per_product + '" onblur="part_changed(this)"  onkeyup="part_changed(this)" ovalue="' + parts_per_product + '" id="parts_per_product' + sku + '"> <span  id="parts_per_product_msg' + sku + '"></span>';
+
+
+
+    var oTR = oTbl.insertRow(1);
+    oTR.id = 'part_list' + sku;
+    oTR.setAttribute('sku', sku);
+
+    Dom.addClass(oTR, 'top');
+    Dom.addClass(oTR, 'title');
+
+    var oTD = oTR.insertCell(0);
+    oTD.innerHTML = Dom.get('label_part').value;
+    Dom.addClass(oTD, 'label');
+
+    var oTD = oTR.insertCell(1);
+    Dom.addClass(oTD, 'sku');
+    oTD.innerHTML = '<span class="id">' + reference + '</span> ('+formated_sku+') ' + description;
     //Dom.setStyle(oTD, 'width', '120px');
-        
-   oTD.colSpan = 2;
-  
-    var oTD= oTR.insertCell(2);
-    Dom.setStyle(oTD,'text-align','right');
-    oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="display:none;cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
-    oTR= oTbl.insertRow(-1);
-      oTR.id="sup_tr2_"+sku;
-  var oTD= oTR.insertCell(0);
-    oTD.innerHTML=  '<?php echo _('Parts Per Product')?>:';
-    Dom.addClass(oTD,'label');
+    oTD.colSpan = 2;
+
+    var oTD = oTR.insertCell(2);
+    Dom.setStyle(oTD, 'text-align', 'right');
+    oTD.innerHTML = '<span style="cursor:pointer" onClick="remove_part(' + sku + ')" ><img src="art/icons/delete_bw.png"/> '+Dom.get('label_remove').value+'</span><span onClick="show_change_part_dialog(' + sku + ',this)"  style="display:none;cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> '+Dom.get('label_change').value+'</span>';
     
-   var oTD= oTR.insertCell(1);
-   oTD.setAttribute('colspan',3);
-   oTD.innerHTML='<input style="padding-left:2px;text-align:left;width:3em" value="'+parts_per_product+'" onblur="part_changed(this)"  onkeyup="part_changed(this)" ovalue="'+parts_per_product+'" id="parts_per_product'+sku+'"> <span  id="parts_per_product_msg'+sku+'"></span>';
-   
-     oTR= oTbl.insertRow(-1);
-     oTR.id="sup_tr3_"+sku;
-         Dom.addClass(oTR,'last');
-
-
-  var oTD= oTR.insertCell(0);
-    oTD.innerHTML=  '<?php echo _('Notes For Pickers')?>:';
-    Dom.addClass(oTD,'label');
     
-   var oTD= oTR.insertCell(1);
-   oTD.setAttribute('colspan',3);
-       Dom.setStyle(oTD, 'text-align', 'left');
+    
 
-   oTD.innerHTML='<input id="pickers_note'+sku+'" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="'+note+'" ovalue="'+note+'" >';
-
-part_render_save_buttons();
+		
+ 
 
 
-dialog_part_list.hide()
+    part_render_save_buttons();
+
+
+    dialog_part_list.hide()
 }
+
 
 
 
@@ -2337,7 +2347,9 @@ validate_scope_metadata={
         YAHOO.util.Event.on('show_product_health_and_safety_editor', 'click', show_product_health_and_safety_editor);
 
     
-    
+       ids = ['elements_InUse', 'elements_NotInUse'];
+    Event.addListener(ids, "click", change_parts_elements_use, 1);
+   
 }
 
 function show_history() {
@@ -2353,6 +2365,94 @@ function hide_history() {
     Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-show_history&value=0', {});
 
+}
+
+
+
+var already_clicked_parts_elements_use_click=false;
+function change_parts_elements_use(e, table_id) {
+    var el = this
+  
+        if (already_clicked_parts_elements_use_click)
+        {
+            already_clicked_parts_elements_use_click=false; // reset
+            clearTimeout(alreadyclickedTimeout); // prevent this from happening
+            change_parts_elements_use_dblclick(el, table_id)
+        }
+        else
+        {
+            already_clicked_parts_elements_use_click=true;
+            alreadyclickedTimeout=setTimeout(function(){
+                already_clicked_parts_elements_use_click=false; // reset when it happens
+                 change_parts_elements_use_click(el, table_id)
+            },300); // <-- dblclick tolerance here
+        }
+        return false;
+}
+function change_parts_elements_use_click(el, table_id) {
+
+    ids = ['elements_InUse', 'elements_NotInUse'];
+
+    if (Dom.hasClass(el, 'selected')) {
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+            Dom.removeClass(el.id + '_bis', 'selected')
+            Dom.removeClass(el.id + '_tris', 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+        Dom.addClass(el.id + '_bis', 'selected')
+        Dom.addClass(el.id + '_tris', 'selected')
+
+    }
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    //alert(request);
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+function change_parts_elements_use_dblclick(el, table_id) {
+
+    ids = ['elements_InUse', 'elements_NotInUse','elements_InUse_bis', 'elements_NotInUse_bis'];
+
+  	Dom.removeClass(ids, 'selected')
+Dom.addClass(el, 'selected')
+        Dom.addClass(el.id + '_bis', 'selected')
+           Dom.addClass(el.id + '_tris', 'selected')
+
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    //alert(request);
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 }
 
 
@@ -2451,14 +2551,15 @@ var tableid=1;
 		      
 		      var ColumnDefs = [
 		      		{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
+					,{key:"reference", label:"<?php echo _('Reference')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?php echo _('Description')?>",width:225, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:165, sortable:false,className:"aleft"}
 			     	,{key:"status", label:"",width:70, sortable:false,className:"aleft"}
                    
 					];
 		    
-		      
-		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=part_list&tableid=1");
+		      request="ar_quick_tables.php?tipo=part_list&tableid="+tableid
+		      this.dataSource1 = new YAHOO.util.DataSource(request);
 		      
 			      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
@@ -2479,7 +2580,7 @@ var tableid=1;
 			  },
 			  
 			  fields: [
-				  "sku","description","used_in","status","formated_sku"
+				  "sku","description","used_in","status","formated_sku","reference"
 				   ]};
 		      
 		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -2497,7 +2598,7 @@ var tableid=1;
 									  })
 								   
 								   ,sortedBy : {
-								      key: "formated_sku",
+								      key: "reference",
 								       dir: ""
 								   }
 								   ,dynamicData : true
@@ -2516,7 +2617,7 @@ var tableid=1;
      
 
                    
-	    this.table1.filter={key:'used_in',value:''};
+	    this.table1.filter={key:'reference',value:''};
 
 
 

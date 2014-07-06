@@ -189,7 +189,7 @@
 			<div style="clear:both">
 			</div>
 			<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
-			<div id="order_details_panel" style="xdisplay:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+			<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
 				
 				
 				<div style="width:450px">
@@ -222,6 +222,10 @@
 				</table>
 				
 				<table border="0" class="info_block">
+				<tr>
+						<td>{t}Customer Fiscal Name{/t}:</td>
+						<td class="aright">{$order->get('Order Customer Fiscal Name')}</td>
+					</tr>
 					<tr>
 						<td>{t}Customer Name{/t}:</td>
 						<td class="aright">{$order->get('Order Customer Name')}</td>

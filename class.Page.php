@@ -1191,7 +1191,7 @@ class Page extends DB_Table {
 				case 'New':
 					$formated_correlation_type=_('New');
 					$formated_correlation_value=number($row['Correlation Value']);
-					break;	
+					break;
 				default:
 					$formated_correlation_type=$row['Correlation Type'];
 					$formated_correlation_value=number($row['Correlation Value']);
@@ -2708,12 +2708,13 @@ class Page extends DB_Table {
 		//$form='<form><table id="list_'.$form_id.'" border=1>';
 		$form='<tbody id="list_'.$form_id.'" >';
 		$counter=1;
-		
-		
+
+
 		$number_fields_with_ordered_products=0;
-		
+
 		foreach ($products as $product) {
 
+			
 
 			if ($this->print_rrp) {
 
@@ -2805,18 +2806,20 @@ class Page extends DB_Table {
 				}
 
 				$input=sprintf('<input  onKeyUp="order_product_from_list_changed(\'%s\')"  maxlength=6  id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >',
-						$form_id,
+					$form_id,
 					$form_id,
 					$product['Product ID'],
 					$old_qty,
 					$old_qty
 				);
-
+if ($old_qty!='') {
+				$number_fields_with_ordered_products++;
+			}
 
 			}
-			if($old_qty!=''){
-			$number_fields_with_ordered_products++;
-			}
+
+
+			
 
 			$tr_style='';
 
@@ -2888,7 +2891,7 @@ class Page extends DB_Table {
                        </tbody>
                        ',
 			$form_id,
-		
+
 			$_SESSION['site_locale'],
 			$form_id,
 			$form_id

@@ -175,13 +175,13 @@ else {
 
 	if ($page->data['Page Code']=='login') {
 
-		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
-			$smarty->assign('template_string','login.chrome.tpl');
-			$js_files[]='js/login.chrome.js';
-		}else {
+		//if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
+		//	$smarty->assign('template_string','login.chrome.tpl');
+		//	$js_files[]='js/login.chrome.js';
+		//}else {
 			$smarty->assign('template_string','login.tpl');
 			$js_files[]='js/login.js';
-		}
+		//}
 	}else {
 
 		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');

@@ -8,6 +8,16 @@
 <input type="hidden" id="decimal_point" value="{$decimal_point}" />
 <input type="hidden" id="thousands_sep" value="{$thousands_sep}" />
 <input type="hidden" id="currency_symbol" value="{$store_currency_symbol}" />
+
+<input type="hidden" id="label_part" value="{t}Part{/t}" />
+<input type="hidden" id="label_parts_per_product" value="{t}Parts Per Product{/t}" />
+<input type="hidden" id="label_note_for_pickers" value="{t}Note for pickers{/t}" />
+
+<input type="hidden" id="label_remove" value="{t}Remove{/t}" />
+<input type="hidden" id="label_change" value="{t}Change{/t}" />
+
+  
+
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>
 <div id="bd">
@@ -57,7 +67,7 @@
 					{foreach from=$product->get_current_part_list('smarty') key=sku item=part_list} 
 					<tr id="part_list{$sku}" sku="{$sku}" class="top title">
 						<td id="part_list{$sku}_label1" class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
-						<td id="part_list{$sku}_label2" colspan="2" style="width:120px"><a href="part.php?sku={$part_list.part->sku}" class="id">{$part_list.part->get_sku()}</a> {$part_list.part->get('Part Unit Description')}</td>
+						<td id="part_list{$sku}_label2" colspan="2" style="width:120px"><a href="part.php?sku={$part_list.part->sku}" class="id">{$part_list.part->get('Part Reference')}</a> ({$part_list.part->get_sku()}) {$part_list.part->get('Part Unit Description')}</td>
 						<td style="width:200px;text-align:right"> 
 						<div id="part_list{$sku}_controls">
 							<span onclick="remove_part({$sku})" style="cursor:pointer"><img src="art/icons/delete_bw.png" /> {t}Remove{/t}</span> <span onclick="show_change_part_dialog({$sku},this)" style="display:none;cursor:pointer;margin-left:15px"><img src="art/icons/arrow_refresh_bw.png" /> {t}Change{/t}</span> 
@@ -93,10 +103,8 @@
 			</div>
 			<div class="edit_block_content" style="padding:0">
 				<div id="d_description_block_family" style="{if $edit_description_block!='family'}display:none{/if};padding:20px">
-											<input type="hidden" id="Product_Family_Key" value="{$product->get('Product Family Key')}" ovalue="{$product->get('Product Family Key')}" oformatedvalue="{$product->get('Product Family Code')}">
-											
-
-					<table class="edit" style="width:100%" border=0>
+					<input type="hidden" id="Product_Family_Key" value="{$product->get('Product Family Key')}" ovalue="{$product->get('Product Family Key')}" oformatedvalue="{$product->get('Product Family Code')}"> 
+					<table class="edit" style="width:100%" border="0">
 						<tr class="title">
 							<td colspan="5">{t}Family{/t}</td>
 						</tr>
@@ -105,10 +113,6 @@
 							<td style="text-align:left"> <span id="current_family_code">{$product->get('Product Family Code')}</span> <img id="edit_family" id="family" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s> </td>
 							<td style="width:200px" id="Product_Family_Key_msg" class="edit_td_alert"></td>
 						</tr>
-						
-						
-						
-						
 						{foreach from=$categories item=cat key=cat_key name=foo } 
 						<tr>
 							<td class="label">{t}{$cat.name}{/t}:</td>
@@ -119,18 +123,14 @@
 							{/foreach} </td>
 						</tr>
 						{/foreach} 
-						
-						
 						<tr class="buttons">
 							<td></td>
-							<td > 
+							<td> 
 							<div class="buttons" style="float:left">
-								<button class="positive disabled" id="save_edit_product_family">{t}Save{/t}</button> 
-								<button class="negative disabled" id="reset_edit_product_family">{t}Reset{/t}</button> 
+								<button class="positive disabled" id="save_edit_product_family">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_family">{t}Reset{/t}</button> 
 							</div>
 							</td>
 						</tr>
-						
 					</table>
 				</div>
 				<div id="d_description_block_type" style="{if $edit_description_block!='type'}display:none{/if};padding:20px">
@@ -277,7 +277,6 @@
 							<span id="Product_Duty_Rate_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
 							<td></td>
 						</tr>
-						
 						<tr>
 							<td style="width:200px" class="label">{t}Origin{/t}:</td>
 							<td style="text-align:left"> 
@@ -289,8 +288,6 @@
 							<span id="Product_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
 							<td></td>
 						</tr>
-						
-						
 						<tr class="buttons">
 							<td colspan="2"> 
 							<div class="buttons" style="float:right">
@@ -322,13 +319,12 @@
 							<input style="width:100px;{if $product->get('Product Use Part Properties')=='No'}display:none{/if}" disabled="disabled" id="Product_Package_Type_locked" value="{$product->get('Product Package Type')}"> <span id="Product_Package_Type_msg" class="edit_td_alert"></span> </td>
 							<td></td>
 						</tr>
-					
 						<tr class="space5" id="package_weight_fields" style="{if $product->get('Product Use Part Properties')=='Yes'  }display:none{/if}">
 							<td class="label">{t}Weight{/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<input type="hidden" id="Product_Package_Weight_Display_Units" value="{$product->get('Product Package Weight Display Units')}" ovalue="{$product->get('Product Package Weight Display Units')}"> 
 							<div>
-								<input  style="text-align:left;width:150px" id="Product_Package_Weight_Display" value="{$product->get('Product Package Weight Display')}" ovalue="{$product->get('Product Package Weight Display')}" valid="0" />
+								<input style="text-align:left;width:150px" id="Product_Package_Weight_Display" value="{$product->get('Product Package Weight Display')}" ovalue="{$product->get('Product Package Weight Display')}" valid="0" />
 								<div id="Product_Package_Weight_Display_Container">
 								</div>
 							</div>
@@ -338,127 +334,108 @@
 							</td>
 							<td id="Product_Package_Weight_Display_msg" class="edit_td_alert"></td>
 						</tr>
-						
 						<tr class="space5" id="package_weight_fields_locked" style="{if $product->get('Product Use Part Properties')!='Yes'  }display:none{/if}">
 							<td class="label">{t}Weight{/t}:</td>
-							<td style="text-align:left;width:300px"> <input disabled="disabled" value="{$product->get('Package Weight')}" style="text-align:left;width:200px">
-							
-							</td>
+							<td style="text-align:left;width:300px"> 
+							<input disabled="disabled" value="{$product->get('Package Weight')}" style="text-align:left;width:200px"> </td>
 							<td id="Product_Package_Weight_Display_msg" class="edit_td_alert"></td>
 						</tr>
-						
-						
 						<tr id="package_dimension_fields_locked" style="{if !($product->get('Product Use Part Properties')=='Yes' and $product->get('Product Part Ratio')==1) }display:none{/if}">
 							<td class="label">{t}Dimensions{/t}:<br />
 							</td>
 							<td style="text-align:left"> 
 							<div>
 								<input disabled="disabled" style="text-align:left;width:200px" id="Product_Package_XHTML_Dimensions" value="{$product->get('Product Package XHTML Dimensions')}" ovalue="{$product->get('Product XHTML Package Dimensions')}" valid="0"> 
-								
 							</div>
 							</td>
 							<td id="Product_XHTML_Package_Dimensions_msg" class="edit_td_alert"></td>
 						</tr>
-						
 						<tbody id="package_dimension_fields" style="{if $product->get('Product Use Part Properties')=='Yes' and $product->get('Product Part Ratio')==1 }display:none{/if}">
-									<tr class="space10">
-							<td class="label"> {t}Form factor{/t}: </td>
-							<td style="text-align:left"> 
-							<input type="hidden" id="Product_Package_Dimensions_Type" value="{$product->get('Product Package Dimensions Type')}" ovalue="{$product->get('Product Package Dimensions Type')}" />
-							<div class="buttons left small" id="Product_Package_Dimensions_Type_options">
-								<button id="Product_Package_Dimensions_Type_option_Rectangular" class="option {if $product->get('Product Package Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_dimensions_shape_type(this,'Rectangular','Package')"><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> <button id="Product_Package_Dimensions_Type_option_Cilinder" class="option {if $product->get('Product Package Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_dimensions_shape_type(this,'Cilinder','Package')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> <button id="Product_Package_Dimensions_Type_option_Sphere" class="option {if $product->get('Product Package Dimensions Type')=='Sphere'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sphere','Package')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> 
-							</div>
-							<img src="art/icons/run.png" style="display:none;height:12.9px;border:1px solid #ccc;padding:1px 3px;border-radius:3px;margin-left:10px;cursor:pointer" title="{t}Dimensions fast field{/t}"> <span id="Product_Package_Dimensions_Type_msg" class="edit_td_alert"></span> </td>
-							<td></td>
-						</tr>
-						<input id="Product_Package_Dimensions_Display_Units" value="{$product->get('Product Package Dimensions Display Units')}" ovalue="{$product->get('Product Package Dimensions Display Units')}" type="hidden"> 
-						<tr id="Product_Package_Dimensions_Width_tr" style="{if $product->get('Product Package Dimensions Type')!='Rectangular' }display:none{/if}">
-							<td class="label">{t}Width{/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Width_Display" value="{$product->get('Product Package Dimensions Width Display')}" ovalue="{$product->get('Product Package Dimensions Width Display')}" valid="0"> 
-								<div id="Product_Package_Dimensions_Width_Display_Container">
+							<tr class="space10">
+								<td class="label"> {t}Form factor{/t}: </td>
+								<td style="text-align:left"> 
+								<input type="hidden" id="Product_Package_Dimensions_Type" value="{$product->get('Product Package Dimensions Type')}" ovalue="{$product->get('Product Package Dimensions Type')}" />
+								<div class="buttons left small" id="Product_Package_Dimensions_Type_options">
+									<button id="Product_Package_Dimensions_Type_option_Rectangular" class="option {if $product->get('Product Package Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_dimensions_shape_type(this,'Rectangular','Package')"><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> <button id="Product_Package_Dimensions_Type_option_Cilinder" class="option {if $product->get('Product Package Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_dimensions_shape_type(this,'Cilinder','Package')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> <button id="Product_Package_Dimensions_Type_option_Sphere" class="option {if $product->get('Product Package Dimensions Type')=='Sphere'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sphere','Package')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> 
 								</div>
-							</div>
-							<div class="buttons small left units" style="margin-left:155px;">
-								<button id="Product_Package_Dimensions_Display_Units_Width" parent="Package" field="Product_Package_Dimensions_Display_Units" style="{if $product->get('Product Package Dimensions Type')!='Rectangular'}display:none{/if}">&#x21b6 {$product->get('Product Package Dimensions Display Units')}</button> 
-							</div>
-							</td>
-							<td id="Product_Package_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr id="Product_Package_Dimensions_Depth_tr" style="{if $product->get('Product Package Dimensions Type')!='Rectangular'}display:none{/if}">
-							<td class="label">{t}Depth{/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Depth_Display" value="{$product->get('Product Package Dimensions Depth Display')}" ovalue="{$product->get('Product Package Dimensions Depth Display')}" valid="0"> 
-								<div id="Product_Package_Dimensions_Depth_Display_Container">
+								<img src="art/icons/run.png" style="display:none;height:12.9px;border:1px solid #ccc;padding:1px 3px;border-radius:3px;margin-left:10px;cursor:pointer" title="{t}Dimensions fast field{/t}"> <span id="Product_Package_Dimensions_Type_msg" class="edit_td_alert"></span> </td>
+								<td></td>
+							</tr>
+							<input id="Product_Package_Dimensions_Display_Units" value="{$product->get('Product Package Dimensions Display Units')}" ovalue="{$product->get('Product Package Dimensions Display Units')}" type="hidden"> 
+							<tr id="Product_Package_Dimensions_Width_tr" style="{if $product->get('Product Package Dimensions Type')!='Rectangular' }display:none{/if}">
+								<td class="label">{t}Width{/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Width_Display" value="{$product->get('Product Package Dimensions Width Display')}" ovalue="{$product->get('Product Package Dimensions Width Display')}" valid="0"> 
+									<div id="Product_Package_Dimensions_Width_Display_Container">
+									</div>
 								</div>
-							</div>
-							</td>
-							<td id="Product_Package_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr id="Product_Package_Dimensions_Length_tr" style="{if $product->get('Product Package Dimensions Type')=='Sphere'}display:none{/if}">
-							<td class="label">{t}Length (High){/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Length_Display" value="{$product->get('Product Package Dimensions Length Display')}" ovalue="{$product->get('Product Package Dimensions Length Display')}" valid="0"> 
-								<div id="Product_Package_Dimensions_Length_Display_Container">
+								<div class="buttons small left units" style="margin-left:155px;">
+									<button id="Product_Package_Dimensions_Display_Units_Width" parent="Package" field="Product_Package_Dimensions_Display_Units" style="{if $product->get('Product Package Dimensions Type')!='Rectangular'}display:none{/if}">&#x21b6 {$product->get('Product Package Dimensions Display Units')}</button> 
 								</div>
-							</div>
-							<div class="buttons small left units" style="margin-left:155px;">
-								<button id="Product_Package_Dimensions_Display_Units_Length" parent="Package" field="Product_Package_Dimensions_Display_Units" style="{if $product->get('Product Package Dimensions Type')!='Cilinder'}display:none{/if}">&#x21b6 {$product->get('Product Package Dimensions Display Units')}</button> 
-							</div>
-							<span id="Product_Package_Dimensions_Display_Units_msg" class="edit_td_alert"></span> </td>
-							<td id="Product_Package_Dimensions_Length_Display_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr id="Product_Package_Dimensions_Diameter_tr" style="{if $product->get('Product Package Dimensions Type')=='Rectangular'}display:none{/if}">
-							<td class="label">{t}Diameter{/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Diameter_Display" value="{$product->get('Product Package Dimensions Diameter Display')}" ovalue="{$product->get('Product Package Dimensions Diameter Display')}" valid="0"> 
-								<div id="Product_Package_Dimensions_Diameter_Display_Container">
+								</td>
+								<td id="Product_Package_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr id="Product_Package_Dimensions_Depth_tr" style="{if $product->get('Product Package Dimensions Type')!='Rectangular'}display:none{/if}">
+								<td class="label">{t}Depth{/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Depth_Display" value="{$product->get('Product Package Dimensions Depth Display')}" ovalue="{$product->get('Product Package Dimensions Depth Display')}" valid="0"> 
+									<div id="Product_Package_Dimensions_Depth_Display_Container">
+									</div>
 								</div>
-							</div>
-							<div class="buttons small left units" style="margin-left:155px;">
-								<button id="Product_Package_Dimensions_Display_Units_Diameter" parent="Package" field="Product_Package_Dimensions_Display_Units" style="{if $product->get('Product Package Dimensions Type')!='Sphere'}display:none{/if}">&#x21b6 {$product->get('Product Package Dimensions Display Units')}</button> 
-							</div>
-							</td>
-							<td id="Supplier_Product_Package_Dimensions_Diameter_Display_msg" class="edit_td_alert"></td>
-						</tr>
+								</td>
+								<td id="Product_Package_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr id="Product_Package_Dimensions_Length_tr" style="{if $product->get('Product Package Dimensions Type')=='Sphere'}display:none{/if}">
+								<td class="label">{t}Length (High){/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Length_Display" value="{$product->get('Product Package Dimensions Length Display')}" ovalue="{$product->get('Product Package Dimensions Length Display')}" valid="0"> 
+									<div id="Product_Package_Dimensions_Length_Display_Container">
+									</div>
+								</div>
+								<div class="buttons small left units" style="margin-left:155px;">
+									<button id="Product_Package_Dimensions_Display_Units_Length" parent="Package" field="Product_Package_Dimensions_Display_Units" style="{if $product->get('Product Package Dimensions Type')!='Cilinder'}display:none{/if}">&#x21b6 {$product->get('Product Package Dimensions Display Units')}</button> 
+								</div>
+								<span id="Product_Package_Dimensions_Display_Units_msg" class="edit_td_alert"></span> </td>
+								<td id="Product_Package_Dimensions_Length_Display_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr id="Product_Package_Dimensions_Diameter_tr" style="{if $product->get('Product Package Dimensions Type')=='Rectangular'}display:none{/if}">
+								<td class="label">{t}Diameter{/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Package_Dimensions_Diameter_Display" value="{$product->get('Product Package Dimensions Diameter Display')}" ovalue="{$product->get('Product Package Dimensions Diameter Display')}" valid="0"> 
+									<div id="Product_Package_Dimensions_Diameter_Display_Container">
+									</div>
+								</div>
+								<div class="buttons small left units" style="margin-left:155px;">
+									<button id="Product_Package_Dimensions_Display_Units_Diameter" parent="Package" field="Product_Package_Dimensions_Display_Units" style="{if $product->get('Product Package Dimensions Type')!='Sphere'}display:none{/if}">&#x21b6 {$product->get('Product Package Dimensions Display Units')}</button> 
+								</div>
+								</td>
+								<td id="Supplier_Product_Package_Dimensions_Diameter_Display_msg" class="edit_td_alert"></td>
+							</tr>
 						</tbody>
-						
-						
-						
 						<tr class="title">
 							<td colspan="3">{t}Unit{/t}</td>
-						</tr> 
-						<tr >
+						</tr>
+						<tr>
 							<td colspan="3"> 
 							<div id="product_units_properties_title_div" style="padding:5px 10px;border:1px dashed #ccc;margin-bottom:5px;width:200px">
-								<img id="unlock_product_units_properties" src="art/icons/link_lock_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Units Properties')=='No'}display:none{/if}" alt="lock" title="{t}Using units part data, click to unlock{/t}" /> 
-								<img id="lock_product_units_properties" src="art/icons/link_lock_open_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Units Properties')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use part data instead{/t}" /> 
-								<img id="lock_product_units_properties_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;" /> 
-								<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Units Properties')=='Yes'}display:none{/if}" id="product_units_properties_part_unlinked_msg"> {t}Units properties unlinked{/t}</span> 
-								<span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Units Properties')=='No'}display:none{/if}" id="product_units_properties_part_link">{$product->get_xhtml_part_links('Product Use Part Units Properties')}</span> 
-								<span id="product_units_properties_msg"></span></td>
+								<img id="unlock_product_units_properties" src="art/icons/link_lock_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Units Properties')=='No'}display:none{/if}" alt="lock" title="{t}Using units part data, click to unlock{/t}" /> <img id="lock_product_units_properties" src="art/icons/link_lock_open_bw.png" style="cursor:pointer;position:relative;bottom:1px;{if $product->get('Product Use Part Units Properties')=='Yes'}display:none{/if}" alt="unlock" title="{t}Click to lock and use part data instead{/t}" /> <img id="lock_product_units_properties_wait" src="art/loading.gif" style="display:none;width:11px;position:relative;bottom:1px;" /> <span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Units Properties')=='Yes'}display:none{/if}" id="product_units_properties_part_unlinked_msg"> {t}Units properties unlinked{/t}</span> <span style="font-weight:normal;font-size:80%;{if $product->get('Product Use Part Units Properties')=='No'}display:none{/if}" id="product_units_properties_part_link">{$product->get_xhtml_part_links('Product Use Part Units Properties')}</span> <span id="product_units_properties_msg"></span></td>
 							</div>
 							</td>
 						</tr>
-					
-							<tr class="space5" id="unit_weight_fields_locked" style="{if $product->get('Product Use Part Units Properties')!='Yes'  }display:none{/if}">
+						<tr class="space5" id="unit_weight_fields_locked" style="{if $product->get('Product Use Part Units Properties')!='Yes'  }display:none{/if}">
 							<td class="label">{t}Weight{/t}:</td>
-							<td style="text-align:left;width:300px"> <input disabled="disabled" value="{$product->get('Unit Weight')}" style="text-align:left;width:200px">
-							
-							</td>
-						
+							<td style="text-align:left;width:300px"> 
+							<input disabled="disabled" value="{$product->get('Unit Weight')}" style="text-align:left;width:200px"> </td>
 						</tr>
-						
-						
 						<tr class="space5" id="unit_weight_fields" style="{if $product->get('Product Use Part Units Properties')=='Yes'  }display:none{/if}">
 							<td class="label">{t}Weight{/t}:</td>
 							<td style="text-align:left;width:300px"> 
 							<div>
-								<input  style="text-align:left;width:150px" id="Product_Unit_Weight_Display" value="{$product->get('Product Unit Weight Display')}" ovalue="{$product->get('Product Unit Weight Display')}" valid="0" />
+								<input style="text-align:left;width:150px" id="Product_Unit_Weight_Display" value="{$product->get('Product Unit Weight Display')}" ovalue="{$product->get('Product Unit Weight Display')}" valid="0" />
 								<div id="Product_Unit_Weight_Display_Container">
 								</div>
 							</div>
@@ -469,95 +446,84 @@
 							</td>
 							<td id="Product_Unit_Weight_Display_msg" class="edit_td_alert"></td>
 						</tr>
-						
-						
-						
 						<tr id="unit_dimension_fields_locked" style="{if !($product->get('Product Use Part Units Properties')=='Yes' ) }display:none{/if}">
 							<td class="label">{t}Dimensions{/t}:<br />
 							</td>
 							<td style="text-align:left"> 
 							<div>
 								<input disabled="disabled" style="text-align:left;width:200px" id="Product_Unit_XHTML_Dimensions" value="{$product->get('Product Unit XHTML Dimensions')}" valid="0"> 
-								
 							</div>
 							</td>
 							<td id="Product_XHTML_Unit_Dimensions_msg" class="edit_td_alert"></td>
 						</tr>
-						
-						<tbody id="unit_dimension_fields"  style="{if $product->get('Product Use Part Units Properties')=='Yes'}display:none{/if}" >
-						<tr class="space10">
-							<td class="label"> {t}Form factor{/t}: </td>
-							<td style="text-align:left" colspan="2"> 
-							<input type="hidden" id="Product_Unit_Dimensions_Type" value="{$product->get('Product Unit Dimensions Type')}" ovalue="{$product->get('Product Unit Dimensions Type')}" />
-							<div class="buttons left small" id="Product_Unit_Dimensions_Type_options">
-								<button id="Product_Unit_Dimensions_Type_option_Rectangular" class="option {if $product->get('Product Unit Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_dimensions_shape_type(this,'Rectangular','Unit')"><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> <button id="Product_Unit_Dimensions_Type_option_Cilinder" class="option {if $product->get('Product Unit Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_dimensions_shape_type(this,'Cilinder','Unit')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> <button id="Product_Unit_Dimensions_Type_option_Sphere" class="option {if $product->get('Product Unit Dimensions Type')=='Sphere'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sphere','Unit')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> <button id="Product_Unit_Dimensions_Type_option_String" class="option {if $product->get('Product Unit Dimensions Type')=='String'}selected{/if}" onclick="change_dimensions_shape_type(this,'String','Unit')"><img src="art/icons/string.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}String{/t}</button> <button id="Product_Unit_Dimensions_Type_option_Sheet" class="option {if $product->get('Product Unit Dimensions Type')=='Sheet'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sheet','Unit')"><img src="art/icons/sheet.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sheet{/t}</button> 
-							</div>
-							<img src="art/icons/run.png" style="display:none;height:12.9px;border:1px solid #ccc;padding:1px 3px;border-radius:3px;margin-left:10px;cursor:pointer" title="{t}Dimensions fast field{/t}"> <span id="Product_Unit_Dimensions_Type_msg" class="edit_td_alert"></span> </td>
-							<td></td>
-						</tr>
-						<input id="Product_Unit_Dimensions_Display_Units" value="{$product->get('Product Unit Dimensions Display Units')}" ovalue="{$product->get('Product Unit Dimensions Display Units')}" type="hidden"> 
-						<tr id="Product_Unit_Dimensions_Width_tr" style="{if $product->get('Product Unit Dimensions Type')!='Rectangular' and  $product->get('Product Unit Dimensions Type')!='Sheet' }display:none{/if}">
-							<td class="label">{t}Width{/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Width_Display" value="{$product->get('Product Unit Dimensions Width Display')}" ovalue="{$product->get('Product Unit Dimensions Width Display')}" valid="0"> 
-								<div id="Product_Unit_Dimensions_Width_Display_Container">
+						<tbody id="unit_dimension_fields" style="{if $product->get('Product Use Part Units Properties')=='Yes'}display:none{/if}">
+							<tr class="space10">
+								<td class="label"> {t}Form factor{/t}: </td>
+								<td style="text-align:left" colspan="2"> 
+								<input type="hidden" id="Product_Unit_Dimensions_Type" value="{$product->get('Product Unit Dimensions Type')}" ovalue="{$product->get('Product Unit Dimensions Type')}" />
+								<div class="buttons left small" id="Product_Unit_Dimensions_Type_options">
+									<button id="Product_Unit_Dimensions_Type_option_Rectangular" class="option {if $product->get('Product Unit Dimensions Type')=='Rectangular'}selected{/if}" onclick="change_dimensions_shape_type(this,'Rectangular','Unit')"><img src="art/icons/regtangular.png"> {t}Rectangular{/t}</button> <button id="Product_Unit_Dimensions_Type_option_Cilinder" class="option {if $product->get('Product Unit Dimensions Type')=='Cilinder'}selected{/if}" onclick="change_dimensions_shape_type(this,'Cilinder','Unit')"><img src="art/icons/database.png"> {t}Cilinder{/t}</button> <button id="Product_Unit_Dimensions_Type_option_Sphere" class="option {if $product->get('Product Unit Dimensions Type')=='Sphere'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sphere','Unit')"><img src="art/icons/sport_golf.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sphere{/t}</button> <button id="Product_Unit_Dimensions_Type_option_String" class="option {if $product->get('Product Unit Dimensions Type')=='String'}selected{/if}" onclick="change_dimensions_shape_type(this,'String','Unit')"><img src="art/icons/string.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}String{/t}</button> <button id="Product_Unit_Dimensions_Type_option_Sheet" class="option {if $product->get('Product Unit Dimensions Type')=='Sheet'}selected{/if}" onclick="change_dimensions_shape_type(this,'Sheet','Unit')"><img src="art/icons/sheet.png" style="height:11px;width:11px;position:relative;bottom:-1px"> {t}Sheet{/t}</button> 
 								</div>
-							</div>
-							<div class="buttons small left units" style="margin-left:155px;">
-								<button id="Product_Unit_Dimensions_Display_Units_Width" parent="Unit" field="Product_Unit_Dimensions_Display_Units" style="{if $product->get('Product Unit Dimensions Type')!='Rectangular' and  $product->get('Product Unit Dimensions Type')!='Sheet'}display:none{/if}">&#x21b6 {$product->get('Product Unit Dimensions Display Units')}</button> <span id="Product_Unit_Dimensions_Display_Units_msg"></span> 
-							</div>
-							</td>
-							<td id="Product_Unit_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr id="Product_Unit_Dimensions_Depth_tr" style="{if $product->get('Product Unit Dimensions Type')!='Rectangular' }display:none{/if}">
-							<td class="label">{t}Depth{/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Depth_Display" value="{$product->get('Product Unit Dimensions Depth Display')}" ovalue="{$product->get('Product Unit Dimensions Depth Display')}" valid="0"> 
-								<div id="Product_Unit_Dimensions_Depth_Display_Container">
+								<img src="art/icons/run.png" style="display:none;height:12.9px;border:1px solid #ccc;padding:1px 3px;border-radius:3px;margin-left:10px;cursor:pointer" title="{t}Dimensions fast field{/t}"> <span id="Product_Unit_Dimensions_Type_msg" class="edit_td_alert"></span> </td>
+								<td></td>
+							</tr>
+							<input id="Product_Unit_Dimensions_Display_Units" value="{$product->get('Product Unit Dimensions Display Units')}" ovalue="{$product->get('Product Unit Dimensions Display Units')}" type="hidden"> 
+							<tr id="Product_Unit_Dimensions_Width_tr" style="{if $product->get('Product Unit Dimensions Type')!='Rectangular' and  $product->get('Product Unit Dimensions Type')!='Sheet' }display:none{/if}">
+								<td class="label">{t}Width{/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Width_Display" value="{$product->get('Product Unit Dimensions Width Display')}" ovalue="{$product->get('Product Unit Dimensions Width Display')}" valid="0"> 
+									<div id="Product_Unit_Dimensions_Width_Display_Container">
+									</div>
 								</div>
-							</div>
-							</td>
-							<td id="Product_Unit_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr id="Product_Unit_Dimensions_Length_tr" style="{if $product->get('Product Unit Dimensions Type')=='Sphere' }display:none{/if}">
-							<td class="label">{t}Length (High){/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Length_Display" value="{$product->get('Product Unit Dimensions Length Display')}" ovalue="{$product->get('Product Unit Dimensions Length Display')}" valid="0"> 
-								<div id="Product_Unit_Dimensions_Length_Display_Container">
+								<div class="buttons small left units" style="margin-left:155px;">
+									<button id="Product_Unit_Dimensions_Display_Units_Width" parent="Unit" field="Product_Unit_Dimensions_Display_Units" style="{if $product->get('Product Unit Dimensions Type')!='Rectangular' and  $product->get('Product Unit Dimensions Type')!='Sheet'}display:none{/if}">&#x21b6 {$product->get('Product Unit Dimensions Display Units')}</button> <span id="Product_Unit_Dimensions_Display_Units_msg"></span> 
 								</div>
-							</div>
-							<div class="buttons small left units" style="margin-left:155px;">
-								<button id="Product_Unit_Dimensions_Display_Units_Length" parent="Unit" field="Product_Unit_Dimensions_Display_Units" style="{if $product->get('Product Unit Dimensions Type')!='Cilinder' and  $product->get('Product Unit Dimensions Type')!='String'}display:none{/if}">&#x21b6 {$product->get('Product Unit Dimensions Display Units')}</button> 
-							</div>
-							</td>
-							<td id="Product_Unit_Dimensions_Length_Display_msg" class="edit_td_alert"></td>
-						</tr>
-						<tr id="Product_Unit_Dimensions_Diameter_tr" style="{if $product->get('Product Unit Dimensions Type')!='Sphere' and $product->get('Product Unit Dimensions Type')!='Cilinder' }display:none{/if}">
-							<td class="label">{t}Diameter{/t}:</td>
-							<td style="text-align:left;width:300px"> 
-							<div>
-								<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Diameter_Display" value="{$product->get('Product Unit Dimensions Diameter Display')}" ovalue="{$product->get('Product Unit Dimensions Diameter Display')}" valid="0"> 
-								<div id="Product_Unit_Dimensions_Diameter_Display_Container">
+								</td>
+								<td id="Product_Unit_Dimensions_Width_Display_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr id="Product_Unit_Dimensions_Depth_tr" style="{if $product->get('Product Unit Dimensions Type')!='Rectangular' }display:none{/if}">
+								<td class="label">{t}Depth{/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Depth_Display" value="{$product->get('Product Unit Dimensions Depth Display')}" ovalue="{$product->get('Product Unit Dimensions Depth Display')}" valid="0"> 
+									<div id="Product_Unit_Dimensions_Depth_Display_Container">
+									</div>
 								</div>
-							</div>
-							<div class="buttons small left units" style="margin-left:155px;">
-								<button id="Product_Unit_Dimensions_Display_Units_Diameter" parent="Unit" field="Product_Unit_Dimensions_Display_Units" style="{if $product->get('Product Unit Dimensions Type')!='Sphere'}display:none{/if}">&#x21b6 {$product->get('Product Unit Dimensions Display Units')}</button> 
-							</div>
-							</td>
-							<td id="Product_Unit_Dimensions_Diameter_Display_msg" class="edit_td_alert"></td>
-						</tr>
-					</tbody>
-						
-						
-						
-						
-						
-						
-						
-						<tr class="buttons" {if $product->get('Product Use Part Units Properties')=='Yes' and $product->get('Product Use Part Properties')=='Yes'}display:none{/if} > 
+								</td>
+								<td id="Product_Unit_Dimensions_Depth_Display_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr id="Product_Unit_Dimensions_Length_tr" style="{if $product->get('Product Unit Dimensions Type')=='Sphere' }display:none{/if}">
+								<td class="label">{t}Length (High){/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Length_Display" value="{$product->get('Product Unit Dimensions Length Display')}" ovalue="{$product->get('Product Unit Dimensions Length Display')}" valid="0"> 
+									<div id="Product_Unit_Dimensions_Length_Display_Container">
+									</div>
+								</div>
+								<div class="buttons small left units" style="margin-left:155px;">
+									<button id="Product_Unit_Dimensions_Display_Units_Length" parent="Unit" field="Product_Unit_Dimensions_Display_Units" style="{if $product->get('Product Unit Dimensions Type')!='Cilinder' and  $product->get('Product Unit Dimensions Type')!='String'}display:none{/if}">&#x21b6 {$product->get('Product Unit Dimensions Display Units')}</button> 
+								</div>
+								</td>
+								<td id="Product_Unit_Dimensions_Length_Display_msg" class="edit_td_alert"></td>
+							</tr>
+							<tr id="Product_Unit_Dimensions_Diameter_tr" style="{if $product->get('Product Unit Dimensions Type')!='Sphere' and $product->get('Product Unit Dimensions Type')!='Cilinder' }display:none{/if}">
+								<td class="label">{t}Diameter{/t}:</td>
+								<td style="text-align:left;width:300px"> 
+								<div>
+									<input style="text-align:left;width:150px" id="Product_Unit_Dimensions_Diameter_Display" value="{$product->get('Product Unit Dimensions Diameter Display')}" ovalue="{$product->get('Product Unit Dimensions Diameter Display')}" valid="0"> 
+									<div id="Product_Unit_Dimensions_Diameter_Display_Container">
+									</div>
+								</div>
+								<div class="buttons small left units" style="margin-left:155px;">
+									<button id="Product_Unit_Dimensions_Display_Units_Diameter" parent="Unit" field="Product_Unit_Dimensions_Display_Units" style="{if $product->get('Product Unit Dimensions Type')!='Sphere'}display:none{/if}">&#x21b6 {$product->get('Product Unit Dimensions Display Units')}</button> 
+								</div>
+								</td>
+								<td id="Product_Unit_Dimensions_Diameter_Display_msg" class="edit_td_alert"></td>
+							</tr>
+						</tbody>
+						<tr class="buttons" {if $product->
+							get('Product Use Part Units Properties')=='Yes' and $product->get('Product Use Part Properties')=='Yes'}display:none{/if} > 
 							<td colspan="2"> 
 							<div class="buttons" style="float:right">
 								<button class="positive disabled" id="save_edit_product_properties">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_product_properties">{t}Reset{/t}</button> 
@@ -766,8 +732,6 @@
 		<button id="save_lock_product_properties" class="positive">{t}Yes, link it!{/t}</button> <button id="cancel_lock_product_properties" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
-
-
 <div id="dialog_link_units_properties" style="padding:20px 10px 10px 10px;">
 	<h2 style="padding-top:0px">
 		{t}Link unit properties to part{/t} 
@@ -782,7 +746,6 @@
 		<button id="save_lock_product_units_properties" class="positive">{t}Yes, link it!{/t}</button> <button id="cancel_lock_product_units_properties" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
-
 <div id="filtermenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -793,7 +756,6 @@
 		</ul>
 	</div>
 </div>
-
 <div id="dialog_link_tariff_code" style="padding:20px 10px 10px 10px;">
 	<h2 style="padding-top:0px">
 		{t}Link outer tariff code to part{/t} 
@@ -808,7 +770,6 @@
 		<button id="save_lock_product_tariff_code" class="positive">{t}Yes, link it!{/t}</button> <button id="cancel_lock_product_tariff_code" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
-
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -842,11 +803,17 @@
 	</div>
 </div>
 <div id="dialog_part_list">
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:650px">
-		<div id="the_table" class="data_table">
-			<span class="clean_table_title">{t}Parts{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
-			<div id="table1" class="data_table_container dtable btable">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:700px">
+		<div style="margin-top:5px" class="data_table">
+			<span class="clean_table_title">{t}Parts{/t}</span> 
+			<div class="elements_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_use.NotInUse}selected{/if} label_part_NotInUse" id="elements_NotInUse" table_type="NotInUse">{t}Not In Use{/t} (<span id="elements_NotInUse_number">{$elements_use_numbers.NotInUse}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_use.InUse}selected{/if} label_part_InUse" id="elements_InUse" table_type="InUse">{t}In Use{/t} (<span id="elements_InUse_number">{$elements_use_numbers.InUse}</span>)</span> 
 			</div>
+		</div>
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
+		<div id="table1" class="data_table_container dtable btable">
 		</div>
 	</div>
 </div>
@@ -883,5 +850,4 @@
 		{/foreach} 
 	</table>
 </div>
-
 {include file='footer.tpl'} 
