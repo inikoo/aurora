@@ -1815,6 +1815,8 @@ function show_set_tax_number_dialog() {
     region2 = Dom.getRegion('dialog_set_tax');
     var pos = [region1.right - region2.width, region1.top]
     Dom.setXY('dialog_set_tax', pos);
+    
+    if(Dom.get('tax_number')!=undefined)
     tax_number = Dom.get('tax_number').innerHTML
 
 
