@@ -133,10 +133,16 @@ div.inline { float:left; }
 			</div>
 			</td>
 			<td width="10%">&nbsp;</td>
-			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span> 
+		
+			<td width="45%" style="border: 0.1mm solid #888888;">
+				{if isset($delivery_note)}
+			<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span> 
 			<div>
+				
 				{$delivery_note->get('Delivery Note XHTML Ship To')}
+				
 			</div>
+			{/if}
 			</td>
 		</tr>
 	</table>
