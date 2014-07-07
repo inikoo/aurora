@@ -168,7 +168,7 @@
 						<td class="{if $items_view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
 					</tr>
 				</table>
-				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $viitems_viewew!='sales' };display:none{/if}" class="options_mini">
+				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $items_view!='sales' };display:none{/if}" class="options_mini">
 					<tr>
 						<td class="{if $items_period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
 						<td class="{if $items_period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>

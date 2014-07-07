@@ -334,6 +334,19 @@ $smarty->assign('filter_value4','');
 
 
 
+$tipo_filter5=$_SESSION['state']['part']['product_breakdown']['f_field'];
+$smarty->assign('filter5',$tipo_filter2);
+$smarty->assign('filter_value5',($_SESSION['state']['part']['product_breakdown']['f_value']));
+$filter_menu5=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product Code'),'label'=>_('Code')),
+);
+$smarty->assign('filter_menu5',$filter_menu5);
+$smarty->assign('filter_name5',$filter_menu5[$tipo_filter5]['label']);
+$paginator_menu5=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu5);
+
+
+
 $tipo_filter6=$_SESSION['state']['part']['availability']['f_field'];
 $smarty->assign('filter6',$tipo_filter2);
 $smarty->assign('filter_value6',($_SESSION['state']['part']['availability']['f_value']));
