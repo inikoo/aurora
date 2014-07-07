@@ -1058,7 +1058,7 @@ class Order extends DB_Table {
 
 		$tax_code=$this->data['Order Tax Code'];
 		$tax_rate=$this->data['Order Tax Rate'];
-
+//print "xx->".print_r($this->data)."<-xx" ;
 		if (array_key_exists('tax_code',$data))
 			$tax_code=$data['tax_code'];
 		if (array_key_exists('tax_rate',$data))
@@ -1665,6 +1665,10 @@ class Order extends DB_Table {
 
 
 		switch ($key) {
+		case('Tax Rate'):
+		
+		return percentage($this->data['Order Tax Rate'],1);
+		break;
 		case('Order Out of Stock Amount'):
 			return $this->data['Order Out of Stock Net Amount']+$this->data['Order Out of Stock Tax Amount'];
 		case('Out of Stock Amount'):
@@ -3344,7 +3348,7 @@ class Order extends DB_Table {
 		);
 //		print $sql;
 
-		//mysql_query($sql);
+		mysql_query($sql);
 
 		$this->update_no_normal_totals('save');
 		$this->update_item_totals_from_order_transactions() ;
