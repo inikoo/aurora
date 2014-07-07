@@ -1909,18 +1909,10 @@ class DeliveryNote extends DB_Table {
 			return;
 		}
 
-
-
-		// if ($this->data ['Delivery Note Assigned Picker Key']==$staff->id) {
-		//
-		//  return;
-		// }
-
-
 		$this->data ['Delivery Note State']='Picker Assigned';
 		$this->data ['Delivery Note Assigned Picker Key']=$staff->id;
 		$this->data ['Delivery Note Assigned Picker Alias']=$staff->data['Staff Alias'];
-		$this->data ['Delivery Note XHTML Pickers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,ucfirst($staff->data['Staff Alias']));
+		$this->data ['Delivery Note XHTML Pickers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,ucfirst($staff->data['Staff Name']));
 		$this->data ['Delivery Note Number Pickers']=1;
 		$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note Number Pickers`=%d,`Delivery Note XHTML Pickers`=%s,`Delivery Note State`=%s ,`Delivery Note Assigned Picker Key`=%d ,`Delivery Note Assigned Picker Alias`=%s where `Delivery Note Key`=%d"
 			,$this->data ['Delivery Note Number Pickers']
@@ -1930,7 +1922,7 @@ class DeliveryNote extends DB_Table {
 			,prepare_mysql ($this->data ['Delivery Note Assigned Picker Alias'])
 			,$this->id);
 		mysql_query($sql);
-
+//print $sql;
 		$this->update_state($this->get_state());
 
 		foreach ($this->get_orders_objects() as $order) {
@@ -1982,7 +1974,7 @@ class DeliveryNote extends DB_Table {
 
 		$this->data ['Delivery Note Assigned Packer Key']=$staff->id;
 		$this->data ['Delivery Note Assigned Packer Alias']=$staff->data['Staff Alias'];
-		$this->data ['Delivery Note XHTML Packers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,ucfirst($staff->data['Staff Alias']));
+		$this->data ['Delivery Note XHTML Packers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,ucfirst($staff->data['Staff Name']));
 		$this->data ['Delivery Note Number Packers']=1;
 
 
@@ -2035,14 +2027,14 @@ class DeliveryNote extends DB_Table {
 				return;
 			}
 
-			$staff_alias=$staff->data['Staff Alias'];
+			$staff_alias=$staff->data['Staff Name'];
 			$staff_key=$staff->id;
-			$xhtml_pickers=sprintf('<a href="staff.php?id=%d">%s</a>',$staff_key,$staff_alias);
+			$xhtml_pickers=sprintf('<a href="staff.php?id=%d">%s</a>',$staff_key,ucfirst($staff_alias));
 
 		}
 
-
-
+$this->data ['Delivery Note XHTML Pickers']=$xhtml_pickers;
+$this->data ['Delivery Note Number Pickers']=1;
 		//if ($this->data ['Delivery Note Assigned Picker Key']==$staff_key) {
 		// return;
 		//}
@@ -2059,6 +2051,7 @@ class DeliveryNote extends DB_Table {
 			prepare_mysql ($staff_alias,false),
 			$this->id);
 		$result=mysql_query($sql);
+	//	print $sql;
 		$this->get_data('id',$this->id);
 
 
@@ -2102,7 +2095,7 @@ class DeliveryNote extends DB_Table {
 				return;
 			}
 
-			$staff_alias=$staff->data['Staff Alias'];
+			$staff_alias=$staff->data['Staff Name'];
 			$staff_key=$staff->id;
 		}
 
@@ -2112,7 +2105,7 @@ class DeliveryNote extends DB_Table {
 
 
 		$this->data ['Delivery Note State']='Packing';
-		$this->data ['Delivery Note XHTML Packers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff_key,$staff_alias);
+		$this->data ['Delivery Note XHTML Packers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff_key,ucfirst($staff_alias));
 		$this->data ['Delivery Note Number Packers']=1;
 		$this->data ['Delivery Note Assigned Packer Key']=$staff_key;
 		$this->data ['Delivery Note Assigned Packer Alias']=$staff_alias;
@@ -2581,7 +2574,7 @@ class DeliveryNote extends DB_Table {
 				}else {
 					$_tmp=_('Picking').' ('.percentage($this->data['Delivery Note Fraction Picked'],1,0).')';
 				}
-				$state.='<span id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Picker Alias'].'</b></span>';
+				$state.='<span id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note XHTML Pickers'].'</b></span>';
 			}
 
 			if ($this->data['Delivery Note Assigned Packer Alias']) {
@@ -2605,7 +2598,7 @@ class DeliveryNote extends DB_Table {
 				}else {
 					$_tmp=_('Packing').'('.percentage($this->data['Delivery Note Fraction Packed'],1,0).')';
 				}
-				$state.=' <span id="dn_state_pack'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Packer Alias'].'</b> </span>';
+				$state.='<br/><span id="dn_state_pack'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note XHTML Packers'].'</b> </span>';
 				if ($this->data['Delivery Note Approved Done']=='Yes') {
 					$state.=' &#x2713;';
 				}

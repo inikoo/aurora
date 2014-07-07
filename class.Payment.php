@@ -102,6 +102,70 @@ class Payment extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
+		
+		case 'Transaction Status':
+		switch ($this->data['Payment Transaction Status']) {
+		//'Pending','Completed','Cancelled','Error'
+			
+			
+			case 'Pending':
+				return _('Pending');
+				break;
+			case 'Completed':
+				return _('Completed');
+				break;
+			case 'Cancelled':
+				return _('Cancelled');
+				break;
+			case 'Error':
+				return _('Error');
+				break;
+			
+			default:
+				return $this->data['Payment Transaction Status'];
+
+			}
+
+			break;
+		
+		break;
+		case 'Method':
+
+			//'Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account'
+			switch ($this->data['Payment Method']) {
+			case 'Credit Card':
+				return _('Credit Card');
+				break;
+			case 'Cash':
+				return _('Cash');
+				break;
+			case 'Paypal':
+				return _('Paypal');
+				break;
+			case 'Check':
+				return _('Check');
+				break;
+			case 'Bank Transfer':
+				return _('Bank Transfer');
+				break;
+			case 'Cash on Delivery':
+				return _('Cash on delivery');
+				break;
+			case 'Other':
+			case 'Unknown':
+				return _('Other');
+
+				break;
+			case 'Account':
+				return _('Account');
+
+				break;
+			default:
+				return $this->data['Payment Method'];
+
+			}
+
+			break;
 
 		case('Amount'):
 			return money($this->data['Payment '.$key],$this->data['Payment Currency Code']);
@@ -293,7 +357,7 @@ class Payment extends DB_Table {
 
 		}
 		return $info;
-		
+
 	}
 
 	function update_balance() {
@@ -303,17 +367,17 @@ class Payment extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$invoiced_amount=$row['amount'];
 		}
-		
+
 		$this->data['Payment Amount Invoiced']=$invoiced_amount;
-		
+
 		$this->data['Payment Balance']=$this->data['Payment Amount']-$this->data['Payment Refund']-$this->data['Payment Amount Invoiced'];
 
 
 		$sql=sprintf("update `Payment Dimension` set `Payment Amount Invoiced`=%.2f,`Payment Balance`=%.2f where `Payment Key`=%d",
-		$this->data['Payment Amount Invoiced'],
-		$this->data['Payment Balance'],
-		$this->id
-		
+			$this->data['Payment Amount Invoiced'],
+			$this->data['Payment Balance'],
+			$this->id
+
 		);
 		//print $sql;
 		mysql_query($sql);

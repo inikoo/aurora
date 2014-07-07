@@ -282,11 +282,11 @@ function assign_picker_save() {
     var dn_key = Dom.get('assign_picker_dn_key').value;
 
     var request = 'ar_edit_orders.php?tipo=' + Dom.get('assign_picker_dialog_type').value + '&dn_key=' + escape(dn_key) + '&staff_key=' + escape(staff_key) + '&pin=' + escape(sup_pwd);
-
+//alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-            //	alert(o.responseText)
+            	alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
