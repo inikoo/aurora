@@ -190,34 +190,33 @@ class Account extends DB_Table{
 		mysql_query($sql);
 		//print $sql;
 	}
-	
-	
-	
-	function get_current_staff_with_position_code($position_code,$options=''){
-$positions=array();
-$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join  `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where  `Company Position Code`=%s and `Staff Currently Working`="Yes"' 
-,prepare_mysql($position_code)
-);
 
 
-$smarty=false;
-if(preg_match('/smarty/i',$options))
-  $smarty=true;
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
-  if($smarty){
-    $_row=array();
-    foreach($row as $key=>$value){
-      $_row[preg_replace('/\s/','',$key)]=$value;
-    }
-    
-    $positions[$row['Staff Key']]=$_row;
-  }else
-    $positions[$row['Staff Key']]=$row;
-}
-return $positions;
-}
-	
+	function get_current_staff_with_position_code($position_code,$options='') {
+		$positions=array();
+		$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join  `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where  `Company Position Code`=%s and `Staff Currently Working`="Yes"'
+			,prepare_mysql($position_code)
+		);
+
+
+		$smarty=false;
+		if (preg_match('/smarty/i',$options))
+			$smarty=true;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res,MYSQL_ASSOC)) {
+			if ($smarty) {
+				$_row=array();
+				foreach ($row as $key=>$value) {
+					$_row[preg_replace('/\s/','',$key)]=$value;
+				}
+
+				$positions[$row['Staff Key']]=$_row;
+			}else
+				$positions[$row['Staff Key']]=$row;
+		}
+		return $positions;
+	}
+
 
 }
 

@@ -66,15 +66,13 @@
 				</table>
 			</div>
 			<div style="border:0px solid #ddd;width:330px;float:right;">
+				
+					<div id="dn_state" style="border:1px solid #ccc;text-align:right"><span id="dn_xhtml_state" style="padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span> 
+</div>
+				
 				<table style="xdisplay:none;width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 					<tbody id="resend" style="xdisplay:none">
-						<tr>
-							<td colspan="2" id="dn_state" class="aright"> 
-							<div style=";margin-bottom:5px;font-size:80%">
-								<span id="dn_xhtml_state" style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span> 
-							</div>
-							</td>
-						</tr>
+						
 						<tr>
 							<td class="aright">{t}Packer{/t}:</td>
 							<td id="assigned_packer" key="{$delivery_note->get('Delivery Note Assigned Packer Key')}" class="aright">{$delivery_note->get('Delivery Note Assigned Packer Alias')}</td>

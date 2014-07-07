@@ -68,18 +68,16 @@
 			</div>
 		</div>
 		<div id="totals" style="width:310px">
+		
+									<div id="dn_state" style="border:1px solid #ccc;text-align:right"><span id="dn_xhtml_state" style="padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span> 
+</div>
+		
 			<table border="0" style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 				<tbody id="resend" style="xdisplay:none">
-					<tr>
-						<td colspan="2" id="dn_state" class="aright"> 
-						<div style=";margin-bottom:5px">
-							<span id="dn_xhtml_state" style="border:1px solid #ccc;padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span> 
-						</div>
-						</td>
-					</tr>
+					
 					<tr>
 						<td class="aright">{t}Picker{/t}:</td>
-						<td id="assigned_picker" key="{$delivery_note->get('Delivery Note Assigned Picker Key')}" class="aright">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td>
+						<td id="assigned_picker" key="{$delivery_note->get('Delivery Note Assigned Picker Key')}" class="aright">{$delivery_note->get('Delivery Note XHTML Pickers')}</td>
 					</tr>
 					<tr>
 						<td class="aright">{t}Transactions{/t}:</td>

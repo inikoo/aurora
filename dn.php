@@ -1,7 +1,7 @@
 <?php
 include_once 'common.php';
 include_once 'class.CurrencyExchange.php';
-include_once('class.CompanyArea.php');
+include_once 'class.CompanyArea.php';
 include_once 'class.Order.php';
 include_once 'class.Warehouse.php';
 
@@ -20,11 +20,10 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
-		'css/order.css',
+	'css/order.css',
 
 	'theme.css.php'
 );
-
 
 
 $js_files=array(
@@ -65,10 +64,11 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
-//	'dn.js.php',
+	'js/edit_common.js',
 	'js/common_assign_picker_packer.js',
-	
-	
+	'js/common_edit_delivery_note.js'
+
+
 );
 
 
@@ -79,7 +79,6 @@ if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])) {
 
 
 $dn_id=$_REQUEST['id'];
-$_SESSION['state']['dn']['id']=$dn_id;
 $dn=new DeliveryNote($dn_id);
 
 
@@ -107,15 +106,10 @@ $smarty->assign('store_id',$store->id);
 $smarty->assign('warehouse',$warehouse);
 
 
-//if ($dn->data['Delivery Note State']=='Dispatched') {
-	$js_files[]='dn.js.php';
-	$template='dn.tpl';
-//}else {
-//	$js_files[]='dn_in_process.js.php';
-//	$template='dn_in_process.tpl';
-//}
+$js_files[]='dn.js.php';
+$template='dn.tpl';
 
-$_SESSION['state']['dn']['store_key']=$dn->data['Delivery Note Store Key'];
+
 
 
 $tipo_filter=$_SESSION['state']['products']['table']['f_field'];
@@ -139,15 +133,15 @@ $number_cols=5;
 $row=0;
 $pickers_data=array();
 $contador=0;
-foreach($pickers as $picker) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($picker as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $pickers_data[$row][]=$tmp;
-    $contador++;
+foreach ($pickers as $picker) {
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$row++;
+	$tmp=array();
+	foreach ($picker as $key=>$value) {
+		$tmp[preg_replace('/\s/','',$key)]=$value;
+	}
+	$pickers_data[$row][]=$tmp;
+	$contador++;
 }
 
 $smarty->assign('pickers',$pickers_data);
@@ -158,15 +152,15 @@ $number_cols=5;
 $row=0;
 $packers_data=array();
 $contador=0;
-foreach($packers as $packer) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($packer as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $packers_data[$row][]=$tmp;
-    $contador++;
+foreach ($packers as $packer) {
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$row++;
+	$tmp=array();
+	foreach ($packer as $key=>$value) {
+		$tmp[preg_replace('/\s/','',$key)]=$value;
+	}
+	$packers_data[$row][]=$tmp;
+	$contador++;
 }
 
 $smarty->assign('packers',$packers_data);
@@ -174,9 +168,9 @@ $smarty->assign('number_packers',count($packers_data));
 
 $tipo_filter2='alias';
 $filter_menu2=array(
-                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
-                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
-              );
+	'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
@@ -184,9 +178,40 @@ $smarty->assign('filter_value2','');
 
 
 
-$smarty->assign('dn',$dn);
+$smarty->assign('delivery_note',$dn);
 $smarty->assign('customer',$customer);
 $smarty->assign('store',$store);
+
+
+
+$parcels=$dn->get_formated_parcels();
+$weight=$dn->data['Delivery Note Weight'];
+$consignment=$dn->data['Delivery Note Shipper Consignment'];
+
+//print "_>$parcels<_";
+
+$smarty->assign( 'parcels', $parcels);
+$smarty->assign( 'weight', ($weight?$dn->get('Weight'):'') );
+$smarty->assign( 'consignment', ($consignment?$dn->get('Consignment'):'') );
+
+
+$shipper_data=array();
+
+$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
+$result=mysql_query($sql);
+while ($row=mysql_fetch_assoc($result)) {
+	$shipper_data[$row['Shipper Key']]=array(
+	'shipper_key'=>$row['Shipper Key'],
+	'code'=>$row['Shipper Code'],
+	'name'=>$row['Shipper Name'],
+	'selected'=>($dn->data['Delivery Note Shipper Code']==$row['Shipper Code']?1:0)
+	);
+	
+	
+}
+$smarty->assign( 'shipper_data', $shipper_data );
+
+
 
 
 
@@ -197,12 +222,3 @@ $smarty->assign('js_files',$js_files);
 //print $template;
 $smarty->display($template);
 ?>
-
-
-
-
-
-
-
-
-
