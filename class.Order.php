@@ -3327,7 +3327,7 @@ class Order extends DB_Table {
 				prepare_mysql($this->data['Order Tax Code']),
 				$row['Order No Product Transaction Fact Key']
 			);
-			 print $sql;
+			// print $sql;
 			mysql_query($sql);
 		}
 
