@@ -186,7 +186,7 @@ class DeliveryNote extends DB_Table {
 		if ($this->data ['Delivery Note Dispatch Method']=='Collection') {
 
 			$this->data ['Delivery Note Shipper Code']='';
-			$this->data ['Delivery Note XHTML Ship To'] = _('Collected');
+			$this->data ['Delivery Note XHTML Ship To'] = _('For collection');
 			$store=new Store($this->data['Delivery Note Store Key']);
 			$collection_address=new Address($store->data['Store Collection Address Key']);
 			if ($collection_address->id) {
