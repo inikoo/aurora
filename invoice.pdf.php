@@ -189,7 +189,6 @@ $mpdf->WriteHTML($html);
 
 //$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
 
-$mpdf->WriteHTML($html);
 
 
 $mpdf->Output();
