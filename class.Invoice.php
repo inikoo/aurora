@@ -2748,14 +2748,14 @@ class Invoice extends DB_Table {
 		$sql=sprintf("delete from `Order Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("update  `Order Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
+		$sql=sprintf("update  `Order Transaction Fact` set `Invoice Key`=NULL ,`Consolidated`='No'  where  `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
 
 
 		$sql=sprintf("delete from `Order No Product Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Key`=NULL  where  `Invoice Key`=%d",$this->id);
+		$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Key`=NULL , `Consolidated`='No'   where  `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
 
 

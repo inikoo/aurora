@@ -3314,7 +3314,7 @@ class Order extends DB_Table {
 
 		);
 		mysql_query($sql);
-
+//print $sql;
 		$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d and `Consolidated`='No'",
 			$this->id
 		);
@@ -3327,7 +3327,7 @@ class Order extends DB_Table {
 				prepare_mysql($this->data['Order Tax Code']),
 				$row['Order No Product Transaction Fact Key']
 			);
-			//   print $sql;
+			 print $sql;
 			mysql_query($sql);
 		}
 
@@ -3337,14 +3337,14 @@ class Order extends DB_Table {
 			prepare_mysql($this->data['Order Tax Code']),
 			$this->data['Order Tax Rate'],
 			prepare_mysql($this->data['Order Tax Name']),
-			prepare_mysql($this->data['Order Tax Operations']),
+			prepare_mysql($this->data['Order Tax Operations'],false),
 			prepare_mysql($this->data['Order Tax Selection Type']),
 			$this->id
 
 		);
-		//print $sql;
+//		print $sql;
 
-		mysql_query($sql);
+		//mysql_query($sql);
 
 		$this->update_no_normal_totals('save');
 		$this->update_item_totals_from_order_transactions() ;
