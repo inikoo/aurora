@@ -245,6 +245,17 @@
 				</table>
 				
 				
+				<table border="0" class="info_block">
+				<tr>
+						<td>{t}Tax Code{/t}:</td>
+						<td class="aright">{$order->get('Order Tax Code')}  {$order->get('Tax Rate')} </td>
+					</tr>
+					<tr>
+						<td>{t}Tax Info{/t}:</td>
+						<td class="aright">{$order->get('Order Tax Name')}</td>
+				
+				</table>
+				
 				</div>
 				<div style="clear:both">
 				</div>

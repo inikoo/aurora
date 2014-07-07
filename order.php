@@ -118,6 +118,8 @@ $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 
+ 
+
 //$order->update_xhtml_delivery_notes();//exit;
 //$order->update_no_normal_totals();
 
@@ -141,7 +143,6 @@ if (isset($_REQUEST['referral'])) {
 	$referral='';
 }
 $smarty->assign('referral',$referral);
-
 
 
 
@@ -295,7 +296,6 @@ else {
 
 
 		 $order->update_tax();
-
 		$order->apply_payment_from_customer_account();
 
 		$js_files[]='js/php.default.min.js';
@@ -324,6 +324,7 @@ else {
 		$template='order_in_process.tpl';
 		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 		//$smarty->assign('default_country_2alpha','GB');
+
 
 
 		$products_display_type='ordered_products';
@@ -402,6 +403,8 @@ else {
 	case('Packed Done'):
 	case('Ready to Ship'):
  $order->update_tax();
+ 
+
 	$order->update_item_totals_from_order_transactions();
 			$order->update_no_normal_totals('save');
 
@@ -818,5 +821,7 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+ 
 $smarty->display($template);
+
 ?>
