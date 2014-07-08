@@ -165,6 +165,12 @@ function hide_add_payment() {
     dialog_add_payment.hide()
 }
 
+
+function add_credit_to_customer(){
+alert("x")
+
+}
+
 function init_add_payment() {
 
 
