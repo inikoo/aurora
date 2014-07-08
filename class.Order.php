@@ -4943,7 +4943,6 @@ class Order extends DB_Table {
 			$ship_to=new Ship_To($ship_to_key);
 			
 			
-			$ship_to->update(array('Ship To Email'=>$this->data['Order Email']));
 			
 			
 		}
