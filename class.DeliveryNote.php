@@ -3493,6 +3493,57 @@ $this->data ['Delivery Note Number Pickers']=1;
 	function get_date($field) {
 		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
 	}
+	
+	
+	
+	function update_ship_to($ship_to_key) {
+
+	
+			
+			$ship_to=new Ship_To($ship_to_key);
+			
+			
+	if(!$ship_to->id){
+		$this->error=true;
+		$this->msg='shit to not found/missing';
+		return;
+	}
+			
+	
+
+
+
+
+
+
+		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Dispatch Method`='Dispatch' ,`Delivery Note Ship To Key To Deliver`=%d,  `Delivery Note Ship To Country Code`=%s,`Delivery Note XHTML Ship Tos`=%s,`Delivery Note Ship To Keys`=%s  ,`Delivery Note Ship To World Region Code`=%s,`Delivery Note Ship To Town`=%s,`Delivery Note Ship To Postal Code`=%s   where `Delivery Note Key`=%d"
+			,$ship_to->id
+			,prepare_mysql($ship_to->data['Ship To Country Code'])
+			,prepare_mysql($ship_to->data['Ship To XHTML Address'])
+			,prepare_mysql($ship_to->id)
+			,prepare_mysql($ship_to->get('World Region Code'))
+			,prepare_mysql($ship_to->data['Ship To Town'])
+			,prepare_mysql($ship_to->data['Ship To Postal Code'])
+
+			,$this->id
+
+		);
+		mysql_query($sql);
+		if (mysql_affected_rows()>0) {
+			$this->get_data('id',$this->id);
+			$this->updated=true;
+			$this->new_value=$ship_to->data['Ship To XHTML Address'];
+		} else {
+			$this->msg=_('Nothing to change');
+		}
+
+		$this->update_shipping();
+		if ($this->data['Delivery Note Tax Selection Type']!='set') {
+			$this->update_tax();
+		}
+
+	}
+	
 
 }
 

@@ -2,7 +2,7 @@ var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_add_payment;
 var dialog_refund_payment;
-
+var dialog_add_credit_note_to_customer;
 
 function save_add_payment() {
 
@@ -166,8 +166,28 @@ function hide_add_payment() {
 }
 
 
-function add_credit_to_customer(){
-alert("x")
+function add_credit_note_to_customer(){
+
+ Dom.get('add_payment_reference').value = '';
+    Dom.get('add_payment_max_amount').value = max_amount;
+    Dom.get('add_payment_amount').value = max_amount;
+
+    Dom.get('add_payment_amount_formated').innerHTML = money(max_amount, Dom.get('currency_code').value);
+
+    Dom.removeClass(Dom.getElementsByClassName('item', 'button', 'add_payment_payment_account_container'), 'selected')
+    Dom.removeClass(['add_payment_payment_method_creditcard', 'add_payment_payment_method_bank_transfer', 'add_payment_payment_method_paypal', 'add_payment_payment_method_cash', 'add_payment_payment_method_cheque', 'add_payment_payment_method_other'], 'selected')
+
+    Dom.get('add_payment_method').value = '';
+    Dom.get('add_payment_payment_account_key').value = ''
+    can_submit_payment()
+
+    region1 = Dom.getRegion('show_add_payment_to_order');
+    region2 = Dom.getRegion('dialog_add_payment');
+
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_add_payment', pos);
+    dialog_add_payment.show()
+
 
 }
 
@@ -193,6 +213,16 @@ function init_add_payment() {
         draggable: false
     });
     dialog_refund_payment.render();
+    
+    
+      dialog_add_credit_note_to_customer = new YAHOO.widget.Dialog("dialog_add_credit_note_to_customer", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_add_credit_note_to_customer.render();
+    
 
 
 }
