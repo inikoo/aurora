@@ -3516,11 +3516,12 @@ $this->data ['Delivery Note Number Pickers']=1;
 
 
 
-		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Dispatch Method`='Dispatch' ,`Delivery Note Ship To Key To Deliver`=%d,  `Delivery Note Ship To Country Code`=%s,`Delivery Note XHTML Ship Tos`=%s,`Delivery Note Ship To Keys`=%s  ,`Delivery Note Ship To World Region Code`=%s,`Delivery Note Ship To Town`=%s,`Delivery Note Ship To Postal Code`=%s   where `Delivery Note Key`=%d"
+		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Dispatch Method`='Dispatch' ,`Delivery Note Ship To Key`=%d,  
+		Delivery Note Country 2 Alpha Code`=%s,`Delivery Note XHTML Ship To`=%s,`Delivery Note Country Code`=%s  ,`Delivery Note Ship To World Region Code`=%s,`Delivery Note Ship To Town`=%s,`Delivery Note Ship To Postal Code`=%s   where `Delivery Note Key`=%d"
 			,$ship_to->id
-			,prepare_mysql($ship_to->data['Ship To Country Code'])
+			,prepare_mysql($ship_to->data['Ship To 2 Alpha Country Code'])
 			,prepare_mysql($ship_to->data['Ship To XHTML Address'])
-			,prepare_mysql($ship_to->id)
+			,prepare_mysql($ship_to->data['Ship To Country Code'])
 			,prepare_mysql($ship_to->get('World Region Code'))
 			,prepare_mysql($ship_to->data['Ship To Town'])
 			,prepare_mysql($ship_to->data['Ship To Postal Code'])

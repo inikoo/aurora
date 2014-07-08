@@ -100,7 +100,7 @@ function save_use_calculated_items_charges() {
 
                 }
                 if (Dom.get('show_add_payment_to_order')!=undefined) {
-                    alert(r.order_total_to_pay)
+                   // alert(r.order_total_to_pay)
                     Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
                 }
 
