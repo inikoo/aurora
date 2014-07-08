@@ -235,35 +235,7 @@ div.inline { float:left; }
 	</table>
 	<br> <br>
 	
-	<table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
-	<tr class="title">
-		<td colspan=5>{t}Payments{/t}</td>
-		</tr>
-	<thead>
-			<tr>
-				<td style="width:40%;text-align:left">{t}Method{/t}</td>
-				<td style="text-align:right">{t}Date{/t}</td>
-				<td style="text-align:left">{t}Status{/t}</td>
-				<td style="text-align:left">{t}Reference{/t}</td>
-								<td style=";text-align:right">{t}Amount{/t}</td>
-
-
-			</tr>
-		</thead>
-		<tbody >
-			{foreach from=$invoice->get_payment_objects('',true,true) item=payment name=payments} 
-			<tr class="{if $smarty.foreach.payments.last}last{/if}">
-				<td style="text-align:left">{$payment->get('Method')} ({$payment->payment_service_provider->get('Payment Service Provider Name')})</td>
-				<td style="text-align:right">{$payment->get('Created Date')}</td>
-				<td style="text-align:left">{$payment->get('Transaction Status')}</td>
-								<td style="text-align:left">{$payment->get('Payment Transaction ID')}</td>
-
-				<td style="text-align:right">{$payment->formated_invoice_amount}</td>
-
-			</tr>
-			{/foreach} 
-		</tbody>
-	</table>
+	
 	
 	<br>
 	<div style="text-align: center; font-style: italic;">
