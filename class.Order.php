@@ -3100,13 +3100,13 @@ class Order extends DB_Table {
 
 	function update_charges_amount($charge_data) {
 
-
+//print_r($charge_data);
 
 		if ($charge_data['Charge Net Amount']!=$this->data['Order Charges Net Amount']) {
 
 			$this->data['Order Charges Net Amount']=$charge_data['Charge Net Amount'];
 
-			$sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Charges" and `Delivery Note Key` IS NULL and `Invoice Key` IS NULL',
+			$sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Charges" and `Consolidated`="No"',
 				$this->id
 			);
 			mysql_query($sql);
@@ -3132,7 +3132,7 @@ class Order extends DB_Table {
 					prepare_mysql($this->data['Order Original Metadata'])
 				);
 
-				//print ("$sql\n");
+			//	print ("$sql\n");
 				mysql_query($sql);
 			}
 

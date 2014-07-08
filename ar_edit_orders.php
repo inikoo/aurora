@@ -3840,14 +3840,14 @@ function update_ship_to_key_from_address($data) {
 	$order->update_ship_to($ship_to_key);
 	
 	$dns=$order->get_delivery_notes_objects();
-/*
+
 //'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'	
 	foreach($dns as $dn){
 		if(!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))){
-			$dn->update_ship_to($ship_to_key);
+			//$dn->update_ship_to($ship_to_key);
 		}
 	}
-	*/
+	
 
 	if ($order->error) {
 		$response=array('state'=>400,'result'=>'no_change','msg'=>$order->msg);
