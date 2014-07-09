@@ -138,7 +138,7 @@ mpdf-->
 {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 
 </div>
-
+<div style=" font-size: 9pt;margin-botom:2pt">{$formated_number_of_items}, {$formated_number_of_picks}</div>  
 <table class="items" width="100%" style="font-size: 8pt; border-collapse: collapse;" cellpadding="8">
 <thead>
 <tr>

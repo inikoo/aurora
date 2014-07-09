@@ -52,9 +52,7 @@
 				<div id="title_delivery_address" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
 					{t}Delivering to{/t}: 
 				</div>
-				<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
-					<b>{t}For collection{/t}</b> 
-				</div>
+				
 				<div tyle="margin-top:5px" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
 				</div>

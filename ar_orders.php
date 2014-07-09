@@ -950,8 +950,10 @@ function list_transactions_in_dn() {
 
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
 		$order_id=$_REQUEST['id'];
-	else
-		$order_id=$_SESSION['state']['dn']['id'];
+	else{
+		exit("no dn");
+	}
+		
 
 
 

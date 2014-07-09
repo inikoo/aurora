@@ -1,0 +1,357 @@
+<?php
+require_once 'common.php';
+require_once 'ar_edit_common.php';
+require_once 'class.Order.php';
+require_once 'class.Staff.php';
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+include_once 'class.Payment_Service_Provider.php';
+
+require_once 'class.User.php';
+include_once 'class.PartLocation.php';
+require_once 'order_common_functions.php';
+
+
+
+if (!isset($_REQUEST['tipo'])) {
+	$response=array('state'=>407,'resp'=>'Non acceptable request (t)');
+	echo json_encode($response);
+	exit;
+}
+
+
+$tipo=$_REQUEST['tipo'];
+
+switch ($tipo) {
+
+
+case('add_payment'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+
+			'parent_key'=>array('type'=>'key'),
+			'payment_reference'=>array('type'=>'string'),
+			'payment_method'=>array('type'=>'string'),
+			'payment_amount'=>array('type'=>'numeric'),
+			'payment_account_key'=>array('type'=>'key')
+
+
+
+
+		));
+
+	if ($data['parent']=='order') {
+		add_payment_to_order($data);
+	}elseif ($data['parent']=='invoice') {
+
+		add_payment_to_invoice($data);
+	}
+	break;
+
+
+case('set_payment_as_completed'):
+	$data=prepare_values($_REQUEST,array(
+			'payment_key'=>array('type'=>'key'),
+			'payment_transaction_id'=>array('type'=>'string')
+
+		));
+	set_payment_as_completed($data);
+	break;
+
+case('cancel_payment'):	
+$data=prepare_values($_REQUEST,array(
+			'payment_key'=>array('type'=>'key'),
+'order_key'=>array('type'=>'key')
+		));
+	cancel_payment($data);
+	break;
+
+break;
+
+default:
+	$response=array('state'=>404,'resp'=>'Operation not found');
+	echo json_encode($response);
+
+}
+
+
+
+
+function cancel_payment($data){
+
+$payment_key=$data['payment_key'];
+$payment=new Payment($payment_key);
+$order=new Order($data['order_key']);
+
+
+
+	if (!$payment->id) {
+
+		$pending_payments=count($order->get_payment_keys('Pending'));
+
+
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment dont exists',
+			'type_error'=>'invalid_payment_key',
+			'payment_key'=>$data['payment_key'],
+			'pending_payments'=>$pending_payments,
+			'status'=>'Deleted',
+			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	if ($payment->data['Payment Transaction Status']!='Pending') {
+		$pending_payments=count($order->get_payment_keys('Pending'));
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],
+			'type_error'=>'invalid_payment_status',
+			'payment_key'=>$payment->id,
+			'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	$data_to_update=array(
+
+		'Payment Completed Date'=>'',
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Cancelled',
+		'Payment Transaction Status Info'=>_('Cancelled by customer'),
+
+
+	);
+	$payment->update($data_to_update);
+
+
+
+
+	$pending_payments=count($order->get_payment_keys('Pending'));
+
+	if ($pending_payments==0) {
+
+			if (  count($order->get_payment_keys('Completed'))) {
+
+			$order->set_as_in_process();
+		}else {
+
+			$order->checkout_cancel_payment();
+		}
+	}
+
+	if (!$payment->id) {
+		$response=array(
+			'state'=>200,
+			'payment_key'=>$data['payment_key'],
+			'pending_payments'=>$pending_payments,
+			'status'=>'Deleted',
+			'created_time_interval'=>0,
+			'msg'=>'error: payment dont exists',
+			'type_error'=>'invalid_payment_key',
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+		);
+	}else {
+
+		$response=array(
+			'state'=>200,
+			'payment_key'=>$payment->id,
+			'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date'),
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+		);
+	}
+
+
+
+
+
+
+
+
+	echo json_encode($response);
+	return;
+
+
+
+
+}
+
+
+
+function set_payment_as_completed($data) {
+
+	$payment_transaction_id=$data['payment_transaction_id'];
+	$payment_key=$data['payment_key'];
+
+	$payment=new Payment($payment_key);
+	$payment_account=new Payment_Account($payment->data['Payment Account Key']);
+
+	$order_key=$payment->data['Payment Order Key'];
+	$order=new Order($order_key);
+	$data_to_update=array(
+
+		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction ID'=>$payment_transaction_id,
+
+	);
+
+
+	$payment->update($data_to_update);
+	$order=new Order($payment->data['Payment Order Key']);
+
+	$order->update(
+		array(
+			'Order Payment Account Key'=>$payment_account->id,
+			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
+			'Order Payment Method'=>$payment_account->data['Payment Type'],
+			'Order Payment Key'=>$payment->id,
+			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
+		));
+
+	$order->checkout_submit_order();
+
+
+
+
+
+
+	send_confirmation_email($order);
+
+}
+
+
+
+
+function add_payment_to_order($data) {
+
+	$order=new Order($data['parent_key']);
+	$payment_account=new Payment_Account($data['payment_account_key']);
+
+	if (!$order->id) {
+		$response=array('state'=>400,'msg'=>'error: order dont exists','type_error'=>'invalid_order_key');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+	if (!$payment_account->id) {
+		$response=array('state'=>400,'msg'=>'error: payment account dont exists','type_error'=>'invalid_payment_account_keyy');
+		echo json_encode($response);
+		return;
+	}
+
+	if (!$payment_account->in_store($order->data['Order Store Key'])) {
+		$response=array('state'=>400,'msg'=>'error: payment account not in this site','type_error'=>'payment_account_not_in_store');
+		echo json_encode($response);
+		return;
+	}
+
+
+	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
+
+
+	$billing_to=new Billing_To($order->data['Order Billing To Keys']);
+
+
+	$payment_data=array(
+		'Payment Account Key'=>$payment_account->id,
+		'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+
+		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
+		'Payment Order Key'=>$order->id,
+		'Payment Store Key'=>$order->data['Order Store Key'],
+		'Payment Customer Key'=>$order->data['Order Customer Key'],
+
+		'Payment Balance'=>$data['payment_amount'],
+		'Payment Amount'=>$data['payment_amount'],
+		'Payment Refund'=>0,
+		'Payment Currency Code'=>$order->data['Order Currency'],
+		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction ID'=>$data['payment_reference'],
+		'Payment Method'=>$data['payment_method']
+
+	);
+
+	$payment=new Payment('create',$payment_data);
+
+	$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+		$order->id,
+		$payment->id,
+		$payment_account->id,
+		$payment_account->data['Payment Service Provider Key'],
+		$payment->data['Payment Amount'],
+		$payment->data['Payment Amount']
+	);
+	mysql_query($sql);
+
+
+	$order->update_payment_state();
+
+
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'order_total_paid'=>$order->get('Payments Amount'),
+		'order_total_to_pay'=>$order->get('To Pay Amount')
+
+	);
+
+	$payments_data=array();
+	foreach ($order->get_payment_objects('',true,true) as $payment) {
+		$payments_data[$payment->id]=array(
+			'date'=>$payment->get('Created Date'),
+			'amount'=>$payment->get('Amount'),
+			'status'=>$payment->get('Payment Transaction Status')
+		);
+	}
+
+
+
+	$response=array('state'=>200,
+		'result'=>'updated',
+		'order_shipping_method'=>$order->data['Order Shipping Method'],
+		'data'=>$updated_data,
+		'shipping'=>money($order->new_value),
+		'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+		'ship_to'=>$order->get('Order XHTML Ship Tos'),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
+		'payments_data'=>$payments_data,
+		'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+	);
+
+	echo json_encode($response);
+
+}
+
+
+
+
+?>

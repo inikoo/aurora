@@ -20,11 +20,7 @@ class Country {
 	var $data=array();
 	var $id=false;
 
-
-
 	function __construct($arg1=false,$arg2=false) {
-
-
 
 		if ($arg1=='id' and is_numeric($arg2)) {
 			$this->get_data('id',$arg2);
@@ -194,27 +190,27 @@ class Country {
 		return $exchange;
 
 	}
-	
 
-	function get_country_name($locale='en_GB'){
-		
-		include('country_localized_names.php');
-		
-		if(array_key_exists($locale,$country_names)){
-			if(isset( $country_names[$locale][$this->data['Country 2 Alpha Code']])){
+
+	function get_country_name($locale='en_GB') {
+
+		include 'country_localized_names.php';
+
+		if (array_key_exists($locale,$country_names)) {
+			if (isset( $country_names[$locale][$this->data['Country 2 Alpha Code']])) {
 				return $country_names[$locale][$this->data['Country 2 Alpha Code']];
 			}
 		}
 
-		
+
 		return $this->data['Country Name'];
-		
+
 	}
-	
-	
 
 
-	
+
+
+
 
 }
 

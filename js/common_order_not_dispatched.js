@@ -436,6 +436,9 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
 
 
 
+
+
+
 function change_shipping_type(new_value) {
 
     var ar_file = 'ar_edit_orders.php';
@@ -451,11 +454,11 @@ function change_shipping_type(new_value) {
                     if (r.new_value == 'Yes') {
                         Dom.setStyle('tr_order_shipping', 'display', 'none');
                         Dom.setStyle(['shipping_address', 'title_delivery_address'], 'display', 'none');
-                        Dom.setStyle(['for_collection', 'title_for_collection'], 'display', '');
+                        Dom.setStyle(['for_collection'], 'display', '');
                     } else {
                         Dom.setStyle('tr_order_shipping', 'display', '');
                         Dom.setStyle(['shipping_address', 'title_delivery_address'], 'display', '');
-                        Dom.setStyle(['for_collection', 'title_for_collection'], 'display', 'none');
+                        Dom.setStyle(['for_collection'], 'display', 'none');
 
                     }
 
