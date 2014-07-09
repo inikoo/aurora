@@ -58,28 +58,7 @@ case('update_order_special_intructions'):
 	update_order_special_intructions($data);
 	break;
 
-case('add_payment'):
-	$data=prepare_values($_REQUEST,array(
-			'parent'=>array('type'=>'string'),
 
-			'parent_key'=>array('type'=>'key'),
-			'payment_reference'=>array('type'=>'string'),
-			'payment_method'=>array('type'=>'string'),
-			'payment_amount'=>array('type'=>'numeric'),
-			'payment_account_key'=>array('type'=>'key')
-
-
-
-
-		));
-
-	if ($data['parent']=='order') {
-		add_payment_to_order($data);
-	}elseif ($data['parent']=='invoice') {
-
-		add_payment_to_invoice($data);
-	}
-	break;
 
 
 case('delivery_note_undo_dispatch'):
@@ -121,14 +100,7 @@ case('new_refund'):
 
 	break;
 
-case('set_payment_as_completed'):
-	$data=prepare_values($_REQUEST,array(
-			'payment_key'=>array('type'=>'key'),
-			'payment_transaction_id'=>array('type'=>'string')
 
-		));
-	set_payment_as_completed($data);
-	break;
 case('add_insurance'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -366,25 +338,6 @@ case('delete_dn_list'):
 
 		));
 	delete_dn_list($data);
-	break;
-case('pay_invoice'):
-	if (!$user->can_view('orders'))
-		exit();
-
-	$data=prepare_values($_REQUEST,array(
-
-			'invoice_key'=>array('type'=>'key'),
-			'reference'=>array('type'=>'string'),
-			'pay_amount'=>array('type'=>'numeric'),
-
-			'method'=>array('type'=>'enum','valid values regex'=>'/pay_by_creditcard|pay_by_bank_transfer|pay_by_paypal|pay_by_cash|pay_by_cheque|pay_by_other/i'
-
-
-			)
-		));
-
-
-	pay_invoice($data);
 	break;
 
 
@@ -910,6 +863,19 @@ function edit_new_order_shipping_type() {
 	}
 	if ($order->id) {
 		$order->update_order_is_for_collection($value);
+		
+		
+		$dns=$order->get_delivery_notes_objects();
+
+	foreach($dns as $dn){
+		if(!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))){
+			$dn->update_is_for_collection($value);
+		}
+	}
+	
+
+		
+		
 		if ($order->updated) {
 
 			$updated_data=array(
@@ -3841,10 +3807,9 @@ function update_ship_to_key_from_address($data) {
 	
 	$dns=$order->get_delivery_notes_objects();
 
-//'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'	
 	foreach($dns as $dn){
 		if(!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))){
-			//$dn->update_ship_to($ship_to_key);
+			$dn->update_ship_to($ship_to_key);
 		}
 	}
 	
@@ -4861,46 +4826,7 @@ function update_order_special_intructions($data) {
 
 
 
-function pay_invoice($data) {
 
-	$invoice=new Invoice($data['invoice_key']);
-
-
-
-	switch ($data['method']) {
-	case 'pay_by_creditcard':
-		$method='Credit Card';
-		break;
-	case 'pay_by_bank_transfer':
-		$method='Bank Transfer';
-		break;
-	case 'pay_by_paypal':
-		$method='Paypal Card';
-		break;
-	case 'pay_by_cash':
-		$method='Cash';
-		break;
-	case 'pay_by_cheque':
-		$method='Check';
-		break;
-	default:
-		$method='Other';
-	}
-
-	$payment_data=array('amount'=>$data['pay_amount'],'Payment Method'=>$method);
-	$invoice->pay('',$payment_data);
-
-	if (!$invoice->error) {
-		$response= array('state'=>200,'msg'=>'paid','invoice_key'=>$invoice->id);
-		echo json_encode($response);
-
-	}else {
-		$response= array('state'=>400,'msg'=>$invoice->msg);
-		echo json_encode($response);
-	}
-
-
-}
 
 
 
@@ -5510,48 +5436,7 @@ function edit_delivery_note($data) {
 
 
 }
-function set_payment_as_completed($data) {
 
-	$payment_transaction_id=$data['payment_transaction_id'];
-	$payment_key=$data['payment_key'];
-
-	$payment=new Payment($payment_key);
-	$payment_account=new Payment_Account($payment->data['Payment Account Key']);
-
-	$order_key=$payment->data['Payment Order Key'];
-	$order=new Order($order_key);
-	$data_to_update=array(
-
-		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Transaction Status'=>'Completed',
-		'Payment Transaction ID'=>$payment_transaction_id,
-
-	);
-
-
-	$payment->update($data_to_update);
-	$order=new Order($payment->data['Payment Order Key']);
-
-	$order->update(
-		array(
-			'Order Payment Account Key'=>$payment_account->id,
-			'Order Payment Account Code'=>$payment_account->data['Payment Account Code'],
-			'Order Payment Method'=>$payment_account->data['Payment Type'],
-			'Order Payment Key'=>$payment->id,
-			'Order Checkout Completed Payment Date'=>gmdate('Y-m-d H:i:s')
-		));
-
-	$order->checkout_submit_order();
-
-
-
-
-
-
-	send_confirmation_email($order);
-
-}
 
 function new_refund($data) {
 
@@ -5682,118 +5567,7 @@ function new_refund($data) {
 
 
 
-function add_payment_to_order($data) {
 
-	$order=new Order($data['parent_key']);
-	$payment_account=new Payment_Account($data['payment_account_key']);
-
-	if (!$order->id) {
-		$response=array('state'=>400,'msg'=>'error: order dont exists','type_error'=>'invalid_order_key');
-		echo json_encode($response);
-		return;
-	}
-
-
-
-	if (!$payment_account->id) {
-		$response=array('state'=>400,'msg'=>'error: payment account dont exists','type_error'=>'invalid_payment_account_keyy');
-		echo json_encode($response);
-		return;
-	}
-
-	if (!$payment_account->in_store($order->data['Order Store Key'])) {
-		$response=array('state'=>400,'msg'=>'error: payment account not in this site','type_error'=>'payment_account_not_in_store');
-		echo json_encode($response);
-		return;
-	}
-
-
-	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
-
-
-	$billing_to=new Billing_To($order->data['Order Billing To Keys']);
-
-
-	$payment_data=array(
-		'Payment Account Key'=>$payment_account->id,
-		'Payment Account Code'=>$payment_account->data['Payment Account Code'],
-
-		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
-		'Payment Order Key'=>$order->id,
-		'Payment Store Key'=>$order->data['Order Store Key'],
-		'Payment Customer Key'=>$order->data['Order Customer Key'],
-
-		'Payment Balance'=>$data['payment_amount'],
-		'Payment Amount'=>$data['payment_amount'],
-		'Payment Refund'=>0,
-		'Payment Currency Code'=>$order->data['Order Currency'],
-		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Transaction Status'=>'Completed',
-		'Payment Transaction ID'=>$data['payment_reference'],
-		'Payment Method'=>$data['payment_method']
-
-	);
-
-	$payment=new Payment('create',$payment_data);
-
-	$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
-		$order->id,
-		$payment->id,
-		$payment_account->id,
-		$payment_account->data['Payment Service Provider Key'],
-		$payment->data['Payment Amount'],
-		$payment->data['Payment Amount']
-	);
-	mysql_query($sql);
-
-
-	$order->update_payment_state();
-
-
-	$updated_data=array(
-		'order_items_gross'=>$order->get('Items Gross Amount'),
-		'order_items_discount'=>$order->get('Items Discount Amount'),
-		'order_items_net'=>$order->get('Items Net Amount'),
-		'order_net'=>$order->get('Total Net Amount'),
-		'order_tax'=>$order->get('Total Tax Amount'),
-		'order_charges'=>$order->get('Charges Net Amount'),
-		'order_credits'=>$order->get('Net Credited Amount'),
-		'order_shipping'=>$order->get('Shipping Net Amount'),
-		'order_total'=>$order->get('Total Amount'),
-		'order_total_paid'=>$order->get('Payments Amount'),
-		'order_total_to_pay'=>$order->get('To Pay Amount')
-
-	);
-
-	$payments_data=array();
-	foreach ($order->get_payment_objects('',true,true) as $payment) {
-		$payments_data[$payment->id]=array(
-			'date'=>$payment->get('Created Date'),
-			'amount'=>$payment->get('Amount'),
-			'status'=>$payment->get('Payment Transaction Status')
-		);
-	}
-
-
-
-	$response=array('state'=>200,
-		'result'=>'updated',
-		'order_shipping_method'=>$order->data['Order Shipping Method'],
-		'data'=>$updated_data,
-		'shipping'=>money($order->new_value),
-		'shipping_amount'=>$order->data['Order Shipping Net Amount'],
-		'ship_to'=>$order->get('Order XHTML Ship Tos'),
-		'tax_info'=>$order->get_formated_tax_info_with_operations(),
-		'payments_data'=>$payments_data,
-		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
-	);
-
-	echo json_encode($response);
-
-}
 
 
 function delivery_note_undo_dispatch($data) {

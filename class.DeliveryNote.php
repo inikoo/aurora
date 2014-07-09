@@ -186,22 +186,32 @@ class DeliveryNote extends DB_Table {
 		if ($this->data ['Delivery Note Dispatch Method']=='Collection') {
 
 			$this->data ['Delivery Note Shipper Code']='';
-			$this->data ['Delivery Note XHTML Ship To'] = _('For collection');
 			$store=new Store($this->data['Delivery Note Store Key']);
 			$collection_address=new Address($store->data['Store Collection Address Key']);
 			if ($collection_address->id) {
 				$this->data ['Delivery Note Country 2 Alpha Code'] =$collection_address->data['Address Country 2 Alpha Code'];
 				$this->data ['Delivery Note Country Code']=$collection_address->data['Address Country Code'];
-				$this->data ['Delivery Note World Region Code']=$collection_address->data['Address World Region'];
+				$this->data ['Delivery Note World Region Code']=$collection_address->get('Address World Region Code');
 				$this->data ['Delivery Note Town']=$collection_address->data['Address Town'];
 				$this->data ['Delivery Note Postal Code']=$collection_address->data['Address Postal Code'];
+				$this->data ['Delivery Note XHTML Ship To'] = '<div><b>'._('For collection').'</b></div><div style="color:#777">'.$collection_address->display('xhtml').'</div>';
+
 
 			} else {
-				$this->data ['Delivery Note Country 2 Alpha Code'] ='XX';
-				$this->data ['Delivery Note Country Code']='UNK';
-				$this->data ['Delivery Note World Region Code']='UNKN';
+			
+			include_once('class.Country.php');
+					$country=new Country('2alpha',$store->data['Store Home Country Code 2 Alpha']);
+				
+				
+			
+			
+				$this->data ['Delivery Note Country 2 Alpha Code'] =$country->data['Country 2 Alpha Code'];
+				$this->data ['Delivery Note Country Code']=$country->data['Country Code'];
+				$this->data ['Delivery Note World Region Code']=$country->data['World Region Code'];
 				$this->data ['Delivery Note Town']='';
 				$this->data ['Delivery Note Postal Code']='';
+				$this->data ['Delivery Note XHTML Ship To'] = '<div><b>'._('For collection').'</b></div>';
+
 			}
 
 
@@ -3496,6 +3506,127 @@ $this->data ['Delivery Note Number Pickers']=1;
 	
 	
 	
+	
+	
+	function update_is_for_collection($_value) {
+
+		if ($_value!='Yes')
+			$_value='No';
+			
+			
+	if($_value=='Yes'){
+		$value='Collection';
+	}else{
+	
+	$value='Dispatch';
+	}
+		//	print $value;
+
+		$old_value=$this->data['Delivery Note Dispatch Method'];
+	
+
+			if ($value=='Collection') {
+				$store=new Store($this->data['Delivery Note Store Key']);
+				$collection_address=new Address($store->data['Store Collection Address Key']);
+				if ($collection_address->id) {
+					$store_2_alpha_country_code=$collection_address->data['Address Country 2 Alpha Code'];
+					$store_country_code=$collection_address->data['Address Country Code'];
+					$store_town_code=$collection_address->data['Address Town'];
+					$store_world_region_code=$collection_address->get('Address World Region Code');
+					$store_postal_code=$collection_address->data['Address Postal Code'];
+				$store_address = '<div><b>'._('For collection').'</b></div><div style="color:#777">'.$collection_address->display('xhtml').'</div>';
+
+				} else {
+				
+					include_once('class.Country.php');
+					$country=new Country('2alpha',$store->data['Store Home Country Code 2 Alpha']);
+				
+					$store_2_alpha_country_code=$country->data['Country 2 Alpha Code'];
+					$store_country_code=$country->data['Country Code'];
+					$store_town_code='';
+					$store_world_region_code=$country->data['World Region Code'];
+					$store_postal_code='';
+				$store_address = '<div><b>'._('For collection').'</b></div>';
+
+
+				}
+				
+				$sql=sprintf("update `Delivery Note Dimension` set 
+				`Delivery Note Dispatch Method`=%s ,
+				`Delivery Note Country Code`=%s,
+				`Delivery Note Country 2 Alpha Code`=%s,
+				`Delivery Note World Region Code`=%s,
+				`Delivery Note Town`=%s,
+				`Delivery Note Postal Code`=%s,
+				`Delivery Note XHTML Ship To`=%s,
+				`Delivery Note Ship To Key`=NULL
+				where `Delivery Note Key`=%d"
+					,prepare_mysql($value)
+					,prepare_mysql($store_country_code)
+					,prepare_mysql($store_2_alpha_country_code)
+					,prepare_mysql($store_world_region_code)
+					,prepare_mysql($store_town_code)
+					,prepare_mysql($store_postal_code)
+					,prepare_mysql($store_address)
+					,$this->id
+				);
+				
+				
+			
+			}
+			else {
+				$customer=new Customer($this->data['Delivery Note Customer Key']);
+
+				$ship_to= $customer->set_current_ship_to('return object');
+
+				$sql=sprintf("update `Delivery Note Dimension` set 
+`Delivery Note Dispatch Method`=%s ,
+				`Delivery Note Country Code`=%s,
+				`Delivery Note Country 2 Alpha Code`=%s,
+				`Delivery Note World Region Code`=%s,
+				`Delivery Note Town`=%s,
+				`Delivery Note Postal Code`=%s,
+				`Delivery Note XHTML Ship To`=%s,
+				`Delivery Note Ship To Key`=%d				
+				where `Delivery Note Key`=%d"
+				,prepare_mysql($value)
+				
+					,prepare_mysql($ship_to->data['Ship To Country Code'])
+					,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
+					,prepare_mysql($ship_to->get('World Region Code'))
+					,prepare_mysql($ship_to->data['Ship To Town'])
+					,prepare_mysql($ship_to->data['Ship To Postal Code'])
+
+					,prepare_mysql($ship_to->display('xhtml'))
+					,$ship_to->id
+					,$this->id
+				);
+			
+			}
+			
+			
+				
+				mysql_query($sql);
+//print $sql;
+
+			
+			
+			
+			$this->get_data('id',$this->id);
+			$this->new_value=$value;
+			$this->updated=true;
+
+		
+
+
+
+		
+
+
+	}
+	
+	
+	
 	function update_ship_to($ship_to_key) {
 
 	
@@ -3517,9 +3648,10 @@ $this->data ['Delivery Note Number Pickers']=1;
 
 
 		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Dispatch Method`='Dispatch' ,`Delivery Note Ship To Key`=%d,  
-		Delivery Note Country 2 Alpha Code`=%s,`Delivery Note XHTML Ship To`=%s,`Delivery Note Country Code`=%s  ,`Delivery Note Ship To World Region Code`=%s,`Delivery Note Ship To Town`=%s,`Delivery Note Ship To Postal Code`=%s   where `Delivery Note Key`=%d"
+		Delivery Note Country 2 Alpha Code`=%s,`Delivery Note XHTML Ship To`=%s,`Delivery Note Country Code`=%s  ,
+		`Delivery Note World Region Code`=%s,`Delivery Note Town`=%s,`Delivery Note Postal Code`=%s   where `Delivery Note Key`=%d"
 			,$ship_to->id
-			,prepare_mysql($ship_to->data['Ship To 2 Alpha Country Code'])
+			,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
 			,prepare_mysql($ship_to->data['Ship To XHTML Address'])
 			,prepare_mysql($ship_to->data['Ship To Country Code'])
 			,prepare_mysql($ship_to->get('World Region Code'))
@@ -3538,10 +3670,7 @@ $this->data ['Delivery Note Number Pickers']=1;
 			$this->msg=_('Nothing to change');
 		}
 
-		$this->update_shipping();
-		if ($this->data['Delivery Note Tax Selection Type']!='set') {
-			$this->update_tax();
-		}
+		
 
 	}
 	

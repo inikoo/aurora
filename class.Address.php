@@ -1368,6 +1368,11 @@ class Address extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
+		
+		case('Address World Region Code'):	
+		$country=new Country('code',$this->data['Address Country Code']);
+		return $country->data['World Region Code'];
+		break;
 		case('Type'):
 		case('Function'):
 

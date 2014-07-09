@@ -491,6 +491,40 @@ class Order extends DB_Table {
 	}
 
 
+function set_as_in_process(){
+	
+	$date=gmdate("Y-m-d H:i:s");
+
+		if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
+			$this->error=true;
+			$this->msg='Order is not in process by customer: xx  '.$this->id.' '.$this->data['Order Current Dispatch State'];
+			return;
+
+		}
+		$this->data['Order Current Dispatch State']='In Process';
+		$this->data['Order Current XHTML Dispatch State']='In Process';
+
+
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Last Updated Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
+			,prepare_mysql($date)
+			,prepare_mysql($date)
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+
+			,$this->id
+		);
+
+
+
+		mysql_query($sql);
+		$this->update_payment_state();
+	
+	}
+
+
+
 	function checkout_submit_order() {
 
 		$date=gmdate("Y-m-d H:i:s");
@@ -4854,15 +4888,25 @@ class Order extends DB_Table {
 					$store_2_alpha_country_code=$collection_address->data['Address Country 2 Alpha Code'];
 					$store_country_code=$collection_address->data['Address Country Code'];
 					$store_town_code=$collection_address->data['Address Town'];
-					$store_world_region_code=$collection_address->data['Address World Region'];
+					$store_world_region_code=$collection_address->get('Address World Region Code');
 					$store_postal_code=$collection_address->data['Address Postal Code'];
+				    $store_address = '<div style="font-weight:800">'._('For collection').'</div>'.$collection_address->display('xhtml');
+
 
 				} else {
-					$store_2_alpha_country_code='XX';
-					$store_country_code='UNK';
+				
+					include_once('class.Country.php');
+					$country=new Country('2alpha',$store->data['Store Home Country Code 2 Alpha']);
+				
+					$store_2_alpha_country_code=$country->data['Country 2 Alpha Code'];
+					$store_country_code=$country->data['Country Code'];
 					$store_town_code='';
-					$store_world_region_code='UNKN';
+					$store_world_region_code=$country->data['World Region Code'];
 					$store_postal_code='';
+			$store_address = '<div style="font-weight:800">'._('For collection').'</div>';
+			
+				
+				
 
 
 				}
@@ -4880,7 +4924,7 @@ class Order extends DB_Table {
 					,prepare_mysql($store_world_region_code)
 					,prepare_mysql($store_town_code)
 					,prepare_mysql($store_postal_code)
-					,prepare_mysql($collection_address->display('xhtml'))
+					,prepare_mysql($store_address)
 					,$this->id
 				);
 				mysql_query($sql);
@@ -4896,9 +4940,11 @@ class Order extends DB_Table {
 
 
 
-				$sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  ,`Order Ship To World Region Code`=%s,`Order Ship To Town`=%s,`Order Ship To Postal Code`=%s      where `Order Key`=%d"
-					,prepare_mysql($ship_to->data['Ship To Country Code'])
-
+				$sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,
+				`Order Ship To Country 2 Alpha Code`=%s,
+				`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  ,`Order Ship To World Region Code`=%s,`Order Ship To Town`=%s,`Order Ship To Postal Code`=%s      where `Order Key`=%d"
+					,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
+,prepare_mysql($ship_to->data['Ship To Country Code'])
 					,prepare_mysql($ship_to->data['Ship To XHTML Address'])
 					,prepare_mysql($ship_to->id)
 					,prepare_mysql($ship_to->get('World Region Code'))

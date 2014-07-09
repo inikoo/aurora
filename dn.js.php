@@ -42,7 +42,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  
 					 ];
 
-	    this.OrdersDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_in_process_in_dn&tid=0");
+	    this.OrdersDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_in_process_in_dn&tid=0&id="+Dom.get('dn_key').value);
 	    this.OrdersDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.OrdersDataSource.connXhrMode = "queueRequests";
 	    this.OrdersDataSource.responseSchema = {

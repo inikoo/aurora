@@ -45,7 +45,8 @@ $transactions=array();
 
 
 
-$sql=sprintf("select  `Map To Order Transaction Fact Parts Multiplicity` as part_multiplicity,`Map To Order Transaction Fact XHTML Info` as multiple_parts_info,Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Part Current Stock`,`Part Reference` as reference,`Picking Note` as notes,ITF.`Part SKU`,`Part Unit Description` as description,`Required` as qty,`Location Code` as location from 
+$sql=sprintf("select  `Map To Order Transaction Fact Parts Multiplicity` as part_multiplicity,`Map To Order Transaction Fact XHTML Info` as multiple_parts_info,Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Part Current Stock`,`Part Reference` as reference,`Picking Note` as notes,ITF.`Part SKU`,`Part Unit Description` as description,
+(`Required`+`Given`) as qty,`Location Code` as location from 
 `Inventory Transaction Fact` ITF   left join  
 `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  
 `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  left join 
@@ -69,7 +70,24 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 $smarty->assign('transactions',$transactions);
 
+$number_of_items=0;
+$number_of_picks=0;
+$sql=sprintf("select count(*) as items,sum(`Required`+`Given`) as picks from `Inventory Transaction Fact`  where `Delivery Note Key`=%d ",
+$delivery_note->id
+);
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+$number_of_items=$row['items'];
+$number_of_picks=$row['picks'];
+}
 
+//print $sql;
+
+$formated_number_of_items='<b>'.number($number_of_items).'</b> '.ngettext('item', 'items', $number_of_items);
+$formated_number_of_picks='<b>'.number($number_of_picks).'</b> '.ngettext('pick', 'picks', $number_of_picks);
+
+$smarty->assign('formated_number_of_items',$formated_number_of_items);
+$smarty->assign('formated_number_of_picks',$formated_number_of_picks);
 
 
 $html=$smarty->fetch('order_pick_aid.pdf.tpl');

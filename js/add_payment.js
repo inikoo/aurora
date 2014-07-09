@@ -15,7 +15,7 @@ function save_add_payment() {
         Dom.setStyle(['save_add_payment', 'close_add_payment'], 'display', 'none')
 
 
-        var request = 'ar_edit_orders.php?tipo=add_payment&payment_amount=' + Dom.get('add_payment_amount').value + "&payment_method=" + Dom.get('add_payment_method').value + "&payment_reference=" + Dom.get('add_payment_reference').value + "&payment_account_key=" + Dom.get('add_payment_payment_account_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
+        var request = 'ar_edit_payments.php?tipo=add_payment&payment_amount=' + Dom.get('add_payment_amount').value + "&payment_method=" + Dom.get('add_payment_method').value + "&payment_reference=" + Dom.get('add_payment_reference').value + "&payment_account_key=" + Dom.get('add_payment_payment_account_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
 
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
@@ -35,6 +35,33 @@ function save_add_payment() {
 
 
 }
+
+
+function cancel_payment(payment_key){
+
+
+ var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' +payment_key+'&order_key='+Dom.get('order_key').value;
+
+
+
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                  alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+
+                location.reload()
+
+                if (r.state == 200) {
+
+                } else {}
+
+            }
+        });
+
+
+}
+
+
 
 
 function add_payment(parent, parent_key) {
