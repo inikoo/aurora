@@ -1496,7 +1496,7 @@ function list_parts_marked_as_out_of_stock() {
 
 	$adata=array();
 
-	//print $sql;
+	print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
