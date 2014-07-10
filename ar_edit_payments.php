@@ -534,9 +534,9 @@ function online_paypal_refund($refund_amount,$payment) {
 	);
 	
 	
-	print_r($aryData);
+//	print_r($aryData);
 	
-	exit;
+	//exit;
 	
 	$aryRes = $ref->refundAmount($aryData);
 
