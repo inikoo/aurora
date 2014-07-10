@@ -19,17 +19,20 @@ function save_refund_payment(){
 
 
         var request = 'ar_edit_payments.php?tipo=refund_payment&refund_amount=' + Dom.get('refund_payment_amount').value + "&refund_payment_method=" + Dom.get('refund_payment_method').value + "&refund_reference=" + Dom.get('refund_payment_reference').value + "&payment_key=" + Dom.get('refund_payment_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
-alert(request);return;
+//alert(request);return;
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
                 //      alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
-                location.reload()
+              
 
                 if (r.state == 200) {
-
-                } else {}
+  location.reload()
+                } else {
+                
+                 alert(o.responseText)
+                }
 
             }
         });
