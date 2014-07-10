@@ -540,6 +540,8 @@ function online_paypal_refund($refund_amount,$payment) {
 	
 	$aryRes = $ref->refundAmount($aryData);
 
+print_r($aryRes);
+
 	if ($aryRes['ACK'] == "Success") {
 
 		$refunded_data=array(
