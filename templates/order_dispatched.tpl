@@ -118,20 +118,27 @@
 					<td width="100" class="aright">{$order->get('Invoiced Total Tax Adjust Amount')}</td>
 				</tr>
 				{/if} 
-				<tr style="border-bottom:1px solid #777">
+					<tr>
 						<td class="aright">{t}Total{/t}</td>
-						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
+						<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
 					</tr>
-					
-				<tr id="tr_order_total_paid" style="border-top:1px solid #777;">
-						<td class="aright"><img id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}">  {t}Paid{/t}</td>
-						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
+					<tr id="tr_order_total_paid_invoiced" style="border-top:1px solid #777;">
+						<td class="aright"><img id="order_paid_info_invoiced" src="art/icons/information.png" style="height:14px;vertical-align:-1.5px" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
+						<td id="order_total_paid_invoiced" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
-				<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright"><div id="show_add_payment_to_order"  class="buttons small left" onclick="add_payment('order','{$order->id}','{$order->get('Order To Pay Amount')}')"><button><img  src="art/icons/add.png"> {t}Payment{/t}</button></div>  {t}To Pay{/t}</td>
-						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+					<tr id="tr_order_total_to_pay_invoiced" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
+						<td class="aright"> 
+												<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}">
+
+						<div class="buttons small left">
+							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
+						</div>
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span>
+						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
+
+						<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
-				
+
 			</table>
 		</div>
 		<div id="dates">
