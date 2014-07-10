@@ -584,7 +584,7 @@ function online_worldpay_refund($refund_amount,$payment) {
 	$option = 0;        // always the same
 
 
-	$sigNotMd5 = $payment->payment_account->data['Payment Account Password'];
+	$sigNotMd5 = $payment->payment_account->data['Payment Account Refund Signature'];
 
 
 
@@ -623,11 +623,7 @@ function online_worldpay_refund($refund_amount,$payment) {
     curl_close($ch);
 
 
-	var_dump($request);
-	print " HOLA ";
-var_dump($response);
-print " HOLA ";
-exit;
+	
 	$respond_array=preg_split('/\,/',$response);
 	if (count($respond_array)==3) {
 
