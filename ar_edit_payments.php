@@ -614,7 +614,7 @@ function online_worldpay_refund($refund_amount,$payment) {
 	$response=file_get_contents(urlencode($request));
 
 
-	var_dump($response);
+	var_dump($request);
 
 print " HOLA ";
 exit;
