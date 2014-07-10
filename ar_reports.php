@@ -1782,7 +1782,7 @@ $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 	$adata=array();
 
-	print $sql;
+	//print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
