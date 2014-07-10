@@ -643,7 +643,7 @@ function online_worldpay_refund($refund_amount,$payment) {
 
 	}
 
-
+return $refunded_data;
 
 
 }
