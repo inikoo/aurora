@@ -540,7 +540,7 @@ function online_paypal_refund($refund_amount,$payment) {
 	
 	$aryRes = $ref->refundAmount($aryData);
 
-print_r($aryRes);
+//print_r($aryRes);
 
 	if ($aryRes['ACK'] == "Success") {
 
@@ -559,6 +559,68 @@ print_r($aryRes);
 	return $refunded_data;
 
 }
+
+function online_worldpay_refund($refund_amount,$payment){
+
+
+$url =$payment->payment_account->data['Payment Account Refund URL Link'];   
+
+$authPW = $payment->payment_account->data['Payment Account Refund Password'];
+
+$instId =$payment->payment_account->data['Payment Account Refund Login'];  
+
+$cartId = "Refund";  // always the same
+$testMode = "0";   // 0 when live
+
+$amount = round(-1.0*$refund_amount,2); // amount of refund 
+$normalAmount = $amount;
+$op= "refund-partial";  // for full refund change to 'refund-full' and  amount  ='';
+$transId = $payment->data['Payment Transaction ID']; // 	Payment Transaction ID
+$Currency = $payment->data['Payment Currency Code'];  //Payment Currency Code
+$startDelayUnit = 4;  // always the same
+$startDelayMult = 1; // always the same
+$intervalMult = 1;   // always the same
+$intervalUnit = 4;  // always the same
+$option = 0;        // always the same
+
+
+$sigNotMd5 = $payment->payment_account->data['Payment Account Password']; 
+
+
+
+$signature = $sigNotMd5 . ":".$instId.":" . $Currency . ":" . $amount;
+$signature = md5($signature);
+
+ $request=printf ("https://%s?authPW=%s&instId=%s&cartId=%s&testMode=%s&signature=%s&normalAmount=%s&op=%s&transId=%s&amount=%s&currency=%s&startDelayUnit=%s&startDelayMult=%s&intervalMult=%s&intervalUnit=%s&option=%s",
+  $url,
+  $authPW,
+  $instId,
+  $cartId,
+  $testMode,
+  $signature,
+  $normalAmount,
+  $op,
+  $transId,
+  $amount,
+  $Currency,
+  $startDelayUnit,
+  $startDelayMult,
+  $intervalMult,
+  $intervalUnit,
+  $option
+ );
+ 
+ print  $request;
+ exit;
+ //$response=file_get_contents($request);
+ 
+ 
+ 
+ 
+
+}
+
+
 
 
 ?>
