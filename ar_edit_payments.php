@@ -611,9 +611,11 @@ function online_worldpay_refund($refund_amount,$payment) {
 	);
 
 print  $request.'   XX ';
-	$response=file_get_contents($request);
+	$response=file_get_contents(urlencode($request));
 
-	print  $response;
+	var_dump($response);
+
+print " YY ";
 
 	$respond_array=preg_split('/\,/',$response);
 	if (count($respond_array)==3) {
