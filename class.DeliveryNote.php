@@ -3057,7 +3057,8 @@ class DeliveryNote extends DB_Table {
 			$otf_key=$row['Map To Order Transaction Fact Key'];
 
 
-			$sql=sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f ,`Not Found`=%f,`No Picked Other`=%f where `Inventory Transaction Key`=%d ",
+			$sql=sprintf("update `Inventory Transaction Fact` set `Date`=%s,`Out of Stock`=%f ,`Not Found`=%f,`No Picked Other`=%f where `Inventory Transaction Key`=%d ",
+				prepare_mysql ($date),
 				$data['Out of Stock'],
 				$data['Not Found'],
 				$data['No Picked Other'],
