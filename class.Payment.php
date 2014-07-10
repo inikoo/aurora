@@ -103,6 +103,9 @@ class Payment extends DB_Table {
 
 		switch ($key) {
 		
+		case('Max Payment to Refund'):
+			return round($this->data['Payment Amount']+$this->data['Payment Refund'],2);
+		break;
 		case 'Transaction Status':
 		switch ($this->data['Payment Transaction Status']) {
 		//'Pending','Completed','Cancelled','Error'

@@ -25,6 +25,25 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 
+case ('refund_payment'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+
+			'parent_key'=>array('type'=>'key'),
+			'refund_reference'=>array('type'=>'string'),
+			'refund_payment_method'=>array('type'=>'string'),
+			'refund_amount'=>array('type'=>'numeric'),
+			'payment_key'=>array('type'=>'key')
+
+
+
+
+		));
+
+
+	refund_payment($data);
+
+	break;
 case('add_payment'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -58,15 +77,15 @@ case('set_payment_as_completed'):
 	set_payment_as_completed($data);
 	break;
 
-case('cancel_payment'):	
-$data=prepare_values($_REQUEST,array(
+case('cancel_payment'):
+	$data=prepare_values($_REQUEST,array(
 			'payment_key'=>array('type'=>'key'),
-'order_key'=>array('type'=>'key')
+			'order_key'=>array('type'=>'key')
 		));
 	cancel_payment($data);
 	break;
 
-break;
+	break;
 
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
@@ -77,11 +96,11 @@ default:
 
 
 
-function cancel_payment($data){
+function cancel_payment($data) {
 
-$payment_key=$data['payment_key'];
-$payment=new Payment($payment_key);
-$order=new Order($data['order_key']);
+	$payment_key=$data['payment_key'];
+	$payment=new Payment($payment_key);
+	$order=new Order($data['order_key']);
 
 
 
@@ -142,7 +161,7 @@ $order=new Order($data['order_key']);
 
 	if ($pending_payments==0) {
 
-			if (  count($order->get_payment_keys('Completed'))) {
+		if (  count($order->get_payment_keys('Completed'))) {
 
 			$order->set_as_in_process();
 		}else {
@@ -352,6 +371,145 @@ function add_payment_to_order($data) {
 }
 
 
+function refund_payment($data) {
+
+	$refund_amount=round($data[refund_amount],2);
+
+	$payment=new Payment($data['payment_key']);
+	$payment->load_payment_account();
+	$payment->load_payment_service_provider();
+	if ($data['refund_payment_method']=='online') {
+
+		if ($payment->payment_account->data['Payment Account Online Refund']=='Yes') {
+
+			switch ($payment->payment_service_provider->data['Payment Service Provider Code']) {
+			case 'Paypal':
+				$refunded_data=online_paypal_refund($data,$payment);
+				break;
+			case 'Worldpay':
+				$refunded_data=online_worldpay_refund($data,$payment);
+				break;
+			default:
+				$response=array('state'=>400,'msg'=>"Error 2. Payment account can't do online refunds");
+				echo json_encode($response);
+				return;
+			}
+
+		}else {
+			$response=array('state'=>400,'msg'=>"Payment account can't do online refunds");
+			echo json_encode($response);
+			return;
+		}
+
+	}else {
+
+		$refunded_data=array(
+			'refund_ok'=>true,
+			'reference'=>$data['refund_reference'],
+		);
+
+	}
+
+
+
+
+	if ($data['parent']=='order') {
+		$order_key=$data['parent_key'];
+	}else {
+		$order_key=0;
+	}
+
+	$payment->update(array(
+			'Payment Refund'=>round($payment->data['Payment Refund']+$refund_amount,2)
+		));
+
+	$payment_data=array(
+		'Payment Account Key'=>$payment->data['Payment Account Key'],
+		'Payment Account Code'=>$payment->data['Payment Account Code'],
+		'Payment Type'=>'Refund',
+
+		'Payment Service Provider Key'=>$payment->data['Service Provider Key'],
+		'Payment Order Key'=>$order_key,
+		'Payment Store Key'=>$payment->data['Payment Store Key'],
+		'Payment Customer Key'=>$payment->data['Payment Customer Key'],
+
+		'Payment Balance'=>$refund_amount,
+		'Payment Amount'=>$refund_amount,
+		'Payment Refund'=>0,
+		'Payment Currency Code'=>$payment->data['Payment Currency Code'],
+		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction ID'=>$refunded_data['payment_reference'],
+		'Payment Method'=>$payment->data['Payment Method'],
+
+	);
+
+	$refund_payment=new Payment('create',$payment_data);
+
+
+
+
+	$order=new Order($order_key);
+	if ($order->id) {
+
+		$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+			$order->id,
+			$refund_payment->id,
+			$payment_account->id,
+			$payment_account->data['Payment Service Provider Key'],
+			$refund_payment->data['Payment Amount'],
+			$refund_payment->data['Payment Amount']
+		);
+		mysql_query($sql);
+		$order->update_payment_state();
+
+
+		$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount'),
+			'order_total_paid'=>$order->get('Payments Amount'),
+			'order_total_to_pay'=>$order->get('To Pay Amount')
+
+		);
+
+		$payments_data=array();
+		foreach ($order->get_payment_objects('',true,true) as $payment) {
+			$payments_data[$payment->id]=array(
+				'date'=>$payment->get('Created Date'),
+				'amount'=>$payment->get('Amount'),
+				'status'=>$payment->get('Payment Transaction Status')
+			);
+		}
+
+
+
+		$response=array('state'=>200,
+			'result'=>'updated',
+			'order_shipping_method'=>$order->data['Order Shipping Method'],
+			'data'=>$updated_data,
+			'shipping'=>money($order->new_value),
+			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info_with_operations(),
+			'payments_data'=>$payments_data,
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount']
+		);
+
+		echo json_encode($response);
+	}
+
+
+}
 
 
 ?>

@@ -50,10 +50,13 @@
 <div id="dialog_refund_payment" style="padding:20px 20px 10px 20px">
 	<input type="hidden" value="" id="refund_payment_key"> 
 	<input type="hidden" value="" id="refund_payment_max_amount"> 
+	<input type="hidden" value="" id="refund_payment_method"> 
+
 	<table style="font-size:110%;border-top:1px solid #ccc">
 		<tr>
 			<td>{t}Amount{/t}:</td>
 			<td style="text-align:right"> 
+			
 			<input onkeyup="update_refund_payment_amount(this)" type="text" style="display:none;text-align:right" id="refund_payment_amount" value=""> <span style="font-weight:800" id="refund_payment_amount_formated"></span> </td>
 			<td> 
 			<div class="buttons small">
@@ -61,10 +64,24 @@
 			</div>
 			</td>
 		</tr>
-		<tr>
+		
+		<tr id="refund_payment_method_tr">
+		<td>{t}Method{/t}:</td>
+		<td colspan="2">
+		
+		<div class="buttons small left">
+			<button onClick="change_refund_payment('online')" id="refund_payment_online">{t}Online{/t}</button>
+			<button onClick="change_refund_payment('manual')" id="refund_payment_manual">{t}Manual{/t}</button>
+		</div>
+		
+		</td>
+		</tr>
+		
+		
+		<tr id="refund_payment_reference_tr">
 			<td>{t}Reference{/t}:</td>
 			<td> 
-			<input onkeyup="can_submit_payment()" id="refund_payment_reference"></td>
+			<input onkeyup="can_submit_refund()" id="refund_payment_reference"></td>
 		</tr>
 		<tr style="height:5px">
 			<td colspan="2"></td>
