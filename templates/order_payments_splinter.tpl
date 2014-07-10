@@ -15,7 +15,13 @@
 		</tr>
 		{foreach from=$order->get_payment_objects('',true,true) item=payment} 
 		<tr id="payment_{$payment->get('Payment Key')}" class="payment" payment_key="{$payment->get('Payment Key')}">
-			<td>{$payment->get('Payment Key')}</td>
+			<td>{$payment->get('Payment Key')}
+			<input type="hidden" id="payment_amount_{$payment->id}" value="{$payment->get('Payment Amount')}"  />
+			<input type="hidden" id="payment_refunded_amount_{$payment->id}" value="{$payment->get('Payment Refund')}"  />
+			<input type="hidden" id="payment_max_refund_amount_{$payment->id}" value="{$payment->get('Max Payment to Refund')}"  />
+			<input type="hidden" id="payment_online_refund_{$payment->id}" value="{$payment->payment_account->get('Payment Account Online Refund')}"  />
+
+			</td>
 			<td>{$payment->payment_service_provider->get('Payment Service Provider Name')} ({$payment->get('Method')})</td>
 			<td><span id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</span></td>
 			<td><span id="payment_status_{$payment->get('Payment Key')}">{$payment->get('Payment Transaction Status')}</span></td>
@@ -23,7 +29,7 @@
 			<td><span id="payment_reference_{$payment->get('Payment Key')}">{$payment->get('Payment Transaction ID')}</span></td>
 			<td style="width:200px"> 
 			<div class="buttons small left">
-				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Method')!='Account')}display:none{/if}" class="negative" onclick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> <button style="{if !( $payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Method')!='Account')}display:none{/if}" class="positive" onclick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> <button class="{if  $order->get('Order To Pay Amount')<0}positive{/if}" style="{if  $payment->get('Payment Method')=='Account' or $payment->get('Payment Transaction Status')!='Completed'}display:none{/if}" onclick="refund_payment({$payment->get('Payment Key')})">{t}Refund{/t}</button> <button class="positive" style="{if  !( $payment->get('Payment Balance')!=0  and $order->get_invoices_to_pay_abs_amount()!=0)  }display:none{/if}" onclick="refund_payment({$payment->get('Payment Key')})">{t}Pay Invoice{/t}</button> 
+				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Method')!='Account')}display:none{/if}" class="negative" onclick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> <button style="{if !( $payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Method')!='Account')}display:none{/if}" class="positive" onclick="confirm_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> <button id="add_refund_{$payment->id}" class="{if  $order->get('Order To Pay Amount')<0}positive{/if}" style="{if  $payment->get('Payment Method')=='Account' or $payment->get('Payment Transaction Status')!='Completed'}display:none{/if}" onclick="refund_payment({$payment->get('Payment Key')})">{t}Refund{/t}</button> <button class="positive" style="{if  !( $payment->get('Payment Balance')!=0  and $order->get_invoices_to_pay_abs_amount()!=0)  }display:none{/if}" onclick="refund_payment({$payment->get('Payment Key')})">{t}Pay Invoice{/t}</button> 
 			</div>
 			</td>
 		</tr>

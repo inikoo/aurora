@@ -4,6 +4,42 @@ var dialog_add_payment;
 var dialog_refund_payment;
 var dialog_add_credit_note_to_customer;
 
+
+
+
+function save_refund_payment(){
+
+  if (Dom.hasClass('save_refund_payment', 'disabled')) {
+        add_credit_note_show_errors()
+    } else {
+
+
+        Dom.setStyle('save_refund_payment_wait', 'display', '')
+        Dom.setStyle(['save_refund_payment', 'close_refund_payment'], 'display', 'none')
+
+
+        var request = 'ar_edit_payments.php?tipo=refund_payment&refund_amount=' + Dom.get('refund_payment_amount').value + "&refund_payment_method=" + Dom.get('refund_payment_method').value + "&refund_reference=" + Dom.get('refund_payment_reference').value + "&payment_key=" + Dom.get('refund_payment_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
+alert(request)
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                //      alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+
+                location.reload()
+
+                if (r.state == 200) {
+
+                } else {}
+
+            }
+        });
+
+    }
+
+
+}
+
+
 function save_add_payment() {
 
     if (Dom.hasClass('save_add_payment', 'disabled')) {
@@ -37,26 +73,26 @@ function save_add_payment() {
 }
 
 
-function cancel_payment(payment_key){
+function cancel_payment(payment_key) {
 
 
- var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' +payment_key+'&order_key='+Dom.get('order_key').value;
+    var request = 'ar_edit_payments.php?tipo=cancel_payment&payment_key=' + payment_key + '&order_key=' + Dom.get('order_key').value;
 
 
 
-        YAHOO.util.Connect.asyncRequest('POST', request, {
-            success: function(o) {
-                  alert(o.responseText)
-                var r = YAHOO.lang.JSON.parse(o.responseText);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
-                location.reload()
+            location.reload()
 
-                if (r.state == 200) {
+            if (r.state == 200) {
 
-                } else {}
+            } else {}
 
-            }
-        });
+        }
+    });
 
 
 }
@@ -67,7 +103,7 @@ function cancel_payment(payment_key){
 function add_payment(parent, parent_key) {
 
     if (parent == 'order') {
-    max_amount=Dom.get('show_add_payment_to_order').getAttribute('amount')
+        max_amount = Dom.get('show_add_payment_to_order').getAttribute('amount')
         add_payment_to_order(parent_key, max_amount)
     }
 
@@ -188,14 +224,59 @@ function can_submit_payment() {
     }
 }
 
+
+function can_submit_refund() {
+if(Dom.get('refund_payment_method').value=='online'){
+
+        Dom.removeClass('save_refund_payment', 'disabled')
+
+}else{
+
+  if ( Dom.get('refund_payment_reference').value != '') {
+        Dom.removeClass('save_refund_payment', 'disabled')
+    } else {
+        Dom.addClass('save_refund_payment', 'disabled')
+
+    }
+}
+
+
+
+  
+}
+
+
 function hide_add_payment() {
     dialog_add_payment.hide()
 }
 
 
-function add_credit_note_to_customer(){
+function hide_refund_payment() {
+    dialog_refund_payment.hide()
+}
 
- Dom.get('add_payment_reference').value = '';
+function change_refund_payment(method) {
+    Dom.removeClass(['refund_payment_online', 'refund_payment_manual'], 'selected')
+
+    Dom.addClass('refund_payment_' + method, 'selected')
+    Dom.get('refund_payment_method').value = method
+
+    if (method == 'online') {
+        Dom.setStyle('refund_payment_reference_tr', 'display', 'none')
+
+
+    } else {
+        Dom.setStyle('refund_payment_reference_tr', 'display', '')
+
+    }
+can_submit_refund()
+
+}
+
+
+function add_credit_note_to_customer() {
+
+    Dom.get('add_payment_reference').value = '';
     Dom.get('add_payment_max_amount').value = max_amount;
     Dom.get('add_payment_amount').value = max_amount;
 
@@ -218,6 +299,61 @@ function add_credit_note_to_customer(){
 
 }
 
+
+function refund_payment(payment_key) {
+
+ Dom.get('refund_payment_key').value=payment_key;
+
+    if (Dom.get('to_pay_label_amount').value < 0) {
+
+        refund_amount = Dom.get('to_pay_label_amount').value
+    } else {
+        refund_amount = Dom.get('payment_max_refund_amount_' + payment_key).value
+
+    }
+
+    if (Dom.get('payment_online_refund_' + payment_key).value == 'Yes') {
+        Dom.get('refund_payment_method').value = 'online';
+
+    } else {
+        Dom.get('refund_payment_method').value = 'manual'
+
+    }
+
+
+
+    if (Dom.get('payment_online_refund_' + payment_key).value == 'Yes') {
+        Dom.setStyle('refund_payment_method_tr', 'display', '')
+        Dom.setStyle('refund_payment_reference_tr', 'display', 'none')
+        Dom.addClass('refund_payment_online', 'selected')
+        Dom.removeClass('refund_payment_manual', 'selected')
+
+    } else {
+        Dom.setStyle('refund_payment_method_tr', 'display', 'none')
+        Dom.setStyle('refund_payment_reference_tr', 'display', '')
+        Dom.removeClass('refund_payment_online', 'selected')
+        Dom.addClass('refund_payment_manual', 'selected')
+
+    }
+
+
+    Dom.get('refund_payment_max_amount').value = Dom.get('payment_max_refund_amount_' + payment_key).value
+    Dom.get('refund_payment_amount').value = refund_amount
+
+
+    Dom.get('refund_payment_amount_formated').innerHTML = money(refund_amount, Dom.get('currency_code').value);
+
+
+    region1 = Dom.getRegion('add_refund_' + payment_key);
+    region2 = Dom.getRegion('dialog_refund_payment');
+
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_refund_payment', pos);
+    dialog_refund_payment.show()
+    can_submit_refund()
+
+}
+
 function init_add_payment() {
 
 
@@ -233,23 +369,23 @@ function init_add_payment() {
     });
     dialog_add_payment.render();
 
-  dialog_refund_payment = new YAHOO.widget.Dialog("dialog_refund_payment", {
+    dialog_refund_payment = new YAHOO.widget.Dialog("dialog_refund_payment", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_refund_payment.render();
-    
-    
-      dialog_add_credit_note_to_customer = new YAHOO.widget.Dialog("dialog_add_credit_note_to_customer", {
+
+
+    dialog_add_credit_note_to_customer = new YAHOO.widget.Dialog("dialog_add_credit_note_to_customer", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_add_credit_note_to_customer.render();
-    
+
 
 
 }
