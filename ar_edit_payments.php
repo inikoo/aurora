@@ -591,7 +591,7 @@ function online_worldpay_refund($refund_amount,$payment) {
 	$signature = $sigNotMd5 . ":".$instId.":" . $Currency . ":" . $amount;
 	$signature = md5($signature);
 
-	$request=printf("https://%s?authPW=%s&instId=%s&cartId=%s&testMode=%s&signature=%s&normalAmount=%s&op=%s&transId=%s&amount=%s&currency=%s&startDelayUnit=%s&startDelayMult=%s&intervalMult=%s&intervalUnit=%s&option=%s",
+	$request=sprintf("https://%s?authPW=%s&instId=%s&cartId=%s&testMode=%s&signature=%s&normalAmount=%s&op=%s&transId=%s&amount=%s&currency=%s&startDelayUnit=%s&startDelayMult=%s&intervalMult=%s&intervalUnit=%s&option=%s",
 		$url,
 		$authPW,
 		$instId,
@@ -611,10 +611,10 @@ function online_worldpay_refund($refund_amount,$payment) {
 	);
 
 
-//	$response=file_get_contents(urlencode($request));
+	$response=file_get_contents(urlencode($request));
 
 
-//	var_dump($response);
+	var_dump($response);
 
 print " HOLA ";
 exit;
