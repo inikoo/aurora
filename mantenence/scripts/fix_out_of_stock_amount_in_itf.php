@@ -38,121 +38,126 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
-
+$sql=sprintf("update  `Inventory Transaction Fact` set `Out of Stock Tag`='Yes' where `Out of Stock`>0 ");
+mysql_query($sql);
 
 $sql=sprintf("select `Part SKU`,`Out of Stock`,`Date`,`Inventory Transaction Key` from `Inventory Transaction Fact` where `Out of Stock Tag`='Yes' ");
 
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	
+
 	$sku=$row['Part SKU'];
 	$qty=$row['Out of Stock'];
 	$date=$row['Date'];
 	$itf_key=$row['Inventory Transaction Key'];
-	
+
 	$amount=get_transaction_value($sku,$qty,$date);
-	
- $sql=sprintf("update `Inventory Transaction Fact` set `Out of Stock Lost Amount`=%f where   `Inventory Transaction Key`=%d",
- -1*$amount,
- $itf_key
- 
- );
- mysql_query($sql);
- //print "$sql\n";
-	
+
+	$sql=sprintf("update `Inventory Transaction Fact` set `Out of Stock Lost Amount`=%f where   `Inventory Transaction Key`=%d",
+		-1*$amount,
+		$itf_key
+
+	);
+	mysql_query($sql);
+	//print "$sql\n";
+
 }
 
-	function get_transaction_value($sku,$qty,$date=false) {
 
-		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
-			,prepare_mysql($date)
-			,$sku
 
-		);
-		$res_old_stock=mysql_query($sql);
-		//print "$sql\n";
-		$old_qty=0;
-		$old_value=0;
 
-		if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
-			$old_qty=round($row_old_stock['stock'],3);
-			$old_value=$row_old_stock['value'];
+
+function get_transaction_value($sku,$qty,$date=false) {
+
+	$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
+		,prepare_mysql($date)
+		,$sku
+
+	);
+	$res_old_stock=mysql_query($sql);
+	//print "$sql\n";
+	$old_qty=0;
+	$old_value=0;
+
+	if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
+		$old_qty=round($row_old_stock['stock'],3);
+		$old_value=$row_old_stock['value'];
+	}
+	$transaction_value=get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
+	return $transaction_value;
+
+}
+
+
+function get_value_change($sku,$qty_change,$old_qty,$old_value,$date) {
+	$qty=$old_qty+$qty_change;
+	if ($qty_change>0) {
+
+		list($qty_above_zero,$qty_below_zero)=$this->qty_analysis($old_qty,$qty);
+		$value_change=0;
+		if ($qty_below_zero) {
+			$unit_cost=$old_value/$old_qty;
+			$value_change+=$qty_below_zero*$unit_cost;
 		}
-		$transaction_value=get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
-		return $transaction_value;
+
+		if ($qty_above_zero) {
+			$part=new Part($sku);
+			$unit_cost=$part->get_unit_cost($date);
+			$value_change+=$qty_above_zero*$unit_cost;
+		}
+
 
 	}
+	elseif ($qty_change<0) {
 
+		list($qty_above_zero,$qty_below_zero)=qty_analysis($old_qty,$qty);
 
-	function get_value_change($sku,$qty_change,$old_qty,$old_value,$date) {
-		$qty=$old_qty+$qty_change;
-		if ($qty_change>0) {
-
-			list($qty_above_zero,$qty_below_zero)=$this->qty_analysis($old_qty,$qty);
-			$value_change=0;
-			if ($qty_below_zero) {
-				$unit_cost=$old_value/$old_qty;
-				$value_change+=$qty_below_zero*$unit_cost;
-			}
-
-			if ($qty_above_zero) {
-				$part=new Part($sku);
-				$unit_cost=$part->get_unit_cost($date);
-				$value_change+=$qty_above_zero*$unit_cost;
-			}
-
+		$value_change=0;
+		if ($qty_below_zero) {
+			$part=new Part($sku);
+			$unit_cost=$part->get_unit_cost($date);
+			$value_change+=-$qty_below_zero*$unit_cost;
 
 		}
-		elseif ($qty_change<0) {
 
-			list($qty_above_zero,$qty_below_zero)=qty_analysis($old_qty,$qty);
+		if ($qty_above_zero) {
 
-			$value_change=0;
-			if ($qty_below_zero) {
-				$part=new Part($sku);
-				$unit_cost=$part->get_unit_cost($date);
-				$value_change+=-$qty_below_zero*$unit_cost;
-
-			}
-
-			if ($qty_above_zero) {
-
-				$unit_cost=$old_value/$old_qty;
-				$value_change+=-$qty_above_zero*$unit_cost;
-
-			}
-
-
+			$unit_cost=$old_value/$old_qty;
+			$value_change+=-$qty_above_zero*$unit_cost;
 
 		}
-		else {
 
-			$value_change=0;
-		}
 
-		return $value_change;
-	}
-	function qty_analysis($a,$b) {
-		if ($b<$a) {
-			$tmp=$a;
-			$a=$b;
-			$b=$tmp;
-		}
-
-		if ($a>=0 and $b>=0) {
-			$above=$b-$a;
-			$below=0;
-		}else if ($a<=0 and $b<=0) {
-				$above=0;
-				$below=$b-$a;
-			}else {
-			$above=$b;
-			$below=-$a;
-		}
-		return array($above,$below);
 
 	}
+	else {
+
+		$value_change=0;
+	}
+
+	return $value_change;
+}
+function qty_analysis($a,$b) {
+	if ($b<$a) {
+		$tmp=$a;
+		$a=$b;
+		$b=$tmp;
+	}
+
+	if ($a>=0 and $b>=0) {
+		$above=$b-$a;
+		$below=0;
+	}else if ($a<=0 and $b<=0) {
+			$above=0;
+			$below=$b-$a;
+		}else {
+		$above=$b;
+		$below=-$a;
+	}
+	return array($above,$below);
+
+}
 
 
 ?>
