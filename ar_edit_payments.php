@@ -610,8 +610,7 @@ function online_worldpay_refund($refund_amount,$payment) {
 		$option
 	);
 
-print urlencode($request).'   XX ';
-exit;
+
 	$response=file_get_contents(urlencode($request));
 
 	var_dump($response);
