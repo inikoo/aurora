@@ -1648,7 +1648,7 @@ $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	//print"$from --> $to ";
 	// print_r($int);
 
-	$where='where ITF.`Out of Stock Tag`="Yes"  $where_interval ';
+	$where="where ITF.`Out of Stock Tag`='Yes'  $where_interval ";
 
 	
 
