@@ -373,7 +373,7 @@ function add_payment_to_order($data) {
 
 function refund_payment($data) {
 
-	$refund_amount=round($data[refund_amount],2);
+	$refund_amount=round($data['refund_amount'],2);
 
 	$payment=new Payment($data['payment_key']);
 	$payment->load_payment_account();
@@ -384,10 +384,10 @@ function refund_payment($data) {
 
 			switch ($payment->payment_service_provider->data['Payment Service Provider Code']) {
 			case 'Paypal':
-				$refunded_data=online_paypal_refund($data,$payment);
+				$refunded_data=online_paypal_refund($refund_amount,$payment);
 				break;
 			case 'Worldpay':
-				$refunded_data=online_worldpay_refund($data,$payment);
+				$refunded_data=online_worldpay_refund($refund_amount,$payment);
 				break;
 			default:
 				$response=array('state'=>400,'msg'=>"Error 2. Payment account can't do online refunds");
@@ -404,7 +404,7 @@ function refund_payment($data) {
 	}else {
 
 		$refunded_data=array(
-			'refund_ok'=>true,
+			'status'=>'Completed',
 			'reference'=>$data['refund_reference'],
 		);
 
@@ -419,6 +419,8 @@ function refund_payment($data) {
 		$order_key=0;
 	}
 
+
+
 	$payment->update(array(
 			'Payment Refund'=>round($payment->data['Payment Refund']+$refund_amount,2)
 		));
@@ -428,7 +430,7 @@ function refund_payment($data) {
 		'Payment Account Code'=>$payment->data['Payment Account Code'],
 		'Payment Type'=>'Refund',
 
-		'Payment Service Provider Key'=>$payment->data['Service Provider Key'],
+		'Payment Service Provider Key'=>$payment->data['Payment Service Provider Key'],
 		'Payment Order Key'=>$order_key,
 		'Payment Store Key'=>$payment->data['Payment Store Key'],
 		'Payment Customer Key'=>$payment->data['Payment Customer Key'],
@@ -440,15 +442,17 @@ function refund_payment($data) {
 		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Transaction Status'=>'Completed',
-		'Payment Transaction ID'=>$refunded_data['payment_reference'],
+		'Payment Transaction Status'=>$refunded_data['status'],
+		'Payment Transaction ID'=>$refunded_data['reference'],
 		'Payment Method'=>$payment->data['Payment Method'],
+		'Payment Related Payment Key'=>$payment->id,
+		'Payment Related Payment Transaction ID'=>$payment->data['Payment Transaction ID'],
 
 	);
 
 	$refund_payment=new Payment('create',$payment_data);
 
-
+	$refund_payment->load_payment_account();
 
 
 	$order=new Order($order_key);
@@ -457,8 +461,8 @@ function refund_payment($data) {
 		$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
 			$order->id,
 			$refund_payment->id,
-			$payment_account->id,
-			$payment_account->data['Payment Service Provider Key'],
+			$refund_payment->payment_account->id,
+			$refund_payment->payment_account->data['Payment Service Provider Key'],
 			$refund_payment->data['Payment Amount'],
 			$refund_payment->data['Payment Amount']
 		);
@@ -508,6 +512,49 @@ function refund_payment($data) {
 		echo json_encode($response);
 	}
 
+
+}
+
+
+function online_paypal_refund($refund_amount,$payment) {
+	require_once 'class.PaypalRefund.php';
+
+	$aryData['transactionID'] = $payment->data['Payment Transaction ID'];   //Payment Transaction ID   1JR99805457778808
+	$aryData['refundType'] = "Partial"; //Partial or Full   can do full one as Partial if we want still works
+	$aryData['currencyCode'] =$payment->data['Payment Currency Code'];    //Payment Currency Code
+	$aryData['amount'] = round(-1.0*$refund_amount,2);
+	$aryData['memo'] = _("Refund");  //what ever we want to say back to the customer about the refunds
+	//  $aryData['invoiceID'] = "Order:00053";
+
+	$ref = new PayPalRefund(
+		$payment->payment_account->data['Payment Account Refund Login'],
+		$payment->payment_account->data['Payment Account Refund Password'],
+		$payment->payment_account->data['Payment Account Refund Signature'],
+		$payment->payment_account->data['Payment Account Refund URL Link']
+	);
+	
+	
+	print_r($aryData);
+	
+	exit;
+	
+	$aryRes = $ref->refundAmount($aryData);
+
+	if ($aryRes['ACK'] == "Success") {
+
+		$refunded_data=array(
+			'status'=>'Completed',
+			'reference'=>$aryRes['REFUNDTRANSACTIONID'],
+		);
+
+	}else {
+		$refunded_data=array(
+			'status'=>'Error',
+			'reference'=>$aryRes['L_LONGMESSAGE0']
+		);
+	}
+	
+	return $refunded_data;
 
 }
 
