@@ -628,9 +628,16 @@ function online_worldpay_refund($refund_amount,$payment) {
 	if (count($respond_array)==3) {
 
 		if ($respond_array[0]=="A") {
+		
+		if($respond_array[1]!=$payment->data['Payment Transaction ID']){
+		$_ref=$respond_array[1];
+		}else{
+		$_ref='';
+		}
+		
 			$refunded_data=array(
 				'status'=>'Completed',
-				'reference'=>$respond_array[1]
+				'reference'=>$_ref
 			);
 		}elseif ($respond_array[0]=="N") {
 			$refunded_data=array(
