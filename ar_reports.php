@@ -1362,12 +1362,13 @@ function list_parts_marked_as_out_of_stock() {
 
 	$filter_msg='';
 	$wheref='';
-	// $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
-	$int=prepare_mysql_dates($from,$to,'`Date`','only dates');
-	//print"$from --> $to ";
-	// print_r($int);
+	
 
-	$where='where ITF.`Out of Stock Tag`="Yes" ';
+$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
+	$where_interval=$where_interval['mysql'];
+
+
+	$where="where ITF.`Out of Stock Tag`='Yes' $where_interval ";
 
 	if ($int['mysql']!='') {
 		$where.=sprintf('  %s ',$int['mysql']);
@@ -1496,7 +1497,7 @@ function list_parts_marked_as_out_of_stock() {
 
 	$adata=array();
 
-	//print $sql;
+	print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1642,11 +1643,6 @@ function list_transactions_parts_marked_as_out_of_stock() {
 $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	$where_interval=$where_interval['mysql'];
 
-
-
-
-	//print"$from --> $to ";
-	// print_r($int);
 
 	$where="where ITF.`Out of Stock Tag`='Yes'  $where_interval ";
 
