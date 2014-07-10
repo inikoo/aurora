@@ -610,9 +610,17 @@ function online_worldpay_refund($refund_amount,$payment) {
 		$option
 	);
 
-$request=urlencode($request);
+//$request=urlencode($request);
 
-	$response=file_get_contents($request);
+	 $ch = curl_init();
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_URL, $request);
+    curl_setopt($ch, CURLOPT_REFERER, $request);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
 
 	var_dump($request);
