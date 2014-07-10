@@ -5970,6 +5970,9 @@ function set_as_in_process(){
 
 		foreach ($this->get_payment_keys($status) as $payment_key) {
 			$payment=new Payment($payment_key);
+						$payment->formated_amount=money($payment->data['Payment Amount'],$payment->data['Payment Currency Code']);
+
+			
 			if ($load_payment_account)
 				$payment->load_payment_account();
 			if ($load_payment_service_provider)

@@ -26,7 +26,7 @@
 			<td><span id="payment_date_{$payment->get('Payment Key')}">{$payment->get('Created Date')}</span></td>
 			<td><span id="payment_status_{$payment->get('Payment Key')}">{$payment->get('Payment Transaction Status')}</span></td>
 			<td style="text-align:right"><span id="payment_amount_{$payment->get('Payment Key')}">{$payment->get('Amount')}</span></td>
-			<td><span id="payment_reference_{$payment->get('Payment Key')}">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()}, {/if}{$payment->get('Payment Transaction ID')}</span></td>
+			<td><span id="payment_reference_{$payment->get('Payment Key')}">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')=='Refund'}, {/if}{$payment->get('Payment Transaction ID')}</span></td>
 			<td style="width:200px"> 
 			<div class="buttons small left">
 				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Method')!='Account')}display:none{/if}" class="negative" onclick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> 
