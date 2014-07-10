@@ -153,6 +153,10 @@
 					<td class="aright">{$order->get('Date')}</td>
 				</tr>
 				<tr>
+					<td>{t}Dispatched Date{/t}:</td>
+					<td class="aright">{$order->get('Dispatched Date')}</td>
+				</tr>
+				<tr>
 					<td>{t}Sales Rep{/t}:</td>
 					<td class="aright">{$order->get('Order XHTML Sales Representative')}</td>
 				</tr>
