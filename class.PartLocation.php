@@ -1492,24 +1492,36 @@ class PartLocation extends DB_Table {
 			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
 			//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
 
-			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ON DUPLICATE KEY UPDATE
+			$sql=sprintf("insert into `Inventory Spanshot Fact` (
+			`Sold Amount`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity On Hand`,
+			`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Storing Cost`,
+			`Quantity Sold`,`Quantity In`,`Quantity Lost`,`Quantity Open`,`Quantity High`,`Quantity Low`,
+			`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,
+			`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
+			`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,
+			`Location Type`
+			) values (
+			%.2f,%s,%d,%d,%d,%f,
+			%.2f ,%.2f,%.2f,%.2f ,
+			%f,%f,%f,%f,%f,%f,
+			%f,%f,%f,
+			%f,%f,%f,
+			%f,%f,%f,
+			%s) ON DUPLICATE KEY UPDATE
 			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
-			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s",
+			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ",
+				$sales_value,
 				prepare_mysql($row['Date']),
-
 				$this->part_sku,
 				$warehouse_key,
-
 				$this->location_key,
-
 				$stock,
+
 				$value,
 				$value_day_cost,
-				$sales_value,
 				$commercial_value,
-
 				$storing_cost,
 
 				$sold,
@@ -1518,6 +1530,7 @@ class PartLocation extends DB_Table {
 				$open,
 				$high,
 				$low,
+				
 				$value_open,
 				$value_high,
 				$value_low,
@@ -1525,6 +1538,7 @@ class PartLocation extends DB_Table {
 				$value_day_cost_open,
 				$value_day_cost_high,
 				$value_day_cost_low,
+				
 				$commercial_value_open,
 				$commercial_value_high,
 				$commercial_value_low,
@@ -1555,7 +1569,8 @@ class PartLocation extends DB_Table {
 				$commercial_value_open,
 				$commercial_value_high,
 				$commercial_value_low,
-				prepare_mysql($location_type)
+				prepare_mysql($location_type),
+				$sales_value
 
 
 			);
@@ -1563,7 +1578,7 @@ class PartLocation extends DB_Table {
 
 
 
-			// print "$sql\n\n";
+			//print "$sql\n\n";
 			//exit;
 		}
 
