@@ -99,7 +99,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	   
-	    			    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=parts_marked_as_out_of_stock&parent=warehouses&parent_key=&tableid="+tableid);
+	   request="ar_reports.php?tipo=parts_marked_as_out_of_stock&parent=warehouses&parent_key=&tableid="+tableid
+	   
+	   
+	    			    this.dataSource1 = new YAHOO.util.DataSource(request);
 
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
