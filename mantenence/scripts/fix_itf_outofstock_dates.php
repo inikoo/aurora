@@ -38,7 +38,7 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 $sql="select count(*) as num ,`Date`,`Part SKU`,`Location Key`,GROUP_CONCAT(`Inventory Transaction Type`) as types,GROUP_CONCAT(`Inventory Transaction Key`) as types_keys from `Inventory Transaction Fact` where `Part SKU`=24695  group by `Part SKU`,`Location Key`,`Date` ";
-$sql="select * from `Inventory Transaction Fact`    where `Out of Stock`>0  order by `Date` desc";
+$sql="select * from `Inventory Transaction Fact`    where `Out of Stock`>0  and `Picked`=0 order by `Date` desc";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
