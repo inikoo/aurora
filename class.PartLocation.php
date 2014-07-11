@@ -1265,19 +1265,22 @@ class PartLocation extends DB_Table {
 	}
 
 	function exist_on_date($date) {
-
+//print $date;
 		$date=date('U',strtotime($date));
 
 		$intervals=$this->get_history_intervals();
-
+		
 		//print_r($intervals);
+		
+		//print "*******";
+		
 		foreach ($intervals as $interval) {
 
 
 			if ($interval['To']) {
 				if (!isset($interval['From'])) {
-					print_r($this);
-					print_r($interval);
+					//print_r($this);
+					//print_r($interval);
 					exit;
 				}
 
@@ -1310,16 +1313,30 @@ class PartLocation extends DB_Table {
 		}
 
 		$intervals=array();
-		// print_r($dates);
-
+		
+		
+		
+		
+		$index=0;
 		foreach ($dates as $date=>$type) {
+			if($index==0 and $type=='Disassociate'){
+				continue;
+			}
+		
 			if ($type=='Associate')
 				$intervals[]=array('From'=>date("Y-m-d",strtotime($date)),'To'=>false);
 			if ($type=='Disassociate')
 				$intervals[count($intervals)-1]['To']=date("Y-m-d",strtotime($date));
-		}
-
-
+	
+	$index++;
+	}
+/*
+print "++++++++++\n";
+		 print_r($dates);
+	 print_r($intervals);
+	 
+	 print "---------\n";
+*/	 
 		return $intervals;
 
 	}
@@ -1337,7 +1354,7 @@ class PartLocation extends DB_Table {
 		}
 
 		$intervals=array();
-		// print_r($dates);
+		
 
 		foreach ($dates as $date=>$type) {
 			if ($type=='Associate')

@@ -55,7 +55,7 @@ $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Da
 $res=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_array($res)) {
-//	$where=' `Part SKU`=963';
+$where=' `Part SKU`=46433';
 	
 
 $where='  true';
