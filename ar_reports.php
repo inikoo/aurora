@@ -1912,7 +1912,7 @@ function list_customers_affected_by_out_of_stock() {
 
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Dispatched Date`');
 
-	$where=sprintf("where `Order Current Dispatch State`='Dispatched' and `Order with Out of Stock`='Yes'   %s ",$date_interval['mysql']);
+	$where=sprintf("where `Order Current Dispatch State`='Dispatched' and `Order with Out of Stock`='Yes' and `Order with Out of Stock`='Yes'   %s ",$date_interval['mysql']);
 
 
 
@@ -1938,7 +1938,7 @@ function list_customers_affected_by_out_of_stock() {
 
 
 
-	$sql="select count(DISTINCT `Order Customer Key`) as total   from  `Order Dimension` O  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where $wheref ";
+	$sql="select count(DISTINCT `Order Customer Key`) as total   from  `Order Dimension` O   left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where $wheref ";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1946,7 +1946,7 @@ function list_customers_affected_by_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(DISTINCT `Order Customer Key`) as total_without_filters   from `Order Dimension` O  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where  ";
+		$sql="select count(DISTINCT `Order Customer Key`) as total_without_filters   from `Order Dimension` O   left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2016,7 +2016,7 @@ function list_customers_affected_by_out_of_stock() {
 	$sql="select
 	(select count(*) from `Order Dimension` where `Order Customer Key`=O.`Order Customer Key` and `Order Current Dispatch State`='Dispatched'  ".$date_interval['mysql'].")/count(DISTINCT `Order Key`) as orders_percentage,
 	(select sum(`Order Items Net Amount`) from `Order Dimension` where `Order Customer Key`=O.`Order Customer Key` and `Order Current Dispatch State`='Dispatched'  ".$date_interval['mysql'].")/sum(`Order Out of Stock Net Amount`) as lost_revenue_percentage,
-	sum(`Order Currency Exchange`*`Order Out of Stock Net Amount`) as lost_revenue, `Order Customer Key`,`Customer Name`,count(DISTINCT `Order Key`) as Orders,MAX(`Order Dispatched Date`) as `Order Dispatched Date`  from  `Order Dimension` O  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where $wheref  group by `Order Customer Key` order by $order $order_direction limit $start_from,$number_results";
+	sum(`Order Currency Exchange`*`Order Out of Stock Net Amount`) as lost_revenue, `Order Customer Key`,`Customer Name`,count(DISTINCT `Order Key`) as Orders,MAX(`Order Dispatched Date`) as `Order Dispatched Date`  from  `Order Dimension` O   left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  $where $wheref  group by `Order Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -2146,9 +2146,9 @@ function list_orders_affected_by_out_of_stock() {
 
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Dispatched Date`');
 
-	$where=sprintf("where `Order Current Dispatch State`='Dispatched' and `Order with Out of Stock`='Yes'   %s ",$date_interval['mysql']);
+	$where=sprintf("where  `Store Show in Warehouse Orders`='Yes'  and `Order Current Dispatch State`='Dispatched' and `Order with Out of Stock`='Yes'   %s ",$date_interval['mysql']);
 
-
+// O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes' 
 
 
 
@@ -2174,7 +2174,7 @@ function list_orders_affected_by_out_of_stock() {
 
 
 
-	$sql="select count(DISTINCT `Order Key`) as total   from  `Order Dimension` O    $where $wheref ";
+	$sql="select count(DISTINCT `Order Key`) as total   from  `Order Dimension` O  left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)    $where $wheref ";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -2182,7 +2182,7 @@ function list_orders_affected_by_out_of_stock() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(DISTINCT `Order Key`) as total_without_filters   from `Order Dimension` O  $where  ";
+		$sql="select count(DISTINCT `Order Key`) as total_without_filters   from `Order Dimension` O  left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2254,7 +2254,7 @@ function list_orders_affected_by_out_of_stock() {
 		$order='`Order Dispatched Date`';
 
 
-	$sql="select `Order Public ID`,`Order Key`,IFNULL(`Order Items Net Amount`/`Order Out of Stock Net Amount`,0) as lost_revenue_percentage ,`Order Currency Exchange`*`Order Out of Stock Net Amount` as lost_revenue, `Order Customer Key`,`Order Customer Name`, `Order Dispatched Date`  from  `Order Dimension` O    $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `Order Public ID`,`Order Key`,IFNULL(`Order Items Net Amount`/`Order Out of Stock Net Amount`,0) as lost_revenue_percentage ,`Order Currency Exchange`*`Order Out of Stock Net Amount` as lost_revenue, `Order Customer Key`,`Order Customer Name`, `Order Dispatched Date`  from  `Order Dimension` O   left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)   $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
