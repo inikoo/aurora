@@ -4929,7 +4929,7 @@ function out_of_stock_lost_revenue_data($data) {
 
 */
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Dispatched Date`');
-	$sql=sprintf("select sum(`Order Out of Stock Net Amount`*`Order Currency Exchange`) as lost_revenue , sum(`Order Items Net Amount`*`Order Currency Exchange`) as revenue from `Order Dimension`  where `Order Current Dispatch State`='Dispatched'    %s ",$date_interval['mysql']);
+	$sql=sprintf("select sum(`Order Out of Stock Net Amount`*`Order Currency Exchange`) as lost_revenue , sum(`Order Items Net Amount`*`Order Currency Exchange`) as revenue from `Order Dimension`  O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes'  and `Order Current Dispatch State`='Dispatched'    %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$lost_revenue=$row['lost_revenue'];
@@ -4957,13 +4957,13 @@ function out_of_stock_customer_data($data) {
 
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Dispatched Date`');
 
-	$sql=sprintf("select count(DISTINCT `Order Customer Key`) as number_out_of_stock_customers from `Order Dimension`  where `Order Current Dispatch State`='Dispatched' and  `Order with Out of Stock`='Yes'    %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Order Customer Key`) as number_out_of_stock_customers from `Order Dimension`   O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes' and `Order Current Dispatch State`='Dispatched' and  `Order with Out of Stock`='Yes'    %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_out_of_stock_customers=$row['number_out_of_stock_customers'];
 	}
 	//print "$sql\n";
-	$sql=sprintf("select count(DISTINCT `Order Customer Key`) as customers from `Order Dimension`  where `Order Current Dispatch State`='Dispatched'     %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Order Customer Key`) as customers from `Order Dimension`   O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes' and `Order Current Dispatch State`='Dispatched'     %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_customers=$row['customers'];
@@ -4986,13 +4986,13 @@ function out_of_stock_order_data($data) {
 
 	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Dispatched Date`');
 
-	$sql=sprintf("select count(DISTINCT `Order Key`) as number_out_of_stock_orders from `Order Dimension`  where `Order Current Dispatch State`='Dispatched' and  `Order with Out of Stock`='Yes'    %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Order Key`) as number_out_of_stock_orders from `Order Dimension` O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes' and `Order Current Dispatch State`='Dispatched' and  `Order with Out of Stock`='Yes'    %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_out_of_stock_orders=$row['number_out_of_stock_orders'];
 	}
 	//print "$sql\n";
-	$sql=sprintf("select count(DISTINCT `Order Key`) as orders from `Order Dimension`  where `Order Current Dispatch State`='Dispatched'     %s ",$date_interval['mysql']);
+	$sql=sprintf("select count(DISTINCT `Order Key`) as orders from `Order Dimension`  O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes'  and `Order Current Dispatch State`='Dispatched'     %s ",$date_interval['mysql']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$number_orders=$row['orders'];
