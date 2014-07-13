@@ -4822,7 +4822,7 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 function get_pending_orders_packed_data($data) {
 	global $corporate_currency;
 
-
+$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 	if ($data['parent']=='none') {
 		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
@@ -4897,7 +4897,7 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Dispatched Date` is not NULL    ",$where);
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
