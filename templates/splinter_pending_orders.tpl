@@ -10,6 +10,7 @@
 	{/foreach} 
 	<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />
 	{foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} {if isset($script)}<script type="text/javascript">{$script}</script>{/if} 
+<base target="_parent" />
 </head>
 <body class="yui-skin-sam inikoo">
 <input type="hidden" id="parent" value="{$parent}">
@@ -17,8 +18,10 @@
 
 <div id="block_table">
 	<div id="title" class="title" style="height:22px">
-		<div class="home_splinter_options" style="float:right;font-size:80%;">
-			<span id="pending_orders_all_stores}" class="{if $all_selected}selected{/if}" style="margin-right:2px" title="{t}All stores{/t}">&#8704;</span> {foreach from=$stores item=store} <span id="pending_orders_store_{$store.id}" class="{if $store.selected}selected{/if}" style="margin-right:2px" title="{$store.name}">{$store.code}</span> {/foreach} 
+		<div id="pending_orders_store_chooser" class="home_splinter_options" style="float:right;font-size:80%;">
+			<span id="pending_orders_all_stores" onClick="change_pending_orders_store(0)" class="option {if $all_selected}selected{/if}" style="margin-right:2px" title="{t}All stores{/t}">&#8704;</span> 
+			{foreach from=$stores item=store} 
+			<span id="pending_orders_store_{$store.id}" onClick="change_pending_orders_store({$store.id})" class="option {if $store.selected}selected{/if}" style="margin-right:2px" title="{$store.name}">{$store.code}</span> {/foreach} 
 		</div>
 		<h1>
 			{t}Pending Orders{/t} 
@@ -27,7 +30,7 @@
 	<div style="border:1px solid #ccc;border-top:none;padding:5px 10px 0px 10px">
 		<table class="edit" border="1" style="width:100%">
 			<tr>
-				<td style="text-align:center"> 
+				<td style="text-align:center;width:25%"> 
 				<h2>
 					{t}In basket{/t}
 				</h2>
@@ -46,7 +49,7 @@
 					</tr>
 				</table>
 				</td>
-				<td style="text-align:center"> 	
+				<td style="text-align:center;width:25%"> 	
 				<h2>{t}In Process{/t}</h2> 
 				<div class="number_orders">
 				<span  id="in_process_number_orders"></span> +<span  id="in_process_internal_number_orders"></span>
@@ -59,7 +62,7 @@
 				</div>
 				
 				</td>
-				<td style="text-align:center"> <h2>{t}In Warehouse{/t}</h2>
+				<td style="text-align:center;width:25%"> <h2>{t}In Warehouse{/t}</h2>
 				
 				<div class="number_orders">
 				<span  id="in_warehouse_number_orders"></span> 
@@ -72,7 +75,7 @@
 				</div>
 				
 				</td>
-				<td style="text-align:center"> <h2>{t}Packed{/t}</h2>
+				<td style="text-align:center;width:25%"> <h2>{t}Packed{/t}</h2>
 				
 				<div class="number_orders">
 				<span  id="packed_number_orders"></span> 

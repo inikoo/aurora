@@ -4552,7 +4552,9 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 
 		$in_basket_avg_age_in_days=number($row['in_basket_avg_age_in_days'],1).' '._('days');
 
-		$pending_orders_data['in_basket_number_orders']=$row['in_basket_number_orders'];
+
+		$pending_orders_data['in_basket_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InProcessbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=InProcessbyCustomer'),number($row['in_basket_number_orders']));
+
 		$pending_orders_data['in_basket_avg_age']=$in_basket_avg_age_in_days;
 
 		if ($user_corporate_currency) {
@@ -4649,7 +4651,9 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 		$in_process_avg_age_in_days=number($row['in_process_avg_age_in_days'],1).' '._('days');
 
-		$pending_orders_data['in_process_number_orders']=$row['in_process_number_orders'];
+
+		$pending_orders_data['in_process_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($row['in_process_number_orders']));
+
 		$pending_orders_data['in_process_avg_age']=$in_process_avg_age_in_days;
 
 		if ($user_corporate_currency) {
@@ -4678,8 +4682,8 @@ $sql=sprintf("select
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
+		$pending_orders_data['in_process_internal_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InProcess':'store_pending_orders.php?id='.$data['parent_key'].'&show=InProcess'),number($row['in_process_internal_number_orders']));
 
-		$pending_orders_data['in_process_internal_number_orders']=$row['in_process_internal_number_orders'];
 
 	}
 
@@ -4763,8 +4767,8 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 	if ($row=mysql_fetch_assoc($res)) {
 
 		$in_warehouse_avg_age_in_days=number($row['in_warehouse_avg_age_in_days'],1).' '._('days');
+		$pending_orders_data['in_warehouse_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InWarehouse':'store_pending_orders.php?id='.$data['parent_key'].'&show=InWarehouse'),number($row['in_warehouse_number_orders']));
 
-		$pending_orders_data['in_warehouse_number_orders']=$row['in_warehouse_number_orders'];
 		$pending_orders_data['in_warehouse_avg_age']=$in_warehouse_avg_age_in_days;
 
 		if ($user_corporate_currency) {
@@ -4867,7 +4871,7 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 
 		$packed_avg_age_in_days=number($row['packed_avg_age_in_days'],1).' '._('days');
 
-		$pending_orders_data['packed_number_orders']=$row['packed_number_orders'];
+		$pending_orders_data['packed_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=PackedDone':'store_pending_orders.php?id='.$data['parent_key'].'&show=PackedDone'),number($row['packed_number_orders']));
 		$pending_orders_data['packed_avg_age']=$packed_avg_age_in_days;
 
 		if ($user_corporate_currency) {
@@ -4886,20 +4890,7 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 	}
 
 
-$sql=sprintf("select
-	count(Distinct `Order Key`) packed_internal_number_orders 
-	
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='In Process' ",$where);
-
-	//print $sql;
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-
-
-		$pending_orders_data['packed_internal_number_orders']=$row['packed_internal_number_orders'];
-
-	}
 
 
 

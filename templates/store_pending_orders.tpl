@@ -4,6 +4,15 @@
 <input type="hidden" id="parent" value="store" />
 <input type="hidden" id="from" value="" />
 <input type="hidden" id="to" value="" />
+
+<input type="hidden" id="InProcessbyCustomer" value="{$elements.InProcessbyCustomer}" />
+<input type="hidden" id="InProcess" value="{$elements.InProcess}" />
+<input type="hidden" id="SubmittedbyCustomer" value="{$elements.SubmittedbyCustomer}" />
+<input type="hidden" id="InWarehouse" value="{$elements.InWarehouse}" />
+<input type="hidden" id="PackedDone" value="{$elements.PackedDone}" />
+
+
+
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
