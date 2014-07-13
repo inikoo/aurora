@@ -32,6 +32,16 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case ('get_pending_orders_data'):
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'numeric'),
+			'parent'=>array('type'=>'string'),
+
+		));
+	get_pending_orders_in_basket_data($data);
+
+
+	break;
 case('get_dn_fields'):
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
@@ -950,10 +960,10 @@ function list_transactions_in_dn() {
 
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
 		$order_id=$_REQUEST['id'];
-	else{
+	else {
 		exit("no dn");
 	}
-		
+
 
 
 
@@ -4449,6 +4459,73 @@ function get_dn_fields($data) {
 	$response= array('state'=>200,'dn_data'=>$dn_data);
 	echo json_encode($response);
 
+}
+
+function get_pending_orders_in_basket_data($data) {
+	global $corporate_currency;
+
+	
+
+	if ($data['parent']=='none') {
+		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$currency_code=$corporate_currency;
+		$user_corporate_currency=true;
+	}elseif ($data['parent']=='store') {
+		$where = sprintf('where `Order Store Key`=%d ',$data['parent_key']);
+
+		$sql=sprintf("select `Store Currency Code` from `Store Dimension` where `Store Key`=%d",$data['parent_key']);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$currency_code=$row['Store Currency Code'];
+		}else {
+			$response= array('state'=>400);
+			echo json_encode($response);
+			exit;
+		}
+		$user_corporate_currency=false;
+
+	}else {
+		$response= array('state'=>400);
+		echo json_encode($response);
+		exit;
+	}
+
+	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+	$pending_orders_data=array(
+		'in_basket_number_orders'=>0,
+		'in_basket_avg_total_balance'=>money(0,$currency_code),
+		'in_basket_avg_age_in_hours'=>'ND'
+	);
+	$sql=sprintf("select
+	count(Distinct `Order Key`) in_basket_number_orders ,
+	avg(TIMESTAMPDIFF(DAY,`Order Created Date`,NOW())) as in_basket_avg_age_in_hours,
+		avg(`Order Balance Total Amount`) in_basket_avg_total_balance ,
+		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_avg_total_balance_corporate 
+
+	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='In Process by Customer' ",$where);
+
+//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$in_basket_avg_age_in_hours=number($row['in_basket_avg_age_in_hours'],1).' '._('days');
+
+		$pending_orders_data['in_basket_number_orders']=$row['in_basket_number_orders'];
+		$pending_orders_data['in_basket_avg_age_in_hours']=$in_basket_avg_age_in_hours;
+		
+		if($user_corporate_currency){
+				$pending_orders_data['in_basket_avg_total_balance']=money($row['in_basket_avg_total_balance'],$currency_code);
+		}else{
+
+				$pending_orders_data['in_basket_avg_total_balance']=money($row['in_basket_avg_total_balance_corporate'],$currency_code);
+
+		}
+		
+
+	}
+
+	$response= array('state'=>200,'data'=>$pending_orders_data);
+	echo json_encode($response);
 }
 
 

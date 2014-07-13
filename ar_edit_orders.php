@@ -119,14 +119,15 @@ case('remove_insurance'):
 	remove_insurance($data);
 
 	break;
-case('update_order_special_intructions'):
+case('update_order='):
 
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
-			'value'=>array('type'=>'string')
+			'value'=>array('type'=>'string'),
+			'key'=>array('type'=>'string')
 
 		));
-	update_order_special_intructions($data);
+	update_order($data);
 	break;
 
 case('edit_delivery_note'):
@@ -4827,6 +4828,24 @@ function update_order_special_intructions($data) {
 
 
 
+function update_order($data) {
+	$order=new Order($data['order_key']);
+
+
+	
+
+
+	$order->update_field_switcher($data['key'],strip_tags($data['value']));
+
+
+
+	$response= array(
+		'state'=>200,
+		'value'=>$order->new_value
+
+	);
+	echo json_encode($response);
+}
 
 
 

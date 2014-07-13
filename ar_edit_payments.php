@@ -148,13 +148,18 @@ function cancel_payment($data) {
 		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Transaction Status'=>'Cancelled',
-		'Payment Transaction Status Info'=>_('Cancelled by customer'),
+		'Payment Transaction Status Info'=>_('Cancelled by user'),
 
 
 	);
 	$payment->update($data_to_update);
 
+	if($payment->data['Payment Method']=='Account'){
+		$customer = new Customer($payment->data['Payment Customer Key']);
+				$customer->update_field_switcher('Customer Account Balance',round($customer->data['Customer Account Balance']+$payment->data['Payment Amount'],2));
 
+	
+	}
 
 
 	$pending_payments=count($order->get_payment_keys('Pending'));

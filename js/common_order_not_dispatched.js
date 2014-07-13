@@ -1739,6 +1739,35 @@ function set_as_dispatched(dn_key, staff_key, referrer, referrer_key) {
     });
 }
 
+
+function update_auto_account_payments(value){
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=update_order&order_key=' + Dom.get('order_key').value + '&key=auto_account_payments&value=' + value;
+
+   
+
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+                    location.reload();
+               
+
+            }
+
+        },
+        failure: function(o) {
+           // alert(o.statusText);
+        },
+        scope: this
+    });
+
+}
+
 function approve_dispatching(dn_key, staff_key, referrer, referrer_key) {
     if (Dom.get('approve_dispatching_img_' + dn_key) != undefined) Dom.get('approve_dispatching_img_' + dn_key).src = 'art/loading.gif';
 
