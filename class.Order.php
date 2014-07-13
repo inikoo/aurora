@@ -607,7 +607,8 @@ function set_as_in_process(){
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
-		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
+			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,$this->id
