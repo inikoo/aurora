@@ -38,18 +38,18 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$delivery_notes=$order->get_delivery_notes_objects();
 	foreach ($delivery_notes as $delivery_note) {
 
-	
+	//print_r($delivery_note);
 
 			if (!in_array($delivery_note->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages')) ) {
 
 
-				if( $delivery_note->data['Delivery Note Date']!=''){
+				if( $delivery_note->data['Delivery Note Date Created']!=''){
 				$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s where `Order Key`=%d   ",
-				prepare_mysql($delivery_note->data['Delivery Note Date']),
+				prepare_mysql($delivery_note->data['Delivery Note Date Created']),
 				$order->id
 				);
 				mysql_query($sql);
-				
+				//print $sql;
 				}
 				
 				
