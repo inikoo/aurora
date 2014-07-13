@@ -32,7 +32,7 @@
 			<tr>
 				<td style="text-align:center;width:25%"> 
 				<h2>
-					{t}In basket{/t}
+					{t}In Basket{/t}
 				</h2>
 				<div class="number_orders" id="in_basket_number_orders"></div> 
 				<div>
