@@ -54,6 +54,31 @@ case ('get_pending_orders_in_basket_data'):
 
 	break;	
 	
+	case ('get_pending_orders_in_warehouse_data'):
+
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'numeric'),
+			'parent'=>array('type'=>'string'),
+
+		));
+	get_pending_orders_in_warehouse_data($data);
+
+
+	break;	
+	
+		case ('get_pending_orders_packed_data'):
+
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'numeric'),
+			'parent'=>array('type'=>'string'),
+
+		));
+	get_pending_orders_packed_data($data);
+
+
+	break;	
+	
+	
 case('get_dn_fields'):
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
@@ -4660,7 +4685,7 @@ $sql=sprintf("select
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Submitted by Customer Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Submitted by Customer Date` is not NULL  ",$where);
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Submitted by Customer Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Send to Warehouse Date` is not NULL  ",$where);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -4673,6 +4698,224 @@ $sql=sprintf("select
 
 
 		$pending_orders_data['in_process_avg_processing_time']=$in_process_avg_processing_time;
+
+	}
+
+
+
+
+	$response= array('state'=>200,'data'=>$pending_orders_data);
+	echo json_encode($response);
+}
+
+
+function get_pending_orders_in_warehouse_data($data) {
+	global $corporate_currency;
+
+
+
+	if ($data['parent']=='none') {
+		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$currency_code=$corporate_currency;
+		$user_corporate_currency=true;
+	}elseif ($data['parent']=='store') {
+		$where = sprintf('where `Order Store Key`=%d ',$data['parent_key']);
+
+		$sql=sprintf("select `Store Currency Code` from `Store Dimension` where `Store Key`=%d",$data['parent_key']);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$currency_code=$row['Store Currency Code'];
+		}else {
+			$response= array('state'=>400);
+			echo json_encode($response);
+			exit;
+		}
+		$user_corporate_currency=false;
+
+	}else {
+		$response= array('state'=>400);
+		echo json_encode($response);
+		exit;
+	}
+
+	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+	$pending_orders_data=array(
+		
+		'in_warehouse_number_orders'=>0,
+		'in_warehouse_avg_total_balance'=>money(0,$currency_code),
+		'in_warehouse_sum_total_balance'=>money(0,$currency_code),
+		'in_warehouse_avg_age'=>'ND',
+		'in_warehouse_avg_processing_time'=>'ND',
+		'in_warehouse_internal_number_orders'=>0,
+	);
+	$sql=sprintf("select
+	count(Distinct `Order Key`) in_warehouse_number_orders ,
+	avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`,NOW())) as in_warehouse_avg_age_in_days,
+		avg(`Order Balance Total Amount`) in_warehouse_avg_total_balance ,
+		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_warehouse_avg_total_balance_corporate ,
+sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
+		sum(`Order Balance Total Amount`*`Order Currency Exchange`) in_warehouse_sum_total_balance_corporate
+
+	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Packing','Packed')  ",$where);
+
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$in_warehouse_avg_age_in_days=number($row['in_warehouse_avg_age_in_days'],1).' '._('days');
+
+		$pending_orders_data['in_warehouse_number_orders']=$row['in_warehouse_number_orders'];
+		$pending_orders_data['in_warehouse_avg_age']=$in_warehouse_avg_age_in_days;
+
+		if ($user_corporate_currency) {
+			$pending_orders_data['in_warehouse_avg_total_balance']=money($row['in_warehouse_avg_total_balance'],$currency_code);
+			$pending_orders_data['in_warehouse_sum_total_balance']=money($row['in_warehouse_sum_total_balance'],$currency_code);
+
+		}else {
+
+			$pending_orders_data['in_warehouse_avg_total_balance']=money($row['in_warehouse_avg_total_balance_corporate'],$currency_code);
+			$pending_orders_data['in_warehouse_sum_total_balance']=money($row['in_warehouse_sum_total_balance'],$currency_code);
+
+
+		}
+
+
+	}
+
+
+
+
+
+
+
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Packed Done Date` is not NULL  ",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+
+		if ($row['in_warehouse_avg_processing_time_in_days']<1)
+			$in_warehouse_avg_processing_time=number(24*$row['in_warehouse_avg_processing_time_in_days'],1).' '._('hours');
+
+		else
+			$in_warehouse_avg_processing_time=number($row['in_warehouse_avg_processing_time_in_days'],1).' '._('days');
+
+
+		$pending_orders_data['in_warehouse_avg_processing_time']=$in_warehouse_avg_processing_time;
+
+	}
+
+
+
+
+	$response= array('state'=>200,'data'=>$pending_orders_data);
+	echo json_encode($response);
+}
+
+
+function get_pending_orders_packed_data($data) {
+	global $corporate_currency;
+
+
+
+	if ($data['parent']=='none') {
+		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$currency_code=$corporate_currency;
+		$user_corporate_currency=true;
+	}elseif ($data['parent']=='store') {
+		$where = sprintf('where `Order Store Key`=%d ',$data['parent_key']);
+
+		$sql=sprintf("select `Store Currency Code` from `Store Dimension` where `Store Key`=%d",$data['parent_key']);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$currency_code=$row['Store Currency Code'];
+		}else {
+			$response= array('state'=>400);
+			echo json_encode($response);
+			exit;
+		}
+		$user_corporate_currency=false;
+
+	}else {
+		$response= array('state'=>400);
+		echo json_encode($response);
+		exit;
+	}
+
+	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
+	$pending_orders_data=array(
+		
+		'packed_number_orders'=>0,
+		'packed_avg_total_balance'=>money(0,$currency_code),
+		'packed_sum_total_balance'=>money(0,$currency_code),
+		'packed_avg_age'=>'ND',
+		'packed_avg_processing_time'=>'ND',
+		'packed_internal_number_orders'=>0,
+	);
+	$sql=sprintf("select
+	count(Distinct `Order Key`) packed_number_orders ,
+	avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`,NOW())) as packed_avg_age_in_days,
+		avg(`Order Balance Total Amount`) packed_avg_total_balance ,
+		avg(`Order Balance Total Amount`*`Order Currency Exchange`) packed_avg_total_balance_corporate ,
+sum(`Order Balance Total Amount`) packed_sum_total_balance ,
+		sum(`Order Balance Total Amount`*`Order Currency Exchange`) packed_sum_total_balance_corporate
+
+	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State` in (`Ready to Ship`,`Packed Done`) ",$where);
+
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$packed_avg_age_in_days=number($row['packed_avg_age_in_days'],1).' '._('days');
+
+		$pending_orders_data['packed_number_orders']=$row['packed_number_orders'];
+		$pending_orders_data['packed_avg_age']=$packed_avg_age_in_days;
+
+		if ($user_corporate_currency) {
+			$pending_orders_data['packed_avg_total_balance']=money($row['packed_avg_total_balance'],$currency_code);
+			$pending_orders_data['packed_sum_total_balance']=money($row['packed_sum_total_balance'],$currency_code);
+
+		}else {
+
+			$pending_orders_data['packed_avg_total_balance']=money($row['packed_avg_total_balance_corporate'],$currency_code);
+			$pending_orders_data['packed_sum_total_balance']=money($row['packed_sum_total_balance'],$currency_code);
+
+
+		}
+
+
+	}
+
+
+$sql=sprintf("select
+	count(Distinct `Order Key`) packed_internal_number_orders 
+	
+
+	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='In Process' ",$where);
+
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+
+		$pending_orders_data['packed_internal_number_orders']=$row['packed_internal_number_orders'];
+
+	}
+
+
+
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Dispatched Date` is not NULL    ",$where);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+
+		if ($row['packed_avg_processing_time_in_days']<1)
+			$packed_avg_processing_time=number(24*$row['packed_avg_processing_time_in_days'],1).' '._('hours');
+
+		else
+			$packed_avg_processing_time=number($row['packed_avg_processing_time_in_days'],1).' '._('days');
+
+
+		$pending_orders_data['packed_avg_processing_time']=$packed_avg_processing_time;
 
 	}
 
