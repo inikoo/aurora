@@ -33,10 +33,11 @@
 				</h2>
 				<div class="number_orders" id="in_basket_number_orders"></div> 
 				<div>
-				<span class="avg_age" id="in_basket_avg_age"></span>  (<span class="avg_processing_time" id="in_basket_avg_processing_time">)</span> 
+				<span class="avg_age" id="in_basket_avg_age"></span>  (<span class="avg_processing_time" id="in_basket_avg_processing_time"></span>) 
 				</div>
-				<div class="avg_total_balance" id="in_basket_avg_total_balance"></div> 
-
+				<div>
+				<span class="sum_total_balance" id="in_basket_sum_total_balance"></span>  (<span class="avg_total_balance" id="in_basket_avg_total_balance"></span>) 
+				</div>
 				
 				
 				<table>

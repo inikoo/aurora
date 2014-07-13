@@ -4494,6 +4494,7 @@ function get_pending_orders_in_basket_data($data) {
 	$pending_orders_data=array(
 		'in_basket_number_orders'=>0,
 		'in_basket_avg_total_balance'=>money(0,$currency_code),
+		'in_basket_sum_total_balance'=>money(0,$currency_code),
 		'in_basket_avg_age'=>'ND',
 		'in_basket_avg_processing_time'=>'ND'
 	);
@@ -4501,7 +4502,9 @@ function get_pending_orders_in_basket_data($data) {
 	count(Distinct `Order Key`) in_basket_number_orders ,
 	avg(TIMESTAMPDIFF(DAY,`Order Created Date`,NOW())) as in_basket_avg_age_in_days,
 		avg(`Order Balance Total Amount`) in_basket_avg_total_balance ,
-		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_avg_total_balance_corporate 
+		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_avg_total_balance_corporate ,
+sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
+		sum(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_sum_total_balance_corporate 
 
 	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='In Process by Customer' ",$where);
 
@@ -4516,9 +4519,13 @@ function get_pending_orders_in_basket_data($data) {
 		
 		if($user_corporate_currency){
 				$pending_orders_data['in_basket_avg_total_balance']=money($row['in_basket_avg_total_balance'],$currency_code);
+								$pending_orders_data['in_basket_sum_total_balance']=money($row['in_basket_sum_total_balance'],$currency_code);
+
 		}else{
 
 				$pending_orders_data['in_basket_avg_total_balance']=money($row['in_basket_avg_total_balance_corporate'],$currency_code);
+								$pending_orders_data['in_basket_sum_total_balance']=money($row['in_basket_sum_total_balance'],$currency_code);
+
 
 		}
 		
