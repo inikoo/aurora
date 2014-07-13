@@ -4599,6 +4599,7 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 function get_pending_orders_in_process_data($data) {
 	global $corporate_currency;
 
+$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 
 	if ($data['parent']=='none') {
@@ -4689,7 +4690,7 @@ $sql=sprintf("select
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Submitted by Customer Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Send to Warehouse Date` is not NULL  ",$where);
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Submitted by Customer Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -4716,8 +4717,8 @@ $sql=sprintf("select
 function get_pending_orders_in_warehouse_data($data) {
 	global $corporate_currency;
 
-
-
+$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
+//print $start_record_date;
 	if ($data['parent']=='none') {
 		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
 		$currency_code=$corporate_currency;
@@ -4792,7 +4793,9 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Packed Done Date` is not NULL  ",$where);
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Packed Done Date`>%s  ",$where,
+	prepare_mysql($start_record_date)
+	);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
