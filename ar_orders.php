@@ -4859,7 +4859,7 @@ function get_pending_orders_packed_data($data) {
 sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 		sum(`Order Balance Total Amount`*`Order Currency Exchange`) packed_sum_total_balance_corporate
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State` in (`Ready to Ship`,`Packed Done`) ",$where);
+	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State` in ('Ready to Ship','Packed Done') ",$where);
 
 	//print $sql;
 	$res=mysql_query($sql);
