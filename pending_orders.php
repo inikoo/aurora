@@ -100,6 +100,15 @@ $smarty->assign('paginator_menu1',$paginator_menu1);
 
 
 
+if(isset($_REQUEST['show']) and  array_key_exists($_REQUEST['show'],$_SESSION['state']['stores']['pending_orders']['elements']) ){
+foreach($_SESSION['state']['stores']['pending_orders']['elements'] as $key=>$value){
+	$_SESSION['state']['stores']['pending_orders']['elements'][$key]=0;
+}
+$_SESSION['state']['stores']['pending_orders']['elements'][$_REQUEST['show']]=1;
+}
+
+
+
 $smarty->assign('elements',$_SESSION['state']['stores']['pending_orders']['elements']);
 
 $smarty->assign('block_view','pending_orders');
