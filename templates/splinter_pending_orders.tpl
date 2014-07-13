@@ -59,8 +59,32 @@
 				</div>
 				
 				</td>
-				<td style="text-align:center"> {t}In Warehouse{/t} </td>
-				<td style="text-align:center"> {t}Packed{/t} </td>
+				<td style="text-align:center"> <h2>{t}In Warehouse{/t}</h2>
+				
+				<div class="number_orders">
+				<span  id="in_warehouse_number_orders"></span> 
+				</div>
+				<div>
+				&lang;<span class="avg_age" id="in_warehouse_avg_age"></span>&rang;  {literal}{{/literal}<span class="avg_processing_time" id="in_warehouse_avg_processing_time"></span>{literal}}{/literal}
+				</div>
+				<div>
+				<span class="sum_total_balance" id="in_warehouse_sum_total_balance"></span>  &lang;<span class="avg_total_balance" id="in_warehouse_avg_total_balance"></span>&rang; 
+				</div>
+				
+				</td>
+				<td style="text-align:center"> <h2>{t}Packed{/t}</h2>
+				
+				<div class="number_orders">
+				<span  id="packed_number_orders"></span> 
+				</div>
+				<div>
+				&lang;<span class="avg_age" id="packed_avg_age"></span>&rang;  {literal}{{/literal}<span class="avg_processing_time" id="packed_avg_processing_time"></span>{literal}}{/literal}
+				</div>
+				<div>
+				<span class="sum_total_balance" id="packed_sum_total_balance"></span>  &lang;<span class="avg_total_balance" id="packed_avg_total_balance"></span>&rang; 
+				</div>
+				
+				</td>
 			</tr>
 		</table>
 	</div>

@@ -40,16 +40,29 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	
 
-			if (!in_array($delivery_note->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages')) and $delivery_note->data['Delivery Note Date']!='') {
+			if (!in_array($delivery_note->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages')) ) {
 
 
-
+				if( $delivery_note->data['Delivery Note Date']!=''){
 				$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s where `Order Key`=%d   ",
 				prepare_mysql($delivery_note->data['Delivery Note Date']),
 				$order->id
 				);
 				mysql_query($sql);
+				
+				}
+				
+				
+				if( $delivery_note->data['Delivery Note Date Done Approved']!=''){
+				$sql=sprintf("update `Order Dimension` set `Order Packed Done Date`=%s where `Order Key`=%d   ",
+				prepare_mysql($delivery_note->data['Delivery Note Date Done Approved']),
+				$order->id
+				);
+				mysql_query($sql);
 				//print "$sql\n";
+				}
+				
+				
 
 			}
 
