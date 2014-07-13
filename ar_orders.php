@@ -4494,11 +4494,12 @@ function get_pending_orders_in_basket_data($data) {
 	$pending_orders_data=array(
 		'in_basket_number_orders'=>0,
 		'in_basket_avg_total_balance'=>money(0,$currency_code),
-		'in_basket_avg_age_in_hours'=>'ND'
+		'in_basket_avg_age'=>'ND',
+		'in_basket_avg_processing_time'=>'ND'
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_basket_number_orders ,
-	avg(TIMESTAMPDIFF(DAY,`Order Created Date`,NOW())) as in_basket_avg_age_in_hours,
+	avg(TIMESTAMPDIFF(DAY,`Order Created Date`,NOW())) as in_basket_avg_age_in_days,
 		avg(`Order Balance Total Amount`) in_basket_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_avg_total_balance_corporate 
 
@@ -4508,10 +4509,10 @@ function get_pending_orders_in_basket_data($data) {
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		$in_basket_avg_age_in_hours=number($row['in_basket_avg_age_in_hours'],1).' '._('days');
+		$in_basket_avg_age_in_days=number($row['in_basket_avg_age_in_days'],1).' '._('days');
 
 		$pending_orders_data['in_basket_number_orders']=$row['in_basket_number_orders'];
-		$pending_orders_data['in_basket_avg_age_in_hours']=$in_basket_avg_age_in_hours;
+		$pending_orders_data['in_basket_avg_age']=$in_basket_avg_age_in_days;
 		
 		if($user_corporate_currency){
 				$pending_orders_data['in_basket_avg_total_balance']=money($row['in_basket_avg_total_balance'],$currency_code);
@@ -4521,6 +4522,23 @@ function get_pending_orders_in_basket_data($data) {
 
 		}
 		
+
+	}
+	
+	
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Created Date`, `Order Submitted by Customer Date` ))  in_basket_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Submitted by Customer Date` is not NULL  ",$where);
+		$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+	
+	
+			if($row['in_basket_avg_processing_time_in_days']<1)
+						$in_basket_avg_processing_time=number(24*$row['in_basket_avg_processing_time_in_days'],1).' '._('hours');
+
+			else
+			$in_basket_avg_processing_time=number($row['in_basket_avg_processing_time_in_days'],1).' '._('days');
+
+	
+			$pending_orders_data['in_basket_avg_processing_time']=$in_basket_avg_processing_time;
 
 	}
 

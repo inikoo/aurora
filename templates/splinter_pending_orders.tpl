@@ -32,7 +32,9 @@
 					{t}In basket{/t}
 				</h2>
 				<div class="number_orders" id="in_basket_number_orders"></div> 
-				<div class="avg_age_in_hours" id="in_basket_avg_age_in_hours"></div> 
+				<div>
+				<span class="avg_age" id="in_basket_avg_age"></span>  (<span class="avg_processing_time" id="in_basket_avg_processing_time">)</span> 
+				</div>
 				<div class="avg_total_balance" id="in_basket_avg_total_balance"></div> 
 
 				
