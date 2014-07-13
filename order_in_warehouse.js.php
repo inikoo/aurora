@@ -219,6 +219,19 @@ function reset_edit_delivery_note(){
 	 dialog_set_dn_data.hide();
 }
 
+function show_order_details(){
+Dom.setStyle('order_details_panel','display','')
+Dom.setStyle('show_order_details','display','none')
+
+}
+
+function hide_order_details(){
+Dom.setStyle('order_details_panel','display','none')
+Dom.setStyle('show_order_details','display','')
+}
+
+
+
 function init() {
 
     init_search('orders_store');
@@ -330,6 +343,12 @@ paid_info_invoied_Tooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", 
     showDelay: 500
 });
 
+
+  Event.addListener("show_order_details", "click", show_order_details);
+    Event.addListener("hide_order_details", "click", hide_order_details);
+
+
+/*
   dialog_set_dn_data = new YAHOO.widget.Dialog("dialog_set_dn_data", {
         visible: false,
         close: true,
@@ -349,8 +368,7 @@ paid_info_invoied_Tooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", 
         draggable: false
     });
     dialog_pack_it.render();
-
-
+*/
 
 
 }

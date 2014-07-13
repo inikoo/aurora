@@ -1736,13 +1736,15 @@ function set_as_in_process(){
 		case('Last Updated Date'):
 		case('Cancelled Date'):
 		case('Created Date'):
-
+		case('Send to Warehouse Date'):
 		case('Suspended Date'):
 		case('Checkout Submitted Payment Date'):
 		case('Checkout Completed Payment Date'):
 		case('Submitted by Customer Date'):
 		case('Dispatched Date'):
 		case('Post Transactions Dispatched Date'):
+		case('Packed Done Date'):
+	
 
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order '.$key].' +0:00'));
 			break;
