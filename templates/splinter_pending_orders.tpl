@@ -3,7 +3,7 @@
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml" style="background-image:url('')">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{t}Sales Overview{/t}</title>
+	<title>{t}Pending Orders{/t}</title>
 	<link href="art/inikoo_logo_small.png" rel="shortcut icon" type="image/x-icon" />
 	{foreach from=$css_files item=i } 
 	<link rel="stylesheet" href="{$i}" type="text/css" />
@@ -12,31 +12,45 @@
 	{foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} {if isset($script)}<script type="text/javascript">{$script}</script>{/if} 
 </head>
 <body class="yui-skin-sam inikoo">
+<input type="hidden" id="parent" value="{$parent}">
+<input type="hidden" id="parent_key" value="{$parent_key}">
+
 <div id="block_table">
 	<div id="title" class="title" style="height:22px">
-		<img id="configuration" style="display:none;cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png" /> 
-		<h1 style="padding:3px 0px ;font-size:90%">
-			{t}Pending Orders{/t} {$warehouse->get('Warehouse Code')}, (<a href="warehouse_orders.php?id={$warehouse->id}" target='_parent' style="color:#FFF">{$total_pending_orders}</a>) <a href="report_pending_orders.php" target='_parent' style="color:#FFF">{$total_pending_orders_amount}</a></span> 
+		<div class="home_splinter_options" style="float:right;font-size:80%;">
+			<span id="pending_orders_all_stores}" class="{if $all_selected}selected{/if}" style="margin-right:2px" title="{t}All stores{/t}">&#8704;</span> {foreach from=$stores item=store} <span id="pending_orders_store_{$store.id}" class="{if $store.selected}selected{/if}" style="margin-right:2px" title="{$store.name}">{$store.code}</span> {/foreach} 
+		</div>
+		<h1>
+			{t}Pending Orders{/t} 
 		</h1>
 	</div>
-	
-	
 	<div style="border:1px solid #ccc;border-top:none;padding:5px 10px 0px 10px">
-	<table class="edit" >
-	{foreach from=$pending_orders_data item=pending_orders}
-	<tr>
-	<td style="width:90px">{$pending_orders.store}</td>
-	<td class="aright">{$pending_orders.number}</td>
-	<td style="width:120px" class="aright">{$pending_orders.amount}</td>
+		<table class="edit" border="1" style="width:100%">
+			<tr>
+				<td style="text-align:center"> 
+				<h2>
+					{t}In basket{/t}
+				</h2>
+				<div class="number_orders" id="in_basket_number_orders"></div> 
+				<div class="avg_age_in_hours" id="in_basket_avg_age_in_hours"></div> 
+				<div class="avg_total_balance" id="in_basket_avg_total_balance"></div> 
 
-	</tr>
-	{/foreach}
-	</table>
+				
+				
+				<table>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+				</td>
+				<td style="text-align:center"> {t}In Process{/t} </td>
+				<td style="text-align:center"> {t}In Warehouse{/t} </td>
+				<td style="text-align:center"> {t}Packed{/t} </td>
+			</tr>
+		</table>
 	</div>
-
-
-<div style="clear:both">
-</div>
+	<div style="clear:both">
+	</div>
 </div>
 </body>
 </html>

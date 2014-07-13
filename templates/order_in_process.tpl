@@ -189,8 +189,15 @@
 			<div style="clear:both">
 			</div>
 			<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
+			
+			
+			
+			
 			<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-				
+				<div class="buttons small right">
+				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')" >{t}Don't add account credits{/t}</button>
+				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')" >{t}Add account credits{/t}</button>
+			</div>
 				
 				<div style="width:450px">
 					<table border="0" class="info_block">

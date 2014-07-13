@@ -247,7 +247,7 @@ case 'sales_overview':
 	break;
 case 'pending_orders':
 
-	include_once('class.Warehouse.php');
+	include_once 'class.Warehouse.php';
 	$js_files[]='js/splinter_pending_orders.js';
 	$template='splinter_pending_orders.tpl';
 
@@ -270,27 +270,66 @@ case 'pending_orders':
 	$pending_orders_data=array();
 	$total_pending_orders=0;
 	$total_pending_orders_amount=0;
-	
+
 	$sql=sprintf('select count(*) as num ,`Order Store Key`,`Order Store Code`,sum(`Order Total Amount`*`Order Currency Exchange`) as amount from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","") group by `Order Store Key`',
-	$store_keys);
+		$store_keys);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$pending_orders_data[]=array(
-		'store'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.$row['Order Store Code'].'</a>',
-		'number'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.number($row['num']).'</a>',
-		'amount'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.money($row['amount'],$corporate_currency).'</a>',
+			'store'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.$row['Order Store Code'].'</a>',
+			'number'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.number($row['num']).'</a>',
+			'amount'=>'<a href="store_pending_orders.php?id='.$row['Order Store Key'].'" target="_parent">'.money($row['amount'],$corporate_currency).'</a>',
 
 		);
-		
+
 		$total_pending_orders+=$row['num'];
-	$total_pending_orders_amount+=$row['amount'];
-		
-	
+		$total_pending_orders_amount+=$row['amount'];
+
+
 	}
-$total_pending_orders_amount=money($total_pending_orders_amount,$corporate_currency);
+	$total_pending_orders_amount=money($total_pending_orders_amount,$corporate_currency);
 	$smarty->assign('pending_orders_data',$pending_orders_data);
 	$smarty->assign('total_pending_orders',$total_pending_orders);
 	$smarty->assign('total_pending_orders_amount',$total_pending_orders_amount);
+	
+	$stores=array();
+	 $all_selected=true;
+	 $parent='none';
+	  $parent_key=0;
+		$sql=sprintf('select `Store Key`,`Store Code`,`Store Name` from  `Store Dimension` where  `Store Key` in (%s)  and `Store Show in Warehouse Orders`="Yes" ',
+		$store_keys);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+	
+	if($user->data['User Hooked Store Key']==$row['Store Key']){
+		$selected=true;
+		 $all_selected=false;
+		  $parent='store';
+	  $parent_key=$row['Store Key'];
+		 
+		}else{
+		$selected=false;
+		}
+	
+		$stores[]=array(
+			'id'=>$row['Store Key'],
+			'code'=>$row['Store Code'],
+			'name'=>$row['Store Name'],
+			'selected'=>$selected
+		);
+
+		
+
+	}
+	
+			$smarty->assign('parent',$parent);
+		$smarty->assign('parent_key',$parent_key);
+
+	
+	 
+		$smarty->assign('stores',$stores);
+	$smarty->assign('all_selected', $all_selected);
+	
 
 	break;
 

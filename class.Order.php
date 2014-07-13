@@ -6213,7 +6213,7 @@ function set_as_in_process(){
 			$original_customer_balance=$customer->data['Customer Account Balance'];
 
 
-			$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+			$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Pending' and  `Is Account Payment`='Yes' and `Order Key`=%d ",
 				$this->id
 
 			);
@@ -6253,7 +6253,7 @@ function set_as_in_process(){
 				$payment_account=new Payment_Account($payment_account_key);
 
 				$payment_key=0;
-				$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+			$sql=sprintf("select B.`Payment Key` from `Order Payment Bridge` B left join `Payment Dimension` P   on (P.`Payment Key`=B.`Payment Key`)  where  `Payment Transaction Status`='Pending' and  `Is Account Payment`='Yes' and `Order Key`=%d ",
 					$this->id
 
 				);
