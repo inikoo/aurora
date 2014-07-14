@@ -648,7 +648,7 @@ function create_delivery_note() {
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //  alert(o.responseText);
+            // alert(o.responseText);
             //return;
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
@@ -2030,7 +2030,7 @@ function init_common_order_not_dispatched() {
     dialog_send_to_warehouse = new YAHOO.widget.Dialog("dialog_send_to_warehouse", {
 
         visible: false,
-        close: true,
+        close: false,
         underlay: "none",
         draggable: false
     });

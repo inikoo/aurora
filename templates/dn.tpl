@@ -131,7 +131,7 @@
 		<div style="clear:both">
 		</div>
 		<img id="show_dn_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
-		<div id="dn_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px">
+		<div id="dn_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
 			
 			<div class="buttons">
 			<button id="show_edit_dn_data" onclick="show_dialog_set_dn_data()" ><img src="art/icons/basket_edit.png" alt="" /> {t}Set Parcels Data{/t}</button> 
@@ -139,6 +139,80 @@
 				<button onclick="undo_dispatch()"><img id="undo_dispatch_icon" src="art/icons/arrow_rotate_anticlockwise.png"> {t}Undo dispatch{/t}</button> 
 			{/if} 
 			</div>
+			
+			
+			<div style="width:550px">
+					<table border="0" class="info_block">
+					<tr>
+						<td>{t}Order placed{/t}:</td>
+						<td class="aright">{$delivery_note->get('Order Date Placed')}</td>
+					</tr>
+					<tr>
+						<td>{t}Send to warehouse{/t}:</td>
+						<td class="aright">{$delivery_note->get('Date Created')}</td>
+					</tr>
+					
+					<tr>
+						<td>{t}Start picking{/t}:</td>
+						<td class="aright">{$delivery_note->get('Date Start Picking')}</td>
+					</tr>
+					
+					<tr>
+						<td>{t}Start picking{/t}:</td>
+						<td class="aright">{$delivery_note->get('Date Start Picking')}</td>
+					</tr>
+					
+					<tr>
+						<td>{t}Finish picking{/t}:</td>
+						<td class="aright">{$delivery_note->get('Date Finish Picking')}</td>
+					</tr>
+					<tr>
+						<td>{t}Start packing{/t}:</td>
+						<td class="aright">{$delivery_note->get('Date Start Packing')}</td>
+					</tr>
+					
+					<tr>
+						<td>{t}Finish packing{/t}:</td>
+						<td class="aright">{$delivery_note->get('Date Finish Packing')}</td>
+					</tr>
+					
+				</table>
+				
+				<table border="0" class="info_block">
+				<tr>
+						<td>{t}Customer Name{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note Customer Name')}</td>
+					</tr>
+					<tr>
+						<td>{t}Contact Name{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note Customer Contact Name')}</td>
+					
+						<tr>
+						<td>{t}Telephone{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note Telephone')}</td>
+					</tr>
+						<tr>
+						<td>{t}Email{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note Email')}</td>
+					</tr>
+				</table>
+				
+				
+				<table border="0" class="info_block">
+				<tr>
+						<td>{t}Pickers{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note XHTML Pickers')} </td>
+					</tr>
+					<tr>
+						<td>{t}Packers{/t}:</td>
+						<td class="aright">{$delivery_note->get('Delivery Note XHTML Packers')} </td>
+					</tr>
+				
+				</table>
+				
+				</div>
+				<div style="clear:both">
+				</div>
 			
 			<div style="clear:both">
 			</div>
