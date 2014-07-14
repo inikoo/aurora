@@ -2680,6 +2680,7 @@ class DeliveryNote extends DB_Table {
 		foreach ($this->get_orders_objects() as $order) {
 			$order->update_dispatch_state();
 			$order->update_xhtml_delivery_notes();
+			$order->update(array('Order Packed Done Date'=>$this->data['Delivery Note Date Done Approved']));
 		}
 		foreach ($this->get_invoices_objects() as $invoice) {
 			$invoice->update_xhtml_delivery_notes();
