@@ -64,7 +64,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 }
 
-
+print_r($transactions);
+exit;
 
 
 
