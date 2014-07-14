@@ -52,7 +52,7 @@
 				<td style="text-align:center;width:25%"> 	
 				<h2>{t}In Process{/t}</h2> 
 				<div class="number_orders">
-				<span  id="in_process_number_orders"></span> +<span  id="in_process_internal_number_orders"></span>
+				<span  id="in_process_number_orders"></span> <span class="in_process_internal"> + <span  id="in_process_internal_number_orders"></span></span>
 				</div>
 				<div>
 				&lang;<span class="avg_age" id="in_process_avg_age"></span>&rang;  {literal}{{/literal}<span class="avg_processing_time" id="in_process_avg_processing_time"></span>{literal}}{/literal}
