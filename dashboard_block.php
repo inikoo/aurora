@@ -249,6 +249,8 @@ case 'pending_orders':
 
 	include_once 'class.Warehouse.php';
 	$js_files[]='js/splinter_pending_orders.js';
+		$css_files[]='css/splinter_pending_orders.css';
+
 	$template='splinter_pending_orders.tpl';
 
 	if (count($user->stores)==0) {
@@ -291,26 +293,26 @@ case 'pending_orders':
 	$smarty->assign('pending_orders_data',$pending_orders_data);
 	$smarty->assign('total_pending_orders',$total_pending_orders);
 	$smarty->assign('total_pending_orders_amount',$total_pending_orders_amount);
-	
+
 	$stores=array();
-	 $all_selected=true;
-	 $parent='none';
-	  $parent_key=0;
-		$sql=sprintf('select `Store Key`,`Store Code`,`Store Name` from  `Store Dimension` where  `Store Key` in (%s)  and `Store Show in Warehouse Orders`="Yes" ',
+	$all_selected=true;
+	$parent='none';
+	$parent_key=0;
+	$sql=sprintf('select `Store Key`,`Store Code`,`Store Name` from  `Store Dimension` where  `Store Key` in (%s)  and `Store Show in Warehouse Orders`="Yes" ',
 		$store_keys);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-	
-	if($user->data['User Hooked Store Key']==$row['Store Key']){
-		$selected=true;
-		 $all_selected=false;
-		  $parent='store';
-	  $parent_key=$row['Store Key'];
-		 
-		}else{
-		$selected=false;
+
+		if ($user->data['User Hooked Store Key']==$row['Store Key']) {
+			$selected=true;
+			$all_selected=false;
+			$parent='store';
+			$parent_key=$row['Store Key'];
+
+		}else {
+			$selected=false;
 		}
-	
+
 		$stores[]=array(
 			'id'=>$row['Store Key'],
 			'code'=>$row['Store Code'],
@@ -318,18 +320,17 @@ case 'pending_orders':
 			'selected'=>$selected
 		);
 
-		
 
 	}
-	
-			$smarty->assign('parent',$parent);
-		$smarty->assign('parent_key',$parent_key);
 
-	
-	 
-		$smarty->assign('stores',$stores);
+	$smarty->assign('parent',$parent);
+	$smarty->assign('parent_key',$parent_key);
+
+
+
+	$smarty->assign('stores',$stores);
 	$smarty->assign('all_selected', $all_selected);
-	
+
 
 	break;
 
