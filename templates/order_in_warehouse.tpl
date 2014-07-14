@@ -306,6 +306,11 @@
 						<td>{t}Send to warehouse{/t}:</td>
 						<td class="aright">{$order->get('Send to Warehouse Date')}</td>
 					</tr>
+					
+					<tr>
+						<td>{t}Picking & packing done{/t}:</td>
+						<td class="aright">{$order->get('Packed Done Date')}</td>
+					</tr>
 				</table>
 				
 				<table border="0" class="info_block">

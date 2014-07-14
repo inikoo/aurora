@@ -1747,7 +1747,6 @@ function set_as_in_process(){
 		case('Dispatched Date'):
 		case('Post Transactions Dispatched Date'):
 		case('Packed Done Date'):
-	
 
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order '.$key].' +0:00'));
 			break;
