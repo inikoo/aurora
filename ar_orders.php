@@ -3906,7 +3906,7 @@ function number_pending_orders_in_interval($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
-		if ( in_array($row['Order Current Dispatch State'],array('Ready to Pick','Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ) {
+		if ( in_array($row['Order Current Dispatch State'],array('Packed Done','Ready to Pick','Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ) {
 			continue;
 		}
 
@@ -3924,10 +3924,16 @@ function number_pending_orders_in_interval($data) {
 		$elements_numbers['InProcessbyCustomer']=$row['num'];
 	}
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing') ",$where);
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Packed','Packing') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InWarehouse']=$row['num'];
+	}
+	
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Packed Done','Ready to Ship') ",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['PackedDone']=$row['num'];
 	}
 
 	//print_r($elements_numbers);
