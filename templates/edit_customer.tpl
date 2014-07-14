@@ -392,9 +392,12 @@
 			
 					
 					<tr>
-						<td style="width:150px" class="label"><span id="Customer_Tax_Number_msg"></span> {t}Preferred Shipping Company{/t}:</td>
-						<td style="text-align:left;width:280px"> 
-					
+						<td style="width:150px" class="label"><span id="Customer_Tax_Number_msg"></span> {t}Preferred Courier{/t}:</td>
+						<td style="text-align:lefts"> 
+					<input type="hidden" id="shipper_code" value="" ovalue=""> 
+			<div class="buttons small left" id="shipper_code_options">
+				{foreach from=$shipper_data item=item key=key } <button style="margin-bottom:5px;min-width:120px" class="{if $item.selected>0}selected{/if} option" id="shipper_code_{$item.code}" onclick="change_shipper('{$item.code}')">{$item.code}</button> {/foreach} 
+			</div>
 						</td>
 					</tr>
 					

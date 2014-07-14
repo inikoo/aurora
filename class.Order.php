@@ -1777,14 +1777,16 @@ function set_as_in_process(){
 
 			break;
 
+
+
 		case ('Weight'):
 			if ($this->data['Order Current Dispatch State']=='Dispatched') {
 				if ($this->data['Order Weight']=='')
-					return weight($this->data['Order Dispatched Estimated Weight']);
+					return "&#8494;" .weight($this->data['Order Dispatched Estimated Weight']);
 				else
 					return weight($this->data['Order Weight']);
 			} else {
-				return weight($this->data['Order Estimated Weight']);
+				return "&#8494;" .weight($this->data['Order Estimated Weight']);
 			}
 			break;
 
