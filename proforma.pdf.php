@@ -50,7 +50,7 @@ $smarty->assign('order',$order);
 
 
 $transactions=array();
-$sql=sprintf("select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Order Key`=%d order by `Product File As` ", $order->id);
+$sql=sprintf("select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Order Key`=%d order by `Product Code File As` ", $order->id);
 print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
