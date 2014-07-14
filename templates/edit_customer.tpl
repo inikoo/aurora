@@ -401,7 +401,16 @@
 						</td>
 					</tr>
 					
-					
+					<tr>
+					<td></td>
+					<td >
+					<div class="buttons left">
+									<button  id="reset_edit_delivery_data" class="negative disabled">{t}Reset{/t}</button> 
+
+				<button  id="save_edit_delivery_data" class="positive disabled">{t}Save{/t}</button> 
+			</div>
+					</td>
+					</tr>
 				</table>
 			
 			{include file='edit_delivery_address_splinter.tpl' parent='customer' order_key=0} 

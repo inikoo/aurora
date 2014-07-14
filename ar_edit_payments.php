@@ -154,11 +154,12 @@ function cancel_payment($data) {
 	);
 	$payment->update($data_to_update);
 
-	if($payment->data['Payment Method']=='Account'){
+	if ($payment->data['Payment Method']=='Account') {
 		$customer = new Customer($payment->data['Payment Customer Key']);
-				$customer->update_field_switcher('Customer Account Balance',round($customer->data['Customer Account Balance']+$payment->data['Payment Amount'],2));
+		$customer->update_field_switcher('Customer Account Balance',round($customer->data['Customer Account Balance']+$payment->data['Payment Amount'],2));
+		$order->update_field_switcher('Order Apply Auto Customer Account Payment','No');
 
-	
+
 	}
 
 
@@ -615,31 +616,31 @@ function online_worldpay_refund($refund_amount,$payment) {
 		$option
 	);
 
-//$request=urlencode($request);
+	//$request=urlencode($request);
 
-	 $ch = curl_init();
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_URL, $request);
-    curl_setopt($ch, CURLOPT_REFERER, $request);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    $response = curl_exec($ch);
-    curl_close($ch);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($ch, CURLOPT_URL, $request);
+	curl_setopt($ch, CURLOPT_REFERER, $request);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	$response = curl_exec($ch);
+	curl_close($ch);
 
 
-	
+
 	$respond_array=preg_split('/\,/',$response);
 	if (count($respond_array)==3) {
 
 		if ($respond_array[0]=="A") {
-		
-		if($respond_array[1]!=$payment->data['Payment Transaction ID']){
-		$_ref=$respond_array[1];
-		}else{
-		$_ref='';
-		}
-		
+
+			if ($respond_array[1]!=$payment->data['Payment Transaction ID']) {
+				$_ref=$respond_array[1];
+			}else {
+				$_ref='';
+			}
+
 			$refunded_data=array(
 				'status'=>'Completed',
 				'reference'=>$_ref
@@ -664,7 +665,7 @@ function online_worldpay_refund($refund_amount,$payment) {
 
 	}
 
-return $refunded_data;
+	return $refunded_data;
 
 
 }
