@@ -260,7 +260,15 @@
 					<tr>
 						<td>{t}Tax Info{/t}:</td>
 						<td class="aright">{$order->get('Order Tax Name')}</td>
+				</tr>
+				</table>
 				
+					<table border="0" class="info_block">
+				<tr>
+						<td>{t}Weight {/t}:</td>
+						<td class="aright">{$order->get('Weight')}</td>
+					</tr>
+					
 				</table>
 				
 				</div>

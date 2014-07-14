@@ -110,7 +110,9 @@ div.inline { float:left; }
 			</div>
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> 
-			
+			<div style="text-align: right">
+				{t}Weight{/t}:<b> {$order->get('Weight')}</b>
+			</div>
 			 </td>
 		</tr>
 	</table>

@@ -637,6 +637,24 @@ $smarty->assign('filter_menu100',$filter_menu100);
 $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
 
+
+	$shipper_data=array();
+
+		$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$shipper_data[$row['Shipper Key']]=array(
+				'shipper_key'=>$row['Shipper Key'],
+				'code'=>$row['Shipper Code'],
+				'name'=>$row['Shipper Name'],
+				'selected'=>0
+			);
+
+
+		}
+		$smarty->assign( 'shipper_data', $shipper_data );
+
+
 $smarty->display('edit_customer.tpl');
 
 
