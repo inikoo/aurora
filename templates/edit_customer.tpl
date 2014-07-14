@@ -145,7 +145,7 @@
 			
 			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:890px;margin-bottom:20px;">
 			
-				<table border="0" class="edit" style="width:100%;>
+				<table border="0" class="edit" style="width:100%;">
 					<tr class="title">
 					<td colspan=2>{t}Billing Information{/t}</td>
 					</tr>
@@ -382,6 +382,25 @@
 			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!='delivery'}display:none{/if};min-height:260px" id="d_delivery">
+			
+			<table border="0" class="edit" style="width:100%;">
+					<tr class="title">
+					<td colspan=2>{t}Delivery Options{/t}</td>
+					</tr>
+					
+					
+			
+					
+					<tr>
+						<td style="width:150px" class="label"><span id="Customer_Tax_Number_msg"></span> {t}Preferred Shipping Company{/t}:</td>
+						<td style="text-align:left;width:280px"> 
+					
+						</td>
+					</tr>
+					
+					
+				</table>
+			
 			{include file='edit_delivery_address_splinter.tpl' parent='customer' order_key=0} 
 		</div>
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if};" id="d_details">
