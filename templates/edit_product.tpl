@@ -141,9 +141,11 @@
 						<tr class="first">
 							<td style="width:180px" class="label">{t}Product Type{/t}:</td>
 							<td style="width:600px" class="buttons left small"> 
-							<input type="hidden" id="Product_Sales_Type" value=""> 
+							<input type="hidden" id="Product_Sales_Type" value="{$sales_type}" ovalue="{$sales_type}" tag="{$sales_type}|replace:' ':'_'"> 
 							<div class="buttons" id="sales_type_options">
-								<button id="product_sales_type_Public_Sale" class="{if $sales_type=='Public Sale'}selected{/if}" onclick="change_sales_type('Public Sale',  '{$sales_type}')">{t}Public Sale{/t}</button> <button id="product_sales_type_Private_Sale" class="{if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale', '{$sales_type}')">{t}Private Sale{/t}</button> <button id="product_sales_type_Not_for_Sale_Sale" class="{if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', '{$sales_type}')">{t}Not For Sale{/t}</button> 
+								<button id="product_sales_type_Public_Sale" class="item {if $sales_type=='Public Sale'}selected{/if}" onclick="change_sales_type('Public Sale', this)" tag="Public_Sale" >{t}Public Sale{/t}</button> 
+								<button id="product_sales_type_Private_Sale" class="item {if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale',this)" tag="Private_Sale">{t}Private Sale{/t}</button> 
+								<button id="product_sales_type_Not_for_Sale_Sale" class="item {if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', this)" tag="Not_For_Sale">{t}Not For Sale{/t}</button> 
 							</div>
 							</td>
 						</tr>

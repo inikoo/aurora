@@ -2232,7 +2232,7 @@ function list_pending_orders() {
 			$elements_count++;
 
 			if ($_key=='InWarehouse') {
-				$_key="'Ready to Pick','Picking & Packing','Ready to Ship','Packed','Packing'";
+				$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer'";
 			}if ($_key=='InProcess') {
@@ -2240,7 +2240,7 @@ function list_pending_orders() {
 			}if ($_key=='InProcessbyCustomer') {
 				$_key="'In Process by Customer','Waiting for Payment Confirmation'";
 			}if ($_key=='PackedDone') {
-				$_key="'Packed Done'";
+				$_key="'Packed Done','Ready to Ship'";
 			}
 
 			$_elements.=','.$_key;

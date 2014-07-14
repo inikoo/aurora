@@ -357,9 +357,10 @@ function save_edit_price(){
 
 function save_edit_family(){
     save_edit_general('product_family');
-    
-    
-    
+}
+
+function save_edit_sales_type(){
+    save_edit_general('product_sales_typ');
 }
 
 function reset_edit_price(){
@@ -412,6 +413,19 @@ Dom.get('Product_Family_Key').innerHTML=Dom.get('Product_Family_Key').getAttribu
 
     reset_edit_general('product_family');
 }
+
+function reset_edit_sales_type(){
+
+Dom.removeClass(Dom.getElementsByClassName('item','button','sales_type_options'),'selected')
+
+Dom.addClass(Dom.get('product_sales_type_'+Dom.get('Product_Sales_Type').getAttribute('ovalue').replace(' ','_')),'selected')
+
+
+
+    reset_edit_general('product_sales_type');
+}
+
+
 
 function change_unit_type(o){
 
@@ -608,6 +622,28 @@ function validate_parts_per_product(key) {
 
 }
 
+
+function change_sales_type(value,el){
+
+Dom.removeClass(Dom.getElementsByClassName('item','button','sales_type_options'),'selected')
+
+Dom.addClass(el,'selected')
+Dom.get('Product_Sales_Type').value=value
+
+
+    validate_scope_data['product_sales_type']['sales_type']['value'] = value;
+
+    ovalue = Dom.get('Product_Sales_Type').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['product_sales_type']['sales_type']['changed'] = true;
+    } else {
+        validate_scope_data['product_sales_type']['sales_type']['changed'] = false;
+    }
+    validate_scope('product_sales_type')
+
+
+}
 
 function part_changed(o){
 part_render_save_buttons();
@@ -1912,7 +1948,9 @@ validate_scope_data={
 			'validation': false
 		}
 	}
-	
+	  ,'product_sales_type':{
+	'sales_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Sales_Type','ar':false,'validation':false}
+    }
 	
 
     };
@@ -1923,6 +1961,7 @@ validate_scope_metadata={
 
  ,'product_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
 	,'product_price':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
+		,'product_sales_type':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,'product_properties':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'pid','key':Dom.get('product_pid').value}
     ,'product_health_and_safety': {
 		'type': 'edit',
@@ -2001,6 +2040,11 @@ validate_scope_metadata={
  
   Event.addListener('save_edit_product_family', "click", save_edit_family);
     Event.addListener('reset_edit_product_family', "click", reset_edit_family);
+
+ Event.addListener('save_edit_product_sales_type', "click", save_edit_sales_type);
+    Event.addListener('reset_edit_product_sales_type', "click", reset_edit_sales_type);
+
+
 
 
   	dialog_link_health_and_safety = new YAHOO.widget.Dialog("dialog_link_health_and_safety",  {visible : false,close:true,underlay: "none",draggable:false});
