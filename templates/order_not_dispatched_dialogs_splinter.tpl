@@ -1,7 +1,18 @@
-<div id="dialog_send_to_warehouse" style="position:absolute;left:-1000px;padding:15px 20px 5px 10px;width:200px">
+<div id="dialog_send_to_warehouse" style="position:absolute;left:-1000px;padding:5px 20px 5px 10px;width:250px">
 	<div id="send_to_warehouse_msg">
 	</div>
-	<table class="edit" style="width:100%">
+	<table class="edit" style="width:100%" border=0>
+	<tr id="send_to_warehouse_buttons">
+			<td colspan="2"> 
+			<div class="buttons" style="margin-right:0px;position:relative;left:15px">
+				<button onclick="save('send_to_warehouse')" id="send_to_warehouse_save" class="positive"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt="">  {t}Send to Warehouse{/t}</button> <button class="negative" onclick="close_dialog('send_to_warehouse')">{t}Close{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	<tr style="height:22px;display:none" id="send_to_warehouse_wait">
+			<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
+		</tr>
+	
 		<tr class="title">
 			<td colspan="2">{t}Send to warehouse{/t}</td>
 		</tr>
@@ -14,16 +25,8 @@
 		<tr>
 			<td colspan="2"> <textarea style="height:100px;width:100%" id="send_to_warehouse_input" onkeyup="change(event,this,'send_to_warehouse')"></textarea> </td>
 		</tr>
-		<tr id="send_to_warehouse_buttons">
-			<td colspan="2"> 
-			<div class="buttons">
-				<button onclick="save('send_to_warehouse')" id="send_to_warehouse_save" class="positive">{t}Continue{/t}</button> <button class="negative" onclick="close_dialog('send_to_warehouse')">{t}Go Back{/t}</button> 
-			</div>
-			</td>
-		</tr>
-		<tr style="height:22px;display:none" id="send_to_warehouse_wait">
-			<td colspan="2" style="text-align:right;padding-right:20px"> <img src="art/loading.gif" alt="" /> {t}Processig Request{/t} </td>
-		</tr>
+		
+		
 	</table>
 </div>
 

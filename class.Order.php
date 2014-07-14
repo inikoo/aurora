@@ -589,7 +589,10 @@ function set_as_in_process(){
 			'Delivery Note Dispatch Method'=>$dispatch_method,
 			'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a class="id" href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>',
 			'Delivery Note Customer Key'=>$this->data['Order Customer Key'],
-			'Delivery Note Metadata'=>$this->data['Order Original Metadata']
+			'Delivery Note Metadata'=>$this->data['Order Original Metadata'],
+			'Delivery Note Customer Contact Name'=>$this->data['Order Customer Contact Name'],
+			'Delivery Note Telephone'=>$this->data['Order Telephone'],
+			'Delivery Note Email'=>$this->data['Order Email']
 
 		);
 

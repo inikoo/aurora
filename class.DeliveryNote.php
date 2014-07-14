@@ -97,8 +97,23 @@ class DeliveryNote extends DB_Table {
 			$this->data ['Delivery Note Order Date Placed'] = $dn_data ['Delivery Note Order Date Placed'];
 		else
 			$this->data ['Delivery Note Order Date Placed'] ='';
+			
+	
+			
+			if (isset($dn_data ['Delivery Note Customer Contact Name']))
+			$this->data ['Delivery Note Customer Contact Name'] = $dn_data ['Delivery Note Customer Contact Name'];
+		else
+			$this->data ['Delivery Note Customer Contact Name'] ='';
 
-
+	if (isset($dn_data ['Delivery Note Telephone']))
+			$this->data ['Delivery Note Telephone'] = $dn_data ['Delivery Note Telephone'];
+		else
+			$this->data ['Delivery Note Telephone'] ='';
+			
+			if (isset($dn_data ['Delivery Note Email']))
+			$this->data ['Delivery Note Email'] = $dn_data ['Delivery Note Email'];
+		else
+			$this->data ['Delivery Note Email'] ='';
 
 
 		if (isset($dn_data ['Delivery Note XHTML Pickers']))
@@ -364,14 +379,23 @@ class DeliveryNote extends DB_Table {
 
 
 	function create_header() {
-		$sql = sprintf("insert into `Delivery Note Dimension` (`Delivery Note Order Date Placed`,`Delivery Note Show in Warehouse Orders`,`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
+		$sql = sprintf("insert into `Delivery Note Dimension` (
+		`Delivery Note Customer Contact Name`,`Delivery Note Telephone`,`Delivery Note Email`,
+		`Delivery Note Order Date Placed`,`Delivery Note Show in Warehouse Orders`,`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
                          `Delivery Note Country 2 Alpha Code`,
                          `Delivery Note Country Code`,
                          `Delivery Note World Region Code`,
                          `Delivery Note Town`,
                          `Delivery Note Postal Code`
 
-                        ) values (%s,%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
+                        ) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
+			
+			,prepare_mysql ($this->data ['Delivery Note Customer Contact Name'])
+			,prepare_mysql ($this->data ['Delivery Note Telephone'])
+			,prepare_mysql ($this->data ['Delivery Note Email'])
+			
+			
+			
 			,prepare_mysql ($this->data ['Delivery Note Order Date Placed'])
 
 			,prepare_mysql ($this->data ['Delivery Note Show in Warehouse Orders'])
