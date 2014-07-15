@@ -4,7 +4,9 @@ require_once 'common.php';
 require_once 'class.Store.php';
 
 require_once 'class.Order.php';
-
+include_once 'class.Payment.php';
+include_once 'class.Payment_Account.php';
+include_once 'class.Payment_Service_Provider.php';
 require_once 'common_geography_functions.php';
 
 
