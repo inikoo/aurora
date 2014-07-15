@@ -52,6 +52,13 @@ table thead td { background-color: #EEEEEE;
 
 div.inline { float:left; }
 .clearBoth { clear:both; }
+
+table thead td,table tr.title td{ background-color: #EEEEEE;
+    text-align: center;
+    border: 0.1mm solid #000000;
+}
+
+
 {/literal}</style> 
 </head>
 <body>
@@ -217,6 +224,7 @@ div.inline { float:left; }
 			
 		</tbody>
 	</table>
+	{if $order->get_number_payments()>0}
 	<br> 
 		 <table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
 	<tr class="title">
@@ -247,7 +255,8 @@ div.inline { float:left; }
 			{/foreach} 
 		</tbody>
 	</table>
-	
+	{/if}
+	<br><br>
 	
 	<div style="text-align: center; font-style: italic;">
 	{include file="string:{$store->get('Store Invoice Message')}" } 
