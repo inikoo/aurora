@@ -6,7 +6,6 @@
 <input type="hidden" id="to" value="" />
 
 <input type="hidden" id="InProcessbyCustomer" value="{$elements.InProcessbyCustomer}" />
-<input type="hidden" id="InProcess" value="{$elements.InProcess}" />
 <input type="hidden" id="SubmittedbyCustomer" value="{$elements.SubmittedbyCustomer}" />
 <input type="hidden" id="InWarehouse" value="{$elements.InWarehouse}" />
 <input type="hidden" id="PackedDone" value="{$elements.PackedDone}" />
@@ -43,8 +42,7 @@
 				<div class="elements_chooser">
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.PackedDone}selected{/if} label_PackedDone" id="elements_PackedDone" table_type="PackedDone">{t}Packed{/t} (<span id="elements_PackedDone_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}In Process{/t} (<span id="elements_SubmittedbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 				</div>
 				<div class="table_top_bar space">

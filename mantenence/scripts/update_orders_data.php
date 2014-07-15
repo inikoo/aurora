@@ -40,8 +40,12 @@ $sql="select `Order Key` from `Order Dimension` order by `Order Key` desc";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$order=new Order($row['Order Key']);
-	$order->update_no_normal_totals();
-	$order->update_payment_state();
+	//$order->update_no_normal_totals();
+	//$order->update_payment_state();
+	
+	$store=new Store($order->data['Order Store Key']);
+	$order->update_field_switcher('Order Show in Warehouse Orders',$store->data['Store Show in Warehouse Orders'],'no_history');
+	
 	print $order->data['Order Date']." ".$order->data['Order Public ID']."  \r";
 }
 
