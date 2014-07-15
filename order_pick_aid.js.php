@@ -107,7 +107,7 @@ var myonCellClick = function(oArgs) {
 
             var ar_file = 'ar_edit_orders.php';
             request = 'tipo=pick_order&dn_key=' + Dom.get('dn_key').value + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&picker_key=' + picker_key;
-            //	alert(request);
+            //	alert(ar_file+'?'+request);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
@@ -519,10 +519,10 @@ function save_no_dispatchable() {
     var request = 'tipo=update_no_dispatched&dn_key=' + Dom.get('dn_key').value + '&itf_key=' + Dom.get('todo_itf_key').value + '&out_of_stock=' + out_of_stock + '&not_found=' + not_found + '&no_picked_other=' + no_picked_other;
 
 
-    //alert(request)
+  //  alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText);
+          //  alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
@@ -661,8 +661,9 @@ function fill_edit_deal_form(deal_key) {
 
 
 
-
-
+function close_no_dispatchable_dialog(){
+no_dispatchable_editor_dialog.hide()
+}
 
 
 function pick_it() {
