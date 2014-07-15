@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-15 13:13+0100\n"
-"PO-Revision-Date: 2014-07-15 13:14+0100\n"
+"PO-Revision-Date: 2014-07-15 13:28+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -25142,11 +25142,8 @@ msgstr "Rückerstattung"
 #: smarty.php:17660 smarty.php:17858 smarty.php:18059 smarty.php:18173
 #: smarty.php:18230 smarty.php:18524 smarty.php:18581 smarty.php:18725
 #: smarty.php:22532
-#, fuzzy
 msgid "To Pay"
-msgstr ""
-"Die neue Art, sicher und schnell online zu bezahlen. Geben Sie einfach Ihre "
-"Bankdaten im sicheren SOFORT System ein."
+msgstr "Zu bezahlen"
 
 #: smarty.php:17666
 #, fuzzy
