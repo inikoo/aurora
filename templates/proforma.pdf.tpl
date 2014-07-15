@@ -218,6 +218,37 @@ div.inline { float:left; }
 		</tbody>
 	</table>
 	<br> 
+		 <table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
+	<tr class="title">
+		<td colspan=5>{t}Payments{/t}</td>
+		</tr>
+	<thead>
+			<tr>
+				<td style="width:40%;text-align:left">{t}Method{/t}</td>
+				<td style="text-align:right">{t}Date{/t}</td>
+				<td style="text-align:left">{t}Status{/t}</td>
+				<td style="text-align:left">{t}Reference{/t}</td>
+								<td style=";text-align:right">{t}Amount{/t}</td>
+
+
+			</tr>
+		</thead>
+		<tbody >
+			{foreach from=$order->get_payment_objects('',true,true) item=payment name=payments} 
+			<tr class="{if $smarty.foreach.payments.last}last{/if}">
+				<td style="text-align:left">{$payment->get('Method')} ({$payment->payment_service_provider->get('Payment Service Provider Name')})</td>
+				<td style="text-align:right">{$payment->get('Created Date')}</td>
+				<td style="text-align:left">{$payment->get('Transaction Status')}</td>
+								<td style="text-align:left">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()|strip_tags}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')=='Refund'}, {/if}{$payment->get('Payment Transaction ID')|strip_tags}</td>
+
+				<td style="text-align:right">{$payment->formated_amount}</td>
+
+			</tr>
+			{/foreach} 
+		</tbody>
+	</table>
+	
+	
 	<div style="text-align: center; font-style: italic;">
 	{include file="string:{$store->get('Store Invoice Message')}" } 
 	
