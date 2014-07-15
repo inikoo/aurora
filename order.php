@@ -763,6 +763,9 @@ $order->update_payment_state();
 	case 'In Process by Customer':
 
 	
+		$js_files[]='js/php.default.min.js';
+		$js_files[]='js/add_payment.js';
+
 
 		$order->apply_payment_from_customer_account();
 
