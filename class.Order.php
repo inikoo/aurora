@@ -1531,7 +1531,7 @@ function set_as_in_process(){
 
 
 		$sql = sprintf( "insert into `Order Dimension` (
-		
+		`Order Show in Warehouse Orders`,
 `Order Telephone`,`Order Customer Fiscal Name`,
 `Order Email`,
 		`Order Apply Auto Customer Account Payment`,
@@ -1545,11 +1545,12 @@ function set_as_in_process(){
                          `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
 
                          ) values
-                         (%s, %s,
+                         (%s,%s, %s,
                          %s,
                          %s,%s,%s,%s,%s,%d,%s,%f,
 
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+			prepare_mysql ( $this->data ['Order Show in Warehouse Orders'] ),
 			prepare_mysql ( $this->data ['Order Telephone'] ),
 			prepare_mysql ( $this->data ['Order Customer Fiscal Name'] ),
 			prepare_mysql ( $this->data ['Order Email'] ),
@@ -1943,13 +1944,29 @@ function set_as_in_process(){
 
 
 
+function auto_account_payments($value,$options=''){
 
+$this->update_field('Order Apply Auto Customer Account Payment',$value,$options);
+
+
+if($value=='Yes'){
+	$this->apply_payment_from_customer_account();
+}else{
+	
+
+}
+
+}
 
 
 
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+		
+		case 'auto_account_payments':
+			$this->auto_account_payments($value,$options);
+		break;
 		case('Order Tax Number'):
 			$this->update_field($field,$value,$options);
 
@@ -3263,16 +3280,10 @@ function set_as_in_process(){
 		$this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
 		$this->data ['Order XHTML Store'] = sprintf( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
 		$this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
+		$this->data['Order Show in Warehouse Orders']=$store->data['Store Show in Warehouse Orders'];
 
 		$this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
-		//if (!isset($this->data ['Order Tax Code'])) {
-		// $tax_category=new TaxCategory($store->data['Store Tax Category Code']);
-		// $this->data ['Order Tax Rate'] = $tax_category->data['Tax Category Rate'];
-		// $this->data ['Order Tax Code'] = $tax_category->data['Tax Category Code'];
-		//}
-
-
-		//$this->set_taxes($store->data['Store Tax Country Code']);
+		
 
 
 	}
@@ -6211,7 +6222,10 @@ function set_as_in_process(){
 
 	function apply_payment_from_customer_account() {
 
-
+$order_amount=$this->data['Order To Pay Amount'];
+if($order_amount<=0){
+	return;
+}
 
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
 
@@ -6239,7 +6253,7 @@ function set_as_in_process(){
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
 			if ($customer_account_available_amount) {
-				$order_amount=$this->data['Order Balance Total Amount'];
+				
 
 				if ($customer_account_available_amount==$order_amount) {
 					$payment_amount=$order_amount;

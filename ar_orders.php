@@ -42,7 +42,7 @@ case ('get_pending_orders_in_basket_data'):
 
 
 	break;
-	case ('get_pending_orders_in_process_data'):
+case ('get_pending_orders_in_process_data'):
 
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'numeric'),
@@ -52,9 +52,9 @@ case ('get_pending_orders_in_basket_data'):
 	get_pending_orders_in_process_data($data);
 
 
-	break;	
-	
-	case ('get_pending_orders_in_warehouse_data'):
+	break;
+
+case ('get_pending_orders_in_warehouse_data'):
 
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'numeric'),
@@ -64,9 +64,9 @@ case ('get_pending_orders_in_basket_data'):
 	get_pending_orders_in_warehouse_data($data);
 
 
-	break;	
-	
-		case ('get_pending_orders_packed_data'):
+	break;
+
+case ('get_pending_orders_packed_data'):
 
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'numeric'),
@@ -76,9 +76,9 @@ case ('get_pending_orders_in_basket_data'):
 	get_pending_orders_packed_data($data);
 
 
-	break;	
-	
-	
+	break;
+
+
 case('get_dn_fields'):
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
@@ -3902,21 +3902,7 @@ function number_pending_orders_in_interval($data) {
 	}
 
 	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0);
-	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` %s  group by `Order Current Dispatch State` ",$where);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
 
-		if ( in_array($row['Order Current Dispatch State'],array('Packed Done','Ready to Pick','Dispatched','Cancelled','Suspended','Packed','Picking & Packing','Ready to Ship','Cancelled by Customer','In Process by Customer','Waiting for Payment Confirmation','Packing'))  ) {
-			continue;
-		}
-
-		$_key=preg_replace('/\s/','',$row['Order Current Dispatch State']);
-
-
-
-
-		$elements_numbers[$_key]=$row['num'];
-	}
 
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",$where);
 	$res=mysql_query($sql);
@@ -3929,12 +3915,19 @@ function number_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InWarehouse']=$row['num'];
 	}
-	
+
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Packed Done','Ready to Ship') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['PackedDone']=$row['num'];
 	}
+	
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('In Process','Submitted by Customer') ",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['SubmittedbyCustomer']=$row['num'];
+	}
+	
 
 	//print_r($elements_numbers);
 
@@ -4507,10 +4500,11 @@ function get_dn_fields($data) {
 function get_pending_orders_in_basket_data($data) {
 	global $corporate_currency;
 
+	$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 
 	if ($data['parent']=='none') {
-		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$where = 'where `Order Show in Warehouse Orders`="Yes" ';
 		$currency_code=$corporate_currency;
 		$user_corporate_currency=true;
 	}elseif ($data['parent']=='store') {
@@ -4540,7 +4534,7 @@ function get_pending_orders_in_basket_data($data) {
 		'in_basket_sum_total_balance'=>money(0,$currency_code),
 		'in_basket_avg_age'=>'ND',
 		'in_basket_avg_processing_time'=>'ND',
-		
+
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_basket_number_orders ,
@@ -4550,7 +4544,7 @@ function get_pending_orders_in_basket_data($data) {
 sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 		sum(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_sum_total_balance_corporate
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='In Process by Customer' ",$where);
+	from `Order Dimension` O  %s and `Order Current Dispatch State`='In Process by Customer' ",$where);
 
 	//print $sql;
 	$res=mysql_query($sql);
@@ -4579,7 +4573,7 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 	}
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Created Date`, `Order Submitted by Customer Date` ))  in_basket_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Submitted by Customer Date` is not NULL  ",$where);
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Created Date`, `Order Submitted by Customer Date` ))  in_basket_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Submitted by Customer Date`>%s  ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -4595,7 +4589,7 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 
 	}
 
-
+	//print $sql;
 
 	$response= array('state'=>200,'data'=>$pending_orders_data);
 	echo json_encode($response);
@@ -4605,11 +4599,11 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 function get_pending_orders_in_process_data($data) {
 	global $corporate_currency;
 
-$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
+	$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 
 	if ($data['parent']=='none') {
-		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$where = 'where `Order Show in Warehouse Orders`="Yes" ';
 		$currency_code=$corporate_currency;
 		$user_corporate_currency=true;
 	}elseif ($data['parent']=='store') {
@@ -4631,26 +4625,27 @@ $start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 		echo json_encode($response);
 		exit;
 	}
-
+$in_process_total_orders=0;
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$pending_orders_data=array(
-		
+
 		'in_process_number_orders'=>0,
 		'in_process_avg_total_balance'=>money(0,$currency_code),
 		'in_process_sum_total_balance'=>money(0,$currency_code),
 		'in_process_avg_age'=>'ND',
 		'in_process_avg_processing_time'=>'ND',
 		'in_process_internal_number_orders'=>0,
+		'in_process_total_orders'=>0
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_process_number_orders ,
-	avg(TIMESTAMPDIFF(DAY,`Order Submitted by Customer Date`,NOW())) as in_process_avg_age_in_days,
+	avg(TIMESTAMPDIFF(DAY,`Order Date`,NOW())) as in_process_avg_age_in_days,
 		avg(`Order Balance Total Amount`) in_process_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_process_avg_total_balance_corporate ,
 sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 		sum(`Order Balance Total Amount`*`Order Currency Exchange`) in_process_sum_total_balance_corporate
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='Submitted by Customer' ",$where);
+	from `Order Dimension` O  %s and `Order Current Dispatch State` in ('Submitted by Customer','In Process') and `Order Current Payment State`='Paid'   ",$where);
 
 	//print $sql;
 	$res=mysql_query($sql);
@@ -4658,7 +4653,7 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 		$in_process_avg_age_in_days=number($row['in_process_avg_age_in_days'],1).' '._('days');
 
-
+		$in_process_total_orders=$row['in_process_number_orders'];
 		$pending_orders_data['in_process_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($row['in_process_number_orders']));
 
 		$pending_orders_data['in_process_avg_age']=$in_process_avg_age_in_days;
@@ -4679,24 +4674,25 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 	}
 
 
-$sql=sprintf("select
-	count(Distinct `Order Key`) in_process_internal_number_orders 
-	
+	$sql=sprintf("select
+	count(`Order Key`) in_process_internal_number_orders
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State`='In Process' ",$where);
 
-	//print $sql;
+	from `Order Dimension`  %s and `Order Current Dispatch State` in ('Submitted by Customer','In Process') and `Order Current Payment State`!='Paid'  ",$where);
+
+//	print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
-
-		$pending_orders_data['in_process_internal_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InProcess':'store_pending_orders.php?id='.$data['parent_key'].'&show=InProcess'),number($row['in_process_internal_number_orders']));
+$in_process_total_orders+=$row['in_process_internal_number_orders'];
+		$pending_orders_data['in_process_internal_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($row['in_process_internal_number_orders']));
 
 
 	}
 
+		$pending_orders_data['in_process_total_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($in_process_total_orders));
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Submitted by Customer Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -4723,10 +4719,10 @@ $sql=sprintf("select
 function get_pending_orders_in_warehouse_data($data) {
 	global $corporate_currency;
 
-$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
-//print $start_record_date;
+	$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
+	//print $start_record_date;
 	if ($data['parent']=='none') {
-		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$where = 'where `Order Show in Warehouse Orders`="Yes" ';
 		$currency_code=$corporate_currency;
 		$user_corporate_currency=true;
 	}elseif ($data['parent']=='store') {
@@ -4751,7 +4747,7 @@ $start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$pending_orders_data=array(
-		
+
 		'in_warehouse_number_orders'=>0,
 		'in_warehouse_avg_total_balance'=>money(0,$currency_code),
 		'in_warehouse_sum_total_balance'=>money(0,$currency_code),
@@ -4767,7 +4763,7 @@ $start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 		sum(`Order Balance Total Amount`*`Order Currency Exchange`) in_warehouse_sum_total_balance_corporate
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Packing','Packed')  ",$where);
+	from `Order Dimension` O %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Packing','Packed')  ",$where);
 
 	//print $sql;
 	$res=mysql_query($sql);
@@ -4799,8 +4795,8 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Packed Done Date`>%s  ",$where,
-	prepare_mysql($start_record_date)
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Packed Done Date`>%s  ",$where,
+		prepare_mysql($start_record_date)
 	);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -4828,10 +4824,10 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 function get_pending_orders_packed_data($data) {
 	global $corporate_currency;
 
-$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
+	$start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 	if ($data['parent']=='none') {
-		$where = 'where `Store Show in Warehouse Orders`="Yes" ';
+		$where = 'where `Order Show in Warehouse Orders`="Yes" ';
 		$currency_code=$corporate_currency;
 		$user_corporate_currency=true;
 	}elseif ($data['parent']=='store') {
@@ -4856,7 +4852,7 @@ $start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$pending_orders_data=array(
-		
+
 		'packed_number_orders'=>0,
 		'packed_avg_total_balance'=>money(0,$currency_code),
 		'packed_sum_total_balance'=>money(0,$currency_code),
@@ -4872,7 +4868,7 @@ $start_record_date=date('Y-m-d H:i:s',strtotime('now -15 days'));
 sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 		sum(`Order Balance Total Amount`*`Order Currency Exchange`) packed_sum_total_balance_corporate
 
-	from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Current Dispatch State` in ('Ready to Ship','Packed Done') ",$where);
+	from `Order Dimension` O  %s and `Order Current Dispatch State` in ('Ready to Ship','Packed Done') ",$where);
 
 	//print $sql;
 	$res=mysql_query($sql);
@@ -4903,7 +4899,7 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O left join `Store Dimension` S on (O.`Order Store Key`=S.`Store Key`) %s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O s%s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 

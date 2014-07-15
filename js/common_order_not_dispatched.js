@@ -1746,7 +1746,7 @@ function update_auto_account_payments(value){
     request = ar_file + '?tipo=update_order&order_key=' + Dom.get('order_key').value + '&key=auto_account_payments&value=' + value;
 
    
-
+alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             //alert(o.responseText)

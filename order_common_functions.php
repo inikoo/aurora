@@ -140,8 +140,13 @@ function get_order_formated_payment_state($data) {
 		$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
 		break;
 	case 'Waiting Payment':
+	
+		if($data['Order Current Dispatch State']=='In Process by Customer'){
+		$payment_state='';
+		}else{
+	
 		$payment_state=_('Waiting Payment');
-
+	}
 		break;
 		case 'Overpaid':
 		$payment_state=_('Overpaid');
@@ -155,8 +160,13 @@ function get_order_formated_payment_state($data) {
 		$payment_state=_('Paid');
 		break;
 	case 'Partially Paid':
+	
+	if($data['Order Current Dispatch State']=='In Process by Customer'){
+		$payment_state=_('Using Credit');
+		}else{
+	
 		$payment_state=_('Partially Paid');
-
+}
 		break;
 
 	default:

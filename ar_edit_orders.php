@@ -119,7 +119,7 @@ case('remove_insurance'):
 	remove_insurance($data);
 
 	break;
-case('update_order='):
+case('update_order'):
 
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -2190,9 +2190,9 @@ function list_pending_orders() {
 	if (isset( $_REQUEST['elements_SubmittedbyCustomer'])) {
 		$elements['SubmittedbyCustomer']=$_REQUEST['elements_SubmittedbyCustomer'];
 	}
-	if (isset( $_REQUEST['elements_InProcess'])) {
-		$elements['InProcess']=$_REQUEST['elements_InProcess'];
-	}
+	//if (isset( $_REQUEST['elements_InProcess'])) {
+//		$elements['InProcess']=$_REQUEST['elements_InProcess'];
+//	}
 	if (isset( $_REQUEST['elements_InProcessbyCustomer'])) {
 		$elements['InProcessbyCustomer']=$_REQUEST['elements_InProcessbyCustomer'];
 	}
@@ -2234,9 +2234,9 @@ function list_pending_orders() {
 			if ($_key=='InWarehouse') {
 				$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
-				$_key="'Submitted by Customer'";
-			}if ($_key=='InProcess') {
-				$_key="'In Process'";
+				$_key="'Submitted by Customer','In Process'";
+			//}if ($_key=='InProcess') {
+		//		$_key="'In Process'";
 			}if ($_key=='InProcessbyCustomer') {
 				$_key="'In Process by Customer','Waiting for Payment Confirmation'";
 			}if ($_key=='PackedDone') {
@@ -2249,7 +2249,7 @@ function list_pending_orders() {
 	$_elements=preg_replace('/^\,/','',$_elements);
 	if ($elements_count==0) {
 		$where.=' and false' ;
-	} elseif ($elements_count<5) {
+	} elseif ($elements_count<4) {
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}else {
 		$where.=' and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","" )';
@@ -2340,6 +2340,8 @@ function list_pending_orders() {
 
 	if ($order=='customer') {
 		$order='`Order Customer Name`';
+	}elseif ($order=='store') {
+		$order='`Order Store Code`';
 	}elseif ($order=='public_id') {
 		$order='`Order File As`';
 	}elseif ($order=='dispatch_state') {
@@ -2348,14 +2350,19 @@ function list_pending_orders() {
 		$order='O.`Order Current Payment State`';
 
 	}elseif ($order=='total_amount') {
-		$order='O.`OOrder Total Amount`';
+	
+	if($parent=='store'){
+			$order='(O.`Order Total Amount`)';
 
+	}else{
+		$order='(O.`Order Total Amount`*`Order Currency Exchange`)';
+}
 	}else {
 		$order='`Order Date`';
 	}
 
 
-	$sql="select *  from `Order Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select *  from `Order Dimension` O  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 	// print $sql;
 	global $myconf;
 

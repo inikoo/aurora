@@ -60,7 +60,7 @@
 			<input onkeyup="update_refund_payment_amount(this)" type="text" style="display:none;text-align:right" id="refund_payment_amount" value=""> <span style="font-weight:800" id="refund_payment_amount_formated"></span> </td>
 			<td> 
 			<div class="buttons small">
-				<button id="show_other_amount_field" onclick="refund_payment_show_other_amount_field()">{t}Other Amount{/t}</button> <button id="refund_payment_pay_max_amount" style="display:none" onclick="refund_payment_pay_max_amount()">{t}Pay All{/t}</button> 
+				<button id="show_other_amount_field" onclick="refund_payment_show_other_amount_field()">{t}Other Amount{/t}</button> <button id="refund_payment_pay_max_amount" style="display:none" onclick="refund_payment_pay_max_amount()">{t}Refund All{/t}</button> 
 			</div>
 			</td>
 		</tr>

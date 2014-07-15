@@ -20,7 +20,7 @@
 		<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
 				<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
 					<input type="hidden" value="customer" id="subject" />
-
+<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}">
 		
 		
 		<div class="branch ">
