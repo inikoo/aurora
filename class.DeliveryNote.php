@@ -97,20 +97,20 @@ class DeliveryNote extends DB_Table {
 			$this->data ['Delivery Note Order Date Placed'] = $dn_data ['Delivery Note Order Date Placed'];
 		else
 			$this->data ['Delivery Note Order Date Placed'] ='';
-			
-	
-			
-			if (isset($dn_data ['Delivery Note Customer Contact Name']))
+
+
+
+		if (isset($dn_data ['Delivery Note Customer Contact Name']))
 			$this->data ['Delivery Note Customer Contact Name'] = $dn_data ['Delivery Note Customer Contact Name'];
 		else
 			$this->data ['Delivery Note Customer Contact Name'] ='';
 
-	if (isset($dn_data ['Delivery Note Telephone']))
+		if (isset($dn_data ['Delivery Note Telephone']))
 			$this->data ['Delivery Note Telephone'] = $dn_data ['Delivery Note Telephone'];
 		else
 			$this->data ['Delivery Note Telephone'] ='';
-			
-			if (isset($dn_data ['Delivery Note Email']))
+
+		if (isset($dn_data ['Delivery Note Email']))
 			$this->data ['Delivery Note Email'] = $dn_data ['Delivery Note Email'];
 		else
 			$this->data ['Delivery Note Email'] ='';
@@ -389,13 +389,13 @@ class DeliveryNote extends DB_Table {
                          `Delivery Note Postal Code`
 
                         ) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
-			
+
 			,prepare_mysql ($this->data ['Delivery Note Customer Contact Name'])
 			,prepare_mysql ($this->data ['Delivery Note Telephone'])
 			,prepare_mysql ($this->data ['Delivery Note Email'])
-			
-			
-			
+
+
+
 			,prepare_mysql ($this->data ['Delivery Note Order Date Placed'])
 
 			,prepare_mysql ($this->data ['Delivery Note Show in Warehouse Orders'])
@@ -3112,10 +3112,61 @@ class DeliveryNote extends DB_Table {
 			else
 				$state='Picking';
 
+			$multipart_partially_no_picked='No';
+
+			if ($row['Map To Order Transaction Fact Parts Multiplicity']!=1) {
+
+				
+
+				$sql=sprintf('select * from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d  ',$row['Map To Order Transaction Fact Key']);
+				$res2=mysql_query($sql);
+				
+				
+				
+				$max_not_picked=0;
+				while ($row2=mysql_fetch_assoc($res2)) {
+				
+					$out_of_stock=$row2['Out of Stock'];
+			$not_found=$row2['Not Found'];
+			$no_picked_other=$row2['No Picked Other'];
+								$total_unpicked=$not_found+$no_picked_other+$out_of_stock;
 
 
-			$sql = sprintf("update `Order Transaction Fact` set `No Shipped Due Not Found`=%f,`No Shipped Due Other`=%f,`No Shipped Due Out of Stock`=%f,
+					$metadata_data=preg_split('/\;/',$row2['Map To Order Transaction Fact Metadata']);
+
+				//	print_r($metadata_data);
+//print 'x->'.$total_unpicked.' '.($total_unpicked/$metadata_data[1])."< x\n";
+					$not_picked=floor($total_unpicked/$metadata_data[1]);
+					if ($not_picked>$max_not_picked) {
+						$max_not_picked=$not_picked;
+					}
+					if (fmod($total_unpicked,$metadata_data[1])  ) {
+						$multipart_partially_no_picked='Yes';
+					}
+				//	print 'x'.$max_not_picked."x\n";
+					
+				}
+				$out_of_stock=$max_not_picked;
+				$no_picked_other=0;
+				$not_found=0;
+
+			}else {
+				$metadata_data=preg_split('/\;/',$row['Map To Order Transaction Fact Metadata']);
+				if ($metadata_data[1]!=1) {
+
+					$not_found=floor($not_found/$metadata_data[1]);
+					$no_picked_other=floor($no_picked_other/$metadata_data[1]);
+					$out_of_stock=floor($out_of_stock/$metadata_data[1]);
+
+					if (fmod($not_found,$metadata_data[1])  or fmod($no_picked_other,$metadata_data[1])  or  fmod($out_of_stock,$metadata_data[1]) ) {
+						$multipart_partially_no_picked='Yes';
+					}
+				}
+			}
+
+			$sql = sprintf("update `Order Transaction Fact` set `Multipart Partically No Picked`=%s,`No Shipped Due Not Found`=%f,`No Shipped Due Other`=%f,`No Shipped Due Out of Stock`=%f,
 			`Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+				prepare_mysql ($multipart_partially_no_picked),
 				$not_found,
 				$no_picked_other,
 				$out_of_stock,
@@ -3127,7 +3178,7 @@ class DeliveryNote extends DB_Table {
 				$otf_key
 			);
 			mysql_query($sql);
-
+			//print $sql;
 			$sql = sprintf("update `Order Transaction Fact` set `Order Out of Stock Lost Amount`=IFNULL(`Order Transaction Amount`*`No Shipped Due Out of Stock`/`Order Quantity`,0)  where `Order Transaction Fact Key`=%d  ",
 				$otf_key
 			);
@@ -3166,6 +3217,8 @@ class DeliveryNote extends DB_Table {
 
 
 	}
+
+
 
 
 	function get_packed_estimated_weight() {

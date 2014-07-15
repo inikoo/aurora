@@ -2687,8 +2687,9 @@ function list_transactions_in_order() {
 function list_transactions_in_warehouse() {
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
 		$order_id=$_REQUEST['id'];
-	else
-		$order_id=$_SESSION['state']['order']['id'];
+	else{
+	exit;
+	}
 
 
 
@@ -2714,12 +2715,19 @@ function list_transactions_in_warehouse() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+		
+		$quantity=number($row['Order Quantity']);
+		
+		if($row['Out of Stock']!=0){
+		$quantity.='<br/> OoS '.number($row['Out of Stock']);
+		}
+		
 		$data[]=array(
 
 			'code'=>$code
 			,'description'=>$row['Product XHTML Short Description']
 			,'tariff_code'=>$row['Product Tariff Code']
-			,'quantity'=>number($row['Order Quantity'])
+			,'quantity'=>$quantity
 			,'gross'=>money($row['Order Transaction Gross Amount'])
 			,'discount'=>money($row['Order Transaction Total Discount Amount'])
 			,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
@@ -4378,6 +4386,10 @@ function transactions_in_warehouse() {
 
 		$no_charge_quantity=0;
 		$quantity=number($row['Order Quantity']);
+		
+		
+	
+		
 		if ($row['No Shipped Due Out of Stock']!=0) {
 			$quantity.='<br/><span>('._('Out of Stock').') '.(-1*$row['No Shipped Due Out of Stock']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due Out of Stock'];
@@ -4395,6 +4407,10 @@ function transactions_in_warehouse() {
 			$quantity.='<br/><span>('._('Not Due Other').') '.(-1*$row['No Shipped Due Other']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due Other'];
 		}
+
+
+
+
 
 
 		if ($row['Order Quantity']==0) {
