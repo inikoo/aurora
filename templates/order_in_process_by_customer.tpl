@@ -173,5 +173,6 @@
 		</tr>
 	</table>
 </div>
+{include file='add_payment_splinter.tpl'}
 
 {include file='footer.tpl'} 
