@@ -3301,7 +3301,7 @@ function picking_aid_sheet() {
 
 	if($row['Map To Order Transaction Fact Parts Multiplicity']!=1){
 	
-	$reference.=$row['Map To Order Transaction Fact XHTML Info'];
+	$reference.='<div style="font-style:italic;color:#ea6c59">'.$row['Map To Order Transaction Fact XHTML Info'].'</div>';
 	}
 
 		$picking_notes=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Picking Note']);
@@ -3517,7 +3517,7 @@ function packing_aid_sheet() {
 
 
 	$data=array();
-	$sql="select `Part Reference`,`Given`,`Packed`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from $table $where $wheref order by  $order $order_direction ";
+	$sql="select `Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Part Reference`,`Given`,`Packed`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from $table $where $wheref order by  $order $order_direction ";
 	//   print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3553,7 +3553,10 @@ function packing_aid_sheet() {
 
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$reference=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']);
-
+	if($row['Map To Order Transaction Fact Parts Multiplicity']!=1){
+	
+	$reference.='<div style="font-style:italic;color:#ea6c59">'.$row['Map To Order Transaction Fact XHTML Info'].'</div>';
+	}
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
 			'sku'=>$sku,
