@@ -202,7 +202,7 @@ div.inline { float:left; }
 				<td colspan="2"><b>{t}Total{/t}</b></td>
 				<td>{$order->get('Total Amount')}</td>
 			</tr>
-			{if $order->get('Order To Pay Amount')==0}
+			{if $order->get('Order To Pay Amount')!=0}
 			<tr class="total">
 				<td colspan="2"><b>{t}Paid{/t}</b></td>
 				<td>{$order->get('Payments Amount')}</td>

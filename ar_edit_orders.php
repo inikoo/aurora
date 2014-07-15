@@ -3257,7 +3257,7 @@ function picking_aid_sheet() {
 
 
 	$data=array();
-	$sql="select `Picking Note`,`Part Reference`, Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Packed`,`Given`,`Location Code`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) $where $wheref order by  $order $order_direction  ";
+	$sql="select `Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Picking Note`,`Part Reference`, Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Packed`,`Given`,`Location Code`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) $where $wheref order by  $order $order_direction  ";
 	// print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3298,6 +3298,11 @@ function picking_aid_sheet() {
 		//print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$reference=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']);
+
+	if($row['Map To Order Transaction Fact Parts Multiplicity']!=1){
+	
+	$reference.=$row['Map To Order Transaction Fact XHTML Info'];
+	}
 
 		$picking_notes=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Picking Note']);
 		$_id=$row['Part SKU'];
