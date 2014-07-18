@@ -2099,7 +2099,19 @@ function transactions_to_process() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		$data[]=array(
+	
+	
+	$quantity=number($row['Order Quantity']);
+			
+			if ($row['Order Bonus Quantity']!=0) {
+				if ($row['Order Quantity']!=0) {
+					$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+				}else {
+					$quantity=number($row['Order Bonus Quantity']).' '._('free');
+				}
+			}
+	
+	$data[]=array(
 
 
 
@@ -2108,7 +2120,7 @@ function transactions_to_process() {
 			'code'=>$code
 			,'description'=>$row['Product XHTML Short Description']
 			,'tariff_code'=>$row['Product Tariff Code']
-			,'quantity'=>number($row['Order Quantity'])
+			,'quantity'=>$quantity
 			,'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code'])
 			,'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
 			,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
@@ -2154,7 +2166,7 @@ function transactions_dipatched() {
 
 	$order=' order by O.`Product Code`';
 
-	$sql="select `No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+	$sql="select `Order Bonus Quantity`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
          from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)
          left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
          left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
@@ -2168,12 +2180,19 @@ function transactions_dipatched() {
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		$ordered='';
-		if ($row['Order Quantity']!=0)
-			$ordered.=number($row['Order Quantity']);
-		if ($row['Order Bonus Quantity']>0) {
-			$ordered='<br/>'._('Bonus').' +'.number($row['Order Bonus Quantity']);
-		}
+		
+			$ordered=number($row['Order Quantity']);
+			
+			if ($row['Order Bonus Quantity']!=0) {
+				if ($row['Order Quantity']!=0) {
+					$ordered.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+				}else {
+					$ordered=number($row['Order Bonus Quantity']).' '._('free');
+				}
+			}
+			
+			
+	
 		if ($row['No Shipped Due No Authorized']>0) {
 			$ordered.='<br/> '._('No Authorized').' -'.number($row['No Shipped Due No Authorized']);
 		}
@@ -2187,7 +2206,7 @@ function transactions_dipatched() {
 			$ordered.='<br/> '._('No Other').' -'.number($row['No Shipped Due Other']);
 		}
 
-		$ordered=preg_replace('/^<br\/>/','',$ordered);
+		//$ordered=preg_replace('/^<br\/>/','',$ordered);
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 
 		$dispatched=number($row['Shipped Quantity']);
@@ -2196,10 +2215,16 @@ function transactions_dipatched() {
 			$dispatched.='<br/> '._('Resend').' +'.number($row['Quantity']);
 		}
 
+
+$description=$row['Product XHTML Short Description'];
+if($row['Deal Info']!=''){
+$description.='<br/> <span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].'</span>';
+}
+
 		$data[]=array(
 
 			'code'=>$code
-			,'description'=>$row['Product XHTML Short Description'].' <span style="color:red">'.$row['Deal Info'].'</span>'
+			,'description'=>$description
 
 			,'ordered'=>$ordered
 			,'dispatched'=>$dispatched
@@ -2647,12 +2672,24 @@ function list_transactions_in_order() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+		
+			$quantity=number($row['Order Quantity']);
+			
+			if ($row['Order Bonus Quantity']!=0) {
+				if ($row['Order Quantity']!=0) {
+					$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+				}else {
+					$quantity=number($row['Order Bonus Quantity']).' '._('free');
+				}
+			}
+	
+		
 		$adata[]=array(
 
 			'code'=>$code,
 			'description'=>$row['Product XHTML Short Description'],
 			'tariff_code'=>$row['Product Tariff Code'],
-			'quantity'=>number($row['Order Quantity']),
+			'quantity'=>$quantity,
 			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
 			'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
@@ -2687,8 +2724,8 @@ function list_transactions_in_order() {
 function list_transactions_in_warehouse() {
 	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
 		$order_id=$_REQUEST['id'];
-	else{
-	exit;
+	else {
+		exit;
 	}
 
 
@@ -2715,13 +2752,13 @@ function list_transactions_in_warehouse() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		
+
 		$quantity=number($row['Order Quantity']);
-		
-		if($row['Out of Stock']!=0){
-		$quantity.='<br/> OoS '.number($row['Out of Stock']);
+
+		if ($row['Out of Stock']!=0) {
+			$quantity.='<br/> OoS '.number($row['Out of Stock']);
 		}
-		
+
 		$data[]=array(
 
 			'code'=>$code
@@ -3929,13 +3966,13 @@ function number_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['PackedDone']=$row['num'];
 	}
-	
+
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('In Process','Submitted by Customer') ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['SubmittedbyCustomer']=$row['num'];
 	}
-	
+
 
 	//print_r($elements_numbers);
 
@@ -4171,7 +4208,7 @@ function transactions_in_warehouse() {
 
 
 	$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
-	$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
+	$where=sprintf(' where   `Order Key`=%d',$order_id);
 	$sql_qty='`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 
 
@@ -4247,16 +4284,16 @@ function transactions_in_warehouse() {
 		$order='`Product Availability`';
 	if ($order=='code')
 		$order='`Product Code File As`';
-	else if ($order=='name')
-			$order='`Product Name`';
-		else if ($order=='available_for')
-				$order='`Product Available Days Forecast`';
-			elseif ($order=='family') {
-				$order='`Product Family`Code';
-			}
-		elseif ($order=='dept') {
-			$order='`Product Main Department Code`';
-		}
+	elseif ($order=='name')
+		$order='`Product Name`';
+	elseif ($order=='available_for')
+		$order='`Product Available Days Forecast`';
+	elseif ($order=='family') {
+		$order='`Product Family`Code';
+	}
+	elseif ($order=='dept') {
+		$order='`Product Main Department Code`';
+	}
 	elseif ($order=='expcode') {
 		$order='`Product Tariff Code`';
 	}
@@ -4278,7 +4315,7 @@ function transactions_in_warehouse() {
 
 
 
-	$sql="select `Delivery Note Quantity`,`Picked Quantity`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Order Bonus Quantity`,`Delivery Note Quantity`,`Picked Quantity`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 
 	$res = mysql_query($sql);
@@ -4321,7 +4358,7 @@ function transactions_in_warehouse() {
 
 		$deal_info='';
 		if ($row['Deal Info']!='') {
-			$deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
+			$deal_info='<br/> <span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].'</span>';
 		}
 
 		$not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
@@ -4385,11 +4422,17 @@ function transactions_in_warehouse() {
 		}
 
 		$no_charge_quantity=0;
+
 		$quantity=number($row['Order Quantity']);
-		
-		
-	
-		
+		if ($row['Order Bonus Quantity']!=0) {
+			if ($row['Order Quantity']!=0) {
+				$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+			}else {
+				$quantity=number($row['Order Bonus Quantity']).' '._('free');
+			}
+		}
+
+
 		if ($row['No Shipped Due Out of Stock']!=0) {
 			$quantity.='<br/><span>('._('Out of Stock').') '.(-1*$row['No Shipped Due Out of Stock']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due Out of Stock'];
@@ -4409,7 +4452,7 @@ function transactions_in_warehouse() {
 		}
 
 
-//195117
+		//195117
 
 
 
@@ -4641,7 +4684,7 @@ function get_pending_orders_in_process_data($data) {
 		echo json_encode($response);
 		exit;
 	}
-$in_process_total_orders=0;
+	$in_process_total_orders=0;
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$pending_orders_data=array(
 
@@ -4667,7 +4710,15 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		$in_process_avg_age_in_days=number($row['in_process_avg_age_in_days'],1).' '._('days');
+
+
+	if ($row['in_process_avg_age_in_days']<1)
+			$in_process_avg_age_in_days=number(24*$row['in_process_avg_age_in_days'],1).' '._('hours');
+
+		else
+			$in_process_avg_age_in_days=number($row['in_process_avg_age_in_days'],1).' '._('days');
+
+
 
 		$in_process_total_orders=$row['in_process_number_orders'];
 		$pending_orders_data['in_process_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($row['in_process_number_orders']));
@@ -4696,16 +4747,16 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 	from `Order Dimension`  %s and `Order Current Dispatch State` in ('Submitted by Customer','In Process') and `Order Current Payment State`!='Paid'  ",$where);
 
-//	print $sql;
+	// print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
-$in_process_total_orders+=$row['in_process_internal_number_orders'];
+		$in_process_total_orders+=$row['in_process_internal_number_orders'];
 		$pending_orders_data['in_process_internal_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($row['in_process_internal_number_orders']));
 
 
 	}
 
-		$pending_orders_data['in_process_total_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($in_process_total_orders));
+	$pending_orders_data['in_process_total_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($in_process_total_orders));
 
 
 	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
@@ -4890,7 +4941,14 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		$packed_avg_age_in_days=number($row['packed_avg_age_in_days'],1).' '._('days');
+
+	if ($row['packed_avg_age_in_days']<1)
+			$packed_avg_age_in_days=number(24*$row['packed_avg_age_in_days'],1).' '._('hours');
+
+		else
+			$packed_avg_age_in_days=number($row['packed_avg_age_in_days'],1).' '._('days');
+
+
 
 		$pending_orders_data['packed_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=PackedDone':'store_pending_orders.php?id='.$data['parent_key'].'&show=PackedDone'),number($row['packed_number_orders']));
 		$pending_orders_data['packed_avg_age']=$packed_avg_age_in_days;
@@ -4915,7 +4973,8 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O s%s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O %s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
+//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 

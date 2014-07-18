@@ -31,6 +31,20 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('update_meta_bonus'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'customer_key'=>array('type'=>'key'),
+			'pid'=>array('type'=>'key'),
+			'product_key'=>array('type'=>'key'),
+				'code'=>array('type'=>'string'),
+			'family_key'=>array('type'=>'key'),
+			'deal_component_key'=>array('type'=>'key'),
+			'value'=>array('type'=>'numeric')
+		));
+	update_meta_bonus($data);
+
+	break;
 case('check_tax_number'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
@@ -251,38 +265,38 @@ function edit_new_order_shipping_type() {
 	}
 	if ($order->id) {
 		$order->update_order_is_for_collection($value);
-		
-			$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
-			$updated_data=array(
-				'order_items_gross'=>$order->get('Items Gross Amount'),
-				'order_items_discount'=>$order->get('Items Discount Amount'),
-				'order_items_net'=>$order->get('Items Net Amount'),
-				'order_net'=>$order->get('Total Net Amount'),
-				'order_tax'=>$order->get('Total Tax Amount'),
-				'order_charges'=>$order->get('Charges Net Amount'),
-				'order_credits'=>$order->get('Net Credited Amount'),
-				'order_shipping'=>$order->get('Shipping Net Amount'),
-				'order_total'=>$order->get('Total Amount'),
-				'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
-				'order_total_paid'=>$order->get('Payments Amount'),
-				'order_total_to_pay'=>$order->get('To Pay Amount')
-			);
+
+		$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+		$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount'),
+			'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
+			'order_total_paid'=>$order->get('Payments Amount'),
+			'order_total_to_pay'=>$order->get('To Pay Amount')
+		);
 
 
-			$response=array('state'=>200,
-				'result'=>'updated',
-				'new_value'=>$order->new_value,
-				'order_shipping_method'=>$order->data['Order Shipping Method'],
-				'data'=>$updated_data,
-				'shipping'=>money($_SESSION['set_currency_exchange']*$order->new_value,$_SESSION['set_currency']),
-				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
-				'ship_to'=>$order->get('Order XHTML Ship Tos'),
-				'tax_info'=>$order->get_formated_tax_info_with_operations(),
-				'order_total_paid'=>$order->data['Order Payments Amount'],
-				'order_total_to_pay'=>$order->data['Order To Pay Amount']
-			);
+		$response=array('state'=>200,
+			'result'=>'updated',
+			'new_value'=>$order->new_value,
+			'order_shipping_method'=>$order->data['Order Shipping Method'],
+			'data'=>$updated_data,
+			'shipping'=>money($_SESSION['set_currency_exchange']*$order->new_value,$_SESSION['set_currency']),
+			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info_with_operations(),
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount']
+		);
 
-		
+
 
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
@@ -352,6 +366,8 @@ function is_order_exist() {
 }
 function edit_new_order() {
 
+	global $smarty;
+
 	$order_key=$_REQUEST['id'];
 
 	$product_pid=$_REQUEST['pid'];
@@ -394,11 +410,15 @@ function edit_new_order() {
 	$order->skip_update_after_individual_transaction=false;
 
 	$transaction_data=$order->add_order_transaction($data);
+
 	if (!$transaction_data['updated']) {
 		$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
 		echo json_encode($response);
 		return;
 	}
+
+
+
 
 	$new_disconted_products=$order->get_discounted_products();
 	foreach ($new_disconted_products as $key=>$value) {
@@ -410,7 +430,7 @@ function edit_new_order() {
 	if (count($disconted_products)>0) {
 
 		$product_keys=join(',',$disconted_products);
-		$sql=sprintf("select `Product Units Per Case`,`Product Name`,(select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
+		$sql=sprintf("select `Order Quantity`,`Order Bonus Quantity`, `Product Units Per Case`,`Product Name`,(select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
 			$order->id,
 			$product_keys);
 
@@ -423,17 +443,25 @@ function edit_new_order() {
 
 
 			if ($row['Deal Info']) {
-
-
-
-				$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($_SESSION['set_currency_exchange']*$row['Order Transaction Total Discount Amount'],$_SESSION['set_currency']).'</span>':'').'</span>';
+				$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']>0?', <span style="font-weight:800">'._('You save').':  '.money($_SESSION['set_currency_exchange']*$row['Order Transaction Total Discount Amount'],$_SESSION['set_currency']).'</span>':'').'</span>';
 			}else {
 				$deal_info='';
+			}
+
+			$qty=number($row['Order Quantity']);
+			if ($row['Order Bonus Quantity']!=0) {
+				if ($row['Order Quantity']!=0) {
+					$qty.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+				}else {
+					$qty=number($row['Order Bonus Quantity']).' '._('free');
+				}
 			}
 
 
 			$adata[$row['Product ID']]=array(
 				'pid'=>$row['Product ID'],
+				'quantity'=>$qty,
+				'ordered_quantity'=>$row['Order Quantity'],
 				'description'=>$row['Product Units Per Case'].'x '.$row['Product Name'].$deal_info,
 				'to_charge'=>money($_SESSION['set_currency_exchange']*($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']),$_SESSION['set_currency'])
 			);
@@ -461,9 +489,24 @@ function edit_new_order() {
 		$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
 	}
 
+
+	
+
+	$order_has_deal_with_bonus=$order->has_deal_with_bonus();
+
+	if ($order_has_deal_with_bonus) {
+		$smarty->assign('order',$order);
+		$order_deal_bonus=$smarty->fetch('order_deal_bonus_splinter.tpl');
+	}else {
+		$order_deal_bonus='';
+
+	}
+
+
 	$response= array(
 		'state'=>200,
 		'quantity'=>$transaction_data['qty'],
+		'ordered_quantity'=>$transaction_data['qty'],
 		'description'=>$product->data['Product XHTML Short Description'],
 		'discount_percentage'=>$transaction_data['discount_percentage'],
 		'key'=>$_REQUEST['id'],
@@ -474,7 +517,10 @@ function edit_new_order() {
 		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false),
 		'charges_deal_info'=>$charges_deal_info,
 		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+		'order_has_deal_with_bonus'=>$order_has_deal_with_bonus,
+		'order_deal_bonus'=>$order_deal_bonus,
+
 	);
 
 	echo json_encode($response);
@@ -484,8 +530,8 @@ function update_ship_to_key_from_address($data) {
 	$order=new Order($data['order_key']);
 	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 	$address=new Address($data['address_key']);
-	
-	
+
+
 
 	$contact_name=$order->data['Order Customer Contact Name'];
 	$company_name=$order->data['Order Customer Name'];
@@ -554,12 +600,12 @@ function update_billing_to_key_from_address($data) {
 
 	$order=new Order($data['order_key']);
 	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
-	
-	
-	
+
+
+
 	$address=new Address($data['address_key']);
-	
-	
+
+
 	$contact_name=$order->data['Order Customer Contact Name'];
 	if ($order->data['Order Customer Fiscal Name']=='') {
 		$company_name=$order->data['Order Customer Name'];
@@ -580,8 +626,8 @@ function update_billing_to_key_from_address($data) {
 		'Billing To Email'=>$order->data['Order Email']
 	);
 
-	
-	
+
+
 	$billing_to_key=$address->get_billing_to($billing_to_data);
 
 	$order->update_billing_to($billing_to_key);
@@ -628,6 +674,109 @@ function update_billing_to_key_from_address($data) {
 
 
 }
+
+
+function update_meta_bonus($data) {
+
+
+	$sql=sprintf("select `Order Meta Transaction Deal Key`,`Bonus Order Transaction Fact Key`,`Bonus Product ID`  from `Order Meta Transaction Deal Dimension` where  `Deal Component Key`=%d and `Order Key`=%d  ",
+		$data['deal_component_key'],
+		$data['order_key']
+	);
+	// print $sql;
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$product_pid=$row['Bonus Product ID'];
+
+
+		if ($data['value']) {
+			if ($data['pid']!=$product_pid) {
+				$sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$row['Bonus Order Transaction Fact Key']);
+				mysql_query($sql);
+				//print $sql;
+
+				$order=new Order($data['order_key']);
+
+
+
+
+				$_data=array(
+					'date'=>gmdate('Y-m-d H:i:s'),
+					'Product Key'=>$data['product_key'],
+					'Metadata'=>'',
+					'qty'=>0,
+					'bonus qty'=>$data['value'],
+					'Current Dispatching State'=>'In Process',
+					'Current Payment State'=>'Waiting Payment'
+				);
+
+				$order->skip_update_after_individual_transaction=true;
+
+				$transaction_data=$order->add_order_transaction($_data);
+
+				$sql=sprintf("update `Order Meta Transaction Deal Dimension` set
+				`Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,
+				`Bonus Order Transaction Fact Key`=%d where `Order Meta Transaction Deal Key`=%d ",
+					$data['value'],
+					$data['product_key'],
+					$data['pid'],
+					$data['family_key'],
+
+					$transaction_data['otf_key'],
+					$row['Order Meta Transaction Deal Key']
+				);
+				mysql_query($sql);
+
+
+				$sql=sprintf("insert into `Deal Component Customer Preference Bridge`  (`Deal Component Key`,`Customer Key`,`Preference Metadata`) values (%d,%d,%s)  ON DUPLICATE KEY UPDATE `Preference Metadata`=%s",
+					$data['deal_component_key'],
+					$data['customer_key'],
+					prepare_mysql($data['code']),
+				prepare_mysql($data['code'])
+				);
+				mysql_query($sql);
+			}
+
+		}
+		else {
+
+			$sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$row['Bonus Order Transaction Fact Key']);
+			mysql_query($sql);
+
+			$sql=sprintf("update `Order Meta Transaction Deal Dimension` set `Bonus Quantity`=0,`Bonus Product Key`=NULL,`Bonus Product ID`=NULL ,`Bonus Product Family Key`=NULL ,`Bonus Order Transaction Fact Key`=0 where `Order Meta Transaction Deal Key`=%d ",
+
+				$row['Order Meta Transaction Deal Key']
+			);
+			mysql_query($sql);
+
+
+			$sql=sprintf("insert into `Deal Component Customer Preference Bridge`  (`Deal Component Key`,`Customer Key`,`Preference Metadata`) values (%d,%d,'')  ON DUPLICATE KEY UPDATE `Preference Metadata`=''",
+				$data['deal_component_key'],
+				$data['customer_key']
+
+			);
+			mysql_query($sql);
+
+		}
+
+
+	}
+
+	$response= array(
+		'state'=>200,
+
+
+
+
+	);
+
+
+	echo json_encode($response);
+
+}
+
 function update_order_special_intructions($data) {
 	$order=new Order($data['order_key']);
 

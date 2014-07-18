@@ -1127,6 +1127,15 @@ var myonCellClick = function(oArgs) {
                             }
                         }
 
+if( Dom.get('order_deal_bonus')!=undefined){
+ if (r.order_has_deal_with_bonus) {
+                    Dom.setStyle('order_deal_bonus', 'display', '')
+                } else {
+                    Dom.setStyle('order_deal_bonus', 'display', 'none')
+                }
+                Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
+                }
+                
                         if (r.order_total_to_pay != 0) {
                             if (Dom.get('tr_order_total_to_pay') != undefined){ 
                             Dom.setStyle('tr_order_total_to_pay', 'display', '')
@@ -1196,8 +1205,10 @@ var myonCellClick = function(oArgs) {
 
 						}
 						*/
+                                                datatable.updateCell(record, 'quantity', r.quantity);
 
-                        datatable.updateCell(record, 'quantity', r.quantity);
+                        datatable.updateCell(record, 'ordered_quantity', r.ordered_quantity);
+
                         datatable.updateCell(record, 'to_charge', r.to_charge);
 
 
@@ -1205,6 +1216,9 @@ var myonCellClick = function(oArgs) {
                         for (var i = 0; i < records.getLength(); i++) {
                             var rec = records.getRecord(i);
                             if (r.discount_data[rec.getData('pid')] != undefined) {
+                              datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                            datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
                                 datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
                                 datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
                             }
@@ -1380,6 +1394,14 @@ var CellEdit = function(callback, newValue) {
                     }
 
 
+if( Dom.get('order_deal_bonus')!=undefined){
+ if (r.order_has_deal_with_bonus) {
+                    Dom.setStyle('order_deal_bonus', 'display', '')
+                } else {
+                    Dom.setStyle('order_deal_bonus', 'display', 'none')
+                }
+                Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
+                }
 
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
@@ -1435,6 +1457,7 @@ var CellEdit = function(callback, newValue) {
 
 						}
 						*/
+                    datatable.updateCell(record, 'ordered_quantity', r.ordered_quantity);
 
                     datatable.updateCell(record, 'quantity', r.quantity);
                     datatable.updateCell(record, 'to_charge', r.to_charge);
@@ -1444,12 +1467,15 @@ var CellEdit = function(callback, newValue) {
                     for (var i = 0; i < records.getLength(); i++) {
                         var rec = records.getRecord(i);
                         if (r.discount_data[rec.getData('pid')] != undefined) {
+                            datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                            datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
                             datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
                             datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
                         }
                     }
 
-                    if (r.quantity == 0) {
+                    if (r.ordered_quantity == 0) {
 
                         datatable.updateCell(record, 'description', r.description);
 
@@ -1485,8 +1511,7 @@ var CellEdit = function(callback, newValue) {
 
 
 
-
-                    callback(true, r.quantity);
+                    callback(true, r.ordered_quantity);
 
 
                 } else {

@@ -15,11 +15,8 @@
 <input type="hidden" id="subject_key" value="{$customer->id}"> 
 <input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}" />
 <input type="hidden" id="customer_key" value="{$customer->id}"> 
-
 <input type="hidden" id="invalid_tax_number_label" value="{t}Invalid tax number{/t}"> 
 <input type="hidden" id="saving_special_intructions" value="0"> 
-
-
 <div id="order_container">
 	<span id="gretings" style="margin-left:5px;position:relative;bottom:5px">{$greetings}</span> 
 	<div id="control_panel">
@@ -69,7 +66,8 @@
 					<td class="aright">{t}Items Gross{/t}</td>
 					<td width="100" class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td>
 				</tr>
-				<tr {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
+				<tr {if $order->
+					get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_discounts" > 
 					<td class="aright">{t}Discounts{/t}</td>
 					<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
 				</tr>
@@ -84,17 +82,17 @@
 				</tr>
 				<tr id="tr_order_items_charges">
 					<td class="aright"> {t}Charges{/t}</td>
-					<td  width="100" class="aright"><span id="charges_deal_info_span">{$charges_deal_info}</span><span id="order_charges">{$order->get('Charges Net Amount')}</span></td>
+					<td width="100" class="aright"><span id="charges_deal_info_span">{$charges_deal_info}</span><span id="order_charges">{$order->get('Charges Net Amount')}</span></td>
 				</tr>
 				<tr id="tr_order_shipping">
 					<td class="aright"> {t}Shipping{/t}</td>
 					<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
-				<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+				<tr {if $order->
+					get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
 					<td class="aright"> {t}Insurance{/t}</td>
 					<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
 				</tr>
-				
 				<tr style="border-top:1px solid #777">
 					<td class="aright">{t}Net{/t}</td>
 					<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
@@ -103,22 +101,18 @@
 					<td class="aright"> <span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 					<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 				</tr>
-				<tr >
+				<tr>
 					<td class="aright">{t}Total{/t}</td>
 					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
-				</tr >
-				
+				</tr>
 				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order Payments Amount')==0}display:none{/if}">
 					<td class="aright">{t}Paid{/t}</td>
 					<td id="order_total_paid" width="100" class="aright" style="font-weight:800">{$order->get('Payments Amount')}</td>
 				</tr>
-				
-						<tr id="tr_order_total_to_pay" style="{if $order->get('Order Payments Amount')==0}display:none{/if}">
+				<tr id="tr_order_total_to_pay" style="{if $order->get('Order Payments Amount')==0}display:none{/if}">
 					<td class="aright">{t}To Pay{/t}</td>
 					<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 				</tr>
-				
-				
 			</table>
 			<div style="text-align:right;padding-top:4px;;clear:both;{if $distinct_set_currency}display:none{/if}">
 				<img src="art/info.png" style="height:14px;position:relative;bottom:-1px" /> {t}Please note, the prices are just a reference value, your payment will be in {/t} <b>{$store->get('Store Currency Code')}</b> {t}with a total of{/t} <b><span id="store_currency_total_balance">{$total_in_store_currency}</span></b> 
@@ -140,30 +134,22 @@
 		<div id="table0" class="data_table_container dtable btable" style="font-size:95%">
 		</div>
 	</div>
-	
-
-	
+	<div id="order_deal_bonus" style="clear:both;padding-top:5px;{if !$order->has_deal_with_bonus() }display:none{/if};border:0px solid red">
+			{include file='order_deal_bonus_splinter.tpl' order=$order} 
+	</div>
 	<div style="float:left;">
 		<span style="float:left;cursor:pointer;{if $order->get('Order Balance Total Amount')==0}display:none{/if}" id="show_cancel_order_dialog"><img style="position:relative;bottom:-1px" src="art/bin.png" title="{t}Cancel order{/t}" alt="Cancel order" /> {t}Clear order{/t} <span id="cancel_order_info" style="display:none">, {t}your order will be cancelled{/t} <img id="cancel_order_img" style="height:16px;position:relative;bottom:-2px" "cancel_order_img" style="height:16px" src="art/emotion_sad.png"></span></span> 
 	</div>
 	<div style="float:right;padding-right:20px;{if $order->get('Order Number Products')==0}display:none{/if}">
 		<img src="art/info.png" style="height:14px;position:relative;bottom:-1px" /> {t}To <b>update basket</b> please, click on the product quantity{/t}. 
 	</div>
-	
-	
-		<div style="clear:both;padding-top:10px">
-	{foreach from=$insurances item=insurance}
-	<div class="insurance_row">
-		{$insurance['Insurance Description']} (<b>{$insurance['Insurance Formated Net Amount']}<b>)<span style="widht:100px">
-		<img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}"   onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}"  class="checkbox"  src="art/icons/checkbox_checked.png">
-		<img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}"  onclick="add_insurance(this)"  style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox"  src="art/icons/checkbox_unchecked.png"></span>
-		<img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox"  src="art/loading.gif">
-
+	<div style="clear:both;padding-top:10px">
+		{foreach from=$insurances item=insurance} 
+		<div class="insurance_row">
+			{$insurance['Insurance Description']} (<b>{$insurance['Insurance Formated Net Amount']}<b>)<span style="widht:100px"> <img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png"> <img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png"></span> <img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif"> 
+		</div>
+		{/foreach} 
 	</div>
-	{/foreach}
-	</div>
-	
-	
 	<div style="margin-top:10px;margin-bottom:50px;border:1px solid white">
 		<div style="float:left;position:relative;bottom:10px">
 			<span>{t}Special instructions{/t}:</span><br> <textarea id="special_instructions" style="resize: none;border:1px solid #ccc;width:400px;height:100px;color:#555;padding:5px">{$order->get('Order Customer Message')}</textarea> 
@@ -173,10 +159,8 @@
 				<span id="special_instructions_wait" style="font-size:85%;color:#aaa;display:none"><img style="width:12px;position:relative;top:1.5px" src="art/loading.gif" />{t}Saving{/t}</span> <span id="special_instructions_saved" style="font-size:85%;color:#aaa;display:none">{t}Saved{/t}</span> 
 			</div>
 		</div>
-		<div class="buttons right" >
-			<button id="button_proceed_to_checkout" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}" onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button> 
-			<button id="button_submit_order_paid" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}" onclick="submit_order_paid()" class="positive">{t}Place Order{/t} <img id="place_order_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> 
-
+		<div class="buttons right">
+			<button id="button_proceed_to_checkout" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}" onclick="location.href='checkout.php'" class="positive">{t}Proceed to Checkout{/t}</button> <button id="button_submit_order_paid" style="{if $order->get('Order To Pay Amount')!=0}display:none{/if}" onclick="submit_order_paid()" class="positive">{t}Place Order{/t} <img id="place_order_img" style="position:relative;top:2px" src="art/icons/arrow_right.png"></button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -194,66 +178,63 @@
 	</div>
 </div>
 <div id="edit_delivery_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;">
-	
 	{include file='edit_delivery_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
 	<div class="buttons">
 		<button id="close_edit_delivery_address_dialog" onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
-<div id="edit_billing_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;" >
-	
+<div id="edit_billing_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;">
 	{include file='edit_billing_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
 	<div class="buttons">
 		<button id="close_edit_billing_address_dialog" onclick="close_edit_billing_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
 <div id="dialog_check_tax_number" style="position:absolute;left:-1000px;padding:10px 20px 10px 10px;width:300px">
-		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
-			<tr class="title">
-				<td colspan="2">{t}Tax Number:{/t} <span id="tax_number_to_check">{$customer->get('Customer Tax Number')}</span> </td>
-			</tr>
-			<tr id="check_tax_number_result_tr" style="display:none">
-				<td colspan="2" id="check_tax_number_result"> </td>
-			</tr>
-			<tr id="check_tax_number_name_tr" style="display:none">
-				<td>{t}Name:{/t}</td>
-				<td id="check_tax_number_name"> </td>
-			</tr>
-			<tr id="check_tax_number_address_tr" style="display:none">
-				<td>{t}Address:{/t}</td>
-				<td id="check_tax_number_address"> </td>
-			</tr>
-			<tr id="check_tax_number_wait">
-				<td colspan="2"> <img style="height:12px" src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
-			</tr>
-			<tr id="check_tax_number_buttons" style="display:none">
-				<td colspan="2"> 
-				<div class="buttons" style="margin-top:10px">
-					<button id="close_check_tax_number">{t}Close{/t}</button> 
-				</div>
-				</td>
-			</tr>
-		</table>
-	</div>
+	<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+		<tr class="title">
+			<td colspan="2">{t}Tax Number:{/t} <span id="tax_number_to_check">{$customer->get('Customer Tax Number')}</span> </td>
+		</tr>
+		<tr id="check_tax_number_result_tr" style="display:none">
+			<td colspan="2" id="check_tax_number_result"> </td>
+		</tr>
+		<tr id="check_tax_number_name_tr" style="display:none">
+			<td>{t}Name:{/t}</td>
+			<td id="check_tax_number_name"> </td>
+		</tr>
+		<tr id="check_tax_number_address_tr" style="display:none">
+			<td>{t}Address:{/t}</td>
+			<td id="check_tax_number_address"> </td>
+		</tr>
+		<tr id="check_tax_number_wait">
+			<td colspan="2"> <img style="height:12px" src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
+		</tr>
+		<tr id="check_tax_number_buttons" style="display:none">
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button id="close_check_tax_number">{t}Close{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
 <div id="dialog_set_tax" style="position:absolute;left:-1000px;padding:10px;width:300px">
-		<table style="margin:10px" border=0>
-			<tr>
-				<td style="width:80px">{t}Tax Number:{/t}</td>
-				<td style="width:220px"> 
-				<div >
-					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$order->get('Order Tax Number')}" valid="0"> 
-					<div id="Customer_Tax_Number_Container">
-					</div>
+	<table style="margin:10px" border="0">
+		<tr>
+			<td style="width:80px">{t}Tax Number:{/t}</td>
+			<td style="width:220px"> 
+			<div>
+				<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$order->get('Order Tax Number')}" valid="0"> 
+				<div id="Customer_Tax_Number_Container">
 				</div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"> 
-				<div class="buttons" style="margin-top:10px">
-					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" onClick="save_quick_edit_tax_number()">{t}Save{/t}</button> <button class="negative" onClick="close_quick_edit_tax_number()">{t}Cancel{/t}</button> 
-				</div>
-				</td>
-			</tr>
-		</table>
-	</div>
-
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" onclick="save_quick_edit_tax_number()">{t}Save{/t}</button> <button class="negative" onclick="close_quick_edit_tax_number()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
