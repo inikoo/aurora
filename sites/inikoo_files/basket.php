@@ -5,6 +5,12 @@ include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 include_once 'class.Payment_Service_Provider.php';
 
+if (!$logged_in) {
+header('Location: login.php');
+	exit;
+}
+
+
 $page_key=$site->get_page_key_from_section('Basket');
 
 
@@ -105,6 +111,7 @@ $base_js_files=array(
 	'js/edit_billing_address_common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
+	'js/edit_bonus.js',
 
 
 );
@@ -116,14 +123,8 @@ $base_js_files=array(
 //exit;
 
 
-// Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
-if (  !$site->data['Site Checkout Method']=='Inikoo' and !in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
-	$base_js_files=array();
-}
-
-if ($logged_in and $site->data['Site Checkout Method']=='Inikoo') {
 	$base_css_files[]='css/order_fields.css';
-}
+
 
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
@@ -172,26 +173,15 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-	$smarty->assign('type_content','file');
+$smarty->assign('type_content','file');
 
-	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
-
-
-
-		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
-		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
-	
+$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 
 
-//$order_in_process->update_charges();
-//$order_in_process->update_discounts();
-//$order_in_process->update_no_normal_totals();
-//			$order_in_process->update_totals_from_order_transactions();
 
-if (!$logged_in) {
-	header('location: login.php');
-	exit;
-}
+$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
+$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
+
 
 $css_files[]='css/order.css';
 
@@ -243,7 +233,7 @@ if ( !$page->order->id) {
 	$paginator_menu=array(10,25,50,100);
 	$smarty->assign('paginator_menu0',$paginator_menu);
 
-$order_in_process->apply_payment_from_customer_account();
+	$order_in_process->apply_payment_from_customer_account();
 
 	$smarty->assign('order',$order_in_process);
 	$smarty->assign('customer',$customer);
@@ -257,48 +247,48 @@ $order_in_process->apply_payment_from_customer_account();
 		$charges_deal_info='<span style="color:red" title="'.$charges_deal_info.'">*</span> ';
 	}
 	$smarty->assign('charges_deal_info',$charges_deal_info);
-	
-	
-$insurances=$order_in_process->get_insurances();
-
-$smarty->assign('insurances',$insurances);
-
-$greetings='';
-if ($customer->data['Customer Orders']==0) {
-
-	$greetings=_('Hello & welcome').' '.$customer->data['Customer Main Contact Name'];
-}elseif ($customer->data['Customer Orders']==1) {
-	$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('great to see you back!');
-}else {
 
 
-	if ((date('U')-date('U',strtotime($customer->data['Customer Last Order Date'].' +0:00')))>2592000 ) {
-		$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('for a special customer');
+	$insurances=$order_in_process->get_insurances();
 
+	$smarty->assign('insurances',$insurances);
+
+	$greetings='';
+	if ($customer->data['Customer Orders']==0) {
+
+		$greetings=_('Hello & welcome').' '.$customer->data['Customer Main Contact Name'];
+	}elseif ($customer->data['Customer Orders']==1) {
+		$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('great to see you back!');
 	}else {
-		$greetings=_('Welcome back').' <b>'.$customer->get_name_for_grettings().'</b> '._('long time no see');
+
+
+		if ((date('U')-date('U',strtotime($customer->data['Customer Last Order Date'].' +0:00')))>2592000 ) {
+			$greetings=_('Hi').' '.$customer->get_name_for_grettings().' '._('for a special customer');
+
+		}else {
+			$greetings=_('Welcome back').' <b>'.$customer->get_name_for_grettings().'</b> '._('long time no see');
+
+		}
 
 	}
 
-}
-
-/*
+	/*
 First Vist Hello & Welcome {Mr Big}
 Second Visit Hi {Mr Big} great to see you back!
 Gold Reward Customer Hello {Mr Big} a special welcome for a Gold Reward Customer!
 Lapsed Gold Reward Welcome back {Mr Big}! Long time no see :)
 */
 
-$smarty->assign('greetings',$greetings);
+	$smarty->assign('greetings',$greetings);
 
-$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order_in_process->data['Order Currency']?0:1));
+	$smarty->assign('distinct_set_currency',($_SESSION['set_currency']!=$order_in_process->data['Order Currency']?0:1));
 
-$smarty->assign('total_in_store_currency',money($order_in_process->data['Order Balance Total Amount'],$order_in_process->data['Order Currency']));
-
-
+	$smarty->assign('total_in_store_currency',money($order_in_process->data['Order Balance Total Amount'],$order_in_process->data['Order Currency']));
 
 
-	
+
+
+
 }
 
 
@@ -312,7 +302,7 @@ if (!$last_basket_page_key) {
 $smarty->assign('last_basket_page_key',$last_basket_page_key);
 
 
-
+$order_in_process->update_discounts_no_items();
 
 
 

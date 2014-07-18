@@ -253,7 +253,7 @@ div.inline { float:left; }
 			</tr>
 		</thead>
 		<tbody >
-			{foreach from=$order->get_payment_objects('',true,true) item=payment name=payments} 
+			{foreach from=$order->get_payment_objects('Completed',true,true) item=payment name=payments} 
 			<tr class="{if $smarty.foreach.payments.last}last{/if}">
 				<td style="text-align:left">{$payment->get('Method')} ({$payment->payment_service_provider->get('Payment Service Provider Name')})</td>
 				<td style="text-align:right">{$payment->get('Created Date')}</td>

@@ -484,16 +484,16 @@ class Order extends DB_Table {
 	}
 
 
-	function send_to_basket(){
-	
-	
-	
+	function send_to_basket() {
+
+
+
 	}
 
 
-function set_as_in_process(){
-	
-	$date=gmdate("Y-m-d H:i:s");
+	function set_as_in_process() {
+
+		$date=gmdate("Y-m-d H:i:s");
 
 		if (!($this->data['Order Current Dispatch State']=='In Process by Customer' or $this->data['Order Current Dispatch State']=='Waiting for Payment Confirmation')) {
 			$this->error=true;
@@ -520,7 +520,7 @@ function set_as_in_process(){
 
 		mysql_query($sql);
 		$this->update_payment_state();
-	
+
 	}
 
 
@@ -705,8 +705,8 @@ function set_as_in_process(){
 
 		}
 		else {
-		
-		
+
+
 			$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
 				$this->id
 
@@ -721,13 +721,13 @@ function set_as_in_process(){
 
 				$current_amount_in_customer_account_payments=0;
 			}
-			
-			
+
+
 			$sql=sprintf("delete  from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
 				$this->id
 
 			);
-			
+
 			mysql_query($sql);
 
 			if ($by_customer) {
@@ -794,20 +794,20 @@ function set_as_in_process(){
 			}
 
 			$customer=new Customer($this->data['Order Customer Key']);
-			
-			
-			
+
+
+
 			$customer->editor=$this->editor;
 			$customer->add_history_order_cancelled($this);
-			
+
 			$customer->update(
-					array(
-						'Customer Account Balance'=>round($customer->data['Customer Account Balance']+$current_amount_in_customer_account_payments,2)
+				array(
+					'Customer Account Balance'=>round($customer->data['Customer Account Balance']+$current_amount_in_customer_account_payments,2)
 
 
-					));
-			
-			
+				));
+
+
 			$store=new Store($this->data['Order Store Key']);
 			$store->update_orders();
 
@@ -1096,7 +1096,7 @@ function set_as_in_process(){
 
 		$tax_code=$this->data['Order Tax Code'];
 		$tax_rate=$this->data['Order Tax Rate'];
-//print "xx->".print_r($this->data)."<-xx" ;
+		//print "xx->".print_r($this->data)."<-xx" ;
 		if (array_key_exists('tax_code',$data))
 			$tax_code=$data['tax_code'];
 		if (array_key_exists('tax_rate',$data))
@@ -1511,10 +1511,7 @@ function set_as_in_process(){
 
 
 
-	function update_discounts() {
-		$this->update_discounts_items();
-		$this->update_discounts_no_items();
-	}
+
 
 
 
@@ -1705,9 +1702,9 @@ function set_as_in_process(){
 
 		switch ($key) {
 		case('Tax Rate'):
-		
-		return percentage($this->data['Order Tax Rate'],1);
-		break;
+
+			return percentage($this->data['Order Tax Rate'],1);
+			break;
 		case('Order Out of Stock Amount'):
 			return $this->data['Order Out of Stock Net Amount']+$this->data['Order Out of Stock Tax Amount'];
 		case('Out of Stock Amount'):
@@ -1944,29 +1941,29 @@ function set_as_in_process(){
 
 
 
-function auto_account_payments($value,$options=''){
+	function auto_account_payments($value,$options='') {
 
-$this->update_field('Order Apply Auto Customer Account Payment',$value,$options);
+		$this->update_field('Order Apply Auto Customer Account Payment',$value,$options);
 
 
-if($value=='Yes'){
-	$this->apply_payment_from_customer_account();
-}else{
-	
+		if ($value=='Yes') {
+			$this->apply_payment_from_customer_account();
+		}else {
 
-}
 
-}
+		}
+
+	}
 
 
 
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
-		
+
 		case 'auto_account_payments':
 			$this->auto_account_payments($value,$options);
-		break;
+			break;
 		case('Order Tax Number'):
 			$this->update_field($field,$value,$options);
 
@@ -2220,7 +2217,7 @@ if($value=='Yes'){
 		// print "$sql\n";
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-//print_r($row);
+			//print_r($row);
 			$this->data ['Order Items Gross Amount'] = round($row ['gross'],2);
 			$this->data ['Order Items Discount Amount'] =  round($row ['discount'],2);
 			$this->data ['Order Items Net Amount'] =  round($row ['total_items_net'],2);
@@ -3059,7 +3056,7 @@ if($value=='Yes'){
 
 
 
-//print_r($this->data);
+		//print_r($this->data);
 
 		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount']+  $this->data ['Order Insurance Tax Amount'];
 		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount'];
@@ -3158,7 +3155,7 @@ if($value=='Yes'){
 
 	function update_charges_amount($charge_data) {
 
-//print_r($charge_data);
+		//print_r($charge_data);
 
 		if ($charge_data['Charge Net Amount']!=$this->data['Order Charges Net Amount']) {
 
@@ -3190,7 +3187,7 @@ if($value=='Yes'){
 					prepare_mysql($this->data['Order Original Metadata'])
 				);
 
-			//	print ("$sql\n");
+				// print ("$sql\n");
 				mysql_query($sql);
 			}
 
@@ -3283,7 +3280,7 @@ if($value=='Yes'){
 		$this->data['Order Show in Warehouse Orders']=$store->data['Store Show in Warehouse Orders'];
 
 		$this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
-		
+
 
 
 	}
@@ -3370,7 +3367,7 @@ if($value=='Yes'){
 
 		);
 		mysql_query($sql);
-//print $sql;
+		//print $sql;
 		$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d and `Consolidated`='No'",
 			$this->id
 		);
@@ -3398,7 +3395,7 @@ if($value=='Yes'){
 			$this->id
 
 		);
-//		print $sql;
+		//  print $sql;
 
 		mysql_query($sql);
 
@@ -4125,7 +4122,7 @@ if($value=='Yes'){
 			$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Transaction Fact Key` =%d",$otf_key);
 			mysql_query($sql);
 
-			
+
 			$sql=sprintf('update `Order Transaction Fact` OTF set `Order Transaction Amount`=%.2f, `Order Transaction Total Discount Amount`=%f where `Order Transaction Fact Key`=%d ',
 				$row['Order Transaction Gross Amount']-$discount_amount,
 				$discount_amount,
@@ -4296,6 +4293,124 @@ if($value=='Yes'){
 		case('Get Free'):
 			switch ($deal_component_data['Deal Component Allowance Target']) {
 
+			case('Family'):
+				$family_key=$deal_component_data['Deal Component Allowance Target Key'];
+				$get_free_allowance=preg_split('/;/',$deal_component_data['Deal Component Allowance']);
+
+				$sql=sprintf("select `Preference Metadata` from `Deal Component Customer Preference Bridge`  where `Deal Component Key`=%d and `Customer Key`=%d ",
+					$deal_component_data['Deal Component Key'],
+					$this->data['Order Customer Key']
+				);
+				$res=mysql_query($sql);
+				if ($row=mysql_fetch_assoc($res)) {
+				
+				$product_code=$row['Preference Metadata'];
+				
+				$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%s and `Product Code`=%s and `Product Main Type`='Sale'",
+				$this->data['Order Store Key'],
+				prepare_mysql($product_code)
+				);
+				$res2=mysql_query($sql);
+						if ($row2=mysql_fetch_assoc($res2)) {
+							$product_pid=$row2['Product ID'];
+
+						}else{
+						$product_pid=0;
+						}
+				
+					if ($product_pid) {
+
+						$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Main Type`='Sale' and `Product Family Key`=%d and `Product ID`=%d",
+							$family_key,
+							$product_pid
+						);
+
+						$res2=mysql_query($sql);
+						if ($row2=mysql_fetch_assoc($res2)) {
+							if ($row2['num']==0) {
+								$product_pid=$get_free_allowance[1];
+								$sql=sprintf("delete from `Deal Component Customer Preference Bridge`  where `Deal Component Key`=%d and `Customer Key`=%d ",
+									$deal_component_data['Deal Component Key'],
+									$this->data['Order Customer Key']
+								);
+								mysql_query($sql);
+							}
+
+						}
+					}
+				}else {
+				
+				$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%s and `Product Code`=%s and `Product Main Type`='Sale'",
+				$this->data['Order Store Key'],
+				prepare_mysql($get_free_allowance[1])
+				);
+				$res2=mysql_query($sql);
+						if ($row2=mysql_fetch_assoc($res2)) {
+							$product_pid=$row2['Product ID'];
+
+						}else{
+						$product_pid=0;
+						}
+				
+				
+				}
+
+
+				$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Main Type`='Sale' and `Product Family Key`=%d and `Product ID`=%d",
+					$family_key,
+					$product_pid
+				);
+
+				$res2=mysql_query($sql);
+				if ($row2=mysql_fetch_assoc($res2)) {
+					if ($row2['num']==0) {
+						$product_pid=0;
+					}
+
+
+				}
+
+				if ($deal_component_data['Deal Component Trigger']=='Order')
+					$allowance_index='Order Get Free';
+				else
+					$allowance_index='Get Free';
+
+				if (!$product_pid) {
+
+					$this->allowance[$allowance_index][$product_pid]=array(
+						'Product ID'=>0,
+						'Product Key'=>0,
+						'Product Family Key'=>0,
+						'Get Free'=>0,
+						'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
+						'Deal Component Key'=>$deal_component_data['Deal Component Key'],
+						'Deal Key'=>$deal_component_data['Deal Component Deal Key'],
+						'Deal Info'=>$deal_info
+					);
+				}else {
+
+					if (isset($this->allowance[$allowance_index][$product_pid])) {
+						$this->allowance[$allowance_index][$product_pid]['Get Free']+=$get_free_allowance[0];
+					} else {
+
+						$product=new Product('pid',$product_pid);
+
+
+						$this->allowance[$allowance_index][$product_pid]=array(
+							'Product ID'=>$product->pid,
+							'Product Key'=>$product->id,
+							'Product Family Key'=>$product->data['Product Family Key'],
+							'Get Free'=>$get_free_allowance[0],
+							'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
+							'Deal Component Key'=>$deal_component_data['Deal Component Key'],
+							'Deal Key'=>$deal_component_data['Deal Component Deal Key'],
+							'Deal Info'=>$deal_info
+						);
+					}
+				}
+
+
+				break;
 			case('Charge'):
 			case('Shipping'):
 
@@ -4314,13 +4429,13 @@ if($value=='Yes'){
 
 				break;
 			case('Product'):
-				$product_id=$deal_component_data['Deal Component Allowance Target Key'];
+				$product_pid=$deal_component_data['Deal Component Allowance Target Key'];
 				$get_free_allowance=$deal_component_data['Deal Component Allowance'];
-				if (isset($this->allowance['Get Free'][$product_id])) {
-					$this->allowance['Get Free'][$product_id]['Get Free']+=$get_free_allowance;
+				if (isset($this->allowance['Get Free'][$product_pid])) {
+					$this->allowance['Get Free'][$product_pid]['Get Free']+=$get_free_allowance;
 				} else {
-					$this->allowance['Get Free'][$product_id]=array(
-						'Product ID'=>$product_id,
+					$this->allowance['Get Free'][$product_pid]=array(
+						'Product ID'=>$product_pid,
 						'Get Free'=>$get_free_allowance,
 						'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
 						'Deal Component Key'=>$deal_component_data['Deal Component Key'],
@@ -4339,6 +4454,12 @@ if($value=='Yes'){
 		}
 
 	}
+
+	function update_discounts() {
+		$this->update_discounts_items();
+		$this->update_discounts_no_items();
+	}
+
 
 	function update_discounts_items() {
 
@@ -4371,7 +4492,7 @@ if($value=='Yes'){
 	function update_discounts_no_items() {
 
 
-		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
+		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Order Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
 		$sql=sprintf('update `Order No Product Transaction Fact`  set  `Transaction Total Discount Amount`=0 , `Transaction Net Amount`=`Transaction Gross Amount` where `Order Key`=%d  '
@@ -4382,6 +4503,20 @@ if($value=='Yes'){
 		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
 
+
+		$sql=sprintf("select `Bonus Order Transaction Fact Key` from `Order Meta Transaction Deal Dimension` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+
+
+			$sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$row['Bonus Order Transaction Fact Key']);
+			mysql_query($sql);
+			//print $sql;
+		}
+
+		$sql=sprintf("delete from `Order Meta Transaction Deal Dimension` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
+		mysql_query($sql);
 
 
 
@@ -4472,18 +4607,78 @@ if($value=='Yes'){
 
 	}
 
+
+	function has_deal_with_bonus() {
+		$has_deal_with_bonus=false;
+		$sql=sprintf("select  count(*) as num  from `Order Meta Transaction Deal Dimension` where  `Order Key`=%d and `Order Meta Transaction Deal Type`='Order Get Free'  ",
+			$this->id
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$has_deal_with_bonus=$row['num'];
+		}
+		return $has_deal_with_bonus;
+
+	}
+
+	function get_deal_bonus_items() {
+		$deal_bonus_items=array();
+		$sql=sprintf("select  `Bonus Product ID`,`Deal Component Allowance Target Key`,B.`Deal Component Key`,`Deal Component Allowance`,`Deal Component Allowance Target`,`Deal Component Allowance Target` from `Order Meta Transaction Deal Dimension` B left join `Deal Component Dimension` DC  on (DC.`Deal Component Key`=B.`Deal Component Key`) where  `Order Key`=%d and `Order Meta Transaction Deal Type`='Order Get Free'   ",
+			$this->id
+		);
+		//print $sql;
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deal_bonus_items[$row['Deal Component Key']]=array();
+
+			if ($row['Deal Component Allowance Target']=='Family') {
+
+				$family_key=$row['Deal Component Allowance Target Key'];
+				$sql=sprintf("select `Product Family Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` from `Product Dimension` where `Product Main Type`='Sale' and `Product Family Key`=%d order by `Product Code File As`",
+					$family_key
+
+				);
+
+				$res2=mysql_query($sql);
+				while ($row2=mysql_fetch_assoc($res2)) {
+
+					$deal_bonus_items[$row['Deal Component Key']][$row2['Product ID']]=array(
+						'pid'=>$row2['Product ID'],
+						'product_key'=>$row2['Product Current Key'],
+						'family_key'=>$row2['Product Family Key'],
+						'code'=>$row2['Product Code'],
+						'name'=>$row2['Product Name'],
+						'selected'=>($row2['Product ID']==$row['Bonus Product ID']?true:false),
+					);
+
+				}
+
+			}
+
+
+		}
+
+		return $deal_bonus_items;
+	}
+
+
+
 	function get_allowances_from_order_trigger() {
 
 		$deals_component_data=array();
 
-		$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Trigger`='Order'   and `Deal Component Status`='Active' "
-
+		$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Trigger`='Order'   and `Deal Component Status`='Active'  and `Deal Component Store Key`=%d  ",
+			$this->data['Order Store Key']
 		);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$deals_component_data[$row['Deal Component Key']]=$row;
 		}
 
+		//print_r($deals_component_data);
+		//exit;
 
 		foreach ($deals_component_data as $deal_component_data ) {
 
@@ -4518,7 +4713,104 @@ if($value=='Yes'){
 				}
 				break;
 
+			case('Order Total Net Amount AND Order Interval'):
+			case('Order Items Net Amount AND Order Interval'):
+						case('Order Total Amount AND Order Interval'):
 
+				$terms_type=preg_split('/\sAND\s/',$deal_component_data['Deal Component Terms Type']);
+				$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
+				$amount_term=$terms[0];
+				$interval_term=$terms[1];
+
+				$interval_term_ok=false;
+				$amount_term_ok=false;
+
+
+
+
+				if ($this->data[$terms_type[0]]>=$amount_term) {
+					$amount_term_ok=true;
+
+				}
+
+
+
+				if ($amount_term_ok) {
+
+					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Dispatched Date`>=%s and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
+						$this->data['Order Customer Key'],
+						$this->id,
+						prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+					);
+
+					$res2=mysql_query($sql);
+					if ($_row=mysql_fetch_assoc($res2)) {
+
+
+						if ($_row['num']>0) {
+							$interval_term_ok=true;
+						}
+					}
+				}
+
+
+				if ($amount_term_ok and $interval_term_ok) {
+
+
+					$this->get_allowances_from_deal_component_data($deal_component_data);
+				}
+			case('Order Total Net Amount AND Order Number'):
+			case('Order Items Net Amount AND Order Number'):
+			case('Order Total Amount AND Order Number'):
+			
+				$terms_type=preg_split('/\sAND\s/',$deal_component_data['Deal Component Terms Type']);
+
+				$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
+				//print_r($deal_component_data);
+				//print "\n";
+				$amount_term=$terms[0];
+				$order_number_term=$terms[1];
+
+				$order_number_term_ok=false;
+				$amount_term_ok=false;
+
+				if ($this->data[$terms_type[0]]>=$amount_term) {
+					$amount_term_ok=true;
+
+				}
+
+
+
+				if ($amount_term_ok) {
+
+
+
+
+					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and  `Order Current Dispatch State` not in ('Cancelled','Suspended','Cancelled by Customer') ",
+						$this->data['Order Customer Key'],
+						$this->id
+					);
+
+					$res2=mysql_query($sql);
+					if ($_row=mysql_fetch_assoc($res2)) {
+
+
+						if ($_row['num']==$order_number_term) {
+							$order_number_term_ok=true;
+						}
+					}
+				}
+
+
+				if ($amount_term_ok and $order_number_term_ok) {
+
+
+					$this->get_allowances_from_deal_component_data($deal_component_data);
+				}
+
+
+
+				break;
 			}
 
 
@@ -4672,7 +4964,6 @@ if($value=='Yes'){
 
 
 
-
 		foreach ($this->allowance['No Item Transaction'] as $type=>$allowance_data) {
 
 
@@ -4715,6 +5006,73 @@ if($value=='Yes'){
 
 
 		}
+
+
+		foreach ($this->allowance['Order Get Free'] as $type=>$allowance_data) {
+
+
+			if (in_array($this->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
+				$dispatching_state='Ready to Pick';
+			}else {
+
+				$dispatching_state='In Process';
+			}
+
+			$payment_state='Waiting Payment';
+
+
+			$data=array(
+				'date'=>gmdate('Y-m-d H:i:s'),
+				'Product Key'=>$allowance_data['Product Key'],
+				'Metadata'=>'',
+				'qty'=>0,
+				'bonus qty'=>$allowance_data['Get Free'],
+				'Current Dispatching State'=>$dispatching_state,
+				'Current Payment State'=>$payment_state
+			);
+
+			$this->skip_update_after_individual_transaction=true;
+
+			$transaction_data=$this->add_order_transaction($data);
+			$this->skip_update_after_individual_transaction=false;
+
+			$sql=sprintf("insert into `Order Meta Transaction Deal Dimension` (`Order Meta Transaction Deal Type`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,
+			`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,
+			`Bonus Product Key`,`Bonus Product ID`,`Bonus Product Family Key`,`Bonus Order Transaction Fact Key`
+			)
+					values (%s,%d, %d,%d,%d,%s,%f,%f,%f,%d,%d,%d,%d)   ON DUPLICATE KEY UPDATE `Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,`Bonus Order Transaction Fact Key`=%d"
+				,prepare_mysql('Order Get Free')
+				,$this->id
+
+
+				,$allowance_data['Deal Campaign Key']
+				,$allowance_data['Deal Key']
+				,$allowance_data['Deal Component Key']
+				,prepare_mysql($allowance_data['Deal Info'])
+				,0
+				,0
+				,$allowance_data['Get Free']
+				,$allowance_data['Product Key']
+				,$allowance_data['Product ID']
+				,$allowance_data['Product Family Key']
+				,$transaction_data['otf_key']
+				,$allowance_data['Get Free']
+				,$allowance_data['Product Key']
+				,$allowance_data['Product ID']
+				,$allowance_data['Product Family Key']
+				,$transaction_data['otf_key']
+			);
+			mysql_query($sql);
+
+
+
+
+
+
+
+
+		}
+
 
 	}
 
@@ -4908,23 +5266,23 @@ if($value=='Yes'){
 					$store_town_code=$collection_address->data['Address Town'];
 					$store_world_region_code=$collection_address->get('Address World Region Code');
 					$store_postal_code=$collection_address->data['Address Postal Code'];
-				    $store_address = '<div style="font-weight:800">'._('For collection').'</div>'.$collection_address->display('xhtml');
+					$store_address = '<div style="font-weight:800">'._('For collection').'</div>'.$collection_address->display('xhtml');
 
 
 				} else {
-				
-					include_once('class.Country.php');
+
+					include_once 'class.Country.php';
 					$country=new Country('2alpha',$store->data['Store Home Country Code 2 Alpha']);
-				
+
 					$store_2_alpha_country_code=$country->data['Country 2 Alpha Code'];
 					$store_country_code=$country->data['Country Code'];
 					$store_town_code='';
 					$store_world_region_code=$country->data['World Region Code'];
 					$store_postal_code='';
-			$store_address = '<div style="font-weight:800">'._('For collection').'</div>';
-			
-				
-				
+					$store_address = '<div style="font-weight:800">'._('For collection').'</div>';
+
+
+
 
 
 				}
@@ -4962,7 +5320,7 @@ if($value=='Yes'){
 				`Order Ship To Country 2 Alpha Code`=%s,
 				`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  ,`Order Ship To World Region Code`=%s,`Order Ship To Town`=%s,`Order Ship To Postal Code`=%s      where `Order Key`=%d"
 					,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
-,prepare_mysql($ship_to->data['Ship To Country Code'])
+					,prepare_mysql($ship_to->data['Ship To Country Code'])
 					,prepare_mysql($ship_to->data['Ship To XHTML Address'])
 					,prepare_mysql($ship_to->id)
 					,prepare_mysql($ship_to->get('World Region Code'))
@@ -5003,12 +5361,12 @@ if($value=='Yes'){
 			$customer=new Customer($this->data['Order Customer Key']);
 			$ship_to= $customer->set_current_ship_to('return object');
 		} else {
-			
+
 			$ship_to=new Ship_To($ship_to_key);
-			
-			
-			
-			
+
+
+
+
 		}
 
 
@@ -5073,12 +5431,12 @@ if($value=='Yes'){
 			$customer=new Customer($this->data['Order Customer Key']);
 			$billing_to= $customer->set_current_billing_to('return object');
 		} else {
-			
+
 			$billing_to=new Billing_To($billing_to_key);
-			
-	
-			
-			
+
+
+
+
 		}
 
 
@@ -5988,9 +6346,9 @@ if($value=='Yes'){
 
 		foreach ($this->get_payment_keys($status) as $payment_key) {
 			$payment=new Payment($payment_key);
-						$payment->formated_amount=money($payment->data['Payment Amount'],$payment->data['Payment Currency Code']);
+			$payment->formated_amount=money($payment->data['Payment Amount'],$payment->data['Payment Currency Code']);
 
-			
+
 			if ($load_payment_account)
 				$payment->load_payment_account();
 			if ($load_payment_service_provider)
@@ -6054,7 +6412,7 @@ if($value=='Yes'){
 
 	function get_items_info() {
 		$items_info=array();
-		$sql=sprintf("select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  where `Order Key`=%d order by OTF.`Product Code` ",
+		$sql=sprintf("select (select `Page Key` from `Page Product Dimension` B  where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page Key`,(select `Page URL` from `Page Product Dimension` B left join `Page Dimension`  PA  on (PA.`Page Key`=B.`Page Key`) where B.`State`='Online' and  B.`Product ID`=OTF.`Product ID` limit 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  where `Order Key`=%d order by OTF.`Product Code` ",
 			$this->id
 
 		);
@@ -6073,13 +6431,23 @@ if($value=='Yes'){
 				$deal_info='';
 			}
 
+
+			$qty=number($row['Order Quantity']);
+			if ($row['Order Bonus Quantity']!=0) {
+				if ($row['Order Quantity']!=0) {
+					$qty.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+				}else {
+					$qty=number($row['Order Bonus Quantity']).' '._('free');
+				}
+			}
+
 			$items_info[]=array(
 				'pid'=>$row['Product ID'],
 				'code'=>$code,
 				'code_plain'=>$row['Product Code'],
 				'description'=>$row['Product XHTML Short Description'].$deal_info,
 				'tariff_code'=>$row['Product Tariff Code'],
-				'quantity'=>number($row['Order Quantity']),
+				'quantity'=>$qty,
 				'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
 				'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
 				'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
@@ -6117,7 +6485,7 @@ if($value=='Yes'){
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		//print_r($row);
+			//print_r($row);
 			$number_payments++;
 			$payments_amount+=$row['Payment Amount'];
 
@@ -6222,10 +6590,10 @@ if($value=='Yes'){
 
 	function apply_payment_from_customer_account() {
 
-$order_amount=$this->data['Order To Pay Amount'];
-if($order_amount<=0){
-	return;
-}
+		$order_amount=$this->data['Order To Pay Amount'];
+		if ($order_amount<=0) {
+			return;
+		}
 
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
 
@@ -6253,7 +6621,7 @@ if($order_amount<=0){
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
 			if ($customer_account_available_amount) {
-				
+
 
 				if ($customer_account_available_amount==$order_amount) {
 					$payment_amount=$order_amount;
@@ -6274,7 +6642,7 @@ if($order_amount<=0){
 				$payment_account=new Payment_Account($payment_account_key);
 
 				$payment_key=0;
-			$sql=sprintf("select B.`Payment Key` from `Order Payment Bridge` B left join `Payment Dimension` P   on (P.`Payment Key`=B.`Payment Key`)  where  `Payment Transaction Status`='Pending' and  `Is Account Payment`='Yes' and `Order Key`=%d ",
+				$sql=sprintf("select B.`Payment Key` from `Order Payment Bridge` B left join `Payment Dimension` P   on (P.`Payment Key`=B.`Payment Key`)  where  `Payment Transaction Status`='Pending' and  `Is Account Payment`='Yes' and `Order Key`=%d ",
 					$this->id
 
 				);

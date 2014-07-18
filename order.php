@@ -316,7 +316,7 @@ else {
 
 		$js_files[]='order_in_process.js.php';
 		$js_files[]='js/common_order_not_dispatched.js';
-
+$js_files[]='js/edit_bonus.js';
 		$css_files[]='css/edit.css';
 		$css_files[]='css/edit_address.css';
 

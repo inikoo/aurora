@@ -27,14 +27,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 
+ var formater_qty=function(el, oRecord, oColumn, oData){
+	
+		el.innerHTML =oRecord.getData("quantity");
+		
+	       };
+
+
 	    var InvoiceColumnDefs = [
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"Description",width:480,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"Description",width:440,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    // ,{key:"stock",label:"Stock", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
-					,{key:"add",label:"", width:5,sortable:false,action:'add_object',object:'new_order'}
+				     ,{key:"ordered_quantity",label:"Qty", formatter:formater_qty,width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
+								     ,{key:"quantity",label:"",hidden:true, width:80,sortable:false}
+
+				,{key:"add",label:"", width:5,sortable:false,action:'add_object',object:'new_order'}
 					,{key:"remove",label:"", width:5,sortable:false,action:'remove_object',object:'new_order'}
 			     ,{key:"to_charge",label:"Net", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 				//	     ,{key:"tax",label:"Tax", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
@@ -65,7 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		fields: [
 			 "code"
-			 ,"description"
+			 ,"description",'ordered_quantity'
 			 ,"quantity"
 			 ,"discount"
 			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage','tax'

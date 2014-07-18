@@ -23,7 +23,20 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('update_meta_bonus'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'customer_key'=>array('type'=>'key'),
+			'pid'=>array('type'=>'key'),
+			'code'=>array('type'=>'string'),
+			'product_key'=>array('type'=>'key'),
+			'family_key'=>array('type'=>'key'),
+			'deal_component_key'=>array('type'=>'key'),
+			'value'=>array('type'=>'numeric')
+		));
+	update_meta_bonus($data);
 
+	break;
 case('check_tax_number'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
@@ -864,19 +877,19 @@ function edit_new_order_shipping_type() {
 	}
 	if ($order->id) {
 		$order->update_order_is_for_collection($value);
-		
-		
+
+
 		$dns=$order->get_delivery_notes_objects();
 
-	foreach($dns as $dn){
-		if(!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))){
-			$dn->update_is_for_collection($value);
+		foreach ($dns as $dn) {
+			if (!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))) {
+				$dn->update_is_for_collection($value);
+			}
 		}
-	}
-	
 
-		
-		
+
+
+
 		if ($order->updated) {
 
 			$updated_data=array(
@@ -1217,6 +1230,8 @@ function is_order_exist() {
 
 function edit_new_order() {
 
+global $smarty;
+
 	$order_key=$_REQUEST['id'];
 
 	$product_pid=$_REQUEST['pid'];
@@ -1274,7 +1289,7 @@ function edit_new_order() {
 	if (count($disconted_products)>0) {
 
 		$product_keys=join(',',$disconted_products);
-		$sql=sprintf("select (select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` group by  OTDB.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
+		$sql=sprintf("select (select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` group by  OTDB.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Quantity`,`Order Bonus Quantity` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
 			$order->id,
 			$product_keys);
 
@@ -1290,14 +1305,25 @@ function edit_new_order() {
 
 
 
-				$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$order->data['Order Currency']).'</span>':'').'</span>';
+				$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']>0?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$order->data['Order Currency']).'</span>':'').'</span>';
+			
+			
 			}else {
 				$deal_info='';
 			}
-
+			$qty=number($row['Order Quantity']);
+			if ($row['Order Bonus Quantity']!=0) {
+				if ($row['Order Quantity']!=0) {
+					$qty.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+				}else {
+					$qty=number($row['Order Bonus Quantity']).' '._('free');
+				}
+			}
 
 			$adata[$row['Product ID']]=array(
 				'pid'=>$row['Product ID'],
+				'quantity'=>$qty,
+				'ordered_quantity'=>$row['Order Quantity'],
 				'description'=>''.$row['Product XHTML Short Description'].$deal_info,
 				'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$order->data['Order Currency'])
 			);
@@ -1331,10 +1357,22 @@ function edit_new_order() {
 	}
 
 
+	$order_has_deal_with_bonus=$order->has_deal_with_bonus();
+
+	if ($order_has_deal_with_bonus) {
+		$smarty->assign('order',$order);
+		$order_deal_bonus=$smarty->fetch('order_deal_bonus_splinter.tpl');
+	}else {
+		$order_deal_bonus='';
+
+	}
+
 
 	$response= array(
 		'state'=>200,
 		'quantity'=>$transaction_data['qty'],
+		'ordered_quantity'=>$transaction_data['qty'],
+
 		'description'=>$product->data['Product XHTML Short Description'],
 		'discount_percentage'=>$transaction_data['discount_percentage'],
 		'key'=>$_REQUEST['id'],
@@ -1348,7 +1386,9 @@ function edit_new_order() {
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'payments_data'=>$payments_data,
 		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+		'order_has_deal_with_bonus'=>$order_has_deal_with_bonus,
+		'order_deal_bonus'=>$order_deal_bonus,
 	);
 
 	echo json_encode($response);
@@ -1545,13 +1585,13 @@ function transactions_to_process() {
 
 		}
 
-		$sql_qty=sprintf(' , 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
+		$sql_qty=sprintf(' ,0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
 			$order_object->data['Order Currency'],
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
-			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-			$sql_qty=',`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$where=sprintf(' where `Order Quantity`>0  and `Order Key`=%d',$order_id);
+			$sql_qty=',`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1784,6 +1824,17 @@ function transactions_to_process() {
 			$remove='-';
 		}
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
+
+
+		$qty=number($row['Order Quantity']);
+		if ($row['Order Bonus Quantity']!=0) {
+			if ($row['Order Quantity']!=0) {
+				$qty.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+			}else {
+				$qty=number($row['Order Bonus Quantity']).' '._('free');
+			}
+		}
+
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
@@ -1798,7 +1849,8 @@ function transactions_to_process() {
 			'gmroi'=>$row['Product GMROI'],
 			//    'stock_value'=>money($row['Product Stock Value']),
 			'stock'=>$stock,
-			'quantity'=>$row['Order Quantity'],
+			'quantity'=>$qty,
+			'ordered_quantity'=>$row['Order Quantity'],
 			//'quantity_formated'=>$quantity,
 			'state'=>$type,
 			'web'=>$web_state,
@@ -2191,8 +2243,8 @@ function list_pending_orders() {
 		$elements['SubmittedbyCustomer']=$_REQUEST['elements_SubmittedbyCustomer'];
 	}
 	//if (isset( $_REQUEST['elements_InProcess'])) {
-//		$elements['InProcess']=$_REQUEST['elements_InProcess'];
-//	}
+	//  $elements['InProcess']=$_REQUEST['elements_InProcess'];
+	// }
 	if (isset( $_REQUEST['elements_InProcessbyCustomer'])) {
 		$elements['InProcessbyCustomer']=$_REQUEST['elements_InProcessbyCustomer'];
 	}
@@ -2235,8 +2287,8 @@ function list_pending_orders() {
 				$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer','In Process'";
-			//}if ($_key=='InProcess') {
-		//		$_key="'In Process'";
+				//}if ($_key=='InProcess') {
+				//  $_key="'In Process'";
 			}if ($_key=='InProcessbyCustomer') {
 				$_key="'In Process by Customer','Waiting for Payment Confirmation'";
 			}if ($_key=='PackedDone') {
@@ -2350,13 +2402,13 @@ function list_pending_orders() {
 		$order='O.`Order Current Payment State`';
 
 	}elseif ($order=='total_amount') {
-	
-	if($parent=='store'){
+
+		if ($parent=='store') {
 			$order='(O.`Order Total Amount`)';
 
-	}else{
-		$order='(O.`Order Total Amount`*`Order Currency Exchange`)';
-}
+		}else {
+			$order='(O.`Order Total Amount`*`Order Currency Exchange`)';
+		}
 	}else {
 		$order='`Order Date`';
 	}
@@ -3299,10 +3351,10 @@ function picking_aid_sheet() {
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$reference=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']);
 
-	if($row['Map To Order Transaction Fact Parts Multiplicity']!=1){
-	
-	$reference.='<div style="font-style:italic;color:#ea6c59">'.$row['Map To Order Transaction Fact XHTML Info'].'</div>';
-	}
+		if ($row['Map To Order Transaction Fact Parts Multiplicity']!=1) {
+
+			$reference.='<div style="font-style:italic;color:#ea6c59">'.$row['Map To Order Transaction Fact XHTML Info'].'</div>';
+		}
 
 		$picking_notes=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Picking Note']);
 		$_id=$row['Part SKU'];
@@ -3553,10 +3605,10 @@ function packing_aid_sheet() {
 
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$reference=sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']);
-	if($row['Map To Order Transaction Fact Parts Multiplicity']!=1){
-	
-	$reference.='<div style="font-style:italic;color:#ea6c59">'.$row['Map To Order Transaction Fact XHTML Info'].'</div>';
-	}
+		if ($row['Map To Order Transaction Fact Parts Multiplicity']!=1) {
+
+			$reference.='<div style="font-style:italic;color:#ea6c59">'.$row['Map To Order Transaction Fact XHTML Info'].'</div>';
+		}
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
 			'sku'=>$sku,
@@ -3820,15 +3872,15 @@ function update_ship_to_key_from_address($data) {
 	$ship_to_key=$address->get_ship_to($ship_to_data);
 
 	$order->update_ship_to($ship_to_key);
-	
+
 	$dns=$order->get_delivery_notes_objects();
 
-	foreach($dns as $dn){
-		if(!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))){
+	foreach ($dns as $dn) {
+		if (!in_array($dn->data['Delivery Note State'],array('Dispatched','Cancelled','Cancelled to Restock'))) {
 			$dn->update_ship_to($ship_to_key);
 		}
 	}
-	
+
 
 	if ($order->error) {
 		$response=array('state'=>400,'result'=>'no_change','msg'=>$order->msg);
@@ -4847,7 +4899,7 @@ function update_order($data) {
 	$order=new Order($data['order_key']);
 
 
-	
+
 
 
 	$order->update_field_switcher($data['key'],strip_tags($data['value']));
@@ -5723,6 +5775,105 @@ function check_order_tax_number($data) {
 
 }
 
+function update_meta_bonus($data) {
 
+
+	$sql=sprintf("select `Order Meta Transaction Deal Key`,`Bonus Order Transaction Fact Key`,`Bonus Product ID`  from `Order Meta Transaction Deal Dimension` where  `Deal Component Key`=%d and `Order Key`=%d  ",
+		$data['deal_component_key'],
+		$data['order_key']
+	);
+//	print $sql;
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$product_pid=$row['Bonus Product ID'];
+
+
+		if ($data['value']) {
+			if ($data['pid']!=$product_pid) {
+				$sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$row['Bonus Order Transaction Fact Key']);
+				mysql_query($sql);
+				//print $sql;
+
+				$order=new Order($data['order_key']);
+
+
+
+
+				$_data=array(
+					'date'=>gmdate('Y-m-d H:i:s'),
+					'Product Key'=>$data['product_key'],
+					'Metadata'=>'',
+					'qty'=>0,
+					'bonus qty'=>$data['value'],
+					'Current Dispatching State'=>'In Process',
+					'Current Payment State'=>'Waiting Payment'
+				);
+
+				$order->skip_update_after_individual_transaction=true;
+
+				$transaction_data=$order->add_order_transaction($_data);
+
+				$sql=sprintf("update `Order Meta Transaction Deal Dimension` set 
+				`Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,
+				`Bonus Order Transaction Fact Key`=%d where `Order Meta Transaction Deal Key`=%d ",
+					$data['value'],
+					$data['product_key'],
+					$data['pid'],
+					$data['family_key'],
+					
+					$transaction_data['otf_key'],
+					$row['Order Meta Transaction Deal Key']
+				);
+				mysql_query($sql);
+				
+				
+				$sql=sprintf("insert into `Deal Component Customer Preference Bridge`  (`Deal Component Key`,`Customer Key`,`Preference Metadata`) values (%d,%d,%s)  ON DUPLICATE KEY UPDATE `Preference Metadata`=%s",
+				$data['deal_component_key'],
+				$data['customer_key'],
+				prepare_mysql($data['code']),
+				prepare_mysql($data['code'])
+				);
+				mysql_query($sql);
+			}
+			
+		}
+		else {
+
+			$sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$row['Bonus Order Transaction Fact Key']);
+			mysql_query($sql);
+
+			$sql=sprintf("update `Order Meta Transaction Deal Dimension` set `Bonus Quantity`=0,`Bonus Product Key`=NULL,`Bonus Product ID`=NULL ,`Bonus Product Family Key`=NULL ,`Bonus Order Transaction Fact Key`=0 where `Order Meta Transaction Deal Key`=%d ",
+
+				$row['Order Meta Transaction Deal Key']
+			);
+			mysql_query($sql);
+			
+			
+			$sql=sprintf("insert into `Deal Component Customer Preference Bridge`  (`Deal Component Key`,`Customer Key`,`Preference Metadata`) values (%d,%d,'')  ON DUPLICATE KEY UPDATE `Preference Metadata`=''",
+				$data['deal_component_key'],
+				$data['customer_key']
+			
+				);
+				mysql_query($sql);
+
+		}
+		
+
+	}
+
+	$response= array(
+			'state'=>200,
+
+			
+
+
+		);
+
+
+		echo json_encode($response);
+
+}
 
 ?>

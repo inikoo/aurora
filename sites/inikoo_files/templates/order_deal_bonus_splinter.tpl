@@ -1,0 +1,1 @@
+../../../templates/order_deal_bonus_splinter.tpl
