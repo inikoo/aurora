@@ -4714,8 +4714,6 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 	if ($row['in_process_avg_age']>172800)
 						$in_process_avg_age=number($row['in_process_avg_age']/86400,1).' '._('days');
-
-
 		else
 			$in_process_avg_age=number($row['in_process_avg_age']/3600,1).' '._('hours');
 
@@ -4760,19 +4758,20 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 	$pending_orders_data['in_process_total_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($in_process_total_orders));
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Date`, `Order Send to Warehouse Date` ))  in_process_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(SECONFD`Order Date`, `Order Send to Warehouse Date` ))  in_process_avg_age from `Order Dimension` O  %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-
-		if ($row['in_process_avg_processing_time_in_days']<1)
-			$in_process_avg_processing_time=number(24*$row['in_process_avg_processing_time_in_days'],1).' '._('hours');
-
+	if ($row['in_process_avg_age']>172800)
+						$in_process_avg_age=number($row['in_process_avg_age']/86400,1).' '._('days');
 		else
-			$in_process_avg_processing_time=number($row['in_process_avg_processing_time_in_days'],1).' '._('days');
+			$in_process_avg_age=number($row['in_process_avg_age']/3600,1).' '._('hours');
 
 
-		$pending_orders_data['in_process_avg_processing_time']=$in_process_avg_processing_time;
+
+	
+
+		$pending_orders_data['in_process_avg_processing_time']=$in_process_avg_age;
 
 	}
 
@@ -4825,7 +4824,7 @@ function get_pending_orders_in_warehouse_data($data) {
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_warehouse_number_orders ,
-	avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`,NOW())) as in_warehouse_avg_age_in_days,
+	avg(TIMESTAMPDIFF(SECONF,`Order Send to Warehouse Date`,NOW())) as in_warehouse_avg_age,
 		avg(`Order Balance Total Amount`) in_warehouse_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_warehouse_avg_total_balance_corporate ,
 sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
@@ -4837,10 +4836,21 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		$in_warehouse_avg_age_in_days=number($row['in_warehouse_avg_age_in_days'],1).' '._('days');
+		
+		
+			if ($row['in_warehouse_avg_age']>172800)
+						$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/86400,1).' '._('days');
+		else
+			$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/3600,1).' '._('hours');
+
+		
+		
+		
+		
+		
 		$pending_orders_data['in_warehouse_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InWarehouse':'store_pending_orders.php?id='.$data['parent_key'].'&show=InWarehouse'),number($row['in_warehouse_number_orders']));
 
-		$pending_orders_data['in_warehouse_avg_age']=$in_warehouse_avg_age_in_days;
+		$pending_orders_data['in_warehouse_avg_age']=$in_warehouse_avg_age;
 
 		if ($user_corporate_currency) {
 			$pending_orders_data['in_warehouse_avg_total_balance']=money($row['in_warehouse_avg_total_balance'],$currency_code);
@@ -4863,21 +4873,21 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Packed Done Date`>%s  ",$where,
+	$sql=sprintf("select avg(TIMESTAMPDIFF(SECOND,`Order Send to Warehouse Date`, `Order Packed Done Date` ))  in_warehouse_avg_age from `Order Dimension` O  %s and `Order Packed Done Date`>%s  ",$where,
 		prepare_mysql($start_record_date)
 	);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-		if ($row['in_warehouse_avg_processing_time_in_days']<1)
-			$in_warehouse_avg_processing_time=number(24*$row['in_warehouse_avg_processing_time_in_days'],1).' '._('hours');
-
+		
+			if ($row['in_warehouse_avg_age']>172800)
+						$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/86400,1).' '._('days');
 		else
-			$in_warehouse_avg_processing_time=number($row['in_warehouse_avg_processing_time_in_days'],1).' '._('days');
+			$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/3600,1).' '._('hours');
 
 
-		$pending_orders_data['in_warehouse_avg_processing_time']=$in_warehouse_avg_processing_time;
+		$pending_orders_data['in_warehouse_avg_processing_time']=$in_warehouse_avg_age;
 
 	}
 
