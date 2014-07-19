@@ -4758,7 +4758,7 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 	$pending_orders_data['in_process_total_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($in_process_total_orders));
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(SECONFD`Order Date`, `Order Send to Warehouse Date` ))  in_process_avg_age from `Order Dimension` O  %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(SECOND,`Order Date`, `Order Send to Warehouse Date` ))  in_process_avg_age from `Order Dimension` O  %s and `Order Send to Warehouse Date`>%s ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -4824,7 +4824,7 @@ function get_pending_orders_in_warehouse_data($data) {
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_warehouse_number_orders ,
-	avg(TIMESTAMPDIFF(SECONF,`Order Send to Warehouse Date`,NOW())) as in_warehouse_avg_age,
+	avg(TIMESTAMPDIFF(SECOND,`Order Send to Warehouse Date`,NOW())) as in_warehouse_avg_age,
 		avg(`Order Balance Total Amount`) in_warehouse_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_warehouse_avg_total_balance_corporate ,
 sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
