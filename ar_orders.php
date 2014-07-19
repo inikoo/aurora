@@ -4940,7 +4940,7 @@ function get_pending_orders_packed_data($data) {
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) packed_number_orders ,
-	avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`,NOW())) as packed_avg_age_in_days,
+	avg(TIMESTAMPDIFF(SECOND,`Order Packed Done Date`,NOW())) as packed_avg_age,
 		avg(`Order Balance Total Amount`) packed_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) packed_avg_total_balance_corporate ,
 sum(`Order Balance Total Amount`) packed_sum_total_balance ,
@@ -4953,16 +4953,17 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-	if ($row['packed_avg_age_in_days']<1)
-			$packed_avg_age_in_days=number(24*$row['packed_avg_age_in_days'],1).' '._('hours');
-
+	
+			if ($row['packed_avg_age']>172800)
+						$packed_avg_age=number($row['packed_avg_age']/86400,1).' '._('days');
 		else
-			$packed_avg_age_in_days=number($row['packed_avg_age_in_days'],1).' '._('days');
+			$packed_avg_age=number($row['packed_avg_age']/3600,1).' '._('hours');
+
 
 
 
 		$pending_orders_data['packed_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=PackedDone':'store_pending_orders.php?id='.$data['parent_key'].'&show=PackedDone'),number($row['packed_number_orders']));
-		$pending_orders_data['packed_avg_age']=$packed_avg_age_in_days;
+		$pending_orders_data['packed_avg_age']=$packed_avg_age;
 
 		if ($user_corporate_currency) {
 			$pending_orders_data['packed_avg_total_balance']=money($row['packed_avg_total_balance'],$currency_code);
@@ -4984,17 +4985,16 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time_in_days from `Order Dimension` O %s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(SECOND,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time from `Order Dimension` O %s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
 //print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-		if ($row['packed_avg_processing_time_in_days']<1)
-			$packed_avg_processing_time=number(24*$row['packed_avg_processing_time_in_days'],1).' '._('hours');
-
+			if ($row['packed_avg_processing_time']>172800)
+						$packed_avg_processing_time=number($row['packed_avg_processing_time']/86400,1).' '._('days');
 		else
-			$packed_avg_processing_time=number($row['packed_avg_processing_time_in_days'],1).' '._('days');
+			$packed_avg_processing_time=number($row['packed_avg_processing_time']/3600,1).' '._('hours');
 
 
 		$pending_orders_data['packed_avg_processing_time']=$packed_avg_processing_time;
