@@ -4713,7 +4713,7 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 
 	if ($row['in_process_avg_age_in_days']<1)
-			$in_process_avg_age_in_days=number(24*$row['in_process_avg_age_in_days'],1).' '._('hours');
+			$in_process_avg_age_in_days=number(24*$row['in_process_avg_age_in_days'],1).' '._('xhours');
 
 		else
 			$in_process_avg_age_in_days=number($row['in_process_avg_age_in_days'],1).' '._('days');
