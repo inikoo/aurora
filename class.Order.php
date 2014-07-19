@@ -1262,9 +1262,10 @@ class Order extends DB_Table {
 				if (!$quantity_set) {
 					$quantity=$old_quantity;
 				}
-				if (!$bonus_quantity_set) {
-					$bonus_quantity=$old_bonus_quantity;
-				}
+				
+				//if (!$bonus_quantity_set) {
+				//	$bonus_quantity=$old_bonus_quantity;
+				//}
 				$total_quantity=$quantity+$bonus_quantity;
 
 
