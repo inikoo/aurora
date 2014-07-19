@@ -4698,7 +4698,7 @@ function get_pending_orders_in_process_data($data) {
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_process_number_orders ,
-	avg(TIMESTAMPDIFF(DAY,`Order Date`,NOW())) as in_process_avg_age_in_days,
+	avg(TIMESTAMPDIFF(SECOND,`Order Date`,NOW())) as in_process_avg_age,
 		avg(`Order Balance Total Amount`) in_process_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_process_avg_total_balance_corporate ,
 sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
@@ -4712,18 +4712,19 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 
 
-	if ($row['in_process_avg_age_in_days']<1)
-			$in_process_avg_age_in_days=number(24*$row['in_process_avg_age_in_days'],1).' '._('xhours');
+	if ($row['in_process_avg_age']>172800)
+						$in_process_avg_age=number($row['in_process_avg_age_in_days']/86400,1).' '._('days');
+
 
 		else
-			$in_process_avg_age_in_days=number($row['in_process_avg_age_in_days'],1).' '._('days');
+			$in_process_avg_age=number($row['in_process_avg_age_in_days']/3600,1).' '._('hours');
 
 
 
 		$in_process_total_orders=$row['in_process_number_orders'];
 		$pending_orders_data['in_process_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=SubmittedbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=SubmittedbyCustomer'),number($row['in_process_number_orders']));
 
-		$pending_orders_data['in_process_avg_age']=$in_process_avg_age_in_days;
+		$pending_orders_data['in_process_avg_age']=$in_process_avg_age;
 
 		if ($user_corporate_currency) {
 			$pending_orders_data['in_process_avg_total_balance']=money($row['in_process_avg_total_balance'],$currency_code);
