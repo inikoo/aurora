@@ -79,7 +79,7 @@ if (isset($_REQUEST['new']) ) {
 		'editor'=>$editor
 
 	);
-/*
+	/*
 	$ship_to=$customer->get_ship_to();
 print_r($ship_to);
 exit;
@@ -118,7 +118,7 @@ $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 
- 
+
 
 //$order->update_xhtml_delivery_notes();//exit;
 //$order->update_no_normal_totals();
@@ -292,11 +292,13 @@ else {
 	case('Waiting for Payment Confirmation'):
 
 		$order->update_item_totals_from_order_transactions();
-			$order->update_no_normal_totals('save');
+
+		$order->update_no_normal_totals('save');
 
 
-		 $order->update_tax();
-		$order->apply_payment_from_customer_account();
+		$order->update_tax();
+		
+		//$order->apply_payment_from_customer_account();
 
 		$js_files[]='js/php.default.min.js';
 		$js_files[]='js/add_payment.js';
@@ -316,7 +318,7 @@ else {
 
 		$js_files[]='order_in_process.js.php';
 		$js_files[]='js/common_order_not_dispatched.js';
-$js_files[]='js/edit_bonus.js';
+		$js_files[]='js/edit_bonus.js';
 		$css_files[]='css/edit.css';
 		$css_files[]='css/edit_address.css';
 
@@ -392,7 +394,7 @@ $js_files[]='js/edit_bonus.js';
 		$smarty->assign('lookup_family',$_SESSION['state']['order']['products']['lookup_family']);
 
 
-		$order->update_shipping();
+		//$order->update_shipping();
 
 		break;
 
@@ -402,15 +404,15 @@ $js_files[]='js/edit_bonus.js';
 	case('Picking & Packing'):
 	case('Packed Done'):
 	case('Ready to Ship'):
- $order->update_tax();
- 
+		$order->update_tax();
 
-	$order->update_item_totals_from_order_transactions();
-			$order->update_no_normal_totals('save');
+
+		$order->update_item_totals_from_order_transactions();
+		$order->update_no_normal_totals('save');
 
 
 		$order->apply_payment_from_customer_account();
-$order->update_payment_state();
+		$order->update_payment_state();
 
 		$js_files[]='js/php.default.min.js';
 		$js_files[]='js/add_payment.js';
@@ -762,7 +764,7 @@ $order->update_payment_state();
 
 	case 'In Process by Customer':
 
-	
+
 		$js_files[]='js/php.default.min.js';
 		$js_files[]='js/add_payment.js';
 
@@ -824,7 +826,7 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
- 
+
 $smarty->display($template);
 
 ?>
