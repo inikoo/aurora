@@ -2099,19 +2099,19 @@ function transactions_to_process() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-	
-	
-	$quantity=number($row['Order Quantity']);
-			
-			if ($row['Order Bonus Quantity']!=0) {
-				if ($row['Order Quantity']!=0) {
-					$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
-				}else {
-					$quantity=number($row['Order Bonus Quantity']).' '._('free');
-				}
+
+
+		$quantity=number($row['Order Quantity']);
+
+		if ($row['Order Bonus Quantity']!=0) {
+			if ($row['Order Quantity']!=0) {
+				$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+			}else {
+				$quantity=number($row['Order Bonus Quantity']).' '._('free');
 			}
-	
-	$data[]=array(
+		}
+
+		$data[]=array(
 
 
 
@@ -2180,19 +2180,19 @@ function transactions_dipatched() {
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		
-			$ordered=number($row['Order Quantity']);
-			
-			if ($row['Order Bonus Quantity']!=0) {
-				if ($row['Order Quantity']!=0) {
-					$ordered.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
-				}else {
-					$ordered=number($row['Order Bonus Quantity']).' '._('free');
-				}
+
+		$ordered=number($row['Order Quantity']);
+
+		if ($row['Order Bonus Quantity']!=0) {
+			if ($row['Order Quantity']!=0) {
+				$ordered.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+			}else {
+				$ordered=number($row['Order Bonus Quantity']).' '._('free');
 			}
-			
-			
-	
+		}
+
+
+
 		if ($row['No Shipped Due No Authorized']>0) {
 			$ordered.='<br/> '._('No Authorized').' -'.number($row['No Shipped Due No Authorized']);
 		}
@@ -2216,10 +2216,10 @@ function transactions_dipatched() {
 		}
 
 
-$description=$row['Product XHTML Short Description'];
-if($row['Deal Info']!=''){
-$description.='<br/> <span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].'</span>';
-}
+		$description=$row['Product XHTML Short Description'];
+		if ($row['Deal Info']!='') {
+			$description.='<br/> <span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].'</span>';
+		}
 
 		$data[]=array(
 
@@ -2672,18 +2672,18 @@ function list_transactions_in_order() {
 		//      $total_discounts+=$ndiscount;
 		//      $total_picks+=$row['dispatched'];
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		
-			$quantity=number($row['Order Quantity']);
-			
-			if ($row['Order Bonus Quantity']!=0) {
-				if ($row['Order Quantity']!=0) {
-					$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
-				}else {
-					$quantity=number($row['Order Bonus Quantity']).' '._('free');
-				}
+
+		$quantity=number($row['Order Quantity']);
+
+		if ($row['Order Bonus Quantity']!=0) {
+			if ($row['Order Quantity']!=0) {
+				$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+			}else {
+				$quantity=number($row['Order Bonus Quantity']).' '._('free');
 			}
-	
-		
+		}
+
+
 		$adata[]=array(
 
 			'code'=>$code,
@@ -4597,7 +4597,7 @@ function get_pending_orders_in_basket_data($data) {
 	);
 	$sql=sprintf("select
 	count(Distinct `Order Key`) in_basket_number_orders ,
-	avg(TIMESTAMPDIFF(DAY,`Order Created Date`,NOW())) as in_basket_avg_age_in_days,
+	avg(TIMESTAMPDIFF(SECOND,`Order Created Date`,NOW())) as in_basket_avg_age,
 		avg(`Order Balance Total Amount`) in_basket_avg_total_balance ,
 		avg(`Order Balance Total Amount`*`Order Currency Exchange`) in_basket_avg_total_balance_corporate ,
 sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
@@ -4609,12 +4609,16 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		$in_basket_avg_age_in_days=number($row['in_basket_avg_age_in_days'],1).' '._('days');
+
+		if ($row['in_basket_avg_age']>172800)
+			$in_basket_avg_age=number($row['in_basket_avg_age']/86400,1).' '._('days');
+		else
+			$in_basket_avg_age=number($row['in_basket_avg_age']/3600,1).' '._('hours');
 
 
 		$pending_orders_data['in_basket_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InProcessbyCustomer':'store_pending_orders.php?id='.$data['parent_key'].'&show=InProcessbyCustomer'),number($row['in_basket_number_orders']));
 
-		$pending_orders_data['in_basket_avg_age']=$in_basket_avg_age_in_days;
+		$pending_orders_data['in_basket_avg_age']=$in_basket_avg_age;
 
 		if ($user_corporate_currency) {
 			$pending_orders_data['in_basket_avg_total_balance']=money($row['in_basket_avg_total_balance'],$currency_code);
@@ -4632,16 +4636,18 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 	}
 
 
-	$sql=sprintf("select avg(TIMESTAMPDIFF(DAY,`Order Created Date`, `Order Submitted by Customer Date` ))  in_basket_avg_processing_time_in_days from `Order Dimension` O  %s and `Order Submitted by Customer Date`>%s  ",$where,prepare_mysql($start_record_date));
+	$sql=sprintf("select avg(TIMESTAMPDIFF(SECOND,`Order Created Date`, `Order Submitted by Customer Date` ))  in_basket_avg_processing_time from `Order Dimension` O  %s and `Order Submitted by Customer Date`>%s  ",$where,prepare_mysql($start_record_date));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-		if ($row['in_basket_avg_processing_time_in_days']<1)
-			$in_basket_avg_processing_time=number(24*$row['in_basket_avg_processing_time_in_days'],1).' '._('hours');
-
+	
+	if ($row['in_basket_avg_processing_time']>172800)
+			$in_basket_avg_processing_time=number($row['in_basket_avg_processing_time']/86400,1).' '._('days');
 		else
-			$in_basket_avg_processing_time=number($row['in_basket_avg_processing_time_in_days'],1).' '._('days');
+			$in_basket_avg_processing_time=number($row['in_basket_avg_processing_time']/3600,1).' '._('hours');
+
+
 
 
 		$pending_orders_data['in_basket_avg_processing_time']=$in_basket_avg_processing_time;
@@ -4712,8 +4718,8 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 
 
 
-	if ($row['in_process_avg_age']>172800)
-						$in_process_avg_age=number($row['in_process_avg_age']/86400,1).' '._('days');
+		if ($row['in_process_avg_age']>172800)
+			$in_process_avg_age=number($row['in_process_avg_age']/86400,1).' '._('days');
 		else
 			$in_process_avg_age=number($row['in_process_avg_age']/3600,1).' '._('hours');
 
@@ -4762,14 +4768,14 @@ sum(`Order Balance Total Amount`) in_process_sum_total_balance ,
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-	if ($row['in_process_avg_age']>172800)
-						$in_process_avg_age=number($row['in_process_avg_age']/86400,1).' '._('days');
+		if ($row['in_process_avg_age']>172800)
+			$in_process_avg_age=number($row['in_process_avg_age']/86400,1).' '._('days');
 		else
 			$in_process_avg_age=number($row['in_process_avg_age']/3600,1).' '._('hours');
 
 
 
-	
+
 
 		$pending_orders_data['in_process_avg_processing_time']=$in_process_avg_age;
 
@@ -4836,18 +4842,18 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		
-		
-			if ($row['in_warehouse_avg_age']>172800)
-						$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/86400,1).' '._('days');
+
+
+		if ($row['in_warehouse_avg_age']>172800)
+			$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/86400,1).' '._('days');
 		else
 			$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/3600,1).' '._('hours');
 
-		
-		
-		
-		
-		
+
+
+
+
+
 		$pending_orders_data['in_warehouse_number_orders']=sprintf('<a href="%s">%s</a>',($data['parent']=='none'?'pending_orders.php?show=InWarehouse':'store_pending_orders.php?id='.$data['parent_key'].'&show=InWarehouse'),number($row['in_warehouse_number_orders']));
 
 		$pending_orders_data['in_warehouse_avg_age']=$in_warehouse_avg_age;
@@ -4880,9 +4886,9 @@ sum(`Order Balance Total Amount`) in_warehouse_sum_total_balance ,
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-		
-			if ($row['in_warehouse_avg_age']>172800)
-						$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/86400,1).' '._('days');
+
+		if ($row['in_warehouse_avg_age']>172800)
+			$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/86400,1).' '._('days');
 		else
 			$in_warehouse_avg_age=number($row['in_warehouse_avg_age']/3600,1).' '._('hours');
 
@@ -4953,9 +4959,9 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-	
-			if ($row['packed_avg_age']>172800)
-						$packed_avg_age=number($row['packed_avg_age']/86400,1).' '._('days');
+
+		if ($row['packed_avg_age']>172800)
+			$packed_avg_age=number($row['packed_avg_age']/86400,1).' '._('days');
 		else
 			$packed_avg_age=number($row['packed_avg_age']/3600,1).' '._('hours');
 
@@ -4986,13 +4992,13 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 
 
 	$sql=sprintf("select avg(TIMESTAMPDIFF(SECOND,`Order Packed Done Date`, `Order Dispatched Date` ))  packed_avg_processing_time from `Order Dimension` O %s and `Order Dispatched Date`>%s  ",$where,prepare_mysql($start_record_date));
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-			if ($row['packed_avg_processing_time']>172800)
-						$packed_avg_processing_time=number($row['packed_avg_processing_time']/86400,1).' '._('days');
+		if ($row['packed_avg_processing_time']>172800)
+			$packed_avg_processing_time=number($row['packed_avg_processing_time']/86400,1).' '._('days');
 		else
 			$packed_avg_processing_time=number($row['packed_avg_processing_time']/3600,1).' '._('hours');
 

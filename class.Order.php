@@ -6591,7 +6591,20 @@ class Order extends DB_Table {
 
 	function apply_payment_from_customer_account() {
 
-		$order_amount=$this->data['Order To Pay Amount'];
+		$order_amount=$this->data['Order Balance Total Amount'];
+		$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Completed' and  `Is Account Payment`='No' and `Order Key`=%d ",
+				$this->id
+
+			);
+$current_amount_completed_payments=0.00;
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$current_amount_completed_payments=$row['Amount'];
+
+			}
+		
+		$order_amount=round($order_amount-$current_amount_completed_payments,2);
 		if ($order_amount<=0) {
 			return;
 		}
@@ -6617,13 +6630,14 @@ class Order extends DB_Table {
 
 				$current_amount_in_customer_account_payments=0;
 			}
+			
 
 
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
 			if ($customer_account_available_amount) {
 
-
+//print "CAA: $customer_account_available_amount  $order_amount \n";
 				if ($customer_account_available_amount==$order_amount) {
 					$payment_amount=$order_amount;
 
@@ -6666,7 +6680,7 @@ class Order extends DB_Table {
 
 					);
 
-
+					//print_r($data_to_update);
 
 					$payment->update($data_to_update);
 
