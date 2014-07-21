@@ -706,29 +706,56 @@ class Order extends DB_Table {
 		}
 		else {
 
-
-			$sql=sprintf("select `Amount` from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
+			$current_amount_in_customer_account_payments=0;
+			$sql=sprintf("select B.`Payment Key`,`Amount`,`Payment Transaction Status` from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`) where `Is Account Payment`='Yes' and `Order Key`=%d ",
 				$this->id
 
 			);
 
 			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
+			while ($row=mysql_fetch_assoc($res)) {
 
-				$current_amount_in_customer_account_payments=$row['Amount'];
+				$current_amount_in_customer_account_payments+=$row['Amount'];
 
-			}else {
+				if ($row['Payment Transaction Status']=='Pending') {
+					$sql=sprintf("delete  from `Order Payment Bridge` where `Payment Key`=%d ",
+						$row['Payment Key']
 
-				$current_amount_in_customer_account_payments=0;
+					);
+					mysql_query($sql);
+					
+					$sql=sprintf("delete  from `Payment Dimension` where `Payment Key`=%d ",
+						$row['Payment Key']
+
+					);
+					mysql_query($sql);
+					
+				}else{
+				
+					$payment=new Payment($row['Payment Key']);
+					$data_to_update=array(
+
+		'Payment Completed Date'=>'',
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Cancelled',
+		'Payment Transaction Status Info'=>_('Cancelled by user'),
+
+
+	);
+	$payment->update($data_to_update);
+	
+					
+				
+				}
+
+
 			}
 
 
-			$sql=sprintf("delete  from `Order Payment Bridge` where `Is Account Payment`='Yes' and `Order Key`=%d ",
-				$this->id
 
-			);
 
-			mysql_query($sql);
+
 
 			if ($by_customer) {
 				$state = 'Cancelled by Customer';
@@ -805,7 +832,7 @@ class Order extends DB_Table {
 					'Customer Account Balance'=>round($customer->data['Customer Account Balance']+$current_amount_in_customer_account_payments,2)
 
 
-				));
+				),'no_history');
 
 
 			$store=new Store($this->data['Order Store Key']);
@@ -1262,9 +1289,9 @@ class Order extends DB_Table {
 				if (!$quantity_set) {
 					$quantity=$old_quantity;
 				}
-				
+
 				//if (!$bonus_quantity_set) {
-				//	$bonus_quantity=$old_bonus_quantity;
+				// $bonus_quantity=$old_bonus_quantity;
 				//}
 				$total_quantity=$quantity+$bonus_quantity;
 
@@ -4304,21 +4331,21 @@ class Order extends DB_Table {
 				);
 				$res=mysql_query($sql);
 				if ($row=mysql_fetch_assoc($res)) {
-				
-				$product_code=$row['Preference Metadata'];
-				
-				$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%s and `Product Code`=%s and `Product Main Type`='Sale'",
-				$this->data['Order Store Key'],
-				prepare_mysql($product_code)
-				);
-				$res2=mysql_query($sql);
-						if ($row2=mysql_fetch_assoc($res2)) {
-							$product_pid=$row2['Product ID'];
 
-						}else{
+					$product_code=$row['Preference Metadata'];
+
+					$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%s and `Product Code`=%s and `Product Main Type`='Sale'",
+						$this->data['Order Store Key'],
+						prepare_mysql($product_code)
+					);
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$product_pid=$row2['Product ID'];
+
+					}else {
 						$product_pid=0;
-						}
-				
+					}
+
 					if ($product_pid) {
 
 						$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Main Type`='Sale' and `Product Family Key`=%d and `Product ID`=%d",
@@ -4340,20 +4367,20 @@ class Order extends DB_Table {
 						}
 					}
 				}else {
-				
-				$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%s and `Product Code`=%s and `Product Main Type`='Sale'",
-				$this->data['Order Store Key'],
-				prepare_mysql($get_free_allowance[1])
-				);
-				$res2=mysql_query($sql);
-						if ($row2=mysql_fetch_assoc($res2)) {
-							$product_pid=$row2['Product ID'];
 
-						}else{
+					$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%s and `Product Code`=%s and `Product Main Type`='Sale'",
+						$this->data['Order Store Key'],
+						prepare_mysql($get_free_allowance[1])
+					);
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$product_pid=$row2['Product ID'];
+
+					}else {
 						$product_pid=0;
-						}
-				
-				
+					}
+
+
 				}
 
 
@@ -4716,7 +4743,7 @@ class Order extends DB_Table {
 
 			case('Order Total Net Amount AND Order Interval'):
 			case('Order Items Net Amount AND Order Interval'):
-						case('Order Total Amount AND Order Interval'):
+			case('Order Total Amount AND Order Interval'):
 
 				$terms_type=preg_split('/\sAND\s/',$deal_component_data['Deal Component Terms Type']);
 				$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
@@ -4743,7 +4770,7 @@ class Order extends DB_Table {
 						$this->id,
 						prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
 					);
-
+					print $sql;
 					$res2=mysql_query($sql);
 					if ($_row=mysql_fetch_assoc($res2)) {
 
@@ -4763,7 +4790,7 @@ class Order extends DB_Table {
 			case('Order Total Net Amount AND Order Number'):
 			case('Order Items Net Amount AND Order Number'):
 			case('Order Total Amount AND Order Number'):
-			
+
 				$terms_type=preg_split('/\sAND\s/',$deal_component_data['Deal Component Terms Type']);
 
 				$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
@@ -6593,17 +6620,17 @@ class Order extends DB_Table {
 
 		$order_amount=$this->data['Order Balance Total Amount'];
 		$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Completed' and  `Is Account Payment`='No' and `Order Key`=%d ",
-				$this->id
+			$this->id
 
-			);
-$current_amount_completed_payments=0.00;
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
+		);
+		$current_amount_completed_payments=0.00;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
 
-				$current_amount_completed_payments=$row['Amount'];
+			$current_amount_completed_payments=$row['Amount'];
 
-			}
-		
+		}
+
 		$order_amount=round($order_amount-$current_amount_completed_payments,2);
 		if ($order_amount<=0) {
 			return;
@@ -6630,14 +6657,14 @@ $current_amount_completed_payments=0.00;
 
 				$current_amount_in_customer_account_payments=0;
 			}
-			
+
 
 
 			$customer_account_available_amount=round($current_amount_in_customer_account_payments+$original_customer_balance,2);
 
 			if ($customer_account_available_amount) {
 
-//print "CAA: $customer_account_available_amount  $order_amount \n";
+				//print "CAA: $customer_account_available_amount  $order_amount \n";
 				if ($customer_account_available_amount==$order_amount) {
 					$payment_amount=$order_amount;
 
@@ -6739,7 +6766,9 @@ $current_amount_completed_payments=0.00;
 						'Customer Account Balance'=>round($customer_account_available_amount-$payment->data['Payment Amount'],2)
 
 
-					));
+					),'no_history');
+
+
 
 
 				$this->update_payment_state();
