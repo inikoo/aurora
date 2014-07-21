@@ -1028,6 +1028,12 @@ $this->update_payment_state();
 			'Invoice Sales Representative Keys'=>$this->get_sales_representative_keys(),
 			'Invoice Metadata'=>$this->data['Order Original Metadata'],
 			'Invoice Billing To Key'=>$this->data['Order Billing To Key To Bill'],
+			'Invoice Tax Number'=>$this->data['Order Tax Number'],
+						'Invoice Tax Number Valid'=>$this->data['Order Tax Number Valid'],
+						'Invoice Tax Number Validation Date'=>$this->data['Order Tax Number Validation Date'],
+						'Invoice Tax Number Associated Name'=>$this->data['Order Tax Number Associated Name'],
+						'Invoice Tax Number Associated Address'=>$this->data['Order Tax Number Associated Address']
+
 
 		);
 
