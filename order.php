@@ -294,7 +294,7 @@ else {
 	//	$order->update_item_totals_from_order_transactions();
 
 		//$order->update_no_normal_totals('save');
-			$order->update_discounts_no_items();
+			//$order->update_discounts_no_items();
 
 
 		//$order->update_tax();
@@ -406,7 +406,7 @@ else {
 	case('Packed Done'):
 	case('Ready to Ship'):
 	//	$order->update_tax();
-
+$order->update_discounts_no_items();
 
 		//$order->update_item_totals_from_order_transactions();
 		//$order->update_no_normal_totals('save');
