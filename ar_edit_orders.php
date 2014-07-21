@@ -23,6 +23,26 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('add_insurance'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'insurance_key'=>array('type'=>'key')
+
+		));
+	add_insurance($data);
+
+	break;
+case('remove_insurance'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'onptf_key'=>array('type'=>'key')
+
+		));
+	remove_insurance($data);
+
+	break;
+
 case('update_meta_bonus'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -43,24 +63,7 @@ case('check_tax_number'):
 		));
 	check_order_tax_number($data);
 	break;
-case('add_insurance'):
-	$data=prepare_values($_REQUEST,array(
-			'order_key'=>array('type'=>'key'),
-			'insurance_key'=>array('type'=>'key')
 
-		));
-	add_insurance($data);
-
-	break;
-case('remove_insurance'):
-	$data=prepare_values($_REQUEST,array(
-			'order_key'=>array('type'=>'key'),
-			'onptf_key'=>array('type'=>'key')
-
-		));
-	remove_insurance($data);
-
-	break;
 case('update_order_special_intructions'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -663,7 +666,7 @@ case('send_to_warehouse'):
 
 
 case('edit_new_order'):
-	edit_new_order();
+	update_order_transaction();
 	break;
 case('is_order_exist'):
 	is_order_exist();
@@ -863,6 +866,8 @@ function send_to_warehouse($data) {
 
 function edit_new_order_shipping_type() {
 
+	global $smarty;
+
 	$order_key=$_REQUEST['id'];
 
 	$value=$_REQUEST['newvalue'];
@@ -916,11 +921,12 @@ function edit_new_order_shipping_type() {
 				);
 			}
 
-
+			$smarty->assign('order',$order);
+			$payments_list=$smarty->fetch('order_payments_splinter.tpl');
 
 			$response=array('state'=>200,
 				'result'=>'updated',
-				'new_value'=>$order->new_value,
+				'order_for_collection'=>$order->data['Order For Collection'],
 				'order_shipping_method'=>$order->data['Order Shipping Method'],
 				'data'=>$updated_data,
 				'shipping'=>money($order->new_value),
@@ -929,7 +935,8 @@ function edit_new_order_shipping_type() {
 				'tax_info'=>$order->get_formated_tax_info_with_operations(),
 				'payments_data'=>$payments_data,
 				'order_total_paid'=>$order->data['Order Payments Amount'],
-				'order_total_to_pay'=>$order->data['Order To Pay Amount']
+				'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+				'payments_list'=>$payments_list
 			);
 
 		} else {
@@ -1228,9 +1235,9 @@ function is_order_exist() {
 	edit_new_order();
 }
 
-function edit_new_order() {
+function update_order_transaction() {
 
-global $smarty;
+	global $smarty;
 
 	$order_key=$_REQUEST['id'];
 
@@ -1306,8 +1313,8 @@ global $smarty;
 
 
 				$deal_info='<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount']>0?', <span style="font-weight:800">-'.money($row['Order Transaction Total Discount Amount'],$order->data['Order Currency']).'</span>':'').'</span>';
-			
-			
+
+
 			}else {
 				$deal_info='';
 			}
@@ -1367,6 +1374,8 @@ global $smarty;
 
 	}
 
+	$smarty->assign('order',$order);
+	$payments_list=$smarty->fetch('order_payments_splinter.tpl');
 
 	$response= array(
 		'state'=>200,
@@ -1389,6 +1398,7 @@ global $smarty;
 		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 		'order_has_deal_with_bonus'=>$order_has_deal_with_bonus,
 		'order_deal_bonus'=>$order_deal_bonus,
+		'payments_list'=>$payments_list
 	);
 
 	echo json_encode($response);
@@ -3963,121 +3973,6 @@ function update_billing_to_key($data) {
 
 
 
-function add_insurance($data) {
-
-	$order= new Order($data['order_key']);
-	$onptf_key=$order->add_insurance($data['insurance_key']);
-
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
-
-	$updated_data=array(
-		'order_items_gross'=>$order->get('Items Gross Amount'),
-		'order_items_discount'=>$order->get('Items Discount Amount'),
-		'order_items_net'=>$order->get('Items Net Amount'),
-		'order_net'=>$order->get('Total Net Amount'),
-		'order_tax'=>$order->get('Total Tax Amount'),
-		'order_charges'=>$order->get('Charges Net Amount'),
-		'order_insurance'=>$order->get('Insurance Net Amount'),
-		'order_credits'=>$order->get('Net Credited Amount'),
-		'order_shipping'=>$order->get('Shipping Net Amount'),
-		'order_total'=>$order->get('Total Amount'),
-		'ordered_products_number'=>$order->get('Number Products'),
-		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
-		'order_total_paid'=>$order->get('Payments Amount'),
-		'order_total_to_pay'=>$order->get('To Pay Amount')
-	);
-	$payments_data=array();
-	foreach ($order->get_payment_objects('',true,true) as $payment) {
-		$payments_data[$payment->id]=array(
-			'date'=>$payment->get('Created Date'),
-			'amount'=>$payment->get('Amount'),
-			'status'=>$payment->get('Payment Transaction Status')
-		);
-	}
-
-
-
-	$response= array(
-		'state'=>200,
-
-		'data'=>$updated_data,
-		'order_key'=>$order->id,
-		'ship_to'=>$order->get('Order XHTML Ship Tos'),
-		'tax_info'=>$order->get_formated_tax_info_with_operations(),
-		'onptf_key'=>$onptf_key,
-		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
-		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data,
-		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
-
-	);
-
-
-	echo json_encode($response);
-
-}
-function remove_insurance($data) {
-
-	$order= new Order($data['order_key']);
-	$order->remove_insurance($data['onptf_key']);
-
-	$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
-
-	$updated_data=array(
-		'order_items_gross'=>$order->get('Items Gross Amount'),
-		'order_items_discount'=>$order->get('Items Discount Amount'),
-		'order_items_net'=>$order->get('Items Net Amount'),
-		'order_net'=>$order->get('Total Net Amount'),
-		'order_tax'=>$order->get('Total Tax Amount'),
-		'order_charges'=>$order->get('Charges Net Amount'),
-		'order_insurance'=>$order->get('Insurance Net Amount'),
-		'order_credits'=>$order->get('Net Credited Amount'),
-		'order_shipping'=>$order->get('Shipping Net Amount'),
-		'order_total'=>$order->get('Total Amount'),
-		'ordered_products_number'=>$order->get('Number Products'),
-		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency']),
-		'order_total_paid'=>$order->get('Payments Amount'),
-		'order_total_to_pay'=>$order->get('To Pay Amount')
-	);
-
-	$payments_data=array();
-	foreach ($order->get_payment_objects('',true,true) as $payment) {
-		$payments_data[$payment->id]=array(
-			'date'=>$payment->get('Created Date'),
-			'amount'=>$payment->get('Amount'),
-			'status'=>$payment->get('Payment Transaction Status')
-		);
-	}
-
-
-
-
-	$response= array(
-		'state'=>200,
-
-		'data'=>$updated_data,
-		'order_key'=>$order->id,
-		'ship_to'=>$order->get('Order XHTML Ship Tos'),
-		'tax_info'=>$order->get_formated_tax_info_with_operations(),
-
-		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
-		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-		'payments_data'=>$payments_data,
-		'order_total_paid'=>$order->data['Order Payments Amount'],
-		'order_total_to_pay'=>$order->data['Order To Pay Amount']
-
-	);
-
-
-	echo json_encode($response);
-
-
-
-
-}
 
 function update_billing_to_key_from_address($data) {
 
@@ -5782,7 +5677,7 @@ function update_meta_bonus($data) {
 		$data['deal_component_key'],
 		$data['order_key']
 	);
-//	print $sql;
+	// print $sql;
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -5815,29 +5710,29 @@ function update_meta_bonus($data) {
 
 				$transaction_data=$order->add_order_transaction($_data);
 
-				$sql=sprintf("update `Order Meta Transaction Deal Dimension` set 
+				$sql=sprintf("update `Order Meta Transaction Deal Dimension` set
 				`Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,
 				`Bonus Order Transaction Fact Key`=%d where `Order Meta Transaction Deal Key`=%d ",
 					$data['value'],
 					$data['product_key'],
 					$data['pid'],
 					$data['family_key'],
-					
+
 					$transaction_data['otf_key'],
 					$row['Order Meta Transaction Deal Key']
 				);
 				mysql_query($sql);
-				
-				
+
+
 				$sql=sprintf("insert into `Deal Component Customer Preference Bridge`  (`Deal Component Key`,`Customer Key`,`Preference Metadata`) values (%d,%d,%s)  ON DUPLICATE KEY UPDATE `Preference Metadata`=%s",
-				$data['deal_component_key'],
-				$data['customer_key'],
-				prepare_mysql($data['code']),
-				prepare_mysql($data['code'])
+					$data['deal_component_key'],
+					$data['customer_key'],
+					prepare_mysql($data['code']),
+					prepare_mysql($data['code'])
 				);
 				mysql_query($sql);
 			}
-			
+
 		}
 		else {
 
@@ -5849,30 +5744,156 @@ function update_meta_bonus($data) {
 				$row['Order Meta Transaction Deal Key']
 			);
 			mysql_query($sql);
-			
-			
+
+
 			$sql=sprintf("insert into `Deal Component Customer Preference Bridge`  (`Deal Component Key`,`Customer Key`,`Preference Metadata`) values (%d,%d,'')  ON DUPLICATE KEY UPDATE `Preference Metadata`=''",
 				$data['deal_component_key'],
 				$data['customer_key']
-			
-				);
-				mysql_query($sql);
+
+			);
+			mysql_query($sql);
 
 		}
-		
+
 
 	}
 
 	$response= array(
-			'state'=>200,
-
-			
+		'state'=>200,
 
 
-		);
 
 
-		echo json_encode($response);
+	);
+
+
+	echo json_encode($response);
+
+}
+
+
+function add_insurance($data) {
+
+global $smarty;
+	$order= new Order($data['order_key']);
+	$onptf_key=$order->add_insurance($data['insurance_key']);
+
+
+
+			$updated_data=array(
+				'order_items_gross'=>$order->get('Items Gross Amount'),
+				'order_items_discount'=>$order->get('Items Discount Amount'),
+				'order_items_net'=>$order->get('Items Net Amount'),
+				'order_net'=>$order->get('Total Net Amount'),
+				'order_tax'=>$order->get('Total Tax Amount'),
+				'order_charges'=>$order->get('Charges Net Amount'),
+				'order_credits'=>$order->get('Net Credited Amount'),
+				'order_shipping'=>$order->get('Shipping Net Amount'),
+				'order_total'=>$order->get('Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount'),
+						'order_insurance'=>$order->get('Insurance Net Amount'),
+
+
+			);
+
+			$payments_data=array();
+			foreach ($order->get_payment_objects('',true,true) as $payment) {
+				$payments_data[$payment->id]=array(
+					'date'=>$payment->get('Created Date'),
+					'amount'=>$payment->get('Amount'),
+					'status'=>$payment->get('Payment Transaction Status')
+				);
+			}
+
+			$smarty->assign('order',$order);
+			$payments_list=$smarty->fetch('order_payments_splinter.tpl');
+
+			$response=array('state'=>200,
+				'result'=>'updated',
+				'order_for_collection'=>$order->data['Order For Collection'],
+				'order_shipping_method'=>$order->data['Order Shipping Method'],
+				'data'=>$updated_data,
+				'shipping'=>money($order->new_value),
+				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+				'ship_to'=>$order->get('Order XHTML Ship Tos'),
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'payments_data'=>$payments_data,
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+				'payments_list'=>$payments_list,
+				
+				'onptf_key'=>$onptf_key,
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
+				
+			);
+
+		
+
+
+	echo json_encode($response);
+
+}
+function remove_insurance($data) {
+global $smarty;
+
+	$order= new Order($data['order_key']);
+	$order->remove_insurance($data['onptf_key']);
+
+
+
+
+			$updated_data=array(
+				'order_items_gross'=>$order->get('Items Gross Amount'),
+				'order_items_discount'=>$order->get('Items Discount Amount'),
+				'order_items_net'=>$order->get('Items Net Amount'),
+				'order_net'=>$order->get('Total Net Amount'),
+				'order_tax'=>$order->get('Total Tax Amount'),
+				'order_charges'=>$order->get('Charges Net Amount'),
+				'order_credits'=>$order->get('Net Credited Amount'),
+				'order_shipping'=>$order->get('Shipping Net Amount'),
+				'order_total'=>$order->get('Total Amount'),
+				'order_total_paid'=>$order->get('Payments Amount'),
+				'order_total_to_pay'=>$order->get('To Pay Amount'),
+						'order_insurance'=>$order->get('Insurance Net Amount'),
+
+
+			);
+
+			$payments_data=array();
+			foreach ($order->get_payment_objects('',true,true) as $payment) {
+				$payments_data[$payment->id]=array(
+					'date'=>$payment->get('Created Date'),
+					'amount'=>$payment->get('Amount'),
+					'status'=>$payment->get('Payment Transaction Status')
+				);
+			}
+
+			$smarty->assign('order',$order);
+			$payments_list=$smarty->fetch('order_payments_splinter.tpl');
+
+			$response=array('state'=>200,
+				'result'=>'updated',
+				'order_for_collection'=>$order->data['Order For Collection'],
+				'order_shipping_method'=>$order->data['Order Shipping Method'],
+				'data'=>$updated_data,
+				'shipping'=>money($order->new_value),
+				'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+				'ship_to'=>$order->get('Order XHTML Ship Tos'),
+				'tax_info'=>$order->get_formated_tax_info_with_operations(),
+				'payments_data'=>$payments_data,
+				'order_total_paid'=>$order->data['Order Payments Amount'],
+				'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+				'payments_list'=>$payments_list,
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
+			);
+
+		
+
+	echo json_encode($response);
+
+
+
 
 }
 
