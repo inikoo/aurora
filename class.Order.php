@@ -4754,7 +4754,7 @@ class Order extends DB_Table {
 				$amount_term_ok=false;
 
 
-print "xx";
+//print "xx";
 
 				if ($this->data[$terms_type[0]]>=$amount_term) {
 					$amount_term_ok=true;
