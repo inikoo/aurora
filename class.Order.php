@@ -4546,7 +4546,7 @@ class Order extends DB_Table {
 		$sql=sprintf("delete from `Order Meta Transaction Deal Dimension` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
 
-print $sql;
+
 
 
 		$this->update_discounts_order_tigger_no_item_allowances();
