@@ -723,30 +723,30 @@ class Order extends DB_Table {
 
 					);
 					mysql_query($sql);
-					
+
 					$sql=sprintf("delete  from `Payment Dimension` where `Payment Key`=%d ",
 						$row['Payment Key']
 
 					);
 					mysql_query($sql);
-					
-				}else{
-				
+
+				}else {
+
 					$payment=new Payment($row['Payment Key']);
 					$data_to_update=array(
 
-		'Payment Completed Date'=>'',
-		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Transaction Status'=>'Cancelled',
-		'Payment Transaction Status Info'=>_('Cancelled by user'),
+						'Payment Completed Date'=>'',
+						'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+						'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+						'Payment Transaction Status'=>'Cancelled',
+						'Payment Transaction Status Info'=>_('Cancelled by user'),
 
 
-	);
-	$payment->update($data_to_update);
-	
-					
-				
+					);
+					$payment->update($data_to_update);
+
+
+
 				}
 
 
@@ -754,7 +754,7 @@ class Order extends DB_Table {
 
 
 
-
+$this->update_payment_state();
 
 
 			if ($by_customer) {
@@ -785,10 +785,17 @@ class Order extends DB_Table {
 			$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
 			$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
 			$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
+			$this->data ['Order Balance Net Amount'] = 0;
+			$this->data ['Order Balance Tax Amount'] = 0;
+			$this->data ['Order Balance Total Amount'] = 0;
 
+			$this->data ['Order To Pay Amount'] =$this->data ['Order Balance Total Amount']-$this->data['Order Payments Amount'];
 
-
-			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
+			`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
+			,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
+			,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=.2%f
+			where `Order Key`=%d"
 				//     ,$no_shipped
 				, prepare_mysql ( $this->data ['Order Cancelled Date'] )
 				, prepare_mysql ( $this->data ['Order Current Payment State'] )
@@ -796,7 +803,7 @@ class Order extends DB_Table {
 				, prepare_mysql ( $this->data ['Order Current XHTML Dispatch State'] )
 				, prepare_mysql ( $this->data ['Order Current XHTML Payment State'] )
 				, prepare_mysql ( $this->data ['Order Cancel Note'] )
-
+				,$this->data ['Order To Pay Amount']
 				, $this->id );
 			if (! mysql_query( $sql ))
 				exit ( "$sql error can not update cancel\n" );
@@ -4754,8 +4761,8 @@ class Order extends DB_Table {
 				$amount_term_ok=false;
 
 
-$deal_component_data['Deal Component Terms'];
-//print_r($terms);
+				$deal_component_data['Deal Component Terms'];
+				//print_r($terms);
 
 				if ($this->data[$terms_type[0]]>=$amount_term) {
 					$amount_term_ok=true;
@@ -4771,7 +4778,7 @@ $deal_component_data['Deal Component Terms'];
 						$this->id,
 						prepare_mysql(date('Y-m-d',strtotime("now -".$interval_term)).' 00:00:00')
 					);
-			//	print $deal_component_data['Deal Component Terms'];
+					// print $deal_component_data['Deal Component Terms'];
 					$res2=mysql_query($sql);
 					if ($_row=mysql_fetch_assoc($res2)) {
 

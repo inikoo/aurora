@@ -4859,12 +4859,17 @@ include_once 'class.Part.php';
 	
 	include_once 'class.Part.php';
 	
+	//print "$type\n";
+	
 		$parts_info=$this->get_parts_info();
 
 		$weight_package=0;
 		$weight_package_units=array();
 		foreach ($parts_info as $sku => $part_info) {
 			$part=new Part($sku);
+			
+		//	print $part->sku.' '.$part->data["Part $type Weight"]." Part $type Weight  ";
+			//print $part->data["Part Package Weight"]." Part Package Weight \n";
 			$weight_package+= $part_info['parts_per_product']*$part->data["Part $type Weight"];
 
 			if (array_key_exists($part->data["Part $type Weight Display Units"], $weight_package_units)) {

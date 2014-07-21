@@ -360,6 +360,21 @@
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" style="font-size:80%" class="data_table_container dtable btable">
 		</div>
+		
+			<div style="clear:both;padding-top:10px">
+		{foreach from=$order->get_insurances() item=insurance} 
+		<div class="insurance_row">
+			{$insurance['Insurance Description']} 
+			(<b>{$insurance['Insurance Formated Net Amount']}</b>)
+			<span style="widht:100px"> 
+			<img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png"/> 
+			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png"/>
+			</span> 
+			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif"/> 
+		</div>
+		{/foreach} 
+	</div>
+		
 	</div>
 </div>
 <div id="rppmenu0" class="yuimenu">

@@ -314,7 +314,6 @@ $order->update_discounts_no_items();
 		$js_files[]='js/country_address_labels.js';
 		$js_files[]='js/edit_address.js';
 
-		//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 		$js_files[]='js/edit_delivery_address_common.js';
 		$js_files[]='js/edit_billing_address_common.js';
@@ -327,10 +326,6 @@ $order->update_discounts_no_items();
 
 
 		$template='order_in_process.tpl';
-		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
-		//$smarty->assign('default_country_2alpha','GB');
-
-
 
 		$products_display_type='ordered_products';
 
@@ -702,6 +697,11 @@ $order->update_discounts_no_items();
 		break;
 	case('Cancelled'):
 	case('Cancelled by Customer'):
+	
+		$js_files[]='js/php.default.min.js';
+			$js_files[]='js/add_payment.js';
+
+	
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$smarty->assign('store_id',$store->id);
