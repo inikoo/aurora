@@ -160,6 +160,21 @@ class Invoice extends DB_Table {
 			$this->data ['Invoice Charged By Keys'] =array($this->editor['User Key']);
 		}
 
+if (array_key_exists('Invoice Tax Number',$invoice_data)) {
+			$this->data ['Invoice Tax Number'] =$invoice_data['Invoice Tax Number'];
+		}
+		if (array_key_exists('Invoice Tax Number Valid',$invoice_data)) {
+			$this->data ['Invoice Tax Number Valid'] =$invoice_data['Invoice Tax Number Valid'];
+		}
+		if (array_key_exists('Invoice Tax Number Validation Date',$invoice_data)) {
+			$this->data ['Invoice Tax Number Validation Date'] =$invoice_data['Invoice Tax Number Validation Date'];
+		}
+		if (array_key_exists('Invoice Tax Number Associated Name',$invoice_data)) {
+			$this->data ['Invoice Tax Number Associated Name'] =$invoice_data['Invoice Tax Number Associated Name'];
+		}
+		if (array_key_exists('Invoice Tax Number Associated Address',$invoice_data)) {
+			$this->data ['Invoice Tax Number Associated Address'] =$invoice_data['Invoice Tax Number Associated Address'];
+		}
 
 		if ( array_key_exists('Invoice Billing To Key',$invoice_data)) {
 			$billing_to=new Billing_To($invoice_data['Invoice Billing To Key']);
@@ -263,7 +278,21 @@ class Invoice extends DB_Table {
 			$this->data ['Invoice Charged By Keys'] =array($this->editor['User Key']);
 		}
 
-
+		if (array_key_exists('Invoice Tax Number',$invoice_data)) {
+			$this->data ['Invoice Tax Number'] =$invoice_data['Invoice Tax Number'];
+		}
+		if (array_key_exists('Invoice Tax Number Valid',$invoice_data)) {
+			$this->data ['Invoice Tax Number Valid'] =$invoice_data['Invoice Tax Number Valid'];
+		}
+		if (array_key_exists('Invoice Tax Number Validation Date',$invoice_data)) {
+			$this->data ['Invoice Tax Number Validation Date'] =$invoice_data['Invoice Tax Number Validation Date'];
+		}
+		if (array_key_exists('Invoice Tax Number Associated Name',$invoice_data)) {
+			$this->data ['Invoice Tax Number Associated Name'] =$invoice_data['Invoice Tax Number Associated Name'];
+		}
+		if (array_key_exists('Invoice Tax Number Associated Address',$invoice_data)) {
+			$this->data ['Invoice Tax Number Associated Address'] =$invoice_data['Invoice Tax Number Associated Address'];
+		}
 
 
 		if ($invoice_data['Invoice Billing To Key']) {
@@ -1490,6 +1519,8 @@ class Invoice extends DB_Table {
 
 
 		$sql = sprintf( "insert into `Invoice Dimension` (
+		`Invoice Tax Number`,`Invoice Tax Number Valid`,`Invoice Tax Number Validation Date`,`Invoice Tax Number Associated Name`,`Invoice Tax Number Associated Address`,
+		
 		`Invoice Customer Level Type`,
 
                          `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,
@@ -1517,6 +1548,7 @@ class Invoice extends DB_Table {
 
                          `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Type`,`Invoice Outstanding Total Amount`) values
                          (
+                          %s,%s,%s,%s,%s,
                          %s,
                          %s,%s,%s,
                          %f,
@@ -1532,7 +1564,11 @@ class Invoice extends DB_Table {
 
                          %s,%s,%s,%s,%f)"
 
-
+, prepare_mysql ( $this->data ['Invoice Tax Number'] )
+, prepare_mysql ( $this->data ['Invoice Tax Number Valid'] )
+, prepare_mysql ( $this->data ['Invoice Tax Number Validation Date'] )
+, prepare_mysql ( $this->data ['Invoice Tax Number Associated Name'] )
+, prepare_mysql ( $this->data ['Invoice Tax Number Associated Address'] )
 
 			, prepare_mysql ( $this->data ['Invoice Customer Level Type'] )
 

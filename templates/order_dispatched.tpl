@@ -232,11 +232,15 @@
 <div id="delivery_notes_container">
 </div>
 </div>
-{*} 
-<div id="msg_dispatched_post_transactions" style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #fd4646;padding:5px 10px;background:#ff6969;color:#fff;xtext-align:center;text-weight:800">
-	{t}This order has some post transactions{/t} <span onclick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span> 
-</div>
-{*} {include file='order_payments_splinter.tpl'} 
+
+
+
+
+<div id="payments_list">
+		{include file='order_payments_splinter.tpl'} 
+	</div>
+
+
 <div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;" id="dispatched_post_transactions">
 	<div class="buttons small">
 		<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> <button id="quick_resend_process" style="{if $order->get('Order Current Post Dispatch State')=='Dispatched'}display:none{/if}"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 

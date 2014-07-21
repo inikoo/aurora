@@ -25,10 +25,16 @@
 			<h2 style="padding:0">
 				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a> 
 			</h2>
+				<div style="padding-left:26px">{$invoice->get('Invoice Tax Number')}</div>
+
 			<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444">
 				<b>{$invoice->get('Invoice Main Contact Name')}</b><br />
-				{$invoice->get('Invoice XHTML Address')} 
+				{$invoice->get('Invoice XHTML Address')}
+				
 			</div>
+			
+			
+			
 			<div style="clear:both">
 			</div>
 		</div>
