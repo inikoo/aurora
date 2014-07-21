@@ -7,6 +7,7 @@ include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 include_once 'class.Payment_Service_Provider.php';
 
+include_once 'class.Part.php';
 
 include_once 'class.Store.php';
 
