@@ -8,6 +8,8 @@ include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Part.php';
 include_once '../../class.PartLocation.php';
+include_once '../../class.Order.php';
+
 include_once '../../common_units_functions.php';
 include_once '../../common_geometry_functions.php';
 
@@ -32,6 +34,37 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
+
+
+$sql="select `Product ID` from `Product Dimension` ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$product=new Product('pid',$row['Product ID']);
+
+
+
+	if ($product->data['Product Use Part Properties']=='Yes' ) {
+	
+			$product->update_weight_from_parts('Package');
+					$product->update_volume_from_parts('Package');
+
+}
+	
+	
+	if ($product->data['Product Use Part Units Properties']=='Yes' ) {
+		$product->update_volume_from_parts('Unit');
+		$product->update_weight_from_parts('Unit');
+
+	}
+	
+
+
+//print "Prod ".$product->pid."\r";
+
+}
+
+exit;
 
 $sql="select `Part SKU` from `Part Dimension` order by  `Part SKU` desc";
 
