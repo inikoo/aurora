@@ -638,7 +638,7 @@ $order->update_discounts_no_items();
 
 		$js_files[]='js/php.default.min.js';
 		$js_files[]='js/add_payment.js';
-
+	$js_files[]='js/common_order_not_dispatched.js';
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$js_files[]='order_dispatched.js.php';
