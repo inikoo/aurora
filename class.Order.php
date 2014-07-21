@@ -4770,7 +4770,7 @@ class Order extends DB_Table {
 						$this->id,
 						prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
 					);
-				
+				print $sql;
 					$res2=mysql_query($sql);
 					if ($_row=mysql_fetch_assoc($res2)) {
 
