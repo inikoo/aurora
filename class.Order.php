@@ -4755,7 +4755,7 @@ class Order extends DB_Table {
 
 
 $deal_component_data['Deal Component Terms'];
-print_r($terms);
+//print_r($terms);
 
 				if ($this->data[$terms_type[0]]>=$amount_term) {
 					$amount_term_ok=true;
