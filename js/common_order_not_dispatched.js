@@ -62,7 +62,7 @@ function add_insurance(o) {
                         }
                         Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
                     }
-
+		if( Dom.get('ordered_products_number')!=undefined)
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
                     if (r.data['ordered_products_number'] > 0) {
@@ -201,6 +201,7 @@ function remove_insurance(o) {
                         }
                         Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
                     }
+		if( Dom.get('ordered_products_number')!=undefined)
 
                     Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
 
