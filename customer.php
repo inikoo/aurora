@@ -15,6 +15,7 @@
 include_once 'common.php';
 include_once 'class.Customer.php';
 include_once 'class.Supplier.php';
+include_once 'class.Part.php';
 
 include_once 'class.Store.php';
 include_once 'duplicate_warning.php';

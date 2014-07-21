@@ -4,6 +4,7 @@ include_once 'class.CurrencyExchange.php';
 include_once 'class.CompanyArea.php';
 include_once 'class.Order.php';
 include_once 'class.Warehouse.php';
+include_once 'class.Part.php';
 
 if (!$user->can_view('orders')) {
 	header('Location: index.php');
