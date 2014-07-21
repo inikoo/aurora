@@ -85,6 +85,12 @@ case('cancel_payment'):
 	cancel_payment($data);
 	break;
 
+	case('complete_payment'):
+	$data=prepare_values($_REQUEST,array(
+			'payment_key'=>array('type'=>'key'),
+			'order_key'=>array('type'=>'key')
+		));
+	complete_payment($data);
 	break;
 
 default:
@@ -93,7 +99,85 @@ default:
 
 }
 
+function complete_payment($data) {
 
+	$payment_key=$data['payment_key'];
+	$payment=new Payment($payment_key);
+	$order=new Order($data['order_key']);
+
+
+
+	if (!$payment->id) {
+
+		$pending_payments=count($order->get_payment_keys('Pending'));
+
+
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment dont exists',
+			'type_error'=>'invalid_payment_key',
+			'payment_key'=>$data['payment_key'],
+			'pending_payments'=>$pending_payments,
+			'status'=>'Deleted',
+			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	if ($payment->data['Payment Transaction Status']!='Pending') {
+		$pending_payments=count($order->get_payment_keys('Pending'));
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],
+			'type_error'=>'invalid_payment_status',
+			'payment_key'=>$payment->id,
+			'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	$data_to_update=array(
+
+		'Payment Completed Date'=>'',
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction Status Info'=>_('Completed by user'),
+
+
+	);
+	$payment->update($data_to_update);
+
+
+$order->update_payment_state();
+	
+
+		$response=array(
+			'state'=>200,
+			'payment_key'=>$payment->id,
+			//'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date'),
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+		);
+	
+
+	echo json_encode($response);
+	return;
+
+
+
+
+}
 
 
 function cancel_payment($data) {

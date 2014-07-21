@@ -48,22 +48,27 @@
 					<button id="change_billing_address" class="state_details" style="display:block;margin-top:10px">{t}Change{/t}</button> 
 				</div>
 			</div>
+			
+			
+			
 			<div style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
-				<div id="title_delivery_address" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
-					{t}Delivering to{/t}: 
+					<div id="title_delivery_address" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+						{t}Delivering to{/t}: 
+					</div>
+					<div id="title_for_collection" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+						&nbsp; 
+					</div>
+					<div class="address_box" id="delivery_address">
+						{$order->get('Order XHTML Ship Tos')} 
+					</div>
+					<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'  or $order->get('Order Invoiced')=='Yes'}display:none{/if};margin-top:10px" class="buttons left small">
+						<button id="change_delivery_address">{t}Change{/t}</button> <br />
+						<button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
+					</div>
+					<div id="for_collection" style="{if $order->get('Order For Collection')=='No' or $order->get('Order Invoiced')=='Yes'}display:none;{/if};margin-top:10px" class="buttons left small">
+						<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
+					</div>
 				</div>
-				
-				<div tyle="margin-top:5px" id="delivery_address">
-					{$order->get('Order XHTML Ship Tos')} 
-				</div>
-				<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes' or $order->get('Order Invoiced')=='Yes'}display:none{/if};margin-top:10px" class="buttons left small">
-					<button id="change_delivery_address">{t}Change{/t}</button> <br />
-					<button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
-				</div>
-				<div id="for_collection" style="{if $order->get('Order For Collection')=='No' or $order->get('Order Invoiced')=='Yes'}display:none;{/if};margin-top:10px" class="buttons left small">
-					<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
-				</div>
-			</div>
 		</div>
 		<div id="totals">
 			<div style="{if $order->data['Order Invoiced']=='Yes'}display:none{/if}">
@@ -112,14 +117,12 @@
 						<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
 					<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright">
-						<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}">
+						<td class="aright"> 
+						<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
 						<div class="buttons small left">
 							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
 						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span>
-						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
-
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				</table>
@@ -200,9 +203,7 @@
 						<div class="buttons small left">
 							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
 						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span>
-						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
-
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				</table>
@@ -275,21 +276,15 @@
 				{/if} 
 			</table>
 		</div>
-			<div style="clear:both">
+		<div style="clear:both">
+		</div>
+		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
+		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+			<div class="buttons small right">
+				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> 
 			</div>
-			<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
-			
-			
-			
-			
-			<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-				<div class="buttons small right">
-				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')" >{t}Don't add account credits{/t}</button>
-				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')" >{t}Add account credits{/t}</button>
-			</div>
-				
-				<div style="width:550px">
-					<table border="0" class="info_block">
+			<div style="width:550px">
+				<table border="0" class="info_block">
 					<tr>
 						<td>{t}Created{/t}:</td>
 						<td class="aright">{$order->get('Created Date')}</td>
@@ -299,22 +294,18 @@
 						<td>{t}Submited{/t}:</td>
 						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
 					</tr>
-				
 					{/if} 
-					
 					<tr>
 						<td>{t}Send to warehouse{/t}:</td>
 						<td class="aright">{$order->get('Send to Warehouse Date')}</td>
 					</tr>
-					
 					<tr>
 						<td>{t}Picking & packing done{/t}:</td>
 						<td class="aright">{$order->get('Packed Done Date')}</td>
 					</tr>
 				</table>
-				
 				<table border="0" class="info_block">
-				<tr>
+					<tr>
 						<td>{t}Customer Fiscal Name{/t}:</td>
 						<td class="aright">{$order->get('Order Customer Fiscal Name')}</td>
 					</tr>
@@ -322,51 +313,46 @@
 						<td>{t}Customer Name{/t}:</td>
 						<td class="aright">{$order->get('Order Customer Name')}</td>
 					</tr>
-						<tr>
+					<tr>
 						<td>{t}Contact Name{/t}:</td>
 						<td class="aright">{$order->get('Order Customer Contact Name')}</td>
 					</tr>
-						<tr>
+					<tr>
 						<td>{t}Telephone{/t}:</td>
 						<td class="aright">{$order->get('Order Telephone')}</td>
 					</tr>
-						<tr>
+					<tr>
 						<td>{t}Email{/t}:</td>
 						<td class="aright">{$order->get('Order Email')}</td>
 					</tr>
 				</table>
-				
-				
 				<table border="0" class="info_block">
-				<tr>
+					<tr>
 						<td>{t}Tax Code{/t}:</td>
-						<td class="aright">{$order->get('Order Tax Code')}  {$order->get('Tax Rate')} </td>
+						<td class="aright">{$order->get('Order Tax Code')} {$order->get('Tax Rate')} </td>
 					</tr>
 					<tr>
 						<td>{t}Tax Info{/t}:</td>
 						<td class="aright">{$order->get('Order Tax Name')}</td>
-				</tr>
+					</tr>
 				</table>
-				
 				<table border="0" class="info_block">
-				<tr>
+					<tr>
 						<td>{t}Weight {/t}:</td>
 						<td class="aright">{$order->get('Weight')}</td>
 					</tr>
-					
 				</table>
-				
-				</div>
-				<div style="clear:both">
-				</div>
-				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
 			</div>
-			
-			
 			<div style="clear:both">
 			</div>
+			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+		</div>
+		<div style="clear:both">
+		</div>
 	</div>
-	{include file='order_payments_splinter.tpl'} 
+	<div id="payments_list">
+		{include file='order_payments_splinter.tpl'} 
+	</div>
 	<div style="margin-top:20px">
 		<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
@@ -396,7 +382,4 @@
 		</ul>
 	</div>
 </div>
-{include file='order_not_dispatched_dialogs_splinter.tpl'}  
-
-
-{include file='add_payment_splinter.tpl'} {include file='assign_picker_packer_splinter.tpl'} {include file='footer.tpl'} 
+{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='add_payment_splinter.tpl'} {include file='assign_picker_packer_splinter.tpl'} {include file='footer.tpl'} 
