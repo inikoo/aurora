@@ -294,6 +294,7 @@ else {
 	//	$order->update_item_totals_from_order_transactions();
 
 		//$order->update_no_normal_totals('save');
+			$order->update_discounts_no_items();
 
 
 		//$order->update_tax();

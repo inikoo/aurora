@@ -109,14 +109,16 @@ function complete_payment(payment_key) {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-             alert(o.responseText)
+            
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
            
 
             if (r.state == 200) {
-           //     location.reload()
-            } else {}
+            location.reload()
+            } else {
+             alert(o.responseText)
+            }
 
         }
     });

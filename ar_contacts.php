@@ -429,7 +429,7 @@ function list_customer_orders() {
 	elseif ($order=='last_update') {
 		$order='`Order Last Updated Date`';
 	}
-	elseif ($order=='current_state') {
+	elseif ($order=='dispatch_state') {
 		$order='`Order Current XHTML Payment State`';
 	}
 	elseif ($order=='order_date') {
@@ -507,7 +507,8 @@ function list_customer_orders() {
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'last_update'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Last Updated Date'].' UTC')) ,
-			'current_state'=>$row['Order Current XHTML Payment State'],
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
+				'payment_state'=>get_order_formated_payment_state($row),
 			'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
 			'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 
