@@ -4,6 +4,14 @@
 		<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
 	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
 	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+	
+	
+	
+
+		<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
+		<input type="hidden" value="customer" id="subject" />
+		<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
+	
 	{include file='orders_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
@@ -244,6 +252,21 @@
 </h2>
 <div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
 </div>
+
+	<div style="clear:both;padding-top:10px;{if $order->get('Order Invoiced')=='Yes'}display:none{/if}">
+		{foreach from=$order->get_insurances() item=insurance} 
+		<div class="insurance_row">
+			{$insurance['Insurance Description']} 
+			(<b>{$insurance['Insurance Formated Net Amount']}</b>)
+			<span style="widht:100px"> 
+			<img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png"/> 
+			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png"/>
+			</span> 
+			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif"/> 
+		</div>
+		{/foreach} 
+	</div>
+
 </div>
 <div id="process_order_dialog" style="width:400px;padding:20px 20px 0 20px;display:none">
 	<div id="assign_pickers_packers">
