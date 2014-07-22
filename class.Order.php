@@ -1889,7 +1889,7 @@ $this->update_payment_state();
 
 
 	function get_delivery_notes_ids() {
-		$sql=sprintf("select `Delivery Note Key` from `Order Transaction Fact` where `Order Key`=%d group by `Delivery Note Key`",$this->id);
+		$sql=sprintf("select `Delivery Note Key` from `Order Delivery Note Bridge` where `Order Key`=%d ",$this->id);
 		//print "$sql\n";
 		$res = mysql_query( $sql );
 		$delivery_notes=array();
