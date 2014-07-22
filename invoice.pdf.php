@@ -203,7 +203,37 @@ $sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-	$tax_data[]=array('name'=>$row['Tax Category Name'],'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
+
+	switch ($row['Tax Category Name']) {
+				case 'Outside the scope of VAT':
+					$tax_category_name=_('Outside the scope of VAT');
+					break;
+				case 'VAT 17.5%':
+					$tax_category_name=_('VAT').' 17.5%';
+					break;
+				case 'VAT 20%':
+					$tax_category_name=_('VAT').' 20%';
+					break;
+				case 'VAT 15%':
+					$tax_category_name=_('VAT').' 15%';
+					break;
+				case 'No Tax':
+					$tax_category_name=_('No Tax');
+					break;
+				case 'Exempt from VAT':
+					$tax_category_name=_('Exempt from VAT');
+					break;
+
+
+				default:
+					$tax_category_name=$row['Tax Category Name'];
+				}
+
+
+
+	$tax_data[]=array(
+	'name'=>$tax_category_name,
+	'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
 }
 
 $smarty->assign('tax_data',$tax_data);

@@ -109,15 +109,13 @@
 						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 					</tr>
 							<tr id="tr_order_total_paid" style="border-top:1px solid #777;">
-						<td class="aright"><img id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
+						<td class="aright">
+						 {t}Paid{/t}</td>
 						<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
 					<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
-						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
-							<button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
-						</div>
+						
 						{t}To Pay{/t}</td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>

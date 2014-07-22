@@ -100,6 +100,10 @@
 						<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
 						<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 					</tr>
+					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+						<td class="aright"> {t}Insurance{/t}</td>
+						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+					</tr>
 					<tr style="border-top:1px solid #777">
 						<td class="aright">{t}Net{/t}</td>
 						<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
@@ -159,7 +163,16 @@
 						<td class="aright">{t}Charges (N){/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Charges Amount')}</td>
 					</tr>
-					{/if} {if $order->get('Order Invoiced Refund Net Amount')!=0} 
+					
+					
+					{/if}
+					
+					<tr {if $order->get('Order Invoiced Insurance Amount')==0 }style="display:none"{/if}  > 
+						<td class="aright"> {t}Insurance{/t}</td>
+						<td id="order_insurance" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
+					</tr>
+					
+					{if $order->get('Order Invoiced Refund Net Amount')!=0} 
 					<tr>
 						<td class="aright"><i>{t}Refunds (N){/t}</i></td>
 						<td width="100" class="aright">{$order->get('Invoiced Refund Net Amount')}</td>

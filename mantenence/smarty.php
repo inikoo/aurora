@@ -1949,10 +1949,7 @@ gettext("Same as billing address");
 gettext("Current Balance");
 
 /* ../templates/customer.tpl */
-gettext("Debits");
-
-/* ../templates/customer.tpl */
-gettext("Credits");
+gettext("Account Balance");
 
 /* ../templates/customer.tpl */
 gettext("Payments in Process");
@@ -17537,6 +17534,9 @@ gettext("Charges");
 gettext("Shipping");
 
 /* ../templates/order_cancelled.tpl */
+gettext("Insurance");
+
+/* ../templates/order_cancelled.tpl */
 gettext("Net");
 
 /* ../templates/order_cancelled.tpl */
@@ -17544,6 +17544,18 @@ gettext("VAT");
 
 /* ../templates/order_cancelled.tpl */
 gettext("Total");
+
+/* ../templates/order_cancelled.tpl */
+gettext("Paid");
+
+/* ../templates/order_cancelled.tpl */
+gettext("Payment");
+
+/* ../templates/order_cancelled.tpl */
+gettext("Credit");
+
+/* ../templates/order_cancelled.tpl */
+gettext("To Pay");
 
 /* ../templates/order_cancelled.tpl */
 gettext("Order Date");
@@ -17684,12 +17696,6 @@ gettext("Invoices");
 gettext("Create Invoice");
 
 /* ../templates/order_dispatched.tpl */
-gettext("This order has some post transactions");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Show details)");
-
-/* ../templates/order_dispatched.tpl */
 gettext("Post Dispatch Operations");
 
 /* ../templates/order_dispatched.tpl */
@@ -17789,12 +17795,6 @@ gettext("Import");
 gettext("Exit Modify Order");
 
 /* ../templates/order_in_process.tpl */
-gettext("Cancel Order");
-
-/* ../templates/order_in_process.tpl */
-gettext("Send to Basket");
-
-/* ../templates/order_in_process.tpl */
 gettext("Send to Warehouse");
 
 /* ../templates/order_in_process.tpl */
@@ -17805,9 +17805,6 @@ gettext("Change");
 
 /* ../templates/order_in_process.tpl */
 gettext("Delivering to");
-
-/* ../templates/order_in_process.tpl */
-gettext("For collection");
 
 /* ../templates/order_in_process.tpl */
 gettext("Change");
@@ -17876,10 +17873,16 @@ gettext("Submit Payment");
 gettext("Last updated");
 
 /* ../templates/order_in_process.tpl */
+gettext("Send to basket");
+
+/* ../templates/order_in_process.tpl */
 gettext("Don't add account credits");
 
 /* ../templates/order_in_process.tpl */
 gettext("Add account credits");
+
+/* ../templates/order_in_process.tpl */
+gettext("Cancel order");
 
 /* ../templates/order_in_process.tpl */
 gettext("Created");
@@ -18503,6 +18506,9 @@ gettext("Charges");
 gettext("Shipping");
 
 /* ../templates/order_in_warehouse.tpl */
+gettext("Insurance");
+
+/* ../templates/order_in_warehouse.tpl */
 gettext("Net");
 
 /* ../templates/order_in_warehouse.tpl */
@@ -18543,6 +18549,9 @@ gettext("Shipping (N)");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Charges (N)");
+
+/* ../templates/order_in_warehouse.tpl */
+gettext("Insurance");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Refunds (N)");
@@ -18714,12 +18723,6 @@ gettext("Total");
 
 /* ../templates/order_in_warehouse_amend.tpl */
 gettext("Paid");
-
-/* ../templates/order_in_warehouse_amend.tpl */
-gettext("Payment");
-
-/* ../templates/order_in_warehouse_amend.tpl */
-gettext("Credit");
 
 /* ../templates/order_in_warehouse_amend.tpl */
 gettext("To Pay");
