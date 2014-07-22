@@ -6193,13 +6193,13 @@ $this->update_payment_state();
 					$tax_category_name=_('Outside the scope of VAT');
 					break;
 				case 'VAT 17.5%':
-					$tax_category_name=_('VAT 17.5%');
+					$tax_category_name=_('VAT').'  17.5%';
 					break;
 				case 'VAT 20%':
-					$tax_category_name=_('VAT 20%');
+					$tax_category_name=_('VAT').'  20%';
 					break;
 				case 'VAT 15%':
-					$tax_category_name=_('VAT 15%');
+					$tax_category_name=_('VAT').'  15%';
 					break;
 				case 'No Tax':
 					$tax_category_name=_('No Tax');
