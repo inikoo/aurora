@@ -143,7 +143,9 @@
 	</div>
 	</div>
 	
-	{include file='order_payments_splinter.tpl'} 
+	<div id="payments_list">
+		{include file='order_payments_splinter.tpl'} 
+	</div>
 
 	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
