@@ -2353,7 +2353,19 @@ return;
 
 
 
-		$sql = sprintf("select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
+		$sql = sprintf("select 
+		
+		             sum(`Order Out of Stock Lost Amount`) as out_of_stock_net,
+               sum(`Order Out of Stock Lost Amount`*`Transaction Tax Rate`) as out_of_stock_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_authorized_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*`Transaction Tax Rate`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_authorized_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_found_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*`Transaction Tax Rate`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_found_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due Other`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_due_other_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due Other`*`Transaction Tax Rate`*(`Order Transaction Amount`)/`Order Quantity`,0)) as not_due_other_tax,
+
+		
+		sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
 		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
 			$this->id);
@@ -2361,10 +2373,15 @@ return;
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 			//print_r($row);
+			
+				$total_not_dispatch_net=$row['out_of_stock_net']+$row['not_authorized_net']+$row['not_found_net']+$row['not_due_other_net'];
+			$total_not_dispatch_tax=$row['out_of_stock_tax']+$row['not_authorized_tax']+$row['not_found_tax']+$row['not_due_other_tax'];
+
+			
 			$this->data ['Order Items Gross Amount'] = round($row ['gross'],2);
 			$this->data ['Order Items Discount Amount'] =  round($row ['discount'],2);
-			$this->data ['Order Items Net Amount'] =  round($row ['total_items_net'],2);
-			$this->data ['Order Items Tax Amount']=  round($row ['tax'],2);
+			$this->data ['Order Items Net Amount'] =  round($row ['total_items_net']-$total_not_dispatch_net,2);
+			$this->data ['Order Items Tax Amount']=  round($row ['tax']-$total_not_dispatch_tax,2);
 			$this->data ['Order Items Total Amount']= $this->data ['Order Items Net Amount'] +$this->data ['Order Items Tax Amount'];
 			$this->data ['Order Estimated Weight']= $row ['estimated_weight'];
 			$this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'];
@@ -2463,7 +2480,7 @@ return;
 			$this->data['Order Balance Net Amount']=round($row['original_net']-$total_not_dispatch_net,2);
 			$this->data['Order Balance Tax Amount']=round($row['original_tax']-$total_not_dispatch_tax,2);
 			
-			print $this->data['Order Balance Net Amount'].'='.$row['original_net'].' '.$total_not_dispatch_net;
+		//	print $this->data['Order Balance Net Amount'].'='.$row['original_net'].' '.$total_not_dispatch_net;
 			
 			$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
 			$this->data['Order Outstanding Balance Net Amount']=$this->data['Order Balance Net Amount']-$this->data['Order Invoiced Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Net Amount'];
