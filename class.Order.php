@@ -917,6 +917,9 @@ return;
 			prepare_mysql($state),
 
 			$this->id );
+			
+			print $sql;
+			
 		mysql_query( $sql );
 
 
