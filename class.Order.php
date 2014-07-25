@@ -3294,13 +3294,13 @@ return;
 
 
 
-	function update_shipping_amount($value) {
+	function update_shipping_amount($value,$dn_key=false) {
 		$value=sprintf("%.2f",$value);
 
 		// if ($value!=$this->data['Order Shipping Net Amount'] or $this->data['Order Shipping Method']!='Set') {
 		$this->update_shipping_method('Set');
 		$this->data['Order Shipping Net Amount']=$value;
-		$this->update_shipping();
+		$this->update_shipping($dn_key);
 
 		$this->updated=true;
 		$this->new_value=$value;
