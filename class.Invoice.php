@@ -444,7 +444,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 		if (count($_orders_ids)) {
 			$orders_keys=join(',',$_orders_ids);
 			
-			
+			var_dump(join(',',$_orders_ids));
 			
 				$sql=sprintf('select `Order No Product Transaction Fact Key`,`Transaction Net Amount`,`Transaction Tax Amount`,`Transaction Type`  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) '
 				,$order_keys);
