@@ -160,7 +160,7 @@ class Invoice extends DB_Table {
 			$this->data ['Invoice Charged By Keys'] =array($this->editor['User Key']);
 		}
 
-if (array_key_exists('Invoice Tax Number',$invoice_data)) {
+		if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 			$this->data ['Invoice Tax Number'] =$invoice_data['Invoice Tax Number'];
 		}
 		if (array_key_exists('Invoice Tax Number Valid',$invoice_data)) {
@@ -423,7 +423,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
 
 
-		
+
 
 
 
@@ -443,13 +443,13 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
 		if (count($_orders_ids)) {
 			$orders_keys=join(',',$_orders_ids);
-			
+
 			var_dump(join(',',$_orders_ids));
 			var_dump($orders_keys);
-				$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount`,`Transaction Tax Amount`,`Transaction Type`  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) "
-				,$order_keys);
+			$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount`,`Transaction Tax Amount`,`Transaction Type`  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) "
+				,$orders_keys);
 			$res=mysql_query($sql);
-			
+
 			print $sql."  XX  $order_keys XX";
 			while ($row=mysql_fetch_assoc($res)) {
 				print_r($row);
@@ -491,10 +491,10 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
 				//  print $sql;
 			}
-			
-			
-			
-			
+
+
+
+
 			$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) '
 				,$orders_keys);
 			$res=mysql_query($sql);
@@ -1075,7 +1075,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 	}
 
 
-	
+
 
 	function update_charges_old($charge_data) {
 
@@ -1279,7 +1279,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 		$total_weight = 0;
 		$weight_factor = array ();
 
-//print $this->data ['Invoice Shipping Net Amount']." <---   $sql\n\n";
+		//print $this->data ['Invoice Shipping Net Amount']." <---   $sql\n\n";
 		$items = 0;
 		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
 			$items ++;
@@ -1287,7 +1287,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 			$total_weight += $weight;
 			$weight_factor [$row ['Order Transaction Fact Key']] = $weight;
 		}
-//print "i: $items  $w: \n\n";
+		//print "i: $items  $w: \n\n";
 		// TODO horrible hack when there is not stitamed weight in system, it should be not extimted weights in system!!!!!
 		if ($total_weight==0) {
 			foreach ($weight_factor as $_key=>$_value) {
@@ -1317,7 +1317,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 				$shipping_tax,
 				$line_number
 			);
-		//	print "$sql\n\n";
+			// print "$sql\n\n";
 			mysql_query( $sql );
 		}
 
@@ -1364,7 +1364,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
 		$sql = sprintf( "insert into `Invoice Dimension` (
 		`Invoice Tax Number`,`Invoice Tax Number Valid`,`Invoice Tax Number Validation Date`,`Invoice Tax Number Associated Name`,`Invoice Tax Number Associated Address`,
-		
+
 		`Invoice Customer Level Type`,
 
                          `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,
@@ -1408,11 +1408,11 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
                          %s,%s,%s,%s,%f)"
 
-, prepare_mysql ( $this->data ['Invoice Tax Number'] )
-, prepare_mysql ( $this->data ['Invoice Tax Number Valid'] )
-, prepare_mysql ( $this->data ['Invoice Tax Number Validation Date'] )
-, prepare_mysql ( $this->data ['Invoice Tax Number Associated Name'] )
-, prepare_mysql ( $this->data ['Invoice Tax Number Associated Address'] )
+			, prepare_mysql ( $this->data ['Invoice Tax Number'] )
+			, prepare_mysql ( $this->data ['Invoice Tax Number Valid'] )
+			, prepare_mysql ( $this->data ['Invoice Tax Number Validation Date'] )
+			, prepare_mysql ( $this->data ['Invoice Tax Number Associated Name'] )
+			, prepare_mysql ( $this->data ['Invoice Tax Number Associated Address'] )
 
 			, prepare_mysql ( $this->data ['Invoice Customer Level Type'] )
 
@@ -1830,7 +1830,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 			$this->id);
 		mysql_query( $sql );
 
-//print $this->data['Invoice Outstanding Total Amount'].'<-';
+		//print $this->data['Invoice Outstanding Total Amount'].'<-';
 		if ($this->data['Invoice Total Amount']>=0) {
 
 			if ($this->data['Invoice Paid Amount']==0) {
