@@ -86,6 +86,15 @@
 						<td class="aright">{t}Discounts{/t}</td>
 						<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
 					</tr>
+						<tr {if $order->
+						get('Order Out of Stock Net Amount')==0 }style="display:none"{/if} id="tr_order_items_out_of_stock" > 
+						<td class="aright">{t}Out of stock{/t}</td>
+						<td width="100" class="aright">-<span id="order_items_out_of_stock">{$order->get('Out of Stock Net Amount')}</span></td>
+					</tr>
+					
+					
+					
+					
 					<tr>
 						<td class="aright">{t}Items Net{/t}</td>
 						<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
