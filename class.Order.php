@@ -913,12 +913,12 @@ return;
 
 		$this->update_payment_state();
 
-		$sql = sprintf( "update `Order Transaction Fact` set Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='No',`Current Dispatching State`=%s where `Order Key`=%d ",
+		$sql = sprintf( "update `Order Transaction Fact` set `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='No',`Current Dispatching State`=%s where `Order Key`=%d ",
 			prepare_mysql($state),
 
 			$this->id );
 			
-			print $sql;
+			//print $sql;
 			
 		mysql_query( $sql );
 
