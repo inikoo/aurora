@@ -9,6 +9,9 @@ require_once 'ar_edit_common.php';
 include_once 'class.CustomField.php';
 require_once 'class.SendEmail.php';
 require_once 'common_detect_agent.php';
+require_once 'class.Supplier.php';
+
+
 
 if (!isset($_REQUEST['tipo'])) {
 	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');

@@ -119,6 +119,9 @@ validate_general('supplier','telephone',unescape(query));
 function validate_supplier_main_fax(query){
 validate_general('supplier','fax',unescape(query));
 }
+function validate_supplier_qq(query){
+validate_general('supplier','qq',unescape(query));
+}
 function validate_supplier_main_www(query){
 validate_general('supplier','www',unescape(query));
 }
@@ -764,6 +767,7 @@ function init(){
 		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'qq':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_QQ','validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid QQ')?>'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Fax','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
 	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Website','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
@@ -828,6 +832,13 @@ var supplier_main_tel_oACDS = new YAHOO.util.FunctionDataSource(validate_supplie
 	    var supplier_main_tel_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Telephone","Supplier_Main_Telephone_Container", supplier_main_tel_oACDS);
 	    supplier_main_tel_oAutoComp.minQueryLength = 0; 
 	    supplier_main_tel_oAutoComp.queryDelay = 0.1;
+	    
+	    var supplier_qq_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_qq);
+	    supplier_qq_oACDS.queryMatchContains = true;
+	    var supplier_qq_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_QQ","Supplier_QQ_Container", supplier_qq_oACDS);
+	    supplier_qq_oAutoComp.minQueryLength = 0; 
+	    supplier_qq_oAutoComp.queryDelay = 0.1;
+	    
 
 var supplier_main_fax_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_fax);
 	    supplier_main_fax_oACDS.queryMatchContains = true;
@@ -849,25 +860,14 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 	    supplier_dispatch_time_oAutoComp.queryDelay = 0.1;	    
 
 
+		edit_address(Dom.get("main_address_key").value,'contact_')
+ 
 
-
-<?php print sprintf("edit_address(%d,'contact_');",$supplier->data['Supplier Main Address Key']);?>
 	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
 	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
 	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
 	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Supplier',subject_key:supplier_id,type:'contact'});
 	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
-
-	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
-	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
-	Countries_AC.forceSelection = true; 
-	Countries_AC.useShadow = true;
-    Countries_AC.suffix='contact_';
-	Countries_AC.resultTypeList = false;
-	Countries_AC.formatResult = countries_format_results;
-	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
-	
 	
 	
 	  dialog_country_list_bis = new YAHOO.widget.Dialog("dialog_country_list_bis", {
@@ -880,7 +880,7 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     dialog_country_list_bis.render();
     
     
-    
+   
     
     
     Event.addListener("set_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
@@ -911,8 +911,7 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
     Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
     
-    
-    
+   
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     oACDS.table_id = 0;
