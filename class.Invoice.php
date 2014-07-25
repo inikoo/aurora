@@ -1269,7 +1269,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 		$total_weight = 0;
 		$weight_factor = array ();
 
-print $this->data ['Invoice Shipping Net Amount']." <---   $sql\n\n";
+//print $this->data ['Invoice Shipping Net Amount']." <---   $sql\n\n";
 		$items = 0;
 		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
 			$items ++;
@@ -1277,7 +1277,7 @@ print $this->data ['Invoice Shipping Net Amount']." <---   $sql\n\n";
 			$total_weight += $weight;
 			$weight_factor [$row ['Order Transaction Fact Key']] = $weight;
 		}
-print "i: $items  $w: \n\n";
+//print "i: $items  $w: \n\n";
 		// TODO horrible hack when there is not stitamed weight in system, it should be not extimted weights in system!!!!!
 		if ($total_weight==0) {
 			foreach ($weight_factor as $_key=>$_value) {
@@ -1307,7 +1307,7 @@ print "i: $items  $w: \n\n";
 				$shipping_tax,
 				$line_number
 			);
-			print "$sql\n\n";
+		//	print "$sql\n\n";
 			mysql_query( $sql );
 		}
 
