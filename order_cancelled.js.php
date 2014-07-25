@@ -9,7 +9,7 @@ Dom.get('undo_cancel_img').src="art/loading.gif"
         var request = 'tipo=undo_cancel&order_key=' + Dom.get('order_key').value;
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-             //   alert(o.responseText);
+                alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
