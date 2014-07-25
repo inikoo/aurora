@@ -2459,7 +2459,7 @@ return;
 
 			//print $row['net'].'xx';
 
-
+print $row['original_net'];
 			$this->data['Order Balance Net Amount']=round($row['original_net']-$total_not_dispatch_net,2);
 			$this->data['Order Balance Tax Amount']=round($row['original_tax']-$total_not_dispatch_tax,2);
 			
@@ -2502,7 +2502,7 @@ return;
 
 		}
 
-print $this->data['Order Balance Net Amount'];
+
 
 
 		$sql = sprintf("select * from `Order No Product Transaction Fact` where `Order Key`=%d" , $this->data ['Order Key']);
