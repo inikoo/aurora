@@ -2491,7 +2491,7 @@ return;
 
 			//  $this->data['Order Tax Refund Invoiced Amount']=$row['ref_tax'];
 			//  $this->data['Order Net Refund Invoiced Amount']=$row['ref_net'];
-			//print_r($row);
+			print_r($row);
 
 			$this->data['Order Invoiced Items Amount']=$row['inv_items'];
 			$this->data['Order Invoiced Shipping Amount']=$row['inv_shp'];
