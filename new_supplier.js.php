@@ -23,6 +23,7 @@ var subject_data={
     "Supplier Name":""
     ,"Supplier Main Contact Name":""
     ,"Supplier Tax Number":""
+      ,"Supplier QQ":""
     ,"Supplier Registration Number":""
     ,"Supplier Main Plain Email":""
     ,"Supplier Main Plain Telephone":""
@@ -239,6 +240,7 @@ function get_contact_data(){
 	subject_data[Subject+' Main Plain FAX']=Dom.get('FAX').value;
 	subject_data[Subject+' Main Plain Mobile']=Dom.get('Mobile').value;
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
+subject_data[Subject+' QQ']=Dom.get('QQ').value;
 
 }
 
@@ -447,6 +449,8 @@ validate_scope_data={
 		   ,'telephone':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item','regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$"}
 		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item'}
 		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item'}
+		   ,'qq':{'inputed':false,'validated':false,'regexp':"[^\\d]+",'required':false,'group':0,'type':'item'}
+
 }};
 
 validate_scope_metadata={

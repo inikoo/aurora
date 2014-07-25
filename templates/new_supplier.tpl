@@ -103,6 +103,7 @@
 				</div>
 				</td>
 				<td></td>
+				</tr>
 				<tr id="tr_Contact_Gender" style="display:none">
 					<td class="label">{t}Gender{/t}:</td>
 					<td> 
@@ -202,6 +203,22 @@
 					</div>
 					</td>
 				</tr>
+				
+				
+				
+				<tr>
+				<td class="label">QQ:</td>
+				<td style="text-align:left;width:350px"> 
+				<div>
+					<input id="QQ" value="" style="width:100%" />
+					<div id="QQ_Container">
+					</div>
+				</div>
+				</td>
+				<td></td>
+				</tr>
+				
+				
 				<tr class="title" style="height:30px">
 					<td colspan="3">{t}Address Info{/t}</td>
 				</tr>

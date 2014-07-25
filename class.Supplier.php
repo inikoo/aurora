@@ -344,7 +344,7 @@ class supplier extends DB_Table {
 
 		$this->data['Supplier ID']=$this->new_id();
 		$this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
-
+$this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 		$this->data['Supplier Main Plain Telephone']='';
 		$this->data['Supplier Main Plain FAX']='';
 		$this->data['Supplier Main Plain Email']='';
