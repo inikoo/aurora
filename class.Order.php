@@ -791,7 +791,7 @@ class Order extends DB_Table {
 
 			$this->data ['Order To Pay Amount'] =$this->data ['Order Balance Total Amount']-$this->data['Order Payments Amount'];
 
-			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
+			$sql = sprintf( "update `Order Dimension` set  `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
 			`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
 			,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 			,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f
@@ -808,8 +808,7 @@ class Order extends DB_Table {
 			if (! mysql_query( $sql ))
 				exit ( "$sql error can not update cancel\n" );
 
-			$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`=%s,`Current Payment State`=%s where `Order Key`=%d ",
-				prepare_mysql($state),
+			$sql = sprintf( "update `Order Transaction Fact` set  `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s where `Order Key`=%d ",
 				prepare_mysql($state),
 				$this->id );
 			mysql_query( $sql );
