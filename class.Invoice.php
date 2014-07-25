@@ -423,11 +423,36 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
 
 
-			$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`) '
-				,$dn_keys);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
+		
 
+
+
+
+
+		}
+
+
+		$_orders_ids=array();
+
+		if (array_key_exists('Orders Keys',$invoice_data)) {
+
+			foreach (preg_split('/\,/',$invoice_data['Orders Keys']) as $order_key) {
+				$_orders_ids[$order_key]=$order_key;
+			}
+		}
+
+		if (count($_orders_ids)) {
+			$orders_keys=join(',',$_orders_ids);
+			
+			
+			
+				$sql=sprintf('select `Order No Product Transaction Fact Key`,`Transaction Net Amount`,`Transaction Tax Amount`,`Transaction Type`  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) '
+				,$order_keys);
+			$res=mysql_query($sql);
+			
+			print $sql;
+			while ($row=mysql_fetch_assoc($res)) {
+				print_r($row);
 				$sql=sprintf("update `Order No Product Transaction Fact` set
 				`Invoice Date`=%s,
 				`Invoice Key`=%d,
@@ -466,25 +491,10 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 
 				//  print $sql;
 			}
-
-
-
-
-
-		}
-
-
-		$_orders_ids=array();
-
-		if (array_key_exists('Orders Keys',$invoice_data)) {
-
-			foreach (preg_split('/\,/',$invoice_data['Orders Keys']) as $order_key) {
-				$_orders_ids[$order_key]=$order_key;
-			}
-		}
-
-		if (count($_orders_ids)) {
-			$orders_keys=join(',',$_orders_ids);
+			
+			
+			
+			
 			$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) '
 				,$orders_keys);
 			$res=mysql_query($sql);
