@@ -444,15 +444,12 @@ class Invoice extends DB_Table {
 		if (count($_orders_ids)) {
 			$orders_keys=join(',',$_orders_ids);
 
-			var_dump(join(',',$_orders_ids));
-			var_dump($orders_keys);
+			
 			$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount`,`Transaction Tax Amount`,`Transaction Type`  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) "
 				,$orders_keys);
 			$res=mysql_query($sql);
 
-			print $sql."  XX  $order_keys XX";
 			while ($row=mysql_fetch_assoc($res)) {
-				print_r($row);
 				$sql=sprintf("update `Order No Product Transaction Fact` set
 				`Invoice Date`=%s,
 				`Invoice Key`=%d,
