@@ -403,13 +403,13 @@ else {
 	case('Packed Done'):
 	case('Ready to Ship'):
 	//	$order->update_tax();
-$order->update_payment_state();
+//$order->update_payment_state();
 		$order->update_item_totals_from_order_transactions();
 		$order->update_no_normal_totals('save');
 
 
 		//$order->apply_payment_from_customer_account();
-		//$order->update_payment_state();
+		$order->update_payment_state();
 
 		$js_files[]='js/php.default.min.js';
 		$js_files[]='js/add_payment.js';
