@@ -440,7 +440,9 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 				$_orders_ids[$order_key]=$order_key;
 			}
 		}
-print_r($invoice_data);
+//print_r($invoice_data);
+print_r($_orders_ids);
+print join(',',$_orders_ids);
 		if (count($_orders_ids)) {
 			$orders_keys=join(',',$_orders_ids);
 			
