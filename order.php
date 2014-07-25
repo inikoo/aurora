@@ -635,6 +635,7 @@ else {
 
 	case('Dispatched'):
 //$order->update_payment_status();
+		$order->update_no_normal_totals('save');
 
 
 		$js_files[]='js/php.default.min.js';
