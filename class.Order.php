@@ -2513,7 +2513,7 @@ return;
 			$this->data['Order Invoiced Outstanding Balance Tax Amount']+=$row['Transaction Outstanding Tax Amount Balance'];
 			$this->data['Order Invoiced Outstanding Balance Total Amount']+=$row['Transaction Outstanding Net Amount Balance']+$row['Transaction Outstanding Tax Amount Balance'];
 
-			// print "xx ".$row['Transaction Net Amount']." \n";
+			 print "xx ".$row['Transaction Net Amount']." \n";
 			$this->data['Order Balance Net Amount']+=$row['Transaction Net Amount'];
 			$this->data['Order Balance Tax Amount']+=$row['Transaction Tax Amount'];
 			$this->data['Order Balance Total Amount']+=$row['Transaction Net Amount']+$row['Transaction Tax Amount'];
