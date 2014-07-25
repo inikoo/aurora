@@ -105,6 +105,12 @@ var myonCellClick = function(oArgs) {
 
             var picker_key = Dom.get('assigned_picker').getAttribute('key');
 
+			if(picker_key==''){
+				alert('assign picker')
+				return;
+			}
+
+
             var ar_file = 'ar_edit_orders.php';
             request = 'tipo=pick_order&dn_key=' + Dom.get('dn_key').value + '&key=quantity&new_value=' + new_qty + '&itf_key=' + data['itf_key'] + '&picker_key=' + picker_key;
             //	alert(ar_file+'?'+request);

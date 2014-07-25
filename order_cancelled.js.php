@@ -2,7 +2,33 @@
 include_once('common.php');?>
 
 
+function undo_cancel(){
 
+Dom.get('undo_cancel_img').src="art/loading.gif"
+       var ar_file = 'ar_edit_orders.php';
+        var request = 'tipo=undo_cancel&order_key=' + Dom.get('order_key').value;
+        YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+            success: function(o) {
+                alert(o.responseText);
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+
+                    window.location.reload();
+                } else {
+                    
+                }
+            },
+            failure: function(o) {
+                alert(o.statusText);
+
+            },
+            scope: this
+        }, request
+
+        );
+
+
+}
 
 Event.addListener(window, "load", function() {
     tables = new function() {
@@ -128,6 +154,19 @@ function change_items_view(e, data) {
 
 }
 
+
+function show_order_details(){
+Dom.setStyle('order_details_panel','display','')
+Dom.setStyle('show_order_details','display','none')
+
+}
+
+function hide_order_details(){
+Dom.setStyle('order_details_panel','display','none')
+Dom.setStyle('show_order_details','display','')
+}
+
+
 function init() {
 
     init_search('orders_store');
@@ -138,6 +177,11 @@ function init() {
         'table_id': 0,
         'parent': 'order_cancelled'
     })
+
+ YAHOO.util.Event.addListener('hide_order_details', "click", hide_order_details)
+ YAHOO.util.Event.addListener('show_order_details', "click", show_order_details)
+
+
 
     }
 

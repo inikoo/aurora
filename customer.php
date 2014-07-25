@@ -58,18 +58,37 @@ $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 
 
-if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|details)$/',$_REQUEST['view']) ) {
+if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|dns|invoices|details)$/',$_REQUEST['view']) ) {
 
-	$view=$_REQUEST['view'];
+	if($_REQUEST['view']=='dns' or $_REQUEST['view']=='invoices' or $_REQUEST['view']=='orders'){
+		$order_view=$_REQUEST['view'];
+		$view='orders';
+	}else{
+	$order_view=$_SESSION['state']['customer']['order_view'];
+		$view=$_REQUEST['view'];
+		
+	}
+	
+	
+	
 } else {
 	$view=$_SESSION['state']['customer']['view'];
+	$order_view=$_SESSION['state']['customer']['order_view'];
+	
 }
-if (!$customer->data['Customer Orders'] and ($view=='products' or $view=='orders')) {
-	//   $view='history';
-}
-//print $view;
+
+
+
 $smarty->assign('view',$view);
+$smarty->assign('orders_block_view',$order_view);
+
 $_SESSION['state']['customer']['view']=$view;
+$_SESSION['state']['customer']['order_view']=$order_view;
+
+
+
+
+
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',

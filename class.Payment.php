@@ -392,6 +392,9 @@ class Payment extends DB_Table {
 		if($this->data['Payment Type']=='Refund'){
 			$parent_info='<b>'._('Refund').'</b>: '.sprintf('%s (<a href="payment.php?id=%d">%s</a>)',$this->data['Payment Related Payment Transaction ID'],$this->data['Payment Related Payment Key'],$this->data['Payment Related Payment Key']);
 		
+		}elseif($this->data['Payment Type']=='Credit'){
+			$parent_info='<b>'._('Credit').'</b>: '.sprintf('%s (<a href="payment.php?id=%d">%s</a>)',$this->data['Payment Related Payment Transaction ID'],$this->data['Payment Related Payment Key'],$this->data['Payment Related Payment Key']);
+		
 		}
 		return $parent_info;
 	

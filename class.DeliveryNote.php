@@ -1688,16 +1688,17 @@ class DeliveryNote extends DB_Table {
 		}
 
 
-		$sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',
+		$sql=sprintf('select `Ship To From Date`,`Ship To Last Used` from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',
 			$customer->id,
 			$this->data['Delivery Note Ship To Key']);
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-
-
 			$from_date=$row['Ship To From Date'];
 			$to_date=$row['Ship To Last Used'];
+		}else{
+		$from_date=gmdate("Y-m-d H:i:s");
+		$to_date=gmdate("Y-m-d H:i:s");
 		}
 
 		if (strtotime($this->data['Delivery Note Date'])< strtotime($from_date))

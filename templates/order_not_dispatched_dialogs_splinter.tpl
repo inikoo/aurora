@@ -278,8 +278,8 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_edit_tax_category" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
-	<div class="buttons">
+<div id="dialog_edit_tax_category" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px;width:350px">
+	<div class="buttons small">
 		<input type="hidden" id="original_tax_code" value="{$order->get('Order Tax Code')}"> {foreach from=$tax_categories item=tax_category} <button tax_category="{$tax_category.code}" onclick="change_tax_category(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button> {/foreach} 
 	</div>
 </div>

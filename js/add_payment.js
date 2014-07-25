@@ -6,11 +6,46 @@ var dialog_add_credit_note_to_customer;
 
 
 
+function save_credit_payment() {
+
+    if (Dom.hasClass('save_credit_payment', 'disabled')) {
+       // add_credit_note_show_errors()
+    } else {
+
+
+        Dom.setStyle('save_credit_payment_wait', 'display', '')
+        Dom.setStyle(['save_credit_payment', 'close_credit_payment'], 'display', 'none')
+
+
+        var request = 'ar_edit_payments.php?tipo=credit_payment&credit_amount=' + Dom.get('credit_payment_amount').value + "&credit_reference=" + Dom.get('credit_payment_reference').value + "&payment_key=" + Dom.get('credit_payment_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
+        //alert(request);return;
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                      alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+
+                if (r.state == 200) {
+                    location.reload()
+                } else {
+
+                    alert(o.responseText)
+                }
+
+            }
+        });
+
+    }
+
+
+}
+
 
 function save_refund_payment() {
 
     if (Dom.hasClass('save_refund_payment', 'disabled')) {
-        add_credit_note_show_errors()
+        //add_credit_note_show_errors()
     } else {
 
 
@@ -46,7 +81,7 @@ function save_refund_payment() {
 function save_add_payment() {
 
     if (Dom.hasClass('save_add_payment', 'disabled')) {
-        add_credit_note_show_errors()
+       // add_credit_note_show_errors()
     } else {
 
 
@@ -149,10 +184,41 @@ function add_payment_show_other_amount_field() {
 
 }
 
+
+function refund_payment_pay_max_amount(){
+ Dom.setStyle(['refund_payment_amount_formated',  'refund_payment_show_other_amount_field'], 'display', '')
+    Dom.setStyle(['refund_payment_amount', 'refund_payment_pay_max_amount','refund_payment_pay_outstanding_amount'], 'display', 'none')
+Dom.get('refund_payment_amount_formated').innerHTML= money(Dom.get('refund_payment_max_amount').value, Dom.get('currency_code').value)
+
+
+}
+function refund_payment_pay_outstanding_amount(){
+ Dom.setStyle(['refund_payment_amount_formated',  'refund_payment_show_other_amount_field'], 'display', '')
+    Dom.setStyle(['refund_payment_amount', 'refund_payment_pay_max_amount','refund_payment_pay_outstanding_amount'], 'display', 'none')
+Dom.get('refund_payment_amount_formated').innerHTML= money(Dom.get('refund_payment_outstanding_amount').value, Dom.get('currency_code').value)
+
+
+}
+
+function credit_payment_pay_max_amount(){
+ Dom.setStyle(['credit_payment_amount_formated',  'credit_payment_show_other_amount_field'], 'display', '')
+    Dom.setStyle(['credit_payment_amount', 'credit_payment_pay_max_amount','credit_payment_pay_outstanding_amount'], 'display', 'none')
+Dom.get('credit_payment_amount_formated').innerHTML= money(Dom.get('credit_payment_max_amount').value, Dom.get('currency_code').value)
+
+
+}
+function credit_payment_pay_outstanding_amount(){
+ Dom.setStyle(['credit_payment_amount_formated',  'credit_payment_show_other_amount_field'], 'display', '')
+    Dom.setStyle(['credit_payment_amount', 'credit_payment_pay_max_amount','credit_payment_pay_outstanding_amount'], 'display', 'none')
+Dom.get('credit_payment_amount_formated').innerHTML= money(Dom.get('credit_payment_outstanding_amount').value, Dom.get('currency_code').value)
+
+
+}
+
 function refund_payment_show_other_amount_field() {
 
-    Dom.setStyle(['refund_payment_amount_formated',  'show_other_amount_field'], 'display', 'none')
-    Dom.setStyle(['refund_payment_amount', 'refund_payment_pay_max_amount'], 'display', '')
+    Dom.setStyle(['refund_payment_amount_formated',  'refund_payment_show_other_amount_field'], 'display', 'none')
+    Dom.setStyle(['refund_payment_amount', 'refund_payment_pay_max_amount','refund_payment_pay_outstanding_amount'], 'display', '')
 
     Dom.get('refund_payment_amount_formated').innerHTML = money(0, Dom.get('currency_code').value)
     Dom.get('refund_payment_amount').value = '';
@@ -161,10 +227,25 @@ function refund_payment_show_other_amount_field() {
 
 }
 
+function credit_payment_show_other_amount_field() {
+
+    Dom.setStyle(['credit_payment_amount_formated',  'credit_payment_show_other_amount_field'], 'display', 'none')
+    Dom.setStyle(['credit_payment_amount', 'credit_payment_pay_max_amount','credit_payment_pay_outstanding_amount'], 'display', '')
+
+    Dom.get('credit_payment_amount_formated').innerHTML = money(0, Dom.get('currency_code').value)
+    Dom.get('credit_payment_amount').value = '';
+    Dom.get('credit_payment_amount').focus();
+
+
+}
+
 function update_add_payment_amount(o) {
     Dom.get('add_payment_amount_formated').innerHTML = money(o.value, Dom.get('currency_code').value)
 
 }
+
+
+
 
 
 function add_payment_pay_max_amount() {
@@ -279,10 +360,34 @@ function can_submit_refund() {
 
         }
     }
+    
+    
+    if(Dom.get('refund_payment_amount').value>0){
+                Dom.addClass('save_refund_payment', 'disabled')
 
+    }else if(!Dom.hasClass('save_refund_payment', 'disabled')){
+     Dom.removeClass('save_refund_payment', 'disabled')
+    }
+    
+}
 
+function can_submit_credit() {
+ 
 
+        if (Dom.get('credit_payment_reference').value != '') {
+            Dom.removeClass('save_credit_payment', 'disabled')
+        } else {
+            Dom.addClass('save_credit_payment', 'disabled')
 
+        }
+        
+          if(Dom.get('credit_payment_amount').value>0){
+                Dom.addClass('save_credit_payment', 'disabled')
+
+    }else if(!Dom.hasClass('save_credit_payment', 'disabled')){
+     Dom.removeClass('save_credit_payment', 'disabled')
+    }
+   
 }
 
 
@@ -294,6 +399,12 @@ function hide_add_payment() {
 function hide_refund_payment() {
     dialog_refund_payment.hide()
 }
+
+function hide_credit_payment() {
+    dialog_credit_payment.hide()
+}
+
+
 
 function change_refund_payment(method) {
     Dom.removeClass(['refund_payment_online', 'refund_payment_manual'], 'selected')
@@ -348,7 +459,7 @@ function refund_payment(payment_key) {
 
         refund_amount = Dom.get('to_pay_label_amount').value
     } else {
-        refund_amount = Dom.get('payment_max_refund_amount_' + payment_key).value
+        refund_amount = -1*Dom.get('payment_max_refund_amount_' + payment_key).value
 
     }
 
@@ -377,7 +488,9 @@ function refund_payment(payment_key) {
     }
 
 
-    Dom.get('refund_payment_max_amount').value = Dom.get('payment_max_refund_amount_' + payment_key).value
+    Dom.get('refund_payment_max_amount').value = -1.0*Dom.get('payment_max_refund_amount_' + payment_key).value
+    Dom.get('refund_payment_outstanding_amount').value = Dom.get('to_pay_label_amount').value
+
     Dom.get('refund_payment_amount').value = refund_amount
 
 
@@ -391,6 +504,49 @@ function refund_payment(payment_key) {
     Dom.setXY('dialog_refund_payment', pos);
     dialog_refund_payment.show()
     can_submit_refund()
+
+}
+
+
+function update_refund_payment_amount(){
+can_submit_refund()
+}
+
+function update_credit_payment_amount(){
+can_submit_credit()
+}
+
+function credit_payment(payment_key) {
+
+    Dom.get('credit_payment_key').value = payment_key;
+
+    if (Dom.get('to_pay_label_amount').value < 0) {
+
+        credit_amount = Dom.get('to_pay_label_amount').value
+    } else {
+        credit_amount = -1.0*Dom.get('payment_max_refund_amount_' + payment_key).value
+
+    }
+
+ 
+		
+
+
+    Dom.get('credit_payment_max_amount').value = -1.0*Dom.get('payment_max_refund_amount_' + payment_key).value
+    Dom.get('credit_payment_amount').value = credit_amount
+    Dom.get('credit_payment_outstanding_amount').value = Dom.get('to_pay_label_amount').value
+
+
+    Dom.get('credit_payment_amount_formated').innerHTML = money(credit_amount, Dom.get('currency_code').value);
+
+
+    region1 = Dom.getRegion('add_credit_' + payment_key);
+    region2 = Dom.getRegion('dialog_credit_payment');
+
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_credit_payment', pos);
+    dialog_credit_payment.show()
+    can_submit_credit()
 
 }
 
@@ -418,13 +574,14 @@ function init_add_payment() {
     dialog_refund_payment.render();
 
 
-    dialog_add_credit_note_to_customer = new YAHOO.widget.Dialog("dialog_add_credit_note_to_customer", {
+  
+  dialog_credit_payment = new YAHOO.widget.Dialog("dialog_credit_payment", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-    dialog_add_credit_note_to_customer.render();
+    dialog_credit_payment.render();
 
 
 
