@@ -3201,7 +3201,7 @@ return;
 
 		//print_r($this->data);
 
-print $this->data ['Order Items Net Amount'].' '.$this->data ['Order Shipping Net Amount'];
+//print $this->data ['Order Items Net Amount'].' '.$this->data ['Order Shipping Net Amount'];
 
 		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount']+  $this->data ['Order Insurance Tax Amount'];
 		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount'];
