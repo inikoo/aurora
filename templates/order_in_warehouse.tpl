@@ -89,7 +89,7 @@
 						<tr {if $order->
 						get('Order Out of Stock Net Amount')==0 }style="display:none"{/if} id="tr_order_items_out_of_stock" > 
 						<td class="aright">{t}Out of stock{/t}</td>
-						<td width="100" class="aright">-<span id="order_items_out_of_stock">{$order->get('Out of Stock Net Amount')}</span></td>
+						<td width="100" class="aright"><span id="order_items_out_of_stock">{$order->get('Out of Stock Net Amount')}</span></td>
 					</tr>
 					
 					
