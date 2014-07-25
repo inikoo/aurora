@@ -4,7 +4,7 @@
 	<input type="hidden" id="subject" value="supplier" />
 	<input type="hidden" id="supplier_key" value="{$supplier->id}"> {include file='suppliers_navigation.tpl'} 
 			<input type="hidden" id="supplier_products_table_id" value="0" />
-
+			<input type="hidden" id="main_address_key" value="{$supplier->get('Supplier Main Address Key')}"> 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <span id="title_name_bis">{$supplier->get('Supplier Name')}</span> ({t}Editing{/t})</span> 
 	</div>
@@ -82,6 +82,7 @@
 					</td>
 					<td id="Supplier_Main_Telephone_msg" class="edit_td_alert"></td>
 				</tr>
+				
 				<tr>
 					<td class="label">{t}Fax{/t}:</td>
 					<td style="text-align:left"> 
@@ -92,6 +93,17 @@
 					</div>
 					</td>
 					<td id="Supplier_Main_Fax_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr>
+					<td class="label">QQ:</td>
+					<td style="text-align:left"> 
+					<div>
+						<input style="text-align:left;" id="Supplier_QQ" value="{$supplier->get('Supplier QQ')}" ovalue="{$supplier->get('Supplier QQ')}" valid="0"> 
+						<div id="Supplier_QQ_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Supplier_QQ_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
 					<td class="label">{t}Web Page{/t}:</td>
@@ -111,7 +123,9 @@
 						<input style="text-align:right;width:100px" id="Supplier_Average_Delivery_Days" value="{$supplier->get('Supplier Average Delivery Days')}" ovalue="{$supplier->get('Supplier Average Delivery Days')}" valid="0"> {t}days{/t} 
 						<div id="Supplier_Average_Delivery_Days_Container">
 						</div>
+						<span style="margin-left:80px">{t}days{/t}</span>
 					</div>
+					
 					</td>
 					<td id="Supplier_Average_Delivery_Days_msg" class="edit_td_alert"></td>
 				</tr>

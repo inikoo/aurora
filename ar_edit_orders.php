@@ -1127,6 +1127,10 @@ function set_order_shipping($data) {
 	$value=$data['value'];
 	$order=new Order($order_key);
 	if ($order->id) {
+	
+	
+	
+	
 		$order->update_shipping_amount($value);
 		if ($order->updated) {
 			$updated_data=array(

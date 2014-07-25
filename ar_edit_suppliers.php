@@ -179,6 +179,7 @@ function edit_supplier() {
 			,'telephone'=>'Supplier Main Plain Telephone'
 			,'fax'=>'Supplier Main Plain FAX'
 			,'www'=>'Supplier Website'
+			,'qq'=>'Supplier QQ'
 			,"address"=>'Address'
 			,"town"=>'Main Address Town'
 			,"postcode"=>'Main Address Town'
