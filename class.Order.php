@@ -2502,6 +2502,7 @@ return;
 
 		}
 
+print $this->data['Order Balance Net Amount'];
 
 
 		$sql = sprintf("select * from `Order No Product Transaction Fact` where `Order Key`=%d" , $this->data ['Order Key']);
@@ -2553,7 +2554,6 @@ return;
 
 		//print_r($this->data);
 
-print $this->data['Order Balance Net Amount'];
 		$oustanding_invoiced_refund_net=0;
 		$oustanding_invoiced_refund_tax=0;
 
