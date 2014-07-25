@@ -1269,7 +1269,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 		$total_weight = 0;
 		$weight_factor = array ();
 
-print "$sql\n\n";
+print $this->data ['Invoice Shipping Net Amount']." <---   $sql\n\n";
 		$items = 0;
 		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
 			$items ++;
