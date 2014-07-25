@@ -1312,6 +1312,23 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-view&value='+this.id ,{});
 }
 
+function change_orders_view() {
+
+tag=this.getAttribute('block_id')
+
+    ids = ['orders_block_orders','orders_block_dns','orders_block_invoices'];
+    block_ids = ['subblock_orders_orders','subblock_orders_dns','subblock_orders_invoices'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('subblock_orders_' + tag, 'display', '');
+
+    Dom.removeClass(ids, 'selected');
+
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customer-order_view&value=' + tag, {});
+}
+
+
+
 var oMenu;
 
 
@@ -1513,6 +1530,15 @@ Dom.get('make_order_courier').value='Own Transport';
 
 }
 
+
+function show_edit_account_balance_button(){
+Dom.setStyle('edit_account_balance_button','visibility','visible')
+}
+function hide_edit_account_balance_button(){
+Dom.setStyle('edit_account_balance_button','visibility','hidden')
+}
+
+
 function get_history_numbers(){
 
 
@@ -1587,6 +1613,9 @@ Event.addListener(['elements_changes','elements_orders','elements_notes','elemen
 
   init_search('customers_store');
 Event.addListener(['orders','history','products','details', 'login_stat'], "click",change_view);
+Event.addListener(['orders_block_orders','orders_block_dns','orders_block_invoices'], "click",change_orders_view);
+
+
 
 
  Event.addListener('clean_table_filter_show0', "click",show_filter,0);
@@ -2034,6 +2063,10 @@ customer_tax_number_oAutoComp.queryDelay = 0.1;
 	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
 	
 	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
+	
+	
+	  Event.addListener("account_balance_tr", "mouseover", show_edit_account_balance_button);
+    Event.addListener("account_balance_tr", "mouseout", hide_edit_account_balance_button);
 	
 	
 	/*

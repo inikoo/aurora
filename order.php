@@ -296,7 +296,7 @@ else {
 
 		//$order->update_no_normal_totals('save');
 			//$order->update_discounts_no_items();
-$order->update_discounts_no_items();
+//$order->update_discounts_no_items();
 
 
 		//$order->update_tax();
@@ -634,6 +634,7 @@ $order->update_discounts_no_items();
 
 
 	case('Dispatched'):
+//$order->update_payment_status();
 
 
 		$js_files[]='js/php.default.min.js';

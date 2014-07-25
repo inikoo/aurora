@@ -754,7 +754,7 @@ class Order extends DB_Table {
 
 
 
-$this->update_payment_state();
+			$this->update_payment_state();
 
 
 			if ($by_customer) {
@@ -853,6 +853,112 @@ $this->update_payment_state();
 
 
 	}
+
+
+
+	function undo_cancel() {
+
+
+if (!preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
+			$this->msg=_('Order is not cancelled');
+$this->error=true;
+return;
+		}
+
+
+		$state  = 'In Process';
+
+		$date=gmdate('Y-m-d H:i:s');
+		$this->data ['Order Cancelled Date'] = '';
+
+		$this->data ['Order Cancel Note'] = '';
+
+		$this->data ['Order Current Payment State'] = 'No Applicable';
+
+
+		$this->data ['Order Current Dispatch State'] = $state;
+
+		$this->data ['Order Current XHTML Dispatch State'] = _('In Process');
+		$this->data ['Order Current XHTML Payment State'] = '';
+		$this->data ['Order XHTML Invoices'] = '';
+		$this->data ['Order XHTML Delivery Notes'] = '';
+		$this->data ['Order Invoiced Balance Total Amount'] = 0;
+		$this->data ['Order Invoiced Balance Net Amount'] = 0;
+		$this->data ['Order Invoiced Balance Tax Amount'] = 0;
+		$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
+		$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
+		$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
+		$this->data ['Order Balance Net Amount'] = 0;
+		$this->data ['Order Balance Tax Amount'] = 0;
+		$this->data ['Order Balance Total Amount'] = 0;
+
+		$this->data ['Order To Pay Amount'] =$this->data ['Order Balance Total Amount']-$this->data['Order Payments Amount'];
+
+		$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
+			`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
+			,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
+			,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f
+			where `Order Key`=%d"
+			//     ,$no_shipped
+			, prepare_mysql ( $this->data ['Order Cancelled Date'] )
+			, prepare_mysql ( $this->data ['Order Current Payment State'] )
+			, prepare_mysql ( $this->data ['Order Current Dispatch State'] )
+			, prepare_mysql ( $this->data ['Order Current XHTML Dispatch State'] )
+			, prepare_mysql ( $this->data ['Order Current XHTML Payment State'] )
+			, prepare_mysql ( $this->data ['Order Cancel Note'] )
+			,$this->data ['Order To Pay Amount']
+			, $this->id );
+		if (! mysql_query( $sql ))
+			exit ( "$sql error can not update cancel\n" );
+
+
+		$this->update_payment_state();
+
+		$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='No',`Current Dispatching State`=%s where `Order Key`=%d ",
+			prepare_mysql($state),
+
+			$this->id );
+		mysql_query( $sql );
+
+
+
+		$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s  where `Order Key`=%d ",
+			prepare_mysql($state),
+			$this->id );
+		mysql_query( $sql );
+
+	$this->update_number_items();
+			$this->update_number_products();
+			$this->update_insurance();
+
+			$this->update_discounts_items();
+			$this->update_item_totals_from_order_transactions();
+
+
+
+			$this->update_shipping(false,false);
+			$this->update_charges(false,false);
+			$this->update_discounts_no_items();
+
+
+
+			$this->update_no_normal_totals();
+			$this->update_totals_from_order_transactions();
+			$this->update_number_items();
+			$this->update_number_products();
+
+			$this->apply_payment_from_customer_account();
+
+		$store=new Store($this->data['Order Store Key']);
+		$store->update_orders();
+
+		$this->update_deals_usage();
+		//$this->cancelled=true;
+
+	}
+
+
+
 
 
 	function activate($date=false) {
@@ -1029,10 +1135,10 @@ $this->update_payment_state();
 			'Invoice Metadata'=>$this->data['Order Original Metadata'],
 			'Invoice Billing To Key'=>$this->data['Order Billing To Key To Bill'],
 			'Invoice Tax Number'=>$this->data['Order Tax Number'],
-						'Invoice Tax Number Valid'=>$this->data['Order Tax Number Valid'],
-						'Invoice Tax Number Validation Date'=>$this->data['Order Tax Number Validation Date'],
-						'Invoice Tax Number Associated Name'=>$this->data['Order Tax Number Associated Name'],
-						'Invoice Tax Number Associated Address'=>$this->data['Order Tax Number Associated Address']
+			'Invoice Tax Number Valid'=>$this->data['Order Tax Number Valid'],
+			'Invoice Tax Number Validation Date'=>$this->data['Order Tax Number Validation Date'],
+			'Invoice Tax Number Associated Name'=>$this->data['Order Tax Number Associated Name'],
+			'Invoice Tax Number Associated Address'=>$this->data['Order Tax Number Associated Address']
 
 
 		);
@@ -1547,12 +1653,6 @@ $this->update_payment_state();
 
 
 	}
-
-
-
-
-
-
 
 
 
@@ -3628,7 +3728,7 @@ $this->update_payment_state();
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			if (!array_key_exists($row['Transaction Type Key'])) {
+			if (!array_key_exists($row['Transaction Type Key'],$valid_insurances)) {
 
 				$sql=sprintf("delete from `Order No Product Transaction Fact` where `Order No Product Transaction Fact Key`=%d ",
 					$row['Order No Product Transaction Fact Key']
@@ -5605,7 +5705,7 @@ $this->update_payment_state();
 	}
 
 
-	public function prepare_file_as($number) {
+	function prepare_file_as($number) {
 
 		$number=strtolower($number);
 		if (preg_match("/^\d+/",$number,$match)) {
@@ -6193,13 +6293,13 @@ $this->update_payment_state();
 					$tax_category_name=_('Outside the scope of VAT');
 					break;
 				case 'VAT 17.5%':
-					$tax_category_name=_('VAT').'  17.5%';
+					$tax_category_name=_('VAT').' 17.5%';
 					break;
 				case 'VAT 20%':
-					$tax_category_name=_('VAT').'  20%';
+					$tax_category_name=_('VAT').' 20%';
 					break;
 				case 'VAT 15%':
-					$tax_category_name=_('VAT').'  15%';
+					$tax_category_name=_('VAT').' 15%';
 					break;
 				case 'No Tax':
 					$tax_category_name=_('No Tax');
@@ -6608,6 +6708,13 @@ $this->update_payment_state();
 			,$this->data['Order To Pay Amount']
 			,$this->id);
 		mysql_query($sql);
+
+		$sql = sprintf( "update `Order Transaction Fact` set `Current Payment State`=%s where `Order Key`=%d ",
+			prepare_mysql($this->data['Order Current Payment State']),
+			$this->id );
+		mysql_query( $sql );
+
+
 		//  print "$sql\n";
 
 	}

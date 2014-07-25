@@ -161,9 +161,12 @@ function close_dialog_add_credit_note() {
 }
 
 function show_add_credit_note() {
-    region1 = Dom.getRegion('add_credit_note');
+
+
+
+    region1 = Dom.getRegion('account_balance');
     region2 = Dom.getRegion('dialog_add_credit_note');
-    var pos = [region1.right - region2.width + 350, region1.bottom]
+    var pos = [region1.right - region2.width , region1.bottom]
     Dom.setXY('dialog_add_credit_note', pos);
 
     Dom.get('add_credit_note_description').value = ''
@@ -187,7 +190,7 @@ function init_add_credit_note() {
         draggable: false
     });
     dialog_add_credit_note.render();
-    Event.addListener("add_credit_note", "click", show_add_credit_note, true);
+    Event.addListener("edit_account_balance_button", "click", show_add_credit_note, true);
 
 
 

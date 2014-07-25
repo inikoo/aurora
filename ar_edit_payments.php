@@ -44,6 +44,22 @@ case ('refund_payment'):
 	refund_payment($data);
 
 	break;
+	
+case ('credit_payment'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+
+			'parent_key'=>array('type'=>'key'),
+			'credit_reference'=>array('type'=>'string'),
+			'credit_amount'=>array('type'=>'numeric'),
+			'payment_key'=>array('type'=>'key')
+		));
+
+
+	credit_payment($data);
+
+	break;	
+	
 case('add_payment'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -397,7 +413,7 @@ function add_payment_to_order($data) {
 		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Transaction Status'=>'Completed',
 		'Payment Transaction ID'=>$data['payment_reference'],
-		'Payment Method'=>$data['payment_method']
+		'Payment Method'=>$data['payment_method'],
 
 	);
 
@@ -459,6 +475,131 @@ function add_payment_to_order($data) {
 	echo json_encode($response);
 
 }
+
+function credit_payment($data) {
+
+	$credit_amount=round($data['credit_amount'],2);
+
+	$payment=new Payment($data['payment_key']);
+	$payment->load_payment_account();
+	$payment->load_payment_service_provider();
+
+
+
+	if ($data['parent']=='order') {
+		$order_key=$data['parent_key'];
+	}else {
+		$order_key=0;
+	}
+
+
+
+	$payment->update(array(
+			'Payment Refund'=>round($payment->data['Payment Refund']+$credit_amount,2)
+		));
+
+
+	$store=new Store($payment->data['Payment Store Key']);
+
+
+		$payment_account=new Payment_Account($store->get_payment_account_key());
+
+
+
+	$payment_data=array(
+		'Payment Account Key'=>$payment_account->data['Payment Account Key'],
+		'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+		'Payment Type'=>'Credit',
+
+		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
+		'Payment Order Key'=>$order_key,
+		'Payment Store Key'=>$payment->data['Payment Store Key'],
+		'Payment Customer Key'=>$payment->data['Payment Customer Key'],
+
+		'Payment Balance'=>$credit_amount,
+		'Payment Amount'=>$credit_amount,
+		'Payment Refund'=>0,
+		'Payment Currency Code'=>$payment->data['Payment Currency Code'],
+		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction ID'=>'xx',
+		'Payment Method'=>'Account',
+		'Payment Related Payment Key'=>$payment->id,
+		'Payment Related Payment Transaction ID'=>'',
+
+	);
+
+	$refund_payment=new Payment('create',$payment_data);
+
+$customer=new Customer($payment->data['Payment Customer Key']);
+		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$credit_amount,'no_history');
+
+
+	$refund_payment->load_payment_account();
+
+
+	$order=new Order($order_key);
+	if ($order->id) {
+
+		$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+			$order->id,
+			$refund_payment->id,
+			$refund_payment->payment_account->id,
+			$refund_payment->payment_account->data['Payment Service Provider Key'],
+			$refund_payment->data['Payment Amount'],
+			$refund_payment->data['Payment Amount']
+		);
+		mysql_query($sql);
+		$order->update_payment_state();
+
+
+		$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount'),
+			'order_total_paid'=>$order->get('Payments Amount'),
+			'order_total_to_pay'=>$order->get('To Pay Amount')
+
+		);
+
+		$payments_data=array();
+		foreach ($order->get_payment_objects('',true,true) as $payment) {
+			$payments_data[$payment->id]=array(
+				'date'=>$payment->get('Created Date'),
+				'amount'=>$payment->get('Amount'),
+				'status'=>$payment->get('Payment Transaction Status')
+			);
+		}
+
+
+
+		$response=array('state'=>200,
+			'result'=>'updated',
+			'order_shipping_method'=>$order->data['Order Shipping Method'],
+			'data'=>$updated_data,
+			'shipping'=>money($order->new_value),
+			'shipping_amount'=>$order->data['Order Shipping Net Amount'],
+			'ship_to'=>$order->get('Order XHTML Ship Tos'),
+			'tax_info'=>$order->get_formated_tax_info_with_operations(),
+			'payments_data'=>$payments_data,
+			'order_total_paid'=>$order->data['Order Payments Amount'],
+			'order_total_to_pay'=>$order->data['Order To Pay Amount']
+		);
+
+		echo json_encode($response);
+	}
+
+
+}
+
 
 
 function refund_payment($data) {

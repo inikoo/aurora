@@ -2520,6 +2520,7 @@ $default_state=array(
 		'details'=>false,
 		'show_history'=>false,
 		'view'=>'history',
+		'order_view'=>'orders',
 		'assets'=>array(
 			'order'=>'subject',
 			'order_dir'=>'',

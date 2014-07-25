@@ -21,94 +21,9 @@ function add_insurance(o) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-            
-            
-                    for (x in r.data) {
-
-                        if (Dom.get(x) != undefined) {
-                            Dom.get(x).innerHTML = r.data[x];
-                        }
-                    }
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
+                update_order_data(r)
 
 
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-                        Dom.get('payments_list').innerHTML=r.payments_list;
-
-                    if (Dom.get('order_deal_bonus') != undefined) {
-                        if (r.order_has_deal_with_bonus) {
-                            Dom.setStyle('order_deal_bonus', 'display', '')
-                        } else {
-                            Dom.setStyle('order_deal_bonus', 'display', 'none')
-                        }
-                        Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
-                    }
-		if( Dom.get('ordered_products_number')!=undefined)
-                    Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
-
-                    if (r.data['ordered_products_number'] > 0) {
-                        Dom.removeClass('done', 'disabled')
-                    } else {
-                        Dom.addClass('done', 'disabled')
-
-                    }
-
-
-
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
-
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-
-                    if (r.discounts) {
-                        Dom.get('tr_order_items_gross').style.display = '';
-                        Dom.get('tr_order_items_discounts').style.display = '';
-
-                    } else {
-                        Dom.get('tr_order_items_gross').style.display = 'none';
-                        Dom.get('tr_order_items_discounts').style.display = 'none';
-
-                    }
-
-          
                 if (r.order_insurance_amount == 0) {
                     Dom.setStyle('tr_order_insurance', 'display', 'none')
                 } else {
@@ -160,96 +75,9 @@ function remove_insurance(o) {
             if (r.state == 200) {
 
 
-               
-               
-                    for (x in r.data) {
 
-                        if (Dom.get(x) != undefined) {
-                            Dom.get(x).innerHTML = r.data[x];
-                        }
-                    }
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
+                update_order_data(r)
 
-
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-                        Dom.get('payments_list').innerHTML=r.payments_list;
-
-                    if (Dom.get('order_deal_bonus') != undefined) {
-                        if (r.order_has_deal_with_bonus) {
-                            Dom.setStyle('order_deal_bonus', 'display', '')
-                        } else {
-                            Dom.setStyle('order_deal_bonus', 'display', 'none')
-                        }
-                        Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
-                    }
-		if( Dom.get('ordered_products_number')!=undefined)
-
-                    Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
-
-                    if (r.data['ordered_products_number'] > 0) {
-                        Dom.removeClass('done', 'disabled')
-                    } else {
-                        Dom.addClass('done', 'disabled')
-
-                    }
-
-
-
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
-
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-
-                    if (r.discounts) {
-                        Dom.get('tr_order_items_gross').style.display = '';
-                        Dom.get('tr_order_items_discounts').style.display = '';
-
-                    } else {
-                        Dom.get('tr_order_items_gross').style.display = 'none';
-                        Dom.get('tr_order_items_discounts').style.display = 'none';
-
-                    }
-
-               
-               
                 if (r.order_insurance_amount == 0) {
                     Dom.setStyle('tr_order_insurance', 'display', 'none')
                 } else {
@@ -290,36 +118,7 @@ function save_use_calculated_shipping() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-                for (x in r.data) {
-
-                    if (Dom.get(x) != undefined) {
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                }
-                for (x in r.payments_data) {
-                    if (Dom.get('payment_amount_' + x) != undefined) {
-                        Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                    }
-                    if (Dom.get('payment_status_' + x) != undefined) {
-                        Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                    }
-                    if (Dom.get('payment_date_' + x) != undefined) {
-                        Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                    }
-                }
-
-
-                if (r.order_total_to_pay != 0) {
-                    if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                } else {
-                    Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                }
-
-
-                if (Dom.get('show_add_payment_to_order') != undefined) {
-                    Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                }
+                update_order_data(r)
 
                 Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
                 Dom.get('shipping_amount').value = r.shipping_amount
@@ -350,34 +149,7 @@ function save_use_calculated_items_charges() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-                for (x in r.data) {
-
-                    if (Dom.get(x) != undefined) {
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                }
-                for (x in r.payments_data) {
-                    if (Dom.get('payment_amount_' + x) != undefined) {
-                        Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                    }
-                    if (Dom.get('payment_status_' + x) != undefined) {
-                        Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                    }
-                    if (Dom.get('payment_date_' + x) != undefined) {
-                        Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                    }
-                }
-
-                if (r.order_total_to_pay != 0) {
-                    if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                } else {
-                    Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                }
-                if (Dom.get('show_add_payment_to_order') != undefined) {
-                    // alert(r.order_total_to_pay)
-                    Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                }
+                update_order_data(r)
 
 
                 // Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
@@ -409,35 +181,11 @@ function save_set_shipping() {
             //  alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
+                update_order_data(r)
+
                 Dom.setStyle('save_set_shipping_wait', 'display', 'none');
                 Dom.setStyle('save_set_shipping', 'display', '');
-                for (x in r.data) {
 
-                    if (Dom.get(x) != undefined) {
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                }
-                for (x in r.payments_data) {
-                    if (Dom.get('payment_amount_' + x) != undefined) {
-                        Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                    }
-                    if (Dom.get('payment_status_' + x) != undefined) {
-                        Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                    }
-                    if (Dom.get('payment_date_' + x) != undefined) {
-                        Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                    }
-                }
-
-                if (r.order_total_to_pay != 0) {
-                    if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                } else {
-                    Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                }
-                if (Dom.get('show_add_payment_to_order') != undefined) {
-                    Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                }
 
 
                 Dom.get('order_shipping_method').innerHTML = r.order_shipping_method;
@@ -474,35 +222,10 @@ function save_set_items_charges() {
             //	alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
+                update_order_data(r)
+
                 Dom.setStyle('save_set_items_charges_wait', 'display', 'none');
                 Dom.setStyle('save_set_items_charges', 'display', '');
-                for (x in r.data) {
-                    //alert(x+' '+r.data[x])
-                    if (Dom.get(x) != undefined) {
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                }
-                for (x in r.payments_data) {
-                    if (Dom.get('payment_amount_' + x) != undefined) {
-                        Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                    }
-                    if (Dom.get('payment_status_' + x) != undefined) {
-                        Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                    }
-                    if (Dom.get('payment_date_' + x) != undefined) {
-                        Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                    }
-                }
-
-                if (r.order_total_to_pay != 0) {
-                    if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                } else {
-                    Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                }
-                if (Dom.get('show_add_payment_to_order') != undefined) {
-                    Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                }
 
 
                 //  Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
@@ -591,36 +314,7 @@ function use_this_delivery_address_in_order(address_key, hide_edit_delivery_addr
                 Dom.setStyle('shipping_address', 'display', '');
                 Dom.setStyle('for_collection', 'display', 'none');
 
-                for (x in r.data) {
-                    if (Dom.get(x) != undefined) {
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                }
-                for (x in r.payments_data) {
-                    if (Dom.get('payment_amount_' + x) != undefined) {
-                        Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                    }
-                    if (Dom.get('payment_status_' + x) != undefined) {
-                        Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                    }
-                    if (Dom.get('payment_date_' + x) != undefined) {
-                        Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                    }
-                }
-
-                if (r.order_total_to_pay != 0) {
-                    if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                } else {
-                    Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                }
-                if (Dom.get('show_add_payment_to_order') != undefined) {
-                    Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                }
-
-
-
-                Dom.get('tax_info').innerHTML = r.tax_info
+                update_order_data(r)
 
 
                 if (hide_edit_delivery_address) {
@@ -657,37 +351,7 @@ function use_this_billing_address_in_order(address_key, hide_edit_billing_addres
 
                 Dom.get('billing_address').innerHTML = r.billing_to;
 
-                for (x in r.data) {
-
-                    if (Dom.get(x) != undefined) {
-                        Dom.get(x).innerHTML = r.data[x];
-                    }
-                }
-                for (x in r.payments_data) {
-                    if (Dom.get('payment_amount_' + x) != undefined) {
-                        Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                    }
-                    if (Dom.get('payment_status_' + x) != undefined) {
-                        Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                    }
-                    if (Dom.get('payment_date_' + x) != undefined) {
-                        Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                    }
-                }
-
-                if (r.order_total_to_pay != 0) {
-                    if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                } else {
-                    Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                }
-                if (Dom.get('show_add_payment_to_order') != undefined) {
-                    Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                }
-
-
-
-                Dom.get('tax_info').innerHTML = r.tax_info
+                update_order_data(r)
 
 
 
@@ -725,52 +389,22 @@ function change_shipping_type(new_value) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 if (r.result == 'updated') {
-                
-                
+
+
                     if (r.order_for_collection == 'Yes') {
-                        Dom.setStyle(['tr_order_shipping','shipping_address', 'title_delivery_address'], 'display', 'none');
-                        Dom.setStyle(['title_for_collection','for_collection'], 'display', '');
+                        Dom.setStyle(['tr_order_shipping', 'shipping_address', 'title_delivery_address'], 'display', 'none');
+                        Dom.setStyle(['title_for_collection', 'for_collection'], 'display', '');
                     } else {
-                    
-                        Dom.setStyle(['tr_order_shipping','shipping_address', 'title_delivery_address'], 'display', '');
-                        Dom.setStyle(['title_for_collection','for_collection'], 'display', 'none');
+
+                        Dom.setStyle(['tr_order_shipping', 'shipping_address', 'title_delivery_address'], 'display', '');
+                        Dom.setStyle(['title_for_collection', 'for_collection'], 'display', 'none');
 
                     }
 
-                        Dom.get('payments_list').innerHTML=r.payments_list;
+
+                    update_order_data(r)
 
 
-                    for (x in r.data) {
-
-                        if (Dom.get(x) != undefined) {
-                            Dom.get(x).innerHTML = r.data[x];
-                        }
-                    }
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
-
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-
-
-                    Dom.get('tax_info').innerHTML = r.tax_info
 
 
                     Dom.get('shipping_amount').value = r.shipping_amount
@@ -1138,7 +772,7 @@ function save(tipo) {
         var request = 'tipo=cancel&note=' + value + '&order_key=' + Dom.get('order_key').value;
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-            //    alert(o.responseText);
+                //    alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -1328,6 +962,109 @@ function save_import_transactions_mals_e() {
     );
 
 }
+
+
+function update_order_data(r) {
+    for (x in r.data) {
+
+        if (Dom.get(x) != undefined) {
+            Dom.get(x).innerHTML = r.data[x];
+        }
+    }
+    for (x in r.payments_data) {
+        if (Dom.get('payment_amount_' + x) != undefined) {
+            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
+        }
+        if (Dom.get('payment_status_' + x) != undefined) {
+            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
+        }
+        if (Dom.get('payment_date_' + x) != undefined) {
+            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
+        }
+    }
+
+    if (Dom.get('order_deal_bonus') != undefined) {
+        if (r.order_has_deal_with_bonus) {
+            Dom.setStyle('order_deal_bonus', 'display', '')
+        } else {
+            Dom.setStyle('order_deal_bonus', 'display', 'none')
+        }
+        Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
+    }
+
+    Dom.get('payments_list').innerHTML = r.payments_list;
+
+    Dom.get('to_pay_label_amount').value = r.order_total_to_pay;
+
+    if (r.order_total_to_pay != 0) {
+        if (Dom.get('tr_order_total_to_pay') != undefined) {
+            Dom.setStyle('tr_order_total_to_pay', 'display', '')
+        }
+
+
+        if (r.order_total_to_pay > 0) {
+            Dom.setStyle(['show_add_payment_to_order', 'to_pay_label'], 'display', '')
+            Dom.setStyle(['to_refund_label'], 'display', 'none')
+
+        } else {
+            Dom.setStyle(['show_add_payment_to_order', 'to_pay_label'], 'display', 'none')
+            Dom.setStyle(['to_refund_label'], 'display', '')
+
+
+        }
+
+    } else {
+
+
+        if (Dom.get('tr_order_total_to_pay') != undefined) {
+            Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
+        }
+
+
+        Dom.setStyle('show_add_payment_to_order', 'display', 'none')
+        Dom.setStyle('show_add_credit_note_to_customer', 'display', 'none')
+
+    }
+
+
+    if (Dom.get('show_add_payment_to_order') != undefined) {
+        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
+    }
+    if (Dom.get('show_add_credit_note_to_customer') != undefined) {
+        Dom.get('show_add_credit_note_to_customer').setAttribute('amount', r.order_total_to_pay)
+    }
+
+
+
+ if (Dom.get('ordered_products_number') != undefined) {
+    Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
+}
+    if (Dom.get('done') != undefined) {
+
+        if (r.data['ordered_products_number'] > 0) {
+            Dom.removeClass('done', 'disabled')
+        } else {
+            Dom.addClass('done', 'disabled')
+
+        }
+    }
+
+    if (r.discounts) {
+        Dom.get('tr_order_items_gross').style.display = '';
+        Dom.get('tr_order_items_discounts').style.display = '';
+
+    } else {
+        Dom.get('tr_order_items_gross').style.display = 'none';
+        Dom.get('tr_order_items_discounts').style.display = 'none';
+
+    }
+
+
+
+
+}
+
+
 var myonCellClick = function(oArgs) {
 
 
@@ -1376,115 +1113,20 @@ var myonCellClick = function(oArgs) {
 
             var ar_file = 'ar_edit_orders.php';
             request = 'tipo=edit_new_order&id=' + Dom.get('order_key').value + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'];
-//alert(ar_file+'?'+request)
+            //alert(ar_file+'?'+request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
-                   // alert(o.responseText);
+                    // alert(o.responseText);
                     datatable.updateCell(record, 'remove', '-');
                     datatable.updateCell(record, 'add', '+');
 
 
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
-                        for (x in r.data) {
-
-                            if (Dom.get(x) != undefined) {
-                                Dom.get(x).innerHTML = r.data[x];
-                            }
-                        }
-                        for (x in r.payments_data) {
-                            if (Dom.get('payment_amount_' + x) != undefined) {
-                                Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                            }
-                            if (Dom.get('payment_status_' + x) != undefined) {
-                                Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                            }
-                            if (Dom.get('payment_date_' + x) != undefined) {
-                                Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                            }
-                        }
-
-                        if (Dom.get('order_deal_bonus') != undefined) {
-                            if (r.order_has_deal_with_bonus) {
-                                Dom.setStyle('order_deal_bonus', 'display', '')
-                            } else {
-                                Dom.setStyle('order_deal_bonus', 'display', 'none')
-                            }
-                            Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
-                        }
-                        
-                        Dom.get('payments_list').innerHTML=r.payments_list;
-                        
-
-                        if (r.order_total_to_pay != 0) {
-                            if (Dom.get('tr_order_total_to_pay') != undefined) {
-                                Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                            }
 
 
-                            if (r.order_total_to_pay > 0) {
-                                Dom.setStyle('show_add_payment_to_order', 'display', '')
-                                Dom.setStyle('show_add_credit_note_to_customer', 'display', 'none')
+                        update_order_data(r)
 
-                            } else {
-                                Dom.setStyle('show_add_payment_to_order', 'display', 'none')
-                                Dom.setStyle('show_add_credit_note_to_customer', 'display', '')
-
-                            }
-
-                        } else {
-
-
-                            if (Dom.get('tr_order_total_to_pay') != undefined) {
-                                Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-                            }
-
-
-                            Dom.setStyle('show_add_payment_to_order', 'display', 'none')
-                            Dom.setStyle('show_add_credit_note_to_customer', 'display', 'none')
-
-                        }
-
-
-                        if (Dom.get('show_add_payment_to_order') != undefined) {
-                            Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                        }
-                        if (Dom.get('show_add_credit_note_to_customer') != undefined) {
-                            Dom.get('show_add_credit_note_to_customer').setAttribute('amount', r.order_total_to_pay)
-                        }
-
-
-
-
-                        Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
-
-                        if (r.data['ordered_products_number'] > 0) {
-                            Dom.removeClass('done', 'disabled')
-                        } else {
-                            Dom.addClass('done', 'disabled')
-
-                        }
-
-
-                        if (r.discounts) {
-                            Dom.get('tr_order_items_gross').style.display = '';
-                            Dom.get('tr_order_items_discounts').style.display = '';
-
-                        } else {
-                            Dom.get('tr_order_items_gross').style.display = 'none';
-                            Dom.get('tr_order_items_discounts').style.display = 'none';
-
-                        }
-
-/*
-							if(r.charges){
-						    Dom.get('tr_order_items_charges').style.display='';
-
-						}else{
-						    Dom.get('tr_order_items_charges').style.display='none';
-
-						}
-						*/
                         datatable.updateCell(record, 'quantity', r.quantity);
 
                         datatable.updateCell(record, 'ordered_quantity', r.ordered_quantity);
@@ -1643,100 +1285,8 @@ var CellEdit = function(callback, newValue) {
                 if (r.state == 200) {
 
 
-                    for (x in r.data) {
+                    update_order_data(r)
 
-                        if (Dom.get(x) != undefined) {
-                            Dom.get(x).innerHTML = r.data[x];
-                        }
-                    }
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
-
-
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-                        Dom.get('payments_list').innerHTML=r.payments_list;
-
-                    if (Dom.get('order_deal_bonus') != undefined) {
-                        if (r.order_has_deal_with_bonus) {
-                            Dom.setStyle('order_deal_bonus', 'display', '')
-                        } else {
-                            Dom.setStyle('order_deal_bonus', 'display', 'none')
-                        }
-                        Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
-                    }
-
-                    Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
-
-                    if (r.data['ordered_products_number'] > 0) {
-                        Dom.removeClass('done', 'disabled')
-                    } else {
-                        Dom.addClass('done', 'disabled')
-
-                    }
-
-
-
-                    for (x in r.payments_data) {
-                        if (Dom.get('payment_amount_' + x) != undefined) {
-                            Dom.get('payment_amount_' + x).innerHTML = r.payments_data[x].amount
-                        }
-                        if (Dom.get('payment_status_' + x) != undefined) {
-                            Dom.get('payment_status_' + x).innerHTML = r.payments_data[x].status
-                        }
-                        if (Dom.get('payment_date_' + x) != undefined) {
-                            Dom.get('payment_date_' + x).innerHTML = r.payments_data[x].date
-                        }
-                    }
-
-                    if (r.order_total_to_pay != 0) {
-                        if (Dom.get('tr_order_total_to_pay') != undefined) Dom.setStyle('tr_order_total_to_pay', 'display', '')
-                    } else {
-                        Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
-
-                    }
-
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
-                    }
-
-
-                    if (r.discounts) {
-                        Dom.get('tr_order_items_gross').style.display = '';
-                        Dom.get('tr_order_items_discounts').style.display = '';
-
-                    } else {
-                        Dom.get('tr_order_items_gross').style.display = 'none';
-                        Dom.get('tr_order_items_discounts').style.display = 'none';
-
-                    }
-
-/*
-							if(r.charges){
-						    Dom.get('tr_order_items_charges').style.display='';
-
-						}else{
-						    Dom.get('tr_order_items_charges').style.display='none';
-
-						}
-						*/
                     datatable.updateCell(record, 'ordered_quantity', r.ordered_quantity);
 
                     datatable.updateCell(record, 'quantity', r.quantity);
@@ -1789,7 +1339,6 @@ var CellEdit = function(callback, newValue) {
                     // datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
-
                     callback(true, r.ordered_quantity);
 
 
@@ -1831,6 +1380,12 @@ var mygetTerms = function(query) {
 
 
 function show_dialog_edit_tax_category() {
+
+    region1 = Dom.getRegion('edit_button_tax');
+    region2 = Dom.getRegion('dialog_edit_tax_category');
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_edit_tax_category', pos);
+
     dialog_edit_tax_category.show()
 }
 
@@ -1848,7 +1403,7 @@ function change_tax_category(o) {
     //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText)
+            alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -2273,12 +1828,12 @@ function init_common_order_not_dispatched() {
     Event.addListener("tr_order_items_charges", "mouseout", hide_edit_button, {
         'name': 'items_charges'
     });
-    Event.addListener("tr_order_tax", "mouseover", show_edit_button, {
-        'name': 'tax'
-    });
-    Event.addListener("tr_order_tax", "mouseout", hide_edit_button, {
-        'name': 'tax'
-    });
+    //   Event.addListener("tr_order_tax", "mouseover", show_edit_button, {
+    //      'name': 'tax'
+    // });
+    //  Event.addListener("tr_order_tax", "mouseout", hide_edit_button, {
+    //      'name': 'tax'
+    // });
     Event.addListener("tr_order_credits", "mouseover", show_edit_button, {
         'name': 'credits'
     });
@@ -2420,7 +1975,7 @@ function init_common_order_not_dispatched() {
 
 
     dialog_edit_tax_category = new YAHOO.widget.Dialog("dialog_edit_tax_category", {
-        context: ["edit_button_tax", "tr", "tl"],
+
         visible: false,
         close: true,
         underlay: "none",

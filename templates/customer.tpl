@@ -25,7 +25,7 @@
 			<div class="buttons small" style="float:right;position:relative;top:5px">
 				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
 				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> 
-				<button id="add_credit_note"><img src="art/icons/add.png" alt=""> {t}Credit Note{/t}</button>  <button id="make_order" class="disabled"><img src="art/icons/database_go.png" alt="">QO Data</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
+				<button id="make_order" class="disabled"><img src="art/icons/database_go.png" alt="">QO Data</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -185,9 +185,9 @@
 						{t}Current Balance{/t} 
 					</h2>
 					<table border=0 style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
-						<tr>
+						<tr id="account_balance_tr">
 							<td id="account_balance_label">{t}Account Balance{/t}</td>
-							<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get('Account Balance')} </td>
+							<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"><img id="edit_account_balance_button" src="art/icons/edit.gif" style="visibility:hidden;cursor:pointer"> {$customer->get('Account Balance')} </td>
 						</tr>
 						
 						<tr style="{if $customer->get_pending_payment_amount_from_account_balance()==0}display:none{/if}" >
@@ -281,7 +281,7 @@
 		<li> <span class="item {if $view=='login_stat'}selected{/if}" id="login_stat"> <span> {t}Login Status{/t}</span></span></li>
 		{/if} 
 		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"><span> {t}Products Ordered{/t}</span></span></li>
-		<li {if !$customer->get('Customer Orders')}style="xdisplay:none"{/if}> <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>
+		<li  <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -433,11 +433,18 @@
 		<div id="table1" class="data_table_container dtable btable">
 		</div>
 	</div>
-	<div id="block_orders" class="data_block" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_orders" class="data_block" style="{if $view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0 0px">
 		
+		<div class="buttons small left tabs">
+					<button class="indented item {if $orders_block_view=='orders'}selected{/if}" id="orders_block_orders" block_id="orders">{t}Orders{/t}</button> 
+					<button class="item {if $orders_block_view=='dns'}selected{/if}" id="orders_block_dns" block_id="dns">{t}Delivery Notes{/t}</button> 
+					<button class="item {if $orders_block_view=='invoices'}selected{/if}" id="orders_block_invoices" block_id="invoices">{t}Invoices{/t}</button> 
+
+				</div>
+				<div class="tabs_base">
+				</div>
 		
-		
-		<div id="subblock_orders_orders">
+		<div id="subblock_orders_orders" style="padding:20px;{if $orders_block_view!='orders'}display:none{/if}">
 		<span class="clean_table_title">{t}Orders{/t}</span> 
 		<div class="table_top_bar space">
 		</div>
@@ -446,7 +453,7 @@
 		</div>
 		</div>
 	
-	<div id="subblock_orders_dns">
+	<div id="subblock_orders_dns"  style="padding:20px;{if $orders_block_view!='dns'}display:none{/if}">
 		<span class="clean_table_title">{t}Delivery Notes{/t}</span> 
 		<div class="table_top_bar space">
 		</div>
@@ -455,7 +462,7 @@
 		</div>
 	</div>
 	
-	<div id="subblock_orders_invoices">
+	<div id="subblock_orders_invoices"  style="padding:20px;{if $orders_block_view!='invoices'}display:none{/if}">
 		<span class="clean_table_title">{t}Invoices{/t}</span> 
 		<div class="table_top_bar space">
 		</div>
@@ -1084,17 +1091,19 @@
 	
 	
 	
-<div id="dialog_add_credit_note" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
+<div id="dialog_add_credit_note" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:10px">
 	<input type="hidden" id="add_credit_note_type" value="normal">
 	<table class="edit" style="margin:10px;width:600px" border="0">
 	
-		<tr>
+	<tr class="title">
+	<td colspan=2>{t}Editing Account Balance{/t}</td>
+		</tr><tr class="space5">
 			<td class="label" style="padding-bottom:10px">{t}Description{/t}:</td>
 			<td colspan=2  style="padding-bottom:10px;"> 
 			<input id="add_credit_note_description" style="width:300px" value=""   onkeyup="can_save_add_credit_note()" />
 			</td>
 		</tr>
-	<tr id="add_credit_note_net_amount_tr">
+	<tr  id="add_credit_note_net_amount_tr">
 			<td class="label" style="padding-top:4px;width:120px">{t}Net Amount{/t}:</td>
 			<td colspan=2  style="padding-top:4px;"> 
 			<input id="add_credit_note_net_amount" style="text-align:right;width:80px" value="" onkeyup="add_credit_note_net_changed()" /> {$customer->get('Customer Currency Code')}
@@ -1137,7 +1146,7 @@
 			<input id="add_credit_note_tax_amount" style="text-align:right;width:80px" value=""onkeyup="add_credit_note_tax_changed()" /> {$customer->get('Customer Currency Code')}
 			</td>
 		</tr>
-			<tr>
+			<tr class="space5">
 			<td class="label" style="padding-bottom:10px">{t}Total{/t}:</td>
 			
 			<td style="padding-bottom:10px;;width:70px" id="add_credit_note_total_formated">{$zero_money}</td>

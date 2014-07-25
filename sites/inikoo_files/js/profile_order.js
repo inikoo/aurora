@@ -398,11 +398,7 @@ Event.addListener(window, "load", function() {
             className: "aright",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
-            },
-            editor: new YAHOO.widget.TextboxCellEditor({
-                asyncSubmitter: CellEdit
-            }),
-            object: 'new_order'
+            }
         }
             //  ,{key:"gross",label:Dom.get('label_gross').value,  width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
                             // ,{key:"discount",label:Dom.get('label_discount').value,  width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}

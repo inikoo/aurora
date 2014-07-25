@@ -6,6 +6,7 @@
 		<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
 		<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
 		<input type="hidden" value="customer" id="subject" />
+		<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
 
 <div id="bd" style="background-image:url('art/stamp.cancel.en.png');background-repeat:no-repeat;background-position:300px 50px">
 	{include file='orders_navigation.tpl'} 
@@ -89,12 +90,13 @@
 						<td class="aright"> <img style="display:none" id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
 						<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
-					<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
+				<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
 						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
+							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
 						</div>
-						{t}To Pay{/t}</td>
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> 
+						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 			</table>
@@ -122,9 +124,24 @@
 			{/if} 
 		</div>
 		<div style="clear:both">
-		</div>
+			</div>
+			<img id="show_order_details" style="cursor:pointer;margin-top:10px" src="art/icons/arrow_sans_lowerleft.png" /> 
+			<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+				<div class="buttons small right" style="float:right;width:350px">
+								
+					<button style="margin-top:5px;margin-bottom:10px;clear:both" id="undo_cancel" onClick="undo_cancel()"><img id="undo_cancel_img" style="width:12px" src="art/icons/arrow_rotate_anticlockwise.png"> {t}Undo Cancel{/t}</button> 
+				</div>
+				{include file='order_details_splinter.tpl'}
+				<div style="clear:both">
+				</div>
+				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			</div>
+			<div style="clear:both">
+			</div>
 	</div>
-	{include file='order_payments_splinter.tpl'} 
+	<div id="payments_list">
+		{include file='order_payments_splinter.tpl'} 
+	</div>
 	<div style="margin-top:20px">
 		<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span> 
 		<div class="table_top_bar">
