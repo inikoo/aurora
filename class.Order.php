@@ -2459,11 +2459,11 @@ return;
 
 			//print $row['net'].'xx';
 
-print $row['original_net'].' '.$total_not_dispatch_net;
+
 			$this->data['Order Balance Net Amount']=round($row['original_net']-$total_not_dispatch_net,2);
 			$this->data['Order Balance Tax Amount']=round($row['original_tax']-$total_not_dispatch_tax,2);
 			
-			
+			print $this->data['Order Balance Net Amount'].'='.$row['original_net'].' '.$total_not_dispatch_net;
 			
 			$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
 			$this->data['Order Outstanding Balance Net Amount']=$this->data['Order Balance Net Amount']-$this->data['Order Invoiced Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Net Amount'];
