@@ -440,9 +440,7 @@ if (array_key_exists('Invoice Tax Number',$invoice_data)) {
 				$_orders_ids[$order_key]=$order_key;
 			}
 		}
-//print_r($invoice_data);
-print_r($_orders_ids);
-print join(',',$_orders_ids);
+
 		if (count($_orders_ids)) {
 			$orders_keys=join(',',$_orders_ids);
 			
@@ -452,7 +450,7 @@ print join(',',$_orders_ids);
 				,$order_keys);
 			$res=mysql_query($sql);
 			
-			print $sql;
+			print $sql."  XX  $order_keys XX";
 			while ($row=mysql_fetch_assoc($res)) {
 				print_r($row);
 				$sql=sprintf("update `Order No Product Transaction Fact` set
