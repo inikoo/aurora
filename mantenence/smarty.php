@@ -83,6 +83,9 @@ gettext("Other Amount");
 gettext("Refund All");
 
 /* ../templates/add_payment_splinter.tpl */
+gettext("Refund Outstanding");
+
+/* ../templates/add_payment_splinter.tpl */
 gettext("Method");
 
 /* ../templates/add_payment_splinter.tpl */
@@ -111,6 +114,9 @@ gettext("Other Amount");
 
 /* ../templates/add_payment_splinter.tpl */
 gettext("Credit All");
+
+/* ../templates/add_payment_splinter.tpl */
+gettext("Credit Outstanding");
 
 /* ../templates/add_payment_splinter.tpl */
 gettext("Note");
@@ -1841,9 +1847,6 @@ gettext("Attachment");
 gettext("Order");
 
 /* ../templates/customer.tpl */
-gettext("Credit Note");
-
-/* ../templates/customer.tpl */
 gettext("Catalogue");
 
 /* ../templates/customer.tpl */
@@ -2123,6 +2126,15 @@ gettext("Delivery Notes");
 gettext("Invoices");
 
 /* ../templates/customer.tpl */
+gettext("Orders");
+
+/* ../templates/customer.tpl */
+gettext("Delivery Notes");
+
+/* ../templates/customer.tpl */
+gettext("Invoices");
+
+/* ../templates/customer.tpl */
 gettext("Source");
 
 /* ../templates/customer.tpl */
@@ -2376,6 +2388,9 @@ gettext("Yes");
 
 /* ../templates/customer.tpl */
 gettext("Cancel");
+
+/* ../templates/customer.tpl */
+gettext("Editing Account Balance");
 
 /* ../templates/customer.tpl */
 gettext("Description");
@@ -10724,6 +10739,9 @@ gettext("Dispatch Time");
 gettext("days");
 
 /* ../templates/edit_supplier.tpl */
+gettext("days");
+
+/* ../templates/edit_supplier.tpl */
 gettext("Products Origin");
 
 /* ../templates/edit_supplier.tpl */
@@ -17552,7 +17570,7 @@ gettext("Paid");
 gettext("Payment");
 
 /* ../templates/order_cancelled.tpl */
-gettext("Credit");
+gettext("To Refund");
 
 /* ../templates/order_cancelled.tpl */
 gettext("To Pay");
@@ -17567,6 +17585,9 @@ gettext("Cancel Date");
 gettext("Order Cancelled");
 
 /* ../templates/order_cancelled.tpl */
+gettext("Undo Cancel");
+
+/* ../templates/order_cancelled.tpl */
 gettext("Items");
 
 /* ../templates/order_cancelled.tpl */
@@ -17574,6 +17595,45 @@ gettext("Basket");
 
 /* ../templates/order_cancelled.tpl */
 gettext("Order times");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Created");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Last updated");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("On website");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Submit Payment");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Last updated");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Customer Fiscal Name");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Customer Name");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Contact Name");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Telephone");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Email");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Tax Code");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Tax Info");
+
+/* ../templates/order_details_splinter.tpl */
+gettext("Weight ");
 
 /* ../templates/order_dispatched.tpl */
 gettext("Orders");
@@ -17849,7 +17909,7 @@ gettext("Paid");
 gettext("Payment");
 
 /* ../templates/order_in_process.tpl */
-gettext("Credit");
+gettext("To Refund");
 
 /* ../templates/order_in_process.tpl */
 gettext("To Pay");
@@ -18494,6 +18554,9 @@ gettext("Items Gross");
 gettext("Discounts");
 
 /* ../templates/order_in_warehouse.tpl */
+gettext("Out of stock");
+
+/* ../templates/order_in_warehouse.tpl */
 gettext("Items Net");
 
 /* ../templates/order_in_warehouse.tpl */
@@ -18519,9 +18582,6 @@ gettext("Paid");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Payment");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Credit");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("To Refund");
@@ -18579,9 +18639,6 @@ gettext("Paid");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Payment");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Credit");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("To Refund");
@@ -19055,7 +19112,7 @@ gettext("Payments");
 gettext("Payment ID");
 
 /* ../templates/order_payments_splinter.tpl */
-gettext("Service Provider");
+gettext("Method");
 
 /* ../templates/order_payments_splinter.tpl */
 gettext("Date");
@@ -19080,6 +19137,9 @@ gettext("Set as completed");
 
 /* ../templates/order_payments_splinter.tpl */
 gettext("Refund");
+
+/* ../templates/order_payments_splinter.tpl */
+gettext("Credit");
 
 /* ../templates/order_payments_splinter.tpl */
 gettext("Pay Invoice");
@@ -27135,6 +27195,18 @@ gettext("Filter options");
 
 /* ../templates/supplier.tpl */
 gettext("Rows per Page");
+
+/* ../templates/supplier.tpl */
+gettext("Delete Image");
+
+/* ../templates/supplier.tpl */
+gettext("Change Image");
+
+/* ../templates/supplier.tpl */
+gettext("Upload Image");
+
+/* ../templates/supplier.tpl */
+gettext("Upload");
 
 /* ../templates/supplier_categories.tpl */
 gettext("Suppliers");

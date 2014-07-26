@@ -479,6 +479,41 @@
 		</tbody>
 	</table>
 </div>
+
+<div id="dialog_image_upload" style="padding:10px">
+	<table>
+		<tr style="{if $user->get_image_src()}display:inline{else}display:none{/if}">
+			<td> 
+			<div class="buttons left" image_id="{$user->get_image_key()}">
+				<button onclick="delete_image(this)"> {t}Delete Image{/t} </button> 
+			</div>
+			</td>
+		</tr>
+		<tr style="height:10px">
+			<td></td>
+		</tr>
+		<tr>
+			<td>{if $user->get_image_src()}{t}Change Image{/t}{else}{t}Upload Image{/t}{/if}</td>
+		</tr>
+		<tr style="height:10px">
+			<td></td>
+		</tr>
+		<tr>
+			<td> 
+			<form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
+				<input id="upload_image_input" style="border:1px solid #ddd;" type="file" name="testFile" />
+			</form>
+			</td>
+			<td> 
+			<div class="buttons left">
+				<button id="uploadButton" class="positive">{t}Upload{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
 {*}{include file='splinter_edit_subject_quick.tpl' subject=$supplier subject_tag='Supplier'} {/*}
 {include file='notes_splinter.tpl'}
 {include file='footer.tpl'} 

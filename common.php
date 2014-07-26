@@ -138,7 +138,7 @@ foreach ($_GET as $key => $value) {
 $lang_menu=array();
 
 
-$sql=sprintf("select * from `Language Dimension`");
+$sql=sprintf("select * from `Language Dimension` order by `Language Original Name`");
 $res=mysql_query($sql);
 
 while ($row=mysql_fetch_assoc($res) ) {

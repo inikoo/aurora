@@ -734,33 +734,37 @@ print "\n";
 }
 ?>
 
-
 Event.addListener('uploadButton', "click", upload_image);
 
-	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
-	
-	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
-	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
-	 
-	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:Dom.get('customer_key').value,type:'contact'});
+var ids = ["contact_address_description", "contact_address_country_d1", "contact_address_country_d2", "contact_address_town", "contact_address_town_d2", "contact_address_town_d1", "contact_address_postal_code", "contact_address_street", "contact_address_internal", "contact_address_building"];
+
+YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change, 'contact_');
+YAHOO.util.Event.addListener(ids, "change", on_address_item_change, 'contact_');
+
+YAHOO.util.Event.addListener('contact_save_address_button', "click", save_address, {
+    prefix: 'contact_',
+    subject: 'Customer',
+    subject_key: Dom.get('customer_key').value,
+    type: 'contact'
+});
 
 Event.addListener('contact_reset_address_button', "click", reset_contact_address);
 
-    if (Dom.get("dialog_check_tax_number") != undefined) {
-        dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {
-            visible: false,
-            close: true,
-            underlay: "none",
-            draggable: false
-        });
-        dialog_check_tax_number.render();
-    }
+if (Dom.get("dialog_check_tax_number") != undefined) {
+    dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_check_tax_number.render();
+}
 
 
 
 
-    Event.addListener(["close_check_tax_number"], "click", close_dialog_check_tax_number);
-    
+Event.addListener(["close_check_tax_number"], "click", close_dialog_check_tax_number);
+
     
     
 }
@@ -768,7 +772,7 @@ Event.onDOMReady(init);
 
 
 
-var upload_image = function(e){
+function upload_image(e){
 
 
 	if(Dom.get('upload_image_input').value==''){
