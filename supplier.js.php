@@ -962,7 +962,80 @@ myrenderEvent()
 
 }
 
+
+function upload_image(e){
+
+
+	if(Dom.get('upload_image_input').value==''){
+		return;
+	}
+
+
+
+    YAHOO.util.Connect.setForm('testForm', true);
+    var request='ar_edit_images.php?tipo=upload_image&scope='+scope+'&scope_key='+scope_key;
+   //alert(request);//return;
+   var uploadHandler = {
+      upload: function(o) {
+	  // alert(o.responseText)
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	   
+	    if(r.state==200){
+	window.location.reload();
+
+	    }else{
+	    Dom.get('upload_image_input').value='';
+		alert(r.msg);
+	    }
+	    
+
+	}
+    };
+
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+
+
+
+  };
+
+function delete_image(o){
+
+
+
+    // alert(scope_key)
+    image_key=o.parentNode.getAttribute('image_id');
+    var answer = confirm('Delete?');
+    if (answer){
+
+	
+
+	 var request='ar_edit_images.php?tipo=update_image&key=delete&new_value=&image_key='+escape(image_key)+'&scope=supplier&scope_key='+Dom.get('supplier_key').value;
+	//alert(request);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		  
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			window.location.reload();
+
+		    }else
+			alert(r.msg);
+		}
+		
+	    });
+    }
+
+
+}
+
+
 	    function init() {
+
+
+Event.addListener('avatar', "click", upload_image);
+dialog_image_upload = new YAHOO.widget.Dialog("dialog_image_upload", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_image_upload.render();
+
 
 	        get_supplier_sales_data(Dom.get('from').value, Dom.get('to').value)
 	        init_search('supplier_products_supplier');
