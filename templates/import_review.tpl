@@ -6,14 +6,15 @@
 	<input type="hidden" id="parent_key" value="{$parent_key}"> 
 	<input type="hidden" id="subject" value="{$subject}"> 
 	<input type="hidden" id="imported_records_key" value="{$imported_records->id}"> 
-	<input type="hidden" id="reference" value="{$reference}"> {if $subject=='customers'} {include file='contacts_navigation.tpl'} 
+	<input type="hidden" id="reference" value="{$reference}"> 
+	{if $subject=='customers'} {include file='contacts_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Import Customers{/t} (2/3)</span> 
 	</div>
 	<div id="top_page_menu" class="top_page_menu">
 		<div class="buttons" style="float:left">
 			<div class="buttons" style="float:left">
-				<span class="main_title"><img src="art/icons/agenda.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$store->get('Store Code')}</span> <span class="subtitle">{t}Import Contacts From CSV File{/t}</span></span> 
+				<span class="main_title"><img src="art/icons/agenda.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$store->get('Store Code')}</span> <span class="subtitle">{t}Import Contacts from CSV File{/t}</span></span> 
 			</div>
 		</div>
 		<div class="buttons" style="float:right">
@@ -23,7 +24,26 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	{/if} {if $subject=='family' || $subject == 'department' || $subject == 'store'} {include file='contacts_navigation.tpl'} 
+	{/if} 
+	
+	{if $subject=='departments'} {include file='assets_navigation.tpl'} 
+			<div class="branch">
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {t}Import Departments{/t} (2/3)</span> 
+		</div>
+		<div id="top_page_menu" class="top_page_menu">
+			<div class="buttons" style="float:left">
+				<span class="main_title"><img src="art/icons/store.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$store->get('Store Code')}</span> <span class="subtitle">{t}Import Departments from CSV File{/t}</span></span> 
+			</div>
+			<div class="buttons" style="float:right">
+				<a class="negative" href="customers.php?store={$store->id}">{t}Cancel{/t}</a> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		{/if} 		
+	
+	
+	{if $subject=='families'  || $subject == 'stores'} {include file='contacts_navigation.tpl'} 
 	<div id="top_page_menu" class="top_page_menu">
 		<div class="buttons" style="float:left">
 			<button onclick="window.location='customers.php?store={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button> 

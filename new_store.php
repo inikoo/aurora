@@ -106,6 +106,9 @@ $locales=array(
 	'es_ES'=>array('description'=>_('Spanish').', '._('Spain').' (€)'),
 	'pl_PL'=>array('description'=>_('Polish').', '._('Poland').' (zł)'),
 	'it_IT'=>array('description'=>_('Italian').', '._('Italy').' (€)'),
+	'sK_SK'=>array('description'=>_('Slovak').', '._('Slovakia').' (€)'),
+	'pl_PL'=>array('description'=>_('Portuguese').', '._('Portugal').' (€)'),
+
 	);
 
 $smarty->assign('locales',$locales);

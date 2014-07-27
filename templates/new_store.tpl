@@ -26,37 +26,43 @@
 	</div>
 	<div id="new_store_messages" style="float:left;padding:5px;border:1px solid #ddd;width:480px;margin-bottom:15px;display:none">
 	</div>
-	<table border=0 class="edit" style="width:900px;margin-top:10px">
+	<table border=1 class="edit" style="width:900px;margin-top:10px">
 		<tr class="first" >
 			<td class="label" style="width:150px">{t}Code{/t}:</td>
-			<td style="width:500px"> 
-			<input style="text-align:left;width:200px" id="Code" value="" ovalue="" valid="0"> 
+			<td style="width:340px"> 
+			<input style="text-align:left;width:100px" id="Code" value="" ovalue="" valid="0"> 
 			<div id="Code_Container">
 			</div>
 			</td>
-			<td style="width:300px;font-size:90%" class="error" id="Code_msg"></td>
+			<td style="width:460px;font-size:90%" class="error" id="Code_msg"></td>
 		</tr>
 		<tr>
 			<td class="label">{t}Name{/t}:</td>
 			<td> 
-			<input style="text-align:left;width:500px" id="Name" value="" ovalue="" valid="0"> 
+			<input style="text-align:left;width:300px" id="Name" value="" ovalue="" valid="0"> 
 			<div id="Name_Container">
 			</div>
 			</td>
 			<td style="width:300px;font-size:90%" class="error" id="Name_msg"></td>
 		</tr>
 		
-		<tr>
-			<td class="label">{t}Country Code{/t}:</td>
-			<td> 
-			<input style="text-align:left;width:50px" id="Country" value="" ovalue="" valid="0" maxlength="3" readonly   onClick="show_dialog_country_list()"  > <span style="font-size:80%;position:relative;bottom:-2px" id="country_button">{t}Choose country{/t}</span>
-			<div id="Name_Country">
+		<tr class="space10">
+			<td class="label">{t}Country{/t}:</td>
+			<td colspan=2 > 
+			<input type="hidden" style="text-align:left;width:50px" id="Country" value="" ovalue="" valid="0"   >
+			<div id="Country_Name" style="float:left">
 			</div>
-			</td>
-			<td style="width:300px;font-size:90%" class="error" id="Country_msg"></td>
+			<div class="buttons small left" style="">
+			<button   id="country_button">{t}Choose country{/t}</button>
+			<button  style="margin-left:10px"   id="country_button_bis" style="display:none">{t}Change country{/t}</button>
+
+			</div>
+			<span style="width:300px;font-size:90%" class="error" id="Country_msg"></span>
+			
+			
 		</tr>
 		
-		<tr>
+		<tr style="display:none" id="locale_tr">
 			<td class="label">{t}Locale{/t}:</td>
 			<td> 
 			<input type="hidden" value="{$default_locale}" ovalue="{$default_locale}" id="locale"> 
@@ -65,10 +71,13 @@
 			</div>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button id="save_new_store" class="positive disabled">{t}Save{/t}</button> <button id="close_add_store" class="negative">{t}Cancel{/t}</button> 
+		<tr class="buttons">
+		<td></td>
+			<td> 
+			<div class="buttons left">
+							<button id="close_add_store" class="negative">{t}Cancel{/t}</button> 
+
+				<button id="save_new_store" class="positive disabled">{t}Save{/t}</button> 
 			</div>
 			</td>
 			<td></td>

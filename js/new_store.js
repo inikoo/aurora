@@ -172,6 +172,10 @@ function select_country(oArgs) {
 
     geo_constraints = tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
     Dom.get('Country').value = geo_constraints;
+    
+    Dom.get('Country_Name').innerHTML=tables.table2.getRecord(oArgs.target).getData('name')
+    Dom.setStyle('country_button','display','none')
+    Dom.setStyle(['country_button_bis','locale_tr'],'display','')
     dialog_country_list.hide();
     hide_filter(true, 2)
     
@@ -182,7 +186,7 @@ function select_country(oArgs) {
 }
 
 function show_dialog_country_list() {
-    region1 = Dom.getRegion('Country');
+    region1 = Dom.getRegion('Country_Name');
     region2 = Dom.getRegion('dialog_country_list');
     var pos = [region1.left, region1.bottom]
     Dom.setXY('dialog_country_list', pos);
@@ -200,6 +204,7 @@ function init() {
     });
     dialog_country_list.render();
     Event.addListener("country_button", "click", show_dialog_country_list);
+    Event.addListener("country_button_bis", "click", show_dialog_country_list);
 
     var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS2.queryMatchContains = true;

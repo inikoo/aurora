@@ -37,7 +37,9 @@ function cancel_import() {
 function get_record_data(index) {
     var ar_file = 'ar_import.php';
     var request = ar_file + "?tipo=get_record_data&index=" + index + "&imported_records_key=" + Dom.get('imported_records_key').value;
-    YAHOO.util.Connect.asyncRequest('POST', request, {
+ 
+ alert(request)
+ YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
        // alert(o.responseText)
@@ -359,13 +361,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table5.filter={key:'code',value:''};
-	    //
-// --------------------------------------Department table ends here----------------------------------------------------------
 
-
-/*
-
-	*/
 	};
 
     });

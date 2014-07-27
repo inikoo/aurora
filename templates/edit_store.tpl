@@ -102,17 +102,13 @@
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='website'}display:none{/if}" id="d_website">
-			
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title" style="margin-right:5px">{t}Sites{/t}</span> 
 				<div class="buttons small left">
-						<button id="new_site" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
-					</div>
-				
-				
+					<button id="new_site" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+				</div>
 				<div class="table_top_bar space">
-					</div>
-				
+				</div>
 				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
 				<div id="table6" style="font-size:90%" class="data_table_container dtable btable">
 				</div>
@@ -260,17 +256,15 @@
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" id="d_discounts">
 			<div class="buttons">
-				 <button id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button> <button style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button> 
+				<button id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button> <button style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button> 
 			</div>
-		
 			<div class="data_table" style="clear:both">
 				<span class="clean_table_title">{t}Deals{/t}</span> 
 				<div class="buttons">
-				<button id="add_deal"><img src="art/icons/add.png" alt=""> {t}New{/t}</button>  
-			</div>
-				
+					<button id="add_deal"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
+				</div>
 				<div class="table_top_bar space">
-			</div>
+				</div>
 				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
 				<div id="table4" class="data_table_container dtable btable">
 				</div>
@@ -308,33 +302,29 @@
 			</div>
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='charges'}display:none{/if}" id="d_charges">
-		
-			<div class="data_table" >
-				
-				
-					<span class="clean_table_title">{t}Charges{/t}</span> 
-					<div class="buttons small left">
+			<div class="data_table">
+				<span class="clean_table_title">{t}Charges{/t}</span> 
+				<div class="buttons small left">
 					<button id="add_charge"><img src="art/icons/add.png" alt="">{t}New{/t}</button> 
 				</div>
-					
-					<div class="table_top_bar space">
-			</div>
-					{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-					<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
-					</div>
+				<div class="table_top_bar space">
 				</div>
-			
+				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+				<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
+				</div>
+			</div>
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='shipping'}display:none{/if}" id="d_shipping">
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='departments'}display:none{/if}" id="d_departments">
-			<div class="general_options" style="float:right">
-				<span style="margin-right:10px" onclick="window.location='import.php?subject=store&subject_key={$store->id}'" class="state_details">Import Department (CSV)</span> <span style="margin-right:10px" id="add_department" class="state_details">Create Department</span> <span style="margin-right:10px;display:none" id="save_new_department" class="state_details">Save</span> <span style="margin-right:10px;display:none" id="close_add_department" class="state_details">Close Dialog</span> 
-			</div>
 			<div class="new_item_dialog" id="new_department_dialog" style="display:none">
-				<div id="new_department_messages" class="messages_block">
+				<div id="new_department_messages" class="messages_block" style="width:320px;float:right;border:1px solid red">
 				</div>
-				<table class="edit">
+				<table class="edit" border="1" style="width:500px">
+					<tr class="title">
+						<td> {t}New department{/t} 
+						<td> 
+					</tr>
 					<tr>
 						<td>{t}Code{/t}:</td>
 						<td> 
@@ -347,16 +337,24 @@
 						<input id="new_name" onkeyup="new_dept_changed(this)" onmouseup="new_dept_changed(this)" onchange="new_dept_changed(this)" name="name" changed="0" type='text' maxlength="255" class='text' value="" />
 						</td>
 					</tr>
+					<tr>
+						<td></td>
+						<td> 
+						<div class="buttons small left">
+							<button id="close_add_department" class="negative">{t}Close Dialog{/t}</button> <button id="save_new_department" class="disabled positive">{t}Add Department{/t}</button> 
+						</div>
+						</td>
+					</tr>
 				</table>
 			</div>
 			<div class="data_table" sxtyle="margin:25px 20px">
-				<span class="clean_table_title">{t}Departments{/t}</span> 
+				<span class="clean_table_title" style="margin-right:5px">{t}Departments{/t}</span> 
+				<div class="buttons small left">
+					<button id="add_department" class="state_details"><img src="art/icons/add.png"> {t}New{/t}</button> <button id="add_department_csv" onclick="window.location='import.php?subject=departments&parent=store&parent_key={$store->id}'"><img src="art/icons/table_add.png"> {t}Import (CSV){/t}</button> 
+				</div>
 				<div class="table_top_bar space">
-		</div>
-		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-				
-				
-				
+				</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 				<div id="table0" class="data_table_container dtable btable">
 				</div>
 			</div>
