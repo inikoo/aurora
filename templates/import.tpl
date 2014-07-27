@@ -22,6 +22,22 @@
 			</div>
 		</div>
 		{/if} 
+		{if $subject=='departments'} {include file='assets_navigation.tpl'} 
+			<div class="branch">
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {t}Import Departments{/t} (1/3)</span> 
+		</div>
+		<div id="top_page_menu" class="top_page_menu">
+			<div class="buttons" style="float:left">
+				<span class="main_title">{t}Import departments{/t}</span> 
+			</div>
+			<div class="buttons" style="float:right">
+				<a class="negative" href="customers.php?store={$store->id}">{t}Cancel{/t}</a> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		{/if} 		
+		
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='upload_file'}selected{/if}" id="upload_file"> <span> {t}Upload File{/t}</span></span></li>

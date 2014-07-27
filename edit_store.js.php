@@ -662,18 +662,19 @@ function cancel_add_department(){
     hide_add_department_dialog(); 
 }
 function hide_add_department_dialog(){
-    Dom.get('new_department_dialog').style.display='none';
-    Dom.get('add_department').style.display='';
-    Dom.get('save_new_department').style.display='none';
-    Dom.get('close_add_department').style.display='none';
+  
+   
+   Dom.setStyle(['add_department','add_department_csv'],'display','')
+Dom.setStyle(['new_department_dialog'],'display','none')
+    
+    
 }
 function show_add_department_dialog(){
-    Dom.get('new_department_dialog').style.display='';
-    Dom.get('add_department').style.display='none';
-    Dom.get('save_new_department').style.display='';
 
-    Dom.addClass('save_new_department','disabled');
-    Dom.get('close_add_department').style.display='';
+Dom.setStyle(['add_department','add_department_csv'],'display','none')
+Dom.setStyle(['new_department_dialog'],'display','')
+
+   
     Dom.get('new_code').focus();
 
 

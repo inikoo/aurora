@@ -26,8 +26,8 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('list_subject_imported_records'):
-list_subject_imported_records();
-break;
+	list_subject_imported_records();
+	break;
 
 
 case 'cancel_import':
@@ -91,7 +91,7 @@ case 'list_maps':
 	list_maps();
 	break;
 case 'list_records':
-list_records();
+	list_records();
 	break;
 case 'imported_records':
 	list_imported_records();
@@ -411,6 +411,9 @@ function update_ignore_record($data) {
 
 
 function get_record_data($data) {
+
+global $smarty;
+
 	$index=$data['index'];
 	$imported_records_key=$data['imported_records_key'];
 	$imported_records=new ImportedRecords('id',$imported_records_key);
@@ -436,6 +439,13 @@ function get_record_data($data) {
 		echo json_encode($response);
 		exit;
 	}
+
+
+$smarty->assign('index',$index);
+$smarty->assign('number_of_records',$number_of_records);
+$smarty->assign('ignore_record',$ignore_record);
+$smarty->assign('index',$index);
+$smarty->assign('prev_index',($index > 1?$index-1:1));
 
 
 	$result="<table class='recordList' border=0  >
@@ -502,8 +512,8 @@ function get_record_data($data) {
 
 	$result.='</table>';
 
-	//print $result;
-
+	print $result;
+exit;
 	$response=array('state'=>200,'result'=>$result,'index'=>$index);
 	echo json_encode($response);
 	exit;
@@ -520,7 +530,7 @@ function insert_data($data) {
 
 	if ($imported_records->data['Imported Records State']!='Review') {
 
-		
+
 
 		$msg='wrong imported records state '.$imported_records->data['Imported Records State'];
 
@@ -540,7 +550,7 @@ function insert_data($data) {
 	list($fork_key,$msg)=new_fork('import',$import_data,$account_code);
 
 	if ($fork_key) {
-	
+
 		$imported_records->update(array('Imported Records Fork Key'=>$fork_key,'Imported Records State'=>'Queued'));
 
 		$response= array(
@@ -2109,7 +2119,7 @@ function list_subject_imported_records() {
 	foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
 		$_SESSION['state'][$subject]['imported_records'][$key]=$item;
 	}
-//	$_SESSION['state'][$subject]['imported_records']['elements']=$elements;
+	// $_SESSION['state'][$subject]['imported_records']['elements']=$elements;
 
 
 
@@ -2127,7 +2137,7 @@ function list_subject_imported_records() {
 			$wheref.=" and  `User Alias` like '".addslashes($f_value)."%'    ";
 
 
-/*
+		/*
 		$_elements='';
 	$num_elements_checked=0;
 	foreach ($elements as $_key=>$_value) {
@@ -2148,9 +2158,9 @@ function list_subject_imported_records() {
 	}
 */
 
-	$sql="select count(distinct `Imported Records Key`) as total from `Imported Records Dimension` IR left join `User Dimension` U on (`Imported Records User Key`=`User Key`) left join `List Dimension` L on (`List Key`=`Imported Records Subject List Key`) $where $wheref";
+		$sql="select count(distinct `Imported Records Key`) as total from `Imported Records Dimension` IR left join `User Dimension` U on (`Imported Records User Key`=`User Key`) left join `List Dimension` L on (`List Key`=`Imported Records Subject List Key`) $where $wheref";
 
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2237,7 +2247,7 @@ function list_subject_imported_records() {
 		case 'Finished':
 			$status=_('Imported');
 			break;
-	case 'Cancelled':
+		case 'Cancelled':
 			$status=_('Cancelled');
 			break;
 		}
@@ -2247,7 +2257,7 @@ function list_subject_imported_records() {
 			// 'id'=>$id,
 			'user'=>$data['User Handle'],
 			'filename'=>$filename,
-		'imported'=>number($data['Imported Imported Records']),
+			'imported'=>number($data['Imported Imported Records']),
 			'name'=>$list,
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Imported Records Creation Date'].' +0:00')),
 			'records'=>number($data['Imported Imported Records']),
@@ -2655,14 +2665,14 @@ function list_records() {
 
 
 	$sql="select count(distinct `Imported Record Key`) as total from `Imported Record` IR  $where $wheref";
-//print $sql;
+	//print $sql;
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-	$sql="select count(distinct `Imported Record Key`) as total from `Imported Record` IR  $where ";
+		$sql="select count(distinct `Imported Record Key`) as total from `Imported Record` IR  $where ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -2731,7 +2741,7 @@ function list_records() {
 		case 'Error':
 			$status=_('Error');
 			break;
-case 'Cancelled':
+		case 'Cancelled':
 			$status=_('Cancelled');
 			break;
 		}
@@ -2739,10 +2749,10 @@ case 'Cancelled':
 
 		$raw_data=$data['Imported Record Data'];
 
-		
+
 
 		$adata[]=array(
-			
+
 			'index'=>number($data['Imported Record Index']),
 			'note'=>$data['Imported Record XHTML Note'],
 			'status'=>$status,

@@ -96,6 +96,17 @@ case('areas'):
 	break;
 
 case('departments'):
+
+		include_once 'class.Store.php';
+	$store=new Store($parent_key);
+	$smarty->assign('store',$store);
+	$smarty->assign('store_key',$store->id);
+	$smarty->assign('search_label',_('Products'));
+	$smarty->assign('search_scope','products');
+	$smarty->assign('search_type','products_store');
+	$smarty->assign('parent','customers');
+	$title=_('Import departmetns');
+
 	break;
 
 case('family'):
