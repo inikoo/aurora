@@ -438,8 +438,7 @@ var highlightEditableCell = function(oArgs) {
             break;
         case 'close':
         case 'pick_it':
-            this.highlightRow(target);
-            break;
+          
 
 
         case ('add_object'):
@@ -448,10 +447,8 @@ var highlightEditableCell = function(oArgs) {
         case ('edit_object'):
         case ('edit_pending'):
 
-            this.highlightRow(target);
-            break;
         case ('dialog'):
-            this.highlightRow(target);
+         
         case ('dialog_delete'):
             this.highlightRow(target);
             break;
@@ -465,15 +462,14 @@ var highlightEditableCell = function(oArgs) {
 var unhighlightEditableCell = function(oArgs) {
         var target = oArgs.target;
         column = this.getColumn(target);
-
+//alert(column.action)
         switch (column.action) {
 
         case ('dialog_delete'):
         case 'delete':
         case 'pick_it':
         case 'close':
-            this.unhighlightRow(target);
-            break;
+          case 'dialog':
         case ('add_object'):
         case ('remove_object'):
         case ('edit_object'):

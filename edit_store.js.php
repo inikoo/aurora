@@ -159,18 +159,23 @@ function save_new_department(){
     var request='ar_edit_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	    alert(o.responseText);
+	   
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
 		    var table=tables['table0'];
 		    var datasource=tables['dataSource0'];
 		    var request='';
 		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+		      var table=tables['table1'];
+		    var datasource=tables['dataSource1'];
+		    var request='';
+		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 		    
 		    Dom.get('new_code').value='';
 		    Dom.get('new_name').value='';
-		  
-		    hide_add_department_dialog();
+		  	Dom.addClass('save_new_department','disabled')
+		   
+		   
 		    Dom.get('new_department_messages').innerHTML='';
 		}else
 		    

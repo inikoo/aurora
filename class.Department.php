@@ -234,10 +234,15 @@ class Department extends DB_Table {
 
 			$this->add_history(array(
 					'Action'=>'created'
-					,'History Abstract'=>_('Department Created')
+					,'History Abstract'=>_('Department created')
 					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
 				),true);
-
+				$store->editor=$this->editor;
+$store->add_history(array(
+					'Action'=>'created'
+					,'History Abstract'=>_('Department created')." (".$this->get('Product Department Code').")"
+					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
+				),true);
 
 			$store->update_departments();
 			return;
@@ -456,17 +461,27 @@ function update_field_switcher($field,$value,$options='') {
 	function delete() {
 		$this->deleted=false;
 		$this->update_product_data();
-
+$store=new Store($this->data['Product Department Store Key']);
+$store->editor=$this->editor;
 		if ($this->get('Total Products')==0) {
 			$store=new Store($this->data['Product Department Store Key']);
 			$sql=sprintf("delete from `Product Department Dimension` where `Product Department Key`=%d",$this->id);
 			if (mysql_query($sql)) {
 
 				$this->deleted=true;
+				
+				
+				$store->add_history(array(
+					'Action'=>'deleted'
+					,'History Abstract'=>_('Department deleted')." (".$this->get('Product Department Code').")"
+					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('deleted')
+				),true);
+
+			$store->update_departments();
 
 			} else {
 
-				$this->msg=_('Error: can not delete department');
+				$this->msg='Error: can not delete department';
 				return;
 			}
 
@@ -474,7 +489,7 @@ function update_field_switcher($field,$value,$options='') {
 		} else {//when families are associated with this department
 			//$this->msg=_('Department can not be deleted because it has associated some products');
 			$move_all_products = true;
-			$store=new Store($this->data['Product Department Store Key']);
+			
 
 			$sql = sprintf("select * from `Product Family Dimension` where `Product Family Main Department Key` = %d", $this->id);
 			$result = mysql_query($sql);
@@ -494,8 +509,17 @@ function update_field_switcher($field,$value,$options='') {
 
 			if (mysql_affected_rows()>0) {
 				$this->deleted=true;
+				
+					$store->add_history(array(
+					'Action'=>'deleted'
+					,'History Abstract'=>_('Department deleted')." (".$this->get('Product Department Code').")"
+					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('deleted')
+				),true);
+
+				
+				
 			} else {
-				$this->deleted_msg='Error family can not be deleted';
+				$this->deleted_msg='Error department can not be deleted';
 			}
 		}
 	}

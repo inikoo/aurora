@@ -49,15 +49,6 @@ $smarty->assign('js_files',$js_files);
 $modify=$user->can_edit('users');
 $smarty->assign('modify',$modify);
 
-$general_options_list=array();
-if($user->can_edit('users')){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_users_supplier.php','label'=>_('Edit Users'));
-  
-}
-
-$smarty->assign('general_options_list',$general_options_list);
-
-
 
 $smarty->assign('search_label',_('Users'));
 $smarty->assign('search_scope','users');
@@ -80,11 +71,11 @@ $smarty->assign('parent','users');
 $smarty->assign('title', _('Users'));
 
 
-$sql="select `Language Code` as  id from `Language Dimension`";
+$sql="select `Language Name`,`Language Code` as  id from `Language Dimension`";
 $newuser_langs=array();
 $result=mysql_query($sql);
  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $newuser_langs[$row['id']]=$_lang[$row['id']];
+  $newuser_langs[$row['id']]=get_translation_language($row['Language Name']);
  }
  mysql_free_result($result);
 $smarty->assign('newuser_langs',$newuser_langs);
