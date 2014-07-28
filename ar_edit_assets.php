@@ -427,7 +427,7 @@ function delete_part_new_product($sku) {
 function delete_family($data) {
 
 
-
+global $editor;
 
 
 	if (!isset($data['delete_type'])  or !($data['delete_type']=='delete' or $data['delete_type']=='discontinue'  )  ) {
@@ -436,7 +436,7 @@ function delete_family($data) {
 	}
 	$id=$data['family_key'];
 	$family=new Family($id);
-
+$family->editor=$editor;
 	if ($data['delete_type']=='delete') {
 
 		$family->delete();
@@ -486,6 +486,8 @@ function close_store($data) {
 
 
 function delete_department() {
+global $editor;
+
 	if (!isset($_REQUEST['id']))
 		return 'Error: no department key';
 	if (!is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0 )
@@ -495,7 +497,7 @@ function delete_department() {
 
 	$id=$_REQUEST['id'];
 	$department=new Department($id);
-
+$department->editor=$editor;
 	if ($_REQUEST['delete_type']=='delete') {
 
 		$department->delete();
@@ -2128,7 +2130,7 @@ function list_departments_for_edition() {
 			'code'=>$row['Product Department Code'],
 			'sales_type'=>$sales_type,
 			//'delete_type'=>$delete_type,
-			'go'=>sprintf("<a href='department.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Department Key'])
+			'go'=>sprintf("<a href='edit_department.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Department Key'])
 		);
 	}
 
@@ -3260,8 +3262,9 @@ function new_parts_list($data) {
 }
 
 function delete_product() {
+global $editor;
 	$product = new Product('pid',$_REQUEST['pid']);
-
+$product->editor=$editor;
 	$product->delete();
 	if ($product->id) {
 		if ($product->delete) {

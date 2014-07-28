@@ -309,6 +309,9 @@ Event.addListener(window, "load", function() {
 
 	        this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        
+	         
+	        
 	        this.table0.subscribe("cellClickEvent", onCellClick);            
 			this.table0.table_id=tableid;
      		this.table0.subscribe("renderEvent", myrenderEvent_customer_history);

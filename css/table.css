@@ -96,8 +96,6 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .inikoo .yui-dt-data tr{border-top:1px solid #ccf}
 .inikoo tr.yui-dt-even{background-color:#f2f2ff;}
 .inikoo tr.yui-dt-odd{background-color:#FFF;}
-.inikoo tr.yui-dt-even td.yui-dt-asc   ,.inikoo tr.yui-dt-even td.yui-dt-desc{background-color:#F2f2ff;}
-.inikoo tr.yui-dt-odd td.yui-dt-asc    ,.inikoo tr.yui-dt-odd td.yui-dt-desc{background-color:#FFF;}
 
 .inikoo .yui-dt-list tr.yui-dt-even{background-color:#FFF;}
 .inikoo .yui-dt-list tr.yui-dt-odd{background-color:#FFF;}

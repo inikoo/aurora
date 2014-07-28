@@ -65,11 +65,11 @@ $smarty->assign('parent','users');
 $smarty->assign('title', _('Users'));
 
 
-$sql="select `Language Code` as  id from `Language Dimension`";
+$sql="select `Language Name`,`Language Code` as  id from `Language Dimension`";
 $newuser_langs=array();
 $result=mysql_query($sql);
  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $newuser_langs[$row['id']]=$_lang[$row['id']];
+  $newuser_langs[$row['id']]=get_translation_language($row['Language Name']);
  }
  mysql_free_result($result);
 $smarty->assign('newuser_langs',$newuser_langs);

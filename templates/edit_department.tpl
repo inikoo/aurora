@@ -10,7 +10,7 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">
-			<button style="margin-left:0px" onclick="window.location='department.php?id={$department->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px; {if !$can_delete}display:none{/if}" onclick="delete_department()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
+			<button style="margin-left:0px" onclick="window.location='department.php?id={$department->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" style="margin-left:0px; {if !$can_delete}display:none{/if}" onclick="delete_department()"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
 			<span class="main_title"> {t}Department{/t} <span class="id" id="title_name">{$department->get('Product Department Name')}</span> <span class="id" id="title_code">({$department->get('Product Department Code')})</span> </span> 
@@ -18,11 +18,8 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<table>
-		<tr style="display:">
-			<td></td>
-			<td style="text-align:right;color:#777;font-size:90%"> 
-			<div id="delete_department_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
+	
+	<div id="delete_department_warning" style="float:right;border:1px solid red;padding:10px 10px 15px 10px;color:red;display:none">
 				<h2>
 					{t}Delete Department{/t} 
 				</h2>
@@ -31,15 +28,18 @@
 				</p>
 				<p id="delete_department_msg">
 				</p>
-				<span id="cancel_delete_department" style="cursor:pointer;display:none;font-weight:800">{t}No, I dont want to delete it{/t}</span> <span id="save_delete_department" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span> 
+				<div class="buttons">
+								<button class="negative" id="save_delete_department" style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</button> 
+
+				<button id="cancel_delete_department" style="cursor:pointer;display:none;font-weight:800">{t}No, I dont want to delete it{/t}</button> 
+				</div>
 				<p id="deleting" style="display:none;">
 					{t}Deleting department, wait please{/t}.
 				</p>
+				<div style="clear:both">
+				</div>
 			</div>
-			</td>
-			<td> </td>
-		</tr>
-	</table>
+	
 	<div style="clear:left;margin:0 0px">
 	</div>
 	<div id="msg_div">

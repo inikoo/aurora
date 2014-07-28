@@ -16,7 +16,9 @@
 		<th style='width:150px'>
 		<div>
 			<img src='art/first_button.png' title='{t}First{/t}' alt='{t}First{/t}' style='height:14px;{if $index > 1}cursor:pointer{else}opacity:.25{/if}' id='first' onclick='get_record_data(1)'>
-			<img src='art/previous_button.gif' title='{t}Previous{/t}' alt='{t}Previous{/t}' style='margin-left:10px;height:14px;$index > 1' id='prev' onclick='get_record_data({$prev_index})'><img src='art/next_button.gif' title='Next' alt='Next' style='margin-left:10px;height:14px;cursor:pointer;cursor:pointer' id='next' onclick='get_record_data(2)'><img src='art/last_button.png' title='Last' alt='Last' style='margin-left:10px;height:14px;cursor:pointer;cursor:pointer' id='next' onclick='get_record_data(2)'>
+			<img src='art/previous_button.gif' title='{t}Previous{/t}' alt='{t}Previous{/t}' style='margin-left:10px;height:14px;$index > 1' id='prev' onclick='get_record_data({$prev_index})'>
+			<img src='art/next_button.gif' title='{t}Next{/t}' alt='{t}Next{/t}' style='margin-left:10px;height:14px;cursor:pointer;{if $$index < $number_of_records}cursor:pointer{else}opacity:.25{/if}' id='next' onclick='get_record_data({$prev_index})'>
+			<img src='art/last_button.png' title='Last' alt='Last' style='margin-left:10px;height:14px;cursor:pointer;{if $index < $number_of_records}cursor:pointer{else}opacity:.25{/if}' id='next' onclick='get_record_data({$number_of_records})'>
 		</div>
 		</th>
 	</tr>

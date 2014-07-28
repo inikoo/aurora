@@ -1,14 +1,40 @@
 <?php
 
 
-$_lang['en']=_('English');
-$_lang['es']=_('Spanish');
-$_lang['de']=_('German');
-$_lang['fr']=_('French');
-$_lang['cs']=_('Czech');
-$_lang['sk']=_('Slovak');
-$_lang['zh']=_('Chinese');
-$_lang['pl']=_('Polish');
+function get_translation_language($str){
+switch($str){
+case 'English':
+$translated_str=_('English');
+break;
+case 'Spanish':
+$translated_str=_('Spanish');
+break;
+case 'German':
+$translated_str=_('German');
+break;
+case 'French':
+$translated_str=_('French');
+break;
+case 'Czech':
+$translated_str=_('Czech');
+break;
+case 'Slovak':
+$translated_str=_('Slovak');
+break;
+case 'Chinese':
+$translated_str=_('Chinese');
+break;
+case 'Polish':
+$translated_str=_('Polish');
+break;
+case 'Italian':
+$translated_str=_('Italian');
+break;
+default:
+$translated_str=$str;
+}
+return $translated_str;
+}
 
 $locale_product_record_type['Discontinued']=_('Discontinued');
 $locale_product_record_type['Normal']=_('Normal');

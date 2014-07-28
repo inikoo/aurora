@@ -446,6 +446,7 @@ $smarty->assign('number_of_records',$number_of_records);
 $smarty->assign('ignore_record',$ignore_record);
 $smarty->assign('index',$index);
 $smarty->assign('prev_index',($index > 1?$index-1:1));
+$smarty->assign('next_index',($index < $number_of_records?$index+1:$index));
 
 
 	$result="<table class='recordList' border=0  >

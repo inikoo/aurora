@@ -318,9 +318,9 @@
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='departments'}display:none{/if}" id="d_departments">
 			<div class="new_item_dialog" id="new_department_dialog" style="display:none">
-				<div id="new_department_messages" class="messages_block" style="width:320px;float:right;border:1px solid red">
+				<div id="new_department_messages" class="messages_block" style="width:320px;float:right;border:0px solid red">
 				</div>
-				<table class="edit" border="1" style="width:500px">
+				<table class="edit" border="0" style="width:500px">
 					<tr class="title">
 						<td> {t}New department{/t} 
 						<td> 
