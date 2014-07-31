@@ -226,7 +226,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 				$message_data['email_placeholders']=array('greetings' => $greetings);
 
-				$message_data['promotion_name']=$site->data->['Site Welcome Email Code'];
+				$message_data['promotion_name']=$site->data['Site Welcome Email Code'];
 
 				if ($site->data['Site Direct Subscribe Madmimi']) {
 					$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
