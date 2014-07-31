@@ -1861,7 +1861,7 @@ $index_page=$this->get_page_object('index');
 		$sitemap=new Sitemap($this->id);
 		$sitemap->page('info');
 
-		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`  not in  ('Product Description','Family Catalogue','Reset','Basket','Not Found','Welcome','Login','Checkout','Client Section','Registration')    ",
+		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`  not in  ('Product Description','Family Catalogue','Login','Registration')    ",
 			$this->id
 		);
 		//print $sql;

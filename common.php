@@ -294,7 +294,7 @@ if ($user->can_view('stores')) {
 			$nav_menu[] = array(_('Products'), 'store.php?id='.$user->data['User Hooked Store Key'],'products');
 		}
 		else {
-			$nav_menu[] = array(_('Products'), 'stores.php','products');
+			$nav_menu[] = array(_('Stores'), 'stores.php','products');
 
 		}
 	}
