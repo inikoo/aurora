@@ -199,15 +199,15 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
 				<td colspan="2">{t}Total Net{/t}</td>
 				<td>{$order->get('Total Net Amount')}</td>
 			</tr>
-			{foreach from=$tax_data item=tax } 
-			<tr>
-				<td class="totals" colspan="2">{$tax.name}</td>
-				<td class="totals">{$tax.amount}</td>
+		<tr >
+				<td colspan="2">{t}Total Tax{/t}</td>
+				<td>{$order->get('Balance Tax Amount')}</td>
 			</tr>
-			{/foreach} 
+			
+			
 			<tr class="total">
 				<td colspan="2"><b>{t}Total{/t}</b></td>
-				<td>{$order->get('Total Amount')}</td>
+				<td>{$order->get('Balance Total Amount')}</td>
 			</tr>
 			{if $order->get('Order To Pay Amount')!=0}
 			<tr class="total">

@@ -72,16 +72,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 $smarty->assign('transactions',$transactions);
 
-$tax_data=array();
-$sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  `Invoice Tax Bridge` B  left join `Tax Category Dimension` T on (T.`Tax Category Code`=B.`Tax Code`)  where B.`Invoice Key`=%d ",$order->id);
-
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$tax_data[]=array('name'=>$row['Tax Category Name'],'amount'=>money($row['Tax Amount'],$order->data['Order Currency']));
-}
-
-$smarty->assign('tax_data',$tax_data);
-
 
 $html=$smarty->fetch('proforma.pdf.tpl');
 
