@@ -40,7 +40,7 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $product=new Product('pid',$row['Product ID']);
 
-$sql=sprintf("update `Product Dimension` `Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
+$sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
 ,prepare_mysql($product->get('short description'))
 			,prepare_mysql($product->get('xhtml short description'))
 			,$product->pid
