@@ -45,7 +45,7 @@ $sql=sprintf("update `Product Dimension` `Product Short Description`=%s,`Product
 			,prepare_mysql($product->get('xhtml short description'))
 			,$product->pid
 		);
-		//print "$sql\n";
+		print "$sql\n";
 		mysql_query($sql);
 //$product->update_part_ratio();
 //$product->update_weight_from_parts();
