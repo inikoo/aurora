@@ -193,7 +193,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 				$plain_message = $smarty_plain_email->fetch('string:'.$site->data['Site Welcome Email Plain Body']);
 
 
-
+//196619
 
 				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 				
@@ -226,7 +226,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 				$message_data['email_placeholders']=array('greetings' => $greetings);
 
-				$message_data['promotion_name']='Welcome Email';
+				$message_data['promotion_name']=$site->data->['Site Welcome Email Code'];
 
 				if ($site->data['Site Direct Subscribe Madmimi']) {
 					$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
