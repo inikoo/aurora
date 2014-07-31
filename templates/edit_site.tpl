@@ -352,7 +352,7 @@
 						</td>
 						<td id="welcome_subject_msg" class="edit_td_alert"></td>
 					</tr>
-					<tr>
+					<tr id="welcome_body_plain_tr" style="{if $email_credentials.Email_Provider=='MadMimi' }display:none{/if}">
 						<td class="label">{t}Body Plain Text{/t}: <span id="welcome_body_plain_msg"></span></td>
 						<td style="text-align:left" colspan="2"> 
 						<div style="height:265px">
@@ -362,7 +362,7 @@
 						</div>
 						</td>
 					</tr>
-					<tr>
+					<tr id="welcome_body_html_tr" style="{if $email_credentials.Email_Provider=='MadMimi' }display:none{/if}">
 						<td class="label">{t}Body HTML{/t}:</td>
 						<td style="text-align:left"> 
 						<div style="height:307px">
@@ -392,8 +392,8 @@
 						</td>
 						<td id="welcome_source_msg" class="edit_td_alert"></td>
 					</tr>
-					<tr>
-						<td colspan="3"> 
+					<tr class="buttons">
+						<td colspan="2"> 
 						<div class="buttons">
 							<button id="save_edit_email_welcome" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_welcome" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
