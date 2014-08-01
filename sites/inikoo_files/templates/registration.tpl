@@ -165,35 +165,22 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="label">{t}Country{/t}:</td>
+				<td class="label"  id="register_address_country_2alpha_code_tr" >{t}Country{/t}:</td>
 				<td> 
-				<select size="1" id="register_address_country_2alpha_code">
-					<option value="XX">{t}Select One{/t}</option>
-					{if $site->get('Site Locale')=='en_GB'}
-					
-					<option value="GB">{t}United Kingdom{/t}</option>
-					<option value="IE">{t}Ireland{/t}</option>
-					<option value="XX">----------</option>
-					{include file="country_select.tpl"}
-					{elseif $site->get('Site Locale')=='es_ES'}
-					<option value="ES">{t}Spain{/t}</option>
-					<option value="PT">{t}Portugal{/t}</option>
-					<option value="XX">----------</option>
-					{include file="country_select.es_ES.tpl"}
-					{elseif $site->get('Site Locale')=='de_DE'}
-					<option value="DE">{t}Germany{/t}</option>
-					<option value="AT">{t}Austria{/t}</option>
-					<option value="CH">{t}Switzerland{/t}</option>
-					<option value="NL">{t}Netherlands{/t}</option>
-					<option value="XX">----------</option>
-					{include file="country_select.de_DE.tpl"}
-					{else}
-					<option value="XX">----------</option>
-					{include file="country_select.tpl"}
-					{/if}
-					
-						
-				</select>
+				
+				
+				
+				
+					<div class="styled-select">
+		<select id="register_address_country_2alpha_code" >
+			{include file='common_country_select.tpl' country=$default_country_2alpha} 
+			{include file='country_select.tpl' } 
+		</select>
+	</div>
+				
+				
+				
+				
 				</td>
 			</tr>
 			<tr class="title">
@@ -265,6 +252,12 @@
 	<div id="message_register_error_captcha" class="warning_block" style="display:none;width:300px;float:right;margin-left:30px;margin-bottom:10px">
 		{t}The Captcha field is incorrect{/t}. 
 	</div>
+	
+	<div id="register_error_select_country" class="warning_block" style="display:none;width:300px;float:right;margin-left:30px;margin-bottom:10px">
+		{t}Select a country{/t}. 
+	</div>
+	
+	
 	<div id="processing_register" class="info_block" style="display:none;width:300px;float:right;margin-left:30px;margin-bottom:10px">
 		<img style="vertical-align:top" src="art/loading.gif" alt=""> {t}Creating your account{/t} 
 	</div>

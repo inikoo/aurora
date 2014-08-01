@@ -44,6 +44,8 @@ if ($page->data['Page Site Key']!=$site->id) {
 }
 
 
+
+
 if (  $order_in_process->id and $order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
 	header('Location: waiting_payment_confirmation.php');
 	exit;
@@ -233,10 +235,7 @@ if ( !$page->order->id) {
 	$paginator_menu=array(10,25,50,100);
 	$smarty->assign('paginator_menu0',$paginator_menu);
 
-	$order_in_process->apply_payment_from_customer_account();
-
-	$smarty->assign('order',$order_in_process);
-	$smarty->assign('customer',$customer);
+	
 
 
 
@@ -301,9 +300,12 @@ if (!$last_basket_page_key) {
 }
 $smarty->assign('last_basket_page_key',$last_basket_page_key);
 
-
+if($order_in_process->id){
 $order_in_process->update_discounts_no_items();
-
+$order_in_process->apply_payment_from_customer_account();
+}
+	$smarty->assign('order',$order_in_process);
+	$smarty->assign('customer',$customer);
 
 
 $smarty->assign('css_files',array_merge( $base_css_files,$css_files));

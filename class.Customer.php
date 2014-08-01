@@ -837,14 +837,14 @@ class Customer extends DB_Table {
 
 			$this->get_data('id',$this->id);
 
-			$this->data['Customer Billing Address Link']=='Contact';
+			$this->data['Customer Billing Address Link']='Contact';
 
 
-			$this->data['Customer Delivery Address Link']=='Contact';
+			$this->data['Customer Delivery Address Link']='Contact';
 
 
-			$this->associate_billing_address($address->id);
-			$this->associate_delivery_address($address->id);
+			$this->create_billing_address_bridge($address->id);
+			$this->create_delivery_address_bridge($address->id);
 
 			$this->get_data('id',$this->id);
 
@@ -4114,6 +4114,9 @@ class Customer extends DB_Table {
 
 		}
 		$address_keys=$this->get_billing_address_keys();
+		
+		
+		
 		if (!array_key_exists($address_key,$address_keys)) {
 			$this->create_billing_address_bridge($address_key);
 			$this->updated=true;

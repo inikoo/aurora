@@ -45,6 +45,9 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
+//$customer->create_billing_address_bridge(194407);
+
+//exit;
 
 
 if (!in_array($customer->data['Customer Store Key'],$user->stores)) {
@@ -228,9 +231,10 @@ $css_files[]='css/edit.css';
 
 
 if ($customer->data['Customer Type']=='Company') {
+
 	$company=new Company($customer->data['Customer Company Key']);
 	if (!$company->id) {
-		print "error no company found".print_r($customer);
+		print "error no company found";
 	}
 	$smarty->assign('company',$company);
 

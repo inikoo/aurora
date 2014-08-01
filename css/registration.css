@@ -7,6 +7,8 @@
 .dialog_inikoo .label {width:200px;text-align:right;padding-right:10px}
 .dialog_inikoo input {width:230px;border: 1px solid #ccc}
 .dialog_inikoo input.error {background-color: #F5EEA2;}
+.dialog_inikoo td.error {background-color: #F5EEA2;}
+
 .dialog_inikoo .link{color:#000}
 .dialog_inikoo .link{color:#000}
 

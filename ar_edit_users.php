@@ -1356,7 +1356,7 @@ function send_reset_password($data,$CKEY) {
 		'masterkey_link'=>$masterkey_link
 	);
 
-	$message_data['promotion_name']='Forgot Password';
+	$message_data['promotion_name']=$site->data['Site Forgot Password Email Code'];
 
 
 	$send_email=new SendEmail();
@@ -1465,7 +1465,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 		$message_data['email_placeholders']=array('greetings' => $greetings);
 
-		$message_data['promotion_name']='Welcome Email';
+		$message_data['promotion_name']=$site->data['Site Welcome Email Code'];
 
 		//print_r($message_data);
 
