@@ -1,4 +1,3 @@
- 
 <option value="XX">---</option>
 <option value="AF">{t}Afghanistan{/t}</option>
 <option value="AL">{t}Albania{/t}</option>

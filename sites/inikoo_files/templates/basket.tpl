@@ -25,7 +25,7 @@
 				Order {$order->get('Order Public ID')} 
 			</h1>
 			<h2>
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px"> {$order->get('Order Customer Name')}, {$order->get('Order Customer Contact Name')}, <span class="id">C{$customer->get_formated_id()}</span> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:-1px">{if $order->get('Order Customer Name')==$order->get('Order Customer Contact Name')} {$order->get('Order Customer Name')}{else}{$order->get('Order Customer Name')}, {$order->get('Order Customer Contact Name')}{/if}, <span class="id">C{$customer->get_formated_id()}</span> 
 			</h2>
 			<div class="address">
 				<div style="margin-bottom:5px">

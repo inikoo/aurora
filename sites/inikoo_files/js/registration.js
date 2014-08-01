@@ -292,6 +292,24 @@ Dom.addClass(['register_password2'],'error');
 
 
 
+if(   Dom.get('register_address_country_2alpha_code').value=='XX' ){
+  if(!error)
+        Dom.setStyle('register_error_select_country','display','')
+
+
+
+    Dom.addClass(['register_address_country_2alpha_code_tr'],'error');
+
+
+error=true;
+}else{
+    Dom.removeClass(['register_address_country_2alpha_code_tr'],'error');
+
+}
+
+
+
+
 if( Dom.get('register_company_name').value=='' &&  Dom.get('register_contact_name').value=='' ){
 Dom.addClass(['register_company_name','register_contact_name'],'error');
 Dom.setStyle('message_register_fields_missing','display','')
@@ -317,16 +335,21 @@ error=true;
 }else{
 Dom.removeClass('register_contact_name','error');
 }
-if(!error)
 
 
+
+
+if(!error){
 submit_register()
+}
 }
 
 
 
 
+function set_country(prefix, code) {
 
+}
 
 
 function submit_check_email(){
@@ -342,7 +365,7 @@ function submit_check_email(){
  //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r=YAHOO.lang.JSON.parse(o.responseText);
 	
 		    if(r.state=='200'){

@@ -397,7 +397,7 @@ function send_reset_password($data,$CKEY) {
 		'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>', 'masterkey_link'=>$masterkey_link
 	);
 
-	$message_data['promotion_name']='Forgot Password';
+	$message_data['promotion_name']=$site->data['Site Forgot Password Email Code'];
 
 	$send_email=new SendEmail();
 	$send_email->secret_key=CKEY;
