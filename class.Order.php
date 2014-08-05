@@ -3315,6 +3315,22 @@ return;
 	}
 
 
+function has_products_without_parts() {
+		$has_products_without_parts=false;
+
+		$sql=sprintf("select count(*) as products_with_out_parts	from `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  where `Order Key`=%d and `Product Number of Parts`=0  ",
+			$this->id
+		);
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['products_with_out_parts']>0) {
+				$has_products_without_parts=true;
+			}
+		}
+
+		return $has_products_without_parts;
+	}
 
 
 

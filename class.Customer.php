@@ -2628,6 +2628,17 @@ class Customer extends DB_Table {
 
 		//get payments data directly from payment
 
+$this->data['Customer Last Dispatched Order Date']='';
+
+$sql=sprintf("select max(`Order Order Dispatched Date Date`) as last_order_dispatched_date from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State`='Dispatched'",
+$this->id
+);
+	$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+$this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_date'];
+
+}
+
 
 		$sql=sprintf("select
 		sum(`Order Invoiced Profit Amount`) as profit,
@@ -2682,8 +2693,9 @@ class Customer extends DB_Table {
 		}
 
 
-		$sql=sprintf("update `Customer Dimension` set `Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
-			$this->data['Customer Net Balance']
+		$sql=sprintf("update `Customer Dimension` set `Customer Last Dispatched Order Date`=%s,`Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
+			,prepare_mysql($this->data['Customer Last Dispatched Order Date'])
+			,$this->data['Customer Net Balance']
 			,$this->data['Customer Orders']
 			,$this->data['Customer Orders Cancelled']
 			,$this->data['Customer Orders Invoiced']
