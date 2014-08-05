@@ -1775,7 +1775,7 @@ function transactions_to_process() {
 
 
 
-	$sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Product Number of Parts`,`Product Part Metadata`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	// print $sql;
 	$res = mysql_query($sql);
@@ -1911,10 +1911,16 @@ function transactions_to_process() {
 			}
 		}
 
+		
+		if($row['Product Number of Parts']==0){
+$part_info='<img style="height:14px" src="art/icons/exclamation.png" title="'._("Product don't have a part associated").'"> ';
+}else{
+$part_info='';
+}
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
-			'code'=>$code,
+			'code'=>$part_info.$code,
 			'description'=>$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info,
 			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea').' '._('Stock').': <b>'.$stock.'</b>',
 			'family'=>$row['Product Family Name'],

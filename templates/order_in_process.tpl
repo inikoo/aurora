@@ -29,7 +29,12 @@
 				<span class="main_title">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 			</div>
 			<div class="buttons">
-				<button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if} onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> <button class="{if {$order->get('Order Number Products')}==0}disabled{/if}" id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> 
+				<button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if} onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> 
+				
+				<button style="{if $order->has_products_without_parts()}display:none{/if}" class="{if {$order->get('Order Number Products')}==0}disabled{/if}" id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button>
+				<button title="{t}Some products in the order don't have parts associated{/t}" style="{if !$order->has_products_without_parts()}display:none{/if}" class="disabled" id="done_error_order_with_products_without_parts"><img id="send_to_warehouse_img" src="art/icons/exclamation.png" alt=""> {t}Send to Warehouse{/t}</button>
+		
+				
 			</div>
 			<div style="clear:both">
 			</div>
