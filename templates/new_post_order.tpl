@@ -67,6 +67,12 @@
 					<td style="border-bottom:1px solid #ccc;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>
 				</tr>
 				
+				<tr style="{if $order->get('Order Invoiced Insurance Amount')==0}display:none{/if}">
+					<td></td>
+					<td style="border-bottom:1px solid #ccc;" class="aright">{t}Insurance{/t}</td>
+					<td style="border-bottom:1px solid #ccc;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
+				</tr>
+				
 			
 			<tr>
 					<td></td>

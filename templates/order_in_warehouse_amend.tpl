@@ -93,6 +93,13 @@
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
 						<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 					</tr>
+					
+					
+					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+						<td class="aright"> {t}Insurance{/t}</td>
+						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+					</tr>
+					
 					<tr id="tr_order_shipping">
 						<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
 						<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
