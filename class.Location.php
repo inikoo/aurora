@@ -134,6 +134,9 @@ class Location extends DB_Table {
 			if (array_key_exists($key,$this->data))
 				$this->data[$key]=_trim($value);
 		}
+		
+		$this->data['Location File As']=$this->get_file_as($this->data['Location Code']);
+		
 		$warehouse_area=new WarehouseArea($this->data['Location Warehouse Area Key']);
 		if (!$warehouse_area->id) {
 			$this->error=true;
@@ -846,6 +849,47 @@ foreach($key as $a=>$b){
 		}
 
 
+	}
+	
+	
+	function get_file_as($StartCode){
+		
+		$PaddingAmount=4;
+  $s = preg_replace("/[^0-9]/","-",$StartCode);
+
+  for($qq=0;$qq<10;$qq++){
+   $s = preg_replace("/--/","-",$s);  
+  }
+  
+
+  
+  $pieces = explode("-", $s);
+  
+  for($qq=0;$qq<count($pieces);$qq++){
+     $ss =  str_pad( $pieces[$qq], $PaddingAmount, '0', STR_PAD_LEFT );
+    if(strlen($pieces[$qq]) > 0){  
+     $StartCode = preg_replace('/'.$pieces[$qq].'/', ';xyz;', $StartCode, 1); 
+     $arr_parts[$qq] = $ss;
+    }
+  
+  }
+
+
+  
+  for($qq=0;$qq<count($pieces);$qq++){
+    
+     if(strlen($pieces[$qq]) > 0){
+      $ss =  $arr_parts[$qq];
+        $StartCode = preg_replace('/;xyz;/', $ss, $StartCode, 1); 
+     }
+
+  
+  }
+     
+  
+  return $StartCode;
+
+	
 	}
 
 	function get_date($key='',$tipo='dt') {
