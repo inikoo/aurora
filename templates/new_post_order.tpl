@@ -63,21 +63,21 @@
 				
 				<tr>
 					<td></td>
-					<td style="border-bottom:1px solid #ccc;" class="aright">{t}Shipping{/t}</td>
-					<td style="border-bottom:1px solid #ccc;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>
+					<td  class="aright">{t}Shipping{/t}</td>
+					<td   id="order_charges" width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>
 				</tr>
 				
 				<tr style="{if $order->get('Order Invoiced Insurance Amount')==0}display:none{/if}">
 					<td></td>
-					<td style="border-bottom:1px solid #ccc;" class="aright">{t}Insurance{/t}</td>
-					<td style="border-bottom:1px solid #ccc;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
+					<td  class="aright">{t}Insurance{/t}</td>
+					<td  id="order_charges" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
 				</tr>
 				
 			
 			<tr>
 					<td></td>
-					<td  class="aright">{t}Total Net{/t}</td>
-					<td  id="order_net" width="100" class="aright">{$order->get('Total Net Amount')}</td>
+					<td style="border-top:1px solid #ccc;"  class="aright">{t}Total Net{/t}</td>
+					<td   style="border-top:1px solid #ccc;"  id="order_net" width="100" class="aright">{$order->get('Total Net Amount')}</td>
 				</tr>
 				
 			
