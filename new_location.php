@@ -9,10 +9,17 @@ if (isset($_REQUEST['auto']))
 else
 	$auto=0;
 
+if (!isset($_REQUEST['warehouse_id']) or !is_numeric($_REQUEST['warehouse_id'])){
+	exit("no warehouse id");
+	
+}
 
 
 $smarty->assign('box_layout','yui-t0');
-$warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
+
+
+
+$warehouse=new warehouse($_REQUEST['warehouse_id']);
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
