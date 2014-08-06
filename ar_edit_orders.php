@@ -3373,7 +3373,7 @@ function picking_aid_sheet() {
 	if ($order=='reference')
 		$order='`Part Reference`';
 	elseif ($order=='location')
-		$order='`Location Code`';
+		$order='`Location File As`';
 
 	elseif ($order=='description')
 		$order='`Part Unit Description`';
@@ -3632,7 +3632,7 @@ function packing_aid_sheet() {
 	if ($order=='reference')
 		$order='`Part Reference`';
 	elseif ($order=='location')
-		$order='`Location Code`';
+		$order='`Location File As`';
 
 	elseif ($order=='description')
 		$order='`Part Unit Description`';

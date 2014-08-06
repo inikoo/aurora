@@ -365,7 +365,7 @@ function list_locations() {
 	elseif ($order=='warehouse')
 		$order='`Warehouse Code`';
 	else
-		$order='`Location Code`';
+		$order='`Location File As`';
 
 
 	$data=array();
@@ -1944,7 +1944,7 @@ if ($f_field=='sku' and $f_value!='')
 	elseif ($order=='warehouse')
 		$order='`Warehouse Code`';
 	else
-		$order='`Location Code`';
+		$order='`Location File As`';
 
 
 	$data=array();
@@ -2192,7 +2192,7 @@ global $corporate_currency;
 		$order='`Can Pick`';
 	
 	else
-		$order='`Location Code`';
+		$order='`Location File As`';
 
 
 	$data=array();

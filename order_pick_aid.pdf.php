@@ -51,7 +51,7 @@ $sql=sprintf("select  `Map To Order Transaction Fact Parts Multiplicity` as part
 `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  
 `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  left join 
 `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) 
-where `Delivery Note Key`=%d order by `Location Code`,`Part Reference` ",
+where `Delivery Note Key`=%d order by `Location File As`,`Part Reference` ",
 	$delivery_note->id
 );
 $result=mysql_query($sql);
