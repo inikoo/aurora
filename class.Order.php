@@ -2526,7 +2526,7 @@ return;
 		//print "$sql\n";
 		$result = mysql_query( $sql );
 		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-
+//print_r($row);
 			$this->data['Order Invoiced Balance Net Amount']+=$row['Transaction Invoice Net Amount'];
 			$this->data['Order Invoiced Balance Tax Amount']+=$row['Transaction Invoice Tax Amount'];
 			$this->data['Order Invoiced Balance Total Amount']+=$row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'];
@@ -2623,7 +2623,7 @@ return;
 			//print "$sql\n";
 			$result = mysql_query( $sql );
 			while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-				//print_r($row);
+			//	print_r($row);
 				$this->data['Order Invoiced Charges Amount']=$row['amount'];
 
 
@@ -3509,7 +3509,7 @@ function has_products_without_parts() {
 
 	function update_tax($tax_category_code=false) {
 
-
+$old_tax_code=$this->data['Order Tax Code'];
 
 		if ($tax_category_code) {
 			$tax_category=new TaxCategory('code',$value);
@@ -3541,21 +3541,37 @@ function has_products_without_parts() {
 		}
 
 
-		$sql=sprintf("update `Order Transaction Fact` set `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s where `Order Key`=%d and `Consolidated`='No'",
+		$sql=sprintf("update `Order Transaction Fact` set `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s where `Order Key`=%d and `Consolidated`='No' and `Transaction Tax Code`=%s  ",
 			$this->data['Order Tax Rate'],
 			prepare_mysql($this->data['Order Tax Code']),
-			$this->id
+			$this->id,
+			prepare_mysql($old_tax_code)
 
 		);
 		mysql_query($sql);
 		//print $sql;
-		$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d and `Consolidated`='No'",
+		$sql=sprintf("select `Tax Category Code`,`Transaction Type`,`Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d and `Consolidated`='No'",
 			$this->id
 		);
 
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
+		
+		if($row['Transaction Type']=='Insurance'){
+		// this to be removed!!!!
+		
+		
+		$_transaction_tax_category=new TaxCategory('code','EX');
+		$sql=sprintf("update `Order No Product Transaction Fact` set `Transaction Tax Amount`=%f,`Tax Category Code`=%s where `Order No Product Transaction Fact Key`=%d",
+				$row['Transaction Net Amount']*$_transaction_tax_category->data['Tax Category Rate'],
+				prepare_mysql($_transaction_tax_category->data['Tax Category Code']),
+				$row['Order No Product Transaction Fact Key']
+			);
+			// print $sql;
+			mysql_query($sql);
+		}elseif($row['Tax Category Code']==$old_tax_code){
+		
 			$sql=sprintf("update `Order No Product Transaction Fact` set `Transaction Tax Amount`=%f,`Tax Category Code`=%s where `Order No Product Transaction Fact Key`=%d",
 				$row['Transaction Net Amount']*$this->data['Order Tax Rate'],
 				prepare_mysql($this->data['Order Tax Code']),
@@ -3563,6 +3579,8 @@ function has_products_without_parts() {
 			);
 			// print $sql;
 			mysql_query($sql);
+			
+			}
 		}
 
 
@@ -6655,7 +6673,6 @@ function has_products_without_parts() {
 
 		return $greeting;
 	}
-
 
 
 

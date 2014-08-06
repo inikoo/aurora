@@ -2938,7 +2938,7 @@ $default_state=array(
 			'f_field'=>'alias',
 			'f_value'=>'',
 			'view'=>'general',
-			'state'=>array('Active'=>1,'Inactive'=>0),
+			'state'=>array('Active'=>1,'Inactive'=>1),
 			'elements'=>array('Working'=>1,'NotWorking'=>1)
 
 

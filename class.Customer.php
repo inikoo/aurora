@@ -2694,7 +2694,7 @@ $this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_d
 
 
 		$sql=sprintf("update `Customer Dimension` set `Customer Last Dispatched Order Date`=%s,`Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
-			,prepare_mysql($this->data['Customer Last Dispatched Order Date'])
+			prepare_mysql($this->data['Customer Last Dispatched Order Date'])
 			,$this->data['Customer Net Balance']
 			,$this->data['Customer Orders']
 			,$this->data['Customer Orders Cancelled']
