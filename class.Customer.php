@@ -2628,16 +2628,17 @@ class Customer extends DB_Table {
 
 		//get payments data directly from payment
 
-$this->data['Customer Last Dispatched Order Date']='';
+		$this->data['Customer Last Dispatched Order Date']='';
 
-$sql=sprintf("select max(`Order Order Dispatched Date Date`) as last_order_dispatched_date from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State`='Dispatched'",
-$this->id
-);
-	$res=mysql_query($sql);
+		$sql=sprintf("select max(`Order Dispatched Date`) as last_order_dispatched_date from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State`='Dispatched'",
+			$this->id
+		);
+	//	print $sql."\n";
+		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-$this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_date'];
+			$this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_date'];
 
-}
+		}
 
 
 		$sql=sprintf("select
@@ -4126,9 +4127,9 @@ $this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_d
 
 		}
 		$address_keys=$this->get_billing_address_keys();
-		
-		
-		
+
+
+
 		if (!array_key_exists($address_key,$address_keys)) {
 			$this->create_billing_address_bridge($address_key);
 			$this->updated=true;
