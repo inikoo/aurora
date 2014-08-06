@@ -42,7 +42,16 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$order=new Order($row['Order Key']);
 	//$order->update_no_normal_totals();
 	//$order->update_payment_state();
-	
+
+
+if($order->data['Order Original Data MIME Type']=='application/vnd.ms-excel' and $order->data['Order Current Dispatch State']=='Dispatched'){
+	$order->update_field_switcher('Order Current Payment State','Paid','no_history');
+$order->update_field_switcher('Order Current XHTML Payment State','Paid','no_history');
+
+
+}
+
+
 	$store=new Store($order->data['Order Store Key']);
 	$order->update_field_switcher('Order Show in Warehouse Orders',$store->data['Store Show in Warehouse Orders'],'no_history');
 	
