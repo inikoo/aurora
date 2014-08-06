@@ -55,7 +55,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$store=new Store($customer->data['Customer Store Key']);
 
-		$customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
+$customer->update_orders();
+
+//		$customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
 
 
 //$address=new Address($customer->data['Customer Billing Address Key']);
