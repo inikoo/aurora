@@ -205,7 +205,15 @@ div.inline { float:left; }
 				<td colspan="2">{t}Charges{/t}</td>
 				<td>{$invoice->get('Charges Net Amount')}</td>
 			</tr>
-			{/if} {if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
+			{/if}
+			{if $invoice->get('Invoice Insurance Net Amount')!=0} 
+			<tr>
+				<td colspan="2">{t}Insurance{/t}</td>
+				<td>{$invoice->get('Insurance Net Amount')}</td>
+			</tr>
+			{/if}
+			
+			{if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
 			<tr>
 				<td colspan="2">{t}Adjusts{/t}</td>
 				<td>{$invoice->get('Total Net Adjust Amount')}</td>

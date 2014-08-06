@@ -1831,7 +1831,7 @@ return;
 			return _('TBC');
 		}
 
-		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|(Shipping |Charges |Insurance )?Net).*(Amount)$/',$key)) {
+		if (preg_match('/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net).*(Amount)$/',$key)) {
 			$amount='Order '.$key;
 			return money($this->exchange*$this->data[$amount],$this->currency_code);
 		}
@@ -2442,8 +2442,10 @@ return;
                sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as inv_items,
                sum(`Invoice Transaction Shipping Amount`) as inv_shp,
                sum(`Invoice Transaction Charges Amount`) as inv_charges,
-               sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Net Adjust`) as inv_net,
-               sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Tax Adjust`) as inv_tax,
+               sum(`Invoice Transaction Insurance Amount`) as inv_insurance,
+
+               sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Insurance Amount`) as inv_net,
+               sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`) as inv_tax,
 
 
                sum(`Order Out of Stock Lost Amount`) as out_of_stock_net,
@@ -2474,7 +2476,7 @@ return;
 			$total_not_dispatch_net=$row['out_of_stock_net']+$row['not_authorized_net']+$row['not_found_net']+$row['not_due_other_net'];
 			$total_not_dispatch_tax=$row['out_of_stock_tax']+$row['not_authorized_tax']+$row['not_found_tax']+$row['not_due_other_tax'];
 
-			//print $row['net'].'xx';
+		
 
 
 			$this->data['Order Balance Net Amount']=round($row['original_net']-$total_not_dispatch_net,2);
@@ -2496,6 +2498,10 @@ return;
 			$this->data['Order Invoiced Items Amount']=$row['inv_items'];
 			$this->data['Order Invoiced Shipping Amount']=$row['inv_shp'];
 			$this->data['Order Invoiced Charges Amount']=$row['inv_charges'];
+			$this->data['Order Invoiced Insurance Amount']=$row['inv_insurance'];
+			
+			
+			
 			$this->data['Order Invoiced Net Amount']=$row['inv_net'];
 			$this->data['Order Invoiced Tax Amount']=$row['inv_tax'];
 			$this->data['Order Invoiced Refund Net Amount']=$row['ref_net'];
@@ -2673,7 +2679,7 @@ return;
                      `Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,
                       `Order Tax Credited Amount`=%.2f,`Order Net Credited Amount`=%.2f,
                      `Order Invoiced Profit Amount`=%.2f,
-                     `Order Invoiced Items Amount`=%.2f,`Order Invoiced Shipping Amount`=%.2f,`Order Invoiced Charges Amount`=%.2f,
+                     `Order Invoiced Items Amount`=%.2f,`Order Invoiced Shipping Amount`=%.2f,`Order Invoiced Charges Amount`=%.2f,`Order Invoiced Insurance Amount`=%.2f, 
                      `Order Invoiced Net Amount`=%.2f,`Order Invoiced Tax Amount`=%.2f,
                      `Order Out of Stock Net Amount`=%.2f,
                      `Order Out of Stock Tax Amount`=%.2f,
@@ -2717,6 +2723,8 @@ return;
 			$this->data['Order Invoiced Items Amount'],
 			$this->data['Order Invoiced Shipping Amount'],
 			$this->data['Order Invoiced Charges Amount'],
+			$this->data['Order Invoiced Insurance Amount'],
+			
 
 			$this->data['Order Invoiced Net Amount'],
 			$this->data['Order Invoiced Tax Amount'],
