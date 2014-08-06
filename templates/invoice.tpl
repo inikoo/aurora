@@ -59,22 +59,27 @@
 					<td class="aright">{t}Credits{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Refund Net Amount')}</td>
 				</tr>
-				{/if} {if $invoice->get('Invoice Charges Net Amount')!=0} 
+				{/if} 
+			
 				<tr>
 					<td class="aright">{t}Charges{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Charges Net Amount')}</td>
 				</tr>
-				{/if} {if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
+			 {if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
 				<tr style="color:red">
 					<td class="aright">{t}Adjust Net{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Total Net Adjust Amount')}</td>
 				</tr>
-				{/if} {if $invoice->get('Invoice Shipping Net Amount')!=0} 
-				<tr style="border-bottom:1px solid #777">
+				{/if}
+				<tr >
 					<td class="aright">{t}Shipping{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Shipping Net Amount')}</td>
 				</tr>
-				{/if} 
+				<tr >
+					<td class="aright">{t}Insurance{/t}</td>
+					<td width="100" class="aright">{$invoice->get('Insurance Net Amount')}</td>
+				</tr>
+				
 				<tr style="border-top:1px solid #777;border-bottom:1px solid #777">
 					<td class="aright">{t}Total Net{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Total Net Amount')}</td>

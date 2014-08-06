@@ -204,6 +204,10 @@ $sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 
+	if($row['Tax Amount']==0){
+		continue;
+	}
+
 	switch ($row['Tax Category Name']) {
 				case 'Outside the scope of VAT':
 					$tax_category_name=_('Outside the scope of VAT');

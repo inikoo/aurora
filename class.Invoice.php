@@ -796,7 +796,7 @@ class Invoice extends DB_Table {
 				$charges_net+=$row['Transaction Invoice Net Amount'];
 				$charges_tax+=$row['Transaction Invoice Tax Amount'];
 			} elseif ($row['Transaction Type']=='Insurance') {
-				$insurance_tax+=$row['Transaction Invoice Net Amount'];
+				$insurance_net+=$row['Transaction Invoice Net Amount'];
 				$insurance_tax+=$row['Transaction Invoice Tax Amount'];
 			} elseif ($row['Transaction Type']=='Adjust') {
 				$adjust_net+=$row['Transaction Invoice Net Amount'];
@@ -849,7 +849,7 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
 		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
 
-
+//print_r($this->data);
 		$total_costs=0;
 		$sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$this->id);
 
@@ -1612,6 +1612,7 @@ class Invoice extends DB_Table {
 		case('Refund Net Amount'):
 		case('Charges Net Amount'):
 		case('Shipping Net Amount'):
+		case('Insurance Net Amount'):
 		case('Total Net Amount'):
 		case('Total Tax Amount'):
 		case('Total Amount'):

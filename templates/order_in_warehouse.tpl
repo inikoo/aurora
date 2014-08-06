@@ -149,12 +149,12 @@
 			<div style="{if $order->data['Order Invoiced']=='No'}display:none{/if}">
 				<table border="0" class="info_block">
 					<tr>
-						<td class="aright">{t}Total Ordered (N){/t}</td>
+						<td class="aright">{t}Total Ordered{/t}</td>
 						<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
 					</tr>
 					{if $order->get('Order Out of Stock Net Amount')!=0 } 
 					<tr>
-						<td class="aright">{t}Out of Stock (N){/t}</td>
+						<td class="aright">{t}Out of Stock{/t}</td>
 						<td width="100" class="aright">{$order->get('Out of Stock Net Amount')}</td>
 					</tr>
 					{/if} 
@@ -163,21 +163,24 @@
 						<td></td>
 					</tr>
 					<tr>
-						<td class="aright">{t}Items (N){/t}</td>
+						<td class="aright">{t}Items{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Items Amount')}</td>
 					</tr>
 					<tr>
-						<td class="aright">{t}Shipping (N){/t}</td>
+						<td class="aright">{t}Shipping{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>
 					</tr>
 					{if $order->get('Order Invoiced Charges Amount')!=0} 
 					<tr>
-						<td class="aright">{t}Charges (N){/t}</td>
+						<td class="aright">{t}Charges{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Charges Amount')}</td>
 					</tr>
 					
 					
 					{/if}
+					
+					
+					
 					
 					<tr {if $order->get('Order Invoiced Insurance Amount')==0 }style="display:none"{/if}  > 
 						<td class="aright"> {t}Insurance{/t}</td>
@@ -196,7 +199,7 @@
 					</tr>
 					{/if} 
 					<tr style="border-top:1px solid #bbb">
-						<td class="aright">{t}Total (N){/t}</td>
+						<td class="aright">{t}Total Net{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Total Net Amount')}</td>
 					</tr>
 					{if $order->get('Order Invoiced Refund Tax Amount')!=0} 

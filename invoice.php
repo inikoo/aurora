@@ -26,6 +26,8 @@ $store=new Store($invoice->data['Invoice Store Key']);
 
 
 $invoice->update_payment_state();
+$invoice->update_totals();
+
 //print_r($invoice->data);
 
 $smarty->assign('search_label',_('Orders'));
