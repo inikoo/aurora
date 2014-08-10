@@ -3,7 +3,7 @@ var Event = YAHOO.util.Event;
 var dialog_add_payment;
 var dialog_refund_payment;
 var dialog_add_credit_note_to_customer;
-
+var dialog_complete_payment;
 
 
 function save_credit_payment() {
@@ -135,19 +135,50 @@ function cancel_payment(payment_key) {
 
 }
 
-function complete_payment(payment_key) {
+function show_complete_payment_dialog(payment_key){
+Dom.get('complete_payment_payment_key').value=payment_key;
+Dom.get('complete_payment_reference').value='';
+ region1 = Dom.getRegion('complete_payment_' + payment_key);
+    region2 = Dom.getRegion('dialog_complete_payment');
+
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_complete_payment', pos);
+  
+
+dialog_complete_payment.show();
+ can_submit_complete_payment();
+ Dom.get('complete_payment_reference').focus();
 
 
-    var request = 'ar_edit_payments.php?tipo=complete_payment&payment_key=' + payment_key + '&order_key=' + Dom.get('order_key').value;
+}
+
+function can_submit_complete_payment(){
+	if(Dom.get('complete_payment_reference').value!=''){
+		 Dom.removeClass('save_complete_payment', 'disabled')
+	}else{
+		 Dom.addClass('save_complete_payment', 'disabled')
+	}
+}
+
+function complete_payment() {
 
 
+ Dom.setStyle('save_complete_payment_wait','display','')
+Dom.setStyle(['save_complete_payment','close_complete_payment'],'display','none')
+
+
+    var request = 'ar_edit_payments.php?tipo=set_payment_as_completed&payment_key=' + Dom.get('complete_payment_payment_key').value + '&payment_transaction_id=' + Dom.get('complete_payment_reference').value;
+
+  //alert(request)
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            
+           
+           //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
-           
+           Dom.setStyle('save_complete_payment_wait','display','none')
+Dom.setStyle(['save_complete_payment','close_complete_payment'],'display','')
 
             if (r.state == 200) {
             location.reload()
@@ -404,6 +435,10 @@ function hide_credit_payment() {
     dialog_credit_payment.hide()
 }
 
+function hide_complete_payment(){
+
+	dialog_complete_payment.hide();
+}
 
 
 function change_refund_payment(method) {
@@ -582,6 +617,14 @@ function init_add_payment() {
         draggable: false
     });
     dialog_credit_payment.render();
+    
+     dialog_complete_payment = new YAHOO.widget.Dialog("dialog_complete_payment", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_complete_payment.render();
 
 
 

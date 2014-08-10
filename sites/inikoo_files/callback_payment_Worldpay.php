@@ -95,17 +95,7 @@ list ($valid,$error,$error_info)=check_if_valid($rep_password,$rep_transStatus,$
 
 if ($valid) {
 
-
-
-
-
 	if ($payment->data['Payment Transaction Status']=='Pending') {
-
-
-
-
-
-
 
 		$data_to_update=array(
 			'Payment Sender'=>$rep_name,
@@ -116,13 +106,9 @@ if ($valid) {
 			'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 			'Payment Transaction Status'=>'Completed',
 			'Payment Transaction ID'=>$rep_transId,
-
+			'Payment Method'=>'Credit Card'
 
 		);
-
-
-
-
 
 
 		$payment->update($data_to_update);

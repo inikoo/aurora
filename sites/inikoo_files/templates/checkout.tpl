@@ -110,7 +110,12 @@
 	</div>
 	<div style="clear:both">
 	</div>
-	<div id="cancelled_payments_container" style="{if $order->get_number_payments('Cancelled')==0}display:none{/if}">
+	
+	<div id="you_have_cancelled_payments" style="padding-top:20px;{if $order->get_number_payments('Cancelled')==0}display:none{/if}">
+		<img style="position:relative;top:2px" src="art/icons/exclamation.png"> {t}Previous attempts to pay were unsuccessful{/t}. <span style="cursor:pointer;text-decoration:underline">{t}More info{/t}</span>
+	</div>
+	
+	<div id="cancelled_payments_container" style="display:none">
 		<table id="cancelled_payments">
 			<tr>
 				<td colspan="6">

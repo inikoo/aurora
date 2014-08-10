@@ -1,5 +1,5 @@
 {include file='header.tpl'} 
-<div id="bd" >
+<div id="bd">
 	{include file='orders_navigation.tpl'} 
 	<input type="hidden" id="order_key" value="{$order->id}" />
 	<div class="branch">
@@ -10,10 +10,7 @@
 			<span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 		</div>
 		<div class="buttons">
-					 <button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> 
-
-		 <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
-	
+			<button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -21,7 +18,7 @@
 	<div id="control_panel">
 		<div id="addresses">
 			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px">  {$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
 				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Contact Address{/t}:</span> <b>{$customer->get('Customer Main Contact Name')}</b><br />
@@ -60,11 +57,16 @@
 					<td width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
 				{/if} 
-				<tr style="border-bottom:1px solid #777">
+				<tr >
 					<td class="aright">{t}Shipping{/t}</td>
 					<td width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
-				<tr>
+					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+						<td class="aright"> {t}Insurance{/t}</td>
+						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+					</tr>
+				
+				<tr style="border-top:1px solid #777">
 					<td class="aright">{t}Net{/t}</td>
 					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
 				</tr>
@@ -73,78 +75,62 @@
 					<td width="100" class="aright">{$order->get('Total Tax Amount')}</td>
 				</tr>
 				<tr style="border-bottom:1px solid #777">
-						<td class="aright">{t}Total{/t}</td>
-						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
-					</tr>
-					
+					<td class="aright">{t}Total{/t}</td>
+					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
+				</tr>
 				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')==0 }display:none{/if}">
-						<td class="aright">{t}Paid{/t}</td>
-						<td id="order_total_paid" width="100" class="aright" >{$order->get('Payments Amount')}</td>
-					</tr>
+					<td class="aright">{t}Paid{/t}</td>
+					<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
+				</tr>
 				<tr id="tr_order_total_paid" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright">
-						{t}To Pay{/t}</td>
-						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
-					</tr>
-				
+					<td class="aright"> {t}To Pay{/t}</td>
+					<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+				</tr>
 			</table>
 		</div>
 		<div id="dates">
-				
-				{if $order->get_notes()} 
-				<div class="notes" style="border:1px solid #ccc;padding:5px;margin-bottom:5px">
-					{$order->get_notes()}
-				</div>
-				{/if} 
-				
-				<table border="0" class="info_block">
-					<tr>
-						<td>{t}Created{/t}:</td>
-						<td class="aright">{$order->get('Date')}</td>
-					</tr>
-					<tr>
-						<td>{t}Last updated{/t}:</td>
-						<td class="aright">{$order->get('Last Updated Date')}</td>
-					</tr>
-					<tr style="border-top:1px solid #ccc" >
-						<td>{t}On website{/t}:</td>
-						<td class="aright">{$order->get('Interval Last Updated Date')}</td>
-					</tr>
-					
-					
-					
-				</table>
+			{if $order->get_notes()} 
+			<div class="notes" style="border:1px solid #ccc;padding:5px;margin-bottom:5px">
+				{$order->get_notes()} 
 			</div>
+			{/if} 
+			<table border="0" class="info_block">
+				<tr>
+					<td>{t}Created{/t}:</td>
+					<td class="aright">{$order->get('Date')}</td>
+				</tr>
+				<tr>
+					<td>{t}Last updated{/t}:</td>
+					<td class="aright">{$order->get('Last Updated Date')}</td>
+				</tr>
+				<tr style="border-top:1px solid #ccc">
+					<td>{t}On website{/t}:</td>
+					<td class="aright">{$order->get('Interval Last Updated Date')}</td>
+				</tr>
+			</table>
+		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-{include file='order_payments_splinter.tpl'} 
-
-	
-	
+	{include file='order_payments_splinter.tpl'} 
 	<div style="margin-top:20px">
-	<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span>  
-			
-			<div class="table_top_bar">
-			</div>
-			<div class="clusters">
-					<div id="table_view_menu1" >
-						<div class="buttons small left cluster">
-							<button class="table_option {if $items_view=='basket'}selected{/if}" id="items_basket">{t}Basket{/t}</button> 
-							<button class="table_option {if $items_view=='times'}selected{/if}" id="items_times">{t}Order times{/t}</button> 
-						</div>
-					
-					</div>
-					
-					<div style="clear:both">
-					</div>
+		<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span> 
+		<div class="table_top_bar">
+		</div>
+		<div class="clusters">
+			<div id="table_view_menu1">
+				<div class="buttons small left cluster">
+					<button class="table_option {if $items_view=='basket'}selected{/if}" id="items_basket">{t}Basket{/t}</button> <button class="table_option {if $items_view=='times'}selected{/if}" id="items_times">{t}Order times{/t}</button> 
 				</div>
-	{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
-			<div id="table0" class="data_table_container dtable btable" style="font-size:80%">
 			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
+		<div id="table0" class="data_table_container dtable btable" style="font-size:80%">
+		</div>
 	</div>
 </div>
-
 <div id="dialog_cancel" style="padding:15px 20px 5px 10px;width:200px">
 	<div id="cancel_msg">
 	</div>
@@ -173,6 +159,4 @@
 		</tr>
 	</table>
 </div>
-{include file='add_payment_splinter.tpl'}
-
-{include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl'} {include file='footer.tpl'} 
