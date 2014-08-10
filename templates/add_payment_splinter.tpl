@@ -145,3 +145,28 @@
 </div>
 
 
+<div id="dialog_complete_payment" style="padding:20px 20px 10px 20px">
+
+	<input type="hidden" value="" id="complete_payment_payment_key"> 
+
+
+
+	<table style="font-size:110%;border-top:1px solid #ccc">
+		
+		<tr>
+			<td>{t}Reference{/t}:</td>
+			<td> 
+			<input onkeyup="can_submit_complete_payment()" id="complete_payment_reference"></td>
+		</tr>
+		<tr style="height:5px">
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons">
+				<span id="save_complete_payment_wait" style="display:none"><img src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span> <button id="save_complete_payment" class="positive disabled" id="save_complete_payment" onclick="complete_payment()">{t}Save{/t}</button> <button id="close_complete_payment" class="negative" onclick="hide_complete_payment()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>

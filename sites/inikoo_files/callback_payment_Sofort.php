@@ -87,6 +87,7 @@ if ($valid) {
 			'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 			'Payment Transaction Status'=>'Completed',
 			'Payment Transaction ID'=>$rep_tranid,
+			'Payment Method'=>'Bank Transfer'
 
 
 		);

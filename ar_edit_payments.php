@@ -44,7 +44,7 @@ case ('refund_payment'):
 	refund_payment($data);
 
 	break;
-	
+
 case ('credit_payment'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -58,8 +58,8 @@ case ('credit_payment'):
 
 	credit_payment($data);
 
-	break;	
-	
+	break;
+
 case('add_payment'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -101,13 +101,7 @@ case('cancel_payment'):
 	cancel_payment($data);
 	break;
 
-	case('complete_payment'):
-	$data=prepare_values($_REQUEST,array(
-			'payment_key'=>array('type'=>'key'),
-			'order_key'=>array('type'=>'key')
-		));
-	complete_payment($data);
-	break;
+
 
 default:
 	$response=array('state'=>404,'resp'=>'Operation not found');
@@ -115,85 +109,7 @@ default:
 
 }
 
-function complete_payment($data) {
 
-	$payment_key=$data['payment_key'];
-	$payment=new Payment($payment_key);
-	$order=new Order($data['order_key']);
-
-
-
-	if (!$payment->id) {
-
-		$pending_payments=count($order->get_payment_keys('Pending'));
-
-
-		$response=array(
-			'state'=>201,
-			'msg'=>'error: payment dont exists',
-			'type_error'=>'invalid_payment_key',
-			'payment_key'=>$data['payment_key'],
-			'pending_payments'=>$pending_payments,
-			'status'=>'Deleted',
-			'created_time_interval'=>0,
-			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
-
-
-		);
-		echo json_encode($response);
-		return;
-	}
-
-	if ($payment->data['Payment Transaction Status']!='Pending') {
-		$pending_payments=count($order->get_payment_keys('Pending'));
-		$response=array(
-			'state'=>201,
-			'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],
-			'type_error'=>'invalid_payment_status',
-			'payment_key'=>$payment->id,
-			'pending_payments'=>$pending_payments,
-			'status'=>$payment->data['Payment Transaction Status'],
-			'created_time_interval'=>0,
-			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
-
-		);
-		echo json_encode($response);
-		return;
-	}
-
-	$data_to_update=array(
-
-		'Payment Completed Date'=>'',
-		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Cancelled Date'=>gmdate('Y-m-d H:i:s'),
-		'Payment Transaction Status'=>'Completed',
-		'Payment Transaction Status Info'=>_('Completed by user'),
-
-
-	);
-	$payment->update($data_to_update);
-
-
-$order->update_payment_state();
-	
-
-		$response=array(
-			'state'=>200,
-			'payment_key'=>$payment->id,
-			//'pending_payments'=>$pending_payments,
-			'status'=>$payment->data['Payment Transaction Status'],
-			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date'),
-			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
-		);
-	
-
-	echo json_encode($response);
-	return;
-
-
-
-
-}
 
 
 function cancel_payment($data) {
@@ -316,17 +232,61 @@ function cancel_payment($data) {
 }
 
 
-
 function set_payment_as_completed($data) {
+
+include_once('send_confirmation_email_function.php');
+
 
 	$payment_transaction_id=$data['payment_transaction_id'];
 	$payment_key=$data['payment_key'];
 
 	$payment=new Payment($payment_key);
 	$payment_account=new Payment_Account($payment->data['Payment Account Key']);
-
 	$order_key=$payment->data['Payment Order Key'];
 	$order=new Order($order_key);
+
+	if (!$payment->id) {
+
+		$pending_payments=count($order->get_payment_keys('Pending'));
+
+
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment dont exists',
+			'type_error'=>'invalid_payment_key',
+			'payment_key'=>$data['payment_key'],
+			'pending_payments'=>$pending_payments,
+			'status'=>'Deleted',
+			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	if ($payment->data['Payment Transaction Status']!='Pending') {
+		$pending_payments=count($order->get_payment_keys('Pending'));
+		$response=array(
+			'state'=>201,
+			'msg'=>'error: payment not pending. '.$payment->data['Payment Transaction Status'],
+			'type_error'=>'invalid_payment_status',
+			'payment_key'=>$payment->id,
+			'pending_payments'=>$pending_payments,
+			'status'=>$payment->data['Payment Transaction Status'],
+			'created_time_interval'=>0,
+			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+
+		);
+		echo json_encode($response);
+		return;
+	}
+
+
+
+
+
 	$data_to_update=array(
 
 		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
@@ -351,12 +311,45 @@ function set_payment_as_completed($data) {
 
 	$order->checkout_submit_order();
 
-
-
-
-
-
 	send_confirmation_email($order);
+
+$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'order_total_paid'=>$order->get('Payments Amount'),
+		'order_total_to_pay'=>$order->get('To Pay Amount')
+
+	);
+
+	$payments_data=array();
+	foreach ($order->get_payment_objects('',true,true) as $payment) {
+		$payments_data[$payment->id]=array(
+			'date'=>$payment->get('Created Date'),
+			'amount'=>$payment->get('Amount'),
+			'status'=>$payment->get('Payment Transaction Status')
+		);
+	}
+
+$response=array('state'=>200,
+		'result'=>'updated',
+		'order_shipping_method'=>$order->data['Order Shipping Method'],
+		'data'=>$updated_data,
+		
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
+		'payments_data'=>$payments_data,
+		'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+	);
+
+	echo json_encode($response);
+
 
 }
 
@@ -502,7 +495,7 @@ function credit_payment($data) {
 	$store=new Store($payment->data['Payment Store Key']);
 
 
-		$payment_account=new Payment_Account($store->get_payment_account_key());
+	$payment_account=new Payment_Account($store->get_payment_account_key());
 
 
 
@@ -533,8 +526,8 @@ function credit_payment($data) {
 
 	$refund_payment=new Payment('create',$payment_data);
 
-$customer=new Customer($payment->data['Payment Customer Key']);
-		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$credit_amount,'no_history');
+	$customer=new Customer($payment->data['Payment Customer Key']);
+	$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$credit_amount,'no_history');
 
 
 	$refund_payment->load_payment_account();

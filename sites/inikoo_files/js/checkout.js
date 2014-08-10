@@ -239,9 +239,17 @@ function back_to_shop() {
 
 }
 
+function show_cancelled_payments(){
+Dom.setStyle('you_have_cancelled_payments','display','none')
+Dom.setStyle('cancelled_payments_container','display','')
+
+}
+
 function init_checkout() {
     Event.addListener('confirm_payment', "click", confirm_payment);
     Event.addListener('place_order', "click", place_order);
+    Event.addListener('you_have_cancelled_payments', "click", show_cancelled_payments);
+
 
 
 

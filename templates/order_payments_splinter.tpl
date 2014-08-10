@@ -30,7 +30,7 @@
 			<td style="width:200px"> 
 			<div class="buttons small left">
 				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending')}display:none{/if}" class="negative" onclick="cancel_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> 
-				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending')}display:none{/if}" class="positive" onclick="complete_payment({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> 
+				<button id="complete_payment_{$payment->id}" style="{if !( $payment->get('Payment Transaction Status')=='Pending')}display:none{/if}" class="positive" onclick="show_complete_payment_dialog({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> 
 				<button id="add_refund_{$payment->id}" class="{if  $order->get('Order To Pay Amount')<0}positive{/if}" style="{if  $payment->get('Payment Type')!='Payment' or  $payment->get('Payment Method')=='Account' or $payment->get('Payment Transaction Status')!='Completed'}display:none{/if}" onclick="refund_payment({$payment->get('Payment Key')})"><img style="height:12.5px;width:12.5px" src="art/icons/add.png"> {t}Refund{/t}</button> 
 				<button id="add_credit_{$payment->id}" class="{if  $order->get('Order To Pay Amount')<0}positive{/if}" style="{if  $payment->get('Payment Type')!='Payment' or  $payment->get('Payment Method')=='Account' or $payment->get('Payment Transaction Status')!='Completed'}display:none{/if}" onclick="credit_payment({$payment->get('Payment Key')})"><img style="height:12.5px;width:12.5px"  src="art/icons/add.png"> {t}Credit{/t}</button> 
 

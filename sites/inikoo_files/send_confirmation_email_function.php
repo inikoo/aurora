@@ -9,7 +9,16 @@ include_once 'class.Payment_Account.php';
 
 function send_confirmation_email($order) {
 
-	global $site,$store;
+
+	$site=new Site($order->data['Order Site Key']);
+
+	$store=new Store($order->data['Order Store Key']);
+
+
+	if(!$site->id){
+		// to do get credentials from store and send email anyway maybe
+		return;
+	}
 
 	$email_mailing_list_key=0;
 
