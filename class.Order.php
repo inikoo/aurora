@@ -5090,7 +5090,7 @@ if(!$dn_key)
 						$this->id,
 						prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
 					);
-print $sql;
+//print $sql;
 					$res2=mysql_query($sql);
 					if ($_row=mysql_fetch_array($res2)) {
 						if ($_row['num']>0) {
