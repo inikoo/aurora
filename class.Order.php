@@ -813,6 +813,10 @@ class Order extends DB_Table {
 				$this->id );
 			mysql_query( $sql );
 
+$sql = sprintf( "update `Order Transaction Fact` set  `Picking Factor`=0,  `Picking Factor`=0,`Picked Quantity`=0, `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0,`Shipped Quantity`=0, `No Shipped Due Out of Stock`=0,`No Shipped Due No Authorized`=0,`No Shipped Due Not Found`=0,`No Shipped Due Other`=0,`Order Out of Stock Lost Amount`=0,`Invoice Quantity`=0 where `Order Key`=%d ",
+				
+				$this->id );
+			mysql_query( $sql );
 
 
 			$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s  where `Order Key`=%d ",
