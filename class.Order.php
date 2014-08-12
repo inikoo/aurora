@@ -4919,7 +4919,7 @@ if(!$dn_key)
 				$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Dispatched Date`>=%s and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 					$this->data['Order Customer Key'],
 					$this->id,
-					prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+					prepare_mysql(date('Y-m-d',strtotime($this->data['Order Date']." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
 				);
 	//print $sql;
 				$res2=mysql_query($sql);
@@ -4962,7 +4962,7 @@ if(!$dn_key)
 					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Dispatched Date`>=%s and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 						$this->data['Order Customer Key'],
 						$this->id,
-						prepare_mysql(date('Y-m-d',strtotime("now -".$interval_term)).' 00:00:00')
+						prepare_mysql(date('Y-m-d',strtotime($this->data['Order Date']." -".$interval_term)).' 00:00:00')
 					);
 					// print $deal_component_data['Deal Component Terms'];
 					$res2=mysql_query($sql);
@@ -5092,7 +5092,7 @@ if(!$dn_key)
 					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Dispatched Date`>=%s  and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes' ",
 						$this->data['Order Customer Key'],
 						$this->id,
-						prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+						prepare_mysql(date('Y-m-d',strtotime($this->data['Order Date']." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
 					);
 //print $sql;
 					$res2=mysql_query($sql);

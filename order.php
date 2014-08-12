@@ -404,7 +404,7 @@ else {
 	case('Ready to Ship'):
 	
 	
-	$order->update_discounts_items();
+	//$order->update_discounts_items();
 		$order->update_tax();
 //$order->update_payment_state();
 		$order->update_item_totals_from_order_transactions();

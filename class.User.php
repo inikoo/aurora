@@ -52,7 +52,6 @@ class User extends DB_Table {
 		return;
 	}
 
-
 	function find($raw_data,$options='') {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
@@ -259,7 +258,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function get_data($key,$data,$data2='Staff') {
 		global $_group;
 		if ($key=='handle')
@@ -299,7 +297,6 @@ class User extends DB_Table {
 
 
 	}
-
 
 	function update_active($value) {
 		$this->updated=false;
@@ -344,7 +341,6 @@ class User extends DB_Table {
 		}
 
 	}
-
 
 	function update_warehouses($value) {
 		$this->updated=false;
@@ -450,10 +446,6 @@ class User extends DB_Table {
 		}
 	}
 
-
-
-
-
 	function update_groups($value) {
 
 		$this->updated=false;
@@ -497,7 +489,6 @@ class User extends DB_Table {
 
 	}
 
-
 	public function update($tipo,$data='') {
 		switch ($tipo) {
 		case('isactive'):
@@ -530,7 +521,6 @@ class User extends DB_Table {
 
 
 	}
-
 
 	function update_staff_setting_field($field,$value,$options='') {
 
@@ -621,7 +611,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function change_password($data) {
 
 		if (strlen($data)!=64) {
@@ -638,10 +627,6 @@ class User extends DB_Table {
 		$this->updated=true;
 
 	}
-
-
-
-
 
 	function add_group($to_add,$history=true) {
 		$changed=0;
@@ -739,7 +724,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function delete_store($to_delete,$history=true) {
 		$changed=0;
 		foreach ($to_delete as $scope_id) {
@@ -789,7 +773,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function delete_website($to_delete,$history=true) {
 		$changed=0;
 		foreach ($to_delete as $scope_id) {
@@ -813,7 +796,6 @@ class User extends DB_Table {
 		}
 		return $changed;
 	}
-
 
 	function add_warehouse($to_add,$history=true) {
 		$changed=0;
@@ -842,7 +824,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function delete_warehouse($to_delete,$history=true) {
 		$changed=0;
 		include_once 'class.Warehouse.php';
@@ -867,7 +848,6 @@ class User extends DB_Table {
 		}
 		return $changed;
 	}
-
 
 	function get($key) {
 
@@ -940,16 +920,18 @@ class User extends DB_Table {
 		return $customer_name;
 	}
 
-
 	function get_number_suppliers() {
 		return count($this->suppliers);
 	}
+
 	function get_number_warehouses() {
 		return count($this->warehouses);
 	}
+
 	function get_number_stores() {
 		return count($this->stores);
 	}
+
 	function get_number_websites() {
 		return count($this->websites);
 	}
@@ -971,13 +953,14 @@ class User extends DB_Table {
 	function can_create($tag,$tag_key=false) {
 		return $this->can_do('Create',$tag,$tag_key);
 	}
+
 	function can_edit($tag,$tag_key=false) {
 		return $this->can_do('Edit',$tag,$tag_key);
 	}
+
 	function can_delete($tag,$tag_key=false) {
 		return $this->can_do('Delete',$tag,$tag_key);
 	}
-
 
 	function can_do($right_type,$tag,$tag_key=false) {
 
@@ -1003,12 +986,6 @@ class User extends DB_Table {
 
 	}
 
-
-
-
-
-
-
 	function can_do_anyx($right_type,$tag) {
 
 		if (array_key_exists($tag,$this->rights_allow[$right_type]))
@@ -1016,7 +993,6 @@ class User extends DB_Table {
 		else
 			return false;
 	}
-
 
 	function can_do_this_key($right_type,$tag,$tag_key) {
 
@@ -1033,7 +1009,6 @@ class User extends DB_Table {
 
 
 	}
-
 
 	function read_groups() {
 		$this->groups=array();
@@ -1053,8 +1028,6 @@ class User extends DB_Table {
 		$this->groups_read=true;
 	}
 
-
-
 	function read_warehouses() {
 
 		$this->warehouses=array();
@@ -1066,7 +1039,6 @@ class User extends DB_Table {
 		}
 
 	}
-
 
 	function read_websites() {
 
@@ -1080,7 +1052,6 @@ class User extends DB_Table {
 
 
 	}
-
 
 	function read_stores() {
 
@@ -1116,7 +1087,6 @@ class User extends DB_Table {
 				$this->supplier_righs='some';
 		}
 	}
-
 
 	function read_rights() {
 
@@ -1188,7 +1158,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function can_view_list($right_name) {
 		$list=array();
 
@@ -1213,7 +1182,6 @@ class User extends DB_Table {
 
 		return $list;
 	}
-
 
 	function forgot_password() {
 
@@ -1357,7 +1325,6 @@ class User extends DB_Table {
 		);
 		mysql_query($sql);
 	}
-
 
 	function add_image($image_key) {
 
@@ -1571,7 +1538,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function deactivate() {
 
 		if ($this->data['User Active']=='No') {
@@ -1628,7 +1594,6 @@ class User extends DB_Table {
 
 	}
 
-
 	function update_table_export_field($table_key,$fields) {
 
 
@@ -1658,9 +1623,6 @@ class User extends DB_Table {
 		}
 
 	}
-
-
-
 
 }
 
