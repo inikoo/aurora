@@ -824,6 +824,12 @@ class Order extends DB_Table {
 
 			foreach ($this->get_delivery_notes_objects() as $dn) {
 				$dn->cancel($note,$date,$force);
+				
+				$sql=sprintf("delete from  `Order Delivery Note Bridge` where `Delivery Note Key` where `Order Key`=%d and `Delivery Note Key`=%d",
+				$this->id,
+				$dn->id
+				);
+				mysql_query( $sql );				
 			}
 
 			$customer=new Customer($this->data['Order Customer Key']);
