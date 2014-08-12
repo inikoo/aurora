@@ -4704,8 +4704,9 @@ $old_tax_code=$this->data['Order Tax Code'];
 
 	function update_discounts_no_items($dn_key=false) {
 
-if($dn_key)
+if(!$dn_key)
 	return;
+	
 		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Order Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
@@ -4713,6 +4714,8 @@ if($dn_key)
 			,$this->id
 		);
 		mysql_query($sql);
+
+
 
 		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
 		mysql_query($sql);
@@ -4914,7 +4917,7 @@ if($dn_key)
 					$this->id,
 					prepare_mysql(date('Y-m-d',strtotime("now -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
 				);
-
+	print $sql;
 				$res2=mysql_query($sql);
 				if ($_row=mysql_fetch_assoc($res2)) {
 
