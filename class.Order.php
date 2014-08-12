@@ -1621,7 +1621,7 @@ return;
 
 			$this->update_shipping($dn_key,false);
 			$this->update_charges($dn_key,false);
-			$this->update_discounts_no_items();
+			$this->update_discounts_no_items($dn_key);
 
 
 
@@ -4696,9 +4696,10 @@ $old_tax_code=$this->data['Order Tax Code'];
 	}
 
 
-	function update_discounts_no_items() {
+	function update_discounts_no_items($dn_key=false) {
 
-
+if($dn_key)
+	return;
 		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Order Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
