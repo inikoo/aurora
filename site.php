@@ -30,7 +30,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 
-if (!($user->can_view('stores')    ) ) {
+if (!($user->can_view('sites')    ) ) {
 	header('Location: index.php');
 	exit;
 }
@@ -39,7 +39,7 @@ if (!($user->can_view('stores')    ) ) {
 
 $site=new Site($site_id);
 if (!$site->id) {
-	header('Location: index.php');
+	header('Location: index.php?no_site_id');
 	exit;
 }
 
@@ -413,7 +413,6 @@ $to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
 $from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
 $smarty->assign('to_little_edian',$to_little_edian);
 $smarty->assign('from_little_edian',$from_little_edian);
-$smarty->assign('calendar_id','sales');
 
 
 $smarty->display('site.tpl');

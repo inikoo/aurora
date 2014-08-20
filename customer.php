@@ -403,7 +403,7 @@ if ($order_interval>10) {
 		$order_interval=round($order_interval).' '._('days');
 	$smarty->assign('orders_interval',$order_interval);
 $filter_menu=array(
-	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with notes *<i>x</i>*'),'label'=>_('Notes')),
 	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
 	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
 	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))

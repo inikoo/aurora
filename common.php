@@ -121,7 +121,6 @@ $_client_locale='en_GB.UTF-8';
 include_once 'set_locales.php';
 require 'locale.php';
 
-//print_r(localeconv());
 $_SESSION['locale_info'] = localeconv();
 if ($_SESSION['locale_info']['currency_symbol']=='EU')
 	$_SESSION['locale_info']['currency_symbol']='Û';
