@@ -290,9 +290,7 @@ class User extends DB_Table {
 				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 					$this->data=array_merge($this->data,$row2);
 				}
-
 			}
-
 		}
 
 
@@ -711,8 +709,8 @@ class User extends DB_Table {
 			if (mysql_affected_rows()>0) {
 				$changed++;
 				$history_data=array(
-					'History Abstract'=>_('User Rights Associated with Store')
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$store->data['Store Name'])
+					'History Abstract'=>_('User rights granted for store').'. ('.$store->data['Store Code'].')'
+					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$store->data['Store Name'])
 					,'Action'=>'associate'
 					,'Indirect Object'=>'Store'
 					,'Indirect Object Key'=>$store->id
@@ -736,8 +734,10 @@ class User extends DB_Table {
 		if (mysql_affected_rows()>0) {
 			$changed++;
 			$history_data=array(
-				'History Abstract'=>_('User Rights Disassociated with Store')
-				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$store->data['Store Name'])
+				
+					'History Abstract'=>_('User rights removed from store').'. ('.$store->data['Store Code'].')'
+
+				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$store->data['Store Name'])
 				,'Action'=>'disassociate'
 				,'Indirect Object'=>'Store'
 				,'Indirect Object Key'=>$store->id
@@ -760,8 +760,8 @@ class User extends DB_Table {
 			if (mysql_affected_rows()>0) {
 				$changed++;
 				$history_data=array(
-					'History Abstract'=>_('User Rights Associated with Store')
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$website->data['Site Name'])
+					'History Abstract'=>_('User rights granted for website').'. ('.$store->data['Site Code'].')'
+					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$website->data['Site Name'])
 					,'Action'=>'associate'
 					,'Indirect Object'=>'Site'
 					,'Indirect Object Key'=>$website->id
@@ -785,8 +785,8 @@ class User extends DB_Table {
 		if (mysql_affected_rows()>0) {
 			$changed++;
 			$history_data=array(
-				'History Abstract'=>_('User Rights Disassociated with Website')
-				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$website->data['Site Name'])
+				'History Abstract'=>_('User rights removed from website').'. ('.$store->data['Site Code'].')'
+				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$website->data['Site Name'])
 				,'Action'=>'disassociate'
 				,'Indirect Object'=>'Site'
 				,'Indirect Object Key'=>$website->id
@@ -993,7 +993,7 @@ class User extends DB_Table {
 		else
 			return false;
 	}
-
+/*
 	function can_do_this_key($right_type,$tag,$tag_key) {
 
 
@@ -1009,6 +1009,7 @@ class User extends DB_Table {
 
 
 	}
+	*/
 
 	function read_groups() {
 		$this->groups=array();

@@ -3112,6 +3112,10 @@ $default_state=array(
 		),
 
 	),
+	
+	'preferences'=>array(
+		'view'=>'color'
+	),
 	'sites'=>array(
 		'block_view'=>'sites',
 
@@ -3179,9 +3183,6 @@ $default_state=array(
 			'elements'=>''
 		)
 
-	),
-	'preferences'=>array(
-		'view'=>'color'
 	),
 	'site'=>array(
 

@@ -6,7 +6,8 @@
 
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="block_view" value="{$block_view}" />
-		<input type="hidden" id="from" value="{$from}" />
+	
+	<input type="hidden" id="from" value="{$from}" />
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="subject" value="page"> 
 	<input type="hidden" id="subject_key" value="{$site->id}"> 

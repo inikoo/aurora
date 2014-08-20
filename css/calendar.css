@@ -16,3 +16,6 @@
 .calendar_year td.week {border:none;border-top:1px solid #fff;border-bottom:1px solid #fff;padding-right:6px}
 
  
+#calendar_container{padding:0 20px;padding-bottom:0px;}
+#period_label_container{float:left;margin-top:7px;font-size:90%;}
+#period_label_container img{height:12px;position:relative;bottom:2px}
