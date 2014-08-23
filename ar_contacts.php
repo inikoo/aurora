@@ -4,7 +4,6 @@
 
 require_once 'common.php';
 require_once 'class.Customer.php';
-require_once 'class.Timer.php';
 require_once 'ar_edit_common.php';
 
 if (!isset($output_type))

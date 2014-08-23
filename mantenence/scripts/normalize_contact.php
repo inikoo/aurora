@@ -1,5 +1,5 @@
 <?php
-include_once('../../app_files/db/dns.php');
+include_once('../../conf/dns.php');
 include_once('../../class.Contact.php');
 
 require_once 'MDB2.php';            // PEAR Database Abstraction Layer

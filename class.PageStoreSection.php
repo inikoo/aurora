@@ -225,7 +225,6 @@ class PageStoreSection extends DB_Table {
                 $image_data=array(
                                 'file'=>$file,
                                 'source_path'=>'mantenence/scripts/',
-                                'path'=>'sites/app_files/pics/',
                                 'name'=>'background_image',
                                 'caption'=>''
                             );

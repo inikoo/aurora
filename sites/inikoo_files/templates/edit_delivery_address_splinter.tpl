@@ -1,1 +1,0 @@
-../../../templates/edit_delivery_address_splinter.tpl

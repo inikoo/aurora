@@ -73,7 +73,7 @@ $scope_args='';
 
 if(isset($_POST['submit']))
 {
-$target_path = "app_files/uploads/";
+$target_path = "server_files/tmp/";
 
 $target_path = $target_path . basename( $_FILES['fileUpload']['name']); 
 
@@ -110,7 +110,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 		return $arrData;
 	}
 
-	$xmlUrl = "app_files/uploads/".$v; // XML feed file/URL
+	$xmlUrl = "server_files/tmp/".$v; // XML feed file/URL
         
 
 	$xmlStr = file_get_contents($xmlUrl);

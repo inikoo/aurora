@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2013 LW
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 include_once '../../class.Warehouse.php';
 
 error_reporting(E_ALL);

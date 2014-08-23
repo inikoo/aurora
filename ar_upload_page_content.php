@@ -15,10 +15,10 @@ require_once 'class.Site.php';
 require_once 'class.Image.php';
 require_once 'ar_edit_common.php';
 
-//upload_page_content_from_file('app_files/tmp/page_content_1322053322_4ecceeca8d41c/jbb/index.php',469);
+//upload_page_content_from_file('server_files/tmp/page_content_1322053322_4ecceeca8d41c/jbb/index.php',469);
 //exit;
 
-//upload_header_from_file('app_files/tmp/page_content_1322354660_4ed187e4c1d0c/header_aw/header.html',array('parent'=>'site','parent_key'=>1,'original_filename'=>'xx'));
+//upload_header_from_file('server_files/tmp/page_content_1322354660_4ed187e4c1d0c/header_aw/header.html',array('parent'=>'site','parent_key'=>1,'original_filename'=>'xx'));
 //exit;
 if (!isset($_REQUEST['tipo'])) {
 	$response=array('state'=>405,'msg'=>'Non acceptable request (t)');
@@ -240,7 +240,7 @@ function getArray($node) {
 function upload_from_zip($data) {
 
 	$folder_id=date('U').'_'.uniqid();
-	$base_dir="app_files/tmp/page_content_".$folder_id;
+	$base_dir="server_files/tmp/page_content_".$folder_id;
 
 	mkdir($base_dir, 0777);
 
@@ -276,19 +276,19 @@ function upload_from_zip($data) {
 
 		switch ($data['tipo']) {
 		case 'upload_page_content':
-			$response=upload_page_content_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+			$response=upload_page_content_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
 			break;
 		case 'upload_header':
-			$response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+			$response=upload_header_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
 			break;
 		case 'upload_footer':
-			$response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+			$response=upload_footer_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
 			break;
 		case 'upload_menu':
-			$response=upload_menu_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+			$response=upload_menu_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
 			break;
 		case 'upload_search':
-			$response=upload_search_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+			$response=upload_search_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
 			break;
 		default:
 			$response= array('state'=>400,'msg'=>'unknown scope');
@@ -296,7 +296,7 @@ function upload_from_zip($data) {
 		}
 
 
-		//deleteAll("app_files/tmp/page_content_".$folder_id);
+		//deleteAll("server_files/tmp/page_content_".$folder_id);
 		echo json_encode($response);
 
 
@@ -309,19 +309,19 @@ function upload_from_zip($data) {
 
 			switch ($data['tipo']) {
 			case 'upload_page_content':
-				$response=upload_page_content_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+				$response=upload_page_content_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
 				break;
 			case 'upload_header':
-				$response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+				$response=upload_header_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
 				break;
 			case 'upload_footer':
-				$response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+				$response=upload_footer_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
 				break;
 			case 'upload_menu':
-				$response=upload_menu_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+				$response=upload_menu_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
 				break;
 			case 'upload_search':
-				$response=upload_search_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+				$response=upload_search_from_file("server_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
 				break;
 
 			default:
@@ -330,7 +330,7 @@ function upload_from_zip($data) {
 			}
 
 
-			//deleteAll("app_files/tmp/page_content_".$folder_id);
+			//deleteAll("server_files/tmp/page_content_".$folder_id);
 			echo json_encode($response);
 
 
@@ -345,7 +345,7 @@ function upload_from_zip($data) {
 	}
 
 
-	deleteAll("app_files/tmp/page_content_".$folder_id);
+	deleteAll("server_files/tmp/page_content_".$folder_id);
 	return;
 }
 

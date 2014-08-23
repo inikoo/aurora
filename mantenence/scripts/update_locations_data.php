@@ -2,7 +2,7 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 // Created: 6 August 2014 14:16:18 BST, Nottingham UK
 //Copyright (c) 2014 LW
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';

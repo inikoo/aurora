@@ -1,1 +1,0 @@
-../../../locale/it_IT/LC_MESSAGES/inikoo.mo

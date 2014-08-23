@@ -1,1 +1,0 @@
-../../../templates/edit_billing_address_splinter.tpl

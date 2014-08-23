@@ -8,7 +8,7 @@ date_default_timezone_set('UTC');
 //ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-include_once('../../app_files/db/dns.php');
+include_once('../../conf/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');

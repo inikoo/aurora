@@ -1,1 +1,0 @@
-../../../js/edit_delivery_address_common.js

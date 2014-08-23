@@ -2,7 +2,7 @@
 //include("../../external_libs/adminpro/adminpro_config.php");
 //include("../../external_libs/adminpro/mysql_dialog.php");
 
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Deal.php';
 include_once '../../class.DealCampaign.php';

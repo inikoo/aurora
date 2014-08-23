@@ -1,5 +1,5 @@
 <?php
-require_once 'app_files/db/dns.php';
+require_once 'conf/dns.php';
 require_once 'class.Customer.php';
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );

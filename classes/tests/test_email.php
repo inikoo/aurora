@@ -16,7 +16,7 @@
 */
 
 
-include_once('../../app_files/db/dns.php');
+include_once('../../conf/dns.php');
 include_once('../../class.Email.php');
 
 error_reporting(E_ALL);
