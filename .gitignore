@@ -1,5 +1,3 @@
-app_files/db/dns.php
-app_files/key.php
 server_files/smarty/templates_c/*
 conf/dns.php
 conf/key.php
