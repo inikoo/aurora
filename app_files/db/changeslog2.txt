@@ -1,0 +1,14 @@
+ALTER TABLE `Dashboard Widget Bridge` ADD `Dashboard Widget Name` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , ADD `Dashboard Widget Description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , ADD INDEX (`Dashboard Widget Name`) ;
+ALTER TABLE `user right scope bridge` CHANGE `Scope` `Scope` ENUM('Store','Warehouse','Supplier','Website','Project','Service') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Store';
+ALTER TABLE `Site Dimension` CHANGE `Site Store Key` `Site Store Key` SMALLINT(5) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Site Dimension` ADD `Site Service Project Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Site Store Key`, ADD `Site Service Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Site Service Project Key`;
+ALTER TABLE `Site Dimension` CHANGE `Site Service Key` `Site Project Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
+// add indexed to prev 2 fields
+ALTER TABLE `Site Dimension` CHANGE `Site Default Number See Also Links` `Site Default Number See Also Links` TINYINT(4) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Site Dimension` ADD `Site Parent` ENUM('Store','Project') NOT NULL DEFAULT 'Store' AFTER `Site Key`, ADD INDEX (`Site Parent`) ;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Key` `Page Store Key` SMALLINT(5) UNSIGNED NULL DEFAULT NULL; 
+ALTER TABLE `Page Store Dimension` ADD `Page Site Parent` ENUM('Store','Project') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Store' AFTER `Page Site Key`, ADD INDEX (`Page Site Parent`) ;
+ALTER TABLE `Page Store Dimension` ADD `Page Service Project Key` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Page Store Key`, ADD `Page Project Key` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Page Service Project Key`;
+// add indexed to prev 2 fields
+ALTER TABLE `Account Dimension` ADD `Google API Client ID` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL , ADD `Google API Service Account Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Site Dimension` ADD `Site Google Analytics Profile ID` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
