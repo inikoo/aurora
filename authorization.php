@@ -10,7 +10,7 @@
 
 
 
-include_once 'app_files/db/dns.php';
+include_once 'conf/dns.php';
 
 include_once 'external_libs/Smarty/Smarty.class.php';
 $smarty = new Smarty();
@@ -50,11 +50,11 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
 require_once 'common_detect_agent.php';
-include_once 'app_files/key.php';
+include_once 'conf/key.php';
 include_once 'aes.php';
 include_once 'set_locales.php';
 
-include_once 'app_files/key.php';
+include_once 'conf/key.php';
 
 include_once 'conf/timezone.php';
 include_once 'class.Auth.php';

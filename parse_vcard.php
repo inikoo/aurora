@@ -51,7 +51,7 @@ $js_files=array(
 			#if ( $_FILES['file']['tmp_name'] )
 			if (($file_type=="vcf") || ($file_type=="vcard"))
 	 		{
-				$target_path = "app_files/uploads/";
+				$target_path = "server_files/tmp/";
 
 				$target_path = $target_path . basename( $_FILES['file']['name']); 
 

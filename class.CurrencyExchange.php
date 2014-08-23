@@ -172,7 +172,7 @@ while($row=mysql_fetch_assoc($res)){
 */
 
 		$random=md5(mt_rand());
-		$tmp_file="app_files/tmp/currency_$random.txt";
+		$tmp_file="server_files/tmp/currency_$random.txt";
 		$days=100;
 
 		if (!$from)
@@ -221,7 +221,7 @@ while($row=mysql_fetch_assoc($res)){
 
 	function load_currency_missing_day($day) {
 		$random=md5(mt_rand());
-		$tmp_file="app_files/tmp/currency_$random.txt";
+		$tmp_file="server_files/tmp/currency_$random.txt";
 
 
 		$from=date("Ymd",strtotime($day.' -1 day'));

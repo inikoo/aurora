@@ -50,11 +50,11 @@ if (isset($_POST['Submit'])) {
 	$ftp->connect();$ftp->login();
 	$confirm2="";
 	
-			$target_path = "app_files/uploads/";
+			$target_path = "server_files/tmp/";
 			$target_path = $target_path .basename( $_FILES['file']['name']); 
 			$name=basename( $_FILES['file']['name']); 
 			if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
-   		        $source_file="app_files/uploads/".basename( $_FILES['file']['name']);
+   		        $source_file="server_files/tmp/".basename( $_FILES['file']['name']);
 			}else echo "not uloaded";
 			chmod($source_file, 0777);
 			$ftp->upload($source_file,$destination_file,'FTP_BINARY');
@@ -72,10 +72,10 @@ if (isset($_POST['Download_Submit'])) {
 	$ftp->connect();$ftp->login();
 	$confirm4="";
 			//chmod($source_file, 0777);
-			$destination_file = "app_files/uploads/".$source_file;
+			$destination_file = "server_files/tmp/".$source_file;
 			$ftp->download($source_file,$destination_file,'FTP_BINARY');
 			chmod($destination_file, 0777);
-			$confirm4="Downloaded $source_file from $ftp_server and stored in folder app_files/uploads" ; 
+			$confirm4="Downloaded $source_file from $ftp_server and stored in folder server_files/tmp" ; 
 			
 $smarty->assign('confirm4',$confirm4);
 }

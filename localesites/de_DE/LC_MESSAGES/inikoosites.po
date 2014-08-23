@@ -1,1 +1,0 @@
-../../../locale/de_DE/LC_MESSAGES/inikoo.po

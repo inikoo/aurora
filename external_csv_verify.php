@@ -65,7 +65,7 @@ $scope_key=$_REQUEST['subject_key'];
 
 if (isset($_POST['submit'])) {
 
-               //$target_path = "app_files/uploads/";
+               //$target_path = "server_files/tmp/";
 
                 //$target_path = $target_path . basename( $_FILES['fileUpload']['name']);
 

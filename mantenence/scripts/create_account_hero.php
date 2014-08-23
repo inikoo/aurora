@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 LW
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 include_once '../../class.User.php';
 include_once '../../class.Account.php';
 include_once '../../class.CompanyArea.php';

@@ -42,7 +42,7 @@ class Image {
 	function Image($a1,$a2=false,$a3=false) {
 
 
-		$this->tmp_path='app_files/pics/tmp/';
+		$this->tmp_path='server_files/tmp/';
 		$this->name='';
 		$this->original_name='';
 		$this->found=false;

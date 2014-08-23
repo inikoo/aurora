@@ -4420,18 +4420,18 @@ if ($old_qty!='') {
 
 		$_system = ob_get_clean();
 		if (preg_match('/darwin/i',$_system)) {
-			$command="mantenence/scripts/webkit2png_mac.py  -C -o app_files/tmp/pp_image".$this->id."  --clipheight=".($height*0.5)."  --clipwidth=512  -s 0.5  ".$url;
+			$command="mantenence/scripts/webkit2png_mac.py  -C -o server_files/tmp/pp_image".$this->id."  --clipheight=".($height*0.5)."  --clipwidth=512  -s 0.5  ".$url;
 
-			//       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
+			//       $command="mantenence/scripts/webkit2png  -C -o server_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
 
 		}
 
 		elseif (preg_match('/linux/i',$_system)) {
-			$command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
+			$command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
 
 
 
-			//  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
+			//  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
 		}
 		else {
 			return;
@@ -4451,12 +4451,12 @@ if ($old_qty!='') {
 		$this->snapshots_taken++;
 
 
-		$image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_preview'.$this->id);
+		$image_data=array('file'=>"server_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_preview'.$this->id);
 
 		//   print_r($image_data);
 		$image=new Image('find',$image_data,'create');
 
-		unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
+		unlink("server_files/tmp/pp_image".$this->id."-clipped.png");
 
 		$new_image_key=$image->id;
 		if (!$new_image_key) {

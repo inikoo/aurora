@@ -247,14 +247,14 @@ class PageFooter extends DB_Table {
 
 
 		if (preg_match('/darwin/i',$_system)) {
-			$command="mantenence/scripts/webkit2png_mac.py  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5    ".$url;
+			$command="mantenence/scripts/webkit2png_mac.py  -C -o server_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5    ".$url;
 
-			//       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_footer_preview.php?id=".$this->id;
+			//       $command="mantenence/scripts/webkit2png  -C -o server_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_footer_preview.php?id=".$this->id;
 
 		}
 
 		elseif (preg_match('/linux/i',$_system)) {
-			$command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log    -o app_files/tmp/pfooter_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80    '.$url;
+			$command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=server_files/tmp/webkit2png_linux.log    -o server_files/tmp/pfooter_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80    '.$url;
 
 
 
@@ -274,7 +274,7 @@ class PageFooter extends DB_Table {
 
 
 
-		$image_data=array('file'=>"app_files/tmp/pfooter_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_footer'.$this->id);
+		$image_data=array('file'=>"server_files/tmp/pfooter_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_footer'.$this->id);
 		$image=new Image('find',$image_data,'create');
 
 		if ($image->id) {

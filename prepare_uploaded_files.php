@@ -10,7 +10,7 @@ foreach ($_FILES as $file) {
     }
     
     $checksum= md5_file($file['tmp_name']);
-    $filename_with_path="./app_files/uploads/".$checksum.$original_extension;
+    $filename_with_path="./server_files/tmp/".$checksum.$original_extension;
     move_uploaded_file($file['tmp_name'],$filename_with_path );
     $files_data[]=array(
                     'original_filename'=>$original_filename,

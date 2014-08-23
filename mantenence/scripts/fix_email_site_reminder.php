@@ -3,7 +3,7 @@
 // @author Raul Perusquia <rulovico@gmail.com>
 // Created: 13 February 2014 23:58:22 CET, Malaga Spain
 //Copyright (c) 2014
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 
 include_once '../../class.Product.php';
 include_once '../../class.User.php';

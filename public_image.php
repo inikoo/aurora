@@ -25,7 +25,7 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) and $_SERVER['HTTP_IF_MODIFIED_SIN
 }
 
 
-include_once 'app_files/db/dns.php';
+include_once 'conf/dns.php';
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 

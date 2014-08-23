@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 date_default_timezone_set('UTC');
 
-require_once '../../app_files/db/dns.php';
+require_once '../../conf/dns.php';
 require_once '../../class.TimeSeries.php';
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}

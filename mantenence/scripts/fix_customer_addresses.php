@@ -2,7 +2,7 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 // Created 1 August 2014 14:05:17 BST, Nottingham, UK
 //Copyright (c) 2014 Inikoo Ltd
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 include_once '../../class.Address.php';
 include_once '../../class.Customer.php';
 include_once '../../class.Supplier.php';

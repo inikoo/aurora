@@ -5,7 +5,7 @@
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 
-require_once 'app_files/db/dns.php';
+require_once 'conf/dns.php';
 require_once 'common_functions.php';
 
 require_once 'ar_edit_common.php';

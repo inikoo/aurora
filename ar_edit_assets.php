@@ -3296,7 +3296,7 @@ function location_audit($data) {
 		if ($_FILES["fileUpload"]["error"] > 0) {
 			echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
 		} else {
-			$target_path = "app_files/uploads/";
+			$target_path = "server_files/tmp/";
 
 			$target_path = $target_path . basename( $_FILES['fileUpload']['name']);
 

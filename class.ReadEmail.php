@@ -390,7 +390,7 @@ class ReadEmail extends DB_Table {
                 
                                     $data="";
                     $attachment_data = imap_fetchbody($mbox,$msgno,$attachment_key+2);  
-                                    $filename="app_files/tmp/email_attachmen".date('U')."t$msgno".$attachment['name'];
+                                    $filename="server_files/tmp/email_attachmen".date('U')."t$msgno".$attachment['name'];
                                     
                                     
                                     $fp=fopen($filename,'w');

@@ -4,7 +4,7 @@ $filenames=array();
 foreach ($_FILES as $fieldName => $file) {
 $filename= date('U').strip_tags(basename($file['name']));
 $filenames[]=$filename;
-    move_uploaded_file($file['tmp_name'], "./app_files/tmp/" .$filename);
+    move_uploaded_file($file['tmp_name'], "./server_files/tmp/" .$filename);
     
 }
 

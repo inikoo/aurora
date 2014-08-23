@@ -1,5 +1,5 @@
 <?php
-include_once '../../app_files/db/dns.php';
+include_once '../../conf/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';

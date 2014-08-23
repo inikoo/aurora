@@ -8,7 +8,7 @@
 */
 
 
-require_once 'app_files/db/dns.php';
+require_once 'conf/dns.php';
 require_once 'common_detect_agent.php';
 require_once 'common_functions.php';
 

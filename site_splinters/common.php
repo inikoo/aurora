@@ -3,7 +3,7 @@
 $path = 'classes/';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
-require_once 'app_files/db/dns.php';
+require_once 'conf/dns.php';
 require_once 'common_functions.php';
 require_once "class.Session.php";
 require_once "class.Auth.php";
@@ -82,7 +82,7 @@ if ($logged_in ) {
     if ($_SESSION['logged_in_page']!=$store_key) {
 
 
-        include_once('app_files/key.php');
+        include_once('conf/key.php');
 
         include_once('aes.php');
         $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
@@ -113,7 +113,7 @@ if ($logged_in ) {
 
 
 
-    include_once('app_files/key.php');
+    include_once('conf/key.php');
     //$auth=new Auth(IKEY,SKEY);
 
 

@@ -1,1 +1,0 @@
-../../class.LightProduct.php

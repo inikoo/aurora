@@ -1,1 +1,0 @@
-../../../templates/customer_badges.tpl
