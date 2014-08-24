@@ -101,7 +101,7 @@ case('delete_invoice'):
 	break;
 
 
-case('new_refund'):
+case('new_orphan_refund'):
 	$data=prepare_values($_REQUEST,array(
 			'net'=>array('type'=>'numeric'),
 			'tax'=>array('type'=>'numeric'),
@@ -112,7 +112,7 @@ case('new_refund'):
 
 
 		));
-	new_refund($data);
+	new_orphan_refund($data);
 
 	break;
 
@@ -1127,10 +1127,10 @@ function set_order_shipping($data) {
 	$value=$data['value'];
 	$order=new Order($order_key);
 	if ($order->id) {
-	
-	
-	
-	
+
+
+
+
 		$order->update_shipping_amount($value);
 		if ($order->updated) {
 			$updated_data=array(
@@ -1158,8 +1158,8 @@ function set_order_shipping($data) {
 				);
 			}
 
-		$smarty->assign('order',$order);
-		$payments_list=$smarty->fetch('order_payments_splinter.tpl');
+			$smarty->assign('order',$order);
+			$payments_list=$smarty->fetch('order_payments_splinter.tpl');
 
 
 
@@ -1168,8 +1168,8 @@ function set_order_shipping($data) {
 				'order_total_paid'=>$order->data['Order Payments Amount'],
 				'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 				'payments_list'=>$payments_list
-				
-				);
+
+			);
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
 		}
@@ -1226,8 +1226,8 @@ function set_order_items_charges($data) {
 				);
 			}
 
-				$smarty->assign('order',$order);
-		$payments_list=$smarty->fetch('order_payments_splinter.tpl');
+			$smarty->assign('order',$order);
+			$payments_list=$smarty->fetch('order_payments_splinter.tpl');
 
 
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges_amount'=>$order->data['Order Charges Net Amount'],'items_charges'=>money($order->new_value),
@@ -1235,7 +1235,7 @@ function set_order_items_charges($data) {
 				'order_total_paid'=>$order->data['Order Payments Amount'],
 				'order_total_to_pay'=>$order->data['Order To Pay Amount'],
 				'payments_list'=>$payments_list
-				);
+			);
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
 		}
@@ -1911,12 +1911,12 @@ function transactions_to_process() {
 			}
 		}
 
-		
-		if($row['Product Number of Parts']==0){
-$part_info='<img style="height:14px" src="art/icons/exclamation.png" title="'._("Product don't have a part associated").'"> ';
-}else{
-$part_info='';
-}
+
+		if ($row['Product Number of Parts']==0) {
+			$part_info='<img style="height:14px" src="art/icons/exclamation.png" title="'._("Product don't have a part associated").'"> ';
+		}else {
+			$part_info='';
+		}
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
@@ -5497,7 +5497,9 @@ function edit_delivery_note($data) {
 }
 
 
-function new_refund($data) {
+function new_orphan_refund($data) {
+
+	global $user;
 
 	$net=$data['net'];
 	$tax=$data['tax'];
@@ -5562,8 +5564,9 @@ function new_refund($data) {
 			'Payment Refund'=>0,
 			'Payment Currency Code'=>$refund->data['Invoice Currency'],
 			'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
-			'Payment Random String'=>md5(mt_rand().date('U'))
-
+			'Payment Random String'=>md5(mt_rand().date('U')),
+			'Payment Submit Type'=>'OrphanRefund',
+			'Payment User Key'=>$user->id,
 
 		);
 

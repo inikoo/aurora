@@ -8777,6 +8777,7 @@ ALTER TABLE `Customer Dimension` ADD `Customer Last Dispatched Order Date` DATET
 ALTER TABLE `Location Dimension` CHANGE `Location File As` `Location File As` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Account Dimension` ADD `Account Type` ENUM('Online Store','Projects') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Online Store' AFTER `Account Key`;
 
+ALTER TABLE `Payment Dimension` ADD `Payment Submit Type` ENUM('Manual','EPS','AutoCredit','OrphanRefund') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'EPS' , ADD `Payment User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
 
 
 

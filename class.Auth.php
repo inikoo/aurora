@@ -516,7 +516,8 @@ class Auth {
 				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c",strtotime($date.' +00:00')).'</td></tr>
 				<tr><td>'._('Handle').':</td><td>'.$this->handle.'</td></tr>
 				<tr><td>'._('IP Address').':</td><td>'.$ip.'</td></tr>
-				<tr><td>'._('User Agent').':</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+			
+			<tr><td>'._('User Agent').':</td><td>'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'').'</td></tr>
 
 				</table>';
 
@@ -588,7 +589,7 @@ class Auth {
 			$details='<table>
 				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c %Z",strtotime($date.' +00:00')).'</td></tr>
 				<tr><td>'._('IP Address').':</td><td>'.$ip.'</td></tr>
-				<tr><td>'._('User Agent').':</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+				<tr><td>'._('User Agent').':</td><td>'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'').'</td></tr>
 				</table>';
 
 			switch ($this->authentication_type) {

@@ -201,12 +201,7 @@ class Payment extends DB_Table {
 
 		foreach ($this->data as $key=>$value) {
 
-
-
-
 			$keys.=",`".$key."`";
-
-
 			if ($key=='Payment Completed Date' or $key=='Payment Last Updated Date'  or $key=='Payment Cancelled Date'
 				or $key=='Payment Order Key' or $key=='Payment Invoice Key' or $key=='Payment Site Key'
 			) {
@@ -215,10 +210,7 @@ class Payment extends DB_Table {
 			}else {
 				$values.=','.prepare_mysql($value,false);
 			}
-
 		}
-
-
 
 		$values=preg_replace('/^,/','',$values);
 		$keys=preg_replace('/^,/','',$keys);
