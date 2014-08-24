@@ -12072,8 +12072,8 @@ class TCPDF {
 		if (isset($_SERVER['REMOTE_ADDR'])) {
 			$seed .= $_SERVER['REMOTE_ADDR'];
 		}
-		if (isset($_SERVER['HTTP_USER_AGENT'])) {
-			$seed .= $_SERVER['HTTP_USER_AGENT'];
+		if (isset((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''))) {
+			$seed .= (isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'');
 		}
 		if (isset($_SERVER['HTTP_ACCEPT'])) {
 			$seed .= $_SERVER['HTTP_ACCEPT'];

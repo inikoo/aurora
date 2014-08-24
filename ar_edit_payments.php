@@ -234,7 +234,7 @@ function cancel_payment($data) {
 
 function set_payment_as_completed($data) {
 
-include_once('send_confirmation_email_function.php');
+	include_once 'send_confirmation_email_function.php';
 
 
 	$payment_transaction_id=$data['payment_transaction_id'];
@@ -313,7 +313,7 @@ include_once('send_confirmation_email_function.php');
 
 	send_confirmation_email($order);
 
-$updated_data=array(
+	$updated_data=array(
 		'order_items_gross'=>$order->get('Items Gross Amount'),
 		'order_items_discount'=>$order->get('Items Discount Amount'),
 		'order_items_net'=>$order->get('Items Net Amount'),
@@ -337,11 +337,11 @@ $updated_data=array(
 		);
 	}
 
-$response=array('state'=>200,
+	$response=array('state'=>200,
 		'result'=>'updated',
 		'order_shipping_method'=>$order->data['Order Shipping Method'],
 		'data'=>$updated_data,
-		
+
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'payments_data'=>$payments_data,
 		'order_total_paid'=>$order->data['Order Payments Amount'],
@@ -357,6 +357,8 @@ $response=array('state'=>200,
 
 
 function add_payment_to_order($data) {
+
+	global $user;
 
 	$order=new Order($data['parent_key']);
 	$payment_account=new Payment_Account($data['payment_account_key']);
@@ -391,12 +393,12 @@ function add_payment_to_order($data) {
 	$payment_data=array(
 		'Payment Account Key'=>$payment_account->id,
 		'Payment Account Code'=>$payment_account->data['Payment Account Code'],
-
 		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
 		'Payment Order Key'=>$order->id,
 		'Payment Store Key'=>$order->data['Order Store Key'],
 		'Payment Customer Key'=>$order->data['Order Customer Key'],
-
+		'Payment Submit Type'=>'Manual',
+		'Payment User Key'=>$user->id,
 		'Payment Balance'=>$data['payment_amount'],
 		'Payment Amount'=>$data['payment_amount'],
 		'Payment Refund'=>0,
@@ -471,6 +473,8 @@ function add_payment_to_order($data) {
 
 function credit_payment($data) {
 
+	global $user;
+
 	$credit_amount=round($data['credit_amount'],2);
 
 	$payment=new Payment($data['payment_key']);
@@ -521,6 +525,8 @@ function credit_payment($data) {
 		'Payment Method'=>'Account',
 		'Payment Related Payment Key'=>$payment->id,
 		'Payment Related Payment Transaction ID'=>'',
+		'Payment Submit Type'=>'Manual',
+		'Payment User Key'=>$user->id,
 
 	);
 
@@ -597,6 +603,8 @@ function credit_payment($data) {
 
 function refund_payment($data) {
 
+	global $user;
+
 	$refund_amount=round($data['refund_amount'],2);
 
 	$payment=new Payment($data['payment_key']);
@@ -630,6 +638,7 @@ function refund_payment($data) {
 		$refunded_data=array(
 			'status'=>'Completed',
 			'reference'=>$data['refund_reference'],
+			'submit_type'=>'Manual'
 		);
 
 	}
@@ -671,6 +680,8 @@ function refund_payment($data) {
 		'Payment Method'=>$payment->data['Payment Method'],
 		'Payment Related Payment Key'=>$payment->id,
 		'Payment Related Payment Transaction ID'=>$payment->data['Payment Transaction ID'],
+		'Payment Submit Type'=>$refunded_data['submit_type'],
+		'Payment User Key'=>$user->id,
 
 	);
 
@@ -758,25 +769,22 @@ function online_paypal_refund($refund_amount,$payment) {
 	);
 
 
-	// print_r($aryData);
-
-	//exit;
-
 	$aryRes = $ref->refundAmount($aryData);
 
-	//print_r($aryRes);
 
 	if ($aryRes['ACK'] == "Success") {
 
 		$refunded_data=array(
 			'status'=>'Completed',
 			'reference'=>$aryRes['REFUNDTRANSACTIONID'],
+			'submit_type'=>'EPS'
 		);
 
 	}else {
 		$refunded_data=array(
 			'status'=>'Error',
-			'reference'=>$aryRes['L_LONGMESSAGE0']
+			'reference'=>$aryRes['L_LONGMESSAGE0'],
+			'submit_type'=>'EPS'
 		);
 	}
 
@@ -861,24 +869,28 @@ function online_worldpay_refund($refund_amount,$payment) {
 
 			$refunded_data=array(
 				'status'=>'Completed',
-				'reference'=>$_ref
+				'reference'=>$_ref,
+				'submit_type'=>'EPS'
 			);
 		}elseif ($respond_array[0]=="N") {
 			$refunded_data=array(
 				'status'=>'Error',
-				'reference'=>$respond_array[2]
+				'reference'=>$respond_array[2],
+				'submit_type'=>'EPS'
 			);
 		}else {
 			$refunded_data=array(
 				'status'=>'Error',
-				'reference'=>'Unknown response:'.$response
+				'reference'=>'Unknown response:'.$response,
+				'submit_type'=>'EPS'
 			);
 
 		}
 	}else {
 		$refunded_data=array(
 			'status'=>'Error',
-			'reference'=>'Wrong response:'.$response
+			'reference'=>'Wrong response:'.$response,
+			'submit_type'=>'EPS'
 		);
 
 	}

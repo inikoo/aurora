@@ -48,8 +48,8 @@ if ($email_send->id) {
                  $email_send->id,
                  prepare_mysql(date('Y-m-d H:i:s',strtotime('now +0:00'))),
                  prepare_mysql(ip()),
-                 prepare_mysql(get_user_browser($_SERVER['HTTP_USER_AGENT'])),
-                 prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT']))
+                 prepare_mysql(get_user_browser((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''))),
+                 prepare_mysql(get_user_os((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')))
 
                 );
    mysql_query($sql);

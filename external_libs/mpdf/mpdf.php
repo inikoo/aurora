@@ -32586,7 +32586,7 @@ function OverWrite($file_in, $search, $replacement, $dest="D", $file_out="mpdf" 
 		case 'D':
 		default:
 			//Download file
-			if(isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'],'MSIE'))
+			if(isset((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')) and strpos((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''),'MSIE'))
 				Header('Content-Type: application/force-download');
 			else
 				Header('Content-Type: application/octet-stream');

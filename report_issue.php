@@ -14,7 +14,7 @@ $metadata="Client: ".$myconf['name']."\n";
 $metadata.="User: ".$user->data['User Alias']." (".$user->id.")\n";
 $metadata.="IP: ".ip()."\n";
 $metadata.="Referrer: ".$_SERVER['HTTP_REFERER']."\n";
-$metadata.="Agent: ".$_SERVER['HTTP_USER_AGENT']."\n";
+$metadata.="Agent: ".(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')."\n";
 
 $smarty->assign('type',$type);
 $smarty->assign('metadata',$metadata);

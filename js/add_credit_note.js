@@ -110,8 +110,7 @@ function add_credit_note(payment_account) {
 
     if (Dom.hasClass('save_add_credit_note_wait', 'disabled')) {
         add_credit_note_show_errors()
-    }
-    else {
+    } else {
 
 
         Dom.setStyle('save_add_credit_note_wait', 'display', '')
@@ -125,11 +124,11 @@ function add_credit_note(payment_account) {
         }
 
 
-        var request = 'ar_edit_orders.php?tipo=new_refund&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value + '&description=' + Dom.get('add_credit_note_description').value + '&refund_type=' + payment_account
+        var request = 'ar_edit_orders.php?tipo=new_orphan_refund&net=' + Dom.get('add_credit_note_net_amount').value + "&tax=" + Dom.get('add_credit_note_tax_amount').value + "&tax_category_code=" + tax_category_code + "&customer_key=" + Dom.get('customer_key').value + '&description=' + Dom.get('add_credit_note_description').value + '&refund_type=' + payment_account
         // alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //  alert(o.responseText)
+          //        alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -166,7 +165,7 @@ function show_add_credit_note() {
 
     region1 = Dom.getRegion('account_balance');
     region2 = Dom.getRegion('dialog_add_credit_note');
-    var pos = [region1.right - region2.width , region1.bottom]
+    var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('dialog_add_credit_note', pos);
 
     Dom.get('add_credit_note_description').value = ''
