@@ -2080,12 +2080,12 @@ function delete_address($data) {
 
 
 			if ($subject_object->data['Customer Main Delivery Address Key']==$address->id) {
-				$address_keys=$this->get_delivery_address_keys();
+				$address_keys=$subject_object->get_delivery_address_keys();
 				$new_delivery_address_key=array_pop($address_keys);
 				$subject_object->update_principal_delivery_address($new_delivery_address_key);
 			}
 			if ($subject_object->data['Customer Billing Address Key']==$address->id) {
-				$address_keys=$this->get_billing_address_keys();
+				$address_keys=$subject_object->get_billing_address_keys();
 				$new_billing_address_key=array_pop($address_keys);
 				$subject_object->update_principal_billing_address($new_billing_address_key);
 			}
@@ -2112,12 +2112,12 @@ function delete_address($data) {
 
 
 			if ($subject_object->data['Customer Main Delivery Address Key']==$address->id) {
-				$address_keys=$this->get_delivery_address_keys();
+				$address_keys=$subject_object->get_delivery_address_keys();
 				$new_delivery_address_key=array_pop($address_keys);
 				$subject_object->update_principal_delivery_address($new_delivery_address_key);
 			}
 			if ($subject_object->data['Customer Billing Address Key']==$address->id) {
-				$address_keys=$this->get_billing_address_keys();
+				$address_keys=$subject_object->get_billing_address_keys();
 				$new_billing_address_key=array_pop($address_keys);
 				$subject_object->update_principal_billing_address($new_billing_address_key);
 			}
