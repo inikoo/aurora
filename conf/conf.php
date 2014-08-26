@@ -4098,7 +4098,20 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
-		)
+		),
+		'payments'=>array(
+			
+			'f_field'=>'id',
+			'f_value'=>'',
+			'f_show'=>true,
+			'order'=>'id',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general'
+			
+
+		),
 
 	),
 

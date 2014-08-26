@@ -5,17 +5,15 @@
 		<input type="hidden" id="link_extra_argument" value="&id={$store->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />
-				<input type="hidden" id="valid_from" value="{$store->get('Store Valid From')}" />
-		<input type="hidden" id="valid_to" value="{$store->get_valid_to()}" />		
+		<input type="hidden" id="valid_from" value="{$store->get('Store Valid From')}" />
+		<input type="hidden" id="valid_to" value="{$store->get_valid_to()}" />
 		<input type="hidden" id="store_key" value="{$store->id}"> 
 		<input type="hidden" id="history_table_id" value="5"> 
 		<input type="hidden" id="subject" value="store"> 
 		<input type="hidden" id="subject_key" value="{$store->id}"> 
 		<input type="hidden" id="products_table_id" value="2"> 
 		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
-				<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
-
-		
+		<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="stores.php"> &#8704; {t}Stores{/t}</a> &rarr; {$store->get('Store Name')}</span> 
 		</div>
@@ -39,6 +37,7 @@
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='websites'}selected{/if}" id="websites"> <span> {t}Web{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='payments'}selected{/if}" id="payments"> <span> {t}Payments{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -88,7 +87,6 @@
 					<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='store_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_family_sales" tipo="list" forecast="" interval=""> <span>{t}Family's Sales{/t}</span> </span> </li>
 					<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='store_product_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_product_sales" tipo="list" forecast="" interval=""> <span>{t}Product's Sales{/t}</span> </span> </li>
 					<li> <span class="item {if $sales_sub_block_tipo=='store_sales_calendar'}selected{/if}" onclick="change_sales_sub_block(this)" id="store_sales_calendar" tipo="store"> <span>{t}Sales Calendar{/t}</span> </span> </li>
-
 				</ul>
 				<div id="sub_block_plot_store_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_store_sales'}display:none{/if}">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
@@ -153,13 +151,9 @@
 					</div>
 				</div>
 				<div id="sub_block_store_sales_calendar" style="min-height:400px;clear:both;border:1px solid #ccc;padding:20px 0px;{if $sales_sub_block_tipo!='store_sales_calendar'}display:none{/if}">
-			  	<div id="d3_calendar_asset_sales" class="d3_calendar" >
-
+					<div id="d3_calendar_asset_sales" class="d3_calendar">
+					</div>
 				</div>
-			  	
-			  	</div>
-				
-				
 				<div style="clear:both">
 				</div>
 			</div>
@@ -273,7 +267,6 @@
 							<div id="page_section_chooser" style="{if $page_elements_type!='section'}display:none{/if}">
 								<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.System}selected{/if} label_page_type" id="elements_System">{t}System{/t} (<span id="elements_System_number">{$elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Info}selected{/if} label_page_type" id="elements_Info">{t}Info{/t} (<span id="elements_Info_number">{$elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Department}selected{/if} label_page_type" id="elements_Department">{t}Departments{/t} (<span id="elements_Department_number">{$elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Family}selected{/if} label_page_type" id="elements_Family">{t}Families{/t} (<span id="elements_Family_number">{$elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Product}selected{/if} label_page_type" id="elements_Product">{t}Products{/t} (<span id="elements_Product_number">{$elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCategory}selected{/if} label_page_type" id="elements_FamilyCategory">{t}Family Categories{/t} (<span id="elements_FamilyCategory_number">{$elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductCategory}selected{/if} label_page_type" id="elements_ProductCategory">{t}Product Categories{/t} (<span id="elements_ProductCategory_number">{$elements_number.ProductCategory}</span>)</span> 
 							</div>
-							
 						</div>
 						<div class="table_top_bar">
 						</div>
@@ -306,10 +299,7 @@
 				<div class="clusters">
 					<div id="table_view_menu0" style="{if $departments_table_type=='thumbnails'}display:none{/if}">
 						<div class="buttons small left cluster">
-							<button class="table_option {if $department_view=='general'}selected{/if}" id="department_general">{t}Overview{/t}</button>
-														<button class="table_option {if $department_view=='timeline'}selected{/if}" id="department_timeline">{t}Timeline{/t}</button>
-
-							<button class="table_option {if $department_view=='stock'}selected{/if}" id="department_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
+							<button class="table_option {if $department_view=='general'}selected{/if}" id="department_general">{t}Overview{/t}</button> <button class="table_option {if $department_view=='timeline'}selected{/if}" id="department_timeline">{t}Timeline{/t}</button> <button class="table_option {if $department_view=='stock'}selected{/if}" id="department_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
 						</div>
 						<div id="department_period_options" class="buttons small left cluster" style="display:{if $department_view!='sales' }none{else}block{/if};">
 							<button class="table_option {if $department_period=='all'}selected{/if}" period="all" id="department_period_all">{t}All{/t}</button> <button class="table_option {if $department_period=='three_year'}selected{/if}" period="three_year" id="department_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $department_period=='year'}selected{/if}" period="year" id="department_period_year">{t}1Yr{/t}</button> <button class="table_option {if $department_period=='yeartoday'}selected{/if}" period="yeartoday" id="department_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $department_period=='six_month'}selected{/if}" period="six_month" id="department_period_six_month">{t}6M{/t}</button> <button class="table_option {if $department_period=='quarter'}selected{/if}" period="quarter" id="department_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $department_period=='month'}selected{/if}" period="month" id="department_period_month">{t}1M{/t}</button> <button class="table_option {if $department_period=='ten_day'}selected{/if}" period="ten_day" id="department_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $department_period=='week'}selected{/if}" period="week" id="department_period_week">{t}1W{/t}</button> 
@@ -343,10 +333,7 @@
 				<div class="clusters">
 					<div id="table_view_menu1" style="{if $families_table_type=='thumbnails'}display:none{/if}">
 						<div class="buttons small left cluster">
-							<button class="table_option {if $family_view=='general'}selected{/if}" id="family_general">{t}Overview{/t}</button> 
-							<button class="table_option {if $family_view=='timeline'}selected{/if}" id="family_timeline">{t}Timeline{/t}</button>
-
-							<button class="table_option {if $family_view=='stock'}selected{/if}" id="family_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $family_view=='sales'}selected{/if}" id="family_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
+							<button class="table_option {if $family_view=='general'}selected{/if}" id="family_general">{t}Overview{/t}</button> <button class="table_option {if $family_view=='timeline'}selected{/if}" id="family_timeline">{t}Timeline{/t}</button> <button class="table_option {if $family_view=='stock'}selected{/if}" id="family_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $family_view=='sales'}selected{/if}" id="family_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
 						</div>
 						<div id="family_period_options" class="buttons small left cluster" style="display:{if $family_view!='sales' }none{else}block{/if};">
 							<button class="table_option {if $family_period=='all'}selected{/if}" period="all" id="family_period_all">{t}All{/t}</button> <button class="table_option {if $family_period=='three_year'}selected{/if}" period="three_year" id="family_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $family_period=='year'}selected{/if}" period="year" id="family_period_year">{t}1Yr{/t}</button> <button class="table_option {if $family_period=='yeartoday'}selected{/if}" period="yeartoday" id="family_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $family_period=='six_month'}selected{/if}" period="six_month" id="family_period_six_month">{t}6M{/t}</button> <button class="table_option {if $family_period=='quarter'}selected{/if}" period="quarter" id="family_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $family_period=='month'}selected{/if}" period="month" id="family_period_month">{t}1M{/t}</button> <button class="table_option {if $family_period=='ten_day'}selected{/if}" period="ten_day" id="family_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $family_period=='week'}selected{/if}" period="week" id="family_period_week">{t}1W{/t}</button> 
@@ -388,17 +375,8 @@
 			<div class="clusters">
 				<div id="table_view_menu2" style="{if $products_table_type=='thumbnails'}display:none{/if}">
 					<div class="buttons small left cluster">
-			
-									<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> 
-						<button class="table_option {if $product_view=='timeline'}selected{/if}" id="product_timeline">{t}Timeline{/t}</button>
-
-						<button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" style="{if !$view_stock}display:none{/if}">{t}Stock{/t}</button> 
-						<button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" style="{if !$view_sales}display:none{/if}">{t}Sales{/t}</button>
-						<button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" style="{if !$view_sales}display:none{/if}">{t}Parts{/t}</button> 
-						<button class="table_option {if $product_view=='properties'}selected{/if}" id="product_properties">{t}Properties{/t}</button> 
-						<button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" style="display:none;{if !$view_sales}display:none{/if}">{t}Groups{/t}</button> 
-
-			</div>
+						<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> <button class="table_option {if $product_view=='timeline'}selected{/if}" id="product_timeline">{t}Timeline{/t}</button> <button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" style="{if !$view_stock}display:none{/if}">{t}Stock{/t}</button> <button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" style="{if !$view_sales}display:none{/if}">{t}Sales{/t}</button> <button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" style="{if !$view_sales}display:none{/if}">{t}Parts{/t}</button> <button class="table_option {if $product_view=='properties'}selected{/if}" id="product_properties">{t}Properties{/t}</button> <button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" style="display:none;{if !$view_sales}display:none{/if}">{t}Groups{/t}</button> 
+					</div>
 					<div id="product_period_options" class="buttons small left cluster" style="display:{if $product_view!='sales' }none{else}block{/if};">
 						<button class="table_option {if $product_period=='all'}selected{/if}" period="all" id="product_period_all">{t}All{/t}</button> <button class="table_option {if $product_period=='three_year'}selected{/if}" period="three_year" id="product_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $product_period=='year'}selected{/if}" period="year" id="product_period_year">{t}1Yr{/t}</button> <button class="table_option {if $product_period=='yeartoday'}selected{/if}" period="yeartoday" id="product_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $product_period=='six_month'}selected{/if}" period="six_month" id="product_period_six_month">{t}6M{/t}</button> <button class="table_option {if $product_period=='quarter'}selected{/if}" period="quarter" id="product_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $product_period=='month'}selected{/if}" period="month" id="product_period_month">{t}1M{/t}</button> <button class="table_option {if $product_period=='ten_day'}selected{/if}" period="ten_day" id="product_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $product_period=='week'}selected{/if}" period="week" id="product_period_week">{t}1W{/t}</button> 
 					</div>
@@ -421,8 +399,7 @@
 		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div style="padding:0px">
 				<div class="buttons small left tabs">
-					<button style="display:none" class="indented item {if $deals_block_view=='deals_details'}selected{/if}" id="deals_details" block_id="deals_details">{t}Overview{/t}</button> 
-					<button class="indented item {if $deals_block_view=='campaigns'}selected{/if}" id="campaigns" block_id="campaigns">{t}Campaigns{/t}</button> <button class="item {if $deals_block_view=='offers'}selected{/if}" id="offers" block_id="offers">{t}Offers{/t}</button> 
+					<button style="display:none" class="indented item {if $deals_block_view=='deals_details'}selected{/if}" id="deals_details" block_id="deals_details">{t}Overview{/t}</button> <button class="indented item {if $deals_block_view=='campaigns'}selected{/if}" id="campaigns" block_id="campaigns">{t}Campaigns{/t}</button> <button class="item {if $deals_block_view=='offers'}selected{/if}" id="offers" block_id="offers">{t}Offers{/t}</button> 
 				</div>
 				<div class="tabs_base">
 				</div>
@@ -450,6 +427,26 @@
 						<div id="table10" class="data_table_container dtable btable" style="font-size:85%">
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div id="block_payments" style="{if $block_view!='payments'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+			<div class="data_table" style="clear:both;">
+				<span class="clean_table_title">{t}Payments{/t} <img style="display:none" class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<div class="table_top_bar">
+				</div>
+				<div class="clusters">
+					<div id="table_view_menu0">
+						<div class="buttons small left cluster">
+						</div>
+					</div>
+					<div class="buttons small cluster group">
+					</div>
+					<div style="clear:both">
+					</div>
+				</div>
+				{include file='table_splinter.tpl' table_id=12 filter_name=$filter_name12 filter_value=$filter_value12 } 
+				<div id="table12" class="data_table_container dtable btable with_total" style="font-size:85%">
 				</div>
 			</div>
 		</div>
