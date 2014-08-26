@@ -84,4 +84,23 @@
 		</ul>
 	</div>
 </div>
+<div id="dialog_delete_customer_list" style="padding:10px 10px 10px 10px;">
+	<h2 style="padding-top:0px">
+		{t}Delete Store{/t} 
+	</h2>
+	<h2 style="padding-top:0px" id="dialog_delete_customer_list_data">
+	</h2>
+	<input type="hidden" id="dialog_delete_customer_list_key" value=""> 
+	<input type="hidden" id="dialog_delete_customer_list_table_id" value=""> 
+	<input type="hidden" id="dialog_delete_customer_list_recordIndex" value=""> 
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<div style="display:none" id="deleting">
+		<img src="art/loading.gif" alt=""> {t}Deleting list, wait please{/t} 
+	</div>
+	<div id="delete_store_buttons" class="buttons">
+		<button onclick="save_delete('delete','customer_list')" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete('delete','customer_list')" class="negative">{t}No i dont want to delete it{/t}</button> 
+	</div>
+</div>
 {include file='footer.tpl'} 

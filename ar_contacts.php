@@ -4926,7 +4926,7 @@ function list_customers_lists() {
 
 			'customer_list_type'=>$customer_list_type,
 			'name'=>$cusomer_list_name,
-			'key'=>$data['List key'],
+			'id'=>$data['List key'],
 			'creation_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")),
 			'add_to_email_campaign_action'=>'<div class="buttons small"><button class="positive" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add Emails').'</button></div>',
 			'items'=>$items,
