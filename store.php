@@ -106,13 +106,13 @@ $js_files=array(
 	'js/assets_common.js',
 	'js/deals_common.js',
 	'js/search.js',
-'js/export_common.js',
+	'js/export_common.js',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/asset_elements.js',
-		'js/d3.v3.min.js',
+	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
 	'store.js.php',
 );
@@ -409,6 +409,21 @@ $smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu11',$paginator_menu);
 
+$tipo_filter=$_SESSION['state']['store']['payments']['f_field'];
+$smarty->assign('filter12',$tipo_filter);
+$smarty->assign('filter_value12',$_SESSION['state']['store']['payments']['f_value']);
+$filter_menu=array(
+	'id'=>array('db_key'=>'id','menu_label'=>_('Payment ID like <i>x</i>*'),'label'=>_('Id')),
+);
+$smarty->assign('filter_menu12',$filter_menu);
+
+$smarty->assign('filter_name12',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu12',$paginator_menu);
+
+
+
+
 $deals_block_view=$_SESSION['state']['store']['deals_block_view'];
 $smarty->assign('deals_block_view',$deals_block_view);
 $websites_block_view=$_SESSION['state']['store']['websites_block_view'];
@@ -494,7 +509,7 @@ $elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Pr
 $sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension` where `Page Store Key`=%d group by `Page Store Section Type`",$store->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-   $elements_number[$row['Page Store Section Type']]=number($row['num']);
+	$elements_number[$row['Page Store Section Type']]=number($row['num']);
 }
 
 $smarty->assign('elements_page_section_number',$elements_number);
