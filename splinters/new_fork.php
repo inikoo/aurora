@@ -25,7 +25,7 @@ function new_fork($type,$data,$account_code) {
 	$fork_key=mysql_insert_id();
 
 	$fork_metadata=base64_encode(AESEncryptCtr(json_encode(array('code'=>addslashes($account_code),'token'=>$token,'fork_key'=>$fork_key,'salt'=>$salt)),$fork_encrypt_key,256));
-
+print $fork_metadata;
 	$client= new GearmanClient();
 	$client->addServer('127.0.0.1');
 	$msg=$client->doBackground($type, $fork_metadata);

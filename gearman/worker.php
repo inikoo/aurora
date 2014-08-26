@@ -15,7 +15,6 @@ include('gearman/import.php');
 
 $count_number_used=0;
 
-print "debug1";
 
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
@@ -31,7 +30,6 @@ while ($worker->work()) {
 	}
 }
 
-print "debug2";
 
 
 function get_fork_data($job) {
