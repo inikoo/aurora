@@ -106,10 +106,10 @@ case('delete_customer'):
 	break;
 
 case('delete_customer_list'):
-	$data=prepare_values($_REQUEST,array(
-			'key'=>array('type'=>'key'),
-
-
+		$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
+			'table_id'=>array('type'=>'numeric','optional'=>true),
+			'recordIndex'=>array('type'=>'numeric','optional'=>true)
 		));
 	delete_customer_list($data);
 	break;
@@ -3846,17 +3846,24 @@ function edit_company_department() {
 }
 function delete_customer_list($data) {
 	global $user;
-	$sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+	$sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['subject_key']);
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 		if (in_array($row['List Parent Key'],$user->stores)) {
-			$sql=sprintf("delete from  `List Customer Bridge` where `List Key`=%d",$data['key']);
+			$sql=sprintf("delete from  `List Customer Bridge` where `List Key`=%d",$data['subject_key']);
 			mysql_query($sql);
-			$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
+			$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['subject_key']);
 			mysql_query($sql);
-			$response=array('state'=>200,'action'=>'deleted');
+			
+			
+			$response=array('state'=>200,
+			'action'=>'deleted',
+			'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
+			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
+		);
+			
 			echo json_encode($response);
 			return;
 

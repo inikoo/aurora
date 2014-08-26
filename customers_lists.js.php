@@ -45,7 +45,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
 	    
-	    				    {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+	    				    {key:"id", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
                             ,{key:"name", label:"<?php echo _('List Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                         	,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 							,{key:"customer_list_type", label:"<?php echo _('Type')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -71,7 +71,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"		
 		},
 		
-		fields: ["name","key","creation_date","customers","customer_list_type","items","delete"]};
+		fields: ["name","id","creation_date","customers","customer_list_type","items","delete"]};
 		
 
 	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -198,11 +198,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+function show_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'customer_list') {
+        dialog_delete_customer_list.show()
+    }
+}
+
+function hide_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'customer_list') {
+        dialog_delete_customer_list.hide()
+    }
+}
+
 
 function init(){
 
     ids = ['user_created', 'imported_records'];
     YAHOO.util.Event.addListener(ids, "click", change_block);
+
+
+dialog_delete_customer_list = new YAHOO.widget.Dialog("dialog_delete_customer_list", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_customer_list.render();
 
 init_search('customers_store');
 dialog_new_list = new YAHOO.widget.Dialog("dialog_new_list", {context:["new_customer_list","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
