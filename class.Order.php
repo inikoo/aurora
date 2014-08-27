@@ -4708,8 +4708,11 @@ class Order extends DB_Table {
 
 	function update_discounts_no_items($dn_key=false) {
 
-		if (!$dn_key)
-			return;
+
+
+		if ($dn_key){
+		return;
+		}
 
 		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Order Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
@@ -4718,7 +4721,6 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-
 
 
 		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Order Key` =%d and `Deal Component Key`!=0  ",$this->id);
