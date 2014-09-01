@@ -1513,9 +1513,7 @@ class Contact extends DB_Table {
 			$this->data['Contact Fuzzy']='No';
 
 
-		if ($this->data['Contact First Name']=='Mr')
-			exit("error with salitation");
-
+	
 
 		$keys='(';
 		$values='values(';

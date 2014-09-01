@@ -37,6 +37,7 @@
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='websites'}selected{/if}" id="websites"> <span> {t}Web{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='payments'}selected{/if}" id="payments"> <span> {t}Payments{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -426,6 +427,26 @@
 						<div id="table10" class="data_table_container dtable btable" style="font-size:85%">
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div id="block_payments" style="{if $block_view!='payments'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+			<div class="data_table" style="clear:both;">
+				<span class="clean_table_title">{t}Payments{/t} <img style="display:none" class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<div class="table_top_bar">
+				</div>
+				<div class="clusters">
+					<div id="table_view_menu0">
+						<div class="buttons small left cluster">
+						</div>
+					</div>
+					<div class="buttons small cluster group">
+					</div>
+					<div style="clear:both">
+					</div>
+				</div>
+				{include file='table_splinter.tpl' table_id=12 filter_name=$filter_name12 filter_value=$filter_value12 } 
+				<div id="table12" class="data_table_container dtable btable with_total" style="font-size:85%">
 				</div>
 			</div>
 		</div>

@@ -182,8 +182,8 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-p
 
 
 function change_block() {
-    ids = ['details', 'departments', 'families', 'products', 'categories', 'deals', 'websites', 'sales'];
-    block_ids = ['block_details', 'block_sites', 'block_departments', 'block_families', 'block_products', 'block_categories', 'block_sales', 'block_deals', 'block_websites'];
+    ids = ['details', 'departments', 'families', 'products', 'categories', 'deals', 'websites', 'sales','payments'];
+    block_ids = ['block_details', 'block_sites', 'block_departments', 'block_families', 'block_products', 'block_categories', 'block_sales', 'block_deals', 'block_websites','block_payments'];
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
@@ -1355,7 +1355,81 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 		});	  
 	    this.table11.filter={key:'<?php echo $_SESSION['state']['store']['campaigns']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['campaigns']['f_value']?>'};
 
-	   
+	    var tableid=12; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var productsColumnDefs = [
+	    
+                	{key:"id", label:"<?php echo _('Id')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    			
+					,{key:"method", label:"<?php echo _('Method')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"date", label:"<?php echo _('Date')?>",  width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"amount", label:"<?php echo _('Amount')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"author", label:"<?php echo _('Author')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+	,{key:"notes", label:"<?php echo _('Notes')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				 
+				 ];
+	    //?tipo=products&tid=0"
+	    request='ar_payments.php?tipo=payments&parent=store&sf=0&parent_key='+Dom.get('store_id').value+'&tableid='+tableid
+	//  alert(request)
+	    this.dataSource12 = new YAHOO.util.DataSource(request);
+	    this.dataSource12.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource12.connXhrMode = "queueRequests";
+	    this.dataSource12.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["id","method","date","amount","author","notes"]};
+		
+
+	  this.table12 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
+								   this.dataSource12
+								 , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 //,initialLoad:false
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['store']['payments']['nr']?>,containers : 'paginator12', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info12'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['store']['payments']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['store']['payments']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+		this.table12.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table12.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table12.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table12.request=request;
+  		this.table12.table_id=tableid;
+     	this.table12.subscribe("renderEvent", campaigns_myrenderEvent);
+	
+	    this.table12.filter={key:'<?php echo $_SESSION['state']['store']['payments']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['payments']['f_value']?>'};
+
+	
 
 
 	};
@@ -1804,7 +1878,7 @@ function init() {
     YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
 
-    Event.addListener(['details', 'departments', 'families', 'products', 'categories', 'deals', 'websites', 'sales'], "click", change_block);
+    Event.addListener(['details', 'departments', 'families', 'products', 'categories', 'deals', 'websites', 'sales','payments'], "click", change_block);
     Event.addListener(['deals_details', 'campaigns', 'offers'], "click", change_deals_block);
     Event.addListener(['sites', 'pages'], "click", change_websites_block);
 

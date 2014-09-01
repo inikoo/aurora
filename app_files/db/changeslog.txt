@@ -8778,7 +8778,8 @@ ALTER TABLE `Location Dimension` CHANGE `Location File As` `Location File As` VA
 ALTER TABLE `Account Dimension` ADD `Account Type` ENUM('Online Store','Projects') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Online Store' AFTER `Account Key`;
 
 ALTER TABLE `Payment Dimension` ADD `Payment Submit Type` ENUM('Manual','EPS','AutoCredit','OrphanRefund') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'EPS' , ADD `Payment User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
-
+ALTER TABLE `Charge Dimension` ADD `Charge Public Description` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `Charge Description`;
+UPDATE `Charge Dimension` SET `Charge Public Description` = 'Please note, that we have a minimum order value of £50 before carriage and VAT. Orders below this threshold will incur £5+VAT small order charge, except gold reward customers.' WHERE `Charge Key` = 1;
 
 
 

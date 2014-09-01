@@ -371,8 +371,9 @@ else {
 
 
 
-		$smarty->assign('search_label',_('Products'));
-		$smarty->assign('search_scope','products');
+			$smarty->assign('search_label',_('Orders'));
+			$smarty->assign('search_scope','orders');
+
 
 		$charges_deal_info=$order->get_no_product_deal_info('Charges');
 		if ($charges_deal_info!='') {
