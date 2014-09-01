@@ -225,6 +225,83 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
 
 
 
+ var tableid=3; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var productsColumnDefs = [
+	    
+                	{key:"id", label:"<?php echo _('Id')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    			
+					,{key:"method", label:"<?php echo _('Method')?>", width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"date", label:"<?php echo _('Date')?>",  width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		,{key:"amount", label:"<?php echo _('Amount')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"author", label:"<?php echo _('Author')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+	,{key:"notes", label:"<?php echo _('Notes')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				 
+				 ];
+	    //?tipo=products&tid=0"
+	    request='ar_payments.php?tipo=payments&parent=store&sf=0&parent_key='+Dom.get('store_id').value+'&tableid='+tableid
+	//  alert(request)
+	    this.dataSource3 = new YAHOO.util.DataSource(request);
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["id","method","date","amount","author","notes"]};
+		
+
+	  this.table3 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
+								   this.dataSource3
+								 , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 //,initialLoad:false
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['store']['payments']['nr']?>,containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['store']['payments']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['store']['payments']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+		this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table3.request=request;
+  		this.table3.table_id=tableid;
+     	this.table3.subscribe("renderEvent", myrenderEvent);
+	
+	    this.table3.filter={key:'<?php echo $_SESSION['state']['store']['payments']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['payments']['f_value']?>'};
+
+	
+
+
 
 	};
     });
@@ -275,8 +352,8 @@ function get_numbers(tipo, from, to) {
 
 function change_block_view(e) {
 
-    ids = ['orders', 'invoices', 'dn'];
-    block_ids = ['block_orders', 'block_invoices', 'block_dn'];
+    ids = ['orders', 'invoices', 'dn','payments'];
+    block_ids = ['block_orders', 'block_invoices', 'block_dn','block_payments'];
 
     if (this.id == 'invoices') {
 
@@ -324,44 +401,50 @@ function change_block_view(e) {
 }
 
 function post_change_period_actions(r) {
-period=r.period;
-to=r.to;
-from=r.from;
+    period = r.period;
+    to = r.to;
+    from = r.from;
 
-
-
-
-
-    request = '&from=' + from + '&to=' + to;
+   request = '&from=' + from + '&to=' + to;
 
     table_id = 0
     var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-    
-    
-    Dom.get('rtext0').innerHTML='<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
-    Dom.get('rtext_rpp0').innerHTML='';
-    Dom.get('rtext1').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
-    Dom.get('rtext_rpp1').innerHTML='';
-    Dom.get('rtext2').innerHTML='<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
-    Dom.get('rtext_rpp2').innerHTML='';
-    
+
+
+    Dom.get('rtext0').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp0').innerHTML = '';
+    Dom.get('rtext1').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp1').innerHTML = '';
+    Dom.get('rtext2').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext_rpp2').innerHTML = '';
+
     table_id = 1
     var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-     table_id = 2
+    
+    table_id = 2
     var table = tables['table' + table_id];
     var datasource = tables['dataSource' + table_id];
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
- get_numbers('order', from, to)
+    
+     table_id = 3
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    
+    
+    
+    get_numbers('order', from, to)
     get_numbers('invoice', from, to)
     get_numbers('delivery_note', from, to)
-   
-  
+
+
 
 }
+
 
 
 function init() {
@@ -379,7 +462,7 @@ function init() {
 
 
     init_search('orders_store');
-    var ids = ['orders', 'invoices', 'dn'];
+    var ids = ['orders', 'invoices', 'dn','payments'];
     Event.addListener(ids, "click", change_block_view);
 
  

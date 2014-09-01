@@ -11,7 +11,7 @@
 
 include_once 'common.php';
 include_once 'class.Store.php';
-include_once('common_date_functions.php');
+include_once 'common_date_functions.php';
 
 
 $css_files=array(
@@ -169,6 +169,21 @@ $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
+
+
+$tipo_filter=$_SESSION['state']['store']['payments']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['store']['payments']['f_value']);
+$filter_menu=array(
+	'id'=>array('db_key'=>'id','menu_label'=>_('Payment ID like <i>x</i>*'),'label'=>_('Id')),
+);
+$smarty->assign('filter_menu3',$filter_menu);
+
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
 
 
 if ($block_view=='invoices')
