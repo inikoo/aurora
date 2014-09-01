@@ -13,18 +13,29 @@ include_once '../../class.Country.php';
 include_once '../../edit_customers_functions.php';
 include_once 'dropshipping_common_functions.php';
 
+
+
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
+include_once '../../set_locales.php';
+
+require_once '../../conf/conf.php';
+require '../../locale.php';
+$_SESSION['locale_info'] = localeconv();
 
 
+$mysql_host='213.175.222.120';
+//$mysql_host='localhost';
+$mysql_user='inikoo';
+//$mysql_user='root';
 
-$con_drop=@mysql_connect('213.175.222.120','drop_db_user',$dns_pwd );
+$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
 }
-$db2=@mysql_select_db("ancient_dropshipnew", $con_drop);
+$db2=@mysql_select_db("livedb_upg", $con_drop);
 if (!$db2) {
 	print "Error can not access the database in drop \n";
 	exit;
@@ -46,8 +57,8 @@ if (!$db) {
 
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+mysql_query("SET time_zone ='+0:00'",$con);
+mysql_query("SET NAMES 'utf8'",$con);
 require_once '../../conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
@@ -61,10 +72,10 @@ $editor=array(
 );
 $store=new Store('code','DS');
 
-$sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` where email='matt.priest@scldirect.co.uk' ";
-$sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` limit 1500,1";
-$sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` ";
-//$sql= "SELECT * FROM ancient_dropshipnew.`customer_entity` where entity_id=488 ";
+$sql= "SELECT * FROM livedb_upg.`customer_entity` where email='matt.priest@scldirect.co.uk' ";
+$sql= "SELECT * FROM livedb_upg.`customer_entity` limit 1500,1";
+$sql= "SELECT * FROM livedb_upg.`customer_entity` ";
+//$sql= "SELECT * FROM livedb_upg.`customer_entity` where entity_id=488 ";
 
 $res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
@@ -76,13 +87,13 @@ while ($row=mysql_fetch_assoc($res)) {
 		prepare_mysql($row['updated_at'])
 
 	);
-	$resxx=mysql_query($sql);
+	$resxx=mysql_query($sql,$con);
 	if ($rowxx=mysql_fetch_assoc($resxx)) {
 
 		continue;
 	}
 
-print $row['entity_id']."\n";
+//print $row['entity_id']."\n";
 	
 	$email=$row['email'];
 	$name='';
@@ -97,7 +108,7 @@ print $row['entity_id']."\n";
 
 	$address1='';$address2='';$town='';$postcode='';$country_div='';$country='UNK';
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 512 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'company_name',1), $row['entity_id'] );
 	//print "$sql\n";
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
@@ -105,38 +116,38 @@ print $row['entity_id']."\n";
 			$company=$row3['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 15 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'taxvat',1),$row['entity_id']);
 	//print "$sql\n";
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$tax_number=$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 4 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'prefix',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 5 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'prefix',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 6 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'middlename',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 7 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'lastname',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 8 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'suffix',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
@@ -147,27 +158,27 @@ print $row['entity_id']."\n";
 
 
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 513 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'telephone',12) , $row['entity_id']);    // telephone type ID 1 is missing from new DB ??? this might not be right phone number and other one no longer in the database....
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$tel=$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 514 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'mobile',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$mob=$row3['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_entity_varchar` WHERE `attribute_id` = 520 AND `entity_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'website_url',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$www=$row3['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`customer_address_entity` WHERE  `parent_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`customer_address_entity` WHERE  `parent_id` =%d",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
 
 	if ($row2=mysql_fetch_assoc($res2)) {
@@ -226,6 +237,8 @@ print $row['entity_id']."\n";
 	$customer_data['editor']=$editor;
 	//$customer_data['Customer Main Plain Telephone']='0114 321 8600';
 	//print_r($customer_data);
+	//continue;
+	
 	$customer=new Customer('old_id',$row['entity_id'],$store->id);
 	if ($customer->id) {
 
@@ -290,7 +303,7 @@ $sql=sprintf("INSERT INTO `Customer Import Metadata` ( `Metadata`, `Import Date`
 				prepare_mysql($row['updated_at'])
 			);
 
-		mysql_query($sql);
+		mysql_query($sql,$con);
 
 }
 
@@ -510,6 +523,7 @@ function edit_address($data) {
 
 
 }
+
 
 
 ?>

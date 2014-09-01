@@ -639,8 +639,11 @@ function create_order($data) {
 
 	$payment_method=parse_payment_method($header_data['pay_method']);
 
-	if($payment_method=='Unknown')
-	print "\n** ".$header_data['pay_method']." $payment_method\n ";
+	if ($payment_method=='Unknown') {
+
+		if ($header_data['pay_method'])
+			print "\n** ".$header_data['pay_method']." $payment_method\n ";
+	}
 
 	$order_data=array(
 		'type'=>'system',
@@ -659,13 +662,13 @@ function create_order($data) {
 		'Order Apply Auto Customer Account Payment'=>'No'
 
 	);
-	
-	
+
+
 
 	//print "creating order\n";
 
 	$order=new Order('new',$order_data);
-	
+
 
 	if ($header_data['collection']=='Yes') {
 		$order->update_order_is_for_collection('Yes');
@@ -675,9 +678,9 @@ function create_order($data) {
 	}
 	$customer = new Customer($customer_key);
 	$billing_to=$customer->get_billing_to($date_order);
-	
-	
-		$order->update_billing_to($billing_to->id);
+
+
+	$order->update_billing_to($billing_to->id);
 
 
 
@@ -824,7 +827,7 @@ function create_order($data) {
 	$order->update_number_products();
 	//$order->categorize();
 	$order->update_shipping_amount($shipping_net);
-	
+
 	$charges_data=array(
 		'Charge Net Amount'=>$charges_net,
 		'Charge Tax Amount'=>$charges_net*$tax_category_object->data['Tax Category Rate'],
@@ -883,7 +886,7 @@ function get_pp_data($date_order,$store_code,$order_data_id) {
 
 	}
 
-//print_r($order_import_metadata);
+	//print_r($order_import_metadata);
 
 	$index_date=$date_order;
 
@@ -977,43 +980,43 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				'Metadata'=>$store_code.$order_data_id
 			);
 			//$invoice->add_credit_no_product_transaction($credit_data);
-		
-		$__order=new Order($credit_data['Order Key']);
-		if ($__order->id) {
 
-			$__order_date=$__order->data['Order Date'];
-		} else {
-			$__order_date='';
+			$__order=new Order($credit_data['Order Key']);
+			if ($__order->id) {
 
-		}
+				$__order_date=$__order->data['Order Date'];
+			} else {
+				$__order_date='';
 
-		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   
+			}
+
+			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
 		values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-			prepare_mysql($credit_data['Affected Order Key']),
-			prepare_mysql($credit_data['Order Key']),
-			prepare_mysql($__order_date),
-			$invoice->id,
-			prepare_mysql($invoice->data['Invoice Date']),
-			prepare_mysql('Credit'),
-			prepare_mysql($credit_data['Transaction Description']),
-			$credit_data['Transaction Invoice Net Amount'],
-			prepare_mysql($credit_data['Tax Category Code']),
-			$credit_data['Transaction Invoice Tax Amount'],
-			$credit_data['Transaction Invoice Net Amount'],
-			$credit_data['Transaction Invoice Tax Amount'],
-			prepare_mysql($invoice->data['Invoice Currency']),
-			$invoice->data['Invoice Currency Exchange'],
-			prepare_mysql($credit_data['Metadata'])
-		);
-		mysql_query($sql);
+				prepare_mysql($credit_data['Affected Order Key']),
+				prepare_mysql($credit_data['Order Key']),
+				prepare_mysql($__order_date),
+				$invoice->id,
+				prepare_mysql($invoice->data['Invoice Date']),
+				prepare_mysql('Credit'),
+				prepare_mysql($credit_data['Transaction Description']),
+				$credit_data['Transaction Invoice Net Amount'],
+				prepare_mysql($credit_data['Tax Category Code']),
+				$credit_data['Transaction Invoice Tax Amount'],
+				$credit_data['Transaction Invoice Net Amount'],
+				$credit_data['Transaction Invoice Tax Amount'],
+				prepare_mysql($invoice->data['Invoice Currency']),
+				$invoice->data['Invoice Currency Exchange'],
+				prepare_mysql($credit_data['Metadata'])
+			);
+			mysql_query($sql);
 
-		$invoice->update_refund_totals();
-		
-		
-		
+			$invoice->update_refund_totals();
+
+
+
 		}
-		
-		
+
+
 
 
 
@@ -1086,7 +1089,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 
 				print_r($value);
 
-			//	exit("==============\n  $key $value\n $sql \n --> $date_inv <-- Error no itf-otf map1\n");
+				// exit("==============\n  $key $value\n $sql \n --> $date_inv <-- Error no itf-otf map1\n");
 			}
 		}
 
@@ -1260,61 +1263,61 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				);
 				//print_r($credit_data);
 				//$invoice->add_credit_no_product_transaction($credit_data);
-				
-					$__order=new Order($credit_data['Order Key']);
-		if ($__order->id) {
 
-			$__order_date=$__order->data['Order Date'];
-		} else {
-			$__order_date='';
+				$__order=new Order($credit_data['Order Key']);
+				if ($__order->id) {
 
-		}
+					$__order_date=$__order->data['Order Date'];
+				} else {
+					$__order_date='';
 
-		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   
+				}
+
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
 		values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-			prepare_mysql($credit_data['Affected Order Key']),
-			prepare_mysql($credit_data['Order Key']),
-			prepare_mysql($__order_date),
-			$invoice->id,
-			prepare_mysql($invoice->data['Invoice Date']),
-			prepare_mysql('Credit'),
-			prepare_mysql($credit_data['Transaction Description']),
-			$credit_data['Transaction Invoice Net Amount'],
-			prepare_mysql($credit_data['Tax Category Code']),
-			$credit_data['Transaction Invoice Tax Amount'],
-			$credit_data['Transaction Invoice Net Amount'],
-			$credit_data['Transaction Invoice Tax Amount'],
-			prepare_mysql($invoice->data['Invoice Currency']),
-			$invoice->data['Invoice Currency Exchange'],
-			prepare_mysql($credit_data['Metadata'])
-		);
-		mysql_query($sql);
+					prepare_mysql($credit_data['Affected Order Key']),
+					prepare_mysql($credit_data['Order Key']),
+					prepare_mysql($__order_date),
+					$invoice->id,
+					prepare_mysql($invoice->data['Invoice Date']),
+					prepare_mysql('Credit'),
+					prepare_mysql($credit_data['Transaction Description']),
+					$credit_data['Transaction Invoice Net Amount'],
+					prepare_mysql($credit_data['Tax Category Code']),
+					$credit_data['Transaction Invoice Tax Amount'],
+					$credit_data['Transaction Invoice Net Amount'],
+					$credit_data['Transaction Invoice Tax Amount'],
+					prepare_mysql($invoice->data['Invoice Currency']),
+					$invoice->data['Invoice Currency Exchange'],
+					prepare_mysql($credit_data['Metadata'])
+				);
+				mysql_query($sql);
 
-		$invoice->update_refund_totals();
-				
-				
+				$invoice->update_refund_totals();
+
+
 			}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			$invoice->update_totals();
 
 
 			adjust_invoice($invoice,$order);
 
 
-			
+
 
 			$invoice->pay('full',array(
 					'Invoice Paid Date'=>$date_inv,
@@ -1328,13 +1331,13 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		}
 
 	}
-	
+
 	$dn->approved_for_shipping($date_inv);
 
 
 	//print "CACA ==".$dn->data['Delivery Note Dispatch Method']."================\n";
-	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch'){
-		
+	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch') {
+
 		$dn->dispatch(array('Delivery Note Date'=>$date_inv));
 	}elseif ($dn->data['Delivery Note Dispatch Method']=='Collection') {
 		$dn->set_as_collected(array('Delivery Note Date'=>$date_inv));
@@ -1397,7 +1400,7 @@ function create_post_order($data,$data_dn_transactions) {
 
 
 	if ($parent_order->id) {
-	
+
 
 		$parent_order->update_field_switcher('Order Item Actions Taken',($reason=='Damaged'?'Replacement':'Send Missing'));
 		$customer=new Customer($parent_order->data['Order Customer Key']);
@@ -1468,11 +1471,11 @@ function create_post_order($data,$data_dn_transactions) {
 		// exit("$store_code.$order_data_id\n");
 		$_order_type=$data['Order Type'];
 
-		
+
 
 		$dn=$parent_order->send_post_action_to_warehouse($date_order,$_order_type,$store_code.$order_data_id);
 
-	if ($parent_order->error) {
+		if ($parent_order->error) {
 			print "Parent order found but still delivery note ";
 			create_post_order_with_out_order($data);
 			return;
@@ -1484,9 +1487,9 @@ function create_post_order($data,$data_dn_transactions) {
 			$data_dn_transactions[$post_transaction['dn_trans_key']]['otf_key']=$transaction_data['otf_key'];
 		}
 		$dn->create_orphan_inventory_transaction_fact($date_order);
-		
+
 		$parent_order->update_post_dispatch_state();
-		
+
 
 		//$dn->approved_for_shipping($date_inv);
 		//$dn->dispatch(array('Delivery Note Date'=>$date_inv));
@@ -2132,9 +2135,9 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 		elseif (preg_match('/debra/i',$_name))
 			$_name='debbie';
 		elseif (preg_match('/andy p|andi p/i',$_name) )
-			$_name='andyp';	
-			elseif (preg_match('/^jess$/i',$_name))
-			$_name='andyp';	
+			$_name='andyp';
+		elseif (preg_match('/^jess$/i',$_name))
+			$_name='andyp';
 		elseif (preg_match('/vinnie/i',$_name))
 			$_name='vinni';
 		elseif (preg_match('/sam/i',$_name))
@@ -2188,16 +2191,16 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='lucie';
 		elseif ($_name=='mat')
 			$_name='matus';
-			elseif ($_name=='vinny')
+		elseif ($_name=='vinny')
 			$_name='vinni';
-			elseif ($_name=='wcyne')
+		elseif ($_name=='wcyne')
 			$_name='wayne';
-			
-				elseif ($_name=='d g' or $_name=='dg' or $_name=='dan g' or $_name=='dan g.' or $_name=='d.g.' or $_name=='d.g.' or $_name=='d.g')
+
+		elseif ($_name=='d g' or $_name=='dg' or $_name=='dan g' or $_name=='dan g.' or $_name=='d.g.' or $_name=='d.g.' or $_name=='d.g')
 			$_name='dang';
-			
+
 		elseif ($_name=='nat')
-			$_name='nathan';	
+			$_name='nathan';
 		elseif ($_name=='ob' or $_name=='o.b.')
 			$_name='olga';
 		elseif ($_name=='stacy')
@@ -2208,9 +2211,9 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='zhilbert';
 
 
-elseif ($_name=='lee')
+		elseif ($_name=='lee')
 			$_name='lee1234';
-	
+
 
 
 		elseif ($_name=='cph')

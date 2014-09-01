@@ -6,21 +6,33 @@ include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
-include_once '../../class.Part.php';
+include_once '../../class.Part.php';      
 include_once '../../class.Store.php';
+include_once 'dropshipping_common_functions.php';
+
+
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
+include_once '../../set_locales.php';
+
+require_once '../../conf/conf.php';
+require '../../locale.php';
+$_SESSION['locale_info'] = localeconv();
 
 
+$mysql_host='213.175.222.120';
+//$mysql_host='localhost';
+$mysql_user='inikoo';
+//$mysql_user='root';
 
-$con_drop=@mysql_connect('213.175.222.120','drop_db_user',$dns_pwd );
+$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
 }
-$db2=@mysql_select_db("ancient_dropshipnew", $con_drop);
+$db2=@mysql_select_db("livedb_upg", $con_drop);
 if (!$db2) {
 	print "Error can not access the database in drop \n";
 	exit;
@@ -63,7 +75,7 @@ $family_bridge=array();
 
 //print_r($store);
 //exit;
-$sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level=2";
+$sql= "SELECT * FROM livedb_upg.`catalog_category_entity` where level=2";
 $res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
@@ -71,7 +83,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	$name='';
 	$description='';
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=31 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'name',3));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$code=preg_replace('/\s/i','',$row2['value']);
@@ -81,7 +93,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		$name=$row2['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_text` WHERE  `entity_id` =%d  and attribute_id=38 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_category_entity_text` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'meta_description',3));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 
@@ -120,7 +132,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-$sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level in (3) and children_count>0";
+$sql= "SELECT * FROM livedb_upg.`catalog_category_entity` where level in (3) and children_count>0";
 $res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
@@ -130,7 +142,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-$sql= "SELECT * FROM ancient_dropshipnew.`catalog_category_entity` where level in (3,4) and children_count=0";
+$sql= "SELECT * FROM livedb_upg.`catalog_category_entity` where level in (3,4) and children_count=0";
 $res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
@@ -142,7 +154,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	$name='';
 	$description='';
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=31 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'name',3));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$code=preg_replace('/\s/i','',$row2['value']);
@@ -152,7 +164,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		$name=$row2['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_entity_text` WHERE  `entity_id` =%d  and attribute_id=38 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_category_entity_text` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'meta_description',3) );
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 
@@ -184,8 +196,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 	);
 
-	//print_r($family_data);
-
+	
 	$family=new Family('create',$family_data);
 	if ($family->id) {
 		$family_bridge[$row['entity_id']]=$family->id;
@@ -196,7 +207,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-$sql= "SELECT * FROM ancient_dropshipnew.`catalog_product_entity` where sku is not NULL and sku not in ('EO-')  ";
+$sql= "SELECT * FROM livedb_upg.`catalog_product_entity` where sku is not NULL and sku not in ('EO-')  ";
 $res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
 
@@ -216,9 +227,11 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 	$code=$row['sku'];
-	print $row['entity_id']." $code \n";
+	
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=56 ",$row['entity_id']);
+  
+  
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'name',4));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$name=$row2['value'];
@@ -226,15 +239,16 @@ while ($row=mysql_fetch_assoc($res)) {
 		exit("error no name associated\n");
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=524 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'], getMagentoAttNumber($con_drop,'awsku',4));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$sku=$row2['value'];
 	}else {
+	//print $row['entity_id']." $code error no sku associated \n";
 		exit("error no sku associated\n");
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=526 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'], getMagentoAttNumber($con_drop,'relate',4));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$parts_per_product=$row2['value'];
@@ -253,7 +267,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		print "$sku $parts_per_product\n";
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_text` WHERE  `entity_id` =%d  and attribute_id=57 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_product_entity_text` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'description',4));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$description=$row2['value'];
@@ -261,7 +275,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		exit("error no description associated\n");
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  and attribute_id=60 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'price',4));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$price=$row2['value'];
@@ -269,7 +283,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		exit("error no description associated\n");
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  and attribute_id=65 ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  and attribute_id=%d ",$row['entity_id'] , getMagentoAttNumber($con_drop,'weight',4));
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$weight=$row2['value'];
@@ -277,7 +291,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		exit("error no description associated\n");
 	}
 
-	$sql=sprintf("SELECT * FROM ancient_dropshipnew.`catalog_category_product` WHERE  `product_id` =%d   ",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM livedb_upg.`catalog_category_product` WHERE  `product_id` =%d   ",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
 	if ($row2=mysql_fetch_assoc($res2)) {
 
@@ -333,6 +347,9 @@ while ($row=mysql_fetch_assoc($res)) {
 		//  'Product Part Metadata'=>$data['values']['Product Part Metadata']
 	);
 	//print_r($product_data);
+	
+	continue;
+	
 	$product=new Product('find',$product_data,'create');
 	//print "$sku $parts_per_product\n";
 
