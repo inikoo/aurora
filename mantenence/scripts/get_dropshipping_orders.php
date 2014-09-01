@@ -10,6 +10,7 @@ include_once '../../class.Part.php';
 include_once '../../class.Store.php';
 include_once '../../class.Country.php';
 include_once '../../class.PartLocation.php';
+include_once '../../class.Staff.php';
 
 
 include_once 'dropshipping_map_order_functions.php';
@@ -22,12 +23,17 @@ date_default_timezone_set('UTC');
 
 
 
-$con_drop=@mysql_connect('213.175.222.120','drop_db_user',$dns_pwd );
+$mysql_host='213.175.222.120';
+//$mysql_host='localhost';
+$mysql_user='inikoo';
+//$mysql_user='root';
+
+$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
 }
-$db2=@mysql_select_db("ancient_dropshipnew", $con_drop);
+$db2=@mysql_select_db("livedb_upg", $con_drop);
 if (!$db2) {
 	print "Error can not access the database in drop \n";
 	exit;
@@ -74,7 +80,7 @@ $editor=array(
 $store=new Store('code','DS');
 $credits=array();
 /*
-$sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE  sku in ('Freight-01','Freight-02','SUSA','SMalta','SF','NWS')  ");
+$sql=sprintf("select * from livedb_upg.`sales_flat_order_item` WHERE  sku in ('Freight-01','Freight-02','SUSA','SMalta','SF','NWS')  ");
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_assoc($res2)) {
 	$store_code=$store->data['Store Code'];
@@ -83,9 +89,9 @@ while ($row2=mysql_fetch_assoc($res2)) {
 	print "delete  $order_data_id \n";
 }
 */
-$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where entity_id=13986	";
-$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` ";
-//$sql= "SELECT * FROM ancient_dropshipnew.`sales_flat_order` where increment_id='AW17841 '";
+$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where entity_id=13986	";
+$sql= "SELECT * FROM livedb_upg.`sales_flat_order`  ";
+//$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where increment_id='AW17841 '";
 $res=mysql_query($sql,$con_drop);
 
 while ($row=mysql_fetch_assoc($res)) {
@@ -115,7 +121,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		continue;
 	}
 	//print $row['state']."\n";
-	$sql=sprintf("select created_at from ancient_dropshipnew.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
+	$sql=sprintf("select created_at from livedb_upg.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
 	//print $sql;
 	if ($row2=mysql_fetch_assoc($res2)) {
@@ -154,7 +160,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 		//print "C:".$customer->id."\n";
-		$sql=sprintf("select * from ancient_dropshipnew.`sales_flat_order_item` WHERE `order_id`=%d ",
+		$sql=sprintf("select * from livedb_upg.`sales_flat_order_item` WHERE `order_id`=%d ",
 			$row['entity_id']
 		);
 		$res2=mysql_query($sql,$con_drop);
@@ -304,6 +310,8 @@ while ($row=mysql_fetch_assoc($res)) {
 		list($address1,$address2,$town,$postcode,$country_div,$country)=get_address($row['shipping_address_id']);
 
 		$country=new Country('find',$country);
+		
+		
 		$shipping_addresses['Ship To Line 1']=$address1;
 		$shipping_addresses['Ship To Line 2']=$address2;
 		$shipping_addresses['Ship To Line 3']='';
@@ -348,7 +356,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		//print_r($data_dn_transactions);
 		//print_r($data);
 
-		//print $data['order id']."   \n";
+		print $data['order id']."   \n";
 
 		create_order($data);
 

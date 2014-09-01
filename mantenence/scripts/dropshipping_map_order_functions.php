@@ -33,6 +33,7 @@ function parse_payment_method($method) {
 	return 'Unknown';
 
 }
+
 function get_payment_method($method) {
 
 
@@ -445,9 +446,6 @@ function is_staff_sale($data) {
 	return $data;
 
 }
-
-
-
 
 
 
