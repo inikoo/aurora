@@ -679,6 +679,24 @@ $default_state=array(
 
 
 	),
+	
+	'payment'=>array(
+	'block_view'=>'details',
+		'changelog'=>array(
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>''
+		),
+	),
+	
 	'orders_lists'=>array(
 
 		'store'=>'',
