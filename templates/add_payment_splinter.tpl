@@ -170,3 +170,36 @@
 		</tr>
 	</table>
 </div>
+
+
+<div id="dialog_cancel_payment" style="padding:20px 20px 10px 20px">
+
+	<input type="hidden" value="" id="cancel_payment_payment_key"> 
+
+
+
+	<table style="font-size:110%;border-top:1px solid #ccc">
+		<tr>
+			<td>{t}Reason of cancellation{/t}:</td>
+			
+			
+		</tr>
+		<tr>
+			
+			<td> 
+			<textarea  onkeyup="can_submit_cancel_payment()" id="cancel_payment_status_info">
+			</textarea>
+			</td>
+		</tr>
+		<tr style="height:5px">
+			<td ></td>
+		</tr>
+		<tr>
+			<td > 
+			<div class="buttons">
+				<span id="save_cancel_payment_wait" style="display:none"><img src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span> <button id="save_cancel_payment" class="positive disabled" id="save_cancel_payment" onclick="cancel_payment()">{t}Save{/t}</button> <button id="close_cancel_payment" class="negative" onclick="hide_cancel_payment()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
