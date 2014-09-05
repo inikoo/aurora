@@ -1730,10 +1730,6 @@ class Order extends DB_Table {
 			prepare_mysql( $this->data ['Order Tax Name'] ),
 			prepare_mysql( $this->data ['Order Tax Operations'] ),
 			prepare_mysql( $this->data ['Order Tax Selection Type'] )
-
-
-
-
 		)
 
 		;
