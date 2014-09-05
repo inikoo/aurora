@@ -42,7 +42,7 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
-$sql=sprintf("select * from `Site Dimension`  ");
+$sql=sprintf("select * from `Site Dimension` where `Site Key`=1 ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
