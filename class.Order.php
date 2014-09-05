@@ -1680,26 +1680,8 @@ class Order extends DB_Table {
 
 
 
-		$sql = sprintf( "insert into `Order Dimension` (
-		`Order Show in Warehouse Orders`,
-`Order Telephone`,`Order Customer Fiscal Name`,
-`Order Email`,
-		`Order Apply Auto Customer Account Payment`,
-
-		`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,
-		`Order Payment Method`,
-		`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,
-
-
-                         `Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`,
-                         `Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`
-
-                         ) values
-                         (%s,%s, %s,
-                         %s,
-                         %s,%s,%s,%s,%s,%d,%s,%f,
-
-                         %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+		$sql = sprintf( "insert into `Order Dimension` (`Order Show in Warehouse Orders`,`Order Telephone`,`Order Customer Fiscal Name`,`Order Email`,		`Order Apply Auto Customer Account Payment`,`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,`Order Payment Method`,`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`,`Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`) values
+                         (%s,%s, %s,%s,%s,%s,%s,%s,%s,%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
 			prepare_mysql ( $this->data ['Order Show in Warehouse Orders'] ),
 			prepare_mysql ( $this->data ['Order Telephone'] ),
 			prepare_mysql ( $this->data ['Order Customer Fiscal Name'] ),
@@ -1761,7 +1743,7 @@ class Order extends DB_Table {
 			$this->data ['Order Key'] = $this->id;
 		}
 		else {
-			exit ( "$sql  Error coan not create order header");
+			exit ( "\n\n$sql\n\n  Error coan not create order header");
 		}
 
 	}
@@ -6352,21 +6334,141 @@ class Order extends DB_Table {
 
 
 		switch ($store->data['Store Tax Country Code']) {
+		case 'ESP':
+		
+
+			$sql=sprintf("select `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` from `Tax Category Dimension`  where `Tax Category Country Code`='ESP' and `Tax Category Active`='Yes'");
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+
+
+				switch ($row['Tax Category Name']) {
+				case 'Exento':
+					$tax_category_name=_('Exento');
+					break;
+				case 'IVA 21%':
+					$tax_category_name=_('VAT').' 21%';
+					break;
+				case 'RE (5,2%)':
+					$tax_category_name='RE (5,2%)';
+					break;
+				case 'IVA+RE (26,2%)':
+					$tax_category_name='IVA+RE (26,2%)';
+					break;
+			
+
+
+				default:
+					$tax_category_name=$row['Tax Category Name'];
+				}
+
+
+
+				$tax_category[$row['Tax Category Type']]= array(
+					'code'=>$row['Tax Category Code'],
+					'name'=>$tax_category_name,
+					'rate'=>$row['Tax Category Rate']);
+
+
+
+			}
+			
+		
+			if (in_array($this->data['Order Ship To Country Code'],array('ESP','UNK'))) {
+
+				if($customer->data['Recargo Equivalencia']=='Yes'){
+				
+				}
+				
+				return array(
+					'code'=>$tax_category['IVA']['code'],
+					'name'=>$tax_category['IVA']['name'],
+					'rate'=>$tax_category['IVA']['rate'],
+					'state'=>'delivery to ESP',
+					'operations'=>''
+
+				);
+				
+				
+			}
+			elseif (in_array($this->data['Order Billing To Country Code'],array('ESP','UNK'))) {
+
+				return array(
+					'code'=>$tax_category['Standard']['code'],
+					'name'=>$tax_category['Standard']['name'],
+					'rate'=>$tax_category['Standard']['rate'],
+					'state'=>'billing to ESP',
+					'operations'=>''
+				);
+			}
+			elseif ( in_array($this->data['Order Billing To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
+
+
+
+				if ($this->data['Order Tax Number Valid']=='Yes') {
+
+
+					$response= array(
+						'code'=>$tax_category['Outside']['code'],
+						'name'=>$tax_category['Outside']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
+						'rate'=>$tax_category['Outside']['rate'],
+						'state'=>'EC with valid tax number',
+						'operations'=>''
+
+					);
+
+				}
+				else {
+
+					if ($this->data['Order Tax Number']=='') {
+
+
+
+						$response= array(
+							'code'=>$tax_category['Standard']['code'],
+							'name'=>$tax_category['Standard']['name'],
+							'rate'=>$tax_category['Standard']['rate'],
+							'state'=>'EC no tax number' ,
+							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
+
+						);
+
+					}
+					else {
+
+
+						$response= array(
+							'code'=>$tax_category['Standard']['code'],
+							'name'=>$tax_category['Standard']['name'],
+							'rate'=>$tax_category['Standard']['rate'],
+							'state'=>'EC with invalid tax number',
+
+							'operations'=>'<div>
+							<img style="width:12px;position:relative;bottom:-1px" src="art/icons/error.png">
+							<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
+							<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
+							<br/>
+							<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
+
+							<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
+							</div>'
+
+						);
+
+
+
+					}
+
+				}
+				}
+
+		break;
 		case 'GBR':
 
 			$tax_category=array();
 
 			$sql=sprintf("select `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` from `Tax Category Dimension`  where `Tax Category Country Code`='GBR' and `Tax Category Active`='Yes'");
-			//exit($sql);
 			$res=mysql_query($sql);
-
-
-
-
-
-
-
-
 			while ($row=mysql_fetch_assoc($res)) {
 
 
