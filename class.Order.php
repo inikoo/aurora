@@ -1206,7 +1206,7 @@ class Order extends DB_Table {
 
 		$sql = sprintf( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Payment State`=%s ,`Current Dispatching State`=%s where `Order Key`=%d", prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), $this->id );
 		if (! mysql_query( $sql ))
-			exit ( "arror can not update no_payment_applicabl 3e\n" );
+			exit ( "error can not update no_payment_applicabl 3e\n" );
 
 	}
 
