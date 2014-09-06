@@ -45,22 +45,22 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	if ($product->data['Product Use Part Properties']=='Yes' ) {
-	
-			$product->update_weight_from_parts('Package');
-					$product->update_volume_from_parts('Package');
 
-}
-	
-	
+		$product->update_weight_from_parts('Package');
+		$product->update_volume_from_parts('Package');
+
+	}
+
+
 	if ($product->data['Product Use Part Units Properties']=='Yes' ) {
 		$product->update_volume_from_parts('Unit');
 		$product->update_weight_from_parts('Unit');
 
 	}
-	
 
 
-//print "Prod ".$product->pid."\r";
+
+	//print "Prod ".$product->pid."\r";
 
 }
 
@@ -185,34 +185,34 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		if ( $product->data['Product Part Units Ratio']==1) {
 			$product->update_volume_from_parts('Package');
 
-		}else{
-		$sql=sprintf("update `Product Dimension` set `Product Package Dimensions Type`='Rectangular',`Product Package Dimensions Display Units`='cm',`Product Package Dimensions Width`=NULL,`Product Package Dimensions Depth`=NULL,`Product Package Dimensions Length`=NULL,`Product Package Dimensions Diameter`=NULL,`Product Package Dimensions Width Display`=NULL,`Product Package Dimensions Depth Display`=NULL,`Product Package Dimensions Length Display`=NULL,`Product Package Dimensions Diameter Display`=NULL,`Product Package Dimensions Volume`=NULL,`Product Package XHTML Dimensions`=NULL where `Product ID`=%d  ",$product->pid);
-		mysql_query($sql);
+		}else {
+			$sql=sprintf("update `Product Dimension` set `Product Package Dimensions Type`='Rectangular',`Product Package Dimensions Display Units`='cm',`Product Package Dimensions Width`=NULL,`Product Package Dimensions Depth`=NULL,`Product Package Dimensions Length`=NULL,`Product Package Dimensions Diameter`=NULL,`Product Package Dimensions Width Display`=NULL,`Product Package Dimensions Depth Display`=NULL,`Product Package Dimensions Length Display`=NULL,`Product Package Dimensions Diameter Display`=NULL,`Product Package Dimensions Volume`=NULL,`Product Package XHTML Dimensions`=NULL where `Product ID`=%d  ",$product->pid);
+			mysql_query($sql);
 			//print"X $sql\n";
 
 		}
 
-	}else{
+	}else {
 		$sql=sprintf("update `Product Dimension` set `Product Package Type`='Box',`Product Package Weight`=NULL,`Product Package Weight Display`=NULL,`Product Package Weight Display Units`='Kg',`Product Package Dimensions Type`='Rectangular',`Product Package Dimensions Display Units`='cm',`Product Package Dimensions Width`=NULL,`Product Package Dimensions Depth`=NULL,`Product Package Dimensions Length`=NULL,`Product Package Dimensions Diameter`=NULL,`Product Package Dimensions Width Display`=NULL,`Product Package Dimensions Depth Display`=NULL,`Product Package Dimensions Length Display`=NULL,`Product Package Dimensions Diameter Display`=NULL,`Product Package Dimensions Volume`=NULL,`Product Package XHTML Dimensions`=NULL where `Product ID`=%d  ",$product->pid);
 		mysql_query($sql);
-			//print"* $sql\n";
+		//print"* $sql\n";
 
 	}
-	
-	
+
+
 	if ($product->data['Product Use Part Units Properties']=='Yes' ) {
 		$product->update_volume_from_parts('Unit');
 		$product->update_weight_from_parts('Unit');
 
-	}else{
-	$sql=sprintf("update `Product Dimension` set `Product Unit Weight`=NULL,`Product Unit Weight Display`=NULL,`Product Unit Weight Display Units`='Kg',`Product Unit Dimensions Type`='Rectangular',`Product Unit Dimensions Display Units`='cm',`Product Unit Dimensions Width`=NULL,`Product Unit Dimensions Depth`=NULL,`Product Unit Dimensions Length`=NULL,`Product Unit Dimensions Diameter`=NULL,`Product Unit Dimensions Width Display`=NULL,`Product Unit Dimensions Depth Display`=NULL,`Product Unit Dimensions Length Display`=NULL,`Product Unit Dimensions Diameter Display`=NULL,`Product Unit Dimensions Volume`=NULL,`Product Unit XHTML Dimensions`=NULL where `Product ID`=%d  ",$product->pid);
+	}else {
+		$sql=sprintf("update `Product Dimension` set `Product Unit Weight`=NULL,`Product Unit Weight Display`=NULL,`Product Unit Weight Display Units`='Kg',`Product Unit Dimensions Type`='Rectangular',`Product Unit Dimensions Display Units`='cm',`Product Unit Dimensions Width`=NULL,`Product Unit Dimensions Depth`=NULL,`Product Unit Dimensions Length`=NULL,`Product Unit Dimensions Diameter`=NULL,`Product Unit Dimensions Width Display`=NULL,`Product Unit Dimensions Depth Display`=NULL,`Product Unit Dimensions Length Display`=NULL,`Product Unit Dimensions Diameter Display`=NULL,`Product Unit Dimensions Volume`=NULL,`Product Unit XHTML Dimensions`=NULL where `Product ID`=%d  ",$product->pid);
 		mysql_query($sql);
 		print"Y $sql\n";
 	}
-	
 
 
-print "Prod ".$product->pid."\r";
+
+	print "Prod ".$product->pid."\r";
 
 }
 

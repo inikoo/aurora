@@ -11,7 +11,15 @@
 			{t}Payment Method{/t}: 
 		</div>
 		<div id="type_of_payment" class="buttons left small">
-			<button class="item" tag="Credit Card" id="add_payment_payment_method_CreditCard"><img src="art/icons/creditcards.png" /> {t}Credit Card{/t}</button> <button class="item" tag="Bank Transfer" id="add_payment_payment_method_BankTransfer"><img src="art/icons/monitor_go.png" /> {t}Bank Transfer{/t}</button> <button class="item" tag="Paypal" id="add_payment_payment_method_Paypal"><img style="width:37px;height:15px" src="art/icons/paypal.png" /> PayPal</button> <button class="item" tag="Cash" id="add_payment_payment_method_Cash"><img src="art/icons/money.png" /> {t}Cash{/t}</button> <button class="item" tag="Check" id="add_payment_payment_method_Check"><img src="art/icons/cheque.png" /> {t}Cheque{/t}</button> <button class="item" tag="Other" id="add_payment_payment_method_Other">{t}Other{/t}</button> <button class="item" tag="Customer Account" id="add_payment_payment_method_CustomerAccount">{t}Customer Account{/t}</button> 
+			<button class="item" tag="Credit Card" id="add_payment_payment_method_CreditCard"><img src="art/icons/creditcards.png" /> {t}Credit Card{/t}</button> 
+			<button class="item" tag="Bank Transfer" id="add_payment_payment_method_BankTransfer"><img src="art/icons/monitor_go.png" /> {t}Bank Transfer{/t}</button> 
+			<button class="item" tag="Paypal" id="add_payment_payment_method_Paypal"><img style="width:37px;height:15px" src="art/icons/paypal.png" /> PayPal</button> 
+			<button class="item" tag="Cash" id="add_payment_payment_method_Cash"><img src="art/icons/money.png" /> {t}Cash{/t}</button> 
+			<button class="item" tag="Check" id="add_payment_payment_method_Check"><img src="art/icons/cheque.png" /> {t}Cheque{/t}</button> 
+			<button class="item" tag="Other" id="add_payment_payment_method_Other">{t}Other{/t}</button> 
+					<button class="item" tag="Cash on Delivery" id="add_payment_payment_method_CashonDelivery">{t}Cash on Delivery{/t}</button> 
+
+		<button class="item" tag="Customer Account" id="add_payment_payment_method_CustomerAccount">{t}Customer Account{/t}</button> 
 		</div>
 	</div>
 	<div style="clear:both;height:10px">

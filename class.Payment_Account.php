@@ -239,7 +239,11 @@ function in_store($site_key) {
 		$data='';
 		$data.=_('Beneficiary').': <b>'.$this->data['Payment Account Recipient Holder'].'</b><br>';
 		$data.=_('Bank').': <b>'.$this->data['Payment Account Recipient Bank Name'].'</b><br>';
+				if ($this->data['Payment Account Recipient Address']!=''){
+
 		$data.=_('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
+		
+		}
 		if ($this->data['Payment Account Recipient Bank Account Number']!='')
 			$data.=_('Account Number').': <b>'.$this->data['Payment Account Recipient Bank Account Number'].'</b><br>';
 		if ($this->data['Payment Account Recipient Bank Code']!='')

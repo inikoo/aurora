@@ -396,7 +396,9 @@ function add_payment_change_account(payment_account_key) {
         number_methods++;
         if (index == 0) {
             Dom.addClass('add_payment_payment_method_' + valid_payment_methods[index], 'selected')
-            Dom.get('add_payment_method').value = Dom.get('add_payment_payment_method_' + valid_payment_methods[index]).getAttribute('tag');
+        
+          
+           Dom.get('add_payment_method').value = Dom.get('add_payment_payment_method_' + valid_payment_methods[index]).getAttribute('tag');
         }
 
         Dom.setStyle('add_payment_payment_method_' + valid_payment_methods[index], 'display', '')

@@ -4456,7 +4456,7 @@ class Order extends DB_Table {
 		if ($deal_component_data['Deal Component Name']!='') {
 			$deal_info=$deal_component_data['Deal Component Name'].', ';
 		}
-		$deal_info.=_trim($deal_component_data['Deal Component Terms Description'].' '.$deal_component_data['Deal Component Allowance Description']);
+		$deal_info.=_trim($deal_component_data['Deal Component XHTML Terms Description Label'].' '.$deal_component_data['Deal Component XHTML Allowance Description Label']);
 
 
 
