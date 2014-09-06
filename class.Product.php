@@ -329,7 +329,7 @@ class product extends DB_Table {
 					,$this->id
 				);
 				mysql_query($sql);
-				
+
 
 
 			}
@@ -884,7 +884,7 @@ class product extends DB_Table {
 		//   print "creating parod key --------------------------------\n";
 		// print "$sql\n";exit;
 		if (mysql_query($sql)) {
-			
+
 
 			$this->new_key=true;
 			$this->new_key_id=mysql_insert_id();
@@ -945,7 +945,7 @@ class product extends DB_Table {
 			);
 
 			mysql_query($sql);
-			
+
 			//print $sql;
 			$this->data['Product Current Key']=$new_current_key;
 			$this->updated=true;
@@ -1025,7 +1025,7 @@ class product extends DB_Table {
 		$sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
 
 		if (mysql_query($sql)) {
-			
+
 			$this->pid = mysql_insert_id();
 			$this->code =$base_data['product code'];
 			$this->new_id=true;
@@ -1056,7 +1056,7 @@ class product extends DB_Table {
 			while ($row=mysql_fetch_array($res_cat)) {
 				$sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d, NULL) ",$row['Category Key'],$this->pid  );
 				mysql_query($sql);
-				
+
 			}
 
 		} else {
@@ -1086,7 +1086,7 @@ class product extends DB_Table {
 				,$this->id
 			);
 			mysql_query($sql);
-			
+
 
 
 			$history_data=array(
@@ -1412,7 +1412,7 @@ class product extends DB_Table {
 		$sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
 		if (mysql_query($sql)) {
 			$product_part_key=mysql_insert_id();
-			
+
 
 			$this->new_value=array('Product Part Key'=>$product_part_key);
 			$this->updated=true;
@@ -1439,7 +1439,7 @@ class product extends DB_Table {
 				$values=preg_replace('/,$/',')',$values);
 				$sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
 				mysql_query($sql);
-				
+
 			}
 		}
 		return $product_part_key;
@@ -1494,7 +1494,7 @@ class product extends DB_Table {
 		$sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
 		// print "$sql\n";
 		if (mysql_query($sql)) {
-			
+
 			$product_part_key=mysql_insert_id();
 
 			if ($base_data['product part most recent']=='Yes') {
@@ -1502,7 +1502,7 @@ class product extends DB_Table {
 				$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No' where `Product ID`=%d  and `Product Part Key`!=%d      "
 					,$product_part_key,$product_part_key);
 				mysql_query($sql);
-				
+
 
 
 			}
@@ -1533,7 +1533,7 @@ class product extends DB_Table {
 				$values=preg_replace('/,$/',')',$values);
 				$sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
 				mysql_query($sql);
-				
+
 				//print "$sql\n";
 
 
@@ -1601,8 +1601,8 @@ class product extends DB_Table {
 
 
 	function get_part_locations($for_smarty=false) {
-	
-	include_once 'class.Part.php';
+
+		include_once 'class.Part.php';
 
 		$skus=join(',',$this->get_current_part_skus());
 		//print_r($this->get_current_part_list());
@@ -1772,7 +1772,7 @@ class product extends DB_Table {
 					,$this->id
 				);
 				if (mysql_query($sql)) {
-					
+
 					$this->msg=_('Product Record Type updated');
 					$this->updated=true;
 
@@ -1800,7 +1800,7 @@ class product extends DB_Table {
 						,$this->id
 					);
 					if (mysql_query($sql)) {
-						
+
 						$this->msg=_('Product Stage updated');
 						$this->updated=true;
 
@@ -1829,7 +1829,7 @@ class product extends DB_Table {
 					);
 
 					if (mysql_query($sql)) {
-						
+
 						$this->msg=_('Product Record Type updated');
 						$this->updated=true;
 						$this->new_value=_('Live');
@@ -1853,7 +1853,7 @@ class product extends DB_Table {
 						,$this->pid
 					);
 					if (mysql_query($sql)) {
-						
+
 						$this->msg=_('Product Record Type updated');
 						$this->updated=true;
 						$this->new_value=_('Live');
@@ -1928,7 +1928,7 @@ class product extends DB_Table {
 				,$this->id
 			);
 			if (mysql_query($sql)) {
-				
+
 				$this->msg=_('Product code updated');
 				$this->updated=true;
 				$this->new_value=$value;
@@ -2000,20 +2000,20 @@ class product extends DB_Table {
 		$country_codes='';
 		$parts=$this->get_parts_objects();
 		foreach ($parts as $part) {
-		
+
 			if ($part->data['Part Origin Country Code']!='')
 				$countries[$part->data['Part Origin Country Code']]=$part->data['Part Origin Country Code'];
 
 		}
 		foreach ($countries as $country) {
-		$country_codes.=','.$country;
+			$country_codes.=','.$country;
 		}
 		$country_codes=preg_replace('/^\,/','',$country_codes);
-		
+
 		$this->update_field('Product Origin Country Code',$country_codes);
 
-		
-		
+
+
 	}
 
 	function update_materials($value) {
@@ -2209,7 +2209,7 @@ class product extends DB_Table {
 		if (!mysql_query($sql)) {
 			exit("error can not self save $sql\n");
 		}
-		
+
 	}
 
 
@@ -2255,7 +2255,7 @@ class product extends DB_Table {
 		);
 		// print "$sql\n";
 		mysql_query($sql);
-		
+
 		if (mysql_affected_rows()>0) {
 			$editor_data=$this->get_editor_data();
 			$this->updated_field['Product For Sale Since Date']=true;
@@ -2293,7 +2293,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		if (mysql_affected_rows()>0) {
 			$this->updated_field['Product Last Sold Date']=true;
 			$editor_data=$this->get_editor_data();
@@ -2335,7 +2335,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		if (mysql_affected_rows()>0) {
 			$this->updated_field['Product First Sold Date']=true;
 			$editor_data=$this->get_editor_data();
@@ -2378,7 +2378,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		// print "$sql\n";
 		$affected+=mysql_affected_rows();
 		$sql=sprintf("update `Product History Dimension`  set `Product History Valid To`=%s where  `Product Key`=%d and `Product History Valid To`<%s   "
@@ -2388,7 +2388,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		//print "$sql\n";
 		$affected+=mysql_affected_rows();
 		// if($affected)
@@ -2406,7 +2406,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		$affected+=mysql_affected_rows();
 		$sql=sprintf("update `Product Dimension`  set `Product Valid To`=%s where  `Product ID`=%d and `Product Valid To`<%s   "
 			,prepare_mysql($date)
@@ -2415,7 +2415,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		$affected+=mysql_affected_rows();
 		return $affected;
 	}
@@ -2429,7 +2429,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		$affected+=mysql_affected_rows();
 		$sql=sprintf("update `Product Same Code Dimension`  set `Product Same Code Valid To`=%s where  `Product Code`=%s and `Product Same Code Valid To`<%s   "
 			,prepare_mysql($date)
@@ -2438,7 +2438,7 @@ class product extends DB_Table {
 
 		);
 		mysql_query($sql);
-		
+
 		$affected+=mysql_affected_rows();
 		return $affected;
 	}
@@ -2970,7 +2970,7 @@ class product extends DB_Table {
 				,$this->id
 			);
 			if (mysql_query($sql)) {
-				
+
 				$this->msg=_('Product price updated');
 				$this->updated=true;
 				$this->data['Product Editing Price']=$amount;
@@ -3027,7 +3027,7 @@ class product extends DB_Table {
 					,$this->new_key_id
 				);
 				mysql_query($sql);
-				
+
 				//print "$sql\n";
 
 				if ($change_at=='now') {
@@ -3165,7 +3165,7 @@ class product extends DB_Table {
 		//print "value $value; c: $currency a: $amount\n";
 		//print "$sql\n";exit("dup rrp");
 		if (mysql_query($sql)) {
-			
+
 			$this->msg=_('Product RRP updated');
 			$this->updated=true;
 
@@ -3245,7 +3245,7 @@ class product extends DB_Table {
 
 
 		mysql_query($sql);
-		
+
 
 		$old_family->update_product_data();
 		$new_family->update_product_data();
@@ -3361,7 +3361,7 @@ class product extends DB_Table {
 			,$this->pid
 		);
 		if (mysql_query($sql)) {
-			
+
 			$this->msg=_('Product name updated');
 			$this->updated=true;
 			$this->new_value=$value;
@@ -3447,7 +3447,7 @@ class product extends DB_Table {
 			,$this->pid
 		);
 		if (mysql_query($sql)) {
-			
+
 			$this->data['Product Special Characteristic']=$value;
 			$this->msg=_('Product Special Characteristic');
 			$this->updated=true;
@@ -3484,7 +3484,7 @@ class product extends DB_Table {
 				,$this->pid
 			);
 			if (mysql_query($sql)) {
-				
+
 				$this->data['Product Description']=$description;
 				$this->msg=_('Product Description changed');
 				$this->updated=true;
@@ -3542,7 +3542,7 @@ class product extends DB_Table {
 				$sql=sprintf("delete from `Category Bridge` where `Subject Key`=%d  and `Subject`='Product'  and `Category Key`=%d ",$this->pid,$category_location_key);
 
 				mysql_query($sql);
-				
+
 				if (mysql_affected_rows()>0) {
 					$this->updated_fields['Product Category'][$category_location_key]=0;
 				}
@@ -3636,7 +3636,7 @@ class product extends DB_Table {
 				$sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d, NULL) ",$category_location_key,$this->pid);
 				//print "$sql\n";
 				if (mysql_query($sql)) {
-					
+
 					if (mysql_affected_rows()>0) {
 						$num_inserted_categories++;
 						$this->updated_fields['Product Category'][$category_location_key]=1;
@@ -3783,8 +3783,8 @@ class product extends DB_Table {
 	}
 
 	function get_parts_objects() {
-	include_once 'class.Part.php';
-	
+		include_once 'class.Part.php';
+
 		$parts=array();
 		foreach ($this->get_current_part_skus() as $part_sku) {
 			$parts[$part_sku]=new Part($part_sku);
@@ -3814,7 +3814,7 @@ class product extends DB_Table {
 	}
 
 	function get_current_part_list($options=false) {
-include_once 'class.Part.php';
+		include_once 'class.Part.php';
 		$part_list=array();
 
 		$sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
@@ -3924,7 +3924,7 @@ include_once 'class.Part.php';
 			// print "$sql\n";
 			if (!mysql_query($sql))
 				exit("$sql\ncan not update product days\n");
-			
+
 		}
 		// return;
 		mysql_free_result($result);
@@ -4082,7 +4082,7 @@ include_once 'class.Part.php';
 		if (!mysql_query($sql))
 			exit("$sql\ncan not update product same code total days\n");
 
-		
+
 
 		mysql_free_result($result);
 
@@ -4181,7 +4181,7 @@ include_once 'class.Part.php';
 		//  print $sql;
 		if (!mysql_query($sql))
 			exit("$sql\ncan not update product same id total days\n");
-		
+
 
 		mysql_free_result($result);
 
@@ -4198,7 +4198,7 @@ include_once 'class.Part.php';
 				,$this->pid
 			);
 			mysql_query($sql);
-			
+
 		}
 
 
@@ -4261,11 +4261,11 @@ include_once 'class.Part.php';
 	function update_parts() {
 		$parts='';
 		$mysql_where='';
-$number_of_parts=0;
+		$number_of_parts=0;
 
 
 		$sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
-		
+
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
@@ -4340,13 +4340,13 @@ $number_of_parts=0;
 
 
 		$sql=sprintf("update `Product Dimension` set `Product Number of Parts`=%d,`Product XHTML Parts`=%s  , `Product XHTML Supplied By`=%s where `Product ID`=%d",
-		$number_of_parts,
-		prepare_mysql(_trim($parts)),
-		prepare_mysql(_trim($supplied_by)),
-		$this->pid);
+			$number_of_parts,
+			prepare_mysql(_trim($parts)),
+			prepare_mysql(_trim($supplied_by)),
+			$this->pid);
 		mysql_query($sql);
-		
-		
+
+
 
 	}
 
@@ -4388,7 +4388,7 @@ $number_of_parts=0;
 
 	function update_availability_type() {
 
-include_once 'class.Part.php';
+		include_once 'class.Part.php';
 		if ($this->data['Product Record Type']=='Historic') {
 			$availability_type='Discontinued';
 		} else {
@@ -4588,7 +4588,7 @@ include_once 'class.Part.php';
 
 		$sql=sprintf("update `Product Dimension` set `Product Units Per Case`=%f where `Product ID`=%d",$units,$this->pid);
 		mysql_query($sql);
-		
+
 		$this->data['Product Units Per Case']=$units;
 		$this->new_value=$units;
 		$this->updated=true;
@@ -4821,7 +4821,7 @@ include_once 'class.Part.php';
 		$sql=sprintf("update `Product Dimension` set `Product Unit Type`=%s where `Product ID`=%d",prepare_mysql($value),$this->pid);
 		//print $sql;
 		mysql_query($sql);
-		
+
 		$this->data['Product Unit Type']=$value;
 		$this->new_value=$value;
 		$this->updated=true;
@@ -4829,8 +4829,8 @@ include_once 'class.Part.php';
 	}
 
 	function get_parts_info() {
-	include_once 'class.Part.php';
-	
+		include_once 'class.Part.php';
+
 		$sql=sprintf("select `Part Stock State`,IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
 		//print $sql;
 		$result=mysql_query($sql);
@@ -4853,19 +4853,19 @@ include_once 'class.Part.php';
 
 
 	function get_weight_from_parts($type) {
-	
-	include_once 'class.Part.php';
-	
-	//print "$type\n";
-	
+
+		include_once 'class.Part.php';
+
+		//print "$type\n";
+
 		$parts_info=$this->get_parts_info();
 
 		$weight_package=0;
 		$weight_package_units=array();
 		foreach ($parts_info as $sku => $part_info) {
 			$part=new Part($sku);
-			
-		//	print $part->sku.' '.$part->data["Part $type Weight"]." Part $type Weight  ";
+
+			// print $part->sku.' '.$part->data["Part $type Weight"]." Part $type Weight  ";
 			//print $part->data["Part Package Weight"]." Part Package Weight \n";
 			$weight_package+= $part_info['parts_per_product']*$part->data["Part $type Weight"];
 
@@ -5451,7 +5451,7 @@ include_once 'class.Part.php';
 
 				$this->data['Product Sales Type']=$sales_state;
 
-				
+
 				$this->msg=_('Product Sales Type updated');
 				$this->updated=true;
 

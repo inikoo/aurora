@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-26 02:49+0100\n"
-"PO-Revision-Date: 2014-07-26 02:50+0100\n"
+"PO-Revision-Date: 2014-09-06 19:22+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2;plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: /Users/raul/po_inikoo_sources\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.9\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: account.js.php:40 ar_edit_sites.php:2399 ar_edit_sites.php:2838
@@ -384,7 +384,7 @@ msgstr "Notas"
 #: warehouse_user.js.php:126 warehouses.js.php:51 widgets.js.php:59
 #: world.js.php:74 world.js.php:140 world.js.php:200 wregion.js.php:70
 msgid "Page"
-msgstr "Pagina"
+msgstr "Página"
 
 #: account.js.php:73 admin_user.js.php:63 admin_user.js.php:126
 #: ar_import.php:453 associate_product.js.php:121 associate_product.js.php:199
@@ -1491,7 +1491,7 @@ msgstr "cargos con nombre como"
 
 #: ar_assets.php:3013 ar_edit_assets.php:2321 ar_quick_tables.php:1894
 msgid "charges with description like"
-msgstr "con la descripción de cargos como"
+msgstr "Cargos con descripción"
 
 #: ar_assets.php:5009 ar_edit_assets.php:3166 ar_edit_contacts.php:3986
 #: ar_edit_orders.php:4335 ar_edit_orders.php:4432 ar_edit_orders.php:4530
@@ -1858,9 +1858,8 @@ msgstr[1] "cambio"
 
 #: ar_assets.php:7799 ar_edit_sites.php:819 ar_sites.php:539 ar_sites.php:935
 #: ar_sites.php:4145
-#, fuzzy
 msgid "There isn't any page with code"
-msgstr "No hay ningun país con el código"
+msgstr "No hay ninguna página con el código"
 
 #: ar_assets.php:7801 ar_edit_sites.php:821 ar_sites.php:541 ar_sites.php:937
 #: ar_sites.php:4147
@@ -2073,7 +2072,7 @@ msgstr "No hay ningún acuerdo con ese nombre"
 #: ar_edit_deals.php:469 sites/ar_contacts.php:403 sites/ar_contacts.php:1165
 #: sites/ar_contacts.php:1418 sites/ar_orders.php:804
 msgid "There isn't any deal with description like "
-msgstr "No hay ningún acuerdo con la descripción como"
+msgstr "No hay ninguna oferta con descripción "
 
 #: ar_contacts.php:410 ar_contacts.php:1172 ar_contacts.php:1425
 #: ar_deals.php:1047 ar_deals.php:1336 ar_edit_assets.php:2614
@@ -2087,7 +2086,7 @@ msgstr "se ocupa de nombre como"
 #: ar_edit_deals.php:479 sites/ar_contacts.php:413 sites/ar_contacts.php:1175
 #: sites/ar_contacts.php:1428 sites/ar_orders.php:814
 msgid "deals with description like"
-msgstr "se ocupa de la descripción como"
+msgstr "Ofertas con descripción"
 
 #: ar_contacts.php:470 ar_contacts.php:484 ar_orders.php:635 ar_orders.php:649
 #: invoice.fast.pdf.php:389 invoice.pdf.old.php:389 invoice2.pdf.php:389
@@ -2147,16 +2146,14 @@ msgstr "Notas de entrega"
 #: invoice2.pdf.php:227 sites/ar_contacts.php:888 sites/ar_contacts.php:962
 #: sites/class.Invoice.php:2439 sites/invoice.pdf.php:65
 #: sites/invoice.pdf.php:88
-#, fuzzy
 msgid "Invoice"
 msgid_plural "Invoice"
 msgstr[0] "Factura"
-msgstr[1] "Factura"
+msgstr[1] "Facturas"
 
 #: ar_contacts.php:900 sites/ar_contacts.php:900
-#, fuzzy
 msgid "There isn't any invoice with this number"
-msgstr "No hay ningún orden con este número"
+msgstr "No hay ningún pedido con este número"
 
 #: ar_contacts.php:908 sites/ar_contacts.php:908
 #, fuzzy
@@ -2202,7 +2199,7 @@ msgstr "Nota de Crédito"
 #: sites/invoice.pdf.php:164 smarty.php:16862 smarty.php:16892
 #: smarty.php:19139
 msgid "Refund"
-msgstr "Restitución"
+msgstr "Devolución"
 
 #: ar_contacts.php:1654 sites/ar_contacts.php:1654
 msgid "company"
@@ -2961,19 +2958,16 @@ msgid "when items gross amount is less than"
 msgstr "Menor que"
 
 #: ar_edit_assets.php:2393
-#, fuzzy
 msgid "when items gross amount is more than"
-msgstr "Artículos bruto"
+msgstr "Es mas de"
 
 #: ar_edit_assets.php:2396
-#, fuzzy
 msgid "when items gross amount is less or equal than"
-msgstr "Menor que"
+msgstr "Menor o igual que"
 
 #: ar_edit_assets.php:2399
-#, fuzzy
 msgid "when items gross amount is more or equal than"
-msgstr "Artículos bruto"
+msgstr "Es mas o igual que"
 
 #: ar_edit_assets.php:2407
 msgid "when"
@@ -3770,9 +3764,8 @@ msgstr "En proceso"
 #: ar_edit_orders.php:1835 ar_orders.php:4371 class.Order.php:1945
 #: class.Order.php:3070 sites/class.Order.php:1945 sites/class.Order.php:3070
 #: smarty.php:3200
-#, fuzzy
 msgid "Submitted by Customer"
-msgstr "Enviado"
+msgstr "Enviado por cliente"
 
 #: ar_edit_orders.php:1838 ar_import.php:2235 ar_import.php:2502
 #: ar_orders.php:4374 class.Order.php:880 class.Order.php:1939
@@ -3952,12 +3945,11 @@ msgstr "días pedidos"
 
 #: ar_edit_orders.php:2520 order.php:213
 msgid "weight"
-msgstr "peso"
+msgstr "Peso"
 
 #: ar_edit_orders.php:2528 order.php:221
-#, fuzzy
 msgid "parcels"
-msgstr "Paquetes"
+msgstr "Bultos"
 
 #: ar_edit_orders.php:2537 order.php:230
 msgid "consignment"
@@ -3982,9 +3974,8 @@ msgid "No part with sku like"
 msgstr "No hay ninguna parte con la descripción como"
 
 #: ar_edit_orders.php:3339 ar_edit_orders.php:3598
-#, fuzzy
 msgid "No part with reference like"
-msgstr "Referencia"
+msgstr "No hay pieza con Referencia"
 
 #: ar_edit_orders.php:3348 ar_edit_orders.php:3607
 #, fuzzy
@@ -3992,9 +3983,8 @@ msgid "with sku like"
 msgstr "No Gusto"
 
 #: ar_edit_orders.php:3351 ar_edit_orders.php:3610
-#, fuzzy
 msgid "with reference like"
-msgstr "Referencia"
+msgstr "con Referencia"
 
 #: ar_edit_orders.php:3410 class.DeliveryNote.php:2180
 #: class.DeliveryNote.php:2631 class.Order.php:3088 dn.js.php:37
@@ -4133,9 +4123,8 @@ msgid "OK"
 msgstr "En Orden"
 
 #: ar_edit_payments.php:170
-#, fuzzy
 msgid "Completed by user"
-msgstr "Usuario"
+msgstr "Completado por Usuario"
 
 #: ar_edit_payments.php:251 class.Order.php:742 sites/class.Order.php:742
 #, fuzzy
@@ -4172,7 +4161,7 @@ msgstr "sumisitros utilizados en"
 
 #: ar_edit_porders.php:1704
 msgid "Wrong date/time"
-msgstr "fecha incorrecta y hora"
+msgstr "fecha/hora incorrecta"
 
 #: ar_edit_preferences.php:48 ar_edit_users.php:335
 msgid "Sub-operation not found"
@@ -4182,13 +4171,12 @@ msgstr "Sub-operación que no se encuentra"
 #: ar_sites.php:520 ar_sites.php:916 ar_sites.php:1539
 msgid "page"
 msgid_plural "pages"
-msgstr[0] "pagina"
-msgstr[1] "paginas"
+msgstr[0] "página"
+msgstr[1] "páginas"
 
 #: ar_edit_sites.php:825 ar_reports.php:4791
-#, fuzzy
 msgid "There isn't any page with name"
-msgstr "No hay ningúna oferta con nombre de"
+msgstr "No hay ninguna página con nombre de"
 
 #: ar_edit_sites.php:827 ar_reports.php:4793
 #, fuzzy
@@ -4817,9 +4805,8 @@ msgid "Change Password"
 msgstr "Cambiar contraseña"
 
 #: ar_edit_sites.php:3160 ar_upload_page_content.php:761
-#, fuzzy
 msgid "Page content uploaded"
-msgstr "Contenido"
+msgstr "Contenido página actualizado"
 
 #: ar_edit_staff.php:178
 msgid "Position deleted"
@@ -5549,7 +5536,7 @@ msgstr "Crédito"
 #: smarty.php:21578 smarty.php:21683 smarty.php:22577 smarty.php:27710
 #: smarty.php:27848 smarty.php:28427 smarty.php:28565
 msgid "Shipping"
-msgstr "Envio"
+msgstr "Envío"
 
 #: ar_orders.php:817 invoice.fast.pdf.php:288 invoice.pdf.jonathan.php:219
 #: invoice.pdf.old.php:288 invoice.pdf.php:170 invoice2.pdf.php:288
@@ -5644,19 +5631,16 @@ msgid "No invoice with customer like"
 msgstr "Factura"
 
 #: ar_orders.php:1887
-#, fuzzy
 msgid "There isn't any invoice with ID like"
-msgstr "No hay ningún cliente con acreditación como"
+msgstr "No hay ninguna factura con ese número"
 
 #: ar_orders.php:1890 ar_orders.php:1893
-#, fuzzy
 msgid "No invoice with total"
-msgstr "Factura"
+msgstr "No hay factura con ese total"
 
 #: ar_orders.php:1896
-#, fuzzy
 msgid "There isn't any invoice billed to"
-msgstr "No hay ningún departamento con esta descripción"
+msgstr "No hay ninguna factura de"
 
 #: ar_orders.php:1905 ar_reports.php:2224
 #, fuzzy
@@ -5737,14 +5721,12 @@ msgid "hours"
 msgstr "horas"
 
 #: ar_parts.php:396 ar_warehouse.php:2152
-#, fuzzy
 msgid "There isn't any part reference "
-msgstr "No hay ninguna parte que se usa en"
+msgstr "No hay pieza con referencia"
 
 #: ar_parts.php:417 ar_warehouse.php:2166
-#, fuzzy
 msgid "parts reference"
-msgstr "Referencia"
+msgstr "Referencia piezas"
 
 #: ar_parts.php:640 smarty.php:3938 smarty.php:7043 smarty.php:12830
 #: smarty.php:13730 smarty.php:21026 smarty.php:21251 smarty.php:22286
@@ -6235,9 +6217,8 @@ msgid "parts with SKU"
 msgstr "Piezas"
 
 #: ar_quick_tables.php:711 ar_reports.php:1461
-#, fuzzy
 msgid "parts with reference like"
-msgstr "Referencia"
+msgstr "Referencia como "
 
 #: ar_quick_tables.php:756
 #, fuzzy
@@ -7101,9 +7082,8 @@ msgid "Change User Theme"
 msgstr "Cambiar Tema del usuario"
 
 #: class.Account.php:83 sites/class.Account.php:83
-#, fuzzy
 msgid "Account Added"
-msgstr "Cuenta"
+msgstr "Cuenta añadida"
 
 #: class.Account.php:90 sites/class.Account.php:90
 #, fuzzy
@@ -7713,9 +7693,8 @@ msgid "New anonymous customer added"
 msgstr "Nuevo cliente anónimo agregó"
 
 #: class.Customer.php:1311 sites/class.Customer.php:1311
-#, fuzzy
 msgid "The customer already has this number"
-msgstr "Cliente ya tiene este correo electrónico"
+msgstr "Cliente ya tiene este numero"
 
 #: class.Customer.php:1399 sites/class.Customer.php:1399
 #, fuzzy
@@ -7958,9 +7937,8 @@ msgid "refunded for"
 msgstr "restitución"
 
 #: class.Customer.php:5154 sites/class.Customer.php:5154
-#, fuzzy
 msgid "Date refunded"
-msgstr "al"
+msgstr "Fecha devolución"
 
 #: class.Customer.php:5495 sites/class.Customer.php:5495
 msgid "Email Removed from Customer"
@@ -8323,9 +8301,8 @@ msgid "Error: Incorrect Store Key"
 msgstr "Error: no se puede crear tienda"
 
 #: class.Department.php:175 sites/class.Department.php:175
-#, fuzzy
 msgid "There is already another department with this code"
-msgstr "Código del departamento ya la Sociedad"
+msgstr "Código del departamento duplicado"
 
 #: class.Department.php:231 sites/class.Department.php:231
 #, fuzzy
@@ -8780,11 +8757,10 @@ msgstr[0] "Facturas del pedido"
 msgstr[1] "Facturas de los pedidos"
 
 #: class.Invoice.php:2455 sites/class.Invoice.php:2455
-#, fuzzy
 msgid "Refund for order"
 msgid_plural "Refund for orders"
-msgstr[0] "Modifíquese el fin de"
-msgstr[1] "Modifíquese el fin de"
+msgstr[0] "Devolución por pedido"
+msgstr[1] "Devolución por pedidos"
 
 #: class.Location.php:159 class.Location.php:408
 msgid "Wrong location code"
@@ -8870,15 +8846,15 @@ msgstr "El peso máximo de este espectáculo lugar ser numérico"
 
 #: class.Location.php:592
 msgid "The maximum weight can not be negative"
-msgstr "El peso máximo que no puede ser negativo"
+msgstr "El peso máximo no puede ser negativo"
 
 #: class.Location.php:597
 msgid "The maximum weight can not be zero"
-msgstr "El peso máximo que no puede ser cero"
+msgstr "El peso máximo no puede ser cero"
 
 #: class.Location.php:613
 msgid "Location maximum weight changed"
-msgstr "Ubicación peso máximo cambiado"
+msgstr "Peso máximo Ubicación cambiado"
 
 #: class.Location.php:619
 msgid "The maximum volume for this location show be numeric"
@@ -9136,9 +9112,8 @@ msgstr "Nuevo"
 
 #: class.Page.php:1622 class.PageDeleted.php:119 sites/class.Page.php:1622
 #: sites/class.PageDeleted.php:119 smarty.php:7892
-#, fuzzy
 msgid "Front Page Store"
-msgstr "Pagina"
+msgstr "Pagina Principal"
 
 #: class.Page.php:1625 class.PageDeleted.php:122 edit_supplier.php:105
 #: email_campaign.php:107 email_campaign_mailing_list.php:39
@@ -9554,9 +9529,8 @@ msgid ""
 msgstr "Pedidos hechos"
 
 #: class.Part.php:3986 class.Part.php:4045
-#, fuzzy
 msgid "Next shipment date removed"
-msgstr "envío Siguiente"
+msgstr "Fecha de envío eliminada"
 
 #: class.Part.php:3987 class.Part.php:4046
 msgid "Next shipment date removed, previous value:"
@@ -9564,18 +9538,16 @@ msgstr ""
 
 #: class.Part.php:3993 class.Part.php:3994 class.Part.php:4052
 #: class.Part.php:4053
-#, fuzzy
 msgid "Next shipment date updated"
-msgstr "envío Siguiente"
+msgstr "Fecha de envío actualizada"
 
 #: class.PartLocation.php:113
 msgid "Part not found"
 msgstr "La parte que no se encuentra"
 
 #: class.PartLocation.php:233
-#, fuzzy
 msgid "Minimum quantity has to be lower than the maximum quantity"
-msgstr "Cantidad"
+msgstr "Cantidad mínima tiene que ser menor que la máxima"
 
 #: class.PartLocation.php:337
 msgid "Quantity On Hand should be a number"
@@ -9595,9 +9567,8 @@ msgid "set to"
 msgstr "establece en"
 
 #: class.PartLocation.php:409 class.PartLocation.php:1749
-#, fuzzy
 msgid "adjust quantity"
-msgstr "Cantidad"
+msgstr "Ajustar Cantidad"
 
 #: class.PartLocation.php:519
 msgid "Part added to location"
@@ -9618,7 +9589,7 @@ msgstr "acciones desconocido en esta ubicación"
 
 #: class.PartLocation.php:677
 msgid "To Move Quantity greater than the stock on the location"
-msgstr "Para mover Cantidad superior a la población sobre la ubicación"
+msgstr "Para mover Cantidad que el stock de la ubicación"
 
 #: class.PartLocation.php:684
 msgid "Destination location is the same as this one"
@@ -9639,7 +9610,7 @@ msgstr "acciones desconocido en la ubicación"
 
 #: class.PartLocation.php:776
 msgid "Lost Quantity greater than the stock on the location"
-msgstr "Lost cantidad superior a la población sobre la ubicación"
+msgstr "Perdida cantidad superior al stock de la ubicación"
 
 #: class.PartLocation.php:877
 msgid "lost from"
@@ -9705,9 +9676,8 @@ msgstr "Por hacer"
 
 #: class.Payment.php:118 site.js.php:676 sites/class.Payment.php:118
 #: smarty.php:23945 smarty.php:23954
-#, fuzzy
 msgid "Completed"
-msgstr "Empresa de creación"
+msgstr "Completado"
 
 #: class.Payment.php:155 sites/class.Payment.php:155 smarty.php:2183
 #, fuzzy
@@ -9744,9 +9714,8 @@ msgid "is in process"
 msgstr "En proceso"
 
 #: class.Payment.php:279 sites/class.Payment.php:279
-#, fuzzy
 msgid "has been completed sucessfully"
-msgstr "ha sido permanentemente"
+msgstr "ha sido completado correctamente"
 
 #: class.Payment.php:293 sites/class.Payment.php:293
 #, fuzzy
@@ -9763,9 +9732,8 @@ msgid "payment in process"
 msgstr "En proceso"
 
 #: class.Payment.php:334 sites/class.Payment.php:334
-#, fuzzy
 msgid "payment completed sucessfully"
-msgstr "Pago"
+msgstr "Pago completado correctamente"
 
 #: class.Payment.php:345 sites/class.Payment.php:345
 #, fuzzy
@@ -9999,7 +9967,7 @@ msgstr "Descripción del producto ha cambiado"
 #: class.Product.php:3494 class.Product.php:3495 sites/class.Product.php:3494
 #: sites/class.Product.php:3495
 msgid "Product Description Created"
-msgstr "Descripción del producto de creación"
+msgstr "Descripción del producto creada"
 
 #: class.Product.php:3497 class.Product.php:3498 sites/class.Product.php:3497
 #: sites/class.Product.php:3498
@@ -10277,14 +10245,12 @@ msgid "Error: There is another store with the same code"
 msgstr "Error: Otro departamento con el mismo código"
 
 #: class.Store.php:439 sites/class.Store.php:439
-#, fuzzy
 msgid "Store Code Updated"
-msgstr "Código de la tienda"
+msgstr "Código de la tienda actualizado"
 
 #: class.Store.php:446 sites/class.Store.php:446
-#, fuzzy
 msgid "Store Code Changed"
-msgstr "Código de la tienda"
+msgstr "Código de la tienda cambiado"
 
 #: class.Store.php:457 sites/class.Store.php:457
 #, fuzzy
@@ -10872,7 +10838,7 @@ msgstr "a la fecha"
 #: sites/common_date_functions.php:62 smarty.php:24497 smarty.php:24668
 #: smarty.php:24806
 msgid "Year-to-Date"
-msgstr "Año a la Fecha"
+msgstr "Un Año hasta Fecha"
 
 #: common_date_functions.php:67 sites/common_date_functions.php:67
 #: smarty.php:24500 smarty.php:24671 smarty.php:24809
@@ -11143,7 +11109,7 @@ msgstr "Fecha del pedido"
 #: smarty.php:19169 smarty.php:24281 smarty.php:24287
 #: supplier_product.js.php:217
 msgid "Parcels"
-msgstr "Paquetes"
+msgstr "Bultos"
 
 #: customer.js.php:639 customers_lists.js.php:51 department.js.php:470
 #: edit_company_area.js.php:159 edit_company_department.js.php:189
@@ -12191,9 +12157,8 @@ msgstr "Estado"
 #: parts_export_common.php:38 products_export_common.php:42
 #: report_intrastat.php:55 sites/invoice.pdf.php:123 smarty.php:9176
 #: store.js.php:535
-#, fuzzy
 msgid "Tariff Code"
-msgstr "Código"
+msgstr "Código Tariff"
 
 #: department.js.php:301 family.js.php:91 inventory.js.php:236
 #: inventory_light.js.php:45 store.js.php:539 stores.js.php:384
@@ -12203,9 +12168,8 @@ msgstr "Tipo"
 
 #: department.js.php:302 family.js.php:92 inventory.js.php:237
 #: inventory_light.js.php:46 store.js.php:540 stores.js.php:385
-#, fuzzy
 msgid "Pkg Weight"
-msgstr "Peso"
+msgstr "Peso Bulto"
 
 #: department.js.php:303 family.js.php:93 inventory.js.php:238
 #: inventory_light.js.php:47 store.js.php:541 stores.js.php:386
@@ -12369,7 +12333,7 @@ msgstr "número de registración de empresa invalida"
 #: dn.pdf.old.php:142 sites/smarty.php:4253 smarty.php:4100 smarty.php:13961
 #: smarty.php:22520
 msgid "VAT Number"
-msgstr "Número fiscal"
+msgstr "Número fiscal/ CIF"
 
 #: dn.pdf.old.php:289 edit_part_category.php:287 edit_product.php:264
 #: inventory.php:182 location.php:205 location.php:224 new_parts_list.php:154
@@ -12424,9 +12388,8 @@ msgid "Invalid Currency Code"
 msgstr "Código de moneda no válido"
 
 #: edit_account.php:52 smarty.php:4373
-#, fuzzy
 msgid "Editing Account"
-msgstr "Edición"
+msgstr "Edición cuenta"
 
 #: edit_account.php:70
 #, fuzzy
@@ -12447,9 +12410,8 @@ msgid "Billing"
 msgstr "Facturación"
 
 #: edit_campaign.js.php:59 edit_deal.js.php:59
-#, fuzzy
 msgid "Invalid Offer Description"
-msgstr "Descripción de la oferta"
+msgstr "Descripción de la oferta invalida"
 
 #: edit_campaign.js.php:60 edit_deal.js.php:60
 #, fuzzy
@@ -12508,7 +12470,7 @@ msgstr "No válido el código de área"
 
 #: edit_company_area.js.php:338
 msgid "Invalid Area Description"
-msgstr "Descripción del Área válido"
+msgstr "Descripción del Área inválido"
 
 #: edit_company_area.php:88 smarty.php:5258
 msgid "Editing Company Area"
@@ -12750,9 +12712,8 @@ msgid "Editing State"
 msgstr "Gestionando estado"
 
 #: edit_family.js.php:806 smarty.php:21854
-#, fuzzy
 msgid "Web Status"
-msgstr "Estado"
+msgstr "Estado web"
 
 #: edit_family.js.php:820 upload_assets.js.php:109
 msgid "Unit Type"
@@ -12901,7 +12862,7 @@ msgstr "Volumen válido"
 #: edit_product.js.php:1649 edit_product.js.php:1758
 #: edit_supplier_product.js.php:1329 edit_supplier_product.js.php:1438
 msgid "Invalid Weight"
-msgstr "Peso válido"
+msgstr "Peso inválido"
 
 #: edit_location.js.php:408 edit_part.js.php:1278 edit_part.js.php:1291
 #: edit_part.js.php:1304 edit_part.js.php:1317 edit_part.js.php:1387
@@ -12975,9 +12936,8 @@ msgid "Limit"
 msgstr "Límite"
 
 #: edit_page.js.php:813
-#, fuzzy
 msgid "Web/Sale Status"
-msgstr "Estado"
+msgstr "Estado Venta web"
 
 #: edit_page.js.php:815
 msgid "Force online"
@@ -13032,20 +12992,17 @@ msgid "Editing Footer"
 msgstr "Pie de página"
 
 #: edit_part.js.php:1099
-#, fuzzy
 msgid "Invalid Part Unit Description"
-msgstr "Descripción unitaria"
+msgstr "Descripción unitaria invalida"
 
 #: edit_part.js.php:1115 edit_product.js.php:1597
 #: edit_supplier_product.js.php:1200
-#, fuzzy
 msgid "Invalid Tariff Code"
-msgstr "Código no válido"
+msgstr "Código Tariff no válido"
 
 #: edit_part.js.php:1131
-#, fuzzy
 msgid "Invalid Reference"
-msgstr "Referencia"
+msgstr "Referencia invalida"
 
 #: edit_part.js.php:1147 edit_product.js.php:1613
 #: edit_supplier_product.js.php:1244
@@ -13120,7 +13077,7 @@ msgstr "Notas para los recolectores"
 #: edit_part.js.php:2297 edit_part.js.php:2397 edit_part.js.php:2655
 #: edit_supplier_product.js.php:2395 edit_supplier_product.js.php:2635
 msgid "Page "
-msgstr "Pagina"
+msgstr "Página"
 
 #: edit_part.js.php:2297 edit_part.js.php:2397 edit_part.js.php:2655
 #: edit_supplier_product.js.php:2395 edit_supplier_product.js.php:2635
@@ -13138,9 +13095,8 @@ msgid "SP Code"
 msgstr "SP Cantidad"
 
 #: edit_part.js.php:2356
-#, fuzzy
 msgid "Supplier product description"
-msgstr "Proveedor del producto"
+msgstr "Descripcion del Proveedor"
 
 #: edit_part.js.php:2357 edit_supplier_product.js.php:2356
 #, fuzzy
@@ -13241,9 +13197,8 @@ msgstr "Envio"
 
 #: edit_product.php:262 inventory.php:183 report_out_of_stock.php:92
 #: warehouse.php:265
-#, fuzzy
 msgid "Part Reference"
-msgstr "Referencia"
+msgstr "Referencia pieza"
 
 #: edit_product_categories.php:103
 #, fuzzy
@@ -13543,9 +13498,8 @@ msgid "Invalid Supplier Name"
 msgstr "Nombre del Proveedor"
 
 #: edit_supplier.js.php:766
-#, fuzzy
 msgid "Invalid Supplier Code"
-msgstr "Proveedor Código"
+msgstr "Código Proveedor invalido"
 
 #: edit_supplier.js.php:770
 #, fuzzy
@@ -14186,7 +14140,7 @@ msgstr "Ajuste Fiscal"
 #: smarty.php:14072 smarty.php:16148 smarty.php:27731 smarty.php:27755
 #: smarty.php:28448 smarty.php:28472
 msgid "Invoice Date"
-msgstr "Fecha de la factura"
+msgstr "Fecha factura"
 
 #: invoice.fast.pdf.php:344 invoice.pdf.old.php:344 invoice2.pdf.php:344
 #: smarty.php:13979 smarty.php:22538
@@ -14227,14 +14181,12 @@ msgid "Charge"
 msgstr "Cargo"
 
 #: invoice.pdf.jonathan.php:147 smarty.php:14075
-#, fuzzy
 msgid "No. Parcels"
-msgstr "Paquetes"
+msgstr "Numero de Bultos"
 
 #: invoice.pdf.jonathan.php:149 smarty.php:14081
-#, fuzzy
 msgid "Payment Status"
-msgstr "Estado"
+msgstr "Estado del pago"
 
 #: invoice.pdf.jonathan.php:157 smarty.php:13991 smarty.php:14084
 #, fuzzy
@@ -14268,9 +14220,8 @@ msgid "Amount"
 msgstr "Cantidad"
 
 #: invoice.pdf.php:89 sites/invoice.pdf.php:89 smarty.php:14057
-#, fuzzy
 msgid "Invoice No."
-msgstr "Factura"
+msgstr "Numero Factura"
 
 #: invoice.pdf.php:93 sites/invoice.pdf.php:93
 #, fuzzy
@@ -14278,9 +14229,8 @@ msgid "Credit Note No."
 msgstr "Nota de Crédito"
 
 #: invoice.pdf.php:97 sites/invoice.pdf.php:97
-#, fuzzy
 msgid "Refund No."
-msgstr "restitución"
+msgstr "No. devolución"
 
 #: invoice.php:21
 msgid "Error, invoice not found"
@@ -14303,7 +14253,7 @@ msgstr "Pais de facturación"
 
 #: invoice_categories.php:168
 msgid "Invoice Categories"
-msgstr "Categorias de facturas"
+msgstr "Categorías de facturas"
 
 #: invoice_category.php:308
 msgid "Invoice Category"
@@ -14311,7 +14261,7 @@ msgstr "Categoría de facturas"
 
 #: invoices_list.php:78 smarty.php:19781 smarty.php:22733
 msgid "Invoice List"
-msgstr "Factura Lista"
+msgstr "Lista de Factura"
 
 #: locale.php:4 new_site.php:80 new_store.php:103
 msgid "English"
@@ -14540,7 +14490,7 @@ msgstr "Árbol"
 #: new_parts_list.js.php:906 new_parts_list.js.php:920
 #: new_products_list.js.php:796 new_products_list.js.php:810
 msgid "From Date"
-msgstr "del"
+msgstr "Desde Fecha"
 
 #: new_customers_list.js.php:1718 new_customers_list.js.php:1738
 #: new_customers_list.js.php:1758 new_delivery_notes_list.js.php:1230
@@ -14552,7 +14502,7 @@ msgstr "del"
 #: new_parts_list.js.php:913 new_parts_list.js.php:927
 #: new_products_list.js.php:803 new_products_list.js.php:817
 msgid "To Date"
-msgstr "al"
+msgstr "a fecha "
 
 #: new_customers_list.php:98 new_customers_list.php:100 smarty.php:2543
 #: smarty.php:2690 smarty.php:3137 smarty.php:3281 smarty.php:6386
@@ -15102,9 +15052,8 @@ msgid "Order not invoiced"
 msgstr "Facturado"
 
 #: order_common_functions.php:356
-#, fuzzy
 msgid "Waiting shipping approval"
-msgstr "Esperando"
+msgstr "Esperando aprobación envío"
 
 #: order_common_functions.php:363
 #, fuzzy
@@ -15112,9 +15061,8 @@ msgid "Mark as Dispatched"
 msgstr "Enviado"
 
 #: order_dispatched.js.php:51 order_dispatched.js.php:88 smarty.php:16598
-#, fuzzy
 msgid "Tarrif Code"
-msgstr "Tarifa"
+msgstr "Código Tariff "
 
 #: order_pack_aid.php:142 smarty.php:4190 smarty.php:4196
 msgid "Packing Aid Sheet"
@@ -15242,19 +15190,16 @@ msgid "Customer Name starting with <i>x</i>"
 msgstr "<i>unidades</i> x <i>nombre</i> PVP"
 
 #: orders.php:149
-#, fuzzy
 msgid "Invoice with a minimum value of"
-msgstr "No hay ningún valor mínimo orden de"
+msgstr "Factura con valor mínimo de"
 
 #: orders.php:150
-#, fuzzy
 msgid "Invoice with a maximum value of"
-msgstr "No hay ningún valor máximo orden de"
+msgstr "Factura con valor máximo de"
 
 #: orders.php:151
-#, fuzzy
 msgid "Invoice billed to country code <i>xxx</i>"
-msgstr "Código de país (XXX)"
+msgstr "Factura con Código de país (XXX)"
 
 #: orders.php:162
 #, fuzzy
@@ -15266,9 +15211,8 @@ msgid "DN Number"
 msgstr "Número de N.E."
 
 #: orders.php:166
-#, fuzzy
 msgid "Delivery Note to country code <i>xxx</i>"
-msgstr "Código de país (XXX)"
+msgstr "Nota de envío con Código de país (XXX)"
 
 #: orders_list.php:39 smarty.php:19760 smarty.php:19778
 #, fuzzy
@@ -15718,9 +15662,8 @@ msgid "Products Lists"
 msgstr "Listas de productos"
 
 #: proforma.pdf.php:40 smarty.php:22532
-#, fuzzy
 msgid "Proforma Invoice"
-msgstr "Factura"
+msgstr "Factura Proforma"
 
 #: report_customers.js.php:45
 msgid "Ship to Address"
@@ -16129,14 +16072,12 @@ msgid "First Created"
 msgstr "Primero"
 
 #: site.js.php:752 site.js.php:829
-#, fuzzy
 msgid "Last Completed"
-msgstr "pasado"
+msgstr "Ultimo completado"
 
 #: site.js.php:907 site.js.php:984
-#, fuzzy
 msgid "Deleted date"
-msgstr "al"
+msgstr "Borrar Fecha"
 
 #: site.js.php:1059
 #, fuzzy
@@ -16336,6 +16277,7 @@ msgstr ""
 #: sites/send_confirmation_email_function.php:55 sites/thanks.php:192
 msgid "Please always state the order number in the payment reference"
 msgstr ""
+"Por favor siempre introducir numero de pedido en la referencia del pago"
 
 #: sites/send_confirmation_email_function.php:56
 #, fuzzy
@@ -16385,7 +16327,7 @@ msgstr "Por pagar"
 #: sites/smarty.php:92 sites/smarty.php:242
 msgid ""
 "Please note, the prices are just a reference value, your payment will be in "
-msgstr ""
+msgstr "Por favor, los precios son solo como referencia, tu cobro será"
 
 #: sites/smarty.php:95
 #, fuzzy
@@ -16462,9 +16404,8 @@ msgid "Go Back Basket"
 msgstr "Volver"
 
 #: sites/smarty.php:245
-#, fuzzy
 msgid "Cancelled payments"
-msgstr "Pagos"
+msgstr "Pagos Cancelados"
 
 #: sites/smarty.php:248 sites/smarty.php:4511 smarty.php:14147
 #: smarty.php:19112
@@ -16478,14 +16419,12 @@ msgid "Service Provider"
 msgstr "Correo electrónico"
 
 #: sites/smarty.php:257 smarty.php:13592
-#, fuzzy
 msgid "Cancelled Date"
-msgstr "Cancelado"
+msgstr "Fecha Cancelada"
 
 #: sites/smarty.php:263
-#, fuzzy
 msgid "Choose payment method"
-msgstr "Forma de pago"
+msgstr "Elija Forma de pago"
 
 #: sites/smarty.php:272 sites/smarty.php:275
 #, fuzzy
@@ -18222,6 +18161,8 @@ msgstr "Mis Facturas"
 msgid ""
 "Please note, the prices are just a reference value, the amount payable is in "
 msgstr ""
+"Por favor tenga en cuenta, los precios son solo como referencia, su total a "
+"pagar es en "
 
 #: sites/smarty.php:4148
 #, fuzzy
@@ -18323,9 +18264,8 @@ msgid "Offers by email & e-Newsletter"
 msgstr "Ofertas por Email"
 
 #: sites/smarty.php:4337 sites/smarty.php:4352
-#, fuzzy
 msgid "Creating your account"
-msgstr "Creando tu cueanta"
+msgstr "Creando tu cuenta"
 
 #: sites/smarty.php:4355
 #, fuzzy
@@ -18624,9 +18564,8 @@ msgid "Cheque"
 msgstr "Calle"
 
 #: smarty.php:53
-#, fuzzy
 msgid "Customer Account"
-msgstr "Cuenta"
+msgstr "Cuenta Clienta"
 
 #: smarty.php:59 smarty.php:80 smarty.php:113 smarty.php:14195
 msgid "Other Amount"
@@ -18642,14 +18581,12 @@ msgid "Refund All"
 msgstr "Reembolsar todo el pedido"
 
 #: smarty.php:86
-#, fuzzy
 msgid "Refund Outstanding"
-msgstr "Pendiente"
+msgstr "Pendiente devolución"
 
 #: smarty.php:89 smarty.php:14042 smarty.php:19115 smarty.php:22601
-#, fuzzy
 msgid "Method"
-msgstr "Método de envío"
+msgstr "Método"
 
 #: smarty.php:116
 #, fuzzy
@@ -18702,9 +18639,8 @@ msgid "System Permissions"
 msgstr "Permisos del Sistema"
 
 #: smarty.php:173 smarty.php:25076 smarty.php:28778 smarty.php:29555
-#, fuzzy
 msgid "Email Account"
-msgstr "Cuenta"
+msgstr "Cuenta Email"
 
 #: smarty.php:182 smarty.php:5669 smarty.php:5684 smarty.php:24131
 #: smarty.php:25085 smarty.php:29564
@@ -18800,9 +18736,8 @@ msgid "Product Store"
 msgstr "Tienda"
 
 #: smarty.php:374 smarty.php:455
-#, fuzzy
 msgid "Product Weight"
-msgstr "Unidad de peso neto del producto ha cambiado"
+msgstr "Peso Producto"
 
 #: smarty.php:377
 #, fuzzy
@@ -19255,14 +19190,12 @@ msgid "Current Balance"
 msgstr "Balance"
 
 #: smarty.php:1955
-#, fuzzy
 msgid "Account Balance"
-msgstr "Balance"
+msgstr "Balance de cuenta"
 
 #: smarty.php:1958
-#, fuzzy
 msgid "Payments in Process"
-msgstr "Pagos"
+msgstr "Pagos en proceso"
 
 #: smarty.php:1961
 msgid "Customer Overview"
@@ -19548,9 +19481,8 @@ msgid "Country List"
 msgstr "Lista de países"
 
 #: smarty.php:2393
-#, fuzzy
 msgid "Editing Account Balance"
-msgstr "Balance"
+msgstr "Editar balance cuenta"
 
 #: smarty.php:2399 smarty.php:18974 smarty.php:18995 smarty.php:29822
 #: smarty.php:29843
@@ -19575,29 +19507,27 @@ msgstr "Cantidad Total de Impuestos"
 #: smarty.php:2420
 msgid "Negative credit amount, to be used only to offset previous credits"
 msgstr ""
+"Cantidad de crédito negativo, para usar solo para reducir abonos previos"
 
 #: smarty.php:2423
 msgid "Please set up the amount to be credited"
-msgstr ""
+msgstr "Por favor introduce cantidad para abonar"
 
 #: smarty.php:2426
-#, fuzzy
 msgid "Please fill de description"
-msgstr "Llena todos los campos por favor"
+msgstr "Por favor introduce la descripción"
 
 #: smarty.php:2429
 msgid "Please fill de description and set up the amount to be credited"
-msgstr ""
+msgstr "Por favor rellena la descripción y la cantidad para abonar"
 
 #: smarty.php:2438
-#, fuzzy
 msgid "Add to customer account"
-msgstr "Añadir Cliente"
+msgstr "Añadir a cuenta Cliente"
 
 #: smarty.php:2441
-#, fuzzy
 msgid "Create refund"
-msgstr "Crear Reembolzo"
+msgstr "Crear devolución"
 
 #: smarty.php:2453
 #, fuzzy
@@ -19866,9 +19796,8 @@ msgid "Customers group by"
 msgstr "Grupo"
 
 #: smarty.php:2750 smarty.php:3239
-#, fuzzy
 msgid "Activity Status"
-msgstr "Estado"
+msgstr "Estado actividad"
 
 #: smarty.php:2768 smarty.php:13244 smarty.php:14441 smarty.php:21158
 #: smarty.php:22412 smarty.php:27569
@@ -19882,9 +19811,8 @@ msgstr "Categoría siguiente"
 
 #: smarty.php:2777 smarty.php:2822 smarty.php:13253 smarty.php:14450
 #: smarty.php:21167 smarty.php:22421 smarty.php:27578
-#, fuzzy
 msgid "deleted date"
-msgstr "al"
+msgstr "Fecha eliminada"
 
 #: smarty.php:2786 smarty.php:13262 smarty.php:14459 smarty.php:21176
 #: smarty.php:22430 smarty.php:27587
@@ -20376,14 +20304,12 @@ msgid "Pending Orders (Store)"
 msgstr "Órdenes en espera (Tienda)"
 
 #: smarty.php:4217 smarty.php:19079
-#, fuzzy
 msgid "Set weight"
-msgstr "Peso neto de la unidad establecida en"
+msgstr "Establecer Peso"
 
 #: smarty.php:4223 smarty.php:19085
-#, fuzzy
 msgid "Set parcels"
-msgstr "Paquetes"
+msgstr "Set Bultos"
 
 #: smarty.php:4229 smarty.php:19091
 #, fuzzy
@@ -20419,9 +20345,8 @@ msgid "Finish packing"
 msgstr "fecha de la finalización del empaquetamiento"
 
 #: smarty.php:4265 smarty.php:19040
-#, fuzzy
 msgid "Set Parcels Data"
-msgstr "Paquetes"
+msgstr "Bultos"
 
 #: smarty.php:4268
 #, fuzzy
@@ -20554,7 +20479,7 @@ msgstr "Dimensiones de la unidad"
 
 #: smarty.php:4580
 msgid "Outer Weight"
-msgstr "Exterior Peso"
+msgstr "Peso Pack"
 
 #: smarty.php:4586
 msgid "Outer Dimensions"
@@ -20775,14 +20700,12 @@ msgid "Campaign State"
 msgstr "Campaña"
 
 #: smarty.php:4967 smarty.php:6545 smarty.php:13565 smarty.php:13589
-#, fuzzy
 msgid "Start Date"
-msgstr "fecha del inicio de la recolleción"
+msgstr "Fecha de inicio"
 
 #: smarty.php:4970 smarty.php:6548
-#, fuzzy
 msgid "End Date"
-msgstr "Colección de fin de mes"
+msgstr "Fecha fin"
 
 #: smarty.php:4988
 msgid "Campaign Description"
@@ -21229,9 +21152,8 @@ msgid "Customers no assigned"
 msgstr "Asignado"
 
 #: smarty.php:6173 smarty.php:7268 smarty.php:8735 smarty.php:10961
-#, fuzzy
 msgid "Category Description"
-msgstr "Descripción"
+msgstr "Descripción Categoria"
 
 #: smarty.php:6191 smarty.php:10979
 msgid "Show Options"
@@ -21460,9 +21382,8 @@ msgid "Employment details"
 msgstr "Detalles"
 
 #: smarty.php:6806 smarty.php:16004
-#, fuzzy
 msgid "Staff Code (Handle)"
-msgstr "Código personal ya la Sociedad"
+msgstr "Código personal "
 
 #: smarty.php:6824
 #, fuzzy
@@ -21578,14 +21499,12 @@ msgid "Edit selected families"
 msgstr "Editar piezas marcadas"
 
 #: smarty.php:7418 smarty.php:8897
-#, fuzzy
 msgid "Set status as"
-msgstr "Estado"
+msgstr "Fijar Estado como"
 
 #: smarty.php:7427 smarty.php:8906
-#, fuzzy
 msgid "Set weight as"
-msgstr "Peso neto de la unidad establecida en"
+msgstr "Peso establecido como"
 
 #: smarty.php:7442 smarty.php:8921
 #, fuzzy
@@ -21644,9 +21563,8 @@ msgid "Inventory Setup"
 msgstr "Inventario"
 
 #: smarty.php:7559 smarty.php:11792
-#, fuzzy
 msgid "Warehouse Description"
-msgstr "Almacén"
+msgstr "Descripción Almacén"
 
 #: smarty.php:7562
 #, fuzzy
@@ -21735,9 +21653,8 @@ msgid "Delete Location"
 msgstr "eliminar"
 
 #: smarty.php:7682
-#, fuzzy
 msgid "Location Description"
-msgstr "Descripción"
+msgstr "Descripción de la Localización"
 
 #: smarty.php:7688
 msgid "Flag"
@@ -21983,9 +21900,8 @@ msgid "Download"
 msgstr "Descargar"
 
 #: smarty.php:8051 smarty.php:10016
-#, fuzzy
 msgid "Code Includes"
-msgstr "Código"
+msgstr "Código incluye"
 
 #: smarty.php:8078 smarty.php:8096 smarty.php:10232 smarty.php:10244
 #: smarty.php:10256 smarty.php:10268
@@ -22003,9 +21919,8 @@ msgid "Delete Page"
 msgstr "Eliminar página"
 
 #: smarty.php:8114
-#, fuzzy
 msgid "Deleting page, wait please"
-msgstr "Eliminando familia, por favor espere on momento"
+msgstr "Eliminando familia, por favor espere un momento"
 
 #: smarty.php:8126
 #, fuzzy
@@ -22064,9 +21979,8 @@ msgid "Historic suppliers"
 msgstr "Histórico"
 
 #: smarty.php:8240
-#, fuzzy
 msgid "Reference, Codes"
-msgstr "Referencia"
+msgstr "Referencia, códigos"
 
 #: smarty.php:8249 smarty.php:8462 smarty.php:9080 smarty.php:9356
 #: smarty.php:11186 smarty.php:11435 smarty.php:20333
@@ -22075,14 +21989,12 @@ msgid "Health & Safety"
 msgstr "Crear una nueva familia"
 
 #: smarty.php:8252 smarty.php:9086 smarty.php:11189
-#, fuzzy
 msgid "Weight/Dimensions"
-msgstr "Dimensiones"
+msgstr "Peso/Dimensiones"
 
 #: smarty.php:8261
-#, fuzzy
 msgid "Keeping Status"
-msgstr "No en uso"
+msgstr "Manteniendo estado"
 
 #: smarty.php:8267 smarty.php:9503 smarty.php:13697 smarty.php:13733
 #: smarty.php:13754 smarty.php:20993 smarty.php:21029 smarty.php:21218
@@ -22092,9 +22004,8 @@ msgstr "No en Uso"
 
 #: smarty.php:8288 smarty.php:9185 smarty.php:11261 smarty.php:20282
 #: smarty.php:21917
-#, fuzzy
 msgid "Commodity Code"
-msgstr "Código"
+msgstr "Código Commodity"
 
 #: smarty.php:8294 smarty.php:9191 smarty.php:11267 smarty.php:11270
 #: smarty.php:20288 smarty.php:21923
@@ -22378,9 +22289,8 @@ msgid "Product Type"
 msgstr "Tipo de registro del producto actualizado"
 
 #: smarty.php:9128
-#, fuzzy
 msgid "Units, code & name"
-msgstr "Unidades"
+msgstr "Unidades, código y nombre"
 
 #: smarty.php:9140
 #, fuzzy
@@ -22388,9 +22298,8 @@ msgid "Locked"
 msgstr "Lleno"
 
 #: smarty.php:9143
-#, fuzzy
 msgid "You can't change code"
-msgstr "¿Puede explicar por qué el cambio de valores?"
+msgstr "No puedes cambiar el código"
 
 #: smarty.php:9152
 msgid "Barcode"
@@ -22484,14 +22393,13 @@ msgid "The product unit properties fields will be replaced by the part ones"
 msgstr "Campos"
 
 #: smarty.php:9473
-#, fuzzy
 msgid "Link outer tariff code to part"
-msgstr "Enlazado a pieza"
+msgstr "Enlazar tariff code a "
 
 #: smarty.php:9476
-#, fuzzy
 msgid "The product outer tariff code fields will be replaced by the part ones"
-msgstr "Campos"
+msgstr ""
+"Los campos de códigos tariff del producto se reemplazaran con los de pieza"
 
 #: smarty.php:9521 smarty.php:13238 smarty.php:22040 smarty.php:22082
 #: smarty.php:22406
@@ -22536,9 +22444,8 @@ msgid "Theme"
 msgstr "Cambiar Tema del usuario"
 
 #: smarty.php:9668
-#, fuzzy
 msgid "Registration Method"
-msgstr "Registro"
+msgstr "Metodo Registro"
 
 #: smarty.php:9671
 msgid "Wholesale"
@@ -22790,9 +22697,8 @@ msgid "New Footer"
 msgstr "Añadir pie de página"
 
 #: smarty.php:9995
-#, fuzzy
 msgid "Checkout Method"
-msgstr "Revisar Pedido y Pago"
+msgstr "Metodo Checkout"
 
 #: smarty.php:9998
 #, fuzzy
@@ -22948,14 +22854,12 @@ msgid "Customer Contact"
 msgstr "Cliente no válido Nombre de Contacto"
 
 #: smarty.php:10397
-#, fuzzy
 msgid "Invoice Details"
-msgstr "Factura"
+msgstr "Detalles de Factura"
 
 #: smarty.php:10400
-#, fuzzy
 msgid "Store VAT Number"
-msgstr "Número fiscal"
+msgstr "Número fiscal/ CIF"
 
 #: smarty.php:10403
 #, fuzzy
@@ -23013,9 +22917,8 @@ msgid "Template Name"
 msgstr "Nombre de la plantilla"
 
 #: smarty.php:10499
-#, fuzzy
 msgid "Template Description"
-msgstr "Correo Plantilla"
+msgstr "Plantilla descripción"
 
 #: smarty.php:10514
 msgid "Full Name"
@@ -23165,9 +23068,8 @@ msgid "Supplier State"
 msgstr "Estado"
 
 #: smarty.php:11282
-#, fuzzy
 msgid "Bar Code"
-msgstr "Código"
+msgstr "Código de Barras"
 
 #: smarty.php:11543
 #, fuzzy
@@ -23325,9 +23227,8 @@ msgid "Editing Warehouse Area"
 msgstr "Edición de Almacén"
 
 #: smarty.php:11951
-#, fuzzy
 msgid "Warehouse Area Code"
-msgstr "Código de área almacén invalido"
+msgstr "Código de área almacén "
 
 #: smarty.php:11954
 #, fuzzy
@@ -23748,7 +23649,7 @@ msgid ""
 "You don't have the rights to see this page, please contact your system "
 "administrator"
 msgstr ""
-"Usted no tiene los derechos para ver esta página, pongase en contacto con el "
+"Usted no tiene permisos para ver esta página, póngase en contacto con el "
 "administrador del sitio"
 
 #: smarty.php:13334
@@ -23888,7 +23789,7 @@ msgstr "Hágalo"
 
 #: smarty.php:13586
 msgid "Imported Date"
-msgstr "Facha de importación"
+msgstr "Fecha de importación"
 
 #: smarty.php:13607 smarty.php:23024
 #, fuzzy
@@ -24020,9 +23921,8 @@ msgid "Set as deleteled"
 msgstr "establece en"
 
 #: smarty.php:14168 smarty.php:19136
-#, fuzzy
 msgid "Set as completed"
-msgstr "establece en"
+msgstr "establece como completado"
 
 #: smarty.php:14192
 msgid "Amount Paid"
@@ -24044,9 +23944,8 @@ msgid "Invoices Categories Home"
 msgstr "Inicio"
 
 #: smarty.php:14312
-#, fuzzy
 msgid "Invoice list"
-msgstr "Factura Lista"
+msgstr "Lista de Factura"
 
 #: smarty.php:14369
 #, fuzzy
@@ -24394,9 +24293,8 @@ msgid "with pending orders"
 msgstr "En espera de órdenes"
 
 #: smarty.php:15656
-#, fuzzy
 msgid "order pay method"
-msgstr "Por pagar"
+msgstr "Forma de pago pedido"
 
 #: smarty.php:15659
 msgid "Web Login"
@@ -24471,11 +24369,11 @@ msgstr "Fecha de creación"
 
 #: smarty.php:15812
 msgid "Start Picking Date"
-msgstr "fecha del inicio de la recolleción"
+msgstr "fecha del inicio del picking"
 
 #: smarty.php:15815
 msgid "Finish Picking Date"
-msgstr "fecha de la finalización de la recolleción"
+msgstr "fecha de la finalización del picking"
 
 #: smarty.php:15818
 msgid "Start Packing Date"
@@ -24486,9 +24384,8 @@ msgid "Finish Packing Date"
 msgstr "fecha de la finalización del empaquetamiento"
 
 #: smarty.php:15824
-#, fuzzy
 msgid "Dispatched Approved Date"
-msgstr "Aprovado"
+msgstr "Fecha envío Aprovado"
 
 #: smarty.php:15827
 msgid "Delivery Note Date"
@@ -24618,7 +24515,7 @@ msgstr "Facturas que..."
 
 #: smarty.php:16151
 msgid "Invoice Paid Date"
-msgstr "Fecha de facturación"
+msgstr "Fecha de pago factura "
 
 #: smarty.php:16154 smarty.php:16412
 #, fuzzy
@@ -24749,14 +24646,12 @@ msgid "New Part"
 msgstr "Nuevas Piezas"
 
 #: smarty.php:16565 smarty.php:17375 warehouse.js.php:152
-#, fuzzy
 msgid "Part Description"
-msgstr "No hay ninguna parte con la descripción como"
+msgstr "Descripción pieza"
 
 #: smarty.php:16568 smarty.php:17378
-#, fuzzy
 msgid "Part Weight"
-msgstr "Peso"
+msgstr "Peso Parcial"
 
 #: smarty.php:16583 smarty.php:16586
 #, fuzzy
@@ -24865,7 +24760,7 @@ msgstr "Crédito processado"
 
 #: smarty.php:16820
 msgid "Create Refund"
-msgstr "Crear Reembolzo"
+msgstr "Crear Devolución"
 
 #: smarty.php:16823
 msgid "Refund Value"
@@ -24955,9 +24850,8 @@ msgid "price"
 msgstr "precio"
 
 #: smarty.php:16949
-#, fuzzy
 msgid "Total invoiced amount..."
-msgstr "Cantidad Total"
+msgstr "Total Facturado"
 
 #: smarty.php:16952
 #, fuzzy
@@ -25111,9 +25005,8 @@ msgstr "búsqueda (pedidos)"
 
 #: smarty.php:17573 smarty.php:17729 smarty.php:17912 smarty.php:18233
 #: smarty.php:18290 smarty.php:18587 smarty.php:18644
-#, fuzzy
 msgid "To Refund"
-msgstr "restitución"
+msgstr "A devolver"
 
 #: smarty.php:17582
 msgid "Cancel Date"
@@ -25268,9 +25161,8 @@ msgid "Don't add account credits"
 msgstr ""
 
 #: smarty.php:17942 smarty.php:18317 smarty.php:18671
-#, fuzzy
 msgid "Add account credits"
-msgstr "Créditos"
+msgstr "Añadir Créditos"
 
 #: smarty.php:17987 smarty.php:18791
 #, fuzzy
@@ -25358,9 +25250,8 @@ msgid "Set Charges"
 msgstr "Establecer Cargos"
 
 #: smarty.php:18929 smarty.php:29777
-#, fuzzy
 msgid "Product Discount"
-msgstr "Descuento"
+msgstr "Descuento Producto"
 
 #: smarty.php:18989 smarty.php:29837
 msgid "Remove Credit"
@@ -25397,14 +25288,12 @@ msgid "Operations"
 msgstr "Operaciones"
 
 #: smarty.php:19145
-#, fuzzy
 msgid "Pay Invoice"
-msgstr "Por pagar"
+msgstr "Pagar factura"
 
 #: smarty.php:19154
-#, fuzzy
 msgid "Delivery Note Date:"
-msgstr "Fecha de entrega Nota"
+msgstr "Fecha de nota de envío"
 
 #: smarty.php:19175
 #, fuzzy
@@ -25701,9 +25590,8 @@ msgid "Can't restock"
 msgstr "Listo para restock"
 
 #: smarty.php:20309 smarty.php:21932
-#, fuzzy
 msgid "Package Weight"
-msgstr "Peso"
+msgstr "Peso Bulto"
 
 #: smarty.php:20312 smarty.php:21935
 #, fuzzy
@@ -25716,9 +25604,8 @@ msgid "Package Volume"
 msgstr "Tipo de embalaje"
 
 #: smarty.php:20318 smarty.php:21941
-#, fuzzy
 msgid "Individual Item Weight"
-msgstr "Individuales"
+msgstr "Peso articulo Individual"
 
 #: smarty.php:20321 smarty.php:21944
 #, fuzzy
@@ -25731,9 +25618,8 @@ msgid "Materials/Ingredients"
 msgstr "Ingredientes"
 
 #: smarty.php:20330
-#, fuzzy
 msgid "General Description"
-msgstr "General"
+msgstr "Descripción General"
 
 #: smarty.php:20363 smarty.php:28688
 #, fuzzy
@@ -25762,9 +25648,8 @@ msgid "Product Changes"
 msgstr "No hubo cambios"
 
 #: smarty.php:20489
-#, fuzzy
 msgid "Next Shipment Date"
-msgstr "envío Siguiente"
+msgstr "Siguiente fecha de envío "
 
 #: smarty.php:20507
 #, fuzzy
@@ -25889,7 +25774,7 @@ msgstr "Empleados"
 
 #: smarty.php:21674 smarty.php:27746 smarty.php:28463
 msgid "Match to Invoice"
-msgstr "El partido de facturas"
+msgstr "Igualar a Factura"
 
 #: smarty.php:21677 smarty.php:21746
 msgid "Match to Delivery Note"
@@ -25910,9 +25795,8 @@ msgid "Supplier Delivery Note Number"
 msgstr "Nota de entrega del proveedor número se requiere"
 
 #: smarty.php:21743
-#, fuzzy
 msgid "Supplier Delivery Note Date"
-msgstr "Fecha de entrega Nota"
+msgstr "Fecha de Albarán del proveedor"
 
 #: smarty.php:21758
 msgid "Supplier's Invoices"
@@ -26003,9 +25887,8 @@ msgid "Product Lists"
 msgstr "Las listas de productos"
 
 #: smarty.php:22517
-#, fuzzy
 msgid "Proforma Invoice No."
-msgstr "Factura"
+msgstr "Factura Proforma número"
 
 #: smarty.php:22634
 #, fuzzy
@@ -26277,9 +26160,8 @@ msgid "Sales per period"
 msgstr "Periodo"
 
 #: smarty.php:23417
-#, fuzzy
 msgid "Sales per invoice category"
-msgstr "Categoría de facturas"
+msgstr "Ventas por categoría de facturas"
 
 #: smarty.php:23423
 #, fuzzy
@@ -26852,9 +26734,8 @@ msgid "Submitted Date"
 msgstr "Enviado"
 
 #: smarty.php:27626 smarty.php:27638 smarty.php:28343 smarty.php:28355
-#, fuzzy
 msgid "Expected Date"
-msgstr "Esperado"
+msgstr "Fecha prevista"
 
 #: smarty.php:27632 smarty.php:28349
 msgid "Set ET"
@@ -26912,7 +26793,7 @@ msgstr "Tiempo Fecha"
 
 #: smarty.php:27752 smarty.php:28469
 msgid "Order Reference"
-msgstr "Orden de referencia"
+msgstr "Referencia del pedido"
 
 #: smarty.php:27758 smarty.php:28475
 msgid "Goods Value"
@@ -26920,7 +26801,7 @@ msgstr "Bienes de Valor"
 
 #: smarty.php:27761 smarty.php:28478
 msgid "Shipping Value"
-msgstr "Envío de valor"
+msgstr "Costo del Envío "
 
 #: smarty.php:27764 smarty.php:28481
 msgid "Charges Value"
@@ -27288,9 +27169,8 @@ msgid "Commercial value"
 msgstr "Valor comecial"
 
 #: stock_history_parts.php:245
-#, fuzzy
 msgid "Last sale date"
-msgstr "Última fecha"
+msgstr "Fecha ultima venta/oferta"
 
 #: stock_history_parts.php:248
 #, fuzzy
@@ -27308,9 +27188,8 @@ msgid "Interval last booked in"
 msgstr "Intervalo"
 
 #: stock_history_parts.php:257
-#, fuzzy
 msgid "Last purchased date"
-msgstr "Última fecha"
+msgstr "Ultima fecha de compra"
 
 #: stock_history_parts.php:260
 #, fuzzy
