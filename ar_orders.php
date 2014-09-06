@@ -2658,7 +2658,7 @@ function list_transactions_in_order() {
 	$total_discounts=0;
 	$total_picks=0;
 
-	$data=array();
+	$adata=array();
 	$sql="select * from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
