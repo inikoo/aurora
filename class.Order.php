@@ -3505,10 +3505,13 @@ class Order extends DB_Table {
 
 	function update_tax($tax_category_code=false) {
 
+
+
+
 		$old_tax_code=$this->data['Order Tax Code'];
 
 		if ($tax_category_code) {
-			$tax_category=new TaxCategory('code',$value);
+			$tax_category=new TaxCategory('code',$tax_category_code);
 			if (!$tax_category->id) {
 				$this->msg='Invalid tax code';
 				$this->error=true;
@@ -3528,6 +3531,7 @@ class Order extends DB_Table {
 
 			$tax_data=$this->get_tax_data();
 
+			//print_r($tax_data);
 			$this->data['Order Tax Code']=$tax_data['code'];
 			$this->data['Order Tax Rate']=$tax_data['rate'];
 			$this->data['Order Tax Name']=$tax_data['name'];
@@ -3545,7 +3549,6 @@ class Order extends DB_Table {
 
 		);
 		mysql_query($sql);
-		//print $sql;
 		$sql=sprintf("select `Tax Category Code`,`Transaction Type`,`Order No Product Transaction Fact Key`,`Transaction Net Amount` from `Order No Product Transaction Fact`  where `Order Key`=%d and `Consolidated`='No'",
 			$this->id
 		);
@@ -3590,7 +3593,6 @@ class Order extends DB_Table {
 			$this->id
 
 		);
-		//  print $sql;
 
 		mysql_query($sql);
 
@@ -4200,6 +4202,9 @@ class Order extends DB_Table {
 
 
 	function get_shipping_from_method($type,$metadata,$dn_key=false) {
+		
+		
+		
 		switch ($type) {
 
 		case('Step Order Items Net Amount'):
@@ -4688,8 +4693,8 @@ class Order extends DB_Table {
 
 
 
-		if ($dn_key){
-		return;
+		if ($dn_key) {
+			return;
 		}
 
 		$this->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Order Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
@@ -6331,7 +6336,7 @@ class Order extends DB_Table {
 
 		switch ($store->data['Store Tax Country Code']) {
 		case 'ESP':
-		
+
 
 			$sql=sprintf("select `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` from `Tax Category Dimension`  where `Tax Category Country Code`='ESP' and `Tax Category Active`='Yes'");
 			$res=mysql_query($sql);
@@ -6351,7 +6356,7 @@ class Order extends DB_Table {
 				case 'IVA+RE (26,2%)':
 					$tax_category_name='IVA+RE (26,2%)';
 					break;
-			
+
 
 
 				default:
@@ -6368,34 +6373,82 @@ class Order extends DB_Table {
 
 
 			}
-			
-		
+
+
+if ( $this->data['Order Ship To Country Code']=='ESP' and  $this->data['Order Billing To Country Code']=='ESP'
+and preg_match('/^(35|38|51)/',$this->data['Order Ship To Postal Code'])
+and preg_match('/^(35|38|51)/',$this->data['Order Billing To Postal Code'])
+) {
+
+return array(
+						'code'=>$tax_category['Excluded']['code'],
+						'name'=>$tax_category['Excluded']['name'],
+						'rate'=>$tax_category['Excluded']['rate'],
+						'state'=>'ouside EC',
+						'operations'=>'<div>'._('Outside EC fiscal area').'</div>'
+
+					);
+}
+
+
 			if (in_array($this->data['Order Ship To Country Code'],array('ESP','UNK'))) {
 
-				if($customer->data['Recargo Equivalencia']=='Yes'){
-				
-				}
-				
-				return array(
-					'code'=>$tax_category['IVA']['code'],
-					'name'=>$tax_category['IVA']['name'],
-					'rate'=>$tax_category['IVA']['rate'],
-					'state'=>'delivery to ESP',
-					'operations'=>''
+				if ($customer->data['Recargo Equivalencia']=='Yes') {
 
-				);
-				
-				
+					return array(
+						'code'=>$tax_category['IVA+RE']['code'],
+						'name'=>$tax_category['IVA+RE']['name'],
+						'rate'=>$tax_category['IVA+RE']['rate'],
+						'state'=>'delivery to ESP with RE',
+						'operations'=>''
+
+					);
+
+				}else {
+
+					return array(
+						'code'=>$tax_category['IVA']['code'],
+						'name'=>$tax_category['IVA']['name'],
+						'rate'=>$tax_category['IVA']['rate'],
+						'state'=>'delivery to ESP',
+						'operations'=>''
+
+					);
+
+				}
+
+
+
+
 			}
 			elseif (in_array($this->data['Order Billing To Country Code'],array('ESP','UNK'))) {
 
-				return array(
-					'code'=>$tax_category['Standard']['code'],
-					'name'=>$tax_category['Standard']['name'],
-					'rate'=>$tax_category['Standard']['rate'],
-					'state'=>'billing to ESP',
-					'operations'=>''
-				);
+				if ($customer->data['Recargo Equivalencia']=='Yes') {
+
+					return array(
+						'code'=>$tax_category['IVA+RE']['code'],
+						'name'=>$tax_category['IVA+RE']['name'],
+						'rate'=>$tax_category['IVA+RE']['rate'],
+						'state'=>'billing to ESP with RE',
+						'operations'=>''
+
+					);
+
+				}else {
+
+					return array(
+						'code'=>$tax_category['IVA']['code'],
+						'name'=>$tax_category['IVA']['name'],
+						'rate'=>$tax_category['IVA']['rate'],
+						'state'=>'billing to ESP',
+						'operations'=>''
+
+					);
+
+				}
+
+
+
 			}
 			elseif ( in_array($this->data['Order Billing To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
 
@@ -6405,9 +6458,9 @@ class Order extends DB_Table {
 
 
 					$response= array(
-						'code'=>$tax_category['Outside']['code'],
-						'name'=>$tax_category['Outside']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
-						'rate'=>$tax_category['Outside']['rate'],
+						'code'=>$tax_category['Excluded']['code'],
+						'name'=>$tax_category['Excluded']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
+						'rate'=>$tax_category['Excluded']['rate'],
 						'state'=>'EC with valid tax number',
 						'operations'=>''
 
@@ -6421,9 +6474,9 @@ class Order extends DB_Table {
 
 
 						$response= array(
-							'code'=>$tax_category['Standard']['code'],
-							'name'=>$tax_category['Standard']['name'],
-							'rate'=>$tax_category['Standard']['rate'],
+							'code'=>$tax_category['IVA']['code'],
+							'name'=>$tax_category['IVA']['name'],
+							'rate'=>$tax_category['IVA']['rate'],
 							'state'=>'EC no tax number' ,
 							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
 
@@ -6434,9 +6487,9 @@ class Order extends DB_Table {
 
 
 						$response= array(
-							'code'=>$tax_category['Standard']['code'],
-							'name'=>$tax_category['Standard']['name'],
-							'rate'=>$tax_category['Standard']['rate'],
+							'code'=>$tax_category['IVA']['code'],
+							'name'=>$tax_category['IVA']['name'],
+							'rate'=>$tax_category['IVA']['rate'],
 							'state'=>'EC with invalid tax number',
 
 							'operations'=>'<div>
@@ -6456,9 +6509,38 @@ class Order extends DB_Table {
 					}
 
 				}
+
+				return $response;
+			}
+			else {
+
+
+				if ( in_array($this->data['Order Ship To Country Code'],get_countries_EC_Fiscal_VAT_area())) {
+
+
+					return array(
+						'code'=>$tax_category['IVA']['code'],
+						'name'=>$tax_category['IVA']['name'],
+						'rate'=>$tax_category['IVA']['rate'],
+						'state'=>'delivery to EC with no EC billing',
+						'operations'=>''
+
+					);
+
+				}else {
+					return array(
+						'code'=>$tax_category['Excluded']['code'],
+						'name'=>$tax_category['Excluded']['name'],
+						'rate'=>$tax_category['Excluded']['rate'],
+						'state'=>'ouside EC',
+						'operations'=>'<div>'._('Outside EC fiscal area').'</div>'
+
+					);
+
 				}
 
-		break;
+			}
+			break;
 		case 'GBR':
 
 			$tax_category=array();
