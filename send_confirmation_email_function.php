@@ -208,7 +208,10 @@ function send_confirmation_email($order) {
 		'CUSTOMERS_NAME' => $order->get_name_for_grettings(),
 		'ORDER_NUMBER'=>$order->get('Order Public ID'),
 		'PAYMENT_EXTRA_INFO'=>$payment_info,
-		'ORDER_DATA'=>$order_info
+		'ORDER_DATA'=>$order_info,
+					'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
+			'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
+
 	);
 
 
