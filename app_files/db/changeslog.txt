@@ -7939,11 +7939,6 @@ truncate `Order Transaction Deal Bridge`;truncate `Order Deal Bridge`;
 // run php fix_order_deals.php
 
 
-//================
-//24201829NUM1BJR
-//GBRL03974514
-//W0098499765836
-//W0098499765836
 UPDATE `Table Dimension` SET `Table Export Fields` = '`Product ID`|1,`Product Code`|1,`Product Name`|1,`Product Price`|1,`Product RRP`|1,Image URL|0' WHERE `Table Key` = 9; 
 
 
@@ -8224,14 +8219,11 @@ CREATE TABLE IF NOT EXISTS `Supplier Product Custom Field Dimension` (  `Supplie
 
 
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Tariff Code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Units Per Case`, ADD `Supplier Product Tariff Code Valid` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No' AFTER `Supplier Product Tariff Code`, ADD `Supplier Product Duty Rate` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Tariff Code Valid`, ADD `Supplier Product Origin Country Code` VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Duty Rate`;
-
-
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Package Type` ENUM('Bottle','Bag','Box','None','Other') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Box'  AFTER `Supplier Product Origin Country Code`,  ADD `Supplier Product Package Weight` FLOAT NULL DEFAULT NULL  AFTER `Supplier Product Package Type`,  ADD `Supplier Product Package Weight Display` FLOAT NULL DEFAULT NULL  AFTER `Supplier Product Package Weight`,  ADD `Supplier Product Package Weight Display Units` ENUM('Kg','g','oz','lb') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Kg'  AFTER `Supplier Product Package Weight Display`,  ADD `Supplier Product Unit Weight` FLOAT NULL DEFAULT NULL  AFTER `Supplier Product Package Weight Display Units`,  ADD `Supplier Product Unit Weight Display` FLOAT NULL DEFAULT NULL  AFTER `Supplier Product Unit Weight`,  ADD `Supplier Product Unit Weight Display Units` ENUM('Kg', 'g', 'oz', 'lb') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Kg'  AFTER `Supplier Product Unit Weight Display`,  ADD `Supplier Product Unit Dimensions Type` ENUM('Rectangular','Cilinder','Sphere','String','Sheet') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Rectangular'  AFTER `Supplier Product Unit Weight Display Units`,  ADD `Supplier Product Unit Dimensions Display Units` ENUM('mm', 'cm', 'm', 'in', 'yd', 'ft') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'cm'  AFTER `Supplier Product Unit Dimensions Type`,  ADD `Supplier Product Unit Dimensions Width` FLOAT NULL DEFAULT NULL  AFTER `Supplier Product Unit Dimensions Display Units`;
 ALTER TABLE `Supplier Product Dimension`  ADD `Supplier Product Unit Dimensions Depth` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Width`,  ADD `Supplier Product Unit Dimensions Length` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Depth`,  ADD `Supplier Product Unit Dimensions Diameter` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Length`,  ADD `Supplier Product Unit Dimensions Width Display` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Diameter`,  ADD `Supplier Product Unit Dimensions Depth Display` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Width Display`,  ADD `Supplier Product Unit Dimensions Length Display` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Depth Display`,  ADD `Supplier Product Unit Dimensions Diameter Display` FLOAT NOT NULL  AFTER `Supplier Product Unit Dimensions Length Display`,  ADD `Supplier Product Package Dimensions Type` ENUM('Rectangular', 'Cilinder', 'Sphere') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Rectangular'  AFTER `Supplier Product Unit Dimensions Diameter Display`,  ADD `Supplier Product Package Dimensions Display Units` ENUM('mm', 'cm', 'm', 'in', 'yd', 'ft') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'cm'  AFTER `Supplier Product Package Dimensions Type`,  ADD `Supplier Product Package Dimensions Width` FLOAT NOT NULL  AFTER `Supplier Product Package Dimensions Display Units`,  ADD `Supplier Product Package Dimensions Depth` FLOAT NOT NULL  AFTER `Supplier Product Package Dimensions Width`,  ADD `Supplier Product Package Dimensions Length` FLOAT NOT NULL  AFTER `Supplier Product Package Dimensions Depth`,  ADD `Supplier Product Package Dimensions Diameter` FLOAT NOT NULL  AFTER `Supplier Product Package Dimensions Length`,  ADD `Supplier Product Package Dimensions Width Display` FLOAT NOT NULL  AFTER `Supplier Product Package Dimensions Diameter`,  ADD `Supplier Product Package Dimensions Depth Display` FLOAT NOT NULL  AFTER `Supplier Product Package Dimensions Width Display`;
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Unit Dimensions Volume` FLOAT NULL DEFAULT NULL AFTER `Supplier Product Unit Dimensions Diameter Display`, ADD `Supplier Product Unit XHTML Dimensions` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Unit Dimensions Volume`;
 ALTER TABLE `Supplier Product Dimension`  DROP `Supplier Product Unit Net Weight`,  DROP `Supplier Product Unit Gross Weight`,  DROP `Supplier Product Unit Package Type`,  DROP `Supplier Product Unit Gross Volume`,  DROP `Supplier Product Unit Minimun Orthogonal Gross Volume`,  DROP `Supplier Product Case Gross Weight`,  DROP `Supplier Product Case Minimun Orthogonal Gross Volume`;
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Package Dimensions Length Display` FLOAT NULL DEFAULT NULL AFTER `Supplier Product Package Dimensions Depth Display`, ADD `Supplier Product Package Dimensions Diameter Display` FLOAT NULL DEFAULT NULL AFTER `Supplier Product Package Dimensions Length Display`, ADD `Supplier Product Package Dimensions Volume` FLOAT NULL DEFAULT NULL AFTER `Supplier Product Package Dimensions Diameter Display`, ADD `Supplier Product Package XHTML Dimensions` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Package Dimensions Volume`;
-
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Barcode Type` ENUM('none','ean8','ean13',' code11','code39','code128','codabar') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'code128' AFTER `Supplier Product XHTML Store As`, ADD `Supplier Product Barcode Data Source` ENUM('Code', 'Other') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Code' AFTER `Supplier Product Barcode Type`, ADD `Supplier Product Barcode Data` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Barcode Data Source`;
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Health And Safety` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Package XHTML Dimensions`, ADD `Supplier Product UN Number` VARCHAR(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product Health And Safety`, ADD `Supplier Product UN Class` VARCHAR(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product UN Number`, ADD `Supplier Product Packing Group` ENUM('None', 'I', 'II', 'III') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'None' AFTER `Supplier Product UN Class`, ADD `Supplier Product Proper Shipping Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Supplier Product Packing Group`, ADD `Supplier Product Hazard Indentification Number` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Supplier Product Proper Shipping Name`;
 ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product MSDS Attachment Bridge Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Supplier Product Hazard Indentification Number`, ADD `Supplier Product MSDS Attachment XHTML Info` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Product MSDS Attachment Bridge Key`;
@@ -8242,18 +8234,15 @@ ALTER TABLE `Product Department Dimension` ADD `Product Department Last Updated`
 ALTER TABLE `Product Family Dimension` ADD `Product Family Last Updated` DATETIME NULL DEFAULT NULL ; 
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Section` `Inventory Transaction Section` ENUM('OIP','In','Move','Out','Audit','NoDispatched','Other') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
 ALTER TABLE `Product Dimension` ADD `Product Use Part Units Properties` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes' AFTER `Product Use Part Properties`;
-
-
-
 ALTER TABLE `Product Dimension` ADD `Product Origin Country Code` VARCHAR(3) NULL DEFAULT NULL AFTER `Product Slogan`;
-
 ALTER TABLE `Product Dimension`   ADD `Product Package Weight` FLOAT NULL DEFAULT NULL  AFTER `Product Package Type`,  ADD `Product Package Weight Display` FLOAT NULL DEFAULT NULL  AFTER `Product Package Weight`,  ADD `Product Package Weight Display Units` ENUM('Kg','g','oz','lb') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Kg'  AFTER `Product Package Weight Display`,  ADD `Product Unit Weight` FLOAT NULL DEFAULT NULL  AFTER `Product Package Weight Display Units`,  ADD `Product Unit Weight Display` FLOAT NULL DEFAULT NULL  AFTER `Product Unit Weight`,  ADD `Product Unit Weight Display Units` ENUM('Kg', 'g', 'oz', 'lb') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Kg'  AFTER `Product Unit Weight Display`,  ADD `Product Unit Dimensions Type` ENUM('Rectangular','Cilinder','Sphere','String','Sheet') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Rectangular'  AFTER `Product Unit Weight Display Units`,  ADD `Product Unit Dimensions Display Units` ENUM('mm', 'cm', 'm', 'in', 'yd', 'ft') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'cm'  AFTER `Product Unit Dimensions Type`,  ADD `Product Unit Dimensions Width` FLOAT NULL DEFAULT NULL  AFTER `Product Unit Dimensions Display Units`;
 ALTER TABLE `Product Dimension`  ADD `Product Unit Dimensions Depth` FLOAT NOT NULL  AFTER `Product Unit Dimensions Width`,  ADD `Product Unit Dimensions Length` FLOAT NOT NULL  AFTER `Product Unit Dimensions Depth`,  ADD `Product Unit Dimensions Diameter` FLOAT NOT NULL  AFTER `Product Unit Dimensions Length`,  ADD `Product Unit Dimensions Width Display` FLOAT NOT NULL  AFTER `Product Unit Dimensions Diameter`,  ADD `Product Unit Dimensions Depth Display` FLOAT NOT NULL  AFTER `Product Unit Dimensions Width Display`,  ADD `Product Unit Dimensions Length Display` FLOAT NOT NULL  AFTER `Product Unit Dimensions Depth Display`,  ADD `Product Unit Dimensions Diameter Display` FLOAT NOT NULL  AFTER `Product Unit Dimensions Length Display`,  ADD `Product Package Dimensions Type` ENUM('Rectangular', 'Cilinder', 'Sphere') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Rectangular'  AFTER `Product Unit Dimensions Diameter Display`,  ADD `Product Package Dimensions Display Units` ENUM('mm', 'cm', 'm', 'in', 'yd', 'ft') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'cm'  AFTER `Product Package Dimensions Type`,  ADD `Product Package Dimensions Width` FLOAT NOT NULL  AFTER `Product Package Dimensions Display Units`,  ADD `Product Package Dimensions Depth` FLOAT NOT NULL  AFTER `Product Package Dimensions Width`,  ADD `Product Package Dimensions Length` FLOAT NOT NULL  AFTER `Product Package Dimensions Depth`,  ADD `Product Package Dimensions Diameter` FLOAT NOT NULL  AFTER `Product Package Dimensions Length`,  ADD `Product Package Dimensions Width Display` FLOAT NOT NULL  AFTER `Product Package Dimensions Diameter`,  ADD `Product Package Dimensions Depth Display` FLOAT NOT NULL  AFTER `Product Package Dimensions Width Display`;
 ALTER TABLE `Product Dimension` ADD `Product Unit Dimensions Volume` FLOAT NULL DEFAULT NULL AFTER `Product Unit Dimensions Diameter Display`, ADD `Product Unit XHTML Dimensions` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Unit Dimensions Volume`;
 ALTER TABLE `Product Dimension` ADD `Product Package Dimensions Length Display` FLOAT NULL DEFAULT NULL AFTER `Product Package Dimensions Depth Display`, ADD `Product Package Dimensions Diameter Display` FLOAT NULL DEFAULT NULL AFTER `Product Package Dimensions Length Display`, ADD `Product Package Dimensions Volume` FLOAT NULL DEFAULT NULL AFTER `Product Package Dimensions Diameter Display`, ADD `Product Package XHTML Dimensions` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Package Dimensions Volume`;
 ALTER TABLE `Part Dimension` ADD `Part Last Updated` DATETIME NULL DEFAULT NULL ; 
-
 ALTER TABLE `Product Dimension` CHANGE `Product Unit Dimensions Depth` `Product Unit Dimensions Depth` FLOAT NULL DEFAULT NULL, CHANGE `Product Unit Dimensions Length` `Product Unit Dimensions Length` FLOAT NULL DEFAULT NULL, CHANGE `Product Unit Dimensions Diameter` `Product Unit Dimensions Diameter` FLOAT NULL DEFAULT NULL, CHANGE `Product Unit Dimensions Width Display` `Product Unit Dimensions Width Display` FLOAT NULL DEFAULT NULL, CHANGE `Product Unit Dimensions Depth Display` `Product Unit Dimensions Depth Display` FLOAT NULL DEFAULT NULL, CHANGE `Product Unit Dimensions Length Display` `Product Unit Dimensions Length Display` FLOAT NULL DEFAULT NULL, CHANGE `Product Unit Dimensions Diameter Display` `Product Unit Dimensions Diameter Display` FLOAT NULL DEFAULT NULL, CHANGE `Product Package Dimensions Width` `Product Package Dimensions Width` FLOAT NULL DEFAULT NULL, CHANGE `Product Package Dimensions Depth` `Product Package Dimensions Depth` FLOAT NULL DEFAULT NULL, CHANGE `Product Package Dimensions Length` `Product Package Dimensions Length` FLOAT NULL DEFAULT NULL, CHANGE `Product Package Dimensions Diameter` `Product Package Dimensions Diameter` FLOAT NULL DEFAULT NULL, CHANGE `Product Package Dimensions Width Display` `Product Package Dimensions Width Display` FLOAT NULL DEFAULT NULL, CHANGE `Product Package Dimensions Depth Display` `Product Package Dimensions Depth Display` FLOAT NULL DEFAULT NULL;
+
+
 
 // php fix_assets_weights.php
 CREATE TABLE IF NOT EXISTS `Material Dimension` (  `Material Key` mediumint(8) unsigned NOT NULL,  `Material Name` varchar(256) NOT NULL,  `Material Family` varchar(256) DEFAULT NULL,  `Material XHTML Description` longtext NOT NULL,  PRIMARY KEY (`Material Key`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -8318,6 +8307,7 @@ delete from `User Group User Bridge` where `User Key`=1 and `User Group Key`!=1;
 ALTER TABLE `Customer Dimension` ADD `Customer Billing Address Line 1` VARCHAR(256) NULL AFTER `Customer Billing Address Lines`, ADD `Customer Billing Address Line 2` VARCHAR(256) NULL AFTER `Customer Billing Address Line 1`, ADD `Customer Billing Address Line 3` VARCHAR(256) NULL AFTER `Customer Billing Address Line 2`;
 ALTER TABLE `Customer Dimension` ADD `Customer Billing Address Postal Code` VARCHAR(32) NULL AFTER `Customer Billing Address Town`;
 ALTER TABLE `Customer Dimension` ADD `Customer Billing Address 2 Alpha Country Code` VARCHAR(2) NULL AFTER `Customer Billing Address Country Code`;
+
 //php update_addresses_data.php
 
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Show in Warehouse Orders` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes' , ADD INDEX (`Delivery Note Show in Warehouse Orders`) ;
@@ -8387,7 +8377,7 @@ ALTER TABLE `Order Dimension` ADD INDEX `Type Store Key` ( `Order Type` ,`Order 
 ALTER TABLE `Order Dimension` ADD INDEX `Current Dispatch State Store Key` ( `Order Current Dispatch State` ,`Order Store Key`) ;
 ALTER TABLE `Order Dimension` ADD INDEX `Current Payment State Store Key` ( `Order Current Payment State` ,`Order Store Key`) ;
 
-update `Tax Category Dimension` set `Tax Category Country Code`='GBR';
+update `Tax Category Dimension` set `Tax Category Country Code`='ESP';
 
 ALTER TABLE `Tax Category Dimension` ADD `Tax Category Type` ENUM('Standard','Zero') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Standard' AFTER `Tax Category Key`;
 ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Type` `Tax Category Type` ENUM('Standard','Zero','Unknown') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Standard';
@@ -8397,8 +8387,6 @@ UPDATE `Tax Category Dimension` SET `Tax Category Type` = 'Zero' WHERE `Tax Cate
 UPDATE `Tax Category Dimension` SET `Tax Category Type` = 'Unknown' WHERE `Tax Category Dimension`.`Tax Category Key` = 8;
 
 ALTER TABLE kbase.`Country Dimension` ADD `EC Fiscal VAT Area` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No' , ADD INDEX (`EC Fiscal VAT Area`) ;
-
-
 UPDATE `kbase`.`Country Dimension` SET `EC Fiscal VAT Area` = 'Yes' WHERE `Country Code` in ('AUT','BEL','BGR','HRV','CZE','DNK','EST','FIN','FRA','MCO','DEU','GRC','HUN','IRL','ITA','LVA','LTU','LUX','MLT','NLD','POL','PRT','ROU','SVK','ESP','SVN','SWE','GBR','IMN','CYP');
 ALTER TABLE `kbase`.`Country Dimension` CHANGE `Country Native Name` `Country Native Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
 UPDATE `kbase`.`Country Dimension` SET `Country Official Name` = 'Republic of Cyprus', `Continent` = 'Europe', `Continent Code` = 'EURP', `World Region` = 'Southern Europe', `World Region Code` = 'SERP', `Country Population` = '1117000', `Country Native Name` = 'Κυπριακή Δημοκρατία/Kıbrıs Cumhuriyeti', `Country Head of State` = 'Nicos Anastasiades', `EC Fiscal VAT Area` = 'Yes' WHERE `Country Dimension`.`Country Key` = 108;
@@ -8469,6 +8457,9 @@ update `Shipping Dimension` set  `Shipping Price Method`='Step Order Items Net A
 ALTER TABLE `Shipping Dimension` ADD `Shipping Secondary Destination Check` ENUM('None','Post Code') NOT NULL DEFAULT 'None' AFTER `Shipping Price Method`, ADD INDEX (`Shipping Secondary Destination Check`) ;
 
 update `Shipping Dimension` set `Shipping Secondary Destination Check`='Post Code' where `Shipping Destination Metadata` IS NOT NULL; 
+
+
+//====XXX
 
 UPDATE `Charge Dimension` SET `Charge Description` = '£5.00 small order',`Charge Metadata` = '5',`Charge Terms Description` = 'when Order Items Net Amount is less than £50.00' WHERE `Charge Dimension`.`Charge Key` =1;
 ALTER TABLE `Charge Dimension` CHANGE `Charge Terms Type` `Charge Terms Type` ENUM( 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Shipping Country', 'Shipping Country First Division', 'Order Items Gross Amount', 'Order Items Net Amount' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
@@ -8541,9 +8532,7 @@ ALTER TABLE `Customer Dimension` ADD `Customer First Invoiced Order Date` DATETI
 ALTER TABLE `Deal Component Dimension` ADD `Deal Component XHTML Name Label` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Deal Component Name`;
 ALTER TABLE `Deal Component Dimension` ADD `Deal Component XHTML Terms Description Label` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Deal Component Terms Description`;
 ALTER TABLE `Deal Component Dimension` ADD `Deal Component XHTML Allowance Description Label` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Deal Component Allowance Description`;
-
 ALTER TABLE `Order Dimension` ADD `Order Tax Number Validation Date` DATETIME NULL DEFAULT NULL , ADD `Order Tax Number Associated Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL , ADD `Order Tax Number Associated Address` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
-
 ALTER TABLE `Order Dimension` ADD `Order Email` VARCHAR(256) NULL DEFAULT NULL AFTER `Order Customer Contact Name`; 
 
 run php update_addresses_data.php;
@@ -8652,8 +8641,8 @@ ALTER TABLE `Site Dimension` ADD `Site Order Notification Email Code` VARCHAR(12
    update `Site Dimension` set `Site Order Notification Email Recipients`='david@ancientwisdom.biz,tomas@ancientwisdom.biz,raul@inikoo.com,bruno@aw-cadeaux.com' where `Site Key`=5;
     update `Site Dimension` set `Site Order Notification Email Recipients`='david@ancientwisdom.biz,tomas@ancientwisdom.biz,raul@inikoo.com,care@ancientwisdom.biz' where `Site Key`=7;
      update `Site Dimension` set `Site Order Notification Email Recipients`='david@ancientwisdom.biz,tomas@ancientwisdom.biz,raul@inikoo.com,mail@aw-regali.com' where `Site Key`=8;
-ALTER TABLE `Order Dimension` ADD `Order Telephone` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Order Customer Contact Name`;
 
+ALTER TABLE `Order Dimension` ADD `Order Telephone` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Order Customer Contact Name`;
 ALTER TABLE `Shipper Dimension` ADD `Shipper Telephone` VARCHAR( 64 ) CHARACTER SET utf32 COLLATE utf32_general_ci NULL AFTER `Shipper Name` ,ADD `Shipper Website` VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `Shipper Telephone` ,ADD `Shipper Tracking URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `Shipper Website` ;
 ALTER TABLE `Order Dimension` ADD `Order Customer Fiscal Name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Order Customer Contact Name`;
 ALTER TABLE `Billing To Dimension` CHANGE `Billing To XHTML Address` `Billing To XHTML Address` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
@@ -8670,6 +8659,8 @@ ALTER TABLE `Address Dimension` CHANGE `Address Plain` `Address Plain` TEXT CHAR
  update `Order Dimension` set `Order Current Payment State`='Waiting Payment'  where `Order Current Payment State`='Not Invoiced';
  ALTER TABLE `Order Dimension` CHANGE `Order Current Payment State` `Order Current Payment State` ENUM('Waiting Payment','Paid','Partially Paid','Unknown','No Applicable','Overpaid') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Waiting Payment';
 // php fix_shipping_to_address.php
+
+
 ALTER TABLE `Order Dimension` CHANGE `Order Telephone` `Order Telephone` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
 ALTER TABLE `Inventory Transaction Fact` ADD `Map To Order Transaction Fact Data` TEXT NULL DEFAULT NULL ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Map To Order Transaction Fact Parts Multiplicity` SMALLINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Out of Stock Tag`;
@@ -8681,8 +8672,6 @@ ALTER TABLE `Location Dimension` ADD `Location File As` VARCHAR(64) CHARACTER SE
 // for carlos: import Payment Account Dimension from aw because some untraked changes
 
 ALTER TABLE `Payment Dimension` ADD `Payment Related Payment Transaction ID` VARCHAR(256) NULL DEFAULT NULL ; 
-
-
 ALTER TABLE `Site Dimension` ADD `Site Welcome Email Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Site Default Flag Color` ,ADD `Site Forgot Password Email Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Site Welcome Email Code` ;
 ALTER TABLE `Store Dimension` ADD `Store Dispatched Email Code` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Shipper Dimension` CHANGE `Shipper Telephone` `Shipper Telephone` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
@@ -8781,5 +8770,7 @@ ALTER TABLE `Payment Dimension` ADD `Payment Submit Type` ENUM('Manual','EPS','A
 ALTER TABLE `Charge Dimension` ADD `Charge Public Description` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `Charge Description`;
 UPDATE `Charge Dimension` SET `Charge Public Description` = 'Please note, that we have a minimum order value of £50 before carriage and VAT. Orders below this threshold will incur £5+VAT small order charge, except gold reward customers.' WHERE `Charge Key` = 1;
 
+ALTER TABLE `Order Dimension` ADD `Order Show in Warehouse Orders` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes' , ADD INDEX (`Order Show in Warehouse Orders`) ;
 
-
+//
+ALTER TABLE `Payment Service Provider Dimension` CHANGE `Payment Service Provider Type` `Payment Service Provider Type` ENUM( 'EPS', 'EBeP', 'Bank', 'Cash', 'Account', 'ConD' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
