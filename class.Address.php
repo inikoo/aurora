@@ -1368,11 +1368,11 @@ class Address extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
-		
-		case('Address World Region Code'):	
-		$country=new Country('code',$this->data['Address Country Code']);
-		return $country->data['World Region Code'];
-		break;
+
+		case('Address World Region Code'):
+			$country=new Country('code',$this->data['Address Country Code']);
+			return $country->data['World Region Code'];
+			break;
 		case('Type'):
 		case('Function'):
 
@@ -1407,6 +1407,7 @@ class Address extends DB_Table {
 
 	function display($tipo='',$locale='en_GB') {
 
+		include_once 'common_geography_functions.php';
 
 		$separator="\n";
 		switch ($tipo) {
@@ -1543,8 +1544,7 @@ class Address extends DB_Table {
 		case('postal'):
 		default:
 			$address=$this->get_formated_address($separator,$locale);
-			$country=new Country('code',$this->data['Address Country Code']);
-			$address.=$country->get_country_name($locale);
+			$address.=translate_country_name($this->data['Address Country Name']);
 			return _trim($address);
 
 		}
@@ -5761,13 +5761,13 @@ class Address extends DB_Table {
 			$billing_address['Billing To Telephone']=$data['Billing To Telephone'];
 
 
-		if ($this->data['Address Contact']!=''){
+		if ($this->data['Address Contact']!='') {
 			$contact_name=$this->data['Address Contact'];
-		}else{
+		}else {
 			$contact_name=$data['Billing To Contact Name'];
 		}
-		
-		if($data['Billing To Company Name']==$contact_name){
+
+		if ($data['Billing To Company Name']==$contact_name) {
 			$contact_name='';
 		}
 
