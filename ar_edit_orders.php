@@ -23,7 +23,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
-
+case('update_recargo_de_equivalencia'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'value'=>array('type'=>'string'),
+		));
+	update_recargo_de_equivalencia($data);
+	break;
 case('add_insurance'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -5976,6 +5982,52 @@ function remove_insurance($data) {
 	echo json_encode($response);
 
 
+
+
+}
+
+function update_recargo_de_equivalencia($data) {
+
+
+	$order= new Order($data['order_key']);
+	$customer=new Customer($order->data['Order Customer Key']);
+	$customer->update(array('Recargo Equivalencia'=>$data['value']));
+
+	$order->update_tax();
+
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_insurance'=>$order->get('Insurance Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'order_total_paid'=>$order->get('Payments Amount'),
+		'order_total_to_pay'=>$order->get('To Pay Amount'),
+
+		'ordered_products_number'=>$order->get('Number Products'),
+		'store_currency_total_balance'=>money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+	);
+
+	$response= array(
+		'state'=>200,
+
+		'data'=>$updated_data,
+		'order_key'=>$order->id,
+		'ship_to'=>$order->get('Order XHTML Ship Tos'),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
+		'order_insurance_amount'=>$order->data['Order Insurance Net Amount'],
+		'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount']
+
+	);
+
+
+	echo json_encode($response);
 
 
 }

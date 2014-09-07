@@ -1,10 +1,5 @@
 <?php
 
-//define('DEBUG', 0);
-//if (DEBUG) {
-//	error_reporting(E_ALL);
-//}
-
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'conf/dns.php';
@@ -15,6 +10,7 @@ require_once 'common_detect_agent.php';
 
 require_once "class.Session.php";
 require_once "aes.php";
+require_once "class.Account.php";
 
 require_once "class.Auth.php";
 require_once "class.User.php";
@@ -47,10 +43,19 @@ if (!$db_selected) {
 
 
 mysql_query("SET NAMES 'utf8'");
-require_once 'conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
+
+$inikoo_account=new Account();
+date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
+define("TIMEZONE",$inikoo_account->data['Account Timezone']);
+
+
+
+
+
+
 
 $max_session_time=$myconf['max_session_time'];
 $max_session_time_in_milliseconds=1000*$max_session_time;
@@ -184,48 +189,22 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
+$corporate_currency=$inikoo_account->data['Account Currency'];
+$corporate_currency_symbol=$inikoo_account->data['Account Currency Symbol'];
+$corporate_country_code=$inikoo_account->data['Account Country Code'];
+$corporate_country_2alpha_code=$inikoo_account->data['Account Country 2 Alpha Code'];
+$inikoo_public_url=$inikoo_account->data['Inikoo Public URL'];
 
 
-$sql=sprintf("select `Inikoo Version`,`Account Code`,`Account Menu Label`,`Account Name`,`Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol`,`Short Message` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
-//print $sql;
+$smarty->assign('top_navigation_message',$inikoo_account->data['Short Message']);
+$smarty->assign('account_name',$inikoo_account->data['Account Name']);
+$account_code=$inikoo_account->data['Account Code'];
 
-$res=mysql_query($sql);
-
-if ($row=mysql_fetch_array($res)) {
-	$corporate_currency=$row['Account Currency'];
-	$corporate_currency_symbol=$row['Currency Symbol'];
-	$corporate_country_code=$row['Account Country Code'];
-	$corporate_country_2alpha_code=$row['Account Country 2 Alpha Code'];
-	$inikoo_public_url=$row['Inikoo Public URL'];
-	$smarty->assign('top_navigation_message',$row['Short Message']);
-	$smarty->assign('account_name',$row['Account Name']);
-	$account_code=$row['Account Code'];
-	$account_label=($row['Account Menu Label']==''?_('Company'):$row['Account Menu Label']);
-
-	$smarty->assign('inikoo_version',$row['Inikoo Version']);
-	$smarty->assign('top_navigation_message',$row['Short Message']);
-	$smarty->assign('account_name',$row['Account Name']);
-	$smarty->assign('account_label',$account_label);
-
-}
-
-/*
-$sql=sprintf("select * from  `Inikoo Dimension` where `Inikoo Key`=1 ");
-//print $sql;
-
-$res=mysql_query($sql);
-
-if ($row=mysql_fetch_array($res)) {
-	$inikoo_version=$row['Inikoo Version'];
-	$inikoo_account_code=$row['Inikoo Account Code'];
-
-	$smarty->assign('inikoo_version',$inikoo_version);
-}
-
-*/
-//print_r($row);
-//exit;
-
+$smarty->assign('inikoo_version',$inikoo_account->data['Inikoo Version']);
+$smarty->assign('top_navigation_message',$inikoo_account->data['Short Message']);
+$smarty->assign('account_name',$inikoo_account->data['Account Name']);
+$account_label=($inikoo_account->data['Account Menu Label']==''?_('Company'):$inikoo_account->data['Account Menu Label']);
+$smarty->assign('account_label',$account_label);
 
 
 $nav_menu=array();
@@ -236,8 +215,6 @@ elseif ($user->data['User Type']=='Staff')
 
 if ($user->can_view('account'))
 	$nav_menu[] = array(_('Account'), 'account.php','account');
-
-
 
 
 if ($user->can_view('staff'))
@@ -267,15 +244,15 @@ if ($user->can_view('warehouses')) {
 
 }
 if ($user->can_view('marketing')) {
-		if (count($user->stores)==1) {
+	if (count($user->stores)==1) {
 		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->stores[0],'marketing');
 	} elseif (count($user->stores)>1) {
 
 		if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->data['User Hooked Store Key'],'marketing');
+			$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->data['User Hooked Store Key'],'marketing');
 		}
 		else {
-		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing_server.php','marketing');
+			$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing_server.php','marketing');
 
 		}
 	}
@@ -339,11 +316,11 @@ if ($user->can_view('customers')) {
 	} elseif (count($user->stores)>1)
 
 		if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->data['User Hooked Store Key'],'customers');
+			$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->data['User Hooked Store Key'],'customers');
 		}
-		else {
+	else {
 		$nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
-		}
+	}
 
 
 

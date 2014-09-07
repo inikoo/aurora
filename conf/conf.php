@@ -1,6 +1,6 @@
 <?php
 
-$report_data=array('ES1'=>array('umbral'=>3000,'year'=>date('Y')-1));
+
 
 
 $myconf=array(
@@ -408,7 +408,7 @@ $default_state=array(
 
 	),
 
-	'report_data'=>$report_data,
+	//'report_data'=>$report_data,
 
 	'supplier_dn'=>array(
 		'supplier_key'=>0,
@@ -552,10 +552,10 @@ $default_state=array(
 			'plot'=>'total_sales_month',
 			'store_key'=>1,
 			'tipo'=>'y',
-			'y'=>date('Y'),
-			'm'=>date('m'),
-			'd'=>date('d'),
-			'w'=>date('W'),
+			//'y'=>date('Y'),
+			//'m'=>date('m'),
+			//'d'=>date('d'),
+			//'w'=>date('W'),
 		)
 		,'stock'=>array(
 			'plot'=>'total_outofstock_month'
@@ -4861,67 +4861,7 @@ $default_state=array(
 			'elements'=>array()
 		)
 	),
-	'report_to_delete'=>array(
-		'tipo'=>'m',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>1,
-		'activity'=>array('compare'=>'last_year','period'=>'week'),
 
-		'sales'=>array(
-			'store_keys'=>'all',
-			'from'=>'',
-			'to'=>'',
-			'period'=>'',
-			'order'=>'date',
-			'order_dir'=>'desc',
-			'invoice_type'=>'all',
-			'dn_state'=>'all',
-			'sf'=>0,
-			'nr'=>25,
-			'plot'=>'per_store',
-			'plot_data'=>array('per_store'=>array(
-					'category'=>'sales',
-					'page'=>'plot.php',
-					'period'=>'m'
-
-				)
-				,'per_category'=>array(
-					'category'=>'sales',
-					'page'=>'plot.php',
-					'period'=>'m'
-				)
-			),
-		),
-
-
-		'products'=>array('store_keys'=>'all',
-			'top'=>100,
-			'criteria'=>'net_sales',
-			'f_value'=>'',
-			'f_show'=>false,
-			'f_field'=>'code',
-			'from'=>'',
-			'to'=>''
-		),
-		'orders_in_process'=>array(
-			'store_keys'=>'all',
-			'sf'=>0,
-			'nr'=>50,
-			'f_value'=>'',
-			'f_show'=>false,
-			'f_field'=>'customer',
-			'from'=>'',
-			'to'=>'',
-			'order'=>'date',
-			'order_dir'=>'',
-			'where'=>''
-		)
-
-
-
-	),
 
 
 	'supplier'=>array(

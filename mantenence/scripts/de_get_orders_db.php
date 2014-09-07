@@ -1,8 +1,9 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
 error_reporting(E_ALL);
 
 include_once '../../conf/dns.php';
+include_once '../../class.Account.php';
+
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';
@@ -54,8 +55,9 @@ date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+$inikoo_account=new Account();
+date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
+define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 
 include_once '../../set_locales.php';
 
