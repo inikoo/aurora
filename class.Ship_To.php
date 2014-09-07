@@ -203,6 +203,9 @@ class Ship_To extends DB_Table {
 	}
 
 	function display($tipo) {
+	
+		include_once('common_geography_functions.php');
+	
 		$separator='\n';
 
 		if ($tipo=='xhtml')
@@ -245,9 +248,9 @@ class Ship_To extends DB_Table {
 			$address.=$ps_address.$separator;
 
 		if ($tipo=='xhtml')
-			$address.='<b>'.$this->data['Ship To Country Name'].'</b>';
+			$address.='<b>'.translate_country_name($this->data['Ship To Country Name']).'</b>';
 		else
-			$address.=$this->data['Ship To Country Name'];
+			$address.=translate_country_name($this->data['Ship To Country Name']);
 
 		if ($tipo=='xhtml') {
 			if ($this->data['Ship To Telephone']!='') {

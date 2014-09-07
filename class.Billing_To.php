@@ -199,6 +199,9 @@ class Billing_To extends DB_Table {
 	}
 
 	function display($tipo) {
+	
+		include_once('common_geography_functions.php');
+	
 		$separator='\n';
 
 		if ($tipo=='xhtml')
@@ -244,9 +247,9 @@ class Billing_To extends DB_Table {
 
 
 		if ($tipo=='xhtml')
-			$address.='<b>'.$this->data['Billing To Country Name'].'</b>';
+			$address.='<b>'.translate_country_name($this->data['Billing To Country Name']).'</b>';
 		else
-			$address.=$this->data['Billing To Country Name'];
+			$address.=translate_country_name($this->data['Billing To Country Name']);
 
 		if ($tipo=='xhtml') {
 			if ($this->data['Billing To Telephone']!='') {

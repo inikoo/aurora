@@ -10,7 +10,40 @@
  Version 2.0
 */
 
+function translate_country_name($country){
 
+	switch($country){
+		case 'Spain':
+			return _('Spain');
+		break;
+		case 'Germany':
+			return _('Germany');
+		break;
+		case 'United Kingdom':
+			return _('United Kingdom');
+		break;
+		case 'France':
+			return _('France');
+		break;
+		case 'Italy':
+			return _('Italy');
+		break;
+		case 'Poland':
+			return _('Poland');
+		break;
+		case 'Portugal':
+			return _('Portugal');
+		break;
+		case 'Unknown':
+			return _('Unknown');
+		break;
+		default:
+			return $country;
+	}
+
+	
+
+}
 
 function get_countries_EC_Fiscal_VAT_area() {
 $countries_EC_Fiscal_VAT_area=array();

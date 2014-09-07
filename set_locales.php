@@ -1,25 +1,25 @@
 <?php
-include_once('conf/locale_defaults.php');
-if(file_exists('conf/locale_settings.php')){
-include_once('conf/locale_settings.php');
+include_once 'conf/locale_defaults.php';
+if (file_exists('conf/locale_settings.php')) {
+	include_once 'conf/locale_settings.php';
 
 }
 
 
-if (!function_exists('_')){
-	function _($str){
+if (!function_exists('_')) {
+	function _($str) {
 		return $str;
 	}
-	function gettext($str){
+	function gettext($str) {
 		return $str;
 	}
-function ngettext($str){
+	function ngettext($str) {
 		return $str;
 	}
-	
-	function bindtextdomain(){};
-	function bind_textdomain_codeset(){};
-	function textdomain(){};
+
+	function bindtextdomain() {};
+	function bind_textdomain_codeset() {};
+	function textdomain() {};
 
 }
 
@@ -33,20 +33,20 @@ setlocale(LC_ALL,$default_locale );
 $_SESSION['locale']=$default_locale;
 //if(isset($_REQUEST['_locale']) and preg_match('/[a-z]{2}\_[A-Z]{2}\.UTF-8/i',$_REQUEST['_locale']) ){
 //print $_REQUEST['_locale']."<-";
-if(isset($_REQUEST['_locale']) and preg_match('/[a-z]{2}\_[A-Z]{2}\.UTF-8/i',$_REQUEST['_locale']) ){
-
-
-  
-  $_SESSION['text_locale']=$_REQUEST['_locale'];
- }
+if (isset($_REQUEST['_locale']) and preg_match('/[a-z]{2}\_[A-Z]{2}\.UTF-8/i',$_REQUEST['_locale']) ) {
 
 
 
+	$_SESSION['text_locale']=$_REQUEST['_locale'];
+}
 
-if(!isset($_SESSION['text_locale'])){
+
+
+
+if (!isset($_SESSION['text_locale'])) {
 	$_SESSION['text_locale']=$default_locale;
-} 
- 
+}
+
 
 if (defined('LC_MESSAGES'))
 	$lc_messages_locale=setlocale(LC_MESSAGES,$_SESSION['text_locale'] );
