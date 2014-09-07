@@ -9,6 +9,8 @@ include_once '../../class.Supplier.php';
 include_once '../../class.Part.php';
 include_once '../../class.Store.php';
 include_once '../../class.Category.php';
+include_once '../../class.Account.php';
+
 
 error_reporting(E_ALL);
 
@@ -32,8 +34,9 @@ date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+$inikoo_account=new Account();
+date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
+define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 
 include_once '../../set_locales.php';
 

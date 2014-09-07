@@ -1,6 +1,7 @@
 <?php
 require_once 'conf/dns.php';
 require_once 'class.Customer.php';
+require_once 'class.Account.php';
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$default_DB_link) {
@@ -12,8 +13,9 @@ if (!$db_selected) {
     exit;
 }
 mysql_query("SET NAMES 'utf8'");
-require_once 'conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+
+require_once 'common_functions.php';
+
 mysql_query("SET time_zone='+0:00'");
 
 

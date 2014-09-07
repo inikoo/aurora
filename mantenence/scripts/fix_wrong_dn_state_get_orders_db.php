@@ -66,7 +66,7 @@ date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../conf/timezone.php';
+require_once 'timezone.php';
 date_default_timezone_set(TIMEZONE) ;
 
 include_once '../../set_locales.php';

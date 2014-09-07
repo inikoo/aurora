@@ -15,7 +15,7 @@ function send_confirmation_email($order) {
 	$store=new Store($order->data['Order Store Key']);
 
 
-	if(!$site->id){
+	if (!$site->id) {
 		// to do get credentials from store and send email anyway maybe
 		return;
 	}
@@ -209,8 +209,8 @@ function send_confirmation_email($order) {
 		'ORDER_NUMBER'=>$order->get('Order Public ID'),
 		'PAYMENT_EXTRA_INFO'=>$payment_info,
 		'ORDER_DATA'=>$order_info,
-					'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
-			'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
+		'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
+		'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
 
 	);
 

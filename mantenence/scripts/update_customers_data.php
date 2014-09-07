@@ -2,6 +2,7 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once '../../conf/dns.php';
+include_once '../../class.Account.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';
@@ -28,8 +29,9 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-require_once '../../conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+$inikoo_account=new Account();
+date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
+define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 
 include_once '../../set_locales.php';
 

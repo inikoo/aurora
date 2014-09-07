@@ -1064,6 +1064,48 @@ function update_order_data(r) {
 
 }
 
+function update_recargo_de_equivalencia(value){
+
+    var request = 'ar_edit_orders.php?tipo=update_recargo_de_equivalencia&value='+value+'&order_key=' + Dom.get('order_key').value
+
+  YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //     alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+               
+
+                for (x in r.data) {
+                    if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
+                }
+
+                Dom.get('tax_info').innerHTML = r.tax_info
+                if (r.order_total_to_pay == 0) {
+                    Dom.setStyle('button_proceed_to_checkout', 'display', 'none')
+                    Dom.setStyle('button_submit_order_paid', 'display', '')
+                } else {
+                    Dom.setStyle('button_proceed_to_checkout', 'display', '')
+                    Dom.setStyle('button_submit_order_paid', 'display', 'none')
+                }
+
+               
+            } else {
+                alert('EC119' + r.msg);
+                //	callback();
+            }
+        },
+        failure: function(o) {
+            //alert(o.statusText);
+            // callback();
+        },
+        scope: this
+    }, request
+
+    );
+
+  
+}
 
 var myonCellClick = function(oArgs) {
 

@@ -13,6 +13,7 @@
 include_once 'conf/dns.php';
 
 include_once 'external_libs/Smarty/Smarty.class.php';
+include_once 'class.Account.php';
 $smarty = new Smarty();
 
 
@@ -56,7 +57,13 @@ include_once 'set_locales.php';
 
 include_once 'conf/key.php';
 
-include_once 'conf/timezone.php';
+
+
+$inikoo_account=new Account();
+date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
+define("TIMEZONE",$inikoo_account->data['Account Timezone']);
+
+
 include_once 'class.Auth.php';
 require_once "class.Session.php";
 

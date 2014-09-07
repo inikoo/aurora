@@ -4202,9 +4202,9 @@ class Order extends DB_Table {
 
 
 	function get_shipping_from_method($type,$metadata,$dn_key=false) {
-		
-		
-		
+
+
+
 		switch ($type) {
 
 		case('Step Order Items Net Amount'):
@@ -6375,20 +6375,20 @@ class Order extends DB_Table {
 			}
 
 
-if ( $this->data['Order Ship To Country Code']=='ESP' and  $this->data['Order Billing To Country Code']=='ESP'
-and preg_match('/^(35|38|51)/',$this->data['Order Ship To Postal Code'])
-and preg_match('/^(35|38|51)/',$this->data['Order Billing To Postal Code'])
-) {
+			if ( $this->data['Order Ship To Country Code']=='ESP' and  $this->data['Order Billing To Country Code']=='ESP'
+				and preg_match('/^(35|38|51)/',$this->data['Order Ship To Postal Code'])
+				and preg_match('/^(35|38|51)/',$this->data['Order Billing To Postal Code'])
+			) {
 
-return array(
-						'code'=>$tax_category['Excluded']['code'],
-						'name'=>$tax_category['Excluded']['name'],
-						'rate'=>$tax_category['Excluded']['rate'],
-						'state'=>'ouside EC',
-						'operations'=>'<div>'._('Outside EC fiscal area').'</div>'
+				return array(
+					'code'=>$tax_category['Excluded']['code'],
+					'name'=>$tax_category['Excluded']['name'],
+					'rate'=>$tax_category['Excluded']['rate'],
+					'state'=>'ouside EC',
+					'operations'=>'<div>'._('Outside EC fiscal area').'</div>'
 
-					);
-}
+				);
+			}
 
 
 			if (in_array($this->data['Order Ship To Country Code'],array('ESP','UNK'))) {
@@ -6400,7 +6400,7 @@ return array(
 						'name'=>$tax_category['IVA+RE']['name'],
 						'rate'=>$tax_category['IVA+RE']['rate'],
 						'state'=>'delivery to ESP with RE',
-						'operations'=>''
+							'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
 
 					);
 
@@ -6411,7 +6411,7 @@ return array(
 						'name'=>$tax_category['IVA']['name'],
 						'rate'=>$tax_category['IVA']['rate'],
 						'state'=>'delivery to ESP',
-						'operations'=>''
+							'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
 
 					);
 
@@ -6430,7 +6430,7 @@ return array(
 						'name'=>$tax_category['IVA+RE']['name'],
 						'rate'=>$tax_category['IVA+RE']['rate'],
 						'state'=>'billing to ESP with RE',
-						'operations'=>''
+							'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
 
 					);
 
@@ -6441,7 +6441,7 @@ return array(
 						'name'=>$tax_category['IVA']['name'],
 						'rate'=>$tax_category['IVA']['rate'],
 						'state'=>'billing to ESP',
-						'operations'=>''
+							'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
 
 					);
 
