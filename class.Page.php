@@ -21,6 +21,8 @@ class Page extends DB_Table {
 	var $logged=false;
 	var $snapshots_taken=0;
 	var $set_title=false;
+	var $set_currency='GBP';
+var $set_currency_exchange=1;
 
 	function Page($arg1=false,$arg2=false,$arg3=false) {
 		$this->table_name='Page';
@@ -2892,7 +2894,7 @@ if ($old_qty!='') {
                        ',
 			$form_id,
 
-			$_SESSION['site_locale'],
+			$this->site->data['Site Locale'],
 			$form_id,
 			$form_id
 		);
@@ -3857,9 +3859,9 @@ if ($old_qty!='') {
 	function get_formated_price($data,$options=false) {
 
 		$_data=array(
-			'Product Price'=>$data['Product Price']*$_SESSION['set_currency_exchange'],
+			'Product Price'=>$data['Product Price']*$this->set_currency_exchange,
 			'Product Units Per Case'=>$data['Product Units Per Case'],
-			'Product Currency'=>$_SESSION['set_currency'],
+			'Product Currency'=>$this->currency,
 			'Product Unit Type'=>$data['Product Unit Type'],
 			'Label'=>$data['Label'],
 			'locale'=>$this->site->data['Site Locale']
@@ -3952,36 +3954,14 @@ if ($old_qty!='') {
 
 				break;
 			default:
-				/*
-				if ($this->order->id) {
-
-
-					$basket='<div style="float:left;">
-				<span id="basket_total">'.$this->order->get('Total Amount').'</span>
-				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span>
-				<span class="link basket"  id="checkout"  onClick=\'window.location="checkout.php"\' >'._('Check Out').'</span>
-
-				<img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-				}else {
-					$basket='<div style="float:left;">
-								<span>'.money_locale(0,$this->site->data['Site Locale'],$this->currency).'</span>
-
-				<span class="link basket" style="margin-left:5px" id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span>
-
-				<img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-
-				}
-
-				$html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
-
-*/
+				
 
 				$currency_info='';
 				$currency_dialog='';
 				global $valid_currencies;
 
 				if (count($valid_currencies)>1) {
-					$currency_info='<div  style="float:right;position:relative;top:2px"><span  style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$_SESSION['set_currency'].'</span>
+					$currency_info='<div  style="float:right;position:relative;top:2px"><span  style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$this->set_currency.'</span>
 				 <img id="show_currency_dialog" style="cursor:pointer" onclick="show_currencies_dialog()"  src="art/dropdown.png">
 				 <img id="hide_currency_dialog" style="cursor:pointer;display:none" onclick="hide_currencies_dialog()"  src="art/dropup.png">
 
@@ -3990,7 +3970,7 @@ if ($old_qty!='') {
 
 					$currency_dialog='<div id="currency_dialog" style="display:none;background:black;width:140px;padding:0 10px 10px 10px"><div style="margin:0px auto" class="buttons small left "><br>';
 					foreach ($valid_currencies as $currency_code=> $valid_currency) {
-						$currency_dialog.='<button class="'.($_SESSION['set_currency']== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')" style="float:none;min-width:140px;text-align:left;margin-bottom:6px" ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
+						$currency_dialog.='<button class="'.($this->set_currency== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')" style="float:none;min-width:140px;text-align:left;margin-bottom:6px" ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
 					}
 					$currency_dialog.='</div></div>';
 
@@ -4001,7 +3981,7 @@ if ($old_qty!='') {
 				$basket='<div style="width:100%;"><div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
 
 				$basket.=' <div id="top_bar_checkout_info" style="float:right;position:relative;top:2px">
-				 <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Items total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.($this->order->id?$this->order->get('Items Net Amount'):money_locale(0,$this->site->data['Site Locale'],$_SESSION['set_currency'])).'</span> (<span id="number_items">'.($this->order->id?$this->order->get('Number Items'):0).'</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
+				 <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Items total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.money_locale(0,$this->site->data['Site Locale'],$this->set_currency).'</span> (<span id="number_items">0</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
 				 </div>' ;
 
 
