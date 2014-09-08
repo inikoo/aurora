@@ -2570,7 +2570,7 @@ function list_pending_orders() {
 		if ($number_dns!=1) {
 			$current_delivery_note_key='';
 		}
-
+/*
 		$dn_operations='<div style=";clear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
 		foreach ($dns_data as $dn_data) {
 			$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none;border-bottom:1px solid #ccc"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);
@@ -2578,7 +2578,7 @@ function list_pending_orders() {
 		}
 		$dn_operations.='</table></div>';
 		$operations.=$dn_operations;
-
+*/
 
 		$public_id=sprintf("<a href='order.php?id=%d&referral=spo'>%s</a>",$row['Order Key'],$row['Order Public ID']);
 		$store=sprintf("<a href='store_pending_orders.php?id=%d'>%s</a>",$row['Order Store Key'],$row['Order Store Code']);
