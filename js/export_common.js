@@ -185,7 +185,7 @@ function export_table(e, data) {
 
     request = request + get_export_extra_args(data.table);
 
-    alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
