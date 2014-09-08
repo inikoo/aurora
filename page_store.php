@@ -30,6 +30,7 @@ bindtextdomain("inikoosites", "./localesites");
 textdomain("inikoosites");
 
 $store=new Store($page->data['Page Store Key']);
+$page->set_currency=$store->data['Store Currency Code'];
 
 $_logged=1;
 if (isset($_REQUEST['logged'])   ) {
