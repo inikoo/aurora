@@ -219,7 +219,7 @@ Dom.setStyle('show_order_details','display','')
 
 function init() {
 
-    init_search('products_store');
+    init_search('orders_store');
 
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
