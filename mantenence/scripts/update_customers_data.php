@@ -62,8 +62,8 @@ $customer->update_orders();
 //		$customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
 
 
-//$address=new Address($customer->data['Customer Billing Address Key']);
-//$address->update_parents();
+$address=new Address($customer->data['Customer Billing Address Key']);
+$address->update_parents();
 //	$customer->update_orders();
 	//$customer->update_activity();
 	//$customer->update_is_new();
