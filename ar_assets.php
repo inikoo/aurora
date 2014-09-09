@@ -9,7 +9,7 @@
 
  Copyright (c) 2009, Inikoo
 
- Version 2.0
+ Version 2.1 
 */
 
 require_once 'common.php';
