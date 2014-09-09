@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-26 02:49+0100\n"
-"PO-Revision-Date: 2014-09-09 12:57+0100\n"
+"PO-Revision-Date: 2014-09-09 14:16+0100\n"
 "Last-Translator: José Miguel - BONISOFT Soluciones Informáticas, SLNE "
 "<info@bonisoft.com>\n"
 "Language-Team: \n"
@@ -16043,7 +16043,7 @@ msgstr "Vistas página"
 
 #: site.js.php:465 site.js.php:536 site.php:215 site.php:230
 msgid "Query"
-msgstr ""
+msgstr "Consulta"
 
 #: site.js.php:466
 #, fuzzy
@@ -16214,7 +16214,7 @@ msgstr "Hola"
 
 #: sites/basket.php:261
 msgid "great to see you back!"
-msgstr ""
+msgstr "¡Encantados de volver a verle!"
 
 #: sites/basket.php:266
 #, fuzzy
@@ -16273,7 +16273,7 @@ msgstr "Processar Orden"
 
 #: sites/send_confirmation_email_function.php:55 sites/thanks.php:192
 msgid "Here are our bank details"
-msgstr ""
+msgstr "Nuestros datos bancarios"
 
 #: sites/send_confirmation_email_function.php:55 sites/thanks.php:192
 msgid "Please always state the order number in the payment reference"
@@ -16338,6 +16338,7 @@ msgstr "Total"
 #: sites/smarty.php:101 sites/smarty.php:113 sites/smarty.php:4142
 msgid "To <b>update basket</b> please, click on the product quantity"
 msgstr ""
+"Para <b>actualizar la cesta</b>  haga click en la cantidad del producto "
 
 #: sites/smarty.php:104 smarty.php:17945
 #, fuzzy
