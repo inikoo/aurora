@@ -1,3 +1,5 @@
 server_files/smarty/templates_c/*
 conf/dns.php
 conf/key.php
+/nbproject/*
+/nbproject/private/
