@@ -3,8 +3,9 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-26 02:49+0100\n"
-"PO-Revision-Date: 2014-09-06 19:22+0100\n"
-"Last-Translator: Raul <raul@inikoo.com>\n"
+"PO-Revision-Date: 2014-09-09 12:57+0100\n"
+"Last-Translator: José Miguel - BONISOFT Soluciones Informáticas, SLNE "
+"<info@bonisoft.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -15746,7 +15747,7 @@ msgstr "No Órdenes"
 
 #: report_out_of_stock.js.php:234 smarty.php:4115
 msgid "Dispatch Date"
-msgstr "Fecha de envio"
+msgstr "Fecha de envío"
 
 #: report_out_of_stock.php:42
 msgid "Mark as Out of Stock Report"
@@ -22991,9 +22992,8 @@ msgid "Suppliers Product List"
 msgstr "Lista de suministros"
 
 #: smarty.php:10736
-#, fuzzy
 msgid "Dispatch Time"
-msgstr "Tiempo promedio de envio"
+msgstr "Tiempo promedio de envío"
 
 #: smarty.php:10745 smarty.php:26987 suppliers.js.php:35
 #, fuzzy
@@ -24385,7 +24385,7 @@ msgstr "fecha de la finalización del empaquetamiento"
 
 #: smarty.php:15824
 msgid "Dispatched Approved Date"
-msgstr "Fecha envío Aprovado"
+msgstr "Fecha envío Aprobado"
 
 #: smarty.php:15827
 msgid "Delivery Note Date"
