@@ -141,6 +141,10 @@
 					<td>{t}Order Date{/t}:</td>
 					<td class="aright">{$order->get('Date')}</td>
 				</tr>
+				<tr>
+					<td>{t}Payment Method{/t}:</td>
+					<td class="aright">{$order->get_formated_payment_state()}</td>
+				</tr>
 				
 			</table>
 		</div>

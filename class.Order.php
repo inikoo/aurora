@@ -6322,7 +6322,6 @@ class Order extends DB_Table {
 
 
 
-
 	function get_tax_data() {
 
 
