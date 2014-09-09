@@ -172,6 +172,12 @@
 						<td class="aright">{$order->get('Last Updated Date')}</td>
 					</tr>
 					{/if} 
+					
+					<tr>
+					<td>{t}Payment Method{/t}:</td>
+					<td class="aright">{$order->get_formated_payment_state()}</td>
+				</tr>
+					
 				</table>
 			</div>
 			<div style="clear:both">

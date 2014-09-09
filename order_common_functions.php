@@ -55,7 +55,7 @@ function get_orders_operations($row,$user) {
 
 	}
 	else if ($row['Order Current Dispatch State']=='In Process') {
-		$operations.='<div class="buttons small '.$class.'">';
+			$operations.='<div class="buttons small '.$class.'">';
 			$operations.=sprintf("<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
 				$row['Order Key'],
 				($row['Order Number Items']==0?'disabled':''),
@@ -76,13 +76,13 @@ function get_orders_operations($row,$user) {
 	elseif (in_array($row['Order Current Dispatch State'],array('Ready to Pick','Picking','Picked','Packing','Packed','Picking & Packing'))  ) {
 
 		$operations.='<div class="buttons small '.$class.'">';
-$operations.=sprintf("<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
-				$row['Order Key'],
-				$row['Order Public ID'],
-				$row['Order Customer Name'],
-				_('Cancel')
-			);
-					$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders&amend=1'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Amend Order'));
+		$operations.=sprintf("<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+			$row['Order Key'],
+			$row['Order Public ID'],
+			$row['Order Customer Name'],
+			_('Cancel')
+		);
+		$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders&amend=1'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Amend Order'));
 
 		$operations.='</div>';
 
@@ -151,6 +151,26 @@ function get_order_formated_payment_state($data) {
 		}else {
 
 			$payment_state=_('Waiting Payment');
+			//Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account
+			switch($data['Order Payment Method']){
+			case 'Bank Transfer':
+				$payment_method=_('Bank Transfer');
+			break;
+			case 'Cash on Delivery':
+				$payment_method=_('Cash on Delivery');
+			break;
+			case 'Other':
+				$payment_method=_('Other');
+			break;
+			case 'Credit Card':
+				$payment_method=_('Credit Card');
+			break;
+			default:
+			$payment_method=$data['Order Payment Method'];
+			}
+			
+			$payment_state=_('Waiting Payment').',<br>'.$payment_method;
+			
 		}
 		break;
 	case 'Overpaid':
