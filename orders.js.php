@@ -25,7 +25,10 @@ Event.addListener(window, "load", function() {
 				       {key:"total_amount", label:"<?php echo _('Total Balance')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 		//alert("ar_orders.php?tipo=orders&where=");
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&where=&parent=store&parent_key="+Dom.get('store_key').value);
+		
+		request="ar_orders.php?tipo=orders&where=&parent=store&parent_key="+Dom.get('store_key').value
+		//alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

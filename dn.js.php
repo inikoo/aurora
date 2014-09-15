@@ -26,41 +26,99 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		show_if_dispatched=(Dom.get('dn_state').value=='Dispatched'?false:true)
 
 	    var OrdersColumnDefs = [
-				     {key:"part", label:"<?php echo _('Part')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-				     ,{key:"description", label:"<?php echo _('Description')?>",width:400,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     
+				     {key:"code", label:"<?php echo _('Product')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"quantity",label:"<?php echo _('Ordered')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"given",label:"<?php echo _('Given')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+						,{key:"dispatched",label:"<?php echo _('Dispatched')?>", hidden:show_if_dispatched,  width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				     ,{key:"description", label:"<?php echo _('Required Parts')?>",width:400,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     
 
 				    ,{key:"picked",label:"<?php echo _('Picked')?>", hidden:!show_if_dispatched, width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"packed",label:"<?php echo _('Packed')?>", hidden:!show_if_dispatched, width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-						,{key:"dispatched",label:"<?php echo _('Dispatched')?>", hidden:show_if_dispatched,  width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-					,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"notes",label:"<?php echo _('Part Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
 
 				  
 					 ];
 
-	    this.OrdersDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_dn&tid=0&id="+Dom.get('dn_key').value);
-	    this.OrdersDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.OrdersDataSource.connXhrMode = "queueRequests";
-	    this.OrdersDataSource.responseSchema = {
+request="ar_orders.php?tipo=transactions_dn&tableid="+tableid+"&sf=0&parent_key="+Dom.get('dn_key').value
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+
+
+
+
+	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
-		totalRecords: 'resultset.total_records',
+		
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		
 		fields: [
-			 "part","description","quantity","picked","packed","notes","dispatched","given"
+			 "code","description","quantity","picked","packed","notes","dispatched","given"
 			 ]};
-	    this.OrdersDataTable = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
-								   this.OrdersDataSource, {
-								       renderLoopSize: 50
-								   }
+			 
+			 
+			 
+		  this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+								   this.dataSource0
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['dn']['transactions']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['dn']['transactions']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['dn']['transactions']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
 								   
-								   );
-	 
+								 );
 	    
-	    this.OrdersDataTable.id=tableid;
-	    this.OrdersDataTable.editmode=false;
+	  
+	    
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	  
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	      
+		this.table0.table_id=tableid;
+		
+      
+       this.table0.subscribe("renderEvent", myrenderEvent);
+	
+	  
+		    
+		    
+
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['dn']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['dn']['transactions']['f_value']?>'};
+
+
+
+
 
 
 var tableid=2; 

@@ -16,10 +16,7 @@
 	<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
 	<input type="hidden" value="customer" id="subject" />
 	<input type="hidden" value="{$store->get('Store Home Country Code 2 Alpha')}" id="default_country_2alpha" />
-							<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
-
-	
-	<iframe id="invoice_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="dn_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="order_pick_aid_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> 
+	<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> <iframe id="invoice_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="dn_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="order_pick_aid_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> 
 	<div class="branch ">
 		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
@@ -28,7 +25,7 @@
 			{if isset($order_prev)}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title {if $order->get('Order Invoiced')=='Yes'}no_buttons{/if} ">Order <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span> </span> 
 		</div>
 		<div class="buttons">
-			{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order"><img style='position:relative;top:1px' src='art/icons/cart_edit.png'> {t}Amend Order{/t}</button> {/if} <button style="display:none" id="process_order">{t}Process Order{/t}</button> <button style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+			{if isset($order_next)}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order"><img style='position:relative;top:1px' src='art/icons/cart_edit.png'> {t}Amend Order{/t}</button> {/if} <button style="display:none" id="process_order">{t}Process Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -51,27 +48,24 @@
 					<button id="change_billing_address" class="state_details" style="display:block;margin-top:10px">{t}Change{/t}</button> 
 				</div>
 			</div>
-			
-			
-			
 			<div style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
-					<div id="title_delivery_address" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
-						{t}Delivering to{/t}: 
-					</div>
-					<div id="title_for_collection" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
-						&nbsp; 
-					</div>
-					<div class="address_box" id="delivery_address">
-						{$order->get('Order XHTML Ship Tos')} 
-					</div>
-					<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'  or $order->get('Order Invoiced')=='Yes'}display:none{/if};margin-top:10px" class="buttons left small">
-						<button id="change_delivery_address">{t}Change{/t}</button> <br />
-						<button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
-					</div>
-					<div id="for_collection" style="{if $order->get('Order For Collection')=='No' or $order->get('Order Invoiced')=='Yes'}display:none;{/if};margin-top:10px" class="buttons left small">
-						<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
-					</div>
+				<div id="title_delivery_address" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+					{t}Delivering to{/t}: 
 				</div>
+				<div id="title_for_collection" style="border-bottom:1px solid #ccc;{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+					&nbsp; 
+				</div>
+				<div class="address_box" id="delivery_address">
+					{$order->get('Order XHTML Ship Tos')} 
+				</div>
+				<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'  or $order->get('Order Invoiced')=='Yes'}display:none{/if};margin-top:10px" class="buttons left small">
+					<button id="change_delivery_address">{t}Change{/t}</button> <br />
+					<button style="margin-top:3px;{if $store->get('Store Can Collect')=='No'}display:none{/if}" id="set_for_collection" onclick="change_shipping_type('Yes')">{t}Set for collection{/t}</button> 
+				</div>
+				<div id="for_collection" style="{if $order->get('Order For Collection')=='No' or $order->get('Order Invoiced')=='Yes'}display:none;{/if};margin-top:10px" class="buttons left small">
+					<button id="set_for_shipping" class="state_details" onclick="change_shipping_type('No')">{t}Set for delivery{/t}</button> 
+				</div>
+			</div>
 		</div>
 		<div id="totals">
 			<div style="{if $order->data['Order Invoiced']=='Yes'}display:none{/if}">
@@ -86,15 +80,11 @@
 						<td class="aright">{t}Discounts{/t}</td>
 						<td width="100" class="aright">-<span id="order_items_discount">{$order->get('Items Discount Amount')}</span></td>
 					</tr>
-						<tr {if $order->
+					<tr {if $order->
 						get('Order Out of Stock Net Amount')==0 }style="display:none"{/if} id="tr_order_items_out_of_stock" > 
 						<td class="aright">{t}Out of stock{/t}</td>
 						<td width="100" class="aright"><span id="order_items_out_of_stock">{$order->get('Out of Stock Net Amount')}</span></td>
 					</tr>
-					
-					
-					
-					
 					<tr>
 						<td class="aright">{t}Items Net{/t}</td>
 						<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
@@ -112,7 +102,8 @@
 						<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
 						<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 					</tr>
-					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+					<tr {if $order->
+						get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
 						<td class="aright"> {t}Insurance{/t}</td>
 						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
 					</tr>
@@ -137,8 +128,7 @@
 						<div class="buttons small left">
 							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
 						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> 
-						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				</table>
@@ -175,18 +165,12 @@
 						<td class="aright">{t}Charges{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Charges Amount')}</td>
 					</tr>
-					
-					
-					{/if}
-					
-					
-					
-					
-					<tr {if $order->get('Order Invoiced Insurance Amount')==0 }style="display:none"{/if}  > 
+					{/if} 
+					<tr {if $order->
+						get('Order Invoiced Insurance Amount')==0 }style="display:none"{/if} > 
 						<td class="aright"> {t}Insurance{/t}</td>
 						<td id="order_insurance" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
 					</tr>
-					
 					{if $order->get('Order Invoiced Refund Net Amount')!=0} 
 					<tr>
 						<td class="aright"><i>{t}Refunds (N){/t}</i></td>
@@ -226,19 +210,14 @@
 						<td class="aright"><img id="order_paid_info_invoiced" src="art/icons/information.png" style="height:14px;vertical-align:-1.5px" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
 						<td id="order_total_paid_invoiced" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
-					
 					<tr id="tr_order_total_to_pay_invoiced" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
 						<div class="buttons small left">
 							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
 						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span> 
-						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
-					
-					
-					
 				</table>
 			</div>
 		</div>
@@ -318,7 +297,10 @@
 		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
 		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
 			<div class="buttons small right">
-				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> 
+				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> 
+				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> 			
+				<button style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+
 			</div>
 			<div style="width:550px">
 				<table border="0" class="info_block">
@@ -397,21 +379,13 @@
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" style="font-size:80%" class="data_table_container dtable btable">
 		</div>
-		
-			<div style="clear:both;padding-top:10px">
-		{foreach from=$order->get_insurances() item=insurance} 
-		<div class="insurance_row">
-			{$insurance['Insurance Description']} 
-			(<b>{$insurance['Insurance Formated Net Amount']}</b>)
-			<span style="widht:100px"> 
-			<img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png"/> 
-			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png"/>
-			</span> 
-			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif"/> 
+		<div style="clear:both;padding-top:10px">
+			{foreach from=$order->get_insurances() item=insurance} 
+			<div class="insurance_row">
+				{$insurance['Insurance Description']} (<b>{$insurance['Insurance Formated Net Amount']}</b>) <span style="widht:100px"> <img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png" /> <img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png" /> </span> <img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif" /> 
+			</div>
+			{/foreach} 
 		</div>
-		{/foreach} 
-	</div>
-		
 	</div>
 </div>
 <div id="rppmenu0" class="yuimenu">

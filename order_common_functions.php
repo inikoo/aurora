@@ -99,10 +99,20 @@ function get_orders_operations($row,$user) {
 		}
 		$operations.='</div>';
 
-	}
+	}elseif ($row['Order Current Dispatch State']=='Ready to Ship') {
+		$operations.='<div class="buttons small '.$class.'">';
+		$order=new Order($row['Order Key']);
+		$dns=$order->get_delivery_notes_objects();
+		if (count($dns)==1) {
+			foreach ($dns as $dn) {
 
+				$operations.='<button  onClick="set_as_dispatched('.$dn->data['Delivery Note Key'].','.$user->get_staff_key().',\'order\',\''.$row['Order Key'].'\')" ><img id="set_as_dispatched_img_'.$dn->data['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>";
+			}
+		}
 
-	else {
+		$operations.='</div>';
+
+	}else {
 		$operations.='';
 
 		$public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
@@ -152,25 +162,25 @@ function get_order_formated_payment_state($data) {
 
 			$payment_state=_('Waiting Payment');
 			//Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account
-			switch($data['Order Payment Method']){
+			switch ($data['Order Payment Method']) {
 			case 'Bank Transfer':
 				$payment_method=_('Bank Transfer');
-			break;
+				break;
 			case 'Cash on Delivery':
 				$payment_method=_('Cash on Delivery');
-			break;
+				break;
 			case 'Other':
 				$payment_method=_('Other');
-			break;
+				break;
 			case 'Credit Card':
 				$payment_method=_('Credit Card');
-			break;
+				break;
 			default:
-			$payment_method=$data['Order Payment Method'];
+				$payment_method=$data['Order Payment Method'];
 			}
-			
+
 			$payment_state=_('Waiting Payment').',<br>'.$payment_method;
-			
+
 		}
 		break;
 	case 'Overpaid':
