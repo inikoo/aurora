@@ -6098,7 +6098,7 @@ function list_assets_sales_history() {
 		break;
 	case 'day':
 		$group=' group by (`Date`) ';
-		$groupi=' group by `Invoice Date` ';
+		$groupi=' group by Date(`Invoice Date`) ';
 		$anchori='Date(`Invoice Date`) as date';
 		break;
 	default:
