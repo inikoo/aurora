@@ -449,7 +449,16 @@ $default_state=array(
 
 
 	'dn'=>array(
-		'id'=>''),
+		'transactions'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'sf'=>0,
+			'nr'=>500,
+		)
+		
+		),
 	'order'=>array(
 		
 
@@ -466,6 +475,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 		),
+		
 		
 		'items'=>array(
 			'view'=>'general',

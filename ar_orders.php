@@ -175,12 +175,10 @@ case('post_transactions'):
 case('shortcut_key_search'):
 	list_shortcut_key_search();
 	break;
-case('transactions_in_dn'):
+case('transactions_dn'):
 	list_transactions_in_dn();
 	break;
-case('transactions_in_process_in_dn'):
-	list_transactions_in_process_in_dn();
-	break;
+
 case('transactions_to_pick'):
 	list_transactions_to_pick();
 	break;
@@ -599,7 +597,7 @@ function list_orders() {
 
 	//$sql="select   * from  $table   $where $wheref  $where_type $where_interval  order by $order $order_direction limit $start_from,$number_results";
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
-	$sql="select `Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select `Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	//print $where;exit;
 	//  print $sql;
 	$adata=array();
@@ -995,114 +993,160 @@ function list_transactions_in_refund() {
 
 function list_transactions_in_dn() {
 
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-		$order_id=$_REQUEST['id'];
+	if (isset( $_REQUEST['parent_key']) and is_numeric( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else {
-		exit("no dn");
+		exit("no dn key");
 	}
+	$conf=$_SESSION['state']['dn']['transactions'];
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	$_SESSION['state']['dn']['transactions']['order']=$order;
+	$_SESSION['state']['dn']['transactions']['order_dir']=$order_dir;
+	$_SESSION['state']['dn']['transactions']['nr']=$number_results;
+	$_SESSION['state']['dn']['transactions']['sf']=$start_from;
+	$_SESSION['state']['dn']['transactions']['f_field']=$f_field;
+	$_SESSION['state']['dn']['transactions']['f_value']=$f_value;
+
+
+	$table=' `Inventory Transaction Fact` ITF left join   `Order Transaction Fact`OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)   ';
+
+	$where=sprintf(' where   ITF.`Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"',$parent_key);
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	$sql="select count(*) as total from $table   $where $wheref ";
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(*) as total_without_filters from $table  $where  ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
 
 
 
 
 
-	$where=sprintf(' where   `Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"',$order_id);
 
-	$total_charged=0;
-	$total_discounts=0;
-	$total_picks=0;
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='code')
+		$order='`Product Code`';
+	elseif ($order=='reference')
+		$order='`Part Referebce`';
+	elseif ($order=='description')
+		$order='Part Unit Desctiption`';
+	else
+
+		$order='`Product Code`';
 
 	$data=array();
-	$sql="select `Delivery Note Quantity`,`Product Tariff Code`,O.`Product Code`, PH.`Product ID` ,`Product XHTML Short Description` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+	$sql="select * from $table $where   ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-
+	//print $sql;
 	$result=mysql_query($sql);
 	$total_gross=0;
 	$total_discount=0;
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+		$quantity=number($row['Order Quantity']);
 
-		$data[]=array(
-
-			'code'=>sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code'])
-			,'description'=>$row['Product XHTML Short Description']
-			,'tariff_code'=>$row['Product Tariff Code']
-			,'quantity'=>number($row['Delivery Note Quantity'])
-
-		);
-	}
-
+		if ($row['Order Bonus Quantity']!=0) {
+			if ($row['Order Quantity']!=0) {
+				$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+			}else {
+				$quantity=number($row['Order Bonus Quantity']).' '._('free');
+			}
+		}
 
 
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$data
-			//     'total_records'=>$total,
-			//     'records_offset'=>$start_from,
-			//     'records_returned'=>$start_from+$res->numRows(),
-			//     'records_perpage'=>$number_results,
-			//     'records_text'=>$rtext,
-			//     'records_order'=>$order,
-			//     'records_order_dir'=>$order_dir,
-			//     'filtered'=>$filtered
-		)
-	);
-	echo json_encode($response);
-}
-function list_transactions_in_process_in_dn() {
-
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-		$order_id=$_REQUEST['id'];
-	else
-		$order_id=$_SESSION['state']['dn']['id'];
-
-
-
-
-	$where=sprintf(' where   `Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"',$order_id);
-
-	$total_charged=0;
-	$total_discounts=0;
-	$total_picks=0;
-
-	$data=array();
-
-	$sql=sprintf("select `Inventory Transaction Quantity`,`Given`,`Packed`,`Picked`,`Out of Stock`,`Not Found`,`No Picked Other`,`Picking Note`,`Required`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`)$where");
-
-	$result=mysql_query($sql);
-	$total_gross=0;
-	$total_discount=0;
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-
-		$notes='';
+		$notes='<b>'.number(-1*$row['Inventory Transaction Quantity']).'</b> '._('dispatched').'<br/>';
 
 		if ($row['Out of Stock']!=0) {
-			$notes.=_('Out of Stock').' '.number($row['Out of Stock']).'<br/>';
+			$notes.='<span style="margin-left:10px">'.number($row['Out of Stock']).'</span> '._('out of stock').'<br/>';
 		}
 		if ($row['Not Found']!=0) {
-			$notes.=_('Not Found').' '.number($row['Not Found']).'<br/>';
+			$notes.=number($row['Not Found']).' '._('Not found').'<br/>';
 		}
 		if ($row['No Picked Other']!=0) {
-			$notes.=_('Not picked (other)').' '.number($row['No Picked Other']).'<br/>';
+			$notes.=_('not picked (other)').' '.number($row['No Picked Other']).'<br/>';
 		}
 
 		$notes=preg_replace('/\<br\/\>$/', '', $notes);
 
+
 		$data[]=array(
 
-			'part'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']),
-			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
-			'given'=>($row['Given']==0?'':number($row['Given'])),
-
-			'quantity'=>number($row['Required']),
+			'code'=>sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']),
+			'description'=>'<b>'.number($row['Required']).'x</b> '.$row['Part Unit Description'].' (<i>'.$row['Part Reference'].'</i>)',
+			'quantity'=>$quantity,
 			'dispatched'=>number(-1*$row['Inventory Transaction Quantity']),
 			'packed'=>number($row['Packed']),
 			'picked'=>number($row['Picked']),
-			'notes'=>$notes,
-
-
-
+			'notes'=>$notes
 		);
 	}
 
@@ -1110,19 +1154,25 @@ function list_transactions_in_process_in_dn() {
 
 	$response=array('resultset'=>
 		array('state'=>200,
-			'data'=>$data
-			//     'total_records'=>$total,
-			//     'records_offset'=>$start_from,
-			//     'records_returned'=>$start_from+$res->numRows(),
-			//     'records_perpage'=>$number_results,
-			//     'records_text'=>$rtext,
-			//     'records_order'=>$order,
-			//     'records_order_dir'=>$order_dir,
-			//     'filtered'=>$filtered
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
 		)
 	);
 	echo json_encode($response);
 }
+
 
 
 
@@ -2662,10 +2712,6 @@ function list_transactions_in_order() {
 	$sql="select * from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-
-
-
-
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		//   $total_charged+=$row['charge'];
@@ -4641,8 +4687,8 @@ sum(`Order Balance Total Amount`) in_basket_sum_total_balance ,
 	if ($row=mysql_fetch_assoc($res)) {
 
 
-	
-	if ($row['in_basket_avg_processing_time']>172800)
+
+		if ($row['in_basket_avg_processing_time']>172800)
 			$in_basket_avg_processing_time=number($row['in_basket_avg_processing_time']/86400,1).' '._('days');
 		else
 			$in_basket_avg_processing_time=number($row['in_basket_avg_processing_time']/3600,1).' '._('hours');

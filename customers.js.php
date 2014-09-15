@@ -123,10 +123,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"total_paymants","total_refunds","net_balance","total_profit","balance","contact_since"
 			 ,"top_orders","top_invoices","top_balance","top_profits","logins","failed_logins","requests"
 			 ]};
-	    //__You shouls not change anything from here
-
-	    //this.dataSource.doBeforeCallback = mydoBeforeCallback;
-
+	   
 
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -185,6 +182,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.view='<?php echo$_SESSION['state']['customers']['customers']['view']?>';
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['customers']['f_value']?>'};
+
+
+
+
 /*
 
    var tableid=1; // Change if you have more the 1 table

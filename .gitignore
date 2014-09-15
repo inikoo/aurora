@@ -3,3 +3,4 @@ conf/dns.php
 conf/key.php
 /nbproject/*
 /nbproject/private/
+mantenence/smarty.php
