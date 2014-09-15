@@ -21,7 +21,7 @@
 		<button style="margin-bottom:10px;width:120px" id="show_contact_fields" field="contact_fields" class="fields selected">{t}Contacts who..{/t}</button><br> 
 		<button style="margin-bottom:10px;width:120px" id="show_products_fields" field="products_fields" class="fields">{t}Products Ordered{/t}</button><br> 
 		<button style="margin-bottom:10px;width:120px" id="show_orders_fields" field="orders_fields" class="fields">{t}Orders Placed{/t}</button><br> 
-		<button style="margin-bottom:10px;width:120px" id="show_pending_orders_fields" field="pending_orders_fields" class="fields">{t}Pending Orders{/t}</button><br> 
+		<button style="margin-bottom:10px;width:120px" id="show_pending_orders_fields" field="pending_orders_fields" class="fields">{t}Orders in Basket{/t}</button><br> 
 		<button style="margin-bottom:10px;width:120px" id="show_weblog_fields" field="weblog_fields" class="fields">{t}Web Logs{/t}</button> 
 	</div>
 	<table id="fields" class="edit" border="0" style="width:790px;margin-top:10px">
@@ -214,10 +214,10 @@
 		</tbody>
 		<tbody id="pending_orders_fields" style="display:none">
 			<tr class="title space10">
-				<td colspan="2">{t}Customer's Pending Orders{/t}</td>
+				<td colspan="2">{t}Customers with orders in basket{/t}</td>
 			</tr>
 			<tr class="space10">
-				<td>{t}with pending orders{/t}:</td>
+				<td>{t}with orders in basket{/t}:</td>
 				<td> 
 				<input type="hidden" value="No" id="pending_orders">
 				<img style="cursor:pointer;height:14px;position:relative;top:2px" onclick="change_customer_with_pending_orders(true)"  id="customer_with_pending_orders" src="art/icons/checkbox_unchecked.png"/>
@@ -228,7 +228,7 @@
 			<tr id="payment_method_tr" style="display:none">
 				<td>{t}order pay method{/t}:</td>
 				<td> 
-				<div id="order_payment_method" default_cat="" class="buttons small left">
+				<div id="pending_order_payment_method" default_cat="" class="buttons small left">
 					{foreach from=$payment_method item=cat4 key=cat_key name=foo3}
 					<button class="catbox{if $cat4.selected} selected{/if}" style="{if $cat_key=='all'}margin-left:10px{/if}" onclick="change_checkbox(this,'payment_method')" id="payment_method_{$cat_key}" parent="allow_" cat="{$cat_key}" field="{$cat4.field}">{$cat4.name}</button>
 					{/foreach} 

@@ -1418,10 +1418,10 @@ function get_awhere() {
         requests_option_array[x] = requests_option[x].getAttribute('cat');
     }
 
-order_payment_method= Dom.getElementsByClassName('selected', 'button', 'order_payment_method');
-order_payment_method_array =new Array();
-    for (x in order_payment_method) {
-        order_payment_method_array[x] = order_payment_method[x].getAttribute('field');
+pending_order_payment_method= Dom.getElementsByClassName('selected', 'button', 'pending_order_payment_method');
+pending_order_payment_method_array =new Array();
+    for (x in pending_order_payment_method) {
+        pending_order_payment_method_array[x] = pending_order_payment_method[x].getAttribute('field');
     }
 
 
@@ -1481,7 +1481,7 @@ order_payment_method_array =new Array();
         order_time_units_since_last_order_qty: order_time_units_since_last_order_qty,
         order_time_units_since_last_order_units: order_time_units_since_last_order_units,
         pending_orders:Dom.get('pending_orders').value,
-        order_payment_method:order_payment_method_array,
+        pending_order_payment_method:pending_order_payment_method_array,
     }
     return YAHOO.lang.JSON.stringify(data);
 
@@ -1501,7 +1501,7 @@ function submit_search(e) {
     Dom.setStyle('the_table', 'display', 'none');
     Dom.setStyle('searching', 'display', '');
     Dom.setStyle('save_dialog', 'visibility', 'visible');
- //s   alert(request)
+ //   alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
