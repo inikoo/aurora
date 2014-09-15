@@ -46,7 +46,7 @@ function customers_awhere($awhere) {
 		'order_time_units_since_last_order_qty'=>false,
 		'order_time_units_since_last_order_units'=>false,
 		'pending_orders'=>'',
-		'order_payment_method'=>array()
+		'pending_order_payment_method'=>array()
 	);
 
 	//  $awhere=json_decode($awhere,TRUE);
@@ -67,26 +67,28 @@ function customers_awhere($awhere) {
 	$use_product=false;
 	$use_categories =false;
 	$use_otf =false;
-$use_order=false;
+	$use_order=false;
 	$where_orders='';
-	if($where_data['pending_orders']=='Yes'){
+	if ($where_data['pending_orders']=='Yes') {
 		$use_order =true;
-		$where_orders=" and `Order Current Dispatch State` in ('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done')";
+		//$where_orders=" and `Order Current Dispatch State` in ('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done')";
+		$where_orders=" and `Order Current Dispatch State` in ('In Process by Customer')";
+
 		$tmp='';
-		foreach($where_data['order_payment_method'] as $payment_method){
-			if($payment_method!=''){
+		foreach ($where_data['pending_order_payment_method'] as $payment_method) {
+			if ($payment_method!='') {
 				$payment_method=addslashes($payment_method);
 				$tmp.="'$payment_method',";
 			}
-		
-			
+
+
 		}
-			$tmp=preg_replace('/\,$/','',$tmp);
-			if($tmp!=''){
-				$where_orders.=" and `Order Payment Method` in($tmp)";
-			}
+		$tmp=preg_replace('/\,$/','',$tmp);
+		if ($tmp!='') {
+			$where_orders.=" and `Order Payment Method` in ($tmp)";
+		}
 	}
-	
+
 
 
 	$where_categories='';
@@ -95,8 +97,8 @@ $use_order=false;
 		$categories_keys=preg_split('/,/',$where_data['categories']);
 		$valid_categories_keys=array();
 		foreach ($categories_keys as $item) {
-			
-				$valid_categories_keys[]="'".addslashes($item)."'";
+
+			$valid_categories_keys[]="'".addslashes($item)."'";
 		}
 		$categories_keys=join($valid_categories_keys,',');
 		if ($categories_keys) {
@@ -178,12 +180,12 @@ $use_order=false;
 
 	}
 
-if($use_order){
-			$table='`Customer Dimension` C  left join  `Order Dimension` O   on (C.`Customer Key`=O.`Order Customer Key`)  ';
+	if ($use_order) {
+		$table='`Customer Dimension` C  left join  `Order Dimension` O   on (C.`Customer Key`=O.`Order Customer Key`)  ';
 		$group=' group by C.`Customer Key`';
 
 
-}
+	}
 
 
 	if ($use_categories) {
@@ -306,18 +308,18 @@ if($use_order){
 
 			$where.=sprintf(' and `Customer Orders`>0 and  `Customer Last Order Date`<=%s ',prepare_mysql($_date));
 			break;
-				case 'exact_day':
+		case 'exact_day':
 
 			$_date=date("Y-m-d 00:00:00",strtotime(sprintf("today -%d %s",$where_data['order_time_units_since_last_order_qty'],$where_data['order_time_units_since_last_order_units'])));
 			$_date=date("Y-m-d 23:59:59",strtotime(sprintf("today -%d %s",$where_data['order_time_units_since_last_order_qty'],$where_data['order_time_units_since_last_order_units'])));
 
 			$where.=sprintf(' and `Customer Orders`>0 and  `Customer Last Order Date`>=%s and  `Customer Last Order Date`<=%s ',
-			prepare_mysql($_date),
-			prepare_mysql($_date2)
-			
+				prepare_mysql($_date),
+				prepare_mysql($_date2)
+
 			);
-			break;	
-			
+			break;
+
 		default:
 
 			break;
@@ -548,7 +550,7 @@ if($use_order){
     $where.="and ($not_customers_which_where)";
     }
     *///print $table;print $where;
-//	print "$where; <br/>$table "; exit;
+	// print "$where; <br/>$table "; exit;
 	return array($where,$table,$group);
 
 
@@ -567,7 +569,7 @@ function extract_customer_geo_groups($str,$q_country_code='C.`Customer Main Coun
 	$post_code_names=array();
 
 
-//print $str;
+	//print $str;
 
 	$country_codes=array();
 	$wregion_codes=array();
@@ -662,9 +664,9 @@ function extract_customer_geo_groups($str,$q_country_code='C.`Customer Main Coun
 	$where=preg_replace('/^\s*or\s*/i','',$where_wr.$where_c.$where_pc.$where_t);
 	if ($where!='')
 		$where=' and '.$where;
-	
-	
-	
+
+
+
 	return $where;
 
 }
