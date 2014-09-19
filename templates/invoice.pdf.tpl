@@ -119,7 +119,8 @@ div.inline { float:left; }
 			<div style="text-align: right">
 				{t}Customer{/t}:<b> {$invoice->get('Invoice Customer Name')}</b> ({$invoice->get('Invoice Customer Key')}) 
 			</div>
-			<div style="{if $invoice->get('Invoice Tax Number')==''}display:none{/if}">{$invoice->get('Invoice Tax Number')}</div>
+			<div style="{if $invoice->get('Invoice Tax Number')==''}display:none{/if}">
+							{t}Tax Number{/t}:<b> {$invoice->get('Invoice Tax Number')}</b> </div>
 			
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 

@@ -1,18 +1,12 @@
 {include file='header.tpl'} 
 <div id="bd">
 	<input type="hidden" id="order_key" value="{$order->id}" />
-		<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
+	<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
 	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
 	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
-	
-	
-	
-
-		<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
-		<input type="hidden" value="customer" id="subject" />
-		<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
-	
-	{include file='orders_navigation.tpl'} 
+	<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
+	<input type="hidden" value="customer" id="subject" />
+	<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> {include file='orders_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
@@ -95,16 +89,12 @@
 					<td class="aright">{t}Charges{/t}</td>
 					<td width="100" class="aright">{$order->get('Invoiced Charges Amount')}</td>
 				</tr>
-				
-				
 				{/if} 
-				
-					
-					<tr {if $order->get('Order Invoiced Insurance Amount')==0 }style="display:none"{/if}  > 
-						<td class="aright"> {t}Insurance{/t}</td>
-						<td id="order_insurance" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
-					</tr>
-				
+				<tr {if $order->
+					get('Order Invoiced Insurance Amount')==0 }style="display:none"{/if} > 
+					<td class="aright"> {t}Insurance{/t}</td>
+					<td id="order_insurance" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
+				</tr>
 				{if $order->get('Order Invoiced Refund Net Amount')!=0} 
 				<tr>
 					<td class="aright"><i>{t}Refunds{/t}</i></td>
@@ -136,27 +126,23 @@
 					<td width="100" class="aright">{$order->get('Invoiced Total Tax Adjust Amount')}</td>
 				</tr>
 				{/if} 
-					<tr>
-						<td class="aright">{t}Total{/t}</td>
-						<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
-					</tr>
-					<tr id="tr_order_total_paid_invoiced" style="border-top:1px solid #777;">
-						<td class="aright"><img id="order_paid_info_invoiced" src="art/icons/information.png" style="height:14px;vertical-align:-1.5px" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
-						<td id="order_total_paid_invoiced" width="100" class="aright">{$order->get('Payments Amount')}</td>
-					</tr>
-					<tr id="tr_order_total_to_pay_invoiced" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright"> 
-												<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}">
-
-						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
-						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span>
-						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
-
-						<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
-					</tr>
-
+				<tr>
+					<td class="aright">{t}Total{/t}</td>
+					<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
+				</tr>
+				<tr id="tr_order_total_paid_invoiced" style="border-top:1px solid #777;">
+					<td class="aright"><img id="order_paid_info_invoiced" src="art/icons/information.png" style="height:14px;vertical-align:-1.5px" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
+					<td id="order_total_paid_invoiced" width="100" class="aright">{$order->get('Payments Amount')}</td>
+				</tr>
+				<tr id="tr_order_total_to_pay_invoiced" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
+					<td class="aright"> 
+					<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
+					<div class="buttons small left">
+						<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> <button style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="show_add_credit_note_to_customer_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_credit_note_to_customer('order','{$order->id}')"><img src="art/icons/add.png"> {t}Credit{/t}</button> 
+					</div>
+					<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
+					<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+				</tr>
 			</table>
 		</div>
 		<div id="dates">
@@ -179,7 +165,7 @@
 					<td class="aright">{$order->get('Order XHTML Sales Representative')}</td>
 				</tr>
 			</table>
-		<table border="0" class="info_block with_title">
+			<table border="0" class="info_block with_title">
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan="2">{t}Delivery Note{/t}:</td>
 				</tr>
@@ -213,9 +199,7 @@
 				</tr>
 				{foreach from=$invoices_data item=invoice} 
 				<tr>
-					<td> <a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> 
-					<a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png">
-					</td>
+					<td> <a href="invoice.php?id={$invoice.key}">{$invoice.number}</a> <a target='_blank' href="invoice.pdf.php?id={$invoice.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('invoice',{$invoice.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
 					<td class="right" style="text-align:right"> {$invoice.state} </td>
 				</tr>
 				<tr>
@@ -232,55 +216,48 @@
 					</div>
 					</td>
 				</tr>
-				
 			</table>
+		</div>
+		<div style="clear:both">
+		</div>
+		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
+		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+				<div class="buttons small right" style="float:right;width:350px">
+					<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 
+				</div>
+			{include file='order_details_splinter.tpl'}
+				<div style="clear:both">
+				</div>
+				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			</div>
 		
-</div>
-<div style="clear:both">
-</div>
-<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
-<div id="delivery_notes_container">
-</div>
-</div>
-
-
-
-
-<div id="payments_list">
+		
+	</div>
+	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
 	</div>
-
-
-<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;" id="dispatched_post_transactions">
-	<div class="buttons small">
-		<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> <button id="quick_resend_process" style="{if $order->get('Order Current Post Dispatch State')=='Dispatched'}display:none{/if}"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 
+	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;" id="dispatched_post_transactions">
+		<div class="buttons small">
+			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> <button id="quick_resend_process" style="{if $order->get('Order Current Post Dispatch State')=='Dispatched'}display:none{/if}"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 
+		</div>
+		<h2 style="margin-left:5px">
+			{t}Post-Order Transactions{/t} <span class="subtitle" style="font-size:80%">({$order->get('Order Current Post Dispatch State')})</span> 
+		</h2>
+		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
+		</div>
 	</div>
-	<h2 style="margin-left:5px">
-		{t}Post-Order Transactions{/t} <span class="subtitle" style="font-size:80%">({$order->get('Order Current Post Dispatch State')})</span> 
+	<h2>
+		{t}Ordered Items{/t} 
 	</h2>
-	<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
+	<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
 	</div>
-</div>
-<h2>
-	{t}Ordered Items{/t} 
-</h2>
-<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
-</div>
-
 	<div style="clear:both;padding-top:10px;{if $order->get('Order Invoiced')=='Yes'}display:none{/if}">
 		{foreach from=$order->get_insurances() item=insurance} 
 		<div class="insurance_row">
-			{$insurance['Insurance Description']} 
-			(<b>{$insurance['Insurance Formated Net Amount']}</b>)
-			<span style="widht:100px"> 
-			<img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png"/> 
-			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png"/>
-			</span> 
-			<img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif"/> 
+			{$insurance['Insurance Description']} (<b>{$insurance['Insurance Formated Net Amount']}</b>) <span style="widht:100px"> <img insurance_key="{$insurance['Insurance Key']}" onptf_key="{$insurance['Order No Product Transaction Fact Key']}" id="insurance_checked_{$insurance['Insurance Key']}" onclick="remove_insurance(this)" style="{if !$insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_checked.png" /> <img insurance_key="{$insurance['Insurance Key']}" id="insurance_unchecked_{$insurance['Insurance Key']}" onclick="add_insurance(this)" style="{if $insurance['Order No Product Transaction Fact Key']}display:none{/if}" class="checkbox" src="art/icons/checkbox_unchecked.png" /> </span> <img insurance_key="{$insurance['Insurance Key']}" id="insurance_wait_{$insurance['Insurance Key']}" style="display:none" class="checkbox" src="art/loading.gif" /> 
 		</div>
 		{/foreach} 
 	</div>
-
 </div>
 <div id="process_order_dialog" style="width:400px;padding:20px 20px 0 20px;display:none">
 	<div id="assign_pickers_packers">
@@ -431,5 +408,4 @@
 		</div>
 	</div>
 </div>
-{include file='add_payment_splinter.tpl'}
-{include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl'} {include file='footer.tpl'} 

@@ -77,6 +77,9 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
+
+print $row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']."\n";
+
 	$currency_exchange = new CurrencyExchange($row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']);
 	$exchange= $currency_exchange->get_exchange();
 
