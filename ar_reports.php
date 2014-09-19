@@ -1492,7 +1492,7 @@ $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	else
 		$order='`Date Picked`';
 
-	$sql="select sum(`Out of Stock`) as qty,sum(`Invoice Currency Exchange Rate`*`Order Out of Stock Lost Amount`) as lost_revenue, `Part Reference`,count(DISTINCT `Customer Key`) as Customers,count(DISTINCT `Order Key`) as Orders,ITF.`Part SKU`,`Part XHTML Currently Used In`,MAX(`Date Picked`) as `Date Picked` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  group by ITF.`Part SKU` order by $order $order_direction limit $start_from,$number_results";
+	$sql="select sum(`Out of Stock`) as qty,sum(`Invoice Currency Exchange Rate`*`Order Out of Stock Lost Amount`) as lost_revenue, `Part Reference`,count(DISTINCT `Customer Key`) as Customers,count(DISTINCT `Order Key`) as Orders,ITF.`Part SKU`,`Part XHTML Currently Used In`,MAX(`Date`) as `Date`,MAX(`Date Picked`) as `Date Picked` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  group by ITF.`Part SKU` order by $order $order_direction limit $start_from,$number_results";
 
 
 	$adata=array();
@@ -1509,7 +1509,7 @@ $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 			'sku'=>sprintf("<a href='part.php?sku=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
 			'reference'=>$data['Part Reference'],
 			'used_in'=>$data['Part XHTML Currently Used In'],
-			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Date Picked']." +00:00")),
+			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Date']." +00:00")),
 			'orders'=>number($data['Orders']),
 			'customers'=>number($data['Customers']),
 			'qty'=>number($data['qty']),

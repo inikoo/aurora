@@ -115,9 +115,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$row['Amount']=money(($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']),$row['Invoice Currency Code']);
 	$row['Discount']=($row['Invoice Transaction Total Discount Amount']==0?'':percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount'],0));
 
-if($row['Product RRP']!=0){
-$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
-}
+	if ($row['Product RRP']!=0) {
+		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
+	}
 
 	if ($print_tariff_code)
 		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
@@ -135,9 +135,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$row['Amount']='';
 	$row['Discount']='';
 
-if($row['Product RRP']!=0){
-$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
-}
+	if ($row['Product RRP']!=0) {
+		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
+	}
 
 	$row['Quantity']='<span >('.$row['qty'].')</span>';
 	$transactions_out_of_stock[]=$row;
@@ -204,40 +204,40 @@ $sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 
-	if($row['Tax Amount']==0){
+	if ($row['Tax Amount']==0) {
 		continue;
 	}
 
 	switch ($row['Tax Category Name']) {
-				case 'Outside the scope of VAT':
-					$tax_category_name=_('Outside the scope of VAT');
-					break;
-				case 'VAT 17.5%':
-					$tax_category_name=_('VAT').' 17.5%';
-					break;
-				case 'VAT 20%':
-					$tax_category_name=_('VAT').' 20%';
-					break;
-				case 'VAT 15%':
-					$tax_category_name=_('VAT').' 15%';
-					break;
-				case 'No Tax':
-					$tax_category_name=_('No Tax');
-					break;
-				case 'Exempt from VAT':
-					$tax_category_name=_('Exempt from VAT');
-					break;
+	case 'Outside the scope of VAT':
+		$tax_category_name=_('Outside the scope of VAT');
+		break;
+	case 'VAT 17.5%':
+		$tax_category_name=_('VAT').' 17.5%';
+		break;
+	case 'VAT 20%':
+		$tax_category_name=_('VAT').' 20%';
+		break;
+	case 'VAT 15%':
+		$tax_category_name=_('VAT').' 15%';
+		break;
+	case 'No Tax':
+		$tax_category_name=_('No Tax');
+		break;
+	case 'Exempt from VAT':
+		$tax_category_name=_('Exempt from VAT');
+		break;
 
 
-				default:
-					$tax_category_name=$row['Tax Category Name'];
-				}
+	default:
+		$tax_category_name=$row['Tax Category Name'];
+	}
 
 
 
 	$tax_data[]=array(
-	'name'=>$tax_category_name,
-	'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
+		'name'=>$tax_category_name,
+		'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
 }
 
 $smarty->assign('tax_data',$tax_data);

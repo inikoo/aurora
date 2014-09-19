@@ -1036,9 +1036,9 @@ function update_order_data(r) {
 
 
 
- if (Dom.get('ordered_products_number') != undefined) {
-    Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
-}
+    if (Dom.get('ordered_products_number') != undefined) {
+        Dom.get('ordered_products_number').value = r.data['ordered_products_number'];
+    }
     if (Dom.get('done') != undefined) {
 
         if (r.data['ordered_products_number'] > 0) {
@@ -1064,17 +1064,17 @@ function update_order_data(r) {
 
 }
 
-function update_recargo_de_equivalencia(value){
+function update_recargo_de_equivalencia(value) {
 
-    var request = 'ar_edit_orders.php?tipo=update_recargo_de_equivalencia&value='+value+'&order_key=' + Dom.get('order_key').value
+    var request = 'ar_edit_orders.php?tipo=update_recargo_de_equivalencia&value=' + value + '&order_key=' + Dom.get('order_key').value
 
-  YAHOO.util.Connect.asyncRequest('POST', request, {
+    YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //     alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-               
+
 
                 for (x in r.data) {
                     if (Dom.get(x) != undefined) Dom.get(x).innerHTML = r.data[x];
@@ -1089,7 +1089,7 @@ function update_recargo_de_equivalencia(value){
                     Dom.setStyle('button_submit_order_paid', 'display', 'none')
                 }
 
-               
+
             } else {
                 alert('EC119' + r.msg);
                 //	callback();
@@ -1104,7 +1104,7 @@ function update_recargo_de_equivalencia(value){
 
     );
 
-  
+
 }
 
 var myonCellClick = function(oArgs) {
@@ -1379,7 +1379,6 @@ var CellEdit = function(callback, newValue) {
 
                     var request = '';
                     // datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
 
                     callback(true, r.ordered_quantity);
 
@@ -1742,9 +1741,23 @@ function close_dialog_check_tax_number() {
 }
 
 
+
 function show_set_tax_number_dialog() {
 
     region1 = Dom.getRegion('set_tax_number');
+    region2 = Dom.getRegion('dialog_set_tax');
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_set_tax', pos);
+
+    if (Dom.get('tax_number') != undefined) tax_number = Dom.get('tax_number').innerHTML
+
+
+    dialog_set_tax.show();
+
+}
+
+function show_set_tax_number_dialog_from_details() {
+    region1 = Dom.getRegion('update_order_tax_number');
     region2 = Dom.getRegion('dialog_set_tax');
     var pos = [region1.right - region2.width, region1.top]
     Dom.setXY('dialog_set_tax', pos);
@@ -2040,9 +2053,9 @@ function init_common_order_not_dispatched() {
                 'required': false,
                 'group': 1,
                 'type': 'item',
-                'name': 'Customer_Tax_Number',
+                'name': 'Order_Tax_Number',
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z0-9]+",
                     'invalid_msg': Dom.get('invalid_tax_number_label').value
                 }]
             }
@@ -2064,7 +2077,7 @@ function init_common_order_not_dispatched() {
 
     var customer_tax_number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
     customer_tax_number_oACDS.queryMatchContains = true;
-    var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Tax_Number", "Customer_Tax_Number_Container", customer_tax_number_oACDS);
+    var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Order_Tax_Number", "Order_Tax_Number_Container", customer_tax_number_oACDS);
     customer_tax_number_oAutoComp.minQueryLength = 0;
     customer_tax_number_oAutoComp.queryDelay = 0.1;
 

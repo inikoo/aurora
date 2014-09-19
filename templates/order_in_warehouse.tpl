@@ -297,71 +297,9 @@
 		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
 		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
 			<div class="buttons small right">
-				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> 
-				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> 			
-				<button style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
-
+				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 			</div>
-			<div style="width:550px">
-				<table border="0" class="info_block">
-					<tr>
-						<td>{t}Created{/t}:</td>
-						<td class="aright">{$order->get('Created Date')}</td>
-					</tr>
-					{if $order->get('Order Submitted by Customer Date')!='' } 
-					<tr>
-						<td>{t}Submited{/t}:</td>
-						<td class="aright">{$order->get('Submitted by Customer Date')}</td>
-					</tr>
-					{/if} 
-					<tr>
-						<td>{t}Send to warehouse{/t}:</td>
-						<td class="aright">{$order->get('Send to Warehouse Date')}</td>
-					</tr>
-					<tr>
-						<td>{t}Picking & packing done{/t}:</td>
-						<td class="aright">{$order->get('Packed Done Date')}</td>
-					</tr>
-				</table>
-				<table border="0" class="info_block">
-					<tr>
-						<td>{t}Customer Fiscal Name{/t}:</td>
-						<td class="aright">{$order->get('Order Customer Fiscal Name')}</td>
-					</tr>
-					<tr>
-						<td>{t}Customer Name{/t}:</td>
-						<td class="aright">{$order->get('Order Customer Name')}</td>
-					</tr>
-					<tr>
-						<td>{t}Contact Name{/t}:</td>
-						<td class="aright">{$order->get('Order Customer Contact Name')}</td>
-					</tr>
-					<tr>
-						<td>{t}Telephone{/t}:</td>
-						<td class="aright">{$order->get('Order Telephone')}</td>
-					</tr>
-					<tr>
-						<td>{t}Email{/t}:</td>
-						<td class="aright">{$order->get('Order Email')}</td>
-					</tr>
-				</table>
-				<table border="0" class="info_block">
-					<tr>
-						<td>{t}Tax Code{/t}:</td>
-						<td class="aright">{$order->get('Order Tax Code')} {$order->get('Tax Rate')} </td>
-					</tr>
-					<tr>
-						<td>{t}Tax Info{/t}:</td>
-						<td class="aright">{$order->get('Order Tax Name')}</td>
-					</tr>
-				</table>
-				<table border="0" class="info_block">
-					<tr>
-						<td>{t}Weight {/t}:</td>
-						<td class="aright">{$order->get('Weight')}</td>
-					</tr>
-				</table>
-			</div>
+			{include file='order_details_splinter.tpl'}
 			<div style="clear:both">
 			</div>
 			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 

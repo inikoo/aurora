@@ -1882,7 +1882,7 @@ class Order extends DB_Table {
 
 		case('Interval Last Updated Date'):
 			include_once 'common_natural_language.php';
-			return seconds_to_string(gmdate('U')-gmdate('U',strtotime($this->data['Order Last Updated Date'].' +0:00')));
+			return seconds_to_string(gmdate('U')-gmdate('U',strtotime($this->data['Order Last Updated Date'].' +0:00')),true);
 			break;
 
 

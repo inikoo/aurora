@@ -1,20 +1,6 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-// function prepare_mysql_date($date){
-
-//   if($date=='')
-//     return array('',0);
-//   if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}$/',$date)){
-//     return array('',1);
-
-//   }
-
-//   $date=str_replace('/','-',$date);
-//   $date=('-',$date);
-//   $mysql_date= join ('-',array_reverse($date));
-//   return array($mysql_date,0);
-// }
 
 
 if (!function_exists('money_format')) {
@@ -2074,15 +2060,6 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 
 function _trim($string) {
 	$string=trim($string);
-
-	//$string=preg_replace('/\xC2\xA0\s*$/',' ',$string);
-	// $string=preg_replace('/\xA0\s*/',' ',$string);
-	// $string=preg_replace('/\s+/',' ',trim($string));
-
-	//  $string=preg_replace('/^\s*/','',$string);
-	//   $string=preg_replace('/\s*$/','',$string);
-	//   $string=preg_replace('/\s+/',' ',$string);
-
 	return $string;
 }
 

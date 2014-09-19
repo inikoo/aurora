@@ -1,4 +1,3 @@
-
 var dialog_export = new Object;
 
 function validate_general(branch, items, query) {
@@ -198,7 +197,7 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-   // alert(ar_file+'?'+request);
+    // alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -213,16 +212,16 @@ function CellEdit(callback, newValue) {
                     data['sph_key'] = r.sp_current_key;
                     data['cost'] = r.newvalue;
                     datatable.updateRow(recordIndex, data);
-                } 
+                }
                 post_edit_in_table(r)
                 callback(true, r.newvalue);
             } else {
-                alert('EC7 '+r.msg);
+                alert('EC7 ' + r.msg);
                 callback();
             }
         },
         failure: function(o) {
-            alert('EC8'+o.statusText);
+            alert('EC8' + o.statusText);
             callback();
         },
         scope: this
@@ -257,7 +256,7 @@ function save_delete(delete_type, subject) {
 
     request = ar_file + '?tipo=delete_' + subject + '&subject_key=' + Dom.get('dialog_' + delete_type + '_' + subject + '_key').value + '&table_id=' + Dom.get('dialog_' + delete_type + '_' + subject + '_table_id').value + '&recordIndex=' + Dom.get('dialog_' + delete_type + '_' + subject + '_recordIndex').value
 
-//alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
 
         success: function(o) {
@@ -283,7 +282,7 @@ function save_delete(delete_type, subject) {
                 data['delete_type'] = r.delete_type;
                 this.updateRow(recordIndex, data);
             } else {
-                alert('EC9 '+r.msg);
+                alert('EC9 ' + r.msg);
             }
         },
         failure: function(fail) {
@@ -317,17 +316,16 @@ var onCellClick = function(oArgs) {
         switch (column.action) {
 
         case 'delete':
-        
-       
-        
+
+
+
             if (record.getData('delete') == '') {
                 return;
             }
             var delete_type = record.getData('delete_type');
             if (delete_type == undefined) delete_type = 'delete';
-			
-			//alert('dialog_' + delete_type + '_' + column.object)
 
+            //alert('dialog_' + delete_type + '_' + column.object)
 
             Dom.get('dialog_' + delete_type + '_' + column.object + '_data').innerHTML = record.getData('subject_data')
             Dom.get('dialog_' + delete_type + '_' + column.object + '_key').value = record.getData('id')
@@ -362,15 +360,15 @@ var onCellClick = function(oArgs) {
                     //alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200 && r.action == 'added') {
-                        alert('EC10'+r.msg);
+                        alert('EC10' + r.msg);
 
 
                     } else {
-                        alert('EC11'+r.msg);
+                        alert('EC11' + r.msg);
                     }
                 },
                 failure: function(fail) {
-                    alert('EC12'+fail.statusText);
+                    alert('EC12' + fail.statusText);
                 },
                 scope: this
             });
@@ -396,11 +394,11 @@ var onCellClick = function(oArgs) {
 
 
                     } else {
-                        alert('EC14'+r.msg);
+                        alert('EC14' + r.msg);
                     }
                 },
                 failure: function(fail) {
-                    alert('EC15'+fail.statusText);
+                    alert('EC15' + fail.statusText);
                 },
                 scope: this
             });
@@ -442,7 +440,7 @@ var highlightEditableCell = function(oArgs) {
             break;
         case 'close':
         case 'pick_it':
-          
+
 
 
         case ('add_object'):
@@ -452,7 +450,7 @@ var highlightEditableCell = function(oArgs) {
         case ('edit_pending'):
 
         case ('dialog'):
-         
+
         case ('dialog_delete'):
             this.highlightRow(target);
             break;
@@ -466,14 +464,14 @@ var highlightEditableCell = function(oArgs) {
 var unhighlightEditableCell = function(oArgs) {
         var target = oArgs.target;
         column = this.getColumn(target);
-//alert(column.action)
+        //alert(column.action)
         switch (column.action) {
 
         case ('dialog_delete'):
         case 'delete':
         case 'pick_it':
         case 'close':
-          case 'dialog':
+        case 'dialog':
         case ('add_object'):
         case ('remove_object'):
         case ('edit_object'):
@@ -511,7 +509,7 @@ function validate_scope(branch) {
     if (validate_scope_metadata[branch]['type'] == 'new') {
         validate_scope_new(branch)
     } else {
-   
+
         validate_scope_edit(branch)
     }
 }
@@ -538,10 +536,10 @@ function validate_scope_edit(branch) {
 
     for (items in validate_scope_data[branch]) {
 
-          //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
+        //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             errors = true;
-          //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
+            //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
         }
         if (validate_scope_data[branch][items].changed == true) {
             changed = true;
@@ -799,7 +797,6 @@ function reset_edit_general(branch) {
         }
         if (validate_scope_data[branch][items].type == 'switch') {
             // alert(validate_scope_data[branch][items].options_name)
-
             Dom.setStyle(Dom.getElementsByClassName(validate_scope_data[branch][items].options_name), 'display', 'none')
             Dom.setStyle(validate_scope_data[branch][items].options_name + '_' + item_input.getAttribute('ovalue'), 'display', '')
         }
@@ -921,11 +918,11 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-       //alert(scope_edit_ar_file+'?'+postData);
+            //alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-        //    alert(o.responseText);
+                    //    alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -942,7 +939,7 @@ function save_edit_general(branch) {
                             }
                         }, 4, YAHOO.util.Easing.easeOut);
                         myAnim.animate();
-						
+
                         post_item_updated_actions(branch, r);
 
                     } else {
@@ -978,7 +975,7 @@ function save_edit_general(branch) {
 
 
 function save_edit_general_bulk(branch) {
-//alert("hola");
+
     operation = 'edit';
     scope_edit_ar_file = validate_scope_metadata[branch]['ar_file'];
     branch_key = validate_scope_metadata[branch]['key'];
@@ -1011,7 +1008,7 @@ function save_edit_general_bulk(branch) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
             Dom.setStyle(validate_scope_data[branch][items].name + '_msg', 'opacity', 1)
-         //   alert(validate_scope_data[branch][items].name + '_msg')
+            //   alert(validate_scope_data[branch][items].name + '_msg')
             Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '<img style="height:14px" src="art/loading.gif"/>';
             var updated_items = 0;
 
@@ -1061,10 +1058,10 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
- //   alert(request+'?'+postData);return;
+    //   alert(request+'?'+postData);return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-         // alert(o.responseText)
+            // alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
@@ -1082,9 +1079,8 @@ function save_edit_general_bulk(branch) {
                     validate_scope_data[branch][r.key].validated = true;
                     Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue', r.newvalue);
                     Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
-                   
-                  // alert(validate_scope_data[branch][r.key].name + '_msg')
-                    
+
+                    // alert(validate_scope_data[branch][r.key].name + '_msg')
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img style="height:14px"  src="art/icons/accept.png"/>';
 
 
@@ -1118,13 +1114,13 @@ function save_edit_general_bulk(branch) {
             }
             Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer')
 
-post_bulk_save_actions()
+            post_bulk_save_actions()
 
             validate_scope_edit(branch)
 
         },
         failure: function(o) {
-            alert('EC17'+o.statusText)
+            alert('EC17' + o.statusText)
         }
 
     }, postData);
@@ -1133,7 +1129,7 @@ post_bulk_save_actions()
 
 }
 
-function post_bulk_save_actions(){
+function post_bulk_save_actions() {
 
 }
 
@@ -1174,7 +1170,7 @@ function save_new_general(branch) {
 
     //  alert(scope_edit_ar_file);
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
-//alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //    alert(o.responseText);
@@ -1236,4 +1232,3 @@ function SelectUrl() {
     }
 
 }
-

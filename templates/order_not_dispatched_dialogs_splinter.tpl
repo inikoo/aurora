@@ -293,8 +293,8 @@
 				<td>{t}Tax Number:{/t}</td>
 				<td style="width:220px"> 
 				<div >
-					<input style="width:100%" type="text" id="Customer_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$customer->get('Order Tax Number')}" valid="0"> 
-					<div id="Customer_Tax_Number_Container">
+					<input style="width:100%" type="text" id="Order_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$customer->get('Order Tax Number')}" valid="0"> 
+					<div id="Order_Tax_Number_Container">
 					</div>
 				</div>
 				</td>
@@ -302,7 +302,7 @@
 			<tr>
 				<td colspan="2"> 
 				<div class="buttons" style="margin-top:10px">
-					<span id="Customer_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" onClick="save_quick_edit_tax_number()">{t}Save{/t}</button> <button class="negative" onClick="close_quick_edit_tax_number()">{t}Cancel{/t}</button> 
+					<span id="Order_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" onClick="save_quick_edit_tax_number()">{t}Save{/t}</button> <button class="negative" onClick="close_quick_edit_tax_number()">{t}Cancel{/t}</button> 
 				</div>
 				</td>
 			</tr>

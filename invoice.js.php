@@ -135,7 +135,7 @@ function show_delete_invoice(){
 
  region1 = Dom.getRegion('delete');
     region2 = Dom.getRegion('dialog_delete');
-    var pos = [region1.left, region1.top]
+    var pos = [region1.left-region2.width, region1.top]
     Dom.setXY('dialog_delete', pos);
 
 

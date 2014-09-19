@@ -187,73 +187,7 @@
 				<div class="buttons small right" style="float:right;width:350px">
 					<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 
 				</div>
-				<div style="width:450px">
-					<table border="0" class="info_block">
-						<tr>
-							<td>{t}Created{/t}:</td>
-							<td class="aright">{$order->get('Created Date')}</td>
-						</tr>
-						{if $order->get('Order Current Dispatch State')=='In Process by Customer' } 
-						<tr>
-							<td>{t}Last updated{/t}:</td>
-							<td class="aright">{$order->get('Last Updated Date')}</td>
-						</tr>
-						<tr style="border-top:1px solid #ccc">
-							<td>{t}On website{/t}:</td>
-							<td class="aright">{$order->get('Interval Last Updated Date')}</td>
-						</tr>
-						{elseif $order->get('Order Current Dispatch State')=='Waiting for Payment Confirmation'} 
-						<tr>
-							<td>{t}Submit Payment{/t}:</td>
-							<td class="aright">{$order->get('Checkout Submitted Payment Date')}</td>
-						</tr>
-						{else} 
-						<tr>
-							<td>{t}Last updated{/t}:</td>
-							<td class="aright">{$order->get('Last Updated Date')}</td>
-							<td class="aright">{$order->get('Interval Last Updated Date')}</td>
-						</tr>
-						{/if} 
-					</table>
-					<table border="0" class="info_block">
-						<tr>
-							<td>{t}Customer Fiscal Name{/t}:</td>
-							<td class="aright">{$order->get('Order Customer Fiscal Name')}</td>
-						</tr>
-						<tr>
-							<td>{t}Customer Name{/t}:</td>
-							<td class="aright">{$order->get('Order Customer Name')}</td>
-						</tr>
-						<tr>
-							<td>{t}Contact Name{/t}:</td>
-							<td class="aright">{$order->get('Order Customer Contact Name')}</td>
-						</tr>
-						<tr>
-							<td>{t}Telephone{/t}:</td>
-							<td class="aright">{$order->get('Order Telephone')}</td>
-						</tr>
-						<tr>
-							<td>{t}Email{/t}:</td>
-							<td class="aright">{$order->get('Order Email')}</td>
-						</tr>
-					</table>
-					<table border="0" class="info_block">
-						<tr>
-							<td>{t}Tax Code{/t}:</td>
-							<td class="aright">{$order->get('Order Tax Code')} {$order->get('Tax Rate')} </td>
-						</tr>
-						<tr>
-							<td>{t}Tax Info{/t}:</td>
-							<td class="aright">{$order->get('Order Tax Name')}</td>
-						</tr>
-					</table>
-					<table border="0" class="info_block">
-						<tr>
-							<td>{t}Weight {/t}:</td>
-							<td class="aright">{$order->get('Weight')}</td>
-						</tr>
-					</table>
-				</div>
+				{include file='order_details_splinter.tpl'}
 				<div style="clear:both">
 				</div>
 				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 

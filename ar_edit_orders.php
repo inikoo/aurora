@@ -4877,10 +4877,6 @@ function update_order_special_intructions($data) {
 function update_order($data) {
 	$order=new Order($data['order_key']);
 
-
-
-
-
 	$order->update_field_switcher($data['key'],strip_tags($data['value']));
 
 

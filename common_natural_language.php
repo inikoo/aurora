@@ -1,6 +1,6 @@
 <?php
 
-function seconds_to_string($secs) {
+function seconds_to_string($secs,$suffix=false) {
     $units = array(
                  "weeks"   => 7*24*3600,
                  "days"    =>   24*3600,
@@ -23,25 +23,29 @@ function seconds_to_string($secs) {
             switch ($key) {
             case 'weeks':
                 $string.=sprintf(ngettext("%d week", "%d weeks", $value), $value);
-                break;
+                break 2;
             case 'days':
                 $string.=' '.sprintf(ngettext("%d day", "%d days", $value), $value);
-                break;
+                break 2;
             case 'hours':
                 $string.=' '.sprintf(ngettext("%d hour", "%d hours", $value), $value);
-                break;
+                break 2;
             case 'minutes':
                 $string.=' '.sprintf(ngettext("%d minute", "%d minutes", $value), $value);
-                break;
+                break 2;
             case 'seconds':
                 $string.=' '.sprintf(ngettext("%d second", "%d seconds", $value), $value);
-                break;
+                break 2;
             }
         }
     }
 
 
     $string=_trim($string);
+    if($suffix){
+    	$string.=' '._('ago');
+    }
+    
     return $string;
 
 }
