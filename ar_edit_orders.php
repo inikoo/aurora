@@ -2330,11 +2330,16 @@ function list_pending_orders() {
 	if (isset( $_REQUEST['elements_SubmittedbyCustomer'])) {
 		$elements['SubmittedbyCustomer']=$_REQUEST['elements_SubmittedbyCustomer'];
 	}
-	//if (isset( $_REQUEST['elements_InProcess'])) {
-	//  $elements['InProcess']=$_REQUEST['elements_InProcess'];
-	// }
+
 	if (isset( $_REQUEST['elements_InProcessbyCustomer'])) {
 		$elements['InProcessbyCustomer']=$_REQUEST['elements_InProcessbyCustomer'];
+	}
+	if (isset( $_REQUEST['elements_WaitingforPaymentConfirmation'])) {
+		$elements['WaitingforPaymentConfirmation']=$_REQUEST['elements_WaitingforPaymentConfirmation'];
+	}
+
+	if (isset( $_REQUEST['elements_ReadytoShip'])) {
+		$elements['ReadytoShip']=$_REQUEST['elements_ReadytoShip'];
 	}
 
 
@@ -2375,12 +2380,14 @@ function list_pending_orders() {
 				$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
 			}if ($_key=='SubmittedbyCustomer') {
 				$_key="'Submitted by Customer','In Process'";
-				//}if ($_key=='InProcess') {
-				//  $_key="'In Process'";
+			}if ($_key=='ReadytoShip') {
+				$_key="'Ready to Ship'";
 			}if ($_key=='InProcessbyCustomer') {
-				$_key="'In Process by Customer','Waiting for Payment Confirmation'";
+				$_key="'In Process by Customer'";
+			}if ($_key=='WaitingforPaymentConfirmation') {
+				$_key="'Waiting for Payment Confirmation'";
 			}if ($_key=='PackedDone') {
-				$_key="'Packed Done','Ready to Ship'";
+				$_key="'Packed Done'";
 			}
 
 			$_elements.=','.$_key;
@@ -2389,7 +2396,7 @@ function list_pending_orders() {
 	$_elements=preg_replace('/^\,/','',$_elements);
 	if ($elements_count==0) {
 		$where.=' and false' ;
-	} elseif ($elements_count<4) {
+	} elseif ($elements_count<6) {
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}else {
 		$where.=' and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","" )';
@@ -2411,7 +2418,7 @@ function list_pending_orders() {
 
 
 		$sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-	// print $sql ;
+	
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2570,7 +2577,7 @@ function list_pending_orders() {
 		if ($number_dns!=1) {
 			$current_delivery_note_key='';
 		}
-/*
+		/*
 		$dn_operations='<div style=";clear:both;margin-top:10px;padding-top:5px;padding-bottom:5px"><table style="margin-top:0px">';
 		foreach ($dns_data as $dn_data) {
 			$dn_operations.=sprintf('<tr style="font-size:90%%;margin:5px 0px;border:none;border-bottom:1px solid #ccc"><td>%s</td><td>%s</td></tr>',_('Delivery Note'),$dn_data['number']);

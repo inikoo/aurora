@@ -64,7 +64,7 @@ div.inline { float:left; }
 <table width="100%" style="font-size: 9pt;" border="0">
 	<tr>
 		<tr>
-			{*} {if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
+			{*} {if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")} 
 			<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>
 			{/if} {*} 
 			<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
@@ -85,7 +85,7 @@ div.inline { float:left; }
 	<table width="100%">
 		<tr>
 			<tr>
-				<td width="33%" style="color:#000;text-align: left;"> <small> {$store->get('Store Company Name')}<br> {if $store->get('Store VAT Number')!=''}{t}VAT Number{/t}: {$store->get('Store VAT Number')}<br>{/if} {if $store->get('Store Company Number')!=''}{t}Registration Number{/t}: {$store->get('Store Company Number')}{/if} </small></td>
+				<td width="33%" style="color:#000;text-align: left;"> <small> {$store->get('Store Company Name')}<br> {if $store->get('Store VAT Number')!=''}{t}VAT Number{/t}: <b>{$store->get('Store VAT Number')}</b><br>{/if} {if $store->get('Store Company Number')!=''}{t}Registration Number{/t}: {$store->get('Store Company Number')}{/if} </small></td>
 				<td width="33%" style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
 				<td width="34%" style="text-align: right;"> <small> {if $store->get('Store Telephone')!=''}{$store->get('Store Telephone')}<br>{/if} {if $store->get('Store Email')!=''}{$store->get('Store Email')}{/if} </small></td>
 			</tr>
@@ -114,14 +114,14 @@ div.inline { float:left; }
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
 			<div style="text-align: right">
-				{t}Payment State{/t}:<b> {$invoice->get('Payment State')}</b> 
+				{t}Payment State{/t}: <b>{$invoice->get('Payment State')}</b> 
 			</div>
 			<div style="text-align: right">
-				{t}Customer{/t}:<b> {$invoice->get('Invoice Customer Name')}</b> ({$invoice->get('Invoice Customer Key')}) 
+				{t}Customer{/t}: <b>{$invoice->get('Invoice Customer Name')}</b> ({$invoice->get('Invoice Customer Key')}) 
 			</div>
 			<div style="{if $invoice->get('Invoice Tax Number')==''}display:none{/if}">
-							{t}Tax Number{/t}:<b> {$invoice->get('Invoice Tax Number')}</b> </div>
-			
+				{t}Tax Number{/t}: <b>{$invoice->get('Invoice Tax Number')}</b> 
+			</div>
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
 			<div style="text-align:right;{if !$delivery_note->get('Delivery Note Number Parcels')}display:none{/if}">
@@ -206,15 +206,12 @@ div.inline { float:left; }
 				<td colspan="2">{t}Charges{/t}</td>
 				<td>{$invoice->get('Charges Net Amount')}</td>
 			</tr>
-			{/if}
-			{if $invoice->get('Invoice Insurance Net Amount')!=0} 
+			{/if} {if $invoice->get('Invoice Insurance Net Amount')!=0} 
 			<tr>
 				<td colspan="2">{t}Insurance{/t}</td>
 				<td>{$invoice->get('Insurance Net Amount')}</td>
 			</tr>
-			{/if}
-			
-			{if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
+			{/if} {if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
 			<tr>
 				<td colspan="2">{t}Adjusts{/t}</td>
 				<td>{$invoice->get('Total Net Adjust Amount')}</td>

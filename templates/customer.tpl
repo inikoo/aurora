@@ -683,7 +683,7 @@
 		<input type="hidden" value="" id="Customer_Fiscal_Name"> 
 		<table style="margin:10px">
 			<tr>
-				<td>{t}Registration Number:{/t}</td>
+				<td>{t}Registration Number{/t}:</td>
 				<td> 
 				<div style="width:220px">
 					<input type="text" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0"> 

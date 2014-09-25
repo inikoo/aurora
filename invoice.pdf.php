@@ -20,6 +20,12 @@ $invoice=new Invoice($id);
 if (!$invoice->id) {
 	exit;
 }
+
+
+$invoice->update_tax();
+
+
+
 //print_r($invoice);
 $store=new Store($invoice->data['Invoice Store Key']);
 $customer=new Customer($invoice->data['Invoice Customer Key']);
@@ -198,6 +204,9 @@ if ($invoice->data['Invoice Type']=='CreditNote') {
 
 $smarty->assign('transactions',$transactions);
 
+
+
+
 $tax_data=array();
 $sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  `Invoice Tax Bridge` B  left join `Tax Category Dimension` T on (T.`Tax Category Code`=B.`Tax Code`)  where B.`Invoice Key`=%d ",$invoice->id);
 
@@ -224,6 +233,9 @@ while ($row=mysql_fetch_assoc($res)) {
 	case 'No Tax':
 		$tax_category_name=_('No Tax');
 		break;
+	case 'RE (5,2%)':
+		$tax_category_name='RE 5,2%';
+		break;	
 	case 'Exempt from VAT':
 		$tax_category_name=_('Exempt from VAT');
 		break;
@@ -239,6 +251,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		'name'=>$tax_category_name,
 		'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
 }
+
 
 $smarty->assign('tax_data',$tax_data);
 

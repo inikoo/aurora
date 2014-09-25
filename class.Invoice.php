@@ -926,10 +926,12 @@ class Invoice extends DB_Table {
 		//print "$sql\n";
 		$result = mysql_query( $sql );
 		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
+	//	print_r($row);
+		
 			$tax_sum_by_code[$row['tax_code']]=$row['amount'];
 		}
 
-
+//print_r($tax_sum_by_code);
 		$sql=sprintf("select IFNULL(`Tax Category Code`,'UNK') as tax_code,sum(`Transaction Invoice Tax Amount`) as amount from `Order No Product Transaction Fact` where `Invoice Key`=%d and `Transaction Type`!='Adjust'  group by `Tax Category Code`",$this->id);
 		// print "$sql\n";
 		$result = mysql_query( $sql );
@@ -940,7 +942,7 @@ class Invoice extends DB_Table {
 				$tax_sum_by_code[$row['tax_code']]=$row['amount'];
 		}
 
-		// print_r($tax_sum_by_code);
+	//	print_r($tax_sum_by_code);
 
 
 		foreach ($tax_sum_by_code as $tax_code=>$amount ) {
@@ -982,7 +984,7 @@ class Invoice extends DB_Table {
 
 
 
-		// print_r($tax_sum_by_code);
+		//print_r($tax_sum_by_code);
 		// exit;
 		foreach ($tax_sum_by_code as $tax_code=>$amount ) {
 

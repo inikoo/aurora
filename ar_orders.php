@@ -3992,14 +3992,26 @@ function number_pending_orders_in_interval($data) {
 		$where=" where false";
 	}
 
-	$elements_numbers=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0);
+
+   
 
 
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",$where);
+	$elements_numbers=array('InProcessbyCustomer'=>0,'WaitingforPaymentConfirmation'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0,'ReadytoShip'=>0);
+
+
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='In Process by Customer' ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InProcessbyCustomer']=$row['num'];
 	}
+	
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='Waiting for Payment Confirmation' ",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['WaitingforPaymentConfirmation']=$row['num'];
+	}
+	
+	
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Packed','Packing') ",$where);
 	$res=mysql_query($sql);
@@ -4007,10 +4019,16 @@ function number_pending_orders_in_interval($data) {
 		$elements_numbers['InWarehouse']=$row['num'];
 	}
 
-	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Packed Done','Ready to Ship') ",$where);
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='Packed Done' ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['PackedDone']=$row['num'];
+	}
+	
+		$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='Ready to Ship'",$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers['ReadytoShip']=$row['num'];
 	}
 
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('In Process','Submitted by Customer') ",$where);

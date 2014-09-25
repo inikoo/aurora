@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-09 17:06+0100\n"
-"PO-Revision-Date: 2014-09-09 17:06+0100\n"
+"POT-Creation-Date: 2014-09-25 11:13-0000\n"
+"PO-Revision-Date: 2014-09-25 11:21-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -40,7 +40,7 @@ msgstr ""
 #: invoice_category.js.php:236 invoice_category_deleted.js.php:57
 #: location.js.php:337 marketing.js.php:38 new_delivery_notes_list.js.php:417
 #: new_invoices_list.js.php:412 order.js.php:40 orders.js.php:21
-#: orders.js.php:86 orders.js.php:160 orders.js.php:235
+#: orders.js.php:89 orders.js.php:163 orders.js.php:238
 #: orders_export_common.php:33 page.js.php:70 part.js.php:23 part.js.php:102
 #: part.js.php:178 part.js.php:276 part.js.php:347 part.js.php:500
 #: part_categories.js.php:121 part_category.js.php:284
@@ -113,7 +113,7 @@ msgstr "Hora"
 #: family_categories.js.php:123 family_category.js.php:261
 #: invoice_categories.js.php:124 invoice_categories_base.js.php:174
 #: invoice_category.js.php:238 invoice_category_deleted.js.php:59
-#: location.js.php:338 location.php:193 orders.js.php:237 part.js.php:278
+#: location.js.php:338 location.php:193 orders.js.php:240 part.js.php:278
 #: part_categories.js.php:123 part_category.js.php:286
 #: part_category_deleted.js.php:59 payment.js.php:551 payment.js.php:1100
 #: product.js.php:272 product_categories.js.php:123
@@ -130,7 +130,7 @@ msgstr "Autor"
 #: customer_category.php:261 customer_category.php:262
 #: customer_category_deleted.js.php:60 customer_category_deleted.php:124
 #: customer_category_deleted.php:125 department.js.php:725 department.php:423
-#: dn.js.php:40 edit_company_area.php:95 edit_customer.php:621
+#: edit_company_area.php:95 edit_customer.php:621
 #: edit_customer_categories.js.php:129 edit_customer_categories.php:132
 #: edit_customer_categories.php:133 edit_customer_category.js.php:113
 #: edit_customer_category.php:250 edit_department.php:238
@@ -158,7 +158,7 @@ msgstr "Autor"
 #: invoice_category_deleted.php:125 order_dispatched.js.php:94
 #: order_pack_aid.js.php:302 order_pack_aid.js.php:312
 #: order_pick_aid.js.php:303 order_restock_aid.js.php:328
-#: order_restock_aid.js.php:342 orders.js.php:239 part.js.php:279 part.php:317
+#: order_restock_aid.js.php:342 orders.js.php:242 part.js.php:279 part.php:317
 #: part_categories.js.php:124 part_categories.php:143 part_categories.php:144
 #: part_category.js.php:287 part_category.php:284 part_category.php:285
 #: part_category_deleted.js.php:60 part_category_deleted.php:124
@@ -194,15 +194,15 @@ msgstr "Notas"
 #: customer_categories.js.php:88 customer_categories.js.php:159
 #: customer_category.js.php:161 customer_category.js.php:240
 #: customer_category.js.php:310 customer_category_deleted.js.php:94
-#: customers.js.php:138 customers.js.php:236 customers.js.php:326
+#: customers.js.php:135 customers.js.php:237 customers.js.php:327
 #: customers_list.js.php:97 customers_lists.js.php:84
 #: customers_lists.js.php:163 customers_send_post.js.php:95
 #: customers_stats.js.php:68 dashboard_top_customers.js.php:71
 #: dashboard_top_products.js.php:69 deal.js.php:76 deal.js.php:148
 #: deal.js.php:224 department.js.php:202 department.js.php:342
 #: department.js.php:435 department.js.php:507 department.js.php:589
-#: department.js.php:666 department.js.php:755 dn.js.php:106 dn_list.js.php:89
-#: edit_company_area.js.php:126 edit_company_area.js.php:193
+#: department.js.php:666 department.js.php:755 dn.js.php:79 dn.js.php:164
+#: dn_list.js.php:89 edit_company_area.js.php:126 edit_company_area.js.php:193
 #: edit_company_department.js.php:155 edit_company_department.js.php:223
 #: edit_customer.js.php:248 edit_customer.js.php:332
 #: edit_customer_categories.js.php:89 edit_customer_categories.js.php:163
@@ -298,8 +298,8 @@ msgstr "Notas"
 #: order_in_warehouse.js.php:164 order_in_warehouse_amend.js.php:91
 #: order_in_warehouse_amend.js.php:178 order_pack_aid.js.php:354
 #: order_pick_aid.js.php:360 order_pick_aid.js.php:433
-#: order_restock_aid.js.php:422 order_suspended.js.php:61 orders.js.php:59
-#: orders.js.php:135 orders.js.php:205 orders.js.php:272 orders_list.js.php:89
+#: order_restock_aid.js.php:422 order_suspended.js.php:61 orders.js.php:62
+#: orders.js.php:138 orders.js.php:208 orders.js.php:275 orders_list.js.php:89
 #: orders_lists.js.php:52 orders_lists.js.php:115 orders_lists.js.php:177
 #: orders_server.js.php:98 orders_server.js.php:162 orders_server.js.php:232
 #: page.js.php:111 page.js.php:191 page.php:131 part.js.php:71 part.js.php:147
@@ -346,7 +346,7 @@ msgstr "Notas"
 #: store.js.php:580 store.js.php:670 store.js.php:758 store.js.php:849
 #: store.js.php:927 store.js.php:1003 store.js.php:1079 store.js.php:1154
 #: store.js.php:1229 store.js.php:1317 store_deals.js.php:110
-#: store_deals.js.php:183 store_pending_orders.js.php:69 stores.js.php:153
+#: store_deals.js.php:183 store_pending_orders.js.php:70 stores.js.php:153
 #: stores.js.php:248 stores.js.php:333 stores.js.php:424 supplier.js.php:68
 #: supplier.js.php:149 supplier.js.php:226 supplier.js.php:291
 #: supplier.js.php:379 supplier.js.php:477 supplier.js.php:556
@@ -387,15 +387,15 @@ msgstr "Página"
 #: customer_categories.js.php:88 customer_categories.js.php:159
 #: customer_category.js.php:161 customer_category.js.php:240
 #: customer_category.js.php:310 customer_category_deleted.js.php:94
-#: customers.js.php:138 customers.js.php:236 customers.js.php:326
+#: customers.js.php:135 customers.js.php:237 customers.js.php:327
 #: customers_list.js.php:97 customers_lists.js.php:84
 #: customers_lists.js.php:163 customers_send_post.js.php:95
 #: customers_stats.js.php:68 dashboard_top_customers.js.php:71
 #: dashboard_top_products.js.php:69 deal.js.php:76 deal.js.php:148
 #: deal.js.php:224 department.js.php:202 department.js.php:342
 #: department.js.php:435 department.js.php:507 department.js.php:589
-#: department.js.php:666 department.js.php:755 dn.js.php:106 dn_list.js.php:89
-#: edit_company_area.js.php:126 edit_company_area.js.php:193
+#: department.js.php:666 department.js.php:755 dn.js.php:79 dn.js.php:164
+#: dn_list.js.php:89 edit_company_area.js.php:126 edit_company_area.js.php:193
 #: edit_company_department.js.php:155 edit_company_department.js.php:223
 #: edit_customer.js.php:248 edit_customer.js.php:332
 #: edit_customer_categories.js.php:89 edit_customer_categories.js.php:163
@@ -491,8 +491,8 @@ msgstr "Página"
 #: order_in_warehouse.js.php:164 order_in_warehouse_amend.js.php:91
 #: order_in_warehouse_amend.js.php:178 order_pack_aid.js.php:354
 #: order_pick_aid.js.php:360 order_pick_aid.js.php:433
-#: order_restock_aid.js.php:422 order_suspended.js.php:61 orders.js.php:59
-#: orders.js.php:135 orders.js.php:205 orders.js.php:272 orders_list.js.php:89
+#: order_restock_aid.js.php:422 order_suspended.js.php:61 orders.js.php:62
+#: orders.js.php:138 orders.js.php:208 orders.js.php:275 orders_list.js.php:89
 #: orders_lists.js.php:52 orders_lists.js.php:115 orders_lists.js.php:177
 #: orders_server.js.php:98 orders_server.js.php:162 orders_server.js.php:232
 #: page.js.php:111 page.js.php:191 part.js.php:71 part.js.php:147
@@ -538,7 +538,7 @@ msgstr "Página"
 #: store.js.php:580 store.js.php:670 store.js.php:758 store.js.php:849
 #: store.js.php:927 store.js.php:1003 store.js.php:1079 store.js.php:1154
 #: store.js.php:1229 store.js.php:1317 store_deals.js.php:110
-#: store_deals.js.php:183 store_pending_orders.js.php:69 stores.js.php:153
+#: store_deals.js.php:183 store_pending_orders.js.php:70 stores.js.php:153
 #: stores.js.php:248 stores.js.php:333 stores.js.php:424 supplier.js.php:68
 #: supplier.js.php:149 supplier.js.php:226 supplier.js.php:291
 #: supplier.js.php:379 supplier.js.php:477 supplier.js.php:556
@@ -770,8 +770,8 @@ msgstr[1] "Departamentos"
 #: ar_edit_deals.php:456 ar_edit_marketing.php:831 ar_edit_marketing.php:1005
 #: ar_edit_marketing.php:1554 ar_edit_marketing.php:1790
 #: ar_edit_marketing.php:1989 ar_edit_orders.php:1717 ar_edit_orders.php:2087
-#: ar_edit_orders.php:2437 ar_edit_orders.php:2773 ar_edit_orders.php:3339
-#: ar_edit_orders.php:3598 ar_edit_parts.php:508 ar_edit_parts.php:826
+#: ar_edit_orders.php:2444 ar_edit_orders.php:2780 ar_edit_orders.php:3346
+#: ar_edit_orders.php:3605 ar_edit_parts.php:508 ar_edit_parts.php:826
 #: ar_edit_parts.php:1283 ar_edit_parts.php:1302 ar_edit_porders.php:488
 #: ar_edit_porders.php:767 ar_edit_porders.php:1321 ar_edit_porders.php:1551
 #: ar_edit_sites.php:806 ar_edit_sites.php:1067 ar_edit_sites.php:1789
@@ -783,19 +783,20 @@ msgstr[1] "Departamentos"
 #: ar_edit_warehouse.php:1655 ar_edit_warehouse.php:1837 ar_history.php:298
 #: ar_history.php:698 ar_history.php:1211 ar_import.php:1762
 #: ar_import.php:2189 ar_import.php:2457 ar_import.php:2695
-#: ar_marketing.php:201 ar_orders.php:528 ar_orders.php:1265
-#: ar_orders.php:1570 ar_orders.php:1871 ar_orders.php:2614 ar_orders.php:2908
-#: ar_orders.php:3088 ar_orders.php:3293 ar_orders.php:3498 ar_orders.php:3711
-#: ar_orders.php:4251 ar_parts.php:385 ar_parts.php:905 ar_parts.php:1227
-#: ar_parts.php:1529 ar_parts.php:1767 ar_parts.php:2084 ar_parts.php:2466
-#: ar_parts.php:3371 ar_parts.php:3583 ar_payments.php:180 ar_payments.php:426
-#: ar_porders.php:178 ar_porders.php:435 ar_porders.php:668 ar_porders.php:899
-#: ar_quick_tables.php:148 ar_quick_tables.php:302 ar_quick_tables.php:454
-#: ar_quick_tables.php:668 ar_quick_tables.php:877 ar_quick_tables.php:1049
-#: ar_quick_tables.php:1190 ar_quick_tables.php:1359 ar_quick_tables.php:1534
-#: ar_quick_tables.php:1709 ar_quick_tables.php:1871 ar_quick_tables.php:2038
-#: ar_quick_tables.php:2204 ar_quick_tables.php:2365 ar_quick_tables.php:2516
-#: ar_regions.php:180 ar_regions.php:390 ar_regions.php:583 ar_regions.php:772
+#: ar_marketing.php:201 ar_orders.php:526 ar_orders.php:1080
+#: ar_orders.php:1315 ar_orders.php:1620 ar_orders.php:1921 ar_orders.php:2664
+#: ar_orders.php:2954 ar_orders.php:3134 ar_orders.php:3339 ar_orders.php:3544
+#: ar_orders.php:3757 ar_orders.php:4315 ar_parts.php:385 ar_parts.php:905
+#: ar_parts.php:1227 ar_parts.php:1529 ar_parts.php:1767 ar_parts.php:2084
+#: ar_parts.php:2466 ar_parts.php:3371 ar_parts.php:3583 ar_payments.php:180
+#: ar_payments.php:426 ar_porders.php:178 ar_porders.php:435
+#: ar_porders.php:668 ar_porders.php:899 ar_quick_tables.php:148
+#: ar_quick_tables.php:302 ar_quick_tables.php:454 ar_quick_tables.php:668
+#: ar_quick_tables.php:877 ar_quick_tables.php:1049 ar_quick_tables.php:1190
+#: ar_quick_tables.php:1359 ar_quick_tables.php:1534 ar_quick_tables.php:1709
+#: ar_quick_tables.php:1871 ar_quick_tables.php:2038 ar_quick_tables.php:2204
+#: ar_quick_tables.php:2365 ar_quick_tables.php:2516 ar_regions.php:180
+#: ar_regions.php:390 ar_regions.php:583 ar_regions.php:772
 #: ar_reports.php:1433 ar_reports.php:1710 ar_reports.php:1967
 #: ar_reports.php:2203 ar_reports.php:2575 ar_reports.php:3217
 #: ar_reports.php:3508 ar_reports.php:3765 ar_reports.php:3994
@@ -840,8 +841,8 @@ msgstr "rpp"
 #: ar_edit_deals.php:458 ar_edit_marketing.php:833 ar_edit_marketing.php:1007
 #: ar_edit_marketing.php:1556 ar_edit_marketing.php:1792
 #: ar_edit_marketing.php:1991 ar_edit_orders.php:1719 ar_edit_orders.php:2089
-#: ar_edit_orders.php:2439 ar_edit_orders.php:2775 ar_edit_orders.php:3341
-#: ar_edit_orders.php:3600 ar_edit_parts.php:510 ar_edit_parts.php:828
+#: ar_edit_orders.php:2446 ar_edit_orders.php:2782 ar_edit_orders.php:3348
+#: ar_edit_orders.php:3607 ar_edit_parts.php:510 ar_edit_parts.php:828
 #: ar_edit_parts.php:1285 ar_edit_parts.php:1304 ar_edit_sites.php:808
 #: ar_edit_sites.php:1069 ar_edit_sites.php:1791 ar_edit_sites.php:2030
 #: ar_edit_sites.php:2337 ar_edit_sites.php:2596 ar_edit_staff.php:473
@@ -850,33 +851,34 @@ msgstr "rpp"
 #: ar_edit_warehouse.php:1657 ar_edit_warehouse.php:1839 ar_history.php:300
 #: ar_history.php:700 ar_history.php:1213 ar_import.php:2191
 #: ar_import.php:2459 ar_import.php:2697 ar_marketing.php:203
-#: ar_orders.php:530 ar_orders.php:1267 ar_orders.php:1572 ar_orders.php:1873
-#: ar_orders.php:2616 ar_orders.php:3090 ar_orders.php:3295 ar_orders.php:3500
-#: ar_orders.php:3713 ar_orders.php:4253 ar_parts.php:387 ar_parts.php:907
-#: ar_parts.php:1531 ar_parts.php:1769 ar_parts.php:2086 ar_parts.php:2468
-#: ar_parts.php:3373 ar_parts.php:3585 ar_payments.php:182 ar_payments.php:428
-#: ar_porders.php:180 ar_porders.php:437 ar_porders.php:902
-#: ar_quick_tables.php:150 ar_quick_tables.php:304 ar_quick_tables.php:456
-#: ar_quick_tables.php:670 ar_quick_tables.php:879 ar_quick_tables.php:1051
-#: ar_quick_tables.php:1192 ar_quick_tables.php:1361 ar_quick_tables.php:1536
-#: ar_quick_tables.php:1711 ar_quick_tables.php:1873 ar_quick_tables.php:2040
-#: ar_quick_tables.php:2206 ar_quick_tables.php:2367 ar_quick_tables.php:2518
-#: ar_reports.php:558 ar_reports.php:729 ar_reports.php:911
-#: ar_reports.php:1435 ar_reports.php:1712 ar_reports.php:1969
-#: ar_reports.php:2205 ar_reports.php:3044 ar_reports.php:4262
-#: ar_reports.php:4531 ar_reports.php:4771 ar_reports.php:5312
-#: ar_reports.php:5646 ar_reports.php:6168 ar_reports.php:6520
-#: ar_reports.php:6775 ar_reports.php:7060 ar_sites.php:524 ar_sites.php:920
-#: ar_sites.php:1230 ar_sites.php:1552 ar_sites.php:1819 ar_sites.php:1832
-#: ar_sites.php:2086 ar_sites.php:2133 ar_sites.php:2439 ar_sites.php:2653
-#: ar_sites.php:2666 ar_sites.php:2857 ar_sites.php:2870 ar_sites.php:3218
-#: ar_sites.php:3493 ar_sites.php:3749 ar_sites.php:4135 ar_staff.php:269
-#: ar_staff.php:522 ar_staff.php:1247 ar_staff.php:1483 ar_staff.php:1724
-#: ar_suppliers.php:268 ar_suppliers.php:695 ar_suppliers.php:1321
-#: ar_suppliers.php:1903 ar_suppliers.php:2242 ar_users.php:1050
-#: ar_users.php:1460 ar_users.php:1702 ar_warehouse.php:324
-#: ar_warehouse.php:739 ar_warehouse.php:1063 ar_warehouse.php:1422
-#: ar_warehouse.php:1652 ar_warehouse.php:1905 ar_warehouse.php:2138
+#: ar_orders.php:528 ar_orders.php:1082 ar_orders.php:1317 ar_orders.php:1622
+#: ar_orders.php:1923 ar_orders.php:2666 ar_orders.php:3136 ar_orders.php:3341
+#: ar_orders.php:3546 ar_orders.php:3759 ar_orders.php:4317 ar_parts.php:387
+#: ar_parts.php:907 ar_parts.php:1531 ar_parts.php:1769 ar_parts.php:2086
+#: ar_parts.php:2468 ar_parts.php:3373 ar_parts.php:3585 ar_payments.php:182
+#: ar_payments.php:428 ar_porders.php:180 ar_porders.php:437
+#: ar_porders.php:902 ar_quick_tables.php:150 ar_quick_tables.php:304
+#: ar_quick_tables.php:456 ar_quick_tables.php:670 ar_quick_tables.php:879
+#: ar_quick_tables.php:1051 ar_quick_tables.php:1192 ar_quick_tables.php:1361
+#: ar_quick_tables.php:1536 ar_quick_tables.php:1711 ar_quick_tables.php:1873
+#: ar_quick_tables.php:2040 ar_quick_tables.php:2206 ar_quick_tables.php:2367
+#: ar_quick_tables.php:2518 ar_reports.php:558 ar_reports.php:729
+#: ar_reports.php:911 ar_reports.php:1435 ar_reports.php:1712
+#: ar_reports.php:1969 ar_reports.php:2205 ar_reports.php:3044
+#: ar_reports.php:4262 ar_reports.php:4531 ar_reports.php:4771
+#: ar_reports.php:5312 ar_reports.php:5646 ar_reports.php:6168
+#: ar_reports.php:6520 ar_reports.php:6775 ar_reports.php:7060
+#: ar_sites.php:524 ar_sites.php:920 ar_sites.php:1230 ar_sites.php:1552
+#: ar_sites.php:1819 ar_sites.php:1832 ar_sites.php:2086 ar_sites.php:2133
+#: ar_sites.php:2439 ar_sites.php:2653 ar_sites.php:2666 ar_sites.php:2857
+#: ar_sites.php:2870 ar_sites.php:3218 ar_sites.php:3493 ar_sites.php:3749
+#: ar_sites.php:4135 ar_staff.php:269 ar_staff.php:522 ar_staff.php:1247
+#: ar_staff.php:1483 ar_staff.php:1724 ar_suppliers.php:268
+#: ar_suppliers.php:695 ar_suppliers.php:1321 ar_suppliers.php:1903
+#: ar_suppliers.php:2242 ar_users.php:1050 ar_users.php:1460 ar_users.php:1702
+#: ar_warehouse.php:324 ar_warehouse.php:739 ar_warehouse.php:1063
+#: ar_warehouse.php:1422 ar_warehouse.php:1652 ar_warehouse.php:1905
+#: ar_warehouse.php:2138
 msgid "Showing all"
 msgstr "mostrando todos"
 
@@ -949,10 +951,10 @@ msgstr "No hay ningún departamento con esta descripción"
 #: ar_edit_dashboard.php:324 ar_edit_deals.php:269 ar_edit_deals.php:272
 #: ar_edit_deals.php:476 ar_edit_deals.php:479 ar_edit_orders.php:1736
 #: ar_edit_orders.php:1739 ar_edit_orders.php:2106 ar_edit_orders.php:2109
-#: ar_edit_orders.php:2450 ar_edit_orders.php:2456 ar_edit_orders.php:2462
-#: ar_edit_orders.php:2469 ar_edit_orders.php:2786 ar_edit_orders.php:2792
-#: ar_edit_orders.php:2798 ar_edit_orders.php:2805 ar_edit_orders.php:3360
-#: ar_edit_orders.php:3363 ar_edit_orders.php:3619 ar_edit_orders.php:3622
+#: ar_edit_orders.php:2457 ar_edit_orders.php:2463 ar_edit_orders.php:2469
+#: ar_edit_orders.php:2476 ar_edit_orders.php:2793 ar_edit_orders.php:2799
+#: ar_edit_orders.php:2805 ar_edit_orders.php:2812 ar_edit_orders.php:3367
+#: ar_edit_orders.php:3370 ar_edit_orders.php:3626 ar_edit_orders.php:3629
 #: ar_edit_parts.php:525 ar_edit_parts.php:528 ar_edit_parts.php:843
 #: ar_edit_parts.php:846 ar_edit_parts.php:1322 ar_edit_porders.php:505
 #: ar_edit_porders.php:508 ar_edit_porders.php:785 ar_edit_porders.php:788
@@ -974,12 +976,12 @@ msgstr "No hay ningún departamento con esta descripción"
 #: ar_history.php:1227 ar_history.php:1233 ar_history.php:1239
 #: ar_import.php:1775 ar_import.php:2198 ar_import.php:2204 ar_import.php:2466
 #: ar_import.php:2472 ar_import.php:2704 ar_marketing.php:216
-#: ar_orders.php:557 ar_orders.php:560 ar_orders.php:563 ar_orders.php:566
-#: ar_orders.php:569 ar_orders.php:1295 ar_orders.php:1298 ar_orders.php:1301
-#: ar_orders.php:1304 ar_orders.php:1307 ar_orders.php:1582 ar_orders.php:1588
-#: ar_orders.php:1594 ar_orders.php:1905 ar_orders.php:1908 ar_orders.php:1911
-#: ar_orders.php:1914 ar_orders.php:1917 ar_orders.php:2633 ar_orders.php:3730
-#: ar_orders.php:4270 ar_orders.php:4273 ar_parts.php:414 ar_parts.php:417
+#: ar_orders.php:555 ar_orders.php:558 ar_orders.php:561 ar_orders.php:564
+#: ar_orders.php:567 ar_orders.php:1345 ar_orders.php:1348 ar_orders.php:1351
+#: ar_orders.php:1354 ar_orders.php:1357 ar_orders.php:1632 ar_orders.php:1638
+#: ar_orders.php:1644 ar_orders.php:1955 ar_orders.php:1958 ar_orders.php:1961
+#: ar_orders.php:1964 ar_orders.php:1967 ar_orders.php:2683 ar_orders.php:3776
+#: ar_orders.php:4334 ar_orders.php:4337 ar_parts.php:414 ar_parts.php:417
 #: ar_parts.php:420 ar_parts.php:423 ar_parts.php:426 ar_parts.php:932
 #: ar_parts.php:936 ar_parts.php:939 ar_parts.php:942 ar_parts.php:2104
 #: ar_parts.php:2485 ar_parts.php:3385 ar_parts.php:3391 ar_parts.php:3600
@@ -1067,12 +1069,12 @@ msgstr "No en Venta"
 
 #: ar_assets.php:890 ar_assets.php:1686 ar_assets.php:2339 ar_assets.php:2821
 #: ar_assets.php:3417 ar_assets.php:3753 ar_assets.php:4058 ar_assets.php:4398
-#: ar_deals.php:1711 ar_orders.php:982 ar_reports.php:4377 ar_reports.php:4619
+#: ar_deals.php:1711 ar_orders.php:980 ar_reports.php:4377 ar_reports.php:4619
 #: ar_splinters.php:173 ar_splinters.php:323 ar_splinters.php:474
 #: class.Page.php:3893 class.Page.php:3897 customer.js.php:434
 #: customer.js.php:645 dn_list.js.php:23 invoice_category.js.php:96
 #: invoices_list.js.php:21 new_invoices_list.js.php:417
-#: new_orders_list.js.php:269 order.js.php:42 orders.js.php:98
+#: new_orders_list.js.php:269 order.js.php:42 orders.js.php:101
 #: orders_list.js.php:23 orders_server.js.php:188 pending_orders.js.php:26
 #: report_customers.js.php:34 report_pending_orders.js.php:18
 #: report_sales_components.js.php:20 report_sales_interval.js.php:44
@@ -1092,8 +1094,8 @@ msgstr "Total"
 #: ar_assets.php:1222 ar_assets.php:7076 ar_edit_assets.php:1339
 #: ar_edit_orders.php:1715 ar_edit_orders.php:2085 ar_edit_parts.php:506
 #: ar_edit_porders.php:486 ar_edit_porders.php:764 ar_edit_porders.php:1319
-#: ar_edit_suppliers.php:791 ar_fork.php:104 ar_orders.php:2612
-#: ar_orders.php:4249 ar_parts.php:3581 ar_sites.php:3745 ar_suppliers.php:691
+#: ar_edit_suppliers.php:791 ar_fork.php:104 ar_orders.php:2662
+#: ar_orders.php:4313 ar_parts.php:3581 ar_sites.php:3745 ar_suppliers.php:691
 #: ar_suppliers.php:2238
 msgid "product"
 msgid_plural "products"
@@ -1102,25 +1104,25 @@ msgstr[1] "productos"
 
 #: ar_assets.php:1233 ar_assets.php:7087 ar_edit_orders.php:1726
 #: ar_edit_orders.php:2096 ar_edit_porders.php:495 ar_edit_porders.php:1328
-#: ar_edit_porders.php:1558 ar_orders.php:4260
+#: ar_edit_porders.php:1558 ar_orders.php:4324
 msgid "There isn't any product with code like "
 msgstr "No hay ningún producto con un código como"
 
 #: ar_assets.php:1236 ar_assets.php:7090 ar_edit_orders.php:1729
 #: ar_edit_orders.php:2099 ar_edit_porders.php:498 ar_edit_porders.php:1331
-#: ar_edit_porders.php:1561 ar_orders.php:4263
+#: ar_edit_porders.php:1561 ar_orders.php:4327
 msgid "There isn't any product with name like "
 msgstr "No hay ningún producto con nombre como"
 
 #: ar_assets.php:1243 ar_assets.php:7097 ar_edit_orders.php:1736
 #: ar_edit_orders.php:2106 ar_edit_porders.php:505 ar_edit_porders.php:1338
-#: ar_edit_porders.php:1568 ar_orders.php:4270 ar_reports.php:1738
+#: ar_edit_porders.php:1568 ar_orders.php:4334 ar_reports.php:1738
 msgid "products with code like"
 msgstr "productos con un código como"
 
 #: ar_assets.php:1246 ar_assets.php:7100 ar_edit_orders.php:1739
 #: ar_edit_orders.php:2109 ar_edit_porders.php:508 ar_edit_porders.php:1341
-#: ar_edit_porders.php:1571 ar_orders.php:4273
+#: ar_edit_porders.php:1571 ar_orders.php:4337
 msgid "products with name like"
 msgstr "productos con nombre como"
 
@@ -1128,15 +1130,15 @@ msgstr "productos con nombre como"
 #: ar_assets.php:1691 ar_assets.php:1695 ar_edit_assets.php:1375
 #: ar_edit_assets.php:1380 ar_edit_assets.php:1399 ar_edit_assets.php:1431
 #: class.Customer.php:2894 class.EmailSend.php:86 class.Product.php:474
-#: class.Product.php:2981 class.Product.php:3062 common_functions.php:689
-#: common_functions.php:693 dashboard_block.php:376
+#: class.Product.php:2981 class.Product.php:3062 common_functions.php:675
+#: common_functions.php:679 dashboard_block.php:376
 msgid "ND"
 msgstr "ND"
 
 #: ar_assets.php:1522 ar_assets.php:1533 ar_reports.php:5480
 #: ar_reports.php:5481 ar_reports.php:5482 ar_reports.php:5817
 #: ar_reports.php:5818 ar_reports.php:5819 class.TimeSeries.php:3178
-#: class.TimeSeries.php:3299 common_functions.php:685 common_functions.php:688
+#: class.TimeSeries.php:3299 common_functions.php:671 common_functions.php:674
 #: new_delivery_notes_list.php:100
 msgid "NA"
 msgstr "NA"
@@ -1205,14 +1207,14 @@ msgstr "Caja"
 msgid "None"
 msgstr "Ninguno"
 
-#: ar_assets.php:1578 ar_orders.php:823 ar_parts.php:674 ar_payments.php:259
+#: ar_assets.php:1578 ar_orders.php:821 ar_parts.php:674 ar_payments.php:259
 #: ar_quick_tables.php:1933 ar_sites.php:654 ar_sites.php:1022
-#: class.Category.php:2243 class.Invoice.php:1647 class.Payment.php:159
+#: class.Category.php:2243 class.Invoice.php:1649 class.Payment.php:159
 #: edit_family.php:297 edit_location.php:66 edit_part.php:92
 #: edit_product.php:73 edit_supplier_product.php:84 edit_warehouse.js.php:4
-#: edit_warehouse.php:33 edit_warehouse_area.js.php:4 invoice.pdf.php:176
+#: edit_warehouse.php:33 edit_warehouse_area.js.php:4 invoice.pdf.php:182
 #: new_customers_list.php:171 new_post_order.js.php:401
-#: order_common_functions.php:163 porder.php:164 smarty.php:50 smarty.php:278
+#: order_common_functions.php:173 porder.php:164 smarty.php:50 smarty.php:278
 #: smarty.php:299 smarty.php:317 smarty.php:344 smarty.php:2123
 #: smarty.php:2162 smarty.php:4343 smarty.php:4358 smarty.php:5429
 #: smarty.php:8204 smarty.php:8237 smarty.php:9053 smarty.php:9113
@@ -1245,7 +1247,7 @@ msgstr "auto"
 #: ar_assets.php:1601 ar_assets.php:7855 ar_edit_assets.php:1491
 #: ar_edit_assets.php:1510 ar_edit_orders.php:1812 ar_edit_orders.php:2179
 #: ar_edit_parts.php:614 ar_edit_sites.php:2648 ar_edit_sites.php:2674
-#: ar_orders.php:4346 ar_sites.php:677 ar_sites.php:3814 ar_sites.php:4194
+#: ar_orders.php:4410 ar_sites.php:677 ar_sites.php:3814 ar_sites.php:4194
 #: class.Page.php:4973 class.Product.php:5295 class.Product.php:5534
 #: class.Product.php:5570 edit_family.js.php:810 new_parts_list.php:102
 #: new_products_list.php:87 product_common_functions.php:32 smarty.php:3905
@@ -1256,10 +1258,10 @@ msgid "Offline"
 msgstr "Fuera de Stock"
 
 #: ar_assets.php:1606 ar_assets.php:7847 ar_edit_assets.php:1502
-#: ar_edit_orders.php:1804 ar_edit_orders.php:2171 ar_edit_orders.php:3425
-#: ar_edit_orders.php:3682 ar_edit_orders.php:4294 ar_edit_parts.php:606
-#: ar_edit_sites.php:2640 ar_edit_sites.php:2679 ar_orders.php:1081
-#: ar_orders.php:4338 ar_orders.php:4437 ar_parts.php:652 ar_sites.php:3819
+#: ar_edit_orders.php:1804 ar_edit_orders.php:2171 ar_edit_orders.php:3432
+#: ar_edit_orders.php:3689 ar_edit_orders.php:4301 ar_edit_parts.php:606
+#: ar_edit_sites.php:2640 ar_edit_sites.php:2679 ar_orders.php:4402
+#: ar_orders.php:4501 ar_parts.php:652 ar_sites.php:3819
 #: class.DeliveryNote.php:1566 class.Page.php:1729 class.Page.php:1885
 #: class.Page.php:2034 class.Page.php:2196 class.Page.php:2297
 #: class.Product.php:5287 class.Product.php:5559 dn.pdf.php:65
@@ -1365,7 +1367,7 @@ msgid "charges with description like"
 msgstr "Cargos con descripción"
 
 #: ar_assets.php:5009 ar_edit_assets.php:3168 ar_edit_contacts.php:3993
-#: ar_edit_orders.php:4347 ar_edit_orders.php:4444 ar_edit_orders.php:4542
+#: ar_edit_orders.php:4354 ar_edit_orders.php:4451 ar_edit_orders.php:4549
 msgid "Another list has the same name"
 msgstr "Otra lista tiene el mismo nombre"
 
@@ -1373,7 +1375,7 @@ msgstr "Otra lista tiene el mismo nombre"
 msgid "No products match this criteria"
 msgstr "Ningún producto coincide con este criterio"
 
-#: ar_assets.php:5195 ar_orders.php:3086 ar_orders.php:3291 ar_orders.php:3496
+#: ar_assets.php:5195 ar_orders.php:3132 ar_orders.php:3337 ar_orders.php:3542
 #: ar_parts.php:1225 department.php:229 family.php:210 family.php:246
 #: family_category.php:199 family_category.php:378 product_category.php:186
 #: site.php:188 sites.php:151 smarty.php:386 smarty.php:392 smarty.php:449
@@ -1390,27 +1392,27 @@ msgstr[1] "Listas"
 msgid "Showing all Lists"
 msgstr "mostrando todas las listas"
 
-#: ar_assets.php:5241 ar_contacts.php:4914 ar_orders.php:3135
-#: ar_orders.php:3340 ar_orders.php:3545 ar_parts.php:1271 smarty.php:15500
+#: ar_assets.php:5241 ar_contacts.php:4914 ar_orders.php:3181
+#: ar_orders.php:3386 ar_orders.php:3591 ar_parts.php:1271 smarty.php:15500
 #: smarty.php:15692 smarty.php:16043 smarty.php:16298 smarty.php:16448
 #: smarty.php:16799
 msgid "Static"
 msgstr "Fija"
 
-#: ar_assets.php:5244 ar_contacts.php:4918 ar_orders.php:3138
-#: ar_orders.php:3343 ar_orders.php:3548 ar_parts.php:1274 smarty.php:15503
+#: ar_assets.php:5244 ar_contacts.php:4918 ar_orders.php:3184
+#: ar_orders.php:3389 ar_orders.php:3594 ar_parts.php:1274 smarty.php:15503
 #: smarty.php:15695 smarty.php:16046 smarty.php:16301 smarty.php:16451
 #: smarty.php:16802
 msgid "Dynamic"
 msgstr "Dinámico"
 
-#: ar_assets.php:5256 ar_orders.php:3150 ar_orders.php:3355 ar_orders.php:3560
+#: ar_assets.php:5256 ar_orders.php:3196 ar_orders.php:3401 ar_orders.php:3606
 #: ar_parts.php:1288
 msgid "Add List"
 msgstr "Agregar lista"
 
 #: ar_assets.php:5530 ar_contacts.php:5510 ar_deals.php:206 ar_deals.php:458
-#: ar_edit_categories.php:2719 ar_edit_categories.php:3098 ar_orders.php:1231
+#: ar_edit_categories.php:2719 ar_edit_categories.php:3098 ar_orders.php:1281
 #: customer.php:296 customers_address_label.pdf.php:283
 msgid "a unknown country"
 msgstr "un país desconocido"
@@ -1532,7 +1534,7 @@ msgstr "Ningún cliente con el equilibrio"
 #: ar_contacts.php:4865 ar_contacts.php:5146 ar_contacts.php:5597
 #: ar_deals.php:285 ar_deals.php:522 ar_edit_categories.php:2048
 #: ar_edit_categories.php:2800 ar_edit_categories.php:3179
-#: ar_edit_contacts.php:3158 ar_orders.php:557 ar_orders.php:1295
+#: ar_edit_contacts.php:3158 ar_orders.php:555 ar_orders.php:1345
 #: ar_quick_tables.php:468 ar_quick_tables.php:891 ar_quick_tables.php:1063
 #: ar_quick_tables.php:2056
 msgid "with name like"
@@ -1575,13 +1577,13 @@ msgstr "que el fin último"
 #: ar_contacts.php:5618 ar_deals.php:303 ar_deals.php:306 ar_deals.php:528
 #: ar_deals.php:531 ar_edit_categories.php:2818 ar_edit_categories.php:2821
 #: ar_edit_categories.php:3197 ar_edit_categories.php:3200
-#: ar_edit_contacts.php:3176 ar_edit_contacts.php:3179 ar_orders.php:563
-#: ar_orders.php:566 ar_orders.php:1301 ar_orders.php:1304
+#: ar_edit_contacts.php:3176 ar_edit_contacts.php:3179 ar_orders.php:561
+#: ar_orders.php:564 ar_orders.php:1351 ar_orders.php:1354
 msgid "which balance"
 msgstr "que el equilibrio"
 
-#: ar_assets.php:5837 ar_assets.php:5856 ar_edit_orders.php:2770
-#: ar_fork.php:98 ar_orders.php:1568 ar_orders.php:1594 ar_reports.php:6771
+#: ar_assets.php:5837 ar_assets.php:5856 ar_edit_orders.php:2777
+#: ar_fork.php:98 ar_orders.php:1618 ar_orders.php:1644 ar_reports.php:6771
 #: ar_reports.php:6797 ar_reports.php:7056 ar_reports.php:7082
 msgid "delivery note"
 msgid_plural "delivery notes"
@@ -1657,7 +1659,7 @@ msgstr "No hay ninguna categoría con etiqueta como"
 msgid "pages with label"
 msgstr "Páginas"
 
-#: ar_assets.php:7866 ar_edit_orders.php:5007 ar_parts.php:3431
+#: ar_assets.php:7866 ar_edit_orders.php:5010 ar_parts.php:3431
 #: ar_users.php:1320 ar_users.php:1519 ar_warehouse.php:1510
 #: ar_warehouse.php:2248 class.Customer.php:2838 class.Customer.php:2877
 #: edit_customer_category.js.php:7 edit_family_category.js.php:7
@@ -1681,7 +1683,7 @@ msgstr "Páginas"
 msgid "Yes"
 msgstr "Si"
 
-#: ar_assets.php:7869 ar_edit_orders.php:5007 ar_parts.php:3434
+#: ar_assets.php:7869 ar_edit_orders.php:5010 ar_parts.php:3434
 #: ar_users.php:1322 ar_users.php:1521 ar_warehouse.php:1510
 #: ar_warehouse.php:2248 class.Customer.php:2841 class.Customer.php:2877
 #: edit_customer_category.js.php:7 edit_family_category.js.php:7
@@ -1790,25 +1792,25 @@ msgid "Category View"
 msgstr "Vista de Categorias"
 
 #: ar_categories.php:600 ar_contacts.php:4446 ar_edit_categories.php:459
-#: ar_edit_categories.php:2021 ar_orders.php:3709 ar_parts.php:2464
+#: ar_edit_categories.php:2021 ar_orders.php:3755 ar_parts.php:2464
 #: ar_reports.php:3043 ar_reports.php:5642 ar_suppliers.php:1317
 msgid "category"
 msgid_plural "categories"
 msgstr[0] "categoria"
 msgstr[1] "categorias"
 
-#: ar_categories.php:613 ar_orders.php:3722
+#: ar_categories.php:613 ar_orders.php:3768
 msgid "There isn't any category with name like "
 msgstr "No hay ninguna categoría con nombre similar"
 
-#: ar_categories.php:621 ar_orders.php:3730
+#: ar_categories.php:621 ar_orders.php:3776
 msgid "categories with name like"
 msgstr "categorias con nombre como"
 
 #: ar_contacts.php:387 ar_edit_marketing.php:1086 class.Customer.php:5005
 #: class.Customer.php:5085 class.Customer.php:5264 edit_page.js.php:714
 #: invoice_category.js.php:93 new_delivery_notes_list.php:87
-#: new_invoices_list.js.php:414 order.php:837 orders.js.php:95
+#: new_invoices_list.js.php:414 order.php:837 orders.js.php:98
 #: plot_data.csv.php:602 report_out_of_stock.js.php:22
 #: report_out_of_stock.js.php:232 report_out_of_stock.php:77
 #: report_sales_with_no_tax.js.php:32 smarty.php:1814 smarty.php:11927
@@ -1845,7 +1847,7 @@ msgstr "se ocupa de nombre como"
 msgid "deals with description like"
 msgstr "Ofertas con descripción"
 
-#: ar_contacts.php:469 ar_contacts.php:483 ar_orders.php:635 ar_orders.php:649
+#: ar_contacts.php:469 ar_contacts.php:483 ar_orders.php:633 ar_orders.php:647
 #: report_sales_with_no_tax.js.php:112 report_sales_with_no_tax.js.php:188
 #: report_tax_ES1.js.php:36 send_confirmation_email_function.php:162
 #: smarty.php:17387 smarty.php:17738 smarty.php:17954 smarty.php:18068
@@ -1853,7 +1855,7 @@ msgstr "Ofertas con descripción"
 msgid "Net"
 msgstr "Neto"
 
-#: ar_contacts.php:472 ar_contacts.php:486 ar_orders.php:638 ar_orders.php:652
+#: ar_contacts.php:472 ar_contacts.php:486 ar_orders.php:636 ar_orders.php:650
 #: report_sales_components.js.php:19 report_sales_with_no_tax.js.php:114
 #: report_sales_with_no_tax.js.php:189
 #: send_confirmation_email_function.php:171 smarty.php:2372 smarty.php:2378
@@ -1863,7 +1865,7 @@ msgstr "Neto"
 msgid "Tax"
 msgstr "Impuestos"
 
-#: ar_contacts.php:488 ar_orders.php:654 report_packers.js.php:42
+#: ar_contacts.php:488 ar_orders.php:652 report_packers.js.php:42
 #: report_pickers.js.php:41 smarty.php:7334 smarty.php:8813 smarty.php:13427
 #: smarty.php:13451
 msgid "Errors"
@@ -1886,8 +1888,8 @@ msgstr "No hay ninguna nota de entrega como"
 msgid "delivery notes with number like"
 msgstr "No notas de entrega"
 
-#: ar_contacts.php:887 ar_contacts.php:961 ar_orders.php:1992
-#: class.Invoice.php:2440 invoice.pdf.php:65 invoice.pdf.php:88 invoice.php:37
+#: ar_contacts.php:887 ar_contacts.php:961 ar_orders.php:2042
+#: class.Invoice.php:2442 invoice.pdf.php:71 invoice.pdf.php:94 invoice.php:37
 #: invoice.php:40
 msgid "Invoice"
 msgid_plural "Invoice"
@@ -1903,8 +1905,8 @@ msgstr "No hay ningún pedido con este número"
 msgid "invoices with number like"
 msgstr "Número de facturas"
 
-#: ar_contacts.php:953 ar_orders.php:1983 ar_reports.php:2691
-#: invoice.pdf.php:70 invoices_csv.php:131 order_common_functions.php:185
+#: ar_contacts.php:953 ar_orders.php:2033 ar_reports.php:2691
+#: invoice.pdf.php:76 invoices_csv.php:131 order_common_functions.php:195
 #: send_confirmation_email_function.php:191 smarty.php:14153 smarty.php:14213
 #: smarty.php:14348 smarty.php:17396 smarty.php:17552 smarty.php:17744
 #: smarty.php:17963 smarty.php:18074 smarty.php:18131 smarty.php:18281
@@ -1912,27 +1914,27 @@ msgstr "Número de facturas"
 msgid "Paid"
 msgstr "Pagado"
 
-#: ar_contacts.php:955 ar_orders.php:1985 class.Invoice.php:1682
-#: order_common_functions.php:193 smarty.php:14156 smarty.php:14216
+#: ar_contacts.php:955 ar_orders.php:2035 class.Invoice.php:1684
+#: order_common_functions.php:203 smarty.php:14156 smarty.php:14216
 #: smarty.php:14351 smarty.php:19067 smarty.php:19109
 msgid "Partially Paid"
 msgstr "Pagado parcialmente"
 
-#: ar_contacts.php:958 ar_orders.php:1988 ar_reports.php:2693
+#: ar_contacts.php:958 ar_orders.php:2038 ar_reports.php:2693
 #: invoices_csv.php:133
 msgid "No Paid"
 msgstr "No hay pago"
 
-#: ar_contacts.php:963 ar_orders.php:1994 class.Invoice.php:2442
-#: invoice.pdf.php:92
+#: ar_contacts.php:963 ar_orders.php:2044 class.Invoice.php:2444
+#: invoice.pdf.php:98
 msgid "Credit Note"
 msgstr "Nota de Crédito"
 
-#: ar_contacts.php:965 ar_edit_payments.php:862 ar_orders.php:811
-#: ar_orders.php:1996 ar_orders.php:2399 class.Invoice.php:2444
-#: class.Payment.php:385 invoice.pdf.php:96 invoice.pdf.php:164 invoice.php:43
-#: invoice.php:45 new_post_order.js.php:400 smarty.php:16688 smarty.php:16718
-#: smarty.php:18641
+#: ar_contacts.php:965 ar_edit_payments.php:862 ar_orders.php:809
+#: ar_orders.php:2046 ar_orders.php:2449 class.Invoice.php:2446
+#: class.Payment.php:385 invoice.pdf.php:102 invoice.pdf.php:170
+#: invoice.php:43 invoice.php:45 new_post_order.js.php:400 smarty.php:16688
+#: smarty.php:16718 smarty.php:18641
 msgid "Refund"
 msgstr "Devolución"
 
@@ -2194,7 +2196,7 @@ msgid "Send"
 msgstr "Enviar"
 
 #: ar_contacts.php:5744 ar_edit_orders.php:1869 ar_import.php:2252
-#: ar_import.php:2746 ar_orders.php:4402 ar_sites.php:3275
+#: ar_import.php:2746 ar_orders.php:4466 ar_sites.php:3275
 #: class.DeliveryNote.php:2590 class.Order.php:778 class.Order.php:1957
 #: class.Order.php:3087 class.Payment.php:121 class.PurchaseOrder.php:146
 #: class.PurchaseOrder.php:475 new_delivery_notes_list.php:71
@@ -2232,10 +2234,10 @@ msgstr "Marcar como Enviado"
 
 #: ar_contacts_customers.php:455 ar_deals.php:490 ar_deals.php:522
 #: ar_deals.php:525 ar_deals.php:528 ar_deals.php:531 ar_deals.php:534
-#: ar_fork.php:92 ar_orders.php:526 ar_orders.php:557 ar_orders.php:560
-#: ar_orders.php:563 ar_orders.php:566 ar_orders.php:569 ar_orders.php:1263
-#: ar_orders.php:1295 ar_orders.php:1298 ar_orders.php:1301 ar_orders.php:1304
-#: ar_orders.php:1307 ar_orders.php:2906 ar_porders.php:172 ar_porders.php:430
+#: ar_fork.php:92 ar_orders.php:524 ar_orders.php:555 ar_orders.php:558
+#: ar_orders.php:561 ar_orders.php:564 ar_orders.php:567 ar_orders.php:1313
+#: ar_orders.php:1345 ar_orders.php:1348 ar_orders.php:1351 ar_orders.php:1354
+#: ar_orders.php:1357 ar_orders.php:2952 ar_porders.php:172 ar_porders.php:430
 #: ar_porders.php:663 ar_porders.php:891 ar_reports.php:2201
 #: ar_reports.php:2224 ar_reports.php:2227 ar_splinters.php:1484
 #: ar_top_customer.php:455
@@ -2281,32 +2283,32 @@ msgid_plural "offers"
 msgstr[0] "oferta"
 msgstr[1] "ofertas"
 
-#: ar_deals.php:502 ar_orders.php:537 ar_orders.php:1275 ar_reports.php:2212
+#: ar_deals.php:502 ar_orders.php:535 ar_orders.php:1325 ar_reports.php:2212
 #, fuzzy
 msgid "No order with customer like"
 msgstr "No hay ningún cliente como"
 
-#: ar_deals.php:505 ar_orders.php:540 ar_orders.php:1278 ar_reports.php:2215
+#: ar_deals.php:505 ar_orders.php:538 ar_orders.php:1328 ar_reports.php:2215
 #, fuzzy
 msgid "No order with number like"
 msgstr "con número como"
 
-#: ar_deals.php:508 ar_deals.php:511 ar_orders.php:543 ar_orders.php:546
-#: ar_orders.php:1281 ar_orders.php:1284
+#: ar_deals.php:508 ar_deals.php:511 ar_orders.php:541 ar_orders.php:544
+#: ar_orders.php:1331 ar_orders.php:1334
 #, fuzzy
 msgid "No order with balance"
 msgstr "Balance"
 
-#: ar_deals.php:514 ar_orders.php:549 ar_orders.php:1287
+#: ar_deals.php:514 ar_orders.php:547 ar_orders.php:1337
 #, fuzzy
 msgid "No order from"
 msgstr "Tomar los valores de la Orden de Compra"
 
-#: ar_deals.php:525 ar_orders.php:560 ar_orders.php:1298
+#: ar_deals.php:525 ar_orders.php:558 ar_orders.php:1348
 msgid "with Number like"
 msgstr "con número como"
 
-#: ar_deals.php:534 ar_orders.php:569 ar_orders.php:1307
+#: ar_deals.php:534 ar_orders.php:567 ar_orders.php:1357
 #: class.PartLocation.php:917 class.PartLocation.php:924
 #: class.Product.php:3098 class.Product.php:3198 class.Product.php:3380
 #: class.Product.php:3462 class.Product.php:5612 class.SupplierProduct.php:704
@@ -2365,7 +2367,7 @@ msgstr "No hay ningún acuerdo con ese nombre"
 #: ar_deals.php:1050 ar_deals.php:1339
 #, fuzzy
 msgid "deals with code like"
-msgstr "se ocupa de nombre como"
+msgstr "se ocupa de la descripción como"
 
 #: ar_deals.php:1111 ar_deals.php:1388
 msgid "Present"
@@ -2594,7 +2596,7 @@ msgstr "Restablecer"
 #: ar_edit_assets.php:2392
 #, fuzzy
 msgid "when items gross amount is less than"
-msgstr "Menor que"
+msgstr "Menor o igual que"
 
 #: ar_edit_assets.php:2395
 msgid "when items gross amount is more than"
@@ -2620,7 +2622,7 @@ msgstr "Suspendido"
 msgid "Activate"
 msgstr "Activo"
 
-#: ar_edit_assets.php:2449 ar_edit_orders.php:1884 ar_orders.php:4417
+#: ar_edit_assets.php:2449 ar_edit_orders.php:1884 ar_orders.php:4481
 #: class.DealComponent.php:454 class.Order.php:993 class.Order.php:1063
 #: class.Order.php:1960 class.Order.php:3090 orders_server.js.php:59
 #: smarty.php:4847 smarty.php:6425 smarty.php:18884 smarty.php:18932
@@ -2629,12 +2631,13 @@ msgid "Suspended"
 msgstr "Suspendido"
 
 #: ar_edit_assets.php:2597 ar_edit_assets.php:2674 ar_edit_categories.php:1040
-#: ar_edit_categories.php:1545 ar_edit_orders.php:3337 ar_edit_orders.php:3360
-#: ar_edit_orders.php:3363 ar_edit_orders.php:3596 ar_edit_orders.php:3619
-#: ar_edit_orders.php:3622 ar_edit_parts.php:702 ar_edit_parts.php:946
+#: ar_edit_categories.php:1545 ar_edit_orders.php:3344 ar_edit_orders.php:3367
+#: ar_edit_orders.php:3370 ar_edit_orders.php:3603 ar_edit_orders.php:3626
+#: ar_edit_orders.php:3629 ar_edit_parts.php:702 ar_edit_parts.php:946
 #: ar_edit_porders.php:1549 ar_edit_suppliers.php:1280 ar_fork.php:101
-#: ar_parts.php:383 ar_parts.php:903 ar_quick_tables.php:666
-#: ar_reports.php:1431 ar_warehouse.php:1236 ar_warehouse.php:1418
+#: ar_orders.php:1078 ar_parts.php:383 ar_parts.php:903
+#: ar_quick_tables.php:666 ar_reports.php:1431 ar_warehouse.php:1236
+#: ar_warehouse.php:1418
 msgid "part"
 msgid_plural "parts"
 msgstr[0] "pieza"
@@ -2692,7 +2695,7 @@ msgstr "Número de piezas asociadas con esta categoría"
 #: ar_parts.php:913 ar_warehouse.php:1428 ar_warehouse.php:2149
 #, fuzzy
 msgid "There isn't any part with "
-msgstr "No hay ninguna pieza con"
+msgstr "No hay pieza con referencia"
 
 #: ar_edit_categories.php:1054 ar_edit_categories.php:1559 ar_parts.php:399
 #: ar_parts.php:917 ar_quick_tables.php:680 ar_warehouse.php:1432
@@ -2963,8 +2966,8 @@ msgstr[1] "áreas de la empresa"
 msgid "Company Area not found"
 msgstr "Empresa Área no se encuentra"
 
-#: ar_edit_contacts.php:3873 ar_edit_orders.php:4644 ar_edit_orders.php:4681
-#: ar_edit_orders.php:4718
+#: ar_edit_contacts.php:3873 ar_edit_orders.php:4651 ar_edit_orders.php:4688
+#: ar_edit_orders.php:4725
 msgid "Forbidden Operation"
 msgstr "Prohibida la operación"
 
@@ -3108,7 +3111,7 @@ msgstr "Familia"
 #: class.Product.php:2318 class.Product.php:2361 class.Product.php:3098
 #: class.Product.php:3198 class.Product.php:3380 class.Product.php:3462
 #: class.Product.php:5611 class.Product.php:5612
-#: dashboard_top_products.js.php:24 order_restock_aid.pdf.php:231
+#: dashboard_top_products.js.php:24 dn.js.php:29 order_restock_aid.pdf.php:231
 #: product.php:146 report_out_of_stock.js.php:20 site.js.php:673
 #: smarty.php:8900 smarty.php:10193 smarty.php:11900 smarty.php:14588
 #: smarty.php:15437 smarty.php:16274 smarty.php:25118 smarty.php:25208
@@ -3133,15 +3136,15 @@ msgstr "Tienda"
 msgid "Campaign"
 msgstr "Campaña"
 
-#: ar_edit_marketing.php:1060 ar_orders.php:826 edit_family.js.php:1059
-#: invoice.pdf.php:179
+#: ar_edit_marketing.php:1060 ar_orders.php:824 edit_family.js.php:1059
+#: invoice.pdf.php:185
 msgid "Deal"
 msgstr "Oferta"
 
 #: ar_edit_marketing.php:1063
 #, fuzzy
 msgid "Store Page"
-msgstr "Pagina Principal Tienda"
+msgstr "Pagina Principal"
 
 #: ar_edit_marketing.php:1067
 #, fuzzy
@@ -3259,22 +3262,22 @@ msgid "Error, can not send an empty order to warehouse"
 msgstr "El error no puede crear almacenes"
 
 #: ar_edit_orders.php:1396 ar_edit_orders.php:1398 ar_edit_orders.php:1914
-#: ar_edit_orders.php:1916 ar_orders.php:2108 ar_orders.php:2110
-#: ar_orders.php:2188 ar_orders.php:2190 ar_orders.php:2680 ar_orders.php:2682
-#: ar_orders.php:4429 ar_orders.php:4431 class.Order.php:6841
-#: class.Order.php:6843
+#: ar_edit_orders.php:1916 ar_orders.php:1119 ar_orders.php:1121
+#: ar_orders.php:2158 ar_orders.php:2160 ar_orders.php:2238 ar_orders.php:2240
+#: ar_orders.php:2726 ar_orders.php:2728 ar_orders.php:4493 ar_orders.php:4495
+#: class.Order.php:6841 class.Order.php:6843
 msgid "free"
 msgstr "gratis"
 
 #: ar_edit_orders.php:1807 ar_edit_orders.php:2174 ar_edit_parts.php:592
-#: ar_orders.php:4341 class.Product.php:5274 edit_page.js.php:814
+#: ar_orders.php:4405 class.Product.php:5274 edit_page.js.php:814
 #: smarty.php:7871
 msgid "Auto"
 msgstr "Auto"
 
 #: ar_edit_orders.php:1810 ar_edit_orders.php:1862 ar_edit_orders.php:2177
 #: ar_edit_warehouse.php:1687 ar_edit_warehouse.php:1691
-#: ar_edit_warehouse.php:1696 ar_orders.php:4344 ar_orders.php:4393
+#: ar_edit_warehouse.php:1696 ar_orders.php:4408 ar_orders.php:4457
 #: ar_payments.php:262 ar_reports.php:529 ar_reports.php:694
 #: ar_reports.php:1791 ar_warehouse.php:380 ar_warehouse.php:384
 #: ar_warehouse.php:389 ar_warehouse.php:582 ar_warehouse.php:1079
@@ -3283,14 +3286,14 @@ msgstr "Auto"
 #: class.Customer.php:2835 class.DB_Table.php:173 class.DB_Table.php:390
 #: class.DeliveryNote.php:2052 class.DeliveryNote.php:2053
 #: class.DeliveryNote.php:2207 class.Invoice.php:613 class.Invoice.php:641
-#: class.Invoice.php:669 class.Invoice.php:1650 class.Invoice.php:1685
+#: class.Invoice.php:669 class.Invoice.php:1652 class.Invoice.php:1687
 #: class.Order.php:402 class.Order.php:1951 class.Product.php:2850
 #: class.Product.php:4338 class.PurchaseOrder.php:149 class.Supplier.php:99
 #: class.Supplier.php:293 class.User.php:540 common_geography_functions.php:38
 #: edit_location.php:100 edit_location.php:109 family_category.js.php:103
 #: locale.php:56 new_customers_list.php:172 new_delivery_notes_list.php:99
 #: new_parts_list.php:103 new_parts_list.php:114 new_products_list.php:88
-#: new_products_list.php:99 order_common_functions.php:181 payment.js.php:56
+#: new_products_list.php:99 order_common_functions.php:191 payment.js.php:56
 #: payment.js.php:157 smarty.php:5003 smarty.php:5237 smarty.php:5687
 #: smarty.php:7481 smarty.php:10571 smarty.php:14699 smarty.php:14741
 #: smarty.php:15029 smarty.php:15071 smarty.php:15215 smarty.php:15263
@@ -3300,32 +3303,32 @@ msgstr "Auto"
 msgid "Unknown"
 msgstr "desconocido"
 
-#: ar_edit_orders.php:1815 ar_edit_orders.php:2182 ar_orders.php:4349
+#: ar_edit_orders.php:1815 ar_edit_orders.php:2182 ar_orders.php:4413
 #: smarty.php:9617 smarty.php:9629 smarty.php:9641 smarty.php:9653
 #: smarty.php:9665 smarty.php:9677 smarty.php:9689 smarty.php:9701
 #: smarty.php:9713 smarty.php:9725
 msgid "Hide"
 msgstr "Ocultar"
 
-#: ar_edit_orders.php:1818 ar_edit_orders.php:2185 ar_orders.php:4352
+#: ar_edit_orders.php:1818 ar_edit_orders.php:2185 ar_orders.php:4416
 #: ar_parts.php:2167 smarty.php:3893 smarty.php:6896 smarty.php:12587
 #: smarty.php:21536 smarty.php:24989 smarty.php:25514
 msgid "Sale"
 msgstr "Venta"
 
-#: ar_edit_orders.php:1838 ar_orders.php:4368 class.Order.php:428
+#: ar_edit_orders.php:1838 ar_orders.php:4432 class.Order.php:428
 #: class.Order.php:1930 class.Order.php:3057 class.Order.php:3060
 #, fuzzy
 msgid "In Process by Customer"
 msgstr "En proceso"
 
-#: ar_edit_orders.php:1841 ar_orders.php:4371 class.Order.php:1933
+#: ar_edit_orders.php:1841 ar_orders.php:4435 class.Order.php:1933
 #: class.Order.php:3066 smarty.php:3167
 msgid "Submitted by Customer"
 msgstr "Enviado por cliente"
 
 #: ar_edit_orders.php:1844 ar_import.php:2246 ar_import.php:2513
-#: ar_orders.php:4374 class.Order.php:890 class.Order.php:1927
+#: ar_orders.php:4438 class.Order.php:890 class.Order.php:1927
 #: class.Order.php:3063 class.PurchaseOrder.php:122
 #: class.PurchaseOrder.php:479 locale.php:43 smarty.php:3170 smarty.php:3761
 #: smarty.php:3812 smarty.php:12938 smarty.php:19028 smarty.php:20696
@@ -3333,12 +3336,12 @@ msgstr "Enviado por cliente"
 msgid "In Process"
 msgstr "En proceso"
 
-#: ar_edit_orders.php:1847 ar_orders.php:4377 class.Order.php:612
+#: ar_edit_orders.php:1847 ar_orders.php:4441 class.Order.php:612
 #: class.Order.php:1936 class.Order.php:3069 smarty.php:28283
 msgid "Ready to Pick"
 msgstr "Listo recol."
 
-#: ar_edit_orders.php:1850 ar_orders.php:4380 class.DeliveryNote.php:2195
+#: ar_edit_orders.php:1850 ar_orders.php:4444 class.DeliveryNote.php:2195
 #: class.DeliveryNote.php:2593 class.DeliveryNote.php:2605
 #: class.DeliveryNote.php:2610 edit_location.php:62 edit_warehouse.js.php:4
 #: edit_warehouse_area.js.php:4 new_company_area.php:49
@@ -3349,20 +3352,20 @@ msgstr "Listo recol."
 msgid "Picking"
 msgstr "En recolección"
 
-#: ar_edit_orders.php:1853 ar_orders.php:4384 smarty.php:28280
+#: ar_edit_orders.php:1853 ar_orders.php:4448 smarty.php:28280
 msgid "Ready to Pack"
 msgstr "Listo empa."
 
-#: ar_edit_orders.php:1856 ar_orders.php:4387 class.DeliveryNote.php:2587
+#: ar_edit_orders.php:1856 ar_orders.php:4451 class.DeliveryNote.php:2587
 #: class.Order.php:1945 class.Order.php:3075 smarty.php:28268
 msgid "Ready to Ship"
 msgstr "Listo  enviar"
 
-#: ar_edit_orders.php:1859 ar_orders.php:2390 ar_orders.php:2413
-#: ar_orders.php:4390 campaign.js.php:32 class.DeliveryNote.php:2177
+#: ar_edit_orders.php:1859 ar_orders.php:2440 ar_orders.php:2463
+#: ar_orders.php:4454 campaign.js.php:32 class.DeliveryNote.php:2177
 #: class.DeliveryNote.php:2581 class.Order.php:1191 class.Order.php:1948
 #: class.Order.php:3007 class.Order.php:3026 class.Order.php:3078
-#: customer.js.php:368 deal.js.php:32 dn.js.php:38
+#: customer.js.php:368 deal.js.php:32 dn.js.php:31
 #: edit_supplier_product.php:355 new_delivery_notes_list.php:70
 #: order.pdf.php:372 order_dispatched.js.php:54 order_dispatched.js.php:89
 #: orders_server.js.php:61 product.js.php:114 smarty.php:4094 smarty.php:19022
@@ -3370,7 +3373,7 @@ msgstr "Listo  enviar"
 msgid "Dispatched"
 msgstr "Enviado"
 
-#: ar_edit_orders.php:1865 ar_orders.php:4397 class.DeliveryNote.php:2201
+#: ar_edit_orders.php:1865 ar_orders.php:4461 class.DeliveryNote.php:2201
 #: class.DeliveryNote.php:2623 class.DeliveryNote.php:2634
 #: class.Order.php:1954 class.Order.php:3081 new_delivery_notes_list.php:67
 #: orders_server.js.php:191 smarty.php:4148 smarty.php:17624 smarty.php:19148
@@ -3378,22 +3381,22 @@ msgstr "Enviado"
 msgid "Packing"
 msgstr "Empaquetando"
 
-#: ar_edit_orders.php:1872 ar_orders.php:4405
+#: ar_edit_orders.php:1872 ar_orders.php:4469
 #, fuzzy
 msgid "No Picked Due Out of Stock"
 msgstr "por fuera de stock"
 
-#: ar_edit_orders.php:1875 ar_orders.php:4408
+#: ar_edit_orders.php:1875 ar_orders.php:4472
 #, fuzzy
 msgid "No Picked Due No Authorised"
 msgstr "recolectado"
 
-#: ar_edit_orders.php:1878 ar_orders.php:4411
+#: ar_edit_orders.php:1878 ar_orders.php:4475
 #, fuzzy
 msgid "No Picked Due Not Found"
 msgstr "recolectado"
 
-#: ar_edit_orders.php:1881 ar_orders.php:4414
+#: ar_edit_orders.php:1881 ar_orders.php:4478
 #, fuzzy
 msgid "No Picked Due Other"
 msgstr "Que no sean recogidos (otros)"
@@ -3417,59 +3420,59 @@ msgstr "Nombre del producto alterado"
 msgid "stock"
 msgstr "Colección de"
 
-#: ar_edit_orders.php:1931 ar_orders.php:4474
+#: ar_edit_orders.php:1931 ar_orders.php:4538
 msgid "ea"
 msgstr "c/u"
 
-#: ar_edit_orders.php:2434
+#: ar_edit_orders.php:2441
 msgid "pending order"
 msgid_plural "pending orders"
 msgstr[0] "orden por hacer"
 msgstr[1] "ordenes por hacer"
 
-#: ar_edit_orders.php:2448 ar_edit_orders.php:2784 ar_porders.php:191
+#: ar_edit_orders.php:2455 ar_edit_orders.php:2791 ar_porders.php:191
 #: ar_porders.php:447 ar_porders.php:679 ar_porders.php:911
 #: ar_reports.php:2584 ar_reports.php:3226
 msgid "There isn't any order with number"
 msgstr "No hay ningún orden con este número"
 
-#: ar_edit_orders.php:2450 ar_edit_orders.php:2786 ar_porders.php:193
+#: ar_edit_orders.php:2457 ar_edit_orders.php:2793 ar_porders.php:193
 #: ar_porders.php:449 ar_porders.php:681 ar_porders.php:913
 #: ar_reports.php:2586 ar_reports.php:3228
 msgid "orders starting with"
 msgstr "órdenes de partida con"
 
-#: ar_edit_orders.php:2454 ar_edit_orders.php:2790 ar_reports.php:2590
+#: ar_edit_orders.php:2461 ar_edit_orders.php:2797 ar_reports.php:2590
 #: ar_reports.php:3232
 msgid "There isn't any order with customer"
 msgstr "No hay ningún orden con el cliente"
 
-#: ar_edit_orders.php:2456 ar_edit_orders.php:2792 ar_reports.php:2592
+#: ar_edit_orders.php:2463 ar_edit_orders.php:2799 ar_reports.php:2592
 #: ar_reports.php:3234
 msgid "orders with customer"
 msgstr "pedidos a los clientes"
 
-#: ar_edit_orders.php:2460 ar_edit_orders.php:2796 ar_porders.php:197
+#: ar_edit_orders.php:2467 ar_edit_orders.php:2803 ar_porders.php:197
 #: ar_porders.php:453 ar_porders.php:685 ar_porders.php:917
 #: ar_reports.php:2596 ar_reports.php:3238
 msgid "There isn't any order minimum value of"
 msgstr "No hay ningún valor mínimo orden de"
 
-#: ar_edit_orders.php:2462 ar_edit_orders.php:2798 ar_porders.php:199
+#: ar_edit_orders.php:2469 ar_edit_orders.php:2805 ar_porders.php:199
 #: ar_porders.php:455 ar_porders.php:687 ar_porders.php:919
 #: ar_reports.php:2598 ar_reports.php:3240
 msgid "orders with min value of"
 msgstr "pedidos con un valor mínimo de"
 
-#: ar_edit_orders.php:2467 ar_edit_orders.php:2803 ar_porders.php:209
+#: ar_edit_orders.php:2474 ar_edit_orders.php:2810 ar_porders.php:209
 #: ar_porders.php:465 ar_porders.php:697 ar_porders.php:929
 #: ar_reports.php:2608 ar_reports.php:3250
 msgid "There isn't any order older than"
 msgstr "No hay ninguna orden de más de"
 
-#: ar_edit_orders.php:2467 ar_edit_orders.php:2803 ar_orders.php:4614
-#: ar_orders.php:4646 ar_orders.php:4722 ar_orders.php:4772 ar_orders.php:4848
-#: ar_orders.php:4891 ar_orders.php:4964 ar_orders.php:5001 ar_porders.php:209
+#: ar_edit_orders.php:2474 ar_edit_orders.php:2810 ar_orders.php:4678
+#: ar_orders.php:4710 ar_orders.php:4786 ar_orders.php:4836 ar_orders.php:4912
+#: ar_orders.php:4955 ar_orders.php:5028 ar_orders.php:5065 ar_porders.php:209
 #: ar_porders.php:465 ar_porders.php:697 ar_porders.php:929
 #: ar_reports.php:2608 ar_reports.php:3250 class.Customer.php:2909
 #: class.Part.php:2845 customer.php:403 email_campaign_in_process.js.php:1313
@@ -3479,83 +3482,83 @@ msgstr "No hay ninguna orden de más de"
 msgid "days"
 msgstr "dias"
 
-#: ar_edit_orders.php:2469 ar_edit_orders.php:2805 ar_porders.php:211
+#: ar_edit_orders.php:2476 ar_edit_orders.php:2812 ar_porders.php:211
 #: ar_porders.php:467 ar_porders.php:699 ar_porders.php:931
 #: ar_reports.php:2610 ar_reports.php:3252
 msgid "last"
 msgstr "pasado"
 
-#: ar_edit_orders.php:2469 ar_edit_orders.php:2805 ar_porders.php:211
+#: ar_edit_orders.php:2476 ar_edit_orders.php:2812 ar_porders.php:211
 #: ar_porders.php:467 ar_porders.php:699 ar_porders.php:931
 #: ar_reports.php:2610 ar_reports.php:3252
 msgid "days orders"
 msgstr "días pedidos"
 
-#: ar_edit_orders.php:2532 order.php:216
+#: ar_edit_orders.php:2539 order.php:216
 msgid "weight"
 msgstr "Peso"
 
-#: ar_edit_orders.php:2540 order.php:224
+#: ar_edit_orders.php:2547 order.php:224
 msgid "parcels"
 msgstr "Bultos"
 
-#: ar_edit_orders.php:2549 order.php:233
+#: ar_edit_orders.php:2556 order.php:233
 msgid "consignment"
 msgstr ""
 
-#: ar_edit_orders.php:2929 ar_edit_orders.php:3011
+#: ar_edit_orders.php:2936 ar_edit_orders.php:3018
 #, fuzzy
 msgid "Wrong Supervisor PIN"
 msgstr "Supervisor de PIN"
 
-#: ar_edit_orders.php:3348 ar_edit_orders.php:3607
+#: ar_edit_orders.php:3355 ar_edit_orders.php:3614
 #, fuzzy
 msgid "No part with sku like"
-msgstr "No hay ninguna parte con la descripción como"
+msgstr "No hay pieza con Referencia"
 
-#: ar_edit_orders.php:3351 ar_edit_orders.php:3610
+#: ar_edit_orders.php:3358 ar_edit_orders.php:3617
 msgid "No part with reference like"
 msgstr "No hay pieza con Referencia"
 
-#: ar_edit_orders.php:3360 ar_edit_orders.php:3619
+#: ar_edit_orders.php:3367 ar_edit_orders.php:3626
 #, fuzzy
 msgid "with sku like"
 msgstr "con número como"
 
-#: ar_edit_orders.php:3363 ar_edit_orders.php:3622
+#: ar_edit_orders.php:3370 ar_edit_orders.php:3629
 msgid "with reference like"
 msgstr "con Referencia"
 
-#: ar_edit_orders.php:3422 class.DeliveryNote.php:2180
+#: ar_edit_orders.php:3429 class.DeliveryNote.php:2180
 #: class.DeliveryNote.php:2631 class.Order.php:3084 dn.js.php:37
 #: new_delivery_notes_list.php:68 order_pack_aid.js.php:307 smarty.php:3161
 #: smarty.php:20690 smarty.php:22511 smarty.php:23924 smarty.php:25247
 msgid "Packed"
 msgstr "Empaquetado"
 
-#: ar_edit_orders.php:3428 ar_edit_orders.php:3685 ar_edit_orders.php:4300
-#: ar_orders.php:1084 ar_orders.php:4446 ar_parts.php:2179 ar_sites.php:639
-#: ar_sites.php:1007 dn.pdf.php:68 smarty.php:12815 smarty.php:18788
-#: smarty.php:18860 smarty.php:19871 smarty.php:20114 smarty.php:21410
-#: smarty.php:25862 smarty.php:26138 smarty.php:27485
+#: ar_edit_orders.php:3435 ar_edit_orders.php:3692 ar_edit_orders.php:4307
+#: ar_orders.php:4510 ar_parts.php:2179 ar_sites.php:639 ar_sites.php:1007
+#: dn.pdf.php:68 smarty.php:12815 smarty.php:18788 smarty.php:18860
+#: smarty.php:19871 smarty.php:20114 smarty.php:21410 smarty.php:25862
+#: smarty.php:26138 smarty.php:27485
 msgid "Not Found"
 msgstr "No se ha encontrado"
 
-#: ar_edit_orders.php:3431 ar_edit_orders.php:3688 ar_edit_orders.php:4303
-#: ar_orders.php:1087 dn.pdf.php:71
+#: ar_edit_orders.php:3438 ar_edit_orders.php:3695 ar_edit_orders.php:4310
+#: dn.pdf.php:71
 msgid "Not picked (other)"
 msgstr "Que no sean recogidos (otros)"
 
-#: ar_edit_orders.php:3477 ar_edit_orders.php:3723
+#: ar_edit_orders.php:3484 ar_edit_orders.php:3730
 #, fuzzy
 msgid "pick aid sheet"
 msgstr "Embalaje Hoja de Ayuda"
 
-#: ar_edit_orders.php:3679
+#: ar_edit_orders.php:3686
 msgid "To pick"
 msgstr "Por recolectar"
 
-#: ar_edit_orders.php:4374 ar_edit_orders.php:4471 ar_edit_orders.php:4569
+#: ar_edit_orders.php:4381 ar_edit_orders.php:4478 ar_edit_orders.php:4576
 #, fuzzy
 msgid "No order match this criteria"
 msgstr "Ningún producto coincide con este criterio"
@@ -3575,7 +3578,7 @@ msgstr "No hay ningún producto con el código"
 #: ar_parts.php:3593 ar_suppliers.php:2250
 #, fuzzy
 msgid "There isn't any product with description like "
-msgstr "No hay ningún cargo con la descripción como"
+msgstr "No hay ningún acuerdo con la descripción como"
 
 #: ar_edit_parts.php:525 ar_edit_parts.php:843 ar_edit_suppliers.php:1171
 #: ar_parts.php:3600 ar_suppliers.php:2257
@@ -3725,7 +3728,7 @@ msgstr[1] "sitios web"
 #: ar_sites.php:2143 ar_sites.php:2449
 #, fuzzy
 msgid "There isn't any website with name"
-msgstr "No hay ningún acuerdo con ese nombre"
+msgstr "No hay ninguna familia con este nombre"
 
 #: ar_edit_sites.php:1086 ar_sites.php:1247 ar_sites.php:1564
 #: ar_sites.php:2145 ar_sites.php:2451
@@ -3991,7 +3994,7 @@ msgstr "Código"
 #: deal.php:185 deal.php:198 department.js.php:147 department.js.php:254
 #: department.js.php:255 department.js.php:274 department.js.php:275
 #: department.js.php:547 department.js.php:624 department.php:158
-#: department.php:176 department.php:393 dn.js.php:73 dn.php:173
+#: department.php:176 department.php:393 dn.js.php:131 dn.php:173
 #: dn_export_common.php:28 edit_account.php:70 edit_company_area.js.php:97
 #: edit_company_department.js.php:126 edit_customer.js.php:299
 #: edit_customer.php:279 edit_customer.php:636
@@ -4107,45 +4110,44 @@ msgstr "Nombre"
 #: ar_edit_sites.php:2387 ar_edit_sites.php:2826 ar_import.php:2021
 #: ar_import.php:2029 associate_product_part.js.php:166 campaign.js.php:187
 #: customer.js.php:363 deliverynote.js.php:34 deliverynote.js.php:41
-#: dn.js.php:31 edit_company_area.js.php:161
-#: edit_company_department.js.php:191 edit_customer.js.php:212
-#: edit_dashboard.php:84 edit_dashboard.php:97 edit_dashboards.php:93
-#: edit_department.js.php:527 edit_department.js.php:603
-#: edit_family.js.php:801 edit_family.js.php:916 edit_family.js.php:1208
-#: edit_hr.js.php:88 edit_location.js.php:165 edit_page.js.php:396
-#: edit_page.js.php:704 edit_page.js.php:718 edit_page.js.php:810
-#: edit_part.js.php:2156 edit_part.js.php:2615 edit_part_category.js.php:246
-#: edit_part_category.js.php:344 edit_part_category.js.php:416
-#: edit_part_category.php:235 edit_part_category.php:273
-#: edit_position.js.php:184 edit_positions.js.php:222 edit_product.js.php:2528
-#: edit_product.js.php:2599 edit_product_category.js.php:199
-#: edit_site.js.php:180 edit_store.js.php:270 edit_store.js.php:347
-#: edit_store.js.php:425 edit_store.js.php:495 edit_store.php:184
-#: edit_supplier.js.php:278 edit_supplier_category.js.php:216
-#: edit_supplier_category.js.php:310 edit_supplier_category.js.php:381
-#: edit_supplier_product.js.php:2260 edit_supplier_product.js.php:2352
-#: edit_supplier_product.js.php:2595 edit_warehouse.js.php:174
-#: edit_warehouse.js.php:244 edit_warehouse_area.js.php:161
-#: email_campaign_in_process.js.php:489 employee.js.php:36 family.js.php:510
-#: inventory.js.php:210 inventory.js.php:211 inventory_light.js.php:21
-#: inventory_light.js.php:22 invoice.js.php:28
-#: invoice_categories_base.js.php:177 location.js.php:341 location.js.php:446
-#: location.js.php:545 marketing.js.php:108 marketing_server.js.php:113
-#: new_deal.js.php:32 new_deal.js.php:103 new_deliverynote.js.php:35
-#: new_deliverynote.js.php:42 new_parts_list.js.php:188
-#: new_parts_list.js.php:191 new_post_order.js.php:394 newpo.js.php:41
-#: newpo.js.php:197 order.pdf.php:370 order_cancelled.js.php:45
-#: order_dispatched.js.php:50 order_dispatched.js.php:87
-#: order_in_process_by_customer.js.php:19 order_pack_aid.js.php:301
-#: order_pick_aid.js.php:302 order_pick_form.js.php:22
-#: order_ready_to_ship.js.php:22 order_restock_aid.js.php:327
-#: order_suspended.js.php:18 part_categories.php:164 part_category.js.php:105
-#: part_category.js.php:106 part_category.php:182 part_category.php:306
-#: parts_list.js.php:18 parts_list.js.php:19 payment.js.php:924
-#: porder_cancelled.js.php:16 porder_in_process.js.php:339
-#: porder_submitted.js.php:61 product.js.php:346 product_categories.php:166
-#: product_category.js.php:90 product_category.js.php:91
-#: product_server.js.php:15 search.js.php:17
+#: edit_company_area.js.php:161 edit_company_department.js.php:191
+#: edit_customer.js.php:212 edit_dashboard.php:84 edit_dashboard.php:97
+#: edit_dashboards.php:93 edit_department.js.php:527
+#: edit_department.js.php:603 edit_family.js.php:801 edit_family.js.php:916
+#: edit_family.js.php:1208 edit_hr.js.php:88 edit_location.js.php:165
+#: edit_page.js.php:396 edit_page.js.php:704 edit_page.js.php:718
+#: edit_page.js.php:810 edit_part.js.php:2156 edit_part.js.php:2615
+#: edit_part_category.js.php:246 edit_part_category.js.php:344
+#: edit_part_category.js.php:416 edit_part_category.php:235
+#: edit_part_category.php:273 edit_position.js.php:184
+#: edit_positions.js.php:222 edit_product.js.php:2528 edit_product.js.php:2599
+#: edit_product_category.js.php:199 edit_site.js.php:180 edit_store.js.php:270
+#: edit_store.js.php:347 edit_store.js.php:425 edit_store.js.php:495
+#: edit_store.php:184 edit_supplier.js.php:278
+#: edit_supplier_category.js.php:216 edit_supplier_category.js.php:310
+#: edit_supplier_category.js.php:381 edit_supplier_product.js.php:2260
+#: edit_supplier_product.js.php:2352 edit_supplier_product.js.php:2595
+#: edit_warehouse.js.php:174 edit_warehouse.js.php:244
+#: edit_warehouse_area.js.php:161 email_campaign_in_process.js.php:489
+#: employee.js.php:36 family.js.php:510 inventory.js.php:210
+#: inventory.js.php:211 inventory_light.js.php:21 inventory_light.js.php:22
+#: invoice.js.php:28 invoice_categories_base.js.php:177 location.js.php:341
+#: location.js.php:446 location.js.php:545 marketing.js.php:108
+#: marketing_server.js.php:113 new_deal.js.php:32 new_deal.js.php:103
+#: new_deliverynote.js.php:35 new_deliverynote.js.php:42
+#: new_parts_list.js.php:188 new_parts_list.js.php:191
+#: new_post_order.js.php:394 newpo.js.php:41 newpo.js.php:197
+#: order.pdf.php:370 order_cancelled.js.php:45 order_dispatched.js.php:50
+#: order_dispatched.js.php:87 order_in_process_by_customer.js.php:19
+#: order_pack_aid.js.php:301 order_pick_aid.js.php:302
+#: order_pick_form.js.php:22 order_ready_to_ship.js.php:22
+#: order_restock_aid.js.php:327 order_suspended.js.php:18
+#: part_categories.php:164 part_category.js.php:105 part_category.js.php:106
+#: part_category.php:182 part_category.php:306 parts_list.js.php:18
+#: parts_list.js.php:19 payment.js.php:924 porder_cancelled.js.php:16
+#: porder_in_process.js.php:339 porder_submitted.js.php:61 product.js.php:346
+#: product_categories.php:166 product_category.js.php:90
+#: product_category.js.php:91 product_server.js.php:15 search.js.php:17
 #: send_confirmation_email_function.php:83 site.js.php:604 site_user.js.php:88
 #: smarty.php:2363 smarty.php:4085 smarty.php:4361 smarty.php:4685
 #: smarty.php:4832 smarty.php:4880 smarty.php:4943 smarty.php:6044
@@ -4181,8 +4183,8 @@ msgstr "Precio"
 #: class.Page.php:1818 class.Page.php:1950 class.Page.php:2112
 #: class.Page.php:2261 class.Page.php:2447 class.Page.php:2473
 #: class.Page.php:2479 class.Page.php:2576 class.Page.php:3829
-#: common_store_functions.php:29 edit_page.js.php:720 invoice.pdf.php:119
-#: invoice.pdf.php:139 smarty.php:4088 smarty.php:21161
+#: common_store_functions.php:29 edit_page.js.php:720 invoice.pdf.php:125
+#: invoice.pdf.php:145 smarty.php:4088 smarty.php:21161
 #: upload_assets.js.php:111
 msgid "RRP"
 msgstr "PVP"
@@ -4387,12 +4389,12 @@ msgstr "Proveedores con"
 msgid "out of stock products"
 msgstr "de productos de stock"
 
-#: ar_edit_suppliers.php:803 ar_orders.php:2631 ar_sites.php:3761
+#: ar_edit_suppliers.php:803 ar_orders.php:2681 ar_sites.php:3761
 #: ar_suppliers.php:703
 msgid "There isn't any product with code"
 msgstr "No hay ningún producto con el código"
 
-#: ar_edit_suppliers.php:805 ar_orders.php:2633 ar_sites.php:3763
+#: ar_edit_suppliers.php:805 ar_orders.php:2683 ar_sites.php:3763
 #: ar_suppliers.php:705
 msgid "products with code"
 msgstr "los productos con código"
@@ -4494,8 +4496,8 @@ msgid_plural "shelf types"
 msgstr[0] "Tipo de estante"
 msgstr[1] "Tipo de estante"
 
-#: ar_fork.php:95 ar_orders.php:1869 ar_orders.php:1905 ar_orders.php:1908
-#: ar_orders.php:1911 ar_orders.php:1914 ar_orders.php:1917
+#: ar_fork.php:95 ar_orders.php:1919 ar_orders.php:1955 ar_orders.php:1958
+#: ar_orders.php:1961 ar_orders.php:1964 ar_orders.php:1967
 #: ar_reports.php:2573
 msgid "invoice"
 msgid_plural "invoices"
@@ -4546,7 +4548,7 @@ msgstr[1] "récord en los últimos"
 #: duplicate_warning.php:103 invoice_category.js.php:92
 #: invoices_list.js.php:19 new_delivery_notes_list.js.php:419
 #: new_invoices_list.js.php:413 new_orders_list.js.php:267 order.js.php:39
-#: orders.js.php:22 orders.js.php:87 orders.js.php:161 orders.php:133
+#: orders.js.php:22 orders.js.php:90 orders.js.php:164 orders.php:133
 #: orders.php:148 orders.php:163 orders_list.js.php:21 page.js.php:148
 #: part.js.php:179 part.php:246 pending_orders.js.php:24 product.js.php:112
 #: product.js.php:179 product.php:369 report_out_of_stock.js.php:163
@@ -4559,25 +4561,24 @@ msgstr[1] "récord en los últimos"
 #: smarty.php:13832 smarty.php:19511 smarty.php:21821 smarty.php:23267
 #: smarty.php:23381 smarty.php:28484 store_pending_orders.js.php:22
 #: supplier_product.js.php:211 users_site.js.php:142
-#, fuzzy
 msgid "Customer"
-msgstr "No. De Cliente"
+msgstr "Cliente"
 
 #: ar_history.php:374 ar_history.php:386 ar_history.php:414
 #: edit_stock.js.php:642 smarty.php:19697 smarty.php:19700
 msgid "delete"
 msgstr "eliminar"
 
-#: ar_history.php:390 ar_history.php:398 order_common_functions.php:270
-#: order_common_functions.php:335 order_common_functions.php:362
-#: order_common_functions.php:365 smarty.php:20912 smarty.php:20984
+#: ar_history.php:390 ar_history.php:398 order_common_functions.php:280
+#: order_common_functions.php:345 order_common_functions.php:372
+#: order_common_functions.php:375 smarty.php:20912 smarty.php:20984
 msgid "edit"
 msgstr "edición"
 
 #: ar_history.php:707
 #, fuzzy
 msgid "There isn't any record with abstract like "
-msgstr "No hay ningún registro coincidente"
+msgstr "No hay ningún registro en los últimos"
 
 #: ar_history.php:710
 #, fuzzy
@@ -4711,7 +4712,7 @@ msgid "Tax Number"
 msgstr "Número fiscal"
 
 #: ar_import.php:1946 customer_category.js.php:101 customers.js.php:69
-#: customers.js.php:273 customers_list.js.php:27 customers_send_post.js.php:28
+#: customers.js.php:274 customers_list.js.php:27 customers_send_post.js.php:28
 #: dn_list.js.php:30 edit_customers.js.php:63 invoices_list.js.php:28
 #: new_customers_list.js.php:673 new_orders_list.js.php:276
 #: orders_list.js.php:30 report_customers.js.php:35
@@ -4920,8 +4921,8 @@ msgstr ""
 msgid "Units"
 msgstr "Unidades"
 
-#: ar_import.php:2019 customer.js.php:573 customers.js.php:197
-#: new_delivery_notes_list.js.php:420 orders.js.php:166 part.js.php:184
+#: ar_import.php:2019 customer.js.php:573 customers.js.php:198
+#: new_delivery_notes_list.js.php:420 orders.js.php:169 part.js.php:184
 #: pending_orders.js.php:31 report_packers.js.php:38 report_pickers.js.php:39
 #: report_pp_employee.js.php:50 report_pp_employee.js.php:110 smarty.php:4070
 #: smarty.php:4079 smarty.php:4160 smarty.php:7220 smarty.php:8240
@@ -4989,14 +4990,14 @@ msgstr "No hay ninguna campaña con la descripción como"
 msgid "campaigns with name"
 msgstr "campañas con el nombre de"
 
-#: ar_orders.php:808 class.Payment.php:388 invoice.pdf.php:161
+#: ar_orders.php:806 class.Payment.php:388 invoice.pdf.php:167
 #: new_post_order.js.php:400 smarty.php:16715 smarty.php:17558
 #: smarty.php:18488 smarty.php:18644
 msgid "Credit"
 msgstr "Crédito"
 
-#: ar_orders.php:814 ar_orders.php:967 class.Order.php:3669
-#: invoice.pdf.php:167 report_sales_components.js.php:17
+#: ar_orders.php:812 ar_orders.php:965 class.Order.php:3669
+#: invoice.pdf.php:173 report_sales_components.js.php:17
 #: report_sales_week.js.php:26 send_confirmation_email_function.php:140
 #: smarty.php:4355 smarty.php:10265 smarty.php:13874 smarty.php:13937
 #: smarty.php:16613 smarty.php:17381 smarty.php:17522 smarty.php:17732
@@ -5007,7 +5008,7 @@ msgstr "Crédito"
 msgid "Shipping"
 msgstr "Envío"
 
-#: ar_orders.php:817 invoice.pdf.php:170 report_sales_components.js.php:18
+#: ar_orders.php:815 invoice.pdf.php:176 report_sales_components.js.php:18
 #: send_confirmation_email_function.php:130 smarty.php:10262 smarty.php:10388
 #: smarty.php:13877 smarty.php:13931 smarty.php:16610 smarty.php:17378
 #: smarty.php:17525 smarty.php:17729 smarty.php:17945 smarty.php:18059
@@ -5016,12 +5017,12 @@ msgstr "Envío"
 msgid "Charges"
 msgstr "Cargos"
 
-#: ar_orders.php:820 ar_parts.php:2176 invoice.pdf.php:173
+#: ar_orders.php:818 ar_parts.php:2176 invoice.pdf.php:179
 #, fuzzy
 msgid "Adjust"
 msgstr "Ajuste"
 
-#: ar_orders.php:829 invoice.pdf.php:182
+#: ar_orders.php:827 invoice.pdf.php:188
 #: send_confirmation_email_function.php:150 smarty.php:13880 smarty.php:13940
 #: smarty.php:16616 smarty.php:17384 smarty.php:17528 smarty.php:17735
 #: smarty.php:17951 smarty.php:18065 smarty.php:18107 smarty.php:18266
@@ -5030,30 +5031,50 @@ msgstr "Ajuste"
 msgid "Insurance"
 msgstr "Seguro"
 
-#: ar_orders.php:1580 ar_reports.php:6783 ar_reports.php:7068
+#: ar_orders.php:1126
+#, fuzzy
+msgid "dispatched"
+msgstr "Enviado"
+
+#: ar_orders.php:1129
+#, fuzzy
+msgid "out of stock"
+msgstr "Agotado"
+
+#: ar_orders.php:1132 smarty.php:17267 smarty.php:17270
+#, fuzzy
+msgid "Not found"
+msgstr "No se ha encontrado"
+
+#: ar_orders.php:1135
+#, fuzzy
+msgid "not picked (other)"
+msgstr "Que no sean recogidos (otros)"
+
+#: ar_orders.php:1630 ar_reports.php:6783 ar_reports.php:7068
 #, fuzzy
 msgid "No delivery note with ID"
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
-#: ar_orders.php:1582 ar_reports.php:6785 ar_reports.php:7070
+#: ar_orders.php:1632 ar_reports.php:6785 ar_reports.php:7070
 msgid "delivery notes starting with"
 msgstr "notas de entrega que comiencen por"
 
-#: ar_orders.php:1586 ar_reports.php:6789 ar_reports.php:7074
+#: ar_orders.php:1636 ar_reports.php:6789 ar_reports.php:7074
 #, fuzzy
 msgid "No delivery note with with customer"
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
-#: ar_orders.php:1588 ar_reports.php:6791 ar_reports.php:7076
+#: ar_orders.php:1638 ar_reports.php:6791 ar_reports.php:7076
 msgid "delivery notes with customer"
 msgstr "notas de entrega con el cliente"
 
-#: ar_orders.php:1592 ar_reports.php:6795 ar_reports.php:7080
+#: ar_orders.php:1642 ar_reports.php:6795 ar_reports.php:7080
 #, fuzzy
 msgid "No delivery note from"
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
-#: ar_orders.php:1594 ar_reports.php:6797 ar_reports.php:7082
+#: ar_orders.php:1644 ar_reports.php:6797 ar_reports.php:7082
 #: class.Address.php:4912 class.Company.php:1335 class.Company.php:1389
 #: class.Company.php:2659 class.Company.php:2693 class.Company.php:2744
 #: class.Company.php:2821 class.Company.php:2903 class.Company.php:2987
@@ -5073,97 +5094,97 @@ msgstr "Nota de entrega"
 msgid "to"
 msgstr "a"
 
-#: ar_orders.php:1884
+#: ar_orders.php:1934
 #, fuzzy
 msgid "No invoice with customer like"
-msgstr "Factura"
+msgstr "No hay ninguna factura con ese número"
 
-#: ar_orders.php:1887
+#: ar_orders.php:1937
 msgid "There isn't any invoice with ID like"
 msgstr "No hay ninguna factura con ese número"
 
-#: ar_orders.php:1890 ar_orders.php:1893
+#: ar_orders.php:1940 ar_orders.php:1943
 msgid "No invoice with total"
 msgstr "No hay factura con ese total"
 
-#: ar_orders.php:1896
+#: ar_orders.php:1946
 msgid "There isn't any invoice billed to"
 msgstr "No hay ninguna factura de"
 
-#: ar_orders.php:1905 ar_reports.php:2224
+#: ar_orders.php:1955 ar_reports.php:2224
 #, fuzzy
 msgid "with customer like"
 msgstr "No hay ningún cliente como"
 
-#: ar_orders.php:1908
+#: ar_orders.php:1958
 #, fuzzy
 msgid "with ID like"
 msgstr "con acreditación como"
 
-#: ar_orders.php:1911 ar_orders.php:1914
+#: ar_orders.php:1961 ar_orders.php:1964
 #, fuzzy
 msgid "which total"
 msgstr "que son"
 
-#: ar_orders.php:1917
+#: ar_orders.php:1967
 #, fuzzy
 msgid "billed to"
-msgstr "Enviados a"
+msgstr "No hay ninguna factura de"
 
-#: ar_orders.php:2197 ar_orders.php:4442
+#: ar_orders.php:2247 ar_orders.php:4506
 msgid "No Authorized"
 msgstr "No autorizado"
 
-#: ar_orders.php:2200
+#: ar_orders.php:2250
 msgid "No Stk"
 msgstr "No Stk."
 
-#: ar_orders.php:2203
+#: ar_orders.php:2253
 msgid "No Found"
 msgstr "No se ha encontrado"
 
-#: ar_orders.php:2206
+#: ar_orders.php:2256
 #, fuzzy
 msgid "No Other"
 msgstr "Otros"
 
-#: ar_orders.php:2215 new_post_order.js.php:400
+#: ar_orders.php:2265 new_post_order.js.php:400
 msgid "Resend"
 msgstr "Vuelva a enviar"
 
-#: ar_orders.php:2287 new_delivery_notes_list.php:88
+#: ar_orders.php:2337 new_delivery_notes_list.php:88
 msgid "Replacement"
 msgstr "Sustitución"
 
-#: ar_orders.php:2290 order.php:240
+#: ar_orders.php:2340 order.php:240
 msgid "Missing"
 msgstr "Falta"
 
-#: ar_orders.php:2382
+#: ar_orders.php:2432
 #, fuzzy
 msgid "Item to be resended in process"
 msgstr "Del artículo"
 
-#: ar_orders.php:2385
+#: ar_orders.php:2435
 msgid "In warehouse"
 msgstr "En Almacén"
 
-#: ar_orders.php:2405
+#: ar_orders.php:2455
 msgid "Credit in process"
 msgstr "Crédito en proceso"
 
-#: ar_orders.php:2408
+#: ar_orders.php:2458
 #, fuzzy
 msgid "Credit in customer file"
 msgstr "Crédito"
 
-#: ar_orders.php:4450
+#: ar_orders.php:4514
 #, fuzzy
 msgid "Not Due Other"
 msgstr "Otros"
 
-#: ar_orders.php:4616 ar_orders.php:4648 ar_orders.php:4724 ar_orders.php:4774
-#: ar_orders.php:4850 ar_orders.php:4893 ar_orders.php:4966 ar_orders.php:5003
+#: ar_orders.php:4680 ar_orders.php:4712 ar_orders.php:4788 ar_orders.php:4838
+#: ar_orders.php:4914 ar_orders.php:4957 ar_orders.php:5030 ar_orders.php:5067
 #: email_campaign_in_process.js.php:1307
 msgid "hours"
 msgstr "horas"
@@ -5291,37 +5312,37 @@ msgstr[1] "Pago"
 #: ar_payments.php:194
 #, fuzzy
 msgid "There isn't any payment with this id"
-msgstr "No hay ningún cliente con acreditación como"
+msgstr "No hay ninguna factura con ese número"
 
 #: ar_payments.php:204
 #, fuzzy
 msgid "payments with id"
 msgstr "Pagos"
 
-#: ar_payments.php:244 class.Invoice.php:1632 class.Payment.php:140
-#: new_customers_list.php:164 order_common_functions.php:166 smarty.php:38
+#: ar_payments.php:244 class.Invoice.php:1634 class.Payment.php:140
+#: new_customers_list.php:164 order_common_functions.php:176 smarty.php:38
 #: smarty.php:2129 smarty.php:14000
 msgid "Credit Card"
 msgstr "Tarjeta de crédito"
 
-#: ar_payments.php:247 class.Invoice.php:1635 class.Payment.php:143
+#: ar_payments.php:247 class.Invoice.php:1637 class.Payment.php:143
 #: new_customers_list.php:165 smarty.php:44 smarty.php:2141 smarty.php:14006
 msgid "Cash"
 msgstr "Efectivo"
 
-#: ar_payments.php:250 class.Invoice.php:1641 class.Payment.php:149
+#: ar_payments.php:250 class.Invoice.php:1643 class.Payment.php:149
 #: new_customers_list.php:167 smarty.php:26468 smarty.php:27185
 msgid "Check"
 msgstr "Compruebe"
 
-#: ar_payments.php:253 class.Invoice.php:1644 class.Payment.php:152
-#: new_customers_list.php:168 order_common_functions.php:157 smarty.php:41
+#: ar_payments.php:253 class.Invoice.php:1646 class.Payment.php:152
+#: new_customers_list.php:168 order_common_functions.php:167 smarty.php:41
 #: smarty.php:2135 smarty.php:14003
 msgid "Bank Transfer"
 msgstr "Transferencia bancaria"
 
 #: ar_payments.php:256 new_customers_list.php:169
-#: order_common_functions.php:160 smarty.php:53
+#: order_common_functions.php:170 smarty.php:53
 msgid "Cash on Delivery"
 msgstr "Contrareembolso"
 
@@ -5335,7 +5356,7 @@ msgstr[1] "con el correo electrónico"
 #: ar_payments.php:440
 #, fuzzy
 msgid "There isn't any provider with this id"
-msgstr "No hay ningún cliente con acreditación como"
+msgstr "No hay ninguna factura con ese número"
 
 #: ar_payments.php:450
 #, fuzzy
@@ -5682,7 +5703,7 @@ msgstr[1] "Espacio"
 #: ar_quick_tables.php:312
 #, fuzzy
 msgid "There isn't any area with code"
-msgstr "No hay ningún proveedor con código"
+msgstr "No hay ninguna página con el código"
 
 #: ar_quick_tables.php:314
 #, fuzzy
@@ -5702,12 +5723,12 @@ msgstr "Areas"
 #: ar_quick_tables.php:676
 #, fuzzy
 msgid "There isn't any part with SKU"
-msgstr "No hay ninguna pieza con"
+msgstr "No hay pieza con referencia"
 
 #: ar_quick_tables.php:689
 #, fuzzy
 msgid "There isn't any part with reference like "
-msgstr "No hay ninguna parte con la descripción como"
+msgstr "No hay pieza con referencia"
 
 #: ar_quick_tables.php:698
 #, fuzzy
@@ -5807,7 +5828,7 @@ msgstr[1] "Categorías"
 #: ar_quick_tables.php:2375
 #, fuzzy
 msgid "There isn't any category with tree like"
-msgstr "No hay ninguna categoría con etiqueta como"
+msgstr "No hay ninguna categoría con nombre como"
 
 #: ar_quick_tables.php:2377
 #, fuzzy
@@ -5883,12 +5904,12 @@ msgstr "No hay ninguna parte que se usa en"
 #: ar_reports.php:1448
 #, fuzzy
 msgid "There isn't any part with reference like"
-msgstr "No hay ninguna parte con la descripción como"
+msgstr "No hay pieza con referencia"
 
 #: ar_reports.php:1455
 #, fuzzy
 msgid "parts with SKU like"
-msgstr "partes con la descripción como"
+msgstr "Referencia como "
 
 #: ar_reports.php:1719
 #, fuzzy
@@ -5903,7 +5924,7 @@ msgstr "No hay ningún producto con un código como"
 #: ar_reports.php:1725
 #, fuzzy
 msgid "There isn't any picker like"
-msgstr "No hay ninguna nota como"
+msgstr "No hay ningún cliente como"
 
 #: ar_reports.php:1728
 #, fuzzy
@@ -5913,7 +5934,7 @@ msgstr "No hay ninguna nota como"
 #: ar_reports.php:1735
 #, fuzzy
 msgid "parts with sku like"
-msgstr "partes con la descripción como"
+msgstr "Referencia como "
 
 #: ar_reports.php:1741
 #, fuzzy
@@ -5958,7 +5979,7 @@ msgstr "categorías"
 #: ar_reports.php:4785
 #, fuzzy
 msgid "There isn't any record with comodity code"
-msgstr "No hay ningún registro en los últimos"
+msgstr "No hay ningún registro coincidente"
 
 #: ar_reports.php:4787
 #, fuzzy
@@ -5979,7 +6000,7 @@ msgstr "Debe especificar un resumen de la cuestión."
 #: ar_sites.php:545 ar_sites.php:941
 #, fuzzy
 msgid "There isn't any page with title"
-msgstr "No hay ningún departamento con esta descripción"
+msgstr "No hay ninguna página con el código"
 
 #: ar_sites.php:547 ar_sites.php:943
 #, fuzzy
@@ -6330,7 +6351,7 @@ msgstr[0] "Libre ubicación"
 msgstr[1] "Libre ubicación"
 
 #: associate_product.js.php:165 company_area.js.php:77
-#: company_department.js.php:11 dn.js.php:72 dn.php:172 edit_hr.php:99
+#: company_department.js.php:11 dn.js.php:130 dn.php:172 edit_hr.php:99
 #: hr.js.php:13 hr.php:53 order.php:580 order.php:697
 #: order_in_warehouse.js.php:130 order_pack_aid.php:166
 #: order_pick_aid.js.php:399 order_pick_aid.php:156
@@ -6394,7 +6415,7 @@ msgstr "Productos"
 
 #: campaign.js.php:28 campaign.php:115 customers.js.php:14 deal.js.php:28
 #: deal.php:172 new_delivery_notes_list.js.php:416 order.js.php:37
-#: orders.js.php:159 part.js.php:177 product.js.php:110 product.php:368
+#: orders.js.php:162 part.js.php:177 product.js.php:110 product.php:368
 #: report_pp_employee.js.php:43 report_pp_employee.js.php:103
 #: report_sales_interval.js.php:39 send_post.js.php:7 smarty.php:2942
 #: smarty.php:5072 smarty.php:5102 smarty.php:5129 smarty.php:5309
@@ -6409,9 +6430,9 @@ msgid "No Send"
 msgstr "N Enviar"
 
 #: campaign.js.php:105 company_area.js.php:76 company_department.js.php:10
-#: customers.js.php:269 deal.js.php:105 edit_customer_category.js.php:218
+#: customers.js.php:270 deal.js.php:105 edit_customer_category.js.php:218
 #: edit_customer_category.js.php:314 edit_customers.js.php:53 hr.js.php:12
-#: orders.js.php:232 orders.php:178 payment.js.php:1095 product.php:188
+#: orders.js.php:235 orders.php:178 payment.js.php:1095 product.php:188
 #: products_export_common.php:27 supplier.js.php:110 supplier.js.php:256
 #: supplier_category.js.php:100 supplier_product.js.php:459
 #: supplier_product.php:192 suppliers.js.php:30 suppliers.js.php:139
@@ -6526,7 +6547,7 @@ msgstr "Número de pedido"
 #: campaign.php:116 campaign.php:128 customer_categories.php:127
 #: customer_category.js.php:94 customer_category.php:152
 #: customer_category.php:279 customer_split_view.php:264
-#: customer_split_view.php:270 customers.js.php:63 customers.js.php:270
+#: customer_split_view.php:270 customers.js.php:63 customers.js.php:271
 #: customers.php:172 customers.php:249 customers_list.js.php:21
 #: customers_list.php:94 customers_send_post.js.php:19
 #: customers_send_post.php:121 customers_stats.js.php:23
@@ -6719,7 +6740,7 @@ msgstr "Registro actualizado"
 #: class.Category.php:1867 class.Category.php:1868 class.Category.php:2045
 #: class.Category.php:2046 class.Part.php:128 class.Part.php:1962
 #: class.PartLocation.php:520 class.PartLocation.php:1034
-#: class.TimeSeries.php:2816 class.TimeSeries.php:3318 dn.js.php:29
+#: class.TimeSeries.php:2816 class.TimeSeries.php:3318
 #: order_pack_aid.js.php:299 order_pick_aid.js.php:296
 #: order_restock_aid.js.php:321 smarty.php:452 smarty.php:8069 smarty.php:8867
 #: smarty.php:8927
@@ -7106,7 +7127,7 @@ msgstr "Cliente ya tiene este numero"
 #: class.Customer.php:1399
 #, fuzzy
 msgid "These customer already has this number"
-msgstr "Cliente ya tiene este número"
+msgstr "Cliente ya tiene este numero"
 
 #: class.Customer.php:1416
 #, fuzzy
@@ -7188,7 +7209,7 @@ msgstr "Telecom asociado con cliente"
 #: class.Customer.php:1891
 #, fuzzy
 msgid "This customer already has this number"
-msgstr "Cliente ya tiene este número"
+msgstr "Cliente ya tiene este numero"
 
 #: class.Customer.php:1905
 #, fuzzy
@@ -7570,7 +7591,7 @@ msgstr ""
 "empaquetado"
 
 #: class.DeliveryNote.php:2183 class.Order.php:1942
-#: order_common_functions.php:129
+#: order_common_functions.php:139
 #, fuzzy
 msgid "Packed & Checked"
 msgstr "Empaquetado y Revisado por:"
@@ -7636,8 +7657,8 @@ msgid ""
 "Error,the sum of out of stock and not found units are greater than the "
 "number of not picked units"
 msgstr ""
-"Error, la suma de fuera de stock y no se encuentran las unidades son mayores "
-"que el número de unidades que no sean recogidos"
+"Error, la suma de unidades fuera de stock y las unidades no encontradas es "
+"mayor que el número de unidades no tomadas en almacén"
 
 #: class.Department.php:143
 #, fuzzy
@@ -8041,33 +8062,33 @@ msgstr "registro de errores"
 msgid "Ignored Log"
 msgstr "ignorado"
 
-#: class.Invoice.php:1638 class.Payment.php:146 new_customers_list.php:166
+#: class.Invoice.php:1640 class.Payment.php:146 new_customers_list.php:166
 #: smarty.php:2132
 msgid "Paypal"
 msgstr "Paypal"
 
-#: class.Invoice.php:1676
+#: class.Invoice.php:1678
 msgid "Paid in full"
 msgstr "Pagado en su totalidad"
 
-#: class.Invoice.php:1679
+#: class.Invoice.php:1681
 msgid "Not Paid"
 msgstr "No pagado"
 
-#: class.Invoice.php:2452
+#: class.Invoice.php:2454
 msgid "Invoice for order"
 msgid_plural "Invoice for orders"
 msgstr[0] "Facturas del pedido"
 msgstr[1] "Facturas de los pedidos"
 
-#: class.Invoice.php:2454
+#: class.Invoice.php:2456
 #, fuzzy
 msgid "Credit note for order"
 msgid_plural "Credit note for orders"
 msgstr[0] "Facturas del pedido"
 msgstr[1] "Facturas de los pedidos"
 
-#: class.Invoice.php:2456
+#: class.Invoice.php:2458
 msgid "Refund for order"
 msgid_plural "Refund for orders"
 msgstr[0] "Devolución por pedido"
@@ -8292,8 +8313,8 @@ msgid "Exento"
 msgstr ""
 
 #: class.Order.php:6350 class.Order.php:6557 class.Order.php:6560
-#: class.Order.php:6563 invoice.pdf.php:216 invoice.pdf.php:219
-#: invoice.pdf.php:222 smarty.php:16622 smarty.php:17390 smarty.php:17957
+#: class.Order.php:6563 invoice.pdf.php:225 invoice.pdf.php:228
+#: invoice.pdf.php:231 smarty.php:16622 smarty.php:17390 smarty.php:17957
 #: smarty.php:18275 smarty.php:18923 smarty.php:26657 smarty.php:27374
 msgid "VAT"
 msgstr "IVA"
@@ -8333,17 +8354,17 @@ msgstr "Válidar"
 msgid "Edit tax number"
 msgstr "Editar Número fiscal"
 
-#: class.Order.php:6554 invoice.pdf.php:213
+#: class.Order.php:6554 invoice.pdf.php:222
 #, fuzzy
 msgid "Outside the scope of VAT"
 msgstr "Exportación exenta de IVA"
 
-#: class.Order.php:6566 invoice.pdf.php:225
+#: class.Order.php:6566 invoice.pdf.php:234
 #, fuzzy
 msgid "No Tax"
 msgstr "Impuestos N º"
 
-#: class.Order.php:6569 invoice.pdf.php:228
+#: class.Order.php:6569 invoice.pdf.php:240
 #, fuzzy
 msgid "Exempt from VAT"
 msgstr "Exento de IVA"
@@ -8704,7 +8725,7 @@ msgid "associated with unknown location"
 msgstr "Ubicación Desconocida"
 
 #: class.Part.php:2763 class.Part.php:2777 class.Part.php:2791
-#: common_functions.php:853
+#: common_functions.php:839
 msgid "d"
 msgstr "d"
 
@@ -8715,7 +8736,7 @@ msgstr "Desconocida Proveedor"
 #: class.Part.php:3720 class.SupplierProduct.php:2344
 #, fuzzy
 msgid "No file is set up as MSDS"
-msgstr "Cliente de configurar como de la empresa"
+msgstr "Configurar Número fiscal / CIF"
 
 #: class.Part.php:3741 class.SupplierProduct.php:2365
 #, fuzzy
@@ -8760,8 +8781,9 @@ msgid "Next shipment date removed"
 msgstr "Fecha de envío eliminada"
 
 #: class.Part.php:3987 class.Part.php:4046
+#, fuzzy
 msgid "Next shipment date removed, previous value:"
-msgstr ""
+msgstr "Fecha de envío eliminada"
 
 #: class.Part.php:3993 class.Part.php:3994 class.Part.php:4052
 #: class.Part.php:4053
@@ -8823,7 +8845,7 @@ msgstr "acciones desconocido en la ubicación de destino"
 #: class.PartLocation.php:721
 #, fuzzy
 msgid "Inter-warehouse transfer"
-msgstr "Galería"
+msgstr "Transferencia bancaria"
 
 #: class.PartLocation.php:770
 msgid "Unknown stock in the location"
@@ -8952,7 +8974,7 @@ msgstr "Pago completado correctamente"
 #: class.Payment.php:337
 #, fuzzy
 msgid "payment in cancelled"
-msgstr "Cancelado"
+msgstr "Pago cancelado"
 
 #: class.Payment.php:347
 #, fuzzy
@@ -9000,7 +9022,7 @@ msgstr "PC"
 msgid "g"
 msgstr "g"
 
-#: class.Product.php:563 common_functions.php:857
+#: class.Product.php:563 common_functions.php:843
 msgid "m"
 msgstr "m"
 
@@ -9281,7 +9303,7 @@ msgid "Matched With DN"
 msgstr "Emparejada con DN"
 
 #: class.PurchaseOrder.php:131 class.PurchaseOrder.php:483
-#: class.PurchaseOrder.php:523 order_common_functions.php:125 smarty.php:20807
+#: class.PurchaseOrder.php:523 order_common_functions.php:135 smarty.php:20807
 #: smarty.php:20975 smarty.php:26420 smarty.php:27137
 msgid "Submitted"
 msgstr "Enviado"
@@ -9326,7 +9348,7 @@ msgstr "Para"
 #: class.ReadEmail.php:473
 #, fuzzy
 msgid "can not connect to the email server"
-msgstr "No puede conectare con el servidor de email"
+msgstr "No puede conectare con el servidor de correos electrónicos"
 
 #: class.SendEmail.php:699
 #, fuzzy
@@ -10086,11 +10108,11 @@ msgid_plural "decades"
 msgstr[0] ""
 msgstr[1] ""
 
-#: common_functions.php:855 smarty.php:4610
+#: common_functions.php:841 smarty.php:4610
 msgid "w"
 msgstr "s"
 
-#: common_functions.php:859 common_functions.php:861
+#: common_functions.php:845 common_functions.php:847
 msgid "y"
 msgstr "a"
 
@@ -10162,6 +10184,11 @@ msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "leer registro"
 msgstr[1] "leer registro"
+
+#: common_natural_language.php:46
+#, fuzzy
+msgid "ago"
+msgstr "Bolsa"
 
 #: common_tax_number_functions.php:47
 #, fuzzy
@@ -10284,13 +10311,13 @@ msgstr "No en sitio web"
 msgid "Invalid Company Registration Number"
 msgstr "número de registración de empresa invalida"
 
-#: customer.js.php:367 dn.js.php:33 new_post_order.js.php:396 newpo.js.php:42
+#: customer.js.php:367 dn.js.php:30 new_post_order.js.php:396 newpo.js.php:42
 #: order.pdf.php:371 order_dispatched.js.php:53 smarty.php:4091
 msgid "Ordered"
 msgstr "Pedidos"
 
 #: customer.js.php:430 customer.js.php:570 customer.js.php:639
-#: customers.js.php:193 dn_list.js.php:19 invoices_list.js.php:17
+#: customers.js.php:194 dn_list.js.php:19 invoices_list.js.php:17
 #: orders_list.js.php:19 pending_orders.js.php:23 report_out_of_stock.php:77
 #: store_pending_orders.js.php:21 warehouse_orders.js.php:74
 msgid "Order ID"
@@ -10308,13 +10335,13 @@ msgstr "Última actualización"
 msgid "Current State"
 msgstr "Estado actual"
 
-#: customer.js.php:433 customers.js.php:195 pending_orders.js.php:28
+#: customer.js.php:433 customers.js.php:196 pending_orders.js.php:28
 #: smarty.php:13826 smarty.php:17408 smarty.php:17567 smarty.php:18143
 #: smarty.php:18287 smarty.php:18656 store_pending_orders.js.php:26
 msgid "Order Date"
 msgstr "Fecha del pedido"
 
-#: customer.js.php:574 new_delivery_notes_list.js.php:421 orders.js.php:167
+#: customer.js.php:574 new_delivery_notes_list.js.php:421 orders.js.php:170
 #: part.js.php:185 report_pp_employee.js.php:51 report_pp_employee.js.php:111
 #: smarty.php:4067 smarty.php:4076 smarty.php:4166 smarty.php:13835
 #: smarty.php:18584 smarty.php:18674 smarty.php:23564 smarty.php:23570
@@ -10331,7 +10358,7 @@ msgstr "Bultos"
 #: edit_warehouse_area.js.php:160 email_campaign_in_process.js.php:124
 #: family.js.php:337 inventory.js.php:153 invoice_categories_base.js.php:175
 #: location.js.php:339 new_delivery_notes_list.js.php:418 order.js.php:38
-#: orders.js.php:89 orders.js.php:162 part.js.php:104 part.js.php:180
+#: orders.js.php:92 orders.js.php:165 part.js.php:104 part.js.php:180
 #: parts_lists.js.php:42 parts_movements.js.php:18 payment.js.php:441
 #: product.js.php:480 report_packers.js.php:30 report_pickers.js.php:33
 #: report_pp_employee.js.php:46 report_pp_employee.js.php:106
@@ -10346,13 +10373,13 @@ msgid "Type"
 msgstr "Tipo"
 
 #: customer.js.php:644 customer_category.js.php:100 customers.js.php:68
-#: customers.js.php:196 customers_list.js.php:26 customers_send_post.js.php:27
+#: customers.js.php:197 customers_list.js.php:26 customers_send_post.js.php:27
 #: dn_list.js.php:22 dn_list.js.php:29 edit_customer_category.js.php:318
 #: edit_customers.js.php:58 edit_part_category.js.php:247
 #: email_campaign.js.php:23 invoice_category.js.php:97 invoices_list.js.php:20
 #: invoices_list.js.php:27 new_customers_list.js.php:672
 #: new_invoices_list.js.php:418 new_orders_list.js.php:268
-#: new_orders_list.js.php:275 orders.js.php:91 orders.js.php:164
+#: new_orders_list.js.php:275 orders.js.php:94 orders.js.php:167
 #: orders_list.js.php:22 orders_list.js.php:29 part.js.php:182
 #: report_customers.js.php:55 report_geo_sales_country.js.php:24
 #: report_geo_sales_wregion.js.php:112 report_pp_employee.js.php:48
@@ -10748,7 +10775,7 @@ msgstr "Desde"
 msgid "Last Order"
 msgstr "Ultima Orden"
 
-#: customer_category.js.php:104 customers.js.php:72 customers.js.php:274
+#: customer_category.js.php:104 customers.js.php:72 customers.js.php:275
 #: customers_export_common.php:56 customers_export_common.php:62
 #: customers_export_common.php:65 customers_list.js.php:30
 #: customers_send_post.js.php:31 dn_export_common.php:37
@@ -10974,12 +11001,12 @@ msgstr "Año"
 msgid "Quarter"
 msgstr "Trimestre"
 
-#: customers.js.php:198 edit_family.js.php:1128 pending_orders.js.php:32
+#: customers.js.php:199 edit_family.js.php:1128 pending_orders.js.php:32
 #: store_pending_orders.js.php:30 warehouse_orders.js.php:82
 msgid "Picks"
 msgstr "recolleciones"
 
-#: customers.js.php:201 pending_orders.js.php:35
+#: customers.js.php:202 pending_orders.js.php:35
 #: store_pending_orders.js.php:33 warehouse_orders.js.php:83
 #, fuzzy
 msgid "Actions"
@@ -10992,7 +11019,7 @@ msgstr "<i>unidades</i> x <i>nombre</i> PVP"
 
 #: customers_export_common.php:25 customers_stats.js.php:22
 #: dn_export_common.php:25 edit_customer.php:283 invoice_category.js.php:90
-#: invoices_export_common.php:25 orders.js.php:20 orders.js.php:85
+#: invoices_export_common.php:25 orders.js.php:20 orders.js.php:88
 #: report_customers.js.php:25 smarty.php:9047
 msgid "ID"
 msgstr "ID"
@@ -11360,7 +11387,7 @@ msgid "Stock State"
 msgstr "Estado"
 
 #: department.js.php:297 family.js.php:87 invoice.js.php:29
-#: invoice.pdf.php:123 new_parts_list.js.php:189 order_cancelled.js.php:46
+#: invoice.pdf.php:129 new_parts_list.js.php:189 order_cancelled.js.php:46
 #: order_in_process_by_customer.js.php:20 order_pick_form.js.php:23
 #: order_ready_to_ship.js.php:23 order_suspended.js.php:19
 #: parts_export_common.php:38 payment.js.php:268 products_export_common.php:42
@@ -11373,7 +11400,7 @@ msgstr "Código Tariff"
 #: stores.js.php:384
 #, fuzzy
 msgid "Pkg Type"
-msgstr "Tipo"
+msgstr "Peso Bulto"
 
 #: department.js.php:302 family.js.php:92 inventory.js.php:237
 #: inventory_light.js.php:46 payment.js.php:273 store.js.php:540
@@ -11384,15 +11411,16 @@ msgstr "Peso Bulto"
 #: department.js.php:303 family.js.php:93 inventory.js.php:238
 #: inventory_light.js.php:47 payment.js.php:274 store.js.php:541
 #: stores.js.php:386
+#, fuzzy
 msgid "Pkg Dim"
-msgstr ""
+msgstr "Peso Bulto"
 
 #: department.js.php:304 family.js.php:94 inventory.js.php:239
 #: inventory_light.js.php:48 payment.js.php:275 store.js.php:542
 #: stores.js.php:387
 #, fuzzy
 msgid "Pkg Vol"
-msgstr "Número máximo de Vol."
+msgstr "Peso Bulto"
 
 #: department.js.php:305 family.js.php:95 inventory.js.php:240
 #: inventory_light.js.php:49 payment.js.php:276 smarty.php:4517
@@ -11417,8 +11445,8 @@ msgstr "URL"
 
 #: department.js.php:1005 department.js.php:1007 department.js.php:1009
 #: family.js.php:879 family.js.php:881 inventory.js.php:443
-#: inventory.js.php:445 invoice_category.js.php:345 orders.js.php:416
-#: orders.js.php:418 orders.js.php:420 page.js.php:386 part.js.php:891
+#: inventory.js.php:445 invoice_category.js.php:345 orders.js.php:419
+#: orders.js.php:421 orders.js.php:423 page.js.php:386 part.js.php:891
 #: part.js.php:893 part.js.php:895 product.js.php:737
 #: report_customers.js.php:203 report_intrastat.js.php:23
 #: report_out_of_stock.js.php:425 report_out_of_stock.js.php:427
@@ -11525,12 +11553,18 @@ msgstr "Semanal"
 msgid "Monthy (end of month)"
 msgstr "Colección de fin de mes"
 
-#: dn.js.php:34
-msgid "Given"
-msgstr "Obsequios"
+#: dn.js.php:33
+#, fuzzy
+msgid "Required Parts"
+msgstr "requerido"
+
+#: dn.js.php:39
+#, fuzzy
+msgid "Part Notes"
+msgstr "toma nota con"
 
 #: dn.pdf.php:39 dn.php:220 invoice_category.js.php:94
-#: new_invoices_list.js.php:415 orders.js.php:96
+#: new_invoices_list.js.php:415 orders.js.php:99
 #: report_sales_with_no_tax.js.php:33 smarty.php:4058 smarty.php:4151
 #: smarty.php:17576 smarty.php:18149 smarty.php:18557 smarty.php:18752
 msgid "Delivery Note"
@@ -11565,7 +11599,7 @@ msgstr "Cliente estática Lista"
 #: duplicate_warning.php:98
 #, fuzzy
 msgid "Customer has a duplicate number"
-msgstr "Cliente ya tiene este número"
+msgstr "Cliente ya tiene este numero"
 
 #: duplicate_warning.php:126
 msgid "same number"
@@ -11711,7 +11745,7 @@ msgstr "Confirmar es nuevo contacto y guardar"
 #: edit_contact_from_parent.js.php:537
 #, fuzzy
 msgid "Cancel Add New Contact"
-msgstr "Cancelar Nuevo correo electrónico"
+msgstr "Cancelar Añador Producto"
 
 #: edit_contact_from_parent.js.php:539
 msgid "Save Changes"
@@ -12020,7 +12054,7 @@ msgstr "Radio"
 #: edit_location.js.php:398
 #, fuzzy
 msgid "Invalid Depth"
-msgstr "Email invalido"
+msgstr "Peso válido"
 
 #: edit_location.js.php:399
 msgid "Invalid Height"
@@ -12185,7 +12219,7 @@ msgstr "Referencia invalida"
 #: edit_supplier_product.js.php:1244
 #, fuzzy
 msgid "Invalid Duty Rate"
-msgstr "Email invalido"
+msgstr "Peso válido"
 
 #: edit_part.js.php:1211 edit_product.js.php:1580
 #: edit_supplier_product.js.php:1297
@@ -12542,7 +12576,7 @@ msgstr "Clave"
 #: edit_site.php:177
 #, fuzzy
 msgid "Editing Website"
-msgstr "Edición"
+msgstr "No en sitio web"
 
 #: edit_stock.js.php:600 edit_stock.js.php:602
 msgid "Can pick"
@@ -12671,7 +12705,7 @@ msgstr "Código Proveedor invalido"
 #: edit_supplier.js.php:770
 #, fuzzy
 msgid "Invalid QQ"
-msgstr "Email invalido"
+msgstr "Peso válido"
 
 #: edit_supplier.js.php:786 smarty.php:4100 smarty.php:18524
 #, fuzzy
@@ -13280,16 +13314,16 @@ msgstr "Descuentos"
 msgid "Charge"
 msgstr "Cargo"
 
-#: invoice.pdf.php:89
+#: invoice.pdf.php:95
 msgid "Invoice No."
 msgstr "Numero Factura"
 
-#: invoice.pdf.php:93
+#: invoice.pdf.php:99
 #, fuzzy
 msgid "Credit Note No."
 msgstr "Nota de Crédito"
 
-#: invoice.pdf.php:97
+#: invoice.pdf.php:103
 msgid "Refund No."
 msgstr "No. devolución"
 
@@ -13665,7 +13699,7 @@ msgstr "Donaciones"
 #: new_delivery_notes_list.php:97 orders.js.php:23 smarty.php:19190
 #, fuzzy
 msgid "Dispatch"
-msgstr "¡Lugar para una expedición"
+msgstr "Fecha de envio"
 
 #: new_delivery_notes_list.php:98
 #, fuzzy
@@ -13908,7 +13942,7 @@ msgstr "Ayuda a Recolección"
 
 #: order.pdf.php:373 order_cancelled.js.php:48 order_dispatched.js.php:55
 #: order_in_process_by_customer.js.php:22 order_pick_form.js.php:25
-#: order_ready_to_ship.js.php:25 order_suspended.js.php:21 orders.js.php:236
+#: order_ready_to_ship.js.php:25 order_suspended.js.php:21 orders.js.php:239
 #: payment.js.php:1099 send_confirmation_email_function.php:85 smarty.php:59
 #: smarty.php:80 smarty.php:113 smarty.php:13859 smarty.php:13907
 #: smarty.php:13982 smarty.php:18626 smarty.php:21845 smarty.php:21896
@@ -13968,128 +14002,128 @@ msgstr "Modifíquese el fin de"
 msgid "Create Invoice"
 msgstr "Crear factura"
 
-#: order_common_functions.php:96 order_common_functions.php:376
+#: order_common_functions.php:96 order_common_functions.php:386
 #: smarty.php:4112
 #, fuzzy
 msgid "Approve Dispatching"
 msgstr "Autorizar el Envío"
 
-#: order_common_functions.php:122 smarty.php:3173 smarty.php:20699
+#: order_common_functions.php:109 order_common_functions.php:398
+#, fuzzy
+msgid "Mark as Dispatched"
+msgstr "Marcar como Enviado"
+
+#: order_common_functions.php:132 smarty.php:3173 smarty.php:20699
 #: smarty.php:25256
 msgid "In Website"
 msgstr "En sitio web"
 
-#: order_common_functions.php:145 smarty.php:19073
+#: order_common_functions.php:155 smarty.php:19073
 #, fuzzy
 msgid "No Applicable"
 msgstr "No aplica"
 
-#: order_common_functions.php:153 order_common_functions.php:172
+#: order_common_functions.php:163 order_common_functions.php:182
 #: smarty.php:14159 smarty.php:14219 smarty.php:14354 smarty.php:19070
 #: smarty.php:19112
 msgid "Waiting Payment"
 msgstr "Esperando pago"
 
-#: order_common_functions.php:177
+#: order_common_functions.php:187
 #, fuzzy
 msgid "Overpaid"
 msgstr "Sobrepagado"
 
-#: order_common_functions.php:190
+#: order_common_functions.php:200
 #, fuzzy
 msgid "Using Credit"
 msgstr "Usando Abono"
 
-#: order_common_functions.php:232 smarty.php:4259 smarty.php:18734
+#: order_common_functions.php:242 smarty.php:4259 smarty.php:18734
 msgid "Assign Picker"
 msgstr "Asignar Recolector"
 
-#: order_common_functions.php:236 order_common_functions.php:255
+#: order_common_functions.php:246 order_common_functions.php:265
 msgid "Pick Order"
 msgstr "Recolectar Pedido"
 
-#: order_common_functions.php:238 order_common_functions.php:252
+#: order_common_functions.php:248 order_common_functions.php:262
 #: smarty.php:4262 smarty.php:18728 smarty.php:18821
 #, fuzzy
 msgid "Start Picking"
 msgstr "Empezar recolección"
 
-#: order_common_functions.php:248 order_common_functions.php:297
+#: order_common_functions.php:258 order_common_functions.php:307
 #: smarty.php:18737
 #, fuzzy
 msgid "Change Picker"
 msgstr "Cambiar recolector"
 
-#: order_common_functions.php:257 order_common_functions.php:294
+#: order_common_functions.php:267 order_common_functions.php:304
 #: order_pick_aid.pdf.php:29 smarty.php:17579 smarty.php:18152
 #: smarty.php:18551
 #, fuzzy
 msgid "Picking Aid"
 msgstr "Ayuda a Recolección"
 
-#: order_common_functions.php:268
+#: order_common_functions.php:278
 #, fuzzy
 msgid "Packing assigned to"
 msgstr "Empaquetado asignado a"
 
-#: order_common_functions.php:277 smarty.php:4271 smarty.php:18740
+#: order_common_functions.php:287 smarty.php:4271 smarty.php:18740
 #: smarty.php:18743 smarty.php:18824
 #, fuzzy
 msgid "Start Packing"
 msgstr "Inicio de embalaje"
 
-#: order_common_functions.php:282 order_common_functions.php:339
+#: order_common_functions.php:292 order_common_functions.php:349
 #: smarty.php:18749 smarty.php:18827
 #, fuzzy
 msgid "Packing Aid"
 msgstr "Ayuda Empaquetado"
 
-#: order_common_functions.php:303 order_common_functions.php:319
+#: order_common_functions.php:313 order_common_functions.php:329
 #: smarty.php:4268 smarty.php:18731
 msgid "Assign Packer"
 msgstr "Asignar Packer"
 
-#: order_common_functions.php:324 smarty.php:4199 smarty.php:4232
+#: order_common_functions.php:334 smarty.php:4199 smarty.php:4232
 msgid "Start packing"
 msgstr "Inicio de embalaje"
 
-#: order_common_functions.php:333 smarty.php:4190
+#: order_common_functions.php:343 smarty.php:4190
 #, fuzzy
 msgid "Packing by"
 msgstr "Con el embalaje"
 
-#: order_common_functions.php:348
+#: order_common_functions.php:358
 #, fuzzy
 msgid "Approve packing"
 msgstr "Autorizar Empaquetado"
 
-#: order_common_functions.php:350
+#: order_common_functions.php:360
 #, fuzzy
 msgid "Waiting for packing approval"
 msgstr "Esperando aprobación de Empaquetado"
 
-#: order_common_functions.php:361
+#: order_common_functions.php:371
 msgid "picking order"
 msgstr "Recolectando pedido"
 
-#: order_common_functions.php:364
+#: order_common_functions.php:374
 #, fuzzy
 msgid "packing order"
 msgstr "Empaquetando Pedido"
 
-#: order_common_functions.php:376
+#: order_common_functions.php:386
 #, fuzzy
 msgid "Order not invoiced"
 msgstr "Pedido no Facturado"
 
-#: order_common_functions.php:381
+#: order_common_functions.php:391
 msgid "Waiting shipping approval"
 msgstr "Esperando aprobación envío"
-
-#: order_common_functions.php:388
-#, fuzzy
-msgid "Mark as Dispatched"
-msgstr "Marcar como Enviado"
 
 #: order_dispatched.js.php:51 order_dispatched.js.php:88 smarty.php:16421
 msgid "Tarrif Code"
@@ -14135,7 +14169,7 @@ msgstr[1] "recogedores"
 msgid "Picking Aid Sheet"
 msgstr "Recogiendo Hoja de Ayuda"
 
-#: orders.js.php:24 orders.js.php:92 payment.php:109 pending_orders.js.php:30
+#: orders.js.php:24 orders.js.php:95 payment.php:109 pending_orders.js.php:30
 #: smarty.php:17399 smarty.php:17555 smarty.php:17747 smarty.php:18077
 #: smarty.php:18134 smarty.php:19199 smarty.php:19208
 #: store_pending_orders.js.php:28
@@ -14146,7 +14180,7 @@ msgstr "Pago"
 msgid "Total Balance"
 msgstr "Balance total"
 
-#: orders.js.php:234 payment.js.php:1097 smarty.php:92 smarty.php:13895
+#: orders.js.php:237 payment.js.php:1097 smarty.php:92 smarty.php:13895
 #: smarty.php:18617 smarty.php:21884
 msgid "Method"
 msgstr "Método"
@@ -14164,7 +14198,7 @@ msgstr "<i>unidades</i> x <i>nombre</i> PVP"
 #: orders.php:134 part.php:247
 #, fuzzy
 msgid "Orders with a minimum value of"
-msgstr "No hay ningún valor mínimo orden de"
+msgstr "Factura con valor mínimo de"
 
 #: orders.php:134 part.php:247
 msgid "Min Value"
@@ -14173,7 +14207,7 @@ msgstr "Valor mín."
 #: orders.php:135
 #, fuzzy
 msgid "Orders with a maximum value of"
-msgstr "Número máximo de pedidos"
+msgstr "Factura con valor máximo de"
 
 #: orders.php:135 part.php:248
 msgid "Max Value"
@@ -14182,7 +14216,7 @@ msgstr "Valor máx."
 #: orders.php:136 part.php:249
 #, fuzzy
 msgid "Orders from country code <i>xxx</i>"
-msgstr "Código de país (XXX)"
+msgstr "Factura con Código de país (XXX)"
 
 #: orders.php:147
 #, fuzzy
@@ -14295,7 +14329,7 @@ msgstr "<i>unidades</i> x <i>nombre</i> PVP"
 #: orders_server.php:116
 #, fuzzy
 msgid "Delivery Note starting with  <i>x</i>"
-msgstr "<i>unidades</i> x <i>nombre</i> PVP"
+msgstr "Nota de envío con Código de país (XXX)"
 
 #: orders_server.php:116
 msgid "Delivery Note Number"
@@ -14344,7 +14378,7 @@ msgstr "Disponibilidad"
 #: part.php:248
 #, fuzzy
 msgid "Orders with a maximum value of "
-msgstr "Número máximo de pedidos"
+msgstr "Factura con valor máximo de"
 
 #: part.php:341 report_out_of_stock.php:74 smarty.php:395 smarty.php:9020
 #: smarty.php:17180 smarty.php:21728 smarty.php:26642 smarty.php:26720
@@ -14873,7 +14907,7 @@ msgstr "Recolectores y Empacadores Informe"
 #: report_pp_employee.php:88
 #, fuzzy
 msgid "Picking & Packing Report"
-msgstr "Recolección"
+msgstr "Recolectando y Empacando"
 
 #: report_sales_components.js.php:21
 msgid "Bonus (Value)"
@@ -16150,8 +16184,9 @@ msgid "Belarus"
 msgstr ""
 
 #: smarty.php:1127
+#, fuzzy
 msgid "Belgium"
-msgstr ""
+msgstr "Belgica"
 
 #: smarty.php:1130
 msgid "Belize"
@@ -16308,7 +16343,7 @@ msgstr ""
 #: smarty.php:1241
 #, fuzzy
 msgid "Dominican Republic"
-msgstr "Républica Checa"
+msgstr "República Dominicana"
 
 #: smarty.php:1244
 #, fuzzy
@@ -16444,8 +16479,9 @@ msgid "Hong Kong"
 msgstr ""
 
 #: smarty.php:1352
+#, fuzzy
 msgid "Hungary"
-msgstr ""
+msgstr "Hungria"
 
 #: smarty.php:1355
 #, fuzzy
@@ -16482,12 +16518,14 @@ msgid "Jamaica"
 msgstr ""
 
 #: smarty.php:1385
+#, fuzzy
 msgid "Japan"
-msgstr ""
+msgstr "Japon"
 
 #: smarty.php:1391
+#, fuzzy
 msgid "Jordan"
-msgstr ""
+msgstr "Jordania"
 
 #: smarty.php:1394
 msgid "Kazakhstan"
@@ -16686,8 +16724,9 @@ msgid "Norfolk Island"
 msgstr ""
 
 #: smarty.php:1541
+#, fuzzy
 msgid "North Korea"
-msgstr ""
+msgstr "Corea del sur"
 
 #: smarty.php:1544
 msgid "Northern Mariana Islands"
@@ -16753,8 +16792,9 @@ msgid "Romania"
 msgstr ""
 
 #: smarty.php:1598
+#, fuzzy
 msgid "Russian Federation"
-msgstr ""
+msgstr "Rusia (Federación)"
 
 #: smarty.php:1601
 msgid "Rwanda"
@@ -16844,7 +16884,7 @@ msgstr "Sur África"
 #: smarty.php:1661
 #, fuzzy
 msgid "South Korea"
-msgstr "Sur África"
+msgstr "Corea del sur"
 
 #: smarty.php:1667
 msgid "Sri Lanka"
@@ -17058,7 +17098,7 @@ msgstr "Facturación"
 #: smarty.php:1907
 #, fuzzy
 msgid "Delivery"
-msgstr "No notas de entrega"
+msgstr "Dirección de entrega"
 
 #: smarty.php:1916
 msgid "Same as billing address"
@@ -17324,12 +17364,12 @@ msgstr "Dirección:"
 #: smarty.php:2198 smarty.php:5912 smarty.php:18464
 #, fuzzy
 msgid "Details Match"
-msgstr "El partido de facturas"
+msgstr "Detalles"
 
 #: smarty.php:2201 smarty.php:5915 smarty.php:18467
 #, fuzzy
 msgid "Details not match"
-msgstr "El partido de facturas"
+msgstr "Detalles"
 
 #: smarty.php:2216
 #, fuzzy
@@ -18038,7 +18078,7 @@ msgstr "Siempre"
 #: smarty.php:3578
 #, fuzzy
 msgid "Email Remainder"
-msgstr "con el correo electrónico"
+msgstr "Correo electrónico"
 
 #: smarty.php:3599
 #, fuzzy
@@ -18207,21 +18247,20 @@ msgstr "Artículos"
 #: smarty.php:4043
 #, fuzzy
 msgid "Delivery Note No."
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
 #: smarty.php:4046 smarty.php:13811 smarty.php:21800
 msgid "VAT Number"
 msgstr "Número fiscal/ CIF"
 
 #: smarty.php:4049
-#, fuzzy
 msgid "Registration number"
-msgstr "Número de registración"
+msgstr "Registro"
 
 #: smarty.php:4073 smarty.php:13844
 #, fuzzy
 msgid "Delivery address"
-msgstr "Dirección de entrega"
+msgstr "Dirección de envio"
 
 #: smarty.php:4109 smarty.php:18548
 msgid "Approve Picking/Packing"
@@ -18235,7 +18274,7 @@ msgstr "Enviado"
 #: smarty.php:4124 smarty.php:4145
 #, fuzzy
 msgid "Process Delivery Note"
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
 #: smarty.php:4154
 msgid "Pending Orders (Store)"
@@ -18289,7 +18328,7 @@ msgstr "Bultos"
 #: smarty.php:4214
 #, fuzzy
 msgid "Undo dispatch"
-msgstr "¡Lugar para una expedición"
+msgstr "Fecha de envio"
 
 #: smarty.php:4217
 #, fuzzy
@@ -19754,7 +19793,7 @@ msgstr "Importar"
 #: smarty.php:7667 smarty.php:7700
 #, fuzzy
 msgid "Page State"
-msgstr "Pagina"
+msgstr "Estado"
 
 #: smarty.php:7673
 #, fuzzy
@@ -19835,7 +19874,7 @@ msgstr "Código de la página"
 #: smarty.php:7766
 #, fuzzy
 msgid "Creation Method"
-msgstr "Fecha de creación"
+msgstr "Método"
 
 #: smarty.php:7769
 #, fuzzy
@@ -19851,8 +19890,9 @@ msgid "Page Keywords"
 msgstr "Palabras clave de la página"
 
 #: smarty.php:7823 smarty.php:9791
+#, fuzzy
 msgid "Includes"
-msgstr ""
+msgstr "Código incluye"
 
 #: smarty.php:7838
 #, fuzzy
@@ -20054,7 +20094,7 @@ msgstr "Datos del código de barras"
 #: smarty.php:8216 smarty.php:9083 smarty.php:11096
 #, fuzzy
 msgid "Outer"
-msgstr "Ultraterrestre distribuye"
+msgstr "Exterior Peso"
 
 #: smarty.php:8219 smarty.php:9086 smarty.php:11099
 msgid "including packing"
@@ -20115,7 +20155,7 @@ msgstr "Diámetro"
 #: smarty.php:8270 smarty.php:11150
 #, fuzzy
 msgid "Individual Item"
-msgstr "Individuales"
+msgstr "Peso articulo Individual"
 
 #: smarty.php:8291 smarty.php:9188 smarty.php:11171
 #, fuzzy
@@ -20288,7 +20328,7 @@ msgstr "Recogedor"
 #: smarty.php:8951 smarty.php:10964
 #, fuzzy
 msgid "Name, Codes"
-msgstr "código postal con el código como"
+msgstr "Referencia, códigos"
 
 #: smarty.php:8957
 msgid "Price, Discounts"
@@ -20373,7 +20413,8 @@ msgstr "Enlazar"
 #: smarty.php:9302
 #, fuzzy
 msgid "The product Health & Safety fields will be replaced by the part ones"
-msgstr "Campos"
+msgstr ""
+"Los campos de códigos tariff del producto se reemplazaran con los de pieza"
 
 #: smarty.php:9308 smarty.php:9326 smarty.php:9344 smarty.php:9365
 msgid "Linking data, wait please"
@@ -20386,12 +20427,13 @@ msgstr "Si, enlazalo!"
 #: smarty.php:9317
 #, fuzzy
 msgid "Link outer properties to part"
-msgstr "Enlazar a pieza"
+msgstr "Enlazar tariff code a "
 
 #: smarty.php:9320
 #, fuzzy
 msgid "The product outer properties fields will be replaced by the part ones"
-msgstr "Campos"
+msgstr ""
+"Los campos de códigos tariff del producto se reemplazaran con los de pieza"
 
 #: smarty.php:9335
 #, fuzzy
@@ -20401,7 +20443,8 @@ msgstr "Enlazar a pieza"
 #: smarty.php:9338
 #, fuzzy
 msgid "The product unit properties fields will be replaced by the part ones"
-msgstr "Campos"
+msgstr ""
+"Los campos de códigos tariff del producto se reemplazaran con los de pieza"
 
 #: smarty.php:9356
 msgid "Link outer tariff code to part"
@@ -20662,7 +20705,7 @@ msgstr "Importar desde archivo"
 #: smarty.php:9821
 #, fuzzy
 msgid "Search method"
-msgstr "Búsqueda"
+msgstr "Método"
 
 #: smarty.php:9824 smarty.php:9884 smarty.php:13100 smarty.php:14516
 #, fuzzy
@@ -20677,7 +20720,7 @@ msgstr "Cliente"
 #: smarty.php:9830
 #, fuzzy
 msgid "Search HTML"
-msgstr "HTML de correo electrónico"
+msgstr "Búsqueda"
 
 #: smarty.php:9836
 #, fuzzy
@@ -20874,7 +20917,7 @@ msgstr "Número fiscal/ CIF"
 #: smarty.php:10286
 #, fuzzy
 msgid "Store Company Number"
-msgstr "número de registración de empresa invalida"
+msgstr "Número fiscal/ CIF"
 
 #: smarty.php:10289
 #, fuzzy
@@ -20911,7 +20954,7 @@ msgstr "Oferta"
 #: smarty.php:10355 smarty.php:10373
 #, fuzzy
 msgid "Save New Template"
-msgstr "Guardar una nueva familia"
+msgstr "Guardar Añadir Producto"
 
 #: smarty.php:10367
 msgid "Add Template"
@@ -21394,7 +21437,7 @@ msgstr "Datos de Email agregados"
 #: smarty.php:12098
 #, fuzzy
 msgid "API Email"
-msgstr "con el correo electrónico"
+msgstr "Correo electrónico"
 
 #: smarty.php:12101
 #, fuzzy
@@ -21404,7 +21447,7 @@ msgstr "Clave"
 #: smarty.php:12104
 #, fuzzy
 msgid "Sender Email"
-msgstr "con el correo electrónico"
+msgstr "Correo electrónico"
 
 #: smarty.php:12119
 #, fuzzy
@@ -21714,7 +21757,7 @@ msgstr "Para empezar, elige el formato de archivo"
 #: smarty.php:13265
 #, fuzzy
 msgid "Import from CSV file"
-msgstr "Importar desde archivo"
+msgstr "Importar desde archivo vCard"
 
 #: smarty.php:13268
 msgid ""
@@ -21913,9 +21956,8 @@ msgid "Payment State"
 msgstr "Estado del pago"
 
 #: smarty.php:13841
-#, fuzzy
 msgid "Billing address"
-msgstr "Dirección de facturación"
+msgstr "Datos de facturación"
 
 #: smarty.php:13862
 #, fuzzy
@@ -22714,12 +22756,12 @@ msgstr "Propiedades"
 #: smarty.php:16424
 #, fuzzy
 msgid "Invalid Tariff Codes"
-msgstr "código postal con el código como"
+msgstr "Código Tariff no válido"
 
 #: smarty.php:16427
 #, fuzzy
 msgid "Valid Tariff Codes"
-msgstr "código postal con el código como"
+msgstr "Referencia, códigos"
 
 #: smarty.php:16430
 #, fuzzy
@@ -22751,7 +22793,7 @@ msgstr "Post Dispatch Operaciones"
 #: smarty.php:16583
 #, fuzzy
 msgid "PDOs of Order"
-msgstr "Processar Orden"
+msgstr "Pedido"
 
 #: smarty.php:16586
 msgid "Cancel Post Order"
@@ -22939,7 +22981,7 @@ msgstr "Diseño"
 #: smarty.php:16955
 #, fuzzy
 msgid "Adding new website"
-msgstr "Agregar nueva ubicación"
+msgstr "Nuevo Sitio Web"
 
 #: smarty.php:16997
 #, fuzzy
@@ -23028,11 +23070,6 @@ msgstr "Nueva Área de Empresa"
 #, fuzzy
 msgid "Create other area"
 msgstr "Otros"
-
-#: smarty.php:17267 smarty.php:17270
-#, fuzzy
-msgid "Not found"
-msgstr "No se ha encontrado"
 
 #: smarty.php:17273
 #, fuzzy
@@ -23152,7 +23189,7 @@ msgstr "Reembolsos (I)"
 #: smarty.php:17570
 #, fuzzy
 msgid "Dispatched Date"
-msgstr "Enviado"
+msgstr "Fecha envío Aprobado"
 
 #: smarty.php:17582 smarty.php:18155 smarty.php:18536
 #, fuzzy
@@ -23182,7 +23219,7 @@ msgstr "Crear factura"
 #: smarty.php:17681 smarty.php:18014
 #, fuzzy
 msgid "Proforma"
-msgstr "Las facturas proforma"
+msgstr "Factura Proforma"
 
 #: smarty.php:17687 smarty.php:18224
 msgid "Exit Modify Order"
@@ -23212,8 +23249,9 @@ msgid "Send to basket"
 msgstr "Canasta"
 
 #: smarty.php:17780 smarty.php:18164
+#, fuzzy
 msgid "Don't add account credits"
-msgstr ""
+msgstr "Añadir Créditos"
 
 #: smarty.php:17783 smarty.php:18167
 msgid "Add account credits"
@@ -23270,12 +23308,12 @@ msgstr "Enviado"
 #: smarty.php:18179
 #, fuzzy
 msgid "Picking & packing done"
-msgstr "Recolección"
+msgstr "Recolectando y Empacando"
 
 #: smarty.php:18221
 #, fuzzy
 msgid "Amending Order"
-msgstr "Processar Orden"
+msgstr "Pedido"
 
 #: smarty.php:18374
 #, fuzzy
@@ -23409,7 +23447,7 @@ msgstr "Otros motivos"
 #: smarty.php:18812
 #, fuzzy
 msgid "Picking of Delivery Note"
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
 #: smarty.php:18845
 #, fuzzy
@@ -23452,7 +23490,7 @@ msgstr "Despacho de Estado"
 #: smarty.php:19220 smarty.php:19223
 #, fuzzy
 msgid "Order List"
-msgstr "Lista de Pedidos"
+msgstr "Pedido"
 
 #: smarty.php:19349
 msgid "Orders Per Store"
@@ -23665,7 +23703,7 @@ msgstr "Peso articulo Individual"
 #: smarty.php:19838 smarty.php:21224
 #, fuzzy
 msgid "Individual Item Dimensions"
-msgstr "Individuales"
+msgstr "Peso articulo Individual"
 
 #: smarty.php:19841 smarty.php:21227
 #, fuzzy
@@ -24196,12 +24234,12 @@ msgstr "Todas las tiendas"
 #: smarty.php:22613 smarty.php:22691
 #, fuzzy
 msgid "Sales per store"
-msgstr "Clientes por tienda"
+msgstr "Ventas por categoría de facturas"
 
 #: smarty.php:22616
 #, fuzzy
 msgid "Sales per category"
-msgstr "Las facturas por categoría"
+msgstr "Ventas por categoría de facturas"
 
 #: smarty.php:22619
 #, fuzzy
@@ -24219,7 +24257,7 @@ msgstr "Último Año (Ventas)"
 #: smarty.php:22682
 #, fuzzy
 msgid "Sales per period"
-msgstr "Periodo"
+msgstr "Ventas por categoría de facturas"
 
 #: smarty.php:22700
 msgid "Sales per invoice category"
@@ -24449,7 +24487,7 @@ msgstr "Paises"
 #: smarty.php:23252
 #, fuzzy
 msgid "Query History"
-msgstr "Historia"
+msgstr "Consulta"
 
 #: smarty.php:23258
 #, fuzzy
@@ -24984,7 +25022,7 @@ msgstr "cantidad de ordenes de compra"
 #: smarty.php:26870
 #, fuzzy
 msgid "Products in Delivery Note"
-msgstr "Nota de entrega"
+msgstr "Nota para la entrega"
 
 #: smarty.php:26885
 msgid "Delete Supplier Delivery Note"
@@ -25253,7 +25291,7 @@ msgstr "Fecha ultima venta/oferta"
 #: stock_history_parts.php:248
 #, fuzzy
 msgid "Interval last sale"
-msgstr "Intervalo"
+msgstr "Fecha ultima venta/oferta"
 
 #: stock_history_parts.php:251
 #, fuzzy
@@ -25272,7 +25310,7 @@ msgstr "Ultima fecha de compra"
 #: stock_history_parts.php:260
 #, fuzzy
 msgid "Interval last purchased"
-msgstr "Intervalo"
+msgstr "Ultima fecha de compra"
 
 #: store.php:140 stores.php:244
 #, fuzzy
@@ -25341,12 +25379,12 @@ msgstr "orden de compra"
 #: supplier.php:162
 #, fuzzy
 msgid "Orders with a minimum value of <i>"
-msgstr "No hay ningún valor mínimo orden de"
+msgstr "Factura con valor mínimo de"
 
 #: supplier.php:163
 #, fuzzy
 msgid "Orders with a maximum value of <i>"
-msgstr "Número máximo de pedidos"
+msgstr "Factura con valor máximo de"
 
 #: supplier.php:164
 #, fuzzy
@@ -25563,6 +25601,9 @@ msgstr "Sincronizando producto"
 #, fuzzy
 msgid "Widgets"
 msgstr "widgets con descripción como"
+
+#~ msgid "Given"
+#~ msgstr "Obsequios"
 
 #~ msgid "Completed by user"
 #~ msgstr "Completado por Usuario"

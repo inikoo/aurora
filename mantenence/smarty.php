@@ -13832,6 +13832,9 @@ gettext("Payment State");
 gettext("Customer");
 
 /* ../templates/invoice.pdf.tpl */
+gettext("Tax Number");
+
+/* ../templates/invoice.pdf.tpl */
 gettext("Parcels");
 
 /* ../templates/invoice.pdf.tpl */
@@ -13962,6 +13965,24 @@ gettext("Delivery Notes");
 
 /* ../templates/invoice.tpl */
 gettext("Delete");
+
+/* ../templates/invoice.tpl */
+gettext("Date");
+
+/* ../templates/invoice.tpl */
+gettext("Paid Date");
+
+/* ../templates/invoice.tpl */
+gettext("Customer Name");
+
+/* ../templates/invoice.tpl */
+gettext("Contact Name");
+
+/* ../templates/invoice.tpl */
+gettext("Tax Number");
+
+/* ../templates/invoice.tpl */
+gettext("Tax Code");
 
 /* ../templates/invoice.tpl */
 gettext("Payments");
@@ -15371,7 +15392,7 @@ gettext("Products Ordered");
 gettext("Orders Placed");
 
 /* ../templates/new_customers_list.tpl */
-gettext("Pending Orders");
+gettext("Orders in Basket");
 
 /* ../templates/new_customers_list.tpl */
 gettext("Web Logs");
@@ -15470,10 +15491,10 @@ gettext("Number of Invoices");
 gettext("Sales");
 
 /* ../templates/new_customers_list.tpl */
-gettext("Customer's Pending Orders");
+gettext("Customers with orders in basket");
 
 /* ../templates/new_customers_list.tpl */
-gettext("with pending orders");
+gettext("with orders in basket");
 
 /* ../templates/new_customers_list.tpl */
 gettext("order pay method");
@@ -17444,6 +17465,9 @@ gettext("Last updated");
 gettext("Customer Fiscal Name");
 
 /* ../templates/order_details_splinter.tpl */
+gettext("Tax Number");
+
+/* ../templates/order_details_splinter.tpl */
 gettext("Customer Name");
 
 /* ../templates/order_details_splinter.tpl */
@@ -17586,6 +17610,18 @@ gettext("Invoices");
 
 /* ../templates/order_dispatched.tpl */
 gettext("Create Invoice");
+
+/* ../templates/order_dispatched.tpl */
+gettext("Send to basket");
+
+/* ../templates/order_dispatched.tpl */
+gettext("Don't add account credits");
+
+/* ../templates/order_dispatched.tpl */
+gettext("Add account credits");
+
+/* ../templates/order_dispatched.tpl */
+gettext("Cancel order");
 
 /* ../templates/order_dispatched.tpl */
 gettext("Post Dispatch Operations");
@@ -17786,45 +17822,6 @@ gettext("Add account credits");
 gettext("Cancel order");
 
 /* ../templates/order_in_process.tpl */
-gettext("Created");
-
-/* ../templates/order_in_process.tpl */
-gettext("Last updated");
-
-/* ../templates/order_in_process.tpl */
-gettext("On website");
-
-/* ../templates/order_in_process.tpl */
-gettext("Submit Payment");
-
-/* ../templates/order_in_process.tpl */
-gettext("Last updated");
-
-/* ../templates/order_in_process.tpl */
-gettext("Customer Fiscal Name");
-
-/* ../templates/order_in_process.tpl */
-gettext("Customer Name");
-
-/* ../templates/order_in_process.tpl */
-gettext("Contact Name");
-
-/* ../templates/order_in_process.tpl */
-gettext("Telephone");
-
-/* ../templates/order_in_process.tpl */
-gettext("Email");
-
-/* ../templates/order_in_process.tpl */
-gettext("Tax Code");
-
-/* ../templates/order_in_process.tpl */
-gettext("Tax Info");
-
-/* ../templates/order_in_process.tpl */
-gettext("Weight ");
-
-/* ../templates/order_in_process.tpl */
 gettext("Order Items");
 
 /* ../templates/order_in_process.tpl */
@@ -18020,9 +18017,6 @@ gettext("Amend Order");
 gettext("Process Order");
 
 /* ../templates/order_in_warehouse.tpl */
-gettext("Cancel Order");
-
-/* ../templates/order_in_warehouse.tpl */
 gettext("Billing to");
 
 /* ../templates/order_in_warehouse.tpl */
@@ -18167,40 +18161,7 @@ gettext("Don't add account credits");
 gettext("Add account credits");
 
 /* ../templates/order_in_warehouse.tpl */
-gettext("Created");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Submited");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Send to warehouse");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Picking & packing done");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Customer Fiscal Name");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Customer Name");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Contact Name");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Telephone");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Email");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Tax Code");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Tax Info");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Weight ");
+gettext("Cancel Order");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Items");
@@ -20687,6 +20648,9 @@ gettext("Pending Orders");
 gettext("Pending Orders");
 
 /* ../templates/pending_orders.tpl */
+gettext("Ready to Ship");
+
+/* ../templates/pending_orders.tpl */
 gettext("Packed");
 
 /* ../templates/pending_orders.tpl */
@@ -20694,6 +20658,9 @@ gettext("In Warehouse");
 
 /* ../templates/pending_orders.tpl */
 gettext("In Process");
+
+/* ../templates/pending_orders.tpl */
+gettext("Waiting EPS");
 
 /* ../templates/pending_orders.tpl */
 gettext("In Website");
@@ -25244,6 +25211,9 @@ gettext("Pending Orders");
 gettext("Pending Orders");
 
 /* ../templates/store_pending_orders.tpl */
+gettext("Ready to Ship");
+
+/* ../templates/store_pending_orders.tpl */
 gettext("Packed");
 
 /* ../templates/store_pending_orders.tpl */
@@ -25251,6 +25221,9 @@ gettext("In Warehouse");
 
 /* ../templates/store_pending_orders.tpl */
 gettext("In Process");
+
+/* ../templates/store_pending_orders.tpl */
+gettext("Waiting EPS");
 
 /* ../templates/store_pending_orders.tpl */
 gettext("In Website");

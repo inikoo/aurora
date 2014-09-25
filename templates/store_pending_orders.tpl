@@ -10,8 +10,6 @@
 <input type="hidden" id="InWarehouse" value="{$elements.InWarehouse}" />
 <input type="hidden" id="PackedDone" value="{$elements.PackedDone}" />
 
-
-
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
@@ -40,9 +38,11 @@
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title">{t}Pending Orders{/t} </span> 
 				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.ReadytoShip}selected{/if} label_ReadytoShip" id="elements_ReadytoShip" table_type="ReadytoShip">{t}Ready to Ship{/t} (<span id="elements_ReadytoShip_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.PackedDone}selected{/if} label_PackedDone" id="elements_PackedDone" table_type="PackedDone">{t}Packed{/t} (<span id="elements_PackedDone_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}In Process{/t} (<span id="elements_SubmittedbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WaitingforPaymentConfirmation}selected{/if} label_WaitingforPaymentConfirmation" id="elements_WaitingforPaymentConfirmation" table_type="WaitingforPaymentConfirmation">{t}Waiting EPS{/t} (<span id="elements_WaitingforPaymentConfirmation_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number"><img style="width:12.9px" src="art/loading.gif" /></span>)</span> 
 				</div>
 				<div class="table_top_bar space">
