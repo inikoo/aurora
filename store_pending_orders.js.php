@@ -239,8 +239,12 @@ function get_store_pending_orders_numbers(from, to) {
     Dom.get('elements_SubmittedbyCustomer_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
     Dom.get('elements_PackedDone_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
     Dom.get('elements_InWarehouse_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
+    Dom.get('elements_ReadytoShip_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
+    Dom.get('elements_WaitingforPaymentConfirmation_number').innerHTML='<img style="width:12.9px" src="art/loading.gif"/>';
 
-   
+  
+  
+  
    
         var ar_file = 'ar_orders.php';
         var request = 'tipo=number_pending_orders_in_interval&parent=store&parent_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
@@ -286,7 +290,7 @@ var elements_type='';
 
 function change_elements_click(el,elements_type) {
 
-     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_ReadytoPick', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
+     ids = ['elements_ReadytoShip','elements_WaitingforPaymentConfirmation','elements_PackedDone', 'elements_InWarehouse', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
 
 
     if (Dom.hasClass(el, 'selected')) {
@@ -329,7 +333,7 @@ function change_elements_click(el,elements_type) {
 
 function change_elements_dblclick(el,elements_type) {
 
-     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_ReadytoPick', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
+     ids = ['elements_ReadytoShip','elements_WaitingforPaymentConfirmation','elements_PackedDone', 'elements_InWarehouse', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
 
 
     
@@ -378,7 +382,7 @@ get_store_pending_orders_numbers('','')
     });
     dialog_cancel_from_list.render();
    
-     ids = ['elements_PackedDone', 'elements_InWarehouse', 'elements_ReadytoPick', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
+     ids = ['elements_ReadytoShip','elements_WaitingforPaymentConfirmation','elements_PackedDone', 'elements_InWarehouse', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
      Event.addListener(ids, "click", change_elements);
     
 
