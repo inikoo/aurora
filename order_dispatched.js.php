@@ -55,25 +55,63 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"invoiced",label:"<?php echo _('Amount')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
+request="ar_orders.php?tipo=transactions_dispatched&tableid=0&sf=0&parent=order&parent_key="+Dom.get('order_key').value
 
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_dipatched&tid=0");
-	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.InvoiceDataSource.connXhrMode = "queueRequests";
-	    this.InvoiceDataSource.responseSchema = {
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
+		metaFields: {
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
 		fields: [
 			 "code"
 			 ,"description"
 			 ,"ordered"
 			 ,"invoiced","dispatched","tariff_code"
 			 ]};
-	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
-								   this.InvoiceDataSource, {
-								       renderLoopSize: 50
-								   }
-								   
-								   );
-	
+			 
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
+						     this.dataSource0, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['order']['items']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['order']['items']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['order']['items']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+       this.table0.doBeforeLoadData=mydoBeforeLoadData;
+       
+       
+       this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+	    
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['items']['f_field']?>',value:'<?php echo$_SESSION['state']['order']['items']['f_value']?>'};
+
 
 
 		
@@ -94,21 +132,37 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 ,{key:"notes",label:"<?php echo _('Notes')?>", width:140,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
-		request="ar_orders.php?tipo=post_transactions&tableid=1&order_key="+Dom.get('order_key').value;
-		//alert(request)
-	    this.InvoiceDataSource1 = new YAHOO.util.DataSource(request);
-	    this.InvoiceDataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.InvoiceDataSource1.connXhrMode = "queueRequests";
-	    this.InvoiceDataSource1.responseSchema = {
+		request="ar_orders.php?tipo=post_transactions&sf=0&tableid="+tableid+"&parent=order&parent_key="+Dom.get('order_key').value;
+	//alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    
+	 
+	    
+	    
+	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
+		metaFields: {
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
 		fields: [
 			 "code"
 			 ,"description",'quantity','operation','tariff_code'
 			 ,"notes"
 			 ,"dn","dispatched",'reason'
 			 ]};
+			 
+			 
 	    this.InvoiceDataTable1 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
-								   this.InvoiceDataSource1, {
+								   this.dataSource1, {
 								       renderLoopSize: 50
 								   }
 								   

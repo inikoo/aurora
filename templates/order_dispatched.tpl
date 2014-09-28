@@ -222,34 +222,42 @@
 		</div>
 		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
 		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-				<div class="buttons small right" style="float:right;width:350px">
-					<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 
-				</div>
-			{include file='order_details_splinter.tpl'}
-				<div style="clear:both">
-				</div>
-				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			<div class="buttons small right" style="float:right;width:350px">
+				<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 
 			</div>
-		
-		
+			{include file='order_details_splinter.tpl'} 
+			<div style="clear:both">
+			</div>
+			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+		</div>
 	</div>
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
 	</div>
-	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;" id="dispatched_post_transactions">
+
+	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;clear:both;margin:20px 0px" id="dispatched_post_transactions">
 		<div class="buttons small">
 			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> <button id="quick_resend_process" style="{if $order->get('Order Current Post Dispatch State')=='Dispatched'}display:none{/if}"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 
 		</div>
-		<h2 style="margin-left:5px">
-			{t}Post-Order Transactions{/t} <span class="subtitle" style="font-size:80%">({$order->get('Order Current Post Dispatch State')})</span> 
-		</h2>
-		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
+
+		
+		
+		<span class="clean_table_title with_elements_chooser">{t}Post-Order Transactions{/t} <span class="subtitle" style="font-size:80%">({$order->get('Order Current Post Dispatch State')})</span></span> 
+		<div class="table_top_bar space">
 		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+		<div id="table1" class="data_table_container dtable btable" style="margin-bottom:0;font-size:80%">
+		</div>
+		
+		
 	</div>
-	<h2>
-		{t}Ordered Items{/t} 
-	</h2>
-	<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
+	<div class="data_table" style="margin:0px;clear:both;">
+		<span class="clean_table_title with_elements_chooser">{t}Ordered Items{/t} </span> 
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+		<div id="table0" class="data_table_container dtable btable" style="margin-bottom:0;font-size:80%">
+		</div>
 	</div>
 	<div style="clear:both;padding-top:10px;{if $order->get('Order Invoiced')=='Yes'}display:none{/if}">
 		{foreach from=$order->get_insurances() item=insurance} 
