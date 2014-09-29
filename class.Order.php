@@ -150,6 +150,7 @@ class Order extends DB_Table {
 		if (array_key_exists('Invoice Tax Code',$data))$refund_data['Invoice Tax Code']=$data['Invoice Tax Code'];
 
 		$refund=new Invoice('create refund',$refund_data);
+		$refund->categorize();
 		return $refund;
 	}
 
@@ -819,7 +820,7 @@ class Order extends DB_Table {
 			mysql_query( $sql );
 
 
-			$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s  where `Order Key`=%d ",
+			$sql = sprintf( "update `Order No Product Transaction Fact` set `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' where `Order Key`=%d ",
 				prepare_mysql($state),
 				$this->id );
 			mysql_query( $sql );
@@ -829,7 +830,7 @@ class Order extends DB_Table {
 			foreach ($this->get_delivery_notes_objects() as $dn) {
 				$dn->cancel($note,$date,$force);
 
-				$sql=sprintf("delete from  `Order Delivery Note Bridge` where `Delivery Note Key` where `Order Key`=%d and `Delivery Note Key`=%d",
+				$sql=sprintf("delete from  `Order Delivery Note Bridge` where `Order Key`=%d and `Delivery Note Key`=%d",
 					$this->id,
 					$dn->id
 				);
@@ -934,7 +935,7 @@ class Order extends DB_Table {
 
 
 
-		$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s  where `Order Key`=%d ",
+		$sql = sprintf( "update `Order No Product Transaction Fact` set `State`=%s ,`Consolidated`='No' where `Order Key`=%d ",
 			prepare_mysql($state),
 			$this->id );
 		mysql_query( $sql );
@@ -1137,7 +1138,7 @@ class Order extends DB_Table {
 			'Invoice Type'=>'Invoice',
 			'Invoice Public ID'=>$this->data['Order Public ID'],
 			'Delivery Note Keys'=>$delivery_note_keys,
-			'Orders Keys'=>$this->id,
+			'Order Key'=>$this->id,
 			'Invoice Store Key'=>$this->data['Order Store Key'],
 			'Invoice Customer Key'=>$this->data['Order Customer Key'],
 			'Invoice Tax Code'=>$tax_code,
@@ -1221,11 +1222,7 @@ class Order extends DB_Table {
 	}
 
 
-	function authorize_all() {
-		$sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=`Order Quantity`  where `Order Key`=%d",$this->id);
-		mysql_query($sql);
 
-	}
 
 
 	function add_order_transaction($data,$historic=false) {
@@ -1325,11 +1322,11 @@ class Order extends DB_Table {
 			$gross=$quantity*$product->data['Product History Price'];
 			$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 			$gross_discounts=0;
-			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
+			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
                              `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
                              `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Billing To Key`,
                              `Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
-                             values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
+                             values (%f,%s,%f,%s,%s,%s,%s,%s,
                              %d,%d,%s,%d,%d,
                              %s,%s,%s,%s,%s,%s,%s,%s,
                              %.2f,%.2f,%.2f,%s,%s,%f,'') ",
@@ -1339,7 +1336,6 @@ class Order extends DB_Table {
 				prepare_mysql ($tax_code),
 				prepare_mysql ( $this->data ['Order Currency'] ),
 				$estimated_weight,
-				prepare_mysql ( $data ['date'] ),
 				prepare_mysql ( $data ['date'] ),
 				prepare_mysql ( $data ['date'] ),
 				$product->id,
@@ -1373,7 +1369,6 @@ class Order extends DB_Table {
 		else {
 
 
-			//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 			if (!in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
 				return array(
 					'updated'=>false,
@@ -1448,9 +1443,8 @@ class Order extends DB_Table {
 
 
 
-					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Current Autorized to Sell Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d ",
+					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d ",
 						$estimated_weight ,
-						$quantity,
 						$quantity,
 						$bonus_quantity,
 						prepare_mysql ( $data ['date'] ),
@@ -1466,12 +1460,12 @@ class Order extends DB_Table {
 					}
 					if ($dn_key) {
 
-						$sql = sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=%f,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d"
-							,$quantity
-							,prepare_mysql ($dn->data ['Delivery Note ID'])
-							,$dn_key
-							,prepare_mysql($dn->data ['Delivery Note Country 2 Alpha Code'])
-							,$row['Order Transaction Fact Key']
+						$sql = sprintf("update  `Order Transaction Fact` set `Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d",
+
+							prepare_mysql ($dn->data ['Delivery Note ID']),
+							$dn_key,
+							prepare_mysql($dn->data ['Delivery Note Country 2 Alpha Code']),
+							$row['Order Transaction Fact Key']
 
 						);
 						mysql_query($sql);
@@ -1515,11 +1509,11 @@ class Order extends DB_Table {
 				$gross=$quantity*$product->data['Product History Price'];
 				$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 
-				$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
+				$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
                                  `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
                                  `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Billing To Key`,
                                  `Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`)
-                                 values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
+                                 values (%f,%s,%f,%s,%s,%s,%s,%s,
                                  %d,%d,%s,%d,%d,
                                  %s,%s,%s,%s,%s,%s,%s,%s,
                                  %.2f,%.2f,%.2f,%s,%s,%f,'',%s)   ",
@@ -1531,7 +1525,7 @@ class Order extends DB_Table {
 					prepare_mysql ( $this->data ['Order Currency'] ),
 					$estimated_weight ,
 					prepare_mysql ( $data ['date'] ),
-					prepare_mysql ( $data ['date'] ),
+
 					prepare_mysql ( $data ['date'] ),
 					$product->id,
 					$product->data['Product ID'],
@@ -1567,13 +1561,12 @@ class Order extends DB_Table {
 
 				if ($dn_key) {
 
-					$sql = sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=%f,`Estimated Weight`=%f,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d"
-						,$quantity
-						,$estimated_weight
-						,prepare_mysql ($dn->data ['Delivery Note ID'])
-						,$dn_key
-						,prepare_mysql($dn->data ['Delivery Note Country 2 Alpha Code'])
-						,$otf_key
+					$sql = sprintf("update  `Order Transaction Fact` set `Estimated Weight`=%f,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d",
+						$estimated_weight,
+						prepare_mysql ($dn->data ['Delivery Note ID']),
+						$dn_key,
+						prepare_mysql($dn->data ['Delivery Note Country 2 Alpha Code']),
+						$otf_key
 
 					);
 					mysql_query($sql);
@@ -1832,8 +1825,10 @@ class Order extends DB_Table {
 
 
 		switch ($key) {
-		case('Tax Rate'):
 
+		case('Items Gross Amount After No Shipped'):
+			return money($this->data['Order Items Gross Amount']-$this->data['Order Out of Stock Net Amount'],$this->currency_code);
+		case('Tax Rate'):
 			return percentage($this->data['Order Tax Rate'],1);
 			break;
 		case('Order Out of Stock Amount'):
@@ -2461,22 +2456,17 @@ class Order extends DB_Table {
 			$this->data['Order Invoiced Outstanding Balance Tax Amount']=$row['ob_tax']+$row['ref_ob_tax'];
 			$this->data['Order Invoiced Outstanding Balance Total Amount']=$this->data['Order Invoiced Outstanding Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Tax Amount'];
 
+
+			/*
 			$total_not_dispatch_net=$row['out_of_stock_net']+$row['not_authorized_net']+$row['not_found_net']+$row['not_due_other_net'];
 			$total_not_dispatch_tax=$row['out_of_stock_tax']+$row['not_authorized_tax']+$row['not_found_tax']+$row['not_due_other_tax'];
-
-
-
-
 			$this->data['Order Balance Net Amount']=round($row['original_net']-$total_not_dispatch_net,2);
 			$this->data['Order Balance Tax Amount']=round($row['original_tax']-$total_not_dispatch_tax,2);
-
-			// print $this->data['Order Balance Net Amount'].'='.$row['original_net'].' '.$total_not_dispatch_net;
-
 			$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
 			$this->data['Order Outstanding Balance Net Amount']=$this->data['Order Balance Net Amount']-$this->data['Order Invoiced Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Net Amount'];
 			$this->data['Order Outstanding Balance Tax Amount']=$this->data['Order Balance Tax Amount']-$this->data['Order Invoiced Balance Tax Amount']+$this->data['Order Invoiced Outstanding Balance Tax Amount'];
 			$this->data['Order Outstanding Balance Total Amount']=$this->data['Order Balance Total Amount']-$this->data['Order Invoiced Balance Total Amount']+$this->data['Order Invoiced Outstanding Balance Total Amount'];
-
+*/
 
 
 			//  $this->data['Order Tax Refund Invoiced Amount']=$row['ref_tax'];
@@ -2512,6 +2502,45 @@ class Order extends DB_Table {
 			$this->data['Order Profit Amount']= $this->data['Order Balance Net Amount']-$this->data['Order Outstanding Balance Net Amount']- $row['costs'];
 
 		}
+
+
+		$net=0;
+		$tax=0;
+		$gross=0;
+		$out_of_stock_amount=0;
+		$discounts=0;
+		$sql = sprintf("
+		select IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) 
+		where OTF.`Order Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+
+			$chargeable_qty=$row['Order Quantity']-$row['No Shipped Due Out of Stock']-$row['No Shipped Due No Authorized']-$row['No Shipped Due Not Found']-$row['No Shipped Due Other'];
+			$gross_chargeable_amount=$chargeable_qty*$row['Product History Price'];
+			$discount=round($gross_chargeable_amount*$row['Fraction Discount'],2);
+			$chargeable_amount=$gross_chargeable_amount-$discount;
+			$gross+=$row['Order Quantity']*$row['Product History Price'];
+			$out_of_stock_amount+=($row['No Shipped Due Out of Stock'])*$row['Product History Price'];
+			$discounts+=$discount;
+			$chargeable_amount=round($chargeable_amount,2);
+			$net+=$chargeable_amount;
+			$tax+=round($chargeable_amount*$row['Transaction Tax Rate'],2);
+
+
+
+		}
+
+
+		$this->data['Order Balance Net Amount']=$net;
+		$this->data['Order Balance Tax Amount']=$tax;
+		$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
+		$this->data['Order Outstanding Balance Net Amount']=$this->data['Order Balance Net Amount']-$this->data['Order Invoiced Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Net Amount'];
+		$this->data['Order Outstanding Balance Tax Amount']=$this->data['Order Balance Tax Amount']-$this->data['Order Invoiced Balance Tax Amount']+$this->data['Order Invoiced Outstanding Balance Tax Amount'];
+		$this->data['Order Outstanding Balance Total Amount']=$this->data['Order Balance Total Amount']-$this->data['Order Invoiced Balance Total Amount']+$this->data['Order Invoiced Outstanding Balance Total Amount'];
+
+
+
 
 
 
@@ -2742,7 +2771,7 @@ class Order extends DB_Table {
 
 			$this->id
 		);
-
+		//print $this->data['Order Balance Tax Amount'];
 
 		mysql_query($sql);
 		//print $sql."\n";
@@ -6399,7 +6428,7 @@ class Order extends DB_Table {
 						'name'=>$tax_category['IVA+RE']['name'],
 						'rate'=>$tax_category['IVA+RE']['rate'],
 						'state'=>'delivery to ESP with RE',
-							'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
+						'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
 
 					);
 
@@ -6410,7 +6439,7 @@ class Order extends DB_Table {
 						'name'=>$tax_category['IVA']['name'],
 						'rate'=>$tax_category['IVA']['rate'],
 						'state'=>'delivery to ESP',
-							'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
+						'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
 
 					);
 
@@ -6429,7 +6458,7 @@ class Order extends DB_Table {
 						'name'=>$tax_category['IVA+RE']['name'],
 						'rate'=>$tax_category['IVA+RE']['rate'],
 						'state'=>'billing to ESP with RE',
-							'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
+						'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
 
 					);
 
@@ -6440,7 +6469,7 @@ class Order extends DB_Table {
 						'name'=>$tax_category['IVA']['name'],
 						'rate'=>$tax_category['IVA']['rate'],
 						'state'=>'billing to ESP',
-							'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
+						'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
 
 					);
 

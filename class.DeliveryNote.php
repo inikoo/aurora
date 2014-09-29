@@ -1174,22 +1174,16 @@ class DeliveryNote extends DB_Table {
 		}else {
 
 
-			$sql=sprintf('select OTF.`Product Key`,`Product Package Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Transaction Fact Key`=%d '
+			$sql=sprintf('select `No Shipped Due No Authorized`,OTF.`Product Key`,`Product Package Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Transaction Fact Key`=%d '
 				,$otf_key);
 			$res=mysql_query($sql);
 
 			while ($row=mysql_fetch_assoc($res)) {
 
-
-
-				//print_r($row);
-
-				//print "  xx ".$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity']." xxx";
-
 				$this->create_inventory_transaction_fact_item(
 					$row['Product Key'],
 					$row['Order Transaction Fact Key'],
-					$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity'],
+					$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No Shipped Due No Authorized'],
 					$date,
 					$row['Supplier Metadata'],
 					$row['Order Bonus Quantity']
@@ -1207,8 +1201,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-
-
+//print "$product_key,$map_to_otf_key,$to_sell_quantity,$date,$supplier_metadata_array,$bonus_qty\n";
 
 		//$date=$this->data['Delivery Note Date Created'];
 
@@ -1254,6 +1247,8 @@ class DeliveryNote extends DB_Table {
 			if ($part->sku) {
 
 				$quantity_to_be_taken=$part_data['Parts Per Product'] * $to_sell_quantity;
+
+
 
 				$locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
 
@@ -1358,26 +1353,44 @@ class DeliveryNote extends DB_Table {
 
 					$picking_note=$part_data['Product Part List Note'];
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
-					values (%d,%s,%s,%s,%s,%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%d,%d,%d,%d,%s) ",
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (
+					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,
+					
+					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
+					
+					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
+					
+					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
+					values (
+					%d,%s,%s,%s,%s,%s,
+					%f,%s,%s,%d,%s,%d,
+					%s,%s,%.2f,%f,%f,%f,
+					
+					%s,%s,%d,%d,%d,%d,%s) ",
 						$multipart_data_multiplicity,
 						prepare_mysql ($multipart_data),
-
-						"'Movement'","'OIP'",
+						"'Movement'",
+						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($picking_note),
+						
 						0,
 						prepare_mysql ($date),
 						prepare_mysql ($date),
 						$this->id,
 						prepare_mysql ($part_data['Part SKU']),
 						$location_key,
+						
+						
 						0,
 						"'Order In Process'",
 						0,
 						$required,
 						$given,
 						0,
+						
+						
+						
 						prepare_mysql ($this->data ['Delivery Note Metadata']),
 						prepare_mysql ($note),
 						$supplier_product_id,
@@ -1387,7 +1400,7 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					mysql_query($sql);
-					//print "$sql\n";
+				//	print "$sql\n";
 					//exit;
 
 
@@ -1431,7 +1444,7 @@ class DeliveryNote extends DB_Table {
 
 		if (!$date)$date=gmdate("Y-m-d H:i:s");
 
-		$sql=sprintf('select OTF.`Product Key`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and `Current Dispatching State` in ("Submitted by Customer","In Process")  '
+		$sql=sprintf('select OTF.`Order Quantity`,`No Shipped Due No Authorized`,OTF.`Product Key`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and `Current Dispatching State` in ("Submitted by Customer","In Process")  '
 			,$order_key);
 		$res=mysql_query($sql);
 
@@ -1439,10 +1452,12 @@ class DeliveryNote extends DB_Table {
 
 			//print_r($row);
 
+$items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No Shipped Due No Authorized'];
+//print " x $items_to_dispatch  x \n";
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],
 				$row['Order Transaction Fact Key'],
-				$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity'],
+				$items_to_dispatch,
 				$date,
 				$row['Supplier Metadata'],
 				$row['Order Bonus Quantity']
@@ -3350,7 +3365,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-
+/*
 	function create_invoice($date=false) {
 		if (!$date)
 			$date=gmdate("Y-m-d H:i:s");
@@ -3405,7 +3420,7 @@ class DeliveryNote extends DB_Table {
 
 		return $invoice;
 	}
-
+*/
 	function calculate_shipping() {
 		$shipping=0;
 		foreach ($this->get_orders_objects() as $order) {

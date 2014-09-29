@@ -23,6 +23,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case 'categorize_invoice':
+$data=prepare_values($_REQUEST,array(
+			'invoice_key'=>array('type'=>'key')
+		));
+	categorize_invoice($data);
+break;
 case('update_recargo_de_equivalencia'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -875,7 +882,7 @@ function send_to_warehouse($data) {
 	}
 
 
-	$order->authorize_all();
+	
 
 	$dn=$order->send_to_warehouse();
 
@@ -5526,7 +5533,7 @@ function new_orphan_refund($data) {
 
 	);
 	$refund=new Invoice('create refund',$refund_data);
-
+	$refund->categorize();
 
 	$tax=-1*$tax;
 	$net=-1*$net;
@@ -6032,6 +6039,20 @@ function update_recargo_de_equivalencia($data) {
 
 	echo json_encode($response);
 
+
+}
+
+function categorize_invoice($data){
+
+	$invoice=new Invoice($data['invoice_key']);
+	$invoice->categorize();
+	$response= array(
+		'state'=>200,
+		'invoice_key'=>$invoice->id,
+	);
+
+
+	echo json_encode($response);
 
 }
 

@@ -8774,3 +8774,9 @@ ALTER TABLE `Order Dimension` ADD `Order Show in Warehouse Orders` ENUM('Yes','N
 
 //
 ALTER TABLE `Payment Service Provider Dimension` CHANGE `Payment Service Provider Type` `Payment Service Provider Type` ENUM( 'EPS', 'EBeP', 'Bank', 'Cash', 'Account', 'ConD' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+// From here!!
+
+ALTER TABLE `Order Transaction Fact` DROP `Current Autorized to Sell Quantity`;
+ALTER TABLE `Order Transaction Fact` DROP `Backlog Date`, DROP `Release to Manufacturing Date`, DROP `Finished Inventory Placement Date`, DROP `Requested Shipping Date`, DROP `Scheduled Shipping Date`;
+ALTER TABLE `Order Transaction Fact` DROP `Manufacturing Facility Key`, DROP `Current Manufacturing Quantity`, DROP `Current On Shelf Quantity`, DROP `Current On Box Quantity`;
+ALTER TABLE `Order Transaction Fact` DROP `Backlog to Shipping Lag`;

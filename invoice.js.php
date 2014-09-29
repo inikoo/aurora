@@ -164,7 +164,7 @@ function save(tipo) {
         //alert(ar_file+'?'+request)
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-             // alert(o.responseText);
+             //alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
