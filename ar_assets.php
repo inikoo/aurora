@@ -5654,7 +5654,7 @@ function list_customers_who_order_product() {
 		$order='`Customer Name`';
 
 
-	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as to_dispatch,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from    $table   $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
+	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from    $table   $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
 
 
 	$data=array();
@@ -5667,7 +5667,6 @@ function list_customers_who_order_product() {
 			'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
 			'charged'=>money($row['charged']),
 			'orders'=>number($row['orders']),
-			'to_dispatch'=>number($row['to_dispatch']),
 			'dispatched'=>number($row['dispatched']),
 			'nodispatched'=>number($row['nodispatched'])
 

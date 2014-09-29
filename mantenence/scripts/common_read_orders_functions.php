@@ -788,7 +788,7 @@ function create_order($data) {
 
 	}
 
-	$order->authorize_all();
+	
 
 	$order->update_order_discounts();
 	$order->update_discounts();
@@ -967,6 +967,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		return;
 
 		$invoice=$order->create_invoice($date_inv);
+		$invoice->categorize();
 		//print_r($invoice);
 
 		foreach ($credits as $credit) {
@@ -1248,7 +1249,8 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 	if (!($tipo_order==6 or $tipo_order==7)) {
 		if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
 
-			$invoice=$dn->create_invoice($date_inv);
+			$invoice=$order->create_invoice($date_inv);
+			$invoice->categorize();
 			// print_r($invoice);
 
 			foreach ($credits as $credit) {
@@ -1864,6 +1866,7 @@ function create_ghost_refund($data,$header_data,$data_dn_transactions) {
 	);
 
 	$refund=new Invoice ('create refund',$refund_data);
+	$refund->categorize();
 	foreach ($data_invoice_transactions as $transaction) {
 
 		if ($transaction['original_amount']!=0) {

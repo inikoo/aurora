@@ -94,7 +94,7 @@ exit;
 	$order=new Order('new',$order_data);
 
 
-
+$order->update_no_normal_totals();
 
 	if ($order->error)
 		exit('error');
@@ -251,6 +251,9 @@ else {
 			'data'=>$dn_data,
 			'operations'=>$dn->get_operations($user,'order',$order->id),
 		);
+		
+		//print_r($dns_data);
+		
 	}
 	$number_dns=count($dns_data);
 	if ($number_dns!=1) {
