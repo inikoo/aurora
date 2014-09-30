@@ -1362,9 +1362,9 @@ function list_parts_marked_as_out_of_stock() {
 
 	$filter_msg='';
 	$wheref='';
-	
 
-$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
+
+	$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	$where_interval=$where_interval['mysql'];
 
 
@@ -1640,13 +1640,13 @@ function list_transactions_parts_marked_as_out_of_stock() {
 	$filter_msg='';
 	$wheref='';
 
-$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
+	$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	$where_interval=$where_interval['mysql'];
 
 
 	$where="where ITF.`Out of Stock Tag`='Yes'  $where_interval ";
 
-	
+
 
 
 	if ($parent=='warehouses') {
@@ -1771,10 +1771,10 @@ $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	elseif ($order=='product')
 		$order='`Product Code`';
 	else
-		$order='`Date Picked`';
+		$order='`Date`';
 
 
-	$sql="select `Order Out of Stock Lost Amount`*`Invoice Currency Exchange Rate` as lost_revenue,`Order Key`,`Order Public ID`,`Out of Stock`,`Product Code`,`Product ID`,`Note`,SD.`Staff Alias`,ITF.`Part SKU`,`Part XHTML Currently Used In`,`Date Picked`,ITF.`Picker Key` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select `Order Out of Stock Lost Amount`*`Invoice Currency Exchange Rate` as lost_revenue,`Order Key`,`Order Public ID`,`Out of Stock`,`Product Code`,`Product ID`,`Note`,SD.`Staff Alias`,ITF.`Part SKU`,`Part XHTML Currently Used In`,ITF.`Date`,ITF.`Picker Key` from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) left join `Staff Dimension` SD on (SD.`Staff Key`=ITF.`Picker Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -1790,13 +1790,20 @@ $where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 		else
 			$reporter=sprintf("<a href='report_out_of_stock_staff.php?id=0'>%s</a>",_('Unknown'));
 
+
+		if ($data['Date']=='') {
+			$date='';
+		}else {
+			$date=strftime("%a %e %b %y %H:%M %Z", strtotime($data['Date']." +00:00"));
+		}
+
 		$adata[]=array(
 
 			'sku'=>sprintf("<a href='part.php?sku=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
 			'product'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$data['Product ID'],$data['Product Code']),
-			'order'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$data['Order Key'],$data['Order Public ID']),
+			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$data['Order Key'],$data['Order Public ID']),
 
-			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Date Picked']." +00:00")),
+			'date'=>$date,
 			'picker'=>$reporter,
 			'qty'=>number($data['Out of Stock']),
 			'note'=>$data['Note'],
@@ -2148,7 +2155,7 @@ function list_orders_affected_by_out_of_stock() {
 
 	$where=sprintf("where  `Store Show in Warehouse Orders`='Yes'  and `Order Current Dispatch State`='Dispatched' and `Order with Out of Stock`='Yes'   %s ",$date_interval['mysql']);
 
-// O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes' 
+	// O left join `Store Dimension`  S on (O.`Order Store Key`=S.`Store Key`)  where  `Store Show in Warehouse Orders`='Yes'
 
 
 
@@ -2263,12 +2270,16 @@ function list_orders_affected_by_out_of_stock() {
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
+		if ($data['Order Dispatched Date']=='') {
+			$date='';
+		}else {
+			$date=strftime("%a %e %b %y %H:%M %Z", strtotime($data['Order Dispatched Date']." +00:00"));
+		}
 
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$data['Order Key'],$data['Order Public ID']),
 			'customer'=>sprintf("<a href='customer.php?id=%d'>%s</a>",$data['Order Customer Key'],$data['Order Customer Name']),
-			'date'=>strftime("%a %e %b %y %H:%M %Z", strtotime($data['Order Dispatched Date']." +00:00")),
+			'date'=>$date,
 			'lost_revenue'=>money($data['lost_revenue'],$corporate_currency),
 			'lost_revenue_percentage'=>percentage(1,$data['lost_revenue_percentage']),
 		);
@@ -2934,19 +2945,19 @@ function tax_overview_europe($country) {
 
 	if ($country=='GB') {
 		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
-		
-				$where_extra=" and `Destination Country 2 Alpha Code`  in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
 
-		
+		$where_extra=" and `Destination Country 2 Alpha Code`  in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
+
+
 	}else {
 		$where_extra=sprintf(' and  `European Union`="Yes"  and `Invoice Billing Country 2 Alpha Code`!=%s',prepare_mysql($country));
 	}
 
 
 	$sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
-$sql="select count(Distinct `Invoice Key`) as invoices, `Transaction Tax Rate`,`Transaction Tax Code`, 
+	$sql="select count(Distinct `Invoice Key`) as invoices, `Transaction Tax Rate`,`Transaction Tax Code`,
 sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as net_hq ,
-sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`+`Invoice Transaction Tax Refund Items`+`Invoice Transaction Tax Refund Shipping`+`Invoice Transaction Tax Refund Charges`+`Invoice Transaction Tax Refund Insurance`)) as tax_hq 
+sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`+`Invoice Transaction Tax Refund Items`+`Invoice Transaction Tax Refund Shipping`+`Invoice Transaction Tax Refund Charges`+`Invoice Transaction Tax Refund Insurance`)) as tax_hq
 
 from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction Tax Code` ";
 
@@ -2962,7 +2973,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 
 		$data[]=array(
 			//'tax_code'=>$row['Transaction Tax Code'].' ('.$row['Tax Category Name'].')',
-						'tax_code'=>$row['Transaction Tax Code'],
+			'tax_code'=>$row['Transaction Tax Code'],
 
 			'category'=>'EU (no '.$country.')',
 			'net'=>money($row['net_hq'],$corporate_currency),
@@ -2991,17 +3002,17 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 
 
 
-//	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+	// $sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
 
-$sql="select count(Distinct `Invoice Key`) as invoices, `Transaction Tax Rate`,`Transaction Tax Code`, 
+	$sql="select count(Distinct `Invoice Key`) as invoices, `Transaction Tax Rate`,`Transaction Tax Code`,
 sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as net_hq ,
-sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`+`Invoice Transaction Tax Refund Items`+`Invoice Transaction Tax Refund Shipping`+`Invoice Transaction Tax Refund Charges`+`Invoice Transaction Tax Refund Insurance`)) as tax_hq 
+sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`+`Invoice Transaction Insurance Tax Amount`+`Invoice Transaction Tax Adjust`+`Invoice Transaction Tax Refund Items`+`Invoice Transaction Tax Refund Shipping`+`Invoice Transaction Tax Refund Charges`+`Invoice Transaction Tax Refund Insurance`)) as tax_hq
 
 from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction Tax Code`";
 
 
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -3013,7 +3024,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 
 		$data[]=array(
 			//'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
-						'tax_code'=>$row['Transaction Tax Code'],
+			'tax_code'=>$row['Transaction Tax Code'],
 
 			'category'=>'no EU',
 			'net'=>money($row['net_hq'],$corporate_currency),
@@ -4815,9 +4826,9 @@ function list_intrastat() {
 	}
 
 	$sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(DISTINCT ' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,
-	
+
 	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`)) as value ,
-	
+
 	sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code`
 	from
