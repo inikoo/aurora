@@ -405,8 +405,8 @@ var order_key=Dom.get('order_key').value;
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		        //location.href='invoice.php?id='+r.invoice_key;
-		        location.reload(); 
-		  
+		       // location.reload(); 
+		    post_create_invoice_actions(r.invoice_key);
 		}else{
 		alert(r.msg)
 		  
@@ -415,6 +415,15 @@ var order_key=Dom.get('order_key').value;
 	});    
 
 }
+
+function post_create_invoice_actions(invoice_key){
+
+    var request='ar_edit_orders.php?tipo=categorize_invoice&invoice_key='+escape(invoice_key);
+ // alert(request); //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{});    
+location.reload(); 
+}
+
 
 function change_parcel_type(o){
 

@@ -539,6 +539,8 @@ function create_delivery_note_from_list(o, order_key) {
 
 }
 
+
+
 function create_delivery_note() {
 
     if (Dom.get('send_to_warehouse_input') != undefined) var note = Dom.get('send_to_warehouse_input').value

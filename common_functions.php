@@ -2991,12 +2991,6 @@ function number2alpha($number) {
 	}
 
 	return $prefix.$alpha;
-
-
-
-
-
-
 }
 
 
