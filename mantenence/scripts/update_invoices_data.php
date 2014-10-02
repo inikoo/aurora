@@ -26,7 +26,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-$sql="select * from `Invoice Dimension`";
+$sql="select * from `Invoice Dimension` order by `Invoice Date` desc";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 

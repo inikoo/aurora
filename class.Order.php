@@ -2352,7 +2352,7 @@ class Order extends DB_Table {
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
 		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
 			$this->id);
-		// print "$sql\n";
+		
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 			//print_r($row);
@@ -2372,6 +2372,7 @@ class Order extends DB_Table {
 
 
 		}
+		
 
 	}
 
