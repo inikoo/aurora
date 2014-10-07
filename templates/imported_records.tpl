@@ -67,7 +67,7 @@
 				</tr>
 				
 				<tr class="section">
-					<td>{t}To do records:{/t}</td>
+					<td>{t}To do records{/t}:</td>
 					<td class="aright" id="records_todo">{$imported_records->get('Todo')}</td>
 					<td id="records_todo_comments"></td>
 				</tr>

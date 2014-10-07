@@ -6374,7 +6374,7 @@ class Order extends DB_Table {
 
 				switch ($row['Tax Category Name']) {
 				case 'Exento':
-					$tax_category_name=_('Exento');
+					$tax_category_name=_('Exempt');
 					break;
 				case 'IVA 21%':
 					$tax_category_name=_('VAT').' 21%';

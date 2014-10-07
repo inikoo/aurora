@@ -1736,7 +1736,7 @@ function list_families_for_edition() {
 		mysql_free_result($result);
 	}
 
-	$rtext=sprintf(ngettext("%d family", "%d families", $total_records), $total_records);
+	$rtext=sprintf("%s %s",number($total_records),ngettext("family", "families", $total_records));
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else

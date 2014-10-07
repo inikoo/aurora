@@ -141,46 +141,38 @@
 			<div class="buttons small right" style="float:right;width:350px">
 				<button class="negative" id="delete" onclick="show_delete_invoice()">{t}Delete{/t}</button> 
 			</div>
-			
 			<div style="width:450px">
-	<table border="0" class="info_block">
-		<tr>
-			<td>{t}Date{/t}:</td>
-			<td class="aright">{$invoice->get('Date')}</td>
-		</tr>
-	
-		<tr>
-			<td>{t}Paid Date{/t}:</td>
-			<td class="aright">{$invoice->get('Paid Date')}</td>
-		</tr>
-		
-	</table>
-	<table border="0" class="info_block">
-		<tr>
-			<td>{t}Customer Name{/t}:</td>
-			<td class="aright">{$invoice->get('Invoice Customer Name')}</td>
-		</tr>
-		<tr>
-			<td>{t}Contact Name{/t}:</td>
-			<td class="aright">{$invoice->get('Invoice Customer Contact Name')}</td>
-		</tr>
-		<tr>
-			<td>{t}Tax Number{/t}:</td>
-			<td class="aright">{$invoice->get('Invoice Tax Number')}</td>
-		</tr>
-	
-	</table>
-	<table border="0" class="info_block">
-		<tr>
-			<td>{t}Tax Code{/t}:</td>
-			<td class="aright">{$invoice->get('Invoice Tax Code')}</td>
-		</tr>
-		
-	</table>
-	
-</div>
-			
-			
+				<table border="0" class="info_block">
+					<tr>
+						<td>{t}Date{/t}:</td>
+						<td class="aright">{$invoice->get('Date')}</td>
+					</tr>
+					<tr>
+						<td>{t}Paid Date{/t}:</td>
+						<td class="aright">{$invoice->get('Paid Date')}</td>
+					</tr>
+				</table>
+				<table border="0" class="info_block">
+					<tr>
+						<td>{t}Customer Name{/t}:</td>
+						<td class="aright">{$invoice->get('Invoice Customer Name')}</td>
+					</tr>
+					<tr>
+						<td>{t}Contact Name{/t}:</td>
+						<td class="aright">{$invoice->get('Invoice Customer Contact Name')}</td>
+					</tr>
+					<tr>
+						<td>{t}Tax Number{/t}:</td>
+						<td class="aright">{$invoice->get('Invoice Tax Number')}</td>
+					</tr>
+				</table>
+				<table border="0" class="info_block">
+					<tr>
+						<td>{t}Tax Code{/t}:</td>
+						<td class="aright">{$invoice->get('Invoice Tax Code')}</td>
+					</tr>
+				</table>
+			</div>
 			<div style="clear:both">
 			</div>
 			<img id="hide_invoice_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
@@ -193,7 +185,7 @@
 			</tr>
 			<tr class="title">
 				<td>{t}Payment ID{/t}</td>
-				<td>{t}Service Provider{/t}</td>
+				<td>{t}Method{/t}</td>
 				<td>{t}Date{/t}</td>
 				<td>{t}Status{/t}</td>
 				<td>{t}Amount{/t}</td>

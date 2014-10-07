@@ -3,7 +3,6 @@
 	<h1>
 		{t}New Product{/t} 
 	</h1>
-	
 	<div id="contact_messages_div">
 		<span id="contact_messages"></span> 
 	</div>
@@ -19,7 +18,7 @@
 					<td colspan="3">{t}Product Info{/t}</td>
 				</tr>
 				<tr style="display:none">
-					<td style="width:200px" class="label">{t}Product Store{/t}:</td>
+					<td style="width:200px" class="label">{t}Store{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="store_code" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -31,7 +30,7 @@
 					<td id="store_code_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}Product Family{/t}:</td>
+					<td style="width:200px" class="label">{t}Family{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="family_code" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -43,7 +42,7 @@
 					<td id="family_code_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}Product Code{/t}:</td>
+					<td style="width:200px" class="label">{t}Code{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="product_code" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -54,7 +53,7 @@
 					<td id="product_code_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}Product Name{/t}:</td>
+					<td style="width:200px" class="label">{t}Name{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="product_name" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -65,7 +64,7 @@
 					<td id="product_name_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}Product Weight{/t}:</td>
+					<td style="width:200px" class="label">{t}Weight{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="product_weight" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -76,7 +75,7 @@
 					<td id="product_weight_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}Product Special Characteristics{/t}:</td>
+					<td style="width:200px" class="label">{t}Special Characteristics{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="special_characteristics" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -87,7 +86,7 @@
 					<td id="special_characteristics_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}Product Description{/t}:</td>
+					<td style="width:200px" class="label">{t}Description{/t}:</td>
 					<td style="width:370px"> 
 					<div>
 						<input style="width:100%" id="product_description" changed="0" type='text' maxlength="255" class='text' value="" />
@@ -131,5 +130,4 @@
 		</div>
 	</div>
 </div>
-<
-{include file='footer.tpl'}
+< {include file='footer.tpl'}
