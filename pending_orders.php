@@ -3,10 +3,10 @@
 
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 19 June 2014 10:53:50 GMT+1, Sheffield UK	
+ Created: 19 June 2014 10:53:50 GMT+1, Sheffield UK
 
  Copyright (c) 2014, Inikoo
- 
+
  Version 2.0
 */
 include_once 'common.php';
@@ -26,9 +26,6 @@ if (!($user->can_view('stores')  ) ) {
 }
 
 
-
-
-//====================
 $smarty->assign('store_key','');
 
 $currency=$corporate_currency;
@@ -66,13 +63,10 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	
 	'js/customers_common.js',
 	'js/export_common.js',
-		'js/common_order_not_dispatched.js',
-
+	'js/common_order_not_dispatched.js?141007',
 	'pending_orders.js.php'
-
 );
 
 
@@ -100,11 +94,11 @@ $smarty->assign('paginator_menu1',$paginator_menu1);
 
 
 
-if(isset($_REQUEST['show']) and  array_key_exists($_REQUEST['show'],$_SESSION['state']['stores']['pending_orders']['elements']) ){
-foreach($_SESSION['state']['stores']['pending_orders']['elements'] as $key=>$value){
-	$_SESSION['state']['stores']['pending_orders']['elements'][$key]=0;
-}
-$_SESSION['state']['stores']['pending_orders']['elements'][$_REQUEST['show']]=1;
+if (isset($_REQUEST['show']) and  array_key_exists($_REQUEST['show'],$_SESSION['state']['stores']['pending_orders']['elements']) ) {
+	foreach ($_SESSION['state']['stores']['pending_orders']['elements'] as $key=>$value) {
+		$_SESSION['state']['stores']['pending_orders']['elements'][$key]=0;
+	}
+	$_SESSION['state']['stores']['pending_orders']['elements'][$_REQUEST['show']]=1;
 }
 
 
