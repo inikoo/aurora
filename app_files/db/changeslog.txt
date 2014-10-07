@@ -8780,3 +8780,6 @@ ALTER TABLE `Order Transaction Fact` DROP `Current Autorized to Sell Quantity`;
 ALTER TABLE `Order Transaction Fact` DROP `Backlog Date`, DROP `Release to Manufacturing Date`, DROP `Finished Inventory Placement Date`, DROP `Requested Shipping Date`, DROP `Scheduled Shipping Date`;
 ALTER TABLE `Order Transaction Fact` DROP `Manufacturing Facility Key`, DROP `Current Manufacturing Quantity`, DROP `Current On Shelf Quantity`, DROP `Current On Box Quantity`;
 ALTER TABLE `Order Transaction Fact` DROP `Backlog to Shipping Lag`;
+
+
+ALTER TABLE `Site Dimension` ADD `Site Server Address` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Site URL`; 

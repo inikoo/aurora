@@ -380,31 +380,31 @@ gettext("New Product");
 gettext("Product Info");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Store");
+gettext("Store");
 
 /* ../templates/associate_product.tpl */
 gettext("List");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Family");
+gettext("Family");
 
 /* ../templates/associate_product.tpl */
 gettext("List");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Code");
+gettext("Code");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Name");
+gettext("Name");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Weight");
+gettext("Weight");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Special Characteristics");
+gettext("Special Characteristics");
 
 /* ../templates/associate_product.tpl */
-gettext("Product Description");
+gettext("Description");
 
 /* ../templates/associate_product.tpl */
 gettext("Save");
@@ -2213,7 +2213,7 @@ gettext("Save");
 gettext("Cancel");
 
 /* ../templates/customer.tpl */
-gettext("Registration Number:");
+gettext("Registration Number");
 
 /* ../templates/customer.tpl */
 gettext("Save");
@@ -13415,7 +13415,7 @@ gettext("Filename");
 gettext("Start Date");
 
 /* ../templates/imported_records.tpl */
-gettext("To do records:");
+gettext("To do records");
 
 /* ../templates/imported_records.tpl */
 gettext("Done");
@@ -15989,13 +15989,13 @@ gettext("Please specify a name");
 gettext("Invoices which...");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Invoice Date");
+gettext("Invoice date");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Invoice Paid Date");
+gettext("Invoice paid date");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("billing location");
+gettext("Billing location");
 
 /* ../templates/new_invoices_list.tpl */
 gettext("Postal Code");
@@ -16010,7 +16010,7 @@ gettext("Country");
 gettext("World Region");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("delivery location");
+gettext("Delivery location");
 
 /* ../templates/new_invoices_list.tpl */
 gettext("Postal Code");
@@ -16037,19 +16037,19 @@ gettext("Invoices in");
 gettext("Category");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Invoices With...");
+gettext("Invoices with");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Total Net Amount");
+gettext("Total net amount");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Total Tax Amount");
+gettext("Total tax amount");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Total Profit");
+gettext("Profit");
 
 /* ../templates/new_invoices_list.tpl */
-gettext("Total Amount");
+gettext("Total amount");
 
 /* ../templates/new_invoices_list.tpl */
 gettext("Tax Code");
@@ -17528,66 +17528,6 @@ gettext("Set for collection");
 gettext("Set for delivery");
 
 /* ../templates/order_dispatched.tpl */
-gettext("Discounts");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Total Ordered");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Out of Stock");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Invoiced Amounts");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Items");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Shipping");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Charges");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Insurance");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Refunds");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Adjusts");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Total Net");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Refunds (Tax)");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Tax");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Tax Adjusts");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Total");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Paid");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Payment");
-
-/* ../templates/order_dispatched.tpl */
-gettext("Credit");
-
-/* ../templates/order_dispatched.tpl */
-gettext("To Refund");
-
-/* ../templates/order_dispatched.tpl */
-gettext("To Pay");
-
-/* ../templates/order_dispatched.tpl */
 gettext("Order Date");
 
 /* ../templates/order_dispatched.tpl */
@@ -18033,105 +17973,6 @@ gettext("Set for collection");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Set for delivery");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Items Gross");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Discounts");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Out of stock");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Items Net");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Credits");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Charges");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Shipping");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Insurance");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Net");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Total");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Paid");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Payment");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("To Refund");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("To Pay");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Add debit/credit");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Total Ordered");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Out of Stock");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Invoiced Amounts");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Items");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Shipping");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Charges");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Insurance");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Refunds (N)");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Adjusts (N)");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Total Net");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Refunds (Tax)");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Tax");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Tax Adjusts");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Total");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Paid");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Payment");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("To Refund");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("To Pay");
 
 /* ../templates/order_in_warehouse.tpl */
 gettext("Order Date");
@@ -18614,10 +18455,16 @@ gettext("Cancel");
 gettext("Order Pick Aid");
 
 /* ../templates/order_pick_aid.pdf.tpl */
-gettext("Order Date");
+gettext("Order date");
 
 /* ../templates/order_pick_aid.pdf.tpl */
-gettext("Delivery Note Date:");
+gettext("Delivery note date");
+
+/* ../templates/order_pick_aid.pdf.tpl */
+gettext("Page");
+
+/* ../templates/order_pick_aid.pdf.tpl */
+gettext("of");
 
 /* ../templates/order_pick_aid.pdf.tpl */
 gettext("Delivery Address");
@@ -18638,7 +18485,7 @@ gettext("Parcels");
 gettext("Courier");
 
 /* ../templates/order_pick_aid.pdf.tpl */
-gettext("Consigment");
+gettext("Consignment");
 
 /* ../templates/order_pick_aid.pdf.tpl */
 gettext("Notes");
@@ -18650,7 +18497,7 @@ gettext("Location");
 gettext("Reference");
 
 /* ../templates/order_pick_aid.pdf.tpl */
-gettext("Descripion");
+gettext("Descrption");
 
 /* ../templates/order_pick_aid.pdf.tpl */
 gettext("Stock");
@@ -18915,6 +18762,105 @@ gettext("Go Back");
 
 /* ../templates/order_suspended.tpl */
 gettext("Processig Request");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Out of stock");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Items Gross");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Discounts");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Items Net");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Credits");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Charges");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Shipping");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Insurance");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Net");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Total");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Paid");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Payment");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("To Refund");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("To Pay");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Add debit/credit");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Total Ordered");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Out of Stock");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Invoiced Amounts");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Items");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Shipping");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Charges");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Insurance");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Refunds (N)");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Adjusts (N)");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Total Net");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Refunds (Tax)");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Tax");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Tax Adjusts");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Total");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Paid");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("Payment");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("To Refund");
+
+/* ../templates/order_totals_splinter.tpl */
+gettext("To Pay");
 
 /* ../templates/orders.tpl */
 gettext("Delivery Notes");
@@ -27820,44 +27766,11 @@ gettext("No results found, try te a more comprensive search");
 /* ../templates/suppliers_navigation.tpl */
 gettext("here");
 
-/* ../templates/table_complex.tpl */
-gettext("%1");
-
-/* ../templates/table_complex.tpl */
-gettext("Hide items");
-
-/* ../templates/table_complex.tpl */
-gettext("filter");
-
-/* ../templates/table_complex.tpl */
-gettext("Loadding...");
-
-/* ../templates/table_complex.tpl */
-gettext("From");
-
-/* ../templates/table_complex.tpl */
-gettext("to");
-
-/* ../templates/table_complex.tpl */
-gettext("All");
-
 /* ../templates/table_dashboard.tpl */
 gettext("filter results");
 
 /* ../templates/table_dashboard.tpl */
 gettext("Close filter");
-
-/* ../templates/table_simple.tpl */
-gettext("%1");
-
-/* ../templates/table_simple.tpl */
-gettext("Hide items");
-
-/* ../templates/table_simple.tpl */
-gettext("filter");
-
-/* ../templates/table_simple.tpl */
-gettext("Loadding...");
 
 /* ../templates/table_splinter.tpl */
 gettext("filter results");

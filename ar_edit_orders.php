@@ -3359,7 +3359,7 @@ function picking_aid_sheet() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with sku like")." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with SKU like")." <b>".$f_value."*</b>";
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with reference like")." <b>".$f_value."*</b>";
@@ -3371,7 +3371,7 @@ function picking_aid_sheet() {
 	elseif ($filtered>0) {
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with sku like')." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with SKU like')." <b>".$f_value."*</b>";
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with reference like')." <b>".$f_value."*</b>";
@@ -3618,7 +3618,7 @@ function packing_aid_sheet() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with sku like")." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with SKU like")." <b>".$f_value."*</b>";
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No part with reference like")." <b>".$f_value."*</b>";
@@ -3630,7 +3630,7 @@ function packing_aid_sheet() {
 	elseif ($filtered>0) {
 		switch ($f_field) {
 		case('sku'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with sku like')." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with SKU like')." <b>".$f_value."*</b>";
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('part','parts',$total)." "._('with reference like')." <b>".$f_value."*</b>";
@@ -4980,11 +4980,6 @@ function update_percentage_discount($data) {
 }
 
 function get_locations($data) {
-	//$part_sku=$_REQUEST['part_sku'];
-	//print $part_sku;
-
-	//$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d", $part_sku);
-	//print $sql;
 
 	$part= new part('sku',$data['part_sku']);
 	$user=$data['user'];

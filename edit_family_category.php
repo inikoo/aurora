@@ -291,7 +291,7 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 $smarty->assign('filter4','used_in');
 $smarty->assign('filter_value4','');
 $filter_menu=array(
-	'sku'=>array('db_key'=>'sku','menu_label'=>_('Family SKU'),'label'=>_('SKU')),
+	'sku'=>array('db_key'=>'sku','menu_label'=>_('SKU'),'label'=>_('SKU')),
 	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),
 );
 $smarty->assign('filter_menu4',$filter_menu);

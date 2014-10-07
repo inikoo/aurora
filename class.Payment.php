@@ -334,7 +334,7 @@ class Payment extends DB_Table {
 			$info=sprintf("%s, %s",
 
 				$this->payment_service_provider->data['Payment Service Provider Name'],
-				_('payment in cancelled')
+				_('payment cancelled')
 
 			);
 
