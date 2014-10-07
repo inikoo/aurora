@@ -604,7 +604,7 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:340,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    request="ar_history.php?tipo=history&sf=0&type=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
-	  
+	 
 	    this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";

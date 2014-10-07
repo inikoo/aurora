@@ -155,8 +155,6 @@ abstract class DB_Table {
 	protected function update_field($field,$value,$options='') {
 
 		$this->updated=false;
-		//print $field;
-		//print $this->table_name;
 
 		$null_if_empty=true;
 
@@ -264,6 +262,12 @@ abstract class DB_Table {
 				and $save_history
 			) {
 
+				
+					$old_value=htmlentities($old_value);
+					$value=htmlentities($value);
+			
+
+
 				$history_data=array(
 					'Indirect Object'=>$field,
 					'old_value'=>$old_value,
@@ -283,19 +287,19 @@ abstract class DB_Table {
 
 				}
 
-				$history_key=$this->add_history($history_data);
+				$history_key=$this->add_history($history_data,false,false,$options);
 				if (
 					in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
-					
-					if($this->table_name=='Product' or $this->table_name=='Supplier Product')
-										$subject_key=$this->pid;
 
-					else
-					$subject_key=$this->id;
-					
+					if ($this->table_name=='Product' or $this->table_name=='Supplier Product'){
+						$subject_key=$this->pid;
+
+					}else{
+						$subject_key=$this->id;
+					}	
+
 					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$subject_key,$history_key);
 					mysql_query($sql);
-//print $sql;
 				}
 
 			}
@@ -333,7 +337,7 @@ abstract class DB_Table {
 
 
 
-	function add_history($raw_data,$force=false,$post_arg1=false) {
+	function add_history($raw_data,$force=false,$post_arg1=false,$options='') {
 
 
 		$editor_data=$this->get_editor_data();
@@ -577,11 +581,11 @@ abstract class DB_Table {
 
 		if ($date!='')
 			$history_data['Date']=$date;
-			
-			
-				
+
+
+
 		$history_key=$this->add_subject_history($history_data,$force_save=true,$deleteable,$customer_history_type);
-		
+
 		$this->updated=true;
 		$this->new_value=$history_key;
 	}
@@ -589,9 +593,9 @@ abstract class DB_Table {
 
 	function add_subject_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
 		$history_key=$this->add_history($history_data,$force_save=true);
-		
-		
-		
+
+
+
 		$sql=sprintf("insert into `%s History Bridge` values (%d,%d,%s,'No',%s)",
 			$this->table_name,
 			($this->table_name=='Product'?$this->pid:$this->id),
@@ -599,10 +603,10 @@ abstract class DB_Table {
 			prepare_mysql($deleteable),
 			prepare_mysql($type)
 		);
-	 //print $sql;
+		//print $sql;
 		mysql_query($sql);
-		
-		
+
+
 		return $history_key;
 	}
 
@@ -647,7 +651,7 @@ abstract class DB_Table {
 			mysql_query($sql);
 			$this->updated=true;
 			$this->new_value='';
-		} 
+		}
 		else {
 			$this->error;
 			$this->msg=$attach->msg;

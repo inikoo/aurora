@@ -38,6 +38,36 @@ require_once '../../conf/conf.php';
 
 global $myconf;
 
+	
+	
+
+$sql=sprintf("select `History Key`,`History Details`,`History Abstract` from `History Dimension` where `Direct Object`='Site' and `Indirect Object` in 
+('Site Head Include','Site Body Include','Site Menu HTML','Site Menu CSS','Site Menu Javascript','Site Search HTML','Site Search CSS','Site Search Javascript','Site Forgot Password Email HTML Body','Site Forgot Password Email Plain Body',
+'Site Forgot Password Email Subject','Site Registration Disclaimer','Site Welcome Email HTML Body','Site Welcome Email Plain Body',
+'Site Welcome Email Subject','Site Welcome Source'
+) 
+");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$details=htmlentities($row['History Details']);
+	$abstract=htmlentities($row['History Abstract']);
+	
+	if(preg_match('/^(Site Welcome Source|Site Welcome Email Subject|Site Welcome Email Plain Body|Site Welcome Email HTML Body|Site Forgot Password Email Subject|Site Registration Disclaimer|Site Head Include|Site Body Include|Site Menu HTML|Site Menu CSS|Site Menu Javascript|Site Search HTML|Site Search CSS|Site Search Javascript|Site Forgot Password Email HTML Body|Site Forgot Password Email Plain Body) changed/i',$abstract,$match)){
+		$abstract=$match[0];
+	}
+	
+	
+	$sql=sprintf("update `History Dimension` set `History Details`=%s,`History Abstract`=%s where `History Key`=%d",
+	prepare_mysql($details),
+	prepare_mysql($abstract),
+	$row['History Key']
+	);
+	mysql_query($sql);
+	//print $sql;
+}
+
+
+exit;
 
 $sql=sprintf("select * from `History Dimension` where `Direct Object`='Part'  ");
 $res=mysql_query($sql);
