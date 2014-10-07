@@ -368,18 +368,24 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 
 	function update_field_switcher($field,$value,$options='') {
 
-		//print "($field,$value\n";
-
-
 		switch ($field) {
-
+		case('Site Head Include'):
+		case('Site Body Include'):
 		case('Site Menu HTML'):
 		case('Site Menu CSS'):
 		case('Site Menu Javascript'):
 		case('Site Search HTML'):
 		case('Site Search CSS'):
 		case('Site Search Javascript'):
-			$this->update_field($field,$value,'no_history');
+		case('Site Forgot Password Email HTML Body'):
+		case('Site Forgot Password Email Plain Body'):
+		case('Site Forgot Password Email Subject'):
+		case('Site Registration Disclaimer'):
+		case('Site Welcome Email HTML Body'):
+		case('Site Welcome Email Plain Body'):
+		case('Site Welcome Email Subject'):
+		case('Site Welcome Source'):
+			$this->update_field($field,$value,'diff');
 			break;
 		case 'checkout_id':
 			$this->update_checkout_data('id',$value);

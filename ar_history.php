@@ -633,9 +633,9 @@ function list_history($asset_type) {
 
 
 	if ($f_field=='notes' and $f_value!='')
-			$wheref.=sprintf(' and `History Abstract`  REGEXP "[[:<:]]%s"   ',addslashes($f_value));
-elseif ($f_field=='author' and $f_value!='')
-			$wheref.=sprintf(' and `Author Name`  like "%s%%"   ',addslashes($f_value));
+		$wheref.=sprintf(' and `History Abstract`  REGEXP "[[:<:]]%s"   ',addslashes($f_value));
+	elseif ($f_field=='author' and $f_value!='')
+		$wheref.=sprintf(' and `Author Name`  like "%s%%"   ',addslashes($f_value));
 
 	//'After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier'
 
@@ -668,8 +668,6 @@ elseif ($f_field=='author' and $f_value!='')
 	//print $where;
 
 	$sql="select count(*) as total from `History Dimension`  $where $wheref";
-	//print($asset);print("**********");print($asset_id);print("*********");
-	//print($sql);print("*********");
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -696,7 +694,7 @@ elseif ($f_field=='author' and $f_value!='')
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -724,16 +722,6 @@ elseif ($f_field=='author' and $f_value!='')
 	else
 		$filter_msg='';
 
-
-
-
-
-
-
-
-
-
-
 	if ($order_direction=='')
 		$rev_order_direction=' desc';
 	else
@@ -742,42 +730,37 @@ elseif ($f_field=='author' and $f_value!='')
 	$order='`History Date` '.$order_direction.',`History Key`  '.$rev_order_direction;
 	$_order='date';
 
-	$sql=sprintf("select  * from `History Dimension`  $where $wheref order by $order  limit $start_from,$number_results ");
+	$sql=sprintf("select `History Key`,`Action`,`Author Name`,`History Abstract`,`History Details`,`History Date` from `History Dimension` $where $wheref order by $order  limit $start_from,$number_results ");
 	//print $sql;
 	$result=mysql_query($sql);
-	$adata=array();
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$tipo=$row['Action'];
+		$author=$row['Author Name'];
+		$note=$row['History Abstract'];
+		if ($row['History Details']!='') {
+			$note.=sprintf(' <img class="button" d="no" id="ch%d" hid="%d" onClick="showdetails(this)" src="art/icons/closed.png" alt="%s" title="%s" />',
+				$row['History Key'],
+				$row['History Key'],
+				_('Show details'),
+				_('Show details')
+			);
+		}
 
 
-
-		$tipo=$data['Action'];
-		$author=$data['Author Name'];
-
-
-		if ($data['History Details']=='')
-			$note=$data['History Abstract'];
-		else
-			$note=$data['History Abstract'].' <img class="button" d="no" id="ch'.$data['History Key'].'" hid="'.$data['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
-
-
-
-		$adata[]=array(
-
-			'author'=>$author
-			,'tipo'=>$tipo
-			,'abstract'=>$note
-			,'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['History Date']." +00:00")),
+		$data[]=array(
+			'author'=>$author,
+			'tipo'=>$tipo,
+			'abstract'=>$note,
+			'date'=>sprintf('<span title="%s %s">%s</span>',_('Record Id'),$row['History Key'],strftime("%a %e %b %Y %H:%M %Z", strtotime($row['History Date']." +00:00"))),
 		);
 	}
-
-
-
-
 
 	$response=array('resultset'=>
 		array(
 			'state'=>200,
-			'data'=>$adata,
+			'data'=>$data,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,
@@ -1209,10 +1192,10 @@ function list_category_history($tipo) {
 		$rtext_rpp='';
 	elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
