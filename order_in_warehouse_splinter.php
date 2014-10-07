@@ -51,11 +51,10 @@ if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {
 
 	$js_files[]='js/country_address_labels.js';
 	$js_files[]='js/edit_address.js';
-	// $js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
 	$js_files[]='js/edit_delivery_address_common.js';
 	$js_files[]='js/edit_billing_address_common.js';
-	$js_files[]='js/common_order_not_dispatched.js';
+	$js_files[]='js/common_order_not_dispatched.js?141007';
 
 	$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 
@@ -122,31 +121,19 @@ if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {
 }
 else {
 
+	$css_files[]='css/edit.css';
+	$css_files[]='css/edit_address.css';
 
 	$js_files[]='js/edit_common.js';
 	$js_files[]='js/country_address_labels.js';
 	$js_files[]='js/edit_address.js';
-
-
-	//$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
-
 	$js_files[]='js/edit_delivery_address_common.js';
 	$js_files[]='js/edit_billing_address_common.js';
-
-	$js_files[]='js/common_order_not_dispatched.js';
-
-
-	$css_files[]='css/edit.css';
-	$css_files[]='css/edit_address.css';
+	$js_files[]='js/common_order_not_dispatched.js?141007';
 	$js_files[]='js/common_assign_picker_packer.js';
 	$js_files[]='order_in_warehouse.js.php';
 
 	$template='order_in_warehouse.tpl';
-
-
-
-
-
 
 	$products_display_type='ordered_products';
 	$_SESSION['state']['order']['products']['display']=$products_display_type;

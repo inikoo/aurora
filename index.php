@@ -20,8 +20,6 @@ include_once 'class.Order.php';
 
 $smarty->assign('store_keys',join(',',$user->stores));
 
-
-
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -33,13 +31,9 @@ $css_files=array(
 	'css/table.css',
 	'css/index.css',
 	'theme.css.php'
-
 );
 
-
-
 $js_files=array(
-
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
 	$yui_path.'paginator/paginator-min.js',
@@ -49,17 +43,12 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
-
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/index.js',
-
 );
-
-//print_r( calculate_inteval_dates('yesterday'));
 
 
 if ($user->data['User Type']=='Warehouse') {
@@ -94,9 +83,6 @@ else {
 	$dashboard_key=$user->data['User Dashboard Key'];
 }
 
-
-
-
 $blocks=array();
 $sql=sprintf("select * from  `Dashboard Widget Bridge`B  left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   where `Dashboard Key`=%d  order by `Dashboard Widget Order`",
 	$dashboard_key
@@ -121,19 +107,12 @@ $smarty->assign('number_of_dashboards',$number_of_dashboards);
 $sql=sprintf("select * from `Dashboard Dimension` where `Dashboard key`=%d", $dashboard_key);
 $result=mysql_query($sql);
 $current_dashboard_data=mysql_fetch_assoc($result);
-
-
-
-
-
-
-
-
 $sql=sprintf("select * from `Dashboard Dimension` where `User key`=%d order by `Dashboard Order` DESC", $user->id);
 $result=mysql_query($sql);
 $row=mysql_fetch_assoc($result);
 $last_dashboard_id=$row['Dashboard Order'];
 */
+
 $next_id=0;
 $prev_id=0;
 $dashboard_data=array();
