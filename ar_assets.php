@@ -9,7 +9,7 @@
 
  Copyright (c) 2009, Inikoo
 
- Version 2.1 
+ Version 2.1
 */
 
 require_once 'common.php';
@@ -40,8 +40,8 @@ switch ($tipo) {
 
 case ('products_availability_timeline'):
 
-list_products_availability_timeline();
-break;
+	list_products_availability_timeline();
+	break;
 case ('get_families_elements_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string'),
@@ -478,10 +478,10 @@ function list_departments() {
 	$rtext=number($total_records)." ".ngettext('department','departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -576,7 +576,7 @@ $rtext_rpp='';
 		$order='`Product Department Critical Availability Products`';
 	elseif ($_order=='discontinued')
 		$order='`Product Department Discontinued Products`';
-elseif ($order=='from') {
+	elseif ($order=='from') {
 		$order='`Product Department Valid From`';
 	}elseif ($order=='to') {
 		$order='`Product Department Valid To`';
@@ -827,7 +827,7 @@ elseif ($order=='from') {
 			'aws_p'=>$aws_p,
 			'awp_p'=>$awp_p,
 			'item_type'=>'item',
-							'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Valid From']." +00:00")),
+			'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Valid From']." +00:00")),
 			'to'=>(
 				($row['Product Department Type']=='Historic')
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Valid To']." +00:00")):''),
@@ -1222,7 +1222,7 @@ function list_products() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1561,8 +1561,8 @@ function list_products() {
 			$main_type=$row['Product Main Type'];
 
 		}
-	
-	switch ($row['Product Package Type']) {
+
+		switch ($row['Product Package Type']) {
 		case('Bottle'):
 			$package_type=_('Bottle');
 			break;
@@ -1655,12 +1655,12 @@ function list_products() {
 				($row['Product Main Type']=='Historic' or $row['Product Main Type']=='Discontinued')
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid To']." +00:00")):''),
 			'last_update'=>($row['Product Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Last Updated']." +00:00"))),
-"package_type"=>$package_type,
-"package_weight"=>weight($row['Product Package Weight']),
-"package_dimension"=>$row['Product Package XHTML Dimensions'],
-"package_volume"=>volume($row['Product Package Dimensions Volume']),
-"unit_weight"=>weight($row['Product Unit Weight']),
-"unit_dimension"=>$row['Product Unit XHTML Dimensions']
+			"package_type"=>$package_type,
+			"package_weight"=>weight($row['Product Package Weight']),
+			"package_dimension"=>$row['Product Package XHTML Dimensions'],
+			"package_volume"=>volume($row['Product Package Dimensions Volume']),
+			"unit_weight"=>weight($row['Product Unit Weight']),
+			"unit_dimension"=>$row['Product Unit XHTML Dimensions']
 
 
 		);
@@ -2091,10 +2091,10 @@ function list_families() {
 	$rtext=number($total_records)." ".ngettext('family','families',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",number($number_results),_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -2312,7 +2312,7 @@ $rtext_rpp='';
 			'image'=>$row['Product Family Main Image'],
 			'type'=>'item',
 			'item_type'=>'item',
-						'from'=>($row['Product Family Valid From']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Family Valid From']." +00:00"))),
+			'from'=>($row['Product Family Valid From']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Family Valid From']." +00:00"))),
 			'to'=>(
 				($row['Product Family Record Type']=='Discontinued')
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Family Valid To']." +00:00")):''),
@@ -2348,7 +2348,7 @@ $rtext_rpp='';
 			'sales'=>$tsall,
 			'profit'=>$tprofit,
 			'item_type'=>'total',
-			
+
 
 		);
 
@@ -2518,10 +2518,10 @@ function list_stores() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -2988,10 +2988,10 @@ function list_charges() {
 	$rtext=number($total_records)." ".ngettext('charge','charges',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -3211,10 +3211,10 @@ function list_customers_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -3595,10 +3595,10 @@ function list_orders_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -3903,10 +3903,10 @@ function list_invoices_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -4225,10 +4225,10 @@ function list_delivery_notes_per_store() {
 	$rtext=number($total_records)." ".ngettext('store','stores',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -5836,10 +5836,10 @@ function list_delivery_notes_per_part($data) {
 	$rtext=$total.' '.ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -5855,10 +5855,10 @@ $rtext_rpp='';
 	$rtext=number($total_records)." ".ngettext('delivery note','delivery notes',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -6017,8 +6017,6 @@ function list_department_sales_report() {
 	global $user;
 	$display_total=false;
 
-
-
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
 	else
@@ -6042,7 +6040,6 @@ function list_department_sales_report() {
 		$conf_table='stores';
 	}
 	else {
-
 		exit;
 	}
 
@@ -6109,58 +6106,12 @@ function list_department_sales_report() {
 	else
 		$tableid=0;
 
-
-	/*
-	if (isset( $_REQUEST['percentages'])) {
-		$percentages=$_REQUEST['percentages'];
-	} else
-		$percentages=$conf['percentages'];
-
-
-
-
-	if (isset( $_REQUEST['avg'])) {
-		$avg=$_REQUEST['avg'];
-	} else
-		$avg=$conf['avg'];
-
-
-	if (isset( $_REQUEST['parent']))
-		$parent=$_REQUEST['parent'];
-	else {
-		$parent='store';//$conf['parent'];
-	}
-	if (isset( $_REQUEST['mode']))
-		$mode=$_REQUEST['mode'];
-	else
-		$mode=$conf['mode'];
-
-
-*/
-
-
-
-
-
-
 	$_SESSION['state'][$conf_table]['family_sales']['order']=$order;
 	$_SESSION['state'][$conf_table]['family_sales']['order_dir']=$order_dir;
 	$_SESSION['state'][$conf_table]['family_sales']['nr']=$number_results;
 	$_SESSION['state'][$conf_table]['family_sales']['sf']=$start_from;
 	$_SESSION['state'][$conf_table]['family_sales']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['family_sales']['f_value']=$f_value;
-	//$_SESSION['state'][$conf_table]['family_sales']['percentages']=$percentages;
-	//$_SESSION['state'][$conf_table]['family_sales']['avg']=$avg;
-	//$_SESSION['state'][$conf_table]['family_sales']['mode']=$mode;
-	//$_SESSION['state'][$conf_table]['family_sales']['to']=$to;
-	//$_SESSION['state'][$conf_table]['family_sales']['from']=$from;
-
-
-
-	//$_SESSION['state'][$conf_table]['period']=$period;
-
-	//$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
-	// $_SESSION['state'][$conf_table]['parent']=$parent;
 
 	$table='`Product Family Dimension`';
 	$where_type='';
@@ -6185,20 +6136,7 @@ function list_department_sales_report() {
 
 	}
 
-	/*
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Product Family Record Type` in ('.$_elements.')' ;
-	}
 
-*/
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
 
@@ -6217,36 +6155,30 @@ function list_department_sales_report() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Product Family Code` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Product Family Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
 
 
 
-	$sql="select count(distinct OTF.`Product Department Key`)  as total from  `Product Department Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product Department Key`=P.`Product Department Key`) left join `Store Dimension` S on (OTF.`Store Key`=S.`Store Key`) $where $wheref      ";
-
-
-	//print $sql;
+	
+	
+		$total_records=0;
+	$total=0;
+	$filtered=0;
+	$sql="select count(distinct OTF.`Product Department Key`)  as total  from `Order Transaction Fact` OTF  $where    ";
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		$total=$row['total'];
+		$total_records=$row['total'];
+		$total=$total_records;
 	}
 	if ($wheref!='') {
-		$sql="select count(distinct OTF.`Product Department Key`)  as total_without_filters from  `Product Department Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product Department Key`=P.`Product Department Key`) left join `Store Dimension` S on (OTF.`Store Key`=S.`Store Key`) $where      ";
-
-
+		$sql="select count(distinct OTF.`Product Department Key`) as total from `Order Transaction Fact`  OTF  left join  `Product Department Dimension` P  o (OTF.`Product Department Key`=P.`Product Department Key`)  $where $wheref ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-			$total_records=$row['total_without_filters'];
-			$filtered=$row['total_without_filters']-$total;
+			$total=$total_records-$row['total'];
+			$filtered=$row['total'];
 		}
-
-	} else {
-		$filtered=0;
-		$filter_total=0;
-		$total_records=$total;
 	}
 	mysql_free_result($res);
 
@@ -6254,7 +6186,7 @@ function list_department_sales_report() {
 	$rtext=number($total_records)." ".ngettext('department','departments',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -6305,7 +6237,7 @@ function list_department_sales_report() {
 
 	$sql="select OTF.`Store Key`,`Store Code`,OTF.`Product Department Key`,`Product Department Code`,`Invoice Currency Code`,P.`Product Department Name`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Department Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product Department Key`=P.`Product Department Key`) left join `Store Dimension` S on (OTF.`Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product Department Key` order by $order $order_direction limit $start_from,$number_results    ";
 
-	//print $sql;
+	
 	$adata=array();
 
 	$res = mysql_query($sql);
@@ -6313,25 +6245,13 @@ function list_department_sales_report() {
 
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-
-
-
 		$code=sprintf('<a href="department.php?id=%s">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
 		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-
-
 		$currency=$row['Invoice Currency Code'];
-
 		$sold=$row['qty_delivered'];
 		$tsall=$row['net'];
 		$tprofit=$row['profit'];
-
-
-
-
-		include_once 'locale.php';
-
 
 
 		$adata[]=array(
@@ -6339,9 +6259,7 @@ function list_department_sales_report() {
 			'code'=>$code,
 			'name'=>$row['Product Department Name'],
 			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
-			//'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
 			'sold'=>(is_numeric($sold)?number($sold):$sold),
-			//'state'=>$main_type
 		);
 
 
@@ -6378,14 +6296,8 @@ function list_department_sales_report() {
 }
 function list_family_sales_report() {
 
-
-
-
-
 	global $user;
 	$display_total=false;
-
-
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -6498,39 +6410,7 @@ function list_family_sales_report() {
 	else {
 		$parent='store';//$conf['parent'];
 	}
-	/*
-	if (isset( $_REQUEST['mode']))
-		$mode=$_REQUEST['mode'];
-	else
-		$mode=$conf['mode'];
 
-
-	if (isset( $_REQUEST['elements']))
-		$elements=$_REQUEST['elements'];
-	else
-		$elements=$conf['elements'];
-
-
-
-	if (isset( $_REQUEST['elements_family_discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_family_discontinued'];
-	}
-	if (isset( $_REQUEST['elements_family_discontinuing'])) {
-		$elements['Discontinuing']=$_REQUEST['elements_family_discontinuing'];
-	}
-	if (isset( $_REQUEST['elements_family_normal'])) {
-		$elements['Normal']=$_REQUEST['elements_family_normal'];
-	}
-	if (isset( $_REQUEST['elements_family_inprocess'])) {
-		$elements['InProcess']=$_REQUEST['elements_family_inprocess'];
-	}
-
-	if (isset( $_REQUEST['elements_family_nosale'])) {
-		$elements['NoSale']=$_REQUEST['elements_family_nosale'];
-	}
-
-
-*/
 
 
 
@@ -6541,19 +6421,6 @@ function list_family_sales_report() {
 	$_SESSION['state'][$conf_table]['family_sales']['sf']=$start_from;
 	$_SESSION['state'][$conf_table]['family_sales']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['family_sales']['f_value']=$f_value;
-	//$_SESSION['state'][$conf_table]['family_sales']['percentages']=$percentages;
-	//$_SESSION['state'][$conf_table]['family_sales']['avg']=$avg;
-	//$_SESSION['state'][$conf_table]['family_sales']['elements']=$elements;
-	//$_SESSION['state'][$conf_table]['family_sales']['mode']=$mode;
-	//$_SESSION['state'][$conf_table]['family_sales']['to']=$to;
-	//$_SESSION['state'][$conf_table]['family_sales']['from']=$from;
-
-
-
-	//$_SESSION['state'][$conf_table]['period']=$period;
-
-	//$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
-	// $_SESSION['state'][$conf_table]['parent']=$parent;
 
 	$table='`Product Family Dimension`';
 	$where_type='';
@@ -6581,20 +6448,7 @@ function list_family_sales_report() {
 
 	}
 
-	/*
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Product Family Record Type` in ('.$_elements.')' ;
-	}
 
-*/
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
 
@@ -6615,42 +6469,35 @@ function list_family_sales_report() {
 	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Product Family Code` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Product Family Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Product Family Name` like '".addslashes($f_value)."%'";
 
 
 
-	$sql="select count(distinct OTF.`Product Family Key`)  as total from  `Product Family Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product Family Key`=P.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) $where $wheref      ";
-
-
-	
+	$total_records=0;
+	$total=0;
+	$filtered=0;
+	$sql="select count(distinct OTF.`Product Family Key`)  as total  from `Order Transaction Fact` OTF  $where    ";
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		$total=$row['total'];
+		$total_records=$row['total'];
+		$total=$total_records;
 	}
 	if ($wheref!='') {
-		$sql="select count(distinct OTF.`Product Family Key`)  as total_without_filters from  `Product Family Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product Family Key`=P.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) $where      ";
-
-
+		$sql="select count(distinct OTF.`Product Family Key`)  as total from `Order Transaction Fact`  OTF  left join  `Product Family Dimension` P on (OTF.`Product Family Key`=P.`Product Family Key`)  $where $wheref       ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-			$total_records=$row['total_without_filters'];
-			$filtered=$row['total_without_filters']-$total;
+			$total=$total_records-$row['total'];
+			$filtered=$row['total'];
 		}
-
-	} else {
-		$filtered=0;
-		$filter_total=0;
-		$total_records=$total;
 	}
 	mysql_free_result($res);
+
 
 
 	$rtext=number($total_records)." ".ngettext('family','families',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -6704,21 +6551,13 @@ function list_family_sales_report() {
 
 	$sql="select `Product Family Store Key`,`Store Code`,OTF.`Product Family Key`,`Product Family Code`,`Product Family Record Type`,`Invoice Currency Code`,P.`Product Family Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from     `Order Transaction Fact`  OTF    left join `Product Family Dimension` P on (OTF.`Product Family Key`=P.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product Family Key` order by $order $order_direction limit $start_from,$number_results    ";
 
-	//print $sql;
 	$adata=array();
-
 	$res = mysql_query($sql);
-
-
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-
 
 		$code=sprintf('<a href="family.php?id=%s">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
 		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Family Store Key'],$row['Store Code']);
 
-		//'Historic','Discontinued','Private','NoSale','Sale'
 		switch ($row['Product Family Record Type']) {
 		case('Historic'):
 			$main_type=_('Historic');
@@ -6745,12 +6584,7 @@ function list_family_sales_report() {
 		$tsall=$row['net'];
 		$tprofit=$row['profit'];
 
-
-
-
 		include_once 'locale.php';
-
-
 
 		$adata[]=array(
 			'store'=>$store,
@@ -6895,64 +6729,14 @@ function list_product_sales_report() {
 	else
 		$tableid=0;
 
-	/*
 
-	if (isset( $_REQUEST['percentages'])) {
-		$percentages=$_REQUEST['percentages'];
-	} else
-		$percentages=$conf['percentages'];
-
-
-
-
-	if (isset( $_REQUEST['avg'])) {
-		$avg=$_REQUEST['avg'];
-	} else
-		$avg=$conf['avg'];
-
-*/
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
 	else {
 		$parent='store';//$conf['parent'];
 	}
 
-	/*
 
-	if (isset( $_REQUEST['mode']))
-		$mode=$_REQUEST['mode'];
-	else
-		$mode=$conf['mode'];
-
-	if (isset( $_REQUEST['elements']))
-		$elements=$_REQUEST['elements'];
-	else
-		$elements=$conf['elements'];
-
-
-
-	if (isset( $_REQUEST['elements_product_sales_discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_product_sales_discontinued'];
-
-	}
-	if (isset( $_REQUEST['elements_product_sales_nosale'])) {
-		$elements['NoSale']=$_REQUEST['elements_product_sales_nosale'];
-	}
-	if (isset( $_REQUEST['elements_product_sales_sale'])) {
-		$elements['Sale']=$_REQUEST['elements_product_sales_sale'];
-	}
-
-
-	if (isset( $_REQUEST['elements_product_sales_private'])) {
-		$elements['Private']=$_REQUEST['elements_product_sales_private'];
-	}
-	if (isset( $_REQUEST['elements_product_sales_historic'])) {
-		$elements['Historic']=$_REQUEST['elements_product_sales_historic'];
-	}
-
-
-
-*/
 
 
 
@@ -6962,20 +6746,6 @@ function list_product_sales_report() {
 	$_SESSION['state'][$conf_table]['product_sales']['sf']=$start_from;
 	$_SESSION['state'][$conf_table]['product_sales']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['product_sales']['f_value']=$f_value;
-	//$_SESSION['state'][$conf_table]['product_sales']['percentages']=$percentages;
-
-	//$_SESSION['state'][$conf_table]['product_sales']['avg']=$avg;
-	//$_SESSION['state'][$conf_table]['product_sales']['elements']=$elements;
-	//$_SESSION['state'][$conf_table]['product_sales']['mode']=$mode;
-	//$_SESSION['state'][$conf_table]['product_sales']['to']=$to;
-	//$_SESSION['state'][$conf_table]['product_sales']['from']=$from;
-
-
-
-	//$_SESSION['state'][$conf_table]['period']=$period;
-
-	//$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
-	// $_SESSION['state'][$conf_table]['parent']=$parent;
 
 	$table='`Product Dimension`';
 	$where_type='';
@@ -6992,32 +6762,13 @@ function list_product_sales_report() {
 		$where.=sprintf('  and OTF.`Product Department Key`=%d',$parent_key);
 		break;
 	case('family'):
-
 		$where.=sprintf(' and OTF.`Product Family Key`=%d',$parent_key);
-
 		break;
 	default:
-
-
 	}
 
 
 	$group='';
-
-	/*
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where_type.=' and false' ;
-	} else {
-		$where_type.=' and `Product Main Type` in ('.$_elements.')' ;
-	}
-	*/
-
 	$where_type='';
 	if ($from)$from=$from.' 00:00:00';
 	if ($to)$to=$to.' 23:59:59';
@@ -7037,37 +6788,27 @@ function list_product_sales_report() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+		$wheref.=" and  OTF.`Product Code` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  P.`Product Name` like '".addslashes($f_value)."%'";
 
 
-
-	$sql="select count(*) as total from `Product Dimension` P   $where $wheref";
-	$sql="select count(distinct OTF.`Product ID`)  as total from  `Product Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where $wheref      ";
-
-
-	//print $sql;
+	$total_records=0;
+	$total=0;
+	$filtered=0;
+	$sql="select count(distinct OTF.`Product ID`)  as total  from `Order Transaction Fact` OTF  $where    ";
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		$total=$row['total'];
+		$total_records=$row['total'];
+		$total=$total_records;
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total_without_filters from `Product Dimension` P  $where ";
-		$sql="select OTF.`Product ID`  as total_without_filters from  `Product Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where       ";
-
+		$sql="select count(distinct OTF.`Product ID`) as total from `Order Transaction Fact`  OTF  left join  `Product Dimension` P   on (OTF.`Product ID`=P.`Product ID`)  $where $wheref       ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-			$total_records=$row['total_without_filters'];
-			$filtered=$row['total_without_filters']-$total;
+			$total=$total_records-$row['total'];
+			$filtered=$row['total'];
 		}
-
-	} else {
-		$filtered=0;
-		$filter_total=0;
-		$total_records=$total;
 	}
 	mysql_free_result($res);
 
@@ -7075,7 +6816,7 @@ function list_product_sales_report() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -7152,12 +6893,9 @@ function list_product_sales_report() {
 
 
 
-	$sql="select `Product Store Key`,`Store Code`,`Product XHTML Short Description`,`Product Record Type`,`Product Main Type`,`Invoice Currency Code`,P.`Product Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product ID` $order limit $start_from,$number_results    ";
-	$sql="select `Product Store Key`,`Store Code`,`Product XHTML Short Description`,`Product Record Type`,`Product Main Type`,`Invoice Currency Code`,P.`Product Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit
+	$sql="select `Product Store Key`,`Store Code`,`Product XHTML Short Description`,`Product Record Type`,`Product Main Type`,`Invoice Currency Code`,P.`Product Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Order Transaction Fact` OTF left join     `Product Dimension` P    on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (OTF.`Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product ID` $order limit $start_from,$number_results    ";
 
-	from  `Order Transaction Fact` OTF left join     `Product Dimension` P    on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (OTF.`Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product ID` $order limit $start_from,$number_results    ";
 
-	//print $sql;
 	$adata=array();
 
 	$res = mysql_query($sql);
@@ -7401,12 +7139,12 @@ function get_asset_sales_data($data) {
 		}
 
 		$sql=sprintf("select 0 as outers, count(Distinct `Invoice Customer Key`) as customers,count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension`  where `Invoice Store Key`=%d  $where_interval   ",
-		$parent_key);
+			$parent_key);
 		break;
 	case('department'):
 
 		$sql=sprintf("select `Product Department Currency Code` from `Product Department Dimension`where  `Product Department Key`=%d  ",
-		$parent_key);
+			$parent_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
@@ -7515,11 +7253,11 @@ function get_families_elements_numbers($data) {
 	default:
 		return;
 	}
-	
+
 
 	$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  $table %s group by  `Product Family Record Type`   ",
 		$where);
-		//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Product Family Record Type']]=$row['num'];
@@ -7621,7 +7359,7 @@ function get_products_elements_numbers($data) {
 
 function list_products_availability_timeline() {
 
-	include_once('common_date_functions.php');
+	include_once 'common_date_functions.php';
 
 	global $user;
 	if (isset( $_REQUEST['parent']))
@@ -7647,16 +7385,16 @@ function list_products_availability_timeline() {
 	elseif ($parent=='page') {
 		$conf=$_SESSION['state']['page']['product_changelog'];
 		$conf_table='page';
-		
+
 	}
 	elseif ($parent=='site') {
 		$conf=$_SESSION['state']['site']['product_changelog'];
 		$conf_table='site';
-	
+
 	}elseif ($parent=='product') {
 		$conf=$_SESSION['state']['product']['availability'];
 		$conf_table='product';
-	
+
 	}
 	else {
 
@@ -7725,13 +7463,13 @@ function list_products_availability_timeline() {
 		break;
 	case('family'):
 		$where.=sprintf(' and PAT.`Family Key`=%d',$parent_key);
-		break;	
+		break;
 	case('site'):
 		$where.=sprintf(' and PAT.`Store Key`=%d',$parent_key);
 		break;
 	case('product'):
 		$where.=sprintf(' and PAT.`Product ID`=%d',$parent_key);
-		break;	
+		break;
 	default:
 		exit();
 		break;
@@ -7812,28 +7550,28 @@ function list_products_availability_timeline() {
 
 	$_order=$order;
 	$_dir=$order_direction;
-	
-	
-	if($order=='code'){
-		$order='`Page Code`';
-	}if($order=='title_label'){
-		$order='`Page Short Title`';
-	}if($order=='operation'){
-		$order='`Operation`';
-	}if($order=='state'){
-		$order='`State`';
-	}if($order=='duration'){
-		$order='`Duration`';
-	}else{
-	
-	
 
-	$order='`Date`';
-}
+
+	if ($order=='code') {
+		$order='`Page Code`';
+	}if ($order=='title_label') {
+		$order='`Page Short Title`';
+	}if ($order=='operation') {
+		$order='`Operation`';
+	}if ($order=='state') {
+		$order='`State`';
+	}if ($order=='duration') {
+		$order='`Duration`';
+	}else {
+
+
+
+		$order='`Date`';
+	}
 
 	$sql=sprintf("select  *  from `Product Availability Timeline` PAT  left join `Product Dimension` PD on (PAT.`Product ID` = PD.`Product ID`) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
-	
+
 
 	$result=mysql_query($sql);
 
@@ -7867,10 +7605,10 @@ function list_products_availability_timeline() {
 		case('No'):
 			$availability=_('No');
 			break;
-			}
-			
-			$duration=gettext_relative_time($row['Duration']);
-			
+		}
+
+		$duration=gettext_relative_time($row['Duration']);
+
 		$data[]=array(
 			'code'=>sprintf("<a href='product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']),
 			'description'=>$row['Product Name'],
