@@ -1869,13 +1869,42 @@ class Order extends DB_Table {
 
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order '.$key].' +0:00'));
 			break;
-
-		case('Interval Last Updated Date'):
+		case('Submitted by Customer Interval'):
+			if($this->data['Order Submitted by Customer Date']==''){
+				return '';
+			}
 			include_once 'common_natural_language.php';
-			return seconds_to_string(gmdate('U')-gmdate('U',strtotime($this->data['Order Last Updated Date'].' +0:00')),true);
+			return seconds_to_string(
+			gmdate('U',strtotime($this->data['Order Submitted by Customer Date']))-gmdate('U',strtotime($this->data['Order Created Date']))
+			);
 			break;
-
-
+        case('Send to Warehouse Interval'):
+        	if($this->data['Order Submitted by Customer Date']=='' or $this->data['Order Send to Warehouse Date']==''){
+				return '';
+			}
+			include_once 'common_natural_language.php';
+			return seconds_to_string(
+			gmdate('U',strtotime($this->data['Order Send to Warehouse Date']))-gmdate('U',strtotime($this->data['Order Submitted by Customer Date']))
+			);
+			break;
+        case('Packed Done Interval'):
+        	if($this->data['Order Send to Warehouse Date']=='' or $this->data['Order Packed Done Date']==''){
+				return '';
+			}
+			include_once 'common_natural_language.php';
+			return seconds_to_string(
+			gmdate('U',strtotime($this->data['Order Packed Done Date']))-gmdate('U',strtotime($this->data['Order Send to Warehouse Date']))
+			);
+			break;		
+       case('Dispatched Interval'):
+        	if($this->data['Order Packed Done Date']=='' or $this->data['Order Dispatched Date']==''){
+				return '';
+			}
+			include_once 'common_natural_language.php';
+			return seconds_to_string(
+			gmdate('U',strtotime($this->data['Order Dispatched Date']))-gmdate('U',strtotime($this->data['Order Packed Done Date']))
+			);
+			break;		
 
 		case ('Order Main Ship To Key') :
 			$sql = sprintf( "select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1", $this->id );
