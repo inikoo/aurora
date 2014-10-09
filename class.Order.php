@@ -155,12 +155,7 @@ class Order extends DB_Table {
 	}
 
 	function create_order($data) {
-
-
-
 		global $myconf;
-
-
 		if (isset($data['editor'])) {
 			foreach ($data['editor'] as $key=>$value) {
 				if (array_key_exists($key,$this->editor))
@@ -570,9 +565,9 @@ class Order extends DB_Table {
 
 		}
 
-		if ($this->data['Order Current Dispatch State']=='Submitted by Customer'    or $this->data['Order Current Dispatch State']=='In Process by Customer') {
+		if ($this->data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->update_field_switcher('Order Date',$date,'no_history');
-
+			$this->data['Order Date']=$date;
 		}
 
 
