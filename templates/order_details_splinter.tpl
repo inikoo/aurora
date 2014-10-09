@@ -3,28 +3,43 @@
 		<tr>
 			<td>{t}Created{/t}:</td>
 			<td class="aright">{$order->get('Created Date')}</td>
+			<td></td>
 		</tr>
-		{if $order->get('Order Current Dispatch State')=='In Process by Customer' } 
-		<tr>
-			<td>{t}Last updated{/t}:</td>
-			<td class="aright">{$order->get('Last Updated Date')}</td>
+		<tr style="{if $order->get('Order Submitted by Customer Date')==''}display:none{/if}">
+			<td>{t}Submitted{/t}:</td>
+			<td class="aright">{$order->get('Submitted by Customer Date')}</td>
+			<td class="aright">{$order->get('Submitted by Customer Interval')}</td>
+		</tr>		
+        <tr style="{if $order->get('Order Send to Warehouse Date')==''}display:none{/if}">
+			<td>{t}Send to Warehouse{/t}:</td>
+			<td class="aright">{$order->get('Send to Warehouse Date')}</td>
+			<td class="aright">{$order->get('Send to Warehouse Interval')}</td>
+
+		</tr>		
+		<tr style="{if $order->get('Order Packed Done Date')==''}display:none{/if}">
+			<td>{t}Packed{/t}:</td>
+			<td class="aright">{$order->get('Packed Done Date')}</td>
+			<td class="aright">{$order->get('Packed Done Interval')}</td>
+		</tr>		
+		<tr style="{if $order->get('Order Dispatched Date')==''}display:none{/if}">
+			<td>{t}Dispatched{/t}:</td>
+			<td class="aright">{$order->get('Dispatched Date')}</td>
+			<td class="aright">{$order->get('Dispatched Interval')}</td>
 		</tr>
-		<tr style="border-top:1px solid #ccc">
-			<td>{t}On website{/t}:</td>
-			<td class="aright">{$order->get('Interval Last Updated Date')}</td>
+		<tr style="{if $order->get('Order Suspended Date')==''}display:none{/if}">
+			<td>{t}Suspended{/t}:</td>
+			<td colspan=2 class="aright">{$order->get('Order Suspended Date')}</td>
+		</tr>		
+		<tr style="{if $order->get('Order Cancelled Date')==''}display:none{/if}">
+			<td>{t}Cancelled{/t}:</td>
+			<td colspan=2 class="aright">{$order->get('Order Cancelled Date')}</td>
 		</tr>
-		{elseif $order->get('Order Current Dispatch State')=='Waiting for Payment Confirmation'} 
-		<tr>
-			<td>{t}Submit Payment{/t}:</td>
-			<td class="aright">{$order->get('Checkout Submitted Payment Date')}</td>
-		</tr>
-		{else} 
-		<tr>
-			<td>{t}Last updated{/t}:</td>
-			<td class="aright">{$order->get('Last Updated Date')}</td>
-			<td class="aright">{$order->get('Interval Last Updated Date')}</td>
-		</tr>
-		{/if} 
+		<tr style="{if $order->get('Order Post Transactions Dispatched Date')==''}display:none{/if}">
+			<td>{t}Replacements Dispatched{/t}:</td>
+			<td colspan=2 class="aright">{$order->get('Post Transactions Dispatched Date')}</td>
+		</tr>		
+		
+		
 	</table>
 	<table border="0" class="info_block">
 		<tr>
