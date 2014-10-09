@@ -289,8 +289,7 @@ function search(query, subject, search_scope) {
            request = request + '&parent='+Dom.get('search_parent').value+'&parent_key='+Dom.get('search_parent_key').value
 
    }
-   
-    
+       
     Dom.get(subject + '_clean_search').src = 'art/loading.gif'
   //  alert('ar_search.php?'+request);return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {

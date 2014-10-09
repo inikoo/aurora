@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-07 13:02-0000\n"
-"PO-Revision-Date: 2014-10-07 13:08-0000\n"
+"POT-Creation-Date: 2014-10-07 13:09-0000\n"
+"PO-Revision-Date: 2014-10-09 11:05-0000\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -3783,7 +3783,7 @@ msgstr[1] "pie de páginas"
 #: ar_edit_sites.php:2042
 #, fuzzy
 msgid "There isn't any footer with name"
-msgstr "No hay ninguna familia con este nombre"
+msgstr "No hay ninguna oferta con ese nombre"
 
 #: ar_edit_sites.php:2044
 #, fuzzy
@@ -4672,7 +4672,7 @@ msgstr "Mapa guardado"
 #: ar_import.php:1773
 #, fuzzy
 msgid "There isn't any map with name"
-msgstr "No hay ninguna familia con este nombre"
+msgstr "No hay ningún acuerdo con ese nombre"
 
 #: ar_import.php:1775
 #, fuzzy
@@ -5678,7 +5678,7 @@ msgstr[1] "Espacio"
 #: ar_quick_tables.php:312
 #, fuzzy
 msgid "There isn't any area with code"
-msgstr "No hay ninguna página con el código"
+msgstr "No hay ningún proveedor con código"
 
 #: ar_quick_tables.php:314
 #, fuzzy
@@ -5952,7 +5952,7 @@ msgstr "categorías"
 #: ar_reports.php:4796
 #, fuzzy
 msgid "There isn't any record with comodity code"
-msgstr "No hay ningún registro coincidente"
+msgstr "No hay ningún registro en los últimos"
 
 #: ar_reports.php:4798
 #, fuzzy
@@ -5973,7 +5973,7 @@ msgstr "Debe especificar un resumen de la cuestión."
 #: ar_sites.php:545 ar_sites.php:941
 #, fuzzy
 msgid "There isn't any page with title"
-msgstr "No hay ninguna página con el código"
+msgstr "No hay ninguna página con nombre de"
 
 #: ar_sites.php:547 ar_sites.php:943
 #, fuzzy
@@ -6024,8 +6024,8 @@ msgstr "Canasta"
 #: ar_sites.php:1536
 msgid "hit"
 msgid_plural "hits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "hit"
+msgstr[1] "hits"
 
 #: ar_sites.php:1842 ar_sites.php:2886
 #, fuzzy
@@ -14105,7 +14105,7 @@ msgstr "Valor máx."
 #: orders.php:136 part.php:249
 #, fuzzy
 msgid "Orders from country code <i>xxx</i>"
-msgstr "Nota de envío con Código de país (XXX)"
+msgstr "Factura con Código de país (XXX)"
 
 #: orders.php:147
 #, fuzzy
@@ -19394,7 +19394,7 @@ msgstr "Etiqueta"
 #: smarty.php:7190
 #, fuzzy
 msgid "With seleced families"
-msgstr "Con clientes marcadas"
+msgstr "Familias"
 
 #: smarty.php:7199
 #, fuzzy
@@ -20079,7 +20079,7 @@ msgstr "Eliminar archivo"
 #: smarty.php:8462 smarty.php:11321
 #, fuzzy
 msgid "Deleting file, wait please"
-msgstr "Eliminando familia, por favor espere on momento"
+msgstr "Eliminando familia, por favor espere un momento"
 
 #: smarty.php:8495 smarty.php:8582 smarty.php:19928 smarty.php:19973
 #: smarty.php:20282 smarty.php:26288
@@ -20730,7 +20730,7 @@ msgstr "No en sitio web"
 #: smarty.php:10232
 #, fuzzy
 msgid "Deleting website, wait please"
-msgstr "Eliminando familia, por favor espere un momento"
+msgstr "Eliminando familia, por favor espere on momento"
 
 #: smarty.php:10244
 msgid "Editing Store"
@@ -20853,7 +20853,7 @@ msgstr "Editando Tiendas"
 #: smarty.php:10475
 #, fuzzy
 msgid "Deleting store, wait please"
-msgstr "Eliminando familia, por favor espere on momento"
+msgstr "Eliminando familia, por favor espere un momento"
 
 #: smarty.php:10493
 msgid "Supplier Details"
@@ -20935,7 +20935,7 @@ msgstr "Histórico"
 #: smarty.php:10961
 #, fuzzy
 msgid "Units, Cost"
-msgstr "Unidades"
+msgstr "Costo"
 
 #: smarty.php:10991
 #, fuzzy
@@ -23224,7 +23224,7 @@ msgstr "Ayuda recolección"
 #: smarty.php:18530 smarty.php:18623
 #, fuzzy
 msgid "Update Locations"
-msgstr "Ubicaciones"
+msgstr "Actualizar"
 
 #: smarty.php:18533 smarty.php:18626
 #, fuzzy
@@ -23974,7 +23974,7 @@ msgstr "Pedidos afectados"
 #: smarty.php:22304 smarty.php:23810
 #, fuzzy
 msgid "Customers Affected"
-msgstr "Clientes"
+msgstr "Clientes afectados"
 
 #: smarty.php:22307
 #, fuzzy

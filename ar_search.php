@@ -695,12 +695,11 @@ function search_orders($data) {
 
 function search_customer($data) {
 
+	global $inikoo_account;
 
 	$max_results=10;
-
 	$user=$data['user'];
 	$q=$data['q'];
-	// $q=_trim($_REQUEST['q']);
 
 	if ($q=='') {
 		$response=array('state'=>200,'results'=>0,'data'=>'');
@@ -708,45 +707,44 @@ function search_customer($data) {
 		return;
 	}
 
-
-
 	if ($data['scope']=='store') {
-		if (in_array($data['store_id'],$user->stores))
+		if (in_array($data['store_id'],$user->stores)) {
 			$stores=$data['store_id'];
-		else
-			$stores=0;
+			$where_store=sprintf(' and `Customer Store Key`=%d',$data['store_id']);
+		}else {
+			$where_store=' and false';
+		}
+	} else {
+		if (count($user->stores)==$inikoo_account->data['Stores']) {
+			$where_store='';
+		}else {
+			$where_store=sprintf(' and `Customer Store Key` in (%s)',join(',',$user->stores));
+		}
 
-	} else
 		$stores=join(',',$user->stores);
+	}
 
 	$candidates=array();
 
 	if (is_numeric($q)) {
-		$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Key`=%d',
-			$stores,$q);
-		//print $sql;
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Key`=%d",
+			$q);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-
 			$candidates[$row['Customer Key']]=2000;
-
-
 		}
 	}
-	//  print "->$q <-";
 	$q_just_numbers=preg_replace('/[^\d]/','',$q);
 	if (strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6) {
 
-		$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%s%%"  ',
-			$stores,
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%s%%'",
 			$q_just_numbers
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$candidates[$row['Customer Key']]=100;
 		}
-		$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%s%%"  ',
-			$stores,
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%s%%'",
 			$q_just_numbers
 		);
 		$res=mysql_query($sql);
@@ -756,16 +754,14 @@ function search_customer($data) {
 	}
 	if (strlen($q_just_numbers)>6) {
 
-		$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Telephone` like "%%%s%%"  ',
-			$stores,
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%%%s%%'",
 			$q_just_numbers
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$candidates[$row['Customer Key']]=100;
 		}
-		$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Plain Mobile` like "%%%s%%"  ',
-			$stores,
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%%%s%%'",
 			$q_just_numbers
 		);
 		$res=mysql_query($sql);
@@ -774,11 +770,8 @@ function search_customer($data) {
 		}
 	}
 
-
-
-
-	$sql=sprintf('select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Tax Number` like  "%s%%" limit 10 ',$stores,$q);
-	//print $sql;
+	$sql=sprintf("select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where true $where_store and `Customer Tax Number` like '%s%%' limit 10 ",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Customer Tax Number']==$q)
@@ -792,15 +785,13 @@ function search_customer($data) {
 		}
 	}
 
-
-	$sql=sprintf('select `Customer Key`,`Customer Main Town` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Main Town` like  "%s%%" limit 10 ',$stores,$q);
-	//print $sql;
+	$sql=sprintf("select `Customer Key`,`Customer Main Town` from `Customer Dimension` where true $where_store and `Customer Main Town` like '%s%%' limit 10 ",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Customer Main Town']==$q)
 			$candidates[$row['Customer Key']]=30;
 		else {
-
 			$len_name=strlen($row['Customer Main Town']);
 			$len_q=strlen($q);
 			$factor=$len_q/$len_name;
@@ -808,15 +799,11 @@ function search_customer($data) {
 		}
 	}
 
-
-
-
-
-	$sql=sprintf('select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Email`  like "%s%%" limit 100 ',$stores,$q);
+	$sql=sprintf("select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Email`  like '%s%%' limit 100 ",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Email']==$q) {
-
 			$candidates[$row['Subject Key']]=120;
 		} else {
 
@@ -826,46 +813,32 @@ function search_customer($data) {
 			$candidates[$row['Subject Key']]=100*$factor;
 		}
 	}
-	//print_r($candidates);
 
-
-	//print "->$q <-";
 	$q_postal_code=preg_replace('/[^a-z^A-Z^\d]/','',$q);
 	if ($q_postal_code!='') {
-		$sql=sprintf('select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and   `Customer Main Plain Postal Code`!="" and   `Customer Main Plain Postal Code` like "%s%%"  limit 150'
-			,$stores
-			,addslashes($q_postal_code)
+		$sql=sprintf("select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150",
+			addslashes($q_postal_code)
 		);
-		//  print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-
 			if ($row['Customer Main Plain Postal Code']==$q_postal_code) {
-
 				$candidates[$row['Customer Key']]=50;
 			} else {
-
 				$len_name=strlen($row['Customer Main Plain Postal Code']);
-
 				$len_q=strlen($q_postal_code);
 				$factor=$len_q/$len_name;
-
-
 				$candidates[$row['Customer Key']]=20*$factor;
 			}
-
 		}
-
 	}
 
-	$sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  like "%s%%"  limit 20',$stores,$q);
+	$sql=sprintf("select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Contact Name` like '%s%%' limit 20",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Contact Name']==$q) {
-
 			$candidates[$row['Subject Key']]=120;
 		} else {
-
 			$len_name=$row['Contact Name'];
 			$len_q=strlen($q);
 			$factor=$len_name/$len_q;
@@ -873,16 +846,13 @@ function search_customer($data) {
 		}
 	}
 
-
-
-	$sql=sprintf('select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Surname`  like "%s%%"  limit 20 ',$stores,$q);
+	$sql=sprintf("select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and  `Contact Surname`  like '%s%%'  limit 20",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Contact Surname']==$q) {
-
 			$candidates[$row['Subject Key']]=120;
 		} else {
-
 			$len_name=$row['Contact Surname'];
 			$len_q=strlen($q);
 			$factor=$len_name/$len_q;
@@ -890,12 +860,8 @@ function search_customer($data) {
 		}
 	}
 
-
-	//print "->$q <-";
-	//  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
-	$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
-
-	//print $sql;
+	$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name` like '%s%%' limit 50",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Customer Name']==$q)
@@ -909,11 +875,8 @@ function search_customer($data) {
 		}
 	}
 
-
-	$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
-	// $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
-
-	//print $sql;
+	$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name`  REGEXP '[[:<:]]%s' limit 100 ",
+		$q);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Customer Name']==$q)
@@ -926,17 +889,8 @@ function search_customer($data) {
 			$candidates[$row['Customer Key']]=50*$factor;
 		}
 	}
-
-
-
-
-
-	//print_r($candidates);
 
 	arsort($candidates);
-
-	//print_r($candidates);
-
 	$total_candidates=count($candidates);
 
 	if ($total_candidates==0) {
@@ -945,49 +899,40 @@ function search_customer($data) {
 		return;
 	}
 
-
 	$counter=0;
 	$customer_keys='';
-
 	$results=array();
-
 
 	foreach ($candidates as $key=>$val) {
 		$counter++;
 		$customer_keys.=','.$key;
 		$results[$key]='';
-		if ($counter>$max_results)
+		if ($counter>$max_results) {
 			break;
+		}
 	}
 	$customer_keys=preg_replace('/^,/','',$customer_keys);
 
 	$sql=sprintf("select `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` left join `Store Dimension` on (`Customer Store Key`=`Store Key`) where `Customer Key` in (%s)",
 		$customer_keys);
 	$res=mysql_query($sql);
-
-
-	//   $customer_card='<table>';
 	while ($row=mysql_fetch_array($res)) {
 
-
 		$name=$row['Customer Name'];
-		if ($row['Customer Tax Number'])$name.='<br/>'.$row['Customer Tax Number'];
+		if ($row['Customer Tax Number']!='') {
+			$name.='<br/>'.$row['Customer Tax Number'];
+		}
 		if ($row['Customer Type']=='Company') {
 			$name.= '<br/>'.$row['Customer Main Contact Name'];
 		}
 
 		$address=$row['Customer Main Plain Email'];
-
 		if ($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
 		$address.='<br/>'.$row['Customer Main Location'];
 		if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
 		$address=preg_replace('/^\<br\/\>/','',$address);
-
-
 		$results[$row['Customer Key']]=array('store'=>$row['Store Code'],'key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
 	}
-	//$customer_card.='</table>';
-
 
 	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'customer.php?id=','q'=>$q);
 	echo json_encode($response);
@@ -1739,11 +1684,10 @@ function search_full_text($data) {
 }
 
 function search_field($data) {
-	//print 'here';
 	global $user;
-	//print_r($data);
+
 	$values=$data['values'];
-	//print_r($values);
+
 
 
 	$max_results=10;
@@ -1966,11 +1910,7 @@ function search_field($data) {
 	}
 
 
-	//print "->$q <-";
-	//  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
 	$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
-
-	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Customer Name']==$q)
@@ -1986,9 +1926,7 @@ function search_field($data) {
 
 
 	$sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
-	// $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 50 ',$stores,$q);
 
-	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if ($row['Customer Name']==$q)
@@ -2489,7 +2427,7 @@ function search_orders_warehouse($data) {
 
 	$the_results=array();
 
-$candidates=array();
+	$candidates=array();
 
 	$max_results=20;
 	$user=$data['user'];

@@ -51,12 +51,6 @@ $inikoo_account=new Account();
 date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
 define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 
-
-
-
-
-
-
 $max_session_time=$myconf['max_session_time'];
 $max_session_time_in_milliseconds=1000*$max_session_time;
 $session = new Session($max_session_time);
