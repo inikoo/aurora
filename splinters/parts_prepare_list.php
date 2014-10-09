@@ -214,12 +214,7 @@ if (!$awhere ) {
 		$where.=' and false' ;
 
 	}
-
-
 }
-
-
-
 
 
 if ($f_field=='used_in' and $f_value!='')
@@ -231,7 +226,7 @@ elseif ($f_field=='supplied_by' and $f_value!='')
 elseif ($f_field=='sku' and $f_value!='')
 	$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 elseif ($f_field=='description' and $f_value!='')
-	$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+	$wheref.=" and  `Part Unit Description` like '".addslashes($f_value)."%'";
 
 
 
