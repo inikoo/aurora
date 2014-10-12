@@ -555,7 +555,7 @@ class Customer extends DB_Table {
 		if ($tag=='id')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
 		elseif ($tag=='email')
-			$sql=sprintf("select * from `Customer Dimension` where `Customer Email`=%s",prepare_mysql($id));
+			$sql=sprintf("select * from `Customer Dimension` where `Customer Main Plain Email`=%s",prepare_mysql($id));
 		elseif ($tag=='old_id')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Old ID`=%s and `Customer Store Key`=%d",
 				prepare_mysql($id),

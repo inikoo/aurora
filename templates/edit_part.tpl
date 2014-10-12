@@ -509,7 +509,10 @@
 						<td style="text-align:left"> 
 						<input type="hidden" id="Part_Packing_Group" value="{$part->get('Part Packing Group')}" ovalue="{$part->get('Part Packing Group')}" />
 						<div class="buttons left small" id="Part_Packing_Group_options">
-							<button id="Part_Packing_Group_option_None" class="option {if $part->get('Part Packing Group')=='None'}selected{/if}" onclick="change_packing_group(this,'None')">{t}None{/t}</button> <button id="Part_Packing_Group_option_I" class="option {if $part->get('Part Packing Group')=='I'}selected{/if}" onclick="change_packing_group(this,'I')">I</button> <button id="Part_Packing_Group_option_II" class="option {if $part->get('Part Packing Group')=='II'}selected{/if}" onclick="change_packing_group(this,'II')">II</button> <button id="Part_Packing_Group_option_III" class="option {if $part->get('Part Packing Group')=='III'}selected{/if}" onclick="change_packing_group(this,'III')">III</button> 
+							<button id="Part_Packing_Group_option_None" class="option {if $part->get('Part Packing Group')=='None'}selected{/if}" onclick="change_packing_group(this,'None')">{t}None{/t}</button> 
+							<button id="Part_Packing_Group_option_I" title="{t}Group I: great danger, and most protective packaging required. Some combinations of different classes of dangerous goods on the same vehicle or in the same container are forbidden if one of the goods is Group I{/t}" class="option {if $part->get('Part Packing Group')=='I'}selected{/if}" onclick="change_packing_group(this,'I')">I</button> 
+							<button id="Part_Packing_Group_option_II" title="{t}Group II: medium danger{/t}" class="option {if $part->get('Part Packing Group')=='II'}selected{/if}" onclick="change_packing_group(this,'II')">II</button> 
+							<button id="Part_Packing_Group_option_III" title="{t}Group III: least danger among regulated goods, and least protective packaging within the transportation requirement{/t}"class="option {if $part->get('Part Packing Group')=='III'}selected{/if}" onclick="change_packing_group(this,'III')">III</button> 
 						</div>
 						<span id="Part_Packing_Group_msg" class="edit_td_alert"></span> </td>
 						<td></td>

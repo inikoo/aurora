@@ -44,28 +44,43 @@ function send_confirmation_email($order) {
 
 
 
-	$payment_account=new Payment_Account($order->data['Order Payment Account Key']);
-	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
-	//print_r($payment_account->data);
-	//print_r($payment_service_provider->data);
+$payment_info_for_customer='<p></p>';
+	$payment_info_for_customer_for_internal_notification='<p></p>';
 
-	$payment_info='<p></p>';
-	$payment_paid_info='<p></p>';
+	if ($order->get_number_payments()>0) {
 
-	if ($order->data['Order Payment Key']) {
 
-		$payment = new Payment($order->data['Order Payment Key']);
-		$payment_info=$payment->get_formated_info();
-		$payment_paid_info=$payment->get_formated_info();
-	}else {
+		foreach ($order->get_payment_objects('',true,true)  as $payment) {
+
+
+			$payment_info_for_customer=', '.$payment->get_formated_info();
+			$payment_info_for_customer_for_internal_notification=', '.$payment->get_formated_info();
+
+		}
+		$payment_info_for_customer='<p>'.preg_replace('/^\, /','',$payment_info_for_customer).'</p>';
+		$payment_info_for_customer_for_internal_notification='<p>'.preg_replace('/^\, /','',$payment_info_for_customer_for_internal_notification).'</p>';
+
+
+
+	}
+	
+	if(!$order->data['Order Payment Key']) {
 
 		if ($payment_service_provider->data['Payment Service Provider Type']=='Bank') {
 
-			$payment_info='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
-			$payment_paid_info=_('To be paid by bank transfer');
+			$payment_info_for_customer.='<p>'._('Here are our bank details').'</p><div>'.$payment_account->get_formated_bank_data().'</div><p>'._('Please always state the order number in the payment reference').'.</p>';
+			$payment_info_for_customer_for_internal_notification.=_('To be paid by bank transfer');
+
+		}elseif ($payment_service_provider->data['Payment Service Provider Type']=='ConD') {
+
+			$payment_info_for_customer_for_internal_notification.=_('To be paid by cash on delivery');
+		}else {
+
+			$payment_info_for_customer_for_internal_notification.=_('To be paid by').': '.$payment_service_provider->data['Payment Service Provider Type'];
 
 		}
 	}
+
 
 
 
@@ -207,7 +222,7 @@ function send_confirmation_email($order) {
 	$message_data['email_placeholders']=array(
 		'CUSTOMERS_NAME' => $order->get_name_for_grettings(),
 		'ORDER_NUMBER'=>$order->get('Order Public ID'),
-		'PAYMENT_EXTRA_INFO'=>$payment_info,
+		'PAYMENT_EXTRA_INFO'=>$payment_info_for_customer,
 		'ORDER_DATA'=>$order_info,
 		'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
 		'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
@@ -278,7 +293,7 @@ function send_confirmation_email($order) {
 			'Order_Voucher_Code'=>'ND',
 
 
-			'PAYMENT_EXTRA_INFO'=>$payment_paid_info,
+			'PAYMENT_EXTRA_INFO'=>$payment_info_for_customer_for_internal_notification,
 			'ORDER_DATA'=>$order_info
 		);
 

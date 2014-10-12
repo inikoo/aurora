@@ -1136,10 +1136,19 @@ function list_transactions_in_dn() {
 		$notes=preg_replace('/\<br\/\>$/', '', $notes);
 
 
+		$description='<b>'.number($row['Required']).'x</b> '.$row['Part Unit Description'];
+		if ($row['Product Code']!=$row['Part Reference']) {
+			$description.=' (<i>'.$row['Part Reference'].'</i>)';
+		}if ($row['Part UN Number']) {
+			$description.=' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$row['Part UN Number'].'</span>';
+		}
+
+
+
 		$data[]=array(
 
 			'code'=>sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']),
-			'description'=>'<b>'.number($row['Required']).'x</b> '.$row['Part Unit Description'].' (<i>'.$row['Part Reference'].'</i>)',
+			'description'=>$description,
 			'quantity'=>$quantity,
 			'dispatched'=>number(-1*$row['Inventory Transaction Quantity']),
 			'packed'=>number($row['Packed']),
@@ -2309,7 +2318,7 @@ function list_transactions_dispatched() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2351,8 +2360,8 @@ function list_transactions_dispatched() {
 	$order=' order by O.`Product Code`';
 
 
-$sql="select  `Operation`,`Quantity`,`Order Bonus Quantity`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
-   	from $table  
+	$sql="select  `Operation`,`Quantity`,`Order Bonus Quantity`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+   	from $table
    	         left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
          left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
 
@@ -2418,9 +2427,9 @@ $sql="select  `Operation`,`Quantity`,`Order Bonus Quantity`,`No Shipped Due Othe
 
 
 
-	
-	
-	
+
+
+
 	$response=array('resultset'=>
 		array(
 			'state'=>200,
@@ -2437,14 +2446,14 @@ $sql="select  `Operation`,`Quantity`,`Order Bonus Quantity`,`No Shipped Due Othe
 		)
 	);
 
-	
-	
+
+
 	echo json_encode($response);
 }
 
 function list_post_transactions() {
 
-	
+
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -2531,14 +2540,14 @@ function list_post_transactions() {
 
 
 
-	
 
-	
-	
+
+
+
 	$table='`Order Post Transaction Dimension` POT
 	left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`)
     left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)';
-$where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
+	$where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 
 	$sql="select count(*) as total from  `Order Post Transaction Dimension` POT $where ";
 	//print $sql;
@@ -2546,7 +2555,7 @@ $where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total_records=$row['total'];
 		$filtered=0;
-		
+
 	}
 	if ($wheref!='') {
 		$sql="select count(*) as total from $table  $where $wheref";
@@ -2565,7 +2574,7 @@ $where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 	$rtext=number($total_records)." ".ngettext('transaction','transactions',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2596,13 +2605,13 @@ $where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 
 
 
-	
+
 
 	$data=array();
 
 	$order=' order by O.`Product Code`';
 	$order='';
-	
+
 	$sql="select POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,OTF.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
 	from $table
 	$where $order  ";
@@ -2725,8 +2734,8 @@ $where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 
 
 
-	
-	
+
+
 	$response=array('resultset'=>
 		array(
 			'state'=>200,
@@ -2743,7 +2752,7 @@ $where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 		)
 	);
 
-	
+
 	echo json_encode($response);
 }
 function list_transactions_in_order() {
@@ -4192,7 +4201,7 @@ function number_pending_orders_in_interval($data) {
 	}
 
 
-   
+
 
 
 	$elements_numbers=array('InProcessbyCustomer'=>0,'WaitingforPaymentConfirmation'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'PackedDone'=>0,'ReadytoShip'=>0);
@@ -4203,14 +4212,14 @@ function number_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['InProcessbyCustomer']=$row['num'];
 	}
-	
+
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='Waiting for Payment Confirmation' ",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['WaitingforPaymentConfirmation']=$row['num'];
 	}
-	
-	
+
+
 	//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Packed','Packing') ",$where);
 	$res=mysql_query($sql);
@@ -4223,8 +4232,8 @@ function number_pending_orders_in_interval($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['PackedDone']=$row['num'];
 	}
-	
-		$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='Ready to Ship'",$where);
+
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` %s and `Order Current Dispatch State`='Ready to Ship'",$where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers['ReadytoShip']=$row['num'];

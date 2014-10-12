@@ -3199,7 +3199,7 @@ function list_customers() {
 	elseif ($order=='orders')
 		$order='`Customer Orders`';
 	elseif ($order=='email')
-		$order='`Customer Email`';
+		$order='`Customer Main Plain Email`';
 	elseif ($order=='telephone')
 		$order='`Customer Main Telehone`';
 	elseif ($order=='last_order')
