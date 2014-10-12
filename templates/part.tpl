@@ -63,7 +63,12 @@
 				</div>
 			</div>
 			<div style="width:280px;float:left;margin-left:5px">
-				<table class="show_info_product">
+			<div style="{if $part->get('Part UN Number')}margin-bottom:10px;{/if}">
+			{if file_exists("art/dangerous_goods_placards/class_{$part->get('Part UN Class')}.png")}
+			<img src="art/dangerous_goods_placards/class_{$part->get('Part UN Class')}.png" style="vertical-align:-55px">{/if}
+			<span style="{if $part->get('Part UN Number')==''}display:none{/if};background-color:#f6972a;border:4px solid #231e23;color:#231e23;font-size:40px;padding:1px;margin:5px;">{$part->get('Part UN Number')}</span>
+			</div>
+				<table class="show_info_product" style="xmargin-top:10px">
 					{foreach from=$part->get_categories() item=category name=foo } 
 					<tr>
 						<td>{if $smarty.foreach.foo.first}{t}Category{/t}:{/if}</td>

@@ -1492,8 +1492,8 @@ get_part_transaction_numbers('','')
 			'name': 'Part_UN_Number_Class',
 			'ar': false,
 			'validation': [{
-				'regexp': "^[\\d\\.]{0,2}$",
-				'invalid_msg': '<?php echo _('Invalid UN Number')?>'
+				'regexp': "^(\\d(\\.|\\.\\d)?|)$",
+				'invalid_msg': '<?php echo _('Invalid UN Number Class')?>'
 				
 			}]
 			

@@ -46,7 +46,10 @@ $transactions=array();
 
 
 $sql=sprintf("select  `Map To Order Transaction Fact Parts Multiplicity` as part_multiplicity,`Map To Order Transaction Fact XHTML Info` as multiple_parts_info,Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Part Current Stock`,`Part Reference` as reference,`Picking Note` as notes,ITF.`Part SKU`,`Part Unit Description` as description,
-(`Required`+`Given`) as qty,`Location Code` as location from 
+(`Required`+`Given`) as qty,`Location Code` as location ,
+`Part UN Number` as un_number,
+`Part Packing Group` as part_packing_group
+from 
 `Inventory Transaction Fact` ITF   left join  
 `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  
 `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  left join 
@@ -60,10 +63,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$total_stock=$row['total_stock'];
 
 	$row['stock']=sprintf("[<b>%d</b>,%d]", $stock_in_picking,$total_stock);
-
-	//$row['location']=$row['Location Code'];
 	$transactions[]=$row;
-
 }
 
 

@@ -153,7 +153,12 @@ mpdf-->
 			<td align="left">{$transaction.stock}</td>
 			<td align="center" class="{if $transaction.part_multiplicity>1}multiple_parts{/if}">{$transaction.qty}</td>
 			<td align="right"></td>
-			<td align="left" style="font-size: 6pt;">{if $transaction.part_multiplicity>1}<b>[{$transaction.multiple_parts_info|strip_tags} *]</b> {/if}{$transaction.notes}</td>
+			<td align="left" style="font-size: 6pt;">
+			{if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
+			{if $transaction.part_packing_group!='None'}PG <b>{$transaction.part_packing_group}</b> {/if}
+			{if $transaction.part_multiplicity>1}<b>[{$transaction.multiple_parts_info|strip_tags} *]</b> {/if}
+			{$transaction.notes}
+			</td>
 		</tr>
 		{/foreach} 
 	</tbody>

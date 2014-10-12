@@ -993,23 +993,7 @@ class User extends DB_Table {
 		else
 			return false;
 	}
-/*
-	function can_do_this_key($right_type,$tag,$tag_key) {
 
-
-
-
-		if (isset($this->rights_allow[$right_type][$tag])) {
-			if (array_key_exists($tag_key, $this->stores))
-				return true;
-			else
-				false;
-		} else
-			return false;
-
-
-	}
-	*/
 
 	function read_groups() {
 		$this->groups=array();

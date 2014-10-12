@@ -262,18 +262,27 @@ class Payment extends DB_Table {
 
 			break;
 		case 'Completed':
-			$info=sprintf("%s %s %s %s %s %s. %s: %s",
-				_('A payment of'),
-				money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
-				_('using'),
-				$this->payment_service_provider->data['Payment Service Provider Name'],
-				_('payment service provider'),
-				_('has been completed sucessfully'),
-				_('Reference'),
-				$this->data['Payment Transaction ID']
+			
+			if ($this->data['Payment Method']=='Account') {
+				$info=sprintf("%s %s",
+					money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
+					_('has been paid from the customer account')
 
-			);
+				);
 
+			}else {
+				$info=sprintf("%s %s %s %s %s %s. %s: %s",
+					_('A payment of'),
+					money($this->data['Payment Amount'],$this->data['Payment Currency Code']),
+					_('using'),
+					$this->payment_service_provider->data['Payment Service Provider Name'],
+					_('payment service provider'),
+					_('has been completed sucessfully'),
+					_('Reference'),
+					$this->data['Payment Transaction ID']
+
+				);
+			}
 			break;
 		case 'Cancelled':
 			$info=sprintf("%s %s %s %s %s %s",
