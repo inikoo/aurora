@@ -14,7 +14,7 @@ $db =& MDB2::factory($dsn);
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
   
-mysql_query("SET time_zone ='+0:00'");
+
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('UTC');
 

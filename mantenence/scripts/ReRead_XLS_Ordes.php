@@ -21,8 +21,8 @@ $db =& MDB2::factory($dsn);
 if (PEAR::isError($db)){echo $db->getMessage() . ' ' . $db->getUserInfo();}
 
   
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+
+mysql_set_charset('utf8');
 $PEAR_Error_skiptrace = &PEAR::getStaticProperty('PEAR_Error','skiptrace');$PEAR_Error_skiptrace = true;// Fix memory leak
 require_once '../../myconf/conf.php';           
 date_default_timezone_set('UTC');

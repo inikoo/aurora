@@ -23,7 +23,7 @@ if (!$db_selected) {
     print "Error can not access the database\n";
     exit;
 }
-mysql_query("SET NAMES 'utf8'");
+mysql_set_charset('utf8');
 require_once 'conf/timezone.php';
 date_default_timezone_set(TIMEZONE) ;
 mysql_query("SET time_zone='+0:00'");

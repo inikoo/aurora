@@ -30,8 +30,8 @@ if (!$db) {print "Error can not access the database\n";exit;}
 
 define("TIMEZONE",'Europe/London');
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+
+mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 //'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'

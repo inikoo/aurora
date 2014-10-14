@@ -31,8 +31,8 @@ if (!$db) {
 
 require 'MadMimi.class.php';
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+
+mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 

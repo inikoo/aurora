@@ -76,7 +76,7 @@ function get_fork_data($job) {
 	define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 
 
-	mysql_query("SET NAMES 'utf8'");
+	mysql_set_charset('utf8');
 	mysql_query("SET time_zone='+0:00'");
 
 

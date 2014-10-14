@@ -26,7 +26,7 @@ if (!$db_selected) {
     readfile('art/inikoo_footer_for_emails.png');
     exit;
 }
-mysql_query("SET NAMES 'utf8'");
+mysql_set_charset('utf8');
 
 
 $inikoo_account=new Account();

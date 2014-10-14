@@ -53,8 +53,8 @@ if (!$db) {
 }
 date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+
+mysql_set_charset('utf8');
 $inikoo_account=new Account();
 date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
 define("TIMEZONE",$inikoo_account->data['Account Timezone']);
