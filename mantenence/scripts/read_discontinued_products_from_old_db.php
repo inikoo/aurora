@@ -23,8 +23,8 @@ if (!$db) {
 	exit;
 }
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+
+mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 
 $sql=sprintf("select id,code,stock,condicion  from aw_old.product  where   condicion=2   ");

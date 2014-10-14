@@ -6,8 +6,8 @@ $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='+0:00'");
-mysql_query("SET NAMES 'utf8'");
+
+mysql_set_charset('utf8');
 require_once 'timezone.php'; 
 date_default_timezone_set(TIMEZONE) ;
 require('../../external_libs/Smarty/Smarty.class.php');
