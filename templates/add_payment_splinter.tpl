@@ -4,7 +4,7 @@
 		{t}Account{/t}: 
 	</div>
 	<div id="add_payment_payment_account_container" style="clear:both" class="buttons left small">
-		{foreach from=$store->get_payment_accounts_data() item=payment_account } <button valid_payment_methods="{$payment_account.valid_payment_methods}" class="item" onclick="add_payment_change_account('{$payment_account.key}')" id="add_payment_payment_account_{$payment_account.key}"><img style="height:14px;width:auto;display:none" src="art/icons/psp_{$payment_account.service_provider_code}.png" /> {$payment_account.service_provider_name}</button> {/foreach} 
+		{foreach from=$store->get_payment_accounts_data() item=payment_account } <button valid_payment_methods="{$payment_account.valid_payment_methods}" class="item" onclick="add_payment_change_account('{$payment_account.key}')" id="add_payment_payment_account_{$payment_account.key}">{if file_exists('art/icons/psp_{$payment_account.service_provider_code}.png')}<img style="height:14px;width:auto;display:none" src="art/icons/psp_{$payment_account.service_provider_code}.png" /> {/if}{$payment_account.service_provider_name}</button> {/foreach} 
 	</div>
 	<div id="payment_methods" style="display:none">
 		<div style="clear:both;margin-top:30px;margin-bottom:5px">
