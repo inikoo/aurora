@@ -78,7 +78,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-print $row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']."\n";
+	print $row['Invoice Currency'].$corporation_currency_code.' '.$row['Invoice Date']."\n";
 
 	$currency_exchange = new CurrencyExchange($row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']);
 	$exchange= $currency_exchange->get_exchange();
@@ -90,7 +90,7 @@ print $row['Invoice Currency'].$corporation_currency_code,$row['Invoice Date']."
 		$row['Invoice Key']
 
 	);
-mysql_query($sql);
+	mysql_query($sql);
 	print "$sql\n";
 
 	$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d ",
@@ -99,17 +99,17 @@ mysql_query($sql);
 
 	);
 	mysql_query($sql);
-	
 
-	
+
+
 	print "$sql\n";
-		$sql=sprintf("update `Order No Product Transaction Fact` set `Currency Exchange`=%f where `Invoice Key`=%d ",
+	$sql=sprintf("update `Order No Product Transaction Fact` set `Currency Exchange`=%f where `Invoice Key`=%d ",
 		$exchange,
 		$row['Invoice Key']
 
 	);
 	print "$sql\n";
-mysql_query($sql);
+	mysql_query($sql);
 }
 
 
@@ -122,15 +122,15 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$currency_exchange = new CurrencyExchange($row['Order Currency'].$corporation_currency_code,$row['Order Date']);
 	$exchange= $currency_exchange->get_exchange();
 
-//	print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
-print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
+	// print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
+	print $row['Order Public ID'].' '.$row['Order Currency']."$corporation_currency_code ".$row['Order Date']."  \n";
 
 	$sql=sprintf("update `Order Dimension` set `Order Currency Exchange`=%f where `Order Key`=%d ",
 		$exchange,
 		$row['Order Key']
 
 	);
-print "$sql\n";
+	print "$sql\n";
 	mysql_query($sql);
 }
 
