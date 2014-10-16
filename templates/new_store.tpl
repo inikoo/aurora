@@ -3,12 +3,8 @@
 	{include file='assets_navigation.tpl'} 
 	<input type="hidden" value="{t}Invalid Code{/t}" id="invalid_store_code"> 
 	<input type="hidden" value="{t}Invalid Name{/t}" id="invalid_store_name"> 
-		<input type="hidden" value="{t}of{/t}" id="label_of"> 
+	<input type="hidden" value="{t}of{/t}" id="label_of"> 
 	<input type="hidden" value="{t}Pages{/t}" id="label_Pages"> 
-
-	
-	
-	
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {t}Stores{/t} ({t}New Store{/t})</span> 
 	</div>
@@ -26,8 +22,8 @@
 	</div>
 	<div id="new_store_messages" style="float:left;padding:5px;border:1px solid #ddd;width:480px;margin-bottom:15px;display:none">
 	</div>
-	<table border=1 class="edit" style="width:900px;margin-top:10px">
-		<tr class="first" >
+	<table border="0" class="edit" style="width:900px;margin-top:10px">
+		<tr class="first">
 			<td class="label" style="width:150px">{t}Code{/t}:</td>
 			<td style="width:340px"> 
 			<input style="text-align:left;width:100px" id="Code" value="" ovalue="" valid="0"> 
@@ -45,52 +41,42 @@
 			</td>
 			<td style="width:300px;font-size:90%" class="error" id="Name_msg"></td>
 		</tr>
-		
 		<tr class="space10">
 			<td class="label">{t}Country{/t}:</td>
-			<td colspan=2 > 
-			<input type="hidden" style="text-align:left;width:50px" id="Country" value="" ovalue="" valid="0"   >
-			<div id="Country_Name" style="float:left">
+			<td colspan="2"> 
+			<input type="hidden" style="text-align:left;width:50px" id="Country" value="{$inikoo_account->get('Account Country 2 Alpha Code')}" ovalue="" valid="0"> 
+			<div class="styled-select">
+				<select id="country_select" onchange="set_country(this.value)">
+					{include file='common_country_select.tpl' country=$inikoo_account->get('Account Country 2 Alpha Code')} {include file='country_select.tpl'} 
+				</select>
 			</div>
-			<div class="buttons small left" style="">
-			<button   id="country_button">{t}Choose country{/t}</button>
-			<button  style="margin-left:10px"   id="country_button_bis" style="display:none">{t}Change country{/t}</button>
-
-			</div>
-			<span style="width:300px;font-size:90%" class="error" id="Country_msg"></span>
-			
-			
+			<span style="width:300px;font-size:90%" class="error" id="Country_msg"></span> 
 		</tr>
-		
-		<tr style="display:none" id="locale_tr">
+		<tr id="locale_tr">
 			<td class="label">{t}Locale{/t}:</td>
 			<td> 
-			<input type="hidden" value="{$default_locale}" ovalue="{$default_locale}" id="locale"> 
-			<div class="buttons small left" style="margin:5px 0" id="locale_container">
-				{foreach from=$locales item=locale key=locale_key} <button onclick="change_locate(this)" style="min-width:200px;margin-bottom:5px;clear:left" class="radio {if $locale_key==$default_locale} selected{/if}" id="radio_shelf_type_{$locale_key}" radio_value="{$locale_key}">{$locale.description}</button> {/foreach} 
+			<input type="hidden" value="{$inikoo_account->get('Account Locale')}" ovalue="{$inikoo_account->get('Account Locale')}" id="locale"> 
+			<div class="styled-select">
+				<select id="locale_select" onchange="set_locate(this.value)">
+					{foreach from=$locales item=locale key=locale_key} 
+					<option style="min-width:200px;margin-bottom:5px;clear:left" class="radio {if $locale_key==$inikoo_account->get('Account Locale')} selected{/if}" id="radio_shelf_type_{$locale_key}" radio_value="{$locale_key}">{$locale.description}</option>
+					{/foreach} 
+				</select>
 			</div>
 			</td>
 		</tr>
 		<tr class="buttons">
-		<td></td>
-			<td> 
+			<td></td>
+			<td colspan=2> 
 			<div class="buttons left">
-							<button id="close_add_store" class="negative">{t}Cancel{/t}</button> 
-
-				<button id="save_new_store" class="positive disabled">{t}Save{/t}</button> 
+				<span id="waiting_add_store" style="display:none"><img src="art/loading.gif"/> {t}Processing request{/t}</span>
+				<button id="close_add_store" class="negative">{t}Cancel{/t}</button> <button id="save_new_store" class="positive disabled">{t}Save{/t}</button> 
+				<span id="error_message" class="error"></span>
 			</div>
 			</td>
-			<td></td>
+			
 		</tr>
 	</table>
 </div>
-<div id="dialog_country_list">
-	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-		<div  class="data_table">
-			<span class="clean_table_title">{t}Country List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-			<div id="table2" class="data_table_container dtable btable">
-			</div>
-		</div>
-	</div>
-</div>
+
 {include file='footer.tpl'} 
