@@ -22,7 +22,6 @@ $css_files=array(
 	'css/table.css',
 	'css/edit.css',
 	'css/order.css',
-
 	'theme.css.php'
 );
 
@@ -189,7 +188,6 @@ $parcels=$dn->get_formated_parcels();
 $weight=$dn->data['Delivery Note Weight'];
 $consignment=$dn->data['Delivery Note Shipper Consignment'];
 
-//print "_>$parcels<_";
 
 $smarty->assign( 'parcels', $parcels);
 $smarty->assign( 'weight', ($weight?$dn->get('Weight'):'') );

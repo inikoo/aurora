@@ -22,6 +22,36 @@ $store=new Store($delivery_note->data['Delivery Note Store Key']);
 $customer=new Customer($delivery_note->data['Delivery Note Customer Key']);
 
 
+
+$parcels=$delivery_note->get_formated_parcels();
+$weight=$delivery_note->data['Delivery Note Weight'];
+$consignment=$delivery_note->data['Delivery Note Shipper Consignment'];
+
+
+$smarty->assign( 'parcels', $parcels);
+$smarty->assign( 'weight', ($weight?$delivery_note->get('Weight'):'') );
+$smarty->assign( 'consignment', ($consignment?$delivery_note->get('Consignment'):'') );
+
+
+$shipper_data=array();
+
+$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
+$result=mysql_query($sql);
+while ($row=mysql_fetch_assoc($result)) {
+	$shipper_data[$row['Shipper Key']]=array(
+	'shipper_key'=>$row['Shipper Key'],
+	'code'=>$row['Shipper Code'],
+	'name'=>$row['Shipper Name'],
+	'selected'=>($delivery_note->data['Delivery Note Shipper Code']==$row['Shipper Code']?1:0)
+	);
+	
+	
+}
+$smarty->assign( 'shipper_data', $shipper_data );
+
+
+
+
 putenv('LC_ALL='.$store->data['Store Locale'].'.UTF-8');
 setlocale(LC_ALL,$store->data['Store Locale'].'.UTF-8');
 bindtextdomain("inikoo", "./locales");
