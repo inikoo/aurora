@@ -157,7 +157,7 @@ $smarty->assign('referral',$referral);
 $customer=new Customer($order->get('order customer key'));
 
 //$order->update_no_normal_totals();
-$order->update_totals_from_order_transactions();
+//$order->update_totals_from_order_transactions();
 
 $store=new Store($order->data['Order Store Key']);
 //print_r($store->get_payment_accounts_data());
