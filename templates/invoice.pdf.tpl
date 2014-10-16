@@ -130,6 +130,11 @@ div.inline { float:left; }
 			<div style="text-align: right">
 				{t}Weight{/t}: <b>{$delivery_note->get('Weight')}</b> 
 			</div>
+			{if $delivery_note->data['Delivery Note Shipper Consignment']!=''}
+			<div style="text-align: right">
+				{t}Courier{/t}: <b> <span id="formated_consignment">{$delivery_note->get('Consignment')|strip_tags}</span></span> </b> 
+			</div>
+			{/if}
 			{/if} </td>
 		</tr>
 	</table>

@@ -60,7 +60,9 @@ div.inline { float:left; }
 <table width="100%" style="font-size: 9pt;" border="0">
 	<tr>
 		<tr>
-			{if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>{/if}
+			{if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
+			<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>
+			{/if} 
 			<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
 			<div style="font-size:7pt">
 				{$store->get('Store Address')|nl2br} 
@@ -90,7 +92,7 @@ div.inline { float:left; }
 		<tr>
 			<td> 
 			<h1>
-				{t}Delivery Note{/t}
+				{t}Delivery Note{/t} 
 			</h1>
 			</td>
 			<td style="text-align: right"> 
@@ -103,9 +105,8 @@ div.inline { float:left; }
 	<table width="100%" style="font-family: sans-serif;" cellpadding="0">
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
-			
 			<div style="text-align: right">
-				{t}Customer{/t}:<b> {$delivery_note->get('Delivery Note Customer Name')}</b> ({$delivery_note->get('Delivery Note Customer Key')})
+				{t}Customer{/t}:<b> {$delivery_note->get('Delivery Note Customer Name')}</b> ({$delivery_note->get('Delivery Note Customer Key')}) 
 			</div>
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
@@ -120,22 +121,23 @@ div.inline { float:left; }
 	</table>
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
 		<tr>
-			
 			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span> 
 			<div>
-				{$delivery_note->get('Delivery Note XHTML Ship To')}
+				{$delivery_note->get('Delivery Note XHTML Ship To')} 
 			</div>
 			</td>
 			<td width="10%">&nbsp;</td>
-			<td width="45%" style="text-align: right" >
-				<div style="text-align: right">
+			<td width="45%" style="text-align: right"> 
+			<div style="text-align: right">
 				{t}Parcels{/t}:<b> {$delivery_note->get_formated_parcels()}</b> 
 			</div>
 			<div style="text-align: right">
 				{t}Weight{/t}: <b>{$delivery_note->get('Weight')}</b> 
 			</div>
+			<div style="text-align: right">
+				{t}Courier{/t}: <b> <span id="formated_consignment">{$consignment|strip_tags}</span></span> </b> 
+			</div>
 			</td>
-			
 		</tr>
 	</table>
 	<br> 
@@ -147,7 +149,6 @@ div.inline { float:left; }
 				<td style="width:8%;text-align:right">{t}RRP{/t}</td>
 				<td style="width:8%;text-align:right">{t}Ordered{/t}</td>
 				<td style="width:8%;text-align:right">{t}Dispatched{/t}</td>
-
 				<td style="text-align:right">{t}Notes{/t}</td>
 			</tr>
 		</thead>
@@ -159,15 +160,11 @@ div.inline { float:left; }
 				<td style="width:8%;text-align:right">{$transaction['RRP']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Required']}</td>
 				<td style="width:8%;text-align:right"><b>{$transaction['dispatched']}</b></td>
-								<td style="text-align:right">{$transaction['notes']}</td>
-
+				<td style="text-align:right">{$transaction['notes']}</td>
 			</tr>
 			{/foreach} 
 		</tbody>
-		
 	</table>
-	<br> 
-	
-	<br> 
+	<br> <br> 
 	</body>
 	</html>
