@@ -5881,7 +5881,7 @@ class Order extends DB_Table {
 
 		switch ($type) {
 		default:
-			$qty_query=' sum(`Order Quantity`)';
+			$qty_query=' sum(CEIL(`Order Quantity`))';
 			break;
 
 		}
