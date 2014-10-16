@@ -41,10 +41,9 @@ var order_key=Dom.get('order_key').value;
 
 function post_create_invoice_actions(invoice_key){
 
-    var request='ar_edit_orders.php?tipo=categorize_invoice&invoice_key='+escape(invoice_key);
- // alert(request); //return;
-    YAHOO.util.Connect.asyncRequest('POST',request ,{});    
-location.reload(); 
+    //var request='ar_edit_orders.php?tipo=categorize_invoice&invoice_key='+escape(invoice_key);
+    //YAHOO.util.Connect.asyncRequest('POST',request ,{});    
+    location.reload(); 
 }
 
 

@@ -25,11 +25,11 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'categorize_invoice':
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'invoice_key'=>array('type'=>'key')
 		));
 	categorize_invoice($data);
-break;
+	break;
 case('update_recargo_de_equivalencia'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -882,7 +882,7 @@ function send_to_warehouse($data) {
 	}
 
 
-	
+
 
 	$dn=$order->send_to_warehouse();
 
@@ -2425,7 +2425,7 @@ function list_pending_orders() {
 
 
 		$sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-	
+
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -3767,7 +3767,7 @@ function create_invoice($data) {
 	$dn_key=$data['dn_key'];
 	$dn=new DeliveryNote($dn_key);
 	$invoice=$dn->create_invoice();
-
+	$invoice->categorize();
 	if (!$dn->error and $invoice->id) {
 		$response=array(
 			'state'=>200,
@@ -3799,7 +3799,7 @@ function create_invoice_order($data) {
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
 	$invoice=$order->create_invoice();
-
+	$invoice->categorize();
 	$response=array(
 		'state'=>200,
 		'invoice_key'=>$invoice->id,
@@ -6037,7 +6037,7 @@ function update_recargo_de_equivalencia($data) {
 
 }
 
-function categorize_invoice($data){
+function categorize_invoice($data) {
 
 	$invoice=new Invoice($data['invoice_key']);
 	$invoice->categorize();
