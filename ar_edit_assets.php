@@ -303,11 +303,8 @@ default:
 function create_store($data) {
 	global $editor;
 
-
-
-
 	$locale=$data['values']['Store Locale'];
-	$country=new Country('code',$data['values']['Country Code']);
+	$country=new Country('2alpha',$data['values']['Country Code']);
 	if (!$country->id) {
 		$response=array('state'=>400,'msg'=>'wrong country');
 		echo json_encode($response);
@@ -315,17 +312,11 @@ function create_store($data) {
 
 	}
 
-
-
-
 	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
 	$data['values']['Store Tax Country Code']=$country->data['Country Code'];
 	$data['values']['Store Home Country Code 2 Alpha']=$country->data['Country 2 Alpha Code'];
 	$data['values']['Store Home Country Name']=$country->data['Country Name'];
 	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
-
-
-
 
 	$sql=sprintf("select `Tax Category Code` from `Tax Category Dimension` where  `Tax Category Default`='Yes' and `Tax Category Country Code`=%s ",
 		prepare_mysql($country->data['Country Code']));
@@ -427,7 +418,7 @@ function delete_part_new_product($sku) {
 function delete_family($data) {
 
 
-global $editor;
+	global $editor;
 
 
 	if (!isset($data['delete_type'])  or !($data['delete_type']=='delete' or $data['delete_type']=='discontinue'  )  ) {
@@ -436,7 +427,7 @@ global $editor;
 	}
 	$id=$data['family_key'];
 	$family=new Family($id);
-$family->editor=$editor;
+	$family->editor=$editor;
 	if ($data['delete_type']=='delete') {
 
 		$family->delete();
@@ -486,7 +477,7 @@ function close_store($data) {
 
 
 function delete_department() {
-global $editor;
+	global $editor;
 
 	if (!isset($_REQUEST['id']))
 		return 'Error: no department key';
@@ -497,7 +488,7 @@ global $editor;
 
 	$id=$_REQUEST['id'];
 	$department=new Department($id);
-$department->editor=$editor;
+	$department->editor=$editor;
 	if ($_REQUEST['delete_type']=='delete') {
 
 		$department->delete();
@@ -793,12 +784,12 @@ function edit_product() {
 
 
 			);
-			
-			
-							$response['Product_Unit_XHTML_Dimensions']=$product->data['Product Unit XHTML Dimensions'];
 
-			
-			
+
+			$response['Product_Unit_XHTML_Dimensions']=$product->data['Product Unit XHTML Dimensions'];
+
+
+
 			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Units Properties');
 
 			$response['ratio']=$product->data['Product Part Ratio'];
@@ -3262,9 +3253,9 @@ function new_parts_list($data) {
 }
 
 function delete_product() {
-global $editor;
+	global $editor;
 	$product = new Product('pid',$_REQUEST['pid']);
-$product->editor=$editor;
+	$product->editor=$editor;
 	$product->delete();
 	if ($product->id) {
 		if ($product->delete) {

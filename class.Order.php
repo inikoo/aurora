@@ -5313,7 +5313,8 @@ class Order extends DB_Table {
 					$row['Order Meta Transaction Deal Key']
 				);
 				mysql_query($sql);
-			}else {
+			}
+			else {
 
 				$sql=sprintf("insert into `Order Meta Transaction Deal Dimension` (`Order Meta Transaction Deal Type`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,
 			`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,

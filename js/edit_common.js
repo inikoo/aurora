@@ -1170,10 +1170,10 @@ function save_new_general(branch) {
 
     //  alert(scope_edit_ar_file);
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
-    //alert(request)
+  //  alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            //    alert(o.responseText);
+    //           alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {
