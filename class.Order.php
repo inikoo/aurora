@@ -1870,41 +1870,41 @@ class Order extends DB_Table {
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Order '.$key].' +0:00'));
 			break;
 		case('Submitted by Customer Interval'):
-			if($this->data['Order Submitted by Customer Date']==''){
+			if ($this->data['Order Submitted by Customer Date']=='') {
 				return '';
 			}
 			include_once 'common_natural_language.php';
 			return seconds_to_string(
-			gmdate('U',strtotime($this->data['Order Submitted by Customer Date']))-gmdate('U',strtotime($this->data['Order Created Date']))
+				gmdate('U',strtotime($this->data['Order Submitted by Customer Date']))-gmdate('U',strtotime($this->data['Order Created Date']))
 			);
 			break;
-        case('Send to Warehouse Interval'):
-        	if($this->data['Order Submitted by Customer Date']=='' or $this->data['Order Send to Warehouse Date']==''){
+		case('Send to Warehouse Interval'):
+			if ($this->data['Order Submitted by Customer Date']=='' or $this->data['Order Send to Warehouse Date']=='') {
 				return '';
 			}
 			include_once 'common_natural_language.php';
 			return seconds_to_string(
-			gmdate('U',strtotime($this->data['Order Send to Warehouse Date']))-gmdate('U',strtotime($this->data['Order Submitted by Customer Date']))
+				gmdate('U',strtotime($this->data['Order Send to Warehouse Date']))-gmdate('U',strtotime($this->data['Order Submitted by Customer Date']))
 			);
 			break;
-        case('Packed Done Interval'):
-        	if($this->data['Order Send to Warehouse Date']=='' or $this->data['Order Packed Done Date']==''){
+		case('Packed Done Interval'):
+			if ($this->data['Order Send to Warehouse Date']=='' or $this->data['Order Packed Done Date']=='') {
 				return '';
 			}
 			include_once 'common_natural_language.php';
 			return seconds_to_string(
-			gmdate('U',strtotime($this->data['Order Packed Done Date']))-gmdate('U',strtotime($this->data['Order Send to Warehouse Date']))
+				gmdate('U',strtotime($this->data['Order Packed Done Date']))-gmdate('U',strtotime($this->data['Order Send to Warehouse Date']))
 			);
-			break;		
-       case('Dispatched Interval'):
-        	if($this->data['Order Packed Done Date']=='' or $this->data['Order Dispatched Date']==''){
+			break;
+		case('Dispatched Interval'):
+			if ($this->data['Order Packed Done Date']=='' or $this->data['Order Dispatched Date']=='') {
 				return '';
 			}
 			include_once 'common_natural_language.php';
 			return seconds_to_string(
-			gmdate('U',strtotime($this->data['Order Dispatched Date']))-gmdate('U',strtotime($this->data['Order Packed Done Date']))
+				gmdate('U',strtotime($this->data['Order Dispatched Date']))-gmdate('U',strtotime($this->data['Order Packed Done Date']))
 			);
-			break;		
+			break;
 
 		case ('Order Main Ship To Key') :
 			$sql = sprintf( "select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1", $this->id );
@@ -2376,7 +2376,7 @@ class Order extends DB_Table {
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
 		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
 			$this->id);
-		
+
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 			//print_r($row);
@@ -2396,7 +2396,7 @@ class Order extends DB_Table {
 
 
 		}
-		
+
 
 	}
 
@@ -2535,7 +2535,7 @@ class Order extends DB_Table {
 		$out_of_stock_amount=0;
 		$discounts=0;
 		$sql = sprintf("
-		select IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) 
+		select IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 		where OTF.`Order Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -5297,33 +5297,53 @@ class Order extends DB_Table {
 			$transaction_data=$this->add_order_transaction($data);
 			$this->skip_update_after_individual_transaction=false;
 
-			$sql=sprintf("insert into `Order Meta Transaction Deal Dimension` (`Order Meta Transaction Deal Type`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,
+			$sql=sprintf("select `Order Meta Transaction Deal Key` from `Order Meta Transaction Deal Dimension`  where `Order Key`=%d and `Deal Component Key`=%d",
+				$this->id,
+				$allowance_data['Deal Component Key']
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$sql=sprintf("update  `Order Meta Transaction Deal Dimension`  set `Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,`Bonus Order Transaction Fact Key`=%d where `Order Meta Transaction Deal Key`=%d",
+
+					$allowance_data['Get Free'],
+					$allowance_data['Product Key'],
+					$allowance_data['Product ID'],
+					$allowance_data['Product Family Key'],
+					$transaction_data['otf_key'],
+					$row['Order Meta Transaction Deal Key']
+				);
+				mysql_query($sql);
+			}else {
+
+				$sql=sprintf("insert into `Order Meta Transaction Deal Dimension` (`Order Meta Transaction Deal Type`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,
 			`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,
 			`Bonus Product Key`,`Bonus Product ID`,`Bonus Product Family Key`,`Bonus Order Transaction Fact Key`
 			)
-					values (%s,%d, %d,%d,%d,%s,%f,%f,%f,%d,%d,%d,%d)   ON DUPLICATE KEY UPDATE `Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,`Bonus Order Transaction Fact Key`=%d"
-				,prepare_mysql('Order Get Free')
-				,$this->id
+					values (%s,%d, %d,%d,%d,%s,%f,%f,%f,%d,%d,%d,%d)  "
+					,prepare_mysql('Order Get Free')
+					,$this->id
 
 
-				,$allowance_data['Deal Campaign Key']
-				,$allowance_data['Deal Key']
-				,$allowance_data['Deal Component Key']
-				,prepare_mysql($allowance_data['Deal Info'])
-				,0
-				,0
-				,$allowance_data['Get Free']
-				,$allowance_data['Product Key']
-				,$allowance_data['Product ID']
-				,$allowance_data['Product Family Key']
-				,$transaction_data['otf_key']
-				,$allowance_data['Get Free']
-				,$allowance_data['Product Key']
-				,$allowance_data['Product ID']
-				,$allowance_data['Product Family Key']
-				,$transaction_data['otf_key']
-			);
-			mysql_query($sql);
+					,$allowance_data['Deal Campaign Key']
+					,$allowance_data['Deal Key']
+					,$allowance_data['Deal Component Key']
+					,prepare_mysql($allowance_data['Deal Info'])
+					,0
+					,0
+					,$allowance_data['Get Free']
+					,$allowance_data['Product Key']
+					,$allowance_data['Product ID']
+					,$allowance_data['Product Family Key']
+					,$transaction_data['otf_key']
+
+				);
+				mysql_query($sql);
+
+
+			}
+
+
+
 
 
 
