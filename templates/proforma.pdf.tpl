@@ -58,6 +58,7 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
     border: 0.1mm solid #000000;
 }
 
+table td.total_label{border:none}
 
 {/literal}</style> 
 </head>
@@ -66,8 +67,7 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
 <table width="100%" style="font-size: 9pt;" border="0">
 	<tr>
 		<tr>
-	
-		<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
+			<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
 			<div style="font-size:7pt">
 				{$store->get('Store Address')|nl2br} 
 			</div>
@@ -96,44 +96,44 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
 		<tr>
 			<td> 
 			<h1>
-				{t}Proforma Invoice{/t}
+				{t}Proforma Invoice{/t} 
 			</h1>
 			</td>
 			<td style="text-align: right"> 
 			<div>
 				{t}Date{/t}:<b>{$order->get_date('Order Date')}</b> 
 			</div>
-			 </td>
+			</td>
 		</tr>
 	</table>
 	<table width="100%" style="font-family: sans-serif;" cellpadding="0">
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
 			<div style="text-align: right">
-				{t}Payment State{/t}:<b> {$order->get_formated_payment_state()}</b>
+				{t}Payment State{/t}:<b> {$order->get_formated_payment_state()}</b> 
 			</div>
 			<div style="text-align: right">
-				{t}Customer{/t}:<b> {$order->get('Order Customer Name')}</b> ({$order->get('Order Customer Key')})
+				{t}Customer{/t}:<b> {$order->get('Order Customer Name')}</b> ({$order->get('Order Customer Key')}) 
 			</div>
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> 
 			<div style="text-align: right">
-				{t}Weight{/t}:<b> {$order->get('Weight')}</b>
+				{t}Weight{/t}:<b> {$order->get('Weight')}</b> 
 			</div>
-			 </td>
+			</td>
 		</tr>
 	</table>
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
 		<tr>
 			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Billing to{/t}:</span> 
 			<div>
-				{$order->get('Order XHTML Billing Tos')}
+				{$order->get('Order XHTML Billing Tos')} 
 			</div>
 			</td>
 			<td width="10%">&nbsp;</td>
 			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivering to{/t}:</span> 
 			<div>
-				{$order->get('Order XHTML Ship Tos')}
+				{$order->get('Order XHTML Ship Tos')} 
 			</div>
 			</td>
 		</tr>
@@ -144,8 +144,8 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
 			<tr>
 				<td style="width:8%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
+				<td style="width:20%;text-align:right">{t}Quantity{/t}</td>
 				<td style="width:8%;text-align:right">{t}Discount{/t}</td>
-				<td style="width:8%;text-align:right">{t}Quantity{/t}</td>
 				<td style="width:10%;text-align:right">{t}Amount{/t}</td>
 			</tr>
 		</thead>
@@ -154,8 +154,8 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
 				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
+				<td style="width:20%;text-align:right">{$transaction['Quantity']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
-				<td style="width:8%;text-align:right">{$transaction['Order Quantity']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
 			</tr>
 			{/foreach} 
@@ -163,105 +163,88 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
 		<tbody class="totals">
 			<tr>
 				<td style="border:none" colspan="2" rowspan="10"></td>
-				<td colspan="2">{t}Items Net{/t}</td>
+				<td colspan="2" class="total_label">{t}Items Net{/t}</td>
 				<td>{$order->get('Items Net Amount')}</td>
 			</tr>
 			{if $order->get('Order Refund Net Amount')!=0 } 
 			<tr>
-				<td colspan="2">{t}Refunds{/t}</td>
+				<td colspan="2" class="total_label">{t}Refunds{/t}</td>
 				<td>{$order->get('Refund Net Amount')}</td>
 			</tr>
-			{/if} 
-			
-			{if $order->get('Order Insurance Net Amount')!=0} 
+			{/if} {if $order->get('Order Insurance Net Amount')!=0} 
 			<tr>
-				<td colspan="2">{t}Insurance{/t}</td>
+				<td colspan="2" class="total_label">{t}Insurance{/t}</td>
 				<td>{$order->get('Insurance Net Amount')}</td>
 			</tr>
 			{/if} 
-			
 			<tr>
-				<td colspan="2">{t}Shipping{/t}</td>
+				<td colspan="2" class="total_label">{t}Shipping{/t}</td>
 				<td>{$order->get('Shipping Net Amount')}</td>
 			</tr>
 			{if $order->get('Order Charges Net Amount')!=0} 
 			<tr>
-				<td colspan="2">{t}Charges{/t}</td>
+				<td colspan="2" class="total_label">{t}Charges{/t}</td>
 				<td>{$order->get('Charges Net Amount')}</td>
 			</tr>
 			{/if} {if $order->get('Order Total Net Adjust Amount')!=0} 
 			<tr>
-				<td colspan="2">{t}Adjusts{/t}</td>
+				<td colspan="2" class="total_label">{t}Adjusts{/t}</td>
 				<td>{$order->get('Total Net Adjust Amount')}</td>
 			</tr>
 			{/if} 
 			<tr class="total_net">
-				<td colspan="2">{t}Total Net{/t}</td>
+				<td colspan="2" class="total_label">{t}Total Net{/t}</td>
 				<td>{$order->get('Total Net Amount')}</td>
 			</tr>
-		<tr >
-				<td colspan="2">{t}Total Tax{/t}</td>
+			<tr>
+				<td colspan="2" class="total_label">{t}Total Tax{/t}</td>
 				<td>{$order->get('Balance Tax Amount')}</td>
 			</tr>
-			
-			
 			<tr class="total">
-				<td colspan="2"><b>{t}Total{/t}</b></td>
+				<td colspan="2" class="total_label"><b>{t}Total{/t}</b></td>
 				<td>{$order->get('Balance Total Amount')}</td>
 			</tr>
-			{if $order->get('Order To Pay Amount')!=0}
+			{if $order->get('Order To Pay Amount')!=0} 
 			<tr class="total">
-				<td colspan="2"><b>{t}Paid{/t}</b></td>
+				<td colspan="2" class="total_label"><b>{t}Paid{/t}</b></td>
 				<td>{$order->get('Payments Amount')}</td>
 			</tr>
-			
 			<tr class="total">
-				<td colspan="2"><b>{t}To Pay{/t}</b></td>
+				<td colspan="2" class="total_label"><b>{t}To Pay{/t}</b></td>
 				<td>{$order->get('To Pay Amount')}</td>
 			</tr>
-			{/if}
-			
-			
+			{/if} 
 		</tbody>
 	</table>
-	{if $order->get_number_payments()>0}
-	<br> 
-		 <table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
-	<tr class="title">
-		<td colspan=5>{t}Payments{/t}</td>
+	{if $order->get_number_payments()>0} <br> 
+	<table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
+		<tr class="title">
+			<td colspan="5">{t}Payments{/t}</td>
 		</tr>
-	<thead>
+		<thead>
 			<tr>
 				<td style="width:40%;text-align:left">{t}Method{/t}</td>
 				<td style="text-align:right">{t}Date{/t}</td>
 				<td style="text-align:left">{t}Status{/t}</td>
 				<td style="text-align:left">{t}Reference{/t}</td>
-								<td style=";text-align:right">{t}Amount{/t}</td>
-
-
+				<td style=";text-align:right">{t}Amount{/t}</td>
 			</tr>
 		</thead>
-		<tbody >
+		<tbody>
 			{foreach from=$order->get_payment_objects('',true,true) item=payment name=payments} 
 			<tr class="{if $smarty.foreach.payments.last}last{/if}">
 				<td style="text-align:left">{$payment->get('Method')} ({$payment->payment_service_provider->get('Payment Service Provider Name')})</td>
 				<td style="text-align:right">{$payment->get('Created Date')}</td>
 				<td style="text-align:left">{$payment->get('Transaction Status')}</td>
-								<td style="text-align:left">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()|strip_tags}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')=='Refund'}, {/if}{$payment->get('Payment Transaction ID')|strip_tags}</td>
-
+				<td style="text-align:left">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()|strip_tags}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')=='Refund'}, {/if}{$payment->get('Payment Transaction ID')|strip_tags}</td>
 				<td style="text-align:right">{$payment->formated_amount}</td>
-
 			</tr>
 			{/foreach} 
 		</tbody>
 	</table>
-	{/if}
-	<br><br>
-	
+	{/if} <br><br> 
 	<div style="text-align: center; font-style: italic;">
-	{include file="string:{$store->get('Store Invoice Message')}" } 
-	
-	
+		{include file="string:{$store->get('Store Invoice Message')}" } 
 	</div>
 	<br> 
 	</body>

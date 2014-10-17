@@ -42,8 +42,8 @@ $mpdf->SetAuthor($store->data['Store Name']);
 
 
 
-if(isset($_REQUEST['print'])){
-$mpdf->SetJS('this.print();');    
+if (isset($_REQUEST['print'])) {
+	$mpdf->SetJS('this.print();');
 }
 $smarty->assign('store',$store);
 
@@ -56,10 +56,50 @@ $sql=sprintf("select * from `Order Transaction Fact` O  left join `Product Histo
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$row['Amount']=money(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']),$row['Order Currency Code']);
+
+	$no_charge_quantity=0;
+
+	$quantity=number($row['Order Quantity']);
+	if ($row['Order Bonus Quantity']!=0) {
+		if ($row['Order Quantity']!=0) {
+			$quantity.='<br/> +'.number($row['Order Bonus Quantity']).' '._('free');
+		}else {
+			$quantity=number($row['Order Bonus Quantity']).' '._('free');
+		}
+	}
+
+
+	if ($row['No Shipped Due Out of Stock']!=0) {
+		$quantity.='<br/><span>('._('Out of Stock').') '.(-1*$row['No Shipped Due Out of Stock']).'</span>';
+		$no_charge_quantity+=$row['No Shipped Due Out of Stock'];
+	}
+
+	if ($row['No Shipped Due No Authorized']!=0) {
+		$quantity.='<br/><span>('._('No Authorized').') '.(-1*$row['No Shipped Due No Authorized ']).'</span>';
+		$no_charge_quantity+=$row['No Shipped Due No Authorized'];
+	}
+	if ($row['No Shipped Due Not Found']!=0) {
+		$quantity.='<br/><span>('._('Not Found').') '.(-1*$row['No Shipped Due Not Found']).'</span>';
+		$no_charge_quantity+=$row['No Shipped Due Not Found'];
+	}
+	if ($row['No Shipped Due Other']!=0) {
+		$quantity.='<br/><span>('._('Not Due Other').') '.(-1*$row['No Shipped Due Other']).'</span>';
+		$no_charge_quantity+=$row['No Shipped Due Other'];
+	}
+
+	if ($row['Order Quantity']==0) {
+		$charge_quantity_amount=0;
+	}else {
+		$to_charge=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
+		$no_charge_quantity_amount=$to_charge*$no_charge_quantity/$row['Order Quantity'];
+		$charge_quantity_amount=$to_charge-$no_charge_quantity_amount;
+	}
+
+
+	$row['Amount']=money($charge_quantity_amount,$row['Order Currency Code']);
 	$row['Discount']=($row['Order Transaction Total Discount Amount']==0?'':percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],0));
-	
-	
+
+	$row['Quantity']=$quantity;
 
 
 	$transactions[]=$row;
@@ -67,23 +107,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 
 
-
-
-
 $smarty->assign('transactions',$transactions);
-
-
 $html=$smarty->fetch('proforma.pdf.tpl');
-
-
-
 $mpdf->WriteHTML($html);
-
 //$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
-
 //$mpdf->WriteHTML($html);
-
-
 $mpdf->Output();
 
 ?>
