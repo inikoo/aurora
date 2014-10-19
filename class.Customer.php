@@ -3057,36 +3057,12 @@ class Customer extends DB_Table {
 
 
 	function get_formated_id($customer_id_prefix='') {
-
-		;
-		$sql="select count(*) as num from `Customer Dimension`";
-		$res=mysql_query($sql);
-		$min_number_zeros=4;
-		if ($row=mysql_fetch_array($res)) {
-			if (strlen($row['num'])-1>$min_number_zeros)
-				$min_number_zeros=strlen($row['num'])-01;
-		}
-		if (!is_numeric($min_number_zeros))
-			$min_number_zeros=4;
-
-		return sprintf("%s%0".$min_number_zeros."d",$customer_id_prefix, $this->id);
-
+		return sprintf("%s%04d",$customer_id_prefix, $this->id);
 	}
 
-	/* Method: add_tel
-       Add/Update an telecom to the Customer
-    */
-
+	
 	function update_custom_fields($id, $value) {
-		//print 'update';
-		//$subject=new CustomField($this->data['Customer Key']);
-		//$subject->editor=$this->editor;
 		$this->update(array($id=>$value));
-
-		//$this->updated=$subject->updated;
-		//$this->msg=$subject->msg;
-		//$this->error=$subject->error;
-		//$this->new_value=$subject->new_value;
 	}
 
 	function update_fiscal_name($value) {
