@@ -2975,75 +2975,7 @@ function list_transactions_in_order() {
 	echo json_encode($response);
 }
 
-function list_transactions_in_warehouse() {
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-		$order_id=$_REQUEST['id'];
-	else {
-		exit;
-	}
 
-
-
-
-	$where=' where `Order Key`='.$order_id;
-
-	$total_charged=0;
-	$total_discounts=0;
-	$total_picks=0;
-
-	$data=array();
-	$sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where   ";
-
-	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-
-
-
-
-
-	$result=mysql_query($sql);
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		//   $total_charged+=$row['charge'];
-		//      $total_discounts+=$ndiscount;
-		//      $total_picks+=$row['dispatched'];
-		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-
-		$quantity=number($row['Order Quantity']);
-
-		if ($row['Out of Stock']!=0) {
-			$quantity.='<br/> OoS '.number($row['Out of Stock']);
-		}
-
-		$data[]=array(
-
-			'code'=>$code
-			,'description'=>$row['Product XHTML Short Description']
-			,'tariff_code'=>$row['Product Tariff Code']
-			,'quantity'=>$quantity
-			,'gross'=>money($row['Order Transaction Gross Amount'])
-			,'discount'=>money($row['Order Transaction Total Discount Amount'])
-			,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
-		);
-	}
-
-
-
-
-
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$data
-			//     'total_records'=>$total,
-			//     'records_offset'=>$start_from,
-			//     'records_returned'=>$start_from+$res->numRows(),
-			//     'records_perpage'=>$number_results,
-			//     'records_text'=>$rtext,
-			//     'records_order'=>$order,
-			//     'records_order_dir'=>$order_dir,
-			//     'filtered'=>$filtered
-		)
-	);
-	echo json_encode($response);
-}
 
 
 
@@ -4724,7 +4656,7 @@ function transactions_in_warehouse() {
 		}
 
 
-		//195117
+		
 
 
 
