@@ -27,7 +27,7 @@ class Account extends DB_Table{
 	function get_data() {
 
 
-		$sql=sprintf("select * from `Account Dimension` ");
+		$sql=sprintf("select * from `Account Dimension` where `Account Key`=1 ");
 
 
 		$result=mysql_query($sql);
