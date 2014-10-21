@@ -66,9 +66,10 @@ while ($row=mysql_fetch_array($result)   ) {
 	$product->update_interval_sales();
 	$product->update_last_period_sales();
 	$product->update_parts();
+	unset($product);
 	$contador++;
 	$lap_time1=date('U');
-//print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+	//print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
 }
 $lap_time1=date('U');
@@ -91,6 +92,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$store->update_interval_sales();
 	$store->update_last_period_sales();
 	$store->update_orders();
+	unset($store);
 	$contador++;
 }
 $lap_time1=date('U');
@@ -116,6 +118,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$family->update_up_today_sales();
 	$family->update_interval_sales();
 	$family->update_last_period_sales();
+	unset($family);
 	$contador++;
 	//$lap_time1=date('U');
 	//print 'Fam '.percentage($contador,$total,3)."  cc  ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." cc  \r";
@@ -152,7 +155,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$department->update_customers();
 	$department->update_product_data();
 	$department->update_families();
-
+    unset($department);
 
 	$contador++;
 	//print 'Dept '.percentage($contador,$total,3)."\r";
@@ -184,6 +187,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$category->update_invoice_category_last_period_sales();
 	$category->update_number_of_subjects();
 	$category->update_no_assigned_subjects();
+	 unset($category);
 	$contador++;
 	//print 'Inv Cat '.percentage($contador,$total,3)."\r";
 }
@@ -220,19 +224,19 @@ while ($row=mysql_fetch_array($result)   ) {
 
 		}
 
-	$contador++;
+		$contador++;
 
 
 	}
 
-
+ unset($product);
 }
 
 
 
-	print date('r')." PH\n";
+print date('r')." PH\n";
 
-	$lap_time1=date('U');
+$lap_time1=date('U');
 print 'PH '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
