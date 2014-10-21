@@ -43,6 +43,7 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$total=$row['total'];
 }
+mysql_free_result($result);
 $contador=0;
 $lap_time0=date('U');
 $sql="select `Product Family Key` from `Product Family Dimension` ";
@@ -51,7 +52,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$family=new Family($row['Product Family Key']);
 	$family->update_similar_families();
-
+	unset($family);
 	$contador++;
 
 	$lap_time1=date('U');
@@ -73,7 +74,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$family=new Family($row['Product Family Key']);
 	$family->update_correlated_sales_families();
-
+    unset($family);
 	$contador++;
 
 	$lap_time1=date('U');
