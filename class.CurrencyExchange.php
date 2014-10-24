@@ -33,7 +33,7 @@ class CurrencyExchange {
 
 	function get_exchange() {
 
-		//print_r($this);
+	
 		$this->get_data_scalar();
 
 

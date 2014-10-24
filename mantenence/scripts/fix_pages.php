@@ -33,7 +33,41 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 
 
+$sql=sprintf("select P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
+$page=new Page($row['Page Key']);
 
+$source=$page->data['Page Store Source'];
+
+preg_match_all('/\"public_image.php\?id=(\d+)\"/', $source, $matches);
+
+
+
+foreach($matches[1] as $image_key){
+
+	$image=new Image($image_key);
+	if($image->id){
+	$replacement=sprintf("images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
+	
+	$source=preg_replace('/\"public_image.php\?id='.$image_key.'\"/','"'.$replacement.'"',$source);
+	}
+	
+	
+	
+}
+$sql=sprintf("update `Page Store Dimension` set `Page Store Source`=%s where `Page Key`=%d",
+prepare_mysql($source),
+$page->id
+
+);
+mysql_query($sql);
+//print_r($source);
+//exit;
+
+}
+
+exit;
 
 $sql=sprintf("select P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
 $res=mysql_query($sql);
