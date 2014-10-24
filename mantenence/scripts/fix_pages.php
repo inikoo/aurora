@@ -182,7 +182,7 @@ while ($row=mysql_fetch_array($res)) {
 	foreach ($matches[1] as $image_key) {
 		$image=new Image($image_key);
 		if ($image->id) {
-			$replacement=sprintf("images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
+			$replacement=sprintf("../images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
 			$source=preg_replace('/\"public_image.php\?id='.$image_key.'\"/','"'.$replacement.'"',$source);
 		}
 	}
@@ -191,7 +191,7 @@ while ($row=mysql_fetch_array($res)) {
 	foreach ($matches[1] as $image_key) {
 		$image=new Image($image_key);
 		if ($image->id) {
-			$replacement=sprintf("images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
+			$replacement=sprintf("../images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
 			$source=preg_replace("/\'public_image.php\?id=".$image_key."\'/",'"'.$replacement.'"',$source);
 		}
 	}
