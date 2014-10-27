@@ -361,10 +361,9 @@ function change_elements_dblclick(el,elements_type) {
 }
 
 function init() {
+    get_pending_orders_numbers('', '')
 
-get_pending_orders_numbers('','')
-
-  init_search('orders');
+    init_search('orders');
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 1);
@@ -374,19 +373,20 @@ get_pending_orders_numbers('','')
     oAutoComp.minQueryLength = 0;
 
 
-  dialog_cancel_from_list = new YAHOO.widget.Dialog("dialog_cancel_from_list", {
+    dialog_cancel_from_list = new YAHOO.widget.Dialog("dialog_cancel_from_list", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
     dialog_cancel_from_list.render();
-   
+
      ids = ['elements_ReadytoShip','elements_WaitingforPaymentConfirmation','elements_PackedDone', 'elements_InWarehouse', 'elements_SubmittedbyCustomer', 'elements_InProcessbyCustomer'];
-     Event.addListener(ids, "click", change_elements);
-    
+    Event.addListener(ids, "click", change_elements);
+
 
 }
+
 
 
 YAHOO.util.Event.onDOMReady(init);
