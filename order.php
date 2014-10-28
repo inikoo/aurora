@@ -124,6 +124,7 @@ $general_options_list=array();
 $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
+$store=new Store($order->data['Order Store Key']);
 
 
 
@@ -153,13 +154,173 @@ $smarty->assign('referral',$referral);
 
 
 
+if ($referral) {
+
+	if ($referral=='spo' or $referral=='po') {
+
+		if ($referral=='spo'){
+
+
+			$conf=$_SESSION['state']['customers']['pending_orders'];
+			$where=sprintf("and `Order Store Key`=%d",$order->data['Order Store Key']);
+			$parent_title=_('Pending Orders').' ('.$store->data['Store Code'].')';
+
+		}else {
+			$conf=$_SESSION['state']['stores']['pending_orders'];
+			$where='';
+			$parent_title=_('Pending Orders');
+		}
+
+
+
+$elements=$conf['elements'];
+$_elements='';
+	$elements_count=0;
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$elements_count++;
+
+			if ($_key=='InWarehouse') {
+				$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
+			}if ($_key=='SubmittedbyCustomer') {
+				$_key="'Submitted by Customer','In Process'";
+			}if ($_key=='ReadytoShip') {
+				$_key="'Ready to Ship'";
+			}if ($_key=='InProcessbyCustomer') {
+				$_key="'In Process by Customer'";
+			}if ($_key=='WaitingforPaymentConfirmation') {
+				$_key="'Waiting for Payment Confirmation'";
+			}if ($_key=='PackedDone') {
+				$_key="'Packed Done'";
+			}
+
+			$_elements.=','.$_key;
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($elements_count==0) {
+		$where.=' and false' ;
+	} elseif ($elements_count<6) {
+		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
+	}else {
+		$where.=' and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","" )';
+
+	}
+
+
+
+		$list_order=$conf['order'];
+		$order_label=$list_order;
+
+
+		if ($list_order=='customer') {
+			$list_order='`Order Customer Name`';
+		}elseif ($list_order=='store') {
+			$list_order='`Order Store Code`';
+		}elseif ($list_order=='public_id') {
+			$list_order='`Order File As`';
+		}elseif ($list_order=='dispatch_state') {
+			$list_order='O.`Order Current Dispatch State`';
+		}elseif ($list_order=='payment_state') {
+			$list_order='O.`Order Current Payment State`';
+
+		}elseif ($list_order=='total_amount') {
+			if ($referral=='spo') {
+				$list_order='(O.`Order Total Amount`)';
+
+			}else {
+				$list_order='(O.`Order Total Amount`*`Order Currency Exchange`)';
+			}
+
+		}else {
+			$list_order='`Order Date`';
+		}
+
+		$wheref='';
+
+
+
+		$f_field=$conf['f_field'];
+
+
+		$f_value=$conf['f_value'];
+
+		$wheref='';
+
+		if ($f_field=='max' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Date Created`))<=".$f_value."    ";
+		elseif ($f_field=='min' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Date Created`))>=".$f_value."    ";
+		elseif ($f_field=='customer_name' and $f_value!='')
+			$wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
+		elseif ($f_field=='public_id' and $f_value!='')
+			$wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
+
+
+
+
+
+
+		$_order=preg_replace('/`/','',$list_order);
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as name from `Order Dimension`   where `Order Key`!=%d %s  and %s <= %s $wheref  order by %s desc  limit 1",
+			$order->id,
+			$where,$list_order,prepare_mysql($order->get($_order)),$list_order);
+
+//print $sql;
+		$result=mysql_query($sql);
+		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
+			$prev=array('id'=>0,'name'=>'','link'=>'');
+		mysql_free_result($result);
+
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as name from `Order Dimension`     where `Order Key`!=%d %s and  %s>=%s  $wheref order by %s   limit 1 ",
+			$order->id,
+			$where,$list_order,prepare_mysql($order->get($_order)),$list_order);
+		//print $sql;
+		$result=mysql_query($sql);
+		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
+			$next=array('id'=>0,'name'=>'','link'=>'');
+
+		
+		
+		
+		
+
+		mysql_free_result($result);
+		$smarty->assign('parent_info',"referral=spo&");
+
+
+		if($conf['order_dir']=='desc'){
+		$smarty->assign('next',$prev);
+		$smarty->assign('prev',$next);
+		}else{
+		$smarty->assign('prev',$prev);
+		$smarty->assign('next',$next);
+		}
+
+		
+
+		$smarty->assign('parent_url','store_pending_orders.php?id='.$store->id);
+
+		$smarty->assign('parent_title',$parent_title);
+
+	}
+
+
+}
+else{
+	
+}
+
+
+
+
+
 
 $customer=new Customer($order->get('order customer key'));
 
 //$order->update_no_normal_totals();
 //$order->update_totals_from_order_transactions();
 
-$store=new Store($order->data['Order Store Key']);
 //print_r($store->get_payment_accounts_data());
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
@@ -274,7 +435,6 @@ else {
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
 			'operations'=>$invoice->get_operations($user,'order',$order->id),
-
 			'number'=>$invoice->data['Invoice Public ID'],
 			'state'=>$invoice->get_xhtml_payment_state(),
 			'data'=>'',

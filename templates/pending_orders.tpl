@@ -7,7 +7,7 @@
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=orders" id="branch_type_orders" ">&#8704; {t}Orders{/t}</a> &rarr; {/if}
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=orders" id="branch_type_orders" ">&#8704; {t}Orders{/t}</a> {/if} &rarr; {t}Pending Orders{/t}
 			</span> 
 		</div>
 		<div class="top_page_menu">
