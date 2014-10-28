@@ -36,7 +36,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     
+								     						,{key:"pkey", label:"Product KEY", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+     
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"Description",width:440,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    // ,{key:"stock",label:"Stock", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -73,7 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		fields: [
-			 "code"
+			 "code","pkey"
 			 ,"description",'ordered_quantity'
 			 ,"quantity"
 			 ,"discount"
@@ -125,7 +126,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     
+							     						,{key:"pkey", label:"Product KEY", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+	     
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"Description",width:480,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    // ,{key:"stock",label:"Stock",width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -160,7 +162,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		fields: [
-			 "code"
+			 "code","pkey"
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
