@@ -41,7 +41,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     
+				     						,{key:"pkey", label:"Product KEY", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"Description",width:440,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    // ,{key:"stock",label:"Stock", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -79,7 +80,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "code"
 			 ,"description","picked"
 			 ,"quantity"
-			 ,"discount"
+			 ,"discount","pkey"
 			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage','tax'
 			 // "promotion_id",
 			 ]};
@@ -128,7 +129,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     
+						,{key:"pkey", label:"Product KEY", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+     
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"Description",width:440,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    // ,{key:"stock",label:"Stock",width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -167,7 +169,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage','tax'
+			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage','tax','pkey'
 			 // "promotion_id",
 			 ]};
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
