@@ -158,7 +158,7 @@ if ($referral) {
 
 	if ($referral=='spo' or $referral=='po') {
 
-		if ($referral=='spo'){
+		if ($referral=='spo') {
 
 
 			$conf=$_SESSION['state']['customers']['pending_orders'];
@@ -173,39 +173,39 @@ if ($referral) {
 
 
 
-$elements=$conf['elements'];
-$_elements='';
-	$elements_count=0;
-	foreach ($elements as $_key=>$_value) {
-		if ($_value) {
-			$elements_count++;
+		$elements=$conf['elements'];
+		$_elements='';
+		$elements_count=0;
+		foreach ($elements as $_key=>$_value) {
+			if ($_value) {
+				$elements_count++;
 
-			if ($_key=='InWarehouse') {
-				$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
-			}if ($_key=='SubmittedbyCustomer') {
-				$_key="'Submitted by Customer','In Process'";
-			}if ($_key=='ReadytoShip') {
-				$_key="'Ready to Ship'";
-			}if ($_key=='InProcessbyCustomer') {
-				$_key="'In Process by Customer'";
-			}if ($_key=='WaitingforPaymentConfirmation') {
-				$_key="'Waiting for Payment Confirmation'";
-			}if ($_key=='PackedDone') {
-				$_key="'Packed Done'";
+				if ($_key=='InWarehouse') {
+					$_key="'Ready to Pick','Picking & Packing','Packed','Packing'";
+				}if ($_key=='SubmittedbyCustomer') {
+					$_key="'Submitted by Customer','In Process'";
+				}if ($_key=='ReadytoShip') {
+					$_key="'Ready to Ship'";
+				}if ($_key=='InProcessbyCustomer') {
+					$_key="'In Process by Customer'";
+				}if ($_key=='WaitingforPaymentConfirmation') {
+					$_key="'Waiting for Payment Confirmation'";
+				}if ($_key=='PackedDone') {
+					$_key="'Packed Done'";
+				}
+
+				$_elements.=','.$_key;
 			}
-
-			$_elements.=','.$_key;
 		}
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($elements_count==0) {
-		$where.=' and false' ;
-	} elseif ($elements_count<6) {
-		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
-	}else {
-		$where.=' and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","" )';
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($elements_count==0) {
+			$where.=' and false' ;
+		} elseif ($elements_count<6) {
+			$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
+		}else {
+			$where.=' and `Order Current Dispatch State` not in ("Dispatched","Unknown","Packing","Cancelled","Suspended","" )';
 
-	}
+		}
 
 
 
@@ -262,53 +262,177 @@ $_elements='';
 
 
 		$_order=preg_replace('/`/','',$list_order);
-		$sql=sprintf("select `Order Key` as id , `Order Public ID` as name from `Order Dimension`   where `Order Key`!=%d %s  and %s <= %s $wheref  order by %s desc  limit 1",
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension`   where `Order Key`!=%d %s  and %s <= %s $wheref  order by %s desc  limit 1",
 			$order->id,
 			$where,$list_order,prepare_mysql($order->get($_order)),$list_order);
 
-//print $sql;
+		//print $sql;
 		$result=mysql_query($sql);
-		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-			$prev=array('id'=>0,'name'=>'','link'=>'');
+		if ($prev=mysql_fetch_assoc($result)) {
+			$prev['to_end']=false;
+			$prev['link']=sprintf("order.php?referral=%s&id=%d",$referral,$prev['id']);
+
+		}else {
+			$prev=array('id'=>0,'title'=>'','link'=>'','to_end'>false);
+		}
+			
+			
 		mysql_free_result($result);
 
-		$sql=sprintf("select `Order Key` as id , `Order Public ID` as name from `Order Dimension`     where `Order Key`!=%d %s and  %s>=%s  $wheref order by %s   limit 1 ",
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension`     where `Order Key`!=%d %s and  %s>=%s  $wheref order by %s   limit 1 ",
 			$order->id,
 			$where,$list_order,prepare_mysql($order->get($_order)),$list_order);
 		//print $sql;
 		$result=mysql_query($sql);
-		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-			$next=array('id'=>0,'name'=>'','link'=>'');
+		if ($next=mysql_fetch_assoc($result)) {
+			$next['to_end']=false;
+			$next['link']=sprintf("order.php?referral=%s&id=%d",$referral,$next['id']);
 
-		
-		
-		
-		
+		}else {
+			$next=array('id'=>0,'title'=>'','link'=>'','to_end'>false);
+		}
+
+
+
 
 		mysql_free_result($result);
 		$smarty->assign('parent_info',"referral=spo&");
 
 
-		if($conf['order_dir']=='desc'){
-		$smarty->assign('next',$prev);
-		$smarty->assign('prev',$next);
-		}else{
-		$smarty->assign('prev',$prev);
-		$smarty->assign('next',$next);
+		if ($conf['order_dir']=='desc') {
+			$smarty->assign('order_next',$prev);
+			$smarty->assign('order_prev',$next);
+		}else {
+			$smarty->assign('order_prev',$prev);
+			$smarty->assign('order_next',$next);
 		}
 
-		
+
 
 		$smarty->assign('parent_url','store_pending_orders.php?id='.$store->id);
 
 		$smarty->assign('parent_title',$parent_title);
 
 	}
+	elseif ($referral=='o') {
 
+		$parent='store';
+		$parent_key=$store->id;
+
+		$awhere='';
+		$conf=$_SESSION['state']['orders']['orders'];
+
+		$from=$_SESSION['state']['orders']['from'];
+		$to=$_SESSION['state']['orders']['to'];
+
+
+
+
+		$elements_type=$conf['elements_type'];
+		$elements=$conf['elements'];
+		$f_field=$conf['f_field'];
+		$f_value=$conf['f_value'];
+		$where=sprintf("and `Order Store Key`=%d",$order->data['Order Store Key']);
+		$parent_title=_('Orders').' ('.$store->data['Store Code'].')';
+
+
+		include_once 'splinters/orders_prepare_list.php';
+
+
+
+
+		$list_order=$conf['order'];
+		$order_label=$list_order;
+
+
+		if ($list_order=='id')
+			$list_order='`Order File As`';
+		elseif ($list_order=='last_date' or $list_order=='date')
+			$list_order='O.`Order Date`';
+		elseif ($list_order=='customer')
+			$list_order='O.`Order Customer Name`';
+		elseif ($list_order=='dispatch_state')
+			$list_order='O.`Order Current Dispatch State`';
+		elseif ($list_order=='payment_state')
+			$list_order='O.`Order Current Payment State`';
+		elseif ($list_order=='total_amount')
+			$list_order='O.`Order Total Amount`';
+		else
+			$list_order='`Order File As`';
+
+
+
+
+
+
+
+
+
+
+		$_order=preg_replace('/O\./','',$list_order);
+		$_order=preg_replace('/`/','',$_order);
+
+
+
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension` O   %s and  `Order Key`!=%d and %s <= %s $wheref  order by %s desc  limit 1",
+
+			$where,
+			$order->id,
+			$list_order,prepare_mysql($order->get($_order)),$list_order);
+
+
+		$result=mysql_query($sql);
+		if ($prev=mysql_fetch_assoc($result)) {
+			$prev['to_end']=false;
+			$prev['link']=sprintf("order.php?referral=o&id=%d",$prev['id']);
+
+		}else {
+			$prev=array('id'=>0,'title'=>'','link'=>'','to_end'>false);
+		}
+
+
+		mysql_free_result($result);
+
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension` O   %s and `Order Key`!=%d and  %s>=%s  $wheref order by %s   limit 1 ",
+
+			$where,
+			$order->id,
+			$list_order,prepare_mysql($order->get($_order)),$list_order);
+		//print $sql;
+		$result=mysql_query($sql);
+		if ($next=mysql_fetch_assoc($result)) {
+			$next['to_end']=false;
+			$next['link']=sprintf("order.php?referral=o&id=%d",$prev['id']);
+
+		}else {
+			$next=array('id'=>0,'title'=>'','link'=>'','to_end'>false);
+		}
+
+		mysql_free_result($result);
+		$smarty->assign('parent_info',"referral=o&");
+
+
+		if ($conf['order_dir']=='desc') {
+			$smarty->assign('order_next',$prev);
+			$smarty->assign('order_prev',$next);
+		}else {
+			$smarty->assign('order_prev',$prev);
+			$smarty->assign('order_next',$next);
+		}
+
+
+
+		$smarty->assign('parent_url','orders.php?id='.$store->id);
+
+		$smarty->assign('parent_title',$parent_title);
+
+	}
 
 }
-else{
-	
+else {
+$smarty->assign('order_prev',array('id'=>0));
+$smarty->assign('order_next',array('id'=>0));
+
 }
 
 

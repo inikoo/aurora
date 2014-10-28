@@ -618,7 +618,7 @@ weight=Dom.get('parcels_weight').value
 
 
 function modify_order(){
-window.location='order.php?id='+Dom.get('order_key').value+'&amend=1';
+window.location='order.php?id='+Dom.get('order_key').value+'&referral='+Dom.get('referral').value+'&amend=1';
 }
 
 YAHOO.util.Event.onDOMReady(init);

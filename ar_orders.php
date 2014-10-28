@@ -609,7 +609,7 @@ function list_orders() {
 		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-			$id="<a href='order.php?r=o&id=".$data['Order Key']."'>".$myconf['order_id_prefix'].sprintf("%05s",$data['Order Public ID']).'</a>';
+			$id="<a href='order.php?referral=o&id=".$data['Order Key']."'>".$myconf['order_id_prefix'].sprintf("%05s",$data['Order Public ID']).'</a>';
 
 
 

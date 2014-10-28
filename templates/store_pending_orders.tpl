@@ -14,7 +14,7 @@
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=orders" id="branch_type_orders" ">&#8704; {t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr;{t}Pending Orders{/t} ({$store->get('Store Code')})</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="pending_orders.php" id="branch_type_orders" ">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if}  {t}Pending Orders{/t} ({$store->get('Store Code')})</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
