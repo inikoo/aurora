@@ -1156,11 +1156,11 @@ var myonCellClick = function(oArgs) {
             }
 
             var ar_file = 'ar_edit_orders.php';
-            request = 'tipo=edit_new_order&id=' + Dom.get('order_key').value + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'];
-            alert(ar_file+'?'+request)
+            request = 'tipo=edit_new_order&id=' + Dom.get('order_key').value + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid']+ '&pkey=' + data['pkey'];
+          //  alert(ar_file+'?'+request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
-                    alert(o.responseText);
+                    //alert(o.responseText);
                     datatable.updateCell(record, 'remove', '-');
                     datatable.updateCell(record, 'add', '+');
 
