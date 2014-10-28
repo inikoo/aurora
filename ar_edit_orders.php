@@ -1321,6 +1321,7 @@ function update_order_transaction() {
 	$order_key=$_REQUEST['id'];
 
 	$product_pid=$_REQUEST['pid'];
+	$pkey=$_REQUEST['pkey'];
 	$quantity=$_REQUEST['newvalue'];
 
 
@@ -1346,9 +1347,14 @@ function update_order_transaction() {
 	$payment_state='Waiting Payment';
 
 	$product=new Product('pid',$product_pid);
+	
+	
+	//$pkey=$product->data['Product Current Key']
+	
+	
 	$data=array(
 		'date'=>gmdate('Y-m-d H:i:s'),
-		'Product Key'=>$product->data['Product Current Key'],
+		'Product Key'=>$pkey,
 		'Metadata'=>'',
 		'qty'=>$quantity,
 		'Current Dispatching State'=>$dispatching_state,
@@ -1674,13 +1680,13 @@ function transactions_to_process() {
 
 		}
 
-		$sql_qty=sprintf(' ,0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
+		$sql_qty=sprintf(', P.`Product Current Key` as `Product Key`,0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
 			$order_object->data['Order Currency'],
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0  and `Order Key`=%d',$order_id);
-			$sql_qty=',`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$sql_qty=',OTF.`Product Key`,`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1932,6 +1938,7 @@ function transactions_to_process() {
 		}
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
+				'pkey'=>$row['Product Key'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$part_info.$code,
 			'description'=>$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info,
@@ -2277,10 +2284,12 @@ function list_pending_orders() {
 	case 'store':
 		$conf=$_SESSION['state']['customers']['pending_orders'];
 		$conf_field='customers';
+		$referral='spo';
 		break;
 	case 'stores':
 		$conf=$_SESSION['state']['stores']['pending_orders'];
 		$conf_field='stores';
+		$referral='po';
 		break;
 	default:
 		exit();
@@ -2416,15 +2425,15 @@ function list_pending_orders() {
 
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Date Created`))<=".$f_value."    ";
-	else if ($f_field=='min' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Date Created`))>=".$f_value."    ";
-		elseif ($f_field=='customer_name' and $f_value!='')
-			$wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
-		elseif ($f_field=='public_id' and $f_value!='')
-			$wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Date Created`))>=".$f_value."    ";
+	elseif ($f_field=='customer_name' and $f_value!='')
+		$wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='public_id' and $f_value!='')
+		$wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
 
 
-		$sql="select count(*) as total from `Order Dimension`   $where $wheref ";
+	$sql="select count(*) as total from `Order Dimension`   $where $wheref ";
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2594,7 +2603,7 @@ function list_pending_orders() {
 		$operations.=$dn_operations;
 */
 
-		$public_id=sprintf("<a href='order.php?id=%d&referral=spo'>%s</a>",$row['Order Key'],$row['Order Public ID']);
+		$public_id=sprintf("<a href='order.php?id=%d&referral=%s'>%s</a>",$row['Order Key'],$referral,$row['Order Public ID']);
 		$store=sprintf("<a href='store_pending_orders.php?id=%d'>%s</a>",$row['Order Store Key'],$row['Order Store Code']);
 
 

@@ -92,7 +92,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title', _('Customers').' ('.$store->data['Store Code'].')');
+$smarty->assign('title', _('Pending Orders').' ('.$store->data['Store Code'].')');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
