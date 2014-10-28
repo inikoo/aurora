@@ -7,20 +7,15 @@
 	<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
 	<input type="hidden" value="customer" id="subject" />
 	<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> {include file='orders_navigation.tpl'} 
-			<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; 
-			{if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> 
-			{else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if}
-			{else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a>
-			{/if}
-			 &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
-		</div>
+	<div class="branch ">
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')}</span> 
+	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			{if $referral!=''}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title">{t}Dispatched Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
+			{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 		</div>
 		<div class="buttons">
-			{if $referral!=''}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} {*}<a style="height:14px" href="order.pdf.php?id={$order->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> {*} <button style="{if $order->get_number_post_order_transactions()}display:none;{/if}" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Create Post Dispatch Operations{/t}</button> 
+			{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} {*}<a style="height:14px" href="order.pdf.php?id={$order->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> {*} <button style="{if $order->get_number_post_order_transactions()}display:none;{/if}" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Create Post Dispatch Operations{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -62,7 +57,7 @@
 			</div>
 		</div>
 		<div id="totals">
-		{include file='order_totals_splinter.tpl'}
+			{include file='order_totals_splinter.tpl'} 
 		</div>
 		<div id="dates">
 			{if $order->get_notes()} 
@@ -153,22 +148,16 @@
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
 	</div>
-
 	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #ccc;padding:5px 5px 10px 5px;clear:both;margin:20px 0px" id="dispatched_post_transactions">
 		<div class="buttons small">
 			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> <button id="quick_resend_process" style="{if $order->get('Order Current Post Dispatch State')=='Dispatched'}display:none{/if}"><img src="art/icons/lightning.png" alt=""> {t}Quick Resend Process{/t}</button> 
 		</div>
-
-		
-		
 		<span class="clean_table_title with_elements_chooser">{t}Post-Order Transactions{/t} <span class="subtitle" style="font-size:80%">({$order->get('Order Current Post Dispatch State')})</span></span> 
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" class="data_table_container dtable btable" style="margin-bottom:0;font-size:80%">
 		</div>
-		
-		
 	</div>
 	<div class="data_table" style="margin:0px;clear:both;">
 		<span class="clean_table_title with_elements_chooser">{t}Ordered Items{/t} </span> 

@@ -20,7 +20,7 @@ var edit_delivery_address;
 
 
 function exit_modify_order(){
-window.location='order.php?id='+Dom.get('order_key').value;
+window.location='order.php?id='+Dom.get('order_key').value+'&referral='+Dom.get('referral').value;
 }
 
 

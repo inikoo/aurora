@@ -15,8 +15,6 @@ if ($from)$from=$from.' 00:00:00';
 if ($to)$to=$to.' 23:59:59';
 
 
-
-
 if ($awhere) {
 	$tmp=preg_replace('/\\\"/','"',$awhere);
 	$tmp=preg_replace('/\\\\\"/','"',$tmp);
@@ -69,8 +67,10 @@ elseif ($parent=='list') {
 elseif ($parent=='store') {
 	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
 		$where=sprintf(' where  `Order Store Key`=%d ',$parent_key);
+		if(!isset($store)){
 		include_once 'class.Store.php';
 		$store=new Store($parent_key);
+		}
 		$currency=$store->data['Store Currency Code'];
 	}
 	else {
@@ -97,8 +97,7 @@ else {
 
 
 
-
-$where_interval=prepare_mysql_dates($from,$to,'`Order Last Updated Date`');
+$where_interval=prepare_mysql_dates($from,$to,'`Order Date`');
 $where.=$where_interval['mysql'];
 
 
@@ -133,7 +132,10 @@ case('dispatch'):
 	}elseif ($num_elements_checked==6) {
 
 	}else {
+	
+	
 		$_elements=preg_replace('/^,/','',$_elements);
+		
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}
 	break;
