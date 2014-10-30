@@ -965,58 +965,7 @@ YAHOO.util.Event.addListener("change_sales_history_timeline_group", "click", sho
 }
 
 
-function submit_interval(){
- ids=['products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_yeartoday','products_period_monthtoday','products_period_weektoday','products_period_today'];
 
- Dom.removeClass(ids,"selected")
- Dom.addClass('custome_period',"selected")
-/*
-Dom.setStyle(['info_yesterday','info_last_m','info_last_w','info_all','info_three_year','info_year','info_six_month','info_quarter','info_month','info_ten_day','info_week','info_yeartoday','info_monthtoday','info_weektoday','info_today'],'display','none')
-Dom.setStyle(['info2_yesterday','info2_last_m','info2_last_w','info2_all','info2_three_year','info2_year','info2_six_month','info2_quarter','info2_month','info2_ten_day','info2_week','info2_yeartoday','info2_monthtoday','info2_weektoday','info2_today'],'display','none')
-Dom.setStyle(['info_other','info2_other'],'display','')
-*/
-Dom.setStyle(['waiting_other_invoices','waiting_other_customers','waiting_other_sales','waiting_other_profits','waiting_other_outers'],'display','')
-Dom.setStyle(['other_invoices','other_customers','other_sales','other_profits','other_outers'],'display','none')
-
-/*
-var request='ar_assets.php?tipo=family_sales_data&family_key='+Dom.get('family_key').value+'&from=' + Dom.get('in').value +'&to=' + Dom.get('out').value
-	       //   alert(request)	 
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	            success:function(o){
-	        //    alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-			
-			
-			
-			Dom.get('custome_period').innerHTML=r.formated_period
-			dialog_calendar.hide();
-			
-			Dom.setStyle(['waiting_other_invoices','waiting_other_customers','waiting_other_sales','waiting_other_profits','waiting_other_outers'],'display','none')
-Dom.setStyle(['other_invoices','other_customers','other_sales','other_profits','other_outers'],'display','')
-
-			Dom.get('other_sales').innerHTML=r.sales;
-						Dom.get('other_profits').innerHTML=r.profits;
-						Dom.get('other_customers').innerHTML=r.customers;
-						Dom.get('other_outers').innerHTML=r.outers;
-						Dom.get('other_invoices').innerHTML=r.invoices;
-						
-			}else{
-                                  
-                                  }
-   			}
-    });
-
-*/
-}
-
-//function show_dialog_calendar(){
-//	region1 = Dom.getRegion('custome_period'); 
-//    region2 = Dom.getRegion('dialog_calendar_splinter'); 
-//	var pos =[region1.right-region2.width,region1.bottom]
-//	Dom.setXY('dialog_calendar_splinter', pos);
-//	dialog_calendar.show();
-//}
 
 
 Event.onDOMReady(init);
