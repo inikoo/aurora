@@ -26,7 +26,6 @@ if (!$user->can_view('orders')) {
 
 $modify=$user->can_edit('orders');
 
-
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -37,13 +36,10 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/order.css',
-
 	'theme.css.php'
 );
 
-
 $js_files=array(
-
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
 	$yui_path.'paginator/paginator-min.js',
@@ -83,34 +79,20 @@ if (isset($_REQUEST['new']) ) {
 		'Order Original Data MIME Type'=>'application/inikoo',
 		'Order Type'=>'Order',
 		'editor'=>$editor
-
 	);
-	/*
-	$ship_to=$customer->get_ship_to();
-print_r($ship_to);
-exit;
-*/
 
 	$order=new Order('new',$order_data);
 
-
-	//$order->update_no_normal_totals();
-
 	if ($order->error)
 		exit('error');
-
 
 	$ship_to=$customer->get_ship_to();
 	$order->update_ship_to($ship_to->id);
 
 	$billing_to=$customer->get_billing_to();
 	$order->update_billing_to($billing_to->id);
-	//exit;
 	header('Location: order.php?id='.$order->id);
 	exit;
-
-
-
 }
 
 
@@ -127,13 +109,6 @@ $order=new Order($order_id);
 $store=new Store($order->data['Order Store Key']);
 
 
-
-//$order->update_xhtml_delivery_notes();//exit;
-//$order->update_no_normal_totals();
-
-//$order->update_no_normal_totals();
-
-//exit;
 
 if (!$order->id) {
 	header('Location: orders_server.php?msg=order_not_found');
@@ -435,17 +410,7 @@ $smarty->assign('order_next',array('id'=>0));
 
 }
 
-
-
-
-
-
 $customer=new Customer($order->get('order customer key'));
-
-//$order->update_no_normal_totals();
-//$order->update_totals_from_order_transactions();
-
-//print_r($store->get_payment_accounts_data());
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 
@@ -476,13 +441,6 @@ else {
 	}
 	$smarty->assign('credit',$credit);
 	$smarty->assign('has_credit',$has_credit);
-
-	//$order->update_no_normal_totals();
-	//print $order->data['Order Balance Net Amount'].' '.$order->data['Order Balance Tax Amount'].' '.$order->data['Order Balance Total Amount'];
-
-
-
-
 
 
 	if (isset($_REQUEST['r'])) {
@@ -523,7 +481,6 @@ else {
 		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
 		$dn_data=preg_replace('/^,/','',$dn_data);
 
-		//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer'
 		if ($missing_dn_data  and in_array($order->data['Order Current Dispatch State'],array('Packed Done','Packed')) ) {
 			$dn_data.=' <img src="art/icons/exclamation.png" style="height:14px;vertical-align:-3px"> <span style="font-style:italic;color:#ea6c59">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$dn->id.')" style="cursor:pointer;display:none" src="art/icons/edit.gif"> ';
 		}

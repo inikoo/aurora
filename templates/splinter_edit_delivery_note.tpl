@@ -21,7 +21,7 @@
 			<td class="label" style="width:65px"><span id="number_parcels_msg" class="edit_td_alert"></span> {t}Parcels{/t}:</td>
 			<td style="text-align:left;width:30px"> 
 			<div>
-				<input style="width:30px" id="number_parcels"  onclick="select()" changed="0" type='text' class='text' value="{$delivery_note->get('Delivery Note Number Parcels')}" ovalue="{$delivery_note->get('Delivery Note Number Parcels')}" />
+				<input style="width:30px" id="number_parcels" onclick="select()" changed="0" type='text' class='text' value="{$delivery_note->get('Delivery Note Number Parcels')}" ovalue="{$delivery_note->get('Delivery Note Number Parcels')}" />
 				<div id="number_parcels_Container">
 				</div>
 			</div>
@@ -42,58 +42,57 @@
 			<div class="buttons small left" id="shipper_code_options">
 				{foreach from=$shipper_data item=item key=key } <button style="margin-bottom:5px;min-width:120px" class="{if $item.selected>0}selected{/if} option" id="shipper_code_{$item.code}" onclick="change_shipper('{$item.code}')">{$item.code}</button> {/foreach} 
 			</div>
-		</div>
-		<span id="shipper_code_msg" class="edit_td_alert"></span> </td>
-	</tr>
-	<tr>
-		<td class="label" style="width:65px"> <span id="consignment_number_msg" class="edit_td_alert"></span> {t}Consignment{/t}:</td>
-		<td style="width:200px" colspan="2"> 
-		<div>
-			<input style="width:250px" id="consignment_number" changed="0" type='text' class='text' value="{$delivery_note->get('Delivery Note Shipper Consignment')}" ovalue="{$delivery_note->get('Delivery Note Shipper Consignment')}" />
-			<div id="consignment_number_Container">
+			<span id="shipper_code_msg" class="edit_td_alert"></span> </td>
+		</tr>
+		<tr>
+			<td class="label" style="width:65px"> <span id="consignment_number_msg" class="edit_td_alert"></span> {t}Consignment{/t}:</td>
+			<td style="width:200px" colspan="2"> 
+			<div>
+				<input style="width:250px" id="consignment_number" changed="0" type='text' class='text' value="{$delivery_note->get('Delivery Note Shipper Consignment')}" ovalue="{$delivery_note->get('Delivery Note Shipper Consignment')}" />
+				<div id="consignment_number_Container">
+				</div>
 			</div>
-		</div>
-		</td>
-	</tr>
-	<tr class="buttons">
-		<td></td>
-		<td colspan="2"> 
-		<div class="buttons left">
-			<button style="margin-right:10px;" id="reset_edit_delivery_note" class="negative disabled">{t}Reset{/t}</button> <button style="margin-right:10px;" id="save_edit_delivery_note" class="positive disabled">{t}Save{/t}</button> 
-		</div>
-		</td>
-	</tr>
-</table>
-<table id="quick_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border="0">
-	<tr id="quick_invoice_invoice_buttons_tr">
-		<td> 
-		<div class="buttons">
-			<button class="positive" onclick="quick_invoice()">{t}Create Invoice{/t}</button> <button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
-		</div>
-		</td>
-	</tr>
-	<tr>
-		<td style="text-align:right;"> 
-		<div style="display:none" id="quick_invoice_invoice_wait">
-			<span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
-		</div>
-		</td>
-	</tr>
-</table>
-<table id="step_by_step_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border="0">
-	<tr id="step_by_step_invoice_buttons_tr">
-		<td> 
-		<div class="buttons">
-			<button class="positive" onclick="step_by_step_invoice()">{t}Create Invoice (Step by Step){/t}</button> <button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
-		</div>
-		</td>
-	</tr>
-	<tr>
-		<td style="text-align:right;"> 
-		<div style="display:none" id="step_by_step_invoice_wait">
-			<span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
-		</div>
-		</td>
-	</tr>
-</table>
+			</td>
+		</tr>
+		<tr class="buttons">
+			<td></td>
+			<td colspan="2"> 
+			<div class="buttons left">
+				<button style="margin-right:10px;" id="reset_edit_delivery_note" class="negative disabled">{t}Reset{/t}</button> <button style="margin-right:10px;" id="save_edit_delivery_note" class="positive disabled">{t}Save{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+	<table id="quick_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border="0">
+		<tr id="quick_invoice_invoice_buttons_tr">
+			<td> 
+			<div class="buttons">
+				<button class="positive" onclick="quick_invoice()">{t}Create Invoice{/t}</button> <button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:right;"> 
+			<div style="display:none" id="quick_invoice_invoice_wait">
+				<span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
+			</div>
+			</td>
+		</tr>
+	</table>
+	<table id="step_by_step_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border="0">
+		<tr id="step_by_step_invoice_buttons_tr">
+			<td> 
+			<div class="buttons">
+				<button class="positive" onclick="step_by_step_invoice()">{t}Create Invoice (Step by Step){/t}</button> <button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:right;"> 
+			<div style="display:none" id="step_by_step_invoice_wait">
+				<span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> 
+			</div>
+			</td>
+		</tr>
+	</table>
 </div>

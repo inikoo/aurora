@@ -230,13 +230,19 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 	//$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
 	$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
 
+
+
+
 	if ($row['Delivery Note State']=='Ready to be Picked') {
 
+	$operations.='<div class="buttons small '.$class.'">';
 		if ($parent=='order') {
+		
+				$operations.='<button style="display:none"  class="first" onClick="show_dialog_process_delivery_note(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/lorry_go.png"> '._('Process Delivery Note')."</button>";
 
 		}else {
 
-			$operations.='<div class="buttons small '.$class.'">';
+		
 
 			if ($user->can_edit('assign_pp')) {
 				$operations.='<button  class="first" onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/user.png"> '._('Assign Picker')."</button>";

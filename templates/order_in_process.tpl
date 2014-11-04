@@ -176,6 +176,16 @@
 						<td class="aright">{$order->get_formated_payment_state()}</td>
 					</tr>
 				</table>
+				<div style="{if $customer->get('Sticky Note')==''}display:none{/if}">
+				{t}Customer's Sticky Note{/t}
+				<div id="sticky_note_div" class="sticky_note" style="margin:0;">
+				
+				<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+					{$customer->get('Sticky Note')} 
+				</div>
+				</div>
+			</div>
+				
 			</div>
 			<div style="clear:both">
 			</div>
@@ -199,6 +209,8 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Products')}</span>)</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>
+		<li> <span class="item {if $block_view=='customer'}selected{/if}" id="customer"> <span> {t}Customer Data{/t} </span></span></li>
+
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -262,6 +274,29 @@
 			<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
 			</div>
 		</div>
+		
+		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='customer'}display:none{/if}" id="customer_block">
+		
+		
+		<span class="clean_table_title with_elements">{t}History/Notes{/t}</span> 
+		<div class="elements_chooser">
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_history_Changes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_history_Orders_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_history_Emails_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_history_WebLog_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+		</div>
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+		<div id="table2" class="data_table_container dtable btable">
+		</div>
+	
+		
+		
+		</div>
+		
 		<div id="order_deal_bonus" style="font-size:85%;clear:both;padding-top:5px;{if !$order->has_deal_with_bonus() }display:none{/if};border:0px solid red">
 			{include file='order_deal_bonus_splinter.tpl' order=$order} 
 		</div>

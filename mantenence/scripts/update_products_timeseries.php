@@ -69,19 +69,19 @@ while ($row2=mysql_fetch_array($res2)) {
 		prepare_mysql($from),
 		prepare_mysql($to),
 		prepare_mysql("Y-m-d")
-		);
+	);
 	$res=mysql_query($sql);
 	//print $sql;
 	while ($row=mysql_fetch_array($res)) {
 		$product->create_time_series($row['Date']);
 
 	}
-	
-		$contador++;
-	$lap_time1=date('U');
-print 'P ('.$contador.'/'.$total.')  Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
-	
+	$contador++;
+	$lap_time1=date('U');
+	print 'P ('.$contador.'/'.$total.')  Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+
 
 }
 
