@@ -36,7 +36,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select `Order Key` from `Order Dimension` ";
+$sql="select `Order Key` from `Order Dimension` and `Order Current Dispatch State`!='Dispatched'";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$order=new Order($row['Order Key']);
