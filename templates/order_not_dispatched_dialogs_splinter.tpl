@@ -30,7 +30,6 @@
 	</table>
 </div>
 
-
 <div id="dialog_cancel" style="position:absolute;left:-1000px;padding:15px 20px 5px 10px;width:200px">
 	<div id="cancel_msg">
 	</div>
@@ -59,6 +58,7 @@
 		</tr>
 	</table>
 </div>
+
 <div id="dialog_edit_shipping" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;">
 	<div id="edit_shipping_msg">
 	</div>
@@ -83,6 +83,7 @@
 		</tr>
 	</table>
 </div>
+
 <div id="dialog_edit_items_charges" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;">
 	<div id="edit_items_charges_msg">
 	</div>
@@ -107,6 +108,7 @@
 		</tr>
 	</table>
 </div>
+
 <div id="dialog_sending_to_warehouse" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:20px;">
 	<div id="sending_to_warehouse_waiting">
 		<img src="art/loading.gif" alt="" /> {t}Processing Request{/t}
@@ -114,6 +116,7 @@
 	<div id="sending_to_warehouse_msg">
 	</div>
 </div>
+
 <div id="change_staff_discount" style="position:absolute;left:-1000px;padding:10px 20px 0px 10px">
 	<input type="hidden" id="change_discount_transaction_key" value="" />
 	<input type="hidden" id="change_discount_record_key" value="" />
@@ -156,6 +159,7 @@
 		<button id="close_edit_delivery_address_dialog" onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
+
 <div id="edit_billing_address_splinter_dialog" class="edit_block" style="position:absolute;left:-1000px;width:890px;padding:20px 20px 20px 20px;background:#fff;" >
 	
 	{include file='edit_billing_address_splinter.tpl' default_country_2alpha=$store->get('Store Home Country Code 2 Alpha') parent='order' order_key={$order->id}} 
@@ -163,6 +167,7 @@
 		<button id="close_edit_billing_address_dialog" onclick="close_edit_billing_address_dialog()" class="negative">{t}Close{/t}</button> 
 	</div>
 </div>
+
 <div id="dialog_check_tax_number" style="position:absolute;left:-1000px;padding:10px 20px 10px 10px;width:300px">
 		<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
 			<tr class="title">
@@ -191,7 +196,6 @@
 			</tr>
 		</table>
 	</div>
-
 
 <div id="dialog_add_credit" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
 	<div id="edit_shipping_msg">
@@ -227,7 +231,6 @@
 		</tr>
 	</table>
 </div>
-
 
 <div id="dialog_edit_credits" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
 	<div id="edit_shipping_msg">
@@ -278,6 +281,7 @@
 		</tr>
 	</table>
 </div>
+
 <div id="dialog_edit_tax_category" style="position:absolute;left:-1000px;border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px;width:350px">
 	<div class="buttons small">
 		<input type="hidden" id="original_tax_code" value="{$order->get('Order Tax Code')}"> {foreach from=$tax_categories item=tax_category} <button tax_category="{$tax_category.code}" onclick="change_tax_category(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button> {/foreach} 
@@ -308,3 +312,160 @@
 			</tr>
 		</table>
 	</div>
+
+
+<div id="dialog_process_delivery_note" style="width:400px;padding:20px 10px 0px 10px;display:none">
+	<input type="hidden" id="dn_key" value="assign_picker"> 
+	<input type="hidden" id="picker_key" value=""> 
+	<input type="hidden" id="packer_key" value=""> 
+
+		
+	<table class="edit" border="0" style="width:100%">
+		<tbody id="picker_data">
+		<tr class="title">
+			<td colspan="2"> {t}Picker{/t} </td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="options" style="width:350px;padding:0 10px;text-align:center">
+				<table border="0" style="margin:auto" id="assign_picker_buttons">
+					{if !isset($number_pickers) or $number_pickers==0} 
+					<tr>
+						<td onclick="show_other_staff(this)" id="picker_show_other_staff" td_id="other_staff_pack_it" class="assign_picker_button other" onclick="show_other_staff(this)">{t}Select Picker{/t}</td>
+					</tr>
+					{else} {foreach from=$pickers item=picker_row name=foo} 
+					<tr>
+						{foreach from=$picker_row key=row_key item=picker } 
+						<td staff_id="{$picker.StaffKey}" id="picker{$picker.StaffKey}" scope="picker" class="assign_picker_button" onclick="select_staff(this,event)">{$picker.StaffAlias}</td>
+						{/foreach} 
+						<td onclick="show_other_staff(this)" id="picker_show_other_staff" td_id="other_staff_picker" class="assign_picker_button other" onclick="show_other_staff(this)">{t}Other{/t}</td>
+					</tr>
+					{/foreach} {/if} 
+				</table>
+			</div>
+			</td>
+		</tr>
+		<tr style="display:none" id="Picker_Staff_Name_tr">
+			<td class="label">{t}Staff Name{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:180px" id="Picker_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="Picker_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		</tbody>
+		
+		<tbody id="packer_data">
+		<tr class="title">
+			<td colspan="2"> {t}Packer{/t} </td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="options" style="width:350px;padding:0 10px;text-align:center">
+				<table border="0" style="margin:auto" id="assign_packer_buttons">
+					{if !isset($number_packers) or $number_packers==0} 
+					<tr>
+						<td onclick="show_other_staff(this)" id="packer_show_other_staff" td_id="other_staff_pack_it" class="assign_packer_button other" onclick="show_other_staff(this)">{t}Select Picker{/t}</td>
+					</tr>
+					{else} {foreach from=$packers item=packer_row name=foo} 
+					<tr>
+						{foreach from=$packer_row key=row_key item=packer } 
+						<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" scope="packer" class="assign_packer_button" onclick="select_staff(this,event)">{$packer.StaffAlias}</td>
+						{/foreach} 
+						<td onclick="show_other_staff(this)" id="packer_show_other_staff" td_id="other_staff_packer" class="assign_packer_button other" onclick="show_other_staff(this)">{t}Other{/t}</td>
+					</tr>
+					{/foreach} {/if} 
+				</table>
+			</div>
+			</td>
+		</tr>
+		<tr style="display:none" id="Packer_Staff_Name_tr">
+			<td class="label">{t}Staff Name{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:180px" id="Packer_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="Packer_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		</tbody>
+		
+		<tbody id="parcels">
+		
+				<tr class="title">
+			<td>{t}Parcels{/t}</td>
+		</tr>
+		<tr class="first">
+			<td class="label" style="width:65px"><span id="parcels_weight_msg" class="edit_td_alert"></span> {t}Weight{/t}:</td>
+			<td style="width:200px" colspan="2"> 
+			<div>
+				<input style="width:100px" id="parcels_weight" changed="0" type='text' class='text' value="" ovalue="" />
+				<span style="margin-left:110px">Kg</span> 
+				<div id="parcels_weight_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr style="height:5px">
+			<td colspan="3"></td>
+		</tr>
+		<tr>
+			<td class="label" style="width:65px"><span id="number_parcels_msg" class="edit_td_alert"></span> {t}Parcels{/t}:</td>
+			<td style="text-align:left;width:30px"> 
+			<div>
+				<input style="width:30px" id="number_parcels" onclick="select()" changed="0" type='text' class='text' value="" ovalue="" />
+				<div id="number_parcels_Container">
+				</div>
+			</div>
+			<td style="width:325px"> 
+			<input id="parcel_type" value="" ovalue="" type="hidden" />
+			<div class="buttons small left" id="parcel_type_options">
+				<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Pallet" valor="Pallet">{t}Pallet{/t}</button> 
+				<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Envelope" valor="Envelope">{t}Envelope{/t}</button> 
+				<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Small Parcel" valor="Small Parcel">{t}Small Parcel{/t}</button> 
+				<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Box" valor="Box">{t}Box{/t}</button> 
+				<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_None" valor="None">{t}None{/t}</button> 
+				<button onclick="change_parcel_type(this)" class="parcel_type" id="parcel_Other" valor="Other">{t}Other{/t}</button> 
+			</div>
+			<span id="parcel_type_msg" class="edit_td_alert"></span> </td>
+		</tr>
+		<tr class="title">
+			<td>{t}Courier{/t}</td>
+		</tr>
+		<tr>
+			<td class="label" style="width:65px">{t}Company{/t}:</td>
+			<td colspan="2"> 
+			<input type="hidden" id="shipper_code" value="" ovalue=""> 
+			<div class="buttons small left" id="shipper_code_options">
+				{foreach from=$shipper_data item=item key=key } <button style="margin-bottom:5px;min-width:120px" class="{if $item.selected>0}selected{/if} option" id="shipper_code_{$item.code}" onclick="change_shipper('{$item.code}')">{$item.code}</button> {/foreach} 
+			</div>
+			<span id="shipper_code_msg" class="edit_td_alert"></span> </td>
+		</tr>
+		<tr>
+			<td class="label" style="width:65px"> <span id="consignment_number_msg" class="edit_td_alert"></span> {t}Consignment{/t}:</td>
+			<td style="width:200px" colspan="2"> 
+			<div>
+				<input style="width:250px" id="consignment_number" changed="0" type='text' class='text' value="" ovalue="" />
+				<div id="consignment_number_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		</tbody>
+		
+		<tr class="buttons">
+			<td></td>
+			<td colspan="2" id="pick_it_msg" class="edit_td_alert"></td>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<button class="positive" onclick="assign_picker_save()">{t}Go{/t}</button> <button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button> 
+				</div>
+				<td> 
+			</tr>
+		</tr>
+	</table>
+</div>

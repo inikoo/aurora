@@ -863,9 +863,9 @@ function lookup_family() {
 
 function change_block() {
 
-    Dom.removeClass(['products', 'items'], 'selected')
+    Dom.removeClass(['products', 'items','customer'], 'selected')
     Dom.addClass(this, 'selected')
-    Dom.setStyle(['products_block', 'items_block'], 'display', 'none')
+    Dom.setStyle(['products_block', 'items_block', 'customer_block'], 'display', 'none')
     Dom.setStyle(this.id + '_block', 'display', '')
 
     Dom.get('products_display_type').value = this.id;
@@ -876,34 +876,7 @@ function change_block() {
 }
 
 
-function change_block_delete() {
 
-    Dom.removeClass(['products', 'items'], 'selected')
-    Dom.addClass(this, 'selected')
-    Dom.setStyle(['table_title_items', 'table_title_products'], 'display', 'none')
-    Dom.setStyle('table_title_' + this.id, 'display', '')
-
-    var table = tables['table0'];
-    var datasource = tables['dataSource0'];
-
-
-    if (this.id == 'items') {
-        var request = '&display=items&lookup_family=';
-
-        Dom.setStyle('products_lookups', 'display', 'none')
-        Dom.get('lookup_family_query').value = '';
-        Dom.setStyle('clear_lookup_family', 'display', 'none')
-
-    } else {
-
-        var request = '&display=products';
-        Dom.setStyle('products_lookups', 'display', '')
-
-
-    }
-    //hide_filter('', 0)
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-}
 
 
 
@@ -1758,6 +1731,21 @@ function show_set_tax_number_dialog() {
 
 }
 
+
+function show_dialog_process_delivery_note(o, dn_key) {
+
+    Dom.setStyle('dialog_process_delivery_note', 'display', '')
+
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('dialog_process_delivery_note');
+    var pos = [region1.right - region2.width, region1.top]
+
+    Dom.setXY('dialog_process_delivery_note', pos);
+    dialog_process_delivery_note.show();
+}
+
+
+
 function show_set_tax_number_dialog_from_details() {
     region1 = Dom.getRegion('update_order_tax_number');
     region2 = Dom.getRegion('dialog_set_tax');
@@ -1871,7 +1859,7 @@ function show_dialog_check_tax_number(tax_number) {
 
 
 function init_common_order_not_dispatched() {
-    Event.addListener(['items', 'products'], "click", change_block);
+    Event.addListener(['items', 'products','customer'], "click", change_block);
 
     Event.addListener("tr_order_shipping", "mouseover", show_edit_button, {
         'name': 'shipping'
@@ -1900,6 +1888,20 @@ function init_common_order_not_dispatched() {
 
     Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
     Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
+
+
+
+
+
+  dialog_process_delivery_note = new YAHOO.widget.Dialog("dialog_process_delivery_note", {
+        visible: false,
+        close: false,
+        underlay: "none",
+        draggable: false
+
+    });
+    dialog_process_delivery_note.render();
+
 
     edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
         visible: false,

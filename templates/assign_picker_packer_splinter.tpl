@@ -4,7 +4,7 @@
 		<input type="hidden" id="assign_picker_staff_key"> 
 		<input type="hidden" id="assign_picker_dn_key"> 
 		<tr class="title">
-			<td colspan="2"> {t}Assign picker for later{/t} </td>
+			<td colspan="2"> {t}Assign picker for later{/t}</td>
 		</tr>
 		<tr>
 			<td colspan="2"> 

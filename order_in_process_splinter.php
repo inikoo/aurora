@@ -24,6 +24,25 @@ if (!isset($inikoo_account))exit;
 
 //$order->apply_payment_from_customer_account();
 
+
+$smarty->assign('elements',$_SESSION['state']['customer']['history']['elements']);
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['customer']['history']['f_field'];
+$filter_value=$_SESSION['state']['customer']['history']['f_value'];
+$smarty->assign('filter_value2',$filter_value);
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+
+
 $js_files[]='js/php.default.min.js';
 $js_files[]='js/add_payment.js';
 

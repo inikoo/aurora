@@ -17,23 +17,15 @@
 	<input type="hidden" value="customer" id="subject" />
 	<input type="hidden" value="{$store->get('Store Home Country Code 2 Alpha')}" id="default_country_2alpha" />
 	<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> <iframe id="invoice_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="dn_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="order_pick_aid_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> 
-			<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; 
-			{if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> 
-			{else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if}
-			{else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a>
-			{/if}
-			 &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
-		</div>
-
+	<div class="branch ">
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
+	</div>
 	<div class="top_page_menu" style="border:none;">
 		<div class="buttons" style="float:left;">
-				{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} 
-			<span class="main_title {if $order->get('Order Invoiced')=='Yes'}no_buttons{/if} ">Order <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span> </span> 
+			{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title {if $order->get('Order Invoiced')=='Yes'}no_buttons{/if} ">Order <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span> </span> 
 		</div>
 		<div class="buttons">
-			{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
-			<button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order"><img style='position:relative;top:1px' src='art/icons/cart_edit.png'> {t}Amend Order{/t}</button> {/if} <button style="display:none" id="process_order">{t}Process Order{/t}</button> 
+			{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {if $order->get_number_invoices()==0} <button id="modify_order"><img style='position:relative;top:1px' src='art/icons/cart_edit.png'> {t}Amend Order{/t}</button> {/if} <button style="display:none" id="process_order">{t}Process Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -76,10 +68,7 @@
 			</div>
 		</div>
 		<div id="totals">
-		
-			{include file='order_totals_splinter.tpl'}
-		
-			
+			{include file='order_totals_splinter.tpl'} 
 		</div>
 		<div id="dates">
 			{if $order->get_notes()} 
@@ -110,7 +99,7 @@
 					<td colspan="2" class="aright" style="text-align:right"> {$dn.data} </td>
 				</tr>
 				<tr>
-					<td colspan="2" class="aright" style="text-align:right" id="operations_container{$dn.key}">{$dn.operations}</td>
+					<td colspan="2" class="aright" style="text-align:left" id="operations_container{$dn.key}">{$dn.operations}</td>
 				</tr>
 				<tr>
 					<td colspan="2"> 
@@ -159,7 +148,7 @@
 			<div class="buttons small right">
 				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 			</div>
-			{include file='order_details_splinter.tpl'}
+			{include file='order_details_splinter.tpl'} 
 			<div style="clear:both">
 			</div>
 			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 

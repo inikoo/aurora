@@ -208,8 +208,6 @@ c4.innerHTML="";
 	
 }
 
-
-
 function myrenderEvent_customer_history(){
 
 get_history_numbers()
@@ -435,8 +433,9 @@ Event.addListener(window, "load", function() {
 				 
 					
 					 ];
-		//alert("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&sf=0&tid="+tableid);
-		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&sf=0&tid="+tableid);
+		request="ar_contacts.php?tipo=customer_orders&customer_key="+Dom.get('customer_key').value+"&sf=0&tid="+tableid
+		 
+		   this.dataSource2  = new YAHOO.util.DataSource(request);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.table_id=tableid;
