@@ -2536,12 +2536,12 @@ class Order extends DB_Table {
 		$discounts=0;
 		$sql = sprintf("select IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 		where OTF.`Order Key`=%d",$this->id);
-		
+
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-//print_r($row);
+			//print_r($row);
 			$chargeable_qty=$row['Order Quantity']-$row['No Shipped Due Out of Stock']-$row['No Shipped Due No Authorized']-$row['No Shipped Due Not Found']-$row['No Shipped Due Other'];
 			$gross_chargeable_amount=$chargeable_qty*$row['Product History Price'];
 			$discount=round($gross_chargeable_amount*$row['Fraction Discount'],2);
@@ -2558,7 +2558,7 @@ class Order extends DB_Table {
 		}
 
 
-//print "$net ";
+		//print "$net ";
 
 
 		$this->data['Order Balance Net Amount']=$net;
@@ -2879,7 +2879,35 @@ class Order extends DB_Table {
 
 
 
+	function update_estimated_weight() {
 
+		$sql=sprintf("select `Order Transaction Fact Key`, `Product Package Weight`, P.`Product ID`,`Order Bonus Quantity`,`Order Quantity` from `Order Transaction Fact` OTF left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  where `Order Key`=%d ",
+			$this->id);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)   ) {
+
+			if ($row['Product ID']) {
+				$estimated_weight=$row['Product Package Weight']*($row['Order Bonus Quantity']+$row['Order Quantity']);
+				$sql=sprintf("update `Order Transaction Fact` set `Estimated Weight`=%f where `Order Transaction Fact Key`=%d",
+					$estimated_weight,
+					$row['Order Transaction Fact Key']
+				);
+
+			}
+
+		}
+
+		$this->get_items_totals_by_adding_transactions();
+
+		$this->update_totals_from_order_transactions();
+
+
+		foreach ($this->get_delivery_notes_objects() as $dn) {
+			$dn->update_item_totals();
+		}
+
+	}
 
 
 
@@ -4244,8 +4272,8 @@ class Order extends DB_Table {
 			,prepare_mysql($this->data['Order Ship To Country Code'])
 			,$this->data['Order Store Key']
 		);
-		
-	
+
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
@@ -4339,12 +4367,12 @@ class Order extends DB_Table {
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-		
-		
-		
+
+
+
 			$discount_amount=round(($row['Order Transaction Gross Amount'])*$percentage/100,2);
-			
-		
+
+
 			return $this->update_transaction_discount_amount($otf_key,$discount_amount);
 		}else {
 			$this->error=true;
@@ -4383,8 +4411,8 @@ class Order extends DB_Table {
 				);
 				return $return_data;
 			}
-			
-		
+
+
 			$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Transaction Fact Key` =%d",$otf_key);
 			mysql_query($sql);
 
@@ -4396,7 +4424,7 @@ class Order extends DB_Table {
 			);
 			mysql_query($sql);
 			//print "$sql\n";
-			
+
 			$deal_info='';
 			if ($discount_amount>0  ) {
 				$deal_info=percentage($discount_amount,$row['Order Transaction Gross Amount']).' Off';
@@ -4416,18 +4444,18 @@ class Order extends DB_Table {
 					$discount_amount,
 					($discount_amount/$row['Order Transaction Gross Amount'])
 				);
-				
+
 				mysql_query($sql);
 				$this->updated=true;
 			}
-			
-			
+
+
 			$this->update_item_totals_from_order_transactions();
 			$this->update_no_normal_totals('save');
 
 			//$this->update_totals_from_order_transactions();
 			$this->apply_payment_from_customer_account();
-			
+
 			return array(
 				'updated'=>true,
 				'otf_key'=>$otf_key,
