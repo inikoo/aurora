@@ -2157,6 +2157,18 @@ class product extends DB_Table {
 
 				}else {
 					$this->update_field('Product '.$tag.' Weight',convert_units($this->data['Product '.$tag.' Weight Display'],$this->data['Product '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
+
+					if ($tag=='Package') {
+						$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`!='Dispatched' ",$this->pid);
+						$result=mysql_query($sql);
+						while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+							$order=new Order($row['Order Key']);
+							$order->update_estimated_weight();
+						}
+
+					}
+
+
 				}
 
 
@@ -4800,10 +4812,21 @@ class product extends DB_Table {
 
 	function update_weight_from_parts($type) {
 		list($weight,$weight_display,$weight_display_units)=$this->get_weight_from_parts($type);
-		// print "$weight,$weight_display,$weight_display_units\n";
+		$old_package_weight=$this->data["Product $type Weight"];
 		$this->update_field("Product $type Weight",$weight);
 		$this->update_field("Product $type Weight Display",$weight_display);
 		$this->update_field("Product $type Weight Display Units",$weight_display_units);
+
+
+		if ($type=='Package' and $weight!=$old_package_weight) {
+						$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`!='Dispatched' ",$this->pid);
+			$result=mysql_query($sql);
+			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+				$order=new Order($row['Order Key']);
+				$order->update_estimated_weight();
+			}
+
+		}
 
 	}
 
