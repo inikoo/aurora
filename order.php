@@ -541,6 +541,8 @@ else {
 	case('In Process'):
 	case('Submitted by Customer'):
 	case('Waiting for Payment Confirmation'):
+	
+	$order->update_shipping();
 		include 'order_in_process_splinter.php';
 		break;
 	case('Ready to Pick'):
