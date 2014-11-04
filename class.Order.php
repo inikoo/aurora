@@ -4228,7 +4228,7 @@ class Order extends DB_Table {
 
 		);
 
-print $sql;
+
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
@@ -4245,7 +4245,7 @@ print $sql;
 			,$this->data['Order Store Key']
 		);
 		
-		print $sql;
+	
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
