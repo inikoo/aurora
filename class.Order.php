@@ -2558,7 +2558,7 @@ class Order extends DB_Table {
 		}
 
 
-print "$net ";
+//print "$net ";
 
 
 		$this->data['Order Balance Net Amount']=$net;
