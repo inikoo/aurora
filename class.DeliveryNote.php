@@ -367,7 +367,7 @@ class DeliveryNote extends DB_Table {
 
 
 		$this->data['Delivery Note Distinct Items']=$distinct_items;
-		$this->data['Delivery Note Estimated Weights']=$estimated_weight;
+		$this->data['Delivery Note Estimated Weight']=$estimated_weight;
 
 		$sql = sprintf("update   `Delivery Note Dimension` set `Delivery Note Distinct Items`=%d,`Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d"
 			,$distinct_items
