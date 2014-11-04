@@ -3678,7 +3678,7 @@ class Order extends DB_Table {
 		}
 
 
-		print "$shipping,$shipping_key,$shipping_method";
+		//print "$shipping,$shipping_key,$shipping_method";
 		if (!is_numeric($shipping)) {
 
 			$this->data['Order Shipping Net Amount']=0;
@@ -4228,7 +4228,7 @@ class Order extends DB_Table {
 
 		);
 
-
+print $sql;
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
@@ -4244,6 +4244,8 @@ class Order extends DB_Table {
 			,prepare_mysql($this->data['Order Ship To Country Code'])
 			,$this->data['Order Store Key']
 		);
+		
+		print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			list($shipping,$method)=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata'],$dn_key);
