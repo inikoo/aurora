@@ -542,7 +542,7 @@ else {
 	case('Submitted by Customer'):
 	case('Waiting for Payment Confirmation'):
 	
-	$order->update_no_normal_totals();
+	
 		include 'order_in_process_splinter.php';
 		break;
 	case('Ready to Pick'):
