@@ -73,11 +73,11 @@ switch($child->Type){
 	
 
 
-	$sql=sprintf("select * from kbase.`User Agent Dimension` where `User Agent String`=%s", prepare_mysql($child->String));
+	$sql=sprintf("select * from `User Agent Dimension` where `User Agent String`=%s", prepare_mysql($child->String));
 	$result=mysql_query($sql);
 
 	if(mysql_num_rows($result) > 0){
-		$sql=sprintf("update kbase.`User Agent Dimension` set `User Agent Name`=%s, `User Agent Description`=%s, `User Agent Type`=%s where `User Agent String`=%s"
+		$sql=sprintf("update `User Agent Dimension` set `User Agent Name`=%s, `User Agent Description`=%s, `User Agent Type`=%s where `User Agent String`=%s"
 		,prepare_mysql($child->ID)
 		,prepare_mysql($child->Description)
 		,prepare_mysql($agent_type)
@@ -86,7 +86,7 @@ switch($child->Type){
 		$existing_count++;
 	}
 	else{
-		$sql=sprintf("insert into kbase.`User Agent Dimension` (`User Agent Name`, `User Agent String`, `User Agent Description`, `User Agent Type`) values (%s, %s, %s, %s)"
+		$sql=sprintf("insert into `User Agent Dimension` (`User Agent Name`, `User Agent String`, `User Agent Description`, `User Agent Type`) values (%s, %s, %s, %s)"
 		,prepare_mysql($child->ID)
 		,prepare_mysql($child->String)
 		,prepare_mysql($child->Description)

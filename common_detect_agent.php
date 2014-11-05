@@ -132,13 +132,13 @@ function get_useragent_key($useragent) {
 		return 1;
 	}
 
-	$sql=sprintf("select `User Agent Key` from kbase.`User Agent Dimension` where `User Agent String`=%s  ",prepare_mysql($useragent));
+	$sql=sprintf("select `User Agent Key` from `User Agent Dimension` where `User Agent String`=%s  ",prepare_mysql($useragent));
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$useragent_key=$row['User Agent Key'];
 	}else {
 
-		$sql=sprintf("insert into kbase.`User Agent Dimension` (`User Agent String`) values (%s) ",prepare_mysql($useragent));
+		$sql=sprintf("insert into `User Agent Dimension` (`User Agent String`) values (%s) ",prepare_mysql($useragent));
 		mysql_query($sql);
 		$useragent_key=mysql_insert_id();
 
