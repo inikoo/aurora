@@ -64,7 +64,7 @@ class CurrencyExchange {
 		}
 
 
-		$sql=sprintf("select `Exchange`,`Date` from kbase.`History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`>=%s and `Date`<=%s     "
+		$sql=sprintf("select `Exchange`,`Date` from `History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`>=%s and `Date`<=%s     "
 			,prepare_mysql($this->currency_pair)
 			,prepare_mysql($this->from)
 			,prepare_mysql($this->to)
@@ -107,7 +107,7 @@ class CurrencyExchange {
 
 
 		$this->exchange=false;
-		$sql=sprintf("select `Exchange` from kbase.`History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`=DATE(%s)     "
+		$sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`=DATE(%s)     "
 			,prepare_mysql($this->currency_pair)
 			,prepare_mysql($this->from));
 		$res3=mysql_query($sql);
@@ -201,7 +201,7 @@ while($row=mysql_fetch_assoc($res)){
 
 
 
-				$sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
+				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  "
 					,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
 				// print "$sql\n";
 				mysql_query($sql);
@@ -242,7 +242,7 @@ while($row=mysql_fetch_assoc($res)){
 
 
 
-				$sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
+				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  "
 					,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
 				//print "$sql\n";
 				mysql_query($sql);
@@ -273,7 +273,7 @@ while($row=mysql_fetch_assoc($res)){
 	function get_current_exchange() {
 
 
-		$sql=sprintf("select `Exchange`,`Date` from kbase.`History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`=%s     "
+		$sql=sprintf("select `Exchange`,`Date` from `History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`=%s     "
 			,prepare_mysql($this->currency_pair)
 			,prepare_mysql(date('Y-m-d'))
 
@@ -288,7 +288,7 @@ while($row=mysql_fetch_assoc($res)){
 			$exchange=$this->get_current_exchange_from_yahoo();
 
 			if ($exchange) {
-				$sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "
+				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "
 					,prepare_mysql(date('Y-m-d')) ,prepare_mysql($this->currency_pair),$exchange,$exchange);
 				// print $sql;
 				mysql_query($sql);

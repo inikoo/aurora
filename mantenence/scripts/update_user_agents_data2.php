@@ -32,7 +32,7 @@ require_once '../../conf/conf.php';
 
 $count=0;
 //$agent_types=array();
-$sql=sprintf("select * from kbase.`User Agent Dimension` where `User Agent Type` is null");
+$sql=sprintf("select * from `User Agent Dimension` where `User Agent Type` is null");
 $result=mysql_query($sql);
 //$agent_types[]='aa';
 while($row=mysql_fetch_assoc($result)){
@@ -86,7 +86,7 @@ while($row=mysql_fetch_assoc($result)){
 	}
 
 
-	$sql=sprintf("update kbase.`User Agent Dimension` set `User Agent Name`=%s, `User Agent Description`=%s, `User Agent Type`=%s where `User Agent Key`=%d"
+	$sql=sprintf("update `User Agent Dimension` set `User Agent Name`=%s, `User Agent Description`=%s, `User Agent Type`=%s where `User Agent Key`=%d"
 			,prepare_mysql($agent_name)
 			,prepare_mysql($agent_description)
 			,prepare_mysql($agent_type)

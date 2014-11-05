@@ -98,7 +98,7 @@ function read_currency_data($tmp_file) {
         $date=date("Y-m-d",strtotime($data[1]));
         $exchange=$data[2];
         if ($exchange>0) {
-            $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  ON DUPLICATE KEY UPDATE `Exchange`=%f  ",
+            $sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  ON DUPLICATE KEY UPDATE `Exchange`=%f  ",
                          prepare_mysql($date) ,prepare_mysql($pair),$exchange,$exchange);
              print "$sql\n";
             mysql_query($sql);
@@ -127,7 +127,7 @@ function read_currency_inv_data($tmp_file,$pair) {
         $date=date("Y-m-d",strtotime($data[1]));
         $exchange=$data[2];
         if ($exchange>0) {
-            $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f) ",
+            $sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f) ",
                          prepare_mysql($date) ,prepare_mysql($pair),1/$exchange);
              print "$sql\n";
             mysql_query($sql);
