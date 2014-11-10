@@ -2597,7 +2597,7 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 
 
-		$sql=sprintf("update `Payment Dimension`  set `Invoice Key`=NULL   where `Invoice Key`=%d",$this->id);
+		$sql=sprintf("update `Payment Dimension`  set `Payment Invoice Key`=NULL   where `Payment Invoice Key`=%d",$this->id);
 		mysql_query($sql);
 
 
