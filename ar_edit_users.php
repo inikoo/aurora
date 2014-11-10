@@ -1332,6 +1332,7 @@ function send_reset_password($data,$CKEY) {
 
 
 	//$message_data['method']='sendmail';
+	$message_data['Email Send Type']='Password Reminder';
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['type']='HTML';
 	$message_data['to']=$login_handle;
@@ -1444,6 +1445,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 		if (!$credentials) {
 			return array($_user->id,$_user->msg);
 		}
+		$message_data['Email Send Type']='Registration';
 		$message_data['from_name']=$site->data['Site Name'];
 		$message_data['method']='smtp';
 		$message_data['type']='html';

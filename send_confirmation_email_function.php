@@ -27,6 +27,7 @@ function send_confirmation_email($order) {
 	if (!$credentials) {
 		return false;
 	}
+	$message_data['Email Send Type']='Order Confirmation';
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['method']='smtp';
 	$message_data['type']='HTML';
@@ -44,7 +45,7 @@ function send_confirmation_email($order) {
 
 
 
-$payment_info_for_customer='<p></p>';
+	$payment_info_for_customer='<p></p>';
 	$payment_info_for_customer_for_internal_notification='<p></p>';
 
 	if ($order->get_number_payments()>0) {
@@ -63,8 +64,8 @@ $payment_info_for_customer='<p></p>';
 
 
 	}
-	
-	if(!$order->data['Order Payment Key']) {
+
+	if (!$order->data['Order Payment Key']) {
 
 		if ($payment_service_provider->data['Payment Service Provider Type']=='Bank') {
 
@@ -255,7 +256,7 @@ $payment_info_for_customer='<p></p>';
 	$notification_recipients=preg_split('/,/',$site->data['Site Order Notification Email Recipients']);
 
 	foreach ($notification_recipients as $notification_recipient) {
-
+		$message_data['Email Send Type']='Order Confirmation';
 		$message_data['from_name']=$site->data['Site Name'];
 		$message_data['method']='smtp';
 		$message_data['type']='HTML';

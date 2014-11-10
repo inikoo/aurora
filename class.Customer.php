@@ -995,6 +995,12 @@ class Customer extends DB_Table {
 
 	function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false) {
 
+		if (!$date) {
+			$date=gmdate('Y-m-d H:i:s');
+		}
+
+
+
 		if ($current_ship_to) {
 			$principal='No';
 		} else {
@@ -1093,6 +1099,11 @@ class Customer extends DB_Table {
 
 
 	function associate_billing_to_key($billing_to_key,$date,$current_billing_to=false) {
+
+if(!$date){
+			$date=gmdate('Y-m-d H:i:s');
+		}
+
 
 		if ($current_billing_to) {
 			$principal='No';
@@ -2633,7 +2644,7 @@ class Customer extends DB_Table {
 		$sql=sprintf("select max(`Order Dispatched Date`) as last_order_dispatched_date from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State`='Dispatched'",
 			$this->id
 		);
-	//	print $sql."\n";
+		// print $sql."\n";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_date'];
@@ -3060,7 +3071,7 @@ class Customer extends DB_Table {
 		return sprintf("%s%04d",$customer_id_prefix, $this->id);
 	}
 
-	
+
 	function update_custom_fields($id, $value) {
 		$this->update(array($id=>$value));
 	}

@@ -12,8 +12,8 @@ require_once 'class.EmailCredentials.php';
 
 class SendEmail extends DB_Table {
 
-var $from=false;
-var $bcc='';
+	var $from=false;
+	var $bcc='';
 	function SendEmail($data=false) {
 
 	}
@@ -323,19 +323,19 @@ var $bcc='';
 
 		case 'MadMimi':
 			list($to,$subject,$html_message,$plain_message)=$this->get_message_data();
-			
-			if($this->from){
-			$from=$this->from;
-			}else{
-			$from=$email_credentials->data['Email Address MadMimi'];
+
+			if ($this->from) {
+				$from=$this->from;
+			}else {
+				$from=$email_credentials->data['Email Address MadMimi'];
 			}
-			
+
 			$api_key=$email_credentials->data['API Key MadMimi'];
 			$username=$email_credentials->data['API Email Address MadMimi'];
 			$promotion_name=$this->email_send_data['Email Promotion Name'];
 			$body_array=$this->email_send_data['Email Placeholders'];
-			
-/*
+
+			/*
 			$date1=$this->email_send_data['Email Promotion Date_1'];
 			$date2=$this->email_send_data['Email Promotion Date_2'];
 			$name=$this->email_send_data['Email Recipient Name'];
@@ -351,16 +351,16 @@ var $bcc='';
 				exit;
 			}
 
-			include_once('class.MadMimi.php');
-/*
+			include_once 'class.MadMimi.php';
+			/*
 			$body_array = array(
 			'some_placeholder' => 'some content here' // This will replace "{some_placeholder}" in your promotion with "some content here".
 				,'greeting' => $greeting, 'name' => $name, 'date1'=>$date1, 'date2'=>$date2
 			);
 */
-			
+
 			$options = array(
-				'promotion_name' => $promotion_name, 
+				'promotion_name' => $promotion_name,
 				'recipients' => $to,
 				'from' => $from,
 				'subject' => $subject,
@@ -371,9 +371,9 @@ var $bcc='';
 			$mailer = new MadMimi($username, $api_key);
 			$response = $mailer->SendMessage($options, $body_array, false);
 
-			if($this->email_send_data['Madmimi Auto Subscribe']){
-			$response_add_membership= $mailer->AddMembership($to,$this->email_send_data['Madmimi Auto Subscribe']);	
-			
+			if ($this->email_send_data['Madmimi Auto Subscribe']) {
+				$response_add_membership= $mailer->AddMembership($to,$this->email_send_data['Madmimi Auto Subscribe']);
+
 			}
 
 
@@ -382,7 +382,7 @@ var $bcc='';
 				$response=  array('state'=>200,'msg'=>'Your Email has been sent!');
 
 			} else
-			
+
 				$response=  array('state'=>400,'msg'=>$response);
 			break;
 
@@ -437,7 +437,7 @@ var $bcc='';
 
 
 
-		if(preg_match('/html/i',$data['type'])){
+		if (preg_match('/html/i',$data['type'])) {
 			$data['type']='HTML';
 		}
 
@@ -454,14 +454,14 @@ var $bcc='';
 			'Email Credential Key'=>$data['email_credentials_key'],
 			'Email Type'=>$data['type'],
 			'Email Send To'=>$data['to'],
-			
+
 			'Email Send HTML'=>$data['html'],
 			'Email Send Plain'=>$data['plain'],
 			'Email Send Subject'=>$data['subject'],
 			'Email Promotion Name'=>$data['promotion_name'],
 			'Email Placeholders'=>$data['email_placeholders'],
-			'Madmimi Auto Subscribe'=>false	
-			
+			'Madmimi Auto Subscribe'=>false
+
 			/*
 			'Email Promotion Date_1'=>$data['promotion_date1'],
 			'Email Promotion Date_2'=>$data['promotion_date2'],
@@ -470,9 +470,13 @@ var $bcc='';
 			*/
 		);
 
-			if(array_key_exists('madmimi_auto_subscribe', $data)){
-				$this->email_send_data['Madmimi Auto Subscribe']=$data['madmimi_auto_subscribe'];
-			}
+		if (array_key_exists('Email Send Type', $data)) {
+			$this->email_send_data['Email Send Type']=$data['Email Send Type'];
+		}
+
+		if (array_key_exists('madmimi_auto_subscribe', $data)) {
+			$this->email_send_data['Madmimi Auto Subscribe']=$data['madmimi_auto_subscribe'];
+		}
 
 		//print_r($this->email_send_data);exit;
 
