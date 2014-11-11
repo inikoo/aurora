@@ -1166,7 +1166,7 @@ class Order extends DB_Table {
 
 		$this->update_xhtml_invoices();
 		$this->update_customer_history();
-		$this->update_xhtml_state();
+	
 
 
 
@@ -1763,18 +1763,7 @@ class Order extends DB_Table {
 		}
 
 	}
-	function update_xhtml_state() {
-		$xhtml_state=$this->calculate_state();
-		$this->data['Order Current XHTML State']=$xhtml_state;
-
-		$sql=sprintf("update `Order Dimension` set `Order Current XHTML State`=%s where `Order Key`=%d",
-			prepare_mysql($xhtml_state,false),
-			$this->id
-		);
-
-		mysql_query($sql);
-
-	}
+	
 
 	function set_display_currency($currency_code,$exchange) {
 		$this->currency_code=$currency_code;
