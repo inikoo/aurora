@@ -1152,7 +1152,7 @@ class Store extends DB_Table {
 			$this->data["Store $db_interval Average Dispatch Time"]=$sum_interval/$number_samples;
 
 		}
-		$sql=sprintf("update `Store Dimension` set`Store $db_interval Average Dispatch Time`=%f where `Store Key`=%d "
+		$sql=sprintf("update `Store Dimension` set `Store $db_interval Acc Average Dispatch Time`=%f where `Store Key`=%d "
 			,$this->data["Store $db_interval Average Dispatch Time"]
 
 			,$this->id
@@ -1162,7 +1162,6 @@ class Store extends DB_Table {
 
 
 		//print "$sql\n\n";
-
 
 
 
