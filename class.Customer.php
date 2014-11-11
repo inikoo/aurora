@@ -995,11 +995,9 @@ class Customer extends DB_Table {
 
 	function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false) {
 
-		if (!$date) {
+		if (!$date or $date=='' or $date='0000-00-00 00:00:00') {
 			$date=gmdate('Y-m-d H:i:s');
 		}
-
-
 
 		if ($current_ship_to) {
 			$principal='No';
@@ -1100,7 +1098,7 @@ class Customer extends DB_Table {
 
 	function associate_billing_to_key($billing_to_key,$date,$current_billing_to=false) {
 
-if(!$date){
+		if (!$date or $date=='' or $date='0000-00-00 00:00:00') {
 			$date=gmdate('Y-m-d H:i:s');
 		}
 

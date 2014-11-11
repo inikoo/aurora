@@ -4825,7 +4825,7 @@ function update_principal_mobil($mobile_key) {
 	if ($main_mobile_key!=$mobile_key) {
 		$mobile=new Telecom($mobile_key);
 		$mobile->editor=$this->editor;
-		$sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Mobile'  "
+		$sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and B.`Telecom Key`=%d and `Telecom Type`='Mobile'  "
 			,$this->id
 			,$main_mobile_key
 		);

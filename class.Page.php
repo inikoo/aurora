@@ -4572,7 +4572,7 @@ if ($old_qty!='') {
 			mysql_query($sql);
 
 			$sql=sprintf("update `Page Product Dimension` set `State`=%s where `Page Key`=%d",
-				$this->data['Page State'],
+				prepare_mysql($this->data['Page State']),
 				$this->id
 			);
 			mysql_query($sql);

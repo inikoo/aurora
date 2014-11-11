@@ -5877,15 +5877,7 @@ class Order extends DB_Table {
 
 
 
-		$sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
-			,$this->data['Order Store Key']
-			,$this->id
-			,prepare_mysql($first_full_search)
-			,prepare_mysql($second_full_search)
-			,prepare_mysql($first_full_search)
-			,prepare_mysql($second_full_search)
-		);
-		mysql_query($sql);
+	
 
 	}
 
