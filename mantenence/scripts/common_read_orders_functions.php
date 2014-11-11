@@ -478,7 +478,7 @@ function delete_old_data($delete_record=false) {
 
 	$sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
-	$sql=sprintf("update `Order Transaction Fact`  `Invoice Transaction Net Refund Amount`=0,`Invoice Transaction Tax Refund Amount`=0,`Invoice Transaction Outstanding Refund Net Balance`=0 ,`Invoice Transaction Outstanding Refund Tax Balance`=0,`Refund Key`=NULL,`Refund Metadata`='' where `Refund Metadata`=%s   and `Order Key`>0  "
+	$sql=sprintf("update `Order Transaction Fact` set `Invoice Transaction Net Refund Amount`=0,`Invoice Transaction Tax Refund Amount`=0,`Invoice Transaction Outstanding Refund Net Balance`=0 ,`Invoice Transaction Outstanding Refund Tax Balance`=0,`Refund Key`=NULL,`Refund Metadata`='' where `Refund Metadata`=%s   and `Order Key`>0  "
 		,prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
 	$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and `Order Key` IS NULL",prepare_mysql($store_code.$order_data_id));
