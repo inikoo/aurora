@@ -171,8 +171,7 @@ class Auth {
 			$this->user_log_key=$row['User Log Key'];
 
 
-			$sql=sprintf("update `User Dimension` set `Session ID`=%s ,`User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
-				prepare_mysql(session_id()),
+			$sql=sprintf("update `User Dimension` set `User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
 				prepare_mysql($ip),
 				prepare_mysql($date),
 				$this->user_key

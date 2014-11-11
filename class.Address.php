@@ -1144,7 +1144,9 @@ class Address extends DB_Table {
 			$this->msg.=' '._('Nothing to be updated')."\n";
 		else {
 
-			$sql=sprintf("update `Address Dimension` set `Address Data Last Update`=NOW where `Address Key`=%d",$this->id);
+			$sql=sprintf("update `Address Dimension` set `Address Data Last Update`=%s where `Address Key`=%d",
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$this->id);
 			mysql_query($sql);
 			$this->get_data('id',$this->id);
 
