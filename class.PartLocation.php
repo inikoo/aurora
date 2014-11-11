@@ -646,10 +646,10 @@ class PartLocation extends DB_Table {
 				'Destination'=>$this->location_key,
 				'Origin'=>$data['Origin']
 			),$date);
-			
-			
-			
-		$this->part->update_set_next_supplier_shipment('');	
+
+
+
+		$this->part->update_set_next_supplier_shipment('');
 
 	}
 
@@ -969,7 +969,9 @@ class PartLocation extends DB_Table {
 		if (is_array($data) and array_key_exists('Date', $data))
 			$date=$data['Date'];
 
-
+		if (!$date or $date=='' or $date='0000-00-00 00:00:00') {
+			$date=gmdate('Y-m-d H:i:s');
+		}
 
 
 		$this->deleted=false;
@@ -1265,15 +1267,15 @@ class PartLocation extends DB_Table {
 	}
 
 	function exist_on_date($date) {
-//print $date;
+		//print $date;
 		$date=date('U',strtotime($date));
 
 		$intervals=$this->get_history_intervals();
-		
+
 		//print_r($intervals);
-		
+
 		//print "*******";
-		
+
 		foreach ($intervals as $interval) {
 
 
@@ -1313,30 +1315,30 @@ class PartLocation extends DB_Table {
 		}
 
 		$intervals=array();
-		
-		
-		
-		
+
+
+
+
 		$index=0;
 		foreach ($dates as $date=>$type) {
-			if($index==0 and $type=='Disassociate'){
+			if ($index==0 and $type=='Disassociate') {
 				continue;
 			}
-		
+
 			if ($type=='Associate')
 				$intervals[]=array('From'=>date("Y-m-d",strtotime($date)),'To'=>false);
 			if ($type=='Disassociate')
 				$intervals[count($intervals)-1]['To']=date("Y-m-d",strtotime($date));
-	
-	$index++;
-	}
-/*
+
+			$index++;
+		}
+		/*
 print "++++++++++\n";
 		 print_r($dates);
 	 print_r($intervals);
-	 
+
 	 print "---------\n";
-*/	 
+*/
 		return $intervals;
 
 	}
@@ -1354,7 +1356,7 @@ print "++++++++++\n";
 		}
 
 		$intervals=array();
-		
+
 
 		foreach ($dates as $date=>$type) {
 			if ($type=='Associate')
@@ -1547,7 +1549,7 @@ print "++++++++++\n";
 				$open,
 				$high,
 				$low,
-				
+
 				$value_open,
 				$value_high,
 				$value_low,
@@ -1555,7 +1557,7 @@ print "++++++++++\n";
 				$value_day_cost_open,
 				$value_day_cost_high,
 				$value_day_cost_low,
-				
+
 				$commercial_value_open,
 				$commercial_value_high,
 				$commercial_value_low,
