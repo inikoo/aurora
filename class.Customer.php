@@ -879,11 +879,6 @@ class Customer extends DB_Table {
 		//print $sql;
 		mysql_query($sql);
 
-		//------------------------
-
-		$sql=sprintf("insert into `Customer Custom Field Dimension` (`Customer Key`) VALUES (%d)", $this->id);
-		//print $sql;
-		mysql_query($sql);
 
 		$this->update_full_search();
 		$this->update_location_type();
