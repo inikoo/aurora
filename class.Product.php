@@ -1341,10 +1341,8 @@ class product extends DB_Table {
 		if ($current_part_key!=$product_part_key) {
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s where `Product Part Key`=%d  ",prepare_mysql(date('Y-m-d H:i:s')),$current_part_key);
 			mysql_query($sql);
-			$sql=sprintf("update `Product Part List` set `Product Part Most Recent`='No' where `Product ID`=%d  ",$this->pid);
-			mysql_query($sql);
-			$sql=sprintf("update `Product Part List` set `Product Part Most Recent`='Yes' where `Product Part Key`=%d  ",$product_part_key);
-			mysql_query($sql);
+			
+			
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No' where `Product ID`=%d  ",$this->pid);
 			mysql_query($sql);
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='Yes' ,`Product Part Valid To`=NULL  where `Product Part Key`=%d  ",$product_part_key);
