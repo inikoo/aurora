@@ -1157,18 +1157,8 @@ class Order extends DB_Table {
 		$invoice=new Invoice ('create',$data_invoice);
 
 
-
-
-
-
-
-		$invoice->update_totals();
-
-		$this->update_xhtml_invoices();
-		$this->update_customer_history();
-	
-
-
+        // to do maybe this is not needed (this is here because in ar_edit_order the payment stuff is done)
+        $this->update_no_normal_totals();
 
 
 
@@ -6392,14 +6382,14 @@ class Order extends DB_Table {
 	function set_as_invoiced() {
 
 
-		$sql=sprintf("update `Order Dimension` set `Order Invoiced`='Yes',`Order Current Payment State`='Waiting Payment'   where `Order Key`=%d ",
+		$sql=sprintf("update `Order Dimension` set `Order Invoiced`='Yes'   where `Order Key`=%d ",
 			$this->id
 		);
 
 		mysql_query($sql);
 
 		$this->data['Order Invoiced']='Yes';
-		$this->data['Order Current Payment State']='Waiting Payment';
+		//$this->data['Order Current Payment State']='Waiting Payment';
 
 	}
 

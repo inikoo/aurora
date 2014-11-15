@@ -11,6 +11,7 @@ include 'gearman/export.php';
 include 'gearman/ping_sitemap.php';
 include 'gearman/import.php';
 include 'gearman/edit_parts.php';
+include 'gearman/housekeeping_tasks.php';
 
 $count_number_used=0;
 
@@ -21,6 +22,7 @@ $worker->addFunction("export", "fork_export");
 $worker->addFunction("ping_sitemap", "fork_ping_sitemap");
 $worker->addFunction("import", "fork_import");
 $worker->addFunction("edit_parts", "fork_edit_parts");
+$worker->addFunction("housekeeping", "fork_housekeeping");
 
 
 
