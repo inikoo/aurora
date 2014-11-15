@@ -72,7 +72,7 @@ class Invoice extends DB_Table {
 		}
 		if (preg_match('/create refund/i',$arg1)) {
 			$this->create_refund($arg2,$arg3,$arg4);
-			
+
 			return;
 		}
 
@@ -379,7 +379,7 @@ class Invoice extends DB_Table {
 
 		$tax_category=$this->data['Invoice Tax Code'];
 		$sql=sprintf('
-				select OTF.`Order Transaction Fact Key`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) 
+				select OTF.`Order Transaction Fact Key`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 
 		where OTF.`Order Key`=%d and ISNULL(OTF.`Invoice Key`)  ',
 			$order_key
@@ -570,30 +570,7 @@ class Invoice extends DB_Table {
 
 		$this->update_refund_totals();
 
-		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
-			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $this->id,$key);
-			mysql_query( $sql );
-			$this->update_xhtml_delivery_notes();
-			$dn->update(array('Delivery Note Invoiced'=>'Yes'));
-			$dn->update_xhtml_invoices();
-		}
-
-		foreach ($this->get_orders_objects() as $key=>$order) {
-			$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $this->id );
-			mysql_query( $sql );
-			$this->update_xhtml_orders();
-			$order->update_xhtml_invoices();
-			$order->update_no_normal_totals();
-			$order->set_as_invoiced();
-		}
-
-
-
-
-	
 		$this->update_title();
-		$this->update_xhtml_sale_representatives();
-
 	}
 
 

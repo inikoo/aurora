@@ -3804,11 +3804,12 @@ function create_invoice($data) {
 
 
 function create_invoice_order($data) {
-	global $user;
+	global $user,$account_code;
+	include 'splinters/new_fork.php';
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
 	$invoice=$order->create_invoice();
-	$invoice->categorize();
+	//$invoice->categorize(); done now in german
 	$response=array(
 		'state'=>200,
 		'invoice_key'=>$invoice->id,
@@ -3831,6 +3832,7 @@ function create_invoice_order($data) {
 
 	}
 
+    list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'invoice_created','subject_key'=>$invoice->id),$account_code);
 
 	echo json_encode($response);
 

@@ -4,3 +4,5 @@ conf/key.php
 /nbproject/*
 /nbproject/private/
 mantenence/smarty.php
+gearman/conf/*
+gearman/downloads_AW/*
