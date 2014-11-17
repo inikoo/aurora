@@ -27,7 +27,7 @@ $mysql_host='213.175.222.120';
 $mysql_user='inikoo';
 //$mysql_user='root';
 
-$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd );
+$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd_dropshipping );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
