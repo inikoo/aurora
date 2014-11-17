@@ -858,15 +858,13 @@ function undo_cancel_order($data) {
 
 function send_to_warehouse($data) {
 
+	global $user,$account_code;
+
 	$order_key=$data['order_key'];
 	$note=$data['note'];
 
-
 	include_once 'class.PartLocation.php';
-	global $user;
-
 	$order=new Order($order_key);
-
 
 	$sql=sprintf("select count(*) as num  from `Order Transaction Fact`   where `Order Key`=%d    ",$order->id);
 	$res=mysql_query($sql);
@@ -876,15 +874,13 @@ function send_to_warehouse($data) {
 			$response=array('state'=>400,'msg'=>_('Error, can not send an empty order to warehouse'),'number_items'=>0);
 			echo json_encode($response);
 			return;
-
 		}
-
 	}
 
-
-
-
 	$dn=$order->send_to_warehouse();
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'send_to_warehouse','delivery_note_key'=>$dn->id),$account_code);
+
 
 	if ($dn) {
 		$dn->update(array('Delivery Note Warehouse Note'=>$note));
@@ -1347,11 +1343,11 @@ function update_order_transaction() {
 	$payment_state='Waiting Payment';
 
 	$product=new Product('pid',$product_pid);
-	
-	
+
+
 	//$pkey=$product->data['Product Current Key']
-	
-	
+
+
 	$data=array(
 		'date'=>gmdate('Y-m-d H:i:s'),
 		'Product Key'=>$pkey,
@@ -1938,7 +1934,7 @@ function transactions_to_process() {
 		}
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
-				'pkey'=>$row['Product Key'],
+			'pkey'=>$row['Product Key'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$part_info.$code,
 			'description'=>$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info,
@@ -3229,7 +3225,7 @@ function set_packing_aid_sheet_pending_as_packed($data) {
 
 function set_picking_aid_sheet_pending_as_picked($data) {
 
-	global $user;
+	global $user,$account_code;
 
 	$dn_key=$data['dn_key'];
 
@@ -3250,6 +3246,13 @@ function set_picking_aid_sheet_pending_as_picked($data) {
 
 		}
 		$delivery_note->update_picking_percentage();
+
+
+		include 'splinters/new_fork.php';
+		list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'delivery_note_picked','subject_key'=>$delivery_note->id,'delivery_note_key'=>$delivery_note->id),$account_code);
+
+
+
 		$response=array(
 			'state'=>200,
 			'dn_key'=>$delivery_note->id,
@@ -3805,7 +3808,7 @@ function create_invoice($data) {
 
 function create_invoice_order($data) {
 	global $user,$account_code;
-	include 'splinters/new_fork.php';
+
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
 	$invoice=$order->create_invoice();
@@ -3832,7 +3835,8 @@ function create_invoice_order($data) {
 
 	}
 
-    list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'invoice_created','subject_key'=>$invoice->id),$account_code);
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'invoice_created','subject_key'=>$invoice->id),$account_code);
 
 	echo json_encode($response);
 
@@ -4206,6 +4210,8 @@ function approve_packing($data) {
 
 function pick_order($data) {
 
+	global $account_code;
+
 	$dn=new DeliveryNote($data['dn_key']);
 	if ($data['key']=='quantity') {
 
@@ -4213,6 +4219,12 @@ function pick_order($data) {
 		$transaction_data=$dn->set_as_picked($data['itf_key'],round($data['new_value'],8),date("Y-m-d H:i:s"),$data['picker_key']);
 
 		$dn->update_picking_percentage();
+
+		include 'splinters/new_fork.php';
+		list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'item_picked','subject_key'=>$data['itf_key'],'delivery_note_key'=>$dn->id),$account_code);
+
+
+
 		if (!$dn->error) {
 
 			$response=array('state'=>200,
@@ -5051,7 +5063,7 @@ function get_locations($data) {
 
 function quick_invoice($data) {
 
-
+	global $account_code;
 
 	$order_key=$data['order_key'];
 
@@ -5100,6 +5112,10 @@ function quick_invoice($data) {
 
 	}
 	$dn->update_picking_percentage();
+
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'delivery_note_picked','subject_key'=>$dn->id,'delivery_note_key'=>$dn->id),$account_code);
+
 
 	$sql="select `Packer Key`,`Inventory Transaction Key`, `Picked`,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
 	// print $sql;

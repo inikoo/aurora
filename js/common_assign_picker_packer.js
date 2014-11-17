@@ -96,6 +96,7 @@ break;
 function select_staff(o) {
 
 
+
     var staff_key = o.getAttribute('staff_id');
     var staff_alias = o.innerHTML;
 
@@ -109,12 +110,12 @@ function select_staff(o) {
         Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
-        Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+       // Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
         
         if(Dom.get('Assign_Picker_Staff_Name_label')!= undefined)
         Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
 
-                
+                assign_picker_save()
                 
 
     }else if (scope == 'packer') {
@@ -128,6 +129,7 @@ function select_staff(o) {
         Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
         if( Dom.get('Assign_Packer_Staff_Name_label')!=undefined)
         Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
+          assign_packer_save()
 
     }else if (scope == 'pick_it') {
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'pick_it_buttons'), 'selected');
