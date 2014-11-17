@@ -1159,7 +1159,7 @@ class Order extends DB_Table {
 
 
         // to do maybe this is not needed (this is here because in ar_edit_order the payment stuff is done)
-        $this->update_no_normal_totals();
+       // $this->update_no_normal_totals();
 
 
 
