@@ -201,10 +201,14 @@ while($row=mysql_fetch_assoc($res)){
 
 
 
-				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  "
-					,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-				// print "$sql\n";
+			
+				
+				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "
+					,prepare_mysql($date) ,prepare_mysql($pair),$exchange,$exchange);
 				mysql_query($sql);
+				
+				
+				
 				$rows++;
 			}
 			fclose($handle);
@@ -241,11 +245,11 @@ while($row=mysql_fetch_assoc($res)){
 
 
 
-
-				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  "
-					,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-				//print "$sql\n";
+	
+				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "
+					,prepare_mysql($date) ,prepare_mysql($pair),$exchange,$exchange);
 				mysql_query($sql);
+				
 				$rows++;
 			}
 			fclose($handle);
@@ -290,7 +294,6 @@ while($row=mysql_fetch_assoc($res)){
 			if ($exchange) {
 				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "
 					,prepare_mysql(date('Y-m-d')) ,prepare_mysql($this->currency_pair),$exchange,$exchange);
-				// print $sql;
 				mysql_query($sql);
 			}
 			return $exchange;
