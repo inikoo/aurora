@@ -591,6 +591,7 @@ class Invoice extends DB_Table {
 		$this->update_xhtml_sale_representatives();
 
 		$this->update_title();
+		$this->update_totals();
 	}
 
 
@@ -1868,7 +1869,7 @@ class Invoice extends DB_Table {
 
 		if ($this->data['Invoice Outstanding Total Amount']>0) {
 
-			print $payment->data['Payment Balance'].'='.$this->data['Invoice Outstanding Total Amount']." xx";
+			//print $payment->data['Payment Balance'].'='.$this->data['Invoice Outstanding Total Amount']." xx";
 
 			if ($payment->data['Payment Balance']>=$this->data['Invoice Outstanding Total Amount']) {
 
