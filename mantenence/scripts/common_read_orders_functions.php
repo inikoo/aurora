@@ -1,6 +1,7 @@
 <?php
 
 include_once '../../class.Category.php';
+include_once '../../class.PartLocation.php';
 
 
 
@@ -788,7 +789,7 @@ function create_order($data) {
 
 	}
 
-	
+
 
 	$order->update_order_discounts();
 	$order->update_discounts();
@@ -849,6 +850,19 @@ function create_order($data) {
 		//print "\nstart_picking_date $start_picking_date,\n finish_picking_date  $finish_picking_date \n  ,$start_packing_date,$finish_packing_date,$approve_date\n";
 		//exit;
 		$dn=$order->send_to_warehouse($finish_picking_date);
+
+
+		$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` ITF where `Delivery Note Key`=%d",
+			$dn->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+			$part_location->update_stock();
+
+
+		}
+
 		if ($finish_picking_date!=$date_order) {
 			print " Picked ";
 			$sql=sprintf("update  `Inventory Transaction Fact` set `Date`=%s,`Date Created`=%s where `Delivery Note Key` =%d  ",
@@ -967,8 +981,27 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		return;
 
 		$invoice=$order->create_invoice($date_inv);
+
+		foreach ($invoice->get_delivery_notes_objects() as $key=>$dn) {
+			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $invoice->id,$key);
+			mysql_query( $sql );
+			$invoice->update_xhtml_delivery_notes();
+			$dn->update(array('Delivery Note Invoiced'=>'Yes'));
+			$dn->update_xhtml_invoices();
+		}
+		foreach ($invoice->get_orders_objects() as $key=>$order) {
+			$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $invoice->id );
+			mysql_query( $sql );
+			$invoice->update_xhtml_orders();
+			$order->update_xhtml_invoices();
+			$order->update_no_normal_totals();
+			$order->set_as_invoiced();
+			$order->update_customer_history();
+		}
+		$invoice->update_xhtml_sale_representatives();
 		$invoice->categorize();
-		//print_r($invoice);
+
+
 
 		foreach ($credits as $credit) {
 			$credit_data=array(
@@ -1142,6 +1175,48 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 	foreach ($_picked_qty as $itf=>$_qty) {
 
 		$dn->set_as_picked($itf,$_qty,$finish_picking_date);
+
+
+
+
+
+		$where=sprintf(" where `Inventory Transaction Key`=%d",$itf);
+
+
+		$sql="select  `Map To Order Transaction Fact Key`,`Inventory Transaction Key`,`Part SKU`,`Inventory Transaction Quantity`,`Date`,`Location Key` from  `Inventory Transaction Fact` ITF $where";
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$transaction_value=$dn->get_transaction_value($row['Part SKU'],-1*$row['Inventory Transaction Quantity'],$row['Date']);
+			$cost_storing=0;//to do
+
+			$sql = sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Amount`=%f where `Inventory Transaction Key`=%d  ",
+				$transaction_value,
+				$row['Inventory Transaction Key']
+			);
+			mysql_query($sql);
+
+			$sql = sprintf("update `Order Transaction Fact` set `Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d  ",
+
+				$transaction_value,
+				$cost_storing,
+				$row['Map To Order Transaction Fact Key']
+			);
+			mysql_query($sql);
+
+			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+			$part_location->update_stock();
+
+		}
+
+
+
+
+
+
+
+
+
 	}
 
 	foreach ($_out_of_stock_qty as $itf=>$_qty) {
@@ -1250,7 +1325,28 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
 
 			$invoice=$order->create_invoice($date_inv);
+
+			foreach ($invoice->get_delivery_notes_objects() as $key=>$dn) {
+				$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $invoice->id,$key);
+				mysql_query( $sql );
+				$invoice->update_xhtml_delivery_notes();
+				$dn->update(array('Delivery Note Invoiced'=>'Yes'));
+				$dn->update_xhtml_invoices();
+			}
+			foreach ($invoice->get_orders_objects() as $key=>$order) {
+				$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $invoice->id );
+				mysql_query( $sql );
+				$invoice->update_xhtml_orders();
+				$order->update_xhtml_invoices();
+				$order->update_no_normal_totals();
+				$order->set_as_invoiced();
+				$order->update_customer_history();
+			}
+			$invoice->update_xhtml_sale_representatives();
 			$invoice->categorize();
+
+
+
 			// print_r($invoice);
 
 			foreach ($credits as $credit) {
