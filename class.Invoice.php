@@ -569,6 +569,26 @@ class Invoice extends DB_Table {
 		//$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax,'Transaction Description'=>_('Charges')),true);
 
 		$this->update_refund_totals();
+		
+		
+		
+		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
+			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $this->id,$key);
+			mysql_query( $sql );
+			$this->update_xhtml_delivery_notes();
+			$dn->update(array('Delivery Note Invoiced'=>'Yes'));
+			$dn->update_xhtml_invoices();
+		}
+		foreach ($this->get_orders_objects() as $key=>$order) {
+			$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $this->id );
+			mysql_query( $sql );
+			$this->update_xhtml_orders();
+			$order->update_xhtml_invoices();
+			$order->update_no_normal_totals();
+			$order->set_as_invoiced();
+			$order->update_customer_history();
+		}
+		$invoice->update_xhtml_sale_representatives();
 
 		$this->update_title();
 	}
