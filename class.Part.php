@@ -1831,8 +1831,8 @@ class part extends DB_Table {
 
 		}
 
-		function get_picking_location_key($date=false,$qty=1) {
-			if ($date) {
+		function get_picking_location_key($date=false,$qty=1,$historic=false) {
+			if ($historic) {
 				return $this->get_picking_location_historic($date,$qty);
 			}
 
@@ -1846,7 +1846,9 @@ class part extends DB_Table {
 			$locations_data=array();
 			while ($row=mysql_fetch_assoc($res)) {
 				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-				list($stock,$value,$in_process)=$part_location->get_stock();
+				//list($stock,$value,$in_process)=$part_location->get_stock();
+				$stock=$part_location->data['Quantity On Hand'];
+				
 				$locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
 
 			}

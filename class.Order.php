@@ -603,7 +603,8 @@ class Order extends DB_Table {
 
 
 		$dn->create_inventory_transaction_fact($this->id,$date,$extra_data);
-		$this->update_delivery_notes('save');
+
+
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
 		$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"

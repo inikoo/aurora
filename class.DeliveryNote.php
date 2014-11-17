@@ -1199,25 +1199,9 @@ class DeliveryNote extends DB_Table {
 
 	function create_inventory_transaction_fact_item($product_key,$map_to_otf_key,$to_sell_quantity,$date,$supplier_metadata_array,$bonus_qty) {
 
-
-
-//print "$product_key,$map_to_otf_key,$to_sell_quantity,$date,$supplier_metadata_array,$bonus_qty\n";
-
-		//$date=$this->data['Delivery Note Date Created'];
-
 		$skus_data=array();
-
-
-
 		$product=new Product('id',$product_key);
-
-
-		//  print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
-
 		$part_list=$product->get_part_list($date);
-		//print_r($part_list);
-
-
 		if (count($part_list)==0) {
 			//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
 			//print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
@@ -1355,17 +1339,17 @@ class DeliveryNote extends DB_Table {
 
 					$sql = sprintf("insert into `Inventory Transaction Fact`  (
 					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,
-					
+
 					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
-					
+
 					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
-					
+
 					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
 					values (
 					%d,%s,%s,%s,%s,%s,
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
-					
+
 					%s,%s,%d,%d,%d,%d,%s) ",
 						$multipart_data_multiplicity,
 						prepare_mysql ($multipart_data),
@@ -1373,24 +1357,24 @@ class DeliveryNote extends DB_Table {
 						"'OIP'",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
 						prepare_mysql ($picking_note),
-						
+
 						0,
 						prepare_mysql ($date),
 						prepare_mysql ($date),
 						$this->id,
 						prepare_mysql ($part_data['Part SKU']),
 						$location_key,
-						
-						
+
+
 						0,
 						"'Order In Process'",
 						0,
 						$required,
 						$given,
 						0,
-						
-						
-						
+
+
+
 						prepare_mysql ($this->data ['Delivery Note Metadata']),
 						prepare_mysql ($note),
 						$supplier_product_id,
@@ -1400,7 +1384,7 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					mysql_query($sql);
-				//	print "$sql\n";
+					// print "$sql\n";
 					//exit;
 
 
@@ -1411,8 +1395,8 @@ class DeliveryNote extends DB_Table {
 					if ($this->update_stock) {
 
 
-						$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
-						$part_location->update_stock();
+						//$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
+						//$part_location->update_stock();
 					}
 					//print "$sql\n";
 					$location_index++;
@@ -1452,8 +1436,8 @@ class DeliveryNote extends DB_Table {
 
 			//print_r($row);
 
-$items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No Shipped Due No Authorized'];
-//print " x $items_to_dispatch  x \n";
+			$items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No Shipped Due No Authorized'];
+			//print " x $items_to_dispatch  x \n";
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],
 				$row['Order Transaction Fact Key'],
@@ -1711,9 +1695,9 @@ $items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No 
 		if ($row=mysql_fetch_assoc($res)) {
 			$from_date=$row['Ship To From Date'];
 			$to_date=$row['Ship To Last Used'];
-		}else{
-		$from_date=gmdate("Y-m-d H:i:s");
-		$to_date=gmdate("Y-m-d H:i:s");
+		}else {
+			$from_date=gmdate("Y-m-d H:i:s");
+			$to_date=gmdate("Y-m-d H:i:s");
 		}
 
 		if (strtotime($this->data['Delivery Note Date'])< strtotime($from_date))
@@ -2833,18 +2817,11 @@ $items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No 
 
 
 
-			$transaction_value=$this->get_transaction_value($sku,$qty,($historic?$date:false));
-
+			// $transaction_value=$this->get_transaction_value($sku,$qty,$date);
+			$transaction_value=0;
 
 			$cost_storing=0;
 
-
-			//****
-			//transaction value
-
-			//****
-
-			//$cost_supplier=ge        $part->get_unit_cost($date)*$qty;
 
 			$sql=sprintf('select `Product Key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d  '
 				,$row['Map To Order Transaction Fact Key']);
@@ -2916,15 +2893,11 @@ $items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No 
 			//print "$sql\n";
 
 			if ($this->update_stock) {
-
-
-				$part_location=new PartLocation($sku.'_'.$location_key);
-				$part_location->update_stock();
+				//$part_location=new PartLocation($sku.'_'.$location_key);
+				//$part_location->update_stock();
 			}
+
 			$otf_key=$row['Map To Order Transaction Fact Key'];
-
-
-
 
 			if ($picking_factor>=1)
 				$state='Ready to Pack';
@@ -3132,26 +3105,26 @@ $items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No 
 
 			if ($row['Map To Order Transaction Fact Parts Multiplicity']!=1) {
 
-				
+
 
 				$sql=sprintf('select * from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d  ',$row['Map To Order Transaction Fact Key']);
 				$res2=mysql_query($sql);
-				
-				
-				
+
+
+
 				$max_not_picked=0;
 				while ($row2=mysql_fetch_assoc($res2)) {
-				
+
 					$out_of_stock=$row2['Out of Stock'];
-			$not_found=$row2['Not Found'];
-			$no_picked_other=$row2['No Picked Other'];
-								$total_unpicked=$not_found+$no_picked_other+$out_of_stock;
+					$not_found=$row2['Not Found'];
+					$no_picked_other=$row2['No Picked Other'];
+					$total_unpicked=$not_found+$no_picked_other+$out_of_stock;
 
 
 					$metadata_data=preg_split('/\;/',$row2['Map To Order Transaction Fact Metadata']);
 
-				//	print_r($metadata_data);
-//print 'x->'.$total_unpicked.' '.($total_unpicked/$metadata_data[1])."< x\n";
+					// print_r($metadata_data);
+					//print 'x->'.$total_unpicked.' '.($total_unpicked/$metadata_data[1])."< x\n";
 					$not_picked=floor($total_unpicked/$metadata_data[1]);
 					if ($not_picked>$max_not_picked) {
 						$max_not_picked=$not_picked;
@@ -3159,8 +3132,8 @@ $items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No 
 					if (fmod($total_unpicked,$metadata_data[1])  ) {
 						$multipart_partially_no_picked='Yes';
 					}
-				//	print 'x'.$max_not_picked."x\n";
-					
+					// print 'x'.$max_not_picked."x\n";
+
 				}
 				$out_of_stock=$max_not_picked;
 				$no_picked_other=0;
@@ -3365,7 +3338,7 @@ $items_to_dispatch=$row['Order Quantity']+$row['Order Bonus Quantity']-$row['No 
 
 
 
-/*
+	/*
 	function create_invoice($date=false) {
 		if (!$date)
 			$date=gmdate("Y-m-d H:i:s");

@@ -237,7 +237,7 @@ if ($referral) {
 
 
 		$_order=preg_replace('/`/','',$list_order);
-		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension`   where `Order Key`!=%d %s  and %s <= %s $wheref  order by %s desc  limit 1",
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension` O  where `Order Key`!=%d %s  and %s <= %s $wheref  order by %s desc  limit 1",
 			$order->id,
 			$where,$list_order,prepare_mysql($order->get($_order)),$list_order);
 
@@ -254,7 +254,7 @@ if ($referral) {
 			
 		mysql_free_result($result);
 
-		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension`     where `Order Key`!=%d %s and  %s>=%s  $wheref order by %s   limit 1 ",
+		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension` O    where `Order Key`!=%d %s and  %s>=%s  $wheref order by %s   limit 1 ",
 			$order->id,
 			$where,$list_order,prepare_mysql($order->get($_order)),$list_order);
 		//print $sql;
