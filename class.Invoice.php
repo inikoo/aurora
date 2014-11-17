@@ -588,7 +588,7 @@ class Invoice extends DB_Table {
 			$order->set_as_invoiced();
 			$order->update_customer_history();
 		}
-		$invoice->update_xhtml_sale_representatives();
+		$this->update_xhtml_sale_representatives();
 
 		$this->update_title();
 	}
