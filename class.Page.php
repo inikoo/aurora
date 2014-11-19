@@ -2046,16 +2046,16 @@ var $set_currency_exchange=1;
 			$form_id='order_button_'.$product->pid;
 
 			if ($quantity) {
-				$button_image_source='art/ordered_'.$_SESSION['site_locale'].'.png';
+				$button_image_source='art/ordered_'.$this->data['Page Locale'].'.png';
 				$button_alt=_('Order Product');
 				$feedback_class="accepted";
 
 			}else {
-				$button_image_source='art/ordernow_'.$_SESSION['site_locale'].'.png';
+				$button_image_source='art/ordernow_'.$this->data['Page Locale'].'.png';
 				$button_alt=_('Order Product');
 				$feedback_class="empty";
 			}
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button"   onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"
+			$button='<img id="order_button_'.$product->pid.'"    class="order_button"  
 			src="'.$button_image_source.'" alt="'.$button_alt.'">
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
 			<img class="button_feedback '.$feedback_class.'" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
@@ -2100,7 +2100,7 @@ var $set_currency_exchange=1;
 			'Product Unit Type'=>$product->data['Product Unit Type'],
 			'Label'=>_('Price').':',
 
-			'locale'=>$_SESSION['site_locale']);
+			'locale'=>$this->data['Page Locale']);
 
 		$price= '<span class="price">'.$this->get_formated_price($price_data).'</span><br>';
 
@@ -2111,7 +2111,7 @@ var $set_currency_exchange=1;
 			'Product Unit Type'=>$product->data['Product Unit Type'],
 			'Label'=>_('RRP').":",
 
-			'locale'=>$_SESSION['site_locale']);
+			'locale'=>$this->data['Page Locale']);
 
 		$rrp= '<span class="rrp">'.$this->get_formated_price($rrp_data).'</span><br>';
 

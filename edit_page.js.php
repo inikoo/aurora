@@ -995,6 +995,8 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-ed
 }
 
 
+
+
 function change_content_block(e, block) {
     Dom.setStyle('show_page_content_overview_block', 'display', '')
     Dom.removeClass(['show_page_header_block', 'show_page_content_block', 'show_page_products_block', 'show_page_footer_block', 'show_page_includes_block'], 'selected')
@@ -1111,65 +1113,85 @@ window.location='page_preview.php?id='+Dom.get('page_key').value+'&logged=1&upda
 }
 
 
-function upload_page_content(){
+function upload_page_content() {
 
 
 
-Dom.setStyle('processing_upload_page_content','display','')
-Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','none')
+    Dom.setStyle('processing_upload_page_content', 'display', '')
+    Dom.setStyle(['upload_page_content', 'cancel_upload_page_content'], 'display', 'none')
 
-    YAHOO.util.Connect.setForm('upload_page_content_form', true,true);
-    var request='ar_upload_page_content.php?tipo=upload_page_content';
+    YAHOO.util.Connect.setForm('upload_page_content_form', true, true);
+    var request = 'ar_upload_page_content.php?tipo=upload_page_content';
 
-//alert(request);
-   var uploadHandler = {
-      upload: function(o) {
- //alert(o.responseText)
+    //alert(request);
+    var uploadHandler = {
+        upload: function(o) {
+            alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
 
-	var r =  YAHOO.lang.JSON.parse(o.responseText);
-
-	    if(r.state==200){
-//	    update_page_height_and_reload(r.page_key)
-  //          Dom.get('page_preview_iframe').src='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
-//window.location='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
-//setTimeout("reload_this("+r.page_key+")", 250);
-
-
+            if (r.state == 200) {
+                //	    update_page_height_and_reload(r.page_key)
+                //          Dom.get('page_preview_iframe').src='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
+                //window.location='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
+                //setTimeout("reload_this("+r.page_key+")", 250);
 
 
 
 
 
-	  window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
+
+                window.location = 'edit_page.php?id=' + r.page_key + '&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
 
 
-      return;
+                return;
 
-	    }else if(r.state==201){
-	        dialog_upload_page_content.hide();
-	        region1 = Dom.getRegion('show_upload_page_content');
-            region2 = Dom.getRegion('dialog_upload_page_content_files');
-            var pos =[region1.right-region2.width,region1.bottom+2]
-            Dom.setXY('dialog_upload_page_content_files', pos);
-	        dialog_upload_page_content_files.show();
-	        buttons='';
-	        for(var i=0; i<r.list.length; i++) {
-                buttons=buttons+"<button onClick='upload_page_content_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
-            }
-	        Dom.get('upload_page_content_files').innerHTML=buttons
-        }else
-		alert(r.msg);
-
+            } else if (r.state == 201) {
+                dialog_upload_page_content.hide();
+                region1 = Dom.getRegion('show_upload_page_content');
+                region2 = Dom.getRegion('dialog_upload_page_content_files');
+                var pos = [region1.right - region2.width, region1.bottom + 2]
+                Dom.setXY('dialog_upload_page_content_files', pos);
+                dialog_upload_page_content_files.show();
+                buttons = '';
+                for (var i = 0; i < r.list.length; i++) {
+                    buttons = buttons + "<button onClick='upload_page_content_file(" + r.list[i] + ")' style='margin-top:0px;margin-bottom:10px' >" + r.list[i] + "</button> ";
+                }
+                Dom.get('upload_page_content_files').innerHTML = buttons
+            } else alert(r.msg);
 
 
-	}
+
+        }
     };
 
-    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+    YAHOO.util.Connect.asyncRequest('POST', request, uploadHandler);
 
 
 
-  };
+};
+
+
+  function publish() {
+
+      Dom.addClass('publish', 'disabled')
+      Dom.get('publish_icon').src = 'art/loading.gif'
+      YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_page&page_key=' + Dom.get('page_key').value, {
+          success: function(o) {
+
+
+              var r = YAHOO.lang.JSON.parse(o.responseText);
+              Dom.removeClass('publish', 'disabled')
+              Dom.get('publish_icon').src = 'art/icons/page_world.png'
+              if (r.state == 200) {
+					change_state('Online');
+					save_edit_page_state()
+
+              }
+
+          }
+      });
+
+  }
 
   function update_page_height_and_reload(page_key){
 //  alert('ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+page_key)
@@ -1388,21 +1410,30 @@ function cancel_add_redirection() {
     dialog_add_redirection.hide();
 
 }
+function post_save_actions(r) {
 
-function post_save_actions(r){
-if(r.key=='footer_type'){
-Dom.setStyle('footer_list_section','opacity',1)
 
-if(r.newvalue=='None'){
-Dom.setStyle('footer_list_section','display','none')
 
-}else{
-Dom.setStyle('footer_list_section','display','')
+    if (r.key == 'footer_type') {
+        Dom.setStyle('footer_list_section', 'opacity', 1)
 
+        if (r.newvalue == 'None') {
+            Dom.setStyle('footer_list_section', 'display', 'none')
+
+        } else {
+            Dom.setStyle('footer_list_section', 'display', '')
+
+        }
+
+    } else if (r.key == 'Page_State') {
+
+        if (r.newvalue == 'Online') {
+            publish();
+        }
+    }
 }
 
-}
-}
+
 
 
 function show_history() {
@@ -1569,7 +1600,7 @@ Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
 			'validation':false
 
 		},
-		
+
 		'Page_Stealth_Mode': {
 			'changed': false,
 			'validated': true,

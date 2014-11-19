@@ -782,28 +782,36 @@ function upload_page_content_from_file($file,$data) {
 function remove_old_page_images($page) {
 	$sql=sprintf("select *  from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d  ",$page->id);
 	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-		$image_key=$row['Image Key'];
+		$image_key=intval($row['Image Key']);
 		$found=false;
 		$html=$page->data['Page Store Source'];
 
-		$regexp = "public_image.php\?id=\d+(\"|\')";
+		$regexp = "images\/\d+\.";
 		if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
 			//print_r($matches);
 			foreach ($matches as $match) {
-				$_image_key=preg_replace('/[^\d]/','',$match[0]);
+				$_image_key=intval(preg_replace('/[^\d]/','',$match[0]));
+				
+				
+				
 				if ($_image_key==$image_key) {
+				
+					
+				
 					$found=true;
 					break;
 				}
 			}
 		}
-		//27269
+	
 		if (!$found) {
+		
+		
 			$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Image Key`=%d and `Subject Key`=%d",
-			$image_key,
-			$page->id
+				$image_key,
+				$page->id
 			);
 			mysql_query($sql);
 
@@ -815,7 +823,7 @@ function remove_old_page_images($page) {
 			}
 
 		}
-
+		
 	}
 
 
@@ -851,7 +859,11 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 						prepare_mysql($caption,false)
 					);
 					mysql_query($sql);
-					$html=str_replace('src="'.$match[2].'"','src="public_image.php?id='.$image->id.'"',$html);
+
+
+					$replacement=sprintf("images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
+
+					$html=str_replace('src="'.$match[2].'"','src="'.$replacement.'"',$html);
 				} else {
 					//print $image->msg."\n";
 				}
@@ -888,7 +900,9 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 						prepare_mysql($caption,false)
 					);
 					mysql_query($sql);
-					$html=str_replace($match[1],"'public_image.php?id=".$image->id."'",$html);
+					$replacement=sprintf("images/%07d.%s",$image->data['Image Key'],$image->data['Image File Format']);
+
+					$html=str_replace($match[1],"'$replacement'",$html);
 
 				} else {
 					//print "cont insert image\n";

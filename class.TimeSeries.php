@@ -864,8 +864,22 @@ class TimeSeries {
 
 	function save_day_values($date,$data) {
 
-		$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,%s,%s,%s,%s,%s,%s,'Data','','','')
-  ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d , `Open`=%s,`High`=%s,`Low`=%s,`Close`=%s,`Volume`=%s,`Adj Close`=%s, `Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d ",
+		$sql=sprintf("insert into `Time Series Dimension` 
+		
+		`Time Series Date`,`Time Series Frequency`,`Time Series Name`,`Time Series Name Key`,
+		``,``,``,``,
+		``,``,``,``,
+		``,``,``,``,
+		values (
+		%s,%s,%s,%d,
+		%d,%d,%s,%f,
+		%d,%s,%s,%s,
+		%s,%s,%s,'Data',
+		'','','')
+  ON DUPLICATE KEY UPDATE  
+  `Time Series Value`=%f ,`Time Series Count`=%d , `Open`=%s,`High`=%s,
+  `Low`=%s,`Close`=%s,`Volume`=%s,`Adj Close`=%s, 
+  `Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d ",
 			prepare_mysql($date),
 			prepare_mysql($this->freq),
 			prepare_mysql($this->name),
