@@ -8786,3 +8786,22 @@ ALTER TABLE `Site Dimension` ADD `Site Server Address` VARCHAR(256) CHARACTER SE
 
 ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM('Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `Page Store Dimension` ADD `Page Store Image URL` VARCHAR(36) NULL DEFAULT NULL AFTER `Number Products`; 
+
+ ALTER TABLE `User Request Dimension` ADD `User Request Referral Page URL Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Session Key`;
+ ALTER TABLE `User Session Dimension` CHANGE `User Session Key` `Visitor Session Key` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, CHANGE `User Session Site Key` `Visitor Session Site Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `User Session Visitor Key` `Visitor Session Visitor Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `User Session Start Date` `Visitor Session Start Date` DATETIME NOT NULL, CHANGE `User Session Last Request Date` `Visitor Session Last Request Date` DATETIME NOT NULL;
+ ALTER TABLE `User Visitor Dimension` CHANGE `User Visitor Key` `Visitor Key` INT(11) NOT NULL AUTO_INCREMENT, CHANGE `User Visitor Site Key` `Visitor Site Key` MEDIUMINT(8) UNSIGNED NOT NULL;
+ change name User Visitor Dimension to: Visitor Dimension
+  change name User Session Dimension to: Visitor Session Dimension
+  
+ALTER TABLE `User Request Dimension`  DROP `User Request Page URL Key`,  DROP `URL`,  DROP `Session Key`,  DROP `Previous Page Key`,  DROP `OS`,  DROP `Browser`;
+ALTER TABLE `User Request Dimension` CHANGE `User Visitor Key` `Visitor Key` MEDIUMINT(9) NULL DEFAULT NULL, CHANGE `User Session Key` `Visitor Session Key` MEDIUMINT(9) NULL DEFAULT NULL;
+ 
+ CREATE TABLE IF NOT EXISTS `Page URL Dimension` (`Page URL Key` mediumint(8) unsigned NOT NULL,  `Page URL Host` varchar(255) NOT NULL,  `Page URL Path` varchar(255) NOT NULL,  `Page URL Arguments` text NOT NULL,  `Page URL` text NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ ALTER TABLE `Page URL Dimension` ADD PRIMARY KEY (`Page URL Key`), ADD KEY `Page URL Host` (`Page URL Host`), ADD KEY `Page URL Host_2` (`Page URL Host`,`Page URL Path`);
+ ALTER TABLE `Page URL Dimension`MODIFY `Page URL Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT;
+
+change urd put vistor key y visitor section key
+
+ALTER TABLE `Page URL Dimension` ADD `Page Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Page URL Key`;
+
+ALTER TABLE `User Request Dimension` CHANGE `Visitor Session Key` `Visitor Session Key` INT UNSIGNED NULL DEFAULT NULL;

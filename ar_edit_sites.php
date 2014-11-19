@@ -26,6 +26,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case 'publish_page':
+	$data=prepare_values($_REQUEST,array(
+			'page_key'=>array('type'=>'key'),
+
+		));
+	publish_page($data);
+	break;
 case('edit_page_flags'):
 	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
@@ -36,13 +43,13 @@ case('edit_page_flags'):
 	edit_page_flags($data);
 	break;
 case 'update_see_also_quantity':
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
-						'operation'=>array('type'=>'string')
+			'operation'=>array('type'=>'string')
 
 		));
 	update_see_also_quantity($data);
-break;
+	break;
 case ('update_sitemap'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key')
@@ -496,7 +503,7 @@ case('create_site'):
 			'parent_key'=>array('type'=>'key')
 		));
 	create_site($data);
-	break;	
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>'Operation not found');
@@ -537,6 +544,29 @@ function update_see_also_quantity($data) {
 
 }
 
+function publish_page($data) {
+
+	$page=new Page($data['page_key']);
+	$site=new Site($page->data['Page Site Key']);
+	if ($site->data['Site SSL']=='Yes') {
+		$site_protocol='https';
+	}else {
+		$site_protocol='http';
+	}
+	$images_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_images.php?parent=page&parent_key=".$page->id."&sk=x");
+	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page&parent_key=".$page->id."&sk=x");
+
+	
+
+	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
+	echo json_encode($response);
+
+}
+
+
+
+
+
 function edit_page($data) {
 
 	global $editor;
@@ -562,43 +592,43 @@ function edit_page($data) {
 	if ($page->updated) {
 
 		$response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value,'page_key'=>$page->id);
-		
+
 		if ($data['okey']=='page_state') {
 			$response['formated_state']=$page->get_formated_state();
 		}else if ($data['okey']=='Site Flag Key') {
 
-			$sql=sprintf("select * from  `Site Flag Dimension` where `Site Flag Key`=%d",$page->new_value);
+				$sql=sprintf("select * from  `Site Flag Dimension` where `Site Flag Key`=%d",$page->new_value);
 
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+				$result=mysql_query($sql);
+				if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-				switch ($row['Site Flag Color']) {
-				case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$row['Site Flag Color']."' />"; break;
-				case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$row['Site Flag Color']."' />";break;
-				case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Site Flag Color']."'  />"; break;
-				case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$row['Site Flag Color']."'/>"; break;
-				case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Site Flag Color']."'/>"; break;
-				case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Site Flag Color']."'/>";break;
-				case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Site Flag Color']."'/>";break;
-				default:
-					$flag='';
+					switch ($row['Site Flag Color']) {
+					case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$row['Site Flag Color']."' />"; break;
+					case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$row['Site Flag Color']."' />";break;
+					case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$row['Site Flag Color']."'  />"; break;
+					case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$row['Site Flag Color']."'/>"; break;
+					case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$row['Site Flag Color']."'/>"; break;
+					case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$row['Site Flag Color']."'/>";break;
+					case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$row['Site Flag Color']."'/>";break;
+					default:
+						$flag='';
+
+					}
+
+					$response['flag_label']=$row['Site Flag Label'];
+					$response['flag_icon']="flag_".strtolower($row['Site Flag Color']).".png";
+					$response['flag']=$flag;
+					$response['flag_value']=$row['Site Flag Color'];
 
 				}
-
-				$response['flag_label']=$row['Site Flag Label'];
-				$response['flag_icon']="flag_".strtolower($row['Site Flag Color']).".png";
-				$response['flag']=$flag;
-				$response['flag_value']=$row['Site Flag Color'];
-
 			}
+
+		if (array_key_exists('table_record_index', $data)) {
+			$response['record_index']=(int) $data['table_record_index'];
 		}
-		
-		if(array_key_exists('table_record_index', $data)){
-		$response['record_index']=(int) $data['table_record_index'];
-		}
-		
+
 	} else {
 		$response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key'],'page_key'=>$page->id);
 	}
@@ -678,7 +708,7 @@ function new_page($data) {
 		break;
 	}
 
-if ($site->new_page) {
+	if ($site->new_page) {
 		$response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
 
 	} else {
@@ -804,10 +834,10 @@ function list_pages_for_edition() {
 	$rtext=number($total_records)." ".ngettext('page','pages',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -1115,7 +1145,7 @@ function list_sites_for_edition() {
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
-		
+
 
 
 		$data[]=array(
@@ -1123,11 +1153,11 @@ function list_sites_for_edition() {
 			'name'=>$row['Site Name'],
 			'code'=>$row['Site Code'],
 			'url'=>$row['Site URL'],
-		'go'=>sprintf("<a href='edit_site.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Site Key']),
+			'go'=>sprintf("<a href='edit_site.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Site Key']),
 
 			'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
 
-		
+
 		);
 	}
 
@@ -1787,10 +1817,10 @@ function list_headers_for_edition() {
 	$rtext=number($total_records)." ".ngettext('header','headers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -2026,10 +2056,10 @@ function list_footers_for_edition() {
 	$rtext=number($total_records)." ".ngettext('footer','footers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -2333,10 +2363,10 @@ function list_page_product_lists_for_edition() {
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -2592,10 +2622,10 @@ function list_page_product_buttons_for_edition() {
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 
@@ -2933,9 +2963,9 @@ function update_page_height($data) {
 		$page->update_field_switcher('Page Footer Height',$data['footer'],'no_history');
 		$page->update_field_switcher('Page Header Height',$data['header'],'no_history');
 		$page->update_field_switcher('Page Content Height',$data['content'],'no_history');
-		
+
 	}
-$page->get_data('id',$page->id);
+	$page->get_data('id',$page->id);
 
 	$response= array('state'=>200,'content'=>$page->data['Page Content Height']);
 	echo json_encode($response);
@@ -3309,9 +3339,9 @@ function create_site($data) {
 		$store=new Store($store_key);
 		$store->editor=$editor;
 
- $site=$store->create_site($data['values']);
+		$site=$store->create_site($data['values']);
 
-	
+
 		if (!$site->new) {
 
 			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'found','object_key'=>$site->id);
