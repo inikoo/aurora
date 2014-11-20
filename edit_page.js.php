@@ -1126,7 +1126,7 @@ function upload_page_content() {
     //alert(request);
     var uploadHandler = {
         upload: function(o) {
-            alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -1136,11 +1136,10 @@ function upload_page_content() {
                 //setTimeout("reload_this("+r.page_key+")", 250);
 
 
+				post_upload_actions(r.page_key)
 
 
 
-
-                window.location = 'edit_page.php?id=' + r.page_key + '&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
 
 
                 return;
@@ -1169,6 +1168,32 @@ function upload_page_content() {
 
 
 };
+
+
+function post_upload_actions(page_key){
+
+ Dom.addClass('publish', 'disabled')
+      Dom.get('publish_icon').src = 'art/loading.gif'
+      YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_page&page_key=' + page_key, {
+          success: function(o) {
+
+
+              var r = YAHOO.lang.JSON.parse(o.responseText);
+              Dom.removeClass('publish', 'disabled')
+              Dom.get('publish_icon').src = 'art/icons/page_world.png'
+              if (r.state == 200) {
+	                window.location = 'edit_page.php?id=' + page_key + '&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
+
+
+              }
+
+          }
+      });
+
+  }
+
+
+
 
 
   function publish() {
