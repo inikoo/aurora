@@ -16,9 +16,10 @@ function change_email_method(){
 	
 }
 
-function post_item_updated_actions(branch,r){
-	window.location.reload();
-}
+//function post_item_updated_actions(branch,r){
+
+//	window.location.reload();
+// }
 
 
 function change_email_type(){

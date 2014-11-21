@@ -1038,8 +1038,8 @@ $index_page=$this->get_page_object('index');
 
 		while ($row=mysql_fetch_array($res)) {
 			$sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ",$new_header_key,$row['Page Key']);
-			//  print "$sql<br>";
 			mysql_query($sql);
+			
 		}
 
 

@@ -1058,7 +1058,7 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-    //   alert(request+'?'+postData);return;
+      // alert(request+'?'+postData);return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             // alert(o.responseText)
@@ -1081,7 +1081,7 @@ function save_edit_general_bulk(branch) {
                     Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
 
                     // alert(validate_scope_data[branch][r.key].name + '_msg')
-                    Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img style="height:14px"  src="art/icons/accept.png"/>';
+                    Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img style="height:14px"  alt="ok" src="art/icons/accept.png"/>';
 
 
                     var myAnim = new YAHOO.util.Anim(validate_scope_data[branch][r.key].name + '_msg', {
@@ -1097,7 +1097,7 @@ function save_edit_general_bulk(branch) {
                     display_add_other(r);
 
 
-
+					
                     post_item_updated_actions(branch, r);
 
 
@@ -1117,6 +1117,8 @@ function save_edit_general_bulk(branch) {
             post_bulk_save_actions()
 
             validate_scope_edit(branch)
+            
+            
 
         },
         failure: function(o) {

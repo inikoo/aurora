@@ -144,8 +144,8 @@ $css_files[]='css/edit.css';
 
 $js_files[]='js/edit_common.js';
 $js_files[]='country_select.js.php';
+$js_files[]='email_credential.js.php';//<- maybe is an error becasue is no refresh after update
 $js_files[]='edit_site.js.php?id='.$site->id;
-$js_files[]='email_credential.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
