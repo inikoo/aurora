@@ -24,7 +24,7 @@ var dialog_upload_search_files;
 
 
 
-var id=<?php echo$_SESSION['state']['site']['id']?>;
+var id=<?php echo $_REQUEST['id']?>;
 
 var scope='favicon';
 var scope_key=id;
@@ -100,7 +100,82 @@ if(branch=='page_flags'){
 }
 
 }
+function post_item_updated_actions(branch, r) {
+    if (branch == 'site_menu') {
+        if (r.key == 'css') {
+            YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site_elements&element=menu_css&site_key=' + Dom.get('site_key').value, {
+                success: function(o) {
+                    var r = YAHOO.lang.JSON.parse(o.responseText);
+                    if (r.state == 200) {
 
+
+                    }
+                }
+            });
+
+
+        } else if (r.key == 'js') {
+            YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site_elements&element=menu_js&site_key=' + Dom.get('site_key').value, {
+                success: function(o) {
+                    var r = YAHOO.lang.JSON.parse(o.responseText);
+                    if (r.state == 200) {
+
+
+                    }
+
+                }
+            });
+
+        }
+
+    }
+    
+     else if (branch == 'site_search') {
+        if (r.key == 'css') {
+            YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site_elements&element=search_css&site_key=' + Dom.get('site_key').value, {
+                success: function(o) {
+                    var r = YAHOO.lang.JSON.parse(o.responseText);
+                    if (r.state == 200) {
+
+
+                    }
+                }
+            });
+
+
+        } else if (r.key == 'js') {
+            YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site_elements&element=search_js&site_key=' + Dom.get('site_key').value, {
+                success: function(o) {
+                    var r = YAHOO.lang.JSON.parse(o.responseText);
+                    if (r.state == 200) {
+
+
+                    }
+
+                }
+            });
+
+        }
+
+    }
+    else{
+    
+      YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site&force=1&site_key=' + Dom.get('site_key').value, {
+        success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+
+            }
+        }
+    });
+    
+    }
+    
+    
+   
+    
+}
 
 
 function change_block(e){
@@ -1923,7 +1998,7 @@ Dom.setStyle('new_page_buttons','display','none')
     var request = 'tipo=new_page&parent=' +parent + '&parent_key=' +parent_key + '&site_key=' + Dom.get('site_key').value
     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php', {
         success: function(o) {
-            alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -2015,6 +2090,7 @@ function save_edit_site_checkout(){
 
 function save_edit_site_menu(){
     save_edit_general_bulk('site_menu');
+    
 }
 
 function reset_edit_site_menu(){
@@ -2025,6 +2101,7 @@ function reset_edit_site_menu(){
 function save_edit_site_search(){
     save_edit_general_bulk('site_search');
 }
+
 
 
 
@@ -2716,9 +2793,4 @@ YAHOO.util.Event.onContentReady("filtermenu9", function() {
 
 
 
-function post_item_updated_actions(branch, r) {
-
-
-
-}
 

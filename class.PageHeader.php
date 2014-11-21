@@ -432,8 +432,4 @@ if($this->data['Page Header Preview Image Key']>0)
 }
 
 
-
-
-
-
 ?>

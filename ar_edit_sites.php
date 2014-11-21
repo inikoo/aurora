@@ -26,12 +26,35 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case 'publish_site_elements':
+	$data=prepare_values($_REQUEST,array(
+			'site_key'=>array('type'=>'key'),
+			'element'=>array('type'=>'string'),
+		));
+	publish_site_elements($data);
+	break;
+case 'publish_page_elements':
+	$data=prepare_values($_REQUEST,array(
+			'page_key'=>array('type'=>'key'),
+			'element'=>array('type'=>'string'),
+		));
+	publish_page_elements($data);
+	break;
 case 'publish_page':
 	$data=prepare_values($_REQUEST,array(
 			'page_key'=>array('type'=>'key'),
-
+			'force'=>array('type'=>'string','optional'=>true),
 		));
 	publish_page($data);
+	break;
+case 'publish_site':
+	$data=prepare_values($_REQUEST,array(
+			'site_key'=>array('type'=>'key'),
+			'force'=>array('type'=>'string','optional'=>true),
+
+		));
+	publish_site($data);
 	break;
 case('edit_page_flags'):
 	$data=prepare_values($_REQUEST,array(
@@ -544,6 +567,41 @@ function update_see_also_quantity($data) {
 
 }
 
+
+function publish_site_elements($data) {
+
+	$site=new Site($data['site_key']);
+	if ($site->data['Site SSL']=='Yes') {
+		$site_protocol='https';
+	}else {
+		$site_protocol='http';
+	}
+
+	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=".$data['element']."&parent_key=".$site->id."&sk=x");
+
+	$response= array('state'=>200,'template_response'=>$template_response);
+	echo json_encode($response);
+
+}
+
+function publish_page_elements($data) {
+
+	$page=new Page($data['page_key']);
+	$site=new Site($page->data['Page Site Key']);
+	if ($site->data['Site SSL']=='Yes') {
+		$site_protocol='https';
+	}else {
+		$site_protocol='http';
+	}
+
+	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=".$data['element']."&parent_key=".$page->id."&sk=x");
+
+	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
+	echo json_encode($response);
+
+}
+
+
 function publish_page($data) {
 
 	$page=new Page($data['page_key']);
@@ -556,13 +614,30 @@ function publish_page($data) {
 	$images_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_images.php?parent=page&parent_key=".$page->id."&sk=x");
 	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page&parent_key=".$page->id."&sk=x");
 
-	
+
 
 	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
 	echo json_encode($response);
 
 }
 
+
+function publish_site($data) {
+
+	$site=new Site($data['site_key']);
+	if ($site->data['Site SSL']=='Yes') {
+		$site_protocol='https';
+	}else {
+		$site_protocol='http';
+	}
+	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=site&parent_key=".$site->id."&sk=x");
+
+
+
+	$response= array('state'=>200,'template_response'=>$template_response);
+	echo json_encode($response);
+
+}
 
 
 
@@ -2188,6 +2263,9 @@ function set_default_header($data) {
 
 	$site->set_default_header($data['header_key']);
 	if ($site->updated) {
+
+		$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=headers&parent_key=".$site->id."&sk=x");
+
 		$response= array('state'=>200,'action'=>'updated');
 	} else
 		$response= array('state'=>400,'msg'=>$site->msg);
@@ -2223,6 +2301,8 @@ function set_default_footer($data) {
 
 	$site->set_default_footer($data['footer_key']);
 	if ($site->updated) {
+		$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=footers&parent_key=".$site->id."&sk=x");
+
 		$response= array('state'=>200,'action'=>'updated');
 	} else
 		$response= array('state'=>400,'msg'=>$site->msg);
