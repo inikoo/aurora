@@ -6467,8 +6467,8 @@ class Order extends DB_Table {
 
 
 			if ( $this->data['Order Ship To Country Code']=='ESP' and  $this->data['Order Billing To Country Code']=='ESP'
-				and preg_match('/^(35|38|51)/',$this->data['Order Ship To Postal Code'])
-				and preg_match('/^(35|38|51)/',$this->data['Order Billing To Postal Code'])
+				and preg_match('/^(35|38|51|52)/',$this->data['Order Ship To Postal Code'])
+				and preg_match('/^(35|38|51|52)/',$this->data['Order Billing To Postal Code'])
 			) {
 
 				return array(
