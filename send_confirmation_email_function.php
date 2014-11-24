@@ -9,6 +9,8 @@ include_once 'class.Payment_Account.php';
 
 function send_confirmation_email($order) {
 
+	global $account_code;
+
 
 	$site=new Site($order->data['Order Site Key']);
 
@@ -44,6 +46,11 @@ function send_confirmation_email($order) {
 	$message_data['plain']=null;
 
 
+
+	$payment_account=new Payment_Account($order->data['Order Payment Account Key']);
+	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
+	//print_r($payment_account->data);
+	//print_r($payment_service_provider->data);
 
 	$payment_info_for_customer='<p></p>';
 	$payment_info_for_customer_for_internal_notification='<p></p>';
@@ -81,7 +88,6 @@ function send_confirmation_email($order) {
 
 		}
 	}
-
 
 
 
@@ -226,7 +232,7 @@ function send_confirmation_email($order) {
 		'PAYMENT_EXTRA_INFO'=>$payment_info_for_customer,
 		'ORDER_DATA'=>$order_info,
 		'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
-		'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
+		'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos')
 
 	);
 
@@ -237,89 +243,67 @@ function send_confirmation_email($order) {
 		$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
 	}
 
-	$send_email=new SendEmail();
 
-	$send_email->track=false;
-	$send_email->secret_key=CKEY;
-
-	//print_r($message_data);
-
-	$send_email->set($message_data);
-
-	$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
-
-	$result=$send_email->send();
+	$fork_data['customer_message_data']=$message_data;
+	$fork_data['customer_message_from']=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
 
 
-	//notification email
+	$fork_data['notification_recipients']=preg_split('/,/',$site->data['Site Order Notification Email Recipients']);
 
-	$notification_recipients=preg_split('/,/',$site->data['Site Order Notification Email Recipients']);
-
-	foreach ($notification_recipients as $notification_recipient) {
-		$message_data['Email Send Type']='Order Confirmation';
-		$message_data['from_name']=$site->data['Site Name'];
-		$message_data['method']='smtp';
-		$message_data['type']='HTML';
-		$message_data['to']=$notification_recipient;
-		$message_data['subject']='Order notification'.' '.$store->data['Store Code'];
-		$message_data['html']='';
-		$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
-		$message_data['email_matter']='Order Confirmation';
-		$message_data['email_matter_key']=$email_mailing_list_key;
-		$message_data['email_matter_parent_key']=$email_mailing_list_key;
-		$message_data['recipient_type']='User';
-		$message_data['recipient_key']=0;
-		$message_data['email_key']=0;
-		$message_data['plain']=null;
-
-
-
-
-
-		$message_data['email_placeholders']=array(
-			'Order_Public_ID'=>$order->get('Order Public ID'),
-
-			'Balance_Total_Amount' => $order->get('Balance Total Amount'),
-			'Order_Number_Products'=>$order->get('Order Number Products'),
-			'Created_Date'=>$order->get('Created Date'),
-			'Submitted_by_Customer_Date'=>$order->get('Submitted by Customer Date'),
-			'Order_Customer_Name'=>$order->get('Order Customer Name'),
-			'Order_Customer_Contact_Name'=>$order->get('Order Customer Contact Name'),
-			'Order_Customer_Key'=>$order->get('Order Customer Key'),
-			'Order_Tax_Number'=>($order->get('Order Tax Number')==''?'ND':$order->get('Order Tax Number')),
-			'Tax_Number_OK'=>($order->get('Order Tax Number Valid')==''?'ND':$order->get('Order Tax Number Valid')),
-			'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
-			'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
-			'Order_Customer_Message'=>($order->get('Order Customer Message')==''?'ND':$order->get('Order Customer Message')),
-			'Order_Voucher_Code'=>'ND',
+	$message_data=array();
+	$message_data['Email Send Type']='Order Confirmation';
+	$message_data['from_name']=$site->data['Site Name'];
+	$message_data['method']='smtp';
+	$message_data['type']='HTML';
+	$message_data['subject']='Order notification'.' '.$store->data['Store Code'];
+	$message_data['html']='';
+	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+	$message_data['email_matter']='Order Confirmation';
+	$message_data['email_matter_key']=$email_mailing_list_key;
+	$message_data['email_matter_parent_key']=$email_mailing_list_key;
+	$message_data['recipient_type']='User';
+	$message_data['recipient_key']=0;
+	$message_data['email_key']=0;
+	$message_data['plain']=null;
+	$message_data['email_placeholders']=array(
+		'Order_Public_ID'=>$order->get('Order Public ID'),
+		'Balance_Total_Amount' => $order->get('Balance Total Amount'),
+		'Order_Number_Products'=>$order->get('Order Number Products'),
+		'Created_Date'=>$order->get('Created Date'),
+		'Submitted_by_Customer_Date'=>$order->get('Submitted by Customer Date'),
+		'Order_Customer_Name'=>$order->get('Order Customer Name'),
+		'Order_Customer_Contact_Name'=>$order->get('Order Customer Contact Name'),
+		'Order_Customer_Key'=>$order->get('Order Customer Key'),
+		'Order_Tax_Number'=>($order->get('Order Tax Number')==''?'ND':$order->get('Order Tax Number')),
+		'Tax_Number_OK'=>($order->get('Order Tax Number Valid')==''?'ND':$order->get('Order Tax Number Valid')),
+		'Order_XHTML_Ship_Tos'=>$order->get('Order XHTML Ship Tos'),
+		'Order_XHTML_Billing_Tos'=>$order->get('Order XHTML Billing Tos'),
+		'Order_Customer_Message'=>($order->get('Order Customer Message')==''?'ND':$order->get('Order Customer Message')),
+		'Order_Voucher_Code'=>'ND',
 
 
-			'PAYMENT_EXTRA_INFO'=>$payment_info_for_customer_for_internal_notification,
-			'ORDER_DATA'=>$order_info
-		);
+		'PAYMENT_EXTRA_INFO'=>$payment_info_for_customer_for_internal_notification,
+		'ORDER_DATA'=>$order_info
+	);
 
 
-		$message_data['promotion_name']=$site->data['Site Order Notification Email Code'];
+	$message_data['promotion_name']=$site->data['Site Order Notification Email Code'];
 
-		if ($site->data['Site Direct Subscribe Madmimi']) {
-			$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
-		}
-
-		//$send_email->bcc=$site->data['Site Order Notification Email Recipients'];
-
-		$send_email=new SendEmail();
-
-		$send_email->track=false;
-		$send_email->secret_key=CKEY;
-
-		//print_r($message_data);
-
-		$send_email->set($message_data);
-
-		$send_email->from=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
-
-		$result=$send_email->send();
+	if ($site->data['Site Direct Subscribe Madmimi']) {
+		$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
 	}
+
+
+
+	$fork_data['notification_message_data']=$message_data;
+
+
+	$fork_data['notification_message_from']=$store->data['Store Name'].' <'.$store->data['Store Email'].'>';
+
+
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('sendemail',array('type'=>'order_confirmation','email_data'=>$fork_data),$account_code);
+
 
 
 }
