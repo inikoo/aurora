@@ -12,6 +12,7 @@ include 'gearman/ping_sitemap.php';
 include 'gearman/import.php';
 include 'gearman/edit_parts.php';
 include 'gearman/housekeeping_tasks.php';
+include 'gearman/sendemail.php';
 
 $count_number_used=0;
 
@@ -23,6 +24,7 @@ $worker->addFunction("ping_sitemap", "fork_ping_sitemap");
 $worker->addFunction("import", "fork_import");
 $worker->addFunction("edit_parts", "fork_edit_parts");
 $worker->addFunction("housekeeping", "fork_housekeeping");
+$worker->addFunction("sendemail", "fork_sendemail");
 
 
 
@@ -48,16 +50,14 @@ function get_fork_data($job) {
 
 
 
-
 	$inikoo_account_code=$fork_metadata['code'];
-
 	if (!ctype_alnum($inikoo_account_code)) {
-		print "cant fint account code\n";
+		print "can't find account code\n";
 		return false;
 	}
 
-	include "gearman/conf/dns.$inikoo_account_code.php";
-	include "class.Account.php";
+	require_once "gearman/conf/dns.$inikoo_account_code.php";
+	require_once "class.Account.php";
 
 
 
