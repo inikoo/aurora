@@ -32,12 +32,14 @@ case ('asset_sales'):
 			'to'=>array('type'=>'string')
 		));
 	asset_sales($data);
-break;
+	break;
 default:
-	
+
 }
 
 function asset_sales($data) {
+
+	global $memcache_ip,$account_code;
 
 	switch ($data['parent']) {
 	case 'product':
@@ -57,8 +59,7 @@ function asset_sales($data) {
 		$group='group by `Date`';
 		break;
 	case 'store':
-	$fields=' `Date`,sum(`Sales`) as Sales';
-
+		$fields=' `Date`,sum(`Sales`) as Sales';
 		$where=sprintf("where `Store Key`=%d",$data['parent_key']);
 		$group='group by `Date`';
 		break;
@@ -70,17 +71,39 @@ function asset_sales($data) {
 	$where_interval=prepare_mysql_dates($data['from'],$data['to'],'`Date`');
 	$where.=$where_interval['mysql'];
 
+	$cache = new Memcached();
+
+	$cache->addServer($memcache_ip, 11211);
+
 	$sql=sprintf("select %s from `Order Spanshot Fact` %s %s",
-	$fields,
-	$where,
-	$group
+		$fields,
+		$where,
+		$group
 	);
 
-	$res=mysql_query($sql);
-	print "date,sales\n";
-	while ($row=mysql_fetch_assoc($res)) {
-		print sprintf("%s,%s\n",$row['Date'],$row['Sales']);
+	if ($result=$cache->get($account_code.'SQL'.md5($sql)));
+	if ($result) {
+		print "date,sales\n";
+		foreach ($result as $row) {
+			print sprintf("%s,%s\n",$row['Date'],$row['Sales']);
+		}
+
+	}else {
+
+		$res=mysql_query($sql);
+		$result=array();
+		print "date,sales\n";
+		while ($row=mysql_fetch_assoc($res)) {
+			print sprintf("%s,%s\n",$row['Date'],$row['Sales']);
+			$result[]=$row;
+		}
+		$cache->set($account_code.'SQL'.md5($sql),$result,86400 );
 	}
+
+
+
+
+
 
 
 

@@ -684,7 +684,13 @@ function create_order($data) {
 	$order->update_billing_to($billing_to->id);
 
 
-
+		$customer->editor=$order->editor;
+		$customer->add_history_new_order($order);
+		$customer->update_orders();
+		$customer->update_no_normal_data();
+		$store=new Store($order->data['Order Store Key']);
+		$store->update_orders();
+		$order->update_full_search();
 
 	//print_r($data_dn_transactions);
 
