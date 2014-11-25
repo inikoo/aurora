@@ -49,6 +49,24 @@ function fork_housekeeping($job) {
 		$invoice->categorize();
 
 		break;
+	case 'order_created':
+		include_once 'class.Order.php';
+		include_once 'class.Customer.php';
+		include_once 'class.Store.php';
+		$order = new Order($fork_data['subject_key']);
+
+		$customer=new Customer($order->data['Order Customer Key']);
+		$customer->editor=$fork_data['editor'];
+		$customer->add_history_new_order($order);
+		$customer->update_orders();
+		$customer->update_no_normal_data();
+		$store=new Store($order->data['Order Store Key']);
+		$store->update_orders();
+		$order->update_full_search();
+
+
+		break;
+
 	case 'delivery_note_picked':
 	case 'item_picked':
 		include_once 'class.DeliveryNote.php';
@@ -94,13 +112,13 @@ function fork_housekeeping($job) {
 		include_once 'class.PartLocation.php';
 
 		$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` ITF where `Delivery Note Key`=%d",
-		$fork_data['delivery_note_key']);
+			$fork_data['delivery_note_key']);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
 			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
 			$part_location->update_stock();
-			
+
 
 		}
 		break;

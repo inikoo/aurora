@@ -42,9 +42,9 @@ $corporate_currency='GBP';
 //$from=date("Y-m-d");
 
 $from='2005-01-01';
-//$from=date("Y-m-d",strtotime('now -2 day'));
+$from=date("Y-m-d",strtotime('now '));
 
-$to=date("Y-m-d",strtotime('now -1 day'));
+$to=date("Y-m-d",strtotime('now '));
 
 //$to='2013-03-06';
 

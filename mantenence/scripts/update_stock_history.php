@@ -44,6 +44,11 @@ $from='2006-04-07';
 $to=date("Y-m-d",strtotime('now -1 day'));
 
 
+$from=date("Y-m-d",strtotime('now'));
+
+$to=date("Y-m-d",strtotime('now'));
+
+
 //$from=date("Y-m-d");
 //$to='2013-09-05';
 

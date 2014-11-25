@@ -91,6 +91,12 @@ if (isset($_REQUEST['new']) ) {
 
 	$billing_to=$customer->get_billing_to();
 	$order->update_billing_to($billing_to->id);
+
+
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'order_created','subject_key'=>$order->id,'editor'=>$order->editor),$account_code);
+
+
 	header('Location: order.php?id='.$order->id);
 	exit;
 }
@@ -250,8 +256,8 @@ if ($referral) {
 		}else {
 			$prev=array('id'=>0,'title'=>'','link'=>'','to_end'>false);
 		}
-			
-			
+
+
 		mysql_free_result($result);
 
 		$sql=sprintf("select `Order Key` as id , `Order Public ID` as title from `Order Dimension` O    where `Order Key`!=%d %s and  %s>=%s  $wheref order by %s   limit 1 ",
@@ -405,8 +411,8 @@ if ($referral) {
 
 }
 else {
-$smarty->assign('order_prev',array('id'=>0));
-$smarty->assign('order_next',array('id'=>0));
+	$smarty->assign('order_prev',array('id'=>0));
+	$smarty->assign('order_next',array('id'=>0));
 
 }
 
@@ -541,8 +547,8 @@ else {
 	case('In Process'):
 	case('Submitted by Customer'):
 	case('Waiting for Payment Confirmation'):
-	
-	
+
+
 		include 'order_in_process_splinter.php';
 		break;
 	case('Ready to Pick'):
