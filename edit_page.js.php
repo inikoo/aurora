@@ -1094,6 +1094,8 @@ Dom.get('upload_page_content_use_file').value='';
 
 dialog_upload_page_content_files.hide();
 }
+
+
 function upload_page_content_file(file){
 Dom.get('upload_page_content_use_file').value=file;
 upload_page_content();

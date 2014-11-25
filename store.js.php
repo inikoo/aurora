@@ -117,67 +117,63 @@ function change_page_elements_dblclick(el,elements_type) {
 
 
 
+function change_elements() {
 
-function change_elements(){
-
-ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
+    ids = ['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'];
 
 
-if(Dom.hasClass(this,'selected')){
+    if (Dom.hasClass(this, 'selected')) {
 
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+    table_id = 2;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+
+    // alert(request)
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
 }
-}
 
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
-
-}
-
-}else{
-Dom.addClass(this,'selected')
-
-}
-
-table_id=2;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
-
-}
-}
-  
- // alert(request)
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+function change_plot(o) {
+    ids = ['plot_store', 'plot_top_departments', 'plot_pie'];
+    block_ids = ['plot_store_div', 'plot_top_departments_div', 'plot_pie_div'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle(o.id + '_div', 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(o, 'selected');
 
 
-}
+    if (o.id == 'plot_store') plot = 'store';
+    else if (o.id == 'plot_top_departments') plot = 'top_departments';
+    else if (o.id == 'plot_pie') plot = 'pie';
 
-function change_plot(o){
-ids=['plot_store','plot_top_departments','plot_pie'];
-block_ids=['plot_store_div','plot_top_departments_div','plot_pie_div'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle(o.id+'_div','display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(o,'selected');
-
-
-if(o.id=='plot_store')
-plot='store';
-else if(o.id=='plot_top_departments')
-plot='top_departments';
-else if(o.id=='plot_pie')
-plot='pie';
-
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+plot ,{});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-plot&value=' + plot, {});
 }
 
 
