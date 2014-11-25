@@ -344,19 +344,17 @@ class Order extends DB_Table {
 			$this->update_shipping();
 
 		}
+		/*
 		$customer=new Customer($data['Customer Key']);
 		$customer->editor=$this->editor;
-
 		$customer->add_history_new_order($this);
-
 		$customer->update_orders();
 		$customer->update_no_normal_data();
-
 		$store=new Store($this->data['Order Store Key']);
 		$store->update_orders();
-
-
 		$this->update_full_search();
+		*/
+
 		if (!$this->ghost_order) {
 			$this->get_data('id',$this->id);
 			$this->update_item_totals_from_order_transactions();
