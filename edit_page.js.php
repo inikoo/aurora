@@ -1072,7 +1072,6 @@ function show_dialog_upload_page_content(e,suffix) {
     Dom.setStyle('processing_upload_page_content', 'display', 'none')
     Dom.setStyle(['upload_page_content', 'cancel_upload_page_content'], 'display', '')
 
-
     region1 = Dom.getRegion('show_upload_page_content'+suffix);
     region2 = Dom.getRegion('dialog_upload_page_content');
     var pos = [region1.right - region2.width, region1.bottom + 2]
@@ -1126,7 +1125,6 @@ function upload_page_content() {
     //alert(request);
     var uploadHandler = {
         upload: function(o) {
-            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -1145,17 +1143,29 @@ function upload_page_content() {
                 return;
 
             } else if (r.state == 201) {
+            
+          
+            
                 dialog_upload_page_content.hide();
-                region1 = Dom.getRegion('show_upload_page_content');
+                region1 = Dom.getRegion('show_upload_page_content_bis');
                 region2 = Dom.getRegion('dialog_upload_page_content_files');
+                
+                
+                
                 var pos = [region1.right - region2.width, region1.bottom + 2]
                 Dom.setXY('dialog_upload_page_content_files', pos);
                 dialog_upload_page_content_files.show();
+                
+                
+                
                 buttons = '';
                 for (var i = 0; i < r.list.length; i++) {
                     buttons = buttons + "<button onClick='upload_page_content_file(" + r.list[i] + ")' style='margin-top:0px;margin-bottom:10px' >" + r.list[i] + "</button> ";
                 }
                 Dom.get('upload_page_content_files').innerHTML = buttons
+                
+               
+                
             } else alert(r.msg);
 
 
