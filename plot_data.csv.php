@@ -16,27 +16,27 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('category_sales'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'category_key'=>array('type'=>'key'),
-						'subject'=>array('type'=>'string'),
-						'from'=>array('type'=>'string'),
-						'to'=>array('type'=>'string'),
+			'subject'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
 
 		));
 	category_sales_pie($data);
 
-break;
+	break;
 case('category_subjects_sales'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'category_key'=>array('type'=>'key'),
-						'subject'=>array('type'=>'string'),
-						'from'=>array('type'=>'string'),
-						'to'=>array('type'=>'string'),
+			'subject'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
 
 		));
 	category_subjects_sales_pie($data);
 
-break;
+	break;
 case('site_requests'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -47,8 +47,8 @@ case('site_requests'):
 case('category'):
 	$data=prepare_values($_REQUEST,array(
 			'category_key'=>array('type'=>'key'),
-				'subject'=>array('type'=>'string'),
-		
+			'subject'=>array('type'=>'string'),
+
 		));
 	category_assigned_pie($data);
 	break;
@@ -247,7 +247,7 @@ case('supplier_product_sales'):
 			'use_corporate'=>array('type'=>'number')
 		));
 	supplier_product_sales($data);
-	break;	
+	break;
 case('supplier_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'supplier_key'=>array('type'=>'string'),
@@ -265,7 +265,7 @@ case('supplier_category_sales'):
 			'use_corporate'=>array('type'=>'number')
 		));
 	supplier_category_sales($data);
-	break;	
+	break;
 case('stacked_invoice_categories_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'string'),
@@ -804,76 +804,92 @@ function customer_families_pie($data) {
 	}
 }
 function store_sales($data) {
-	global $user;
-	$tmp=preg_split('/\,/', $data['store_key']);
-	$stores_keys=array();
-	foreach ($tmp as $store_key) {
+	global $user,$memcache_ip,$account_code;
 
-		if (is_numeric($store_key) and in_array($store_key, $user->stores)) {
-			$stores_keys[]=$store_key;
+
+	$finger_print=md5('store'.$data['store_key'].','.(array_key_exists('to',$data)?$data['to']:'').','.(array_key_exists('from',$data)?$data['from']:'').','.$data['use_corporate']);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PLOT_ASSETS_SALES'.$finger_print);
+
+	if ($cache_result) {
+		$graph_data=$cache_result;
+	}
+	else {
+
+
+
+
+		$tmp=preg_split('/\,/', $data['store_key']);
+		$stores_keys=array();
+		foreach ($tmp as $store_key) {
+
+			if (is_numeric($store_key) and in_array($store_key, $user->stores)) {
+				$stores_keys[]=$store_key;
+			}
 		}
+
+		$graph_data=array();
+
+
+
+		if (array_key_exists('to',$data) and $data['to']!='') {
+			$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data) and $data['from']!='') {
+			$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+		} else {
+			$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$stores_keys));
+		}
+
+		$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+			$dates
+
+		);
+
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graph_data[$row['Date']]['vol']=0;
+
+			$graph_data[$row['Date']]['value']=0;
+			//$graph_data[$row['Date']]['date']=$row['Date'];
+
+		}
+
+
+		if (array_key_exists('to',$data) and $data['to']!='') {
+			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Invoice Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data) and $data['from']!='') {
+			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+		}
+
+		$corporate_currency='';
+		if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount` %s) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+			$corporate_currency,
+			$dates,
+			join(',',$stores_keys)
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$graph_data[$row['date']]['vol']=$row['invoices'];
+			$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+		}
+
+		$cache->set($account_code.'PLOT_ASSETS_SALES'.$finger_print,$graph_data,86400 );
+
 	}
 
-	$graph_data=array();
 
-
-
-	if (array_key_exists('to',$data) and $data['to']!='') {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data) and $data['from']!='') {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$stores_keys));
-	}
-
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
-		$dates
-
-	);
-
-	//print $sql;
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$graph_data[$row['Date']]['vol']=0;
-
-		$graph_data[$row['Date']]['value']=0;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
-
-	}
-
-
-	if (array_key_exists('to',$data) and $data['to']!='') {
-		$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Invoice Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data) and $data['from']!='') {
-		$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
-	}
-
-	$corporate_currency='';
-	if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
-	$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount` %s) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
-		$corporate_currency,
-		$dates,
-		join(',',$stores_keys)
-	);
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$graph_data[$row['date']]['vol']=$row['invoices'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
-	}
-
-
-
-	$out='';
-	//print_r($graph_data);
 	foreach ($graph_data as $key=>$value) {
 		print $key.','.join(',',$value)."\n";
 	}
@@ -881,75 +897,89 @@ function store_sales($data) {
 
 }
 function department_sales($data) {
-	global $user;
-	$tmp=preg_split('/\,/', $data['department_key']);
-	$departments_keys=array();
-	foreach ($tmp as $department_key) {
+	global $user,$memcache_ip,$account_code;
 
-		if (is_numeric($department_key)) {
-			$departments_keys[]=$department_key;
+	$finger_print=md5('department'.$data['department_key'].','.(array_key_exists('to',$data)?$data['to']:'').','.(array_key_exists('from',$data)?$data['from']:'').','.$data['use_corporate']);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PLOT_ASSETS_SALES'.$finger_print);
+
+	if ($cache_result) {
+		$graph_data=$cache_result;
+	}else {
+
+
+		$tmp=preg_split('/\,/', $data['department_key']);
+		$departments_keys=array();
+		foreach ($tmp as $department_key) {
+
+			if (is_numeric($department_key)) {
+				$departments_keys[]=$department_key;
+			}
 		}
+
+		$graph_data=array();
+
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+		} else {
+			$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Department Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$departments_keys));
+		}
+
+		$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+			$dates
+
+		);
+
+
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graph_data[$row['Date']]['vol']=0;
+
+			$graph_data[$row['Date']]['value']=0;
+			//$graph_data[$row['Date']]['date']=$row['Date'];
+
+		}
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Invoice Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+		}
+
+		$corporate_currency='';
+		if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Department Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+			$corporate_currency,
+			$dates,
+			join(',',$departments_keys)
+		);
+		// print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$graph_data[$row['date']]['vol']=$row['invoices'];
+			$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+		}
+
+		$cache->set($account_code.'PLOT_ASSETS_SALES'.$finger_print,$graph_data,86400 );
+
 	}
 
-	$graph_data=array();
 
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Department Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$departments_keys));
-	}
-
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
-		$dates
-
-	);
-
-
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$graph_data[$row['Date']]['vol']=0;
-
-		$graph_data[$row['Date']]['value']=0;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
-
-	}
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Invoice Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
-	}
-
-	$corporate_currency='';
-	if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
-	$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Department Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
-		$corporate_currency,
-		$dates,
-		join(',',$departments_keys)
-	);
-	// print $sql;
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$graph_data[$row['date']]['vol']=$row['invoices'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
-	}
-
-
-
-	$out='';
 	//print_r($graph_data);
 	foreach ($graph_data as $key=>$value) {
 		print $key.','.join(',',$value)."\n";
@@ -958,76 +988,88 @@ function department_sales($data) {
 
 }
 function family_sales($data) {
-	global $user;
-	$tmp=preg_split('/\,/', $data['family_key']);
-	$familys_keys=array();
-	foreach ($tmp as $family_key) {
+	global $user,$memcache_ip,$account_code;
 
-		if (is_numeric($family_key)) {
-			$familys_keys[]=$family_key;
+	$finger_print=md5('family'.$data['family_key'].','.(array_key_exists('to',$data)?$data['to']:'').','.(array_key_exists('from',$data)?$data['from']:'').','.$data['use_corporate']);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PLOT_ASSETS_SALES'.$finger_print);
+
+	if ($cache_result) {
+		$graph_data=$cache_result;
+	}else {
+
+		$tmp=preg_split('/\,/', $data['family_key']);
+		$familys_keys=array();
+		foreach ($tmp as $family_key) {
+
+			if (is_numeric($family_key)) {
+				$familys_keys[]=$family_key;
+			}
 		}
+
+		$graph_data=array();
+
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+		} else {
+			$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Family Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$familys_keys));
+		}
+
+		$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+			$dates
+
+		);
+
+		//print $sql;
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graph_data[$row['Date']]['vol']=0;
+
+			$graph_data[$row['Date']]['value']=0;
+			//$graph_data[$row['Date']]['date']=$row['Date'];
+
+		}
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Invoice Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+		}
+
+		$corporate_currency='';
+		if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Family Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+			$corporate_currency,
+			$dates,
+			join(',',$familys_keys)
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$graph_data[$row['date']]['vol']=$row['invoices'];
+			$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+		}
+
+		$cache->set($account_code.'PLOT_ASSETS_SALES'.$finger_print,$graph_data,86400 );
+
 	}
 
-	$graph_data=array();
 
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Family Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$familys_keys));
-	}
-
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
-		$dates
-
-	);
-
-	//print $sql;
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$graph_data[$row['Date']]['vol']=0;
-
-		$graph_data[$row['Date']]['value']=0;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
-
-	}
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Invoice Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
-	}
-
-	$corporate_currency='';
-	if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
-	$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Family Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
-		$corporate_currency,
-		$dates,
-		join(',',$familys_keys)
-	);
-	//print $sql;
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$graph_data[$row['date']]['vol']=$row['invoices'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
-	}
-
-
-
-	$out='';
-	//print_r($graph_data);
 	foreach ($graph_data as $key=>$value) {
 		print $key.','.join(',',$value)."\n";
 	}
@@ -1037,75 +1079,89 @@ function family_sales($data) {
 
 
 function category_part_sales($data) {
-	global $user;
-	$tmp=preg_split('/\,/', $data['category_key']);
-	$categories_keys=array();
-	foreach ($tmp as $category_key) {
+	global $user,$memcache_ip,$account_code;
 
-		if (is_numeric($category_key)) {
-			$categories_keys[]=$category_key;
+	$finger_print=md5('category'.$data['category_key'].','.(array_key_exists('to',$data)?$data['to']:'').','.(array_key_exists('from',$data)?$data['from']:'').','.$data['use_corporate']);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PLOT_ASSETS_SALES'.$finger_print);
+
+	if ($cache_result) {
+		$graph_data=$cache_result;
+	}else {
+
+
+		$tmp=preg_split('/\,/', $data['category_key']);
+		$categories_keys=array();
+		foreach ($tmp as $category_key) {
+
+			if (is_numeric($category_key)) {
+				$categories_keys[]=$category_key;
+			}
 		}
+
+		$graph_data=array();
+
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+		} else {
+			$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`) where `Category Key` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$categories_keys));
+		}
+
+		$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+			$dates
+
+		);
+
+
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graph_data[$row['Date']]['vol']=0;
+
+			$graph_data[$row['Date']]['value']=0;
+			//$graph_data[$row['Date']]['date']=$row['Date'];
+
+		}
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+		}
+
+
+		$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type` like 'Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+			$dates,
+			join(',',$categories_keys)
+		);
+
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$graph_data[$row['date']]['vol']=$row['outers'];
+			$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+		}
+
+
+		$cache->set($account_code.'PLOT_ASSETS_SALES'.$finger_print,$graph_data,86400 );
+
 	}
 
-	$graph_data=array();
 
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`) where `Category Key` in (%s)  and `Inventory Transaction Type` like 'Sale'   )",join(',',$categories_keys));
-	}
-
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
-		$dates
-
-	);
-
-
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$graph_data[$row['Date']]['vol']=0;
-
-		$graph_data[$row['Date']]['value']=0;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
-
-	}
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	}
-
-
-	$sql=sprintf("select Date(`Date`) as date,sum(`Amount In`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type` like 'Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
-		$dates,
-		join(',',$categories_keys)
-	);
-
-	//print $sql;
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$graph_data[$row['date']]['vol']=$row['outers'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
-	}
-
-
-
-	$out='';
-	//print_r($graph_data);
 	foreach ($graph_data as $key=>$value) {
 		print $key.','.join(',',$value)."\n";
 	}
@@ -1115,76 +1171,88 @@ function category_part_sales($data) {
 
 
 function product_id_sales($data) {
-	global $user;
-	$tmp=preg_split('/\,/', $data['product_id']);
-	$product_ids=array();
-	foreach ($tmp as $product_id) {
+	global $user,$memcache_ip,$account_code;
 
-		if (is_numeric($product_id)) {
-			$product_ids[]=$product_id;
+	$finger_print=md5('product'.$data['product_id'].','.(array_key_exists('to',$data)?$data['to']:'').','.(array_key_exists('from',$data)?$data['from']:'').','.$data['use_corporate']);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PLOT_ASSETS_SALES'.$finger_print);
+
+	if ($cache_result) {
+		$graph_data=$cache_result;
+	}else {
+
+
+		$tmp=preg_split('/\,/', $data['product_id']);
+		$product_ids=array();
+		foreach ($tmp as $product_id) {
+
+			if (is_numeric($product_id)) {
+				$product_ids[]=$product_id;
+			}
 		}
+
+		$graph_data=array();
+
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+		} else {
+			$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product ID` in (%s)  and `Current Payment State`='Paid'  )",join(',',$product_ids));
+		}
+
+		$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+			$dates
+
+		);
+
+		//print $sql;
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graph_data[$row['Date']]['vol']=0;
+
+			$graph_data[$row['Date']]['value']=0;
+			//$graph_data[$row['Date']]['date']=$row['Date'];
+
+		}
+
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Invoice Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+		}
+
+		$corporate_currency='';
+		if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product ID` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+			$corporate_currency,
+			$dates,
+			join(',',$product_ids)
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$graph_data[$row['date']]['vol']=$row['invoices'];
+			$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
+		}
+
+
+		$cache->set($account_code.'PLOT_ASSETS_SALES'.$finger_print,$graph_data,86400 );
+
 	}
-
-	$graph_data=array();
-
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
-	} else {
-		$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product ID` in (%s)  and `Current Payment State`='Paid'  )",join(',',$product_ids));
-	}
-
-	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
-		$dates
-
-	);
-
-	//print $sql;
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$graph_data[$row['Date']]['vol']=0;
-
-		$graph_data[$row['Date']]['value']=0;
-		//$graph_data[$row['Date']]['date']=$row['Date'];
-
-	}
-
-
-	if (array_key_exists('to',$data)) {
-		$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
-	} else {
-		$dates=sprintf(" `Invoice Date`<=NOW()  ");
-	}
-	if (array_key_exists('from',$data)) {
-		$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
-	}
-
-	$corporate_currency='';
-	if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
-	$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product ID` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
-		$corporate_currency,
-		$dates,
-		join(',',$product_ids)
-	);
-	//print $sql;
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$graph_data[$row['date']]['vol']=$row['invoices'];
-		$graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
-	}
-
-
-
-	$out='';
-	//print_r($graph_data);
 	foreach ($graph_data as $key=>$value) {
 		print $key.','.join(',',$value)."\n";
 	}
@@ -1248,7 +1316,7 @@ function stacked_invoice_categories_sales($data) {
 
 	if ($to)$to=$to.' 23:59:59';
 	if ($from)$from=$from.' 00:00:00';
-	
+
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where true  %s order by `Date` ",
@@ -1259,17 +1327,17 @@ function stacked_invoice_categories_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['Date']]=$tmp;
-	}	
+	}
 	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 
 	$i=0;
 	foreach ($categories_keys as $category_key) {
 
-	
+
 		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` left join `Category Bridge` on (`Subject Key`=`Invoice Key`)  where `Subject`='Invoice'  %s and `Category Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
 			$where_interval['mysql'],
-				$category_key
-			);
+			$category_key
+		);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -1343,7 +1411,7 @@ function stacked_store_sales($data) {
 
 	if ($to)$to=$to.' 23:59:59';
 	if ($from)$from=$from.' 00:00:00';
-	
+
 	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 
 	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where true  %s order by `Date` ",
@@ -1354,18 +1422,18 @@ function stacked_store_sales($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['Date']]=$tmp;
-	}	
+	}
 	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
-	
+
 	$i=0;
 	foreach ($store_keys as $store_key) {
 
-		
+
 		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` where  `Invoice Store Key`=%d %s  group by Date(`Invoice Date`) order by `Date` desc",
 			$store_key,
 			$where_interval['mysql']
-			
-			);
+
+		);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -1397,6 +1465,7 @@ function stacked_store_sales($data) {
     */
 }
 function top_families($data) {
+	global $account_code,$memcache_ip;
 
 	$max_slices=$data['nr'];
 	$store_keys=preg_split('/,/',$data['store_keys']);
@@ -1418,29 +1487,44 @@ function top_families($data) {
 	$field='(`Product Family DC '.$db_interval.' Acc Invoiced Amount`)';
 
 
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.join(',',$valid_store_keys)));
 
-	$total=0;
-	$sql=sprintf("select sum%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s)  ",
-		$field,
-		join(",",$valid_store_keys)
-	);
-	// print $sql;
-	$res=mysql_query($sql);
-
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['sales'];
+	if ($cache_result) {
+		list($others,$sql_result)=$cache_result;
 	}
+	else {
 
-	$others=$total;
-	$sql=sprintf("select `Product Family Store Code`,`Product Family Name`,F.`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s) order by sales desc limit %d ",
-		$field,
-		join(",",$valid_store_keys),
-		$max_slices
-	);
-	$res=mysql_query($sql);
-	//print $sql;
-	while ($row=mysql_fetch_assoc($res)) {
-		$descripton='';//$row['Product Family Name'];
+		$total=0;
+		$sql=sprintf("select sum%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s)  ",
+			$field,
+			join(",",$valid_store_keys)
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$total=$row['sales'];
+		}
+		$others=$total;
+		$sql=sprintf("select `Product Family Store Code`,`Product Family Name`,F.`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s) order by sales desc limit %d ",
+			$field,
+			join(",",$valid_store_keys),
+			$max_slices
+		);
+		$res=mysql_query($sql);
+
+		$sql_result=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql_result[]=$row;
+		}
+		$cache->set($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.join(',',$valid_store_keys)),array($total,$sql_result),86400 );
+	}
+	foreach ($sql_result as $row) {
+
+
+
 		$descripton=$row['Product Family Store Code'].' '.$row['Product Family Code'];
 		$code=$row['Product Family Code'];
 		printf("%s;%.2f;;;family.php?id=%d;%s\n",$code,$row['sales'],$row['Product Family Key'],$descripton);
@@ -1454,6 +1538,8 @@ function top_families($data) {
 }
 
 function top_products($data) {
+
+	global $account_code,$memcache_ip;
 
 	$max_slices=$data['nr'];
 	$store_keys=preg_split('/,/',$data['store_keys']);
@@ -1474,27 +1560,43 @@ function top_products($data) {
 	$db_interval=get_interval_db_name($period);
 	$field='(`Product ID DC '.$db_interval.' Acc Invoiced Amount`)';
 
-	$total=0;
-	$sql=sprintf("select sum%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) where `Product Store Key` in (%s)  ",
-		$field,
-		join(",",$valid_store_keys)
-	);
-	//print $sql;
-	$res=mysql_query($sql);
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.join(',',$valid_store_keys)));
 
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['sales'];
+	if ($cache_result) {
+		list($others,$sql_result)=$cache_result;
 	}
+	else {
 
-	$others=$total;
-	$sql=sprintf("select `Store Code`,`Product Name`,F.`Product ID`,`Product Code`,%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) left join `Store Dimension` S on (`Store Key`=`Product Store Key`)  where `Product Store Key` in (%s) order by sales desc limit %d ",
-		$field,
-		join(",",$valid_store_keys),
-		$max_slices
-	);
-	$res=mysql_query($sql);
-	//print $sql;
-	while ($row=mysql_fetch_assoc($res)) {
+		$total=0;
+		$sql=sprintf("select sum%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) where `Product Store Key` in (%s)  ",
+			$field,
+			join(",",$valid_store_keys)
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$total=$row['sales'];
+		}
+		$others=$total;
+		$sql=sprintf("select `Store Code`,`Product Name`,F.`Product ID`,`Product Code`,%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) left join `Store Dimension` S on (`Store Key`=`Product Store Key`)  where `Product Store Key` in (%s) order by sales desc limit %d ",
+			$field,
+			join(",",$valid_store_keys),
+			$max_slices
+		);
+		$res=mysql_query($sql);
+
+		$sql_result=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql_result[]=$row;
+		}
+		$cache->set($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.join(',',$valid_store_keys)),array($total,$sql_result),86400 );
+	}
+	foreach ($sql_result as $row) {
+
+
 		$descripton='';//$row['Product Name'];
 		$descripton=$row['Store Code'].' '.$row['Product Code'];
 		$code=$row['Product Code'];
@@ -1510,12 +1612,10 @@ function top_products($data) {
 
 function top_parts($data) {
 
-	global $user;
+	global $account_code,$memcache_ip,$user;
+
 
 	$max_slices=$data['nr'];
-
-
-
 	$period=$data['period'];
 
 
@@ -1534,25 +1634,40 @@ function top_parts($data) {
 	$field='(`Part '.$db_interval.' Acc Sold Amount`)';
 
 
-	$total=0;
-	$sql=sprintf("select sum%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   ",
-		$field
-	);
-	//print $sql;
-	$res=mysql_query($sql);
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.$where));
 
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['sales'];
+	if ($cache_result) {
+		list($others,$sql_result)=$cache_result;
 	}
+	else {
 
-	$others=$total;
-	$sql=sprintf("select `Part Unit Description`,P.`Part SKU` ,%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   order by sales desc limit %d ",
-		$field,
-		$max_slices
-	);
-	$res=mysql_query($sql);
-	// print $sql;
-	while ($row=mysql_fetch_assoc($res)) {
+		$total=0;
+		$sql=sprintf("select sum%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   ",
+			$field
+		);
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$total=$row['sales'];
+		}
+		$others=$total;
+		$sql=sprintf("select `Part Unit Description`,P.`Part SKU` ,%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   order by sales desc limit %d ",
+			$field,
+			$max_slices
+		);
+		$res=mysql_query($sql);
+
+		$sql_result=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql_result[]=$row;
+		}
+		$cache->set($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.$where),array($total,$sql_result),86400 );
+	}
+	foreach ($sql_result as $row) {
+
+
 		$descripton=$row['Part Unit Description'];
 		$code=sprintf("SKU%05d",$row['Part SKU']);
 		printf("%s;%.2f;;;part.php?sku=%d;%s\n",$code,$row['sales'],$row['Part SKU'],$descripton);
@@ -1567,64 +1682,82 @@ function top_parts($data) {
 
 function top_parts_categories($data) {
 
-	global $user;
+	global $account_code,$memcache_ip,$user;
 
 	$max_slices=$data['nr'];
 
 
 
 	$period=$data['period'];
-
-
-	$warehouses=join(',',$user->warehouses);
-	if ($warehouses=='')$warehouses=0;
-
-
-	if (!$warehouses)
-		$where=sprintf('  false ');
-
-	else {
-
-
-		$sql=sprintf("select GROUP_CONCAT(`Warehouse Family Category Key`) as root_category from `Warehouse Dimension` where `Warehouse Key` in (%s)",$warehouses);
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$root_category=$row['root_category'];
-		}
-
-
-		$where=sprintf(" `Category Subject`='Part' and  `Category Parent Key` in (%s)",$root_category);
-
-
-
-	}
-
-
 	$db_interval=get_interval_db_name($period);
 	$field='(`Part Category '.$db_interval.' Acc Sold Amount`)';
 
+	$warehouses=join(',',$user->warehouses);
 
 
-	$total=0;
-	$sql=sprintf("select sum%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  where  $where   ",
-		$field
-	);
-	//print $sql;
-	$res=mysql_query($sql);
 
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['sales'];
+
+
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$cache_result=$cache->get($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.$warehouses));
+
+	if ($cache_result) {
+		list($others,$sql_result)=$cache_result;
 	}
+	else {
 
-	$others=$total;
-	$sql=sprintf("select `Category Label`,`Category Key` ,%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`) where  $where   order by sales desc limit %d ",
-		$field,
-		$max_slices
-	);
-	$res=mysql_query($sql);
-	//print $sql;
-	while ($row=mysql_fetch_assoc($res)) {
+		if ($warehouses=='')$warehouses=0;
+
+
+		if (!$warehouses)
+			$where=sprintf('  false ');
+
+		else {
+
+
+			$sql=sprintf("select GROUP_CONCAT(`Warehouse Family Category Key`) as root_category from `Warehouse Dimension` where `Warehouse Key` in (%s)",$warehouses);
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$root_category=$row['root_category'];
+			}
+
+
+			$where=sprintf(" `Category Subject`='Part' and  `Category Parent Key` in (%s)",$root_category);
+
+
+
+		}
+
+
+		$total=0;
+		$sql=sprintf("select sum%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  where  $where   ",
+			$field
+		);
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$total=$row['sales'];
+		}
+		$others=$total;
+		$sql=sprintf("select `Category Label`,`Category Key` ,%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`) where  $where   order by sales desc limit %d ",
+			$field,
+			$max_slices
+		);
+		$res=mysql_query($sql);
+
+		$sql_result=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$sql_result[]=$row;
+		}
+		$cache->set($account_code.'PIE_TOP_ASSETS'.md5($max_slices.$field.$warehouses),array($total,$sql_result),86400 );
+	}
+	foreach ($sql_result as $row) {
+
+
+
 		$descripton=$row['Category Label'];
 		$code=$row['Category Label'];
 		printf("%s;%.2f;;;part_categories.php?id=%d;%s\n",$code,$row['sales'],$row['Category Key'],$descripton);
@@ -1799,10 +1932,10 @@ function category_assigned_pie($data) {
 
 function category_subjects_sales_pie($data) {
 
-$to=$data['to'];
-$from=$data['from'];
+	$to=$data['to'];
+	$from=$data['from'];
 
-if ($to)$to=$to.' 23:59:59';
+	if ($to)$to=$to.' 23:59:59';
 	if ($from)$from=$from.' 00:00:00';
 
 	switch ($data['subject']) {
@@ -1820,7 +1953,7 @@ if ($to)$to=$to.' 23:59:59';
 		$link='supplier.php?id=';
 		$table='`Inventory Transaction Fact` ITF left join `Category Bridge` B on (`Supplier Key`=`Subject Key` and `Subject`="Supplier")  left join `Supplier Dimension` S on (S.`Supplier Key`=ITF.`Supplier Key`) ';
 		$group=' group by B.`Subject Key`';
-			$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+		$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 		$where=$where_interval['mysql'];
 		break;
 	case 'Family':
@@ -1846,7 +1979,7 @@ if ($to)$to=$to.' 23:59:59';
 	}
 
 
-	
+
 
 
 	$sql=sprintf("select `Supplier Code`,`Supplier Name`,ITF.`Supplier Key` as subject_key,sum(`Amount In`) as sales_amount  from %s where  B.`Category Key`=%d %s $group order by  sum(`Amount In`) desc ",
@@ -1854,23 +1987,23 @@ if ($to)$to=$to.' 23:59:59';
 		$data['category_key'],
 		$where
 	);
-	
+
 	//print $sql;
-	
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-$descripton='cc';
-	printf("%s;%.2f;;;%s%d\n",$row['Supplier Code'],$row['sales_amount'],$link,$row['subject_key']);
+		$descripton='cc';
+		printf("%s;%.2f;;;%s%d\n",$row['Supplier Code'],$row['sales_amount'],$link,$row['subject_key']);
 
 	}
 }
 
 function category_sales_pie($data) {
 
-$to=$data['to'];
-$from=$data['from'];
+	$to=$data['to'];
+	$from=$data['from'];
 
-if ($to)$to=$to.' 23:59:59';
+	if ($to)$to=$to.' 23:59:59';
 	if ($from)$from=$from.' 00:00:00';
 
 	switch ($data['subject']) {
@@ -1888,7 +2021,7 @@ if ($to)$to=$to.' 23:59:59';
 		$link='supplier_category.php?id=';
 		$table='`Inventory Transaction Fact` ITF left join `Category Bridge` B on (ITF.`Supplier Key`=B.`Subject Key` and `Subject`="Supplier")  left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) ';
 		$group=' group by B.`Category Key`';
-			$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+		$where_interval=prepare_mysql_dates($from,$to,'`Date`');
 		$where=$where_interval['mysql'];
 		break;
 	case 'Family':
@@ -1914,7 +2047,7 @@ if ($to)$to=$to.' 23:59:59';
 	}
 
 
-	
+
 
 
 	$sql=sprintf("select `Category Label`,`Category Code`,B.`Category Key` ,sum(`Amount In`) as sales_amount  from %s where  C.`Category Parent Key`=%d %s $group order by  sum(`Amount In`) desc ",
@@ -1922,13 +2055,13 @@ if ($to)$to=$to.' 23:59:59';
 		$data['category_key'],
 		$where
 	);
-	
+
 	//print $sql;
-	
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-$descripton=$row['Category Label'];
-	printf("%s;%.2f;;;%s%d\n",$row['Category Code'],$row['sales_amount'],$link,$row['Category Key']);
+		$descripton=$row['Category Label'];
+		printf("%s;%.2f;;;%s%d\n",$row['Category Code'],$row['sales_amount'],$link,$row['Category Key']);
 
 	}
 }
@@ -2632,7 +2765,7 @@ function supplier_category_sales($data) {
 		$dates,
 		join(',',$category_keys)
 	);
-	 //print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];

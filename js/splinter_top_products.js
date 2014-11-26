@@ -150,7 +150,6 @@ Dom.setStyle('title_'+type,'display','')
 
 Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_type').value+'&store_keys='+Dom.get('store_keys').value+'&period='+Dom.get('top_products_period').value+'&nr='+Dom.get('top_products_nr').value); 
 
-
 var table=top_products_tables.table1;
     var datasource=top_products_tables.dataSourcetopprod;
     var request='&type=' + type;
