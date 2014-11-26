@@ -514,7 +514,7 @@ function sales_representative_sales_overview() {
 function list_families() {
 
 
-	global $myconf,$output_type,$user,$corporate_currency;;
+	global $myconf,$output_type,$user,$corporate_currency,$account_code,$memcache_ip;
 	$_SESSION['state']['home']['splinters']['top_products']['type']='families';
 	$conf=$_SESSION['state']['home']['splinters']['top_products'];
 	//print_r($conf);
@@ -602,8 +602,27 @@ function list_families() {
 	$adata=array();
 	//print $sql;
 	$position=1;
-	$result=mysql_query($sql);
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	
+	
+		$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
+
+	if (!$sql_result) {
+		$result=mysql_query($sql);
+		$sql_result=array();
+		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$sql_result[]=$data;
+		}
+		mysql_free_result($result);
+		$cache->set($account_code.'SQL'.md5($sql),$sql_result,86400 );
+	}
+
+
+
+	foreach ($sql_result as $data) {
+
+
 
 		if ($db_interval=='Total' or $db_interval=='3 Year') {
 			$delta_sales='';
@@ -639,7 +658,7 @@ function list_families() {
 			'net_sales_delta'=>$delta_sales
 		);
 	}
-	mysql_free_result($result);
+	
 
 
 
@@ -673,7 +692,7 @@ function list_families() {
 function list_parts() {
 
 
-	global $myconf,$output_type,$user,$corporate_currency;
+	global $myconf,$output_type,$user,$corporate_currency,$account_code,$memcache_ip;
 	$_SESSION['state']['home']['splinters']['top_products']['type']='parts';
 	$conf=$_SESSION['state']['home']['splinters']['top_products'];
 	//print_r($conf);
@@ -767,23 +786,34 @@ function list_parts() {
 
 	}
 
+	$period_db=get_interval_db_name($period);
 
-
-	$sql="select  `Part Current Stock`, `Part Unit Description`,P.`Part SKU`,`Part Total Acc Sold Amount`,`Part 1 Month Acc Sold Amount`,`Part 1 Year Acc Sold Amount`,`Part 1 Quarter Acc Sold Amount`,`Part 1 Year Acc Sold Amount` from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$sql="select  * from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
-	// print $sql;
-	$position=1;
-	$result=mysql_query($sql);
 
-	$period_db=get_interval_db_name($period);
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$position=1;
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
+
+	if (!$sql_result) {
+		$result=mysql_query($sql);
+		$sql_result=array();
+		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$sql_result[]=$data;
+		}
+		mysql_free_result($result);
+		$cache->set($account_code.'SQL'.md5($sql),$sql_result,86400 );
+	}
+
+
+
+	foreach ($sql_result as $data) {
+
 
 		$sales=money($data["Part $period_db Acc Sold Amount"],$corporate_currency);
-
-
-
 
 		if ($period_db=='Total' or $period_db=='3 Year') {
 			$delta_sales='';
@@ -810,7 +840,6 @@ function list_parts() {
 			,'stock'=>$stock
 		);
 	}
-	mysql_free_result($result);
 
 
 
@@ -848,7 +877,7 @@ function list_parts() {
 function list_parts_categories() {
 
 
-	global $myconf,$output_type,$user,$corporate_currency;
+	global $myconf,$output_type,$user,$corporate_currency,$account_code,$memcache_ip;
 	$_SESSION['state']['home']['splinters']['top_products']['type']='parts_categories';
 	$conf=$_SESSION['state']['home']['splinters']['top_products'];
 	//print_r($conf);
@@ -950,11 +979,25 @@ function list_parts_categories() {
 	$adata=array();
 	//print $sql;
 	$position=1;
-	$result=mysql_query($sql);
+	
+	
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
+
+	if (!$sql_result) {
+		$result=mysql_query($sql);
+		$sql_result=array();
+		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$sql_result[]=$data;
+		}
+		mysql_free_result($result);
+		$cache->set($account_code.'SQL'.md5($sql),$sql_result,86400 );
+	}
 
 
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+	foreach ($sql_result as $data) {
 
 
 
@@ -986,7 +1029,7 @@ function list_parts_categories() {
 
 		);
 	}
-	mysql_free_result($result);
+	
 
 
 
@@ -1022,7 +1065,7 @@ function list_parts_categories() {
 function list_products() {
 
 
-	global $myconf,$output_type,$user,$corporate_currency;
+	global $myconf,$output_type,$user,$corporate_currency,$memcache_ip,$account_code;
 	$_SESSION['state']['home']['splinters']['top_products']['type']='products';
 
 	$conf=$_SESSION['state']['home']['splinters']['top_products'];
@@ -1108,12 +1151,25 @@ function list_products() {
 
 	$sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-	// print $sql;
 	$position=1;
-	$result=mysql_query($sql);
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
+
+	if (!$sql_result) {
+		$result=mysql_query($sql);
+		$sql_result=array();
+		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$sql_result[]=$data;
+		}
+		mysql_free_result($result);
+		$cache->set($account_code.'SQL'.md5($sql),$sql_result,86400 );
+	}
 
 
+
+	foreach ($sql_result as $data) {
 		if ($db_interval=='Total' or $db_interval=='3 Year') {
 			$sales_delta='';
 		}else {
@@ -1159,10 +1215,6 @@ function list_products() {
 			,'stock'=>$stock
 		);
 	}
-	mysql_free_result($result);
-
-
-
 
 	$response=array('resultset'=>
 		array('state'=>200,
@@ -1193,7 +1245,7 @@ function list_products() {
 function list_customers() {
 
 
-	global $myconf,$output_type,$user;
+	global $myconf,$output_type,$user,$account_code,$memcache_ip;
 
 	$conf=$_SESSION['state']['home']['splinters']['top_customers'];
 
@@ -1306,9 +1358,26 @@ function list_customers() {
 
 
 	$position=1;
-	$result=mysql_query($sql);
-	//print $sql;
-	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	
+	
+		$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
+
+	if (!$sql_result) {
+		$result=mysql_query($sql);
+		$sql_result=array();
+		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$sql_result[]=$data;
+		}
+		mysql_free_result($result);
+		$cache->set($account_code.'SQL'.md5($sql),$sql_result,86400 );
+	}
+	
+	
+	
+	
+	foreach ($sql_result as $data) {
 
 
 		switch ($data['Customer Type by Activity']) {
@@ -1358,7 +1427,7 @@ function list_customers() {
 
 		);
 	}
-	mysql_free_result($result);
+	
 
 
 

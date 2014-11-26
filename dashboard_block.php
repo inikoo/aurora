@@ -183,22 +183,6 @@ case 'top_products':
 	$smarty->assign('store_keys',$store_keys);
 
 
-	/*
-
-	switch ($_SESSION['state']['home']['splinters']['top_products']['period']) {
-	case 'ytd':
-		$table_title=_('Sales').": "._('Year-to-Date');
-		break;
-	default:
-		$table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['top_products']['period'];
-		break;
-	}
-	$smarty->assign('table_title',$table_title);
-
-*/
-
-
-
 	$tipo_filter=$_SESSION['state']['home']['splinters']['top_products']['f_field'];
 	$smarty->assign('filter_name',$tipo_filter);
 	$smarty->assign('filter_value',$_SESSION['state']['home']['splinters']['top_products']['f_value']);
