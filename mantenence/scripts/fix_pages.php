@@ -170,10 +170,9 @@ while ($row=mysql_fetch_array($res)) {
 
 	$pattern='/target="_blank"\s*"=""/';
 	$replacement='target="_blank"';
-	$soxurce=preg_replace($pattern,$replacement,$source);
+	$source=preg_replace($pattern,$replacement,$source);
 
 
-	// print $source;
 
 
 
