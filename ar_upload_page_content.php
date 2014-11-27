@@ -833,7 +833,19 @@ function remove_old_page_images($page) {
 function upload_content_images($html,$base_dir='',$parent_data) {
 	include_once 'class.Image.php';
 
-	//print htmlspecialchars($html);
+	
+	$pattern='/href="(.+)\s*"\s*target="_blank""/';
+	$replacement='href="${1}" target="_blank"';
+	$html=preg_replace($pattern,$replacement,$html);
+
+	$pattern='/target="_blank"\s*"=""/';
+	$replacement='target="_blank"';
+	$html=preg_replace($pattern,$replacement,$html);
+
+	
+	
+	
+	
 
 	$regexp = "<img\s[^>]*src=(\"??)([^\" >]*?)\\1[^>]*>";
 	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
