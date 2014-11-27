@@ -82,38 +82,38 @@ while ($row=mysql_fetch_array($res)) {
 
 
 	}
-	
-	
-		$pattern='/alt="http.*"/';
-		
-		$replacement='alt=""';
-		$source=preg_replace($pattern,$replacement,$source);
-	
-	
+
+
+	$pattern='/alt="http.*"/';
+
+	$replacement='alt=""';
+	$source=preg_replace($pattern,$replacement,$source);
+
+
 	$pattern='/alt=".*\/.*"/';
-		
-		$replacement='alt=""';
-		$source=preg_replace($pattern,$replacement,$source);
-	
-	
-//	print $source;
+
+	$replacement='alt=""';
+	$source=preg_replace($pattern,$replacement,$source);
+
+
+	// print $source;
 	$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/pics\/(.+)\.jpg\s*"\s*target="_blank""?><img src="images\/(.+)" .* alt="(.+)" >/';
 
 	preg_match_all($pattern, $source, $matches);
 
 	//print_r($matches);
-	
+
 	foreach ($matches[1] as $key=>$possible_code) {
 
-		
-$possible_code=preg_replace('/_[a-z]+$/','',$possible_code);
+
+		$possible_code=preg_replace('/_[a-z]+$/','',$possible_code);
 
 		$code=false;
 		$sql=sprintf("select `Product Code`,`Product Name` from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d",
 			prepare_mysql($possible_code),
 			$row['Page Store Key']
 		);
-		
+
 		//print "$sql\n";
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_array($res2)) {
@@ -160,32 +160,23 @@ $possible_code=preg_replace('/_[a-z]+$/','',$possible_code);
 
 
 
-
-
-
-
-
-
-
-
-
 	}
-	
-	
-	
-	
-	
-	
-	$pattern='/href="(.+)\s*"target="_blank""/';
-		
-		$replacement='href="${1}" target="_blank"';
-		$source=preg_replace($pattern,$replacement,$source);
 
 
-//	print $source;
+
+	$pattern='/href="(.+)\s*"\s*target="_blank""/';
+	$replacement='href="${1}" target="_blank"';
+	$source=preg_replace($pattern,$replacement,$source);
+
+	$pattern='/target="_blank"\s*"=""/';
+	$replacement='target="_blank"';
+	$soxurce=preg_replace($pattern,$replacement,$source);
 
 
-	
+	// print $source;
+
+
+
 	$sql=sprintf("update `Page Store Dimension` set `Page Store Source`=%s where `Page Key`=%d",
 		prepare_mysql($source),
 		$page->id
