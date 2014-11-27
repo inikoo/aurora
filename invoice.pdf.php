@@ -22,7 +22,7 @@ if (!$invoice->id) {
 }
 
 
-$invoice->update_tax();
+//$invoice->update_tax();
 
 
 
@@ -235,7 +235,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		break;
 	case 'RE (5,2%)':
 		$tax_category_name='RE 5,2%';
-		break;	
+		break;
 	case 'Exempt from VAT':
 		$tax_category_name=_('Exempt from VAT');
 		break;
@@ -262,11 +262,9 @@ $html=$smarty->fetch('invoice.pdf.tpl');
 
 
 $mpdf->WriteHTML($html);
-
 //$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
-
-
-
 $mpdf->Output();
+
+
 
 ?>

@@ -72,7 +72,6 @@ function asset_sales($data) {
 	$where.=$where_interval['mysql'];
 
 	$cache = new Memcached();
-
 	$cache->addServer($memcache_ip, 11211);
 
 	$sql=sprintf("select %s from `Order Spanshot Fact` %s %s",
@@ -81,7 +80,7 @@ function asset_sales($data) {
 		$group
 	);
 
-	if ($result=$cache->get($account_code.'SQL'.md5($sql)));
+	$result=$cache->get($account_code.'SQL'.md5($sql));
 	if ($result) {
 		print "date,sales\n";
 		foreach ($result as $row) {
