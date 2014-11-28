@@ -843,7 +843,9 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 	$html=preg_replace($pattern,$replacement,$html);
 
 	
-	
+	$pattern='/href="\s*(.+)\s*"/';
+	$replacement='href="${1}"';
+	$html=preg_replace($pattern,$replacement,$html);
 	
 	
 
