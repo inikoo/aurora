@@ -658,14 +658,22 @@ function change_web_configuration(o, product_pid) {
 
 }
 
-function set_web_configuration(value) {
+function set_web_configuration(o,value) {
+   
+  if(Dom.hasClass(o,'waiting')){
+  	return;
+  }
+   
+
+   Dom.addClass(Dom.getElementsByClassName('item','button','edit_web_state_buttons'),'waiting')
     var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&pid=' + Dom.get('product_pid').value + '&newvalue=' + value
-    //   alert(request);
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
             	//alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
+             Dom.removeClass(Dom.getElementsByClassName('item','button','edit_web_state_buttons'),'waiting')
             if (r.state == 200) {
                 dialog_edit_web_state.hide()
                 Dom.get('product_web_state_' + r.newdata.pid).innerHTML = r.newdata.icon

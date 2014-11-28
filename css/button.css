@@ -360,7 +360,9 @@ button.selected, .buttons a.selected{
 
 
 .buttons button.disabled,.buttons a.disabled{color:#ccc;cursor:not-allowed}
-button.disabled:hover, .buttons a.disabled:hover{
+.buttons button.waiting,.buttons a.waiting{color:#ccc;cursor:wait}
+
+button.disabled:hover, .buttons a.disabled:hover,button.waiting:hover, .buttons a.waiting:hover{
      background-color:#f5f5f5;
     border:1px solid #dedede;
     border-top:1px solid #eee;
@@ -369,7 +371,7 @@ button.disabled:hover, .buttons a.disabled:hover{
   
   color:#ccc
 }
-button.disabled img,.buttons a.disabled img{opacity:0.6;}
+button.disabled img,.buttons a.disabled img,button.waiting img,.buttons a.waiting img{opacity:0.6;}
 
 
 .buttons.group {

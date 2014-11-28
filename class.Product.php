@@ -5160,7 +5160,7 @@ class product extends DB_Table {
 		$web_state=$this->get_web_state();
 
 
-		// print $web_state."\n";
+
 
 		$sql=sprintf('update `Product Dimension` set `Product Web State`=%s where `Product ID`=%d',
 			prepare_mysql($web_state),
@@ -5239,7 +5239,32 @@ class product extends DB_Table {
 			}
 			mysql_query($sql);
 
+
+			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
+				$this->pid);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$page=new Page($row['Page Key']);
+
+				$site=new Site($page->data['Page Site Key']);
+				if ($site->data['Site SSL']=='Yes') {
+					$site_protocol='https';
+				}else {
+					$site_protocol='http';
+				}
+
+				$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page&parent_key=".$page->id."&sk=x");
+
+
+
+			}
+
+
+
 		}
+
+
+
 
 
 
@@ -5250,6 +5275,8 @@ class product extends DB_Table {
 			while ($row=mysql_fetch_assoc($res)) {
 				$page=new Page($row['Page Key']);
 				$page->update_list_products();
+
+
 			}
 
 		}
