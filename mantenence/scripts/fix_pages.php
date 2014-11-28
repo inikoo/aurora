@@ -169,6 +169,9 @@ while ($row=mysql_fetch_array($res)) {
 	$source=preg_replace($pattern,$replacement,$source);
 
 
+	$pattern='/href="\s*(.+)\s*"/';
+	$replacement='href="${1}"';
+	$source=preg_replace($pattern,$replacement,$source);
 
 
 
