@@ -1341,8 +1341,8 @@ class product extends DB_Table {
 		if ($current_part_key!=$product_part_key) {
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s where `Product Part Key`=%d  ",prepare_mysql(date('Y-m-d H:i:s')),$current_part_key);
 			mysql_query($sql);
-			
-			
+
+
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No' where `Product ID`=%d  ",$this->pid);
 			mysql_query($sql);
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='Yes' ,`Product Part Valid To`=NULL  where `Product Part Key`=%d  ",$product_part_key);
@@ -1910,7 +1910,8 @@ class product extends DB_Table {
 				$this->msg=_('Error: Wrong code (empty)');
 				return;
 			}
-			$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  COLLATE utf8_general_ci "
+			$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Current Key`!=%d and `Product Store Key`=%d and `Product Code`=%s  COLLATE utf8_general_ci "
+				,$this->id
 				,$this->data['Product Store Key']
 				,prepare_mysql($value)
 			);
@@ -1921,7 +1922,7 @@ class product extends DB_Table {
 				return;
 			}
 
-			$sql=sprintf("update `Product Dimension` set `Product Code`=%s where `Product Key`=%d "
+			$sql=sprintf("update `Product Dimension` set `Product Code`=%s where `Product Current Key`=%d "
 				,prepare_mysql($value)
 				,$this->id
 			);
@@ -4817,7 +4818,7 @@ class product extends DB_Table {
 
 
 		if ($type=='Package' and $weight!=$old_package_weight) {
-						$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`!='Dispatched' ",$this->pid);
+			$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`!='Dispatched' ",$this->pid);
 			$result=mysql_query($sql);
 			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$order=new Order($row['Order Key']);
