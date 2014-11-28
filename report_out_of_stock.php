@@ -34,7 +34,7 @@ $js_files=array(
 	'js/calendar_interval.js',
 	
 	'js/reports_calendar.js',
-	'js/export.js',
+	//'js/export.js',
 	'report_out_of_stock.js.php',
 
 );

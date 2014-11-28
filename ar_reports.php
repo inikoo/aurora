@@ -1298,7 +1298,17 @@ function list_parts_marked_as_out_of_stock() {
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['parts'];
 
-	$start_from=0;
+
+
+
+	if (isset( $_REQUEST['sf'])) {
+		$start_from=$_REQUEST['sf'];
+		$_SESSION['state']['report_part_out_of_stock']['parts']['sf']=$start_from;
+	} else
+		$start_from=$conf['sf'];
+
+
+
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
@@ -1370,10 +1380,7 @@ function list_parts_marked_as_out_of_stock() {
 
 	$where="where ITF.`Out of Stock Tag`='Yes' $where_interval ";
 
-	if ($int['mysql']!='') {
-		$where.=sprintf('  %s ',$int['mysql']);
 
-	}
 
 
 	if ($parent=='warehouses') {
@@ -1573,7 +1580,14 @@ function list_transactions_parts_marked_as_out_of_stock() {
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['transactions'];
 
-	$start_from=0;
+
+
+	if (isset( $_REQUEST['sf'])) {
+		$start_from=$_REQUEST['sf'];
+		$_SESSION['state']['report_part_out_of_stock']['transactions']['sf']=$start_from;
+	} else
+		$start_from=$conf['sf'];
+
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
@@ -1853,7 +1867,12 @@ function list_customers_affected_by_out_of_stock() {
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['customers'];
 
-	$start_from=0;
+	if (isset( $_REQUEST['sf'])) {
+		$start_from=$_REQUEST['sf'];
+		$_SESSION['state']['report_part_out_of_stock']['customers']['sf']=$start_from;
+	} else
+		$start_from=$conf['sf'];
+
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
@@ -2087,7 +2106,12 @@ function list_orders_affected_by_out_of_stock() {
 
 	$conf=$_SESSION['state']['report_part_out_of_stock']['orders'];
 
-	$start_from=0;
+	if (isset( $_REQUEST['sf'])) {
+		$start_from=$_REQUEST['sf'];
+		$_SESSION['state']['report_part_out_of_stock']['orders']['sf']=$start_from;
+	} else
+		$start_from=$conf['sf'];
+
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];

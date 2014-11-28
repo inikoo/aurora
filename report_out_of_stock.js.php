@@ -28,7 +28,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			//	,{key:"note", label:"<?php echo _('Notes')?>",width:265, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 	   
-	   request="ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock&parent=warehouses&parent_key=&tableid="+tableid;
+	   request="ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock&parent=warehouses&parent_key=&sf=0&tableid="+tableid;
 	 //  alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 
@@ -77,10 +77,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']?>'};
-	  //  YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
-	
-	
-	 //START OF THE TABLE=========================================================================================================================
+
 
 		var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -99,7 +96,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	   
-	   request="ar_reports.php?tipo=parts_marked_as_out_of_stock&parent=warehouses&parent_key=&tableid="+tableid
+	   request="ar_reports.php?tipo=parts_marked_as_out_of_stock&parent=warehouses&parent_key=&sf=0&tableid="+tableid
 	   
 	   
 	    			    this.dataSource1 = new YAHOO.util.DataSource(request);
@@ -126,7 +123,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['report_part_out_of_stock']['parts']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['report_part_out_of_stock']['parts']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -152,7 +149,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
 	
-	
+
 	
 		var tableid=2; 
 	    var tableDivEL="table"+tableid;
@@ -172,7 +169,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	   
-	   request="ar_reports.php?tipo=customers_affected_by_out_of_stock&tableid="+tableid
+	   request="ar_reports.php?tipo=customers_affected_by_out_of_stock&sf=0&tableid="+tableid
 	 //  alert(request)
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 
@@ -237,7 +234,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	   
-	   request="ar_reports.php?tipo=orders_affected_by_out_of_stock&tableid="+tableid
+	   request="ar_reports.php?tipo=orders_affected_by_out_of_stock&sf=0&tableid="+tableid
 	    this.dataSource3 = new YAHOO.util.DataSource(request);
 
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -253,6 +250,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records"
+		    
+		    		   
+		    
 		},
 		fields: [
 		'customer','public_id','date','lost_revenue','lost_revenue_percentage'
@@ -262,7 +262,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['report_part_out_of_stock']['orders']['nr']?>,containers : 'paginator2', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['report_part_out_of_stock']['orders']['nr']?>,containers : 'paginator3', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
