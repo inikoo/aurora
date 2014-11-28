@@ -6,3 +6,5 @@ conf/key.php
 mantenence/smarty.php
 gearman/conf/*
 gearman/downloads_AW/*
+downloads/*
+!downloads/.htaccess
