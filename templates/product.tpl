@@ -490,10 +490,10 @@
 		<img src="art/loading.gif" /> {t}Processing Request{/t} 
 	</div>
 	<div class="buttons" id="edit_web_state_buttons">
-		<button onclick="set_web_configuration('Offline')">{t}Offline{/t}</button> 
-		<button onclick="set_web_configuration('Online Force Out of Stock')">{t}Force Out of Stock{/t}</button> 
-		<button onclick="set_web_configuration('Online Force For Sale')">{t}Force Online{/t}</button> 
-		<button onclick="set_web_configuration('Online Auto')">{t}Link to part{/t}</button> 
+		<button class="item" onclick="set_web_configuration(this,'Offline')">{t}Offline{/t}</button> 
+		<button class="item" onclick="set_web_configuration(this,'Online Force Out of Stock')">{t}Force Out of Stock{/t}</button> 
+		<button class="item" onclick="set_web_configuration(this,'Online Force For Sale')">{t}Force Online{/t}</button> 
+		<button class="item" onclick="set_web_configuration(this,'Online Auto')">{t}Link to part{/t}</button> 
 	</div>
 </div>
 <div id="dialog_sales_history_timeline_group" style="padding:10px 20px 0px 10px">
