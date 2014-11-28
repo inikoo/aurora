@@ -2,25 +2,24 @@
 //@author Raul Perusquia <raul@inikoo.com>
 //Copyright (c) 2013 Inikoo
 
-if(!isset($_REQUEST['f'])){
-exit();
+if (!isset($_REQUEST['f'])) {
+	exit();
 }
 
 
 
 $file=$_REQUEST['f'];
 
-if (!$file or !file_exists($file)) 
-{
-exit();
+if (!$file or !file_exists($file)) {
+	exit("file not found");
 }
 
-if(preg_match('/\.csv$/i',$file)){
+if (preg_match('/\.csv$/i',$file)) {
 	$type='text/csv';
-}else if(preg_match('/\.xls$/i',$file)){
+}elseif (preg_match('/\.xls$/i',$file)) {
 	$type='application/vnd.ms-excel';
-}else{
-$type='text/txt';
+}else {
+	$type='text/txt';
 }
 
 
@@ -33,6 +32,6 @@ readfile($file);
 unlink($file);
 ignore_user_abort(true);
 if (connection_aborted()) {
-unlink($file);
+	unlink($file);
 }
 ?>

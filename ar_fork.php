@@ -24,8 +24,8 @@ case('get_wait_info'):
 			'tag'=>array('type'=>'string'),
 			'extra_key'=>array('type'=>'key','optional'=>true)
 		));
-		
-		
+
+
 	get_wait_info($data);
 	break;
 
@@ -42,43 +42,43 @@ function get_wait_info($data) {
 		$fork_key);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
-	
+
 		$result_extra_data=array();
-	
+
 		if ($row['Fork State']=='In Process')
 			$msg=number($row['Fork Operations Done']+$row['Fork Operations Errors']+$row['Fork Operations No Changed']).'/'.$row['Fork Operations Total Operations'];
 		elseif ($row['Fork State']=='Queued')
 			$msg=_('Queued');
-		elseif ($row['Fork State']=='Finished' or $row['Fork State']=='Cancelled'){
-			$msg='';	
-			if($row['Fork Type']=='import'){
-			
-			include_once('class.ImportedRecords.php');
-			$imported_records=new ImportedRecords('id',$data['extra_key']);
-			
-			$result_extra_data=array(
-			'finished_date'=>$imported_records->get('Finish Date'),
-			'cancelled_date'=>$imported_records->get('Cancelled Date'),
-						'start_date'=>$imported_records->get('Start Date'),
+		elseif ($row['Fork State']=='Finished' or $row['Fork State']=='Cancelled') {
+			$msg='';
+			if ($row['Fork Type']=='import') {
 
-			'finished_list_link'=>'<a href="list.php?id='.$imported_records->get('Imported Records Subject List Key').'">'.$imported_records->get('Imported Records Subject List Name').'</a>',
-			'finished_records_done'=>$imported_records->get('Imported'),
-			'finished_records_ignored'=>$imported_records->get('Ignored'),
-			'finished_records_error'=>$imported_records->get('Errors'),
-			'finished_records_cancelled'=>$imported_records->get('Cancelled'),
-			'finished_state'=>$imported_records->data['Imported Records State']
-			
-			);
+				include_once 'class.ImportedRecords.php';
+				$imported_records=new ImportedRecords('id',$data['extra_key']);
+
+				$result_extra_data=array(
+					'finished_date'=>$imported_records->get('Finish Date'),
+					'cancelled_date'=>$imported_records->get('Cancelled Date'),
+					'start_date'=>$imported_records->get('Start Date'),
+
+					'finished_list_link'=>'<a href="list.php?id='.$imported_records->get('Imported Records Subject List Key').'">'.$imported_records->get('Imported Records Subject List Name').'</a>',
+					'finished_records_done'=>$imported_records->get('Imported'),
+					'finished_records_ignored'=>$imported_records->get('Ignored'),
+					'finished_records_error'=>$imported_records->get('Errors'),
+					'finished_records_cancelled'=>$imported_records->get('Cancelled'),
+					'finished_state'=>$imported_records->data['Imported Records State']
+
+				);
 			}
-			
-			
-			
-			
-				
-			
-			
-			
-		
+
+
+
+
+
+
+
+
+
 		}else
 			$msg='';
 
@@ -134,10 +134,10 @@ function get_wait_info($data) {
 			'result_extra_data'=>$result_extra_data
 
 		);
-		
-		
-		
-		
+
+
+
+
 		echo json_encode($response);
 
 	}else {
