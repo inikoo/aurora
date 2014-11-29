@@ -603,8 +603,15 @@ function publish_page_elements($data) {
 
 
 function publish_page($data) {
-
+	global $account_code,$memcache_ip;
 	$page=new Page($data['page_key']);
+
+	if (!$page->id) {
+		$response= array('state'=>400,'msg'=>'page not found');
+		echo json_encode($response);
+		return;
+	}
+
 	$site=new Site($page->data['Page Site Key']);
 	if ($site->data['Site SSL']=='Yes') {
 		$site_protocol='https';
@@ -614,6 +621,11 @@ function publish_page($data) {
 	$images_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_images.php?parent=page&parent_key=".$page->id."&sk=x");
 	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page&parent_key=".$page->id."&sk=x");
 
+	$mem = new Memcached();
+	$mem->addServer($memcache_ip, 11211);
+
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $result, 172800);
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $result, 172800);
 
 
 	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
