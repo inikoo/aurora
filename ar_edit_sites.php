@@ -41,13 +41,20 @@ case 'publish_page_elements':
 		));
 	publish_page_elements($data);
 	break;
+case 'refresh_cache_page':
+	$data=prepare_values($_REQUEST,array(
+			'page_key'=>array('type'=>'key'),
+			'force'=>array('type'=>'string','optional'=>true),
+		));
+	refresh_cache_page($data);
+	break;
 case 'publish_page':
 	$data=prepare_values($_REQUEST,array(
 			'page_key'=>array('type'=>'key'),
 			'force'=>array('type'=>'string','optional'=>true),
 		));
 	publish_page($data);
-	break;
+	break;	
 case 'publish_site':
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -163,6 +170,14 @@ case('delete_page'):
 		));
 	delete_page($data);
 	break;
+case('delete_site'):
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key')
+		));
+	delete_site($data);
+	break;	
+	
+	
 case('update_page_height'):
 	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
@@ -602,6 +617,40 @@ function publish_page_elements($data) {
 }
 
 
+
+
+
+function refresh_cache_page($data) {
+	global $account_code,$memcache_ip;
+	$page=new Page($data['page_key']);
+
+	if (!$page->id) {
+		$response= array('state'=>400,'msg'=>'page not found');
+		echo json_encode($response);
+		return;
+	}
+
+	$site=new Site($page->data['Page Site Key']);
+	if ($site->data['Site SSL']=='Yes') {
+		$site_protocol='https';
+	}else {
+		$site_protocol='http';
+	}
+	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+
+	$mem = new Memcached();
+	$mem->addServer($memcache_ip, 11211);
+
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $result, 172800);
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $result, 172800);
+
+
+	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
+	echo json_encode($response);
+
+}
+
+
 function publish_page($data) {
 	global $account_code,$memcache_ip;
 	$page=new Page($data['page_key']);
@@ -723,6 +772,30 @@ function edit_page($data) {
 
 }
 
+
+
+function delete_site($data) {
+
+	global $editor;
+
+
+	$site=new Site($data['id']);
+	$site->editor=$site;
+
+
+	$site->delete();
+
+
+
+	if ($site->deleted) {
+
+		$response= array('state'=>200,'site_key'=>$site->id);
+	} else {
+		$response= array('state'=>400,'msg'=>$site->msg,'site_key'=>$site->id);
+	}
+	echo json_encode($response);
+
+}
 
 function delete_page($data) {
 
