@@ -1204,7 +1204,27 @@ function post_upload_actions(page_key){
 
   }
 
+ function refresh_cache() {
 
+      Dom.addClass('refresh_cache', 'disabled')
+      Dom.get('refresh_cache_icon').src = 'art/loading.gif'
+      YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=refresh_cache_page&page_key=' + Dom.get('page_key').value, {
+          success: function(o) {
+
+
+              var r = YAHOO.lang.JSON.parse(o.responseText);
+              Dom.removeClass('refresh_cache', 'disabled')
+              Dom.get('refresh_cache_icon').src = 'art/icons/page_world.png'
+              if (r.state == 200) {
+					change_state('Online');
+					save_edit_page_state()
+
+              }
+
+          }
+      });
+
+  }
 
 
 

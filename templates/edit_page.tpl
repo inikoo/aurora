@@ -22,7 +22,7 @@
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> 
 
 				<button id="show_upload_page_content_bis"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> 
-					<button id="publish" onclick="publish()"> <img id="publish_icon" src="art/icons/page_world.png" alt="" /> {t}Publish{/t}</button> 
+					<button id="refresh_cache" onclick="refresh_cache()"> <img id="refresh_cache_icon" src="art/icons/page_world.png" alt="" /> {t}Refresh Cache{/t}</button> 
 
 			</div>
 			<div class="buttons left">
