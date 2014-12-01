@@ -645,7 +645,7 @@ function refresh_cache_page($data) {
 	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $result, 172800);
 
 
-	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
+	$response= array('state'=>200,'template_response'=>$template_response,'x'=>$site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
 	echo json_encode($response);
 
 }
