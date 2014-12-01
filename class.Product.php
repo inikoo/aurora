@@ -5253,7 +5253,7 @@ class product extends DB_Table {
 					$site_protocol='http';
 				}
 
-				$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page&parent_key=".$page->id."&sk=x");
+				$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
 
 
 
