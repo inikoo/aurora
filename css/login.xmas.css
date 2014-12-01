@@ -1,8 +1,9 @@
 @media screen and (max-device-width: 800px) {
-html { background: url('../art/bg/xmas1.jpg') #000 no-repeat center center fixed; }
+html { background: url('../art/xmas/xmas2.jpg') #000 no-repeat center center fixed; }
 #bgvid { display: none; }
 }
 
+#top_header{opacity.6}
 
 html{background-image:none;background-color: rgba(256,256,256,0.2)}
 #bd{background-color: rgba(0,256,256,0.1);border:none}
@@ -11,7 +12,7 @@ video#bgvid {
 position: fixed; right: 0; bottom: 0;
 min-width: 100%; min-height: 100%;
 width: auto; height: auto; z-index: -100;
-background: url('../art/bg/xmas1.jpg') no-repeat;
+background: url('../art/xmas/xmas2.jpg') no-repeat;
 background-size: cover;
 }
 

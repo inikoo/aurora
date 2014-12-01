@@ -11,7 +11,7 @@
 	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} 
 </head>
 <body class=" yui-skin-sam inikoo">
-<video autoplay loop muted poster="art/bg/xmas1.jpg" id="bgvid"> <source src="art/xmas/xmas2.webm" type="video/webm"> <source src="art/xmas/xmas2.mp4" type="video/mp4"> </video> 
+<video autoplay loop muted poster="xmas/xmas2.jpg" id="bgvid"> <source src="art/xmas/xmas2.webm" type="video/webm"> <source src="art/xmas/xmas2.mp4" type="video/mp4"> </video> 
 <div id="doc4" class="">
 	<div id="hd">
 		<div class="top_navigation">
@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<img src="art/inikoo_logo_small.png" style="position:absolute;margin-left:20px;margin-top:2px;height:34px" /> 
-		<div class="buttons menu" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;">
+		<div id="top_header" class="buttons menu" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;">
 			<button id="supplier_login" class="header  {if $login_type=='supplier'}selected{/if}">Suppliers Login</button> <button id="staff_login" class="header {if $login_type=='staff'}selected{/if}">Staff Login</button> 
 			<div style="clear:both">
 			</div>
