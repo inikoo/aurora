@@ -86,6 +86,7 @@ $css_files=array(
 	'css/common.css',
 	'css/button.css',
 	'css/login.css',
+	'css/login.xmas.css',
 
 	'public_theme.css.php',
 //	'css/snow.css',
