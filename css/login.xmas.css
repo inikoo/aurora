@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Satisfy';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Satisfy'), url('../art/xmas/font.woff') format('woff');
+}
+
 @media screen and (max-device-width: 800px) {
 html { background: url('../art/xmas/xmas2.jpg') #000 no-repeat center center fixed; }
 #bgvid { display: none; }
