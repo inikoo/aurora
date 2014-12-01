@@ -1127,6 +1127,8 @@ function upload_page_content() {
     //alert(request);
     var uploadHandler = {
         upload: function(o) {
+        
+       
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -1184,15 +1186,17 @@ function upload_page_content() {
 
 function post_upload_actions(page_key){
 
- Dom.addClass('publish', 'disabled')
-      Dom.get('publish_icon').src = 'art/loading.gif'
+
+
+ Dom.addClass('refresh_cache', 'disabled')
+      Dom.get('refresh_cache_icon').src = 'art/loading.gif'
+     // alert('ar_edit_sites.php?tipo=publish_page&page_key=' + page_key)
       YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_page&page_key=' + page_key, {
           success: function(o) {
 
-
               var r = YAHOO.lang.JSON.parse(o.responseText);
-              Dom.removeClass('publish', 'disabled')
-              Dom.get('publish_icon').src = 'art/icons/page_world.png'
+              Dom.removeClass('refresh_cache', 'disabled')
+              Dom.get('refresh_cache_icon').src = 'art/icons/page_world.png'
               if (r.state == 200) {
 	                window.location = 'edit_page.php?id=' + page_key + '&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
 
@@ -1208,7 +1212,8 @@ function post_upload_actions(page_key){
 
       Dom.addClass('refresh_cache', 'disabled')
       Dom.get('refresh_cache_icon').src = 'art/loading.gif'
-      YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=refresh_cache_page&page_key=' + Dom.get('page_key').value, {
+    
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=refresh_cache_page&page_key=' + Dom.get('page_key').value, {
           success: function(o) {
 
 

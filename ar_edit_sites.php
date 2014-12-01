@@ -54,7 +54,7 @@ case 'publish_page':
 			'force'=>array('type'=>'string','optional'=>true),
 		));
 	publish_page($data);
-	break;	
+	break;
 case 'publish_site':
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -175,9 +175,9 @@ case('delete_site'):
 			'id'=>array('type'=>'key')
 		));
 	delete_site($data);
-	break;	
-	
-	
+	break;
+
+
 case('update_page_height'):
 	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
@@ -641,8 +641,8 @@ function refresh_cache_page($data) {
 	$mem = new Memcached();
 	$mem->addServer($memcache_ip, 11211);
 
-	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $result, 172800);
-	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $result, 172800);
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $page->id, 172800);
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $page->id, 172800);
 
 
 	$response= array('state'=>200,'template_response'=>$template_response);
@@ -673,8 +673,8 @@ function publish_page($data) {
 	$mem = new Memcached();
 	$mem->addServer($memcache_ip, 11211);
 
-	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $result, 172800);
-	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $result, 172800);
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $page->id, 172800);
+	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $page->id, 172800);
 
 
 	$response= array('state'=>200,'images_response'=>$images_response,'template_response'=>$template_response);
@@ -780,7 +780,7 @@ function delete_site($data) {
 
 
 	$site=new Site($data['id']);
-	$site->editor=$site;
+	$site->editor=$editor;
 
 
 	$site->delete();
@@ -3498,13 +3498,195 @@ function create_site($data) {
 
 	) {
 		$store_key=$data['parent_key'];
-
-
-
 		$store=new Store($store_key);
 		$store->editor=$editor;
-
 		$site=$store->create_site($data['values']);
+
+		$pages_data=array(
+			array(
+				'Page Code'=>'home'
+				,'Page Section'=>'home'
+				,'Page Store Section'=>'Front Page Store'
+				,'Page URL'=>'index.php'
+				,'Page Description'=>_('Homepage')
+				,'Page Title'=>_('Homepage')
+				,'Page Short Title'=>_('Home')
+				,'Page Store Title'=>$site->data['Site Name']
+				,'Page Store Subtitle'=>$site->data['Site Name']
+				,'Page Store Slogan'=>$site->data['Site Slogan']
+				,'Page Store Resume'=>''
+
+			),
+			array(
+				'Page Store Section'=>'Registration',
+				'Page Store Title'=>_('Registration'),
+				'Page Short Title'=>_('Registration'),
+				'Page Code'=>'registration',
+				'Page URL'=>'registration.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'registration',
+				'Number See Also Links'=>0
+
+
+
+			),
+			array(
+				'Page Store Section'=>'Login',
+				'Page Store Title'=>_('Log in'),
+				'Page Short Title'=>_('Log in'),
+				'Page Code'=>'login',
+				'Page URL'=>'login.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'login',
+				'Number See Also Links'=>0),
+			array(
+				'Page Store Section'=>'Basket',
+				'Page Store Title'=>_('Basket'),
+				'Page Short Title'=>_('Basket'),
+				'Page Code'=>'basket',
+				'Page URL'=>'basket.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'basket',
+				'Number See Also Links'=>0,
+
+
+			),
+			array(
+				'Page Store Section'=>'Checkout',
+				'Page Store Title'=>_('Checkout'),
+				'Page Short Title'=>_('Checkout'),
+				'Page Code'=>'checkout',
+				'Page URL'=>'checkout.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'checkout',
+				'Number See Also Links'=>0,
+
+
+			),
+			array(
+				'Page Store Section'=>'Thanks',
+				'Page Store Title'=>_('Thanks'),
+				'Page Short Title'=>_('Thanks for your order'),
+				'Page Code'=>'thanks',
+				'Page URL'=>'thanks.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'thanks',
+				'Number See Also Links'=>0,
+			),
+			array(
+				'Page Store Section'=>'Payment Limbo',
+				'Page Store Title'=>_('Waiting for payment confirmation'),
+				'Page Short Title'=>_('Waiting for payment confirmation'),
+				'Page Code'=>'waiting',
+				'Page URL'=>'waiting_payment_confirmation.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'waiting_payment_confirmation',
+				'Number See Also Links'=>0,),
+			
+			array(
+				'Page Store Section'=>'Reset',
+				'Page Store Title'=>_('Reset Password'),
+				'Page Short Title'=>_('Reset Password'),
+				'Page Code'=>'reset',
+				'Page URL'=>'reset.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'reset',
+				'Number See Also Links'=>0,
+			),
+						array(
+				'Page Store Section'=>'Search',
+				'Page Store Title'=>_('Search'),
+				'Page Short Title'=>_('Search'),
+				'Page Code'=>'search',
+				'Page URL'=>'search.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'search',
+				'Number See Also Links'=>0,
+			),
+			
+			array(
+				'Page Store Section'=>'Client Section',
+				'Page Store Title'=>_('Profile'),
+				'Page Short Title'=>_('Profile'),
+				'Page Code'=>'profile',
+				'Page URL'=>'profile.php',
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'profile',
+				'Number See Also Links'=>0,
+
+			),
+			array(
+			'Page Store Section Type'=>'Info',
+				'Page Store Section'=>'Information',
+				'Page Store Title'=>_('Terms and Conditions'),
+				'Page Short Title'=>_('Terms and Conditions'),
+				'Page Code'=>'t_and_c',
+				'Page URL'=>'terms_and_conditions',
+				'Page Store Content Display Type'=>'Source',
+				'Page Store Content Template Filename'=>'',
+				'Number See Also Links'=>0,
+			),
+			array(
+			
+			'Page Store Section'=>'Welcome',
+				'Page Store Title'=>_('Welcome'),
+				'Page Short Title'=>_('Welcome'),
+				'Page Code'=>'welcome',
+			    'Page URL'=>'welcome.php',
+
+				'Page Store Content Display Type'=>'Source',
+				'Page Store Content Template Filename'=>'',
+				'Number See Also Links'=>0,
+			),
+			array(
+			
+			
+	//Page Store Section Type: 'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'		
+	// page store section:'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo'
+	'Page Store Section Type'=>'System',
+	'Page Store Section'=>'Department Description',
+				'Page Store Title'=>_('Department'),
+				'Page Short Title'=>_('Department'),
+				'Page Code'=>'department',
+			    'Page URL'=>'department.php',
+
+					'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'department',
+				'Number See Also Links'=>0,
+			),
+			array(
+				'Page Store Section Type'=>'System',
+
+			'Page Store Section'=>'Family Description',
+				'Page Store Title'=>_('Family'),
+				'Page Short Title'=>_('Family'),
+				'Page Code'=>'family',
+			    'Page URL'=>'family.php',
+
+					'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'family',
+				'Number See Also Links'=>0,
+			),
+			array(
+				'Page Store Section Type'=>'System',
+
+			'Page Store Section'=>'Product Description',
+				'Page Store Title'=>_('Product'),
+				'Page Short Title'=>_('Product'),
+				'Page Code'=>'product',
+			    'Page URL'=>'product.php',
+
+					'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'product',
+				'Number See Also Links'=>0,
+			)
+			
+
+		);
+
+		foreach ($pages_data as $page_data) {
+			$site->add_store_page($page_data);
+		}
 
 
 		if (!$site->new) {
