@@ -10,7 +10,8 @@
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} 
 </head>
-<body class=" yui-skin-sam inikoo" >
+<body class=" yui-skin-sam inikoo">
+<video autoplay loop muted poster="art/bg/xmas1.jpg" id="bgvid"> <source src="art/xmas/xmas2.webm" type="video/webm"> <source src="art/xmas/xmas2.mp4" type="video/mp4"> </video> 
 <div id="doc4" class="">
 	<div id="hd">
 		<div class="top_navigation">
@@ -28,65 +29,64 @@
 		</div>
 	</div>
 	<div id="bd" style="padding-top:30px">
-		
-		 <div id="login_message">
-    	<h2>{$message_showcase}</h2>
-    	<p>{$message}</p>
-    	
-    </div>
-		
-		<div id="login_box" style="border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;xmargin-top:0px;xmargin-right:30px;margin:0px auto">
-			<h2 id="login_title_staff" style="margin-top:10px;{if $login_type!='staff'}display:none{/if}">
-				{t}Staff Login{/t} 
+		<div id="login_message">
+			<h2>
+				{$message_showcase} 
 			</h2>
-			<h2 id="login_title_suppliers" style="margin-top:10px;{if $login_type!='supplier'}display:none{/if}">
-				{t}Suppliers Login{/t} 
-			</h2>
-			<div id="mensage">
-			</div>
-			
-			
-			<form name="loginform" id="loginform" method="post" autocomplete="off" action="authorization.php">
-				<table style="width:100%;margin-top:20px">
+			<p>
+				{$message} 
+			</p>
+		</div>
+		<img src="art/xmas/inikoo_logo_xmas.png" style="position:absolute;right:400px;opacity:.8"> 
+	<div id="login_box" style="border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;xmargin-top:0px;xmargin-right:30px;margin:0px auto">
+		<h2 id="login_title_staff" style="margin-top:10px;{if $login_type!='staff'}display:none{/if}">
+			{t}Staff Login{/t} 
+		</h2>
+		<h2 id="login_title_suppliers" style="margin-top:10px;{if $login_type!='supplier'}display:none{/if}">
+			{t}Suppliers Login{/t} 
+		</h2>
+		<div id="mensage">
+		</div>
+		<form name="loginform" id="loginform" method="post" autocomplete="off" action="authorization.php">
+			<table style="width:100%;margin-top:20px">
+				<tr>
+					<td>{t}User{/t}:</td>
+					<td> 
+					<input style="width:100%" type="text" class="text" id="_login_" name="_login_" maxlength="80" value="" />
+					</td>
+				</tr>
+				<tr>
+					<td>{t}Password{/t}:</td>
+					<td> 
+					<input style="width:100%" type="password" class="password" id="_passwd_" name="_passwd_" maxlength="80" value="" />
 					<input type="hidden" name="_lang" value="{$lang_id}" />
 					<input type="hidden" id="ep" name="ep" value="{$st}" />
 					<input type="hidden" id="user_type" name="user_type" value="{$login_type}" />
-					<tr>
-						<td>{t}User{/t}:</td>
-						<td> 
-						<input style="width:100%" type="text" class="text" id="_login_" name="_login_" maxlength="80" value="" />
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Password{/t}:</td>
-						<td> 
-						<input style="width:100%" type="password" class="password" id="_passwd_" name="_passwd_" maxlength="80" value="" />
-						</td>
-					</tr>
-				</table>
-			</form>
-			<table style="width:100%;">
-				<tr>
-					<td colspan="2"> 
-					<div class="buttons" style="margin-top:10px">
-						<button class="positive" id="login_button">{t}Log in{/t}</button> 
-					</div>
 					</td>
 				</tr>
 			</table>
-		</div>
-		
+		</form>
+		<table style="width:100%;">
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<button class="positive" id="login_button">{t}Log in{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
 	</div>
-	<div id="footer">
-		<div class="links">
-			<a href="terms_use.php">{t}Terms of use{/t}</a> 
-		</div>
-		<div class='adv'>
-			<img src="art/inikoo_logo_mini.png"/> <a href="http://www.inikoo.com">{t}Inikoo{/t}</a> <a href="http://www.inikoo.com/changelog.php/v={$inikoo_version}">v{$inikoo_version}</a> 
-		</div>
-		<div style="clear:both">
-		</div>
+</div>
+<div id="footer">
+	<div class="links">
+		<a href="terms_use.php">{t}Terms of use{/t}</a> 
 	</div>
-</div>	
+	<div class='adv'>
+		<img src="art/inikoo_logo_mini.png" /> <a href="http://www.inikoo.com">{t}Inikoo{/t}</a> <a href="http://www.inikoo.com/changelog.php/v={$inikoo_version}">v{$inikoo_version}</a> 
+	</div>
+	<div style="clear:both">
+	</div>
+</div>
+</div>
 </body>
 </html>
