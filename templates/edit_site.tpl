@@ -9,7 +9,7 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">
-			<button style="margin-left:0px" onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px;{if $site->get('Site Total Users')==0}{/if}" id="delete_site" class="negative"><img src="art/icons/cross.png" alt="" /> {t}Delete Site{/t}</button> <span class="main_title"> {t}Editing Site{/t}: <span id="title_name">{$site->get('Site Name')}</span> (<span id="title_url">{$site->get('Site URL')}</span>) </span> 
+			<button style="margin-left:0px" onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button>  <span class="main_title"> {t}Editing Site{/t}: <span id="title_name">{$site->get('Site Name')}</span> (<span id="title_url">{$site->get('Site URL')}</span>) </span> 
 		</div>
 		<div class="buttons" style="float:right">
 		</div>
@@ -660,7 +660,7 @@
 				</table>
 			</div>
 			<div class="edit_subblock" style="{if $components_block_view!='head'}display:none{/if}" id="d_head">
-				<table class="edit" border="0" style="width:100%">
+				<table class="edit" border="0" style="width:100%;display:none">
 					<tr class="title">
 						<td colspan="3">{t}Code Includes{/t}</td>
 					</tr>
@@ -700,7 +700,7 @@
 	</div>
 	<div class="edit_block" style="{if $block_view!='general'}display:none{/if}" id="d_general">
 		<div class="buttons left small tabs">
-			<button id="website_properties" class="indented {if $general_block_view=='website_properties'}selected{/if}">{t}Website Properties{/t}</button> <button id="website_ftp" class="{if $general_block_view=='website_ftp'}selected{/if}">{t}FTP Configuration{/t}</button> 
+			<button id="website_properties" class="indented {if $general_block_view=='website_properties'}selected{/if}">{t}Website Properties{/t}</button> <button id="website_ftp" class="{if $general_block_view=='website_ftp'}selected{/if}">{t}FTP Configuration{/t}</button> <button id="delete_site" class="{if $general_block_view=='delete_site'}selected{/if}">{t}Delete Website{/t}</button> 
 		</div>
 		<div class="tabs_base">
 		</div>
@@ -875,6 +875,12 @@
 					</tr>
 				</table>
 			</div>
+			<div class="edit_subblock" style="{if $general_block_view!='delete_site'}display:none{/if}" id="d_delete_site">
+			<div class="buttons left">
+			<button style="margin-left:0px;{if $site->get('Site Total Users')==0}{/if}" id="delete_site_button" class="negative"><img src="art/icons/cross.png" alt="" /> {t}Delete Site{/t}</button>
+			</div>
+			</div>
+			
 		</div>
 	</div>
 	<div class="edit_block" style="{if $block_view!='theme'}display:none{/if}" id="d_theme">
@@ -1397,7 +1403,7 @@
 		<img src="art/loading.gif" alt=""> {t}Deleting website, wait please{/t} 
 	</div>
 	<div id="delete_site_buttons" class="buttons">
-		<button id="save_delete_site" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_site" class="negative">{t}No i dont want to delete it{/t}</button> 
+		<button id="save_delete_site" onClick="save_delete_site()" class="negative">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_site" >{t}No, I dont want to delete it{/t}</button> 
 	</div>
 </div>
 {include file='footer.tpl'} 
