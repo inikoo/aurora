@@ -33,7 +33,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 
 
-$sql=sprintf("select `Page Store Key`,`Page Store Image Key`,P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store' and `Page Store Source`!='' and `Page Store Section Type`='Family' ");
+$sql=sprintf("select `Page Store Key`,`Page Store Image Key`,P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store' and `Page Store Source`!='' and `Page Store Section`='Family Catalogue' ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	$page=new Page($row['Page Key']);
