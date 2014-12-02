@@ -42,8 +42,8 @@ while ($row=mysql_fetch_array($res)) {
 
 
 	$source=$page->data['Page Store Source'];
+	$original_source=$source;
 
-	
 
 
 	$pattern='/alt="http.*"/';
@@ -54,7 +54,7 @@ while ($row=mysql_fetch_array($res)) {
 	$replacement='alt=""';
 	$source=preg_replace($pattern,$replacement,$source);
 
-/*
+	/*
 
 <div style="position:absolute; left:735px; top:963px; width:221px; height:221px;">
 <a href="https://www.ancientwisdom.biz/user_files/pics/iwood-12.jpg " target="_blank"><img src="images/0892720.png" width="221" height="221" border="0" title="" alt="pp2371a26a.png"></a></div>
@@ -63,28 +63,17 @@ while ($row=mysql_fetch_array($res)) {
 
 
 
-	// print $source;
-	$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/.*pics\/(.+)\.jpg\s*"\s*target="_blank""?><img src="images\/(.+)" .* alt="(.+)" >/';
 	$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/.*pics\/(.+)\.jpg\s*"\s*target="_blank""?><img src="images\/(.+)" .* alt="(.+)"\s*>/';
-
 	preg_match_all($pattern, $source, $matches);
-
-
-
 	foreach ($matches[1] as $key=>$possible_code) {
-
-
 		$possible_code=preg_replace('/_[a-z]+$/','',$possible_code);
-
-
-
 		$code=false;
 		$sql=sprintf("select `Product Code`,`Product Name` from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d",
 			prepare_mysql($possible_code),
 			$row['Page Store Key']
 		);
 
-		
+
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_array($res2)) {
 			$code=$row2['Product Code'];
@@ -127,9 +116,9 @@ while ($row=mysql_fetch_array($res)) {
 
 		$replacement='<a href="https://www.ancientwisdom.biz/${1}pics/${2}.jpg" target="_blank"><img src="images/${3}"${4} title="'.str_replace('"','',$description).'" alt="'.str_replace('"','',$code).'">';
 
-		
+
 		$source=preg_replace($pattern,$replacement,$source);
-		
+
 	}
 
 
@@ -148,11 +137,26 @@ while ($row=mysql_fetch_array($res)) {
 
 
 
-	$sql=sprintf("update `Page Store Dimension` set `Page Store Source`=%s where `Page Key`=%d",
+	
+
+
+	if ($original_source!=$source) {
+	
+		$sql=sprintf("update `Page Store Dimension` set `Page Store Source`=%s where `Page Key`=%d",
 		prepare_mysql($source),
 		$page->id
 	);
 	mysql_query($sql);
+	
+		$site=new Site($page->data['Page Site Key']);
+		if ($site->data['Site SSL']=='Yes') {
+			$site_protocol='https';
+		}else {
+			$site_protocol='http';
+		}
+		$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+
+	}
 
 }
 
