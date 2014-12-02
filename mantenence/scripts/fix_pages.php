@@ -93,7 +93,7 @@ while ($row=mysql_fetch_array($res)) {
 
 
 	// print $source;
-	$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/pics\/(.+)\.jpg\s*"\s*target="_blank""?><img src="images\/(.+)" .* alt="(.+)" >/';
+	$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/.*pics\/(.+)\.jpg\s*"\s*target="_blank""?><img src="images\/(.+)" .* alt="(.+)" >/';
 
 	preg_match_all($pattern, $source, $matches);
 
@@ -148,14 +148,11 @@ while ($row=mysql_fetch_array($res)) {
 		}
 
 
-		$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/pics\/('.$matches[1][$key].')\.jpg\s*"\s*target="_blank""?><img src="images\/('.$matches[2][$key].')"(.*) title=".*" alt="'.$matches[3][$key].'" >/';
+		$pattern='/<a href="https?:\/\/www.ancientwisdom.biz\/.*pics\/('.$matches[1][$key].')\.jpg\s*"\s*target="_blank""?><img src="images\/('.$matches[2][$key].')"(.*) title=".*" alt="'.$matches[3][$key].'" >/';
 		//print $pattern."\n";
-		$replacement='<a href="https://www.ancientwisdom.biz/pics/${1}.jpg" target="_blank"><img src="images/${2}"${3} title="'.str_replace('"','',$description).'" alt="'.str_replace('"','',$code).'">';
+		$replacement='<a href="https://www.ancientwisdom.biz/.*pics/${1}.jpg" target="_blank"><img src="images/${2}"${3} title="'.str_replace('"','',$description).'" alt="'.str_replace('"','',$code).'">';
 		$source=preg_replace($pattern,$replacement,$source);
 		//print $replacement."\n";
-
-
-
 	}
 
 
