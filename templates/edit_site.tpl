@@ -660,7 +660,7 @@
 				</table>
 			</div>
 			<div class="edit_subblock" style="{if $components_block_view!='head'}display:none{/if}" id="d_head">
-				<table class="edit" border="0" style="width:100%;display:none">
+				<table class="edit" border="0" style="width:100%;">
 					<tr class="title">
 						<td colspan="3">{t}Code Includes{/t}</td>
 					</tr>
