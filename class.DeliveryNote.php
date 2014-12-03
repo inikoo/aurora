@@ -3718,7 +3718,7 @@ class DeliveryNote extends DB_Table {
 
 		if (!$ship_to->id) {
 			$this->error=true;
-			$this->msg='shit to not found/missing';
+			$this->msg='not found/missing';
 			return;
 		}
 
@@ -3730,7 +3730,7 @@ class DeliveryNote extends DB_Table {
 
 
 		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Dispatch Method`='Dispatch' ,`Delivery Note Ship To Key`=%d,
-		Delivery Note Country 2 Alpha Code`=%s,`Delivery Note XHTML Ship To`=%s,`Delivery Note Country Code`=%s  ,
+		`Delivery Note Country 2 Alpha Code`=%s,`Delivery Note XHTML Ship To`=%s,`Delivery Note Country Code`=%s  ,
 		`Delivery Note World Region Code`=%s,`Delivery Note Town`=%s,`Delivery Note Postal Code`=%s   where `Delivery Note Key`=%d"
 			,$ship_to->id
 			,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
@@ -3743,6 +3743,7 @@ class DeliveryNote extends DB_Table {
 			,$this->id
 
 		);
+		
 		mysql_query($sql);
 		if (mysql_affected_rows()>0) {
 			$this->get_data('id',$this->id);
