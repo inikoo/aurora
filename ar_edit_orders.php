@@ -3824,7 +3824,7 @@ function create_invoice_order($data) {
 
 
 	$payments=$order->get_payment_objects('Completed');
-	
+
 	//print_r($payments);
 	foreach ($payments as $payment) {
 		$paymnet_balance=$invoice->apply_payment($payment);
