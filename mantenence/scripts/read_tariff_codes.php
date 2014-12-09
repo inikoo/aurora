@@ -19,6 +19,7 @@ include_once '../../set_locales.php';
 require '../../locale.php';
 $_SESSION['locale_info'] = localeconv();
 
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {
@@ -48,7 +49,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 $set_part_as_available=false;
 
-$csv_file='tariff_codes.csv';
+$csv_file='/tmp/tariff_codes.csv';
 
 
 $handle_csv = fopen($csv_file, "r");
@@ -61,47 +62,16 @@ $inicio=false;
 while (($_cols = fgetcsv($handle_csv))!== false) {
 
 	if (_trim($_cols[1])!='' and _trim($_cols[1])!='') {
-		$tariff_code=sprintf("%010d",_trim($_cols[1]));
+		$tariff_code=_trim($_cols[1]);
 		$duty_rate=_trim($_cols[2]);
 		$code=_trim($_cols[0]);
-
-		$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Code`=%s",
-			prepare_mysql($code)
-		);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$product=new Product('pid',$row['Product ID']);
-			$list_parts=$product->get_all_part_skus();
-
-			foreach ($list_parts as $sku) {
-				$part=new Part($sku);
-				$part->update_duty_rate($duty_rate);
-				$part->update_tariff_code($tariff_code);
-
-			}
-			$sql=sprintf("update `Product Dimension` set `Product Tariff Code`=%s ,`Product Duty Rate`=%s where `Product Code`=%s",
-				prepare_mysql($tariff_code),
-				prepare_mysql($duty_rate),
-				prepare_mysql($code)
-			);
-			mysql_query($sql);
-		}
+		//print "$code $tariff_code $duty_rate\n";
+		$part=new Part('reference',$code);
+		$part->update(array('Part Tariff Code'=>$tariff_code,'Part Duty Rate'=>$duty_rate));
 	}
 
 }
 
-exit;
-$sql=sprintf("select * from aw_old.product ");
-$result=mysql_query($sql);
-while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$product_code=$row2['code'];
-	$export_code=$row2['export_code'];
-	$sql=sprintf("update `Product Dimension` set `Product Tariff Code`=%s where `Product Code`=%s  "
-		,prepare_mysql($export_code)
-		,prepare_mysql($product_code)
-	);
-	if (!mysql_query($sql))
-		exit("$sql\n Error");
-}
+
 
 ?>
