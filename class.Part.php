@@ -45,6 +45,8 @@ class part extends DB_Table {
 	function get_data($tipo,$tag) {
 		if ($tipo=='id' or $tipo=='sku')
 			$sql=sprintf("select * from `Part Dimension` where `Part SKU`=%d ",$tag);
+		if ($tipo=='code' or $tipo=='reference')
+			$sql=sprintf("select * from `Part Dimension` where `Part Reference`=%s ",prepare_mysql($tag));	
 		else
 			return;
 
@@ -2404,7 +2406,7 @@ class part extends DB_Table {
 
 		function update_sales_from_invoices($interval) {
 
-			list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
+			list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_interval_dates($interval);
 			//print "$db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb  \n";
 
 			setlocale(LC_ALL, 'en_GB');
