@@ -45,7 +45,7 @@ class part extends DB_Table {
 	function get_data($tipo,$tag) {
 		if ($tipo=='id' or $tipo=='sku')
 			$sql=sprintf("select * from `Part Dimension` where `Part SKU`=%d ",$tag);
-		if ($tipo=='code' or $tipo=='reference')
+		else if ($tipo=='code' or $tipo=='reference')
 			$sql=sprintf("select * from `Part Dimension` where `Part Reference`=%s ",prepare_mysql($tag));	
 		else
 			return;
