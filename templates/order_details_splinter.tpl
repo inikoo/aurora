@@ -43,8 +43,9 @@
 	</table>
 	<table border="0" class="info_block">
 		<tr>
-			<td>{t}Customer Fiscal Name{/t}:</td>
-			<td class="aright">{$order->get('Order Customer Fiscal Name')}</td>
+			<td id="order_customer_fiscal_name_label">{t}Customer Fiscal Name{/t}:</td>
+			<td id="order_customer_fiscal_name" class="aright">{$order->get('Order Customer Fiscal Name')}</td>
+			<td class="aright"><img id="update_customer_fiscal_name" onClick="show_update_customer_fiscal_name()" style="cursor:pointer" src="art/icons/edit.gif"></td>
 		</tr>
 		<tr>
 			<td>{t}Tax Number{/t}:</td>
@@ -86,3 +87,25 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_quick_edit_Order_Customer_Fiscal_Name" style="padding:10px">
+		<table style="margin:10px">
+			<tr>
+				<td>{t}Customer Fiscal Name:{/t}</td>
+				<td> 
+				<div >
+					<input style="width:300px" type="text" id="Order_Customer_Fiscal_Name" value="{$order->get('Order Customer Fiscal Name')}" ovalue="{$order->get('Order Customer Fiscal Name')}" valid="0"> 
+					<div id="Order_Customer_Fiscal_Name_Container">
+					</div>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons" style="margin-top:10px">
+					<span id="Order_Customer_Fiscal_Name_msg"></span> <button class="positive" id="save_quick_edit_customer_fiscal_name">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_customer_fiscal_name">{t}Cancel{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>

@@ -189,7 +189,7 @@
 			</div>
 			<div style="clear:both">
 			</div>
-			<img id="show_order_details" style="cursor:pointer;margin-top:10px" src="art/icons/arrow_sans_lowerleft.png" /> 
+			<img id="show_order_details" style="cursor:pointer;margin-top:10px;height:16px" src="art/icons/arrow_sans_lowerleft.png" /> 
 			<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
 				<div class="buttons small right" style="float:right;width:350px">
 					<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 

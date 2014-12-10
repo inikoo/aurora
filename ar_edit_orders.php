@@ -4165,7 +4165,8 @@ function update_billing_to_key_from_address($data) {
 			'payments_data'=>$payments_data,
 			'order_total_paid'=>$order->data['Order Payments Amount'],
 			'order_total_to_pay'=>$order->data['Order To Pay Amount'],
-			'payments_list'=>$payments_list
+			'payments_list'=>$payments_list,
+			'order_customer_fiscal_name'=>$order->data['Order Customer Fiscal Name']
 
 		);
 
@@ -4916,15 +4917,44 @@ function update_order_special_intructions($data) {
 function update_order($data) {
 	$order=new Order($data['order_key']);
 
-	$order->update_field_switcher($data['key'],strip_tags($data['value']));
+
+	$key_dic=array(
+		'Customer_Fiscal_Name'=>'Order Customer Fiscal Name',
+	);
+
+	if (array_key_exists($data['key'],$key_dic))
+		$key=$key_dic[$data['key']];
+	else
+		$key=$data['key'];
 
 
+	$order->update_field_switcher($key,strip_tags($data['value']));
 
 	$response= array(
 		'state'=>200,
 		'value'=>$order->new_value
 
 	);
+
+	if ($key=='Order Customer Fiscal Name') {
+
+		include_once 'class.Billing_To.php';
+
+		$current_billing_address= new Billing_To($order->data['Order Billing To Key To Bill']);
+
+		$billing_address=$current_billing_address->data;
+		$billing_address['Billing To Telephone']=$order->data['Order Telephone'];
+		//$billing_address['Billing To Contact Name']=$order->data['Order Telephone'];
+		$billing_address['Billing To Company Name']=$order->data['Order Customer Fiscal Name'];
+		$billing_address['Billing To Email']=$order->data['Order Email'];
+
+		$billing_to= new Billing_To('find create',$billing_address);
+		$order->update_billing_to($billing_to->id);
+		$response['billing_to']=$order->get('Order XHTML Billing Tos');
+	}
+
+
+
 	echo json_encode($response);
 }
 
