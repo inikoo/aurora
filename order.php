@@ -51,7 +51,8 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
-	'js/search.js'
+	'js/search.js',
+	'js/edit_order_details.js'
 );
 
 
