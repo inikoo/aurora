@@ -1361,6 +1361,9 @@ class part extends DB_Table {
 			$stock=0;
 			$value=0;
 			$in_process=0;
+			
+			/*
+			
 			$sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Quantity In Process`) as in_process ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
 			$res=mysql_query($sql);
 			//print $sql;
@@ -1370,6 +1373,25 @@ class part extends DB_Table {
 				$value=$row['value'];
 
 			}
+*/
+
+$sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock ,sum(`Inventory Transaction Amount`) as value
+			       from `Inventory Transaction Fact` `Part SKU`=%d "
+			,prepare_mysql($date)
+			,$this->part_sku
+			,$this->location_key
+		);
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+			$stock=$row['stock'];
+			$value=$row['value'];
+		}
+
+
+		
+
+		
+
 
 
 
