@@ -1376,7 +1376,7 @@ class part extends DB_Table {
 */
 
 $sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock ,sum(`Inventory Transaction Amount`) as value
-			       from `Inventory Transaction Fact` `Part SKU`=%d ",
+			       from `Inventory Transaction Fact` where `Part SKU`=%d ",
 			$this->sku
 		);
 		$res=mysql_query($sql);
