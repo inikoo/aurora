@@ -3612,7 +3612,11 @@ function get_interval_db_name($interval) {
 	return $db_interval;
 }
 
-function calculate_inteval_dates($interval) {
+function calculate_inteval_dates($interval){
+	return calculate_interval_dates($interval);
+}
+
+function calculate_interval_dates($interval) {
 
 	$from_date=false;
 	$to_date=false;
