@@ -670,7 +670,7 @@ class product extends DB_Table {
 
 	function update_sales_averages() {
 
-		$sql=sprintf("select count(*) as days,avg(`Sales`) as avg , sum('Availability') as Availability from `Order Spanshot Fact` where `Product ID`=%d ",
+		$sql=sprintf("select count(*) as days,avg(`Sales`) as avg , sum(`Availability`) as Availability from `Order Spanshot Fact` where `Product ID`=%d ",
 			$this->pid
 		);
 		$res=mysql_query($sql);
@@ -714,6 +714,33 @@ class product extends DB_Table {
 			$this->data['Product Max Day Sales'],
 			$this->pid
 		);
+		mysql_query($sql);
+		
+		
+		// 1 year do it for all periods later
+		
+		$interval='1 Year';
+		
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
+		
+		$sql=sprintf("select count(*) as on_sale, sum(`Availability`) as Availability from `Order Spanshot Fact` where `Product ID`=%d %s %s",
+			$this->pid,
+			($from_date?sprintf('and `Date`>=%s',prepare_mysql(substr($from_date,0,10))):''),
+			($to_date?sprintf('and `Date`<%s',prepare_mysql(substr($to_date,0,10))):'')
+		);
+		$res=mysql_query($sql);
+		
+		if ($row=mysql_fetch_assoc($res)) {
+		$this->data["Product $db_interval Acc Days On Sale"]=$row['on_sale'];
+		$this->data["Product $db_interval Acc Days Available"]=$row['Availability'];
+		}
+		$sql=sprintf("update `Product Dimension` set `Product $db_interval Acc Days On Sale`=%d,`Product $db_interval Acc Days Available`=%d where `Product ID`=%d",
+			$this->data["Product $db_interval Acc Days On Sale"],
+			$this->data["Product $db_interval Acc Days Available"],
+		
+			$this->pid
+		);
+		
 		mysql_query($sql);
 
 	}

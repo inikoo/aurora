@@ -32,7 +32,8 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select `Product ID` from `Product Dimension` order by  `Product ID` desc";
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=765 order by  `Product ID` ";
+$sql="select `Product ID` from `Product Dimension` order by  `Product ID` ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
