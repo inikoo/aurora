@@ -120,7 +120,7 @@ request="ar_assets.php?tipo=products&parent=family&sf=0&parent_key="+Dom.get('fa
 		},
 		
 		fields: [
-			 "last_update","from","to","1m_avg_sold_over_1y",
+			 "last_update","from","to","1m_avg_sold_over_1y","days_available_over_1y","percentage_available_1y",
 			 'id',"package_type","package_weight","package_dimension","package_volume","unit_weight","unit_dimension"
 			 ,"code"
 			 ,"name","stock","stock_value","record_type"
