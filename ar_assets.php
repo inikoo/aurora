@@ -1347,9 +1347,13 @@ function list_products() {
 		$order='`Product Unit Weight`';
 	}elseif ($order=='unit_dimension') {
 		$order='`Product Unit Dimensions Volume`';
+	}elseif($order=='1m_avg_sold_over_1y'){
+	  	$order='`Product 1 Year Acc Quantity Invoiced`';
+	}elseif($order=='days_available_over_1y'){
+	  	$order='`Product 1 Year Acc Days On Sale`';
+	}elseif($order=='percentage_available_1y'){
+	  	$order='`Product 1 Year Acc Days Available`/`Product 1 Year Acc Days On Sale`';
 	}
-
-
 
 
 
@@ -1660,8 +1664,10 @@ function list_products() {
 			"package_dimension"=>$row['Product Package XHTML Dimensions'],
 			"package_volume"=>volume($row['Product Package Dimensions Volume']),
 			"unit_weight"=>weight($row['Product Unit Weight']),
-			"unit_dimension"=>$row['Product Unit XHTML Dimensions']
-
+			"unit_dimension"=>$row['Product Unit XHTML Dimensions'],
+			'1m_avg_sold_over_1y'=>ceil($row['Product 1 Year Acc Quantity Invoiced']/12),
+			'days_available_over_1y'=>$row['Product 1 Year Acc Days On Sale'],
+			'percentage_available_1y'=>percentage($row['Product 1 Year Acc Days Available'],$row['Product 1 Year Acc Days On Sale'])
 
 		);
 	}

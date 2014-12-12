@@ -10,6 +10,7 @@ function change_product_view(e, data) {
     else if (tipo == 'product_categories') tipo = 'categories';
     else if (tipo == 'product_timeline') tipo = 'timeline';
     else if (tipo == 'product_properties') tipo = 'properties';
+    else if (tipo == 'product_reorder') tipo = 'reorder';
 
     var table = tables['table' + data.table_id];
     table.hideColumn('smallname');
@@ -33,21 +34,21 @@ function change_product_view(e, data) {
     table.hideColumn('gmroi');
     table.hideColumn('stock_forecast');
     table.hideColumn('price');
-	table.hideColumn('from');
+    table.hideColumn('from');
     table.hideColumn('last_update');
-    	table.hideColumn('to');
+    table.hideColumn('to');
 
-table.hideColumn('package_type');
-table.hideColumn('package_weight');
-table.hideColumn('package_dimension');
-table.hideColumn('package_volume');
-table.hideColumn('unit_weight');
-table.hideColumn('unit_dimensionom');
+    table.hideColumn('package_type');
+    table.hideColumn('package_weight');
+    table.hideColumn('package_dimension');
+    table.hideColumn('package_volume');
+    table.hideColumn('unit_weight');
+    table.hideColumn('unit_dimensionom');
 
 
 
-    
-        Dom.setStyle(['change_products_display_mode','product_period_options','product_avg_options'],'display','none')
+
+    Dom.setStyle(['change_products_display_mode', 'product_period_options', 'product_avg_options'], 'display', 'none')
 
 
     if (tipo == 'sales') {
@@ -56,16 +57,16 @@ table.hideColumn('unit_dimensionom');
         table.showColumn('profit');
         //  table.showColumn('margin');
         table.showColumn('delta_sales');
-           
-        Dom.setStyle(['change_products_display_mode','product_period_options','product_avg_options'],'display','')
-        
+
+        Dom.setStyle(['change_products_display_mode', 'product_period_options', 'product_avg_options'], 'display', '')
+
         table.showColumn('smallname');
     } else if (tipo == 'general') {
         table.showColumn('name');
         table.showColumn('web');
         table.showColumn('stock');
         table.showColumn('formated_record_type');
-            table.showColumn('price');
+        table.showColumn('price');
 
         Dom.get('product_period_options').style.display = 'none';
         Dom.get('product_avg_options').style.display = 'none';
@@ -89,32 +90,38 @@ table.hideColumn('unit_dimensionom');
         table.showColumn('family');
         table.showColumn('dept');
         table.showColumn('expcode');
-    }else if (tipo == 'timeline') {
-       
+    } else if (tipo == 'timeline') {
+
         Dom.get('product_period_options').style.display = 'none';
         Dom.get('product_avg_options').style.display = 'none';
         table.showColumn('from');
         table.showColumn('last_update');
-               table.showColumn('to');
+        table.showColumn('to');
 
-    }else if (tipo == 'properties') {
-  Dom.get('product_period_options').style.display = 'none';
+    } else if (tipo == 'properties') {
+        Dom.get('product_period_options').style.display = 'none';
         Dom.get('product_avg_options').style.display = 'none';
-table.showColumn('package_type');
-table.showColumn('package_weight');
-table.showColumn('package_dimension');
-table.showColumn('package_volume');
-table.showColumn('unit_weight');
-table.showColumn('unit_dimensionom');
-}
+        table.showColumn('package_type');
+        table.showColumn('package_weight');
+        table.showColumn('package_dimension');
+        table.showColumn('package_volume');
+        table.showColumn('unit_weight');
+        table.showColumn('unit_dimensionom');
+    }else if (tipo == 'reorder') {
+        Dom.get('product_period_options').style.display = 'none';
+        Dom.get('product_avg_options').style.display = 'none';
+       table.showColumn('smallname');
+        table.showColumn('stock');
+    }
 
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
     Dom.addClass(this, "selected");
- 
-    
+
+
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=' + data.parent + '-products-view&value=' + escape(tipo), {});
 
 }
+
 
 
 
