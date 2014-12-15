@@ -934,6 +934,7 @@ class Order extends DB_Table {
 			$this->id );
 		mysql_query( $sql );
 
+
 		$this->update_number_items();
 		$this->update_number_products();
 		$this->update_insurance();
