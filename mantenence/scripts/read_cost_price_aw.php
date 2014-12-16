@@ -141,7 +141,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 		'Supplier Key'=>1,
 		'Supplier Product Code'=>$code,
 		'Supplier Product Units Per Case'=>1,
-		'SPH Case Cost'=>sprintf("%.2f",$cost/$units),
+		'SPH Case Cost'=>sprintf("%.2f",$cost),
 		'Supplier Product Name'=>$description,
 		'Supplier Product Description'=>$description,
 		'Supplier Product Valid From'=>gmdate("Y-m-d H:i:s"),
