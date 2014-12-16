@@ -1462,20 +1462,20 @@ print "++++++++++\n";
 			$warehouse_key=1;
 
 			$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
-				//$value_day_cost_unit_cost=$this->part->get_unit_cost($row['Date'].' 23:59:59');
+			//$value_day_cost_unit_cost=$this->part->get_unit_cost($row['Date'].' 23:59:59');
 
+$value_day_cost_unit_cost=$this->part->data['Part Cost'];
+			$value_day_cost=$stock*$value_day_cost_unit_cost
+			$commercial_value=$stock*$commercial_value_unit_cost;
 
-                $value_day_cost=$stock*$this->part->data['Part Cost'];
-				$commercial_value=$stock*$commercial_value_unit_cost;
+			$value_day_cost_open=$open*$value_day_cost_unit_cost;
+			$commercial_value_open=$open*$commercial_value_unit_cost;
 
-$value_day_cost_open=$open*$value_day_cost_unit_cost;
-				$commercial_value_open=$open*$commercial_value_unit_cost;
+			$value_day_cost_high=$high*$value_day_cost_unit_cost;
+			$commercial_value_high=$high*$commercial_value_unit_cost;
 
-$value_day_cost_high=$high*$value_day_cost_unit_cost;
-				$commercial_value_high=$high*$commercial_value_unit_cost;
-				
-$value_day_cost_low=$low*$value_day_cost_unit_cost;
-				$commercial_value_low=$low*$commercial_value_unit_cost;
+			$value_day_cost_low=$low*$value_day_cost_unit_cost;
+			$commercial_value_low=$low*$commercial_value_unit_cost;
 
 			/*
 
