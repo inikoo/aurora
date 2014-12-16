@@ -510,7 +510,7 @@ class supplierproduct extends DB_Table {
 			return $this->get_formated_unit();
 			break;
 		case('Formated Cost'):
-			
+
 			return money($this->data['Supplier Product Cost Per Case'],$this->data['Supplier Product Currency']);
 
 		}
@@ -541,7 +541,7 @@ class supplierproduct extends DB_Table {
 			return 1;
 
 	}
-	
+
 	function update_valid_dates($date) {
 		$this->update_valid_dates_key($date);
 		$this->update_valid_dates_code($date);
@@ -644,24 +644,24 @@ class supplierproduct extends DB_Table {
 			return;
 
 		}
-		
-		
-		
-		
+
+
+
+
 		$old_formated_price=$this->get('Formated Price');
 		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Case Cost`=%.2f "
 
-			
+
 			,$this->pid
 			,$amount
 		);
-		 
+
 		$res=mysql_query($sql);
 
 		$num_historic_records=mysql_num_rows($res);
-		
-		
-		
+
+
+
 		if ($num_historic_records==0) {
 			$data=array(
 				'SPH Case Cost'=>$amount
@@ -678,7 +678,7 @@ class supplierproduct extends DB_Table {
 		}
 		elseif ($num_historic_records==1) {
 			$row=mysql_fetch_assoc($res);
-			
+
 			$key_matched=$row['SPH Key'];
 			if ($change_at=='now') {
 				$this->change_current_key($key_matched);
@@ -794,9 +794,9 @@ class supplierproduct extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
-		
-		
-			case 'Product Supplier Unit Dimensions Display Units':
+
+
+		case 'Product Supplier Unit Dimensions Display Units':
 		case 'Product Supplier Unit Dimensions Width Display':
 		case 'Product Supplier Unit Dimensions Depth Display':
 		case 'Product Supplier Unit Dimensions Length Display':
@@ -810,18 +810,18 @@ class supplierproduct extends DB_Table {
 		case 'Product Supplier Unit Weight Display Units':
 		case 'Product Supplier Package Weight Display':
 		case 'Product Supplier Package Weight Display Units':
-		if (preg_match('/Weight.*Display/',$field)) {
-			$this->update_weight_dimensions_data($field,$value,'Weight');
-		}elseif (preg_match('/Dimensions.*Display/',$field)) {
-			$this->update_weight_dimensions_data($field,$value,'Dimensions');
-		}
-		break;
-		
+			if (preg_match('/Weight.*Display/',$field)) {
+				$this->update_weight_dimensions_data($field,$value,'Weight');
+			}elseif (preg_match('/Dimensions.*Display/',$field)) {
+				$this->update_weight_dimensions_data($field,$value,'Dimensions');
+			}
+			break;
+
 		case('Sticky Note'):
 			$this->update_field('Product Supplier '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
 			break;
-		
+
 		case('Supplier Product Tariff Code'):
 			$this->update_tariff_code($value);
 
@@ -856,9 +856,9 @@ class supplierproduct extends DB_Table {
 
 
 	}
-	
-	
-	
+
+
+
 	function update_weight_dimensions_data($field,$value,$type) {
 
 		include_once 'common_units_functions.php';
@@ -899,7 +899,7 @@ class supplierproduct extends DB_Table {
 
 			}
 
-		//	print "x".$this->updated."<<";
+			// print "x".$this->updated."<<";
 
 			if ($this->updated) {
 
@@ -913,11 +913,11 @@ class supplierproduct extends DB_Table {
 						$this->update_field('Product Supplier '.$tag.' Dimensions Volume',$volume,'nohistory');
 						//print $this->data['Product Supplier '.$tag.' XHTML Dimensions']."xxx";
 					}
-						$this->update_field('Product Supplier '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
+					$this->update_field('Product Supplier '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
 
-				}else{
-				$this->update_field('Product Supplier '.$tag.' Weight',convert_units($this->data['Product Supplier '.$tag.' Weight Display'],$this->data['Product Supplier '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
-}
+				}else {
+					$this->update_field('Product Supplier '.$tag.' Weight',convert_units($this->data['Product Supplier '.$tag.' Weight Display'],$this->data['Product Supplier '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
+				}
 
 
 			}
@@ -954,7 +954,7 @@ class supplierproduct extends DB_Table {
 
 	}
 
-	
+
 	function change_current_key($new_current_key) {
 
 		$sql=sprintf("select `SPH Case Cost` from `Supplier Product History Dimension` where  `Supplier Product ID`=%d and `SPH Key`=%d "
@@ -1108,7 +1108,7 @@ class supplierproduct extends DB_Table {
 	function update_sales($interval) {
 
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 		//print "$interval : $db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb\n";
 
