@@ -1468,6 +1468,14 @@ print "++++++++++\n";
                 $value_day_cost=$stock*$this->part->data['Part Cost'];
 				$commercial_value=$stock*$commercial_value_unit_cost;
 
+$value_day_cost_open=$open*$value_day_cost_unit_cost;
+				$commercial_value_open=$open*$commercial_value_unit_cost;
+
+$value_day_cost_high=$high*$value_day_cost_unit_cost;
+				$commercial_value_high=$high*$commercial_value_unit_cost;
+				
+$value_day_cost_low=$low*$value_day_cost_unit_cost;
+				$commercial_value_low=$low*$commercial_value_unit_cost;
 
 			/*
 
