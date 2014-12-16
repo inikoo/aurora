@@ -64,7 +64,7 @@ $where=' `Part SKU`=46433';
 	
 
 $where='  true';
-	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
+	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s  order by `Part SKU` ',$where);
 	$res2=mysql_query($sql);
 	$count=0;
 	while ($row2=mysql_fetch_array($res2)) {

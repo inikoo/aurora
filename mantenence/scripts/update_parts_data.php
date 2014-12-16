@@ -36,12 +36,14 @@ $options='no_history';
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Part Dimension` where `Part SKU`=95 order by `Part SKU`";
-//$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`";
+$sql="select `Part SKU` from `Part Dimension`   order by `Part SKU`";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
 	
+	$part->update_cost();
+	continue;
 $part->update_availability();
 	$part->update_available_forecast();
 	$part->update_stock_state();

@@ -3033,6 +3033,15 @@ function get_supplier_products_new($date=false) {
 	}
 
 
+	function update_cost(){
+		$cost=$this->get_unit_cost();
+		$sql=sprintf("update `Part Dimension` set `Part Cost`=%.2f where `Part SKU`=%d",
+		$cost,
+		$this->sku
+		);
+		mysql_query($sql);
+	}
+
 	function get_unit_cost($date=false) {
 
 
