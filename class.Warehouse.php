@@ -327,9 +327,10 @@ class Warehouse extends DB_Table{
 		while ($row=mysql_fetch_array($res)) {
 			$dormant_1y_open_value_at_day=0;
 
-			$sql=sprintf('select ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` from `Inventory Spanshot Fact` ITF left join `Part Dimension` P  on (P.`Part SKU`=ITF.`Part SKU`)where `Warehouse Key`=%d and `Date`=%s and `Value At Day Cost`!=0',
+			$sql=sprintf('select ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` from `Inventory Spanshot Fact` ITF left join `Part Dimension` P  on (P.`Part SKU`=ITF.`Part SKU`)where `Warehouse Key`=%d and `Date`=%s and `Value At Day Cost`!=0 and `Part Valid From`>%s',
 				$this->id,
-				prepare_mysql($row['Date'])
+				prepare_mysql($row['Date']),
+				prepare_mysql(date("Y-m-d H:i:s",strtotime($row['Date'].' 23:59:59 -1 year'))),
 			);
 			$res2=mysql_query($sql);
 
