@@ -68,6 +68,8 @@ $store=new Store($store_key);
 $__cols=array();
 $inicio=false;
 $counter=0;
+$read=false;
+
 while (($_cols = fgetcsv($handle_csv))!== false) {
 
 
@@ -82,7 +84,12 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	$code=$_cols[3];
 	$units=$_cols[5];
 	$description=$_cols[6];
-	//if ($code!='ESAM-01')continue;
+	
+	
+	if(!$read)continue;
+	if ($code=='Glitter-20'){
+		$read=true;
+	}
 	//print_r($_cols);
 	$cost=$_cols[25];
 	if (preg_match('/-/',$code) and is_numeric($cost) and is_numeric($units) ) {
