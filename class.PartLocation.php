@@ -1461,6 +1461,15 @@ print "++++++++++\n";
 			$location_type="Unknown";
 			$warehouse_key=1;
 
+			$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
+				//$value_day_cost_unit_cost=$this->part->get_unit_cost($row['Date'].' 23:59:59');
+
+
+                $value_day_cost=$stock*this->part->data['Part Cost'];
+				$commercial_value=$stock*$commercial_value_unit_cost;
+
+
+			/*
 
 			if ($stock>0 or $open>0 or $high>0 or $low>0) {
 				$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
@@ -1507,6 +1516,8 @@ print "++++++++++\n";
 			if ($value_open<0)$value_open=0;
 			if ($value_low<0)$value_low=0;
 			if ($value_high<0)$value_high=0;
+
+			*/
 
 			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
 			//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
