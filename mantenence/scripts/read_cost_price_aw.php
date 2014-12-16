@@ -86,9 +86,9 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	$description=$_cols[6];
 	
 	
-	if(!$read)continue;
+	//if(!$read)continue;
 	if ($code=='Glitter-20'){
-		$read=true;
+		continue;
 	}
 	//print_r($_cols);
 	$cost=$_cols[25];
