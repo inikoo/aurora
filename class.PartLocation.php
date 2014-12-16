@@ -1449,6 +1449,34 @@ print "++++++++++\n";
 		//print $this->part_sku." ".$this->location_key." $from $to \n";
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
+			//print $this->part->data['Part Valid From'].' '.date('Y-m-d ',strtotime($row['Date'].' 23:59:59 -1 year'))."\n";
+			//print strtotime($this->part->data['Part Valid From']).' '.strtotime($row['Date'].' 23:59:59 -1 year')."\n\n";
+
+			if (strtotime($this->part->data['Part Valid From'])<=strtotime($row['Date'].' 23:59:59 -1 year')) {
+
+				$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
+					$this->part->sku,
+					$this->location->id,
+					prepare_mysql(date("Y-m-d H:i:s",strtotime($row['Date'].' 23:59:59 -1 year'))),
+					prepare_mysql($row['Date'].' 23:59:59')
+				);
+				//print "$sql\n";
+				$res3=mysql_query($sql);
+				if ($row3=mysql_fetch_array($res3)) {
+					if ($row3['num']==0) {
+						$dormant_1year='Yes';
+					}else {
+						$dormant_1year='No';
+					}
+				}else{
+					$dormant_1year='Yes';
+				}
+
+			}else {
+				$dormant_1year='NA';
+			}
+
+
 			list($stock,$value,$in_process)=$this->get_stock($row['Date'].' 23:59:59');
 			list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
 			list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
@@ -1537,7 +1565,7 @@ print "++++++++++\n";
 			`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,
 			`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
 			`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,
-			`Location Type`
+			`Location Type`,`Dormant 1 Year`
 			) values (
 			%.2f,%s,%d,%d,%d,%f,
 			%.2f ,%.2f,%.2f,%.2f ,
@@ -1545,11 +1573,11 @@ print "++++++++++\n";
 			%f,%f,%f,
 			%f,%f,%f,
 			%f,%f,%f,
-			%s) ON DUPLICATE KEY UPDATE
+			%s,%s) ON DUPLICATE KEY UPDATE
 			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
-			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ",
+			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s",
 				$sales_value,
 				prepare_mysql($row['Date']),
 				$this->part_sku,
@@ -1582,6 +1610,7 @@ print "++++++++++\n";
 				$commercial_value_low,
 
 				prepare_mysql($location_type),
+				prepare_mysql($dormant_1year),
 
 				$warehouse_key,
 				$stock,
@@ -1608,7 +1637,8 @@ print "++++++++++\n";
 				$commercial_value_high,
 				$commercial_value_low,
 				prepare_mysql($location_type),
-				$sales_value
+				$sales_value,
+				prepare_mysql($dormant_1year)
 
 
 			);
