@@ -148,7 +148,7 @@ class Warehouse extends DB_Table{
 
 
 			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
-				
+
 				$sql=sprintf("insert into `User Right Scope Bridge` values(%d,'Warehouse',%d)",
 					$this->editor['User Key'],
 					$this->id
@@ -325,6 +325,30 @@ class Warehouse extends DB_Table{
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
+			$dormant_1y_open_value_at_day=0;
+
+			$sql=sprintf('select ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` from `Inventory Spanshot Fact` ITF left join `Part Dimension` P  on (P.`Part SKU`=ITF.`Part SKU`)where `Warehouse Key`=%d and `Date`=%s and `Value At Day Cost`!=0',
+				$this->id,
+				prepare_mysql($row['Date'])
+			);
+			$res2=mysql_query($sql);
+
+			while ($row2=mysql_fetch_assoc($res2)) {
+				$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and  `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
+					$row2['Part SKU'],
+					prepare_mysql(date("Y-m-d H:i:s",strtotime($row['Date'].' 23:59:59 -1 year'))),
+					prepare_mysql($row['Date'].' 23:59:59')
+				);
+				
+				$res3=mysql_query($sql);
+				if ($row3=mysql_fetch_array($res3)) {
+					if ($row3['num']==0) {
+						$dormant_1y_open_value_at_day+=$row2['Value At Day Cost'];
+					}
+				}
+
+			}
+
 
 			$sql=sprintf("select `Date`,
 			count(DISTINCT `Part SKU`) as parts,`Date`, count(DISTINCT `Location Key`) as locations,
@@ -348,29 +372,20 @@ class Warehouse extends DB_Table{
 
 
 
-				$sql=sprintf("insert into `Inventory Warehouse Spanshot Fact` values (%s,%d,%.2f,%.2f,%.2f, %f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d) ON DUPLICATE KEY UPDATE
+				$sql=sprintf("insert into `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
+				`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
+				`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,`Dormant 1 Year Value At Day Cost`
+
+				) values (%s,%d,%.2f,%.2f,%.2f, %f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%.2f) ON DUPLICATE KEY UPDATE
 					`Value At Cost`=%.2f, `Value At Day Cost`=%.2f,`Value Commercial`=%.2f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
 			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,
-			`Parts`=%d,`Locations`=%d
+			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f
 			",
 					prepare_mysql($row['Date']),
 
 					$this->id,
-					$row2['close'],
-					$row2['close_value_at_day'],
-					$row2['close_commercial_value'],
-					$row2['open'],
-					$row2['high'],
-					$row2['low'],
-
-					$row2['open_value_at_day'],
-					$row2['high_value_at_day'],
-					$row2['low_value_at_day'],
-					$row2['open_commercial_value'],
-					$row2['high_commercial_value'],
-					$row2['low_commercial_value'],
 					$row2['parts'],
 					$row2['locations'],
 
@@ -387,14 +402,32 @@ class Warehouse extends DB_Table{
 					$row2['open_commercial_value'],
 					$row2['high_commercial_value'],
 					$row2['low_commercial_value'],
+					$dormant_1y_open_value_at_day,
+
+					$row2['close'],
+					$row2['close_value_at_day'],
+					$row2['close_commercial_value'],
+					$row2['open'],
+					$row2['high'],
+					$row2['low'],
+
+					$row2['open_value_at_day'],
+					$row2['high_value_at_day'],
+					$row2['low_value_at_day'],
+					$row2['open_commercial_value'],
+					$row2['high_commercial_value'],
+					$row2['low_commercial_value'],
 					$row2['parts'],
-					$row2['locations']
+					$row2['locations'],
+					$dormant_1y_open_value_at_day
 
 
 				);
 				mysql_query($sql);
-				// print "$sql\n";
-				mysql_query($sql);
+
+			//	print "$sql\n";
+
+
 
 			}
 
@@ -482,7 +515,7 @@ class Warehouse extends DB_Table{
 						$row['Warehouse Flag Key']
 
 					);
-	//print $sql;
+					//print $sql;
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_assoc($res2)) {
 						$location=new Location($row2['Location Key']);
