@@ -48,7 +48,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$page->data['Page Site Key'],
 		prepare_mysql($page->data['Page URL']),
 		prepare_mysql($page->data['Page Store Title']),
-		prepare_mysql($page->data['Page Store Resume']),
+		prepare_mysql($page->data['Page Store Description']),
 		prepare_mysql($content)
 	);
 	mysql_query($sql);

@@ -45,9 +45,6 @@ $store=new Store($family->data['Product Family Store Key']);
 
 $can_delete = true;
 
-//if($store->data['Store Orphan Products Family Key'] == $family->id){
-// $can_delete = false;
-//}
 
 
 

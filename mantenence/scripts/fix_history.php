@@ -39,7 +39,29 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 	
-	
+	$sql=sprintf("select * from `History Dimension` where `Direct Object`='Site' and `Action`='edited' ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$Site=new Site($row['Direct Object Key']);
+	if ($Site->id) {
+		$sql=sprintf("insert into  `Site History Bridge` (`Site Key`,`History Key`,`Type`) values (%d,%d,'Changes')",$Site->id,$row['History Key']);
+		mysql_query($sql);
+		print "$sql\n";
+	}
+}
+
+$sql=sprintf("select * from `History Dimension` where `Indirect Object`='Site'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$Site=new Site($row['Indirect Object Key']);
+	if ($Site->id) {
+		$sql=sprintf("insert into  `Site History Bridge` (`Site Key`,`History Key`,`Type`) values (%d,%d,'Changes')",$Site->id,$row['History Key']);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
+}
+
+exit;
 
 $sql=sprintf("select `History Key`,`History Details`,`History Abstract` from `History Dimension` where `Direct Object`='Site' and `Indirect Object` in 
 ('Site Head Include','Site Body Include','Site Menu HTML','Site Menu CSS','Site Menu Javascript','Site Search HTML','Site Search CSS','Site Search Javascript','Site Forgot Password Email HTML Body','Site Forgot Password Email Plain Body',

@@ -93,7 +93,7 @@ if (!($user->can_view('stores') and in_array($store->id,$user->stores)   ) ) {
 	exit;
 }
 
-
+$store->load_acc_data();
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
@@ -197,10 +197,14 @@ else
 
 
 
-$total_invoices_and_refunds=$store->get('Total Invoices');
+$total_invoices_and_refunds=$store->get('Total Acc Invoices');
+
 $total_invoices=$store->get('Invoices');
+
 $total_refunds=$store->get('Refunds');
+
 $total_to_pay=$store->get('All To Pay Invoices');
+
 $total_paid=$store->get('All Paid Invoices');
 
 $smarty->assign('total_invoices_and_refunds',$total_invoices_and_refunds);

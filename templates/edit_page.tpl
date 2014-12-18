@@ -21,7 +21,7 @@
 			<div class="buttons">
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> 
 
-				<button id="show_upload_page_content_bis"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> 
+				<button id="show_upload_page_content_bis" style="{if $page->get('Page Store Content Display Type')=='Template'}display:none{/if}"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> 
 					<button id="refresh_cache" onclick="refresh_cache()"> <img id="refresh_cache_icon" src="art/icons/page_world.png" alt="" /> {t}Refresh Cache{/t}</button> 
 
 			</div>
@@ -163,7 +163,7 @@
 					<td class="label" style="width:120px">{t}Description{/t}:</td>
 					<td style="width:400px"> 
 					<div>
-<textarea id="page_html_head_resume" style="width:404px;height:80px" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
+<textarea id="page_html_head_resume" style="width:404px;height:80px" value="{$page->get('Page Store Description')}" ovalue="{$page->get('Page Store Description')}">{$page->get('Page Store Description')}</textarea> 
 						<div id="page_html_head_resume_Container">
 						</div>
 					</div>
@@ -171,83 +171,8 @@
 					<td><span id="page_html_head_resume_msg"></span> </td>
 				</tr>
 				<tbody id="advanced_configuration">
-					<tr style="display:none">
-						<td style="width:120px" class="label">{t}Creation Method{/t}:</td>
-						<td style="width:400px"> 
-						<table>
-							<tr>
-								<td style="padding:0;" class="label">{t}External body & HTML HEAD{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="checkbox_thumbnails" type="checkbox" {if $page->get('Page Store Type') =="External Content and HTML HEAD"}checked="checked"{/if} ></td>
-							</tr>
-						</table>
-						</td>
-					</tr>
-					<tr style="display:none">
-						<td style="width:120px" class="label">{t}Page Type{/t}:</td>
-						<td style="width:400px"> 
-						<table border="0">
-							<tr>
-								<td style="padding:0;" class="label">{t}Front Page Store{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Front Page Store"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Search{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Search"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Product Description{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Product Description"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Information{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Information"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Category Catalogue{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Category Catalogue"}checked="checked"{/if} ></td>
-								<td>{if $page->get('Page Store Section') =="Category Catalogue"}{$page->get('Page Parent Code')}{/if} </td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Family Catalogue{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Family Catalogue"}checked="checked"{/if} ></td>
-								<td style="padding:0;">{if $page->get('Page Store Section') =="Family Catalogue"}<a href="family.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} <span id="edit_parent_family" style="color:#777;font-style:italic;cursor:pointer">({t}Change{/t})</span></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Department Catalogue{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Department Catalogue"}checked="checked"{/if} ></td>
-								<td style="padding:0;">{if $page->get('Page Store Section') =="Department Catalogue"}<a href="department.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} </td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Store Catalogue{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Store Catalogue"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Registration{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Registration"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Client Section{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Client Section"}checked="checked"{/if} ></td>
-							</tr>
-							<tr>
-								<td style="padding:0;" class="label">{t}Check Out{/t}:</td>
-								<td> 
-								<input layout="thumbnails" id="radio_thumbnails" type="radio" {if $page->get('Page Store Section') =="Check Out"}checked="checked"{/if} ></td>
-							</tr>
-						</table>
-						</td>
-					</tr>
+				
+					
 					<tr>
 						<td class="label" style="width:120px">{t}Browser Title{/t}:</td>
 						<td style="width:400px"> 
@@ -401,7 +326,7 @@
 					</tr>
 					<tr class="first">
 						<td colspan="3"> 
-						<div style="clear:both">
+						<div style="clear:both;min-height:300px">
 							{include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
 							<div id="table8" class="data_table_container dtable btable">
 							</div>
@@ -441,8 +366,10 @@
 						</tr>
 						<tr class="first">
 							<td colspan="3">
+							<div style="clear:both;min-height:300px">
 							{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
 							<div id="table9" class="data_table_container dtable btable">
+							</div>
 							</div>
 							</td>
 						</tr>
@@ -467,8 +394,35 @@
 					</div>
 				</div>
 			</div>
-			<div style="{if $content_view!='content'}display:none{/if};" style="display:none" id="page_content_block">
-				<table class="edit" id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-1px">
+			<div style="{if $content_view!='content'}display:none{/if};min-height:400px"id="page_content_block">
+				
+				<table class="edit" style="padding:20px;margin-top:20px;margin-left:20px;width:900px">
+				<tr>
+						<td style="width:120px" class="label">{t}Content source type{/t}:</td>
+						<td style="width:500px"> 
+						<div id="see_also_type" default_cat="" class="buttons left small">
+							<button class="{if $page->get('Page Store Content Display Type')=='Template'}selected{/if}" onclick="save_content_display_type('Template')" id="content_display_type_Template">{t}Template{/t}</button> 
+							<button class="{if  $page->get('Page Store Content Display Type')=='Source'}selected{/if}" onclick="save_content_display_type('Source')" id="content_display_type_Source">{t}Custom{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					
+						<tr class="space10" style="{if $page->get('Page Store Content Display Type')!='Template'}display:none;{/if}">
+						<td class="label">{t}Template{/t}:</td>
+						<td> 
+						
+						<img style="border:1px solid #ccc" src="art/page_layout_product_thumbnails.png"/>
+						
+						</td>
+						</tr>
+						<tr>
+					
+				</div>
+					
+				</table>
+			
+				
+				<table class="edit" id="content_edit_table" style="{if $page->get('Page Store Content Display Type')!='Source'}display:none;{/if}width:810px;padding:0px;margin:0;position:relative;left:-1px">
 					<tr class="title">
 						<td colspan="2"> 
 						<div class="buttons left">
@@ -476,7 +430,7 @@
 						<div style="float:right" id="html_editor_msg">
 						</div>
 						<div class="buttons small">
-							<button style="display:none" id="download_page_content">{t}Download{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> <button class="positive disabled" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_page_content">{t}Reset{/t}</button> 
+							<button style="display:none" id="download_page_content">{t}Download{/t}</button> <button id="show_upload_page_content" > <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> <button class="positive disabled" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_page_content">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>

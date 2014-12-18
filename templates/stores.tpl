@@ -28,7 +28,7 @@
 			<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Families{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='deals'}selected{/if}" style="display:none" id="deals"> <span> {t}Offers{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='sites'}selected{/if}" id="sites"> <span> {t}Websites{/t}</span></span></li>
+			{*}<li> <span class="item {if $block_view=='sites'}selected{/if}" id="sites"> <span> {t}Websites{/t}</span></span></li>{*}
 		</ul>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 		</div>
@@ -187,6 +187,7 @@
 		</div>
 		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		</div>
+		{*}
 		<div id="block_sites" style="{if $block_view!='sites'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="clear:both;margin-top:25px">
 				<span class="clean_table_title">{t}Web Sites{/t}</span> 
@@ -200,6 +201,7 @@
 				</div>
 			</div>
 		</div>
+		{*}
 	</div>
 </div>
 <div id="rppmenu0" class="yuimenu">

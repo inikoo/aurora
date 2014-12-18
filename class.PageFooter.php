@@ -234,7 +234,7 @@ class PageFooter extends DB_Table {
 
 		$new_image_key=$old_image_key;
 		//      $image=new Image($image_key);
-		$url="http://localhost/".dirname($_SERVER['PHP_SELF'])."/public_footer_preview.php?id=".$this->id;
+		$url="http://localhost:".$_SERVER['SERVER_PORT']."/".dirname($_SERVER['PHP_SELF'])."/public_footer_preview.php?id=".$this->id;
 
 
 		ob_start();
@@ -447,7 +447,9 @@ class PageFooter extends DB_Table {
 	}
 
 
-
+function display_content(){
+	return $this->data['Template'];
+}
 
 
 }

@@ -31,7 +31,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$where=' where `Part SKU`=31059';
+$where=' where `Part SKU`=47599';
 $where='';
 $sql="select count(*) as total from `Part Location Dimension`  $where ";
 $result=mysql_query($sql);

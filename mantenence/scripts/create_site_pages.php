@@ -63,6 +63,7 @@ $page_data=array(
  );
 $site->add_store_page($page_data);
 
+
 $page_data=array(
 
 'Page Store Section'=>'Checkout',

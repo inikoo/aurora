@@ -1,0 +1,51 @@
+body{margin-top:0px;padding-top:0px;font-family: "Open Sans",Helvetica,Arial,sans-serif;}
+a{text-decoration: none;}
+a:hover{text-decoration: underline;}
+
+#hd{margin-top:24px}
+
+
+span.link{color:#EEE;cursor:pointer;margin-left:15px;font-weight:800}
+span.link:hover{text-decoration:underline;color:#FFF;}
+#show_actions_dialog,.dummy_img{cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;}
+#top_bar{
+
+position: fixed;
+    height: 24px;
+    top: 0;
+  width:934px;
+   padding:0px 20px;
+   z-index: 100;background-color:#222;color:#fff;
+}
+
+#top_bar .currencies{float:right;position:relative;top:2px}
+#top_bar .currencies .inline_content {margin-left:0px;margin-right:10px;}
+#top_bar .currencies img{cursor:pointer}
+#top_bar #currency_dialog {display:none;background:black;width:140px;padding:0 10px 10px 10px}
+#top_bar #currency_dialog button{float:none;min-width:140px;text-align:left;margin-bottom:6px}
+#top_bar .actions{float:left;position:relative;top:4px;margin-right:20px}
+#top_bar .checkout_info{float:right;position:relative;top:2px}
+#top_bar .checkout_info img{height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer}
+#top_bar .checkout_info .basket{color:#ff8000;margin-left:10px}
+
+@media screen and (max-width: 945px) {
+
+#top_bar {
+position: relative;
+
+}
+#hd{margin-top:0}
+
+#top_bar .checkout_info {float:left}
+}
+@media screen and (max-width: 600px) {
+.hello_customer{display:none}
+#top_bar .actions{margin-right:0px}
+
+}
+
+@media screen and (max-width: 600px) {
+
+.basket_info{display:none}
+#top_bar .checkout_info .basket{position:relative;top:2px;margin-left:20px}
+}

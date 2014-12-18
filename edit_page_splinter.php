@@ -24,61 +24,61 @@ if (!$user->can_view('sites') or !$user->can_edit('sites')  ) {
 
 
 
-if (!isset($_REQUEST['id'])){
-header('Location: index.php?no_id');
+if (!isset($_REQUEST['id'])) {
+	header('Location: index.php?no_id');
 	exit;
 
-}else{
-$splinter_key=$_REQUEST['id'];
+}else {
+	$splinter_key=$_REQUEST['id'];
 }
-if (!isset($_REQUEST['type']) or !in_array($_REQUEST['type'],array('header','footer'))){
-header('Location: index.php?wrong_page_splinter_type');
+if (!isset($_REQUEST['type']) or !in_array($_REQUEST['type'],array('header','footer'))) {
+	header('Location: index.php?wrong_page_splinter_type');
 	exit;
 
-}else{
-$splinter_type=$_REQUEST['type'];
+}else {
+	$splinter_type=$_REQUEST['type'];
 
 }
-if (!isset($_REQUEST['referral']) or !in_array($_REQUEST['referral'],array('site','page'))){
-header('Location: index.php?no_referral_type');
+if (!isset($_REQUEST['referral']) or !in_array($_REQUEST['referral'],array('site','page'))) {
+	header('Location: index.php?no_referral_type');
 	exit;
 
-}else{
-$referral=$_REQUEST['referral'];
+}else {
+	$referral=$_REQUEST['referral'];
 }
 
-if (!isset($_REQUEST['referral_key']) or !is_numeric($_REQUEST['referral_key']) ){
-header('Location: index.php?no_referral_key');
+if (!isset($_REQUEST['referral_key']) or !is_numeric($_REQUEST['referral_key']) ) {
+	header('Location: index.php?no_referral_key');
 	exit;
 
-}else{
-$referral_key=$_REQUEST['referral_key'];
+}else {
+	$referral_key=$_REQUEST['referral_key'];
 
 }
 
 
 
-if($splinter_type=='header'){
-$splinter=new PageHeader($splinter_key);
-}else{
-$splinter=new PageFooter($splinter_key);
+if ($splinter_type=='header') {
+	$splinter=new PageHeader($splinter_key);
+}else {
+	$splinter=new PageFooter($splinter_key);
 
 }
 
 
-if(!$splinter->id){
+if (!$splinter->id) {
 
 
-header('Location: index.php?no_splinter_found');
+	header('Location: index.php?no_splinter_found');
 	exit;
 }
 
 
 
-if($referral=='site'){
-$referral=new Site($referral_key);
-}elseif($referral=='page'){
-$referral=new Page($referral_key);
+if ($referral=='site') {
+	$referral=new Site($referral_key);
+}elseif ($referral=='page') {
+	$referral=new Page($referral_key);
 
 }
 
@@ -144,12 +144,12 @@ $smarty->assign('edit_block',$edit_block);
 
 $smarty->assign('parent','sites');
 
-if($splinter_type=='header'){
-$smarty->assign('title',_('Editing Header'));
+if ($splinter_type=='header') {
+	$smarty->assign('title',_('Editing Header'));
 
 
-}else{
-$smarty->assign('title',_('Editing Footer'));
+}else {
+	$smarty->assign('title',_('Editing Footer'));
 }
 
 

@@ -246,7 +246,7 @@ function save_delete(delete_type, subject) {
     else if (subject == 'supplier_product' || subject == 'supplier') ar_file = 'ar_edit_suppliers.php';
     else if (subject == 'ind_staff' || subject == 'ind_positions' || subject == 'ind_department') ar_file = 'ar_edit_staff.php';
     else if (subject == 'subcategory') ar_file = 'ar_edit_categories.php';
-    else if (subject == 'page_store' || subject == 'page_header' || subject == 'page_footer') ar_file = 'ar_edit_sites.php';
+    else if (subject == 'page_store' || subject == 'header' || subject == 'footer') ar_file = 'ar_edit_sites.php';
     else if (subject == 'order_list' || subject == 'invoice_list' || subject == 'dn_list') ar_file = 'ar_edit_orders.php';
     else if (subject == 'email_campaign_recipient' || subject == 'email_campaign_objetive' || subject == 'color_scheme' || subject == 'template_header_image' || subject == 'template_postcard') ar_file = 'ar_edit_marketing.php';
     else ar_file = 'ar_edit_assets.php';
@@ -256,11 +256,11 @@ function save_delete(delete_type, subject) {
 
     request = ar_file + '?tipo=delete_' + subject + '&subject_key=' + Dom.get('dialog_' + delete_type + '_' + subject + '_key').value + '&table_id=' + Dom.get('dialog_' + delete_type + '_' + subject + '_table_id').value + '&recordIndex=' + Dom.get('dialog_' + delete_type + '_' + subject + '_recordIndex').value
 
-    //alert(request)
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
 
         success: function(o) {
-            // alert(o.responseText);
+            //alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200 && r.action == 'deleted') {
 
@@ -846,7 +846,8 @@ function cancel_new_general(branch) {
     if (Dom.get('show_new_' + branch + '_dialog_button') != undefined) {
         Dom.setStyle('show_new_' + branch + '_dialog_button', 'display', '');
     }
-    Dom.get("new_" + branch + "_dialog_msg").innerHTML
+    
+    //Dom.get("new_" + branch + "_dialog_msg").innerHTML
     Dom.setStyle('new_' + branch + '_dialog', 'display', 'none');
 
 };
@@ -1172,10 +1173,10 @@ function save_new_general(branch) {
 
     //  alert(scope_edit_ar_file);
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
-  //  alert(request)
-    YAHOO.util.Connect.asyncRequest('POST', request, {
+ // alert(request)
+  YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-    //           alert(o.responseText);
+            alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {
@@ -1211,7 +1212,6 @@ function save_new_general(branch) {
 }
 
 function post_action(branch, r) {
-
 }
 
 function post_new_create_actions(branch, response) {

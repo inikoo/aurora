@@ -13,8 +13,12 @@ function save_new_site() {
 
 }
 
+function post_new_create_actions(branch, response) {
+    window.location = "site.php?view=details&id=" + response.object_key
+}
+
 function post_action(branch, response) {
-    window.location = "edit_site.php?view=details&id=" + response.object_key
+    window.location = "site.php?view=details&id=" + response.object_key
 
 
 }

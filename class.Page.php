@@ -22,7 +22,7 @@ class Page extends DB_Table {
 	var $snapshots_taken=0;
 	var $set_title=false;
 	var $set_currency='GBP';
-var $set_currency_exchange=1;
+	var $set_currency_exchange=1;
 
 	function Page($arg1=false,$arg2=false,$arg3=false) {
 		$this->table_name='Page';
@@ -93,16 +93,7 @@ var $set_currency_exchange=1;
 						$this->data[$key]=$value;
 					}
 
-					if ($this->data['Page Store Logo Data']!='')
-						$this->data['Page Store Logo Data']=unserialize($this->data['Page Store Logo Data']);
-					if ($this->data['Page Store Header Data']!='')
-						$this->data['Page Store Header Data']=unserialize($this->data['Page Store Header Data']);
-					if ($this->data['Page Store Content Data']!='')
-						$this->data['Page Store Content Data']=unserialize($this->data['Page Store Content Data']);
-					if ($this->data['Page Store Footer Data']!='')
-						$this->data['Page Store Footer Data']=unserialize($this->data['Page Store Footer Data']);
-					if ($this->data['Page Store Layout Data']!='')
-						$this->data['Page Store Layout Data']=unserialize($this->data['Page Store Layout Data']);
+
 
 				}
 
@@ -131,6 +122,16 @@ var $set_currency_exchange=1;
 
 	}
 
+	function load_data() {
+		$sql=sprintf("select * from `Page Store Data Dimension` where  `Page Key`=%d",$this->id);
+		$res =mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			foreach ($row as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+
+		}
+	}
 
 	function find($raw_data,$options) {
 
@@ -230,8 +231,9 @@ var $set_currency_exchange=1;
 
 		$this->new=false;
 		if (!isset($raw_data['Page Code']) or  $raw_data['Page Code']=='') {
+			$this->error=true;
+			$this->msg='No page code';
 
-			$raw_data['Page Code']=preg_replace('/\s/','',strtolower($raw_data['Page Section'].'_'.$raw_data['Page Short Title']));
 		}
 
 		if (!isset($raw_data['Page URL']) or  $raw_data['Page URL']=='') {
@@ -320,53 +322,7 @@ var $set_currency_exchange=1;
 
 
 
-
-
-
 		$data['Page Key']=$this->id;
-
-
-
-		if (!is_array($data['Page Store Showcases'])) {
-			$data['Page Store Showcases']=array();
-		}
-
-		if (array_key_exists('Presentation',$data['Page Store Showcases'])) {
-			$data['Presentation Showcase']='Yes';
-		}
-		if (array_key_exists('Offers',$data['Page Store Showcases'])) {
-			$data['Offers Showcase']='Yes';
-		}
-		if (array_key_exists('New',$data['Page Store Showcases'])) {
-			$data['New Showcase']='Yes';
-		}
-		$data['Page Store Showcases']=serialize($data['Page Store Showcases']);
-
-		if (!is_array($data['Page Store Product Layouts'])) {
-			$data['Page Store Product Layouts']=array();
-		}
-
-		if (array_key_exists('List',$data['Page Store Product Layouts'])) {
-			$data['List Layout']='Yes';
-		}
-		if (array_key_exists('Slideshow',$data['Page Store Product Layouts'])) {
-			$data['Product Slideshow Layout']='Yes';
-		}
-		if (array_key_exists('Thumbnails',$data['Page Store Product Layouts'])) {
-			$data['Product Thumbnails Layout']='Yes';
-		}
-		if (array_key_exists('Manual',$data['Page Store Product Layouts'])) {
-			$data['Product Manual Layout']='Yes';
-		}
-
-		//print_r($data);
-
-
-
-
-
-		$data['Page Store Product Layouts']=serialize($data['Page Store Product Layouts']);
-
 		$keys='(';
 
 		$values='values(';
@@ -375,7 +331,7 @@ var $set_currency_exchange=1;
 			if ($key=='Page Source Template')
 				$values.=prepare_mysql($value,false).",";
 
-			else if (preg_match('/Subtitle|Title|Resume|Presentation|Slogan|Manual Layout Data|Page Store Showcases|Page Store Showcases/i',$key))
+			else if (preg_match('/Title|Description/i',$key))
 					$values.="'".addslashes($value)."',";
 				else
 					$values.=prepare_mysql($value).",";
@@ -388,6 +344,11 @@ var $set_currency_exchange=1;
 
 			$this->get_data('id',$this->id);
 			$this->new=true;
+
+
+			$sql=sprintf("insert into `Page Store Data Dimension` (`Page Key`) values (%d)",$this->id);
+			mysql_query($sql);
+
 			$sql=sprintf("select `Site Flag Key` from  `Site Flag Dimension` where `Site Flag Color`=%s and `Site Key`=%d",
 				prepare_mysql($this->data['Site Flag']),
 				$this->data['Page Site Key']
@@ -408,7 +369,7 @@ var $set_currency_exchange=1;
 				$this->data['Page Site Key'],
 				prepare_mysql($this->data['Page URL']),
 				prepare_mysql($this->data['Page Store Title']),
-				prepare_mysql($this->data['Page Store Resume']),
+				prepare_mysql($this->data['Page Store Description']),
 				prepare_mysql($content)
 			);
 			mysql_query($sql);
@@ -433,9 +394,9 @@ var $set_currency_exchange=1;
 			//print $this->get_xhtml_content();
 			//print "-------------------------\n";
 			//print $this->get_plain_content();
-			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Resume`=%s,`Page Store Content`=%s where `Page Key`=%d",
+			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Description`=%s,`Page Store Content`=%s where `Page Key`=%d",
 				prepare_mysql($this->data['Page Store Title']),
-				prepare_mysql($this->data['Page Store Resume']),
+				prepare_mysql($this->data['Page Store Description']),
 				prepare_mysql($this->get_plain_content()),
 
 				$this->id
@@ -670,20 +631,6 @@ var $set_currency_exchange=1;
 	function get_javascript() {
 		return $this->data['Page Store Javascript'];
 	}
-	function update_presentation_template_data($value,$options) {
-
-
-
-
-		$myFile = "sites/templates/splinters/presentation/".$this->id.'.tpl';
-		$fh = fopen($myFile, 'w');
-		fwrite($fh,$value );
-		fclose($fh);
-		$this->update_field('Product Presentation Template Data',$value,$options);
-
-
-
-	}
 
 
 	function update_field_switcher($field,$value,$options='') {
@@ -736,10 +683,10 @@ var $set_currency_exchange=1;
 			}
 
 			break;
-		case('Page Store Resume'):
+		case('Page Store Description'):
 		case('description'):
 		case('page_html_head_resume'):
-			$this->update_field('Page Store Resume',$value,$options);
+			$this->update_field('Page Store Description',$value,$options);
 			$this->update_store_search();
 			break;
 		case('Page Keywords'):
@@ -752,14 +699,9 @@ var $set_currency_exchange=1;
 			$this->update_field('Page Store Title',$value,$options);
 			$this->update_store_search();
 			break;
-		case('subtitle'):
-			$this->update_field('Page Store Subtitle',$value,$options);
-			break;
-		case('slogan'):
-			$this->update_field('Page Store Slogan',$value,$options);
-			break;
+		case('description'):
 		case('resume'):
-			$this->update_field('Page Store Resume',$value,$options);
+			$this->update_field('Page Store Description',$value,$options);
 			break;
 		case('display_type'):
 			$this->update_field('Page Store Content Display Type',$value,$options);
@@ -788,9 +730,7 @@ var $set_currency_exchange=1;
 			$this->update_field($field,$value,$options);
 			$this->update_store_search();
 			break;
-		case('presentation_template_data'):
-			$this->update_presentation_template_data($value,$options);
-			break;
+
 		default:
 
 			$base_data=$this->base_data();
@@ -1076,62 +1016,18 @@ var $set_currency_exchange=1;
 
 
 
-	function get_data_for_smarty($data) {
 
 
-		$page_section=new PageStoreSection('code',$this->data['Page Store Section'],$this->data['Page Site Key']);
-		$data=$page_section->get_data_for_smarty($data);
+	function display_found_in() {
 
-		$header_style=$data['header_style'];
-		if ($this->data['Page Store Header Data'] and array_key_exists('style',$this->data['Page Store Header Data']))
-			foreach ($this->data['Page Store Header Data']['style'] as $key=>$value) {
-				$header_style.="$key:$value;";
-			}
-		$data['header_style']=$header_style;
-
-		$footer_style=$data['footer_style'];
-		if ($this->data['Page Store Footer Data'] and array_key_exists('style',$this->data['Page Store Footer Data']))
-			foreach ($this->data['Page Store Footer Data']['style'] as $key=>$value) {
-				$footer_style.="$key:$value;";
-			}
-		$data['footer_style']=$footer_style;
-
-		$content_style=$data['content_style'];
-		$showcases=array();
-		if ($this->data['Page Store Content Data'] ) {
-
-			if (array_key_exists('style',$this->data['Page Store Content Data'])) {
-				foreach ($this->data['Page Store Content Data']['style'] as $key=>$value) {
-					$content_style.="$key:$value;";
-				}
-			}
-
-			if (array_key_exists('Showcases',$this->data['Page Store Content Data'])) {
-				foreach ($this->data['Page Store Content Data']['Showcases'] as $showcase_key=>$showcase) {
-					$style='';
-					if (array_key_exists('style',$showcase)) {
-						foreach ($this->data['Page Store Content Data']['Showcases'][$showcase_key]['style'] as $key=>$value) {
-							$style.="$key:$value;";
-						}
-					}
-					$showcase['style']=$style;
-					$showcases[]=$showcase;
-
-				}
-			}
-
+		$found_in='';
+		foreach ($this->get_found_in() as $item) {
+			$found_in.=$item['link'];
+			break;
 		}
 
-		$data['content_style']=$content_style;
-		$data['showcases']=$showcases;
-		$data['resume']=$this->data['Page Store Resume'];
-		$data['slogan']=$this->data['Page Store Slogan'];
-		$data['subtitle']=$this->data['Page Store Subtitle'];
-		$data['title']=$this->data['Page Title'];
-		return $data;
+		return $found_in;
 	}
-
-
 
 
 	function get_found_in() {
@@ -1146,7 +1042,7 @@ var $set_currency_exchange=1;
 			$found_in_page=new Page($row['Page Store Found In Key']);
 			if ($found_in_page->id) {
 
-				$link='<a href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
+				$link='<a class="found_in" href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
 
 				$found_in[]=array(
 					'link'=>$link,
@@ -1564,7 +1460,7 @@ var $set_currency_exchange=1;
 			$number_list_products=0;
 			$number_button_products=0;
 
-			$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Page Key`=%d",
+			$sql=sprintf("select PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Page Key`=%d group by PPD.`Product ID`",
 				$this->id);
 			//print $sql;
 			//exit;
@@ -1679,10 +1575,7 @@ var $set_currency_exchange=1;
 
 					$html.=$this->display_button_emals_commerce($product);
 					break;
-				case 'AW':
 
-					$html.=$this->display_button_aw_checkout($product);
-					break;
 				case 'Inikoo':
 					$html.=$this->display_button_inikoo($product);
 
@@ -1697,158 +1590,7 @@ var $set_currency_exchange=1;
 		return $html;
 	}
 
-	function display_button_aw_checkout($product) {
 
-
-
-
-		if ($product->data['Product Web State']=='Out of Stock') {
-
-
-			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
-				$product->pid,
-				$this->user->id
-
-			);
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
-			}else {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'" style="color:#777" ><span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product->pid.'"></span></span>';
-
-			}
-
-
-			if ($product->data['Product Next Supplier Shipment']!='') {
-				$next_shipment='. '._('Expected').': '.$product->get('Next Supplier Shipment');
-			}
-			else {
-				$next_shipment='';
-			}
-
-			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span><span style="color:red">'.$next_shipment.$email_reminder.'</span>';
-		}
-		elseif ($product->data['Product Web State']=='Offline') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
-		}
-		elseif ($product->data['Product Web State']=='Discontinued') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
-		}
-		else {
-
-
-			$form_id='order_button_'.$product->pid;
-
-			$form_id='order_button_'.$product->pid;
-
-			$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="document.forms[\''.$form_id.'\'].submit();"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">';
-			//  <input type='hidden' name='userid' value='%s'>
-			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
-                             <form action='%s' method='post' id='%s' name='%s'  >
-
-
-
-
-
-                             <input type='hidden' name='product' value='%s%sx %s'>
-                             <input type='hidden' name='return' value='%s'>
-                             <input type='hidden' name='price' value='%s'>
-                            <input type='hidden' name='customer_last_order' value='%s'>
-                            <input type='hidden' name='customer_key' value='%s'>
-
-
-
-
-                             <table border=0>
-                             <tr>
-                             <td>
-                             <input style='height:20px;text-align:center'    type='text' size='2' class='qty' name='qty' value='1'>
-                             </td>
-                             <td>
-                             %s
-                             </td>
-                             </table>
-                             </form>
-
-
-                             </div>",
-
-				$this->site->get_checkout_data('url').'/shopping_cart.php',$form_id,$form_id,
-				//$this->site->get_checkout_data('id'),
-				$product->data['Product Code'],
-				// fix jonathan pop up (expeerimental)
-				" ".$product->data['Product Units Per Case'],
-				$product->data['Product Name'],
-				$this->data['Page URL'],
-				number_format($product->data['Product Price'],2,'.',''),
-				$this->customer->get('Customer Last Order Date'),
-				$this->customer->id,
-
-
-
-
-
-
-
-
-				$button
-
-
-			);
-		}
-
-		$data=array(
-			'Product Price'=>$product->data['Product Price'],
-
-
-			'Product Units Per Case'=>$product->data['Product Units Per Case'],
-			'Product Currency'=>$product->get('Product Currency'),
-			'Product Unit Type'=>$product->data['Product Unit Type'],
-
-
-			'locale'=>$this->site->data['Site Locale']);
-
-		$price= '<span class="price">'.formated_price($data).'</span><br>';
-
-		$data=array(
-			'Product Price'=>$product->data['Product RRP'],
-			'Product Units Per Case'=>$product->data['Product Units Per Case'],
-			'Product Currency'=>$product->get('Product Currency'),
-			'Product Unit Type'=>$product->data['Product Unit Type'],
-			'Label'=>_('RRP').":",
-
-			'locale'=>$this->site->data['Site Locale']);
-
-		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
-
-
-
-
-		$form=sprintf('<div  class="ind_form">
-                      <span class="code">%s</span><br/>
-                      <span class="name">%sx %s</span><br>
-                      %s
-                      %s
-                      %s
-                      </div>',
-			$product->data['Product Code'],
-			$product->data['Product Units Per Case'],
-			$product->data['Product Name'],
-			$price,
-			$rrp,
-			$message
-		);
-
-
-
-
-		return $form;
-
-
-
-
-
-	}
 	function display_button_emals_commerce($product) {
 
 
@@ -1980,8 +1722,7 @@ var $set_currency_exchange=1;
 	}
 
 
-	function display_button_inikoo($product) {
-
+	function get_button_ordered_quantity($product) {
 		$quantity=0;
 		if (isset($this->order) and $this->order) {
 
@@ -1995,16 +1736,18 @@ var $set_currency_exchange=1;
 
 		}
 
-
-
-
 		if ($quantity<=0) {
 			$quantity='';
 		}
 
+		return $quantity;
+	}
+
+	function get_button_text($product,$quantity) {
+
 		if ($product->data['Product Web State']=='Out of Stock') {
 
-
+			$message='';
 			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
 				$product->pid,
 				$this->user->id
@@ -2017,9 +1760,8 @@ var $set_currency_exchange=1;
 				$email_reminder='<br/>
 					<span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
 					<span id="send_reminder_container_'.$product->pid.'" style="color:#777" >
-						<span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
-					</span>
-					<span id="send_reminder_msg_'.$product->pid.'"></span>';
+					<span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
+					</span><span id="send_reminder_msg_'.$product->pid.'"></span>';
 
 			}
 
@@ -2055,14 +1797,12 @@ var $set_currency_exchange=1;
 				$button_alt=_('Order Product');
 				$feedback_class="empty";
 			}
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button"  
+			$button='<img id="order_button_'.$product->pid.'"    class="order_button"
 			src="'.$button_image_source.'" alt="'.$button_alt.'">
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
 			<img class="button_feedback '.$feedback_class.'" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
 			$input_field=sprintf("<br/><div class='order_but' style='text-align:left'>
-
-
-                             <table border=0 onmouseover=\"over_order_button(".$product->pid.")\" onmouseout=\"out_order_button(".$product->pid.")\"  >
+			<table border=0 onmouseover=\"over_order_button(".$product->pid.")\" onmouseout=\"out_order_button(".$product->pid.")\"  >
                              <tr>
                              <td>
                              <input maxlength=6 onClick=\"this.select();\" class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
@@ -2091,6 +1831,12 @@ var $set_currency_exchange=1;
 
 		}
 
+		return $message;
+
+	}
+
+	function get_button_price($product) {
+
 		$price_data=array(
 			'Product Price'=>$product->data['Product Price'],
 
@@ -2103,7 +1849,14 @@ var $set_currency_exchange=1;
 			'locale'=>$this->data['Page Locale']);
 
 		$price= '<span class="price">'.$this->get_formated_price($price_data).'</span><br>';
-
+		return $price;
+	}
+	function get_button_rrp($product) {
+	
+		if(!$product->data['Product RRP']){
+			return '';
+		}
+	
 		$rrp_data=array(
 			'Product Price'=>$product->data['Product RRP'],
 			'Product Units Per Case'=>$product->data['Product Units Per Case'],
@@ -2114,15 +1867,30 @@ var $set_currency_exchange=1;
 			'locale'=>$this->data['Page Locale']);
 
 		$rrp= '<span class="rrp">'.$this->get_formated_price($rrp_data).'</span><br>';
+		return $rrp;
+
+	}
+
+	function display_button_inikoo($product) {
+
+		$quantity=$this->get_button_ordered_quantity($product);
+
+		$message=$this->get_button_text($product,$quantity);
+		$price=$this->get_button_price($product);
+
+		$rrp=$this->get_button_rrp($product);
+
 
 
 
 
 		$form=sprintf('<div  class="ind_form">
-                      <span class="code">%s</span><br/>
-                      <span class="name">%sx %s</span><br>
+                      <div class="product_description" >
+                      <span class="code">%s</span>
+                      <div class="name">%sx %s</div>
                       %s
                       %s
+                      </div>
                       %s
                       </div>',
 			$product->data['Product Code'],
@@ -2716,7 +2484,7 @@ var $set_currency_exchange=1;
 
 		foreach ($products as $product) {
 
-			
+
 
 			if ($this->print_rrp) {
 
@@ -2814,14 +2582,14 @@ var $set_currency_exchange=1;
 					$old_qty,
 					$old_qty
 				);
-if ($old_qty!='') {
-				$number_fields_with_ordered_products++;
-			}
+				if ($old_qty!='') {
+					$number_fields_with_ordered_products++;
+				}
 
 			}
 
 
-			
+
 
 			$tr_style='';
 
@@ -3859,7 +3627,7 @@ if ($old_qty!='') {
 	function get_formated_price($data,$options=false) {
 
 		$_data=array(
-			'Product Price'=>$data['Product Price']*$this->set_currency_exchange,
+			'Product Price'=>$data['Product Price'],
 			'Product Units Per Case'=>$data['Product Units Per Case'],
 			'Product Currency'=>$this->currency,
 			'Product Unit Type'=>$data['Product Unit Type'],
@@ -3898,79 +3666,26 @@ if ($old_qty!='') {
 				$html=$basket;
 
 				break;
-			case 'AW':
-				$customer_data=urlencode(base64_encode(json_encode(array(
-								'key'=>$this->customer->id,
-								//'key'=>'13224',
-								'email'=>$this->customer->get('Customer Main Plain Email'),
-								'name'=>$this->customer->get('Customer Name'),
-								'contact'=>$this->customer->get('Customer Main Contact Name'),
-								'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
-								'vat_number'=>$this->customer->get('Customer Tax Number'),
-								'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
-								'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address')),
-							)))
-				);
-				//** INIKOO_DEBUG** 160414**  Test of new shopping cart, take off! after debubug
-				/*
-				if($this->customer->id>158522){
 
-				$customer_data=urlencode(base64_encode(json_encode(array(
-								'key'=>0,
-								'email'=>$this->customer->get('Customer Main Plain Email'),
-								'name'=>$this->customer->get('Customer Name'),
-								'contact'=>$this->customer->get('Customer Main Contact Name'),
-								'telephone'=>$this->customer->get('Customer Main Plain Telephone'),
-								'vat_number'=>$this->customer->get('Customer Tax Number'),
-								'billing_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Billing Address')),
-								'delivery_address'=>preg_replace('/\<br\/\>/','|',$this->customer->get('Customer XHTML Main Delivery Address'))
-							)))
-				);
-
-
-				}else{
-
-					$customer_data=urlencode(base64_encode(json_encode(array(
-								'key'=>$this->customer->id,
-								'email'=>'test@test.com',
-								'name'=>'customer name',
-								'contact'=>'contact name',
-								'telephone'=>'telephone',
-								'vat_number'=>'vat number',
-								'billing_address'=>'address (billing)',
-								'delivery_address'=>'address (delivery)',
-							)))
-				);
-				}
-				*/
-				// ** INIKOO_DEBUG --END
-
-				$remote_page=$this->site->get_checkout_data('url').'/basket.php?data=' . $customer_data . '&scwdw=1&return='.$this->data['Page URL'];
-				//print $remote_page;
-				$basket= '<div style="position:absolute;left:990px;">'.file_get_contents($remote_page ).'</div>';
-
-				$basket.='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/basket.php?data='.$customer_data.'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-				$html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
-
-				break;
 			default:
-				
+
 
 				$currency_info='';
 				$currency_dialog='';
 				global $valid_currencies;
 
 				if (count($valid_currencies)>1) {
-					$currency_info='<div  style="float:right;position:relative;top:2px"><span  style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$this->set_currency.'</span>
-				 <img id="show_currency_dialog" style="cursor:pointer" onclick="show_currencies_dialog()"  src="art/dropdown.png">
-				 <img id="hide_currency_dialog" style="cursor:pointer;display:none" onclick="hide_currencies_dialog()"  src="art/dropup.png">
+					$currency_info='
+					<div class="currencies" ><span  class="inline_content" style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$this->set_currency.'</span>
+				 <img id="show_currency_dialog" onclick="show_currencies_dialog()"  src="art/dropdown.png">
+				 <img id="hide_currency_dialog" style="display:none" onclick="hide_currencies_dialog()"  src="art/dropup.png">
 
 
 				 </span></div>';
 
-					$currency_dialog='<div id="currency_dialog" style="display:none;background:black;width:140px;padding:0 10px 10px 10px"><div style="margin:0px auto" class="buttons small left "><br>';
+					$currency_dialog='<div id="currency_dialog" ><div style="margin:0px auto" class="buttons small left "><br>';
 					foreach ($valid_currencies as $currency_code=> $valid_currency) {
-						$currency_dialog.='<button class="'.($this->set_currency== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')" style="float:none;min-width:140px;text-align:left;margin-bottom:6px" ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
+						$currency_dialog.='<button class="'.($this->set_currency== $currency_code?'selected':'').'  '.($_SESSION['user_currency']== $currency_code?'recommended':'').'" onClick="change_currency(\''.$currency_code.'\')"  ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
 					}
 					$currency_dialog.='</div></div>';
 
@@ -3978,10 +3693,20 @@ if ($old_qty!='') {
 
 
 
-				$basket='<div style="width:100%;"><div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span> </div>';
+				$basket='<div style="width:100%;">
+				<div class="actions" >
+					<span class="hello_customer">'.$this->customer->get_hello().'</span>
+					<span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span>
+					<span class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span>
+				</div>';
 
-				$basket.=' <div id="top_bar_checkout_info" style="float:right;position:relative;top:2px">
-				 <img  src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="cursor:pointer"  > '._('Items total').': <span onClick=\'window.location="basket.php"\'  id="basket_total">'.money_locale(0,$this->site->data['Site Locale'],$this->set_currency).'</span> (<span id="number_items">0</span> '._('items').')</span>  <span onClick=\'window.location="basket.php"\' style="color:#ff8000;margin-left:10px" class="link basket"  id="see_basket"  >'._('Basket').'</span>
+				$basket.=' <div class="checkout_info" >
+				<span class="basket_info">
+				    <img  onClick=\'window.location="basket.php"\' src="art/basket.jpg" />
+				     '._('Items total').':
+				 	<span onClick=\'window.location="basket.php"\'  id="basket_total">'.money_locale(0,$this->site->data['Site Locale'],$this->set_currency).'</span>
+				 	 (<span id="number_items">0</span> '._('items').') </span>
+				 	  <span onClick=\'window.location="basket.php"\'  class="link basket"  id="see_basket"  >'._('Basket').'</span>
 				 </div>' ;
 
 
@@ -4026,8 +3751,16 @@ if ($old_qty!='') {
 			return;
 
 
+		if ($this->data['Page Store Content Display Type']=='Source') {
+			$lists=$this->get_list_products_from_source();
+		}else {
+			$lists=array('default');
 
-		$lists=$this->get_list_products_from_source();
+
+		}
+		
+		$site=new Site($this->data['Page Site Key']);
+
 		$valid_list_keys=array();
 		foreach ($lists as $list_key) {
 
@@ -4092,6 +3825,15 @@ if ($old_qty!='') {
 			}
 
 			foreach ($new_products_on_list as $product_pid=>$tmp) {
+			
+			
+			$page_data=array(
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'product',
+				);
+				$product_page_key=$site->add_product_page($product_pid,$page_data);
+			
+			
 				if (array_key_exists($product_pid,$old_products_on_list)) {
 
 				}else {
@@ -4348,11 +4090,11 @@ if ($old_qty!='') {
 	}
 
 	function display_search() {
-		print $this->site->display_search();
+		return $this->site->display_search();
 	}
 
 	function display_menu() {
-		print $this->site->display_menu();
+		return $this->site->display_menu();
 	}
 
 
@@ -4366,14 +4108,13 @@ if ($old_qty!='') {
 			$dirname=dirname($_SERVER['PHP_SELF']);
 		}
 
-
 		$r = join('',unpack('v*', fread(fopen('/dev/urandom', 'r'),25)));
 		$pwd=uniqid('',true).sha1(mt_rand()).'.'.$r;
 
 		$sql=sprintf("insert into `MasterKey Internal Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
 			,1
 			,prepare_mysql($pwd)
-			,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +5 minute")))
+			,prepare_mysql(gmdate("Y-m-d H:i:s",strtotime("now +5 minute")))
 			,prepare_mysql(ip(),false)
 		);
 
@@ -4387,12 +4128,12 @@ if ($old_qty!='') {
 		//      $image=new Image($image_key);
 
 
-
 		$height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 		//ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
 
-		$url="http://localhost/".$dirname."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
-
+		$url="http://localhost".(!isset($_SERVER['SERVER_PORT']) or $_SERVER['SERVER_PORT']=='80'?'':':'.$_SERVER['SERVER_PORT']).$dirname."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
+		//print $url;
+		//exit;
 		ob_start();
 		system("uname");
 
@@ -4400,6 +4141,7 @@ if ($old_qty!='') {
 
 		$_system = ob_get_clean();
 		if (preg_match('/darwin/i',$_system)) {
+			//$url='http://www.yahoo.com';
 			$command="mantenence/scripts/webkit2png_mac.py  -C -o server_files/tmp/pp_image".$this->id."  --clipheight=".($height*0.5)."  --clipwidth=512  -s 0.5  ".$url;
 
 			//       $command="mantenence/scripts/webkit2png  -C -o server_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
@@ -4422,11 +4164,11 @@ if ($old_qty!='') {
 
 
 		ob_start();
-		system($command,$retval);
+		@system($command,$retval);
 		ob_get_clean();
 
-
-		// print "$url\n\n";
+		//print $command;
+		//  print "$url\n\n";
 
 		$this->snapshots_taken++;
 
@@ -4444,7 +4186,6 @@ if ($old_qty!='') {
 			exit("xx \n");
 
 		}
-
 
 
 
@@ -4783,7 +4524,7 @@ if ($old_qty!='') {
 
 
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
 			$this->id,
@@ -4821,7 +4562,7 @@ if ($old_qty!='') {
 			$this->data['Page Store '.$db_interval.' Acc Users']=0;
 		}
 
-		$sql=sprintf('update `Page Store Dimension` set `Page Store '.$db_interval.' Acc Requests`=%d,
+		$sql=sprintf('update `Page Store Data Dimension` set `Page Store '.$db_interval.' Acc Requests`=%d,
 	`Page Store '.$db_interval.' Acc Sessions`=%d,
 	`Page Store '.$db_interval.' Acc Visitors`=%d,
 	`Page Store '.$db_interval.' Acc Users Requests`=%d,
@@ -4979,6 +4720,128 @@ if ($old_qty!='') {
 		}
 
 	}
+
+	function get_primary_content() {
+		$content='';
+
+		return $content;
+
+	}
+
+	function get_families_data() {
+		$families=array();
+
+		$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Main Image`,`Product Family Name` from `Product Family Dimension` P  where `Product Family Main Department Key`=%d and  `Product Family Sales Type`='Public Sale' ",
+			$this->data['Page Parent Key']
+		);
+
+		$counter=0;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+
+
+			$family_data=array(
+				'code'=>$row['Product Family Code'],
+				'name'=>$row['Product Family Name'],
+				'id'=>$row['Product Family Key'],
+				'img'=>$row['Product Family Main Image'],
+			);
+
+			if ($counter==0) {
+				$family_data['first']=true;
+			}else {
+				$family_data['first']=false;
+			}
+
+			$family_data['col']=fmod($counter,4)+1;
+			$counter++;
+			$families[]=$family_data;
+		}
+
+
+		return $families;
+
+	}
+
+	function get_product_data() {
+		$product_data=array();
+
+		$sql=sprintf("select `Product ID` from `Product Dimension` P  where `Product ID`=%d ",
+			$this->data['Page Parent Key']
+		);
+
+		$counter=0;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$product=new Product('pid',$row['Product ID']);
+
+
+$quantity=$this->get_button_ordered_quantity($product);
+
+$images=array();
+			$product_data=array(
+				'code'=>$product->data['Product Code'],
+				'name'=>$product->data['Product Name'],
+				'id'=>$product->data['Product ID'],
+				'img'=>$product->data['Product Main Image'],
+				'images'=>$images,
+				'quantity'=>$quantity,
+				'price'=>$this->get_button_price($product),
+				'rrp'=>$this->get_button_rrp($product),
+				'button'=>$this->get_button_text($product,$quantity),
+				'description'=>$product->data['Product Description']
+			);
+
+
+		}
+
+
+		return $product_data;
+
+	}
+
+
+
+
+	function get_products_data() {
+		$products=array();
+		$sql=sprintf("select `Product ID` from `Page Product Dimension`  where `Page Key`=%d  ",
+			$this->id
+		);
+
+		$counter=0;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$product=new Product('pid',$row['Product ID']);
+
+			$product_data=array(
+				'code'=>$product->data['Product Code'],
+				'name'=>$product->data['Product Name'],
+				'id'=>$product->data['Product ID'],
+				'price'=>$product->data['Product Price'],
+				'special_char'=>$product->data['Product Special Characteristic'],
+				'img'=>$product->data['Product Main Image'],
+				'button'=>$this->display_button_inikoo($product)
+			);
+
+			if ($counter==0) {
+				$product_data['first']=true;
+			}else {
+				$product_data['first']=false;
+			}
+
+			$product_data['col']=fmod($counter,4)+1;
+			$counter++;
+			$products[]=$product_data;
+		}
+
+		return $products;
+
+	}
+
 
 }
 

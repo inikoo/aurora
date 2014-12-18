@@ -301,7 +301,7 @@ default:
 
 
 function create_store($data) {
-	global $editor;
+	global $editor,$inikoo_account;
 
 	$locale=$data['values']['Store Locale'];
 	$country=new Country('2alpha',$data['values']['Country Code']);
@@ -313,7 +313,7 @@ function create_store($data) {
 	}
 
 	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
-	$data['values']['Store Tax Country Code']=$country->data['Country Code'];
+	$data['values']['Store Tax Country Code']=$inikoo_account->data['Account Country Code'];
 	$data['values']['Store Home Country Code 2 Alpha']=$country->data['Country 2 Alpha Code'];
 	$data['values']['Store Home Country Name']=$country->data['Country Name'];
 	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
@@ -2941,7 +2941,6 @@ function create_product($data) {
 				'product rrp'=>$data['values']['Product RRP'],
 				'product units per case'=>$data['values']['Product Units'],
 				'product family key'=>$family->id,
-
 				'product valid from'=>$editor['Date'],
 				'product valid to'=>$editor['Date'],
 				'Product Code'=>$data['values']['Product Code'],
@@ -2950,7 +2949,6 @@ function create_product($data) {
 				'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
 				'Product Main Department Key'=>$department_key,
 				'editor'=>$editor,
-
 				'Product Part Metadata'=>$data['values']['Product Part Metadata']
 			));
 

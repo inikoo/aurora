@@ -40,18 +40,9 @@ $store=new Store($department->get('Product Department Store Key'));
 
 $can_delete = true;
 
-//if($store->data['Store Orphan Families Department'] == $department->id){
-//	$can_delete = false;
-//}
-
-
-
 $smarty->assign('can_delete',$can_delete);
 
 $create=$user->can_create('product families');
-
-
-
 
 if (isset($_REQUEST['edit_tab'])) {
     $edit=$_REQUEST['edit_tab'];
@@ -60,14 +51,8 @@ if (isset($_REQUEST['edit_tab'])) {
     $edit=$_SESSION['state']['department']['editing'];
 }
 
-
-
-
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
-
-
-
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');

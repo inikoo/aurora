@@ -215,10 +215,9 @@ class Auth {
 
 		$sql=sprintf("select `MasterKey Internal Key`,U.`User Key`,`User Handle`,`User Parent Key` from `MasterKey Internal Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
 			prepare_mysql($data),
-			prepare_mysql(date('Y-m-d H:i:s'))
+			prepare_mysql(gmdate('Y-m-d H:i:s'))
 
 		);
-
 
 
 		if ($same_ip) {
@@ -230,7 +229,7 @@ class Auth {
 
 
 		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
+		if ($row=mysql_fetch_array($res) ) {
 
 
 
@@ -284,7 +283,7 @@ class Auth {
 
 
 		);
-		//print $sql;
+		
 		//  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip()));}
 
 

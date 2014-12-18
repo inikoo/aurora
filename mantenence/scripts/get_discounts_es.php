@@ -43,9 +43,9 @@ $version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2002-spain_descuentos.xls';
+$file_name='AWorder2002-spain.xls';
 $csv_file='es_desc_tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 //exit;
 
 $handle_csv = fopen($csv_file, "r");
@@ -358,16 +358,16 @@ foreach ($__cols as $cols) {
 		}
 
 
-		if (isset($cols['42'])) {
-			if (preg_match('/\d+\;\d+/',$cols['42'])) {
+		if (isset($cols['22'])) {
+			if (preg_match('/\d+\;\d+/',$cols['22'])) {
 
-				printf("bien tienes descuento en %s %s\n",$cols[5],$cols['42']);
+				printf("bien tienes descuento en %s %s\n",$cols[5],$cols['22']);
 
 				$family=new Family('code_store',$cols[5],$store_key);
 
 				if ($family->id) {
 
-					$deal_metadata=preg_split('/\;/',$cols['42']);
+					$deal_metadata=preg_split('/\;/',$cols['22']);
 
 
 					$allowance=$deal_metadata[1].'% off';

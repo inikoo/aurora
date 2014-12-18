@@ -1075,11 +1075,14 @@ function show_dialog_upload_page_content(e,suffix) {
     region1 = Dom.getRegion('show_upload_page_content'+suffix);
     region2 = Dom.getRegion('dialog_upload_page_content');
     var pos = [region1.right - region2.width, region1.bottom + 2]
+ 
     Dom.setXY('dialog_upload_page_content', pos);
-
-    dialog_upload_page_content.show()
+dialog_upload_page_content.show()
+    
 
 }
+
+
 
 function close_upload_page_content(){
 

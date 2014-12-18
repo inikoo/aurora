@@ -289,7 +289,7 @@ abstract class DB_Table {
 
 				$history_key=$this->add_history($history_data,false,false,$options);
 				if (
-					in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
+					in_array($this->table_name,array('Site','Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
 
 					if ($this->table_name=='Product' or $this->table_name=='Supplier Product'){
 						$subject_key=$this->pid;
@@ -769,7 +769,8 @@ abstract class DB_Table {
 				'normal_url'=>'image.php?id='.$row['Image Key'],
 				'filename'=>$row['Image Filename'],
 				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
+				'is_principal'=>$row['Is Principal'],
+				'id'=>$row['Image Key'],
 				'size'=>formatSizeUnits($row['Image File Size']),
 				'width'=>$row['Image Width'],
 				'height'=>$row['Image Height']
@@ -783,7 +784,6 @@ abstract class DB_Table {
 	function add_image($image_key) {
 
 		include_once 'common_units_functions.php';
-
 
 		if ($this->table_name=='Product')
 			$subject_key=$this->pid;
@@ -799,13 +799,10 @@ abstract class DB_Table {
 			$subject=$this->table_name;
 		}
 
-
 		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d  and `Image Key`=%d",
 			prepare_mysql($subject),
 			$subject_key,
 			$image_key);
-
-		//print $sql;
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -813,7 +810,6 @@ abstract class DB_Table {
 			$this->msg=_('Image already uploaded');
 			return;
 		}
-
 
 		$number_images=$this->get_number_of_images();
 		if ($number_images==0) {

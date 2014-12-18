@@ -185,12 +185,12 @@ class PageHeader extends DB_Table {
 
 	function get($key) {
 
-		
+
 
 		switch ($key) {
 		case('Name'):
-		return $this->data[$this->table_name.' '.$key];
-		break;
+			return $this->data[$this->table_name.' '.$key];
+			break;
 		default:
 			if (isset($this->data[$key]))
 				return $this->data[$key];
@@ -210,10 +210,10 @@ class PageHeader extends DB_Table {
 
 	function get_preview_snapshot_src() {
 
-if($this->data['Page Header Preview Image Key']>0)
-		return sprintf("image.php?id=%d",$this->data['Page Header Preview Image Key']);
-	else
-		return 'art/nopic.png';
+		if ($this->data['Page Header Preview Image Key']>0)
+			return sprintf("image.php?id=%d",$this->data['Page Header Preview Image Key']);
+		else
+			return 'art/nopic.png';
 
 	}
 
@@ -230,8 +230,8 @@ if($this->data['Page Header Preview Image Key']>0)
 		//      $image=new Image($image_key);
 
 
-		$url="http://localhost/".dirname($_SERVER['PHP_SELF'])."/public_header_preview.php?id=".$this->id;
 
+		$url="http://localhost:".$_SERVER['SERVER_PORT']."/".dirname($_SERVER['PHP_SELF'])."/public_header_preview.php?id=".$this->id;
 
 		ob_start();
 		system("uname");
@@ -307,7 +307,7 @@ if($this->data['Page Header Preview Image Key']>0)
 
 			);
 			mysql_query($sql);
-			print $sql;
+			//print $sql;
 
 			$this->data['Page Header Preview Snapshot Last Update']=$preview_update_date;
 			$this->updated=true;
@@ -322,8 +322,8 @@ if($this->data['Page Header Preview Image Key']>0)
 			);
 			mysql_query($sql);
 			$this->data['Page Header Preview Snapshot Last Update']=$preview_update_date;
-		
-		
+
+
 
 		}
 
@@ -424,7 +424,9 @@ if($this->data['Page Header Preview Image Key']>0)
 
 	}
 
-
+	function display_content() {
+		return $this->data['Template'];
+	}
 
 
 

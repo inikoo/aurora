@@ -52,22 +52,6 @@ $page->user=$user;
 $page->logged=$logged;
 $page->currency=$store->data['Store Currency Code'];
 
-//print_r($page->display_product_image('3dart-01'));
-//exit;
-
-$family_key=$page->data['Page Parent Key'];
-
-/*
-//$page->update_button_products('Parent');
-
-$products=$page->get_all_products();
-//print_r($products);
-
-foreach($products as $product){
-	//print $product['code'];
-}
-
-*/
 
 if (isset($_REQUEST['update_heights'])  and  $_REQUEST['update_heights']) {
 	$smarty->assign('update_heights',1);
@@ -86,6 +70,8 @@ if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	'css/button.css',
+	'css/ecom_style.css',
+	'css/ecom_order_fields.css'
 );
 
 $js_files=array(
@@ -141,7 +127,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
-
+$js_files[]='js/jquery.js';
 
 if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('type_content','string');
@@ -149,33 +135,52 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 
 } else {
 	$smarty->assign('type_content','file');
-	$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
-	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
+	$smarty->assign('template_string','ecom_'.$page->data['Page Store Content Template Filename'].'.tpl');
 
-	$js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
-	$js_files[]='js/jquery.js';
-	$js_files[]='js/jquery.prettyPhoto.js';
+
+
+	$css_files[]='css/ecom_'.$page->data['Page Store Content Template Filename'].'.css';
+
+	$js_files[]='js/ecom_'.$page->data['Page Store Content Template Filename'].'.js';
+
 
 
 }
 
 
-
-
-
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-
-
 $smarty->assign('title',_('Preview').' '.$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
 
 
+$_site=array(
+	'telephone'=>$site->data['Site Contact Telephone'],
+	'address'=>$site->data['Site Contact Address'],
+	'email'=>$site->data['Site Contact Email'],
+	'company_name'=>$store->data['Store Company Name'],
+	'company_tax_number'=>$store->data['Store VAT Number'],
+	'company_number'=>$store->data['Store Company Number']
+);
 
+$_page=array(
+	'found_in'=>$page->display_found_in(),
+	'title'=>$page->display_title(),
+	'search'=>$page->display_search(),
+);
 
+$smarty->assign('_page',$_page);
+$smarty->assign('_site',$_site);
+
+if ($page->data['Page Store Section Type']=='Family') {
+	$smarty->assign('_products',$page->get_products_data());
+}elseif ($page->data['Page Store Section Type']=='Department') {
+	$smarty->assign('_families',$page->get_families_data());
+}elseif ($page->data['Page Store Section Type']=='Product') {
+
+	$smarty->assign('product',$page->get_product_data());
+}
 $smarty->display('page_store.tpl');
 ?>

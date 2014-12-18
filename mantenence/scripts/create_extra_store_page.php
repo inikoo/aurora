@@ -54,7 +54,7 @@ $pages_data=array(array(
 	'Page Store Title'=>'Search',
 	'Page Store Subtitle'=>'',
 	'Page Store Slogan'=>'Search our webpage',
-	'Page Store Resume'=>'Search our webpage'
+	'Page Store Description'=>'Search our webpage'
 )
 
 );

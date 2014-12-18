@@ -58,7 +58,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Welcome to Ancient Wisdom'
 		  ,'Page Store Subtitle'=>'Europe\'s Biggest Online Giftware Wholesaler'
 		  ,'Page Store Slogan'=>'Exotic & Esoteric'
-		  ,'Page Store Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+		  ,'Page Store Description'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
 		  ,'Page Store Header Data'=>array('style'=>array('background-image'=>'sites_data/header_home.gb.jpg','background-color'=>'#f99013'))
 		  ,'Page Store Content Data'=>array(
 		            'style'=>array('background-image'=>'sites_data/left_nav.png'),
@@ -104,7 +104,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Register to Ancient Wisdom'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Hello stranger'
-		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+		  ,'Page Store Description'=>'Please note this is a wholesale site we supply wholesale to the trade.'
           ,'Page Options'=>serialize(array(
             'Form_Type'=>'Steps',
             'Fields'=>array(
@@ -135,7 +135,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Register to Ancient Wisdom'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Hello stranger'
-		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+		  ,'Page Store Description'=>'Please note this is a wholesale site we supply wholesale to the trade.'
           ,'Page Options'=>serialize(array(
             'Form_Type'=>'Show All',
             'Fields'=>array(
@@ -168,7 +168,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Lost Pasword'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Password forgotten?'
-		  ,'Page Store Resume'=>'Could be that you forgot your password or that you are a previous customer on its first login'
+		  ,'Page Store Description'=>'Could be that you forgot your password or that you are a previous customer on its first login'
 
 		  
 		  )
@@ -185,7 +185,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Checkout'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Checkout'
-		  ,'Page Store Resume'=>''
+		  ,'Page Store Description'=>''
 
 		  
 		  )	  
@@ -204,7 +204,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Login'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Login here'
-		  ,'Page Store Resume'=>''
+		  ,'Page Store Description'=>''
 
 		  
 		  )
@@ -221,7 +221,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Reset Pasword'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Set your password'
-		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+		  ,'Page Store Description'=>'Please note this is a wholesale site we supply wholesale to the trade.'
 
 		  
 		  )  
@@ -238,7 +238,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Contact Page'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You know where we are'
-		  ,'Page Store Resume'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
+		  ,'Page Store Description'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_contact.html')
 
 		  )
@@ -254,7 +254,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Showroom'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You can visit us!'
-		  ,'Page Store Resume'=>'Why not visit us... we are always delighted to see our customers.'
+		  ,'Page Store Description'=>'Why not visit us... we are always delighted to see our customers.'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_showroom.html')
 		  
 		  )	     
@@ -269,7 +269,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Export Guide'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Shipping Worldwide'
-		  ,'Page Store Resume'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
+		  ,'Page Store Description'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_export_guide.html')
 		  )
 
@@ -284,7 +284,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Terms & Conditions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'The small print'
-		  ,'Page Store Resume'=>''
+		  ,'Page Store Description'=>''
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_terms_and_conditions.html')
 
 		     ),
@@ -299,7 +299,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Company Ethics'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Not is everything about money'
-		  ,'Page Store Resume'=>'These are tricky subjects, but not one we choose to ignore as a company. On fact we take this very seriously'
+		  ,'Page Store Description'=>'These are tricky subjects, but not one we choose to ignore as a company. On fact we take this very seriously'
 		  ,'Product Presentation Type'=>'Template'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_ethics.html')
 		 ),
@@ -314,7 +314,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Frequently Asked Questions'
 		  ,'Page Store Subtitle'=>'(with answers)'
 		  ,'Page Store Slogan'=>'You ask we aswer'
-		  ,'Page Store Resume'=>'Here we recopilate the most common queries'
+		  ,'Page Store Description'=>'Here we recopilate the most common queries'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_faq.html')
 		  ),
 	    array(
@@ -328,7 +328,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'First Order Bonus'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Just a little thank you'
-		  ,'Page Store Resume'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value). '
+		  ,'Page Store Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value). '
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_first_order_bonus.html')
 		  ),
 
@@ -343,7 +343,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Gold Reward Promotion'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Incentives for aur regular customers'
-		  ,'Page Store Resume'=>'Order within 30 days to receive a Discount Upgrade '
+		  ,'Page Store Description'=>'Order within 30 days to receive a Discount Upgrade '
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_gold.html')
 		  ),
  
@@ -358,7 +358,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'10p Special'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'For that bargarian hunters'
-		  ,'Page Store Resume'=>'Sorry only one outer per customer.'
+		  ,'Page Store Description'=>'Sorry only one outer per customer.'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_ten_pence.html')
 		  ),
 	    array(
@@ -372,7 +372,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Mega Clearance'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"An offer you can't resists "
-		  ,'Page Store Resume'=>'Every week for just a week (or until it is gone) we clear out one product line'
+		  ,'Page Store Description'=>'Every week for just a week (or until it is gone) we clear out one product line'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_megaclearance.html')
 		  ),
 	    array(
@@ -386,7 +386,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Buy one get one free.'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"Say BOGOFF to the credit crunch"
-		  ,'Page Store Resume'=>'No-one does a BOGOF quite like us. Offers available while stocks last. Great deals you can pass on to your customers - or simply give your profit margins a bit of a boost.'
+		  ,'Page Store Description'=>'No-one does a BOGOF quite like us. Offers available while stocks last. Great deals you can pass on to your customers - or simply give your profit margins a bit of a boost.'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_bogof.html')
 		  ),
 	    array(
@@ -400,7 +400,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Special Deals'
 		   ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"Special Deals"
-		  ,'Page Store Resume'=>'Special Deals'
+		  ,'Page Store Description'=>'Special Deals'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_special_deals.html')
 		  ),
 	     array(
@@ -414,7 +414,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'New & Recent Additions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Recent Additions'
-		  ,'Page Store Resume'=>'Recent Additions'
+		  ,'Page Store Description'=>'Recent Additions'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_new_products.html')
 		  ),
 	     array(
@@ -428,7 +428,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'New WSL Additions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Recent WSL Additions'
-		  ,'Page Store Resume'=>'Recent WSL Additions'
+		  ,'Page Store Description'=>'Recent WSL Additions'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_new_wsl_products.html')
 		  ),
 	    array(
@@ -442,7 +442,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Best Sellers'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Current Fast Moving Lines'
-		  ,'Page Store Resume'=>'Best Sellers'
+		  ,'Page Store Description'=>'Best Sellers'
 		  ,'Product Presentation Template Data'=>file_get_contents('sites_data/gb_best_sellers.html')
 		  ),
 	       array(
@@ -456,7 +456,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Newsletter'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Newsletter'
-		  ,'Page Store Resume'=>'Newsletter'
+		  ,'Page Store Description'=>'Newsletter'
 		  ),
 	    );
 

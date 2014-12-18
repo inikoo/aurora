@@ -17,7 +17,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Title'=>'Bienvenue chez AW-Cadeaux'
 		  ,'Page Store Subtitle'=>'Leader Online des Grossistes Cadeaux'
 		  ,'Page Store Slogan'=>'Chez AW Cadeaux, nous explorons le monde sans cesse à la recherche de nouveaux produits. Mais nous nous attachons à le faire en s’assurant que nos fournisseurs respectent les règles éthique liées au droit du travail. '
-		  ,'Page Store Resume'=>'Retrouvez sur notre site plus de 10000 produits exotiques et ésotérique, tous rassemblés dans notre catalogue. 
+		  ,'Page Store Description'=>'Retrouvez sur notre site plus de 10000 produits exotiques et ésotérique, tous rassemblés dans notre catalogue. 
 Commandez : c’est simple, rapide et sécurisé.'
 		  
 		  
@@ -34,7 +34,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Inscrivez-vous à AW-Cadeaux'
 		  ,'Page Store Subtitle'=>"En créant un compte auprès d'AW-cadeaux.com vous serez à même d'acheter en ligne plus vite, d'être à jour dans vos commandes et de garder trace de vos précédents achats."
 		  ,'Page Store Slogan'=>'Nouveau Client'
-		  ,'Page Store Resume'=>'Site dédié Exclusivement aux professionels.'
+		  ,'Page Store Description'=>'Site dédié Exclusivement aux professionels.'
 
 		  
 		  )
@@ -51,7 +51,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>"J'ai oublié mon mot de passe !"
 		  ,'Page Store Subtitle'=>'Si vous avez oublié votre mot de passe, saisissez ci-dessous votre adresse email et nous vous enverrons un message avec votre nouveau mot de passe'
 		  ,'Page Store Slogan'=>'Définissez votre mot de passe'
-		  ,'Page Store Resume'=>'Nous sommes Grossiste et ce site  est dédié Exclusivement aux professionels.'
+		  ,'Page Store Description'=>'Nous sommes Grossiste et ce site  est dédié Exclusivement aux professionels.'
 
 		  
 		  )
@@ -69,7 +69,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Contact Page'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Vous savez où nous sommes'
-		  ,'Page Store Resume'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
+		  ,'Page Store Description'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
 		  )
 
 	     ,array(
@@ -84,7 +84,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Showroom'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You can visit us!'
-		  ,'Page Store Resume'=>'Why not visit us... we are always delighted to see our customers.'
+		  ,'Page Store Description'=>'Why not visit us... we are always delighted to see our customers.'
 		  )	     
  ,array(
 		  'Page Code'=>'export_guide'
@@ -98,7 +98,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Export Guide'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Shipping Worldwide'
-		  ,'Page Store Resume'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
+		  ,'Page Store Description'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
 		  )
 
 	      ,array(
@@ -113,7 +113,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Terms & Conditions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'The small print'
-		  ,'Page Store Resume'=>''
+		  ,'Page Store Description'=>''
 		     ),
 	       array(
 		  'Page Code'=>'company_ethics'
@@ -127,7 +127,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Company Ethics'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Not is everything about money'
-		  ,'Page Store Resume'=>'These are tricky subjects, but not one we choose to ignore as a company. On fact we take this very seriously'
+		  ,'Page Store Description'=>'These are tricky subjects, but not one we choose to ignore as a company. On fact we take this very seriously'
 		     ),
 	    array(
 		  'Page Code'=>'faq'
@@ -141,7 +141,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Frequently Asked Questions'
 		  ,'Page Store Subtitle'=>'(with answers)'
 		  ,'Page Store Slogan'=>'You ask we aswer'
-		  ,'Page Store Resume'=>'Here we recopilate the most common queries'
+		  ,'Page Store Description'=>'Here we recopilate the most common queries'
 		  ),
 	    array(
 		  'Page Code'=>'fob'
@@ -155,7 +155,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>''
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Merci pour votre confiance'
-		  ,'Page Store Resume'=>'Sur toute 1ère commande, vous avez la possibilité de bénéficier GRATUITEMENT de produits cadeaux d’une valeur PVC* de marchandise équivalent à 100€ (*Prix de Vente Conseillé)! '
+		  ,'Page Store Description'=>'Sur toute 1ère commande, vous avez la possibilité de bénéficier GRATUITEMENT de produits cadeaux d’une valeur PVC* de marchandise équivalent à 100€ (*Prix de Vente Conseillé)! '
 		  ),
 
 	    array(
@@ -170,7 +170,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Vos avantages'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Le principe est simple : plus rapidement vous recommandez, plus vous êtes récompensé.'
-		  ,'Page Store Resume'=>'En commandant chaque mois vous gardez votre statut Gold et continuez à bénéficiez des meilleurs offres sur tous nos produits.'
+		  ,'Page Store Description'=>'En commandant chaque mois vous gardez votre statut Gold et continuez à bénéficiez des meilleurs offres sur tous nos produits.'
 		  ),
  
 	    array(
@@ -185,7 +185,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'10p Special'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'For that bargarian hunters'
-		  ,'Page Store Resume'=>'Sorry only one outer per customer.'
+		  ,'Page Store Description'=>'Sorry only one outer per customer.'
 		  ),
 	    array(
 		  'Page Code'=>'megaclearance'
@@ -198,7 +198,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Mega Clearance'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"An offer you can't resists "
-		  ,'Page Store Resume'=>'Every week for just a week (or until it is gone) we clear out one product line'
+		  ,'Page Store Description'=>'Every week for just a week (or until it is gone) we clear out one product line'
 		  ),
 	    array(
 		  'Page Code'=>'bogof'
@@ -211,7 +211,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Buy one get one free.'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"Say BOGOFF to the credit crunch"
-		  ,'Page Store Resume'=>'No-one does a BOGOF quite like us. Offers available while stocks last. Great deals you can pass on to your customers - or simply give your profit margins a bit of a boost.'
+		  ,'Page Store Description'=>'No-one does a BOGOF quite like us. Offers available while stocks last. Great deals you can pass on to your customers - or simply give your profit margins a bit of a boost.'
 		  ),
 	    array(
 		  'Page Code'=>'special_deals'
@@ -224,7 +224,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Special Deals'
 		   ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>"Special Deals"
-		  ,'Page Store Resume'=>'Special Deals'
+		  ,'Page Store Description'=>'Special Deals'
 		  ),
 	     array(
 		  'Page Code'=>'new_products'
@@ -237,7 +237,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'New & Recent Additions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Ajouts récents'
-		  ,'Page Store Resume'=>'Ajouts récents'
+		  ,'Page Store Description'=>'Ajouts récents'
 		  ),
 	     array(
 		  'Page Code'=>'new_wsl_products'
@@ -250,7 +250,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'New WSL Additions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Recent WSL Additions'
-		  ,'Page Store Resume'=>'Recent WSL Additions'
+		  ,'Page Store Description'=>'Recent WSL Additions'
 		  ),
 	    array(
 		  'Page Code'=>'best_sellers'
@@ -263,7 +263,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Best Sellers'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Current Fast Moving Lines'
-		  ,'Page Store Resume'=>'Best Sellers'
+		  ,'Page Store Description'=>'Best Sellers'
 		  ),
 	       array(
 		  'Page Code'=>'newsletter'
@@ -276,7 +276,7 @@ Commandez : c’est simple, rapide et sécurisé.'
 		  ,'Page Store Title'=>'Newsletter'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Newsletter'
-		  ,'Page Store Resume'=>'Newsletter'
+		  ,'Page Store Description'=>'Newsletter'
 		  ),
 	    );
 

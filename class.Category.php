@@ -1263,7 +1263,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 
 
@@ -1376,7 +1376,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 	function update_part_category_sales($interval) {
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 
 
@@ -1572,7 +1572,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$to_date='';
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";

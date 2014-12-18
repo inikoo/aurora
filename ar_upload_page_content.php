@@ -69,6 +69,17 @@ function process_uploaded_files($data) {
 			$data['original_filename']=$_FILES['file']['name'];
 			upload_from_zip($data);
 			return;
+		}if (preg_match('/html/',$_FILES['file']['type']) or preg_match('/\.html$/i',$_FILES['file']['name']) ) {
+			$data['original_filename']=$_FILES['file']['name'];
+			upload_from_html($_FILES['file']['tmp_name'],$data);
+			return;
+
+		}else {
+			$msg=_('File type not reconized').' '.$_FILES['file']['type'];
+			$response= array('state'=>400,'msg'=>$msg);
+			echo json_encode($response);
+			return;
+
 		}
 	} else {
 		$poidsMax = ini_get('upload_max_filesize');
@@ -128,7 +139,7 @@ function get_head_styles($dom,$html) {
 	$style=array();
 
 
-	if (preg_match_all('/<style type=\"text\/css\">(.+)<\/style>/siU',$html,$matches)) {
+	if (preg_match_all('/<style\s?.*>(.+)<\/style>/siU',$html,$matches)) {
 
 		// print_r($matches);
 		// exit;
@@ -195,6 +206,11 @@ function get_head_meta($tag,$dom,$html) {
 function get_head_scripts($dom,$html) {
 	$script=array();
 	$heads = $dom->getElementsByTagName('head');
+	
+	if(!$heads->length){
+		return $script;
+	}
+	
 	$a=getArray($heads->item(0));
 
 	//print_r($a);
@@ -236,6 +252,40 @@ function getArray($node) {
 }
 
 
+function upload_from_html($filename,$data) {
+
+
+
+
+
+	switch ($data['tipo']) {
+	case 'upload_page_content':
+		$response=upload_page_content_from_file($filename,$data);
+		break;
+	case 'upload_header':
+		$response=upload_header_from_file($filename,$data);
+		break;
+	case 'upload_footer':
+		$response=upload_footer_from_file($filename,$data);
+		break;
+	case 'upload_menu':
+		$response=upload_menu_from_file($filename,$data);
+		break;
+	case 'upload_search':
+		$response=upload_search_from_file($filename,$data);
+		break;
+	default:
+		$response= array('state'=>400,'msg'=>'unknown scope');
+		break;
+	}
+
+
+	echo json_encode($response);
+
+
+
+	return;
+}
 
 function upload_from_zip($data) {
 
@@ -482,9 +532,7 @@ function upload_header_from_file($file,$data) {
 	$html=remove_php_tags($html);
 
 	$dom = new domDocument;
-	ini_set( "display_errors", 0);
-	$dom->loadHTML($html);
-	ini_set( "display_errors", 1);
+	@$dom->loadHTML($html);
 	$dom->preserveWhiteSpace = false;
 
 	$styles=get_head_styles($dom,$html);
@@ -501,9 +549,6 @@ function upload_header_from_file($file,$data) {
 
 
 	$page_header=new PageHeader();
-
-
-
 	$page_header_data=array(
 		'Page Header Name'=>$data['original_filename'],
 		'Site Key'=>$site_key,
@@ -585,10 +630,10 @@ function upload_footer_from_file($file,$data) {
 	$html=remove_php_tags($html);
 
 	$dom = new domDocument;
-	ini_set( "display_errors", 0);
-	$dom->loadHTML($html);
-	ini_set( "display_errors", 1);
+	@$dom->loadHTML($html);
 	$dom->preserveWhiteSpace = false;
+
+
 
 	$styles=get_head_styles($dom,$html);
 	$scripts=get_head_scripts($dom,$html);
@@ -679,16 +724,14 @@ function upload_page_content_from_file($file,$data) {
 	$html=extract_products_info($html);
 	$html=remove_php_tags($html);
 	$dom = new domDocument;
-	ini_set( "display_errors", 0);
-	$dom->loadHTML($html);
-	ini_set( "display_errors", 1);
+	@$dom->loadHTML($html);
 	$dom->preserveWhiteSpace = false;
 
 
-	if ($page->data['Page Store Resume']=='') {
+	if ($page->data['Page Store Description']=='') {
 		$resume=get_head_meta('description',$dom,$html);
 		if ($resume)
-			$page->update_field_switcher('Page Store Resume',$resume);
+			$page->update_field_switcher('Page Store Description',$resume);
 
 	}
 
@@ -793,22 +836,22 @@ function remove_old_page_images($page) {
 			//print_r($matches);
 			foreach ($matches as $match) {
 				$_image_key=intval(preg_replace('/[^\d]/','',$match[0]));
-				
-				
-				
+
+
+
 				if ($_image_key==$image_key) {
-				
-					
-				
+
+
+
 					$found=true;
 					break;
 				}
 			}
 		}
-	
+
 		if (!$found) {
-		
-		
+
+
 			$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Image Key`=%d and `Subject Key`=%d",
 				$image_key,
 				$page->id
@@ -823,7 +866,7 @@ function remove_old_page_images($page) {
 			}
 
 		}
-		
+
 	}
 
 
@@ -833,7 +876,7 @@ function remove_old_page_images($page) {
 function upload_content_images($html,$base_dir='',$parent_data) {
 	include_once 'class.Image.php';
 
-	
+
 	$pattern='/href="(.+)\s*"\s*target="_blank""/';
 	$replacement='href="${1}" target="_blank"';
 	$html=preg_replace($pattern,$replacement,$html);
@@ -842,12 +885,12 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 	$replacement='target="_blank"';
 	$html=preg_replace($pattern,$replacement,$html);
 
-	
+
 	$pattern='/href="\s*(.+)\s*"/';
 	$replacement='href="${1}"';
 	$html=preg_replace($pattern,$replacement,$html);
-	
-	
+
+
 
 	$regexp = "<img\s[^>]*src=(\"??)([^\" >]*?)\\1[^>]*>";
 	if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
@@ -928,6 +971,12 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 			}
 		}
 	}
+
+
+
+
+
+
 
 
 	return $html;
@@ -1026,9 +1075,7 @@ function upload_menu_from_file($file,$data) {
 	$html=file_get_contents($file);
 	$html=remove_php_tags($html);
 	$dom = new domDocument;
-	ini_set( "display_errors", 0);
-	$dom->loadHTML($html);
-	ini_set( "display_errors", 1);
+	@$dom->loadHTML($html);
 	$dom->preserveWhiteSpace = false;
 	$style=_trim(join(' ',get_head_styles($dom,$html)));
 	$script=_trim(join(' ',get_head_scripts($dom,$html)));
@@ -1067,9 +1114,7 @@ function upload_search_from_file($file,$data) {
 	$html=file_get_contents($file);
 	$html=remove_php_tags($html);
 	$dom = new domDocument;
-	ini_set( "display_errors", 0);
-	$dom->loadHTML($html);
-	ini_set( "display_errors", 1);
+	@$dom->loadHTML($html);
 	$dom->preserveWhiteSpace = false;
 	$style=_trim(join(' ',get_head_styles($dom,$html)));
 	$script=_trim(join(' ',get_head_scripts($dom,$html)));
