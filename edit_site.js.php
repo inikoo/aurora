@@ -100,6 +100,24 @@ if(branch=='page_flags'){
 }
 
 }
+
+
+function save_delete_site() {
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=delete_site&id=' + Dom.get('site_key').value, {
+        success: function(o) {
+         alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                window.location = 'sites.php'
+
+            } else {
+                alert(r.msg)
+            }
+        }
+    });
+}
+
 function post_item_updated_actions(branch, r) {
     if (branch == 'site_menu') {
         if (r.key == 'css') {
@@ -233,8 +251,8 @@ function change_pages_subblock(e){
 
 
 function change_general_subblock(e){
-    var ids = [ "website_properties","website_ftp"]; 
-	var block_ids = ["d_website_properties","d_website_ftp"]; 
+    var ids = [ "website_properties","website_ftp","delete_site"]; 
+	var block_ids = ["d_website_properties","d_website_ftp","d_delete_site"]; 
 	Dom.setStyle(block_ids,'display','none');				
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
@@ -250,11 +268,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"author",label:"<?php echo _('Author')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:340,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"date",label:"<?php echo _('Date')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"time",label:"<?php echo _('Time')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				       ,{key:"handle",label:"<?php echo _('Author')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"note", label:"<?php echo _('Description')?>", width:440,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    request="ar_history.php?tipo=history&type=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
+	    request="ar_history.php?tipo=site_history&parent=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value;
 	  
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -279,7 +299,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "id"
 			 ,"note"
-			 ,'author','date','tipo','abstract','details'
+			 ,'handle','date','note','time'
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -330,7 +350,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   				       ,{key:"pages",label:"<?php echo _('Pages')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   				       ,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
 				     				     ,{key:"default", label:"",width:90,sortable:false,className:"acenter"}		         
-				     ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_header'}		         
+				     ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'header'}		         
 				       ];
 				       
 	 
@@ -411,7 +431,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   		,{key:"pages",label:"<?php echo _('Pages')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   			,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
 				     				     ,{key:"default", label:"",width:90,sortable:false,className:"aright"}		         
-				     ,{key:"delete", label:"",width:13,sortable:false,action:'delete',object:'page_footer'}		         
+				     ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'footer'}	
+
 				       ];
 				       
 	 
@@ -825,13 +846,18 @@ dialog_upload_header.show()
 
 
 
-function delete_site(){
- region1 = Dom.getRegion('delete_site'); 
-    region2 = Dom.getRegion('dialog_delete_site'); 
- var pos =[region1.right-region2.width,region1.bottom+2]
+function delete_site() {
+    region1 = Dom.getRegion('delete_site_button');
+    region2 = Dom.getRegion('dialog_delete_site');
+    var pos = [region1.left, region1.top]
     Dom.setXY('dialog_delete_site', pos);
-dialog_delete_site.show()
+    dialog_delete_site.show()
 }
+
+function cancel_delete_site(){
+  dialog_delete_site.hide()
+}
+
 
 function close_upload_header(){
 Dom.get('upload_header_use_file').value='';
@@ -926,7 +952,7 @@ function upload_footer(e){
     Dom.setStyle(['upload_footer','cancel_upload_footer'],'display','none');
    var uploadHandler = {
       upload: function(o) {
-	  // alert(o.responseText)
+	   alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
@@ -1169,6 +1195,22 @@ function show_product_category_list() {
 }
 
 
+function show_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'footer') {
+        dialog_delete_footer.show()
+    }else if (delete_type == 'delete' && subject == 'header') {
+        dialog_delete_header.show()
+    }
+}
+
+function hide_dialog_delete(delete_type, subject) {
+    if (delete_type == 'delete' && subject == 'footer') {
+        dialog_delete_footer.hide()
+    }else if (delete_type == 'delete' && subject == 'header') {
+        dialog_delete_header.hide()
+    }
+}
+
 
 
 
@@ -1360,6 +1402,13 @@ function init() {
 
 
 
+dialog_delete_footer = new YAHOO.widget.Dialog("dialog_delete_footer", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_footer.render();
+
+dialog_delete_header = new YAHOO.widget.Dialog("dialog_delete_header", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_header.render();
+
+
     Event.addListener('cancel_upload_header_files', "click", cancel_upload_header_files);
     dialog_upload_header_files = new YAHOO.widget.Dialog("dialog_upload_header_files", {
         visible: false,
@@ -1401,7 +1450,11 @@ function init() {
 
 
 
-    Event.addListener('delete_site', "click", delete_site);
+    Event.addListener('delete_site_button', "click", delete_site);
+        Event.addListener('cancel_delete_site', "click", cancel_delete_site);
+
+    
+    
     dialog_delete_site = new YAHOO.widget.Dialog("dialog_delete_site", {
         visible: false,
         close: true,
@@ -1503,7 +1556,7 @@ function init() {
 
 
 
-    var ids = ["website_properties", "website_ftp",];
+    var ids = ["website_properties", "website_ftp","delete_site"];
     YAHOO.util.Event.addListener(ids, "click", change_general_subblock);
 
 
@@ -2635,7 +2688,7 @@ function set_default_header(header_key) {
 
         success: function(o) {
 
-            //alert(o.responseText);	
+          //  alert(o.responseText);	
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -2662,7 +2715,7 @@ function set_default_footer(footer_key) {
 
         success: function(o) {
 
-            //   alert(o.responseText);	
+               alert(o.responseText);	
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 

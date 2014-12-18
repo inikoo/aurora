@@ -158,6 +158,17 @@ class Store extends DB_Table {
 
 	}
 
+	function load_acc_data(){
+		$sql=sprintf("select * from `Store Data Dimension` where `Store Key`=%d",$this->id);
+		$res =mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			foreach ($row as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+
+		}
+	}
+
 
 	function find($raw_data,$options) {
 
@@ -258,7 +269,7 @@ class Store extends DB_Table {
 		case('Total Users'):
 			return number($this->data['Store Total Users']);
 		case('All To Pay Invoices'):
-			return $this->data['Store Total Invoices']-$this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
+			return $this->data['Store Total Acc Invoices']-$this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
 		case('All Paid Invoices'):
 			return $this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
 		case('code'):
@@ -311,8 +322,13 @@ class Store extends DB_Table {
 
 			return number($this->data[$amount]);
 		}
+		
+		if (preg_match('/(Orders|Delivery Notes|Invoices) Acc$/',$key)) {
 
-		if (preg_match('/(Orders|Delivery Notes|Invoices|Refunds|Orders In Process)$/',$key)) {
+			$amount='Store '.$key;
+
+			return number($this->data[$amount]);
+		}elseif (preg_match('/(Orders|Delivery Notes|Invoices|Refunds|Orders In Process)$/',$key)) {
 
 			$amount='Store '.$key;
 
@@ -393,11 +409,7 @@ class Store extends DB_Table {
 
 
 
-	function update_sales() {
-		$this->update_store_sales();
-		$this->update_sales_default_currency();
 
-	}
 
 
 	function update_children_data() {
@@ -622,12 +634,15 @@ class Store extends DB_Table {
 			$sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
 			mysql_query($sql);
 
-
+			$sql="insert into `Store Data Currency` (`Store Key`) values(".$this->id.");";
+			mysql_query($sql);
 
 			$dept_data=array(
 				'Product Department Code'=>'ND_'.$this->data['Store Code'],
 				'Product Department Name'=>_('Products without department'),
-				'Product Department Store Key'=>$this->id
+				'Product Department Store Key'=>$this->id,
+				'Product Department Sales Type'=>'Not for Sale',
+				'editor'=>$editor
 			);
 
 			$dept_no_dept=new Department('find',$dept_data,'create');
@@ -640,7 +655,10 @@ class Store extends DB_Table {
 				'Product Family Name'=>_('Products without family'),
 				'Product Family Main Department Key'=>$dept_no_dept->id,
 				'Product Family Store Key'=>$this->id,
-				'Product Family Special Characteristic'=>'None'
+				'Product Family Special Characteristic'=>'None',
+				'Product Family Sales Type'=>'Not for Sale',
+				'Product Family Availability'=>'No Applicable',
+				'editor'=>$editor
 			);
 
 			$fam_no_fam=new Family('find',$fam_data,'create');
@@ -674,7 +692,7 @@ class Store extends DB_Table {
 			$history_key=$this->add_history(array(
 					'Action'=>'created',
 					'History Abstract'=>_('Store Created').' ('.$this->data['Store Name'].')',
-					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
+					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('created')
 				),true);
 
 			include_once 'class.Account.php';
@@ -686,7 +704,7 @@ class Store extends DB_Table {
 		} else {
 			print $sql;
 			exit;
-			$this->msg=_(" Error can not create store");
+			$this->msg=_("Error can not create store");
 
 		}
 
@@ -914,14 +932,14 @@ class Store extends DB_Table {
 
 	function update_orders() {
 
-		$this->data['Store Total Orders']=0;
+		$this->data['Store Total Acc Orders']=0;
 		$this->data['Store Dispatched Orders']=0;
 		$this->data['Store Cancelled Orders']=0;
 		$this->data['Store Orders In Process']=0;
 		$this->data['Store Unknown Orders']=0;
 		$this->data['Store Suspended Orders']=0;
 
-		$this->data['Store Total Invoices']=0;
+		$this->data['Store Total Acc Invoices']=0;
 		$this->data['Store Invoices']=0;
 		$this->data['Store Refunds']=0;
 		$this->data['Store Paid Invoices']=0;
@@ -929,7 +947,7 @@ class Store extends DB_Table {
 		$this->data['Store Partially Paid Invoices']=0;
 		$this->data['Store Partially Paid Refunds']=0;
 
-		$this->data['Store Total Delivery Notes']=0;
+		$this->data['Store Total Acc Delivery Notes']=0;
 		$this->data['Store Ready to Pick Delivery Notes']=0;
 		$this->data['Store Picking Delivery Notes']=0;
 		$this->data['Store Packing Delivery Notes']=0;
@@ -945,23 +963,23 @@ class Store extends DB_Table {
 		$this->data['Store Delivery Notes For Shortages']=0;
 
 
-		$sql="select count(*) as `Store Total Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Suspended',1,0 )) as `Store Suspended Orders`,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
+		$sql="select count(*) as `Store Total Acc Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Suspended',1,0 )) as `Store Suspended Orders`,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data['Store Total Orders']=$row['Store Total Orders'];
+			$this->data['Store Total Acc Orders']=$row['Store Total Acc Orders'];
 			$this->data['Store Dispatched Orders']=$row['Store Dispatched Orders'];
 			$this->data['Store Cancelled Orders']=$row['Store Cancelled Orders'];
 			$this->data['Store Unknown Orders']=$row['Store Unknown Orders'];
 			$this->data['Store Suspended Orders']=$row['Store Suspended Orders'];
 
-			$this->data['Store Orders In Process']=  $this->data['Store Total Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders']-$this->data['Store Suspended Orders'];
+			$this->data['Store Orders In Process']=  $this->data['Store Total Acc Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders']-$this->data['Store Suspended Orders'];
 
 		}
 
 		$sql="select count(*) as `Store Total Invoices`,sum(IF(`Invoice Type`='Invoice',1,0 )) as `Store Invoices`,sum(IF(`Invoice Type`!='Invoice',1,0 )) as `Store Refunds` ,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Invoice',1,0 )) as `Store Paid Invoices`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Invoice',1,0 )) as `Store Partially Paid Invoices`,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`!='Invoice',1,0 )) as `Store Paid Refunds`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`!='Invoice',1,0 )) as `Store Partially Paid Refunds` from `Invoice Dimension`   where `Invoice Store Key`=".$this->id;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data['Store Total Invoices']=$row['Store Total Invoices'];
+			$this->data['Store Total Acc Invoices']=$row['Store Total Invoices'];
 			$this->data['Store Invoices']=$row['Store Invoices'];
 			$this->data['Store Paid Invoices']=$row['Store Paid Invoices'];
 			$this->data['Store Partially Paid Invoices']=$row['Store Partially Paid Invoices'];
@@ -984,7 +1002,7 @@ class Store extends DB_Table {
              from `Delivery Note Dimension`   where `Delivery Note Store Key`=".$this->id;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data['Store Total Delivery Notes']=$row['Store Total Delivery Notes'];
+			$this->data['Store Total Acc Delivery Notes']=$row['Store Total Delivery Notes'];
 			$this->data['Store Ready to Pick Delivery Notes']=$row['Store Ready to Pick Delivery Notes'];
 			$this->data['Store Picking Delivery Notes']=$row['Store Picking Delivery Notes'];
 			$this->data['Store Packing Delivery Notes']=$row['Store Packing Delivery Notes'];
@@ -998,27 +1016,23 @@ class Store extends DB_Table {
 			$this->data['Store Delivery Notes For Orders']=$row['Store Delivery Notes For Orders'];
 		}
 
-		//print "$sql\n";
 
-		$sql=sprintf("update `Store Dimension` set `Store Total Orders`=%d,`Store Suspended Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
-                     ,`Store Total Invoices`=%d ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
-                     ,`Store Total Delivery Notes`=%d,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
+		$sql=sprintf("update `Store Dimension` set `Store Suspended Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
+                    ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
+                     ,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
                      ,`Store Delivery Notes For Replacements`=%d,`Store Delivery Notes For Shortages`=%d,`Store Delivery Notes For Samples`=%d,`Store Delivery Notes For Donations`=%d,`Store Delivery Notes For Orders`=%d
                      where `Store Key`=%d",
-			$this->data['Store Total Orders'],
 			$this->data['Store Suspended Orders'],
 			$this->data['Store Dispatched Orders'],
 			$this->data['Store Cancelled Orders'],
 			$this->data['Store Orders In Process'],
 			$this->data['Store Unknown Orders'],
-			$this->data['Store Total Invoices'],
 			$this->data['Store Invoices'],
 			$this->data['Store Refunds'],
 			$this->data['Store Paid Invoices'],
 			$this->data['Store Paid Refunds'],
 			$this->data['Store Partially Paid Invoices'],
 			$this->data['Store Partially Paid Refunds'],
-			$this->data['Store Total Delivery Notes'],
 			$this->data['Store Ready to Pick Delivery Notes'],
 			$this->data['Store Picking Delivery Notes'],
 			$this->data['Store Picking Delivery Notes'],
@@ -1032,14 +1046,24 @@ class Store extends DB_Table {
 			$this->data['Store Delivery Notes For Orders'],
 			$this->id
 		);
-		//print $sql;
 		mysql_query($sql);
 
-		//print "\nxx".$this->id."xx --> ".$this->data['Store Orders In Process']." \n ";
+		$sql=sprintf("update `Store Data Dimension` set `Store Total Acc Orders`=%d,`Store Total Acc Invoices`=%d ,`Store Total Acc Delivery Notes`=%d where `Store Key`=%d",
+			$this->data['Store Total Acc Orders'],
+			$this->data['Store Total Acc Invoices'],
+			$this->data['Store Total Acc Delivery Notes'],
+			$this->id
+		);
+		mysql_query($sql);
+
+
 
 	}
 
+
+
 	function update_up_today_sales() {
+		$this->update_sales_from_invoices('Total');
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
@@ -1094,9 +1118,7 @@ class Store extends DB_Table {
 
 	function get_formated_dispatch_time($interval) {
 
-		if ($interval!='Total') {
-			$interval=$interval.' Acc';
-		}
+		
 		$interval=addslashes($interval);
 
 		return number(($this->data["Store $interval Average Dispatch Time"]/3600));
@@ -1109,7 +1131,7 @@ class Store extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1152,7 +1174,7 @@ class Store extends DB_Table {
 			$this->data["Store $db_interval Average Dispatch Time"]=$sum_interval/$number_samples;
 
 		}
-		$sql=sprintf("update `Store Dimension` set `Store $db_interval Acc Average Dispatch Time`=%f where `Store Key`=%d "
+		$sql=sprintf("update `Store Data Dimension` set `Store $db_interval Acc Average Dispatch Time`=%f where `Store Key`=%d "
 			,$this->data["Store $db_interval Average Dispatch Time"]
 
 			,$this->id
@@ -1174,7 +1196,7 @@ class Store extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1206,7 +1228,7 @@ class Store extends DB_Table {
 			$this->data["Store DC $db_interval Acc Profit"]=$row["dc_profit"];
 		}
 
-		$sql=sprintf("update `Store Dimension` set
+		$sql=sprintf("update `Store Data Dimension` set
                      `Store $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `Store $db_interval Acc Invoiced Amount`=%.2f,
                      `Store $db_interval Acc Invoices`=%d,
@@ -1261,7 +1283,7 @@ class Store extends DB_Table {
 				$this->data["Store DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
 			}
 
-			$sql=sprintf("update `Store Dimension` set
+			$sql=sprintf("update `Store Data Dimension` set
                          `Store $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoiced Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoices`=%.2f,
@@ -1416,6 +1438,13 @@ class Store extends DB_Table {
 
 		if ($data['Site Code']=='')
 			$data['Site Code']=$this->data['Store Code'];
+
+		if (!array_key_exists('Site Contact Telephone',$data) or $data['Site Contact Telephone']=='')
+			$data['Site Contact Telephone']=$this->data['Store Telephone'];
+		if (!array_key_exists('Site Contact Address',$data) or  $data['Site Contact Address']=='')
+			$data['Site Contact Address']=$this->data['Store Address'];
+
+		$data['editor']=$this->editor;
 
 		$site=new Site('new',$data);
 		return $site;
@@ -1767,7 +1796,7 @@ class Store extends DB_Table {
 		$payment_account_key=0;
 		$sql=sprintf("select PA.`Payment Account Key` from `Payment Account Dimension` PA left join `Payment Account Site Bridge` B on (PA.`Payment Account Key`=B.`Payment Account Key`)  where `Payment Type`='Account' and `Store Key`=%d ",
 			$this->id);
-		//	print $sql;
+		// print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$payment_account_key=$row['Payment Account Key'];
@@ -1777,30 +1806,30 @@ class Store extends DB_Table {
 		return $payment_account_key;
 
 	}
-	
-		function get_payment_accounts_data() {
+
+	function get_payment_accounts_data() {
 		$payment_accounts_data=array();
 		$sql=sprintf("select *from `Payment Account Dimension` PA left join `Payment Account Site Bridge` B on (PA.`Payment Account Key`=B.`Payment Account Key`) left join `Payment Service Provider Dimension` PSPD on (PSPD.`Payment Service Provider Key`=PA.`Payment Service Provider Key`)  where  `Status`='Active' and `Store Key`=%d ",
 			$this->id);
-		//	print $sql;
+		// print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		
-		
-		if($row['Payment Type']=='Account')
-			continue;
-		$payment_service_provider=new Payment_Service_Provider($row['Payment Service Provider Key']);
-		
-		$payment_accounts_data[]=array(
+
+
+			if ($row['Payment Type']=='Account')
+				continue;
+			$payment_service_provider=new Payment_Service_Provider($row['Payment Service Provider Key']);
+
+			$payment_accounts_data[]=array(
 				'key'=>$row['Payment Account Key'],
 				'code'=>$row['Payment Account Code'],
 				'type'=>$row['Payment Type'],
 				'service_provider_code'=>$row['Payment Service Provider Code'],
-								'service_provider_name'=>$row['Payment Service Provider Name'],
-								'valid_payment_methods'=>join(',',preg_replace('/\s/','',$payment_service_provider->get_valid_payment_methods()))
+				'service_provider_name'=>$row['Payment Service Provider Name'],
+				'valid_payment_methods'=>join(',',preg_replace('/\s/','',$payment_service_provider->get_valid_payment_methods()))
 
-		);
-			
+			);
+
 		}
 
 

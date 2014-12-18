@@ -624,7 +624,7 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 
 
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_interval_dates($interval);
 		setlocale(LC_ALL, 'en_GB');
 
 

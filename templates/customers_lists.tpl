@@ -86,7 +86,7 @@
 </div>
 <div id="dialog_delete_customer_list" style="padding:10px 10px 10px 10px;">
 	<h2 style="padding-top:0px">
-		{t}Delete Store{/t} 
+		{t}Delete list{/t} 
 	</h2>
 	<h2 style="padding-top:0px" id="dialog_delete_customer_list_data">
 	</h2>

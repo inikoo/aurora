@@ -303,7 +303,7 @@ class Deal extends DB_Table {
 			}
 		}
 
-
+		$old_components=$this->get_components();
 
 		$deal_component=new DealComponent('find create',$data);
 
@@ -313,6 +313,10 @@ class Deal extends DB_Table {
 		return $deal_component;
 	}
 
+	function get_components(){
+		//to do
+		$components=array();
+	}
 
 
 	function add_component_from_schema_old($deal_schema,$additional_data=array()) {

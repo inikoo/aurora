@@ -118,6 +118,26 @@ $page->site=$site;
 $smarty->assign('page',$page);
 $smarty->assign('page_header',$page_header);
 
+$store=new Store($site->data['Site Store Key']);
+$_site=array(
+'telephone'=>$site->data['Site Contact Telephone'],
+'address'=>$site->data['Site Contact Address'],
+'email'=>$site->data['Site Contact Email'],
+'company_name'=>$store->data['Store Company Name'],
+'company_tax_number'=>$store->data['Store VAT Number'],
+'company_number'=>$store->data['Store Company Number']
+);
+
+$_page=array(
+'found_in'=>_('Breadcrumbs'),
+
+'title'=>$site->data['Site Name'],
+'search'=>$site->display_search(),
+);
+
+$smarty->assign('_page',$_page);
+$smarty->assign('_site',$_site);
+
 
 
 $smarty->display('page_header_preview.tpl');

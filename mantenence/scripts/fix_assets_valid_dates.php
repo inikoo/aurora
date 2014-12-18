@@ -38,6 +38,52 @@ global $myconf;
 $limit_low='2003-01-01 00:00:00';
 
 
+$sql=sprintf("select `Date` ,`Supplier Product ID`,`Supplier Product Historic Key` from `Inventory Transaction Fact` where `Supplier Product ID`=3753");
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+$date=$row['Date'];
+$spid=$row['Supplier Product ID'];
+$spkey=$row['Supplier Product Historic Key'];
+
+$sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid From`=%s where  `SPH Key`=%d and `SPH Valid From`>%s   "
+			,prepare_mysql($date)
+			,$spid
+			,prepare_mysql($date)
+
+		);
+		mysql_query($sql);
+		$affected+=mysql_affected_rows();
+		$sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid To`=%s where  `SPH Key`=%d and `SPH Valid To`<%s   "
+			,prepare_mysql($date)
+			,$spid
+			,prepare_mysql($date)
+
+		);
+		mysql_query($sql);
+		
+		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product ID`=%d and `Supplier Product Valid From`>%s   "
+
+			,prepare_mysql($date)
+			,$spid
+			,prepare_mysql($date)
+
+		);
+		mysql_query($sql);
+
+
+		$sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where `Supplier Product ID`=%d and `Supplier Product Valid To`<%s   "
+			,prepare_mysql($date)
+			,$spid
+			,prepare_mysql($date)
+
+		);
+		mysql_query($sql);
+print "$sql\n";
+}
+
+exit;
+
 $sql="select `Product Key`,UNIX_TIMESTAMP(`Product History Valid From`) as unix_date ,`Product History Valid From` as date  from `Product History Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

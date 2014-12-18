@@ -245,15 +245,15 @@ class Family extends DB_Table {
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id,false);
-			$this->msg=_("Family Added");
+			$this->msg=_("Family created");
 
 
 
-			$sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family Key`) values (%d) ",$this->id);
+			$sql=sprintf("insert into `Product Family Default Currency` (`Product Family Key`) values (%d)",$this->id);
 			mysql_query($sql);
-
-			//     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
-			//mysql_query($sql);
+			
+			$sql=sprintf("insert into `Product Family Data Dimension` (`Product Family Key`) values (%d)",$this->id);
+			mysql_query($sql);
 
 			$data_for_history=array('Action'=>'created'
 				,'History Abstract'=>_('Family Created')
@@ -270,7 +270,7 @@ class Family extends DB_Table {
 
 		} else {
 			$this->error=true;
-			$this->msg="$sql  Error can not create the family";
+			$this->msg="$sql Error can not create the family";
 			print "$sql\n";
 			exit;
 		}
@@ -860,7 +860,7 @@ class Family extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 
 		setlocale(LC_ALL, 'en_GB');

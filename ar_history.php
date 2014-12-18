@@ -44,6 +44,7 @@ case('customer_history'):
 case('store_history'):
 case('account_history'):
 case('subject_history'):
+case('site_history'):
 
 case('supplier_history'):
 	list_subject_history();
@@ -88,7 +89,7 @@ function history_details() {
 function list_subject_history() {
 
 
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part','account','supplier_product','employee'))) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','customer','supplier','store','department','family','product','part','account','supplier_product','employee'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -226,6 +227,9 @@ function list_subject_history() {
 	}elseif ($parent=='account') {
 		$where=sprintf(' where  true  ');
 		$subject='Account';
+	}elseif ($parent=='site') {
+		$where=sprintf(' where   B.`Site Key`=%d   ',$parent_key);
+		$subject='Site';
 	}
 
 	elseif ($parent=='supplier') {
@@ -236,6 +240,8 @@ function list_subject_history() {
 
 	$where.=$date_interval['mysql'];
 	$_elements='';
+	
+	if(is_array($elements)){
 	foreach ($elements as $_key=>$_value) {
 		if ($_value)
 			$_elements.=','.prepare_mysql($_key);
@@ -246,7 +252,7 @@ function list_subject_history() {
 	} else {
 		$where.=' and Type in ('.$_elements.')' ;
 	}
-
+}
 
 	$wheref='';
 

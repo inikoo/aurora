@@ -39,7 +39,7 @@ if (!($user->can_view('sites')    ) ) {
 
 $site=new Site($site_id);
 if (!$site->id) {
-	header('Location: index.php?no_site_id');
+	header('Location: sites.php?site_not_found');
 	exit;
 }
 

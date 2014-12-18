@@ -64,6 +64,7 @@ class product extends DB_Table {
 	private $historic_keys=array();
 	private $historic_keys_with_same_code=array();
 	var $id=false;
+	var $pid=false;
 	var $locale;
 	var $url;
 	var $user_id;
@@ -227,26 +228,27 @@ class product extends DB_Table {
 		}
 		//print_r($raw_data);
 		$data=$this->get_base_data();
-		foreach ($raw_data as $_key=>$value) {
-			$key=strtolower($_key);
+		foreach ($raw_data as $key=>$value) {
 			if (array_key_exists($key,$data))
 				$data[$key]=_trim($value);
 		}
 		//print_r($data);
 
-		if ($data['product code']=='' or $data['product price']=='') {
+		if ($data['Product Code']=='' or $data['Product Price']=='') {
 			$this->error=true;
 			return;
 		}
 
-		if ($data['product store key']=='')
-			$data['product store key']=1;
-		if ($data['product name']=='')
-			$data['product name']=$data['product code'];
+		if ($data['Product Store Key']=='') {
+			exit("no store Key");
+		}
+
+		if ($data['Product Name']=='')
+			$data['Product Name']=$data['Product Code'];
 
 
 		$sql=sprintf("select `Product Code` from `Product Same Code Dimension` where `Product Code`=%s  "
-			,prepare_mysql($data['product code'])
+			,prepare_mysql($data['Product Code'])
 		);
 		//print "$sql\n";
 		$result=mysql_query($sql);
@@ -256,8 +258,8 @@ class product extends DB_Table {
 			$this->found_code=$row['Product Code'];
 
 			$sql=sprintf("select `Product Code` from `Product Dimension` where `Product Code`=%s  and  `Product Store Key`=%d "
-				,prepare_mysql($data['product code'])
-				,$data['product store key']
+				,prepare_mysql($data['Product Code'])
+				,$data['Product Store Key']
 			);
 			//print "$sql\n";
 			$result4=mysql_query($sql);
@@ -267,10 +269,10 @@ class product extends DB_Table {
 
 
 				$sql=sprintf("select `Product ID`,`Product Current Key` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d  ORDER BY `Product Record Type` "
-					,prepare_mysql($data['product code'])
-					,$data['product units per case']
-					,prepare_mysql($data['product unit type'])
-					,$data['product store key']
+					,prepare_mysql($data['Product Code'])
+					,$data['Product Units Per Case']
+					,prepare_mysql($data['Product Unit Type'])
+					,$data['Product Store Key']
 				);
 				// print "aqui zxseu $sql\n";
 				$result2=mysql_query($sql);
@@ -281,8 +283,8 @@ class product extends DB_Table {
 					$this->get_data('pid',$this->found_id);
 					$sql=sprintf("select `Product Key` from `Product History Dimension` where `Product ID`=%d and `Product History Price`=%.2f and `Product History Name`=%s  "
 						,$row2['Product ID']
-						,$data['product price']
-						,prepare_mysql($data['product name'])
+						,$data['Product Price']
+						,prepare_mysql($data['Product Name'])
 					);
 					// print "$sql\n";
 					$result3=mysql_query($sql);
@@ -301,8 +303,8 @@ class product extends DB_Table {
 		}
 
 		// print "Found in key ".$this->found_in_key."\n";
-		// print "Found in id ".$this->found_in_id."\n";
-		// print "Found in store ".$this->found_in_store."\n";
+		//print "Found in id ".$this->found_in_id."\n";
+		//print "Found in store ".$this->found_in_store."\n";
 		//print "Found in code ".$this->found_in_code."\n";
 		//print "Found in key ".$this->found_key."\n";
 
@@ -323,8 +325,8 @@ class product extends DB_Table {
 				$this->get_data('pid',$this->found_id);
 				$this->create_key($data);
 				$sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
-					,prepare_mysql($this->get('historic short description'))
-					,prepare_mysql($this->get('historic xhtml short description'))
+					,prepare_mysql($this->get('Historic Short Description'))
+					,prepare_mysql($this->get('Historic XHTML Short Description'))
 					,$this->pid
 					,$this->id
 				);
@@ -352,9 +354,9 @@ class product extends DB_Table {
 				$this->create($data);
 			}
 
-			$this->update_valid_dates($raw_data['product valid from']);
-			if (isset($raw_data['product valid to']))
-				$this->update_valid_dates($raw_data['product valid to']);
+			$this->update_valid_dates($raw_data['Product Valid From']);
+			if (isset($raw_data['Product Valid To']))
+				$this->update_valid_dates($raw_data['Product Valid To']);
 
 		}
 
@@ -580,11 +582,11 @@ class product extends DB_Table {
 
 
 
-		case('historic short description'):
-		case('short description'):
+		case('Historic Short Description'):
+		case('Short Description'):
 
 
-			if ($key=='historic short description') {
+			if ($key=='Historic Short Description') {
 				$units=$this->get('Product Units Per Case');
 				$name=$this->data_historic['Product Name'];
 				$price=$this->data_historic['Product Price'];
@@ -605,9 +607,9 @@ class product extends DB_Table {
 			}
 
 			return _trim($desc);
-		case('historic xhtml short description'):
-		case('xhtml short description'):
-			if ($key=='historic xhtml short description') {
+		case('Historic XHTML Short Description'):
+		case('XHTML Short Description'):
+			if ($key=='Historic XHTML Short Description') {
 				$units=$this->get('Product Units Per Case');
 				$name=$this->data_historic['Product Name'];
 				$price=$this->data_historic['Product Price'];
@@ -715,32 +717,32 @@ class product extends DB_Table {
 			$this->pid
 		);
 		mysql_query($sql);
-		
-		
+
+
 		// 1 year do it for all periods later
-		
+
 		$interval='1 Year';
-		
+
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
-		
+
 		$sql=sprintf("select count(*) as on_sale, sum(`Availability`) as Availability from `Order Spanshot Fact` where `Product ID`=%d %s %s",
 			$this->pid,
 			($from_date?sprintf('and `Date`>=%s',prepare_mysql(substr($from_date,0,10))):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql(substr($to_date,0,10))):'')
 		);
 		$res=mysql_query($sql);
-		
+
 		if ($row=mysql_fetch_assoc($res)) {
-		$this->data["Product $db_interval Acc Days On Sale"]=$row['on_sale'];
-		$this->data["Product $db_interval Acc Days Available"]=$row['Availability'];
+			$this->data["Product $db_interval Acc Days On Sale"]=$row['on_sale'];
+			$this->data["Product $db_interval Acc Days Available"]=$row['Availability'];
 		}
 		$sql=sprintf("update `Product Dimension` set `Product $db_interval Acc Days On Sale`=%d,`Product $db_interval Acc Days Available`=%d where `Product ID`=%d",
 			$this->data["Product $db_interval Acc Days On Sale"],
 			$this->data["Product $db_interval Acc Days Available"],
-		
+
 			$this->pid
 		);
-		
+
 		mysql_query($sql);
 
 	}
@@ -798,13 +800,13 @@ class product extends DB_Table {
 	function get_base_data_history() {
 		global $myconf;
 		$base_data=array(
-			'product history price'=>'',
-			'product history name'=>'',
-			'product history short description'=>'',
-			'product history xhtml short description'=>'',
-			'product history special characteristic'=>'',
-			'product history valid from'=>date("Y-m-d H:i:s"),
-			'product history valid to'=>date("Y-m-d H:i:s"),
+			'Product History Price'=>'',
+			'Product History Name'=>'',
+			'Product History Short Description'=>'',
+			'Product History XHTML Short Description'=>'',
+			'Product History special characteristic'=>'',
+			'Product History Valid From'=>gmdate("Y-m-d H:i:s"),
+			'Product History Valid To'=>gmdate("Y-m-d H:i:s"),
 
 
 		);
@@ -818,47 +820,44 @@ class product extends DB_Table {
 	function get_base_data() {
 		global $myconf,$corporate_currency;
 		$base_data=array(
-			'product sales type'=>'Public Sale',
-			'product type'=>'Normal',
-			'product record type'=>'Normal',
-			'product availability type'=>'Normal',
-			'product stage'=>'In Process',
-			'Product web configuration'=>'Offline',
-			'product store key'=>1,
-			'product locale'=>$myconf['lang'].'_'.$myconf['country'],
-			'product currency'=>$corporate_currency,
+			'Product Sales Type'=>'Public Sale',
+			'Product Type'=>'Normal',
+			'Product Record Type'=>'Normal',
+			'Product Availability Type'=>'Normal',
+			'Product Stage'=>'In Process',
+			'Product Web Configuration'=>'Offline',
+			'Product Store Key'=>'',
+			'Product Locale'=>'',
+			'Product Currency'=>$corporate_currency,
 
-			'product code file as'=>'',
-			'product code'=>'',
-			'product price'=>'',
-			'product rrp'=>'',
-			'product name'=>'',
-			'product short description'=>'',
-			'product xhtml short description'=>'',
-			'product special characteristic'=>'',
-			'product special characteristic component a'=>'',
-			'product special characteristic component b'=>'',
+			'Product Code File As'=>'',
+			'Product Code'=>'',
+			'Product Price'=>'',
+			'Product RRP'=>'',
+			'Product Name'=>'',
+			'Product Short Description'=>'',
+			'Product XHTML Short Description'=>'',
+			'Product Special Characteristic'=>'',
+			'Product Special Characteristic Component A'=>'',
+			'Product Special Characteristic Component B'=>'',
 
-			'product description'=>'',
-			'product family key'=>'',
-			'product family code'=>'',
-			'product family name'=>'',
-			'product main department key'=>'',
-			'product main department code'=>'',
-			'product main department name'=>'',
-			'product package type'=>'Box',
-			// 'product package size metadata'=>'',
-			//   'product net weight'=>'',
-			//   'product gross weight'=>'',
-			'product units per case'=>'1',
-			'product unit type'=>'Piece',
-			'product unit container'=>'',
+			'Product Description'=>'',
+			'Product Family Key'=>'',
+			'Product Family Code'=>'',
+			'Product Family Name'=>'',
+			'Product Main Department Key'=>'',
+			'Product Main Department Code'=>'',
+			'Product Main Department Name'=>'',
+			'Product Package type'=>'Box',
+			'Product Units Per Case'=>'1',
+			'Product Unit Type'=>'Piece',
+			'Product Unit Container'=>'',
 
-			'product availability state'=>'Normal',
-			'product valid from'=>date("Y-m-d H:i:s"),
-			'product valid to'=>date("Y-m-d H:i:s"),
-			'product current key'=>'',
-			'product part metadata'=>'',
+			'Product Availability state'=>'Normal',
+			'Product Valid From'=>gmdate("Y-m-d H:i:s"),
+			'Product Valid To'=>gmdate("Y-m-d H:i:s"),
+			'Product Current Key'=>'',
+			'Product Part Metadata'=>'',
 
 		);
 
@@ -870,10 +869,10 @@ class product extends DB_Table {
 	function get_base_data_same_code() {
 		global $myconf;
 		$base_data=array(
-			'product code file as'=>'',
-			'product code'=>'',
-			'product same code valid from'=>date("Y-m-d H:i:s"),
-			'product same code valid to'=>date("Y-m-d H:i:s"),
+			'Product Code File As'=>'',
+			'Product Code'=>'',
+			'Product Same Code Valid From'=>date("Y-m-d H:i:s"),
+			'Product Same Code Valid To'=>date("Y-m-d H:i:s"),
 
 
 		);
@@ -889,8 +888,7 @@ class product extends DB_Table {
 
 		$base_data_history=$this->get_base_data_history();
 		foreach ($data as $key=>$value) {
-			$key=strtolower($key);
-			$key=preg_replace('/^product/','product history',$key);
+			$key=preg_replace('/^Product/','Product History',$key);
 			if (isset($base_data_history[$key]))
 				$base_data_history[$key]=_trim($value);
 		}
@@ -925,8 +923,8 @@ class product extends DB_Table {
 
 
 
-			$this->data_historic['Product Name']=$base_data_history['product history name'];
-			$this->data_historic['Product Price']=$base_data_history['product history price'];
+			$this->data_historic['Product Name']=$base_data_history['Product History Name'];
+			$this->data_historic['Product Price']=$base_data_history['Product History Price'];
 
 
 
@@ -985,45 +983,47 @@ class product extends DB_Table {
 
 	function create_product_id($data) {
 
+		//print_r($data);
+
 		$base_data=$this->get_base_data();
 
-		foreach ($data as $_key=>$value) {
-			$key=strtolower($_key);
-			if (array_key_exists($key,$base_data) and $key!='product availability state')
+		foreach ($data as $key=>$value) {
+			if (array_key_exists($key,$base_data) and $key!='Product Availability State')
 				$base_data[$key]=_trim($value);
 		}
 
 
 		//print_r($base_data);exit;
 
-		$base_data['product code file as']=$this->normalize_code($base_data['product code']);
+		$base_data['Product Code File As']=$this->normalize_code($base_data['Product Code']);
 
-		if (!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
-			$base_data['product units per case']=1;
+		if (!is_numeric($base_data['Product Units Per Case']) or $base_data['Product Units Per Case']<1)
+			$base_data['Product Units Per Case']=1;
 
 
-		$family=new Family($base_data['product family key']);
+		$family=new Family($base_data['Product Family Key']);
 		if (!$family->id) {
 			$this->error=true;
 			$this->msg='Wrong family';
-			print_r($data);
+
+
 			exit("Error Creating product: product family key family not found\n");
 			return;
 		}
 
 		$department=new Department($family->data['Product Family Main Department Key']);
 
-		$base_data['product main department key']=$department->id;
-		$base_data['product main department code']=$department->data['Product Department Code'];
-		$base_data['product main department name']=$department->data['Product Department Name'];
-		$base_data['product family code']=$family->data['Product Family Code'];
-		$base_data['product family name']=$family->data['Product Family Name'];
+		$base_data['Product Main Department Key']=$department->id;
+		$base_data['Product Main Department Code']=$department->data['Product Department Code'];
+		$base_data['Product Main Department Name']=$department->data['Product Department Name'];
+		$base_data['Product Family Code']=$family->data['Product Family Code'];
+		$base_data['Product Family Name']=$family->data['Product Family Name'];
 
-		$store=new Store($base_data['product store key']);
+		$store=new Store($base_data['Product Store Key']);
 
 
 
-		$base_data['product current key']=$this->id;
+		$base_data['Product Current Key']=$this->id;
 
 
 
@@ -1032,7 +1032,7 @@ class product extends DB_Table {
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 			//print "$key\n";
-			if ($key=='product special characteristic component a' or $key=='product special characteristic component b')
+			if ($key=='Product Special Characteristic Component A' or $key=='Product Special Characteristic Component B')
 				$values.=prepare_mysql($value,false).",";
 
 			else
@@ -1043,22 +1043,21 @@ class product extends DB_Table {
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
 
-		$old_pids=$this->get_product_ids_with_same_code_store($base_data['product code'],$base_data['product store key']);
-		//if(count($old_pids)>0){
-		//print $base_data['product code']."\n";
-		//print_r($old_pids);
-		// exit;
-		//}
-		$sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
+		$old_pids=$this->get_product_ids_with_same_code_store($base_data['Product Code'],$base_data['Product Store Key']);
 
+		$sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
+		//print $sql;
 		if (mysql_query($sql)) {
 
 			$this->pid = mysql_insert_id();
-			$this->code =$base_data['product code'];
+			$this->code =$base_data['Product Code'];
 			$this->new_id=true;
 			$this->new=true;
 
 			$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$this->new_id);
+			mysql_query($sql);
+
+			$sql=sprintf("insert into  `Product Data Dimension`  (`Product ID`) values (%d) ",$this->new_id);
 			mysql_query($sql);
 
 			$editor_data=$this->get_editor_data();
@@ -1093,8 +1092,8 @@ class product extends DB_Table {
 
 		$this->get_data('pid',$this->pid);
 		$this->update_main_type();
-		$this->data['Product Short Description']=$this->get('short description');
-		$this->data['Product XHTML Short Description']=$this->get('xhtml short description');
+		$this->data['Product Short Description']=$this->get('Short Description');
+		$this->data['Product XHTML Short Description']=$this->get('XHTML Short Description');
 
 		$sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product ID`=%d"
 			,prepare_mysql($this->data['Product Short Description'])
@@ -1129,16 +1128,15 @@ class product extends DB_Table {
 	function create_code($data) {
 		$base_data_same_code=$this->get_base_data_same_code();
 		foreach ($data as $key=>$value) {
-			$key=strtolower($key);
-			if ($key=='product valid from')
-				$key='product same code valid from';
-			else if ($key=='product valid to')
-					$key='product same code valid to';
+			if ($key=='Product Valid From')
+				$key='Product Same Code Valid From';
+			else if ($key=='Product Valid To')
+					$key='Product Same Code Valid To';
 
 				if (isset($base_data_same_code[$key]))
 					$base_data_same_code[$key]=_trim($value);
 		}
-		$base_data_same_code['product code file as']=$this->normalize_code($base_data_same_code['product code']);
+		$base_data_same_code['Product Code File As']=$this->normalize_code($base_data_same_code['Product Code']);
 
 		$keys='(';
 		$values='values(';
@@ -1152,18 +1150,13 @@ class product extends DB_Table {
 		// print "$sql\n";
 		if (mysql_query($sql)) {
 			$this->new_code=true;
-			$this->code = $base_data_same_code['product code'];
+			$this->code = $base_data_same_code['Product Code'];
 		}
 
 	}
 
 
 
-	/*
-      Method: create
-      Crea o actualiza valores de la tabla Product Dimension
-    */
-	//
 
 
 	function create($data) {
@@ -1320,10 +1313,14 @@ class product extends DB_Table {
 
 	function update_product_part_list($product_part_key,$header_data,$list) {
 
+
+
 		$this->new_value=array();
 
 		$old_data=$this->get_product_part_dimension_data($product_part_key);
 		$old_items_data=$this->get_product_part_list_data($product_part_key);
+
+
 
 		if ($old_data['Product Part Metadata']!=$header_data['Product Part Metadata']) {
 			$sql=sprintf("update `Product Part Dimension` set `Product Part Metadata`=%s where `Product Part Key`=%d"
@@ -1338,7 +1335,7 @@ class product extends DB_Table {
 		}
 
 		foreach ($list as $item) {
-			if ($old_items_data[ $item['Part SKU'] ] ['Product Part List Note']!=$item['Product Part List Note']   ) {
+			if ($old_items_data[ $item['Part SKU'] ] ['Product Part List Note']!=$header_data['Product Part List Note']   ) {
 				$sql=sprintf("update `Product Part List` set `Product Part List Note`=%s where `Product Part List Key`=%d ",
 					prepare_mysql($item['Product Part List Note']),
 					$old_items_data[$item['Part SKU']]['Product Part List Key']
@@ -1385,6 +1382,10 @@ class product extends DB_Table {
 	function new_current_part_list($header_data,$list) {
 
 		$product_part_key=$this->find_product_part_list($list);
+
+
+
+
 		if ($product_part_key) {
 			$this->update_product_part_list($product_part_key,$header_data,$list);
 		} else {
@@ -1396,6 +1397,9 @@ class product extends DB_Table {
 		$this->update_main_type();
 		$this->update_availability_type();
 		$this->update_availability();
+
+
+
 
 
 	}
@@ -1412,8 +1416,8 @@ class product extends DB_Table {
 			'Product ID'=>$this->pid,
 			'Product Part Type'=>'Simple',
 			'Product Part Metadata'=>'',
-			'Product Part Valid From'=>date('Y-m-d H:i:s'),
-			'Product Part Valid To'=>date('Y-m-d H:i:s'),
+			'Product Part Valid From'=>gmdate('Y-m-d H:i:s'),
+			'Product Part Valid To'=>gmdate('Y-m-d H:i:s'),
 			'Product Part Most Recent'=>'No',
 		);
 
@@ -1478,29 +1482,28 @@ class product extends DB_Table {
 
 
 		$_base_list_data=array(
-			'product id'=>$this->data['Product ID'],
-			'part sku'=>'',
-			'requiered'=>'',
-			'parts per product'=>'',
-			'product part list note'=>'',
-			'product part list metadata'=>'',
+			'Product ID'=>$this->data['Product ID'],
+			'Part SKU'=>'',
+			'Requiered'=>'',
+			'Parts Per Product'=>'',
+			'Product Part List Note'=>'',
+			'Product Part List Metadata'=>'',
 
 		);
 
 		$_base_data=array(
-			'product id'=>$this->data['Product ID'],
+			'Product ID'=>$this->data['Product ID'],
 
-			'product part type'=>'Simple Pick',
-			'product part metadata'=>'',
-			'product part valid from'=>date('Y-m-d H:i:s'),
-			'product part valid to'=>date('Y-m-d H:i:s'),
-			'product part most recent'=>'Yes',
+			'Product Part Type'=>'Simple Pick',
+			'Product Part Metadata'=>'',
+			'Product Part Valid From'=>gmdate('Y-m-d H:i:s'),
+			'Product Part Valid To'=>gmdate('Y-m-d H:i:s'),
+			'Product Part Most Recent'=>'Yes',
 
 		);
 
 		$base_data=$_base_data;
 		foreach ($header_data as $key=>$value) {
-			$key=strtolower($key);
 			if (array_key_exists($key,$base_data))
 				$base_data[$key]=_trim($value);
 		}
@@ -1509,7 +1512,7 @@ class product extends DB_Table {
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
-			if ($key=='product part metadata' )
+			if ($key=='Product Part Metadata' )
 				$values.=prepare_mysql($value,false).',';
 			else
 				$values.=prepare_mysql($value).',';
@@ -1522,7 +1525,7 @@ class product extends DB_Table {
 
 			$product_part_key=mysql_insert_id();
 
-			if ($base_data['product part most recent']=='Yes') {
+			if ($base_data['Product Part Most Recent']=='Yes') {
 
 				$sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No' where `Product ID`=%d  and `Product Part Key`!=%d      "
 					,$product_part_key,$product_part_key);
@@ -1540,16 +1543,15 @@ class product extends DB_Table {
 			foreach ($part_list as $data) {
 				$base_data=$_base_list_data;
 				foreach ($data as $key=>$value) {
-					$key=strtolower($key);
 					if (array_key_exists($key,$base_data))
 						$base_data[$key]=_trim($value);
 				}
-				$base_data['product part key']=$product_part_key;
+				$base_data['Product Part key']=$product_part_key;
 				$keys='(';
 				$values='values(';
 				foreach ($base_data as $key=>$value) {
 					$keys.="`$key`,";
-					if ($key=='product part list metadata' or $key=='product part list note')
+					if ($key=='Product Part List Metadata' or $key=='Product Part List Note')
 						$values.=prepare_mysql($value,false).',';
 					else
 						$values.=prepare_mysql($value).',';
@@ -3059,8 +3061,8 @@ class product extends DB_Table {
 				$this->create_key($data);
 				$sql=sprintf("update  `Product History Dimension` set `Product History Name`=%s, `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
 					,prepare_mysql($this->data['Product Name'])
-					,prepare_mysql($this->get('short description'))
-					,prepare_mysql($this->get('xhtml short description'))
+					,prepare_mysql($this->get('Short Description'))
+					,prepare_mysql($this->get('XHTML Short Description'))
 					,$this->pid
 					,$this->new_key_id
 				);
@@ -3086,7 +3088,7 @@ class product extends DB_Table {
 				$this->updated=true;
 			}
 			else {
-				exit("exit more that one hitoric product\n ");
+				exit("exit more that one hitoric product\n");
 
 			}
 
@@ -3366,7 +3368,7 @@ class product extends DB_Table {
 		}
 
 		if ($value=='') {
-			$this->msg=_('Error: Wrong name (empty)');
+			$this->msg='Error: Wrong name (empty)';
 			return;
 		}
 		if (!(strtolower($value)==strtolower($this->data['Product Name']) and $value!=$this->data['Product Name'])) {
@@ -4309,6 +4311,47 @@ class product extends DB_Table {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
 			$mysql_where.=', '.$row['Part SKU'];
 			$number_of_parts++;
+
+
+
+			$part_fields=array(
+				'Part Tariff Code',
+				'Part Duty Rate',
+				'Part UN Number',
+				'Part UN Class',
+				'Part Health And Safety',
+				'Part Packing Group',
+				'Part Proper Shipping Name',
+				'Part Hazard Indentification Number',
+				'Part Unit Dimensions Type',
+				'Part Unit Dimensions Display Units',
+				'Part Unit Dimensions Width Display',
+				'Part Unit Dimensions Depth Display',
+				'Part Unit Dimensions Length Display',
+				'Part Unit Dimensions Diameter Display',
+				'Part Package Dimensions Type',
+				'Part Package Dimensions Display Units',
+				'Part Package Dimensions Width Display',
+				'Part Package Dimensions Depth Display',
+				'Part Package Dimensions Length Display',
+				'Part Package Dimensions Diameter Display',
+				'Part Unit Weight Display',
+				'Part Unit Weight Display Units',
+				'Part Package Weight Display',
+				'Part Package Weight Display Units',
+				'Part Unit Materials',
+				'Part Origin Country Code'
+			);
+
+			$part=new Part($row['Part SKU']);
+			foreach ($part_fields as $field) {
+				$part->update_fields_used_in_products($field,$part->data[$field]);
+			}
+			
+			foreach($part->get_images_slidesshow() as $image_data){
+			$this->add_image($image_data['id']);
+			}
+
 		}
 
 
@@ -4474,7 +4517,7 @@ class product extends DB_Table {
 
 		// get parts;
 		$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
-		
+
 
 
 

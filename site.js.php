@@ -196,7 +196,6 @@ function change_elements_dblclick(el,elements_type) {
         }
     }
 
-    alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
@@ -1468,7 +1467,7 @@ function save_page_flag(key, value) {
     table_record_index = Dom.get('edit_flag_table_record_index').value;
 
     var request = 'ar_edit_sites.php?tipo=edit_page_flag&key=' + key + '&newvalue=' + value + '&id=' + page_id + '&okey=' + key + '&table_record_index=' + table_record_index
-    	alert(request);
+    	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText)
@@ -1876,7 +1875,7 @@ function change_requests_elements_dblclick(el,elements_type) {
         }
     }
 
-   alert(request)
+  // alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 

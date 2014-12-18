@@ -91,41 +91,39 @@ newvalue=r.newvalue;
 }
 
 
-function change_block(e){
-        var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","invoice", "website","communications"]; 
-
-	
-	if(this.id=='pictures'  ){
-	    Dom.get('info_name').style.display='';
-	}else
-	    Dom.get('info_name').style.display='none';
+function change_block(e) {
+    var ids = ["description", "pictures", "departments", "discounts", "charges", "shipping", "campaigns", "invoice", "website", "communications", "payments"];
 
 
-	Dom.get('d_departments').style.display='none';
-	Dom.get('d_pictures').style.display='none';
-	Dom.get('d_discounts').style.display='none';
-	Dom.get('d_description').style.display='none';
-	Dom.get('d_website').style.display='none';
-
-	Dom.get('d_charges').style.display='none';
-	Dom.get('d_discounts').style.display='none';
-	Dom.get('d_campaigns').style.display='none';
-Dom.get('d_invoice').style.display='none';
-Dom.get('d_communications').style.display='none';
-	Dom.get('d_shipping').style.display='none';
-	Dom.get('d_'+this.id).style.display='';
-	Dom.removeClass(ids,'selected');
-	
-	Dom.addClass(this, 'selected');
-	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-edit&value='+this.id ,{});
-	
-	editing=this.id;
-   
+    if (this.id == 'pictures') {
+        Dom.get('info_name').style.display = '';
+    } else Dom.get('info_name').style.display = 'none';
 
 
+    Dom.get('d_departments').style.display = 'none';
+    Dom.get('d_pictures').style.display = 'none';
+    Dom.get('d_discounts').style.display = 'none';
+    Dom.get('d_description').style.display = 'none';
+    Dom.get('d_website').style.display = 'none';
+    Dom.get('d_payments').style.display = 'none';
+    Dom.get('d_charges').style.display = 'none';
+    Dom.get('d_discounts').style.display = 'none';
+    Dom.get('d_campaigns').style.display = 'none';
+    Dom.get('d_invoice').style.display = 'none';
+    Dom.get('d_communications').style.display = 'none';
+    Dom.get('d_shipping').style.display = 'none';
+    Dom.get('d_' + this.id).style.display = '';
+    Dom.removeClass(ids, 'selected');
+
+    Dom.addClass(this, 'selected');
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-edit&value=' + this.id, {});
+
+    editing = this.id;
 
 }
+
+
 function new_dept_changed(o){
     if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
 	can_add_department=true;
@@ -780,7 +778,7 @@ function init(){
   init_search('products_store');
 
 
-    var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","invoice", "website","communications"]; 
+    var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","invoice", "website","communications","payments"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
@@ -906,22 +904,21 @@ function new_site(){
 
 
 
+function edit_deal_templates() {
 
-function edit_deal_templates(){
-
-Dom.setStyle('d_campaigns','display','')
-Dom.setStyle('d_discounts','display','none')
-
-}
-
-function close_edit_deals_templates(){
-Dom.setStyle('d_campaigns','display','none')
-Dom.setStyle('d_discounts','display','')
+    Dom.setStyle('d_campaigns', 'display', '')
+    Dom.setStyle('d_discounts', 'display', 'none')
 
 }
 
-function charge_changed(key){
-Dom.setStyle(['charge_save'+key,'charge_reset'+key],'visibility','visible')
+function close_edit_deals_templates() {
+    Dom.setStyle('d_campaigns', 'display', 'none')
+    Dom.setStyle('d_discounts', 'display', '')
+
+}
+
+function charge_changed(key) {
+    Dom.setStyle(['charge_save' + key, 'charge_reset' + key], 'visibility', 'visible')
 }
 
 function charge_save(key){

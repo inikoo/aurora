@@ -23,7 +23,7 @@ class Department extends DB_Table {
 
 	public $new_value=false;
 
-	
+
 	var $external_DB_link=false;
 	function Department($a1=false,$a2=false,$a3=false) {
 		$this->table_name='Product Department';
@@ -225,20 +225,23 @@ class Department extends DB_Table {
 		$values=preg_replace('/,$/',')',$values);
 		$sql=sprintf("insert into `Product Department Dimension` %s %s",$keys,$values);
 
-		//   print "$sql\n";
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
-			$this->msg=_("Department Added");
+			$this->msg=_("Department created");
 			$this->get_data('id',$this->id,false);
 			$this->new=true;
+
+			$sql=sprintf("insert into `Product Department Data Dimension`  (`Product Department Key`) values (%d)",$this->id);
+			mysql_query($sql);
+			
 
 			$this->add_history(array(
 					'Action'=>'created'
 					,'History Abstract'=>_('Department created')
 					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
 				),true);
-				$store->editor=$this->editor;
-$store->add_history(array(
+			$store->editor=$this->editor;
+			$store->add_history(array(
 					'Action'=>'created'
 					,'History Abstract'=>_('Department created')." (".$this->get('Product Department Code').")"
 					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
@@ -248,13 +251,13 @@ $store->add_history(array(
 			return;
 		} else {
 			$this->error=true;
-			$this->msg=_("$sql Error can not create department");
+			$this->msg="Error can not create department. $sql";
 
 		}
 
 	}
 
-	
+
 	function get_data($tipo,$tag,$tag2=false) {
 
 		switch ($tipo) {
@@ -310,18 +313,18 @@ $store->add_history(array(
 
 
 
-function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field,$value,$options='') {
 
 
 		switch ($field) {
-			case('Store Sticky Note'):
+		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
-			break;	
+			break;
 		case('Sticky Note'):
 			$this->update_field('Product Department '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
 			break;
-	
+
 		default:
 			$base_data=$this->base_data();
 			if (array_key_exists($field,$base_data)) {
@@ -461,23 +464,23 @@ function update_field_switcher($field,$value,$options='') {
 	function delete() {
 		$this->deleted=false;
 		$this->update_product_data();
-$store=new Store($this->data['Product Department Store Key']);
-$store->editor=$this->editor;
+		$store=new Store($this->data['Product Department Store Key']);
+		$store->editor=$this->editor;
 		if ($this->get('Total Products')==0) {
 			$store=new Store($this->data['Product Department Store Key']);
 			$sql=sprintf("delete from `Product Department Dimension` where `Product Department Key`=%d",$this->id);
 			if (mysql_query($sql)) {
 
 				$this->deleted=true;
-				
-				
-				$store->add_history(array(
-					'Action'=>'deleted'
-					,'History Abstract'=>_('Department deleted')." (".$this->get('Product Department Code').")"
-					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('deleted')
-				),true);
 
-			$store->update_departments();
+
+				$store->add_history(array(
+						'Action'=>'deleted'
+						,'History Abstract'=>_('Department deleted')." (".$this->get('Product Department Code').")"
+						,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('deleted')
+					),true);
+
+				$store->update_departments();
 
 			} else {
 
@@ -489,13 +492,13 @@ $store->editor=$this->editor;
 		} else {//when families are associated with this department
 			//$this->msg=_('Department can not be deleted because it has associated some products');
 			$move_all_products = true;
-			
+
 
 			$sql = sprintf("select * from `Product Family Dimension` where `Product Family Main Department Key` = %d", $this->id);
 			$result = mysql_query($sql);
 			while ($row = mysql_fetch_assoc($result)) {
 				$family = new Family($row['Product Family Key']);
-				$family->update_department($store->data['Store Orphan Families Department']);
+				$family->update_department($store->data['Store No Products Department Key']);
 				if (!$family->updated) {
 					$move_all_products&=false;
 				}
@@ -509,15 +512,15 @@ $store->editor=$this->editor;
 
 			if (mysql_affected_rows()>0) {
 				$this->deleted=true;
-				
-					$store->add_history(array(
-					'Action'=>'deleted'
-					,'History Abstract'=>_('Department deleted')." (".$this->get('Product Department Code').")"
-					,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('deleted')
-				),true);
 
-				
-				
+				$store->add_history(array(
+						'Action'=>'deleted'
+						,'History Abstract'=>_('Department deleted')." (".$this->get('Product Department Code').")"
+						,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('deleted')
+					),true);
+
+
+
 			} else {
 				$this->deleted_msg='Error department can not be deleted';
 			}
@@ -682,7 +685,7 @@ $store->editor=$this->editor;
 
 
 		$to_date='';
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 
 
@@ -1105,7 +1108,7 @@ $store->editor=$this->editor;
 
 
 
-	
+
 
 	function remove_image($image_key) {
 
@@ -1173,7 +1176,7 @@ $store->editor=$this->editor;
 
 	}
 	function get_images_slidesshow() {
-			include_once('common_units_functions.php');
+		include_once 'common_units_functions.php';
 
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d",$this->id);
 		$res=mysql_query($sql);
@@ -1278,20 +1281,20 @@ $store->editor=$this->editor;
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-				
-				include_once('common_units_functions.php');
-$this->new_value=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,
-			'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],
-			'id'=>$row['Image Key'],
-			'size'=>formatSizeUnits($row['Image File Size']
-			)
-			);		}
+
+			include_once 'common_units_functions.php';
+			$this->new_value=array(
+				'name'=>$row['Image Filename'],
+				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+				'filename'=>$row['Image Filename'],
+				'ratio'=>$ratio,
+				'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'],
+				'id'=>$row['Image Key'],
+				'size'=>formatSizeUnits($row['Image File Size']
+				)
+			);  }
 
 		$this->updated=true;
 		$this->msg=_("image added");
@@ -1318,8 +1321,8 @@ $this->new_value=array(
 		}
 
 	}
-	
-		function post_add_history($history_key,$type=false) {
+
+	function post_add_history($history_key,$type=false) {
 
 		if (!$type) {
 			$type='Changes';
@@ -1333,55 +1336,55 @@ $this->new_value=array(
 		mysql_query($sql);
 
 	}
-	
-	function get_valid_to(){
-	/*
+
+	function get_valid_to() {
+		/*
 	To do discintinued Department
 	if($this->data['Product Department Record Type']=='Discontinued'){
 			return $this->data['Product Department Valid To'];
 		}else{
 			return gmdate("Y-m-d H:i:s");
 		}
-		
+
 		*/
-	return gmdate("Y-m-d H:i:s");
-	
+		return gmdate("Y-m-d H:i:s");
+
 	}
-	
+
 	function update_sales_averages() {
 
-include_once('common_stat_functions.php');
+		include_once 'common_stat_functions.php';
 
 		$sql=sprintf("select sum(`Sales`) as sales,sum(`Availability`) as availability  from `Order Spanshot Fact` where `Product Department Key`=%d   group by `Date`;",
 			$this->id
 		);
 		$res=mysql_query($sql);
-	
+
 		$counter_available=0;
 		$counter=0;
 		$sum=0;
-		while($row=mysql_fetch_assoc($res)) {
-				
-				$sum+=$row['sales'];
-				$counter++;
-				if($row['sales']==$row['availability']){
-					$counter_available++;
-				}
-				
-				
-		}	
-		
-		
-			if($counter>0){
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$sum+=$row['sales'];
+			$counter++;
+			if ($row['sales']==$row['availability']) {
+				$counter_available++;
+			}
+
+
+		}
+
+
+		if ($counter>0) {
 			$this->data['Product Department Number Days on Sale']=$counter;
 			$this->data['Product Department Avg Day Sales']=$sum/$counter;
-				$this->data['Product Department Number Days Available']=$counter_available;
-	
+			$this->data['Product Department Number Days Available']=$counter_available;
+
 		}else {
 			$this->data['Product Department Number Days on Sale']=0;
 			$this->data['Product Department Avg Day Sales']=0;
 			$this->data['Product Department Number Days Available']=0;
-			
+
 
 		}
 
@@ -1393,23 +1396,23 @@ include_once('common_stat_functions.php');
 		$max_value=0;
 		$counter=0;
 		$sum=0;
-		while($row=mysql_fetch_assoc($res)) {
-				$data_sales[]=$row['sales'];
-				$sum+=$row['sales'];
-				$counter++;
-				if($row['sales']>$max_value){
-					$max_value=$row['sales'];
-				}
-		}	
-			
-			
-			if($counter>0){
-			
-			
-			
-			
-			
-			
+		while ($row=mysql_fetch_assoc($res)) {
+			$data_sales[]=$row['sales'];
+			$sum+=$row['sales'];
+			$counter++;
+			if ($row['sales']>$max_value) {
+				$max_value=$row['sales'];
+			}
+		}
+
+
+		if ($counter>0) {
+
+
+
+
+
+
 			$this->data['Product Department Number Days with Sales']=$counter;
 			$this->data['Product Department Avg with Sale Day Sales']=$sum/$counter;
 			$this->data['Product Department STD with Sale Day Sales']=standard_deviation($data_sales);
@@ -1423,7 +1426,7 @@ include_once('common_stat_functions.php');
 		}
 
 		$sql=sprintf("update `Product Department Dimension` set `Product Department Number Days on Sale`=%d,`Product Department Avg Day Sales`=%d,`Product Department Number Days Available`=%f,`Product Department Number Days with Sales`=%d,`Product Department Avg with Sale Day Sales`=%f,`Product Department STD with Sale Day Sales`=%f,`Product Department Max Day Sales`=%f where `Product Department Key`=%d",
-		$this->data['Product Department Number Days on Sale'],
+			$this->data['Product Department Number Days on Sale'],
 			$this->data['Product Department Avg Day Sales'],
 			$this->data['Product Department Number Days Available'],
 			$this->data['Product Department Number Days with Sales'],

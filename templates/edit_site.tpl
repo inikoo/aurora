@@ -5,7 +5,7 @@
 	<input type="hidden" id="store_key" value="{$store_key}" />
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr; {/if}<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px;height:10px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr; {/if}<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">
@@ -1400,10 +1400,50 @@
 		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
 	</p>
 	<div style="display:none" id="deleting">
-		<img src="art/loading.gif" alt=""> {t}Deleting website, wait please{/t} 
+		<img src="art/loading.gif" alt=""> {t}Deleting website{/t}, {t}wait please{/t} 
 	</div>
 	<div id="delete_site_buttons" class="buttons">
 		<button id="save_delete_site" onClick="save_delete_site()" class="negative">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_site" >{t}No, I dont want to delete it{/t}</button> 
 	</div>
 </div>
+<div id="dialog_delete_footer" style="padding:10px 10px 10px 10px;">
+	<h2 style="padding-top:0px">
+		{t}Delete footer{/t} 
+	</h2>
+	<h2 style="padding-top:0px" id="dialog_delete_footer_data">
+	</h2>
+	<input type="hidden" id="dialog_delete_footer_key" value=""> 
+	<input type="hidden" id="dialog_delete_footer_table_id" value=""> 
+	<input type="hidden" id="dialog_delete_footer_recordIndex" value=""> 
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<div style="display:none" id="deleting">
+		<img src="art/loading.gif" alt=""> {t}Deleting footer{/t}, {t}wait please{/t} 
+	</div>
+	<div id="delete_store_buttons" class="buttons">
+		<button onclick="save_delete('delete','footer')" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete('delete','footer')" class="negative">{t}No i dont want to delete it{/t}</button> 
+	</div>
+</div>
+
+<div id="dialog_delete_header" style="padding:10px 10px 10px 10px;">
+	<h2 style="padding-top:0px">
+		{t}Delete header{/t} 
+	</h2>
+	<h2 style="padding-top:0px" id="dialog_delete_header_data">
+	</h2>
+	<input type="hidden" id="dialog_delete_header_key" value=""> 
+	<input type="hidden" id="dialog_delete_header_table_id" value=""> 
+	<input type="hidden" id="dialog_delete_header_recordIndex" value=""> 
+	<p>
+		{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t} 
+	</p>
+	<div style="display:none" id="deleting">
+		<img src="art/loading.gif" alt=""> {t}Deleting header{/t}, {t}wait please{/t} 
+	</div>
+	<div id="delete_store_buttons" class="buttons">
+		<button onclick="save_delete('delete','header')" class="positive">{t}Yes, delete it!{/t}</button> <button onclick="cancel_delete('delete','header')" class="negative">{t}No i dont want to delete it{/t}</button> 
+	</div>
+</div>
+
 {include file='footer.tpl'} 

@@ -121,7 +121,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=stores");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=stores&sf=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -212,7 +212,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				     ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=departments&parent=none&tableid=1&parent_key=0");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=departments&parent=none&tableid=1&parent_key=0&sf=0");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -391,7 +391,7 @@ this.table1.table_id=tableid;
 
 			       ];
 
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=none&parent_key=&tableid=3");
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=none&parent_key=&tableid=3&sf=0");
 		//alert("ar_assets.php?tipo=products&parent=none&tableid=3");
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";

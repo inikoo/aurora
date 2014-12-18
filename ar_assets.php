@@ -608,9 +608,10 @@ function list_departments() {
 	$sql="select sum(`Product Department Out Of Stock Products`) outofstock,sum(`Product Department Unknown Stock Products`)stock_error,
          sum(`Product Department Stock Value`)stock_value,sum(`Product Department Surplus Availability Products`)surplus,sum(`Product Department Optimal Availability Products`) optimal,
          sum(`Product Department Low Availability Products`) low,sum(`Product Department Critical Availability Products`) critical,
-         sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where  $wheref ";
+         sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families
+         from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref ";
 	$result=mysql_query($sql);
-
+//print $sql;
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$sum_families=$row['sum_families'];
 		$sum_active=$row['sum_active'];
@@ -632,7 +633,8 @@ function list_departments() {
 
 	$sum_total_sales=0;
 	$sum_month_sales=0;
-	$sql="select   max(`Product Department $period_tag Acc Days Available`) as 'Product Department $period_tag Acc Days Available',max(`Product Department $period_tag Acc Days On Sale`) as 'Product Department $period_tag Acc Days On Sale', sum(if(`Product Department $period_tag Acc Profit`<0,`Product Department $period_tag Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department $period_tag Acc Profit`>=0,`Product Department $period_tag Acc Profit`,0)) as total_profit_plus,sum(`Product Department $period_tag Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension` $where $wheref  ";
+	$sql="select  max(`Product Department $period_tag Acc Days Available`) as 'Product Department $period_tag Acc Days Available',max(`Product Department $period_tag Acc Days On Sale`) as 'Product Department $period_tag Acc Days On Sale', sum(if(`Product Department $period_tag Acc Profit`<0,`Product Department $period_tag Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department $period_tag Acc Profit`>=0,`Product Department $period_tag Acc Profit`,0)) as total_profit_plus,sum(`Product Department $period_tag Acc Invoiced Amount`) as sum_total_sales
+	from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref  ";
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -679,7 +681,7 @@ function list_departments() {
 
 
 
-	$sql="select *  from `Product Department Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 	$adata=array();
@@ -1347,12 +1349,12 @@ function list_products() {
 		$order='`Product Unit Weight`';
 	}elseif ($order=='unit_dimension') {
 		$order='`Product Unit Dimensions Volume`';
-	}elseif($order=='1m_avg_sold_over_1y'){
-	  	$order='`Product 1 Year Acc Quantity Invoiced`';
-	}elseif($order=='days_available_over_1y'){
-	  	$order='`Product 1 Year Acc Days On Sale`';
-	}elseif($order=='percentage_available_1y'){
-	  	$order='`Product 1 Year Acc Days Available`/`Product 1 Year Acc Days On Sale`';
+	}elseif ($order=='1m_avg_sold_over_1y') {
+		$order='`Product 1 Year Acc Quantity Invoiced`';
+	}elseif ($order=='days_available_over_1y') {
+		$order='`Product 1 Year Acc Days On Sale`';
+	}elseif ($order=='percentage_available_1y') {
+		$order='`Product 1 Year Acc Days Available`/`Product 1 Year Acc Days On Sale`';
 	}
 
 
@@ -1376,7 +1378,7 @@ function list_products() {
 	if ($percentages) {
 
 		$sum_total_stock_value=0;
-		$sql="select sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
+		$sql="select sum(`Product Stock Value`) as sum_stock_value from `Product Dimension` $where $wheref";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1405,13 +1407,27 @@ function list_products() {
 
 	}
 
-	//
+	//`Product $db_interval Acc 1YB Invoiced Amount`
+	//print $db_interval;
+	
+	if (!($db_interval=='Total' or $db_interval=='3 Year')){
+				$fields="`Product $db_interval Acc 1YB Invoiced Amount`,";
+}else{
+$fields='';
+}
+	
+	$sql="select P.`Product ID`,`Product Code`,`Store Currency Code`,`Product Price`,`Product Units Per Case`,`Product $db_interval Acc Invoiced Amount`,`Product $db_interval Acc Profit`,`Product $db_interval Acc Days On Sale`,`Product $db_interval Acc Days Available` ,
+	$fields 
+	`Product $db_interval Acc Quantity Invoiced`,`Product $db_interval Acc Margin`,`Product Availability`,`Product Sales Type`,`Product Stage`,`Product Main Type`,`Product Package Type`,`Product Web State`,`Product Store Key`,`Store Code`,`Product Web Configuration`,`Product Availability State`,
+	`Product Available Days Forecast`,`Product Record Type`,`Product Currency`,`Product XHTML Short Description`,`Product Main Image`,`Product Name`,`Product Valid From`,`Product Last Updated`,
+	`Product Family Name`,`Product Main Department Name`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product GMROI`,
+	`Product Stock Value`,`Product Package Weight`,`Product Package XHTML Dimensions`,`Product Package Dimensions Volume`,`Product Unit Weight`,`Product Unit XHTML Dimensions`
 
-	$sql="select  * from  $table $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+	from  $table $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+
+	//print $sql;
 
 
-
-	//print $sql;exit;
 	$res = mysql_query($sql);
 	$adata=array();
 
@@ -1470,7 +1486,7 @@ function list_products() {
 			}
 			elseif ($avg=='week') {
 				if ($row["Product $db_interval Acc Days On Sale"]>0)
-					$factor=7/$row["Product To$db_intervaltal Acc Days On Sale"];
+					$factor=7/$row["Product $db_interval Acc Days On Sale"];
 				else
 					$factor='ND';
 			}
@@ -1499,7 +1515,7 @@ function list_products() {
 			}
 
 			if (!($db_interval=='Total' or $db_interval=='3 Year'))
-				$delta_sales=delta($row['Product Year To Day Acc Invoiced Amount'],$row['Product Year To Day Acc 1YB Invoiced Amount']);
+				$delta_sales=delta($row["Product $db_interval Acc Invoiced Amount"],$row["Product $db_interval Acc 1YB Invoiced Amount"]);
 
 			$margin=$row["Product $db_interval Acc Margin"];
 
@@ -1508,6 +1524,24 @@ function list_products() {
 
 
 		}
+
+		if ($db_interval=='Total' or $db_interval=='3 Year') {
+			
+			$avg_sold_over='';
+			$days_available_over='';
+			$percentage_available='';
+		}else {
+			$avg_sold_over='';
+			$days_available_over='';
+			$percentage_available='';
+		}
+
+
+		//   '1m_avg_sold_over_1y'=>ceil($row['Product 1 Year Acc Quantity Invoiced']/12),
+		// 'days_available_over_1y'=>$row['Product 1 Year Acc Days On Sale'],
+		// 'percentage_available_1y'=>percentage($row['Product 1 Year Acc Days Available'],$row['Product 1 Year Acc Days On Sale'])
+
+
 
 		if (is_numeric($row['Product Availability']))
 			$stock=number($row['Product Availability']);
@@ -1665,9 +1699,12 @@ function list_products() {
 			"package_volume"=>volume($row['Product Package Dimensions Volume']),
 			"unit_weight"=>weight($row['Product Unit Weight']),
 			"unit_dimension"=>$row['Product Unit XHTML Dimensions'],
-			'1m_avg_sold_over_1y'=>ceil($row['Product 1 Year Acc Quantity Invoiced']/12),
-			'days_available_over_1y'=>$row['Product 1 Year Acc Days On Sale'],
-			'percentage_available_1y'=>percentage($row['Product 1 Year Acc Days Available'],$row['Product 1 Year Acc Days On Sale'])
+			'1m_avg_sold_over'=>$avg_sold_over,
+			'days_available_over'=>$days_available_over,
+			'percentage_available'=>$percentage_available
+
+
+
 
 		);
 	}
@@ -2021,18 +2058,18 @@ function list_families() {
 	case('store'):
 
 		$where=sprintf(' where `Product Family Store Key`=%d',$parent_key);
-		$table='`Product Family Dimension` F';
+		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`)';
 		break;
 	case('department'):
 
 		$where=sprintf(' where `Product Family Main Department Key`=%d',$parent_key);
-		$table='`Product Family Dimension` F';
+		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`)';
 
 		break;
 	case('category'):
 
 		$where=sprintf(' where `Category Key`=%d',$parent_key);
-		$table='`Product Family Dimension` F left join `Category Bridge` on (`Subject`="Family" and `Subject Key`=`Product Family Key`)';
+		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`) left join `Category Bridge` on (`Subject`="Family" and `Subject Key`=`Product Family Key`)';
 
 		break;
 
@@ -2043,7 +2080,7 @@ function list_families() {
 
 			$where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
 		}
-		$table='`Product Family Dimension` F';
+		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`)';
 
 
 	}
@@ -2076,8 +2113,8 @@ function list_families() {
 	if ($f_field=='name' and $f_value!='')
 		$wheref.=" and `Product Family Name`  like '%".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total from $table     $where $wheref";
-	//print $sql;
+	$sql="select count(*) as total from $table $where $wheref";
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2086,7 +2123,7 @@ function list_families() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total  from $table   $where ";
+		$sql="select count(*) as total from $table $where";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -2181,6 +2218,8 @@ function list_families() {
 		$order='`Product Family Valid To`';
 	}elseif ($order=='last_update') {
 		$order='`Product Family Last Updated`';
+	}elseif ($order=='department') {
+		$order='`Product Family Main Department Code`';
 	}
 	else
 		$order='`Product Family Code`';
@@ -2650,7 +2689,7 @@ function list_stores() {
 
 
 
-	$sql="select *  from `Store Dimension` S  left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key`   $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key`   $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 
@@ -2685,19 +2724,7 @@ function list_stores() {
 				$tprofit=percentage($row['Store DC '.$period_tag.' Profit'],$sum_total_profit_plus,2);
 			else
 				$tprofit=percentage($row['Store DC '.$period_tag.' Profit'],$sum_total_profit_minus,2);
-
-
-
-
-
 		} else {
-
-
-
-
-
-
-
 
 			if ($avg=="totals")
 				$factor=1;
@@ -2726,14 +2753,8 @@ function list_stores() {
 					$factor=0;
 			}
 
-			$tsall=($row["Store".$DC_tag." Total Invoiced Amount"]*$factor);
-			$tprofit=($row["Store".$DC_tag." Total Profit"]*$factor);
-
-
-
-
-
-
+			$tsall=($row["Store".$DC_tag." Total Acc Invoiced Amount"]*$factor);
+			$tprofit=($row["Store".$DC_tag." Total Acc Profit"]*$factor);
 
 		}
 
@@ -3562,7 +3583,7 @@ function list_orders_per_store() {
 	if (count($user->stores)==0)
 		$where="where false";
 	else {
-		$where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+		$where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
 	}
 	$filter_msg='';
 	$wheref='';
@@ -3574,7 +3595,7 @@ function list_orders_per_store() {
 
 
 
-	$sql="select count(*) as total from `Store Dimension`   $where $wheref";
+	$sql="select count(*) as total from `Store Dimension`  S $where $wheref";
 	//print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3586,7 +3607,7 @@ function list_orders_per_store() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Store Dimension`   $where ";
+		$sql="select count(*) as total from `Store Dimension` S  $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3661,8 +3682,8 @@ function list_orders_per_store() {
 	$total_todo=0;
 	$total_paid=0;
 	$total_suspended=0;
-	$sql="select  sum(`Store Total Orders`) as orders,sum(`Store Unknown Orders`) as unknown,sum(`Store Suspended Orders`) as suspended,sum(`Store Dispatched Orders`) as dispatched,sum(`Store Cancelled Orders`) cancelled,sum(`Store Orders In Process`) as todo   from `Store Dimension`  $where     ";
-	// print $sql;
+	$sql="select  sum(`Store Total Acc Orders`) as orders,sum(`Store Unknown Orders`) as unknown,sum(`Store Suspended Orders`) as suspended,sum(`Store Dispatched Orders`) as dispatched,sum(`Store Cancelled Orders`) cancelled,sum(`Store Orders In Process`) as todo   from `Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) $where     ";
+
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total_orders=$row['orders'];
@@ -3679,8 +3700,8 @@ function list_orders_per_store() {
 
 
 
-	$sql="select `Store Name`,`Store Code`,`Store Key`,`Store Total Orders` as orders,`Store Suspended Orders` as suspended, `Store Total Orders` as orders,`Store Unknown Orders` as unknown,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
+	$sql="select `Store Name`,`Store Code`,S.`Store Key`,`Store Total Acc Orders` as orders,`Store Suspended Orders` as suspended, `Store Unknown Orders` as unknown,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo from   `Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
 	$res = mysql_query($sql);
 
 	$total=mysql_num_rows($res);
@@ -3788,6 +3809,8 @@ function list_orders_per_store() {
 
 function list_invoices_per_store() {
 
+	global $user;
+
 	$conf=$_SESSION['state']['stores']['invoices'];
 
 	if (isset( $_REQUEST['sf']))
@@ -3871,7 +3894,12 @@ function list_invoices_per_store() {
 	$_SESSION['state']['stores']['invoices']['f_value']=$f_value;
 
 
-	$where="where true  ";
+	if (count($user->stores)==0)
+		$where="where false";
+	else {
+		$where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
+	}
+
 
 	$filter_msg='';
 	$wheref='';
@@ -3883,7 +3911,7 @@ function list_invoices_per_store() {
 
 
 
-	$sql="select count(*) as total from `Store Dimension`   $where $wheref";
+	$sql="select count(*) as total from `Store Dimension` S $where $wheref";
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -3894,7 +3922,7 @@ function list_invoices_per_store() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Store Dimension`   $where ";
+		$sql="select count(*) as total from `Store Dimension` S $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3969,8 +3997,8 @@ function list_invoices_per_store() {
 	$total_refunds_paid=0;
 	$total_refunds_to_be_paid=0;
 
-	$sql="select  `Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Refunds` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid from `Store Dimension`  $where     ";
-	//print $sql;
+	$sql="select `Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Acc Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Refunds` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid from `Store Dimension` S left join `Store Data Dimension` D on (S.`Store Key`=D.`Store Key`) $where";
+
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total_invoices=$row['invoices'];
@@ -3979,15 +4007,9 @@ function list_invoices_per_store() {
 		$total_refunds=$row['refunds'];
 		$total_refunds_paid=$row['refunds_paid'];
 		$total_refunds_to_be_paid=$row['refunds_to_be_paid'];
-
-
 	}
 
-
-
-
-
-	$sql="select `Store Name`,`Store Code`,`Store Key`,`Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Refunds` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid  from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Store Name`,`Store Code`,S.`Store Key`,`Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Acc Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Refunds` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid from `Store Dimension` S left join `Store Data Dimension` D on (S.`Store Key`=D.`Store Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 
@@ -4182,15 +4204,12 @@ function list_delivery_notes_per_store() {
 	$_SESSION['state']['stores']['delivery_notes']['f_field']=$f_field;
 	$_SESSION['state']['stores']['delivery_notes']['f_value']=$f_value;
 
-	// print_r($_SESSION['tables']['families_list']);
 
-	//  print_r($_SESSION['tables']['families_list']);
-	//  $where="where true  ";
 
 	if (count($user->stores)==0)
 		$where="where false";
 	else {
-		$where=sprintf("where `Store Key` in (%s)",join(',',$user->stores));
+		$where=sprintf("where S.`Store Key` in (%s)",join(',',$user->stores));
 	}
 
 
@@ -4204,7 +4223,7 @@ function list_delivery_notes_per_store() {
 
 
 
-	$sql="select count(*) as total from `Store Dimension`   $where $wheref";
+	$sql="select count(*) as total from `Store Dimension` S $where $wheref";
 	//print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4216,7 +4235,7 @@ function list_delivery_notes_per_store() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Store Dimension`   $where ";
+		$sql="select count(*) as total from `Store Dimension` S $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4284,7 +4303,7 @@ function list_delivery_notes_per_store() {
 	$total_dn_samples=0;
 
 
-	$sql="select `Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send, `Store Returned Delivery Notes`as dn_returned from `Store Dimension`  $where     ";
+	$sql="select `Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Acc Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send, `Store Returned Delivery Notes`as dn_returned from `Store Dimension` S left join `Store Data Dimension` D on (S.`Store Key`=D.`Store Key`) $where";
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total_dn=$row['dn'];
@@ -4306,7 +4325,7 @@ function list_delivery_notes_per_store() {
 
 
 
-	$sql="select `Store Name`,`Store Code`,`Store Key`,`Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send,`Store Returned Delivery Notes`as dn_returned from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Store Name`,`Store Code`,S.`Store Key`,`Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Acc Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send,`Store Returned Delivery Notes`as dn_returned from `Store Dimension` S left join `Store Data Dimension` D on (S.`Store Key`=D.`Store Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	//print $sql;
 	$res = mysql_query($sql);
 
@@ -6167,9 +6186,9 @@ function list_department_sales_report() {
 
 
 
-	
-	
-		$total_records=0;
+
+
+	$total_records=0;
 	$total=0;
 	$filtered=0;
 	$sql="select count(distinct OTF.`Product Department Key`)  as total  from `Order Transaction Fact` OTF  $where    ";
@@ -6243,7 +6262,7 @@ function list_department_sales_report() {
 
 	$sql="select OTF.`Store Key`,`Store Code`,OTF.`Product Department Key`,`Product Department Code`,`Invoice Currency Code`,P.`Product Department Name`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Department Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product Department Key`=P.`Product Department Key`) left join `Store Dimension` S on (OTF.`Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product Department Key` order by $order $order_direction limit $start_from,$number_results    ";
 
-	
+
 	$adata=array();
 
 	$res = mysql_query($sql);

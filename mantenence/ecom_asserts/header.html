@@ -1,0 +1,47 @@
+<html>
+<head>
+<style>
+#hd{ background-color:#fc8d1a;
+background-repeat:no-repeat; background-image:url('../art/headers/orange.jpg');
+height:100px;color:#fff;
+font-family: 'Ubuntu',Helvetica,Arial,sans-serif;
+}
+#found_in{position:relative;top:10px;padding-left:5px;}
+#hd #found_in a{color:#FFF}
+
+#header_title{position:relative;top:10px;padding-left:20px;font-size: 32px;line-height: 95%;}
+#hd .left_column {float:left;margin-left:20px;height:100px}
+#hd .left_column img{height:100%}
+#hd .central_column{float:left;width:550px}
+#hd .right_column{float:right;width:250px}
+#hd .right_column div {float:right;margin-right:10px;color:#FFF}
+#search {float:right;margin-right:20px;margin-top:10px;color:#FFF}
+.telephones{font-size:14px;text-align: right;margin-left:5px}
+</style> 
+</head>
+<body>
+<div id="hd">
+	<div class="left_column" >
+		<a href="index.php"><img src="art/headers/logo_white.png" title="{t}Homepage{/t}" /></a> 
+	</div>
+	<div class="central_column" >
+	<div id="found_in">
+			{$_page.found_in} 
+		</div>
+		<h1 id="header_title">
+			{$_page.title} 
+		</h1>
+	</div>
+	<div class="right_column" >
+		{if $_site.telephone!=''}
+		<div>
+			{t}Call us{/t}: <div class="telephones">{$_site.telephone}</div>
+		</div>
+		{/if}
+		<div id="search">
+			{$_page.search} 
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -2342,7 +2342,7 @@ function search_site($data) {
 		$candidates[$row['Page Key']]=$factor;
 	}
 
-	//`Page Store Title`,`Page Store Resume`,`Page Store Source`)
+	//`Page Store Title`,`Page Store Description`,`Page Store Source`)
 
 
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
@@ -2356,7 +2356,7 @@ function search_site($data) {
 		$candidates[$row['Page Key']]=$row['score']*3;
 	}
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Resume`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Resume`) AGAINST ("%s")  ',
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Description`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Description`) AGAINST ("%s")  ',
 
 		addslashes($q),
 		addslashes($data['site_id']),
@@ -2406,7 +2406,7 @@ function search_site($data) {
 	$page_keys=preg_replace('/^,/','',$page_keys);
 
 
-	$sql=sprintf("select `Site Code`,`Page Code`, PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=PS.`Page Site Key`)    where PS.`Page Key` in (%s) ",
+	$sql=sprintf("select `Site Code`,`Page Code`, PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Description` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=PS.`Page Site Key`)    where PS.`Page Key` in (%s) ",
 		$page_keys);
 
 	$res=mysql_query($sql);
@@ -2415,7 +2415,7 @@ function search_site($data) {
 		//if ($row['Product Main Image']!='art/nopic.png')
 		//     $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Product Main Image']));
 
-		$results[$row['Page Key']]=array('site_code'=>$row['Site Code'],'image'=>$image,'code'=>$row['Page Code'],'name'=>$row['Page Short Title'],'description'=>$row['Page Store Resume'],'link'=>'page.php?id=','key'=>$row['Page Key']);
+		$results[$row['Page Key']]=array('site_code'=>$row['Site Code'],'image'=>$image,'code'=>$row['Page Code'],'name'=>$row['Page Short Title'],'description'=>$row['Page Store Description'],'link'=>'page.php?id=','key'=>$row['Page Key']);
 	}
 
 	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'page.php?id=','q'=>$q);

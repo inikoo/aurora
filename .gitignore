@@ -8,3 +8,4 @@ gearman/conf/*
 gearman/downloads_AW/*
 downloads/*
 !downloads/.htaccess
+server_files/tmp/*

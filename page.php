@@ -58,8 +58,7 @@ if (!$page->id) {
 }
 
 
-$_SESSION['state']['page']['id']=$page->id;
-
+$page->load_data();
 $site=new Site($page->data['Page Site Key']);
 $smarty->assign('site',$site);
 $store=new Store($site->data['Site Store Key']);

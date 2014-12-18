@@ -771,7 +771,7 @@ class Order extends DB_Table {
 			$this->data ['Order Current Dispatch State'] = $state;
 
 			$this->data ['Order Current XHTML Dispatch State'] = _('Cancelled');
-			$this->data ['Order Current XHTML Payment State'] = _ ( 'Order cancelled' );
+			$this->data ['Order Current XHTML Payment State'] = _( 'Order cancelled' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
 			$this->data ['Order Invoiced Balance Total Amount'] = 0;
@@ -934,6 +934,11 @@ class Order extends DB_Table {
 			$this->id );
 		mysql_query( $sql );
 
+
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d ",$this->id);
+		mysql_query($sql);
+		
+		
 
 		$this->update_number_items();
 		$this->update_number_products();
@@ -1157,8 +1162,8 @@ class Order extends DB_Table {
 		$invoice=new Invoice ('create',$data_invoice);
 
 
-        // to do maybe this is not needed (this is here because in ar_edit_order the payment stuff is done)
-        $this->update_no_normal_totals();
+		// to do maybe this is not needed (this is here because in ar_edit_order the payment stuff is done)
+		$this->update_no_normal_totals();
 
 
 
@@ -1753,7 +1758,7 @@ class Order extends DB_Table {
 		}
 
 	}
-	
+
 
 	function set_display_currency($currency_code,$exchange) {
 		$this->currency_code=$currency_code;
@@ -2353,7 +2358,8 @@ class Order extends DB_Table {
 
 		sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
-		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=%d" ,
+		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where
+		`Order Key`=%d" ,
 			$this->id);
 
 		$result = mysql_query( $sql );
@@ -2513,7 +2519,8 @@ class Order extends DB_Table {
 		$gross=0;
 		$out_of_stock_amount=0;
 		$discounts=0;
-		$sql = sprintf("select IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
+		$sql = sprintf("select IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`
+		from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 		where OTF.`Order Key`=%d",$this->id);
 
 		//print $sql;
@@ -3211,7 +3218,7 @@ class Order extends DB_Table {
 
 
 	function update_totals_from_order_transactions() {
-		if ($this->ghost_order or !$this->data ['Order Key'])
+		if ($this->ghost_order or !$this->id)
 			return;
 
 		$this->data['Order Shipping Net Amount']=0;
@@ -5856,7 +5863,7 @@ class Order extends DB_Table {
 
 
 
-	
+
 
 	}
 

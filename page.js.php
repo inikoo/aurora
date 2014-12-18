@@ -33,10 +33,10 @@ function recapture_preview() {
 
 
    request='ar_edit_sites.php?tipo=update_preview_snapshot&parent=Page&parent_key=' + Dom.get('page_key').value
-
+//alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-        //    alert(o.responseText)
+           alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             Dom.setStyle('recapture_preview_processing', 'display', 'none')
             Dom.setStyle('recapture_preview', 'display', '')

@@ -27,7 +27,8 @@
 		<li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"><span> {t}Images{/t}</span></span></li>
 		<li> <span class="item {if $edit=='departments'}selected{/if}" id="departments"><span> {t}Departments{/t}</span></span></li>
 		<li> <span class="item {if $edit=='website'}selected{/if} " id="website"><span>{t}Web Sites{/t}</span></span></li>
-		<li> <span class="item {if $edit=='communications'}selected{/if}" id="communications"> <span> {t}Customer Contact{/t}</span></span></li>
+		<li> <span class="item {if $edit=='communications'}selected{/if}" id="communications"> <span> {t}Emails{/t}</span></span></li>
+		<li> <span class="item {if $edit=='payments'}selected{/if}" id="payments"> <span> {t}Payments{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
 		<div id="info_name" style="margin-left:20px;float:left;width:260px;display:none">
@@ -367,6 +368,19 @@
 				{t}Store Emails Accounts{/t} 
 			</h2>
 			{*} {include file='email_credential_splinter.tpl' site=$store email_credentials=$email_credentials} {*} 
+		</div>
+		<div class="edit_block" style="min-height:200px;{if $edit!='payments'}display:none{/if}" id="d_payments">
+			<div class="data_table" style="clear:both;">
+				<span class="clean_table_title" style="margin-right:5px">{t}Payment Accunts{/t}</span> 
+				<div class="buttons small left">
+					<button id="new_site" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+				</div>
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
+				<div id="table6" style="font-size:90%" class="data_table_container dtable btable">
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="buttons small">

@@ -1,0 +1,27 @@
+#bd{
+background:#F6F6E8;border:0px;color:#333;border-bottom:none,
+min-height:390px;height:auto !important;height:390px;padding:0px 0px;margin-top:5px
+}
+
+.wraptocenter {
+
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 300px;
+    height: 300px;
+    margin-bottom:10px;
+    padding-top:0px
+}
+.wraptocenter img {
+     vertical-align: bottom;max-width:270px;max-height:270px;
+}
+
+
+
+.product{min-height:400px;}
+
+.product .information{float:left;width:465px;margin-left:20px;xborder:1px solid red}
+.highlight_box{border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9}
+.price{display:block;clear:both;color:red;font-size:30px;margin:10px 0;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
+.code{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}

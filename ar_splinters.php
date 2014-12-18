@@ -112,7 +112,7 @@ function invoice_categories_sales_overview() {
 
 
 
-	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($period);
 	$from=($from?substr($from,0,-9):'');
 	$to=($from?substr($to,0,-9):'');
 
@@ -260,7 +260,7 @@ function store_sales_overview() {
                         " );
 
 
-	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($period);
 
 	$from=($from?substr($from,0,-9):'');
 	$to=($from?substr($to,0,-9):'');
@@ -413,7 +413,7 @@ function sales_representative_sales_overview() {
 
 
 
-	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($period);
 	$from=($from?substr($from,0,-9):'');
 	$to=($from?substr($to,0,-9):'');
 
@@ -598,7 +598,7 @@ function list_families() {
 	// $sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 
 
-	$sql="select  *  from `Product Family Dimension` P  left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) left join `Product Family Default Currency` DCP on (P.`Product Family Key`=DCP.`Product Family Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select * from `Product Family Dimension` P   left join `Product Family Data Dimension` PFDD on (P.`Product Family Key`=PFDD.`Product Family Key`) left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) left join `Product Family Default Currency` DCP on (P.`Product Family Key`=DCP.`Product Family Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 	//print $sql;
 	$position=1;
@@ -1149,7 +1149,7 @@ function list_products() {
 		$sql_names.=" ,`Product $db_interval Acc 1YB Invoiced Amount`  ";
 	}
 
-	$sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) left join `Product Data Dimension` PDD on (P.`Product ID`=PDD.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 	$position=1;
 
@@ -1315,7 +1315,7 @@ function list_customers() {
 	$total=$number_results;
 
 
-	list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+	list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($period);
 
 
 	$where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s) %s %s",

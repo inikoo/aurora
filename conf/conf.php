@@ -3445,7 +3445,7 @@ $default_state=array(
 			'nr'=>25,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>''
+			'elements'=>array('Changes'=>1)
 		),
 
 		'users'=>array(

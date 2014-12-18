@@ -375,7 +375,7 @@ function list_pages() {
 
 	$where='where true ';
 
-	$table='`Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=`Page Site Key`) ';
+	$table='`Page Store Dimension` PS left join `Page Store Data Dimension` PSD on (PS.`Page Key`=PSD.`Page Key`) left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=`Page Site Key`) ';
 
 	switch ($parent) {
 	case('store'):
@@ -499,7 +499,7 @@ function list_pages() {
 
 
 	$sql="select count(*) as total from $table $where $wheref";
-	//print $sql;
+	
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -582,6 +582,10 @@ function list_pages() {
 		$order='`Page Store Number Sold Out Products`';
 	elseif ($order=='percentage_products_out_of_stock')
 		$order='percentage_out_of_stock ';
+elseif ($order=='type')
+		$order='`Page Store Section`';
+
+
 
 	elseif ($order=='flag')
 		$order='`Site Flag`';
@@ -617,6 +621,10 @@ function list_pages() {
 		case 'Family Catalogue':
 			$type=sprintf("f(<a href='family.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
 			break;
+		case 'Product Description':
+			$type=sprintf("f(<a href='product.php?pid=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
+			break;
+		
 		case 'Welcome':
 			$type=_('Welcome');
 			break;
@@ -650,6 +658,15 @@ function list_pages() {
 		case 'Basket':
 			$type=_('Basket');
 			break;
+		case 'Thanks':
+			$type=_('Thanks');
+			break;
+		case 'Payment Limbo':
+			$type=_('Payment Limbo');
+			break;	
+		case 'Search':
+			$type=_('Search');
+			break;	
 		default:
 			$type=_('Other').' '.$row['Page Store Section'];
 			break;

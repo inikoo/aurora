@@ -1905,7 +1905,7 @@ function page_list() {
 	if ($order=='title')
 		$order='`Page Title`';
 	else
-		$order='`Page Section`';
+		$order='`Page Code`';
 
 
 	$adata=array();
@@ -1936,7 +1936,6 @@ function page_list() {
 
 		$adata[]=array(
 			'key'=>$row['Page Key'],
-			'section'=>$row['Page Section'],
 			'code'=>$row['Page Code'],
 			'store_title'=>$row['Page Store Title'],
 			'type'=>$type

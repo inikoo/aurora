@@ -1,0 +1,66 @@
+<html>
+<head>
+<style>
+#footer{background:#000;margin-top:10px;color:#F6F6E8;}
+#footer a{text-decoration: none;}
+#footer .adv{color:#ff5113}
+#footer{ font-size:85%;;margin-top:5px;margin-bottom:100px;margin:0px;margin-bottom:30px;margin-top:10px;border-radius: 10px;padding:20px}
+#footer a{color:#fff}
+#footer .accepted_payments{float:left;margin-left:100px}
+#footer .accepted_payments img.card_merchant{width:100px;margin-left:65px;margin-top:0px;position:relative;top:-10px}
+#footer .accepted_payments img.card{height:20px;margin-left:2px;margin-top:0px}
+#footer .accepted_payments img.card.first{margin-left:12px;}
+#footer .accepted_payments img.paypal{height:20px;margin-top:5px;margin-left:80px;}
+#footer .inikoo_placement {clear:both;margin:auto;text-align:center;margin-top:10px;padding-top:25px;color:#ccc;font-size:110%}
+#footer .inikoo_placement  a{color:#ccc;}
+#footer .site_details{float:left;width:200px}
+#footer .site_map{float:left;margin-left:100px;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
+#footer .social_media{float:right;}
+</style> 
+</head>
+<body>
+<div id="footer">
+	<div class="site_details">
+		<h2 style="margin-top:0px">
+			{$_site.company_name}
+		</h2>
+		<p>
+			{if $_site.company_number!=''}{t}Company Number{/t}: {$_site.company_number}</br>{/if}
+			{if $_site.company_tax_number!=''}{t}Tax Number{/t}: {$_site.company_tax_number}{/if}
+		</p>
+		<p>
+			{if $_site.telephone!=''}{t}Telephone{/t}: {$_site.telephone}</br>{/if}
+			{if $_site.email!=''}{t}Email{/t}: <a style="color:white" href="mailto:{$_site.email}">{$_site.email}</a></br>{/if}
+		</p>
+		{if $_site.address!=''}<p>{$_site.address}</p>{/if}
+	</div>
+	<div class="site_map">
+		<h3>
+			<a href="contact.php">{t}Contact{/t}</a><br />
+			<br />
+			<a href="about.php">{t}About{/t}</a><br />
+			<br />
+			<a href="terms_and_conditions.php">{t}Terms & Condition{/t}s</a><br />
+		</h3>
+	</div>
+	<div class="accepted_payments" >
+		<img class="card_merchant worldpay" src="art/payments/worldpay.png"><br> 
+		<img class="card first" src="art/payments/VISA.gif" title="Visa"> 
+		<img class="card" src="art/payments/visa_debit.gif" title="Visa Debit"> 
+		<img class="card" src="art/payments/visa_electron.gif" title="Visa Electron"> 
+		<img class="card" src="art/payments/mastercard.gif" title="Mastercard"> 
+		<img class="card" src="art/payments/maestro.gif" title="Maestro"> 
+		<img class="card" src="art/payments/JCB.gif" title="JCB"> <br> 
+		<img class="paypal"  src="art/payments/logo-paypal.jpg" title="PayPal"> 
+	</div>
+	<div class="social_media">
+		<a href="#"><img src="art/social_media/facebook.png" title="Facebook"></a> <a href="#"><img src="art/social_media/google+.png" title="Google+"></a> <a href="#"><img src="art/social_media/linkedin.png" title="Linkedin"></a> <a href="#"><img src="art/social_media/twitter.png" title="Twitter"></a> {*}<a href="#"><img src="art/social_media/blogger.png" title="Blogger"></a>{*} <br />
+	</div>
+	<div class="inikoo_placement">
+		
+			<a href="http://www.inikoo.com">{t}Powered by Inikoo{/t} <img src="art/inikoo_logo_mini.png" style="position:relative;bottom:-1px"></a>
+		
+	</div>
+</div>
+</body>
+</html>

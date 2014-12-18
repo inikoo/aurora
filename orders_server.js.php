@@ -61,8 +61,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"dispatched",label:"<?php echo _('Dispatched')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
 					 ];
-
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=orders_per_store&tableid="+tableid);
+		request="ar_assets.php?tipo=orders_per_store&tableid="+tableid
+		
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		//alert("ar_assets.php?tipo=orders_per_store&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

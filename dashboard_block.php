@@ -213,6 +213,8 @@ case 'top_products':
 case 'sales_overview':
 	$js_files[]='js/splinter_sales.js';
 	$template='splinter_sales.tpl';
+	
+	
 
 	switch ($_SESSION['state']['home']['splinters']['sales']['period']) {
 	case 'ytd':
@@ -375,6 +377,11 @@ default:
 	exit;
 	break;
 }
+
+$smarty->assign('corporate_currency',$corporate_currency);
+$smarty->assign('corporate_currency_symbol',$corporate_currency_symbol);
+
+
 $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

@@ -249,16 +249,20 @@ case('set_footer'):
 	break;
 
 
-case('delete_page_header'):
+case('delete_header'):
 	$data=prepare_values($_REQUEST,array(
-			'id'=>array('type'=>'key'),
+			'subject_key'=>array('type'=>'key'),
+			'table_id'=>array('type'=>'numeric','optional'=>true),
+			'recordIndex'=>array('type'=>'numeric','optional'=>true),
 
 		));
 	delete_page_header($data);
 	break;
-case('delete_page_footer'):
+case('delete_footer'):
 	$data=prepare_values($_REQUEST,array(
-			'id'=>array('type'=>'key'),
+			'subject_key'=>array('type'=>'key'),
+			'table_id'=>array('type'=>'numeric','optional'=>true),
+			'recordIndex'=>array('type'=>'numeric','optional'=>true),
 
 		));
 	delete_page_footer($data);
@@ -1035,7 +1039,7 @@ function list_pages_for_edition() {
 	if ($order=='code')
 		$order='`Page Code`';
 	else
-		$order='`Page Section`';
+		$order='`Page Code`';
 
 
 	$adata=array();
@@ -1055,14 +1059,13 @@ function list_pages_for_edition() {
 
 		$adata[]=array(
 			'id'=>$row['Page Key'],
-			'section'=>$row['Page Section'],
 			'code'=>$row['Page Code'],
 			'site'=>sprintf('<a href="site.php?id=%d">%s</a>',$row['Page Site Key'],$row['Site Code']),
 			'store_title'=>$row['Page Store Title'],
 			'link_title'=>$row['Page Short Title'],
 			'url'=>$row['Page URL'],
 			'page_title'=>$row['Page Title'],
-			'page_description'=>$row['Page Store Resume'],
+			'page_description'=>$row['Page Store Description'],
 
 
 			'go'=>sprintf("<a href='edit_page.php?id=%d&referral=%s&referral_key=%s&content_view=overview'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'],$parent,$parent_key),
@@ -1818,10 +1821,17 @@ function edit_site_field($site_key,$key,$value_data) {
 
 
 function delete_page_header($data) {
-	$page_header=new PageHeader($data['id']);
+	$page_header=new PageHeader($data['subject_key']);
 	$page_header->delete();
 	if ($page_header->deleted) {
 		$response= array('state'=>200,'action'=>'deleted');
+		if (array_key_exists('table_id', $data)) {
+			$response['table_id']=$data['table_id'];
+		}
+		if (array_key_exists('recordIndex', $data)) {
+			$response['recordIndex']=$data['recordIndex'];
+
+		}
 
 	} else {
 		$response= array('state'=>400,'msg'=>$page_header->msg);
@@ -1831,10 +1841,18 @@ function delete_page_header($data) {
 }
 
 function delete_page_footer($data) {
-	$page_footer=new Pagefooter($data['id']);
+	$page_footer=new Pagefooter($data['subject_key']);
 	$page_footer->delete();
 	if ($page_footer->deleted) {
 		$response= array('state'=>200,'action'=>'deleted');
+		if (array_key_exists('table_id', $data)) {
+			$response['table_id']=$data['table_id'];
+		}
+		if (array_key_exists('recordIndex', $data)) {
+			$response['recordIndex']=$data['recordIndex'];
+
+		}
+
 
 	} else {
 		$response= array('state'=>400,'msg'=>$page_footer->msg);
@@ -2052,7 +2070,7 @@ function list_headers_for_edition() {
 			'id'=>$row['Page Header Key'],
 			'name'=>$row['Page Header Name'],
 			'pages'=>number($row['Number Pages']),
-			'image'=>'<img alt="preview" style="width:300px" src="image.php?id='.$row['Page Header Preview Image Key'].'"/>',
+			'image'=>'<img alt="preview" style="width:300px" src="public_image.php?id='.$row['Page Header Preview Image Key'].'"/>',
 			'default'=>$default,
 			'selected'=>$selected,
 			'go'=>sprintf("<a href='edit_page_splinter.php?type=header&id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
@@ -2348,8 +2366,12 @@ function set_default_header($data) {
 
 	$site->set_default_header($data['header_key']);
 	if ($site->updated) {
-
-		$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=headers&parent_key=".$site->id."&sk=x");
+		if ($site->data['Site SSL']=='Yes') {
+			$site_protocol='https';
+		}else {
+			$site_protocol='http';
+		}
+		$template_response=@file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=headers&parent_key=".$site->id."&sk=x");
 
 		$response= array('state'=>200,'action'=>'updated');
 	} else
@@ -2385,8 +2407,14 @@ function set_default_footer($data) {
 	}
 
 	$site->set_default_footer($data['footer_key']);
+
 	if ($site->updated) {
-		$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=footers&parent_key=".$site->id."&sk=x");
+		if ($site->data['Site SSL']=='Yes') {
+			$site_protocol='https';
+		}else {
+			$site_protocol='http';
+		}
+		$template_response=@file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=footers&parent_key=".$site->id."&sk=x");
 
 		$response= array('state'=>200,'action'=>'updated');
 	} else
@@ -3074,6 +3102,7 @@ function update_preview_snapshot($data) {
 		break;
 	case 'Footer':
 		$scope=new PageFooter($data['parent_key']);
+
 		break;
 
 	}
@@ -3440,7 +3469,7 @@ function add_row($data) {
 
 function split_row($data) {
 	//print_r($data);
-	global $editor;
+	global $editor,$account_code;
 	$page=new Page($data['page_key']);
 	$page->editor=$editor;
 	$template_id=$data['template_id'];
@@ -3488,8 +3517,100 @@ function split_row($data) {
 }
 
 
+function get_head_styles($dom,$html) {
+
+	$style=array();
+
+
+	if (preg_match_all('/<style\s?.*>(.+)<\/style>/siU',$html,$matches)) {
+
+		// print_r($matches);
+		// exit;
+
+		$_style=preg_replace('/^\s*\<\!\-\-/','',$matches[1][0]);
+		$_style=preg_replace('/\-\-\>\s*$/','',$_style);
+		$style[]= $_style;
+
+
+
+	}
+
+
+	return $style;
+}
+function get_head_scripts($dom,$html) {
+	$script=array();
+	$heads = $dom->getElementsByTagName('head');
+
+	if (!$heads->length) {
+		return $script;
+	}
+
+	$a=getArray($heads->item(0));
+
+	//print_r($a);
+	if (isset($a['script'])) {
+		foreach ($a['script'] as $script_data) {
+			if (isset($script_data['#cdata-section'])) {
+				$_script=$script_data['#cdata-section'];
+				$script[]= $_script;
+			}
+		}
+	}
+	return $script;
+}
+
+
+
+function getArray($node) {
+	$array = false;
+
+	if ($node->hasAttributes()) {
+		foreach ($node->attributes as $attr) {
+			$array[$attr->nodeName] = $attr->nodeValue;
+		}
+	}
+
+	if ($node->hasChildNodes()) {
+		if ($node->childNodes->length == 1) {
+			$array[$node->firstChild->nodeName] = $node->firstChild->nodeValue;
+		} else {
+			foreach ($node->childNodes as $childNode) {
+				if ($childNode->nodeType != XML_TEXT_NODE) {
+					$array[$childNode->nodeName][] = getArray($childNode);
+				}
+			}
+		}
+	}
+
+	return $array;
+}
+
+function get_footer($html) {
+	$html=preg_replace("/^.*\<\/head\>/msU",'',$html);
+	$html=preg_replace("/<\/html\>.*$/msU",'',$html);
+
+	$html=preg_replace("/^.*\<body.*\>/msU",'',$html);
+	$html=preg_replace("/<\/body>\s*$/",'',$html);
+
+
+	//print $html;
+	//$a=getArray($div);
+	return $html;
+}
+
+function get_header($html) {
+	$html=preg_replace("/^.*\<\/head\>/msU",'',$html);
+	$html=preg_replace("/<\/html\>.*$/msU",'',$html);
+
+	$html=preg_replace("/^.*\<body.*\>/msU",'',$html);
+	$html=preg_replace("/<\/body>\s*$/",'',$html);
+	return $html;
+}
+
+
 function create_site($data) {
-	global $editor;
+	global $editor,$account_code;
 
 	if (array_key_exists('Site Name',$data['values'])
 		and  array_key_exists('Site Code',$data['values'])
@@ -3502,199 +3623,352 @@ function create_site($data) {
 		$store->editor=$editor;
 		$site=$store->create_site($data['values']);
 
-		$pages_data=array(
-			array(
-				'Page Code'=>'home'
-				,'Page Section'=>'home'
-				,'Page Store Section'=>'Front Page Store'
-				,'Page URL'=>'index.php'
-				,'Page Description'=>_('Homepage')
-				,'Page Title'=>_('Homepage')
-				,'Page Short Title'=>_('Home')
-				,'Page Store Title'=>$site->data['Site Name']
-				,'Page Store Subtitle'=>$site->data['Site Name']
-				,'Page Store Slogan'=>$site->data['Site Slogan']
-				,'Page Store Resume'=>''
-
-			),
-			array(
-				'Page Store Section'=>'Registration',
-				'Page Store Title'=>_('Registration'),
-				'Page Short Title'=>_('Registration'),
-				'Page Code'=>'registration',
-				'Page URL'=>'registration.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'registration',
-				'Number See Also Links'=>0
 
 
 
-			),
-			array(
-				'Page Store Section'=>'Login',
-				'Page Store Title'=>_('Log in'),
-				'Page Short Title'=>_('Log in'),
-				'Page Code'=>'login',
-				'Page URL'=>'login.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'login',
-				'Number See Also Links'=>0),
-			array(
-				'Page Store Section'=>'Basket',
-				'Page Store Title'=>_('Basket'),
-				'Page Short Title'=>_('Basket'),
-				'Page Code'=>'basket',
-				'Page URL'=>'basket.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'basket',
-				'Number See Also Links'=>0,
 
 
-			),
-			array(
-				'Page Store Section'=>'Checkout',
-				'Page Store Title'=>_('Checkout'),
-				'Page Short Title'=>_('Checkout'),
-				'Page Code'=>'checkout',
-				'Page URL'=>'checkout.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'checkout',
-				'Number See Also Links'=>0,
+
+		if ($site->new) {
 
 
-			),
-			array(
-				'Page Store Section'=>'Thanks',
-				'Page Store Title'=>_('Thanks'),
-				'Page Short Title'=>_('Thanks for your order'),
-				'Page Code'=>'thanks',
-				'Page URL'=>'thanks.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'thanks',
-				'Number See Also Links'=>0,
-			),
-			array(
-				'Page Store Section'=>'Payment Limbo',
-				'Page Store Title'=>_('Waiting for payment confirmation'),
-				'Page Short Title'=>_('Waiting for payment confirmation'),
-				'Page Code'=>'waiting',
-				'Page URL'=>'waiting_payment_confirmation.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'waiting_payment_confirmation',
-				'Number See Also Links'=>0,),
-			
-			array(
-				'Page Store Section'=>'Reset',
-				'Page Store Title'=>_('Reset Password'),
-				'Page Short Title'=>_('Reset Password'),
-				'Page Code'=>'reset',
-				'Page URL'=>'reset.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'reset',
-				'Number See Also Links'=>0,
-			),
-						array(
-				'Page Store Section'=>'Search',
-				'Page Store Title'=>_('Search'),
-				'Page Short Title'=>_('Search'),
-				'Page Code'=>'search',
-				'Page URL'=>'search.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'search',
-				'Number See Also Links'=>0,
-			),
-			
-			array(
-				'Page Store Section'=>'Client Section',
-				'Page Store Title'=>_('Profile'),
-				'Page Short Title'=>_('Profile'),
-				'Page Code'=>'profile',
-				'Page URL'=>'profile.php',
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'profile',
-				'Number See Also Links'=>0,
+			$page_header=new PageHeader();
+			$page_header_data=array(
+				'Page Header Name'=>'default',
+				'Site Key'=>$site->id,
+				'Default Site'=>'Yes',
+			);
+			$page_header->create($page_header_data);
 
-			),
-			array(
-			'Page Store Section Type'=>'Info',
-				'Page Store Section'=>'Information',
-				'Page Store Title'=>_('Terms and Conditions'),
-				'Page Short Title'=>_('Terms and Conditions'),
-				'Page Code'=>'t_and_c',
-				'Page URL'=>'terms_and_conditions',
-				'Page Store Content Display Type'=>'Source',
-				'Page Store Content Template Filename'=>'',
-				'Number See Also Links'=>0,
-			),
-			array(
-			
-			'Page Store Section'=>'Welcome',
-				'Page Store Title'=>_('Welcome'),
-				'Page Short Title'=>_('Welcome'),
-				'Page Code'=>'welcome',
-			    'Page URL'=>'welcome.php',
 
-				'Page Store Content Display Type'=>'Source',
-				'Page Store Content Template Filename'=>'',
-				'Number See Also Links'=>0,
-			),
-			array(
-			
-			
-	//Page Store Section Type: 'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'		
-	// page store section:'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo'
-	'Page Store Section Type'=>'System',
-	'Page Store Section'=>'Department Description',
-				'Page Store Title'=>_('Department'),
-				'Page Short Title'=>_('Department'),
-				'Page Code'=>'department',
-			    'Page URL'=>'department.php',
 
+			$html=file_get_contents('mantenence/ecom_asserts/header.html');
+			$dom = new domDocument;
+
+			@$dom->loadHTML($html);
+
+			$dom->preserveWhiteSpace = false;
+
+			$styles=get_head_styles($dom,$html);
+			$scripts=get_head_scripts($dom,$html);
+
+			$content=get_header($html);
+
+
+			$page_header->update(array('Template'=>$content));
+
+
+
+			foreach ($styles as $_key=>$style) {
+
+				$name='style_header'.$site->id.'_'.$_key;
+				$sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'CSS',%s) ",
+					prepare_mysql($name),
+					prepare_mysql($style)
+
+				);
+				mysql_query($sql);
+				//print $sql;
+				$external_file_id=mysql_insert_id();
+				$sql=sprintf("insert into `Page Header External File Bridge` values (%d,%d,%s) ",
+					$external_file_id,
+					$page_header->id,
+					prepare_mysql('CSS')
+				);
+				// print $sql;
+				mysql_query($sql);
+			}
+
+
+			foreach ($scripts as $_key=>$script) {
+
+
+				$name='script_header'.$site->id.'_'.$_key;
+				$sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'Javascript',%s) ",
+					prepare_mysql($name),
+					prepare_mysql($script)
+
+				);
+				mysql_query($sql);
+				$external_file_id=mysql_insert_id();
+				$sql=sprintf("insert into `Page Header External File Bridge` values (%d,%d,%s) ",
+					$external_file_id,
+					$page_header->id,
+					prepare_mysql('Javascript')
+				);
+				mysql_query($sql);
+				// exit;
+			}
+			$page_header->update_preview_snapshot();
+			$site->update_field_switcher('Site Default Header Key',$page_header->id,'no history');
+
+
+			$html=file_get_contents('mantenence/ecom_asserts/footer.html');
+
+
+			$dom = new domDocument;
+			@$dom->loadHTML($html);
+			$dom->preserveWhiteSpace = false;
+
+
+
+			$styles=get_head_styles($dom,$html);
+			$scripts=get_head_scripts($dom,$html);
+
+			$content=get_footer($html);
+
+
+
+
+			$page_footer=new PageFooter();
+
+
+
+			$page_footer_data=array(
+				'Page Footer Name'=>'default',
+				'Site Key'=>$site->id,
+				'Default Site'=>'Yes',
+			);
+			$page_footer->create($page_footer_data);
+
+
+			$page_footer->update(array('Template'=>$content));
+
+
+
+			foreach ($styles as $_key=>$style) {
+
+				$name='style_footer'.$site->id.'_'.$_key;
+				$sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'CSS',%s) ",
+					prepare_mysql($name),
+					prepare_mysql($style)
+
+				);
+				mysql_query($sql);
+				$external_file_id=mysql_insert_id();
+				$sql=sprintf("insert into `Page Footer External File Bridge` values (%d,%d,%s) ",
+					$external_file_id,
+					$page_footer->id,
+					prepare_mysql('CSS')
+				);
+				mysql_query($sql);
+			}
+
+
+			foreach ($scripts as $_key=>$script) {
+
+
+				$name='script_footer'.$site->id.'_'.$_key;
+				$sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'Javascript',%s) ",
+					prepare_mysql($name),
+					prepare_mysql($script)
+
+				);
+				mysql_query($sql);
+				$external_file_id=mysql_insert_id();
+				$sql=sprintf("insert into `Page Footer External File Bridge` values (%d,%d,%s) ",
+					$external_file_id,
+					$page_footer->id,
+					prepare_mysql('Javascript')
+				);
+				mysql_query($sql);
+				// exit;
+			}
+			$page_footer->update_preview_snapshot();
+
+
+			$site->update_field_switcher('Site Default Footer Key',$page_footer->id,'no history');
+
+
+			$pages_data=array(
+				array(
+					'Page Code'=>'home',
+					'Page Store Section'=>'Front Page Store',
+					'Page URL'=>'index.php',
+					'Page Description'=>_('Homepage'),
+					'Page Title'=>_('Homepage'),
+					'Page Short Title'=>_('Home'),
+					'Page Store Title'=>$site->data['Site Name'],
+					'Page Store Subtitle'=>$site->data['Site Name'],
+					'Page Store Slogan'=>$site->data['Site Slogan'],
+					'Page Store Description'=>'',
+					'Page State'=>'Online',
+
+				),
+				array(
+					'Page Store Section'=>'Registration',
+					'Page Store Title'=>_('Registration'),
+					'Page Short Title'=>_('Registration'),
+					'Page Code'=>'registration',
+					'Page URL'=>'registration.php',
 					'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'department',
-				'Number See Also Links'=>0,
-			),
-			array(
-				'Page Store Section Type'=>'System',
+					'Page Store Content Template Filename'=>'registration',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
 
-			'Page Store Section'=>'Family Description',
-				'Page Store Title'=>_('Family'),
-				'Page Short Title'=>_('Family'),
-				'Page Code'=>'family',
-			    'Page URL'=>'family.php',
 
+				),
+				array(
+					'Page Store Section'=>'Login',
+					'Page Store Title'=>_('Log in'),
+					'Page Short Title'=>_('Log in'),
+					'Page Code'=>'login',
+					'Page URL'=>'login.php',
 					'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'family',
-				'Number See Also Links'=>0,
-			),
-			array(
-				'Page Store Section Type'=>'System',
+					'Page Store Content Template Filename'=>'login',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
 
-			'Page Store Section'=>'Product Description',
-				'Page Store Title'=>_('Product'),
-				'Page Short Title'=>_('Product'),
-				'Page Code'=>'product',
-			    'Page URL'=>'product.php',
-
+				array(
+					'Page Store Section'=>'Basket',
+					'Page Store Title'=>_('Basket'),
+					'Page Short Title'=>_('Basket'),
+					'Page Code'=>'basket',
+					'Page URL'=>'basket.php',
 					'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'product',
-				'Number See Also Links'=>0,
-			)
-			
+					'Page Store Content Template Filename'=>'basket',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
 
-		);
+				),
+				array(
+					'Page Store Section'=>'Checkout',
+					'Page Store Title'=>_('Checkout'),
+					'Page Short Title'=>_('Checkout'),
+					'Page Code'=>'checkout',
+					'Page URL'=>'checkout.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'checkout',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
 
-		foreach ($pages_data as $page_data) {
-			$site->add_store_page($page_data);
-		}
+
+				),
+				array(
+					'Page Store Section'=>'Thanks',
+					'Page Store Title'=>_('Thanks'),
+					'Page Short Title'=>_('Thanks for your order'),
+					'Page Code'=>'thanks',
+					'Page URL'=>'thanks.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'thanks',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+				array(
+					'Page Store Section'=>'Payment Limbo',
+					'Page Store Title'=>_('Waiting for payment confirmation'),
+					'Page Short Title'=>_('Waiting for payment confirmation'),
+					'Page Code'=>'waiting',
+					'Page URL'=>'waiting_payment_confirmation.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'waiting_payment_confirmation',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+
+				array(
+					'Page Store Section'=>'Reset',
+					'Page Store Title'=>_('Reset Password'),
+					'Page Short Title'=>_('Reset Password'),
+					'Page Code'=>'reset',
+					'Page URL'=>'reset.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'reset',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+				array(
+					'Page Store Section'=>'Search',
+					'Page Store Title'=>_('Search'),
+					'Page Short Title'=>_('Search'),
+					'Page Code'=>'search',
+					'Page URL'=>'search.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'search',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+
+				array(
+					'Page Store Section'=>'Client Section',
+					'Page Store Title'=>_('Profile'),
+					'Page Short Title'=>_('Profile'),
+					'Page Code'=>'profile',
+					'Page URL'=>'profile.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'profile',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+
+				),
+				array(
+					'Page Store Section Type'=>'Info',
+					'Page Store Section'=>'Information',
+					'Page Store Title'=>_('Contact'),
+					'Page Short Title'=>_('Contact'),
+					'Page Code'=>'contact',
+					'Page URL'=>'contact',
+					'Page Store Content Display Type'=>'Source',
+					'Page Store Content Template Filename'=>'',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+				array(
+					'Page Store Section Type'=>'Info',
+					'Page Store Section'=>'Information',
+					'Page Store Title'=>_('About'),
+					'Page Short Title'=>_('About'),
+					'Page Code'=>'about',
+					'Page URL'=>'about',
+					'Page Store Content Display Type'=>'Source',
+					'Page Store Content Template Filename'=>'',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+				array(
+					'Page Store Section Type'=>'Info',
+					'Page Store Section'=>'Information',
+					'Page Store Title'=>_('Terms and Conditions'),
+					'Page Short Title'=>_('Terms and Conditions'),
+					'Page Code'=>'t_and_c',
+					'Page URL'=>'terms_and_conditions',
+					'Page Store Content Display Type'=>'Source',
+					'Page Store Content Template Filename'=>'',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+				array(
+
+					'Page Store Section'=>'Welcome',
+					'Page Store Title'=>_('Welcome'),
+					'Page Short Title'=>_('Welcome'),
+					'Page Code'=>'welcome',
+					'Page URL'=>'welcome.php',
+
+					'Page Store Content Display Type'=>'Source',
+					'Page Store Content Template Filename'=>'',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				)
 
 
-		if (!$site->new) {
 
-			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'found','object_key'=>$site->id);
+			);
+
+			foreach ($pages_data as $page_data) {
+				$site->add_store_page($page_data);
+			}
+
+			include 'splinters/new_fork.php';
+			list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'create_site_assets_pages','site_key'=>$site->id,'editor'=>$editor),$account_code);
+
+
+			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'created','object_key'=>$site->id,'fork_key'=>$fork_key);
 		} else {
 
-			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'created','object_key'=>$site->id);
+			$response=array('state'=>400,'msg'=>$site->msg,'action'=>'found','object_key'=>$site->id,'msg'=>'error try again');
 		}
 
 

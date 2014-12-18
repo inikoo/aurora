@@ -204,7 +204,8 @@ class Site extends DB_Table {
 			$this->new=true;
 
 
-$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
+
+			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
 			foreach ($flags as $flag=>$flag_label) {
 				$sql=sprintf("INSERT INTO `Site Flag Dimension` (`Site Flag Key`, `Site Key`, `Site Flag Color`, `Site Flag Label`, `Site Flag Number Locations`, `Site Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
 					$this->id,
@@ -226,15 +227,30 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 				);
 				mysql_query($sql);
 
-			}else {
-				$sql="insert into `User Right Scope Bridge` values(1,'Website',".$this->id.");";
-				mysql_query($sql);
 			}
-
 
 			$this->create_site_page_sections();
 
 
+			$history_data=array(
+				'History Abstract'=>_('Website created'),
+				'History Details'=>_trim(_('New website')." ".$this->data['Site Name']." "._('added')),
+				'Action'=>'created'
+			);
+			$this->add_subject_history($history_data);
+
+
+			$store=new Store($this->data['Site Store Key']);
+			$store->editor=$this->editor;
+			$history_data=array(
+				'History Abstract'=>_('Website created')." ".$this->data['Site Code'],
+				'History Details'=>_trim(_('New website')." ".$this->data['Site Name']." "._('created')),
+				'Action'=>'deleted'
+			);
+			$store->add_subject_history($history_data);
+
+
+			$this->new=true;
 
 		} else {
 			$this->error=true;
@@ -417,132 +433,9 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 
 
 
-	function add_index_page($data) {
-
-		$store= new Store($this->data['Site Store Key']);
-
-		if (array_key_exists('Showcases',$data))
-			$showcases=$data['Showcases'];
-		else
-			$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$store->data['Store Name']);
-
-		if (array_key_exists('Showcases',$data))
-			$product_layouts=$data['Product Layouts'];
-		else
-			$product_layouts=array('List'=>array('Display'=>true,'Type'=>'Auto'));
-		if (isset($data['Showcases Layout']))
-			$showcases_layout=$data['Showcases Layout'];
-		else
-			$showcases_layout='';
-		$page_data=array(
-			'Page Site Key'=>$this->id,
-			'Page Code'=>'index',
-			'Page Source Template'=>'pages/'.$store->data['Store Code'].'/catalogue',
-			'Page URL'=>'catalogue.php?code='.$store->data['Store Code'],
-			'Page Description'=>'Store Catalogue',
-			'Page Title'=>$store->data['Store Name'],
-			'Page Short Title'=>$store->data['Store Name'],
-			'Page Store Title'=>$store->data['Store Name'],
-			'Page Store Subtitle'=>'',
-			'Page Store Slogan'=>$data['Page Store Slogan'],
-			'Page Store Resume'=>$data['Page Store Resume'],
-			'Page Store Showcases'=>$showcases,
-			'Page Store Showcases Layout'=>$showcases_layout,
-			'Page Store Product Layouts'=>$product_layouts
-		);
-
-		if (array_key_exists('Page Store Header Data',$data)) {
-			$page_data['Page Store Header Data']=$data['Page Store Header Data'];
-		}
-		if (array_key_exists('Page Store Footer Data',$data)) {
-			$page_data['Page Store Footer Data']=$data['Page Store Footer Data'];
-		}
-		if (array_key_exists('Page Store Content Data',$data)) {
-			$page_data['Page Store Content Data']=$data['Page Store Content Data'];
-		}
-		if (array_key_exists('Page Store Layout Data',$data)) {
-			$page_data['Page Store Layout Data']=$data['Page Store Layout Data'];
-		}
-		if (array_key_exists('Page Store Logo Data',$data)) {
-			$page_data['Page Store Logo Data']=$data['Page Store Logo Data'];
-		}
-		$page_data['Page Store Section']='Front Page Store';
-		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
-		$page_data['Page Store Section Key']=$page_section->id;
-		$page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
-		$page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
-		$page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
-		$page_data['Page Type']='Store';
-		$page_data['Page Section']='catalogue';
-		$page_data['Page Store Source Type'] ='Dynamic';
-		$page_data['Page Store Key']=$store->data['Store Key'];
-		$page_data['Page Parent Key']=$store->data['Store Key'];
-
-		$page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
-
-
-		$page=new Page('find',$page_data,'create');
-
-		$sql=sprintf("update `Site Dimension` set `Site Index Page Key`=%d  where `Site Key`=%d",$page->id,$this->id);
-		//  print $sql;
-		mysql_query($sql);
-
-	}
-
-	function add_cataloge_page($data) {
-
-		$store= new Store($this->data['Site Store Key']);
-
-		if (array_key_exists('Showcases',$data))
-			$showcases=$data['Showcases'];
-		else
-			$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$store->data['Store Name']);
-
-		if (array_key_exists('Showcases',$data))
-			$product_layouts=$data['Product Layouts'];
-		else
-			$product_layouts=array('List'=>array('Display'=>true,'Type'=>'Auto'));
-		if (isset($data['Showcases Layout']))
-			$showcases_layout=$data['Showcases Layout'];
-		else
-			$showcases_layout='';
-
-
-		$page_data=array(
-			'Page Site Key'=>$this->id,
-			'Page Code'=>'SD_'.$store->data['Store Code'],
-			'Page Source Template'=>'pages/'.$store->data['Store Code'].'/catalogue',
-			'Page URL'=>'catalogue.php?code='.$store->data['Store Code'],
-			'Page Description'=>'Store Catalogue',
-			'Page Title'=>$store->data['Store Name'],
-			'Page Short Title'=>$store->data['Store Name'],
-			'Page Store Title'=>$store->data['Store Name'],
-			'Page Store Subtitle'=>'',
-			'Page Store Slogan'=>$data['Page Store Slogan'],
-			'Page Store Resume'=>$data['Page Store Resume'],
-			'Page Store Showcases'=>$showcases,
-			'Page Store Showcases Layout'=>$showcases_layout,
-			'Page Store Product Layouts'=>$product_layouts
-		);
-		$page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
-
-		$page_data['Page Store Section']='Store Catalogue';
-		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
-		$page_data['Page Store Section Key']=$page_section->id;
-		$page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
-		$page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
-		$page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
-		$page_data['Page Type']='Store';
-		$page_data['Page Section']='catalogue';
-		$page_data['Page Store Source Type'] ='Dynamic';
-		$page_data['Page Store Key']=$store->data['Store Key'];
-		$page_data['Page Parent Key']=$store->data['Store Key'];
-		//print_r($page_data);
-		$page=new Page('find',$page_data,'create');
 
 
 
-	}
 
 	function add_store_page($raw_page_data) {
 
@@ -557,14 +450,15 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 		$page_data['Page Footer Key']=$this->data['Site Default Footer Key'];
 		$page_data['Page Type']='Store';
 		$page_data['Page Store Slogan']='';
-		$page_data['Page Store Resume']='';
-		$page_data['Page Section']='info';
+		$page_data['Page Store Description']='';
 		$page_data['Page Short Title']=$store->data['Store Code'];
 		$page_data['Page Store Section']='Information';
-		$page_data['Showcases Layout']='Splited';
+
 		$page_data['Number See Also Links']=0;
 		$page_data['Page Code']=$page_code;
 		$page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_code);
+		$page_data['editor']=$this->editor;
+		$page_data['Page Locale']=$this->data['Site Locale'];
 
 
 		foreach ($raw_page_data as $key=>$value) {
@@ -583,8 +477,23 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 		$this->msg=$page->msg;
 		$this->error=$page->error;
 
+		$this->update_product_totals();
+		$this->update_page_totals();
+
+
 	}
 	function add_department_page($department_key,$raw_data) {
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d  and `Page Site Key`=%d ",
+			$department_key,
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			return $row['Page Key'];
+		}
+
+
 
 		$department=new Department($department_key);
 
@@ -598,83 +507,46 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 
 		$index_page=$this->get_page_object('index');
 
-		/*
-		if (!array_key_exists('Showcases',$data)) {
 
-			$showcases=array();
-
-			if ($store_page_data['Display Presentation']='Yes'  ) {
-				$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$department->data['Product Department Name']);
-			}
-			if ($store_page_data['Display Offers']='Yes' ) {
-				$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
-			}
-			if ($store_page_data['Display New Products']='Yes' ) {
-				$showcases['New']=array('Display'=>true,'Type'=>'Auto');
-			}
-		} else
-			$showcases=$data['Showcases'];
-
-
-		if (!array_key_exists('Product Layouts',$data)) {
-
-			$product_layouts=array();
-
-			if ($store_page_data['Product Thumbnails Layout']='Yes' ) {
-				$product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-			}
-
-			if ($store_page_data['List Layout ']='Yes' ) {
-				$product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
-			}
-
-			if ($store_page_data['Product Slideshow Layout']='Yes' ) {
-				$product_layouts['Slideshow']=array('Display'=>true,'Type'=>'Auto');
-			}
-			if ($store_page_data['Product Manual Layout']='Yes' ) {
-				$product_layouts['Manual']=array('Display'=>true,'Type'=>$index_page->data['Product Manual Layout Type'],'Data'=>$index_page->data['Product Manual Layout Data']);
-			}
-
-			if (count($product_layouts==0)) {
-				$product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-			}
-		} else
-			$product_layouts=$data['Product Layouts'];
-
-		if (!array_key_exists('Showcases Layout',$data))
-			$showcases_layout=$store_page_data['Showcases Layout'];
-		else
-			$showcases_layout=$data['Showcases Layout'];
-*/
 		$page_code=$this->get_unique_department_page_code($department);
+
+
+
 		$page_data=array(
 			'Page Code'=>$page_code,
-			'Page Site Key'=>$this->id,
-			'Page Source Template'=>'',
 			'Page URL'=>$this->data['Site URL'].'/'.strtolower($page_code),
-			'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl',
-			'Page Description'=>'Department Showcase Page',
-			'Page Title'=>$department->data['Product Department Name'],
-			'Page Short Title'=>$department->data['Product Department Name'],
-			'Page Store Title'=>$department->data['Product Department Name'],
-			'Page Store Subtitle'=>'',
-			'Page Store Slogan'=>'',
-			'Page Store Abstract'=>'',
-			'Page Store Showcases'=>'',
-			'Page Store Showcases Layout'=>'',
-			'Page Store Product Layouts'=>'',
-			'Number See Also Links'=>$this->data['Site Default Number See Also Links'],
-			'Page Store Creation Date'=>gmdate('Y-m-d H:i:s'),
-			'Page Store Last Update Date'=>gmdate('Y-m-d H:i:s'),
-			'Page Store Last Structural Change Date'=>date('Y-m-d H:i:s'),
-			'Page Section'=>'catalogue',
+			'Page Site Key'=>$this->id,
 			'Page Type'=>'Store',
-			'Page Store Source Type'=>'Dynamic',
 			'Page Store Key'=>$store->id,
 			'Page Parent Key'=>$department->id,
 			'Page Parent Code'=>$department->data['Product Department Code'],
-			'Page Store Section'=>'Department Catalogue'
+			'Page Store Section Type'=>'Department',
+			'Page Store Section'=>'Department Catalogue',
+			'Page Store Last Update Date'=>gmdate('Y-m-d H:i:s'),
+			'Page Store Last Structural Change Date'=>gmdate('Y-m-d H:i:s'),
+            'Page Locale'=>$this->data['Site Locale'],
+			'Page Source Template'=>'',
+			'Page Description'=>$department->data['Product Department Name'],
+			'Page Title'=>$department->data['Product Department Name'],
+			'Page Short Title'=>$department->data['Product Department Name'],
+			'Page Store Title'=>$department->data['Product Department Name'],
+
+
+			'Page Header Key'=>$this->data['Site Default Header Key'],
+			'Page Footer Key'=>$this->data['Site Default Footer Key'],
+			'Page Store Creation Date'=>gmdate('Y-m-d H:i:s'),
+			'Number See Also Links'=>0,
+			'editor'=>$this->editor,
+
 		);
+
+		foreach ($raw_data as $key=>$value) {
+			if (in_array($key,array('Page Code','Page URL','Page Site Key','Page Type','Page Store Key','Page Parent Key','Page Parent Code','Page Store Section Type','Page Store Section','Page Store Last Update Date','Page Store Last Structural Change Date'))) {
+				continue;
+			}
+			$page_data[$key]=$value;
+		}
+
 
 
 
@@ -692,15 +564,26 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 		$this->new_page_key=$page->id;
 		$this->msg=$page->msg;
 		$this->error=$page->error;
-		//print_r($page);
-		//exit;
-		//$sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d  where `Product Department Key`=%d",$page->id,$department->id);
-		//mysql_query($sql);
+
+		$this->update_product_totals();
+		$this->update_page_totals();
+
+		return $page->id;
 
 	}
 
 
 	function add_family_page($family_key,$raw_data) {
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d and `Page Site Key`=%d",
+			$family_key,
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			return $row['Page Key'];
+		}
+
 
 		$family=new Family($family_key);
 		if ($family->data['Product Family Store Key']!=$this->data['Site Store Key']) {
@@ -712,93 +595,47 @@ $flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=
 
 		$store=new Store($family->data['Product Family Store Key']);
 
-		//      print_r($store_page_data);
-		/*
-$index_page=$this->get_page_object('index');
-		if (!array_key_exists('Showcases',$data)) {
-
-			$showcases=array();
-
-			if ($store_page_data['Display Presentation']='Yes'  ) {
-				$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$family->data['Product Family Name']);
-			}
-			if ($store_page_data['Display Offers']='Yes' ) {
-				$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
-			}
-			if ($store_page_data['Display New Products']='Yes' ) {
-				$showcases['New']=array('Display'=>true,'Type'=>'Auto');
-			}
-		} else
-			$showcases=$data['Showcases'];
-
-
-		if (!array_key_exists('Product Layouts',$data)) {
-
-			$product_layouts=array();
-
-			if ($store_page_data['Product Thumbnails Layout']='Yes' ) {
-				$product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-			}
-
-			if ($store_page_data['List Layout ']='Yes' ) {
-				$product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
-			}
-
-			if ($store_page_data['Product Slideshow Layout']='Yes' ) {
-				$product_layouts['Slideshow']=array('Display'=>true,'Type'=>'Auto');
-			}
-			if ($store_page_data['Product Manual Layout']='Yes' ) {
-				$product_layouts['Manual']=array('Display'=>true,'Type'=>$index_page->data['Product Manual Layout Type'],'Data'=>$index_page->data['Product Manual Layout Data']);
-			}
-
-			if (count($product_layouts==0)) {
-				$product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-			}
-		} else
-			$product_layouts=$data['Product Layouts'];
-
-		if (!array_key_exists('Showcases Layout',$data))
-			$showcases_layout=$store_page_data['Showcases Layout'];
-		else
-			$showcases_layout=$data['Showcases Layout'];
-*/
 
 
 		$page_code=$this->get_unique_family_page_code($family);
 
 		$page_data=array(
 			'Page Code'=>$page_code,
-			'Page Source Template'=>'',
-			'Page Site Key'=>$this->id,
 			'Page URL'=>$this->data['Site URL'].'/'.strtolower($page_code),
-			'Page Source Template'=>'pages/'.$store->data['Store Code'].'/family.tpl',
-			'Page Description'=>'Family Showcase Page',
-			'Page Title'=>$family->data['Product Family Name'],
-			'Page Short Title'=>$family->data['Product Family Name'],
-			'Page Store Title'=>$family->data['Product Family Name'],
-			'Page Store Subtitle'=>'',
-			'Page Store Slogan'=>'',
-			'Page Store Abstract'=>'',
-			'Page Store Showcases'=>'',
-			'Page Store Showcases Layout'=>'',
-			'Page Store Product Layouts'=>'',
-			'Page Header Key'=>$this->data['Site Default Header Key'],
-			'Page Footer Key'=>$this->data['Site Default Footer Key'],
-			'Page Store Section'=>'Family Catalogue',
-			'Page Store Creation Date'=>date('Y-m-d H:i:s'),
-			'Page Store Last Update Date'=>date('Y-m-d H:i:s'),
-			'Page Store Last Structural Change Date'=>date('Y-m-d H:i:s'),
-			'Page Section'=>'catalogue',
+			'Page Site Key'=>$this->id,
 			'Page Type'=>'Store',
-			'Page Store Source Type'=>'Dynamic',
 			'Page Store Key'=>$store->id,
 			'Page Parent Key'=>$family->id,
 			'Page Parent Code'=>$family->data['Product Family Code'],
+			'Page Store Section Type'=>'Family',
+			'Page Store Section'=>'Family Catalogue',
+			'Page Store Last Update Date'=>gmdate('Y-m-d H:i:s'),
+			'Page Store Last Structural Change Date'=>gmdate('Y-m-d H:i:s'),
 
+			'Page Store Content Display Type'=>'Source',
+			'Page Store Content Template Filename'=>'',
+			'Page Description'=>$family->data['Product Family Name'],
+			'Page Title'=>$family->data['Product Family Name'],
+			'Page Short Title'=>$family->data['Product Family Name'],
+			'Page Store Title'=>$family->data['Product Family Name'],
+            'Page Locale'=>$this->data['Site Locale'],
+
+			'Page Header Key'=>$this->data['Site Default Header Key'],
+			'Page Footer Key'=>$this->data['Site Default Footer Key'],
+			'Page Store Creation Date'=>gmdate('Y-m-d H:i:s'),
 			'Number See Also Links'=>$this->data['Site Default Number See Also Links'],
+			'editor'=>$this->editor
 		);
 
+		foreach ($raw_data as $key=>$value) {
+			if (in_array($key,array('Page Code','Page URL','Page Site Key','Page Type','Page Store Key','Page Parent Key','Page Parent Code','Page Store Section Type','Page Store Section','Page Store Last Update Date','Page Store Last Structural Change Date'
+					))) {
+				continue;
+			}
 
+			$page_data[$key]=$value;
+
+		}
 
 
 
@@ -820,16 +657,128 @@ $index_page=$this->get_page_object('index');
 			$page->update_see_also();
 		}
 
+
+		$page->update_product_totals();
+
+		$this->update_product_totals();
+		$this->update_page_totals();
 		$this->new_page=$page->new;
 		$this->new_page_key=$page->id;
 		$this->msg=$page->msg;
 		$this->error=$page->error;
 
-		//print_r($page);
-		//exit;
-
+		return $page->id;
 
 	}
+
+	function add_product_page($product_pid,$raw_data) {
+
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Product Description' and `Page Parent Key`=%d and `Page Site Key`=%d",
+			$product_pid,
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			return $row['Page Key'];
+		}
+
+		$product=new Product('pid',$product_pid);
+		if ($product->data['Product Store Key']!=$this->data['Site Store Key']) {
+			$this->error=true;
+			$this->msg='product store and site store dont match';
+			return;
+		}
+
+
+		$store=new Store($product->data['Product Store Key']);
+
+
+
+		$page_code=$this->get_unique_product_page_code($product);
+
+		$page_data=array(
+			'Page Code'=>$page_code,
+			'Page URL'=>$this->data['Site URL'].'/'.strtolower($page_code),
+			'Page Site Key'=>$this->id,
+			'Page Type'=>'Store',
+			'Page Store Key'=>$store->id,
+			'Page Parent Key'=>$product->pid,
+			'Page Parent Code'=>$product->data['Product Family Code'],
+			'Page Store Section Type'=>'Product',
+			'Page Store Section'=>'Product Description',
+			'Page Store Last Update Date'=>gmdate('Y-m-d H:i:s'),
+			'Page Store Last Structural Change Date'=>gmdate('Y-m-d H:i:s'),
+
+			'Page Store Content Display Type'=>'Source',
+			'Page Store Content Template Filename'=>'',
+			'Page Description'=>$product->data['Product Name'],
+			'Page Title'=>$product->data['Product Name'],
+			'Page Short Title'=>$product->data['Product Name'],
+			'Page Store Title'=>$product->data['Product Name'],
+            'Page Locale'=>$this->data['Site Locale'],
+
+			'Page Header Key'=>$this->data['Site Default Header Key'],
+			'Page Footer Key'=>$this->data['Site Default Footer Key'],
+			'Page Store Creation Date'=>gmdate('Y-m-d H:i:s'),
+			'Number See Also Links'=>$this->data['Site Default Number See Also Links'],
+			'Page State'=>'Online',
+			'editor'=>$this->editor
+		);
+
+		foreach ($raw_data as $key=>$value) {
+			if (in_array($key,array('Page Code','Page URL','Page Site Key','Page Type','Page Store Key','Page Parent Key','Page Parent Code','Page Store Section Type','Page Store Section','Page Store Last Update Date','Page Store Last Structural Change Date'
+					))) {
+				continue;
+			}
+
+			$page_data[$key]=$value;
+
+		}
+
+
+
+		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+		$page_data['Page Store Section Key']=$page_section->id;
+
+
+		$page=new Page('find',$page_data,'create');
+		if ($page->new) {
+			/*
+			include_once 'class.Department.php';
+			$department=new Department($product->data['Product Family Main Department Key']);
+			if ($department->id) {
+				$parent_pages_keys=$department->get_pages_keys();
+				foreach ($parent_pages_keys as $parent_page_key) {
+					$page->add_found_in_link($parent_page_key);
+					break;
+				}
+			}
+			*/
+			include_once 'class.Family.php';
+			$family=new Family($product->data['Product Family Key']);
+			if ($family->id) {
+				$parent_pages_keys=$family->get_pages_keys();
+				foreach ($parent_pages_keys as $parent_page_key) {
+					$page->add_found_in_link($parent_page_key);
+					break;
+				}
+			}
+
+			//$page->update_see_also();
+		}
+		$page->update_product_totals();
+
+		$this->update_product_totals();
+		$this->update_page_totals();
+		$this->new_page=$page->new;
+		$this->new_page_key=$page->id;
+		$this->msg=$page->msg;
+		$this->error=$page->error;
+
+		return $page->id;
+	}
+
 	function base_data() {
 
 
@@ -883,32 +832,6 @@ $index_page=$this->get_page_object('index');
 
 		}
 		return $page;
-	}
-
-	function get_data_for_smarty() {
-
-		//print_r($this->data);
-
-		$data['logo']=$this->data['Site Logo Data']['Image Source'];
-
-
-		$header_style='';
-		if ($this->data['Site Header Data'] and array_key_exists('style',$this->data['Site Header Data']))
-			foreach ($this->data['Site Header Data']['style'] as $key=>$value) {
-				$header_style.="$key:$value;";
-			}
-		$data['header_style']=$header_style;
-
-		$footer_style='';
-		if ($this->data['Site Footer Data'] and array_key_exists('style',$this->data['Site Footer Data']))
-			foreach ($this->data['Site Footer Data']['style'] as $key=>$value) {
-				$footer_style.="$key:$value;";
-			}
-		$data['footer_style']=$footer_style;
-
-
-
-		return $data;
 	}
 
 	function get_page_section_object($code) {
@@ -989,6 +912,29 @@ $index_page=$this->get_page_object('index');
 		return $suffix;
 	}
 
+	function get_unique_product_page_code($product) {
+
+		if (!$this->is_page_store_code($product->data['Product Code']))
+			return $product->data['Product Code'];
+		if (!$this->is_page_store_code('p_'.$product->data['Product Code']))
+			return 'p_'.$product->data['Product Code'];
+
+
+		for ($i = 2; $i <= 200; $i++) {
+
+			if ($i<=100) {
+				$suffix=$i;
+			} else {
+				$suffix=uniqid('', true);
+			}
+
+			if (!$this->is_page_store_code($product->data['Product Code'].$suffix))
+				return $product->data['Product Code'].$suffix;
+		}
+
+		return $suffix;
+	}
+
 
 	function get_unique_department_page_code($department) {
 
@@ -1039,7 +985,7 @@ $index_page=$this->get_page_object('index');
 		while ($row=mysql_fetch_array($res)) {
 			$sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ",$new_header_key,$row['Page Key']);
 			mysql_query($sql);
-			
+
 		}
 
 
@@ -1155,7 +1101,7 @@ $index_page=$this->get_page_object('index');
 			$number_pages_with_out_of_stock_products,
 			$this->id
 		);
-		//print "$sql\n";
+
 
 		mysql_query($sql);
 		$this->data['Site Number Pages']=$number_pages;
@@ -1171,12 +1117,12 @@ $index_page=$this->get_page_object('index');
 		$number_out_of_stock_products=0;
 
 
-		
+
 
 
 		$sql=sprintf("select  PPD.`Product ID`,`Parent Type`,`Product Web State`  from `Page Product Dimension` PPD left join `Product Dimension` P on (PPD.`Product ID`=P.`Product ID`) where `Site Key`=%d and !(`Product Web State`='Offline' and `Parent Type`='List' and `State`='Offline')  group by PPD.`Product ID` ",
 			$this->id);
-		print "$sql\n";
+		//print "$sql\n";
 		// exit;
 
 		$result=mysql_query($sql);
@@ -1193,7 +1139,7 @@ $index_page=$this->get_page_object('index');
 			$this->id
 		);
 		mysql_query($sql);
-		print "$sql\n";
+		//print "$sql\n";
 		$this->data['Site Number Products']=$number_products;
 		$this->data['Site Number Out of Stock Products']=$number_out_of_stock_products;
 
@@ -1437,15 +1383,15 @@ $index_page=$this->get_page_object('index');
 	function get_page_key_from_section($section) {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`=%s and `Page Site Key`=%d ",
-		prepare_mysql($section),
-		$this->id);
+			prepare_mysql($section),
+			$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
 		return $page_key;
 	}
-	
+
 
 	function get_profile_page_key() {
 		$page_key=0;
@@ -1562,12 +1508,12 @@ $index_page=$this->get_page_object('index');
 			$this->id
 		);
 		mysql_query($sql);
-	//	print "$sql\n\n";
+		// print "$sql\n\n";
 
 	}
 
 	function update_requests($interval) {
-		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  where  `Site Key`=%d  %s",
 			$this->id,
@@ -1813,11 +1759,11 @@ $index_page=$this->get_page_object('index');
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
 
 		$res=mysql_query($sql);
-
+		$favicon_url='art/nopic.png';
 		while ($row=mysql_fetch_array($res)) {
-			$images_slideshow='public_image.php?id='.$row['Image Key'];
+			$favicon_url='public_image.php?id='.$row['Image Key'];
 		}
-		return $images_slideshow;
+		return $favicon_url;
 	}
 
 	function get_main_image_key() {
@@ -2037,13 +1983,40 @@ $sql = 'SELECT word FROM words_list
 
 	function delete() {
 
+		if ($this->data['Site Total Users']>0) {
+			$this->error=_("Can't delete");
+			return;
+		}
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$page=new Page($row['Page Key']);
+			$page->delete();
+		}
+
+		$sql=sprintf("delete from `Site Dimension` where `Site Key`=%d ",$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Page Store Section Dimension` where `Site Key`=%d ",$this->id);
+		mysql_query($sql);
 
 
+		$store=new Store($this->data['Site Store Key']);
+		$store->editor=$this->editor;
+		$history_data=array(
+			'History Abstract'=>_('Website deleted')." ".$this->data['Site Code'],
+			'History Details'=>_trim(_('New website')." ".$this->data['Site Name']." "._('deleted')),
+			'Action'=>'deleted'
+		);
+		$store->add_subject_history($history_data);
+
+		$this->deleted=true;
 
 	}
-	
-	
-		function update_page_flags_numbers() {
+
+
+	function update_page_flags_numbers() {
 
 
 		$sql=sprintf("select * from  `Site Flag Dimension` where `Site Key`=%d  ",$this->id);
@@ -2063,12 +2036,12 @@ $sql = 'SELECT word FROM words_list
 			$num=$row['num'];
 
 		}
-	
+
 		$sql=sprintf("update  `Site Flag Dimension`  set `Site Flag Number Pages`=%d where `Site Flag Key`=%d ",
 			$num,
 			$flag_key);
 		mysql_query($sql);
-	
+
 
 	}
 
@@ -2124,7 +2097,7 @@ $sql = 'SELECT word FROM words_list
 						$row['Site Flag Key']
 
 					);
-	//print $sql;
+					//print $sql;
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_assoc($res2)) {
 						$page=new Page($row2['Page Key']);
@@ -2152,28 +2125,28 @@ $sql = 'SELECT word FROM words_list
 
 	}
 
-function get_payment_options_data(){
-	
+	function get_payment_options_data() {
+
 		$payment_options_data=array();
-	
+
 		$sql=sprintf("select * from `Payment Account Dimension` PA left join `Payment Service Provider Dimension` PSP on  (PA.`Payment Service Provider Key`=PSP.`Payment Service Provider Key`) left join `Payment Account Site Bridge`  B on (PA.`Payment Account Key`=B.`Payment Account Key`) where  `Show In Cart`='Yes' and `Site Key`=%d order by `Show Cart Order`",
-		$this->id
-		
+			$this->id
+
 		);
 		//print $sql;
 		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
-		$payment_options_data[]=array(
-		'payment_service_provider_code'=>$row['Payment Service Provider Code'],
-		'payment_account_key'=>$row['Payment Account Key'],
-		'payment_account'=>new Payment_Account($row['Payment Account Key'])
-		);
-		
+		while ($row=mysql_fetch_assoc($res)) {
+			$payment_options_data[]=array(
+				'payment_service_provider_code'=>$row['Payment Service Provider Code'],
+				'payment_account_key'=>$row['Payment Account Key'],
+				'payment_account'=>new Payment_Account($row['Payment Account Key'])
+			);
+
 		}
 		return $payment_options_data;
 
 
-}
+	}
 
 
 }

@@ -40,7 +40,13 @@ if (!$user->can_edit('sites') ) {
 
 
 $site=new Site($site_id);
-$_SESSION['state']['site']['id']=$site->id;
+
+if (!$site->id) {
+	header('Location: sites.php?error=site_not_found');
+	exit;
+}
+
+
 $store=new Store($site->data['Site Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);

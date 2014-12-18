@@ -40,7 +40,7 @@ global $myconf;
 
 
 
-$sql="select * from `Part Dimension` where `Part SKU`=16227 order by `Part SKU`";
+$sql="select * from `Part Dimension` where `Part SKU`=47599 order by `Part SKU`";
 $sql="select `Part SKU` from `Part Dimension` order by `Part SKU` desc ";
 
 
