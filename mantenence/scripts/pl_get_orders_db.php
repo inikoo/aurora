@@ -970,6 +970,39 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				,'product valid to'=>$date2
 				,'editor'=>array('Date'=>$date_order)
 			);
+			
+			$product_data=array(
+				'Product Sales Type'=>'Not for Sale',
+				'Product Type'=>'Normal',
+				'Product Locale'=>'pl_PL',
+				'Product Currency'=>'PLN',
+				'Product Record Type'=>'Normal',
+				'Product Web Configuration'=>'Offline',
+
+			//	'Product Special Characteristic'=>$special_char,
+				'Product Store Key'=>$store_key,
+				'Product Main Department Key'=>$dept_key,
+				'Product Family Key'=>$fam_key,
+				'Product Code'=>$code,
+				'Product Name'=>$description,
+				'Product Unit Type'=>$unit_type,
+				'Product Units Per Case'=>$transaction['units'],
+				'Product Net Weight'=>$w,
+				'Product Gross Weight'=>$w,
+				'Part Gross Weight'=>$w,
+				'Product RRP'=>sprintf("%.2f",$transaction['rrp']*$transaction['units']),
+				'Product Price'=>sprintf("%.2f",$transaction['price']),
+				'Supplier Code'=>_trim($transaction['supplier_code']),
+				'Supplier Name'=>_trim($transaction['supplier_code']),
+				'Supplier Product Cost'=>$supplier_product_cost,
+				'Supplier Product Code'=>$sup_prod_code,
+				'Supplier Product name'=>$description,
+				'auto_add'=>true,
+				'Product Valid From'=>$date_order,
+				'Product Valid To'=>$date2,
+				'editor'=>array('Date'=>$date_order)
+			);
+
 
 
 			// print "$code\n";
