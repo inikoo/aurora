@@ -519,27 +519,27 @@ foreach ($__cols as $cols) {
 
 
 		$data=array(
-			'product code'=>$code,
-			'product store key'=>$store_key,
-			'product stage'=>'Normal',
-			'product locale'=>'de_DE',
-			'product currency'=>'EUR',
-			'product sales type'=>'Public Sale',
-			'product type'=>'Normal',
-			'product record type'=>'Normal',
+			'Product Code'=>$code,
+			'Product Store Key'=>$store_key,
+			'Product Stage'=>'Normal',
+			'Product Locale'=>'de_DE',
+			'Product Currency'=>'EUR',
+			'Product Sales Type'=>'Public Sale',
+			'Product Type'=>'Normal',
+			'Product Record Type'=>'Normal',
 			'Product Web Configuration'=>'Online Auto',
 
 
-			'product price'=>sprintf("%.2f",$price),
-			'product rrp'=>$rrp,
-			'product units per case'=>$units,
-			'product name'=>$description,
-			'product family key'=>$family->id,
-			'product special characteristic'=>$special_char,
-			//  'product family special characteristic'=>$fam_special_char,
+			'Product Price'=>sprintf("%.2f",$price),
+			'Product RRP'=>$rrp,
+			'Product Units Per Case'=>$units,
+			'Product Name'=>$description,
+			'Product Family Key'=>$family->id,
+			'Product Special Characteristic'=>$special_char,
+			//  'Product family special characteristic'=>$fam_special_char,
 
-			'product valid from'=>date('Y-m-d H:i:s'),
-			'product valid to'=>date('Y-m-d H:i:s'),
+			'Product Valid From'=>gmdate('Y-m-d H:i:s'),
+			'Product Valid To'=>gmdate('Y-m-d H:i:s'),
 			//'deals'=>$deals
 		);
 		//     print_r($cols);
@@ -553,7 +553,7 @@ foreach ($__cols as $cols) {
 		}
 		$product=new Product('find',$data,'create');
 		if ($product->new) {
-			$product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
+			$product->update_for_sale_since(gmdate("Y-m-d H:i:s",strtotime("now +1 seconds")));
 
 
 		}
