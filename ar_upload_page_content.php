@@ -37,7 +37,7 @@ case('upload_page_content'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
 			'parent'=>array('type'=>'string'),
-			'use_file'=>array('type'=>'string')
+			'use_file'=>array('type'=>'string','optional'=>true)
 		));
 	$data['tipo']=$tipo;
 
@@ -82,6 +82,7 @@ function process_uploaded_files($data) {
 
 		}
 	} else {
+		
 		$poidsMax = ini_get('upload_max_filesize');
 		$msg=_("Your file is too big, maximum allowed size here is").": $poidsMax";
 		$response= array('state'=>400,'msg'=>$msg);

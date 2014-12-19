@@ -233,7 +233,7 @@ class Department extends DB_Table {
 
 			$sql=sprintf("insert into `Product Department Data Dimension`  (`Product Department Key`) values (%d)",$this->id);
 			mysql_query($sql);
-			
+
 
 			$this->add_history(array(
 					'Action'=>'created'
@@ -317,7 +317,16 @@ class Department extends DB_Table {
 
 
 		switch ($field) {
-		case('Store Sticky Note'):
+		case('Product Department Sales Type'):
+			$this->update_sales_type($value);
+			break;
+		case('Product Department Code'):
+			$this->update_code($value);
+			break;
+		case('Product Department Name'):
+			$this->update_name($value);
+			break;	
+		case('Product Department Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
 		case('Sticky Note'):
@@ -338,129 +347,144 @@ class Department extends DB_Table {
 
 	}
 
+	function update_code($code) {
 
+		if ($code==$this->data['Product Department Code']) {
+			$this->updated=true;
+			$this->new_value=$code;
+			return;
 
+		}
 
-	function update($key,$a1=false,$a2=false) {
-		$this->updated=false;
-		$this->msg='Nothing to change';
+		if ($code=='') {
+			$this->msg=_('Error: Wrong code (empty)');
+			return;
+		}
 
-		switch ($key) {
-		case('sales_type'):
-			$this->update_sales_type($a1);
-			break;
-		case('code'):
+		if (!(strtolower($code)==strtolower($this->data['Product Department Code']) and $code!=$this->data['Product Department Code'])) {
 
-			if ($a1==$this->data['Product Department Code']) {
-				$this->updated=true;
-				$this->new_value=$a1;
-				return;
-
-			}
-
-			if ($a1=='') {
-				$this->msg=_('Error: Wrong code (empty)');
-				return;
-			}
-
-			if (!(strtolower($a1)==strtolower($this->data['Product Department Code']) and $a1!=$this->data['Product Department Code'])) {
-
-				$sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s  COLLATE utf8_general_ci"
-					,$this->data['Product Department Store Key']
-					,prepare_mysql($a1)
-				);
-				$res=mysql_query($sql);
-				$row=mysql_fetch_array($res);
-				if ($row['num']>0) {
-					$this->msg=_("Error: Another department with the same code");
-					return;
-				}
-			}
-			$old_value=$this->get('Product Department Code');
-			$sql=sprintf("update `Product Department Dimension` set `Product Department Code`=%s where `Product Department Key`=%d "
-				,prepare_mysql($a1)
-				,$this->id
-			);
-			if (mysql_query($sql)) {
-				$this->msg=_('Department code updated');
-				$this->updated=true;
-				$this->new_value=$a1;
-
-				$this->data['Product Department Code']=$a1;
-				$editor_data=$this->get_editor_data();
-
-
-				$this->add_history(array(
-						'Indirect Object'=>'Product Department Code'
-						,'History Abstract'=>_('Product Department Changed').' ('.$this->get('Product Department Name').')'
-						,'History Details'=>_('Store')." ".$this->data['Product Department Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Code')
-					));
-
-
-
-
-			} else {
-				$this->msg=_("Error: Department code could not be updated");
-
-				$this->updated=false;
-
-			}
-			break;
-
-		case('name'):
-
-			if ($a1==$this->data['Product Department Name']) {
-				$this->updated=true;
-				$this->new_value=$a1;
-				return;
-
-			}
-
-			if ($a1=='') {
-				$this->msg=_('Error: Wrong name (empty)');
-				return;
-			}
-			$sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s  COLLATE utf8_general_ci"
+			$sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s  COLLATE utf8_general_ci"
 				,$this->data['Product Department Store Key']
-				,prepare_mysql($a1)
+				,prepare_mysql($code)
 			);
 			$res=mysql_query($sql);
 			$row=mysql_fetch_array($res);
 			if ($row['num']>0) {
-				$this->msg=_("Error: Another department with the same name");
+				$this->msg=_("Error: Another department with the same code");
 				return;
 			}
-			$old_value=$this->get('Product Department Name');
-			$sql=sprintf("update `Product Department Dimension` set `Product Department Name`=%s where `Product Department Key`=%d "
-				,prepare_mysql($a1)
-				,$this->id
-			);
-			if (mysql_query($sql)) {
-				$this->msg=_('Department name updated');
-				$this->updated=true;
-				$this->new_value=$a1;
-				$this->data['Product Department Name']=$a1;
-
-
-				$this->add_history(array(
-						'Indirect Object'=>'Product Department Name'
-						,'History Abstract'=>_('Product Department Name Changed').' ('.$this->get('Product Department Name').')'
-						,'History Details'=>_('Product Department')." ("._('Code').":".$this->data['Product Department Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Name')
-					));
-
-
-
-			} else {
-				$this->msg=_("Error: Department name could not be updated");
-
-				$this->updated=false;
-
-			}
-			break;
 		}
+		$old_value=$this->get('Product Department Code');
+		$sql=sprintf("update `Product Department Dimension` set `Product Department Code`=%s where `Product Department Key`=%d "
+			,prepare_mysql($code)
+			,$this->id
+		);
+		if (mysql_query($sql)) {
+			$this->msg=_('Department code updated');
+			$this->updated=true;
+			$this->new_value=$code;
+
+			$this->data['Product Department Code']=$code;
+
+
+			$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Code`=%s where `Product Family Main Department Key`=%d ",
+			prepare_mysql($code),
+			$this->id
+			);
+			mysql_query($sql);
+			
+			$sql=sprintf("update `Product Dimension` set `Product Main Department Code`=%s where `Product Main Department Key`=%d ",
+			prepare_mysql($code),
+			$this->id
+			);
+			mysql_query($sql);
+			
+
+			$editor_data=$this->get_editor_data();
+
+
+			$this->add_history(array(
+					'Indirect Object'=>'Product Department Code'
+					,'History Abstract'=>_('Product Department Changed').' ('.$this->get('Product Department Name').')'
+					,'History Details'=>_('Store')." ".$this->data['Product Department Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Code')
+				));
+
+
+
+
+		} else {
+			$this->msg="Error: Department code could not be updated";
+
+			$this->updated=false;
+
+		}
+
 	}
 
+	function update_name($name) {
+		if ($name==$this->data['Product Department Name']) {
+			$this->updated=true;
+			$this->new_value=$name;
+			return;
 
+		}
+
+		if ($name=='') {
+			$this->msg=_('Error: Wrong name (empty)');
+			return;
+		}
+		$sql=sprintf("select count(*) as num from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Name`=%s  COLLATE utf8_general_ci"
+			,$this->data['Product Department Store Key']
+			,prepare_mysql($name)
+		);
+		$res=mysql_query($sql);
+		$row=mysql_fetch_array($res);
+		if ($row['num']>0) {
+			$this->msg=_("Error: Another department with the same name");
+			return;
+		}
+		$old_value=$this->get('Product Department Name');
+		$sql=sprintf("update `Product Department Dimension` set `Product Department Name`=%s where `Product Department Key`=%d "
+			,prepare_mysql($name)
+			,$this->id
+		);
+		if (mysql_query($sql)) {
+			$this->msg=_('Department name updated');
+			$this->updated=true;
+			$this->new_value=$name;
+			$this->data['Product Department Name']=$name;
+
+
+			$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Name`=%s where `Product Family Main Department Key`=%d ",
+			prepare_mysql($name),
+			$this->id
+			);
+			mysql_query($sql);
+			
+			$sql=sprintf("update `Product Dimension` set `Product Main Department Name`=%s where `Product Main Department Key`=%d ",
+			prepare_mysql($name),
+			$this->id
+			);
+			mysql_query($sql);
+
+
+			$this->add_history(array(
+					'Indirect Object'=>'Product Department Name',
+					'History Abstract'=>_('Product Department Name Changed').' ('.$this->get('Product Department Name').')',
+					'History Details'=>_('Product Department')." ("._('Code').":".$this->data['Product Department Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Name')
+				));
+
+
+
+		} else {
+			$this->msg="Error: Department name could not be updated";
+
+			$this->updated=false;
+
+		}
+
+	}
+	
 	function delete() {
 		$this->deleted=false;
 		$this->update_product_data();
@@ -527,7 +551,18 @@ class Department extends DB_Table {
 		}
 	}
 
+	function get_family_keys() {
+		$family_keys=array();
+		$sql=sprintf('select `Product Family Key` from `Product Family Dimension` where `Product Family Main Department Key`=%d',
+			$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$family_keys[]=$row['Product Family Key'];
+		}
+		return $family_keys;
 
+	}
 
 	function get_period($period,$key) {
 		return $this->get($period.' '.$key);
@@ -619,7 +654,7 @@ class Department extends DB_Table {
 
 			$sql=sprintf("select count(*) as num from `Product Family Department Bridge`  where `Product Department Key`=%d",$this->id);
 			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			if ($row=mysql_fetch_assoc($result)) {
 				$sql=sprintf("update `Product Department Dimension` set `Product Department Families`=%d   where `Product Department Key`=%d  ",
 					$row['num'],
 					$this->id
@@ -717,7 +752,7 @@ class Department extends DB_Table {
 		$result=mysql_query($sql);
 
 		//print $sql."\n\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_assoc($result)) {
 			$this->data["Product Department $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
 			$this->data["Product Department $db_interval Acc Invoiced Amount"]=$row["net"];
 			$this->data["Product Department $db_interval Acc Invoices"]=$row["invoices"];
@@ -792,7 +827,7 @@ class Department extends DB_Table {
 
 
 			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			if ($row=mysql_fetch_assoc($result)) {
 				$this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
 				$this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
 				$this->data["Product Department $db_interval Acc 1YB Invoiced Delta"]=($row["net"]==0?-1000000:$this->data["Product Department $db_interval Acc Invoiced Amount"]/$row["net"]);
@@ -837,7 +872,7 @@ class Department extends DB_Table {
 		);
 
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_assoc($result)) {
 			$s_char=$row['Product Department Name'];
 			$number=1;
 			$sql=sprintf("select * from `Product Department Dimension` where `Product Department Name` like '%s (%%)'  and `Product Department Store Key`=%d "
@@ -981,7 +1016,7 @@ class Department extends DB_Table {
 
 
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_assoc($result)) {
 
 			$in_process=$row['in_process'];
 			$public_sale=$row['public_sale'];
@@ -1039,7 +1074,7 @@ class Department extends DB_Table {
 		$sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
 		// print "$sql\n";
 		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		while ($row=mysql_fetch_assoc($result)) {
 			$number_active_customers++;
 			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
 				$number_active_customers_more_than_50++;
@@ -1061,7 +1096,7 @@ class Department extends DB_Table {
 	function update_families() {
 		$sql=sprintf("select count(*) as num from `Product Family Dimension`  where`Product Family Main Department Key`=%d",$this->id);
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_assoc($result)) {
 			$this->data['Product Department Families']=$row['num'];
 			$sql=sprintf("update `Product Department Dimension` set `Product Department Families`=%d  where `Product Department Key`=%d  ",
 				$this->data['Product Department Families'],
@@ -1072,7 +1107,7 @@ class Department extends DB_Table {
 
 		$sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' and `Product Family Record Type` in ('New','Normal','Discontinuing')  ",$this->id);
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_assoc($result)) {
 			$this->data['Product Department For Public For Sale Families']=$row['num'];
 			$sql=sprintf("update `Product Department Dimension` set `Product Department For Public For Sale Families`=%d  where `Product Department Key`=%d  ",
 				$this->data['Product Department For Public For Sale Families'],
@@ -1083,7 +1118,7 @@ class Department extends DB_Table {
 
 		$sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d  and `Product Family Sales Type`='Public Sale' and `Product Family Record Type`='Discontinued'    "   ,$this->id);
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_assoc($result)) {
 			$this->data['Product Department For Public Discontinued Families']=$row['num'];
 			$sql=sprintf("update `Product Department Dimension` set `Product Department For Public Discontinued Families`=%d  where `Product Department Key`=%d  ",
 				$this->data['Product Department For Public Discontinued Families'],

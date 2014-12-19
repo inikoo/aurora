@@ -389,6 +389,13 @@ class Family extends DB_Table {
 			$this->data['Product Family Code']=$value;
 			$this->update_full_search();
 
+$sql=sprintf("update `Product Dimension` set `Product Family Code`=%s where `Product Family Key`=%d ",
+			prepare_mysql($value),
+			$this->id
+			);
+			mysql_query($sql);
+
+
 			$data_for_history=array(
 				'Indirect Object'=>'Product Family Code'
 				,'History Abstract'=>_('Product family Code changed').' ('.$this->get('Product Family Code').')'
@@ -397,7 +404,7 @@ class Family extends DB_Table {
 			$this->add_history($data_for_history);
 
 		} else {
-			$this->msg=_("Error: Family code could not be updated");
+			$this->msg="Error: Family code could not be updated";
 
 			$this->updated=false;
 
@@ -441,6 +448,13 @@ class Family extends DB_Table {
 
 			$this->data['Product Family Name']=$value;
 			$this->update_full_search();
+			
+			$sql=sprintf("update `Product Dimension` set `Product Family Name`=%s where `Product Family Key`=%d ",
+			prepare_mysql($value),
+			$this->id
+			);
+			mysql_query($sql);
+			
 			$this->add_history(array(
 					'Indirect Object'=>'Product Family Name'
 					,'History Abstract'=>('Product Family Name Changed').' ('.$this->get('Product Family Name').')'
@@ -450,7 +464,7 @@ class Family extends DB_Table {
 
 
 		} else {
-			$this->msg=_("Error: Family name could not be updated");
+			$this->msg="Error: Family name could not be updated";
 
 			$this->updated=false;
 

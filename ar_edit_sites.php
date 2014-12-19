@@ -3890,6 +3890,28 @@ function create_site($data) {
 					'Number See Also Links'=>0,
 					'Page State'=>'Online'
 				),
+				array(
+					'Page Store Section'=>'Welcome',
+					'Page Store Title'=>_('Welcome'),
+					'Page Short Title'=>_('Welcome'),
+					'Page Code'=>'welcome',
+					'Page URL'=>'welcome.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'welcome',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
+				array(
+					'Page Store Section'=>'Not Found',
+					'Page Store Title'=>_('Not Found'),
+					'Page Short Title'=>_('Not Found'),
+					'Page Code'=>'not_found',
+					'Page URL'=>'404.php',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'404',
+					'Number See Also Links'=>0,
+					'Page State'=>'Online'
+				),
 
 				array(
 					'Page Store Section'=>'Client Section',
