@@ -22,9 +22,9 @@ require '../../locale.php';
 $_SESSION['locale_info'] = localeconv();
 
 
-$mysql_host='213.175.222.120';
+$mysql_host='localhost';
 //$mysql_host='localhost';
-$mysql_user='inikoo';
+$mysql_user='root';
 //$mysql_user='root';
 
 $con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd_dropshipping );
