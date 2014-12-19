@@ -44,7 +44,7 @@
 						<td colspan="2">{t}Family Details{/t} </td>
 					</tr>
 					<tr>
-						<td class="label" style="width:100px">{t}Family Code{/t}:</td>
+						<td class="label" style="width:100px">{t}Code{/t}:</td>
 						<td> 
 						<div>
 							<input id="code" changed="0" type='text' class='text' maxlength="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}" />
@@ -55,7 +55,7 @@
 						<td id="code_msg" class="edit_td_alert" style="width:300px"></td>
 					</tr>
 					<tr>
-						<td class="label">{t}Family Name{/t}:</td>
+						<td class="label">{t}Name{/t}:</td>
 						<td> 
 						<div>
 							<input id="name" changed="0" type='text' maxlength="255" class='text' value="{$family->get('Product Family Name')}" ovalue="{$family->get('Product Family Name')}" />
@@ -66,7 +66,7 @@
 						<td id="name_msg" class="edit_td_alert" style="width:300px"></td>
 					</tr>
 					<tr>
-						<td class="label">{t}Family Char{/t}:</td>
+						<td class="label">{t}Label{/t}:</td>
 						<td> 
 						<div>
 							<input id="special_char" type='text' maxlength="255" class='text' value="{$family->get('Product Family Special Characteristic')}" ovalue="{$family->get('Product Family Special Characteristic')}" />

@@ -4311,9 +4311,6 @@ class product extends DB_Table {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
 			$mysql_where.=', '.$row['Part SKU'];
 			$number_of_parts++;
-
-
-
 			$part_fields=array(
 				'Part Tariff Code',
 				'Part Duty Rate',
@@ -4353,10 +4350,6 @@ class product extends DB_Table {
 			}
 
 		}
-
-
-
-
 
 
 

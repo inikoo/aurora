@@ -233,7 +233,12 @@ case('edit_product_properties'):
 	break;
 
 case('edit_department'):
-	edit_department();
+	$data=prepare_values($_REQUEST,array(
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'id'=>array('type'=>'key'),
+		));
+	edit_department($data);
 	break;
 case('edit_store'):
 case('edit_invoice'):
@@ -568,23 +573,34 @@ function edit_store($data) {
 	}
 	echo json_encode($response);
 }
-function edit_department() {
-	$department=new Department($_REQUEST['id']);
+function edit_department($data) {
+
 	global $editor;
+
+	$department=new Department($data['id']);
+
 	$department->editor=$editor;
+	
 
-	$department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue']))
-
+	$translator=array(
+		'name'=>'Product Department Name',
+		'code'=>'Product Department Code',
+'sales_type'=>'Product Department Sales Type'
 	);
 
-	//   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
-	//echo json_encode($response);
-	// exit;
+	if (array_key_exists($data['key'],$translator))
+		$key=$translator[$data['key']];
+	else
+		$key=$data['key'];
+
+	$department->update(array($key=>stripslashes(urldecode($data['newvalue']))));
+
+
 	if ($department->updated) {
-		$response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$_REQUEST['key']);
+		$response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$data['key']);
 
 	} else {
-		$response= array('state'=>400,'msg'=>$department->msg,'key'=>$_REQUEST['key']);
+		$response= array('state'=>400,'msg'=>$department->msg,'key'=>$data['key']);
 	}
 	echo json_encode($response);
 
@@ -923,8 +939,6 @@ function edit_family_department($data) {
 
 
 function edit_family($data) {
-	//print $data['newvalue'];
-
 
 	$family=new family($data['id']);
 	global $editor;
