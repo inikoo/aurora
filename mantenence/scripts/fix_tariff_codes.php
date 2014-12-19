@@ -57,7 +57,7 @@ $sql2=sprintf("select * from `Part Dimension`");
 $res2=mysql_query($sql2);
 while ($row2=mysql_fetch_assoc($res2)) {
 	$part=new Part($row2['Part SKU']);
-	if ($part->data['Part Tariff Code']!=='') {
+	if ($part->data['Part Tariff Code']!='') {
 		$product_ids=$part->get_product_ids();
 
 		foreach ($product_ids as $product_id) {
@@ -82,7 +82,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 	
 	}
 	
-	if ($part->data['Part Duty Rate']!=='') {
+	if ($part->data['Part Duty Rate']!='') {
 		$product_ids=$part->get_product_ids();
 
 		foreach ($product_ids as $product_id) {
