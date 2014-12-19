@@ -632,7 +632,7 @@ foreach ($__cols as $cols) {
 
 
 
-
+/*
 		$data=array(
 			'product store key'=>1,
 			'product currency'=>'EUR',
@@ -658,6 +658,33 @@ foreach ($__cols as $cols) {
 			'deals'=>$deals
 
 		);
+	*/	
+			$data=array(
+			'Product Code'=>$code,
+			'Product Store Key'=>$store_key,
+			'Product Stage'=>'Normal',
+			'Product Locale'=>'es_ES',
+			'Product Currency'=>'EUR',
+			'Product Sales Type'=>'Public Sale',
+			'Product Type'=>'Normal',
+			'Product Record Type'=>'Normal',
+			'Product Web Configuration'=>'Online Auto',
+
+
+			'Product Price'=>sprintf("%.2f",$price),
+			'Product RRP'=>$rrp,
+			'Product Units Per Case'=>$units,
+			'Product Name'=>$description,
+			'Product Family Key'=>$family->id,
+			'Product Special Characteristic'=>$special_char,
+			//  'Product family special characteristic'=>$fam_special_char,
+
+			'Product Valid From'=>gmdate('Y-m-d H:i:s'),
+			'Product Valid To'=>gmdate('Y-m-d H:i:s'),
+			//'deals'=>$deals
+		);
+		
+		
 		// print_r($cols);
 		//print_r($data);
 		//exit;
