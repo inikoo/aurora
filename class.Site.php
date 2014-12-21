@@ -207,7 +207,7 @@ class Site extends DB_Table {
 
 			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
 			foreach ($flags as $flag=>$flag_label) {
-				$sql=sprintf("INSERT INTO `Site Flag Dimension` (`Site Flag Key`, `Site Key`, `Site Flag Color`, `Site Flag Label`, `Site Flag Number Locations`, `Site Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
+				$sql=sprintf("INSERT INTO `Site Flag Dimension` (`Site Flag Key`, `Site Key`, `Site Flag Color`, `Site Flag Label`, `Site Flag Active`) VALUES ( %d, %s,%s, 'Yes')",
 					$this->id,
 					prepare_mysql($flag),
 					prepare_mysql($flag_label)
