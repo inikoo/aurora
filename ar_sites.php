@@ -375,14 +375,14 @@ function list_pages() {
 
 	$where='where true ';
 
-	$table='`Page Store Dimension` PS left join `Page Store Data Dimension` PSD on (PS.`Page Key`=PSD.`Page Key`) left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=`Page Site Key`) ';
+	$table='`Page Store Dimension` PS left join `Page Store Data Dimension` PSD on (PS.`Page Key`=PSD.`Page Key`) left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=PS.`Page Site Key`) ';
 
 	switch ($parent) {
 	case('store'):
 		$where.=sprintf(' and `Page Store Key`=%d   ',$parent_key);
 		break;
 	case('site'):
-		$where.=sprintf(' and `Page Site Key`=%d',$parent_key);
+		$where.=sprintf(' and PS.`Page Site Key`=%d',$parent_key);
 		break;
 	case('department'):
 		$where.=sprintf('  and `Page Parent Key`=%d  and `Page Store Section`="Department Catalogue"  ',$parent_key);
@@ -499,7 +499,7 @@ function list_pages() {
 
 
 	$sql="select count(*) as total from $table $where $wheref";
-	
+//	print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];

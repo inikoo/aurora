@@ -123,7 +123,8 @@ class Page extends DB_Table {
 	}
 
 	function load_data() {
-		$sql=sprintf("select * from `Page Store Data Dimension` where  `Page Key`=%d",$this->id);
+		$sql=sprintf("select * from `Page Store Data Dimension` where `Page Key`=%d",$this->id);
+
 		$res =mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			foreach ($row as $key=>$value) {
@@ -1852,11 +1853,11 @@ class Page extends DB_Table {
 		return $price;
 	}
 	function get_button_rrp($product) {
-	
-		if(!$product->data['Product RRP']){
+
+		if (!$product->data['Product RRP']) {
 			return '';
 		}
-	
+
 		$rrp_data=array(
 			'Product Price'=>$product->data['Product RRP'],
 			'Product Units Per Case'=>$product->data['Product Units Per Case'],
@@ -3758,7 +3759,7 @@ class Page extends DB_Table {
 
 
 		}
-		
+
 		$site=new Site($this->data['Page Site Key']);
 
 		$valid_list_keys=array();
@@ -3825,15 +3826,15 @@ class Page extends DB_Table {
 			}
 
 			foreach ($new_products_on_list as $product_pid=>$tmp) {
-			
-			
-			$page_data=array(
+
+
+				$page_data=array(
 					'Page Store Content Display Type'=>'Template',
 					'Page Store Content Template Filename'=>'product',
 				);
 				$product_page_key=$site->add_product_page($product_pid,$page_data);
-			
-			
+
+
 				if (array_key_exists($product_pid,$old_products_on_list)) {
 
 				}else {
@@ -4778,9 +4779,9 @@ class Page extends DB_Table {
 			$product=new Product('pid',$row['Product ID']);
 
 
-$quantity=$this->get_button_ordered_quantity($product);
+			$quantity=$this->get_button_ordered_quantity($product);
 
-$images=array();
+			$images=array();
 			$product_data=array(
 				'code'=>$product->data['Product Code'],
 				'name'=>$product->data['Product Name'],

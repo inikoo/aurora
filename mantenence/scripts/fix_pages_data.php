@@ -36,12 +36,17 @@ $sql="select * from `Page Dimension` where `Page Type`='Store' ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-	$page=new Page($row['Page Key']);
 
-//print $page->data['Page Store Source'];
+
+
+	$sql=sprintf("insert into `Page Store Data Dimension` (`Page Key`) values (%d)",$row['Page Key']);
+	mysql_query($sql);
+	continue;
+	$page=new Page($row['Page Key']);
+	//print $page->data['Page Store Source'];
 
 	$content=$page->get_plain_content();
-	
+
 	//print "$content\n";
 	$sql=sprintf("insert into `Page Store Search Dimension` values (%d,%d,%s,%s,%s,%s)",
 		$page->id,
@@ -54,7 +59,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	mysql_query($sql);
 
 	$page->update_store_search();
-	
+
 
 }
 
