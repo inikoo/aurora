@@ -33,10 +33,10 @@ function recapture_preview() {
 
 
    request='ar_edit_sites.php?tipo=update_preview_snapshot&parent=Page&parent_key=' + Dom.get('page_key').value
-//alert(request)
+   //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-           alert(o.responseText)
+          // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             Dom.setStyle('recapture_preview_processing', 'display', 'none')
             Dom.setStyle('recapture_preview', 'display', '')
@@ -48,15 +48,7 @@ function recapture_preview() {
     });
 }
 
-function recapture_page() {
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=update_page_preview_snapshot&id=' + Dom.get('page_key').value, {
-        success: function(o) {
-          //  alert(o.responseText)
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            //Dom.get('page_preview_snapshot_image').src='image.php?id='+r.image_key
-        }
-    });
-}
+
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -436,7 +428,7 @@ function get_requests_numbers(from, to) {
 
      init_search('site');
 
-     YAHOO.util.Event.addListener('recapture_page', "click", recapture_page);
+     YAHOO.util.Event.addListener('recapture_page', "click", recapture_preview);
      YAHOO.util.Event.addListener('recapture_preview', "click", recapture_preview);
      YAHOO.util.Event.addListener('set_online', "click", set_online);
 
