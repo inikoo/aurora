@@ -181,6 +181,9 @@ if ($page->data['Page Store Section Type']=='Family') {
 }elseif ($page->data['Page Store Section Type']=='Product') {
 
 	$smarty->assign('product',$page->get_product_data());
+}elseif ($page->data['Page Store Section']=='Front Page Store') {
+
+	$smarty->assign('_departments',$page->get_departments_data());
 }
 $smarty->display('page_store.tpl');
 ?>

@@ -1426,6 +1426,63 @@ function show_dialog_family_list() {
     dialog_family_list.show();
 }
 
+function change_content_display_type(value){
+
+Dom.get('content_display_type').value=value;
+
+if(value=='Template'){
+Dom.addClass('content_display_type_Template','selected')
+Dom.removeClass('content_display_type_Source','selected')
+Dom.setStyle('content_edit_table','display','none');
+Dom.setStyle('content_display_type_template_showcase','display','');
+
+
+
+}else{
+Dom.removeClass('content_display_type_Template','selected')
+Dom.addClass('content_display_type_Source','selected')
+Dom.setStyle('content_edit_table','display','');
+Dom.setStyle('content_display_type_template_showcase','display','none');
+
+
+}
+
+if(value!=Dom.get('content_display_type').getAttribute('ovalue')){
+Dom.setStyle(['save_content_display_type','reset_content_display_type'],'display','')
+}else{
+Dom.setStyle(['save_content_display_type','reset_content_display_type'],'display','none')
+
+}
+}
+
+function reset_content_display_type(){
+value=Dom.get('content_display_type').getAttribute('ovalue')
+change_content_display_type(value)
+}
+
+function save_content_display_type(){
+
+
+
+ var request = 'ar_edit_sites.php?tipo=edit_page&newvalue=' + Dom.get('content_display_type').value + '&id=' + Dom.get('page_key').value+'&okey=content_display_type&key=Page Store Content Display Type';
+   
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+           // alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+              Dom.get('content_display_type').setAttribute('ovalue',r.newvalue)
+              Dom.setStyle(['save_content_display_type','reset_content_display_type'],'display','none')
+
+            } else {
+                alert(r.msg)
+            }
+        }
+    });
+}
+
+
+
 function save_add_redirection() {
     url = Dom.get('add_redirect_source').value;
     var request = 'ar_edit_sites.php?tipo=add_redirect&url=' + escape(url) + '&page_key=' + Dom.get('page_key').value;
