@@ -66,7 +66,7 @@
 			<td class="label">{t}API Key{/t}:</td>
 			<td style="text-align:left;width:350px" "> 
 			<div>
-				<input type="password" style="text-align:left;width:100%" id="API_Key_MadMimi" value="{$email_credentials.API_Key_MadMimi}" ovalue="{$email_credentials.API_Key_MadMimi}" valid="0"> 
+				<input  style="text-align:left;width:100%" id="API_Key_MadMimi" value="{$email_credentials.API_Key_MadMimi}" ovalue="{$email_credentials.API_Key_MadMimi}" valid="0"> 
 				<div id="API_Key_MadMimi_Container">
 				</div>
 			</div>

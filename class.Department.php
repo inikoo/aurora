@@ -1210,24 +1210,7 @@ class Department extends DB_Table {
 		}
 
 	}
-	function get_images_slidesshow() {
-		include_once 'common_units_functions.php';
-
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d",$this->id);
-		$res=mysql_query($sql);
-		$images_slideshow=array();
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			// print_r($row);
-			$images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],'size'=>formatSizeUnits($row['Image File Size']));
-		}
-		// print_r($images_slideshow);
-
-		return $images_slideshow;
-	}
+	
 	function get_main_image_key() {
 
 		return $this->data['Product Department Main Image Key'];
