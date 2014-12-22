@@ -464,11 +464,11 @@ case('edit_page_state'):
 case('edit_page_content'):
 case('edit_page_properties'):
 case('edit_page_flag'):
+case('edit_page'):
 
 	require_once 'class.Family.php';
 
 
-	//print_r($_REQUEST);
 
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
@@ -724,7 +724,7 @@ function edit_page($data) {
 		$page->update_field_switcher($data['key'],$value,'no_history');
 	} else {
 
-		//print $data['key'];
+	//print $data['key'];
 		$page->update_field_switcher($data['key'],$value);
 	}
 
@@ -3793,6 +3793,8 @@ function create_site($data) {
 					'Page Store Slogan'=>$site->data['Site Slogan'],
 					'Page Store Description'=>'',
 					'Page State'=>'Online',
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'index',
 
 				),
 				array(

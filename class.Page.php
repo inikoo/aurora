@@ -704,6 +704,9 @@ class Page extends DB_Table {
 		case('resume'):
 			$this->update_field('Page Store Description',$value,$options);
 			break;
+		case('Page Store Content Display Type'):
+			$this->update_content_display_type($value,$options);
+			break;	
 		case('display_type'):
 			$this->update_field('Page Store Content Display Type',$value,$options);
 			break;
@@ -751,6 +754,20 @@ class Page extends DB_Table {
 
 
 
+	}
+
+
+	function update_content_display_type($value,$options){
+	
+	
+//'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
+//'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'	
+	if($value=='Template'){
+		if($this->data['Page Store Section']=='Front Page Store'){
+		$this->update_field('Page Store Content Template Filename','home','no_history');
+		}
+	}
+	$this->update_field('Page Store Content Display Type',$value,$options);
 	}
 
 
@@ -4729,6 +4746,43 @@ class Page extends DB_Table {
 
 	}
 
+	function get_departments_data() {
+		$departments=array();
+
+		$sql=sprintf("select `Page Key`,`Product Department Key`,`Product Department Code`,`Product Department Main Image`,`Product Department Name` from `Product Department Dimension` P left join `Page Store Dimension` PSD on (`Page Parent Key`=`Product Department Key` and `Page Store Section Type`='Department') where `Product Department Store Key`=%d and  `Product Department Sales Type`='Public Sale' ",
+			$this->data['Page Store Key']
+		);
+
+		$counter=0;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+
+
+			$department_data=array(
+				'code'=>$row['Product Department Code'],
+				'name'=>$row['Product Department Name'],
+				'id'=>$row['Product Department Key'],
+				'img'=>$row['Product Department Main Image'],
+				'page_id'=>$row['Page Key'],
+			);
+
+			if ($counter==0) {
+				$department_data['first']=true;
+			}else {
+				$department_data['first']=false;
+			}
+
+			$department_data['col']=fmod($counter,4)+1;
+			$counter++;
+			$departments[]=$department_data;
+		}
+
+
+		return $departments;
+
+	}
+
 	function get_families_data() {
 		$families=array();
 
@@ -4802,9 +4856,6 @@ class Page extends DB_Table {
 		return $product_data;
 
 	}
-
-
-
 
 	function get_products_data() {
 		$products=array();
