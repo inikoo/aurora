@@ -1,6 +1,6 @@
 <div id="bd" style="padding:20px 15px">
 
-	<div id="products" class="content" style="xwidth:780px;">
+	<div id="products" class="content" >
 		
 		
 	
@@ -8,10 +8,10 @@
 		
 	    {foreach from=$_products item=product} 
 		<div class="block four product_showcase {if $product.col==1}first{/if}" style="margin-bottom:20px;position:relative">
-			<a href="product.php?code={$product.code}&parent={$page->get('Page Code')}"><img class="more_info" src="art/moreinfo_corner{$product.col}.png"> </a>
+			<a href="product.php?id={$product.page_id}"><img class="more_info" src="art/moreinfo_corner{$product.col}.png"> </a>
 			
 			<div class="wraptocenter">
-			<img src="{$product.img}" style="	"> 
+			<img src="{$product.img}" > 
 			</div>
 			
 			{$product.button}

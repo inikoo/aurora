@@ -70,6 +70,7 @@ $css_files=array(
                'css/container.css',
                'css/button.css',
                'css/table.css',
+               	'css/images.css',
                'css/edit.css',
                'theme.css.php'
            );
@@ -91,7 +92,7 @@ $js_files=array(
               'js/search.js',
               'js/table_common.js',
               'js/edit_common.js',
-              
+              	'js/upload_image.js',
               'js/pages_common.js'
 
           );

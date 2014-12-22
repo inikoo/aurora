@@ -706,7 +706,7 @@ class Page extends DB_Table {
 			break;
 		case('Page Store Content Display Type'):
 			$this->update_content_display_type($value,$options);
-			break;	
+			break;
 		case('display_type'):
 			$this->update_field('Page Store Content Display Type',$value,$options);
 			break;
@@ -757,17 +757,17 @@ class Page extends DB_Table {
 	}
 
 
-	function update_content_display_type($value,$options){
-	
-	
-//'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
-//'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'	
-	if($value=='Template'){
-		if($this->data['Page Store Section']=='Front Page Store'){
-		$this->update_field('Page Store Content Template Filename','home','no_history');
+	function update_content_display_type($value,$options) {
+
+
+		//'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
+		//'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'
+		if ($value=='Template') {
+			if ($this->data['Page Store Section']=='Front Page Store') {
+				$this->update_field('Page Store Content Template Filename','home','no_history');
+			}
 		}
-	}
-	$this->update_field('Page Store Content Display Type',$value,$options);
+		$this->update_field('Page Store Content Display Type',$value,$options);
 	}
 
 
@@ -4822,7 +4822,7 @@ class Page extends DB_Table {
 	function get_product_data() {
 		$product_data=array();
 
-		$sql=sprintf("select `Product ID` from `Product Dimension` P  where `Product ID`=%d ",
+		$sql=sprintf("select `Product ID` from `Product Dimension` P where `Product ID`=%d ",
 			$this->data['Page Parent Key']
 		);
 
@@ -4835,6 +4835,13 @@ class Page extends DB_Table {
 
 			$quantity=$this->get_button_ordered_quantity($product);
 
+
+			if ($this->logged) {
+				$button=$this->display_button_inikoo($product);
+			}else {
+				$button=$this->display_button_logged_out($product);
+			}
+
 			$images=array();
 			$product_data=array(
 				'code'=>$product->data['Product Code'],
@@ -4845,7 +4852,7 @@ class Page extends DB_Table {
 				'quantity'=>$quantity,
 				'price'=>$this->get_button_price($product),
 				'rrp'=>$this->get_button_rrp($product),
-				'button'=>$this->get_button_text($product,$quantity),
+				'button'=>$button,
 				'description'=>$product->data['Product Description']
 			);
 
@@ -4859,7 +4866,7 @@ class Page extends DB_Table {
 
 	function get_products_data() {
 		$products=array();
-		$sql=sprintf("select `Product ID` from `Page Product Dimension`  where `Page Key`=%d  ",
+		$sql=sprintf("select PSD.`Page Key` ,`Product ID` from `Page Product Dimension` P  left join `Page Store Dimension` PSD on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')   where P.`Page Key`=%d  ",
 			$this->id
 		);
 
@@ -4869,6 +4876,12 @@ class Page extends DB_Table {
 
 			$product=new Product('pid',$row['Product ID']);
 
+			if ($this->logged) {
+				$button=$this->display_button_inikoo($product);
+			}else {
+				$button=$this->display_button_logged_out($product);
+			}
+
 			$product_data=array(
 				'code'=>$product->data['Product Code'],
 				'name'=>$product->data['Product Name'],
@@ -4876,8 +4889,12 @@ class Page extends DB_Table {
 				'price'=>$product->data['Product Price'],
 				'special_char'=>$product->data['Product Special Characteristic'],
 				'img'=>$product->data['Product Main Image'],
-				'button'=>$this->display_button_inikoo($product)
+				'button'=>$button,
+				'page_id'=>$row['Page Key'],
 			);
+
+
+
 
 			if ($counter==0) {
 				$product_data['first']=true;

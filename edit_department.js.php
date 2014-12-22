@@ -768,11 +768,8 @@ var request='tipo=new_page&parent=department&parent_key='+Dom.get('department_ke
 						    //alert(o.responseText)
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
-
 								   window.location='edit_page.php?view=setup&id='+r.page_key
-								   
-								   
-							    }else{
+								    }else{
 						
                                         alert(r.msg)								
 								

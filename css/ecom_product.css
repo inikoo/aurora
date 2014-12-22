@@ -25,3 +25,8 @@ min-height:390px;height:auto !important;height:390px;padding:0px 0px;margin-top:
 .highlight_box{border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9}
 .price{display:block;clear:both;color:red;font-size:30px;margin:10px 0;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
 .code{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
+
+.product_log_out_price{color:green;padding:30px 20px 20px 20px;font-size:150%}
+.product_log_out_price a{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;color:green;font-style: 800}
+
+.product_long_descriptions{padding:20px 0px} 
