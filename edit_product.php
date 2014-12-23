@@ -54,6 +54,7 @@ $smarty->assign('store',$store);
 //$product->load_images_slidesshow();
 //$images=$product->images_slideshow;
 $product->load_currency_data();
+$product->load_acc_data();
 
 //$smarty->assign('images',$images);
 //$smarty->assign('num_images',count($images));

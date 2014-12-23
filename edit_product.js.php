@@ -360,7 +360,8 @@ function save_edit_family(){
 }
 
 function save_edit_sales_type(){
-    save_edit_general('product_sales_typ');
+
+    save_edit_general('product_sales_type');
 }
 
 function reset_edit_price(){
@@ -515,6 +516,9 @@ part_render_save_buttons();
 function save_part() {
 
 
+Dom.setStyle('wait_edit_part','display','')
+Dom.setStyle(['add_part','save_edit_part','reset_edit_part'],'display','none')
+
     key = Dom.get("product_part_items").getAttribute("product_part_key");
 
     for (part_key in part_list) {
@@ -548,6 +552,11 @@ function save_part() {
                         Dom.get('pickers_note' + sku).value = r.newvalue.items[sku]['Product Part List Note'];
                         Dom.get('pickers_note' + sku).setAttribute('ovalue', r.newvalue.items[sku]['Product Part List Note']);
                     }
+                    
+                    Dom.setStyle('wait_edit_part','display','none')
+Dom.setStyle(['add_part','save_edit_part','reset_edit_part'],'display','')
+
+                    
                 }
                 reset_part(key)
             } else {

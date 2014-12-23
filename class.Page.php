@@ -4544,7 +4544,7 @@ class Page extends DB_Table {
 
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `Visitor Session Key`) num_sessions ,count(Distinct `Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 
@@ -4562,7 +4562,7 @@ class Page extends DB_Table {
 
 		}
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  where  `Is User`='Yes' and `Page Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `Visitor Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  where  `Is User`='Yes' and `Page Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 

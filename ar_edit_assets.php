@@ -217,6 +217,7 @@ case('edit_product_description'):
 case('edit_product'):
 case('edit_product_health_and_safety'):
 case('edit_product_general_description'):
+case('edit_product_sales_type'):
 
 	edit_product();
 	break;
@@ -1361,7 +1362,7 @@ function list_products_for_edition() {
 	else
 		$order='`Product Code`';
 
-	$sql="select *  from `Product Dimension` P  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Product Dimension` P left join `Product Data Dimension` D on (D.`Product ID`=P.`Product ID`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 	$adata=array();
@@ -2802,7 +2803,8 @@ function edit_part_list($data) {
 		'Product Part Valid From'=>$date,
 		'Product Part Metadata'=>'',
 		'Product Part Valid To'=>'',
-		'Product Part Most Recent'=>'Yes'
+		'Product Part Most Recent'=>'Yes',
+		'Product Part List Note'=>$value['note']
 	);
 
 
@@ -2826,9 +2828,9 @@ function edit_part_list($data) {
 
 
 		foreach ($product->data as $key=>$val) {
-			$data[strtolower($key)]=$val;
+			$data[$key]=$val;
 		}
-		$data['product valid from']=$date;
+		$data['Product Valid From']=$date;
 		$product->create_key($data);
 		$product->create_product_id($data);
 
