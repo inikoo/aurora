@@ -2501,7 +2501,7 @@ function list_requests() {
 
 	$sql=sprintf("select URD.`Page Key` ,PSD.`Page Code`,`URL`,PSD.`Page Store Section`, PP.`Page Code` previous_code ,PP.`Page Key` previous_page_key  ,`IP`,`Previous Page`,`Previous Page Key`,`Customer Key`,`Customer Name`,`User Handle`, `Date` from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `Page Store Dimension` PP on (URD.`Previous Page Key`=PP.`Page Key`)  left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
-
+print $sql;
 
 	$result=mysql_query($sql);
 
