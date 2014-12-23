@@ -2354,9 +2354,7 @@ function list_requests() {
 	}
 
 	switch ($parent) {
-	case('store'):
-		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
-		break;
+	
 
 	case('page'):
 		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
@@ -2415,7 +2413,7 @@ function list_requests() {
 
 
 	$sql="select  count(*) as total from `User Request Dimension` URD $where   ";
-
+print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
