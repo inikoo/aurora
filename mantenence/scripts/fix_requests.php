@@ -33,7 +33,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 
 
-$sql=sprintf("select `Previous Page`,`Site Key`,`User Request Key` from `User Request Dimension`  where `User Request Referral Page URL Key` is NULL  and `Previous Page`!='' limit 1000000 ");
+$sql=sprintf("select `Previous Page`,`Site Key`,`User Request Key` from `User Request Dimension`  where `User Request Referral Page URL Key` is NULL  and `Previous Page`!=''  ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	//print_r($row);
