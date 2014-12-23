@@ -124,21 +124,7 @@
 				</div>
 			</div>
 		</div>
-		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_orders')  }display:none{/if}" id="pending_orders_block">
-			<div class="data_table" style="clear:both;">
-				<span class="clean_table_title">{t}Pending Orders{/t} 
-				</span> 
-					<div class="elements_chooser">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Packed}selected{/if} label_Packed" id="elements_Packed" table_type="Packed">{t}Packed{/t} (<span id="elements_Packed_number">{$elements_number.Packed}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number">{$elements_number.InWarehouse}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number">{$elements_number.SubmittedbyCustomer}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number">{$elements_number.InProcess}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number">{$elements_number.InProcessbyCustomer}</span>)</span> 
-					</div>
-				
-				<div class="table_top_bar space">
-				</div>
-				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-				<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
-				</div>
-			</div>
-		</div>
+		
 		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_post')  }display:none{/if}" id="pending_post_block">
 			<span class="clean_table_title">{t}Pending Post{/t} 
 			<img src="art/pdf.gif" style="position:relative;height:11px;top:4.5px" title="{t}Label Address{/t}" onclick="window.location='customers_address_label.pdf.php?label=l7159&type=send_post&id={$store->id}'"></span> 
