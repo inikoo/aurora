@@ -60,6 +60,7 @@
 						<td colspan="2">{t}Part List{/t}</td>
 						<td colspan="2"> 
 						<div class="buttons small" id="product_part_items" product_part_key="{$product->get_current_product_part_key()}">
+						<img id="wait_edit_part" style="float:right;display:none" src="art/loading.gif" alt="waiting"> 
 							<button style="margin-right:0px;{if $product->get('Product Type')=='normal' and $num_parts!=0}xdisplay:none{/if}" id="add_part" class="state_details">{t}Add Part to List{/t}</button> <button class="positive" style="visibility:hidden" id="save_edit_part" onclick="save_part()" class="state_details">{t}Save{/t}</button> <button class="negative" style="visibility:hidden" id="reset_edit_part" onclick="reset_part()" class="state_details">{t}Cancel{/t}</button> 
 						</div>
 						</td>

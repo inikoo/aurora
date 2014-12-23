@@ -34,7 +34,7 @@
 	<div class="tabbed_container no_padding">
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
+				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='type'}selected{/if}" id="details_subtab_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -142,6 +142,31 @@
 				<form onsubmit="return false;" style="position:relative;left:-3px">
 <textarea id="Family_Description" ovalue="{$family->get('Product Family Description')|escape}" rows="20" cols="75">{$family->get('Product Family Description')|escape}</textarea> 
 				</form>
+			</div>
+			<div id="d_details_subtab_type" style="{if $edit_details_subtab!='type' }display:none{/if}">
+			<table class="edit" style="width:100%">
+						<tr class="title">
+							<td colspan="3">{t}Sales Type{/t}</td>
+						</tr>
+						<tr class="first">
+							<td style="width:180px" class="label">{t}Family Type{/t}:</td>
+							<td style="width:600px" class="buttons left small"> 
+							<input type="hidden" id="Family_Sales_Type" value="{$sales_type}" ovalue="{$sales_type}" tag="{$sales_type}|replace:' ':'_'"> 
+							<div class="buttons" id="sales_type_options">
+								<button id="family_sales_type_Public_Sale" class="item {if $sales_type=='Public Sale'}selected{/if}" onclick="change_sales_type('Public Sale', this)" tag="Public_Sale" >{t}Public Sale{/t}</button> 
+								<button id="family_sales_type_Private_Sale" class="item {if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale',this)" tag="Private_Sale">{t}Private Sale{/t}</button> 
+								<button id="family_sales_type_Not_for_Sale_Sa" class="item {if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', this)" tag="Not_For_Sale">{t}Not For Sale{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						<tr class="buttons">
+							<td colspan="2"> 
+							<div class="buttons" style="float:right">
+								<button class="positive disabled" id="save_edit_family_sales_type">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_family_sales_type">{t}Reset{/t}</button> 
+							</div>
+							</td>
+						</tr>
+					</table>
 			</div>
 		</div>
 		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if};">

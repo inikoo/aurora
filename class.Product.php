@@ -202,6 +202,18 @@ class product extends DB_Table {
 		}
 	}
 
+function load_acc_data(){
+if($this->pid){
+		$sql=sprintf("select * from `Product Data Dimension` where `Product ID`=%d",$this->pid);
+		$res =mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			foreach ($row as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+
+		}
+		}
+	}
 
 	function find($raw_data,$options) {
 
@@ -1057,7 +1069,7 @@ class product extends DB_Table {
 			$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$this->new_id);
 			mysql_query($sql);
 
-			$sql=sprintf("insert into  `Product Data Dimension`  (`Product ID`) values (%d) ",$this->new_id);
+			$sql=sprintf("insert into  `Product Data Dimension`  (`Product ID`) values (%d) ",$this->pid);
 			mysql_query($sql);
 
 			$editor_data=$this->get_editor_data();
@@ -1335,7 +1347,7 @@ class product extends DB_Table {
 		}
 
 		foreach ($list as $item) {
-			if ($old_items_data[ $item['Part SKU'] ] ['Product Part List Note']!=$header_data['Product Part List Note']   ) {
+			if ($old_items_data[ $item['Part SKU'] ]['Product Part List Note']!=$header_data['Product Part List Note']   ) {
 				$sql=sprintf("update `Product Part List` set `Product Part List Note`=%s where `Product Part List Key`=%d ",
 					prepare_mysql($item['Product Part List Note']),
 					$old_items_data[$item['Part SKU']]['Product Part List Key']
