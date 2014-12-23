@@ -2413,7 +2413,7 @@ function list_requests() {
 
 
 	$sql="select  count(*) as total from `User Request Dimension` URD $where   ";
-print $sql;
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
