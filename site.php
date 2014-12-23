@@ -413,7 +413,7 @@ $to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
 $from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
 $smarty->assign('to_little_edian',$to_little_edian);
 $smarty->assign('from_little_edian',$from_little_edian);
-
+$smarty->assign('calendar_id','sales');
 
 $smarty->display('site.tpl');
 
