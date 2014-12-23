@@ -2499,9 +2499,12 @@ function list_requests() {
 	$order='`Date`';
 }
 
-	$sql=sprintf("select URD.`Page Key` ,PSD.`Page Code`,`URL`,PSD.`Page Store Section`, PP.`Page Code` previous_code ,PP.`Page Key` previous_page_key  ,`IP`,`Previous Page`,`Previous Page Key`,`Customer Key`,`Customer Name`,`User Handle`, `Date` from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `Page Store Dimension` PP on (URD.`Previous Page Key`=PP.`Page Key`)  left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+	$sql=sprintf("select URD.`Page Key` ,PSD.`Page Code`,PSD.`Page Store Section`,`IP`,`Customer Key`,`Customer Name`,`User Handle`, `Date` ,PP.`Page Key`,PP.`Page URL`
+	from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) 
+	left join `Page URL Dimension` PP on (URD.`User Request Referral Page URL Key`=PP.`Page URL Key`)  
+	left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
-print $sql;
+//print $sql;
 
 	$result=mysql_query($sql);
 
@@ -2513,7 +2516,8 @@ print $sql;
 		else
 			$customer='<span style="color:#777;font-style:italic">'.$row['IP'].'</span>';
 
-		$previous_page=$row['Previous Page'];
+		$previous_page=$row['Page URL'];
+		/*
 		if ($row['previous_page_key']) {
 			$previous_page=sprintf('<a href="page.php?id=%d">%s</a>',$row['previous_page_key'],$row['previous_code']);
 		}
@@ -2522,6 +2526,8 @@ print $sql;
 		if ($row['Page Store Section']=='Not Found') {
 			$previous_page='<b>'.$row['URL'].'</b> '.$previous_page;
 		}
+		*/
+		
 		$data[]=array(
 			'customer'=>$customer,
 			'handle'=>$row['User Handle'],
@@ -2529,7 +2535,7 @@ print $sql;
 			'ip'=>$row['IP'],
 			'previous_page'=>$previous_page,
 			'page'=>sprintf('<a href="page.php?id=%d">%s</a>',$row['Page Key'],$row['Page Code']),
-			'url'=>$row['URL']
+			'url'=>$row['Page URL']
 
 		);
 
