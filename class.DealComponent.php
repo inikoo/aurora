@@ -178,6 +178,7 @@ class DealComponent extends DB_Table {
 		$metadata='';
 
 		foreach ($conditions as $condition) {
+
 			$metadata.=';'.DealComponent::parse_individual_allowance_metadata($condition,$allowance_description);
 		}
 		$metadata=preg_replace('/^;/','',$metadata);
@@ -480,35 +481,57 @@ class DealComponent extends DB_Table {
 
 
 
-
-
-	function update_term($thin_description) {
-		$this->updated=false;
+	function parse_term_description($thin_description) {
 
 
 		switch ($this->data['Deal Component Terms Type']) {
 		case('Family Quantity Ordered'):
 		case('Product Quantity Ordered'):
 			if (!is_numeric($thin_description)) {
-				$this->msg=_('Term should be numeric');
-				return;
+				$msg=_('Term should be numeric');
+				$error=true;
+				return array($thin_description,$error,$msg);
+
 			}elseif ($thin_description<=0) {
-				$this->msg=_('Term should be more than zero');
-				return;
+				$msg=_('Term should be more than zero');
+				$error=true;
+				return array($thin_description,$error,$msg);
+
 			}
 
 			$term_description="order ".number($thin_description)." or more";
+			return array($term_description,false,'');
 		default:
 			$term_description=$thin_description;
+			return array($term_description,false,'');
 
 
 		}
 
 
+
+
+
+	}
+
+
+	function update_term($thin_description) {
+		$this->updated=false;
+
+
+		list($term_description,$error,$msg)=$this->parse_term_description($thin_description);
+		if ($error) {
+			$this->error=true;
+			$this->msg=$msg;
+			return;
+		}
+
 		$term_metadata=$this->parse_term_metadata(
 			$this->data['Deal Component Terms Type']
 			,$term_description
 		);
+
+
 		if ($term_metadata!=$this->data['Deal Component Terms']) {
 
 			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Terms Description`=%s ,`Deal Component Terms`=%s where `Deal Component Key`=%d"
@@ -530,30 +553,49 @@ class DealComponent extends DB_Table {
 
 	}
 
-	function update_allowance($thin_description) {
-		$this->updated=false;
-
+	function parse_allowance_description($thin_description) {
 
 		switch ($this->data['Deal Component Allowance Type']) {
 		case('Percentage Off'):
+
+
 			$thin_description=preg_replace('/\s*%$/','',$thin_description);
 
 			if (!is_numeric($thin_description)) {
-				$this->msg=_('allowance should be numeric');
-				return;
+				$msg=_('Value should be a percentage');
+				$error=true;
+				return array($thin_description,$error,$msg);
+
 			}
 			$thin_description=abs($thin_description);
 
 			if ($thin_description>100) {
-				$this->msg=_('allowance can not be more than 100%');
-				return;
+				$msg=_('Discount can not be more than 100%');
+				$msg=_('Value should be a percentage');
+				$error=true;
+				return array($thin_description,$error,$msg);
 			}
 
-			$allowance_description=number($thin_description)."%";
-
+			$allowance_description=number($thin_description)."% off";
+			return array($allowance_description,false,'');
 		default:
 			$allowance_description=$thin_description;
+			return array($allowance_description,false,'');
 
+		}
+
+
+	}
+
+	function update_allowance($thin_description) {
+		$this->updated=false;
+
+
+		list($allowance_description,$error,$msg)=$this->parse_allowance_description($thin_description);
+		if ($error) {
+			$this->error=true;
+			$this->msg=$msg;
+			return;
 		}
 
 
@@ -561,6 +603,9 @@ class DealComponent extends DB_Table {
 			$this->data['Deal Component Allowance Type']
 			,$allowance_description
 		);
+
+
+
 		if ($allowance_metadata!=$this->data['Deal Component Allowance']) {
 
 			$sql=sprintf("insert into `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
@@ -622,45 +667,114 @@ class DealComponent extends DB_Table {
 		$deal->update_number_components();
 	}
 
-	function update($data,$options='') {
+	function update_terms_allowances($data,$options='') {
+
+		$updated=false;
+		$allowance_changed=false;
+		$term_changed=false;
+
+		list($allowance_description,$error,$msg)=$this->parse_allowance_description($data['Allowances']);
+
+		if ($error) {
+			$this->error=true;
+			$this->msg=$msg;
+			return;
+		}
+		list($term_description,$error,$msg)=$this->parse_term_description($data['Terms']);
+
+		if ($error) {
+			$this->error=true;
+			$this->msg=$msg;
+			return;
+		}
+
+		$allowance_metadata=$this->parse_allowance_metadata($this->data['Deal Component Allowance Type'],$allowance_description);
+		if ($allowance_metadata!=$this->data['Deal Component Allowance']) {
+			$allowance_changed=true;
+		}
+
+		$term_metadata=$this->parse_term_metadata($this->data['Deal Component Terms Type'],$term_description);
+
+
+		if ($term_metadata!=$this->data['Deal Component Terms']) {
+			$term_changed=true;
+		}
+
+		if ($allowance_changed or $term_changed) {
+
+			if ($this->data['Deal Component Public']=='No') {
+
+				$sql=sprintf("update `Deal Component Dimension` set `Deal Component Terms Description`=%s ,`Deal Component Terms`=%s where `Deal Component Key`=%d"
+					,prepare_mysql($term_description)
+					,prepare_mysql($term_metadata)
+					,$this->id
+				);
+
+				mysql_query($sql);
+
+				$sql=sprintf("update `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
+					,prepare_mysql($allowance_description)
+					,prepare_mysql($allowance_metadata)
+					,$this->id
+				);
+				mysql_query($sql);
+				$this->updated=true;
+				$this->data['Deal Component Allowance Description']=$allowance_description;
+				$this->data['Deal Component Allowance']=$allowance_metadata;
+				$this->data['Deal Component Terms Description']=$term_description;
+				$this->data['Deal Component Terms']=$term_metadata;
 
 
 
+			}else {
 
 
-		if ($this->data['Deal Component Public']=='No') {
-
-			$this->update_field_switcher('Deal Component Name',$data['Deal Component Name']);
-			$this->update_allowance($data['Allowances']);
-			$this->update_term($data['Terms']);
-		}else {
+				$old_metadata=new DealComponent($this->id);
+				$deal_metadata_data=$this->data;
+				$old_metadata->update_field_switcher('Deal Component Record Type','Historic');
+				$old_metadata->update_field_switcher('Deal Component Status','Finish');
 
 
-			$old_metadata=new DealComponent($this->id);
-			$deal_metadata_data=$this->data;
-			$old_metadata->update_field_switcher('Deal Component Record Type','Historic');
 
-			$old_metadata->update_field_switcher('Deal Component Expiration Date',gmdate('Y-m-d H:i:s'));
+				$old_metadata->update_field_switcher('Deal Component Expiration Date',gmdate('Y-m-d H:i:s'));
 
-			if ($this->data['Deal Component Status']!='Active') {
-				$deal_metadata_data['Deal Component Public']='No';
+				if ($this->data['Deal Component Status']!='Active') {
+					$deal_metadata_data['Deal Component Public']='No';
+				}
+				$deal_metadata_data['Deal Component Expiration Date']='';
+
+				$deal_metadata_data['Deal Component Total Acc Used Orders']=0;
+				$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
+				unset($deal_metadata_data['Deal Component Key']);
+				$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
+                $deal_metadata_data['Deal Component Allowance Description']=$allowance_description;
+				$deal_metadata_data['Deal Component Allowance']=$allowance_metadata;
+				$deal_metadata_data['Deal Component Terms Description']=$term_description;
+				$deal_metadata_data['Deal Component Terms']=$term_metadata;
+				
+				
+
+				
+				$this->create($deal_metadata_data);
+
+				$deal=new Deal($this->data['Deal Component Deal Key']);
+				$deal->update_field_switcher('Deal Description',$this->get('Description'));
+	
+
+
 			}
-			$deal_metadata_data['Deal Component Expiration Date']='';
-
-			$deal_metadata_data['Deal Component Total Acc Used Orders']=0;
-			$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
-			unset($deal_metadata_data['Deal Component Key']);
-			$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
-
-			//print_r($deal_metadata_data);
-
-			$this->create($deal_metadata_data);
-			$this->update_allowance($data['Allowances']);
-			$this->update_term($data['Terms']);
 
 
+
+		}else {
+			return;
 
 		}
+
+
+		
+
+
 
 
 	}

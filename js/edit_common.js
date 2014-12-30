@@ -533,7 +533,6 @@ function validate_scope_edit(branch) {
 
     var errors = false;
     var changed = false;
-
     for (items in validate_scope_data[branch]) {
 
         //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
@@ -584,13 +583,12 @@ function validate_scope_new(branch) {
     var errors = false;
     for (items in validate_scope_data[branch]) {
         //if(items=='user_handle')
-        //alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
+       // alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
         if (validate_scope_data[branch][items].required == true && validate_scope_data[branch][items].validated == false) {
-            //    alert(branch+' , '+items+" error")
+          //      alert(branch+' , '+items+" error")
             errors = true;
         }
     }
-
     if (errors) {
         Dom.addClass('save_new_' + branch, 'disabled');
     } else {
@@ -638,10 +636,10 @@ function regex_validation(regexp, query) {
 
     var validator = new RegExp(regexp, "i");
     if (!validator.test(query)) {
-        /// alert("Err "+query);
+       
         return false;
     } else {
-        //alert('ok')
+      
         return true;
     }
 }
@@ -717,7 +715,7 @@ function client_validation(branch, items, query) {
 function validate_general_new(branch, items, query) {
 
     var data = validate_scope_data[branch][items];
-    if ('' != trim(query.toLowerCase())) {
+    if ('' != trim(query)) {
         validate_scope_data[branch][items].changed = true;
 
         if (data.ar == 'find') {
@@ -920,7 +918,7 @@ function save_edit_general(branch) {
 
             save_edit_general_tokens.push(item_name)
 
-            alert(scope_edit_ar_file+'?'+postData);
+           // alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
@@ -1161,7 +1159,7 @@ function save_new_general(branch) {
     for (items in validate_scope_data[branch]) {
         //alert()
         var item_input = Dom.get(validate_scope_data[branch][items].name);
-        //alert(item_input+' : '+items)
+      //  alert(validate_scope_data[branch][items].name+' => '+item_input.value)
         values[validate_scope_data[branch][items].dbname] = item_input.value;
         //alert(validate_scope_data[branch][items].dbname+' --- '+item_input.value)
     }
@@ -1177,7 +1175,7 @@ function save_new_general(branch) {
  // alert(request)
   YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {

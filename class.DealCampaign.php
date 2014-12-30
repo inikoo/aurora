@@ -142,7 +142,7 @@ class DealCampaign extends DB_Table {
 
 		// print_r($data);
 		$sql=sprintf("insert into `Deal Campaign Dimension` %s %s",$keys,$values);
-		// print "$sql\n";
+		
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id);
@@ -173,6 +173,21 @@ class DealCampaign extends DB_Table {
 		return false;
 	}
 
+function get_from_date(){
+	if($this->data['Deal Campaign Valid From']==''){
+		return '';
+	}else{
+		return gmdate('d-m-Y',strtotime($this->data['Deal Campaign Valid From'].' +0:00' ));
+	}
+}
+
+function get_to_date(){
+	if($this->data['Deal Campaign Valid To']==''){
+		return '';
+	}else{
+		return gmdate('d-m-Y',strtotime($this->data['Deal Campaign Valid To'].' +0:00' ));
+	}
+}
 
 
 	function add_deal($data) {

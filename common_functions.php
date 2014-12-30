@@ -320,7 +320,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 
 
 
-	return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2);
+	return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2,'mysql_from'=>$mysql_date1,'mysql_to'=>$mysql_date2);
 
 
 }

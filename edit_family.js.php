@@ -388,7 +388,7 @@ deal_save(deal_key,'allowance');
 function save_metadata_deal(key) {
 
     var request = 'tipo=update_deal_metadata&deal_metadata_key=' + key + '&name=' + encodeURIComponent(Dom.get('deal_metadata_description_input' + key).value) + '&terms=' + encodeURIComponent(Dom.get('deal_term' + key).value) + '&allowances=' + encodeURIComponent(Dom.get('deal_allowance' + key).value)
-  //  alert(request)
+    alert(request)
     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_deals.php', {
         success: function(o) {
             alert(o.responseText);
@@ -496,17 +496,30 @@ Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
 
 }
 
+function deal_show_edit_state(o, id, tag) {
 
-function deal_show_edit_state(id,tag){
 
-if(tag!='Suspended'){
-Dom.setStyle('suspend_deal_button'+id,'display','')
-}else{
-Dom.setStyle('activate_deal_button'+id,'display','')
+
+    if (o.src.match(/edit.gif/)) {
+        o.src = 'art/icons/edit_disabled.png';
+       
+        if (tag != 'Suspended') {
+            Dom.setStyle('suspend_deal_button' + id, 'display', '')
+        } else {
+            Dom.setStyle('activate_deal_button' + id, 'display', '')
+        }
+
+    } else {
+        o.src = 'art/icons/edit.gif';
+        if (tag != 'Suspended') {
+            Dom.setStyle('suspend_deal_button' + id, 'display', 'none')
+        } else {
+            Dom.setStyle('activate_deal_button' + id, 'display', 'none')
+        }
+    }
 
 }
 
-}
 
 
 function deal_term_changed(deal_metadata_key){

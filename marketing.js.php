@@ -194,7 +194,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 	,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 	    			
 					,{key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"duration", label:"<?php echo _('Duration')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"duration", label:"<?php echo _('Duration')?>",  width:220,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 	
 						,{key:"deals", label:"<?php echo _('Deals')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -205,7 +205,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 ];
 	    //?tipo=products&tid=0"
 	    request='ar_deals.php?tipo=campaigns&parent=store&parent_key='+Dom.get('store_key').value+'&tableid='+tableid+'&referrer=marketing'
-	
+	//alert(request)
 	    this.dataSource11 = new YAHOO.util.DataSource(request);
 	    this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource11.connXhrMode = "queueRequests";
