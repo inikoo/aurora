@@ -575,6 +575,8 @@ class Site extends DB_Table {
 
 	function add_family_page($family_key,$raw_data) {
 
+$this->new_page=false;
+/*
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d and `Page Site Key`=%d",
 			$family_key,
 			$this->id
@@ -583,7 +585,7 @@ class Site extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			return $row['Page Key'];
 		}
-
+*/
 
 		$family=new Family($family_key);
 		if ($family->data['Product Family Store Key']!=$this->data['Site Store Key']) {
@@ -644,6 +646,7 @@ class Site extends DB_Table {
 
 
 		$page=new Page('find',$page_data,'create');
+		
 		if ($page->new) {
 			include_once 'class.Department.php';
 			$department=new Department($family->data['Product Family Main Department Key']);
