@@ -38,18 +38,7 @@
 			<p style="width:300px">
 				{$campaign->get('Deal Campaign Description')} 
 			</p>
-			<div style="width:400px">
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Trigger{/t}</td>
-						<td class="aright">{$campaign->get('Deal Campaign Trigger')} {if $campaign->get('Deal Campaign Trigger XHTML Label')}({$campaign->get('Deal Campaign Trigger XHTML Label')}){/if}</td>
-					</tr>
-					<tr>
-						<td>{t}Terms type{/t}</td>
-						<td class="aright">{$campaign->get('Deal Campaign Terms Type')}</td>
-					</tr>
-				</table>
-			</div>
+			
 		</div>
 		<div id="block_customers" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span id="table_title" class="clean_table_title">{t}Customers{/t}</span> 

@@ -92,7 +92,7 @@
 				<div class="data_table" sxtyle="margin:25px 10px;">
 					<span class="clean_table_title" style="margin-right:5px">{t}Deals{/t}</span> 
 					<div class="buttons small left">
-						<button id="add_deal"> <img src="art/icons/add.png"> {t}New{/t}</button> 
+						<button id="add_deal" onClick="location.href='new_deal.php?parent=family&parent_key={$family->id}'"> <img src="art/icons/add.png"> {t}New{/t}</button> 
 					</div>
 					<div class="table_top_bar space">
 					</div>

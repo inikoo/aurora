@@ -558,7 +558,7 @@
 							<td class="label">{t}RRP per Unit{/t}:</td>
 							<td style="text-align:left"> 
 							<div>
-								<input style="text-align:left;width:100%" id="Product_RRP" value="{$product->get('RRP')}" ovalue="{$product->get('RRP')}" valid="0"> 
+								<input style="text-align:left;width:100%" id="Product_RRP" value="{$product->get('RRP Per Unit')}" ovalue="{$product->get('RRP Per Unit')}" valid="0"> 
 								<div id="Product_RRP_Container">
 								</div>
 							</div>

@@ -611,7 +611,7 @@ function list_departments() {
          sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families
          from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref ";
 	$result=mysql_query($sql);
-//print $sql;
+	//print $sql;
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$sum_families=$row['sum_families'];
 		$sum_active=$row['sum_active'];
@@ -1409,15 +1409,15 @@ function list_products() {
 
 	//`Product $db_interval Acc 1YB Invoiced Amount`
 	//print $db_interval;
-	
-	if (!($db_interval=='Total' or $db_interval=='3 Year')){
-				$fields="`Product $db_interval Acc 1YB Invoiced Amount`,";
-}else{
-$fields='';
-}
-	
+
+	if (!($db_interval=='Total' or $db_interval=='3 Year')) {
+		$fields="`Product $db_interval Acc 1YB Invoiced Amount`,";
+	}else {
+		$fields='';
+	}
+
 	$sql="select P.`Product ID`,`Product Code`,`Store Currency Code`,`Product Price`,`Product Units Per Case`,`Product $db_interval Acc Invoiced Amount`,`Product $db_interval Acc Profit`,`Product $db_interval Acc Days On Sale`,`Product $db_interval Acc Days Available` ,
-	$fields 
+	$fields
 	`Product $db_interval Acc Quantity Invoiced`,`Product $db_interval Acc Margin`,`Product Availability`,`Product Sales Type`,`Product Stage`,`Product Main Type`,`Product Package Type`,`Product Web State`,`Product Store Key`,`Store Code`,`Product Web Configuration`,`Product Availability State`,
 	`Product Available Days Forecast`,`Product Record Type`,`Product Currency`,`Product XHTML Short Description`,`Product Main Image`,`Product Name`,`Product Valid From`,`Product Last Updated`,
 	`Product Family Name`,`Product Main Department Name`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product GMROI`,
@@ -1526,7 +1526,7 @@ $fields='';
 		}
 
 		if ($db_interval=='Total' or $db_interval=='3 Year') {
-			
+
 			$avg_sold_over='';
 			$days_available_over='';
 			$percentage_available='';

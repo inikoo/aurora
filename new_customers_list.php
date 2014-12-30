@@ -36,7 +36,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-		'css/edit.css',
+	'css/edit.css',
 
 	'css/new_list.css',
 
@@ -59,7 +59,7 @@ $js_files=array(
 	'js/customers_common.js',
 	'new_customers_list.js.php',
 	'js/edit_common.js',
-	
+
 );
 
 $smarty->assign('search_label',_('Customers'));
@@ -166,12 +166,12 @@ $payment_method=array(
 	'Paypal'=>array('name'=>_('Paypal'),'selected'=>false,'field'=>'Paypal' ),
 	'Check'=>array('name'=>_('Check'),'selected'=>false,'field'=>'Check' ),
 	'BankTransfer'=>array('name'=>_('Bank Transfer'),'selected'=>false,'field'=>'Bank Transfer' ),
-		'CashonDelivery'=>array('name'=>_('Cash on Delivery'),'selected'=>false,'field'=>'Cash on Delivery' ),
+	'CashonDelivery'=>array('name'=>_('Cash on Delivery'),'selected'=>false,'field'=>'Cash on Delivery' ),
 
 	'Other'=>array('name'=>_('Other'),'selected'=>false,'field'=>'Other' ),
 	'Unknown'=>array('name'=>_('Unknown'),'selected'=>false,'field'=>'Unknown' ),
-	
-	
+
+
 	'all'=>array('name'=>_('Any'),'selected'=>true,'field'=>''),
 
 );

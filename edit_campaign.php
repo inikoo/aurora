@@ -57,7 +57,6 @@ $smarty->assign('campaign',$campaign);
 
 
 
-
 $smarty->assign('edit_block_view',$_SESSION['state']['campaign']['edit_block_view']);
 
 $css_files=array(
@@ -88,7 +87,7 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/search.js',
-              'edit_campaign.js.php',
+              'js/edit_campaign.js',
           
           );
 

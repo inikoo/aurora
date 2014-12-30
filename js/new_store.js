@@ -14,8 +14,6 @@ function save_new_store() {
 
 function post_new_create_actions(branch, response) {
     window.location = "edit_store.php?view=details&id=" + response.store_key
-
-
 }
 
 function cancel_add_store() {
@@ -125,10 +123,6 @@ function init() {
 
 
     };
-
-
-
-
     validate_scope_metadata = {
         'store': {
             'type': 'new',

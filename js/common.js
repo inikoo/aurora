@@ -359,9 +359,6 @@ function updateCal() {
 
 function handleSelect(type, args, obj) {
    
-  
-   
-   
    var dates = args[0];
     var date = dates[0];
     var year = date[0],

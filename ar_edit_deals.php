@@ -37,6 +37,19 @@ case('create_campaign'):
 
 	create_campaign($data);
 	break;
+	
+case('edit_campaign_description'):
+case('edit_campaign_status'):
+	$data=prepare_values($_REQUEST,array(
+			'campaign_key'=>array('type'=>'key'),
+			'okey'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'newvalue'=>array('type'=>'string')
+
+		));
+
+	update_campaign($data);
+	break;	
 
 case('update_deal_metadata'):
 	$data=prepare_values($_REQUEST,array(
@@ -99,15 +112,20 @@ function update_deal_metadata($data) {
 
 
 	$deal_metadata=new DealComponent($data['deal_metadata_key']);
-	$deal_metadata->update(array(
-			'Deal Component Name'=>$data['name'],
+	
+					$deal_metadata->update_field_switcher('Deal Component Name',$data['name']);
+
+	$deal_metadata->update_terms_allowances(array(
 			'Terms'=>$data['terms'],
 			'Allowances'=>$data['allowances'])
 	);
 	if (!$deal_metadata->error) {
 		$response= array('state'=>200,
+		'updated'=>$deal_metadata->updated,
 			'deal_metadata_key'=>$deal_metadata->id,
-			'deal_metadata_description'=>$deal_metadata->get('Description')
+			'deal_metadata_description'=>$deal_metadata->get('Description'),
+			'deal_metadata_name'=>$deal_metadata->get('Deal Component Name'),
+			
 		);
 
 	} else {
@@ -118,6 +136,38 @@ function update_deal_metadata($data) {
 
 
 }
+
+function update_campaign($data) {
+
+	require_once 'class.DealCampaign.php';
+
+
+
+
+	$campaign=new DealCampaign($data['campaign_key']);
+	
+	$campaign->update(array($data['key']=>$data['newvalue']));
+
+	
+	if (!$campaign->error) {
+		$response= array('state'=>200,
+		'updated'=>$campaign->updated,
+			'newvalue'=>$campaign->new_value,
+			'key'=>$data['okey'],
+			
+		);
+
+	} else {
+		$response= array('state'=>400,'msg'=>$deal_metadata->msg);
+	}
+	echo json_encode($response);
+
+
+
+}
+
+
+
 
 function old_edit_deal() {
 
@@ -606,7 +656,7 @@ function list_deals_for_edition() {
 
 		}
 
-		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span> <img style='cursor:pointer' onClick='deal_show_edit_state(".$deal_metadata->id.",\"".$deal_metadata->data['Deal Component Status']."\")'  src='art/icons/edit.gif'>";
+		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span> <img style='cursor:pointer' onClick='deal_show_edit_state(this,".$deal_metadata->id.",\"".$deal_metadata->data['Deal Component Status']."\")'  src='art/icons/edit.gif'>";
 		$status.= '<div style="margin-top:10px;margin-left:0px;display:none" id="suspend_deal_button'.$deal_metadata->id.'"  class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative" style="margin-left:0"> '._("Suspend").'</button></div>';
 		$status.= '<div style="margin-top:10px;margin-left:0px;display:none" id="activate_deal_button'.$deal_metadata->id.'"   class="buttons small left"><button onClick="activate_deal_metadata('.$deal_metadata->id.')" class="positive"> '._("Activate").'</button></div>';
 
@@ -717,9 +767,29 @@ function create_campaign($data) {
 
 
 	if ($store->id) {
-		$campaign_data=$data['values'];
+		
 
-		$gold_camp=$store->add_campaign($campaign_data);
+		$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'],$data['values']['Deal Campaign Valid To'],'','only_dates');
+		
+		$data['values']['Deal Campaign Valid From']=$dates['mysql_from'].' 00:00:00';
+		
+		
+		$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?$dates['mysql_to'].' 23:59:59':'');
+		
+		$campaign_data=$data['values'];
+		$campaign=$store->add_campaign($campaign_data);
+		
+		if ($campaign->new) {
+		$response=array('state'=>200,'campaign_key'=>$campaign->id,'action'=>'created');
+
+	}elseif ($store->id) {
+		$response=array('state'=>400,'campaign_key'=>$campaign->id,'action'=>'found');
+
+	}else {
+		$response=array('state'=>400,'msg'=>$campaign->msg);
+
+	}
+	echo json_encode($response);
 
 	}else {
 		$response=array('state'=>404,'resp'=>'store_not_found');

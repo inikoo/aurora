@@ -850,7 +850,6 @@ function new_page($data) {
 
 	$site=new Site($data['site_key']);
 	$page_data=array();
-
 	switch ($data['parent']) {
 	case'site':
 		$site->add_store_page($page_data);
