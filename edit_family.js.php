@@ -1386,7 +1386,7 @@ function new_family_page(site_key){
 
 
 var request='tipo=new_page&parent=family&parent_key='+Dom.get('family_key').value+'&site_key='+site_key
-alert('ar_edit_sites.php'+request)
+//alert('ar_edit_sites.php'+request)
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						'ar_edit_sites.php', {
