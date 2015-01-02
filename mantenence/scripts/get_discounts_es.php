@@ -43,8 +43,8 @@ $version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2002-spain.xls';
-$csv_file='es_desc_tmp.csv';
+$file_name='es.xls';
+$csv_file='es_tmp.csv';
 //exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 //exit;
 
@@ -79,7 +79,7 @@ $reread_deals=true;
 if ($reread_deals) {
 
 
-	$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Store Key`=%d",$store_key);
+	$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Store Key`=%d and `Deal Campaign Key`!=8",$store_key);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$sql=sprintf("delete from `Deal Target Bridge` where `Deal Key`=%d",$row['Deal Key']);
@@ -90,16 +90,18 @@ if ($reread_deals) {
 		mysql_query($sql);
 		$sql=sprintf("delete from `Order No Product Transaction Deal Bridge` where `Deal Key`=%d",$row['Deal Key']);
 		mysql_query($sql);
+		
+		$sql=sprintf("delete from `Deal Target Bridge` where `Deal Key`=%d",$row['Deal Key']);
+	mysql_query($sql);
+
 	}
 
-	$sql=sprintf("delete from `Deal Target Bridge` where `Deal Store Key`=%d",$store_key);
+	
+	$sql=sprintf("delete from `Deal Campaign Dimension` where `Deal Campaign Store Key`=%d and `Deal Campaign Key`!=8",$store_key);
 	mysql_query($sql);
-
-	$sql=sprintf("delete from `Deal Campaign Dimension` where `Deal Campaign Store Key`=%d",$store_key);
+	$sql=sprintf("delete from `Deal Component Dimension` where `Deal Component Store Key`=%d and `Deal Component Campaign Key`!=8",$store_key);
 	mysql_query($sql);
-	$sql=sprintf("delete from `Deal Component Dimension` where `Deal Component Store Key`=%d",$store_key);
-	mysql_query($sql);
-	$sql=sprintf("delete from `Deal Dimension` where `Deal Store Key`=%d",$store_key);
+	$sql=sprintf("delete from `Deal Dimension` where `Deal Store Key`=%d and `Deal Campaign Key`!=8",$store_key);
 	mysql_query($sql);
 
 
@@ -112,6 +114,10 @@ $campaign_data=array('Deal Campaign Code'=>'Oro','Deal Campaign Name'=>'Club Oro
 $gold_camp=new DealCampaign('find create',$campaign_data);
 $campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Alto volumen','Deal Campaign Store Key'=>$store_key);
 $vol_camp=new DealCampaign('find create',$campaign_data);
+
+//$campaign_data=array('Deal Campaign Code'=>'FOB','Deal Campaign Name'=>'Regalo del Bienvenida','Deal Campaign Store Key'=>$store_key);
+//$fob_camp=new DealCampaign('find create',$campaign_data);
+
 //$campaign_data=array('Deal Campaign Code'=>'Bogof','Deal Campaign Name'=>'Compra 1 te damos 1 gratis','Deal Campaign Store Key'=>$store_key);
 //$bogof_camp=new DealCampaign('find create',$campaign_data);
 
