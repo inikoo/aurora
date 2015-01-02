@@ -21,7 +21,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {print "Error can not connect with database server\n";exit;}
-//$dns_db='dw';
+$dns_db='costadw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {print "Error can not access the database\n";exit;}
 
@@ -39,7 +39,7 @@ $version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2002-spain.xls';
+$file_name='es.xls';
 $csv_file='es_tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
