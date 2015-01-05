@@ -11,7 +11,6 @@
 	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} 
 </head>
 <body class=" yui-skin-sam inikoo">
-<video autoplay loop muted poster="xmas/xmas2.jpg" id="bgvid"> <source src="art/xmas/xmas2.webm" type="video/webm"> <source src="art/xmas/xmas2.mp4" type="video/mp4"> </video> 
 <div id="doc4" class="">
 	<div id="hd">
 		<div class="top_navigation">
@@ -37,8 +36,6 @@
 				{$message} 
 			</p>
 		</div>
-		<img src="art/xmas/inikoo_logo_xmas.png" style="position:absolute;right:400px;opacity:.8">
-		<span style="position:absolute;right:340px;opacity:.8;top:220px;font-size:160%;color:#fff;font-family: 'Satisfy', cursive;">{t}Merry Christmas{/t}</span>
 	<div id="login_box" style="border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;xmargin-top:0px;xmargin-right:30px;margin:0px auto">
 		<h2 id="login_title_staff" style="margin-top:10px;{if $login_type!='staff'}display:none{/if}">
 			{t}Staff Login{/t} 
