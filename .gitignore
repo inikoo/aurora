@@ -4,6 +4,7 @@ conf/key.php
 /nbproject/*
 /nbproject/private/
 mantenence/smarty.php
+mantenence/scripts/*.csv
 gearman/conf/*
 gearman/downloads_AW/*
 downloads/*
