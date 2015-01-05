@@ -32,8 +32,8 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=765 order by  `Product ID` ";
-$sql="select `Product ID` from `Product Dimension` order by  `Product ID` ";
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=1663 order by  `Product ID` ";
+//$sql="select `Product ID` from `Product Dimension` order by  `Product ID` ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -47,6 +47,7 @@ $sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Pro
 			,prepare_mysql($product->get('XHTML Short Description'))
 			,$product->pid
 		);
+		print $sql;
 		mysql_query($sql);
 		
 //$product->update_part_ratio();
