@@ -47,7 +47,7 @@ $sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Pro
 			,prepare_mysql($product->get('XHTML Short Description'))
 			,$product->pid
 		);
-		print "$sql\n";
+		//print "$sql\n";
 		mysql_query($sql);
 		
 //$product->update_part_ratio();
