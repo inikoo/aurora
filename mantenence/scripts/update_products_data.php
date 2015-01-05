@@ -38,17 +38,17 @@ $sql="select `Product ID` from `Product Dimension` order by  `Product ID` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $product=new Product('pid',$row['Product ID']);
-$product->update_parts();
+//$product->update_parts();
 //$product->update_availability();
 //$product->update_sales_averages();
-/*
+
 $sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
-,prepare_mysql($product->get('short description'))
-			,prepare_mysql($product->get('xhtml short description'))
+,prepare_mysql($product->get('Short Description'))
+			,prepare_mysql($product->get('XHTML Short Description'))
 			,$product->pid
 		);
 		mysql_query($sql);
-		*/
+		
 //$product->update_part_ratio();
 //$product->update_weight_from_parts();
 //$product->update_cost();
