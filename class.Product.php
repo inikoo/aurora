@@ -968,8 +968,8 @@ if($this->pid){
 			$price=$row['Product History Price'];
 			$this->data['Product Price']=sprintf("%.2f",$price);
 			$this->data['Product Name']=$row['Product History Name'];
-			$this->data['Product XHTML Short Description']=$this->get('xhtml short description');
-			$this->data['Product Short Description']=$this->get('short description');
+			$this->data['Product XHTML Short Description']=$this->get('XHTML Short Description');
+			$this->data['Product Short Description']=$this->get('Short Description');
 
 			$sql=sprintf("update `Product Dimension` set `Product Name`=%s,`Product Short Description`=%s ,`Product XHTML Short Description`=%s,`Product Price`=%.2f,`Product Current Key`=%d  where `Product ID`=%d "
 				,prepare_mysql($this->data['Product Name'])
@@ -1118,8 +1118,8 @@ if($this->pid){
 
 		if ($this->new_key) {
 			$sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
-				,prepare_mysql($this->get('historic short description'))
-				,prepare_mysql($this->get('historic xhtml short description'))
+				,prepare_mysql($this->get('Historic Short Description'))
+				,prepare_mysql($this->get('Historic XHTML Short Description'))
 				,$this->pid
 				,$this->id
 			);
@@ -3402,14 +3402,14 @@ if($this->pid){
 			$edit_column='Product Name';
 		$old_name=$this->get('Product Name');
 		$this->data[$edit_column]=$value;
-		$this->data['Product Short Description']=$this->get('short description');
-		$this->data['Product XHTML Short Description']=$this->get('xhtml short description');
+		$this->data['Product Short Description']=$this->get('Short Description');
+		$this->data['Product XHTML Short Description']=$this->get('XHTML Short Description');
 
 		$sql=sprintf("update `Product Dimension` set `%s`=%s ,`Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
 			,$edit_column
 			,prepare_mysql($value)
-			,prepare_mysql($this->get('short description'))
-			,prepare_mysql($this->get('xhtml short description'))
+			,prepare_mysql($this->get('Short Description'))
+			,prepare_mysql($this->get('XHTML Short Description'))
 			,$this->pid
 		);
 		if (mysql_query($sql)) {
