@@ -154,9 +154,9 @@ while ($row2=mysql_fetch_assoc($res2)) {
 
 
 			//$email_site_reminder=new EmailSiteReminder($row['Email Site Reminder Key']);
-
+			if($number_products>0){
 			send_email($subject_data,$products,$email_data[$site->data['Site Code']]);
-
+}
 			$esr_keys=preg_split('/,/',$row['esr_keys']);
 
 
