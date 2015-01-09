@@ -1228,7 +1228,6 @@ function clean_cache() {
 
     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=clear_cache&site_key=' + Dom.get('site_key').value, {
         success: function(o) {
-            alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
