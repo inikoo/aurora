@@ -9,7 +9,10 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">
-			<button style="margin-left:0px" onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button>  <span class="main_title"> {t}Editing Site{/t}: <span id="title_name">{$site->get('Site Name')}</span> (<span id="title_url">{$site->get('Site URL')}</span>) </span> 
+			<button style="margin-left:0px" onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button>  
+			<button  id="clean_cache" ><img id="clean_cache_img" src="art/icons/wand.png" alt="" /> {t}Clean Cache{/t}</button>  
+		
+			<span class="main_title"> {t}Editing Site{/t}: <span id="title_name">{$site->get('Site Name')}</span> (<span id="title_url">{$site->get('Site URL')}</span>) </span> 
 		</div>
 		<div class="buttons" style="float:right">
 		</div>

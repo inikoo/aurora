@@ -1212,8 +1212,28 @@ function hide_dialog_delete(delete_type, subject) {
 }
 
 
+function clean_cache() {
 
+    if (Dom.hasClass('waiting', Dom.get('clean_cache'))) {
+        return;
+    }
 
+    Dom.get('clean_cache_img').src = 'art/loading.gif'
+    Dom.addClass('waiting', Dom.get('clean_cache'))
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site&force=1&site_key=' + Dom.get('site_key').value, {
+        success: function(o) {
+            alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                Dom.get('clean_cache_img').src = 'art/icons/wand.png'
+                Dom.removeClass('waiting', Dom.get('clean_cache'))
+            }
+        }
+    });
+
+}
 
 function init() {
     init_search('site');
@@ -1955,6 +1975,10 @@ dialog_delete_header = new YAHOO.widget.Dialog("dialog_delete_header", {visible 
     oAutoComp9.minQueryLength = 0;
     YAHOO.util.Event.addListener('clean_table_filter_show9', "click", show_filter, 9);
     YAHOO.util.Event.addListener('clean_table_filter_hide9', "click", hide_filter, 9);
+    
+        YAHOO.util.Event.addListener('clean_cache', "click", clean_cache, 9);
+
+    
     
 
 

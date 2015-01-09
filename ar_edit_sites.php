@@ -63,6 +63,18 @@ case 'publish_site':
 		));
 	publish_site($data);
 	break;
+
+
+case 'clear_cache':
+	$data=prepare_values($_REQUEST,array(
+			'site_key'=>array('type'=>'key'),
+
+		));
+	clear_cache($data);
+	break;
+
+
+
 case('edit_page_flags'):
 	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
@@ -695,8 +707,14 @@ function publish_site($data) {
 	}else {
 		$site_protocol='http';
 	}
-	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=site&parent_key=".$site->id."&sk=x");
 
+	$request=$site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=site&parent_key=".$site->id."&sk=x";
+	if (isset($data['force'])) {
+		$request.='&force=1';
+	}
+
+
+	$template_response=$request;//file_get_contents($request);
 
 
 	$response= array('state'=>200,'template_response'=>$template_response);
@@ -704,6 +722,27 @@ function publish_site($data) {
 
 }
 
+function clear_cache($data) {
+
+
+	$site=new Site($data['site_key']);
+	if ($site->data['Site SSL']=='Yes') {
+		$site_protocol='https';
+	}else {
+		$site_protocol='http';
+	}
+
+	$request=$site_protocol.'://'.$site->data['Site URL']."/maintenance/clear_cache.php?sk=x";
+
+
+
+	$template_response=file_get_contents($request);
+
+
+	$response= array('state'=>200,'template_response'=>$template_response);
+	echo json_encode($response);
+
+}
 
 
 
@@ -724,7 +763,7 @@ function edit_page($data) {
 		$page->update_field_switcher($data['key'],$value,'no_history');
 	} else {
 
-	//print $data['key'];
+		//print $data['key'];
 		$page->update_field_switcher($data['key'],$value);
 	}
 
