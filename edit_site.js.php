@@ -119,7 +119,12 @@ function save_delete_site() {
 }
 
 function post_item_updated_actions(branch, r) {
+
+
+
     if (branch == 'site_menu') {
+
+//alert(r.key)
         if (r.key == 'css') {
             YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site_elements&element=menu_css&site_key=' + Dom.get('site_key').value, {
                 success: function(o) {
@@ -1221,7 +1226,7 @@ function clean_cache() {
     Dom.get('clean_cache_img').src = 'art/loading.gif'
     Dom.addClass('waiting', Dom.get('clean_cache'))
 
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=publish_site&force=1&site_key=' + Dom.get('site_key').value, {
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_sites.php?tipo=clear_cache&site_key=' + Dom.get('site_key').value, {
         success: function(o) {
             alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);

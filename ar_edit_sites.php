@@ -714,7 +714,7 @@ function publish_site($data) {
 	}
 
 
-	$template_response=$request;//file_get_contents($request);
+	$template_response=file_get_contents($request);
 
 
 	$response= array('state'=>200,'template_response'=>$template_response);
