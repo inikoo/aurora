@@ -995,7 +995,7 @@ if($this->pid){
 
 	function create_product_id($data) {
 
-		//print_r($data);
+		
 
 		$base_data=$this->get_base_data();
 
@@ -1019,7 +1019,7 @@ if($this->pid){
 			$this->msg='Wrong family';
 
 
-			exit("Error Creating product: product family key family not found\n");
+			exit("Error Creating product: family key ->".$base_data['Product Family Key']."<- not found\n");
 			return;
 		}
 
