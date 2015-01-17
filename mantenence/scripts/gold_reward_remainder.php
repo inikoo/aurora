@@ -41,7 +41,10 @@ global $myconf;
 $date1=date('Y-m-d',strtotime("now -24 days"));
 $date2=date('Y-m-d',strtotime("$date1 +1 month"));
 //print "$date1 $date2\n";
-$sql=sprintf("select `Customer Key`,`Customer Last Order Date` from `Customer Dimension` where Date(`Customer Last Order Date`)=%s and `Customer Main Plain Email`!=''  and `Customer Store Key`=1 and `Customer Level Type`!='VIP' ",prepare_mysql($date1));
+
+
+$sql=sprintf("select `Customer Key`,`Customer Last Order Date` from `Customer Dimension` where Date(`Customer Last Invoiced Dispatched Date`)=%s and `Customer Main Plain Email`!=''  and `Customer Store Key`=1 and `Customer Level Type`!='VIP' ",
+prepare_mysql($date1));
 
 //print "$sql";
 //exit;
@@ -49,6 +52,11 @@ $sql=sprintf("select `Customer Key`,`Customer Last Order Date` from `Customer Di
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$customer=new Customer($row['Customer Key']);
+	
+	if(count($customer->get_pending_orders_keys())>0){
+		continue;
+	}
+	
 	$name=$customer->get_greetings();
 	$email=$customer->data['Customer Main Plain Email'];
 	//print "$email $name  $date1 $date2\n";
@@ -67,6 +75,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		'subject' => 'Ancient Wisdom Gold Reward Reminder'
 
 	);
+
 
 	$mailer = new MadMimi('david@ancientwisdom.biz', '447ba8315277320c130646a345136dc8');
 	$response = $mailer->SendMessage($options, $body_array, true);

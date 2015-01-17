@@ -57,22 +57,22 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$store=new Store($customer->data['Customer Store Key']);
 
-$customer->update_orders();
+	$customer->update_orders();
 
-//		$customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
+	//  $customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
 
 
-$address=new Address($customer->data['Customer Billing Address Key']);
-$address->update_parents();
-//	$customer->update_orders();
+	//$address=new Address($customer->data['Customer Billing Address Key']);
+	//$address->update_parents();
+	// $customer->update_orders();
 	//$customer->update_activity();
 	//$customer->update_is_new();
 	//$customer->update_rankings();
 	$lap_time1=date('U');
-		print 'Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+	print 'Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
-	
-	
+
+
 }
 
 //exit;
