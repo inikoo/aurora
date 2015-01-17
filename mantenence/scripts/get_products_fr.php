@@ -475,7 +475,7 @@ foreach ($__cols as $cols) {
 			'Product Code'=>$code,
 			'Product Store Key'=>$store_key,
 			'Product Stage'=>'Normal',
-			'Product Locale'=>'it_IT',
+			'Product Locale'=>'fr_FR',
 			'Product Currency'=>'EUR',
 			'Product Sales Type'=>'Public Sale',
 			'Product Type'=>'Normal',

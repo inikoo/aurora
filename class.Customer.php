@@ -2561,7 +2561,6 @@ class Customer extends DB_Table {
 		$this->data['Customer Orders Invoiced']=0;
 		$this->data['Customer First Order Date']='';
 		$this->data['Customer Last Order Date']='';
-
 		$this->data['Customer First Invoiced Order Date']='';
 		$this->data['Customer Last Invoiced Order Date']='';
 
@@ -2606,6 +2605,8 @@ class Customer extends DB_Table {
 		}
 
 
+
+
 		if ($this->data['Customer Orders Invoiced']>1) {
 			$sql="select `Order Date` as date from `Order Dimension` where `Order Invoiced`='Yes'  and `Order Customer Key`=".$this->id." order by `Order Date`";
 			$last_order=false;
@@ -2632,15 +2633,15 @@ class Customer extends DB_Table {
 
 		//get payments data directly from payment
 
-		$this->data['Customer Last Dispatched Order Date']='';
+		$this->data['Customer Last Invoiced Dispatched Date']='';
 
-		$sql=sprintf("select max(`Order Dispatched Date`) as last_order_dispatched_date from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State`='Dispatched'",
+		$sql=sprintf("select max(`Order Dispatched Date`) as last_order_dispatched_date from `Order Dimension` where `Order Customer Key`=%d  and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 			$this->id
 		);
 		// print $sql."\n";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$this->data['Customer Last Dispatched Order Date']=$row['last_order_dispatched_date'];
+			$this->data['Customer Last Invoiced Dispatched Date']=$row['last_order_dispatched_date'];
 
 		}
 
@@ -2698,8 +2699,8 @@ class Customer extends DB_Table {
 		}
 
 
-		$sql=sprintf("update `Customer Dimension` set `Customer Last Dispatched Order Date`=%s,`Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
-			prepare_mysql($this->data['Customer Last Dispatched Order Date'])
+		$sql=sprintf("update `Customer Dimension` set `Customer Last Invoiced Dispatched Date`=%s,`Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
+			prepare_mysql($this->data['Customer Last Invoiced Dispatched Date'])
 			,$this->data['Customer Net Balance']
 			,$this->data['Customer Orders']
 			,$this->data['Customer Orders Cancelled']
@@ -2724,7 +2725,7 @@ class Customer extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		//print $sql;
+		//print "$sql\n\n";
 
 
 	}
@@ -4575,6 +4576,30 @@ class Customer extends DB_Table {
 			$dispatch_state_valid_values="'In Process by Customer','Waiting for Payment Confirmation'";
 		}else {
 			$dispatch_state_valid_values="'In Process by Customer'";
+		}
+
+		$order_keys=array();
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in (%s) ",
+			$this->id,
+			$dispatch_state_valid_values
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			//print_r($row);
+
+			$order_keys[$row['Order Key']]=$row['Order Key'];
+		}
+		return $order_keys;
+	}
+
+	function get_pending_orders_keys($dispatch_state='') {
+
+		$dispatch_state_valid_values="'Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
+
+		if ($dispatch_state=='all') {
+
+			$dispatch_state_valid_values.=",'In Process','In Process by Customer','Waiting for Payment Confirmation'";
 		}
 
 		$order_keys=array();
