@@ -202,16 +202,16 @@ class product extends DB_Table {
 		}
 	}
 
-function load_acc_data(){
-if($this->pid){
-		$sql=sprintf("select * from `Product Data Dimension` where `Product ID`=%d",$this->pid);
-		$res =mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			foreach ($row as $key=>$value) {
-				$this->data[$key]=$value;
-			}
+	function load_acc_data() {
+		if ($this->pid) {
+			$sql=sprintf("select * from `Product Data Dimension` where `Product ID`=%d",$this->pid);
+			$res =mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
 
-		}
+			}
 		}
 	}
 
@@ -731,31 +731,6 @@ if($this->pid){
 		mysql_query($sql);
 
 
-		// 1 year do it for all periods later
-
-		$interval='1 Year';
-
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
-
-		$sql=sprintf("select count(*) as on_sale, sum(`Availability`) as Availability from `Order Spanshot Fact` where `Product ID`=%d %s %s",
-			$this->pid,
-			($from_date?sprintf('and `Date`>=%s',prepare_mysql(substr($from_date,0,10))):''),
-			($to_date?sprintf('and `Date`<%s',prepare_mysql(substr($to_date,0,10))):'')
-		);
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->data["Product $db_interval Acc Days On Sale"]=$row['on_sale'];
-			$this->data["Product $db_interval Acc Days Available"]=$row['Availability'];
-		}
-		$sql=sprintf("update `Product Dimension` set `Product $db_interval Acc Days On Sale`=%d,`Product $db_interval Acc Days Available`=%d where `Product ID`=%d",
-			$this->data["Product $db_interval Acc Days On Sale"],
-			$this->data["Product $db_interval Acc Days Available"],
-
-			$this->pid
-		);
-
-		mysql_query($sql);
 
 	}
 
@@ -995,7 +970,7 @@ if($this->pid){
 
 	function create_product_id($data) {
 
-		
+
 
 		$base_data=$this->get_base_data();
 
@@ -3899,6 +3874,61 @@ if($this->pid){
 
 
 	function update_days() {
+		$this->update_days_interval('Today');
+		$this->update_days_interval('Week To Day');
+		$this->update_days_interval('Month To Day');
+		$this->update_days_interval('Year To Day');
+
+
+
+
+		$this->update_days_interval('Yesterday');
+		$this->update_days_interval('Last Week');
+		$this->update_days_interval('Last Month');
+
+
+		$this->update_days_interval('3 Year');
+		$this->update_days_interval('1 Year');
+		$this->update_days_interval('6 Month');
+		$this->update_days_interval('1 Quarter');
+		$this->update_days_interval('1 Month');
+		$this->update_days_interval('10 Day');
+		$this->update_days_interval('1 Week');
+		$this->update_days_interval('Total');
+
+	}
+
+
+	function update_days_interval($interval) {
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
+		//print "$db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb,$interval\n";
+		$sql=sprintf("select count(*) as on_sale, sum(`Availability`) as Availability from `Order Spanshot Fact` where `Product ID`=%d %s %s",
+			$this->pid,
+			($from_date?sprintf('and `Date`>=%s',prepare_mysql(substr($from_date,0,10))):''),
+			($to_date?sprintf('and `Date`<%s',prepare_mysql(substr($to_date,0,10))):'')
+		);
+		$res=mysql_query($sql);
+		//print "$sql\n";
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data["Product $db_interval Acc Days On Sale"]=$row['on_sale'];
+			$this->data["Product $db_interval Acc Days Available"]=$row['Availability'];
+		}else {
+			$this->data["Product $db_interval Acc Days On Sale"]=0;
+			$this->data["Product $db_interval Acc Days Available"]=0;
+		}
+		$sql=sprintf("update `Product Data Dimension` set `Product $db_interval Acc Days On Sale`=%d,`Product $db_interval Acc Days Available`=%d where `Product ID`=%d",
+			$this->data["Product $db_interval Acc Days On Sale"],
+			$this->data["Product $db_interval Acc Days Available"],
+
+			$this->pid
+		);
+		//print "$sql\n";
+		mysql_query($sql);
+
+	}
+
+	function update_days_old($interval) {
 
 
 
@@ -3963,7 +3993,7 @@ if($this->pid){
 
 
 
-			$sql=sprintf("update `Product History Dimension` set `Product History Total Days On Sale`=%f , `Product History 1 Year Acc Days On Sale`=%f ,`Product History 1 Quarter Acc Days On Sale`=%f ,`Product History 1 Month Acc Days On Sale`=%f ,`Product History 1 Week Acc Days On Sale`=%f  where `Product key`=%d "
+			$sql=sprintf("update `Product History Dimension` set `Product History Total Acc Days On Sale`=%f , `Product History 1 Year Acc Days On Sale`=%f ,`Product History 1 Quarter Acc Days On Sale`=%f ,`Product History 1 Month Acc Days On Sale`=%f ,`Product History 1 Week Acc Days On Sale`=%f  where `Product key`=%d "
 				,$tdays
 				,$ydays
 				,$qdays
@@ -3973,7 +4003,6 @@ if($this->pid){
 
 				,$this->id
 			);
-			// print "$sql\n";
 			if (!mysql_query($sql))
 				exit("$sql\ncan not update product days\n");
 
@@ -4222,7 +4251,7 @@ if($this->pid){
 		$q_days=count($q_days);
 		$m_days=count($m_days);
 		$w_days=count($w_days);
-		$sql=sprintf("update `Product Dimension` set `Product Total Acc Days On Sale`=%f ,`Product 1 Year Acc Days On Sale`=%f , `Product 1 Quarter Acc Days On Sale`=%f, `Product 1 Month Acc Days On Sale`=%f , `Product 1 Week Acc Days On Sale`=%f where  `Product ID`=%d "
+		$sql=sprintf("update `Product Data Dimension` set `Product Total Acc Days On Sale`=%f ,`Product 1 Year Acc Days On Sale`=%f , `Product 1 Quarter Acc Days On Sale`=%f, `Product 1 Month Acc Days On Sale`=%f , `Product 1 Week Acc Days On Sale`=%f where  `Product ID`=%d "
 			,$total_days
 			,$y_days
 			,$q_days
@@ -4356,9 +4385,9 @@ if($this->pid){
 			foreach ($part_fields as $field) {
 				$part->update_fields_used_in_products($field,$part->data[$field]);
 			}
-			
-			foreach($part->get_images_slidesshow() as $image_data){
-			$this->add_image($image_data['id']);
+
+			foreach ($part->get_images_slidesshow() as $image_data) {
+				$this->add_image($image_data['id']);
 			}
 
 		}

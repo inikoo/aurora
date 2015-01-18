@@ -8861,5 +8861,4 @@ ALTER TABLE `Store Dimension` DROP `Store Total Invoiced Gross Amount`, DROP `St
 
 ALTER TABLE `Inventory Warehouse Spanshot Fact` ADD `Dormant 1 Year Value At Day Cost` DECIMAL(9,2) NOT NULL DEFAULT '0.00' ;
 
-
-
+ALTER TABLE `Customer Dimension` CHANGE `Customer Last Dispatched Order Date` `Customer Last Invoiced Dispatched Date` DATETIME NULL DEFAULT NULL; 
