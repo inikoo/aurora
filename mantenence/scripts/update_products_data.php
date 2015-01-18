@@ -32,16 +32,17 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-//$sql="select `Product ID` from `Product Dimension` where `Product ID`=1663 order by  `Product ID` ";
-$sql="select `Product ID` from `Product Dimension` order by  `Product ID` ";
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=96081 order by  `Product ID` ";
+$sql="select `Product ID` from `Product Dimension` order by  `Product ID` desc";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $product=new Product('pid',$row['Product ID']);
+$product->update_days();
 //$product->update_parts();
 //$product->update_availability();
 //$product->update_sales_averages();
-
+/*
 $sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
 ,prepare_mysql($product->get('Short Description'))
 			,prepare_mysql($product->get('XHTML Short Description'))
@@ -53,7 +54,7 @@ $sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Pro
 //$product->update_part_ratio();
 //$product->update_weight_from_parts();
 //$product->update_cost();
-
+*/
 print $product->pid."\r";
 }
 

@@ -43,10 +43,14 @@ function change_product_view(e, data) {
     table.hideColumn('package_dimension');
     table.hideColumn('package_volume');
     table.hideColumn('unit_weight');
-    table.hideColumn('unit_dimensionom');
+    table.hideColumn('unit_dimension');
 
 
 
+
+    table.hideColumn('1m_avg_sold_over_1y');
+    table.hideColumn('days_available_over_1y');
+    table.hideColumn('percentage_available_1y');
 
     Dom.setStyle(['change_products_display_mode', 'product_period_options', 'product_avg_options'], 'display', 'none')
 
@@ -54,7 +58,7 @@ function change_product_view(e, data) {
     if (tipo == 'sales') {
         table.showColumn('sold');
         table.showColumn('sales');
-        table.showColumn('profit');
+        //table.showColumn('profit');
         //  table.showColumn('margin');
         table.showColumn('delta_sales');
 
@@ -75,21 +79,26 @@ function change_product_view(e, data) {
         table.showColumn('stock');
         table.showColumn('stock_value');
         table.showColumn('smallname');
-        Dom.get('product_period_options').style.display = 'none';
-        Dom.get('product_avg_options').style.display = 'none';
+        table.showColumn('state');
+        table.showColumn('web');
+        Dom.setStyle(['product_period_options', 'product_avg_options'], 'display', 'none')
+
     } else if (tipo == 'parts') {
         table.showColumn('parts');
         table.showColumn('supplied');
         table.showColumn('gmroi');
-        Dom.get('product_period_options').style.display = 'none';
-        Dom.get('product_avg_options').style.display = 'none';
+        table.showColumn('smallname');
+
+
+
 
     } else if (tipo == 'cats') {
-        Dom.get('product_period_options').style.display = 'none';
-        Dom.get('product_avg_options').style.display = 'none';
+
         table.showColumn('family');
         table.showColumn('dept');
         table.showColumn('expcode');
+        Dom.setStyle(['product_period_options', 'product_avg_options'], 'display', 'none')
+
     } else if (tipo == 'timeline') {
 
         Dom.get('product_period_options').style.display = 'none';
@@ -99,19 +108,21 @@ function change_product_view(e, data) {
         table.showColumn('to');
 
     } else if (tipo == 'properties') {
-        Dom.get('product_period_options').style.display = 'none';
-        Dom.get('product_avg_options').style.display = 'none';
+        Dom.setStyle(['product_period_options', 'product_avg_options'], 'display', 'none')
+
         table.showColumn('package_type');
         table.showColumn('package_weight');
         table.showColumn('package_dimension');
         table.showColumn('package_volume');
         table.showColumn('unit_weight');
-        table.showColumn('unit_dimensionom');
-    }else if (tipo == 'reorder') {
-        Dom.get('product_period_options').style.display = 'none';
-        Dom.get('product_avg_options').style.display = 'none';
-       table.showColumn('smallname');
+        table.showColumn('unit_dimension');
+    } else if (tipo == 'reorder') {
+
+        table.showColumn('smallname');
         table.showColumn('stock');
+        table.showColumn('1m_avg_sold_over_1y');
+        table.showColumn('days_available_over_1y');
+        table.showColumn('percentage_available_1y');
     }
 
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
@@ -148,11 +159,11 @@ function change_family_view(e, data) {
     table.hideColumn('critcal');
     table.hideColumn('name');
     table.hideColumn('delta_sales');
-   table.hideColumn('from');
+    table.hideColumn('from');
     table.hideColumn('last_update');
-        table.hideColumn('to');
+    table.hideColumn('to');
 
-        Dom.setStyle(['change_families_display_mode','family_period_options','family_avg_options'],'display','none')
+    Dom.setStyle(['change_families_display_mode', 'family_period_options', 'family_avg_options'], 'display', 'none')
 
 
     if (tipo == 'sales') {
@@ -163,7 +174,7 @@ function change_family_view(e, data) {
         table.showColumn('name');
         table.showColumn('delta_sales');
 
-        Dom.setStyle(['change_families_display_mode','family_period_options','family_avg_options'],'display','')
+        Dom.setStyle(['change_families_display_mode', 'family_period_options', 'family_avg_options'], 'display', '')
 
 
     } else if (tipo == 'general') {
@@ -175,7 +186,7 @@ function change_family_view(e, data) {
         Dom.get('family_period_options').style.display = 'none';
         Dom.get('family_avg_options').style.display = 'none';
     } else if (tipo == 'stock') {
-            table.showColumn('department');
+        table.showColumn('department');
 
         table.showColumn('stock_error');
         table.showColumn('outofstock');
@@ -188,13 +199,13 @@ function change_family_view(e, data) {
 
 
         Dom.get('family_' + 'avg_options').style.display = 'none';
-    }else if (tipo == 'timeline') {
-       
+    } else if (tipo == 'timeline') {
+
         Dom.get('family_period_options').style.display = 'none';
         Dom.get('family_avg_options').style.display = 'none';
         table.showColumn('from');
         table.showColumn('last_update');
-               table.showColumn('to');
+        table.showColumn('to');
 
     }
 
@@ -202,7 +213,7 @@ function change_family_view(e, data) {
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
     Dom.addClass(this, "selected");
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=' + data.parent + '-families-view&value=' + escape(tipo), {});
-   Dom.get('families_view').value=tipo
+    Dom.get('families_view').value = tipo
 
 }
 
@@ -240,25 +251,24 @@ function change_department_view(e, data) {
     table.hideColumn('low');
     table.hideColumn('critical');
     table.hideColumn('delta_sales');
-        table.hideColumn('from');
+    table.hideColumn('from');
     table.hideColumn('last_update');
-               table.hideColumn('to');
+    table.hideColumn('to');
 
-    
-    Dom.setStyle(['change_departments_display_mode','department_period_options','department_avg_options'],'display','none')
+
+    Dom.setStyle(['change_departments_display_mode', 'department_period_options', 'department_avg_options'], 'display', 'none')
 
     if (tipo == 'sales') {
-    table.showColumn('name');
+        table.showColumn('name');
 
         //table.showColumn('awp_p');
         //table.showColumn('aws_p');
         table.showColumn('sales');
         table.showColumn('delta_sales');
         table.showColumn('profit');
-                      Dom.setStyle(['change_departments_display_mode','department_period_options','department_avg_options'],'display','')
+        Dom.setStyle(['change_departments_display_mode', 'department_period_options', 'department_avg_options'], 'display', '')
 
-    }
-    else if (tipo == 'general') {
+    } else if (tipo == 'general') {
         table.showColumn('name');
 
         Dom.get('department_period_options').style.display = 'none';
@@ -268,8 +278,7 @@ function change_department_view(e, data) {
         table.showColumn('families');
         table.showColumn('discontinued');
 
-    }
-    else if (tipo == 'stock') {
+    } else if (tipo == 'stock') {
         table.showColumn('name');
 
         Dom.get('department_period_options').style.display = 'none';
@@ -281,14 +290,13 @@ function change_department_view(e, data) {
         table.showColumn('critical');
         table.showColumn('stock_error');
         table.showColumn('outofstock');
-    }
-	else if (tipo == 'timeline') {
-       
+    } else if (tipo == 'timeline') {
+
         Dom.get('department_period_options').style.display = 'none';
         Dom.get('department_avg_options').style.display = 'none';
         table.showColumn('from');
         table.showColumn('last_update');
-               table.showColumn('to');
+        table.showColumn('to');
 
     }
 
@@ -307,7 +315,7 @@ function change_timeline_group(table_id, subject, mode, label) {
     Dom.addClass(subject + '_timeline_group_' + mode, 'selected');
     var request = '&timeline_group=' + mode;
     dialog_sales_history_timeline_group.hide();
-    
+
     Dom.get('change_' + subject + '_timeline_group').innerHTML = ' &#x21b6 ' + label;
     var request = '&timeline_group=' + mode;
     var table = tables['table' + table_id];

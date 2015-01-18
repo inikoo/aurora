@@ -1416,7 +1416,7 @@ function list_products() {
 		$fields='';
 	}
 
-	$sql="select P.`Product ID`,`Product Code`,`Store Currency Code`,`Product Price`,`Product Units Per Case`,`Product $db_interval Acc Invoiced Amount`,`Product $db_interval Acc Profit`,`Product $db_interval Acc Days On Sale`,`Product $db_interval Acc Days Available` ,
+	$sql="select P.`Product Valid To`,P.`Product ID`,`Product Code`,`Store Currency Code`,`Product Price`,`Product Units Per Case`,`Product $db_interval Acc Invoiced Amount`,`Product $db_interval Acc Profit`,`Product $db_interval Acc Days On Sale`,`Product $db_interval Acc Days Available` ,
 	$fields
 	`Product $db_interval Acc Quantity Invoiced`,`Product $db_interval Acc Margin`,`Product Availability`,`Product Sales Type`,`Product Stage`,`Product Main Type`,`Product Package Type`,`Product Web State`,`Product Store Key`,`Store Code`,`Product Web Configuration`,`Product Availability State`,
 	`Product Available Days Forecast`,`Product Record Type`,`Product Currency`,`Product XHTML Short Description`,`Product Main Image`,`Product Name`,`Product Valid From`,`Product Last Updated`,
@@ -1504,7 +1504,7 @@ function list_products() {
 			}
 			if ($factor=='ND') {
 				$delta_sales='';
-				$tsall=_('ND');
+				$tsall=_('ND').'x'.$row["Product $db_interval Acc Days On Sale"];
 				$tprofit=_('ND');
 				$sold=_('ND');
 			} else {

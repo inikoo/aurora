@@ -41,6 +41,7 @@ $account_code=$inikoo_account->data['Account Code'];
 
 
 $from=date("Y-m-d",strtotime('now '));
+//$from='2014-12-08';
 $to=date("Y-m-d",strtotime('now '));
 
 
