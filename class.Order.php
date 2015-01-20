@@ -832,17 +832,12 @@ class Order extends DB_Table {
 			}
 
 			$customer=new Customer($this->data['Order Customer Key']);
-
-
-
 			$customer->editor=$this->editor;
 			$customer->add_history_order_cancelled($this);
-
+			$customer->update_orders();
 			$customer->update(
 				array(
 					'Customer Account Balance'=>round($customer->data['Customer Account Balance']+$current_amount_in_customer_account_payments,2)
-
-
 				),'no_history');
 
 
@@ -857,7 +852,6 @@ class Order extends DB_Table {
 
 
 	}
-
 
 
 	function undo_cancel() {
@@ -937,8 +931,8 @@ class Order extends DB_Table {
 
 		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d ",$this->id);
 		mysql_query($sql);
-		
-		
+
+
 
 		$this->update_number_items();
 		$this->update_number_products();
@@ -961,6 +955,10 @@ class Order extends DB_Table {
 		$this->update_number_products();
 
 		$this->apply_payment_from_customer_account();
+
+
+		$customer=new Customer($this->data['Order Customer Key']);
+		$customer->update_orders();
 
 		$store=new Store($this->data['Order Store Key']);
 		$store->update_orders();
@@ -1164,7 +1162,6 @@ class Order extends DB_Table {
 
 		// to do maybe this is not needed (this is here because in ar_edit_order the payment stuff is done)
 		$this->update_no_normal_totals();
-
 
 
 
@@ -3088,6 +3085,8 @@ class Order extends DB_Table {
 
 		$this->update_customer_history();
 		$this->update_full_search();
+		$customer=new Customer($this->data['Order Customer Key']);
+		$customer->update_orders();
 
 	}
 	function set_order_as_completed($date) {
@@ -3107,6 +3106,9 @@ class Order extends DB_Table {
 		//print "$sql\n";
 		$this->update_customer_history();
 		$this->update_full_search();
+
+		$customer=new Customer($this->data['Order Customer Key']);
+		$customer->update_orders();
 
 	}
 
@@ -4975,8 +4977,20 @@ class Order extends DB_Table {
 
 			$terms_ok=false;
 			$this->deals['Family']['Deal']=true;
-			$this->deals['Family']['Deal Multiplicity']++;
-			$this->deals['Family']['Terms Multiplicity']++;
+
+			if (isset($this->deals['Family']['Deal Multiplicity'])) {
+				$this->deals['Family']['Deal Multiplicity']++;
+			}else {
+				$this->deals['Family']['Deal Multiplicity']=1;
+			}
+
+			if (isset($this->deals['Family']['Terms Multiplicity'])) {
+				$this->deals['Family']['Terms Multiplicity']++;
+			}else {
+				$this->deals['Family']['Terms Multiplicity']=1;
+			}
+
+
 
 
 			//'Order Total Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Total Amount AND Shipping Country','Total Amount AND Order Number','Voucher'
@@ -5148,8 +5162,18 @@ class Order extends DB_Table {
 
 				$terms_ok=false;
 				$this->deals['Family']['Deal']=true;
-				$this->deals['Family']['Deal Multiplicity']++;
-				$this->deals['Family']['Terms Multiplicity']++;
+				if (isset($this->deals['Family']['Deal Multiplicity'])) {
+					$this->deals['Family']['Deal Multiplicity']++;
+				}else {
+					$this->deals['Family']['Deal Multiplicity']=1;
+				}
+
+				if (isset($this->deals['Family']['Terms Multiplicity'])) {
+					$this->deals['Family']['Terms Multiplicity']++;
+				}else {
+					$this->deals['Family']['Terms Multiplicity']=1;
+				}
+
 
 
 				//'Order Total Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Total Amount AND Shipping Country','Total Amount AND Order Number','Voucher'
@@ -6396,7 +6420,11 @@ class Order extends DB_Table {
 		mysql_query($sql);
 
 		$this->data['Order Invoiced']='Yes';
-		//$this->data['Order Current Payment State']='Waiting Payment';
+
+		$customer=new Customer($this->data['Order Customer Key']);
+
+		$customer->update_orders();
+
 
 	}
 

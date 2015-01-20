@@ -3034,11 +3034,12 @@ class product extends DB_Table {
 
 			}
 			$old_formated_price=$this->get('Formated Price');
-			$sql=sprintf("select `Product Key` from `Product History Dimension` where `Product ID`=%d and `Product History Price`=%.2f "
+			$sql=sprintf("select `Product Key` from `Product History Dimension` where `Product ID`=%d and `Product History Price`=%.2f and `Product History Name`=%s"
 				,$this->pid
 				,$amount
+				,prepare_mysql($this->data['Product Name'])
 			);
-			//print $sql;
+
 			$res=mysql_query($sql);
 
 			$num_historic_records=mysql_num_rows($res);
