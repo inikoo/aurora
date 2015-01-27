@@ -724,7 +724,6 @@ function edit_product() {
 	}
 
 
-
 	$product->update(array($key=>stripslashes(urldecode($newvalue))));
 
 

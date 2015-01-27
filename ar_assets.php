@@ -1068,6 +1068,13 @@ function list_products() {
 		$avg=$_REQUEST['avg'];
 	} else
 		$avg=$conf['avg'];
+		
+		
+		if (isset( $_REQUEST['avg_reorder'])) {
+		$avg_reorder=$_REQUEST['avg_reorder'];
+	} else
+		$avg_reorder=$conf['avg_reorder'];
+		
 
 	if (isset( $_REQUEST['period'])) {
 		$period=$_REQUEST['period'];
@@ -1179,6 +1186,7 @@ function list_products() {
 	$_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
 	$_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
 	$_SESSION['state'][$conf_table]['products']['avg']=$avg;
+	$_SESSION['state'][$conf_table]['products']['avg_reorder']=$avg_reorder;
 	$_SESSION['state'][$conf_table]['products']['period']=$period;
 	$_SESSION['state'][$conf_table]['products']['elements']=$elements;
 	$_SESSION['state'][$conf_table]['products']['elements_type']=$elements_type;
@@ -1277,9 +1285,8 @@ function list_products() {
 	}
 	elseif ($order=='sales') {
 		$order='`Product '.$period_tag.' Acc Invoiced Amount`';
-
-
-
+	}elseif ($order=='sales_reorder') {
+		$order='`Product '.$period_tag.' Acc Invoiced Amount`';
 	}elseif ($_order=='delta_sales') {
 		$order='`Product '.$period_tag.' Acc Invoiced Amount`';
 
@@ -1291,8 +1298,8 @@ function list_products() {
 	}
 	elseif ($order=='sold') {
 		$order='`Product '.$period_tag.' Acc Quantity Invoiced`';
-
-
+	}elseif ($order=='sold_reorder') {
+		$order='`Product '.$period_tag.' Acc Quantity Invoiced`';
 	}
 	elseif ($order=='family') {
 		$order='`Product Family`Code';
@@ -1466,7 +1473,6 @@ function list_products() {
 			$delta_sales='';
 			$sold='';
 			$margin='';
-
 			$tsall=percentage($row["Product $db_interval Acc Invoiced Amount"],$sum_total_sales,2);
 			if ($row["Product $db_interval Acc Profit"]>=0)
 				$tprofit=percentage($row["Product $db_interval Acc Profit"],$sum_total_profit_plus,2);
@@ -1504,7 +1510,7 @@ function list_products() {
 			}
 			if ($factor=='ND') {
 				$delta_sales='';
-				$tsall=_('ND').'x'.$row["Product $db_interval Acc Days On Sale"];
+				$tsall=_('ND');
 				$tprofit=_('ND');
 				$sold=_('ND');
 			} else {
@@ -1524,6 +1530,48 @@ function list_products() {
 
 
 		}
+		
+		
+		
+		
+			if ($avg_reorder=='totals')
+				$factor=1;
+			elseif ($avg_reorder=='month') {
+				if ($row["Product $db_interval Acc Days On Sale"]>0)
+					$factor=30.4368499/$row["Product $db_interval Acc Days On Sale"];
+				else
+					$factor='ND';
+			}
+			elseif ($avg_reorder=='week') {
+				if ($row["Product $db_interval Acc Days On Sale"]>0)
+					$factor=7/$row["Product $db_interval Acc Days On Sale"];
+				else
+					$factor='ND';
+			}
+			elseif ($avg_reorder=='month_eff') {
+				if ($row["Product $db_interval Acc Days Available"]>0)
+					$factor=30.4368499/$row["Product $db_interval Acc Days Available"];
+				else
+					$factor='ND';
+			}
+			elseif ($avg_reorder=='week_eff') {
+				if ($row["Product $db_interval Acc Days Available"]>0)
+					$factor=7/$row["Product $db_interval Acc Days Available"];
+				else
+					$factor='ND';
+			}
+
+			if ($factor=='ND') {
+				$sales_reorder=_('ND');
+				$sold_reorder=_('ND');
+			} else {
+				$sales_reorder=($row["Product $db_interval Acc Invoiced Amount"]*$factor);
+				$sold_reorder=$row["Product $db_interval Acc Quantity Invoiced"]*$factor;
+			}
+
+		
+		
+		
 
 		if ($db_interval=='Total' or $db_interval=='3 Year') {
 
@@ -1569,6 +1617,9 @@ function list_products() {
 
 		if ($sold=='') {
 			$sold=_('NA');
+		}
+		if ($sold_reorder=='') {
+			$sold_reorder=_('NA');
 		}
 
 		$type=$row['Product Sales Type'];
@@ -1678,10 +1729,12 @@ function list_products() {
 			'stock_value'=>money($row['Product Stock Value']),
 			'stock'=>$stock,
 			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
+			'sales_reorder'=>(is_numeric($sales_reorder)?money($sales_reorder,$currency):$sales_reorder),
 			'delta_sales'=>$delta_sales,
 			'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
 			'margin'=>$margin,
 			'sold'=>(is_numeric($sold)?number($sold):$sold),
+			'sold_reorder'=>(is_numeric($sold_reorder)?number($sold_reorder):$sold_reorder),
 			'state'=>$main_type,
 			'web'=>$formated_web_configuration,
 			'image'=>$row['Product Main Image'],
@@ -1694,12 +1747,14 @@ function list_products() {
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid To']." +00:00")):''),
 			'last_update'=>($row['Product Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Last Updated']." +00:00"))),
 			"package_type"=>$package_type,
-			"package_weight"=>weight($row['Product Package Weight']),
+			
+
+			
+			"package_weight"=>weight($row['Product Package Weight'],'Kg',3,false,true),
 			"package_dimension"=>$row['Product Package XHTML Dimensions'],
 			"package_volume"=>volume($row['Product Package Dimensions Volume']),
-			"unit_weight"=>weight($row['Product Unit Weight']),
+			"unit_weight"=>weight($row['Product Unit Weight'],'Kg',3,false,true),
 			"unit_dimension"=>$row['Product Unit XHTML Dimensions'],
-			'1m_avg_sold_over'=>$avg_sold_over,
 			'days_available_over'=>$days_available_over,
 			'percentage_available'=>$percentage_available
 

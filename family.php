@@ -160,6 +160,7 @@ $smarty->assign('department',$department);
 $smarty->assign('product_view',$_SESSION['state']['family']['products']['view']);
 $smarty->assign('product_period',$_SESSION['state']['family']['products']['period']);
 $smarty->assign('product_avg',$_SESSION['state']['family']['products']['avg']);
+$smarty->assign('product_avg_reorder',$_SESSION['state']['family']['products']['avg_reorder']);
 
 $tipo_filter=$_SESSION['state']['family']['products']['f_field'];
 $smarty->assign('filter_name0',$tipo_filter);

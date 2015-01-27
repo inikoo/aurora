@@ -620,23 +620,28 @@ function money_cents($amount) {
 }
 
 
-function weight($w,$unit='Kg',$number_decimals=3,$simplify=false) {
+function weight($w,$unit='Kg',$number_decimals=3,$simplify=false,$zero_fill=false) {
 	if ($w=='') return '';
 	if ($simplify) {
 		if ($w==0) {
-			return '0Kg';
+			return '0'.$unit;
 		}
 
 		$w=round($w);
 
 		if ($w==0) {
-			return '~1Kg';
+			return '~1'.$unit;
 		}elseif ($w>1000) {
 			$w=number($w,0);
 		}
-		return $w.='Kg';
+		return $w.=$unit;
 	}else {
-		return number($w,$number_decimals).'Kg';
+		if($zero_fill){
+				return number($w,$number_decimals,true).$unit;
+
+		}else{
+		return number($w,$number_decimals).$unit;
+		}
 	}
 }
 
