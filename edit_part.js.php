@@ -2064,12 +2064,12 @@ var part_unit_materials_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_
 }
 
 
-function show_dialog_country_list(){
-	region1 = Dom.getRegion(this); 
-    region2 = Dom.getRegion('dialog_country_list'); 
-	var pos =[region1.right+5,region1.top-120]
-	Dom.setXY('dialog_country_list', pos);
-dialog_country_list.show()
+function show_dialog_country_list() {
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_country_list');
+    var pos = [region1.right + 5, region1.top - 120]
+    Dom.setXY('dialog_country_list', pos);
+    dialog_country_list.show()
 }
 
  

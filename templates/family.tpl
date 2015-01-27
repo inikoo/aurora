@@ -264,9 +264,20 @@
 					<div id="product_period_options" class="buttons small left cluster" style="display:{if !($product_view=='sales' or $product_view=='reorder') }none{else}block{/if};">
 						<button class="table_option {if $product_period=='all'}selected{/if}" period="all" id="product_period_all">{t}All{/t}</button> <button class="table_option {if $product_period=='three_year'}selected{/if}" period="three_year" id="product_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $product_period=='year'}selected{/if}" period="year" id="product_period_year">{t}1Yr{/t}</button> <button class="table_option {if $product_period=='yeartoday'}selected{/if}" period="yeartoday" id="product_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $product_period=='six_month'}selected{/if}" period="six_month" id="product_period_six_month">{t}6M{/t}</button> <button class="table_option {if $product_period=='quarter'}selected{/if}" period="quarter" id="product_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $product_period=='month'}selected{/if}" period="month" id="product_period_month">{t}1M{/t}</button> <button class="table_option {if $product_period=='ten_day'}selected{/if}" period="ten_day" id="product_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $product_period=='week'}selected{/if}" period="week" id="product_period_week">{t}1W{/t}</button> 
 					</div>
-					<div id="product_avg_options" class="buttons small left cluster" style="display:{if !($product_view=='sales' or $product_view=='reorder') }none{else}block{/if};">
-						<button class="table_option {if $product_avg=='totals'}selected{/if}" avg="totals" id="product_avg_totals">{t}Totals{/t}</button> <button class="table_option {if $product_avg=='month'}selected{/if}" avg="month" id="product_avg_month">{t}M AVG{/t}</button> <button class="table_option {if $product_avg=='week'}selected{/if}" avg="week" id="product_avg_week">{t}W AVG{/t}</button> <button class="table_option {if $product_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff" id="product_avg_month_eff">{t}M EAVG{/t}</button> <button class="table_option {if $product_avg=='week_eff'}selected{/if}" style="display:none" avg="week_eff" id="product_avg_week_eff">{t}W EAVG{/t}</button> 
+					<div id="product_avg_options" class="buttons small left cluster" style="display:{if $product_view!='sales'  }none{else}block{/if};">
+						<button title="{t}Totals{/t}" class="table_option {if $product_avg=='totals'}selected{/if}" avg="totals" id="product_avg_totals">&Sigma;<sub>x</sub></button> 
+						<button title="{t}Monthy average{/t}" class="table_option {if $product_avg=='month'}selected{/if}" avg="month" id="product_avg_month">x&#772;<sub>m</sub></button> 
+						<button title="{t}Weekly average{/t}" class="table_option {if  $product_avg=='week'}selected{/if}" avg="week" id="product_avg_week">x&#772;<sub>w</sub></button> 
+						<button title="{t}Monthy effective average{/t}"  class="table_option {if  $product_avg=='month_eff'}selected{/if}"  avg="month_eff" id="product_avg_month_eff">x&#772;<sub>em</sub></button> 
+						<button title="{t}Weekly effective average{/t}" class="table_option {if $product_avg=='week_eff'}selected{/if}"  avg="week_eff" id="product_avg_week_eff">x&#772;<sub>ew</sub></button> 
 					</div>
+					<div id="product_reorder_avg_reorder_options" class="buttons small left cluster" style="display:{if $product_view!='reorder' }none{else}block{/if};">
+						<button title="{t}Totals{/t}" class="table_option {if $product_avg_reorder=='totals'}selected{/if}" avg="totals" id="product_reorder_avg_totals">&Sigma;<sub>x</sub></button> 
+						<button title="{t}Monthy average{/t}" class="table_option {if $product_avg_reorder=='month'}selected{/if}" avg="month" id="product_reorder_avg_month">x&#772;<sub>m</sub></button> 
+						<button title="{t}Weekly average{/t}" class="table_option {if $product_avg_reorder=='week'}selected{/if}" avg="week" id="product_reorder_avg_week">x&#772;<sub>w</sub></button> 
+						</div>
+					
+					
 				</div>
 				<div class="buttons small cluster group">
 					<button style="{if $products_table_type=='thumbnails'  or  $product_view!='sales' }display:none{/if}  " id="change_products_display_mode">&#x21b6 {$display_products_mode_label}</button> <button id="change_products_table_type">&#x21b6 {$products_table_type_label}</button> 
