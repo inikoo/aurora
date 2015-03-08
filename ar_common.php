@@ -87,9 +87,6 @@ function prepare_values( $data, $value_names ) {
 
 
 
-
-
-
 			break;
 		case( 'json array' ):
 
