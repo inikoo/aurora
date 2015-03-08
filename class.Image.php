@@ -14,7 +14,6 @@
 
 
 
-
 class Image {
 
 	var $id = false;
@@ -292,11 +291,7 @@ $this->create_other_size_data();
 
 
 	function get_format($filename) {
-
-
-
 		$this->format=guess_file_format($filename);
-
 	}
 
 
