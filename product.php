@@ -31,7 +31,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-	'css/images.css',
+//	'css/images.css',
 	'css/d3_calendar.css',
 	'theme.css.php'
 );
@@ -60,7 +60,7 @@ $js_files=array(
 	'js/search.js',
 	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
-	'product.js.php'
+	'js/product.js'
 
 );
 
@@ -464,6 +464,19 @@ $smarty->assign('filter_name6',$filter_menu6[$tipo_filter6]['label']);
 $paginator_menu6=array(10,25,50,100,500);
 $smarty->assign('paginator_menu6',$paginator_menu6);
 
+$tipo_filter=$_SESSION['state']['product']['offers']['f_field'];
+$smarty->assign('filter10',$tipo_filter);
+$smarty->assign('filter_value10',$_SESSION['state']['product']['offers']['f_value']);
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+);
+$smarty->assign('filter_menu10',$filter_menu);
+
+$smarty->assign('filter_name10',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
+
 
 $link='product.php';
 include_once 'product_navigation_common.php';
@@ -549,6 +562,59 @@ if ($product->data['Product Max Day Sales']>0) {
 $smarty->assign('sales_max_sample_domain',$sales_max_sample_domain);
 
 
+$session_data=base64_encode(json_encode(array(
+ 	'label'=>array(
+ 		'Price'=>_('Price'),
+ 		'Customer'=>_('Customer'),
+ 		'Orders'=>_('Orders'),
+ 		'Code'=>_('Code'),
+ 		'Description'=>_('Description'),
+ 		'Date'=>_('Date'),
+ 		'WebSales_State'=>_('Web/Sales State'),
+ 		'ID'=>_('ID'),
+ 		'Name'=>_('Name'),
+ 		'Sales'=>_('Sales'),
+ 		'Profit'=>_('Profit'),
+ 		'Available'=>_('Available'),
+ 		'Forecast'=>_('Forecast'),
+ 		'Parts'=>_('Parts'),
+ 		'Supplied_by'=>_('Supplied by'),
+ 		'GMROI'=>_('GMROI'),
+ 		'Last_Update'=>_('Last Update'),
+  		'Since'=>_('Since'),
+ 		'Until'=>_('Until'),
+ 		'Pkg_Type'=>_('Pkg Type'),
+ 		'Pkg_Weight'=>_('Pkg Weight'),
+ 		'Pkg_Dim'=>_('Pkg Dim'),
+ 		'Pkg_Vol'=>_('Pkg Vol'),
+ 		'Unit_Weight'=>_('Unit Weight'),
+ 		'Unit_Dim'=>_('Unit Dim'),
+ 		'URL'=>_('URL'),
+ 		'Users'=>_('Users'),
+ 		'Pages'=>_('Pages'),
+ 		'Products'=>_('Products'),
+ 		'OoS'=>_('OoS'),
+ 		'Pages_w_Prods'=>_('Pages w Prods'),
+ 		'Pages_w_OoS'=>_('Pages w OoS'),
+ 		'OK'=>_('OK'),
+ 		'Low'=>_('Low'),
+ 		'Critical'=>_('Critical'),
+ 		'Gone'=>_('Gone'),
+ 		'Unknown'=>_('Unknown'),
+ 		'Families'=>_('Families'),
+ 		'Discontinued'=>_('Discontinued'),
+ 		'Sales_Type'=>_('Sales Type'),
+ 		'Surplus'=>_('Surplus'),
+ 		'Department'=>_('Department'),
+
+		'Page'=>_('Page'),
+ 		'of'=>_('of')
+ 		),
+ 	'state'=>array(
+ 		'product'=>$_SESSION['state']['product']
+ 		)
+ 	)));
+ $smarty->assign('session_data',$session_data);
 
 $smarty->display('product.tpl');
 ?>

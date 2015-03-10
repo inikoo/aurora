@@ -2601,6 +2601,16 @@ $default_state=array(
 
 
 		),
+			'offers'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		),
 		
 		'history'=>array(
 			'order'=>'date',

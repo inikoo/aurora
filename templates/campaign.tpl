@@ -2,7 +2,7 @@
 <div id="bd" class="no_padding">
 	<input type="hidden" value="{$session_data}" id="session_data" />
 
-	<input type="hidden" value="{$campaign->id}" id="deal_key" />
+	<input type="hidden" value="{$campaign->id}" id="campaign_key" />
 	<input type="hidden" value="{$store->id}" id="store_key" />
 	<input type="hidden" value="{$campaign->id}" id="subject_key" />
 	<input type="hidden" value="campaign" id="subject" />
@@ -59,7 +59,7 @@
 			</div>
 		</div>
 		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title" style="margin-right:5px">{t}Deals{/t}</span> 
+			<span class="clean_table_title" style="margin-right:5px">{t}Offers{/t}</span> 
 				<div class="buttons small left">
 					<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
 				</div>

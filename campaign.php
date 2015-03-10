@@ -155,13 +155,18 @@
  $session_data=base64_encode(json_encode(array(
  	'label'=>array(
  		'Number'=>_('Number'),
- 		'Customers'=>_('Customer'),
+ 		'Customer'=>_('Customer'),
  		'Orders'=>_('Orders'),
  		'Code'=>_('Code'),
-'Description'=>_('Description'),
+ 		'Description'=>_('Description'),
  		'Date'=>_('Date'),
  		'Number'=>_('Number'),
+ 		'ID'=>_('ID'),
+ 		'Name'=>_('Name'),
+ 		'Location'=>_('Location'),
  		'Duration'=>_('Duration'),
+ 		'Page'=>_('Page'),
+ 		'of'=>_('of')
  		),
  	'state'=>array(
  		'orders'=>$_SESSION['state']['campaign']['orders'],

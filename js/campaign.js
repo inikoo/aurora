@@ -33,8 +33,8 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 		{key:"customer_name", label:labels.Customer, width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 		{key:"date", label:labels.Date, sortable:true, width:100,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 		];
-		request="ar_deals.php?tipo=orders_with_deal&deal_key="+Dom.get('deal_key').value+"&tableid="+tableid;
-
+		request="ar_deals.php?tipo=orders&parent=campaign&parent_key="+Dom.get('campaign_key').value+"&tableid="+tableid;
+		
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -65,7 +65,7 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 			this.dataSource0, { renderLoopSize: 50,generateRequest : myRequestBuilder,paginator : new YAHOO.widget.Paginator({
 				rowsPerPage:state.orders.nr,containers : 'paginator0',
-				pageReportTemplate : '('+labels.Page+'{currentPage} '+labels.of+' {totalPages})',
+				pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
 				previousPageLinkLabel : "<",
 				nextPageLinkLabel : ">",
 				firstPageLinkLabel :"<<",
@@ -94,13 +94,13 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 
 		ColumnDefs = [
 		{key:"id", label:labels.Id,width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-		{key:"name", label:labels.Customers,width:270, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+		{key:"name", label:labels.Name,width:270, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 		{key:"location", label:labels.Location,width:250, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 		{key:"orders", label:labels.Orders,width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 		];
 
 
-		this.dataSource1 = new YAHOO.util.DataSource("ar_deals.php?tipo=customers_who_use_deal&deal_key="+Dom.get('deal_key').value+"&tableid="+tableid);
+		this.dataSource1 = new YAHOO.util.DataSource("ar_deals.php?tipo=customers&parent=campaign&parent_key="+Dom.get('campaign_key').value+"&tableid="+tableid);
 		this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource1.connXhrMode = "queueRequests";
 		this.dataSource1.responseSchema = {
@@ -130,7 +130,7 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 						renderLoopSize: 50,generateRequest : myRequestBuilder,
 						paginator : new YAHOO.widget.Paginator({
 							rowsPerPage:state.customers.nr,containers : 'paginator1',
-							pageReportTemplate : '('+labels.Page+'{currentPage} '+labels.of+' {totalPages})',
+							pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
 							previousPageLinkLabel : "<",
 							nextPageLinkLabel : ">",
 							firstPageLinkLabel :"<<",
@@ -192,7 +192,7 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
         			renderLoopSize: 50,generateRequest : myRequestBuilder,
         			paginator : new YAHOO.widget.Paginator({
         				rowsPerPage:state.offers.nr,containers : 'paginator1',
-        				pageReportTemplate : '('+labels.Page+'{currentPage} '+labels.of+' {totalPages})',
+        				pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
         				previousPageLinkLabel : "<",
         				nextPageLinkLabel : ">",
         				firstPageLinkLabel :"<<",

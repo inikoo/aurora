@@ -335,6 +335,20 @@
 			</div>
 		</div>
 		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		
+	
+		<span class="clean_table_title">Offers</span> 
+		<div class="buttons small left">
+			<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+		</div>
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=10 filter_name=$filter_name10 filter_value=$filter_value10 } 
+		<div id="table10" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+	
+
+
 		</div>
 		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}Pages{/t}</span> 
