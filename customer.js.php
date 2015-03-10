@@ -785,6 +785,93 @@ this.table100.prefix='';
 	    //
 
 
+var tableid=10; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var productsColumnDefs = [
+	    
+	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+
+                                        ,{key:"code", label:"<?php echo _('Code')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"duration", label:"<?php echo _('Duration')?>",  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+				 ];
+	    //?tipo=products&tid=0"
+	    
+	    request="ar_deals.php?tipo=deals&parent=customer&parent_key="+Dom.get('customer_key').value+'&tableid=10&referrer=customer'
+	   // alert(request);
+	    this.dataSource10 = new YAHOO.util.DataSource(request);
+	    this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource10.connXhrMode = "queueRequests";
+	    this.dataSource10.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		      rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["name","key","description","duration","orders","code","customers"]};
+		
+
+	  this.table10 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
+								   this.dataSource10
+								 , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 //,initialLoad:false
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['customer']['offers']['nr']?>,containers : 'paginator10', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info10'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['customer']['offers']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['customer']['offers']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+		this.table10.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table10.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table10.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table10.request=request;
+  		this.table10.table_id=tableid;
+     	this.table10.subscribe("renderEvent", myrenderEvent);
+		this.table10.getDataSource().sendRequest(null, {
+		    success: function(request, response, payload) {
+		        if (response.results.length == 0) {
+		      
+		             get_offers_elements_numbers()
+
+		        } else {
+		             this.onDataReturnInitializeTable(request, response, payload);
+		        }
+		    },
+		    scope: this.table10,
+		    argument: this.table10.getState()
+		});
+	  
+	    this.table10.filter={key:'<?php echo $_SESSION['state']['customer']['offers']['f_field']?>',value:'<?php echo $_SESSION['state']['customer']['offers']['f_value']?>'};
+	    
 
 	
 		};
@@ -1301,9 +1388,9 @@ function validate_customer_telephone_other(query,id){
     }
 }
 
-function change_view(){
-ids=['orders','history','products','details', 'login_stat'];
-block_ids=['block_orders','block_history','block_products','block_details', 'block_login_stat'];
+function change_block(){
+ids=['orders','history','products','details', 'login_stat','deals'];
+block_ids=['block_orders','block_history','block_products','block_details', 'block_login_stat','block_deals'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 
@@ -1582,6 +1669,10 @@ function get_history_numbers(){
 
 }
 
+function new_deal () {
+  location.href = "new_deal.php?parent=customer&parent_key="+Dom.get('customer_key').value;
+}
+
 function init(){
 
 list_of_dialogs=["dialog_quick_edit_Customer_Name", 
@@ -1614,7 +1705,7 @@ Event.addListener(['elements_changes','elements_orders','elements_notes','elemen
 
 
   init_search('customers_store');
-Event.addListener(['orders','history','products','details', 'login_stat'], "click",change_view);
+Event.addListener(['orders','history','products','details', 'login_stat','deals'], "click",change_block);
 Event.addListener(['orders_block_orders','orders_block_dns','orders_block_invoices'], "click",change_orders_view);
 
 
