@@ -35,9 +35,15 @@ case('page_list'):
 case('deal_list'):
 	deal_list();
 	break;
+case('campaign_list'):
+	campaign_list();
+	break;	
 case('part_list'):
 	part_list();
 	break;
+case('customer_list'):
+	customer_list();
+	break;	
 case('department_list'):
 	department_list();
 	break;
@@ -500,6 +506,150 @@ function department_list() {
 			'key'=>$row['Product Department Key'],
 			'name'=>$row['Product Department Name'],
 			'code'=>$row['Product Department Code'],
+
+
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
+
+function customer_list() {
+
+	global $user;
+
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else$order='code';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else$order_dir='';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else$f_field='code';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+	else$store_key='';
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+
+	if (!in_array($store_key,$user->stores)) {
+		$where=sprintf('where false ');
+	} else {
+		$where=sprintf('where `Customer Store Key`=%d',$store_key);
+	}
+
+
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='id' and $f_value!='')
+		$wheref.=" and  `Customer ID` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Customer Name` like '".addslashes($f_value)."%'";
+
+
+	$sql="select count(*) as total from `Customer Dimension` $where $wheref  ";
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Customer Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('Customer','Customers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp="("._('Showing all').")";
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
+		break;
+	case('name'):
+		if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with name like')." <b>$f_value</b>";
+		break;
+
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='name')
+		$order='`Customer Name`';
+	else
+		$order='`Customer Key`';
+
+	$adata=array();
+	$sql="select  `Customer Key`, `Customer Name` from `Customer Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+
+		$adata[]=array(
+			'key'=>$row['Customer Key'],
+			'name'=>$row['Customer Name'],
+			'formated_id'=>sprintf("%05d",$row['Customer Key'])
 
 
 		);
@@ -1680,10 +1830,10 @@ function deal_list() {
 
 
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Deal Component Name` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
 
-	$sql="select count(DISTINCT `Deal Component Name`) as total from `Deal Component Dimension` $where $wheref  ";
+	$sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension` $where $wheref  ";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1694,7 +1844,7 @@ function deal_list() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(DISTINCT `Deal Component Name`) as total from `Deal Component Dimension`  $where   ";
+		$sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension`  $where   ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -1734,16 +1884,16 @@ function deal_list() {
 
 
 	if ($order=='name')
-		$order='`Deal Component Name`';
+		$order='`Deal Name`';
 	else
-		$order='`Deal Component Name`';
+		$order='`Deal Name`';
 
 
 
 
 
 	$adata=array();
-	$sql="select  `Deal Component Key`,`Deal Component Name` from `Deal Component Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Deal Key`,`Deal Name` from `Deal Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
@@ -1752,10 +1902,10 @@ function deal_list() {
 
 		$adata[]=array(
 
-			'name'=>$row['Deal Component Name'],
+			'name'=>$row['Deal Name'],
 			'description'=>'',
-			'id'=>$row['Deal Component Key'],
-			'key'=>$row['Deal Component Key']
+			'id'=>$row['Deal Key'],
+			'key'=>$row['Deal Key']
 			//  'code'=>$row['Product Department Code'],
 
 
@@ -1787,7 +1937,151 @@ function deal_list() {
 	echo json_encode($response);
 }
 
+function campaign_list() {
 
+	global $user;
+
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else$order='code';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else$order_dir='';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else$f_field='code';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+	else$store_key='';
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+
+	if (!in_array($store_key,$user->stores)) {
+		$where=sprintf('where false ');
+	} else {
+		$where=sprintf('where `Deal Campaign Store Key`=%d',$store_key);
+	}
+
+
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Deal Campaign Name` like '".addslashes($f_value)."%'";
+
+
+	$sql="select count(DISTINCT `Deal Campaign Name`) as total from `Deal Campaign Dimension` $where $wheref  ";
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(DISTINCT `Deal Campaign Name`) as total from `Deal Campaign Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('Campaign','Campaigns',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp="("._('Showing all').")";
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any campaign with name")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('campaigns with name like')." <b>$f_value</b>)";
+		break;
+
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='name')
+		$order='`Deal Campaign Name`';
+	else
+		$order='`Deal Campaign Name`';
+
+
+
+
+
+	$adata=array();
+	$sql="select  `Deal Campaign Key`,`Deal Campaign Code`,`Deal Campaign Name` from `Deal Campaign Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+
+		$adata[]=array(
+			'name'=>$row['Deal Campaign Name'],
+			'code'=>$row['Deal Campaign Code'],
+			'id'=>$row['Deal Campaign Key'],
+			'key'=>$row['Deal Campaign Key']
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
 
 function page_list() {
 

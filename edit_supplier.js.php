@@ -880,9 +880,6 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     dialog_country_list_bis.render();
     
     
-   
-    
-    
     Event.addListener("set_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
     Event.addListener("update_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
 

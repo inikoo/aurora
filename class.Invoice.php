@@ -4,11 +4,6 @@
 
  This file contains the Invoice Class
 
- Each invoice has to be associated with a contact if no contac data is provided when the Invoice is
-
- eated an anonimous contact will be created as well.
-
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
