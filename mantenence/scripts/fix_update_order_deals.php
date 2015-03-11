@@ -17,11 +17,10 @@ error_reporting(E_ALL);
 
 
 date_default_timezone_set('UTC');
-
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {
-	print "Error can not connect with database server\n";
+	print "Error! can not connect with database server\n";
 	exit;
 }
 $db=@mysql_select_db($dns_db, $con);
@@ -51,7 +50,15 @@ $sql=sprintf("select `Order Key` from `Order Dimension` order by `Order Date` de
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	$order=new Order($row2['Order Key']);
-	$order->get_allowances();
+		$order->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
+	$order->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
+
+	$order->get_allowances_from_department_trigger();
+	$order->get_allowances_from_family_trigger();
+	$order->get_allowances_from_product_trigger();
+	$order->get_allowances_from_customer_trigger();
+	$order->get_allowances_from_order_trigger();
+
 	$date=$order->data['Order Date'];
 	//print_r($order->allowance['Family Percentage Off']);
 

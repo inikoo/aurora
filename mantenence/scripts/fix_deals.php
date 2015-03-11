@@ -116,16 +116,4 @@ while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ?>

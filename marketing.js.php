@@ -114,7 +114,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 ];
 	    //?tipo=products&tid=0"
 	    
-	    request="ar_deals.php?tipo=deals&parent=store&parent_key="+Dom.get('store_key').value+'&tableid=10&referrer=marketing'
+	    request="ar_deals.php?tipo=deals&parent=marketing&parent_key="+Dom.get('store_key').value+'&tableid=10&referrer=marketing'
 	   // alert(request);
 	    this.dataSource10 = new YAHOO.util.DataSource(request);
 	    this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;

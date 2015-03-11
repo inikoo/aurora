@@ -272,7 +272,6 @@
 					<div id="table10" class="data_table_container dtable btable" style="font-size:85%">
 					</div>
 				</div>	
-
 			</div>
 			<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0;">
 				<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">

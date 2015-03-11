@@ -1028,6 +1028,8 @@ if(isset($_REQUEST['parent'])){
  		$where=sprintf("where    `Deal Component Trigger`='Product' and  `Deal Component Trigger Key`=%d   ",$parent_key);
  	elseif ($parent=='customer')
  		$where=sprintf("where    `Deal Component Trigger`='Customer' and  `Deal Component Trigger Key`=%d   ",$parent_key);
+ 	elseif ($parent=='marketing')
+ 		 		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
  	else
  		$where=sprintf("where true ");;
 

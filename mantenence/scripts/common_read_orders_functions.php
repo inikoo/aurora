@@ -798,7 +798,7 @@ function create_order($data) {
 
 
 	$order->update_order_discounts();
-	$order->update_discounts();
+    //$order->update_discounts();
 	$order->update_item_totals_from_order_transactions();
 
 	$order->update_shipping();

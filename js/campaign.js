@@ -297,6 +297,9 @@ function save_new_email_campaign(){
 
 }
 
+function new_deal () {
+  location.href = "new_deal.php?parent=campaign&parent_key="+Dom.get('campaign_key').value;
+}
 
 
 function init(){
