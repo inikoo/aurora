@@ -58,7 +58,6 @@ function handleSelect(type, args, obj) {
     } else if (this.id == 2) {
         validate_general('campaign', 'to', txtDate1.value);
     }
-
 }
 
 function start_now() {

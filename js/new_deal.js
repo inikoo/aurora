@@ -1,5 +1,6 @@
 var Dom   = YAHOO.util.Dom;
 var session_data,labels;
+var asset_select_scope;
 
 YAHOO.util.Event.addListener(window, "load", function() {
 
@@ -343,6 +344,77 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.table104.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table104.filter={key:'name',value:''};
 
+
+        var tableid=105;
+		var tableDivEL="table"+tableid;
+		
+		var ColumnDefs = [
+		{key:"key", label:"",hidden:true},
+		{key:"code",formatter:"remove_links", label:labels.Code,width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+		{key:"name", formatter:"remove_links",label:labels.Name,width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		];
+		request="ar_quick_tables.php?tipo=deal_list&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0";
+
+		this.dataSource105 = new YAHOO.util.DataSource(request);
+		this.dataSource105.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource105.connXhrMode = "queueRequests";
+		this.dataSource105.table_id=tableid;
+
+		this.dataSource105.responseSchema = {
+			resultsList: "resultset.data",
+			metaFields: {
+				rowsPerPage:"resultset.records_perpage",
+				rtext:"resultset.rtext",
+				rtext_rpp:"resultset.rtext_rpp",
+				sort_key:"resultset.sort_key",
+				sort_dir:"resultset.sort_dir",
+				tableid:"resultset.tableid",
+				filter_msg:"resultset.filter_msg",
+				totalRecords: "resultset.total_records"
+			},
+			fields: [
+			"name",'code','id'
+			]
+		};
+
+
+		this.table105 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+			this.dataSource105, {
+				renderLoopSize: 50,generateRequest : myRequestBuilder,
+				paginator : new YAHOO.widget.Paginator({
+					rowsPerPage:20,containers : 'paginator105', 
+					pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
+					previousPageLinkLabel : "<",
+					nextPageLinkLabel : ">",
+					firstPageLinkLabel :"<<",
+					lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false,
+					template : "{PreviousPageLink}<strong id='paginator_info105'>{CurrentPageReport}</strong>{NextPageLink}"
+				})
+
+				,sortedBy : {
+					key: 'code',
+					dir: ''
+				},
+				dynamicData : true
+
+			}
+
+			);
+
+		this.table105.handleDataReturnPayload =myhandleDataReturnPayload;
+		this.table105.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table105.subscribe("cellClickEvent", this.table105.onEventShowCellEditor);
+        this.table105.prefix='';
+        this.table105.subscribe("rowMouseoverEvent", this.table105.onEventHighlightRow);
+        this.table105.subscribe("rowMouseoutEvent", this.table105.onEventUnhighlightRow);
+        this.table105.subscribe("rowClickEvent", select_deal_from_list);
+
+
+
+        this.table105.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table105.filter={key:'code',value:''};
+        
+
     };});
 
 function trigger_changed (value) {
@@ -351,17 +423,17 @@ function trigger_changed (value) {
 
 	switch(value){
 		case 'Department':
-		show_dialog_departments_list();
+		show_dialog_departments_list('trigger');
 		Dom.setStyle(['trigger_department_options','department_terms_select'],'display','')
 		terms_changed('Department Quantity Ordered')
 		break;
 		case 'Family':
-		show_dialog_families_list();
+		show_dialog_families_list('trigger');
 		Dom.setStyle(['trigger_family_options','family_terms_select'],'display','')
 		terms_changed('Department Quantity Ordered')
 		break;
 		case 'Product':
-		show_dialog_products_list();
+		show_dialog_products_list('trigger');
 		Dom.setStyle(['trigger_product_options','product_terms_select'],'display','')
 
 		terms_changed('Department Quantity Ordered')
@@ -384,24 +456,60 @@ function show_dialog_campaigns_list () {
 	dialog_campaigns_list.show();
 }
 
-function show_dialog_departments_list () {
-	region1 = Dom.getRegion('tigger');
+function show_dialog_departments_list (scope) {
+
+	if(scope=='trigger'){
+		var scope_element='trigger'
+		asset_select_scope='trigger'
+	}else if(scope=='target_bis'){
+		var scope_element='allowances_select'
+		asset_select_scope='target_bis'
+	}else{
+		var scope_element='customer_terms_select'
+		asset_select_scope='target'
+	}
+
+	region1 = Dom.getRegion(scope_element);
 	region2 = Dom.getRegion('dialog_departments_list');
 	var pos =[region1.left-2,region1.top+22]
 	Dom.setXY('dialog_departments_list', pos);
 	dialog_departments_list.show();
+
 }
 
-function show_dialog_families_list () {
-	region1 = Dom.getRegion('tigger');
+function show_dialog_families_list (scope) {
+
+	if(scope=='trigger'){
+		var scope_element='trigger'
+		asset_select_scope='trigger'
+	}else if(scope=='target_bis'){
+		var scope_element='allowances_select'
+		asset_select_scope='target_bis'
+	}else{
+		var scope_element='customer_terms_select'
+		asset_select_scope='target'
+	}
+	region1 = Dom.getRegion(scope_element);
 	region2 = Dom.getRegion('dialog_families_list');
 	var pos =[region1.left-2,region1.top+22]
 	Dom.setXY('dialog_families_list', pos);
 	dialog_families_list.show();
 }
 
-function show_dialog_products_list () {
-	region1 = Dom.getRegion('tigger');
+function show_dialog_products_list (scope) {
+
+	if(scope=='trigger'){
+		var scope_element='trigger'
+		asset_select_scope='trigger'
+	}else if(scope=='target_bis'){
+		var scope_element='allowances_select'
+		asset_select_scope='target_bis'
+	}else{
+		var scope_element='customer_terms_select'
+		asset_select_scope='target'
+	}
+
+	region1 = Dom.getRegion(scope_element);
 	region2 = Dom.getRegion('dialog_products_list');
 	var pos =[region1.left-2,region1.top+22]
 	Dom.setXY('dialog_products_list', pos);
@@ -417,7 +525,7 @@ function show_dialog_customers_list () {
 }
 
 function show_dialog_deals_list () {
-	region1 = Dom.getRegion('update_deal');
+	region1 = Dom.getRegion('allowances_select');
 	region2 = Dom.getRegion('dialog_deals_list');
 	var pos =[region1.left,region1.top]
 	Dom.setXY('dialog_deals_list', pos);
@@ -443,36 +551,72 @@ function select_campaign_from_list(oArgs) {
 
 function select_department_from_list(oArgs) {
 
-	
-
 	record = tables.table101.getRecord(oArgs.target);
-	Dom.get('trigger').value= 'Department';
-	Dom.get('trigger_key').value= record.getData('key');
-	Dom.get('department_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	if(asset_select_scope=='trigger'){
+		Dom.get('trigger').value= 'Department';
+		Dom.get('trigger_key').value= record.getData('key');
+		Dom.get('department_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+		Dom.setStyle('trigger_department_options_options','display','')
+
+	}else if(asset_select_scope=='target_bis'){
+
+		Dom.get('target').value= 'Department';
+		Dom.get('target_key').value= record.getData('key');
+		Dom.get('target_bis_department_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	}else{
+		Dom.get('target').value= 'Department';
+		Dom.get('target_key').value= record.getData('key');
+		Dom.get('target_department_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	}
 	dialog_departments_list.hide();
+
 }
 
 function select_family_from_list(oArgs) {
 
-	Dom.setStyle('trigger_family_options','display','')
 
 	record = tables.table102.getRecord(oArgs.target);
-	Dom.get('trigger').value= 'Family';
-	Dom.get('trigger_key').value= record.getData('key');
-	Dom.get('family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	if(asset_select_scope=='trigger'){
+		Dom.get('trigger').value= 'Family';
+		Dom.get('trigger_key').value= record.getData('key');
+		Dom.get('family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+		Dom.setStyle('trigger_family_options','display','');
+	}else if(asset_select_scope=='target_bis'){
+
+		Dom.get('target').value= 'Family';
+		Dom.get('target_key').value= record.getData('key');
+		Dom.get('target_bis_family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	}else{
+		Dom.get('target').value= 'Family';
+		Dom.get('target_key').value= record.getData('key');
+		Dom.get('target_family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+
+	}
+
 	dialog_families_list.hide();
 }
 
 function select_product_from_list(oArgs) {
 
-	Dom.setStyle('trigger_product_options','display','')
-
+	
 
 	record = tables.table103.getRecord(oArgs.target);
-	Dom.get('trigger').value= 'Product';
-	Dom.get('trigger_key').value= record.getData('key');
-	Dom.get('product_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
-	
+	if(asset_select_scope=='trigger'){
+		Dom.get('trigger').value= 'Product';
+		Dom.get('trigger_key').value= record.getData('key');
+		Dom.get('product_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+		Dom.setStyle('trigger_product_options','display','')
+	}else if(asset_select_scope=='target_bis'){
+
+		Dom.get('target').value= 'Product';
+		Dom.get('target_key').value= record.getData('key');
+		Dom.get('target_bis_product_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	}else{
+		Dom.get('target').value= 'Product';
+		Dom.get('target_key').value= record.getData('key');
+		Dom.get('target_product_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+
+	}
 
 	dialog_products_list.hide();
 }
@@ -491,8 +635,8 @@ function select_customer_from_list(oArgs) {
 function select_deal_from_list(oArgs) {
 
 	record = tables.table105.getRecord(oArgs.target);
-	
-	//Dom.get('deal_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+	Dom.get('clone_deal_key').value=record.getData('key');
+	Dom.get('clone_deal_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
 	dialog_deals_list.hide();
 }
 
@@ -506,27 +650,56 @@ function new_campaign () {
 }
 
 function terms_changed(value){
-	Dom.setStyle(['amount_options','voucher_options','if_order_more_tr','order_interval_tr','order_number_tr','for_every_ordered_tr'],'display','none');
-	Dom.setStyle(['order_more_than_allowances_select','for_every_allowances_select','voucher_allowances_select','every_order_allowances_select','next_order_allowances_select'],'display','none');
+	Dom.setStyle(['amount_options','voucher_options','if_order_more_tr','order_interval_tr','order_number_tr','for_every_ordered_tr','target_department_options','target_family_options','target_product_options'],'display','none');
+	Dom.setStyle(['order_more_than_allowances_select','for_every_allowances_select','voucher_allowances_select','every_order_allowances_select','next_order_allowances_select','amount_allowances_select','order_interval_allowances_select','order_number_allowances_select'],'display','none');
 
+
+	Dom.get('terms').value=value;
 	switch(value){
+		case 'Customer Department Quantity Ordered':
+		Dom.setStyle(['if_order_more_tr','target_department_options'],'display','');
+		Dom.setStyle('order_more_than_allowances_select','display','');
+		
+		show_dialog_departments_list('target')	
+		allowances_changed('Percentage Off')
+		Dom.get('terms').value='Department Quantity Ordered';
+		break;
+		case 'Customer Family Quantity Ordered':
+
+		Dom.setStyle(['if_order_more_tr','target_family_options'],'display','');
+		Dom.setStyle('order_more_than_allowances_select','display','');
+
+		show_dialog_families_list('target')	
+
+		allowances_changed('Percentage Off');
+		Dom.get('terms').value='Family Quantity Ordered';
+
+		break;
+		case 'Customer Product Quantity Ordered':
+		Dom.setStyle(['if_order_more_tr','target_product_options'],'display','');
+		Dom.setStyle('order_more_than_allowances_select','display','');
+		show_dialog_products_list('target')	
+
+		allowances_changed('Percentage Off');
+		Dom.get('terms').value='Product Quantity Ordered';
+		break;
 		case 'Department Quantity Ordered':
 		Dom.setStyle('if_order_more_tr','display','');
 		Dom.setStyle('order_more_than_allowances_select','display','');
 
-		allowances_changed('Percentage Off')
+		allowances_changed('Percentage Off');
 		break;
 		case 'Family Quantity Ordered':
 		Dom.setStyle('if_order_more_tr','display','');
 		Dom.setStyle('order_more_than_allowances_select','display','');
 
-		allowances_changed('Percentage Off')
+		allowances_changed('Percentage Off');
 		break;
 		case 'Product Quantity Ordered':
 		Dom.setStyle('if_order_more_tr','display','');
 		Dom.setStyle('order_more_than_allowances_select','display','');
 
-		allowances_changed('Percentage Off')
+		allowances_changed('Percentage Off');
 		break;
 		case 'Department For Every Quantity Ordered':
 		Dom.setStyle('for_every_ordered_tr','display','');
@@ -537,43 +710,57 @@ function terms_changed(value){
 		Dom.setStyle('for_every_ordered_tr','display','');
 		Dom.setStyle('for_every_allowances_select','display','');
 		allowances_changed('Get Same Free');
+
 		break;
 		case 'Product For Every Quantity Ordered':
 		Dom.setStyle('for_every_ordered_tr','display','');
 		Dom.setStyle('for_every_allowances_select','display','');
 		allowances_changed('Get Same Free');
+
 		break;
 		case 'Voucher':
 		Dom.setStyle('voucher_options','display','');
-		Dom.setStyle('order_more_than_allowances_select','display','');
-		allowances_changed('Percentage Off')
+		Dom.setStyle('voucher_allowances_select','display','');
+		allowances_changed('Percentage Off');
+
 		break;
 		case 'Amount':
 		Dom.setStyle('amount_options','display','');
 		Dom.get('amount').focus();
+		Dom.setStyle('amount_allowances_select','display','');
+		allowances_changed('Percentage Off')
 		break;
 		case 'Order Interval':
 		Dom.setStyle('order_interval_tr','display','');
 		Dom.get('order_interval').focus();
+		Dom.setStyle('order_interval_allowances_select','display','');
+		allowances_changed('Percentage Off');
+
 		break;
 		case 'Order Number':
 		Dom.setStyle('order_number_tr','display','');
 		Dom.get('order_number').focus();
+		Dom.setStyle('order_number_allowances_select','display','');
+		allowances_changed('Percentage Off');
+		
 		break;
 		case 'Voucher AND Amount':
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('amount_options','display','');
 		Dom.get('amount').focus();
+		
 		break;
 		case 'Voucher AND Order Number':
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('order_number_tr','display','');
 		Dom.get('order_number').focus();
+		
 		break;
 		case 'Voucher AND Order Interval':
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('order_interval_tr','display','');
 		Dom.get('order_interval').focus();
+		
 		break;
 		case 'Amount AND Order Number':
 		Dom.setStyle('amount_options','display','');
@@ -591,7 +778,7 @@ function terms_changed(value){
 		allowances_changed('Percentage Off')
 		break;
 		case 'Next Order':
-Dom.setStyle('next_order_allowances_select','display','');
+		Dom.setStyle('next_order_allowances_select','display','');
 
 		allowances_changed('Percentage Off')
 		break;
@@ -603,19 +790,149 @@ Dom.setStyle('next_order_allowances_select','display','');
 }
 
 function allowances_changed (value) {
-	Dom.setStyle(['percentage_off_tr','get_same_free_tr'],'display','none')
+	Dom.setStyle(['percentage_off_tr','get_same_free_tr','target_bis_department_options','target_bis_family_options','target_bis_product_options','clone_deal_options'],'display','none')
 	switch(value){
+		case 'Department Percentage Off':
+		Dom.setStyle(['percentage_off_tr','target_bis_department_options'],'display','');
+		show_dialog_departments_list('target_bis')
+
+		break;
+		case 'Family Percentage Off':
+		Dom.setStyle(['percentage_off_tr','target_bis_family_options'],'display','');
+		show_dialog_families_list('target_bis')
+		break;
+		case 'Product Percentage Off':
+		Dom.setStyle(['percentage_off_tr','target_bis_product_options'],'display','');
+		show_dialog_products_list('target_bis')
+		break;
 		case 'Percentage Off':
 		Dom.setStyle('percentage_off_tr','display','');
 		break;
 		case 'Get Same Free':
 		Dom.setStyle('get_same_free_tr','display','');
 		break;
+
+		case 'Clone':
+		Dom.setStyle('clone_deal_options','display','');
+		show_dialog_deals_list()
+		break;
+	
+
+
+
+	}
+
+
+}
+
+function select_voucher_code_type () {
+
+	if(this.id=='voucher_code_random'){
+		Dom.removeClass('voucher_code_custome','selected');
+		Dom.addClass('voucher_code_random','selected');
+		Dom.setStyle('voucher_code_tr','display','none')
+		Dom.get('voucher_code').value='';
+		Dom.get('voucher_code_type').value='Random';
+
+	}else{
+		Dom.addClass('voucher_code_custome','selected');
+		Dom.removeClass('voucher_code_random','selected');
+		Dom.setStyle('voucher_code_tr','display','');
+		Dom.get('voucher_code').focus();
+		Dom.get('voucher_code_type').value='Custome';
 	}
 }
 
+function select_voucher_type () {
+
+	if(this.id=='voucher_type_public'){
+		Dom.addClass('voucher_type_public','selected');
+		Dom.removeClass('voucher_type_private','selected');
+		Dom.get('voucher_type').value='Public';
+
+	}else{
+		Dom.removeClass('voucher_type_public','selected');
+		Dom.addClass('voucher_type_private','selected');
+		Dom.get('voucher_type').value='Private';
+	}
+}
+
+function date_changed() {
+
+    if (this.id == 'v_calpop1') {
+
+        validate_general('campaign', 'from', this.value);
+    } else if (this.id == 'v_calpop2') {
+        validate_general('campaign', 'to', this.value);
+
+    }
+}
+
+function handleSelect(type, args, obj) {
+
+    var dates = args[0];
+    var date = dates[0];
+    var year = date[0],
+        month = date[1],
+        day = date[2];
+
+
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    var txtDate1 = document.getElementById("v_calpop" + this.id);
+    txtDate1.value = day + "-" + month + "-" + year;
+    this.hide();
+
+    if (this.id == 1) {
+        validate_general('campaign', 'from', txtDate1.value);
+    } else if (this.id == 2) {
+        validate_general('campaign', 'to', txtDate1.value);
+    }
+}
+
+function start_now() {
+
+    if (Dom.hasClass("start_now", "selected")) {
+        Dom.removeClass("start_now", "selected")
+        Dom.setStyle(['v_calpop1', 'calpop1'], 'display', '');
+    } else {
+        Dom.addClass("start_now", "selected")
+         Dom.setStyle(['v_calpop1', 'calpop1'], 'display', 'none');
+        var d = new Date()
+        year = d.getFullYear(),
+            month = d.getMonth(),
+            day = d.getDate();
+        if (month < 10) month = '0' + month;
+        if (day < 10) day = '0' + day;
+        var date = day + "-" + month + "-" + year;
+        Dom.get("v_calpop1").value=date
+       
+        validate_general('campaign', 'from', date);
+    }
+}
+
+function permanent_campaign() {
+
+    if (Dom.hasClass("to_permanent", "selected")) {
+        Dom.removeClass("to_permanent", "selected")
+        Dom.setStyle(['v_calpop2', 'calpop2'], 'display', '');
+        validate_scope_data.campaign.to.validated = false;
+        validate_scope('campaign');
+    } else {
+        Dom.addClass("to_permanent", "selected")
+        Dom.setStyle(['v_calpop2', 'calpop2'], 'display', 'none');
+
+        validate_scope_data.campaign.to.validated = true;
+        validate_scope_data.campaign.to.changed = true;
+
+        Dom.get("v_calpop2").value = '';
+        validate_scope('campaign');
+
+    }
+}
 
 function init(){
+
 
 	switch(Dom.get('trigger').value){
 		case 'Department':
@@ -710,9 +1027,41 @@ function init(){
 			'key_name': 'store_key',
 			'key': ''
 		}
-
-
 	};
+
+cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
+        title: "Start:",
+        mindate: new Date(),
+        close: true
+    });
+    cal1.update = updateCal;
+    cal1.id = '1';
+    cal1.render();
+    cal1.update();
+    cal1.selectEvent.subscribe(handleSelect, cal1, true);
+
+    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+
+
+    cal2 = new YAHOO.widget.Calendar("calpop2", "campaign_to_Container", {
+        title: "Until:",
+        mindate: new Date(),
+        close: true
+    });
+    cal2.update = updateCal;
+    cal2.id = '2';
+    cal2.render();
+    cal2.update();
+    cal2.selectEvent.subscribe(handleSelect, cal2, true);
+
+    YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
+
+
+
+    Event.addListener(['v_calpop1', 'v_calpop2'], "keyup", date_changed);
+
+    YAHOO.util.Event.addListener('to_permanent', "click", permanent_campaign)
+    YAHOO.util.Event.addListener('start_now', "click", start_now)
 
 
 	dialog_campaigns_list = new YAHOO.widget.Dialog("dialog_campaigns_list", {
@@ -733,7 +1082,11 @@ function init(){
 		draggable: false
 	});
 	dialog_departments_list.render();
-	Event.addListener("update_department", "click", show_dialog_departments_list);
+	Event.addListener("update_department", "click", show_dialog_departments_list,'trigger');
+	Event.addListener("target_update_department", "click", show_dialog_departments_list,'target');
+
+
+
 	dialog_families_list = new YAHOO.widget.Dialog("dialog_families_list", {
 		visible: false,
 		close: true,
@@ -741,7 +1094,8 @@ function init(){
 		draggable: false
 	});
 	dialog_families_list.render();
-	Event.addListener("update_family", "click", show_dialog_families_list);
+	Event.addListener("update_family", "click", show_dialog_families_list,"trigger");
+	Event.addListener("target_update_family", "click", show_dialog_families_list,"target");
 
 	dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
 		visible: false,
@@ -750,7 +1104,8 @@ function init(){
 		draggable: false
 	});
 	dialog_products_list.render();
-	Event.addListener("update_product", "click", show_dialog_products_list);
+	Event.addListener("update_product", "click", show_dialog_products_list,"trigger");
+	Event.addListener("target_update_product", "click", show_dialog_products_list,"target");
 
 	dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
 		visible: false,
@@ -777,7 +1132,11 @@ function init(){
 		draggable: false
 	});
 	dialog_deals_list.render();
-	Event.addListener("update_deal", "click", show_dialog_deals_list);
+	Event.addListener("update_clone_deal", "click", show_dialog_deals_list);
+	Event.addListener(['voucher_code_random','voucher_code_custome'], "click", select_voucher_code_type);
+	Event.addListener(['voucher_type_public','voucher_type_private'], "click", select_voucher_type);
+
+
 
 
 }

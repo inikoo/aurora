@@ -13,8 +13,12 @@
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> ({t}New offer{/t})</span> 
 		{elseif $scope_subject=='Store'} 
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="stores.php"> &#8704; {t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> ({t}New offer{/t})</span> 
-	{elseif $scope_subject=='Customer'} 
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; <a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a> ({t}New offer{/t})</span> 
+		{elseif $scope_subject=='Customer'} 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; <a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a> ({t}New offer{/t})</span> 
+		{elseif $scope_subject=='Product'} 
+
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Code')}</a> &rarr; <a href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; <a href="product.php?pid={$product->pid}" title="{$product->get('Product Name')}">{$product->get('Product Code')}</a> ({t}New offer{/t})</span> 
+
 
 		{/if} 
 	</div>
@@ -117,7 +121,7 @@
 					<div class="buttons small left">
 						<span style="float:left;margin-right:10px" id="campaign_formated"></span> 
 						<button style="display:none" id="update_campaign">{t}Change campaign{/t}</button> 
-						<button style="margin-bottom:2px" id="select_campaign" alt_label="{t}Select other campaign{/t}" label="{t}Select campaign{/t}" >{t}Select campaign{/t}</button> 
+						<button style="margin-bottom:2px" id="select_campaign" alt_label="{t}Change campaign{/t}" label="{t}Select campaign{/t}" >{t}Select campaign{/t}</button> 
 						<button style="" id="new_campaign">{t}New campaign{/t}</button> 
 					</div>
 				</td>
@@ -211,6 +215,9 @@
 			<td class="label" style="width:300px">{t}Terms{/t}:</td>
 			<td style="text-align:left;width:400px"> 
 				<div class="styled-select">
+					<input type="hidden" id="terms" value="">
+					<input type="hidden" id="target" value="">
+					<input type="hidden" id="target_key" value="">
 					<select id="department_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Department'}display:none{/if}">
 						<option value="Department Quantity Ordered">{t}Order more than{/t}</option>
 						<option value="Department For Every Quantity Ordered">{t}For every{/t}</option>
@@ -227,9 +234,9 @@
 						<option value="Voucher">{t}Voucher{/t}</option> 
 						<option value="Every Order">{t}Every Order{/t}</option>
 						<option value="Next Order">{t}Next Order{/t}</option>
-						<option value="Department Quantity Ordered">{t}Order more than{/t} ({t}Department{/t})</option>
-						<option value="Family Quantity Ordered">{t}Order more than{/t} ({t}Family{/t})</option>
-						<option value="Product Quantity Ordered">{t}Order more than{/t} ({t}Product{/t})</option>
+						<option value="Customer Department Quantity Ordered">{t}Order more than{/t} ({t}Department{/t})</option>
+						<option value="Customer Family Quantity Ordered">{t}Order more than{/t} ({t}Family{/t})</option>
+						<option value="Customer Product Quantity Ordered">{t}Order more than{/t} ({t}Product{/t})</option>
 
 					</select>
 					<select id="customer_terms_select" onchange="terms_changed(this.value)">
@@ -238,6 +245,8 @@
 						<option value="Amount">{t}Amount{/t}</option>
 						<option value="Order Number">{t}Nth Order{/t}</option>
 						<option value="Order Interval">{t}Last order placed (Days){/t}</option>
+
+
 
 						<option value="Voucher AND Amount">{t}Voucher & Amount{/t}</option>
 						<option value="Voucher AND Order Number">{t}Voucher & Nth Order{/t}</option>
@@ -253,23 +262,68 @@
 				</div>
 			</td>
 		</tr>
+
+		<tr id="target_department_options" style="display:none">
+			<td class="label">{t}Department{/t}:</td>
+			<td>
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="target_department_formated"></span> 
+					<button style="" id="target_update_department">{t}Change department{/t}</button> 
+				</div>
+			</td>
+		</tr>
+		<tr id="target_family_options" style="display:none">
+			<td class="label">{t}Family{/t}:</td>
+			<td>
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="target_family_formated"></span> 
+					<button style="" id="target_update_family">{t}Change family{/t}</button> 
+				</div>
+			</td>
+		</tr>
+		<tr id="target_product_options" style="display:none">
+			<td class="label">{t}Product{/t}:</td>
+			<td>
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="target_product_formated"></span> 
+					<button style="" id="target_update_product">{t}Change product{/t}</button> 
+				</div>
+			</td>
+		</tr>
+
+
 		<tbody id="voucher_options">
 			<tr>
-				<td class="label">{t}Voucher Code{/t}</td>
-				<td>
+				<td class="label">{t}Voucher code type{/t}:</td>
+				<td><input type=hidden id="voucher_code_type" value="Random">
 					<div class="buttons small left">
 						<button id="voucher_code_random" class="selected">{t}Generate Random Code{/t}</button>
 						<button id="voucher_code_custome">{t}Custome Code{/t}</button>
 					</div>
 				</td>	
 
-			</tr>	
+			</tr>
+			<tr id="voucher_code_tr" style="display: none">
+				<td class="label">{t}Voucher Code{/t}:</td>
+				<td style="text-align:left;width:400px"> 
+					<div>
+						<input style="text-align:left;width:60px" id="voucher_code" value='' ovalue=""> 
+						<div id="voucher_code_Container">
+						</div>
+					</div>
+				</td>
+				<td> 
+					<div style="float:left;width:180px" id="voucher_code_msg" class="edit_td_alert">
+					</div>
+				</td>
+
+			</tr>		
 			<tr>
-				<td class="label">{t}Voucher type{/t}</td>
-				<td>
+				<td class="label">{t}Voucher type{/t}:</td>
+				<td><input type=hidden id="voucher_type" value="Public">
 					<div class="buttons small left">
-						<button id="voucher_type_public" class="selected">{t}Public{/t}</button>
-						<button id="voucher_type_one_use">{t}One use{/t}</button>
+						<button id="voucher_type_public" class="selected" title="{t}One per customer{/t}">{t}Public{/t}</button>
+						<button id="voucher_type_private" title="{t}Only applicable in the backend{/t}">{t}Private{/t}</button>
 					</div>
 				</td>	
 
@@ -363,41 +417,115 @@
 		<tr class="space15">
 			<td class="label" style="width:300px">{t}Allowances{/t}:</td>
 			<td style="text-align:left;width:400px"> 
-				<div class="styled-select">
+				<div class="styled-select" id="allowances_select">
 					<select id="order_more_than_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
-
 						<option value="Percentage Off">{t}Percentage off{/t}</option>
 						<option value="Get Same Free">{t}Get free (same product){/t}</option>
-						
 					</select>
 					<select id="for_every_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
-
 						<option value="Get Same Free">{t}Get free (same product){/t}</option>
-						
 					</select>
 					<select id="every_order_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
-
-						<<option value="Percentage Off">{t}Percentage off{/t}</option>
-						
+						<option value="Percentage Off">{t}Percentage off{/t}</option>
+						<option value="Department Percentage Off">{t}Percentage off{/t} ({t}department{/t})</option>
+						<option value="Family Percentage Off">{t}Percentage off{/t} ({t}family{/t})</option>
+						<option value="Product Percentage Off">{t}Percentage off{/t} ({t}products{/t})</option>
+						<option value="Free Shipping">{t}Free Shipping{/t}</option>
+						<option value="Free Charges">{t}Free Charges{/t}</option>
+						<option value="Clone">{t}Clone other deal allowances{/t}</option>
 					</select>	
 					<select id="next_order_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
-
-						<<option value="Percentage Off">{t}Percentage off{/t}</option>
-						
+						<option value="Percentage Off">{t}Percentage off{/t}</option>
+						<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
+						<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
+						<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+						<option value="Free Shipping">{t}Free Shipping{/t}</option>
+						<option value="Free Charges">{t}Free Charges{/t}</option>
+						<option value="Clone">{t}Clone other deal allowances{/t}</option>
 					</select>		
 					<select id="voucher_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
-						
 						<option value="Percentage Off">{t}Percentage off{/t}</option>
+						<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
+						<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
+						<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
 						<option value="Free Shipping">{t}Free Shipping{/t}</option>
+						<option value="Free Charges">{t}Free Charges{/t}</option>
 						<option value="Clone">{t}Clone other deal allowances{/t}</option>
-
 					</select>
+					<select id="amount_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
+						<option value="Percentage Off">{t}Percentage off{/t}</option>
+						<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
+						<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
+						<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+						<option value="Free Shipping">{t}Free Shipping{/t}</option>
+						<option value="Free Charges">{t}Free Charges{/t}</option>
+						<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					</select>
+					<select id="order_interval_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
+						<option value="Percentage Off">{t}Percentage off{/t}</option>
+						<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
+						<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
+						<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+						<option value="Free Shipping">{t}Free Shipping{/t}</option>
+						<option value="Free Charges">{t}Free Charges{/t}</option>
+						<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					</select>
+					<select id="order_number_allowances_select" onchange="allowances_changed(this.value)" style="display:none"  >
+						<option value="Percentage Off">{t}Percentage Off{/t}</option>
+						<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
+						<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
+						<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+						<option value="Free Shipping">{t}Free Shipping{/t}</option>
+						<option value="Free Charges">{t}Free Charges{/t}</option>
+						<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					</select>
+
+
+
 				</div>
 			</td>
 			<td> 
 				
 			</td>
 		</tr>
+
+		<tr id="target_bis_department_options" style="display:none">
+			<td class="label">{t}Department{/t}:</td>
+			<td>
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="target_bis_department_formated"></span> 
+					<button style="" id="target_bis_update_department">{t}Change department{/t}</button> 
+				</div>
+			</td>
+		</tr>
+		<tr id="target_bis_family_options" style="display:none">
+			<td class="label">{t}Family{/t}:</td>
+			<td>
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="target_bis_family_formated"></span> 
+					<button style="" id="target_bis_update_family">{t}Change family{/t}</button> 
+				</div>
+			</td>
+		</tr>
+		<tr id="target_bis_product_options" style="display:none">
+			<td class="label">{t}Product{/t}:</td>
+			<td>
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="target_bis_product_formated"></span> 
+					<button style="" id="target_bis_update_product">{t}Change product{/t}</button> 
+				</div>
+			</td>
+		</tr>
+		<tr id="clone_deal_options" style="display:none">
+			<td class="label">{t}Deal{/t}:</td>
+			<td>
+				<div class="buttons small left"><input type="hidden" id="clone_deal_key" id="">
+					<span style="float:left;margin-right:10px" id="clone_deal_formated"></span> 
+					<button style="" id="update_clone_deal">{t}Change deal{/t}</button> 
+				</div>
+			</td>
+		</tr>
+
 		<tr id="percentage_off_tr">
 			<td class="label">{t}Discount{/t}:</td>
 			<td style="text-align:left;width:400px"> 
@@ -459,19 +587,19 @@
 			</td>
 		</tr>
 		<tr style="height:50px">
-				<td class="label">{t}Description{/t}:</td>
-				<td style="text-align:left;"> 
-					<div>
-						<textarea style="text-align:left;width:300px;height:40px;resize:horizontal" id="deal_description" value='' ovalue=""></textarea> 
-						<div id="deal_description_Container">
-						</div>
+			<td class="label">{t}Description{/t}:</td>
+			<td style="text-align:left;"> 
+				<div>
+					<textarea style="text-align:left;width:300px;height:40px;resize:horizontal" id="deal_description" value='' ovalue=""></textarea> 
+					<div id="deal_description_Container">
 					</div>
-				</td>
-				<td> 
-					<div style="float:left;width:180px" id="deal_description_msg" class="edit_td_alert">
-					</div>
-				</td>
-			</tr>
+				</div>
+			</td>
+			<td> 
+				<div style="float:left;width:180px" id="deal_description_msg" class="edit_td_alert">
+				</div>
+			</td>
+		</tr>
 		<tr class="buttons">
 			<td></td>
 			<td style="text-align:right"> 
