@@ -1013,7 +1013,7 @@ if(isset($_REQUEST['parent'])){
 
 
  	if ($parent=='store') {
- 		 		$where=sprintf("where    `Deal Component Trigger`='Order' and  `Deal Store Key`=%d     ",$parent_key);
+ 		 		$where=sprintf("where  `Deal Trigger`='Order' and  `Deal Store Key`=%d     ",$parent_key);
 
 
 
@@ -1021,13 +1021,13 @@ if(isset($_REQUEST['parent'])){
  		$where=sprintf("where  `Deal Campaign Key`=%d     ",$parent_key);
  	}
  	elseif ($parent=='department')
- 		$where=sprintf("where    `Deal Component Trigger`='Department' and  `Deal Component Trigger Key`=%d     ",$parent_key);
+ 		$where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_key);
  	elseif ($parent=='family')
- 		$where=sprintf("where    `Deal Component Trigger`='Family' and  `Deal Component Trigger Key`=%d   ",$parent_key);
+ 		$where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_key);
  	elseif ($parent=='product')
- 		$where=sprintf("where    `Deal Component Trigger`='Product' and  `Deal Component Trigger Key`=%d   ",$parent_key);
+ 		$where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_key);
  	elseif ($parent=='customer')
- 		$where=sprintf("where    `Deal Component Trigger`='Customer' and  `Deal Component Trigger Key`=%d   ",$parent_key);
+ 		$where=sprintf("where    `Deal Trigger`='Customer' and  `Deal Trigger Key`=%d   ",$parent_key);
  	elseif ($parent=='marketing')
  		 		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
  	else
@@ -1079,7 +1079,7 @@ if(isset($_REQUEST['parent'])){
  	mysql_free_result($res);
 
 
- 	$rtext=number($total_records)." ".ngettext('deal','deals',$total_records);
+ 	$rtext=number($total_records)." ".ngettext('offer','offers',$total_records);
  	if ($total_records>$number_results)
  		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
  	elseif ($total_records>=10)

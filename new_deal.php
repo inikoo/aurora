@@ -76,7 +76,7 @@
  	$smarty->assign('parent','products');
  	$smarty->assign('search_label',_('Products'));
  	$smarty->assign('search_scope','products');
-$smarty->assign('link_back','store.php?id='.$store->id);
+ 	$smarty->assign('link_back','store.php?id='.$store->id);
 
  	break;
  	case 'department':
@@ -88,7 +88,7 @@ $smarty->assign('link_back','store.php?id='.$store->id);
  	$smarty->assign('department',$department);
 
  	$smarty->assign('store',$store);
- 	 	
+ 	
 
  	$smarty->assign('department',$department);
 
@@ -124,18 +124,20 @@ $smarty->assign('link_back','store.php?id='.$store->id);
  	$smarty->assign('parent','products');
  	$smarty->assign('search_label',_('Products'));
  	$smarty->assign('search_scope','products');
-$smarty->assign('link_back','family.php?id='.$family->id);
+ 	$smarty->assign('link_back','family.php?id='.$family->id);
 
 
  	break;
  	case 'product':
- 	$product=new Product($_REQUEST['parent_key']);
+ 	$product=new Product('pid',$_REQUEST['parent_key']);
  	$department=new Department($product->get('Product Main Department Key'));
  	$family=new Family($product->get('Product Family Key'));
 
  	$store=new Store($product->data['Product Store Key']);
 
- 	$smarty->assign('scope',$family);
+ 	$smarty->assign('scope',$product);
+ 	$smarty->assign('product',$product);
+
  	$smarty->assign('family',$family);
  	$smarty->assign('department',$department);
  	$smarty->assign('store',$store);
@@ -149,13 +151,13 @@ $smarty->assign('link_back','family.php?id='.$family->id);
 
  	$smarty->assign('search_label',_('Products'));
  	$smarty->assign('search_scope','products');
-$smarty->assign('link_back','product.php?pid='.$product->pid);
+ 	$smarty->assign('link_back','product.php?pid='.$product->pid);
 
 
  	break;
  }
 
-$smarty->assign('store_key',$store->id);
+ $smarty->assign('store_key',$store->id);
 
  $css_files=array(
  	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -181,6 +183,8 @@ $smarty->assign('store_key',$store->id);
  	$yui_path.'datatable/datatable.js',
  	$yui_path.'container/container-min.js',
  	$yui_path.'menu/menu-min.js',
+ 	 	$yui_path.'calendar/calendar-min.js',
+
  	'js/php.default.min.js',
  	'js/common.js',
  	'js/table_common.js',
@@ -271,6 +275,8 @@ $smarty->assign('store_key',$store->id);
  	'label'=>array(
  		'Invalid_code'=>_('Invalid code'),
  		'Invalid_name'=>_('Invalid name'),
+ 		'Page'=>_('Page'),
+ 		'of'=>_('of')
 
  		)
  	)));
