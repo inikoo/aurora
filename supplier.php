@@ -319,6 +319,8 @@ $smarty->assign('categories_data',$categories_data);
 $smarty->assign('number_categories_data',$number_categories_data);
 $smarty->assign('sticky_note',$supplier->data['Supplier Sticky Note']);
 
+
+
 $smarty->display('supplier.tpl');
 
 ?>
