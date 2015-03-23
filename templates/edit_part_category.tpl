@@ -1,6 +1,8 @@
 {include file='header.tpl'} 
 <div id="bd">
 	{include file='locations_navigation.tpl'} 
+			<input type="hidden" value="{$session_data}" id="session_data" />
+
 	<input type="hidden" value="{$category_key}" id="category_key" />
 	<input type="hidden" value="{$category->get('Category Root Key')}" id="root_category_key" />
 	<input type="hidden" value="{$category->get('Category Branch Type')}" id="branch_type" />
