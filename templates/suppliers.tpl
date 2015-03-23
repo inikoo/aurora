@@ -1,7 +1,9 @@
 {include file='header.tpl'} 
 <input type="hidden" id="subject_key" value="1" />
-	<input type="hidden" id="subject" value="none" />
-		<input type="hidden" id="supplier_products_table_id" value="1" />
+<input type="hidden" id="subject" value="none" />
+<input type="hidden" id="supplier_products_table_id" value="1" />
+<input type="hidden" value="{$session_data}" id="session_data" />
+
 
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
@@ -67,33 +69,33 @@
 			</div>
 		</div>
 		<div id="block_sinvoices" style="{if $block_view!='sinvoices'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-		
+
 			<span class="clean_table_title" style="margin-right:5px">{t}Supplier Invoices{/t} </span> 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
 			<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
-		
+
 		</div>
 		<div id="block_idn" style="{if $block_view!='idn'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-		
-		<span class="clean_table_title" style="margin-right:5px">{t}Incoming Delivery Notes{/t} </span> 
+
+			<span class="clean_table_title" style="margin-right:5px">{t}Incoming Delivery Notes{/t} </span> 
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
 			<div id="table4" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
-		
+
 		</div>
 		<div id="block_sproducts" style="{if $block_view!='sproducts'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="clear:both;">
 				<span class="clean_table_title">{t}Supplier Products{/t} <img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
-					<div class="elements_chooser">
-										<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-								<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-	</div>
+				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+				</div>
 				
 				<div class="table_top_bar">
 				</div>

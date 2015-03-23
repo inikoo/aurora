@@ -2215,7 +2215,7 @@ $default_state=array(
 		),
 		'edit_categories'=>array(
 			'view'=>'category',
-			'order'=>'sku',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
