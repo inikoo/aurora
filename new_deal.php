@@ -53,6 +53,8 @@
  	$smarty->assign('scope_subject','Customer');
  	$smarty->assign('trigger','Customer');
  	$smarty->assign('trigger_key',$customer->id);
+ 	$smarty->assign('target','Order');
+ 	$smarty->assign('target_key','');
 
  	$smarty->assign('parent','customers');
  	$smarty->assign('search_label',_('Customers'));
@@ -72,7 +74,9 @@
  	$smarty->assign('scope_subject','Store');
  	$smarty->assign('trigger','Order');
  	$smarty->assign('trigger_key',$store->id);
-
+$smarty->assign('target','Order');
+ 	$smarty->assign('target_key','');
+ 	
  	$smarty->assign('parent','products');
  	$smarty->assign('search_label',_('Products'));
  	$smarty->assign('search_scope','products');
@@ -95,7 +99,8 @@
  	$smarty->assign('scope_subject','Department');
  	$smarty->assign('trigger','Department');
  	$smarty->assign('trigger_key',$department->id);
-
+	$smarty->assign('target','Department');
+ 	$smarty->assign('target_key',$department->id);
 
  	$smarty->assign('parent','products');
  	$smarty->assign('search_label',_('Products'));
@@ -119,6 +124,8 @@
  	$smarty->assign('scope_subject','Family');
  	$smarty->assign('trigger','Family');
  	$smarty->assign('trigger_key',$family->id);
+ 	$smarty->assign('target','Family');
+ 	$smarty->assign('target_key',$family->id);
 
 
  	$smarty->assign('parent','products');
@@ -145,7 +152,8 @@
  	$smarty->assign('scope_subject','Product');
  	$smarty->assign('trigger','Product');
  	$smarty->assign('trigger_key',$product->pid);
-
+	$smarty->assign('target','Product');
+ 	$smarty->assign('target_key',$product->pid);
 
  	$smarty->assign('parent','products');
 
@@ -183,7 +191,7 @@
  	$yui_path.'datatable/datatable.js',
  	$yui_path.'container/container-min.js',
  	$yui_path.'menu/menu-min.js',
- 	 	$yui_path.'calendar/calendar-min.js',
+ 	$yui_path.'calendar/calendar-min.js',
 
  	'js/php.default.min.js',
  	'js/common.js',
@@ -275,6 +283,15 @@
  	'label'=>array(
  		'Invalid_code'=>_('Invalid code'),
  		'Invalid_name'=>_('Invalid name'),
+ 		'Invalid_description'=>_('Invalid description'),
+ 		'Invalid_date'=>_('Invalid date'),
+ 		'Invalid_amount'=>_('Invalid amount'),
+ 		'Invalid_number'=>_('Invalid number'),
+
+
+
+ 		'Invalid_percentage'=>_('Invalid percentage'),
+
  		'Page'=>_('Page'),
  		'of'=>_('of')
 

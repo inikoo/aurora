@@ -1819,7 +1819,7 @@ function deal_list() {
 	if (!in_array($store_key,$user->stores)) {
 		$where=sprintf('where false ');
 	} else {
-		$where=sprintf('where `Store Key`=%d',$store_key);
+		$where=sprintf('where `Deal Store Key`=%d',$store_key);
 	}
 
 
@@ -1831,6 +1831,8 @@ function deal_list() {
 
 	if ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Deal Code` like '".addslashes($f_value)."%'";
 
 
 	$sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension` $where $wheref  ";
@@ -1893,7 +1895,7 @@ function deal_list() {
 
 
 	$adata=array();
-	$sql="select  `Deal Key`,`Deal Name` from `Deal Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Deal Code`,`Deal Key`,`Deal Name`,`Deal Description` from `Deal Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
@@ -1901,9 +1903,9 @@ function deal_list() {
 	while ($row=mysql_fetch_array($res)) {
 
 		$adata[]=array(
-
+			'code'=>$row['Deal Code'],
 			'name'=>$row['Deal Name'],
-			'description'=>'',
+			'description'=>$row['Deal Description'],
 			'id'=>$row['Deal Key'],
 			'key'=>$row['Deal Key']
 			//  'code'=>$row['Product Department Code'],
