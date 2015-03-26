@@ -50,7 +50,7 @@ $sql=sprintf("select `Order Key` from `Order Dimension` order by `Order Date` de
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 	$order=new Order($row2['Order Key']);
-		$order->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
+	$order->allowance=array('Family Percentage Off'=>array(),'Get Free'=>array(),'Get Same Free'=>array(),'Credit'=>array(),'No Item Transaction'=>array());
 	$order->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
 	$order->get_allowances_from_department_trigger();
@@ -66,7 +66,7 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
 	$sql=sprintf("select `Order Transaction Total Discount Amount`,`Product ID`,`Product Family Key`,`Product Key`,`Order Transaction Fact Key`,`Order Key`,`Order Transaction Total Discount Amount`/`Order Transaction Gross Amount` as fraction from  `Order Transaction Fact`  where `Order Transaction Total Discount Amount`>0  and `Order Transaction Gross Amount`>0 and `Order Key`=%d",
 		$order->id
-	);
+		);
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -86,13 +86,7 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 			$discount_factor_upper_limit=$discount_factor+0.01;
 
 
-			if (
-				$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']>=$discount_factor_lower_limit
-				and
-				$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']<=$discount_factor_upper_limit
-
-
-			) {
+			if ($order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']>=$discount_factor_lower_limit and $order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']<=$discount_factor_upper_limit) {
 
 
 
@@ -119,29 +113,29 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 				,prepare_mysql($deal_info)
 				,$row['Order Transaction Total Discount Amount']
 				,$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Percentage Off']
-			);
+				);
 			mysql_query($sql);
-			
-			
-			
+
+
+
 			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Begin Date`=%s  where   (`Deal Component Begin Date` is NULL or `Deal Component Begin Date`='' or `Deal Component Begin Date`>%s)  and `Deal Component Key`=%d",
-			prepare_mysql($date),
-			prepare_mysql($date),
+				prepare_mysql($date),
+				prepare_mysql($date),
 
-			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Component Key']
-			);
+				$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Component Key']
+				);
 			mysql_query($sql);
-			
-			
+
+
 			$sql=sprintf("update `Deal Dimension` set `Deal Begin Date`=%s  where   (`Deal Begin Date` is NULL or `Deal Begin Date`='' or `Deal Begin Date`>%s)  and `Deal Key`=%d",
-			prepare_mysql($date),
-			prepare_mysql($date),
+				prepare_mysql($date),
+				prepare_mysql($date),
 
-			$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Key']
-			);
+				$order->allowance['Family Percentage Off'][$row['Product Family Key']]['Deal Key']
+				);
 			mysql_query($sql);
-			
-			
+
+
 
 		}else {
 
@@ -150,12 +144,37 @@ while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
 
 
+		$order->update_deal_bridge_from_assets_deals();
+		$order->update_deals_usage();
+
+		$sql=sprintf("select `Deal Campaign Key` from `Order Deal Bridge` where `Order Key`=%d group by `Deal Campaign Key`",$order->id);
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+			$campaign=new DealCampaign($row['Deal Campaign Key']);
+			if($campaign->data['Deal Campaign Valid From']=='' or strtotime($campaign->data['Deal Campaign Valid From'].' +0:00')>strtotime($order->data['Order Date'].' +0:00')){
+				$campaign->update(array('Deal Campaign Valid From'=>$order->data['Order Date']),'no_history');
+			}
+		}
+
+		$sql=sprintf("select `Deal Component Key` from `Order Deal Bridge` where `Order Key`=%d group by `Deal Component Key`",$order->id);
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+			$deal_component=new DealComponent($row['Deal Component Key']);
+			if($deal_component->data['Deal Component Begin Date']=='' or strtotime($deal_component->data['Deal Component Begin Date'].' +0:00')>strtotime($order->data['Order Date'].' +0:00')){
+				$deal_component->update(array('Deal Component Begin Date'=>$order->data['Order Date']),'no_history');
+			}
+		}
+
+		$sql=sprintf("select `Deal Key` from `Order Deal Bridge` where `Order Key`=%d group by `Deal Key`",$order->id);
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+			$deal=new Deal($row['Deal Key']);
+			if($deal->data['Deal Begin Date']=='' or strtotime($deal->data['Deal Begin Date'].' +0:00')>strtotime($order->data['Order Date'].' +0:00')){
+				$deal->update(array('Deal Begin Date'=>$order->data['Order Date']),'no_history');
+			}
+		}
+
 	}
-
-
-
-	$order->update_deal_bridge_from_assets_deals();
-	$order->update_deals_usage();
 }
 
 

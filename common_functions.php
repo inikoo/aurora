@@ -3000,21 +3000,16 @@ function number2alpha($number) {
 
 
 function generatePassword($length=9, $strength=0) {
-	$vowels = 'aeuy'.md5(mt_rand());
-	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
-	if ($strength & 1) {
-		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
+	$vowels = 'aeiu23456789';
+	$consonants = 'qwertyupasfghjkzxcvbnm';
+	if ($strength >=1) {
+		$consonants .= 'QWERTYUPASDFGHJKLZXCVBNM';
+		$vowels .= 'AEU';
 	}
-	if ($strength & 2) {
-		$vowels .= "AEUI";
-	}
-	if ($strength & 4) {
-
-		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
-	}
-	if ($strength & 8) {
-
-		$consonants .= '2345678906789$%^&*(';
+	if ($strength>=2) {
+		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,%';// Dont use ; or : or |
+	}if ($strength>=3) {
+		$vowels = 'qwertyupasfghjkzxcvbnmQWERTYUPASDFGHJKLZXCVBNM';
 
 	}
 

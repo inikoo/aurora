@@ -1,4 +1,3 @@
-<div id="bd" style="padding:5px 20px 15px 20px">
 	<div class="content" >
 		
 		<div class="product" stxyle="border:1px solid #ccc;background-color:#fff">
@@ -140,4 +139,4 @@
 	
 	<div style="clear:both">
 	</div>
-</div>
+

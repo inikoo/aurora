@@ -56,10 +56,15 @@
  	$data=prepare_values($_REQUEST,array(
  		'store_key'=>array('type'=>'key'),
  		'query'=>array('type'=>'string'),
-
-
  		));
  	is_campaign_code_in_store($data);
+ 	break;
+ 	case('is_deal_code_in_store'):
+ 	$data=prepare_values($_REQUEST,array(
+ 		'store_key'=>array('type'=>'key'),
+ 		'query'=>array('type'=>'string'),
+ 		));
+ 	is_deal_code_in_store($data);
  	break;
  	case('orders'):
  	$can_see_customers=$user->can_view('customers');
@@ -216,14 +221,14 @@
 
  	switch ($parent) {
  		case 'deal':
- 			$where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$parent_key);
- 			break;
+ 		$where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$parent_key);
+ 		break;
  		case 'campaign':
- 			$where=sprintf(" where `Deal Campaign Key`=%d and `Used`='Yes' ",$parent_key);
- 			break;
+ 		$where=sprintf(" where `Deal Campaign Key`=%d and `Used`='Yes' ",$parent_key);
+ 		break;
  		default:
- 			exit('unknown parent');
- 			break;
+ 		exit('unknown parent');
+ 		break;
  	}
 
 
@@ -232,7 +237,7 @@
 
  	$wheref="";
 
-	
+
  	if ($f_field=='name'  and $f_value!='')
  		$wheref.=" and `Customer Name` like '".addslashes($f_value)."%'";
  	elseif ($f_field=='country' and  $f_value!='') {
@@ -403,7 +408,7 @@
 
  function list_orders($can_see_customers=false) {
 
-if(isset($_REQUEST['parent'])){
+ 	if(isset($_REQUEST['parent'])){
  		$parent=$_REQUEST['parent'];
  	}else{
  		exit('no parent');
@@ -494,16 +499,16 @@ if(isset($_REQUEST['parent'])){
 
  	switch ($parent) {
  		case 'deal':
- 			$where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$parent_key);
- 			break;
+ 		$where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$parent_key);
+ 		break;
  		case 'campaign':
- 			$where=sprintf(" where `Deal Campaign Key`=%d and `Used`='Yes' ",$parent_key);
- 			break;
+ 		$where=sprintf(" where `Deal Campaign Key`=%d and `Used`='Yes' ",$parent_key);
+ 		break;
  		default:
- 			exit('unknown parent');
- 			break;
- 	
-}
+ 		exit('unknown parent');
+ 		break;
+
+ 	}
 
 
  	$wheref='';
@@ -1013,7 +1018,7 @@ if(isset($_REQUEST['parent'])){
 
 
  	if ($parent=='store') {
- 		 		$where=sprintf("where  `Deal Trigger`='Order' and  `Deal Store Key`=%d     ",$parent_key);
+ 		$where=sprintf("where  `Deal Trigger`='Order' and  `Deal Store Key`=%d     ",$parent_key);
 
 
 
@@ -1029,7 +1034,7 @@ if(isset($_REQUEST['parent'])){
  	elseif ($parent=='customer')
  		$where=sprintf("where    `Deal Trigger`='Customer' and  `Deal Trigger Key`=%d   ",$parent_key);
  	elseif ($parent=='marketing')
- 		 		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
+ 		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
  	else
  		$where=sprintf("where true ");;
 
@@ -1837,9 +1842,43 @@ if(isset($_REQUEST['parent'])){
     		return;
 
     	}
+}
 
+ function is_deal_code_in_store($data) {
+    	$store_key=$data['store_key'];
+    	$sql=sprintf("select `Deal Key`,`Deal Code`  from `Deal Dimension` where `Deal Store Key`=%d and `Deal Code`=%s  ",
+    		$store_key,
+    		prepare_mysql($data['query'])
 
-    }
+    		);
+
+    	$res=mysql_query($sql);
+    	if($row=mysql_fetch_assoc($res)){
+
+    		$msg=sprintf('%s <a href="campaign.php?id=%d">%s</a>',
+    			_('Another deal already has this code'),
+    			$row['Deal Key'],
+    			$row['Deal Code']
+    			);
+
+    		$response= array(
+    			'state'=>200,
+    			'found'=>1,
+    			'msg'=>$msg
+    			);
+    		echo json_encode($response);
+    		return;
+    	}else{
+    		$response= array(
+    			'state'=>200,
+    			'found'=>0,
+
+    			);
+    		echo json_encode($response);
+    		return;
+
+    	}
+}
 
 
     ?>

@@ -64,7 +64,8 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 			this.dataSource0, { renderLoopSize: 50,generateRequest : myRequestBuilder,paginator : new YAHOO.widget.Paginator({
-				rowsPerPage:state.orders.nr,containers : 'paginator0',
+				rowsPerPage:state.orders.nr,
+				containers : 'paginator0',
 				pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
 				previousPageLinkLabel : "<",
 				nextPageLinkLabel : ">",
@@ -129,7 +130,8 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 						//draggableColumns:true,
 						renderLoopSize: 50,generateRequest : myRequestBuilder,
 						paginator : new YAHOO.widget.Paginator({
-							rowsPerPage:state.customers.nr,containers : 'paginator1',
+							rowsPerPage:state.customers.nr,
+							containers : 'paginator1',
 							pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
 							previousPageLinkLabel : "<",
 							nextPageLinkLabel : ">",

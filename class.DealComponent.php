@@ -152,7 +152,7 @@ class DealComponent extends DB_Table {
 			$this->get_data('id',$this->id);
 			$this->new=true;
 		} else {
-			print "Error can not create deal component $sql\n";
+			print "Error can not create deal component\n $sql\n";
 			exit;
 
 		}
@@ -233,7 +233,9 @@ class DealComponent extends DB_Table {
 		case('Family Quantity Ordered'):
 		case('Product Quantity Ordered'):
 		case('Department Quantity Ordered'):
-		case('Store Quantity Ordered'):
+		case('Family For Every Quantity Ordered'):
+		case('Product For Every Quantity Ordered'):
+		case('Department For Every Quantity Ordered'):
 
 			//print("$term_description\n");
 			$term_description=translate_written_number($term_description);
@@ -247,6 +249,8 @@ class DealComponent extends DB_Table {
 			if (preg_match('/buy \d+/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
 			if (preg_match('/foreach \d+/i',$term_description,$match))
+				return preg_replace('/[^\d]/','',$match[0]);
+			if (preg_match('/for every \d+/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
 			if (preg_match('/\d+ oder mehr/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]);
@@ -485,6 +489,7 @@ class DealComponent extends DB_Table {
 
 
 		switch ($this->data['Deal Component Terms Type']) {
+		case('Department Quantity Ordered'):
 		case('Family Quantity Ordered'):
 		case('Product Quantity Ordered'):
 			if (!is_numeric($thin_description)) {
@@ -501,6 +506,23 @@ class DealComponent extends DB_Table {
 
 			$term_description="order ".number($thin_description)." or more";
 			return array($term_description,false,'');
+		case('Department For Every Quantity Ordered'):
+		case('Family For Every Quantity Ordered'):
+		case('Product For Every Quantity Ordered'):
+			if (!is_numeric($thin_description)) {
+				$msg=_('Term should be numeric');
+				$error=true;
+				return array($thin_description,$error,$msg);
+
+			}elseif ($thin_description<=0) {
+				$msg=_('Term should be more than zero');
+				$error=true;
+				return array($thin_description,$error,$msg);
+
+			}
+
+			$term_description="for every ".number($thin_description);
+			return array($term_description,false,'');	
 		default:
 			$term_description=$thin_description;
 			return array($term_description,false,'');
@@ -527,8 +549,8 @@ class DealComponent extends DB_Table {
 		}
 
 		$term_metadata=$this->parse_term_metadata(
-			$this->data['Deal Component Terms Type']
-			,$term_description
+			$this->data['Deal Component Terms Type'],
+			$term_description
 		);
 
 

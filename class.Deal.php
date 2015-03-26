@@ -292,6 +292,9 @@ class Deal extends DB_Table {
 		$data['Deal Component Deal Key']=$this->id;
 		$data['Deal Component Store Key']=$this->data['Deal Store Key'];
 		$data['Deal Component Campaign Key']=$this->data['Deal Campaign Key'];
+		$data['Deal Component Begin Date']=$this->data['Deal Begin Date'];
+		$data['Deal Component Expiration Date']=$this->data['Deal Expiration Date'];
+		$data['Deal Component Status']=$this->data['Deal Status'];
 
 
 
@@ -319,113 +322,6 @@ class Deal extends DB_Table {
 	}
 
 
-	function add_component_from_schema_old($deal_schema,$additional_data=array()) {
-		$this->component_created=false;
-
-		$schema_data=$this->find_schema($deal_schema);
-		if ($this->schema_found) {
-
-			$data['Deal Component Allowance Target']=$schema_data['Deal Component Allowance Target'];
-			if (array_key_exists('Deal Component Allowance Target Key',$additional_data))
-				$data['Deal Component Allowance Target Key']=$additional_data['Deal Component Allowance Target Key'];
-			else
-				$data['Deal Component Allowance Target Key']=0;
-
-
-			switch ($data['Deal Component Allowance Target']) {
-			case('Charge'):
-				$target=new Charge($additional_data['Deal Component Allowance Target Key']);
-				break;
-			case('Shipping'):
-				$target=new Shipping($additional_data['Deal Component Allowance Target Key']);
-				break;
-			case('Family'):
-				$target=new Family($additional_data['Deal Component Allowance Target Key']);
-				break;
-			case('Department'):
-				$target=new Department($additional_data['Deal Component Allowance Target Key']);
-				break;
-			case('Store'):
-				$target=new Store($additional_data['Deal Component Allowance Target Key']);
-				break;
-			case('Customer'):
-				$target=new Customer($additional_data['Deal Component Allowance Target Key']);
-				break;
-			case('Product'):
-				$target=new Product($additional_data['Deal Component Allowance Target Key']);
-				break;
-			default:
-				exit("can not get target ".$data['Deal Component Allowance Target']."\n");
-			}
-
-			$schema_replaceable_columns=array('Deal Component Allowance Description','Deal Component Name');
-			foreach ($schema_replaceable_columns as $schema_replaceable_column) {
-				if (preg_match('/\[.+\]/',$schema_data[$schema_replaceable_column],$match)) {
-					$tag=preg_replace('/\[/','\\[',$match[0]);
-					$tag=preg_replace('/\]/','\\]',$tag);
-					$column=preg_replace('/(\[|\])/','',$match[0]);
-					if ($target->get($column)!='') {
-						$column_data=$target->get($column);
-						$schema_data[$schema_replaceable_column]=preg_replace("/$tag/",$column_data,$schema_data[$schema_replaceable_column]);
-					}
-				}
-			}
-
-
-			$data['Deal Store Key']=$this->data['Deal Store Key'];
-
-
-
-			$data['Deal Component Trigger']=$schema_data['Deal Component Trigger'];
-
-
-			$data['Campaign Deal Schema Key']=$schema_data['Deal Schema Key'];
-			if (array_key_exists('Deal Component Trigger Key',$additional_data) and is_numeric($additional_data['Deal Component Trigger Key']) ) {
-				$data['Deal Component Trigger Key']=$additional_data['Deal Component Trigger Key'];
-			} else
-				$data['Deal Component Trigger Key']=0;
-
-			$data['Deal Component Begin Date']=$this->data['Deal Begin Date'];
-			$data['Deal Component Expiration Date']=$this->data['Deal Expiration Date'];
-			//print_r($schema_data);
-			$data['Deal Component Allowance Type']=$schema_data['Deal Component Allowance Type'];
-			$data['Deal Component Name']=$schema_data['Deal Component Name'];
-			$data['Deal Component Allowance Lock']=$schema_data['Deal Component Allowance Lock'];
-			if ($schema_data['Deal Component Allowance Lock']=='Yes') {
-				$data['Deal Component Allowance Description']=$schema_data['Deal Component Allowance Description'];
-				$data['Deal Component Allowance']=$schema_data['Deal Component Allowance'];
-
-
-			} else {
-				$data['Deal Component Allowance Description']=$additional_data['Deal Component Allowance Description'];
-				$data['Deal Component Allowance']=Deal::parse_allowance_metadata($data['Deal Component Allowance Type'],$data['Deal Component Allowance Description']);
-
-
-			}
-			$data['Deal Component Terms Lock']=$this->data['Campaign Deal Component Terms Lock'];
-			$data['Deal Component Terms Type']=$this->data['Campaign Deal Component Terms Type'];
-
-			if ($this->data['Campaign Deal Component Terms Lock']=='Yes') {
-				$data['Deal Component Terms Description']=$this->data['Campaign Deal Component Terms Description'];
-				$data['Deal Component Terms']=$this->data['Campaign Deal Component Terms'];
-
-			} else {
-				$data['Deal Component Terms Description']=$additional_data['Deal Component Terms Description'];
-				$data['Deal Component Terms']=Deal::parse_term_metadata($data['Deal Component Terms Type'],$data['Deal Component Terms Description']);
-			}
-			//print_r($data);
-			// exit;
-			$deal=new DealComponent('find create',$data);
-
-
-		}
-		else {
-			$this->msg='Schema not found';
-			$this->error=true;
-
-		}
-
-	}
 
 	function update_usage() {
 

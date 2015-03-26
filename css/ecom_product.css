@@ -1,6 +1,7 @@
 #bd{
-background:#F6F6E8;border:0px;color:#333;border-bottom:none,
-min-height:390px;height:auto !important;height:390px;padding:0px 0px;margin-top:5px
+background:#FFF;border:0px;color:#333;border-bottom:none,
+min-height:390px;height:auto !important;height:390px;padding:0px 0px;margin-top:0px;
+border-left:1px solid #aaa;border-right:1px solid #aaa;padding:10px 20px 10px 20px;
 }
 
 .wraptocenter {
@@ -23,7 +24,7 @@ min-height:390px;height:auto !important;height:390px;padding:0px 0px;margin-top:
 
 .product .information{float:left;width:465px;margin-left:20px;xborder:1px solid red}
 .highlight_box{border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9}
-.price{display:block;clear:both;color:red;font-size:30px;margin:10px 0;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
+.price{display:block;clear:both;color:green;font-size:22px;margin:10px 0;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
 .code{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;}
 
 .product_log_out_price{color:green;padding:30px 20px 20px 20px;font-size:150%}

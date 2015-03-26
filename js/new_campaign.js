@@ -107,7 +107,7 @@ function init() {
 
 
     validate_scope_data = {
-        'campaign': {
+        'deal': {
             'code': {
                 'changed': false,
                 'validated': false,

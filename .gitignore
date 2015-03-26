@@ -13,3 +13,5 @@ server_files/tmp/*
 *.sublime-workspace
 
 *.sublime-project
+
+*.php~

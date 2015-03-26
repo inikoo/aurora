@@ -1,6 +1,7 @@
 var Dom   = YAHOO.util.Dom;
 var session_data,labels;
 var asset_select_scope;
+var validate_scope_data;
 
 YAHOO.util.Event.addListener(window, "load", function() {
 
@@ -45,7 +46,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				totalRecords: "resultset.total_records"
 			},
 			fields: [
-			"name",'code','id'
+			"name",'code','key'
 			]
 		};
 
@@ -225,6 +226,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         {key:"name", formatter:"remove_links",label:labels.Name,width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
         ];
         request="ar_quick_tables.php?tipo=product_list&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0";
+        
         this.dataSource103 = new YAHOO.util.DataSource(request);
         this.dataSource103.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource103.connXhrMode = "queueRequests";
@@ -243,7 +245,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         		totalRecords: "resultset.total_records"
         	},
         	fields: [
-        	"name",'code','id'
+        	"name",'code','id','key'
         	]
         };
 
@@ -346,63 +348,63 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
         var tableid=105;
-		var tableDivEL="table"+tableid;
-		
-		var ColumnDefs = [
-		{key:"key", label:"",hidden:true},
-		{key:"code",formatter:"remove_links", label:labels.Code,width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-		{key:"name", formatter:"remove_links",label:labels.Name,width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-		];
-		request="ar_quick_tables.php?tipo=deal_list&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0";
+        var tableDivEL="table"+tableid;
 
-		this.dataSource105 = new YAHOO.util.DataSource(request);
-		this.dataSource105.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		this.dataSource105.connXhrMode = "queueRequests";
-		this.dataSource105.table_id=tableid;
+        var ColumnDefs = [
+        {key:"key", label:"",hidden:true},
+        {key:"code",formatter:"remove_links", label:labels.Code,width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+        {key:"name", formatter:"remove_links",label:labels.Name,width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+        ];
+        request="ar_quick_tables.php?tipo=deal_list&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0";
 
-		this.dataSource105.responseSchema = {
-			resultsList: "resultset.data",
-			metaFields: {
-				rowsPerPage:"resultset.records_perpage",
-				rtext:"resultset.rtext",
-				rtext_rpp:"resultset.rtext_rpp",
-				sort_key:"resultset.sort_key",
-				sort_dir:"resultset.sort_dir",
-				tableid:"resultset.tableid",
-				filter_msg:"resultset.filter_msg",
-				totalRecords: "resultset.total_records"
-			},
-			fields: [
-			"name",'code','id'
-			]
-		};
+        this.dataSource105 = new YAHOO.util.DataSource(request);
+        this.dataSource105.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource105.connXhrMode = "queueRequests";
+        this.dataSource105.table_id=tableid;
+
+        this.dataSource105.responseSchema = {
+        	resultsList: "resultset.data",
+        	metaFields: {
+        		rowsPerPage:"resultset.records_perpage",
+        		rtext:"resultset.rtext",
+        		rtext_rpp:"resultset.rtext_rpp",
+        		sort_key:"resultset.sort_key",
+        		sort_dir:"resultset.sort_dir",
+        		tableid:"resultset.tableid",
+        		filter_msg:"resultset.filter_msg",
+        		totalRecords: "resultset.total_records"
+        	},
+        	fields: [
+        	"name",'code','key'
+        	]
+        };
 
 
-		this.table105 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-			this.dataSource105, {
-				renderLoopSize: 50,generateRequest : myRequestBuilder,
-				paginator : new YAHOO.widget.Paginator({
-					rowsPerPage:20,containers : 'paginator105', 
-					pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
-					previousPageLinkLabel : "<",
-					nextPageLinkLabel : ">",
-					firstPageLinkLabel :"<<",
-					lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false,
-					template : "{PreviousPageLink}<strong id='paginator_info105'>{CurrentPageReport}</strong>{NextPageLink}"
-				})
+        this.table105 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+        	this.dataSource105, {
+        		renderLoopSize: 50,generateRequest : myRequestBuilder,
+        		paginator : new YAHOO.widget.Paginator({
+        			rowsPerPage:20,containers : 'paginator105', 
+        			pageReportTemplate : '('+labels.Page+' {currentPage} '+labels.of+' {totalPages})',
+        			previousPageLinkLabel : "<",
+        			nextPageLinkLabel : ">",
+        			firstPageLinkLabel :"<<",
+        			lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false,
+        			template : "{PreviousPageLink}<strong id='paginator_info105'>{CurrentPageReport}</strong>{NextPageLink}"
+        		})
 
-				,sortedBy : {
-					key: 'code',
-					dir: ''
-				},
-				dynamicData : true
+        		,sortedBy : {
+        			key: 'code',
+        			dir: ''
+        		},
+        		dynamicData : true
 
-			}
+        	}
 
-			);
+        	);
 
-		this.table105.handleDataReturnPayload =myhandleDataReturnPayload;
-		this.table105.doBeforeSortColumn = mydoBeforeSortColumn;
+        this.table105.handleDataReturnPayload =myhandleDataReturnPayload;
+        this.table105.doBeforeSortColumn = mydoBeforeSortColumn;
         //this.table105.subscribe("cellClickEvent", this.table105.onEventShowCellEditor);
         this.table105.prefix='';
         this.table105.subscribe("rowMouseoverEvent", this.table105.onEventHighlightRow);
@@ -542,11 +544,22 @@ function select_campaign_from_list(oArgs) {
 	record = tables.table100.getRecord(oArgs.target);
 	
 	Dom.removeClass(['select_campaign','new_campaign'],'selected');
-	Dom.get('campaign_formated').value= record.getData('key');
+	Dom.get('campaign_key').value= record.getData('key');
+	
 	Dom.get('campaign_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
 	Dom.get('select_campaign').innerHTML=Dom.get('select_campaign').getAttribute('alt_label');
 
 	dialog_campaigns_list.hide();
+	validate_scope_data.deal.campaign_key.required=true;
+	validate_scope_data.deal.campaign_code.required=false;
+	validate_scope_data.deal.campaign_name.required=false;
+	validate_scope_data.deal.campaign_name.required=false;
+	validate_scope_data.deal.from.required=false;
+	validate_scope_data.deal.to.required=false;
+
+	validate_scope_data.deal.campaign_key.validated=true;
+	validate_scope('deal')
+
 }
 
 function select_department_from_list(oArgs) {
@@ -635,7 +648,8 @@ function select_customer_from_list(oArgs) {
 function select_deal_from_list(oArgs) {
 
 	record = tables.table105.getRecord(oArgs.target);
-	Dom.get('clone_deal_key').value=record.getData('key');
+	Dom.get('target').value= 'Deal';
+	Dom.get('target_key').value= record.getData('key');
 	Dom.get('clone_deal_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
 	dialog_deals_list.hide();
 }
@@ -647,14 +661,36 @@ function new_campaign () {
 	Dom.setStyle('new_campaign_fields','display','');
 	Dom.get('select_campaign').innerHTML=Dom.get('select_campaign').getAttribute('label');
 	Dom.get('campaign_formated').innerHTML ='';
+
+	validate_scope_data.deal.campaign_key.required=false;
+	validate_scope_data.deal.campaign_code.required=true;
+	validate_scope_data.deal.campaign_name.required=true;
+	validate_scope_data.deal.campaign_name.required=true;
+	validate_scope_data.deal.from.required=true;
+	validate_scope_data.deal.to.required=true;
+
+	validate_scope('deal')
+
+
+
+
 }
 
 function terms_changed(value){
+	
 	Dom.setStyle(['amount_options','voucher_options','if_order_more_tr','order_interval_tr','order_number_tr','for_every_ordered_tr','target_department_options','target_family_options','target_product_options'],'display','none');
 	Dom.setStyle(['order_more_than_allowances_select','for_every_allowances_select','voucher_allowances_select','every_order_allowances_select','next_order_allowances_select','amount_allowances_select','order_interval_allowances_select','order_number_allowances_select'],'display','none');
 
+	validate_scope_data.deal.voucher_code.required=false;
+	validate_scope_data.deal.amount.required=false;
+	validate_scope_data.deal.if_order_more.required=false;
+	validate_scope_data.deal.for_every_ordered.required=false;
+	validate_scope_data.deal.order_interval.required=false;
+	validate_scope_data.deal.order_number.required=false;
+
 
 	Dom.get('terms').value=value;
+
 	switch(value){
 		case 'Customer Department Quantity Ordered':
 		Dom.setStyle(['if_order_more_tr','target_department_options'],'display','');
@@ -718,6 +754,9 @@ function terms_changed(value){
 		allowances_changed('Get Same Free');
 
 		break;
+
+
+
 		case 'Voucher':
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('voucher_allowances_select','display','');
@@ -728,7 +767,7 @@ function terms_changed(value){
 		Dom.setStyle('amount_options','display','');
 		Dom.get('amount').focus();
 		Dom.setStyle('amount_allowances_select','display','');
-		allowances_changed('Percentage Off')
+		allowances_changed('Percentage Off');
 		break;
 		case 'Order Interval':
 		Dom.setStyle('order_interval_tr','display','');
@@ -745,32 +784,48 @@ function terms_changed(value){
 		
 		break;
 		case 'Voucher AND Amount':
+
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('amount_options','display','');
+		Dom.setStyle('voucher_allowances_select','display','');
+
 		Dom.get('amount').focus();
+		allowances_changed('Percentage Off');
 		
 		break;
 		case 'Voucher AND Order Number':
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('order_number_tr','display','');
+		Dom.setStyle('voucher_allowances_select','display','');
+
 		Dom.get('order_number').focus();
+		allowances_changed('Percentage Off');
 		
 		break;
 		case 'Voucher AND Order Interval':
 		Dom.setStyle('voucher_options','display','');
 		Dom.setStyle('order_interval_tr','display','');
+		Dom.setStyle('voucher_allowances_select','display','');
+
 		Dom.get('order_interval').focus();
+		allowances_changed('Percentage Off');
 		
 		break;
 		case 'Amount AND Order Number':
 		Dom.setStyle('amount_options','display','');
 		Dom.setStyle('order_number_tr','display','');
+		Dom.setStyle('voucher_allowances_select','display','');
+
 		Dom.get('amount').focus();
+		allowances_changed('Percentage Off');
 		break;
 		case 'Amount AND Order Interval':
 		Dom.setStyle('amount_options','display','');
 		Dom.setStyle('order_interval_tr','display','');
+		Dom.setStyle('order_interval_allowances_select','display','');
+
 		Dom.get('amount').focus();
+		allowances_changed('Percentage Off');
 		break;
 		case 'Every Order':
 		Dom.setStyle('every_order_allowances_select','display','');
@@ -787,41 +842,61 @@ function terms_changed(value){
 
 	}
 
+	validate_scope('deal')
+
 }
 
 function allowances_changed (value) {
 	Dom.setStyle(['percentage_off_tr','get_same_free_tr','target_bis_department_options','target_bis_family_options','target_bis_product_options','clone_deal_options'],'display','none')
+	
+	validate_scope_data.deal.percentage_off.required=false;
+	validate_scope_data.deal.get_same_free.required=false;
+	Dom.get('allowances').value=value;
 	switch(value){
 		case 'Department Percentage Off':
 		Dom.setStyle(['percentage_off_tr','target_bis_department_options'],'display','');
 		show_dialog_departments_list('target_bis')
+		validate_scope_data.deal.percentage_off.required=true;
 
 		break;
 		case 'Family Percentage Off':
 		Dom.setStyle(['percentage_off_tr','target_bis_family_options'],'display','');
-		show_dialog_families_list('target_bis')
+		show_dialog_families_list('target_bis');
+		validate_scope_data.deal.percentage_off.required=true;
+
 		break;
 		case 'Product Percentage Off':
 		Dom.setStyle(['percentage_off_tr','target_bis_product_options'],'display','');
-		show_dialog_products_list('target_bis')
+		show_dialog_products_list('target_bis');
+		validate_scope_data.deal.percentage_off.required=true;
+
 		break;
 		case 'Percentage Off':
+
 		Dom.setStyle('percentage_off_tr','display','');
+		validate_scope_data.deal.percentage_off.required=true;
+		break;
+		case 'Amount Off':
+
+		Dom.setStyle('amount_off_tr','display','');
+		validate_scope_data.deal.amount_off.required=true;
 		break;
 		case 'Get Same Free':
 		Dom.setStyle('get_same_free_tr','display','');
+		validate_scope_data.deal.get_same_free.required=true;
+
 		break;
 
 		case 'Clone':
 		Dom.setStyle('clone_deal_options','display','');
 		show_dialog_deals_list()
 		break;
-	
+
 
 
 
 	}
-
+	validate_scope('deal')
 
 }
 
@@ -833,6 +908,8 @@ function select_voucher_code_type () {
 		Dom.setStyle('voucher_code_tr','display','none')
 		Dom.get('voucher_code').value='';
 		Dom.get('voucher_code_type').value='Random';
+		validate_scope_data.deal.voucher_code.required=false;
+
 
 	}else{
 		Dom.addClass('voucher_code_custome','selected');
@@ -840,7 +917,11 @@ function select_voucher_code_type () {
 		Dom.setStyle('voucher_code_tr','display','');
 		Dom.get('voucher_code').focus();
 		Dom.get('voucher_code_type').value='Custome';
+		validate_scope_data.deal.voucher_code.required=true;
+
 	}
+
+	validate_scope('deal')
 }
 
 function select_voucher_type () {
@@ -857,81 +938,505 @@ function select_voucher_type () {
 	}
 }
 
+function select_amount_type () {
+
+	Dom.removeClass(['amount_type_total','amount_type_net','amount_type_items'],'selected');
+
+
+	if(this.id=='amount_type_total'){
+		Dom.addClass('amount_type_total','selected');
+		Dom.get('amount_type').value='Order Total Amount';
+
+	}else if(this.id=='amount_type_net'){
+		Dom.addClass('amount_type_net','selected');
+		Dom.get('amount_type').value='Order Total Net Amount';
+
+	}else{
+		Dom.addClass('amount_type_items','selected');
+		Dom.get('amount_type').value='Order Items Net Amount';
+	}
+}
+
+
+
 function date_changed() {
 
-    if (this.id == 'v_calpop1') {
+	if (this.id == 'v_calpop1') {
 
-        validate_general('campaign', 'from', this.value);
-    } else if (this.id == 'v_calpop2') {
-        validate_general('campaign', 'to', this.value);
+		validate_general('deal', 'from', this.value);
+	} else if (this.id == 'v_calpop2') {
+		validate_general('deal', 'to', this.value);
 
-    }
+	}
 }
 
 function handleSelect(type, args, obj) {
 
-    var dates = args[0];
-    var date = dates[0];
-    var year = date[0],
-        month = date[1],
-        day = date[2];
+	var dates = args[0];
+	var date = dates[0];
+	var year = date[0],
+	month = date[1],
+	day = date[2];
 
 
-    if (month < 10) month = '0' + month;
-    if (day < 10) day = '0' + day;
-    var txtDate1 = document.getElementById("v_calpop" + this.id);
-    txtDate1.value = day + "-" + month + "-" + year;
-    this.hide();
+	if (month < 10) month = '0' + month;
+	if (day < 10) day = '0' + day;
+	var txtDate1 = document.getElementById("v_calpop" + this.id);
+	txtDate1.value = day + "-" + month + "-" + year;
+	this.hide();
 
-    if (this.id == 1) {
-        validate_general('campaign', 'from', txtDate1.value);
-    } else if (this.id == 2) {
-        validate_general('campaign', 'to', txtDate1.value);
-    }
+	if (this.id == 1) {
+		validate_general('deal', 'from', txtDate1.value);
+	} else if (this.id == 2) {
+		validate_general('deal', 'to', txtDate1.value);
+	}
 }
 
 function start_now() {
 
-    if (Dom.hasClass("start_now", "selected")) {
-        Dom.removeClass("start_now", "selected")
-        Dom.setStyle(['v_calpop1', 'calpop1'], 'display', '');
-    } else {
-        Dom.addClass("start_now", "selected")
-         Dom.setStyle(['v_calpop1', 'calpop1'], 'display', 'none');
-        var d = new Date()
-        year = d.getFullYear(),
-            month = d.getMonth(),
-            day = d.getDate();
-        if (month < 10) month = '0' + month;
-        if (day < 10) day = '0' + day;
-        var date = day + "-" + month + "-" + year;
-        Dom.get("v_calpop1").value=date
-       
-        validate_general('campaign', 'from', date);
-    }
+	if (Dom.hasClass("start_now", "selected")) {
+		Dom.removeClass("start_now", "selected")
+		Dom.setStyle(['v_calpop1', 'calpop1'], 'display', '');
+	} else {
+		Dom.addClass("start_now", "selected")
+		Dom.setStyle(['v_calpop1', 'calpop1'], 'display', 'none');
+		var d = new Date()
+		year = d.getFullYear(),
+		month = d.getMonth(),
+		day = d.getDate();
+		if (month < 10) month = '0' + month;
+		if (day < 10) day = '0' + day;
+		var date = day + "-" + month + "-" + year;
+		Dom.get("v_calpop1").value=date
+
+		validate_general('deal', 'from', date);
+	}
 }
 
 function permanent_campaign() {
 
-    if (Dom.hasClass("to_permanent", "selected")) {
-        Dom.removeClass("to_permanent", "selected")
-        Dom.setStyle(['v_calpop2', 'calpop2'], 'display', '');
-        validate_scope_data.campaign.to.validated = false;
-        validate_scope('campaign');
-    } else {
-        Dom.addClass("to_permanent", "selected")
-        Dom.setStyle(['v_calpop2', 'calpop2'], 'display', 'none');
+	if (Dom.hasClass("to_permanent", "selected")) {
+		Dom.removeClass("to_permanent", "selected")
+		Dom.setStyle(['v_calpop2', 'calpop2'], 'display', '');
+		validate_scope_data.deal.to.validated = false;
+		validate_scope('deal');
+	} else {
+		Dom.addClass("to_permanent", "selected")
+		Dom.setStyle(['v_calpop2', 'calpop2'], 'display', 'none');
 
-        validate_scope_data.campaign.to.validated = true;
-        validate_scope_data.campaign.to.changed = true;
+		validate_scope_data.deal.to.validated = true;
+		validate_scope_data.deal.to.changed = true;
 
-        Dom.get("v_calpop2").value = '';
-        validate_scope('campaign');
+		Dom.get("v_calpop2").value = '';
+		validate_scope('deal');
 
-    }
+	}
 }
 
+
+function validate_campaign_code(query) {
+	validate_general('deal', 'campaign_code', query);
+}
+
+function validate_campaign_name(query) {
+
+	validate_general('deal', 'campaign_name', query);
+}
+
+function validate_campaign_description(query) {
+	validate_general('deal', 'campaign_description', query);
+}
+
+function validate_deal_code(query) {
+	validate_general('deal', 'code', query);
+}
+
+function validate_deal_name(query) {
+	
+	validate_general('deal', 'name', query);
+}
+
+function validate_deal_description(query) {
+	validate_general('deal', 'description', query);
+}
+
+function validate_voucher_code(query) {
+	validate_general('deal', 'voucher_code', query);
+}
+
+function validate_amount(query) {
+	validate_general('deal', 'amount', query);
+}
+
+function validate_if_order_more(query) {
+	validate_general('deal', 'if_order_more', query);
+}
+
+function validate_for_every_ordered(query) {
+	validate_general('deal', 'for_every_ordered', query);
+}
+
+function validate_order_interval(query) {
+	validate_general('deal', 'order_interval', query);
+}
+
+function validate_order_number(query) {
+	validate_general('deal', 'order_number', query);
+}
+
+function validate_percentage_off(query) {
+	validate_general('deal', 'percentage_off', query);
+}
+
+function validate_percentage_off(query) {
+	validate_general('deal', 'percentage_off', query);
+}
+
+function validate_get_same_free(query) {
+	validate_general('deal', 'get_same_free', query);
+}
+
+function save_new_deal() {
+	save_new_general('deal');
+}
+
+
+
 function init(){
+	session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
+	labels=session_data.label;
+
+
+	validate_scope_data = {
+
+		'deal': {
+			'code': {
+				'changed': false,
+				'validated': false,
+				'required': true,
+				'dbname': 'Deal Code',
+				'group': 1,
+				'type': 'item',
+				'name': 'deal_code',
+				'validation': [{
+					'regexp': "[a-z\\d]+",
+					'invalid_msg': labels.Invalid_code
+				}],
+				'ar': 'find',
+				'ar_request': 'ar_deals.php?tipo=is_deal_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
+			},
+			'name': {
+				'changed': false,
+				'validated': false,
+				'required': true,
+				'dbname': 'Deal Name',
+				'group': 1,
+				'type': 'item',
+				'name': 'deal_name',
+
+				'validation': [{
+					'regexp': "[a-z\\d]+",
+					'invalid_msg': labels.Invalid_name
+				}],
+				'ar': false
+			},
+			'description': {
+				'changed': false,
+				'validated': true,
+				'required': false,
+				'dbname': 'Deal Description',
+				'group': 1,
+				'type': 'item',
+				'name': 'deal_description',
+
+				'validation': [{
+					'regexp': "[a-z\\d]+",
+					'invalid_msg': labels.Invalid_description
+				}],
+				'ar': false
+			},
+			'terms': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'dbname': 'Deal Terms Type',
+				'name': 'terms',
+
+				'validation': false,
+				'ar': false
+			},
+			'allowances': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'dbname': 'Deal Component Allowance Type',
+				'name': 'allowances',
+
+				'validation': false,
+				'ar': false
+			},
+			'target': {
+				'changed': true,
+				'validated': false,
+				'required': false,
+				'dbname': 'Deal Component Allowance Target',
+				'name': 'target',
+
+				'validation': false,
+				'ar': false
+			},
+			'target_key': {
+				'changed': true,
+				'validated': false,
+				'required': false,
+				'dbname': 'Deal Component Allowance Target Key',
+				'name': 'target_key',
+
+				'validation': false,
+				'ar': false
+			},
+			'voucher_code': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'dbname': 'voucher_code',
+				'name': 'voucher_code',
+
+				'validation': [{
+					'regexp': "[a-z\\d]+",
+					'invalid_msg': labels.Invalid_code
+				}],
+				'ar': false
+			},
+			'voucher_code_type': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'dbname': 'voucher_code_type',
+				'name': 'voucher_code_type',
+
+				'validation':false,
+				'ar': false
+			},
+			'voucher_type': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'dbname': 'voucher_type',
+				'name': 'voucher_type',
+
+				'validation':false,
+				'ar': false
+			},
+			'amount': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'amount',
+				'dbname': 'amount',
+				'validation': [{
+					'numeric': "money",
+					'invalid_msg': labels.Invalid_amount
+				}],
+				'ar': false
+			},
+			'amount_type': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'amount_type',
+				'dbname': 'amount_type',
+				'validation':false,
+				'ar': false
+			},
+			'if_order_more': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'if_order_more',
+				'dbname': 'if_order_more',
+				'validation': [{
+					'numeric': "positive integer",
+					'invalid_msg': labels.Invalid_number
+				}],
+				'ar': false
+			},
+			'for_every_ordered': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'for_every_ordered',
+				'dbname': 'for_every_ordered',
+				'validation': [{
+					'numeric': "positive integer",
+					'invalid_msg': labels.Invalid_number
+				}],
+				'ar': false
+			},
+			'order_interval': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'order_interval',
+				'dbname': 'order_interval',
+				'validation': [{
+					'numeric': "positive integer",
+					'invalid_msg': labels.Invalid_number
+				}],
+				'ar': false
+			},
+			'order_number': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'order_number',
+				'dbname': 'order_number',
+				'validation': [{
+					'numeric': "positive integer",
+					'invalid_msg': labels.Invalid_number
+				}],
+				'ar': false
+			},
+			'percentage_off': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'percentage_off',
+				'dbname': 'percentage_off',
+				'validation': [{
+					'numeric': "percentage",
+					'invalid_msg': labels.Invalid_percentage
+				}],
+				'ar': false
+			},
+			'get_same_free': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'name': 'get_same_free',
+				'dbname': 'get_same_free',
+				'validation': [{
+					'numeric': "positive integer",
+					'invalid_msg': labels.Invalid_number
+				}],
+				'ar': false
+			},
+			'trigger': {
+				'changed': false,
+				'validated': true,
+				'required': true,
+				'name': 'trigger',
+				'dbname': 'Deal Trigger',
+			},
+			'trigger': {
+				'changed': false,
+				'validated': true,
+				'required': true,
+				'name': 'trigger',
+				'dbname': 'Deal Trigger',
+			},
+			'trigger_key': {
+				'changed': false,
+				'validated': true,
+				'required': true,
+				'name': 'trigger_key',
+				'dbname': 'Deal Trigger Key',
+			},
+			'campaign_key': {
+				'changed': false,
+				'validated': false,
+				'required': true,
+				'group': 1,
+				'type': 'item',
+				'name': 'campaign_key',
+				'dbname': 'Deal Campaign Key',
+				'validation': [{
+					'numeric': 'positive',
+					'invalid_msg': ''
+				}]
+			},
+			'campaign_code': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'group': 1,
+				'type': 'item',
+				'name': 'campaign_code',
+				'ar': 'find',
+				'ar_request': 'ar_deals.php?tipo=is_campaign_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
+				'dbname': 'Deal Campaign Code'
+			},
+			'campaign_name': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'group': 1,
+				'type': 'item',
+				'name': 'campaign_name',
+				'ar': false,
+				'dbname': 'Deal Campaign Name',
+				'validation': [{
+					'regexp': "[a-z\\d]+",
+					'invalid_msg': labels.Invalid_name
+				}]
+			},
+			'campaign_description': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'group': 1,
+				'type': 'item',
+				'name': 'campaign_description',
+				'ar': false,
+				'dbname': 'Deal Campaign Description',
+				'validation': [{
+					'regexp': "[a-z\\d]+",
+					'invalid_msg': labels.Invalid_description
+				}]
+			},
+			'from': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'group': 1,
+				'type': 'item',
+				'name': 'v_calpop1',
+				'ar': false,
+				'dbname': 'Deal Campaign Valid From',
+				'validation': [{
+					'regexp': "\\d{2}-\\d{2}-\\d{4}",
+					'invalid_msg': labels.Invalid_date
+				}]
+			},
+			'to': {
+				'changed': false,
+				'validated': false,
+				'required': false,
+				'group': 1,
+				'type': 'item',
+				'name': 'v_calpop2',
+				'ar': false,
+				'dbname': 'Deal Campaign Valid To',
+				'validation': [{
+					'regexp': "\\d{2}-\\d{2}-\\d{4}",
+					'invalid_msg': labels.Invalid_date
+				}]
+			}
+
+
+		}
+	};
+
+
+	validate_scope_metadata = {
+		'deal': {
+			'type': 'new',
+			'ar_file': 'ar_edit_deals.php',
+			'key_name': 'store_key',
+			'key': Dom.get('store_key').value
+		}
+	};
+
 
 
 	switch(Dom.get('trigger').value){
@@ -946,126 +1451,58 @@ function init(){
 		break;	
 		case 'Customer':
 		terms_changed('Voucher');
+		
 		break;
 		case 'Order':
 		terms_changed('Voucher');
 		break;				
 	}
 
-	session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
-	labels=session_data.label;
+	switch(Dom.get('scope_subject').value){
+		case 'Campaign':
+		init_search('marketing_store');
 
-	init_search('products_store');
+		break;
+		case 'Customer':
+		init_search('customers_store');
+		break;
+		default:
+		init_search('products_store');
+	}
 
-	validate_scope_data = {
+	cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
+		title: "Start:",
+		mindate: new Date(),
+		close: true
+	});
+	cal1.update = updateCal;
+	cal1.id = '1';
+	cal1.render();
+	cal1.update();
+	cal1.selectEvent.subscribe(handleSelect, cal1, true);
 
-		'deal': {
-			'code': {
-				'changed': false,
-				'validated': false,
-				'required': true,
-				'dbname': 'Deal Code',
-				'group': 1,
-				'type': 'item',
-				'name': 'Code',
-				'validation': [{
-					'regexp': "[a-z\\d]+",
-					'invalid_msg': labels.Invalid_code
-				}],
-				'ar': 'find',
-				'ar_request': 'ar_deals.php?tipo=is_deal_code&query='
-			},
-			'name': {
-				'changed': false,
-				'validated': false,
-				'required': true,
-				'dbname': 'Deal Name',
-				'group': 1,
-				'type': 'item',
-				'name': 'Name',
-
-				'validation': [{
-					'regexp': "[a-z\\d]+",
-					'invalid_msg': labels.Invalid_name
-				}],
-				'ar': false
-			},
-			'country': {
-				'changed': true,
-				'validated': true,
-				'required': true,
-				'dbname': 'Country Code',
-				'group': 1,
-				'type': 'item',
-				'name': 'Country',
-
-				'validation': false,
-				'ar': false
-			},
-			'locale': {
-				'changed': true,
-				'validated': true,
-				'required': true,
-				'dbname': 'Store Locale',
-				'group': 1,
-				'type': 'item',
-				'name': 'locale',
-
-				'validation': false,
-				'ar': false
-			}
+	YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
 
 
+	cal2 = new YAHOO.widget.Calendar("calpop2", "campaign_to_Container", {
+		title: "Until:",
+		mindate: new Date(),
+		close: true
+	});
+	cal2.update = updateCal;
+	cal2.id = '2';
+	cal2.render();
+	cal2.update();
+	cal2.selectEvent.subscribe(handleSelect, cal2, true);
 
-		}
-	};
+	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 
-	validate_scope_metadata = {
-		'store': {
-			'type': 'new',
-			'ar_file': 'ar_edit_assets.php',
-			'key_name': 'store_key',
-			'key': ''
-		}
-	};
+	Event.addListener(['v_calpop1', 'v_calpop2'], "keyup", date_changed);
 
-cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
-        title: "Start:",
-        mindate: new Date(),
-        close: true
-    });
-    cal1.update = updateCal;
-    cal1.id = '1';
-    cal1.render();
-    cal1.update();
-    cal1.selectEvent.subscribe(handleSelect, cal1, true);
-
-    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
-
-
-    cal2 = new YAHOO.widget.Calendar("calpop2", "campaign_to_Container", {
-        title: "Until:",
-        mindate: new Date(),
-        close: true
-    });
-    cal2.update = updateCal;
-    cal2.id = '2';
-    cal2.render();
-    cal2.update();
-    cal2.selectEvent.subscribe(handleSelect, cal2, true);
-
-    YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-
-
-
-    Event.addListener(['v_calpop1', 'v_calpop2'], "keyup", date_changed);
-
-    YAHOO.util.Event.addListener('to_permanent', "click", permanent_campaign)
-    YAHOO.util.Event.addListener('start_now', "click", start_now)
-
+	YAHOO.util.Event.addListener('to_permanent', "click", permanent_campaign)
+	YAHOO.util.Event.addListener('start_now', "click", start_now)
 
 	dialog_campaigns_list = new YAHOO.widget.Dialog("dialog_campaigns_list", {
-
 		visible: false,
 		close: true,
 		underlay: "none",
@@ -1084,8 +1521,7 @@ cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
 	dialog_departments_list.render();
 	Event.addListener("update_department", "click", show_dialog_departments_list,'trigger');
 	Event.addListener("target_update_department", "click", show_dialog_departments_list,'target');
-
-
+	Event.addListener("target_bis_update_department", "click", show_dialog_departments_list,'target');
 
 	dialog_families_list = new YAHOO.widget.Dialog("dialog_families_list", {
 		visible: false,
@@ -1093,9 +1529,11 @@ cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
 		underlay: "none",
 		draggable: false
 	});
+
 	dialog_families_list.render();
 	Event.addListener("update_family", "click", show_dialog_families_list,"trigger");
 	Event.addListener("target_update_family", "click", show_dialog_families_list,"target");
+	Event.addListener("target_bis_update_family", "click", show_dialog_families_list,"target");
 
 	dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
 		visible: false,
@@ -1106,15 +1544,7 @@ cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
 	dialog_products_list.render();
 	Event.addListener("update_product", "click", show_dialog_products_list,"trigger");
 	Event.addListener("target_update_product", "click", show_dialog_products_list,"target");
-
-	dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
-		visible: false,
-		close: true,
-		underlay: "none",
-		draggable: false
-	});
-	dialog_products_list.render();
-	Event.addListener("update_product", "click", show_dialog_products_list);
+	Event.addListener("target_bis_update_product", "click", show_dialog_products_list,"target");
 
 	dialog_customers_list = new YAHOO.widget.Dialog("dialog_customers_list", {
 		visible: false,
@@ -1135,6 +1565,148 @@ cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
 	Event.addListener("update_clone_deal", "click", show_dialog_deals_list);
 	Event.addListener(['voucher_code_random','voucher_code_custome'], "click", select_voucher_code_type);
 	Event.addListener(['voucher_type_public','voucher_type_private'], "click", select_voucher_type);
+	Event.addListener(['amount_type_total','amount_type_net','amount_type_items'], "click", select_amount_type);
+
+	var campaign_code_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_code);
+	campaign_code_oACDS.queryMatchContains = true;
+	var campaign_code_oAutoComp = new YAHOO.widget.AutoComplete("campaign_code", "campaign_code_Container", campaign_code_oACDS);
+	campaign_code_oAutoComp.minQueryLength = 0;
+	campaign_code_oAutoComp.queryDelay = 0.1;
+
+	var campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_name);
+	campaign_name_oACDS.queryMatchContains = true;
+	var campaign_name_oAutoComp = new YAHOO.widget.AutoComplete("campaign_name", "campaign_name_Container", campaign_name_oACDS);
+	campaign_name_oAutoComp.minQueryLength = 0;
+	campaign_name_oAutoComp.queryDelay = 0.1;
+
+	var campaign_description_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_description);
+	campaign_description_oACDS.queryMatchContains = true;
+	var campaign_description_oAutoComp = new YAHOO.widget.AutoComplete("campaign_description", "campaign_description_Container", campaign_description_oACDS);
+	campaign_description_oAutoComp.minQueryLength = 0;
+	campaign_description_oAutoComp.queryDelay = 0.1;
+
+	var deal_code_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_code);
+	deal_code_oACDS.queryMatchContains = true;
+	var deal_code_oAutoComp = new YAHOO.widget.AutoComplete("deal_code", "deal_code_Container", deal_code_oACDS);
+	deal_code_oAutoComp.minQueryLength = 0;
+	deal_code_oAutoComp.queryDelay = 0.1;
+
+	var deal_name_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_name);
+	deal_name_oACDS.queryMatchContains = true;
+	var deal_name_oAutoComp = new YAHOO.widget.AutoComplete("deal_name", "deal_name_Container", deal_name_oACDS);
+	deal_name_oAutoComp.minQueryLength = 0;
+	deal_name_oAutoComp.queryDelay = 0.1;
+
+	var deal_description_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_description);
+	deal_description_oACDS.queryMatchContains = true;
+	var deal_description_oAutoComp = new YAHOO.widget.AutoComplete("deal_description", "deal_description_Container", deal_description_oACDS);
+	deal_description_oAutoComp.minQueryLength = 0;
+	deal_description_oAutoComp.queryDelay = 0.1;
+
+	var voucher_code_oACDS = new YAHOO.util.FunctionDataSource(validate_voucher_code);
+	voucher_code_oACDS.queryMatchContains = true;
+	var voucher_code_oAutoComp = new YAHOO.widget.AutoComplete("voucher_code", "voucher_code_Container", voucher_code_oACDS);
+	voucher_code_oAutoComp.minQueryLength = 0;
+	voucher_code_oAutoComp.queryDelay = 0.1;
+
+	var amount_oACDS = new YAHOO.util.FunctionDataSource(validate_amount);
+	amount_oACDS.queryMatchContains = true;
+	var amount_oAutoComp = new YAHOO.widget.AutoComplete("amount", "amount_Container", amount_oACDS);
+	amount_oAutoComp.minQueryLength = 0;
+	amount_oAutoComp.queryDelay = 0.1;
+	var if_order_more_oACDS = new YAHOO.util.FunctionDataSource(validate_if_order_more);
+	if_order_more_oACDS.queryMatchContains = true;
+	var if_order_more_oAutoComp = new YAHOO.widget.AutoComplete("if_order_more", "if_order_more_Container", if_order_more_oACDS);
+	if_order_more_oAutoComp.minQueryLength = 0;
+	if_order_more_oAutoComp.queryDelay = 0.1;
+
+	var for_every_ordered_oACDS = new YAHOO.util.FunctionDataSource(validate_for_every_ordered);
+	for_every_ordered_oACDS.queryMatchContains = true;
+	var for_every_ordered_oAutoComp = new YAHOO.widget.AutoComplete("for_every_ordered", "for_every_ordered_Container", for_every_ordered_oACDS);
+	for_every_ordered_oAutoComp.minQueryLength = 0;
+	for_every_ordered_oAutoComp.queryDelay = 0.1;
+
+	var order_interval_oACDS = new YAHOO.util.FunctionDataSource(validate_order_interval);
+	order_interval_oACDS.queryMatchContains = true;
+	var order_interval_oAutoComp = new YAHOO.widget.AutoComplete("order_interval", "order_interval_Container", order_interval_oACDS);
+	order_interval_oAutoComp.minQueryLength = 0;
+	order_interval_oAutoComp.queryDelay = 0.1;
+
+	var order_number_oACDS = new YAHOO.util.FunctionDataSource(validate_order_number);
+	order_number_oACDS.queryMatchContains = true;
+	var order_number_oAutoComp = new YAHOO.widget.AutoComplete("order_number", "order_number_Container", order_number_oACDS);
+	order_number_oAutoComp.minQueryLength = 0;
+	order_number_oAutoComp.queryDelay = 0.1;
+
+	var percentage_off_oACDS = new YAHOO.util.FunctionDataSource(validate_percentage_off);
+	percentage_off_oACDS.queryMatchContains = true;
+	var percentage_off_oAutoComp = new YAHOO.widget.AutoComplete("percentage_off", "percentage_off_Container", percentage_off_oACDS);
+	percentage_off_oAutoComp.minQueryLength = 0;
+	percentage_off_oAutoComp.queryDelay = 0.1;
+
+	var amount_off_oACDS = new YAHOO.util.FunctionDataSource(validate_amount_off);
+	amount_off_oACDS.queryMatchContains = true;
+	var amount_off_oAutoComp = new YAHOO.widget.AutoComplete("amount_off", "amount_off_Container", amount_off_oACDS);
+	amount_off_oAutoComp.minQueryLength = 0;
+	amount_off_oAutoComp.queryDelay = 0.1;
+
+	var get_same_free_oACDS = new YAHOO.util.FunctionDataSource(validate_get_same_free);
+	get_same_free_oACDS.queryMatchContains = true;
+	var get_same_free_oAutoComp = new YAHOO.widget.AutoComplete("get_same_free", "get_same_free_Container", get_same_free_oACDS);
+	get_same_free_oAutoComp.minQueryLength = 0;
+	get_same_free_oAutoComp.queryDelay = 0.1;
+
+	YAHOO.util.Event.addListener('save_new_deal', "click", save_new_deal);
+
+	Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
+	Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
+	Event.addListener('clean_table_filter_show101', "click", show_filter, 101);
+	Event.addListener('clean_table_filter_hide101', "click", hide_filter, 101);
+	Event.addListener('clean_table_filter_show102', "click", show_filter, 102);
+	Event.addListener('clean_table_filter_hide102', "click", hide_filter, 102);
+	Event.addListener('clean_table_filter_show103', "click", show_filter, 103);
+	Event.addListener('clean_table_filter_hide103', "click", hide_filter, 103);
+	Event.addListener('clean_table_filter_show104', "click", show_filter, 104);
+	Event.addListener('clean_table_filter_hide104', "click", hide_filter, 104);
+	Event.addListener('clean_table_filter_show105', "click", show_filter, 105);
+	Event.addListener('clean_table_filter_hide105', "click", hide_filter, 105);
+
+
+	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS.queryMatchContains = true;
+	oACDS.table_id = 100;
+	var oAutoComp = new YAHOO.widget.AutoComplete("f_input100", "f_container100", oACDS);
+	oAutoComp.minQueryLength = 100;
+
+	var oACDS101 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS101.queryMatchContains = true;
+	oACDS101.table_id = 101;
+	var oAutoComp101 = new YAHOO.widget.AutoComplete("f_input101", "f_container101", oACDS101);
+	oAutoComp101.minQueryLength = 0;
+
+	var oACDS102 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS102.queryMatchContains = true;
+	oACDS102.table_id = 102;
+	var oAutoComp102 = new YAHOO.widget.AutoComplete("f_input102", "f_container102", oACDS102);
+	oAutoComp102.minQueryLength = 0;
+
+	var oACDS103 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS103.queryMatchContains = true;
+	oACDS103.table_id = 103;
+	var oAutoComp103 = new YAHOO.widget.AutoComplete("f_input103", "f_container103", oACDS103);
+	oAutoComp103.minQueryLength = 0;
+
+	var oACDS104 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS104.queryMatchContains = true;
+	oACDS104.table_id = 104;
+	var oAutoComp104 = new YAHOO.widget.AutoComplete("f_input104", "f_container104", oACDS104);
+	oAutoComp104.minQueryLength = 0;
+
+	var oACDS105 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS105.queryMatchContains = true;
+	oACDS105.table_id = 105;
+	var oAutoComp105 = new YAHOO.widget.AutoComplete("f_input105", "f_container105", oACDS105);
+	oAutoComp105.minQueryLength = 0;
 
 
 
@@ -1142,6 +1714,7 @@ cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
 
 
 
