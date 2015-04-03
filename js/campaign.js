@@ -160,6 +160,8 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 
 
         {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true},
+         {key:"state", label:"", width:10,sortable:false},
+
         {key:"code", label:labels.Code, width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
         {key:"description", label:labels.Description, width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
         {key:"orders", label:labels.Orders,  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
@@ -185,7 +187,7 @@ session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value))
 
         	},
 
-        	fields: ["name","key","allowance","duration","orders","code","customers","target","terms","code","description"]};
+        	fields: ["name","key","allowance","duration","orders","code","customers","target","terms","code","description","state"]};
 
 
         	this.table2 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,this.dataSource2

@@ -311,8 +311,6 @@ abstract class DB_Table {
 
 	protected function get_editor_data() {
 
-
-
 		if (isset($this->editor['Date'])  and preg_match('/^\d{4}-\d{2}-\d{2}/',$this->editor['Date']))
 			$date=$this->editor['Date'];
 		else
@@ -320,14 +318,10 @@ abstract class DB_Table {
 
 		$user_key=1;
 
-
-
 		if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
 			$user_key=$this->editor['User Key'];
 		else
 			$user_key=0;
-
-
 
 		return array(
 			'User Key'=>$user_key

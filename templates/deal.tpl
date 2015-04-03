@@ -1,11 +1,12 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
+	<input type="hidden" value="{$session_data}" id="session_data" />
 	<input type="hidden" value="{$deal->id}" id="deal_key" />
 	<input type="hidden" value="{$store->id}" id="store_key" />
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			{if $referrer=='store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$deal->get('Deal Code')}</span> {else} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; {$deal->get('Deal Code')}</span> {/if} 
+			{if $referrer=='store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if} <a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$deal->get('Deal Code')}</span> {else} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Code')}</a> &rarr; {$deal->get('Deal Code')}</span> {/if} 
 		</div>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 			<div class="buttons" style="float:left">
@@ -33,7 +34,7 @@
 			<h2>
 				{$deal->get('Deal Name')} 
 			</h2>
-			<p style="width:300px;border:1px solid #ccc;padding:4px">
+			<p style="width:300px;border:1px solid #ccc;padding:4px;{if {$deal->get('Deal Description')}==''}display:none{/if}">
 				{$deal->get('Deal Description')} 
 			</p>
 			<div style="width:400px">
@@ -43,20 +44,8 @@
 						<td class="aright">{$deal->get('Deal Trigger')} {if $deal->get('Deal Trigger XHTML Label')}({$deal->get('Deal Trigger XHTML Label')}){/if}</td>
 					</tr>
 					<tr>
-						<td>{t}Terms type{/t}</td>
-						<td class="aright">{$deal->get('Deal Terms Type')}</td>
-					</tr>
-				</table>
-			</div>
-			<div style="width:400px">
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Orders{/t}</td>
-						<td class="aright">{$deal->get('Deal ')}</td>
-					</tr>
-					<tr>
-						<td>{t}Customers{/t}</td>
-						<td class="aright">{$deal->get('Deal Terms Type')}</td>
+						<td>{t}Terms{/t}</td>
+						<td class="aright">{$deal->get_formated_terms()}</td>
 					</tr>
 				</table>
 			</div>

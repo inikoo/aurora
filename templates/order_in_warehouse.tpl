@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='assets_navigation.tpl'} 
+	{include file='assets_navigation.tpl'}
 	<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
 	<input type="hidden" value="{$store->id}" id="store_id" />
 	<input type="hidden" value="{$store->id}" id="store_key" />

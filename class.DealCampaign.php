@@ -15,8 +15,6 @@
  class DealCampaign extends DB_Table {
 
 
-
-
  	function DealCampaign($a1,$a2=false,$a3=false) {
 
  		$this->table_name='Deal Campaign';
@@ -37,13 +35,17 @@
 
  	function get_data($tipo,$tag,$tag2=false) {
 
- 		if ($tipo=='id')
+ 		if ($tipo=='id'){
  			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Key`=%d",$tag);
- 		elseif ($tipo=='code_store')
+ 		}
+ 		elseif ($tipo=='code_store'){
  			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Code`=%s and `Deal Campaign Store Key`=%d",
  				prepare_mysql($tag),
  				$tag2
  				);
+ 		}else{
+ 			print "get_data tipo not found >".$tipo.'<';
+ 		}
 
 
  		$result=mysql_query($sql);
@@ -54,19 +56,12 @@
 
  	}
 
-
-
-
-
-
  	function find($raw_data,$options) {
 
  		if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
  			foreach ($raw_data['editor'] as $key=>$value) {
-
  				if (array_key_exists($key,$this->editor))
  					$this->editor[$key]=$value;
-
  			}
  		}
 
@@ -86,20 +81,14 @@
 
 
  		foreach ($raw_data as $key=>$value) {
-
  			if (array_key_exists($key,$data))
  				$data[$key]=$value;
-
  		}
-
-
 
  		$sql=sprintf("select `Deal Campaign Key` from `Deal Campaign Dimension` where  `Deal Campaign Code`=%s and `Deal Campaign Store Key`=%d ",
  			prepare_mysql($data['Deal Campaign Code']),
  			$data['Deal Campaign Store Key']
  			);
-
-
 
  		$result=mysql_query($sql);
  		$num_results=mysql_num_rows($result);
@@ -168,11 +157,50 @@
  			return $this->data[$key];
 
  		switch ($key) {
+			case 'Interval':
+			case 'Duration':
+				if (!$this->data['Deal Campaign Valid To'] ) {
+ 			$duration=_('Permanent');
+ 		} else {
+ 			if ($this->data['Deal Campaign Valid From']) {
+ 				$duration=strftime("%a %e %b %Y", strtotime($this->data['Deal Campaign Valid From']." +00:00")).' - ';
+ 			}else{
+ 				$duration='? -';
+ 			}
+ 			$duration.=strftime("%a %e %b %Y", strtotime($this->data['Deal Campaign Valid To']." +00:00"));
+ 		}
+			return $duration;
 
  		}
 
  		return false;
  	}
+
+ 	function get_formated_status(){
+	
+		switch($this->data['Deal Campaign Status']){
+		case 'Waiting':
+		return _('Waiting');
+		break;
+		case 'Suspended':
+		return _('Suspended');
+		break;
+		case 'Active':
+		return _('Active');
+		break;
+		case 'Finish':
+		return _('Finished');
+		break;
+		case 'Waiting':
+		return _('Waiting');
+		break;
+		default:
+			return $this->data['Deal Campaign Status'];
+		}
+	
+	}
+
+	
 
  	function get_from_date(){
  		if($this->data['Deal Campaign Valid From']==''){
@@ -209,74 +237,72 @@
  	}
 
 
- 	function activate() {
-
- 		if ($this->data['Deal Campaign Valid From']=='') {
- 			$this->data['Deal Campaign Valid From']=gmdate("Y-m-d H:i:s");
- 		}else {
- 			if (strtotime($this->data['Deal Campaign Valid From'].' +0:00')>time()  ) {
- 				$this->data['Deal Campaign Valid From']=gmdate("Y-m-d H:i:s");
- 			}
-
- 		}
-
- 		$sql=sprintf("update `Deal Campaign Dimension` set `Deal Campaign Status`='Active' ,`Deal Campaign Valid From`=%s",
- 			$this->data['Deal Campaign Valid From']
- 			);
- 		mysql_query($sql);
-
- 		$store=new DealCampaign('id',$this->data['Deal Campaign Store Key']);
- 		$store->update_campaings_data();
-
- 	}
-
- 	function update_status(){
-
- 		if($this->data['Deal Campaign Valid From']=='' and $this->data['Deal Campaign Valid To']==''){
- 			$status='Active';
-
- 		}elseif($this->data['Deal Campaign Valid From']==''){
- 			if(strtotime($this->data['Deal Campaign Valid To'].' +0:00')<strtotime('now +0:00')){
- 				$status='Active';
-
- 			}else{
- 				$status='Finish';
- 			}
-
- 		}elseif($this->data['Deal Campaign Valid To']==''){
-
- 			if(strtotime($this->data['Deal Campaign Valid From'].' +0:00')<strtotime('now +0:00')){
-
- 				$status='Active';
-
- 			}else{
- 				$status='Waiting';
- 			}
-
- 		}else{
-
- 			if(strtotime($this->data['Deal Campaign Valid To'].' +0:00')<strtotime('now +0:00')){
- 				$status='Finish';
-
- 			}else if(strtotime($this->data['Deal Campaign Valid From'].' +0:00')<strtotime('now +0:00')){
- 				
- 				$status='Active';
-
- 			}else{
- 				$status='Waiting';
-
- 			}
-
- 		}
-
- 		$this->update(array('Deal Campaign Status'=>$status));
-
-
- 	}
 
 
 
+	function update_status_from_dates() {
 
+		
+		if ($this->data['Deal Campaign Status']=='Waiting' and strtotime($this->data['Deal Campaign Valid From'].' +0:00')<strtotime('now +0:00')) {
+			$this->update_field_switcher('Deal Campaign Status','Active','no_history');
+		}
+		
+		
+	
+		if ($this->data['Deal Campaign Valid To']!='' and  strtotime($this->data['Deal Campaign Valid To'].' +0:00')<strtotime('now +0:00')) {
+
+			$this->update_field_switcher('Deal Campaign Status','Finish','no_history');
+
+		}
+
+		foreach ($this->get_deal_keys() as $deal_key) {
+			$deal=new Deal($deal_key);
+			$deal->update_status_from_dates();
+
+
+
+		}
+
+		foreach ($this->get_deal_component_keys() as $deal_component_key) {
+			$deal_compoment=new DealComponent($deal_key);
+			$deal_compoment->update_status_from_dates();
+		}
+
+
+	}
+
+
+	function get_deal_keys() {
+		$deal_keys=array();
+		$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Campaign Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deal_keys[]=$row['Deal Key'];
+		}
+		return $deal_keys;
+
+	}
+
+	function get_number_deals() {
+		$number_deals=0;
+		$sql=sprintf("select count(*) as num from `Deal Dimension` where `Deal Campaign Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$number_deals=$row['num'];
+		}
+		return $number_deals;
+	}
+
+	function get_deal_component_keys() {
+		$deal_component_keys=array();
+		$sql=sprintf("select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Campaign Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deal_component_keys[]=$row['Deal Component Key'];
+		}
+		return $deal_component_keys;
+
+	}
 
  	function update_usage() {
 
@@ -300,7 +326,6 @@
  			$customers,
  			$this->id
  			);
-//print "$sql\n";
  		mysql_query($sql);
  		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Campaign Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
  			$this->id
@@ -323,7 +348,6 @@
  		mysql_query($sql);
 
 
- 		$this->update_status();
 
  		$store=new Store($this->data['Deal Campaign Store Key']);
  		$store->update_campaings_data();
@@ -332,6 +356,37 @@
 
 
  	}
+
+ 	function delete() {
+
+		if ($this->get_number_deals()>0 and $this->data['Deal Campaign Status']!='Waiting') {
+			$this->msg='can not delete';
+			return;
+		}
+
+
+		$sql=sprintf("delete from `Deal Campaign Dimension` where `Deal Campaign Key`=%d",
+			$this->id
+		);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Deal Dimension` where `Deal Campaign Key`=%d",
+			$this->id
+		);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Deal Compoment Dimension` where `Deal Compoment Campaign Key`=%d",
+			$this->id
+		);
+		mysql_query($sql);
+
+
+
+
+	}
+	
+	
+		
 
  }
 

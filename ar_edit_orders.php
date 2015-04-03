@@ -1470,6 +1470,7 @@ function update_order_transaction() {
 		'to_charge'=>$transaction_data['to_charge'],
 		'discount_data'=>$adata,
 		'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
+		'amount_off'=>($order->data['Order Deal Amount Off']!=0?true:false),
 		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false),
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),
 		'order_total_paid'=>$order->data['Order Payments Amount'],
@@ -4899,6 +4900,8 @@ function update_percentage_discount($data) {
 		'to_charge'=>$transaction_data['to_charge'],
 		//'discount_data'=>$adata,
 		'discounts'=>($discounts!=0?true:false),
+				'amount_off'=>($order->data['Order Deal Amount Off']!=0?true:false),
+
 		//'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
 		'charges'=>$order->data['Order Charges Net Amount'],
 		'tax_info'=>$order->get_formated_tax_info_with_operations(),

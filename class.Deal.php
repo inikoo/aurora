@@ -10,466 +10,483 @@
 
  Version 2.0
 */
-include_once 'class.DB_Table.php';
+ include_once 'class.DB_Table.php';
 
-class Deal extends DB_Table {
-
-
-
-
-	function Deal($a1,$a2=false) {
-
-		$this->table_name='Deal';
-		$this->ignore_fields=array('Deal Key');
-
-		if (is_numeric($a1) and !$a2) {
-			$this->get_data('id',$a1);
-		} else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
-				$this->find($a2,'create');
-
-			}
-		elseif (preg_match('/find/i',$a1))
-			$this->find($a2,$a1);
-		else
-			$this->get_data($a1,$a2);
-
-	}
-
-	function get_data($tipo,$tag) {
-
-		if ($tipo=='id')
-			$sql=sprintf("select * from `Deal Dimension` where `Deal Key`=%d",$tag);
-		elseif ($tipo=='code')
-			$sql=sprintf("select * from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($tag));
-
-
-		$result=mysql_query($sql);
-
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
-			$this->id=$this->data['Deal Key'];
-		}
-
-		if ($this->data['Deal Remainder Email Campaign Key']>0) {
-			include_once 'class.EmailCampaign.php';
-			$this->remainder_email_campaign=new EmailCampaign($this->data['Deal Remainder Email Campaign Key']);
-
-		}
-
-
-	}
+ class Deal extends DB_Table {
 
 
 
 
+ 	function Deal($a1,$a2=false) {
+
+ 		$this->table_name='Deal';
+ 		$this->ignore_fields=array('Deal Key');
+
+ 		if (is_numeric($a1) and !$a2) {
+ 			$this->get_data('id',$a1);
+ 		} else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
+ 			$this->find($a2,'create');
+
+ 		}
+ 		elseif (preg_match('/find/i',$a1))
+ 			$this->find($a2,$a1);
+ 		else
+ 			$this->get_data($a1,$a2);
+
+ 	}
+
+ 	function get_data($tipo,$tag) {
+
+ 		if ($tipo=='id')
+ 			$sql=sprintf("select * from `Deal Dimension` where `Deal Key`=%d",$tag);
+ 		elseif ($tipo=='code')
+ 			$sql=sprintf("select * from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($tag));
 
 
-	function find($raw_data,$options) {
+ 		$result=mysql_query($sql);
 
-		if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
-			foreach ($raw_data['editor'] as $key=>$value) {
+ 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
+ 			$this->id=$this->data['Deal Key'];
+ 		}
 
-				if (array_key_exists($key,$this->editor))
-					$this->editor[$key]=$value;
+ 		if ($this->data['Deal Remainder Email Campaign Key']>0) {
+ 			include_once 'class.EmailCampaign.php';
+ 			$this->remainder_email_campaign=new EmailCampaign($this->data['Deal Remainder Email Campaign Key']);
 
-			}
-		}
-
-		$this->candidate=array();
-		$this->found=false;
-		$this->found_key=0;
-		$create='';
-		$update='';
-		if (preg_match('/create/i',$options)) {
-			$create='create';
-		}
-		if (preg_match('/update/i',$options)) {
-			$update='update';
-		}
-
-		$data=$this->base_data();
+ 		}
 
 
-		foreach ($raw_data as $key=>$value) {
-
-			if (array_key_exists($key,$data))
-				$data[$key]=$value;
-
-		}
-
-
-
-		$sql=sprintf("select `Deal Key` from `Deal Dimension` where  `Deal Code`=%s and `Deal Store Key`=%d ",
-			prepare_mysql($data['Deal Code']),
-			$data['Deal Store Key']
-		);
-
-
-
-		$result=mysql_query($sql);
-		$num_results=mysql_num_rows($result);
-		if ($num_results==1) {
-			$row=mysql_fetch_array($result, MYSQL_ASSOC);
-			$this->found=true;
-			$this->found_key=$row['Deal Key'];
-
-		}
-		if ($this->found) {
-			$this->get_data('id',$this->found_key);
-		}
-
-
-		if ($create and !$this->found) {
-			$this->create($data);
-
-		}
-
-
-	}
-
-
-	function create($data) {
+ 	}
 
 
 
-		$keys='(';
-		$values='values(';
-		foreach ($data as $key=>$value) {
-			$keys.="`$key`,";
-			if ($key=='Deal Trigger XHTML Label') {
-				$values.=prepare_mysql($value,false).",";
 
-			}else {
-				$values.=prepare_mysql($value).",";
-			}
-		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
+
+
+ 	function find($raw_data,$options) {
+
+ 		if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
+ 			foreach ($raw_data['editor'] as $key=>$value) {
+
+ 				if (array_key_exists($key,$this->editor))
+ 					$this->editor[$key]=$value;
+
+ 			}
+ 		}
+
+ 		$this->candidate=array();
+ 		$this->found=false;
+ 		$this->found_key=0;
+ 		$create='';
+ 		$update='';
+ 		if (preg_match('/create/i',$options)) {
+ 			$create='create';
+ 		}
+ 		if (preg_match('/update/i',$options)) {
+ 			$update='update';
+ 		}
+
+ 		$data=$this->base_data();
+
+
+ 		foreach ($raw_data as $key=>$value) {
+
+ 			if (array_key_exists($key,$data))
+ 				$data[$key]=$value;
+
+ 		}
+
+
+
+ 		$sql=sprintf("select `Deal Key` from `Deal Dimension` where  `Deal Code`=%s and `Deal Store Key`=%d ",
+ 			prepare_mysql($data['Deal Code']),
+ 			$data['Deal Store Key']
+ 			);
+
+
+
+ 		$result=mysql_query($sql);
+ 		$num_results=mysql_num_rows($result);
+ 		if ($num_results==1) {
+ 			$row=mysql_fetch_array($result, MYSQL_ASSOC);
+ 			$this->found=true;
+ 			$this->found_key=$row['Deal Key'];
+
+ 		}
+ 		if ($this->found) {
+ 			$this->get_data('id',$this->found_key);
+ 		}
+
+
+ 		if ($create and !$this->found) {
+ 			$this->create($data);
+
+ 		}
+
+
+ 	}
+
+
+ 	function create($data) {
+
+ 		$keys='';
+ 		$values='';
+
+ 		foreach ($data as $key=>$value) {
+ 			$keys.="`$key`,";
+ 			if ($key=='Deal Trigger XHTML Label') {
+ 				$values.=prepare_mysql($value,false).",";
+
+ 			}else {
+ 				$values.=prepare_mysql($value).",";
+ 			}
+ 		}
+ 		$keys=preg_replace('/,$/','',$keys);
+ 		$values=preg_replace('/,$/','',$values);
 
 
 
 		// print_r($data);
-		$sql=sprintf("insert into `Deal Dimension` %s %s",$keys,$values);
+ 		$sql=sprintf("insert into `Deal Dimension` (%s) values (%s)",$keys,$values);
 		// print "$sql\n";
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
-			$this->get_data('id',$this->id);
-			$this->new=true;
+ 		if (mysql_query($sql)) {
+ 			$this->id = mysql_insert_id();
+ 			$this->get_data('id',$this->id);
+ 			$this->new=true;
 
 
-			$store=new Store('id',$this->data['Deal Store Key']);
-			$store->update_deals_data();
+ 			$store=new Store('id',$this->data['Deal Store Key']);
+ 			$store->update_deals_data();
 
-		} else {
-			print "Error can not create deal  $sql\n";
-			exit;
+ 		} else {
+ 			print "Error can not create deal  $sql\n";
+ 			exit;
 
-		}
-	}
-
-
+ 		}
+ 	}
 
 
-	function get($key='') {
 
-		if (isset($this->data[$key]))
-			return $this->data[$key];
 
-		switch ($key) {
+ 	function get($key='') {
 
-		}
+ 		if (isset($this->data[$key]))
+ 			return $this->data[$key];
 
-		return false;
-	}
+ 		switch ($key) {
 
-	function add_deal_schema($raw_data) {
+ 		}
 
-		$base_data=array(
-			'Deal Component Name'=>$this->data['Deal Name'],
-			'Deal Component Allowance Description'=>'',
-			'Deal Component Allowance Type'=>'',
-			'Deal Component Allowance Target'=>'',
-			'Deal Component Allowance Lock'=>'No',
-			'Deal Component Allowance'=>'',
-			'Deal Component Trigger'=>'',
-			'Deal Component Replace Type'=>'none',
-			'Deal Component Replace'=>''
-		);
-		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$base_data))
-				$base_data[$key]=$value;
-		}
-		$base_data['Deal Key']=$this->id;
-		$this->schema_found=false;
-		$fields=array();
-		foreach ($base_data as $key=>$value) {
-			if (!($key=='Deal Component Allowance'  or  $key=='Deal Component Replace'  ))
-				$fields[]=$key;
-		}
+ 		return false;
+ 	}
 
-		$sql="select `Deal Schema Key` from `Campaign Deal Schema` where  true ";
-		// print_r($fields);
-		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($base_data[$field],false));
-		}
+ 	function get_formated_status() {
+
+ 		switch ($this->data['Deal Status']) {
+ 			case 'Waiting':
+ 			return _('Waiting');
+ 			break;
+ 			case 'Suspended':
+ 			return _('Suspended');
+ 			break;
+ 			case 'Active':
+ 			return _('Active');
+ 			break;
+ 			case 'Finish':
+ 			return _('Finished');
+ 			break;
+ 			case 'Waiting':
+ 			return _('Waiting');
+ 			break;
+ 			default:
+ 			return $this->data['Deal Status'];
+ 		}
+
+ 	}
+
+ 	function get_formated_terms() {
+ 		$terms='';
+ 		$sql=sprintf("select `Deal Component XHTML Terms Description Label`,`Deal Component Terms Description`,`Deal Component Terms Type`,`Deal Component Allowance Target XHTML Label`  from `Deal Component Dimension` where `Deal Component Deal Key`=%d group by `Deal Component Terms Description`",
+ 			$this->id
+ 			);
+ 		$res=mysql_query($sql);
+ 		$count=0;
+ 		while ($row=mysql_fetch_assoc($res)) {
+ 			$count++;
+ 			if ($count==1) {
+ 				$terms.=$row['Deal Component XHTML Terms Description Label'];
+ 				if($row['Deal Component Allowance Target XHTML Label']!='' and in_array($row['Deal Component Terms Type'],array('Department Quantity Ordered','Department For Every Quantity Ordered','Family Quantity Ordered','Family For Every Quantity Ordered','Product Quantity Ordered','Product For Every Quantity Ordered'))){
+ 					$terms.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
+ 				}
+ 			}else {
+ 				$terms.=', ...';
+ 				break;
+ 			}
+
+
+ 		}
+
+ 		return $terms;
+ 	}
+
+ 	function get_formated_allowances() {
+
+ 		$allowances='';
+ 		$sql=sprintf("select `Deal Component Allowance Description` from `Deal Component Dimension` where `Deal Component Deal Key`=%d group by `Deal Component Terms Description`",
+ 			$this->id
+ 			);
+ 		$res=mysql_query($sql);
+ 		$count=0;
+ 		while ($row=mysql_fetch_assoc($res)) {
+ 			$count++;
+ 			if ($count==1) {
+ 				$allowances=$row['Deal Component Allowance Description'];
+ 			}else {
+ 				$allowances.=', ...';
+ 				break;
+ 			}
+
+
+ 		}
+		//print $allowances;
+
+ 		return $allowances;
+
+
+ 	}
+
+ 	function update_formated_term() {
+ 		$this->update_field_switcher('Deal Terms',$this->get_formated_terms(),'no_history');
+ 	}
+
+ 	function update_formated_allowance() {
+ 		$this->update_field_switcher('Deal Allowances',$this->get_formated_allowances(),'no_history');
+
+ 	}
+
+
+ 	function update_field_switcher($field,$value,$options='') {
+
+ 		switch ($field) {
+ 			case('Deal Begin Date'):
+ 			$this->update_begin_date($value,$options);
+ 			break;
+ 			case('Deal Expiration Date'):
+ 			$this->update_expitation_date($value,$options);
+ 			break;
+ 			default:
+ 			$base_data=$this->base_data();
+
+ 			if (array_key_exists($field,$base_data)) {
+ 				$this->update_field($field,$value,$options);
+ 			}
+ 		}
+ 	}
+
+
+ 	function update_begin_date($value,$options) {
+ 		$this->updated=false;
+
+ 		if ($this->data['Deal Status']=='Waiting') {
+
+ 			$this->update_field('Deal Begin Date',$value,$options);
+
+ 			$sql=sprintf('select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Status`="Waiting" and `Deal Component Deal Key`=%d',
+ 				$this->id
+ 				);
+ 			$res=mysql_query($sql);
+ 			while ($row=mysql_fetch_assoc($res)) {
+ 				$deal_compoment=new DealComponent($row['Deal Component Key']);
+ 				$deal_compoment->update(array('Deal Component Begin Date'=>$value));
+ 			}
+
+ 			$this->update_status_from_dates();
+ 			$this->updated=true;
+ 		}else {
+ 			$this->error=true;
+ 			$this->msg='Deal already started';
+ 		}
+ 	}
+
+
+ 	function update_expitation_date($value,$options) {
+
+ 		if ($this->data['Deal Status']=='Finish') {
+ 			$this->error=true;
+ 			$this->msg='Deal already finished';
+ 		}else {
+ 			$this->update_field('Deal Expiration Date',$value,$options);
+ 			$this->updated=true;
+
+
+ 		}
+
+ 		$sql=sprintf('select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Status`!="Finish" and `Deal Component Deal Key`=%d',
+ 			$this->id
+ 			);
+ 		$res=mysql_query($sql);
+ 		while ($row=mysql_fetch_assoc($res)) {
+ 			$deal_compoment=new DealComponent($row['Deal Component Key']);
+ 			$deal_compoment->update(array('Deal Component Expiration Date'=>$value));
+ 		}
+
+
+ 		$this->update_status_from_dates();
+
+
+ 	}
+
+ 	function add_component($data) {
+
+ 		$data['Deal Component Deal Key']=$this->id;
+ 		$data['Deal Component Store Key']=$this->data['Deal Store Key'];
+ 		$data['Deal Component Campaign Key']=$this->data['Deal Campaign Key'];
+ 		$data['Deal Component Begin Date']=$this->data['Deal Begin Date'];
+ 		$data['Deal Component Expiration Date']=$this->data['Deal Expiration Date'];
+ 		$data['Deal Component Status']=$this->data['Deal Status'];
+
+
+
+ 		$hereditary_fields=array('Status','Name','Trigger','Trigger Key','Trigger XHTML Label','Terms Type');
+ 		foreach ($hereditary_fields as $hereditary_field) {
+ 			if (!array_key_exists('Deal Component '.$hereditary_field,$data)) {
+ 				$data['Deal Component '.$hereditary_field]=
+ 				$this->data['Deal '.$hereditary_field];
+ 			}
+ 		}
+
+ 		$old_components=$this->get_components();
+
+ 		$deal_component=new DealComponent('find create',$data);
+
+ 		$this->update_number_components();
+ 		$deal_component->update_target_bridge();
+
+ 		return $deal_component;
+
+ 	}
+
+ 	function get_components(){
+ 		$components=array();
+ 	}
+
+ 	function update_usage() {
+
+
+
+
+ 		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Applied`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+ 			$this->id
+
+ 			);
+ 		$res=mysql_query($sql);
+ 		$orders=0;
+ 		$customers=0;
+ 		if ($row=mysql_fetch_assoc($res)) {
+ 			$orders=$row['orders'];
+ 			$customers=$row['customers'];
+ 		}
+
+ 		$sql=sprintf("update `Deal Dimension` set `Deal Total Acc Applied Orders`=%d, `Deal Total Acc Applied Customers`=%d where `Deal Key`=%d",
+ 			$orders,
+ 			$customers,
+ 			$this->id
+ 			);
 		//print "$sql\n";
-		$result=mysql_query($sql);
-		$num_results=mysql_num_rows($result);
-		if ($num_results==1) {
-			$row=mysql_fetch_array($result, MYSQL_ASSOC);
-			$this->schema_found=true;
+ 		mysql_query($sql);
+ 		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+ 			$this->id
 
-
-		}
-		if (!$this->schema_found) {
-
-
-			if ($base_data['Deal Component Allowance Lock']=='Yes')
-				$base_data['Deal Component Allowance']=Deal::parse_allowance_metadata($base_data['Deal Component Allowance Type'],$base_data['Deal Component Allowance Description']);
-			else
-				$base_data['Deal Component Allowance']='';
-
-			//print_r($base_data);
-
-			$keys='(';
-			$values='values(';
-			foreach ($base_data as $key=>$value) {
-				$keys.="`$key`,";
-				//print "-> $key=>$value \n";
-				if (
-					($base_data['Deal Component Allowance Lock']=='No'  and  $key=='Deal Component Allowance') or
-					($base_data['Deal Component Replace Type']=='none'  and  $key=='Deal Component Replace')
-				)
-					$values.=prepare_mysql($value,false).",";
-				else
-					$values.=prepare_mysql($value).",";
-			}
-			$keys=preg_replace('/,$/',')',$keys);
-			$values=preg_replace('/,$/',')',$values);
-			$sql=sprintf("insert into `Campaign Deal Schema` %s %s",$keys,$values);
-			if (mysql_query($sql)) {
-				$this->msg='Deal Schema Added';
-			} else {
-				print "Error can not add deal schema  $sql\n";
-				exit;
-
-			}
-
-		} else {
-			$this->msg='Deal Schema Found';
-		}
-
-	}
-
-	function find_schema($arg) {
-		$schema_data=array();
-		$this->schema_found=false;
-		if (is_string($arg)) {
-			$sql=sprintf("select * from `Campaign Deal Schema` where `Deal Component Name`=%s",prepare_mysql($arg));
-			//print "$sql\n";
-
-
-			$res=mysql_query($sql);
-
-			if ($schema_data=mysql_fetch_array($res)) {
-
-				$this->schema_found=true;
-			}
-		}
-		elseif (is_numeric($arg)) {
-			$sql=sprintf("select * from `Campaign Deal Schema` where `Deal Schema Key`=%d",$arg);
-			$res=mysql_query($sql);
-			if ($schema_data=mysql_fetch_array($res)) {
-				$this->schema_found=true;
-			}
-		}
-
-
-		return $schema_data;
-	}
-
-	function add_component($data) {
-
-		$data['Deal Component Deal Key']=$this->id;
-		$data['Deal Component Store Key']=$this->data['Deal Store Key'];
-		$data['Deal Component Campaign Key']=$this->data['Deal Campaign Key'];
-		$data['Deal Component Begin Date']=$this->data['Deal Begin Date'];
-		$data['Deal Component Expiration Date']=$this->data['Deal Expiration Date'];
-		$data['Deal Component Status']=$this->data['Deal Status'];
-
-
-
-		$hereditary_fields=array('Status','Name','Trigger','Trigger Key','Trigger XHTML Label','Terms Type');
-		foreach ($hereditary_fields as $hereditary_field) {
-			if (!array_key_exists('Deal Component '.$hereditary_field,$data)) {
-				$data['Deal Component '.$hereditary_field]=
-					$this->data['Deal '.$hereditary_field];
-			}
-		}
-
-		$old_components=$this->get_components();
-
-		$deal_component=new DealComponent('find create',$data);
-
-		$this->update_number_components();
-		$deal_component->update_target_bridge();
-
-		return $deal_component;
-	}
-
-	function get_components(){
-		//to do
-		$components=array();
-	}
-
-
-
-	function update_usage() {
-
-
-
-
-		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Applied`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
-			$this->id
-
-		);
-		$res=mysql_query($sql);
-		$orders=0;
-		$customers=0;
-		if ($row=mysql_fetch_assoc($res)) {
-			$orders=$row['orders'];
-			$customers=$row['customers'];
-		}
-
-		$sql=sprintf("update `Deal Dimension` set `Deal Total Acc Applied Orders`=%d, `Deal Total Acc Applied Customers`=%d where `Deal Key`=%d",
-			$orders,
-			$customers,
-			$this->id
-		);
-//print "$sql\n";
-		mysql_query($sql);
-		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
-			$this->id
-
-		);
-		$res=mysql_query($sql);
-		$orders=0;
-		$customers=0;
+ 			);
+ 		$res=mysql_query($sql);
+ 		$orders=0;
+ 		$customers=0;
 		//  print "$sql\n";
-		if ($row=mysql_fetch_assoc($res)) {
-			$orders=$row['orders'];
-			$customers=$row['customers'];
-		}
+ 		if ($row=mysql_fetch_assoc($res)) {
+ 			$orders=$row['orders'];
+ 			$customers=$row['customers'];
+ 		}
 
-		$sql=sprintf("update `Deal Dimension` set `Deal Total Acc Used Orders`=%d, `Deal Total Acc Used Customers`=%d where `Deal Key`=%d",
-			$orders,
-			$customers,
-			$this->id
-		);
-		mysql_query($sql);
+ 		$sql=sprintf("update `Deal Dimension` set `Deal Total Acc Used Orders`=%d, `Deal Total Acc Used Customers`=%d where `Deal Key`=%d",
+ 			$orders,
+ 			$customers,
+ 			$this->id
+ 			);
+ 		mysql_query($sql);
+ 	}
 
-		include_once('class.DealCampaign.php');
-
-		$deal_campaign=new DealCampaign($this->data['Deal Campaign Key']);
-		$deal_campaign->update_usage();
-
-	}
-
-
-	/*
-	function activate() {
-
-		if ($this->data['Deal Begin Date']=='') {
-			$this->data['Deal Begin Date']=gmdate("Y-m-d H:i:s");
-		}else {
-			if (strtotime($this->data['Deal Begin Date'].' +0:00')>time()  ) {
-				$this->data['Deal Begin Date']=gmdate("Y-m-d H:i:s");
-			}
-
-		}
-
-		$sql=sprintf("update `Deal Dimension` set `Deal Status`='Active' ,`Deal Begin Date`=%s",
-			$this->data['Deal Begin Date']
-		);
-		mysql_query($sql);
-
-		$store=new('id',$this->data['Deal Campaign Store Key']);
-		$store->update_campaings_data();
-
-		$sql=sprintf("select `Deal Companent Key` from ``Deal Component Dimension where `Deal Component Deal Key`=%d and `Deal COmponent Status`='Waiting'",
-			$this_>id
-		);
-		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
-			$deal_component=new DealComponent('id',$row['Deal Companent Key']);
-			$deal_component->update_status('Active');
-		}
-
-
-		}
-*/
-
-	function update_status_from_components() {
-
-		$state='Waiting';
-
-
-		$sql=sprintf("select count(*) as num   from `Deal Component Dimension`where `Deal Component Deal Key`=%d and `Deal Component Status`='Finish'",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']>0)
-				$state='Finish';
-		}
-
-
-		$sql=sprintf("select count(*) as num   from `Deal Component Dimension`where `Deal Component Deal Key`=%d and `Deal Component Status`='Suspended'",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']>0)
-				$state='Suspended';
-		}
-
-
-		$sql=sprintf("select count(*) as num   from `Deal Component Dimension`where `Deal Component Deal Key`=%d and `Deal Component Status`='Active'",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']>0)
-				$state='Active';
-		}
-
-
-		$sql=sprintf("update `Deal Dimension` set `Deal Status`=%s where `Deal Key`=%d",
-			prepare_mysql($state),
-			$this->id
-		);
-		mysql_query($sql);
-
-
-
-		$campaign=new DealCampaign('id',$this->data['Deal Campaign Key']);
-		$campaign->update_status_from_deals();
-
-
-	}
-
-	function update_number_components() {
-		$number=0;
-		$sql=sprintf("select count(*) as number from `Deal Component Dimension` where `Deal Component Deal Key`=%d and `Deal Component Status`='Active' ",
-			$this->id);
-		$res=mysql_query($sql);
+ 	function update_number_components() {
+ 		$number=0;
+ 		$sql=sprintf("select count(*) as number from `Deal Component Dimension` where `Deal Component Deal Key`=%d and `Deal Component Status`='Active' ",
+ 			$this->id);
+ 		$res=mysql_query($sql);
 		//print "$sql\n";
-		if ($row=mysql_fetch_assoc($res)) {
-			$number=$row['number'];
-		}
+ 		if ($row=mysql_fetch_assoc($res)) {
+ 			$number=$row['number'];
+ 		}
 
-		$sql=sprintf("update `Deal Dimension` set `Deal Number Active Components`=%d where `Deal Key`=%d",
-			$number,
-			$this->id
-		);
-		mysql_query($sql);
-		$this->data['Deal Number Components']=$number;
-	}
+ 		$sql=sprintf("update `Deal Dimension` set `Deal Number Active Components`=%d where `Deal Key`=%d",
+ 			$number,
+ 			$this->id
+ 			);
+ 		mysql_query($sql);
+ 		$this->data['Deal Number Components']=$number;
+ 	}
+
+ 	function get_deal_component_keys() {
+ 		$deal_component_keys=array();
+ 		$sql=sprintf("select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Deal Key`=%d ",$this->id);
+ 		$res=mysql_query($sql);
+ 		while ($row=mysql_fetch_assoc($res)) {
+ 			$deal_component_keys[]=$row['Deal Component Key'];
+ 		}
+ 		return $deal_component_keys;
+ 	}
+
+ 	function update_status_from_dates() {
 
 
-}
 
-?>
+ 		if ($this->data['Deal Status']=='Waiting' and strtotime($this->data['Deal Begin Date'].' +0:00')>=strtotime('now +0:00')) {
+
+ 			$this->update_field_switcher('Deal Status','Active','no_history');
+
+ 		}
+
+
+
+ 		if ($this->data['Deal Expiration Date']!='' and  strtotime($this->data['Deal Expiration Date'].' +0:00')<=strtotime('now +0:00')) {
+
+ 			$this->update_field_switcher('Deal Status','Finish','no_history');
+
+ 		}
+
+
+
+
+ 		foreach ($this->get_deal_component_keys() as $deal_component_key) {
+ 			$deal_compoment=new DealComponent($deal_component_key);
+ 			$deal_compoment->update_status_from_dates();
+ 		}
+ 	}
+
+ 	function get_from_date() {
+ 		if ($this->data['Deal Begin Date']=='') {
+ 			return '';
+ 		}else {
+ 			return gmdate('d-m-Y',strtotime($this->data['Deal Begin Date'].' +0:00' ));
+ 		}
+ 	}
+
+ 	function get_to_date() {
+ 		if ($this->data['Deal Expiration Date']=='') {
+ 			return '';
+ 		}else {
+ 			return gmdate('d-m-Y',strtotime($this->data['Deal Expiration Date'].' +0:00' ));
+ 		}
+ 	}
+
+
+ }
+
+ ?>

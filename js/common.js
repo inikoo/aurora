@@ -341,7 +341,6 @@ function updateCal() {
     if (txtDate1.value != "") {
         temp = txtDate1.value.split('-');
         var date = temp[1] + '/' + temp[0] + '/' + temp[2];
-
         this.select(date);
 
         var selectedDates = this.getSelectedDates();
@@ -351,7 +350,7 @@ function updateCal() {
             this.cfg.setProperty("pagedate", (firstDate.getMonth() + 1) + "/" + firstDate.getFullYear());
             this.render();
         } else {
-            alert("Cannot select a date before 1/1/2006 or after 12/31/2008");
+          //  alert("Date outside limits "+date);
         }
 
     }
