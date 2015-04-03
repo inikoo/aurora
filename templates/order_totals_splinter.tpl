@@ -21,6 +21,12 @@
 						<td class="aright">{t}Items Net{/t}</td>
 						<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
 					</tr>
+
+<tr {if $order->get('Order Deal Amount Off')==0 }style="display:none"{/if} id="tr_order_amount_off" > 
+						<td class="aright">{t}Ammount Off{/t}</td>
+						<td width="100" class="aright"><span id="order_items_discount">{$order->get('Deal Amount Off')}</span></td>
+					</tr>
+					
 					<tr id="tr_order_credits" {if $order->
 						get('Order Net Credited Amount')==0}style="display:none"{/if}> 
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_credits" /> {t}Credits{/t}</td>
@@ -34,8 +40,7 @@
 						<td class="aright"> <img style="{if $order->get('Order Shipping Method')=='On Demand'}visibility:visible{else}visibility:hidden{/if};cursor:pointer" src="art/icons/edit.gif" id="edit_button_shipping" /> {t}Shipping{/t}</td>
 						<td id="order_shipping" width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 					</tr>
-					<tr {if $order->
-						get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
 						<td class="aright"> {t}Insurance{/t}</td>
 						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
 					</tr>

@@ -78,3 +78,11 @@ table.form_state td.aleft{text-align:left}
 .list_options tr{border-top:1px solid #ccc}
 .list_options td.option {padding-left:40px}
 
+
+.ok{padding:10px;font-size:90%;
+border: solid 1px #ADDE5C;
+ background: #DFF2BF;
+ color: #008000;
+}
+
+.ok .hide_me{float:right;cursor:pointer;color:#777}

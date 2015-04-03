@@ -3,6 +3,7 @@ var dialog_add_credit;
 var dialog_edit_credits;
 var dialog_edit_tax_category;
 var dialog_set_tax;
+var dialog_add_voucher;
 
 
 function add_insurance(o) {
@@ -544,7 +545,7 @@ function create_delivery_note_from_list(o, order_key) {
 function create_delivery_note() {
 
     if (Dom.get('send_to_warehouse_input') != undefined) var note = Dom.get('send_to_warehouse_input').value
-    else var note = '';
+        else var note = '';
     var ar_file = 'ar_edit_orders.php';
 
 
@@ -671,25 +672,32 @@ function save_change_discount() {
 
                     }
 
-                    if (r.charges) {
-                        Dom.get('tr_order_items_charges').style.display = '';
-
-                    } else {
-                        Dom.get('tr_order_items_charges').style.display = 'none';
-
-                    }
+                    if(r.amount_off){
+                        Dom.setStyle('tr_order_amount_off','display','');
+                    }else{
+                     Dom.setStyle('tr_order_amount_off','display','none');
+                 }
 
 
-                    datatable.updateCell(record, 'quantity', r.quantity);
-                    datatable.updateCell(record, 'to_charge', r.to_charge);
-                    datatable.updateCell(record, 'description', r.description);
-                    datatable.updateCell(record, 'discount_percentage', r.discount_percentage);
+                 if (r.charges) {
+                    Dom.get('tr_order_items_charges').style.display = '';
+
+                } else {
+                    Dom.get('tr_order_items_charges').style.display = 'none';
+
+                }
+
+
+                datatable.updateCell(record, 'quantity', r.quantity);
+                datatable.updateCell(record, 'to_charge', r.to_charge);
+                datatable.updateCell(record, 'description', r.description);
+                datatable.updateCell(record, 'discount_percentage', r.discount_percentage);
 
 
 
-                    change_staff_discount.hide();
-                    Dom.setStyle('change_staff_discount_waiting', 'display', 'none')
-                    Dom.setStyle('change_staff_discount_buttons', 'display', '')
+                change_staff_discount.hide();
+                Dom.setStyle('change_staff_discount_waiting', 'display', 'none')
+                Dom.setStyle('change_staff_discount_buttons', 'display', '')
                     //Dom.get('change_discount_value').value=value;
                 }
 
@@ -704,7 +712,7 @@ function save_change_discount() {
         );
 
 
-    }
+}
 }
 
 function show_dialog_edit_credits() {
@@ -755,14 +763,14 @@ function save(tipo) {
     //alert(tipo)
     switch (tipo) {
 
-    case ('send_to_warehouse'):
+        case ('send_to_warehouse'):
 
         Dom.setStyle('send_to_warehouse_buttons', 'display', 'none')
         Dom.setStyle('send_to_warehouse_wait', 'display', '')
 
         create_delivery_note()
         break;
-    case ('cancel'):
+        case ('cancel'):
 
         if (Dom.hasClass('cancel_save', 'disabled')) {
             return;
@@ -863,7 +871,7 @@ function lookup_family() {
 
 function change_block() {
 
-    Dom.removeClass(['products', 'items','customer'], 'selected')
+    Dom.removeClass(['products', 'items', 'customer'], 'selected')
     Dom.addClass(this, 'selected')
     Dom.setStyle(['products_block', 'items_block', 'customer_block'], 'display', 'none')
     Dom.setStyle(this.id + '_block', 'display', '')
@@ -1024,6 +1032,7 @@ function update_order_data(r) {
         }
     }
 
+
     if (r.discounts) {
         Dom.get('tr_order_items_gross').style.display = '';
         Dom.get('tr_order_items_discounts').style.display = '';
@@ -1034,6 +1043,12 @@ function update_order_data(r) {
 
     }
 
+
+    if(r.amount_off){
+        Dom.setStyle('tr_order_amount_off','display','');
+    }else{
+     Dom.setStyle('tr_order_amount_off','display','none');
+ }
 
 
 
@@ -1085,22 +1100,22 @@ function update_recargo_de_equivalencia(value) {
 var myonCellClick = function(oArgs) {
 
 
-        var target = oArgs.target,
-            column = this.getColumn(target),
-            record = this.getRecord(target);
+    var target = oArgs.target,
+    column = this.getColumn(target),
+    record = this.getRecord(target);
 
 
 
-        datatable = this;
-        var records = this.getRecordSet();
+    datatable = this;
+    var records = this.getRecordSet();
         //alert(records.getLength())
         //return;
         var recordIndex = this.getRecordIndex(record);
 
 
         switch (column.action) {
-        case ('add_object'):
-        case ('remove_object'):
+            case ('add_object'):
+            case ('remove_object'):
             var data = record.getData();
 
             if (column.action == 'add_object') {
@@ -1129,72 +1144,72 @@ var myonCellClick = function(oArgs) {
             }
 
             var ar_file = 'ar_edit_orders.php';
-            request = 'tipo=edit_new_order&id=' + Dom.get('order_key').value + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid']+ '&pkey=' + data['pkey'];
-          //  alert(ar_file+'?'+request)
+            request = 'tipo=edit_new_order&id=' + Dom.get('order_key').value + '&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'] + '&pkey=' + data['pkey'];
+            //  alert(ar_file+'?'+request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
-                    //alert(o.responseText);
-                    datatable.updateCell(record, 'remove', '-');
-                    datatable.updateCell(record, 'add', '+');
+                // alert(o.responseText);
+                 datatable.updateCell(record, 'remove', '-');
+                 datatable.updateCell(record, 'add', '+');
 
 
-                    var r = YAHOO.lang.JSON.parse(o.responseText);
-                    if (r.state == 200) {
+                 var r = YAHOO.lang.JSON.parse(o.responseText);
+                 if (r.state == 200) {
 
 
-                        update_order_data(r)
+                    update_order_data(r)
 
-                        datatable.updateCell(record, 'quantity', r.quantity);
+                    datatable.updateCell(record, 'quantity', r.quantity);
 
-                        datatable.updateCell(record, 'ordered_quantity', r.ordered_quantity);
+                    datatable.updateCell(record, 'ordered_quantity', r.ordered_quantity);
 
-                        datatable.updateCell(record, 'to_charge', r.to_charge);
+                    datatable.updateCell(record, 'to_charge', r.to_charge);
 
 
 
-                        for (var i = 0; i < records.getLength(); i++) {
-                            var rec = records.getRecord(i);
-                            if (r.discount_data[rec.getData('pid')] != undefined) {
-                                datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
-                                datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+                    for (var i = 0; i < records.getLength(); i++) {
+                        var rec = records.getRecord(i);
+                        if (r.discount_data[rec.getData('pid')] != undefined) {
+                            datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                            datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
 
-                                datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
-                                datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
-                            }
+                            datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                            datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
                         }
+                    }
 
-                        if (r.quantity == 0) {
+                    if (r.quantity == 0) {
 
-                            datatable.updateCell(record, 'description', r.description);
+                        datatable.updateCell(record, 'description', r.description);
 
-                            if (Dom.get('products_display_type').value == 'ordered_products') {
+                        if (Dom.get('products_display_type').value == 'ordered_products') {
 
-                                this.deleteRow(target);
-                            }
+                            this.deleteRow(target);
                         }
+                    }
 
 
 
-                        if (Dom.get('products_display_type').value == 'products') {
+                    if (Dom.get('products_display_type').value == 'products') {
 
-                            var table = tables['table0'];
-                            var datasource = tables['dataSource0'];
-
-                        } else {
-                            var table = tables['table1'];
-                            var datasource = tables['dataSource1'];
-
-
-                        }
-
-                        var request = '';
-                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
-
-
+                        var table = tables['table0'];
+                        var datasource = tables['dataSource0'];
 
                     } else {
-                        alert('EC24' + r.msg);
+                        var table = tables['table1'];
+                        var datasource = tables['dataSource1'];
+
+
+                    }
+
+                    var request = '';
+                    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+
+
+                } else {
+                    alert('EC24' + r.msg);
                         //	callback();
                     }
                 },
@@ -1207,23 +1222,23 @@ var myonCellClick = function(oArgs) {
 
             );
 
-            break;
+break;
 
-        case ('edit_object'):
+case ('edit_object'):
 
-            change_discount(this.getCell(target), record.getData('otf_key'), record.getId(), record.getData('discount_percentage'))
+change_discount(this.getCell(target), record.getData('otf_key'), record.getId(), record.getData('discount_percentage'))
 
-            break;
-        default:
+break;
+default:
 
-            this.onEventShowCellEditor(oArgs);
-            break;
-        }
-    };
+this.onEventShowCellEditor(oArgs);
+break;
+}
+};
 
 function change(e, o, tipo) {
     switch (tipo) {
-    case ('cancel'):
+        case ('cancel'):
 
 
         if (o.value != '') {
@@ -1243,8 +1258,8 @@ function change(e, o, tipo) {
 
 function enable_save(tipo) {
     switch (tipo) {
-    case ('cancel'):
-    case ('send_to_warehouse'):
+        case ('cancel'):
+        case ('send_to_warehouse'):
         Dom.removeClass(tipo + '_save', 'disabled')
 
         break;
@@ -1253,8 +1268,8 @@ function enable_save(tipo) {
 
 function disable_save(tipo) {
     switch (tipo) {
-    case ('cancel'):
-    case ('send_to_warehouse'):
+        case ('cancel'):
+        case ('send_to_warehouse'):
         Dom.addClass(tipo + '_save', 'disabled')
         break;
     }
@@ -1263,14 +1278,14 @@ function disable_save(tipo) {
 
 function close_dialog(tipo) {
     switch (tipo) {
-    case ('send_to_warehouse'):
+        case ('send_to_warehouse'):
 
 
         dialog_send_to_warehouse.hide();
 
         break;
 
-    case ('cancel'):
+        case ('cancel'):
 
 
         dialog_cancel.hide();
@@ -1283,15 +1298,15 @@ var CellEdit = function(callback, newValue) {
 
 
 
-        var record = this.getRecord(),
-            column = this.getColumn(),
-            oldValue = this.value,
-            datatable = this.getDataTable();
-        var records = datatable.getRecordSet();
-        var ar_file = 'ar_edit_orders.php';
-        var data = record.getData();
+    var record = this.getRecord(),
+    column = this.getColumn(),
+    oldValue = this.value,
+    datatable = this.getDataTable();
+    var records = datatable.getRecordSet();
+    var ar_file = 'ar_edit_orders.php';
+    var data = record.getData();
 
-        if (newValue < data['picked']) newValue = data['picked']
+    if (newValue < data['picked']) newValue = data['picked']
         var request = 'tipo=edit_' + column.object + '&id=' + Dom.get('order_key').value + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
         // alert(ar_file+'?'+request);
         //return;
@@ -1334,27 +1349,26 @@ var CellEdit = function(callback, newValue) {
                             }
                             */
 
-                        var table = tables['table' + Dom.get('items_table_index').value];
-                        var datasource = tables['dataSource' + Dom.get('items_table_index').value];
-                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                            var table = tables['table' + Dom.get('items_table_index').value];
+                            var datasource = tables['dataSource' + Dom.get('items_table_index').value];
+                            datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
-                    }
-                    if (Dom.get('products_display_type').value == 'products') {
+                        }
+                        if (Dom.get('products_display_type').value == 'products') {
 
-                        var table = tables['table1'];
-                        var datasource = tables['dataSource1'];
+                            var table = tables['table1'];
+                            var datasource = tables['dataSource1'];
 
-                    } else {
-                        var table = tables['table0'];
-                        var datasource = tables['dataSource0'];
+                        } else {
+                            var table = tables['table0'];
+                            var datasource = tables['dataSource0'];
 
 
-                    }
+                        }
 
-                    var request = '';
+                        var request = '';
                     // datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
                     callback(true, r.ordered_quantity);
 
 
@@ -1371,7 +1385,7 @@ var CellEdit = function(callback, newValue) {
         }, request
 
         );
-    };
+};
 
 
 var mygetTerms = function(query) {
@@ -1379,18 +1393,18 @@ var mygetTerms = function(query) {
 
 
 
-        if (this.table_id == undefined) var table_id = 0;
-        else var table_id = this.table_id;
+    if (this.table_id == undefined) var table_id = 0;
+    else var table_id = this.table_id;
 
-        var Dom = YAHOO.util.Dom;
-        var table = tables['table' + table_id];
-        var datasource = tables['dataSource' + table_id];
+    var Dom = YAHOO.util.Dom;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
 
-        table.filter.value = Dom.get('f_input' + table_id).value;
-        var request = '&tableid=' + table_id + '&sf=0&f_field=' + table.filter.key + '&f_value=' + table.filter.value + '&display=' + Dom.get('products_display_type').value;
+    table.filter.value = Dom.get('f_input' + table_id).value;
+    var request = '&tableid=' + table_id + '&sf=0&f_field=' + table.filter.key + '&f_value=' + table.filter.value + '&display=' + Dom.get('products_display_type').value;
 
-        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-    };
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+};
 
 
 
@@ -1727,8 +1741,22 @@ function show_set_tax_number_dialog() {
     if (Dom.get('tax_number') != undefined) tax_number = Dom.get('tax_number').innerHTML
 
 
-    dialog_set_tax.show();
+        dialog_set_tax.show();
 
+}
+
+function show_dialog_add_voucher() {
+
+    region1 = Dom.getRegion('add_voucher');
+    region2 = Dom.getRegion('dialog_add_voucher');
+    var pos = [region1.left, region1.top]
+    Dom.setXY('dialog_add_voucher', pos);
+
+
+
+    dialog_add_voucher.show();
+
+    Dom.get('Order_Voucher').focus()
 }
 
 
@@ -1744,7 +1772,13 @@ function show_dialog_process_delivery_note(o, dn_key) {
     dialog_process_delivery_note.show();
 }
 
+function close_dialog_add_voucher() {
+    Dom.get('Order_Voucher').value = ''
+    Dom.get('Order_Voucher_msg').innerHTML = '';
 
+    dialog_add_voucher.hide();
+
+}
 
 function show_set_tax_number_dialog_from_details() {
     region1 = Dom.getRegion('update_order_tax_number');
@@ -1755,7 +1789,7 @@ function show_set_tax_number_dialog_from_details() {
     if (Dom.get('tax_number') != undefined) tax_number = Dom.get('tax_number').innerHTML
 
 
-    dialog_set_tax.show();
+        dialog_set_tax.show();
 
 }
 
@@ -1785,23 +1819,23 @@ function show_dialog_check_tax_number(tax_number) {
 
 
     if (Dom.get('save_tax_details_not_match') != undefined) Dom.setStyle('save_tax_details_not_match', 'display', 'none')
-    if (Dom.get('save_tax_details_match') != undefined) Dom.setStyle('save_tax_details_match', 'display', 'none')
+        if (Dom.get('save_tax_details_match') != undefined) Dom.setStyle('save_tax_details_match', 'display', 'none')
 
-    Dom.setStyle('close_check_tax_number', 'display', 'none')
-    Dom.setStyle('check_tax_number_name_tr', 'display', 'none')
-    Dom.setStyle('check_tax_number_address_tr', 'display', 'none')
-
-
-    dialog_check_tax_number.show()
-
-    Dom.get('check_tax_number_result').innerHTML = '';
-
-    var request = 'ar_edit_orders.php?tipo=check_tax_number&order_key=' + Dom.get('order_key').value
+            Dom.setStyle('close_check_tax_number', 'display', 'none')
+        Dom.setStyle('check_tax_number_name_tr', 'display', 'none')
+        Dom.setStyle('check_tax_number_address_tr', 'display', 'none')
 
 
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-        success: function(o) {
-            Dom.setStyle(['submit_register', 'cancel_register'], 'visibility', 'visible');
+        dialog_check_tax_number.show()
+
+        Dom.get('check_tax_number_result').innerHTML = '';
+
+        var request = 'ar_edit_orders.php?tipo=check_tax_number&order_key=' + Dom.get('order_key').value
+
+
+        YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+                Dom.setStyle(['submit_register', 'cancel_register'], 'visibility', 'visible');
 
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -1815,22 +1849,29 @@ function show_dialog_check_tax_number(tax_number) {
 
 
 
-                if ((r.name != undefined || r.address != undefined) && r.valid) {
+                    if ((r.name != undefined || r.address != undefined) && r.valid) {
 
-                    if (r.name != undefined && r.name != '') {
-                        Dom.setStyle('check_tax_number_name_tr', 'display', '')
-                        Dom.get('check_tax_number_name').innerHTML = r.name
+                        if (r.name != undefined && r.name != '') {
+                            Dom.setStyle('check_tax_number_name_tr', 'display', '')
+                            Dom.get('check_tax_number_name').innerHTML = r.name
 
+                        }
+                        if (r.address != undefined && r.address != '') {
+                            Dom.setStyle('check_tax_number_address_tr', 'display', '')
+                            Dom.get('check_tax_number_address').innerHTML = r.address
+
+                        }
+
+
+
+                        Dom.setStyle('close_check_tax_number', 'display', '')
+                    } else {
+
+                        Dom.setStyle('close_check_tax_number', 'display', '')
                     }
-                    if (r.address != undefined && r.address != '') {
-                        Dom.setStyle('check_tax_number_address_tr', 'display', '')
-                        Dom.get('check_tax_number_address').innerHTML = r.address
-
-                    }
 
 
 
-                    Dom.setStyle('close_check_tax_number', 'display', '')
                 } else {
 
                     Dom.setStyle('close_check_tax_number', 'display', '')
@@ -1838,9 +1879,58 @@ function show_dialog_check_tax_number(tax_number) {
 
 
 
+            },
+            failure: function(o) {
+
+            }
+
+        });
+
+
+}
+
+function remove_voucher(voucher_key) {
+    var request = 'ar_edit_deals.php?tipo=remove_voucher_from_order&order_key=' + Dom.get('order_key').value + '&voucher_key=' + voucher_key
+    //   alert(request)
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            //   alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == '200') {
+                update_order_data(r)
+                Dom.get('vouchers_div').innerHTML = r.vouchers_list
+                var datatable = tables['table0'];
+                var records = datatable.getRecordSet();
+
+                for (var i = 0; i < records.getLength(); i++) {
+                    var rec = records.getRecord(i);
+                    if (r.discount_data[rec.getData('pid')] != undefined) {
+                        datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                        datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
+                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                    }
+                }
+                
+                var datatable = tables['table1'];
+                var records = datatable.getRecordSet();
+
+                for (var i = 0; i < records.getLength(); i++) {
+                    var rec = records.getRecord(i);
+                    if (r.discount_data[rec.getData('pid')] != undefined) {
+                        datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                        datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
+                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                    }
+                }
+
             } else {
 
-                Dom.setStyle('close_check_tax_number', 'display', '')
             }
 
 
@@ -1851,15 +1941,75 @@ function show_dialog_check_tax_number(tax_number) {
         }
 
     });
+}
+
+function save_add_voucher() {
+    value = Dom.get('Order_Voucher').value
+
+    if (value == '') {
+        return;
+    }
+
+    var request = 'ar_edit_deals.php?tipo=add_voucher_to_order&order_key=' + Dom.get('order_key').value + '&voucher=' + value
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == '200') {
+                update_order_data(r)
+                close_dialog_add_voucher()
+                Dom.get('vouchers_div').innerHTML = r.vouchers_list
+
+                var datatable = tables['table0'];
+                var records = datatable.getRecordSet();
+
+                for (var i = 0; i < records.getLength(); i++) {
+                    var rec = records.getRecord(i);
+                    if (r.discount_data[rec.getData('pid')] != undefined) {
+                        datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                        datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
+                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                    }
+                }
+                
+                var datatable = tables['table1'];
+                var records = datatable.getRecordSet();
+
+                for (var i = 0; i < records.getLength(); i++) {
+                    var rec = records.getRecord(i);
+                    if (r.discount_data[rec.getData('pid')] != undefined) {
+                        datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                        datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
+                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                    }
+                }
 
 
+            } else {
+
+                Dom.get('Order_Voucher_msg').innerHTML = r.msg
+
+            }
+
+
+
+        },
+        failure: function(o) {
+
+        }
+
+    });
 }
 
 
-
-
 function init_common_order_not_dispatched() {
-    Event.addListener(['items', 'products','customer'], "click", change_block);
+    Event.addListener(['items', 'products', 'customer'], "click", change_block);
 
     Event.addListener("tr_order_shipping", "mouseover", show_edit_button, {
         'name': 'shipping'
@@ -1879,230 +2029,237 @@ function init_common_order_not_dispatched() {
     //  Event.addListener("tr_order_tax", "mouseout", hide_edit_button, {
     //      'name': 'tax'
     // });
-    Event.addListener("tr_order_credits", "mouseover", show_edit_button, {
-        'name': 'credits'
-    });
-    Event.addListener("tr_order_credits", "mouseout", hide_edit_button, {
-        'name': 'credits'
-    });
+Event.addListener("tr_order_credits", "mouseover", show_edit_button, {
+    'name': 'credits'
+});
+Event.addListener("tr_order_credits", "mouseout", hide_edit_button, {
+    'name': 'credits'
+});
 
-    Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
-    Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
-
-
+Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
+Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
 
 
+dialog_add_voucher = new YAHOO.widget.Dialog("dialog_add_voucher", {
+    visible: false,
+    close: false,
+    underlay: "none",
+    draggable: false
 
-  dialog_process_delivery_note = new YAHOO.widget.Dialog("dialog_process_delivery_note", {
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-
-    });
-    dialog_process_delivery_note.render();
-
-
-    edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-
-    });
-    edit_delivery_address.render();
-    YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
-
-    edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-
-    });
-    edit_billing_address.render();
-    YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
+});
+dialog_add_voucher.render();
 
 
+dialog_process_delivery_note = new YAHOO.widget.Dialog("dialog_process_delivery_note", {
+    visible: false,
+    close: false,
+    underlay: "none",
+    draggable: false
+
+});
+dialog_process_delivery_note.render();
 
 
+edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", {
+    visible: false,
+    close: false,
+    underlay: "none",
+    draggable: false
 
-    change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    change_staff_discount.render();
+});
+edit_delivery_address.render();
+YAHOO.util.Event.addListener("change_delivery_address", "click", change_delivery_address);
 
-    dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
+edit_billing_address = new YAHOO.widget.Dialog("edit_billing_address_splinter_dialog", {
+    visible: false,
+    close: false,
+    underlay: "none",
+    draggable: false
 
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_cancel.render();
-
-    dialog_send_to_warehouse = new YAHOO.widget.Dialog("dialog_send_to_warehouse", {
-
-        visible: false,
-        close: false,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_send_to_warehouse.render();
-
-
-    if (Dom.get('cancel') != undefined) YAHOO.util.Event.addListener("cancel", "click", open_cancel_dialog);
-
-
-    dialog_edit_credits = new YAHOO.widget.Dialog("dialog_edit_credits", {
-        context: ["edit_button_credits", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_credits.render();
-    Event.addListener("edit_button_credits", "click", show_dialog_edit_credits);
+});
+edit_billing_address.render();
+YAHOO.util.Event.addListener("change_billing_address", "click", change_billing_address);
 
 
 
-    dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_shipping.render();
-    Event.addListener("edit_button_shipping", "click", show_dialog_edit_shipping);
-    Event.addListener("save_set_shipping", "click", save_set_shipping);
-    Event.addListener("reset_set_shipping", "click", reset_set_shipping);
-    Event.addListener("shipping_amount", "keydown", submit_edit_shipping);
-
-    dialog_edit_items_charges = new YAHOO.widget.Dialog("dialog_edit_items_charges", {
-        context: ["edit_button_items_charges", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_items_charges.render();
-    Event.addListener("edit_button_items_charges", "click", show_dialog_edit_items_charges);
-    Event.addListener("save_set_items_charges", "click", save_set_items_charges);
-    Event.addListener("reset_set_items_charges", "click", reset_set_items_charges);
-    Event.addListener("items_charges_amount", "keydown", submit_edit_items_charges);
-
-    dialog_sending_to_warehouse = new YAHOO.widget.Dialog("dialog_sending_to_warehouse", {
-        context: ["done", "tr", "tr"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_sending_to_warehouse.render();
-
-    Event.addListener("change_discount_save", "click", save_change_discount);
-    Event.addListener("change_discount_cancel", "click", cancel_change_discount);
-
-    dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_import_transactions_mals_e.render();
-    Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e, true);
-
-    Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e, true);
-
-    dialog_add_credit = new YAHOO.widget.Dialog("dialog_add_credit", {
-        context: ["add_credit", "tr", "tr"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_add_credit.render();
-    Event.addListener("add_credit", "click", show_dialog_add_credit);
-
-    Event.addListener("save_add_credit", "click", save_add_credit);
-
-    Event.addListener("save_edit_credit", "click", save_edit_credit);
-    Event.addListener("remove_credit", "click", remove_credit);
 
 
-    dialog_edit_tax_category = new YAHOO.widget.Dialog("dialog_edit_tax_category", {
+change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", {
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+change_staff_discount.render();
 
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_edit_tax_category.render();
-    YAHOO.util.Event.addListener("edit_button_tax", "click", show_dialog_edit_tax_category);
+dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
 
-    if (Dom.get('lookup_family_query')) {
-        Event.addListener("lookup_family_query", "keydown", look_family_submit_on_enter);
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_cancel.render();
+
+dialog_send_to_warehouse = new YAHOO.widget.Dialog("dialog_send_to_warehouse", {
+
+    visible: false,
+    close: false,
+    underlay: "none",
+    draggable: false
+});
+dialog_send_to_warehouse.render();
+
+
+if (Dom.get('cancel') != undefined) YAHOO.util.Event.addListener("cancel", "click", open_cancel_dialog);
+
+
+dialog_edit_credits = new YAHOO.widget.Dialog("dialog_edit_credits", {
+    context: ["edit_button_credits", "tr", "tl"],
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_edit_credits.render();
+Event.addListener("edit_button_credits", "click", show_dialog_edit_credits);
+
+
+
+dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_edit_shipping.render();
+Event.addListener("edit_button_shipping", "click", show_dialog_edit_shipping);
+Event.addListener("save_set_shipping", "click", save_set_shipping);
+Event.addListener("reset_set_shipping", "click", reset_set_shipping);
+Event.addListener("shipping_amount", "keydown", submit_edit_shipping);
+
+dialog_edit_items_charges = new YAHOO.widget.Dialog("dialog_edit_items_charges", {
+    context: ["edit_button_items_charges", "tr", "tl"],
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_edit_items_charges.render();
+Event.addListener("edit_button_items_charges", "click", show_dialog_edit_items_charges);
+Event.addListener("save_set_items_charges", "click", save_set_items_charges);
+Event.addListener("reset_set_items_charges", "click", reset_set_items_charges);
+Event.addListener("items_charges_amount", "keydown", submit_edit_items_charges);
+
+dialog_sending_to_warehouse = new YAHOO.widget.Dialog("dialog_sending_to_warehouse", {
+    context: ["done", "tr", "tr"],
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_sending_to_warehouse.render();
+
+Event.addListener("change_discount_save", "click", save_change_discount);
+Event.addListener("change_discount_cancel", "click", cancel_change_discount);
+
+dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_import_transactions_mals_e.render();
+Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e, true);
+
+Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e, true);
+
+dialog_add_credit = new YAHOO.widget.Dialog("dialog_add_credit", {
+    context: ["add_credit", "tr", "tr"],
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_add_credit.render();
+Event.addListener("add_credit", "click", show_dialog_add_credit);
+
+Event.addListener("save_add_credit", "click", save_add_credit);
+
+Event.addListener("save_edit_credit", "click", save_edit_credit);
+Event.addListener("remove_credit", "click", remove_credit);
+
+
+dialog_edit_tax_category = new YAHOO.widget.Dialog("dialog_edit_tax_category", {
+
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+});
+dialog_edit_tax_category.render();
+YAHOO.util.Event.addListener("edit_button_tax", "click", show_dialog_edit_tax_category);
+
+if (Dom.get('lookup_family_query')) {
+    Event.addListener("lookup_family_query", "keydown", look_family_submit_on_enter);
+
+}
+
+
+validate_scope_data = {
+    'order': {
+        'tax_number': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Order_Tax_Number',
+            'validation': [{
+                'regexp': "[a-z0-9]+",
+                'invalid_msg': Dom.get('invalid_tax_number_label').value
+            }]
+        }
 
     }
-
-
-    validate_scope_data = {
-        'order': {
-            'tax_number': {
-                'changed': false,
-                'validated': true,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'Order_Tax_Number',
-                'validation': [{
-                    'regexp': "[a-z0-9]+",
-                    'invalid_msg': Dom.get('invalid_tax_number_label').value
-                }]
-            }
-
-        }
-    };
+};
 
 
 
-    validate_scope_metadata = {
-        'order': {
-            'type': 'edit',
-            'ar_file': 'ar_edit_orders.php',
-            'key_name': 'order_key',
-            'key': Dom.get('order_key').value
-        }
-    };
+validate_scope_metadata = {
+    'order': {
+        'type': 'edit',
+        'ar_file': 'ar_edit_orders.php',
+        'key_name': 'order_key',
+        'key': Dom.get('order_key').value
+    }
+};
 
 
-    var customer_tax_number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
-    customer_tax_number_oACDS.queryMatchContains = true;
-    var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Order_Tax_Number", "Order_Tax_Number_Container", customer_tax_number_oACDS);
-    customer_tax_number_oAutoComp.minQueryLength = 0;
-    customer_tax_number_oAutoComp.queryDelay = 0.1;
+var customer_tax_number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
+customer_tax_number_oACDS.queryMatchContains = true;
+var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Order_Tax_Number", "Order_Tax_Number_Container", customer_tax_number_oACDS);
+customer_tax_number_oAutoComp.minQueryLength = 0;
+customer_tax_number_oAutoComp.queryDelay = 0.1;
 
-    dialog_set_tax = new YAHOO.widget.Dialog("dialog_set_tax", {
+dialog_set_tax = new YAHOO.widget.Dialog("dialog_set_tax", {
+    visible: false,
+    close: true,
+    underlay: "none",
+    draggable: false
+
+});
+dialog_set_tax.render();
+
+if (Dom.get("dialog_check_tax_number") != undefined) {
+    dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
-
     });
-    dialog_set_tax.render();
-
-    if (Dom.get("dialog_check_tax_number") != undefined) {
-        dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {
-            visible: false,
-            close: true,
-            underlay: "none",
-            draggable: false
-        });
-        dialog_check_tax_number.render();
-    }
+    dialog_check_tax_number.render();
+}
 
 
 

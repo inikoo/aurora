@@ -1983,7 +1983,7 @@ $default_state=array(
 
 	'deal'=>array(
 		'view'=>'details',
-
+		'post_create_action'=>'go_to_new',
 		'edit_block_view'=>'state',
 		'orders'=>array(
 			'order'=>'date',
@@ -2017,6 +2017,15 @@ $default_state=array(
 			'nr'=>100,
 		),
 		'components'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+		),
+			'edit_components'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,

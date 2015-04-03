@@ -107,7 +107,7 @@ function init() {
 
 
     validate_scope_data = {
-        'deal': {
+        'campaign': {
             'code': {
                 'changed': false,
                 'validated': false,
@@ -227,7 +227,6 @@ function init() {
 
     YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
 
-
     cal2 = new YAHOO.widget.Calendar("calpop2", "campaign_to_Container", {
         title: "Until:",
         mindate: new Date(),
@@ -240,10 +239,10 @@ function init() {
     cal2.selectEvent.subscribe(handleSelect, cal2, true);
 
     YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-
-
-
     Event.addListener(['v_calpop1', 'v_calpop2'], "keyup", date_changed);
+
+
+
 
     YAHOO.util.Event.addListener('save_new_campaign', "click", save_new_campaign)
     YAHOO.util.Event.addListener('to_permanent', "click", permanent_campaign)

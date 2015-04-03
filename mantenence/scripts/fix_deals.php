@@ -31,8 +31,8 @@ $sql=sprintf("select * from `Deal Dimension` ");
 $result2a=mysql_query($sql);
 while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
-$deal=new Deal($row['Deal Key']);
-$deal->update_number_metadeals();
+    $deal=new Deal($row['Deal Key']);
+    $deal->update_number_metadeals();
 
 }
 exit;
@@ -67,13 +67,13 @@ while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
         $family=new Family($row['Deal Component Trigger Key']);
         $sql=sprintf("insert into `Deal Dimension` (`Deal Code`,`Store Key`,`Deal Name`,`Deal Description`) values (%s,%d,%s,%s)",
-                     prepare_mysql($store->data['Store Code'].'.Vol.'.$family->data['Product Family Code']),
-                     $store->id,
-                     prepare_mysql($family->data['Product Family Code'].' Volumen Discount'),
-                     prepare_mysql(sprintf("%s when order more than %d picks in %s family",$row['Deal Component Allowance Description'],$row['Deal Component Terms'],$family->data['Product Family Code']))
+           prepare_mysql($store->data['Store Code'].'.Vol.'.$family->data['Product Family Code']),
+           $store->id,
+           prepare_mysql($family->data['Product Family Code'].' Volumen Discount'),
+           prepare_mysql(sprintf("%s when order more than %d picks in %s family",$row['Deal Component Allowance Description'],$row['Deal Component Terms'],$family->data['Product Family Code']))
 
 
-                    );
+           );
         mysql_query($sql);
         $deal_key=mysql_insert_id();
 //print "$sql\n";
@@ -91,13 +91,13 @@ while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
         $family=new Family($row['Deal Component Trigger Key']);
         $sql=sprintf("insert into `Deal Dimension` (`Deal Code`,`Store Key`,`Deal Name`,`Deal Description`) values (%s,%d,%s,%s)",
-                     prepare_mysql($store->data['Store Code'].'.BOGOF.'.$family->data['Product Family Code']),
-                     $store->id,
-                     prepare_mysql($family->data['Product Family Code'].' BOGOF'),
-                     prepare_mysql(sprintf("Buy one Get one Free when order any product in %s family",$family->data['Product Family Code']))
+           prepare_mysql($store->data['Store Code'].'.BOGOF.'.$family->data['Product Family Code']),
+           $store->id,
+           prepare_mysql($family->data['Product Family Code'].' BOGOF'),
+           prepare_mysql(sprintf("Buy one Get one Free when order any product in %s family",$family->data['Product Family Code']))
 
 
-                    );
+           );
         mysql_query($sql);
         $deal_key=mysql_insert_id();
 //print "$sql\n";
@@ -106,9 +106,9 @@ while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
     if ($deal_key) {
         $sql=sprintf("update `Deal Component Dimension` set `Deal Key`=%d where `Deal Component Key`=%d",
-                     $deal_key,
-                     $row['Deal Component Key']
-                    );
+           $deal_key,
+           $row['Deal Component Key']
+           );
         mysql_query($sql);
     }
 

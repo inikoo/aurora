@@ -38,8 +38,9 @@ class DealComponent extends DB_Table {
 
 	function get_data($tipo,$tag) {
 
-		if ($tipo=='id')
+		if ($tipo=='id'){
 			$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Key`=%d",$tag);
+		}
 		//    elseif($tipo=='code')
 		//  $sql=sprintf("select * from `Deal Component Dimension` where `Deal Code`=%s",prepare_mysql($tag));
 		// print $sql;
@@ -656,14 +657,19 @@ class DealComponent extends DB_Table {
 
 	function update_status($value) {
 
-		$sql=sprintf("update `Deal Component Dimension` set `Deal Component Status`=%s where `Deal Component Key`=%d"
-			,prepare_mysql($value)
-			,$this->id
-		);
-		mysql_query($sql);
-		$this->data['Deal Component Status']=$value;
 
+		if($value=='Suspended'){
+			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Status`=%s where `Deal Component Key`=%d"
+				,prepare_mysql($value)
+				,$this->id
+			);
+			mysql_query($sql);
+			$this->data['Deal Component Status']=$value;
+		}else{
+			$this->update_status_from_dates($force=true);
+		}
 
+/*
 		if ($this->data['Deal Component Status']=='Active') {
 			$from_date=false;
 			if ($this->data['Deal Component Begin Date']=='') {
@@ -687,6 +693,32 @@ class DealComponent extends DB_Table {
 
 		$deal->update_status_from_components();
 		$deal->update_number_components();
+		*/
+	}
+
+
+	function update_status_from_dates($force=false) {
+
+		if ($this->data['Deal Component Expiration Date']!='' and  strtotime($this->data['Deal Component Expiration Date'].' +0:00')<=strtotime('now +0:00')) {
+			$this->update_field_switcher('Deal Component Status','Finish','no_history');
+			return;
+		}
+
+
+		if(!$force and $this->data['Deal Component Status']=='Suspended'){
+			return;
+		}
+		
+		if ( strtotime($this->data['Deal Component Begin Date'].' +0:00')>=strtotime('now +0:00')) {
+			$this->update_field_switcher('Deal Component Status','Waiting','no_history');
+		}
+
+
+		if (strtotime($this->data['Deal Component Begin Date'].' +0:00')<=strtotime('now +0:00')) {
+			$this->update_field_switcher('Deal Component Status','Active','no_history');
+		}
+
+		
 	}
 
 	function update_terms_allowances($data,$options='') {
@@ -842,6 +874,50 @@ class DealComponent extends DB_Table {
 	}
 
 
+function update_usage() {
+
+
+
+
+		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Component Key`=%d and `Applied`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+			$this->id
+
+		);
+		$res=mysql_query($sql);
+		$orders=0;
+		$customers=0;
+		if ($row=mysql_fetch_assoc($res)) {
+			$orders=$row['orders'];
+			$customers=$row['customers'];
+		}
+
+		$sql=sprintf("update `Deal Component Dimension` set `Deal Component Total Acc Applied Orders`=%d, `Deal Component Total Acc Applied Customers`=%d where `Deal Component Key`=%d",
+			$orders,
+			$customers,
+			$this->id
+		);
+		//print "$sql\n";
+		mysql_query($sql);
+		$sql=sprintf("select count( distinct O.`Order Key`) as orders,count( distinct `Order Customer Key`) as customers from `Order Deal Bridge` B left  join `Order Dimension` O on (O.`Order Key`=B.`Order Key`) where B.`Deal Component Key`=%d and `Used`='Yes' and `Order Current Dispatch State`!='Cancelled' ",
+			$this->id
+
+		);
+		$res=mysql_query($sql);
+		$orders=0;
+		$customers=0;
+		//  print "$sql\n";
+		if ($row=mysql_fetch_assoc($res)) {
+			$orders=$row['orders'];
+			$customers=$row['customers'];
+		}
+		$sql=sprintf("update `Deal Component Dimension` set `Deal Component Total Acc Used Orders`=%d, `Deal Component Total Acc Used Customers`=%d where `Deal Component Key`=%d",
+			$orders,
+			$customers,
+			$this->id
+		);
+		mysql_query($sql);
+		
+	}
 
 }
 

@@ -85,8 +85,7 @@ class Account extends DB_Table{
 			$this->new=true;
 
 
-			$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`)
-	VALUES ('Accounts', %s, 'Account');",
+			$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
 				_('Internal customers accounts')
 
 			);
@@ -194,7 +193,7 @@ class Account extends DB_Table{
 
 	function get_current_staff_with_position_code($position_code,$options='') {
 		$positions=array();
-		$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join  `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where  `Company Position Code`=%s and `Staff Currently Working`="Yes"'
+		$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where  `Company Position Code`=%s and `Staff Currently Working`="Yes"'
 			,prepare_mysql($position_code)
 		);
 

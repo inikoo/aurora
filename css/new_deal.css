@@ -1,0 +1,17 @@
+#new_deal{margin-top:20px;width:900px}
+#new_deal td.label{width:250px}
+#new_deal td.input{width:300px;text-align:left}
+#new_deal td.input textarea{padding:0px 3px;resize:horizontal}
+#campaign_description_tr{height: 110px;}
+#campaign_description_tr textarea{height: 100px;}
+#deal_description_tr{height: 60px;}
+#deal_description_tr textarea{height: 50px;}
+
+#new_deal td.input .short{width:150px}
+#new_deal td.input.very_short input{width:60px}
+#new_deal td.input.very_short span{margin-left:70px}
+
+
+
+#new_deal td.messages{width:350px}
+

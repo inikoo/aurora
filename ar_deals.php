@@ -25,6 +25,14 @@
 
  $tipo=$_REQUEST['tipo'];
  switch ($tipo) {
+ 	case('is_voucher_code_in_store'):
+ 	$data=prepare_values($_REQUEST,array(
+ 		'store_key'=>array('type'=>'key'),
+ 		'query'=>array('type'=>'string'),
+ 		));
+ 	is_voucher_code_in_store($data);
+ 	break;
+
  	case('marketing_per_store'):
  	list_marketing_per_store();
  	break;
@@ -114,9 +122,9 @@
 
  function code_in_other_deal($data) {
  	$email=_trim($data['query']);
- 	$sql=sprintf('select `Deal Code`,`Deal Key` from `Deal Dimension` where `Deal Code`=%s and `Deal Key`!=%d and `Deal Store Key`=%d ',
+ 	$sql=sprintf('select `Deal Code`,`Deal Key`,`Deal Name` from `Deal Dimension` where `Deal Code`=%s and `Deal Key`!=%d and `Deal Store Key`=%d ',
  		prepare_mysql($email),
- 		$data['customer_key'],
+ 		$data['deal_key'],
  		$data['store_key']
  		);
  	$result=mysql_query($sql);
@@ -1139,6 +1147,8 @@
  		$order='`Deal Total Acc Used Customers`';
  	elseif ($store=='store')
  		$order='`Store Code`';
+ 	elseif ($store=='state')
+ 		$order='`Deal Status`';	
  	else
  		$order='`Deal Name`';
 
@@ -1159,7 +1169,22 @@
  		$customers=number($row['Deal Total Acc Used Customers']);
 
 
-
+	switch($row['Deal Status']){
+		case 'Waiting':
+	$state=sprintf('<img src="art/icons/bullet_orange.png" alt="%s" title="%s">',_('Waiting'),_('Offer waiting'));
+	break;
+	case 'Active':
+	$state=sprintf('<img src="art/icons/bullet_green.png" alt="%s" title="%s">',_('Active'),_('Offer active'));
+	break;
+	case 'Suspended':
+	$state=sprintf('<img src="art/icons/bullet_red.png" alt="%s" title="%s">',_('Suspended'),_('Offer suspended'));
+	break;
+	case 'Finish':
+	$state=sprintf('<img src="art/icons/bullet_grey.png" alt="%s" title="%s">',_('Finished'),_('Offer finished'));
+	break;
+	default:
+	$state=$row['Deal Status'];
+	}
 
 
 
@@ -1195,7 +1220,8 @@
  			'description'=>'<b>'.$row['Deal Name'].'</b><br/>'.$row['Deal Description'],
  			'orders'=>$orders,
  			'customers'=>$customers,
- 			'duration'=>$duration
+ 			'duration'=>$duration,
+ 			'state'=>$state
 
 
  			);
@@ -1238,8 +1264,6 @@
  }
 
  function list_deal_components() {
-
-
 
  	if ( isset($_REQUEST['parent']))
  		$parent= $_REQUEST['parent'];
@@ -1842,9 +1866,9 @@
     		return;
 
     	}
-}
+    }
 
- function is_deal_code_in_store($data) {
+    function is_deal_code_in_store($data) {
     	$store_key=$data['store_key'];
     	$sql=sprintf("select `Deal Key`,`Deal Code`  from `Deal Dimension` where `Deal Store Key`=%d and `Deal Code`=%s  ",
     		$store_key,
@@ -1855,7 +1879,7 @@
     	$res=mysql_query($sql);
     	if($row=mysql_fetch_assoc($res)){
 
-    		$msg=sprintf('%s <a href="campaign.php?id=%d">%s</a>',
+    		$msg=sprintf('%s <a href="deal.php?id=%d">%s</a>',
     			_('Another deal already has this code'),
     			$row['Deal Key'],
     			$row['Deal Code']
@@ -1878,7 +1902,47 @@
     		return;
 
     	}
-}
+    }
+
+
+    function is_voucher_code_in_store($data) {
+    	$store_key=$data['store_key'];
+    	$sql=sprintf("select `Voucher Key`,`Voucher Code`  from `Voucher Dimension` where `Voucher Store Key`=%d and `Voucher Code`=%s  ",
+    		$store_key,
+    		prepare_mysql($data['query'])
+
+    		);
+
+    	$res=mysql_query($sql);
+    	if ($row=mysql_fetch_assoc($res)) {
+
+    		$msg=sprintf('%s <a href="voucher.php?id=%d">%s</a>',
+    			_('Another voucher already has this code'),
+    			$row['Voucher Key'],
+    			$row['Voucher Code']
+    			);
+
+    		$response= array(
+    			'state'=>200,
+    			'found'=>1,
+    			'msg'=>$msg
+    			);
+    		echo json_encode($response);
+    		return;
+    	}else {
+    		$response= array(
+    			'state'=>200,
+    			'found'=>0,
+
+    			);
+    		echo json_encode($response);
+    		return;
+
+    	}
+
+
+    }
+
 
 
     ?>

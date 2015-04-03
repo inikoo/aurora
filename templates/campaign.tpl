@@ -1,7 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
 	<input type="hidden" value="{$session_data}" id="session_data" />
-
 	<input type="hidden" value="{$campaign->id}" id="campaign_key" />
 	<input type="hidden" value="{$store->id}" id="store_key" />
 	<input type="hidden" value="{$campaign->id}" id="subject_key" />
@@ -9,9 +8,7 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			{if $referrer=='store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; {$campaign->get('Deal Campaign Code')}</span> {else}
-			 <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')}</a> &rarr; {$campaign->get('Deal Campaign Code')}</span> 
-			 {/if} 
+			{if $referrer=='store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if} <a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; {$campaign->get('Deal Campaign Code')}</span> {else} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; {$campaign->get('Deal Campaign Code')}</span> {/if} 
 		</div>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 			<div class="buttons" style="float:left">
@@ -42,7 +39,6 @@
 			<p style="width:300px">
 				{$campaign->get('Deal Campaign Description')} 
 			</p>
-			
 		</div>
 		<div id="block_customers" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span id="table_title" class="clean_table_title">{t}Customers{/t}</span> 
@@ -62,9 +58,9 @@
 		</div>
 		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title" style="margin-right:5px">{t}Offers{/t}</span> 
-				<div class="buttons small left">
-					<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
-				</div>
+			<div class="buttons small left">
+				<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+			</div>
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
