@@ -4,5 +4,4 @@
 	</div>
 	{t}New Deal{/t} <b>{$deal->get('Deal Code')}</b> {t}created successfully{/t}<br>
 	{$deal->get('Deal Name')}<br/>
-	
-</div>
+	</div>

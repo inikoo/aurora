@@ -1320,6 +1320,16 @@ function create_deal($data) {
 
 		if (is_numeric($data['values']['Deal Campaign Key'])) {
 			$campaign=new DealCampaign($data['values']['Deal Campaign Key']);
+			if (!$campaign->id) {
+				$response=array(
+					'state'=>404,
+					'resp'=>'campaign_not_found',
+					'msg'=>_('Campaign not found')
+				);
+				echo json_encode($response);
+				exit;
+			}
+
 		}else {
 
 			$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'], $data['values']['Deal Campaign Valid To'], '', 'only_dates');
@@ -1406,12 +1416,23 @@ function create_deal($data) {
 			$terms='order '.$deal_data['if_order_more'];
 			$terms_label=_('Buy').' '.$deal_data['if_order_more'];
 			break;
+		case 'Department For Every Quantity Any Product Ordered':
+		case 'Family For Every Quantity Any Product Ordered':
+
+			$terms='for every '.$deal_data['for_every_ordered'];
+			$terms_label=_('For every').' '.number($deal_data['for_every_ordered']).' '._('you buy');
+			$terms_label=sprintf(_('buy %1$s',number($deal_data['for_every_ordered'])));
+
+			break;
+
 		case 'Department For Every Quantity Ordered':
 		case 'Family For Every Quantity Ordered':
 		case 'Product For Every Quantity Ordered':
 			$terms='for every '.$deal_data['for_every_ordered'];
-			$terms_label=_('For every').' '.$deal_data['for_every_ordered'];
+			$terms_label=sprintf(_('For every %1$s you buy',number($deal_data['for_every_ordered'])));
+
 			break;
+
 		case 'Voucher AND Amount':
 
 			if ($deal_data['voucher_code_type']=='Random') {
@@ -1630,8 +1651,16 @@ function create_deal($data) {
 			$allowances_label=$deal_data['percentage_off']._('% off');
 			break;
 		case 'Get Same Free':
-			$allowances=$deal_data['percentage_off'].' free';
+			$allowances=$deal_data['get_same_free'].' free';
 			$allowances_label=', '.$deal_data['get_same_free'].' '._('free');
+			$allowances_label=' '.sprintf(_('get %1$s free bonus',number($deal_data['get_same_free'])));
+
+			break;
+		case 'Get Cheapest Free':
+			$allowances='cheapest '.$deal_data['get_same_free'].' free';
+			$allowances_label=' '.sprintf(_('get %1$s free',number($deal_data['get_same_free'])));
+			$deal_data['Deal Component Terms']=$deal_data['for_every_ordered'];
+			$deal_data['Deal Component Allowance']=$deal_data['get_same_free'];
 			break;
 		case 'Free Shipping':
 
@@ -1685,6 +1714,8 @@ function create_deal($data) {
 				$deal_component_data['Deal Component Mirror Metadata']=$row['Deal Component Key'];
 
 				$component=$deal->add_component($deal_component_data);
+				
+				
 			}
 
 

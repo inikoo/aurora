@@ -162,12 +162,14 @@
 				<input type="hidden" id="target" value="{$target}"> 
 				<input type="hidden" id="target_key" value="{$target_key}"> 
 				<select id="department_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Department'}display:none{/if}">
-					<option value="Department Quantity Ordered">{t}Order more than{/t}</option>
-					<option value="Department For Every Quantity Ordered">{t}For every{/t}</option>
+					<option value="Department Quantity Ordered">{t}Order more than{/t} (any product)</option>
+					<option value="Department For Every Quantity Any Product Ordered">{t}For every (any product){/t}</option>
+					<option value="Department For Every Quantity Ordered">{t}For every (same product){/t}</option>
 				</select>
 				<select id="family_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Family'}display:none{/if}">
 					<option value="Family Quantity Ordered">{t}Order more than{/t}</option>
-					<option value="Family For Every Quantity Ordered">{t}For every{/t}</option>
+					<option value="Family For Every Quantity Any Product Ordered">{t}For every (any product){/t}</option>
+					<option value="Family For Every Quantity Ordered">{t}For every{/t} (same product)</option>
 				</select>
 				<select id="product_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Product'}display:none{/if}">
 					<option value="Product Quantity Ordered">{t}Order more than{/t}</option>
@@ -280,7 +282,7 @@
 		<tr id="if_order_more_tr" style="display:none">
 			<td class="label">{t}If order more than{/t}:</td>
 			<td class="input very_short"> 
-				<input id="if_order_more" value="" ovalue=""> <span>{$currency_symbol}</span>
+				<input id="if_order_more" value="" ovalue=""> <span>{t}outers{/t}</span>
 				<div id="if_order_more_Container">
 				</div>
 			
@@ -291,7 +293,7 @@
 		<tr id="for_every_ordered_tr" style="display:none">
 			<td class="label">{t}For every{/t}:</td>
 			<td class="input very_short"> 
-				<input id="for_every_ordered" value="" ovalue=""> 
+				<input id="for_every_ordered" value="" ovalue=""> <span>{t}outers{/t}</span>
 				<div id="for_every_ordered_Container">
 				</div>
 			</td>
@@ -328,7 +330,10 @@
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
 				</select>
 				<select id="for_every_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
-					<option value="Get Same Free">{t}Get free (same product){/t}</option>
+					<option value="Get Same Free">{t}Give x extra free{/t}</option>
+				</select>
+				<select id="for_every_any_product_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
+					<option value="Get Cheapest Free">{t}Get x cheapest free{/t}</option>
 				</select>
 				<select id="every_order_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
@@ -338,7 +343,7 @@
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}products{/t})</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
-					<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
 				<select id="next_order_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
@@ -348,7 +353,7 @@
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
-					<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
 				<select id="voucher_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
@@ -357,7 +362,7 @@
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
-					<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
 				<select id="amount_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
@@ -367,7 +372,7 @@
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
-					<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
 				<select id="order_interval_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
@@ -377,7 +382,7 @@
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
-					<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
 				<select id="order_number_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage Off{/t}</option>
@@ -387,7 +392,7 @@
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
-					<option value="Clone">{t}Clone other deal allowances{/t}</option>
+					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
 			</div>
 			</td>
@@ -453,14 +458,14 @@
 		<tr id="get_same_free_tr">
 			<td class="label">{t}Get Free{/t}:</td>
 			<td class="input very_short"> 
-				<input id="get_same_free" value="" ovalue=""> 
+				<input id="get_same_free" value="" ovalue=""> <span>{t}outer{/t}</span>
 				<div id="get_same_free_Container">
 				</div>
 			</td>
 			<td id="get_same_free_msg" class="messages edit_td_alert">
 			</td>
-	
 		</tr>
+		
 		<tr class="title space20">
 			<td colspan="2">Description</td>
 		</tr>

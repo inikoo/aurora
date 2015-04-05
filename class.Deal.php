@@ -166,8 +166,6 @@
  	}
 
 
-
-
  	function get($key='') {
 
  		if (isset($this->data[$key]))
