@@ -831,7 +831,7 @@ function new_campaign() {
 function terms_changed(value) {
 
     Dom.setStyle(['amount_options', 'voucher_options', 'if_order_more_tr', 'order_interval_tr', 'order_number_tr', 'for_every_ordered_tr', 'target_department_options', 'target_family_options', 'target_product_options'], 'display', 'none');
-    Dom.setStyle(['order_more_than_allowances_select', 'for_every_allowances_select', 'voucher_allowances_select', 'every_order_allowances_select', 'next_order_allowances_select', 'amount_allowances_select', 'order_interval_allowances_select', 'order_number_allowances_select'], 'display', 'none');
+    Dom.setStyle(['order_more_than_allowances_select', 'for_every_allowances_select', 'voucher_allowances_select', 'every_order_allowances_select', 'next_order_allowances_select', 'amount_allowances_select', 'order_interval_allowances_select', 'order_number_allowances_select','for_every_any_product_allowances_select'], 'display', 'none');
 
     validate_scope_data.deal.voucher_code.required = false;
     validate_scope_data.deal.amount.required = false;
@@ -889,6 +889,17 @@ function terms_changed(value) {
 
         allowances_changed('Percentage Off');
         break;
+         case 'Department For Every Any Product Quantity Ordered':
+        Dom.setStyle('for_every_ordered_tr', 'display', '');
+        Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
+        allowances_changed('Get Cheapest Free');
+        break;
+    case 'Family For Every Quantity Any Product Ordered':
+        Dom.setStyle('for_every_ordered_tr', 'display', '');
+        Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
+        allowances_changed('Get Cheapest Free');
+
+        break;   
     case 'Department For Every Quantity Ordered':
         Dom.setStyle('for_every_ordered_tr', 'display', '');
         Dom.setStyle('for_every_allowances_select', 'display', '');
@@ -1024,21 +1035,21 @@ function allowances_changed(value) {
 
         break;
     case 'Percentage Off':
-
         Dom.setStyle('percentage_off_tr', 'display', '');
         validate_scope_data.deal.percentage_off.required = true;
         break;
     case 'Amount Off':
-
         Dom.setStyle('amount_off_tr', 'display', '');
         validate_scope_data.deal.amount_off.required = true;
         break;
     case 'Get Same Free':
         Dom.setStyle('get_same_free_tr', 'display', '');
         validate_scope_data.deal.get_same_free.required = true;
-
         break;
-
+    case 'Get Cheapest Free':
+        Dom.setStyle('get_same_free_tr', 'display', '');
+        validate_scope_data.deal.get_same_free.required = true;
+        break;
     case 'Clone':
         Dom.setStyle('clone_deal_options', 'display', '');
         show_dialog_deals_list()

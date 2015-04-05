@@ -1981,6 +1981,7 @@ $default_state=array(
 		),
 	),
 
+
 	'deal'=>array(
 		'view'=>'details',
 		'post_create_action'=>'go_to_new',
