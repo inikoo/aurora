@@ -34,19 +34,21 @@
 			<h2>
 				{$deal->get('Deal Name')} 
 			</h2>
+			
 			<p style="width:300px;border:1px solid #ccc;padding:4px;{if {$deal->get('Deal Description')}==''}display:none{/if}">
 				{$deal->get('Deal Description')} 
 			</p>
 			<div style="width:400px">
 				<table class="show_info_product">
 					<tr>
-						<td>{t}Trigger{/t}</td>
-						<td class="aright">{$deal->get('Deal Trigger')} {if $deal->get('Deal Trigger XHTML Label')}({$deal->get('Deal Trigger XHTML Label')}){/if}</td>
+						
+						<td colspan="2" class="aright">{$deal->get('Deal Term Allowances')} </td>
 					</tr>
 					<tr>
-						<td>{t}Terms{/t}</td>
-						<td class="aright">{$deal->get_formated_terms()}</td>
+						<td>{t}Validity{/t}</td>
+						<td class="aright">{$deal->get('Duration')}</td>
 					</tr>
+					
 				</table>
 			</div>
 			<span class="clean_table_title">Allowances</span> 

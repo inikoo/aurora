@@ -64,9 +64,6 @@ case 'customer_categories':
 	if ($category->data['Category Subject']!='Customer' or $category->data['Category Branch Type']!='Head') {
 		exit('This is not a customer dead category');
 	}
-
-
-
 	$store=new Store($category->data['Category Store Key']);
 	$smarty->assign('scope', $category);
 	$smarty->assign('category', $category);
@@ -81,23 +78,25 @@ case 'customer_categories':
 	$smarty->assign('search_scope', 'customers');
 	$smarty->assign('link_back', 'customer_category.php?id='.$category->id);
 	break;
-case 'customer_list':
-	$customer=new Customer($_REQUEST['parent_key']);
-	$store=new Store($customer->data['Customer Store Key']);
+case 'customers_list':
+	include_once 'class.List.php';
+
+	$list=new SubjectList($_REQUEST['parent_key']);
+	$store=new Store($list->data['List Parent Key']);
 
 
-	$smarty->assign('scope', $customer);
-	$smarty->assign('customer', $customer);
+	$smarty->assign('scope', $list);
+	$smarty->assign('list', $list);
 	$smarty->assign('store', $store);
-	$smarty->assign('scope_subject', 'Customer');
-	$smarty->assign('trigger', 'Customer');
-	$smarty->assign('trigger_key', $customer->id);
+	$smarty->assign('scope_subject', 'Customer List');
+	$smarty->assign('trigger', 'Customer List');
+	$smarty->assign('trigger_key', $list->id);
 	$smarty->assign('target', 'Order');
 	$smarty->assign('target_key', '');
 	$smarty->assign('parent', 'customers');
 	$smarty->assign('search_label', _('Customers'));
 	$smarty->assign('search_scope', 'customers');
-	$smarty->assign('link_back', 'customer.php?id='.$customer->id);
+	$smarty->assign('link_back', 'customers_list.php?id='.$list->id);
 	break;
 case 'store':
 	$store=new Store($_REQUEST['parent_key']);

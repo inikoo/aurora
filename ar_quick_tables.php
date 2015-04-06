@@ -37,13 +37,13 @@ case('deal_list'):
 	break;
 case('campaign_list'):
 	campaign_list();
-	break;	
+	break;
 case('part_list'):
 	part_list();
 	break;
 case('customer_list'):
 	customer_list();
-	break;	
+	break;
 case('department_list'):
 	department_list();
 	break;
@@ -79,6 +79,9 @@ case('category_list'):
 	break;
 case('supplier_list'):
 	supplier_list();
+	break;
+case('list_list'):
+	list_list();
 	break;
 default:
 
@@ -725,16 +728,16 @@ function part_list() {
 
 
 	$elements=array('InUse'=>1,'NotInUse'=>0);
-	
-	
+
+
 	if (isset( $_REQUEST['elements_InUse'])) {
 		$elements['InUse']=$_REQUEST['elements_InUse'];
 	}
-	
+
 	if (isset( $_REQUEST['elements_NotInUse'])) {
 		$elements['NotInUse']=$_REQUEST['elements_NotInUse'];
 	}
-	
+
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -756,32 +759,32 @@ function part_list() {
 
 
 
-  	$_elements='';
-		$elements_count=0;
-		foreach ($elements as $_key=>$_value) {
-			if ($_value) {
-				$elements_count++;
+	$_elements='';
+	$elements_count=0;
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			$elements_count++;
 
-				if ($_key=='InUse') {
-					$_key='In Use';
-				}else {
-					$_key='Not In Use';
-				}
-
-				$_elements.=','.prepare_mysql($_key);
+			if ($_key=='InUse') {
+				$_key='In Use';
+			}else {
+				$_key='Not In Use';
 			}
+
+			$_elements.=','.prepare_mysql($_key);
 		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($elements_count==0) {
-			$where.=' and false' ;
-		} elseif ($elements_count==1) {
-			$where.=' and `Part Status` in ('.$_elements.')' ;
-		}
-  
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($elements_count==0) {
+		$where.=' and false' ;
+	} elseif ($elements_count==1) {
+		$where.=' and `Part Status` in ('.$_elements.')' ;
+	}
+
 
 	$filter_msg='';
 	$wheref='';
-if ($f_field=='reference' and $f_value!='')
+	if ($f_field=='reference' and $f_value!='')
 		$wheref.=" and  `Part Reference` like '".addslashes($f_value)."%'";
 	if ($f_field=='used_in' and $f_value!='')
 		$wheref.=" and  `Part Currently Used In` like '%".addslashes($f_value)."%'";
@@ -837,7 +840,7 @@ if ($f_field=='reference' and $f_value!='')
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with reference like ")." <b>".$f_value."*</b> ";
-			break;	
+			break;
 		}
 	}
 	elseif ($filtered>0) {
@@ -859,7 +862,7 @@ if ($f_field=='reference' and $f_value!='')
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with reference like')." <b>".$f_value."*</b>";
-			break;	
+			break;
 		}
 	}
 	else
@@ -875,9 +878,9 @@ if ($f_field=='reference' and $f_value!='')
 	$_order=$order;
 	$_dir=$order_direction;
 
-if ($order=='reference')
+	if ($order=='reference')
 		$order='`Part Reference`';
-elseif ($order=='status')
+	elseif ($order=='status')
 		$order='`Part Status`';
 	elseif ($order=='description')
 		$order='`Part Unit Description`';
@@ -2608,7 +2611,7 @@ function category_list() {
 		exit('no subject');
 	}
 
-if (isset( $_REQUEST['branch_type']))$branch_type=$_REQUEST['branch_type'];
+	if (isset( $_REQUEST['branch_type']))$branch_type=$_REQUEST['branch_type'];
 	else {
 		$branch_type='';
 	}
@@ -2626,10 +2629,10 @@ if (isset( $_REQUEST['branch_type']))$branch_type=$_REQUEST['branch_type'];
 		$where=sprintf('where `Category Store Key`=%d',$store_key);
 	}
 
-     $where.=sprintf(' and `Category Subject`=%s',prepare_mysql($subject));
+	$where.=sprintf(' and `Category Subject`=%s',prepare_mysql($subject));
 
-	if($branch_type!=''){
-	     $where.=sprintf(' and `Category Branch Type`=%s',prepare_mysql($branch_type));
+	if ($branch_type!='') {
+		$where.=sprintf(' and `Category Branch Type`=%s',prepare_mysql($branch_type));
 
 	}
 
@@ -2731,6 +2734,178 @@ if (isset( $_REQUEST['branch_type']))$branch_type=$_REQUEST['branch_type'];
 			'code'=>$row['Category Code'],
 			'tree'=>$row['Category Plain Branch Tree'],
 			'subjects'=>number($row['Category Number Subjects'])
+
+
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
+
+function list_list() {
+
+	global $user;
+
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else$order='date';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else$order_dir='desc';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else$f_field='name';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
+	else {
+		exit('no store');
+	}
+
+	if (isset( $_REQUEST['subject']))$subject=$_REQUEST['subject'];
+	else {
+		exit('no subject');
+	}
+
+	if (isset( $_REQUEST['list_type']))$list_type=$_REQUEST['list_type'];
+	else {
+		$list_type='';
+	}
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+
+	if (!in_array($store_key,$user->stores)) {
+		$where=sprintf('where false ');
+	} else {
+		$where=sprintf('where `List Parent Key`=%d',$store_key);
+	}
+
+	$where.=sprintf(' and `List Scope`=%s',prepare_mysql($subject));
+
+	if ($list_type!='') {
+		$where.=sprintf(' and `List Type`=%s',prepare_mysql($list_type));
+
+	}
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `List Name` like '".addslashes($f_value)."%'";
+
+
+	$sql="select count(*) as total from `List Dimension` $where $wheref  ";
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `List Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp="("._('Showing all').")";
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any list with name like")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('lists with name like')." <b>$f_value</b>)";
+		break;
+
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='name')
+		$order='`List Name`';
+	elseif ($order=='items')
+		$order='`List Number Items`';
+	elseif ($order=='date')
+		$order='`List Creation Date`';
+	elseif ($order=='datetime')
+		$order='`List Creation Date`';
+	else
+		$order='`List Key`';
+
+
+
+
+	$adata=array();
+	$sql="select  * from `List Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+
+
+		$adata[]=array(
+			'key'=>$row['List Key'],
+			'date'=>strftime("%a %e %b %Y", strtotime($row['List Creation Date']." +00:00")),
+			'datetime'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['List Creation Date']." +00:00")),
+
+			'name'=>$row['List Name'],
+			'items'=>number($row['List Number Items'])
 
 
 		);

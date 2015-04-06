@@ -1393,7 +1393,15 @@ function create_deal($data) {
 			);
 			$no_items=false;
 			break;
-
+		case 'Customer List':
+			include_once 'class.List.php';
+			$list=new SubjectList($deal_data['Deal Trigger Key']);
+			$deal_data['Deal Trigger XHTML Label']=sprintf('<a href="list.php?id=%d">%s</a>',
+				$list->id,
+				$list->data['List Name']
+			);
+			$no_items=false;
+			break;
 		}
 
 		$deal=$campaign->add_deal($deal_data);
@@ -1462,8 +1470,28 @@ function create_deal($data) {
 			);
 
 			$voucher=new Voucher('create', $voucher_data);
-			$terms='voucher '.$voucher->id.';'.$deal_data['amount'].';'.$deal_data['amount_type'];
-			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'').' & +'.money($deal_data['amount'], $store->data['Store Currency Code']);
+
+
+
+
+			switch ($deal_data['amount_type']) {
+			case 'Order Total Amount':
+				$amount_type='Total';
+				$amount_type_formated=_('Total');
+				break;
+			case 'Order Total Net Amount':
+				$amount_type='Net';
+				$amount_type_formated=_('Net');
+				break;
+			case 'Order Items Net Amount':
+				$amount_type='Items Net';
+				$amount_type_formated=_('Items Net');
+				break;
+			}
+
+
+			$terms='voucher '.data['Voucher Code'].' '.($deal_data['voucher_type']=='Private'?'(Private) ':'').'& '.money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type;
+			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'').' & +'.money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type_formated;
 
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'].';'.$deal_data['amount'].';'.$deal_data['amount_type'];
 		case 'Voucher AND Order Number':
@@ -1490,9 +1518,9 @@ function create_deal($data) {
 
 
 
-			$deal_data['Deal Component Terms']=$deal_data['order_number'];
+			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'].';'.$deal_data['order_number'];
 
-			$terms='voucher '.$voucher->id.';'.$deal_data['order_number'];
+			$terms='voucher '.$voucher->data['Voucher Code'].' & '.$deal_data['order_number'].' th order';
 			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'').' & ';
 
 			switch ($deal_data['order_number']) {
@@ -1537,7 +1565,7 @@ function create_deal($data) {
 			);
 
 			$voucher=new Voucher('create', $voucher_data);
-			$terms='voucher '.$voucher->id.';'.$deal_data['order_interval'];
+			$terms='voucher '.$voucher->data['Voucher Code'].' & '.$deal_data['order_interval'].' days since last order';
 			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'').' & '.number($deal_data['order_interval']).' '._('days');
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'].';'.$deal_data['order_interval'];
 
@@ -1567,15 +1595,31 @@ function create_deal($data) {
 
 
 			$voucher=new Voucher('create', $voucher_data);
-			$terms='voucher '.$voucher->id;
+			$terms='voucher '.$voucher->data['Voucher Code'];
 			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'');
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'];
 			break;
 		case 'Amount':
 			$no_items=true;
 
-			$terms=$deal_data['amount'].';'.$deal_data['amount_type'];
-			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']);
+			switch ($deal_data['amount_type']) {
+			case 'Order Total Amount':
+				$amount_type='Total';
+				$amount_type_formated=_('Total');
+				break;
+			case 'Order Total Net Amount':
+				$amount_type='Net';
+				$amount_type_formated=_('Net');
+				break;
+			case 'Order Items Net Amount':
+				$amount_type='Items Net';
+				$amount_type_formated=_('Items Net');
+				break;
+			}
+
+
+			$terms=money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type;
+			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type_formated;
 			$deal_data['Deal Component Terms']=$deal_data['amount'].';'.$deal_data['amount_type'];
 			break;
 		case 'Every Order':
@@ -1584,8 +1628,22 @@ function create_deal($data) {
 			break;
 		case 'Amount AND Order Number':
 			$no_items=true;
+			switch ($deal_data['amount_type']) {
+			case 'Order Total Amount':
+				$amount_type='Total';
+				$amount_type_formated=_('Total');
+				break;
+			case 'Order Total Net Amount':
+				$amount_type='Net';
+				$amount_type_formated=_('Net');
+				break;
+			case 'Order Items Net Amount':
+				$amount_type='Items Net';
+				$amount_type_formated=_('Items Net');
+				break;
+			}
 
-			$terms=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_number'];
+			$terms=money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type.' & '.number($deal_data['order_number']).' th order';
 			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' & ';
 
 			switch ($deal_data['order_number']) {
@@ -1602,7 +1660,9 @@ function create_deal($data) {
 				$terms_label.=_('forth order');
 				break;
 			default:
-				$terms_label.=number($deal_data['order_number']).'th '._('Order');
+				$terms_label.=sprintf(_('%1$sth order',number($deal_data['order_number'])));
+
+
 			}
 
 
@@ -1612,18 +1672,42 @@ function create_deal($data) {
 		case 'Amount AND Order Interval':
 			$no_items=true;
 
+			switch ($deal_data['amount_type']) {
+			case 'Order Total Amount':
+				$amount_type='Total';
+				$amount_type_formated=_('Total');
+				break;
+			case 'Order Total Net Amount':
+				$amount_type='Net';
+				$amount_type_formated=_('Net');
+				break;
+			case 'Order Items Net Amount':
+				$amount_type='Items Net';
+				$amount_type_formated=_('Items Net');
+				break;
+			}
+
+			$terms=money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type.' & '.number($deal_data['order_interval']).' days since last order';
+
+
 			$terms=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_interval'];
-			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' & '.number($deal_data['order_interval']).' '._('days');
+			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' & '.sprintf(_('%1$s days from last order',number($deal_data['order_interval'])));
 			$deal_data['Deal Component Terms']=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_interval'];
 			break;
 
 		case 'Order Interval':
-			$terms=$deal_data['order_interval'];
-			$terms_label=number($deal_data['order_interval']).' '._('days');
+			$terms=number($deal_data['order_interval']).' days since last order';
+
+
+
+			$terms_label=sprintf(_('%1$s days from last order',number($deal_data['order_interval'])));
+
+
+
 			$deal_data['Deal Component Terms']=$deal_data['order_interval'];
 			break;
 		case 'Order Number':
-			$terms=$deal_data['order_number'];
+			$terms=number($deal_data['order_number']).' th order';
 			switch ($deal_data['order_number']) {
 			case 1:
 				$terms_label=_('first order');
@@ -1638,7 +1722,7 @@ function create_deal($data) {
 				$terms_label=_('forth order');
 				break;
 			default:
-				$terms_label=number($deal_data['order_number']).'th '._('Order');
+				$terms_label=sprintf(_('%1$sth order',number($deal_data['order_number'])));
 			}
 
 			$deal_data['Deal Component Terms']=$deal_data['order_number'];
@@ -1789,7 +1873,7 @@ function create_deal($data) {
 
 		}
 
-
+		$deal->update_term_allowances();
 		$smarty->assign('deal', $deal);
 		$new_deal_message=$smarty->fetch('ar_messages/new_deal.tpl');
 
@@ -1924,9 +2008,9 @@ function add_voucher_to_order($data) {
 	$order->update_number_products();
 
 	$order->apply_payment_from_customer_account();
-	
-	
-	
+
+
+
 	$new_disconted_products=$order->get_discounted_products();
 	foreach ($new_disconted_products as $key=>$value) {
 		$disconted_products[$key]=$value;

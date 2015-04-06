@@ -1221,7 +1221,7 @@ function list_deals() {
 			'store'=>$store,
 			'code'=>$code,
 			'name'=>$name,
-			'description'=>sprintf('<b title="%s">%s</b> %s<br/>x%s',$row['Deal Description'],$row['Deal Code'],$row['Deal Name'],$row['Deal Term Allowances']),
+			'description'=>sprintf('<b title="%s">%s</b> %s<br/>%s',$row['Deal Description'],$row['Deal Code'],$row['Deal Name'],$row['Deal Term Allowances']),
 			'orders'=>$orders,
 			'customers'=>$customers,
 			'duration'=>$duration,

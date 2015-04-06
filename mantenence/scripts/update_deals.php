@@ -61,7 +61,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 
-$sql="select * from `Deal Dimension`";
+$sql="select * from `Deal Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
