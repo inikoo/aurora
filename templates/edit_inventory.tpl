@@ -114,50 +114,6 @@
 							</tr>
 							{/foreach} 
 						</table>
-						<table class="options" border="0" style="font-size:120%;margin-top:20px;;float:right;padding:0">
-							<tr>
-								<td id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
-								<td class="disabled" id="save_new_custom_field">{t}Save{/t}</td>
-								<td id="cancel_add_custom_field">{t}Cancel{/t}</td>
-							</tr>
-						</table>
-						<div id="Customer_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-							{t}Another contact has been found with the similar details{/t}. 
-							<table style="margin:10px 0">
-								<tr>
-									<td><span style="cursor:pointer;text-decoration:underline" onclick="edit_founded()" id="pick_founded">{t}Edit the Customer found{/t} (<span id="founded_name"></span>)</span></td>
-								</tr>
-								<tr>
-									<td><span style="color:red">{t}Creating this customer is likely to produce duplicate contacts.{/t}</span></br<span style="cursor:pointer;text-decoration:underline;color:red" id="save_when_founded">{t}Create customer anyway{/t}</span></td>
-								</tr>
-							</table>
-						</div>
-						<div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-							<b>{t}Another contact has the same email{/t}</b>. 
-							<table style="margin:10px 0">
-								<tr>
-									<td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the Customer found{/t} (<span id="email_founded_name"></span>)</td>
-								</tr>
-								<tr>
-									<td><span style="color:red">{t}Creating this customer will produce duplicate contacts. The email will not be added.{/t}</span></br>
-									<span style="cursor:pointer;text-decoration:underline;color:red" id="force_new">{t}Create customer anyway{/t}</span></td>
-								</tr>
-							</table>
-						</div>
-						<div id="email_found_other_store_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
-							<b>{t}A Customer has the same email in another store{/t}</b>. 
-							<table style="margin:10px 0">
-								<input type="hidden" value="" id="found_email_other_store_customer_key"> 
-								<tr>
-									<td style="cursor:pointer;text-decoration:underline" onclick="clone_founded()">{t}Use contact data to create new customer in this store{/t}</td>
-								</tr>
-							</table>
-						</div>
-						<div style="clear:both;padding:10px;" id="validation">
-							<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_Customer_found">
-								{t}Company has been found{/t} 
-							</div>
-						</div>
 					</div>
 					<div style="clear:both;height:40px">
 					</div>

@@ -260,7 +260,18 @@ $default_state=array(
 		)
 		,
 
+'offers'=>array(
 
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Finish'=>0,'Waiting'=>1,'Active'=>1,'Suspended'=>1)
+
+		),
 		'edit_categories'=>array(
 
 			'order'=>'code',

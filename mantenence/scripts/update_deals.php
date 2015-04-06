@@ -68,8 +68,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$deal=new Deal($row['Deal Key']);
 
-	$deal->update_formated_term();
-	$deal->update_formated_allowance();
+	$deal->update_term_allowances();
 
 	unset($deal);
 

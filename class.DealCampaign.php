@@ -264,7 +264,7 @@
 		}
 
 		foreach ($this->get_deal_component_keys() as $deal_component_key) {
-			$deal_compoment=new DealComponent($deal_key);
+			$deal_compoment=new DealComponent($deal_component_key);
 			$deal_compoment->update_status_from_dates();
 		}
 

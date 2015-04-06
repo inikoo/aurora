@@ -1385,6 +1385,14 @@ function create_deal($data) {
 				$customer->data['Customer Name']
 			);
 			break;
+		case 'Customer Category':
+			$category=new Category($deal_data['Deal Trigger Key']);
+			$deal_data['Deal Trigger XHTML Label']=sprintf('<a href="category.php?id=%d">%s</a>',
+				$category->id,
+				$category->data['Category Label']
+			);
+			$no_items=false;
+			break;
 
 		}
 
@@ -1434,7 +1442,7 @@ function create_deal($data) {
 			break;
 
 		case 'Voucher AND Amount':
-
+			$no_items=true;
 			if ($deal_data['voucher_code_type']=='Random') {
 				$voucher_code=get_vocher_code($store->id);
 
@@ -1545,6 +1553,7 @@ function create_deal($data) {
 				$voucher_code=$deal_data['voucher_code'];
 
 			}
+
 			include_once 'class.Voucher.php';
 			$voucher_data=array(
 				'Voucher Code'=>$voucher_code,
@@ -1563,11 +1572,19 @@ function create_deal($data) {
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'];
 			break;
 		case 'Amount':
+			$no_items=true;
+
 			$terms=$deal_data['amount'].';'.$deal_data['amount_type'];
 			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']);
 			$deal_data['Deal Component Terms']=$deal_data['amount'].';'.$deal_data['amount_type'];
 			break;
+		case 'Every Order':
+			$terms='every order';
+			$terms_label=_('Every Order');
+			break;
 		case 'Amount AND Order Number':
+			$no_items=true;
+
 			$terms=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_number'];
 			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' & ';
 
@@ -1593,18 +1610,12 @@ function create_deal($data) {
 			$deal_data['Deal Component Terms']=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_number'];
 			break;
 		case 'Amount AND Order Interval':
-
-
+			$no_items=true;
 
 			$terms=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_interval'];
 			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' & '.number($deal_data['order_interval']).' '._('days');
-
-
-
 			$deal_data['Deal Component Terms']=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_interval'];
 			break;
-
-
 
 		case 'Order Interval':
 			$terms=$deal_data['order_interval'];
@@ -1671,13 +1682,12 @@ function create_deal($data) {
 			$allowances_label=_('free shipping');
 			break;
 		case 'Free Charges':
-
 			$deal_data['Deal Component Allowance Type']='Get Free';
 			$deal_data['Deal Component Allowance Target']='Charge';
-
 			$allowances='free charges';
 			$allowances_label=_('free charges');
 			break;
+
 		case 'Clone':
 			$deal->update(array('Deal Mirror Metadata'=>$deal_data['Deal Component Allowance Target Key']), 'no_history');
 			break;
@@ -1714,8 +1724,8 @@ function create_deal($data) {
 				$deal_component_data['Deal Component Mirror Metadata']=$row['Deal Component Key'];
 
 				$component=$deal->add_component($deal_component_data);
-				
-				
+
+
 			}
 
 
@@ -1908,11 +1918,15 @@ function add_voucher_to_order($data) {
 	$order->update_item_totals_from_order_transactions();
 	$order->update_discounts_no_items();
 	$order->update_no_normal_totals();
+	$order->update_item_totals_from_order_transactions();
 	$order->update_totals_from_order_transactions();
 	$order->update_number_items();
 	$order->update_number_products();
 
 	$order->apply_payment_from_customer_account();
+	
+	
+	
 	$new_disconted_products=$order->get_discounted_products();
 	foreach ($new_disconted_products as $key=>$value) {
 		$disconted_products[$key]=$value;
@@ -2054,6 +2068,7 @@ function remove_voucher_from_order($data) {
 
 	$order->update_discounts_no_items();
 	$order->update_no_normal_totals();
+	$order->update_item_totals_from_order_transactions();
 	$order->update_totals_from_order_transactions();
 	$order->update_number_items();
 	$order->update_number_products();

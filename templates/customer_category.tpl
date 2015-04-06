@@ -2,6 +2,7 @@
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
+		<input type="hidden" value="{$session_data}" id="session_data" />
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
 		<input type="hidden" id="customers_view" value="{$customers_view}" />
@@ -28,6 +29,7 @@
 		<li style="{if !$show_subcategories}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Number Children')})</span></span> </li>
 		<li style="{if !$show_subjects}display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Customers{/t} ({$category->get('Number Subjects')})</span></span> </li>
 		<li style="{if !$show_subjects_data}display:none{/if};display:none"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span> </li>
+		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span> </li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span> </li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
@@ -250,6 +252,19 @@
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 		<div id="table2" class="data_table_container dtable btable">
+		</div>
+	</div>
+	<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div id="children_table" class="data_table">
+			<span class="clean_table_title" style="margin-right:5px">Offers</span> 
+		<div class="buttons small left">
+			<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+		</div>
+		<div class="table_top_bar space">
+		</div>
+		{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
+		<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
 		</div>
 	</div>
 </div>

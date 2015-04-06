@@ -35,8 +35,8 @@ if (!$category->id) {
 }
 
 
-if($category->data['Category Subject']!='Customer'){
-header('Location: index.php?error_no_wrong_category_id');
+if ($category->data['Category Subject']!='Customer') {
+	header('Location: index.php?error_no_wrong_category_id');
 	exit;
 }
 
@@ -68,14 +68,14 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/customers_common.js',
-              'js/export_common.js',
-
-	'customer_category.js.php'
+	'js/export_common.js',
+	'js/customer_category.js'
 
 );
 
@@ -169,7 +169,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $customers_view=$_SESSION['state']['customer_categories']['customers']['view'];
 
-if($customers_view=='other_value' and $category->data['Is Category Field Other']=='No'){
+if ($customers_view=='other_value' and $category->data['Is Category Field Other']=='No') {
 	$customers_view='general';
 }
 
@@ -203,7 +203,7 @@ if ($order=='code') {
 $_order=preg_replace('/`/','',$order);
 $sql=sprintf("select `Category Key` as id , `Category Code` as name from `Category Dimension`  where  `Category Parent Key`=%d and `Category Root Key`=%d  and %s < %s  order by %s desc  limit 1",
 	$category->data['Category Parent Key'],
-		$category->data['Category Root Key'],
+	$category->data['Category Root Key'],
 	$order,
 	prepare_mysql($category->get($_order)),
 	$order
@@ -220,7 +220,7 @@ mysql_free_result($result);
 
 $sql=sprintf(" select`Category Key` as id , `Category Code` as name from `Category Dimension`  where  `Category Parent Key`=%d  and `Category Root Key`=%d    and  %s>%s  order by %s   ",
 	$category->data['Category Parent Key'],
-		$category->data['Category Root Key'],
+	$category->data['Category Root Key'],
 	$order,
 	prepare_mysql($category->get($_order)),
 	$order
@@ -243,7 +243,7 @@ $smarty->assign('filter_value1',$_SESSION['state']['customer_categories']['subca
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
-		'label'=>array('db_key'=>'code','menu_label'=>_('Category Label'),'label'=>_('Label')),
+	'label'=>array('db_key'=>'code','menu_label'=>_('Category Label'),'label'=>_('Label')),
 
 );
 
@@ -294,6 +294,40 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
+$tipo_filter=$_SESSION['state']['customer_categories']['no_assigned_customers']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['customer_categories']['no_assigned_customers']['f_value']);
+$filter_menu=array(
+	'customer name'=>array('db_key'=>'customer name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+	'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
+	'min'=>array('db_key'=>'min','menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
+	'max'=>array('db_key'=>'min','menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
+	'last_more'=>array('db_key'=>'last_more','menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
+	'last_less'=>array('db_key'=>'last_more','menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+
+);
+$smarty->assign('filter_menu3',$filter_menu);
+
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['customer_categories']['offers']['f_field'];
+$smarty->assign('filter4',$tipo_filter);
+$smarty->assign('filter_value4',$_SESSION['state']['customer_categories']['offers']['f_value']);
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+);
+$smarty->assign('filter_menu4',$filter_menu);
+
+$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu4',$paginator_menu);
 
 
 $smarty->assign('parent','customers');
@@ -334,7 +368,51 @@ $smarty->assign('elements_customer_category_elements_type',$_SESSION['state']['c
 $smarty->assign('elements_customer_category_activity',$_SESSION['state']['customer_categories']['elements']['activity']);
 $smarty->assign('elements_customer_category_level_type',$_SESSION['state']['customer_categories']['elements']['level_type']);
 
-include('customers_export_common.php');
+include 'customers_export_common.php';
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Id'=>_('ID'),
+				'Customer_Name'=>_('Customer Name'),
+				'Location'=>_('Location'),
+				'Since'=>_('Since'),
+				'Last_Order'=>_('Last Order'),
+				'Orders'=>_('Orders'),
+				'Status'=>_('Status'),
+				'Contact_Name'=>_('Contact Name'),
+				'Email'=>_('Email'),
+				'Telephone'=>_('Telephone'),
+				'Contact_Address'=>_('Contact Address'),
+				'Billing_Address'=>_('Billing Address'),
+				'Delivery_Address'=>_('Delivery Address'),
+				'Payments'=>_('Payments'),
+				'Refunds'=>_('Refunds'),
+				'Balance'=>_('Balance'),
+				'Outstanding'=>_('Outstanding'),
+				'Profit'=>_('Profit'),
+				'Orders_Rank'=>_('Orders Rank'),
+				'Invoices_Rank'=>_('Invoices Rank'),
+				'Balance_Rank'=>_('Balance Rank'),
+				'Profits_Rank'=>_('Profits Rank'),
+				'Logins'=>_('Logins'),
+				'Failed_Logis'=>_('Failed Logis'),
+				'Viewed_Pages'=>_('Viewed Pages'),
+				'Category_Other_Value'=>_('Category Other Value'),
+				'Code'=>_('Code'),
+				'Label'=>_('Label'),
+				'Customers'=>_('Customers'),
+				'Date'=>_('Date'),
+				'Time'=>_('Time'),
+				'Author'=>_('Author'),
+				'Notes'=>_('Notes'),
+
+				'Page'=>_('Page'),
+				'of'=>_('of')
+
+			),
+			'state'=>array('customer_categories'=>$_SESSION['state']['customer_categories'])
+		)));
+$smarty->assign('session_data', $session_data);
 
 $smarty->display('customer_category.tpl');
 ?>
