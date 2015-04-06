@@ -32,7 +32,7 @@
 		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span> </li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span> </li>
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+	<div class="tabs_base">
 	</div>
 	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px;display:none;">
 	</div>
@@ -328,6 +328,29 @@
 		</ul>
 	</div>
 </div>
+
+
+<div id="rppmenu4" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd"> {t}Rows per Page{/t}: </li>
+			{foreach from=$paginator_menu4 item=menu } 
+			<li class="yuimenuitem"> <a class="yuimenuitemlabel" onclick="change_rpp({$menu},4)"> {$menu}</a> </li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu4" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd"> {t}Filter options{/t}: </li>
+			{foreach from=$filter_menu4 item=menu } 
+			<li class="yuimenuitem"> <a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',4)"> {$menu.menu_label}</a> </li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
 <div id="dialog_change_customers_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
