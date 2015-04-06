@@ -2608,6 +2608,10 @@ function category_list() {
 		exit('no subject');
 	}
 
+if (isset( $_REQUEST['branch_type']))$branch_type=$_REQUEST['branch_type'];
+	else {
+		$branch_type='';
+	}
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 	$_order=$order;
@@ -2622,7 +2626,12 @@ function category_list() {
 		$where=sprintf('where `Category Store Key`=%d',$store_key);
 	}
 
+     $where.=sprintf(' and `Category Subject`=%s',prepare_mysql($subject));
 
+	if($branch_type!=''){
+	     $where.=sprintf(' and `Category Branch Type`=%s',prepare_mysql($branch_type));
+
+	}
 
 
 	$filter_msg='';
@@ -2636,6 +2645,7 @@ function category_list() {
 
 
 	$sql="select count(*) as total from `Category Dimension` $where $wheref  ";
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2655,7 +2665,7 @@ function category_list() {
 	}
 
 
-	$rtext=number($total_records)." ".ngettext('Category','Categories',$total_records);
+	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -2719,7 +2729,8 @@ function category_list() {
 			'key'=>$row['Category Key'],
 			'label'=>$label,
 			'code'=>$row['Category Code'],
-			'tree'=>$row['Category Plain Branch Tree']
+			'tree'=>$row['Category Plain Branch Tree'],
+			'subjects'=>number($row['Category Number Subjects'])
 
 
 		);

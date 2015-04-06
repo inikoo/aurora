@@ -253,15 +253,13 @@
 
  	}
 
- 	function update_formated_term() {
- 		$this->update_field_switcher('Deal Terms',$this->get_formated_terms(),'no_history');
+ 	function update_term_allowances() {
+ 	
+ 	print $this->get_formated_terms().'  &#8594; '.$this->get_formated_allowances()."\n\n\n\n";
+ 		$this->update_field_switcher('Deal Term Allowances',$this->get_formated_terms().'  &#8594; '.$this->get_formated_allowances(),'no_history');
  	}
 
- 	function update_formated_allowance() {
- 		$this->update_field_switcher('Deal Allowances',$this->get_formated_allowances(),'no_history');
-
- 	}
-
+ 	
 
  	function update_field_switcher($field,$value,$options='') {
 

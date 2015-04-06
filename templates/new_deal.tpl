@@ -4,13 +4,27 @@
 <input type="hidden" value="{$scope_subject}" id="scope_subject" />
 <input type="hidden" value="{$post_create_action}" id="post_create_action" />
 <div id="bd">
-	{if $scope_subject=='Campaign'}{include file='marketing_navigation.tpl'}{else if $scope_subject=='Customer'}{include file='contacts_navigation.tpl'} {else}{include file='assets_navigation.tpl'}{/if} 
+	{if $scope_subject=='Campaign'}
+	{include file='marketing_navigation.tpl'}
+	{else if $scope_subject=='Customer' or   $scope_subject=='Customer Category'  or $scope_subject=='Customer List'}{include file='contacts_navigation.tpl'} 
+	{else}{include file='assets_navigation.tpl'}{/if} 
 	<div class="branch">
-		{if $scope_subject=='Campaign'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}" title="{$campaign->get('Deal Campaign Name')}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="campaign.php?id={$campaign->id}" title="{$campaign->get('Deal Campaign Name')}">{$campaign->get('Deal Campaign Code')}</a> ({t}New Offer{/t})</span> {elseif $scope_subject=='Family'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> &rarr; <a href="family.php?id={$family->id}" title="{$family->get('Product Family Name')}">{$family->get('Product Family Code')}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Department'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="stores.php"> &#8704; {t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Customer'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; <a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Product'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Code')}</a> &rarr; <a href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; <a href="product.php?pid={$product->pid}" title="{$product->get('Product Name')}">{$product->get('Product Code')}</a> ({t}New offer{/t})</span> {/if} 
+		{if $scope_subject=='Campaign'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}" title="{$campaign->get('Deal Campaign Name')}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="campaign.php?id={$campaign->id}" title="{$campaign->get('Deal Campaign Name')}">{$campaign->get('Deal Campaign Code')}</a> ({t}New Offer{/t})</span> {elseif $scope_subject=='Family'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> &rarr; <a href="family.php?id={$family->id}" title="{$family->get('Product Family Name')}">{$family->get('Product Family Code')}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Department'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="stores.php"> &#8704; {t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Customer'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; <a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a> ({t}New offer{/t})</span> {elseif $scope_subject=='Product'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Code')}</a> &rarr; <a href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; <a href="product.php?pid={$product->pid}" title="{$product->get('Product Name')}">{$product->get('Product Code')}</a> ({t}New offer{/t})</span> 
+		{else if $scope_subject=='Customer Category'}
+					<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr;<a href="customer_categories.php?&store_id={$store->id}"> {t}Categories{/t} </a> &rarr; {$category->get('Category XHTML Branch Tree')} ({t}New Offer{/t})</span> 
+
+		{/if} 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			{if $scope_subject=='Store'} <span class="main_title">{t}New Offer{/t} @ {t}Store{/t} <span class="id">{$store->get('Store Code')}</span></span> {else if $scope_subject=='Department'} <span class="main_title">{t}New Offer{/t} @ {t}Department{/t} <span class="id">{$department->get('Product Department Code')}</span></span> {else if $scope_subject=='Family'} <span class="main_title">{t}New Offer{/t} @ {t}Family{/t} <span class="id">{$family->get('Product Family Code')}</span></span> {else if $scope_subject=='Product'} <span class="main_title">{t}New Offer{/t} @ {t}Product{/t} <span class="id">{$product->get('Product Code')}</span></span> {else if $scope_subject=='Customer'} <span class="main_title">{t}New Offer{/t} @ {t}Customer{/t} <span class="id">{$customer->get('Customer Name')}</span></span> {else if $scope_subject=='Campaign'} <span class="main_title">{t}New Offer{/t} @ {t}Campaign{/t} <span class="id">{$campaign->get('Deal Campaign Code')}</span></span> {else} <span class="main_title">{t}New Offer{/t}</span> {/if} 
+			{if $scope_subject=='Store'} <span class="main_title">{t}New Offer{/t} @ {t}Store{/t} <span class="id">{$store->get('Store Code')}</span></span> 
+			{else if $scope_subject=='Department'} <span class="main_title">{t}New Offer{/t} @ {t}Department{/t} <span class="id">{$department->get('Product Department Code')}</span></span> 
+			{else if $scope_subject=='Family'} <span class="main_title">{t}New Offer{/t} @ {t}Family{/t} <span class="id">{$family->get('Product Family Code')}</span></span> 
+			{else if $scope_subject=='Product'} <span class="main_title">{t}New Offer{/t} @ {t}Product{/t} <span class="id">{$product->get('Product Code')}</span></span> 
+			{else if $scope_subject=='Customer'} <span class="main_title">{t}New Offer{/t} @ {t}Customer{/t} <span class="id">{$customer->get('Customer Name')}</span></span> 
+			{else if $scope_subject=='Campaign'} <span class="main_title">{t}New Offer{/t} @ {t}Campaign{/t} <span class="id">{$campaign->get('Deal Campaign Code')}</span></span> 
+			{else if $scope_subject=='Customer Category'} <span class="main_title">{t}New Offer{/t} @ {t}Customer Category{/t} <span class="id">{$category->get('Category Label')}</span></span> 
+			{else} <span class="main_title">{t}New Offer{/t}</span> {/if} 
 		</div>
 		<div class="buttons">
 			<button class="negative" onclick="window.location='{$link_back}'">{t}Cancel{/t}</button> 
@@ -23,18 +37,20 @@
 			<tr class="title">
 				<td colspan="3">Trigger</td>
 			</tr>
-			<tr class="space10" style="{if $scope_subject!='Campaign'}display:none{/if}">
+			<tr  class="space10" style="{if $scope_subject!='Campaign'}display:none{/if}">
 				<td class="label" style>{t}Trigger{/t}:</td>
 				<td class="input" style="text-align:left;"> 
 				<input type="hidden" id="trigger" value="{$trigger}" />
 				<input type="hidden" id="trigger_key" value="{$trigger_key}" />
 				<div class="styled-select">
-					<select id="tigger" onchange="trigger_changed(this.value)">
+					<select id="trigger_select" onchange="trigger_changed(this.value)">
 						<option value="Order">{t}Order{/t}</option>
 						<option value="Department">{t}Department{/t}</option>
 						<option value="Family">{t}Family{/t}</option>
 						<option value="Product">{t}Product{/t}</option>
 						<option value="Customer">{t}Customer{/t}</option>
+						<option value="Customer Category">{t}Customer Category{/t}</option>
+						<option value="Customer List">{t}Customer List{/t}</option>
 					</select>
 				</div>
 				</td>
@@ -76,6 +92,25 @@
 				</td>
 				<td class="messages"></td>
 			</tr>
+			<tr id="trigger_customer_category_options" style="display:none">
+				<td class="label">{t}Customer category{/t}:</td>
+				<td class="input"> 
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="customer_category_formated"></span> <button style id="update_customer_category">{t}Change category{/t}</button> 
+				</div>
+				</td>
+				<td class="messages"></td>
+			</tr>
+			<tr id="trigger_customer_list_options" style="display:none">
+				<td class="label">{t}Customer list{/t}:</td>
+				<td class="input"> 
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="customer_list_formated"></span> <button style id="update_customer_list">{t}Change list{/t}</button> 
+				</div>
+				</td>
+				<td class="messages"></td>
+			</tr>
+			
 		</tbody>
 		<tbody id="campaign_options" style="{if $scope_subject=='Campaign'}display:none{/if}">
 			<tr class="title">
@@ -175,16 +210,15 @@
 					<option value="Product Quantity Ordered">{t}Order more than{/t}</option>
 					<option value="Product For Every Quantity Ordered">{t}For every{/t}</option>
 				</select>
-				<select id="customer_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Customer'}display:none{/if}">
+				<select id="customer_terms_select" onchange="terms_changed(this.value)" style="{if !($trigger=='Customer' or  $trigger=='Customer Category' or  $trigger=='Customer List') }display:none{/if}">
 					<option value="Voucher">{t}Voucher{/t}</option>
 					<option value="Amount">{t}Amount{/t}</option>
 					<option value="Every Order">{t}Every Order{/t}</option>
-					<option value="Next Order">{t}Next Order{/t}</option>
 					<option value="Customer Department Quantity Ordered">{t}Order more than{/t} ({t}Department{/t})</option>
 					<option value="Customer Family Quantity Ordered">{t}Order more than{/t} ({t}Family{/t})</option>
 					<option value="Customer Product Quantity Ordered">{t}Order more than{/t} ({t}Product{/t})</option>
 				</select>
-				<select id="customer_terms_select" onchange="terms_changed(this.value)">
+				<select id="customer_terms_select" onchange="terms_changed(this.value)"  style="{if $trigger!='Order'}display:none{/if}">
 					<option value="Voucher">{t}Voucher{/t}</option>
 					<option value="Amount">{t}Amount{/t}</option>
 					<option value="Order Number">{t}Nth Order{/t}</option>
@@ -574,6 +608,25 @@
 		</div>
 	</div>
 </div>
+<div id="dialog_customer_categories_list" style="position:absolute;left:-1000;top:0">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="data_table">
+			<span class="clean_table_title">{t}Category List{/t}</span> {include file='table_splinter.tpl' table_id=106 filter_name=$filter_name106 filter_value=$filter_value106} 
+			<div id="table106" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog_customer_lists_list" style="position:absolute;left:-1000;top:0">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="data_table">
+			<span class="clean_table_title">{t}Customer Lists{/t}</span> {include file='table_splinter.tpl' table_id=107 filter_name=$filter_name107 filter_value=$filter_value107} 
+			<div id="table107" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+
 <div id="dialog_deals_list" style="position:absolute;left:-1000;top:0">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div class="data_table">

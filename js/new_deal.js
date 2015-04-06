@@ -7,7 +7,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
     session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
     labels = session_data.label;
-
+ 	
+ 
     tables = new function() {
 
         this.remove_links = function(elLiner, oRecord, oColumn, oData) {
@@ -564,13 +565,212 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: ''
         };
 
+        var tableid = 106;
+        var tableDivEL = "table" + tableid;
+
+        var ColumnDefs = [{
+            key: "key",
+            label: "",
+            hidden: true
+        }, {
+            key: "code",
+            formatter: "remove_links",
+            label: labels.Code,
+            width: 50,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "label",
+            formatter: "remove_links",
+            label: labels.Label,
+            width: 180,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "subjects",
+            label: labels.Customers,
+            width: 180,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }];
+        request = "ar_quick_tables.php?tipo=category_list&subject=Customer&branch_type=Head&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
+		//alert(request)
+        this.dataSource106 = new YAHOO.util.DataSource(request);
+        this.dataSource106.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource106.connXhrMode = "queueRequests";
+        this.dataSource106.table_id = tableid;
+
+        this.dataSource106.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rowsPerPage: "resultset.records_perpage",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+            },
+            fields: ["label", 'code', 'key', 'subjects']
+        };
+
+
+        this.table106 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource106, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: 20,
+                containers: 'paginator106',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info106'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: 'code',
+                dir: ''
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table106.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table106.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table106.subscribe("cellClickEvent", this.table106.onEventShowCellEditor);
+        this.table106.prefix = '';
+        this.table106.subscribe("rowMouseoverEvent", this.table106.onEventHighlightRow);
+        this.table106.subscribe("rowMouseoutEvent", this.table106.onEventUnhighlightRow);
+        this.table106.subscribe("rowClickEvent", select_customer_category_from_list);
+
+        this.table106.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table106.filter = {
+            key: 'code',
+            value: ''
+        };
+
+
+
+        var tableid = 107;
+        var tableDivEL = "table" + tableid;
+
+        var ColumnDefs = [{
+            key: "key",
+            label: "",
+            hidden: true
+        },  {
+            key: "name",
+            formatter: "remove_links",
+            label: labels.Name,
+            width: 180,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "items",
+            formatter: "remove_links",
+            label: labels.Customers,
+            width: 180,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }];
+        request = "ar_quick_tables.php?tipo=list_list&subject=Customer&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
+
+        this.dataSource107 = new YAHOO.util.DataSource(request);
+        this.dataSource107.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource107.connXhrMode = "queueRequests";
+        this.dataSource107.table_id = tableid;
+
+        this.dataSource107.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rowsPerPage: "resultset.records_perpage",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+            },
+            fields: ["name", 'key', 'items']
+        };
+
+
+        this.table107 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource107, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: 20,
+                containers: 'paginator107',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info107'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: 'name',
+                dir: ''
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table107.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table107.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table107.subscribe("cellClickEvent", this.table107.onEventShowCellEditor);
+        this.table107.prefix = '';
+        this.table107.subscribe("rowMouseoverEvent", this.table107.onEventHighlightRow);
+        this.table107.subscribe("rowMouseoutEvent", this.table107.onEventUnhighlightRow);
+        this.table107.subscribe("rowClickEvent", select_deal_from_list);
+
+        this.table107.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table107.filter = {
+            key: 'name',
+            value: ''
+        };
+
+
+
+
+
 
     };
 });
 
 function trigger_changed(value) {
-    Dom.setStyle(['trigger_department_options', 'trigger_family_options', 'trigger_product_options', 'trigger_customer_options'], 'display', 'none')
-    Dom.setStyle(['department_terms_select', 'family_terms_select', 'product_terms_select', 'customer_terms_select', 'customer_terms_select'], 'display', 'none')
+    Dom.setStyle(['trigger_department_options', 'trigger_family_options', 'trigger_product_options', 'trigger_customer_options', 'trigger_customer_category_options', 'trigger_customer_list_options'], 'display', 'none')
+    Dom.setStyle(['department_terms_select', 'family_terms_select', 'product_terms_select', 'customer_terms_select'], 'display', 'none')
 
     Dom.setStyle(['voucher_tr'], 'display', '')
 
@@ -592,11 +792,19 @@ function trigger_changed(value) {
         terms_changed('Department Quantity Ordered')
         break;
     case 'Customer':
-        Dom.setStyle(['voucher_tr'], 'display', 'none')
         show_dialog_customers_list();
+        terms_changed('Voucher')
         break;
+    case 'Customer Category':
+        show_dialog_customer_categories_list();
+        terms_changed('Voucher')
+        break;
+    case 'Customer List':
+        show_dialog_customer_lists_list();
+        terms_changed('Voucher')
+        break;
+
     case 'Order':
-        show_dialog_customers_list();
         break;
     }
 }
@@ -613,7 +821,7 @@ function show_dialog_campaigns_list() {
 function show_dialog_departments_list(scope) {
 
     if (scope == 'trigger') {
-        var scope_element = 'trigger'
+        var scope_element = 'trigger_select'
         asset_select_scope = 'trigger'
     } else if (scope == 'target_bis') {
         var scope_element = 'allowances_select'
@@ -624,8 +832,9 @@ function show_dialog_departments_list(scope) {
     }
 
     region1 = Dom.getRegion(scope_element);
+   
     region2 = Dom.getRegion('dialog_departments_list');
-    var pos = [region1.left - 2, region1.top + 22]
+    var pos = [region1.left - 2, region1.top+1 ]
     Dom.setXY('dialog_departments_list', pos);
     dialog_departments_list.show();
 
@@ -634,7 +843,7 @@ function show_dialog_departments_list(scope) {
 function show_dialog_families_list(scope) {
 
     if (scope == 'trigger') {
-        var scope_element = 'trigger'
+        var scope_element = 'trigger_select'
         asset_select_scope = 'trigger'
     } else if (scope == 'target_bis') {
         var scope_element = 'allowances_select'
@@ -645,7 +854,7 @@ function show_dialog_families_list(scope) {
     }
     region1 = Dom.getRegion(scope_element);
     region2 = Dom.getRegion('dialog_families_list');
-    var pos = [region1.left - 2, region1.top + 22]
+    var pos = [region1.left - 2, region1.top+1 ]
     Dom.setXY('dialog_families_list', pos);
     dialog_families_list.show();
 }
@@ -653,7 +862,7 @@ function show_dialog_families_list(scope) {
 function show_dialog_products_list(scope) {
 
     if (scope == 'trigger') {
-        var scope_element = 'trigger'
+        var scope_element = 'trigger_select'
         asset_select_scope = 'trigger'
     } else if (scope == 'target_bis') {
         var scope_element = 'allowances_select'
@@ -665,15 +874,14 @@ function show_dialog_products_list(scope) {
 
     region1 = Dom.getRegion(scope_element);
     region2 = Dom.getRegion('dialog_products_list');
-    var pos = [region1.left - 2, region1.top + 22]
+    var pos = [region1.left - 2, region1.top+1 ]
     Dom.setXY('dialog_products_list', pos);
     dialog_products_list.show();
 }
 
 function show_dialog_customers_list() {
-    region1 = Dom.getRegion('tigger');
-    var pos = [region1.left - 2, region1.top + 22]
-    var pos = [region1.left, region1.top]
+    region1 = Dom.getRegion('trigger_select');
+    var pos = [region1.left - 2, region1.top+1 ]
     Dom.setXY('dialog_customers_list', pos);
     dialog_customers_list.show();
 }
@@ -686,7 +894,19 @@ function show_dialog_deals_list() {
     dialog_deals_list.show();
 }
 
+function show_dialog_customer_categories_list() {
+     region1 = Dom.getRegion('trigger_select');
+    var pos = [region1.left - 2, region1.top+1 ]
+    Dom.setXY('dialog_customer_categories_list', pos);
+    dialog_customer_categories_list.show();
+}
 
+function show_dialog_customer_lists_list() {
+     region1 = Dom.getRegion('trigger_select');
+    var pos = [region1.left - 2, region1.top+1 ]
+    Dom.setXY('dialog_customer_lists_list', pos);
+    dialog_customer_lists_list.show();
+}
 
 
 function select_campaign_from_list(oArgs) {
@@ -797,6 +1017,17 @@ function select_customer_from_list(oArgs) {
     dialog_customers_list.hide();
 }
 
+function select_customer_category_from_list(oArgs) {
+
+    Dom.setStyle('trigger_customer_category_options', 'display', '')
+
+    record = tables.table106.getRecord(oArgs.target);
+    Dom.get('trigger').value = 'Customer Category';
+    Dom.get('trigger_key').value = record.getData('key');
+    Dom.get('customer_category_formated').innerHTML = record.getData('code') + " (" + record.getData('label') + ") ";
+    dialog_customer_categories_list.hide();
+}
+
 function select_deal_from_list(oArgs) {
 
     record = tables.table105.getRecord(oArgs.target);
@@ -831,7 +1062,7 @@ function new_campaign() {
 function terms_changed(value) {
 
     Dom.setStyle(['amount_options', 'voucher_options', 'if_order_more_tr', 'order_interval_tr', 'order_number_tr', 'for_every_ordered_tr', 'target_department_options', 'target_family_options', 'target_product_options'], 'display', 'none');
-    Dom.setStyle(['order_more_than_allowances_select', 'for_every_allowances_select', 'voucher_allowances_select', 'every_order_allowances_select', 'next_order_allowances_select', 'amount_allowances_select', 'order_interval_allowances_select', 'order_number_allowances_select','for_every_any_product_allowances_select'], 'display', 'none');
+    Dom.setStyle(['order_more_than_allowances_select', 'for_every_allowances_select', 'voucher_allowances_select', 'every_order_allowances_select', 'next_order_allowances_select', 'amount_allowances_select', 'order_interval_allowances_select', 'order_number_allowances_select', 'for_every_any_product_allowances_select'], 'display', 'none');
 
     validate_scope_data.deal.voucher_code.required = false;
     validate_scope_data.deal.amount.required = false;
@@ -889,7 +1120,7 @@ function terms_changed(value) {
 
         allowances_changed('Percentage Off');
         break;
-         case 'Department For Every Any Product Quantity Ordered':
+    case 'Department For Every Any Product Quantity Ordered':
         Dom.setStyle('for_every_ordered_tr', 'display', '');
         Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
         allowances_changed('Get Cheapest Free');
@@ -899,7 +1130,7 @@ function terms_changed(value) {
         Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
         allowances_changed('Get Cheapest Free');
 
-        break;   
+        break;
     case 'Department For Every Quantity Ordered':
         Dom.setStyle('for_every_ordered_tr', 'display', '');
         Dom.setStyle('for_every_allowances_select', 'display', '');
@@ -1646,6 +1877,8 @@ function init() {
         terms_changed('Product Quantity Ordered');
         break;
     case 'Customer':
+    case 'Customer Category':
+    case 'Customer List':
         terms_changed('Voucher');
 
         break;
@@ -1660,6 +1893,8 @@ function init() {
 
         break;
     case 'Customer':
+    case 'Customer Category':
+    case 'Customer List':
         init_search('customers_store');
         break;
     default:
@@ -1759,6 +1994,31 @@ function init() {
     });
     dialog_deals_list.render();
     Event.addListener("update_clone_deal", "click", show_dialog_deals_list);
+
+    dialog_customer_categories_list = new YAHOO.widget.Dialog("dialog_customer_categories_list", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_customer_categories_list.render();
+    Event.addListener("update_customer_category", "click", show_dialog_customer_categories_list);
+
+    dialog_customer_lists_list = new YAHOO.widget.Dialog("dialog_customer_lists_list", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_customer_lists_list.render();
+    Event.addListener("update_customer_list", "click", show_dialog_customer_lists_list);
+
+
+
+
+
+
+
     Event.addListener(['voucher_code_random', 'voucher_code_custome'], "click", select_voucher_code_type);
     Event.addListener(['voucher_type_public', 'voucher_type_private'], "click", select_voucher_type);
     Event.addListener(['amount_type_total', 'amount_type_net', 'amount_type_items'], "click", select_amount_type);
@@ -1866,7 +2126,10 @@ function init() {
     Event.addListener('clean_table_filter_hide104', "click", hide_filter, 104);
     Event.addListener('clean_table_filter_show105', "click", show_filter, 105);
     Event.addListener('clean_table_filter_hide105', "click", hide_filter, 105);
-
+    Event.addListener('clean_table_filter_show105', "click", show_filter, 106);
+    Event.addListener('clean_table_filter_hide105', "click", hide_filter, 106);
+    Event.addListener('clean_table_filter_show105', "click", show_filter, 107);
+    Event.addListener('clean_table_filter_hide105', "click", hide_filter, 107);
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -1904,9 +2167,19 @@ function init() {
     var oAutoComp105 = new YAHOO.widget.AutoComplete("f_input105", "f_container105", oACDS105);
     oAutoComp105.minQueryLength = 0;
 
+    var oACDS106 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS106.queryMatchContains = true;
+    oACDS106.table_id = 106;
+    var oAutoComp106 = new YAHOO.widget.AutoComplete("f_input106", "f_container106", oACDS106);
+    oAutoComp106.minQueryLength = 0;
+
+    var oACDS107 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS107.queryMatchContains = true;
+    oACDS107.table_id = 107;
+    var oAutoComp107 = new YAHOO.widget.AutoComplete("f_input107", "f_container107", oACDS107);
+    oAutoComp107.minQueryLength = 0;
 
     YAHOO.util.Event.addListener(['go_to_new', 'create_other_deal'], "click", after_actions_changed);
-
 
 
 }

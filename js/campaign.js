@@ -15,6 +15,7 @@ function change_block() {
 
 }
 
+
 YAHOO.util.Event.addListener(window, "load", function() {
 
     session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));

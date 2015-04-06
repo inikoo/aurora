@@ -42,28 +42,62 @@ case 'campaign':
 	break;
 case 'customer':
 	$customer=new Customer($_REQUEST['parent_key']);
-
-
 	$store=new Store($customer->data['Customer Store Key']);
-
 	$smarty->assign('scope', $customer);
 	$smarty->assign('customer', $customer);
-
 	$smarty->assign('store', $store);
-
 	$smarty->assign('scope_subject', 'Customer');
 	$smarty->assign('trigger', 'Customer');
 	$smarty->assign('trigger_key', $customer->id);
 	$smarty->assign('target', 'Order');
 	$smarty->assign('target_key', '');
-
 	$smarty->assign('parent', 'customers');
 	$smarty->assign('search_label', _('Customers'));
 	$smarty->assign('search_scope', 'customers');
 	$smarty->assign('link_back', 'customer.php?id='.$customer->id);
+	break;
+case 'customer_categories':
+	$category=new Category($_REQUEST['parent_key']);
+	if (!$category->id) {
+		exit('Category not found');
+	}
+	if ($category->data['Category Subject']!='Customer' or $category->data['Category Branch Type']!='Head') {
+		exit('This is not a customer dead category');
+	}
 
 
 
+	$store=new Store($category->data['Category Store Key']);
+	$smarty->assign('scope', $category);
+	$smarty->assign('category', $category);
+	$smarty->assign('store', $store);
+	$smarty->assign('scope_subject', 'Customer Category');
+	$smarty->assign('trigger', 'Customer Category');
+	$smarty->assign('trigger_key', $category->id);
+	$smarty->assign('target', 'Order');
+	$smarty->assign('target_key', '');
+	$smarty->assign('parent', 'customers');
+	$smarty->assign('search_label', _('Customers'));
+	$smarty->assign('search_scope', 'customers');
+	$smarty->assign('link_back', 'customer_category.php?id='.$category->id);
+	break;
+case 'customer_list':
+	$customer=new Customer($_REQUEST['parent_key']);
+	$store=new Store($customer->data['Customer Store Key']);
+
+
+	$smarty->assign('scope', $customer);
+	$smarty->assign('customer', $customer);
+	$smarty->assign('store', $store);
+	$smarty->assign('scope_subject', 'Customer');
+	$smarty->assign('trigger', 'Customer');
+	$smarty->assign('trigger_key', $customer->id);
+	$smarty->assign('target', 'Order');
+	$smarty->assign('target_key', '');
+	$smarty->assign('parent', 'customers');
+	$smarty->assign('search_label', _('Customers'));
+	$smarty->assign('search_scope', 'customers');
+	$smarty->assign('link_back', 'customer.php?id='.$customer->id);
 	break;
 case 'store':
 	$store=new Store($_REQUEST['parent_key']);
@@ -280,6 +314,30 @@ $smarty->assign('filter_value105', '');
 $paginator_menu=array(10, 25, 50, 100, 500);
 $smarty->assign('paginator_menu105', $paginator_menu);
 
+$tipo_filter106='code';
+$filter_menu106=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
+	'label'=>array('db_key'=>'label','menu_label'=>_('Category Label'),'label'=>_('Label')),
+);
+$smarty->assign('filter_name106', $filter_menu106[$tipo_filter106]['label']);
+$smarty->assign('filter_menu106', $filter_menu106);
+$smarty->assign('filter106', $tipo_filter106);
+$smarty->assign('filter_value106', '');
+$paginator_menu=array(10, 25, 50, 100, 500);
+$smarty->assign('paginator_menu106', $paginator_menu);
+
+
+$tipo_filter107='name';
+$filter_menu107=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('List name like <i>x</i>'),'label'=>_('Name'))
+);
+$smarty->assign('filter_name107', $filter_menu107[$tipo_filter107]['label']);
+$smarty->assign('filter_menu107', $filter_menu107);
+$smarty->assign('filter107', $tipo_filter107);
+$smarty->assign('filter_value107', '');
+$paginator_menu=array(10, 25, 50, 100, 500);
+$smarty->assign('paginator_menu107', $paginator_menu);
+
 $session_data=base64_encode(json_encode(array(
 			'label'=>array(
 				'Invalid_code'=>_('Invalid code'),
@@ -289,6 +347,10 @@ $session_data=base64_encode(json_encode(array(
 				'Invalid_amount'=>_('Invalid amount'),
 				'Invalid_number'=>_('Invalid number'),
 				'Invalid_percentage'=>_('Invalid percentage'),
+				'Code'=>_('Code'),
+				'Label'=>_('Label'),
+				'Customers'=>_('Customers'),
+				'Name'=>_('Name'),
 
 				'Page'=>_('Page'),
 				'of'=>_('of')
