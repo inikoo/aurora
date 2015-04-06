@@ -676,6 +676,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
             label: "",
             hidden: true
         },  {
+            key: "date",
+            label: labels.Date,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },  {
             key: "name",
             formatter: "remove_links",
             label: labels.Name,
@@ -689,15 +698,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
             key: "items",
             formatter: "remove_links",
             label: labels.Customers,
-            width: 180,
+            width: 90,
             sortable: true,
-            className: "aleft",
+            className: "aright",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         }];
-        request = "ar_quick_tables.php?tipo=list_list&subject=Customer&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-
+        request = "ar_quick_tables.php?tipo=list_list&subject=Customer&list_type=Static&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
+		
         this.dataSource107 = new YAHOO.util.DataSource(request);
         this.dataSource107.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource107.connXhrMode = "queueRequests";
@@ -715,7 +724,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
             },
-            fields: ["name", 'key', 'items']
+            fields: ["name", 'key', 'items','date']
         };
 
 
@@ -737,8 +746,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             ,
             sortedBy: {
-                key: 'name',
-                dir: ''
+                key: 'date',
+                dir: 'desc'
             },
             dynamicData: true
 
@@ -752,7 +761,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.table107.prefix = '';
         this.table107.subscribe("rowMouseoverEvent", this.table107.onEventHighlightRow);
         this.table107.subscribe("rowMouseoutEvent", this.table107.onEventUnhighlightRow);
-        this.table107.subscribe("rowClickEvent", select_deal_from_list);
+        this.table107.subscribe("rowClickEvent", select_customer_list_from_list);
 
         this.table107.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table107.filter = {
@@ -1026,6 +1035,17 @@ function select_customer_category_from_list(oArgs) {
     Dom.get('trigger_key').value = record.getData('key');
     Dom.get('customer_category_formated').innerHTML = record.getData('code') + " (" + record.getData('label') + ") ";
     dialog_customer_categories_list.hide();
+}
+
+function select_customer_list_from_list(oArgs) {
+
+    Dom.setStyle('trigger_customer_list_options', 'display', '')
+
+    record = tables.table107.getRecord(oArgs.target);
+    Dom.get('trigger').value = 'Customer List';
+    Dom.get('trigger_key').value = record.getData('key');
+    Dom.get('customer_list_formated').innerHTML = record.getData('name') ;
+    dialog_customer_lists_list.hide()
 }
 
 function select_deal_from_list(oArgs) {

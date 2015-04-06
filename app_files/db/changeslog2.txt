@@ -49,6 +49,7 @@ ALTER TABLE `Order Dimension` ADD `Order Deal Amount Off` DECIMAL(12,2) NOT NULL
 ALTER TABLE `Deal Dimension` CHANGE `Deal Trigger` `Deal Trigger` ENUM('Order','Department','Family','Product','Customer','Customer Category','Customer List') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
 ALTER TABLE `Deal Component Dimension` CHANGE `Deal Component Trigger` `Deal Component Trigger` ENUM('Family','Product','Order','Customer','Customer Category','Customer List') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `Deal Dimension` ADD `Deal Term Allowances` TEXT NULL AFTER `Deal Description`; 
+update `Deal Component Dimension` set `Deal Component XHTML Terms Description Label`=`Deal Component Terms Description` where `Deal Component XHTML Terms Description Label`='';
 
 
 

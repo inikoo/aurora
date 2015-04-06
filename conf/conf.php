@@ -260,7 +260,7 @@ $default_state=array(
 		)
 		,
 
-'offers'=>array(
+		'offers'=>array(
 
 			'order'=>'code',
 			'order_dir'=>'',
@@ -374,7 +374,7 @@ $default_state=array(
 	'customers_list'=>array(
 
 
-
+		'block_view'=>'customers',
 
 		'customers'=>array(
 
@@ -398,7 +398,18 @@ $default_state=array(
 
 
 		),
+		'offers'=>array(
 
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array('Finish'=>0,'Waiting'=>1,'Active'=>1,'Suspended'=>1)
+
+		),
 		'edit_table'=>array(
 			'order'=>'name',
 			'order_dir'=>'desc',
@@ -468,10 +479,10 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>500,
 		)
-		
-		),
+
+	),
 	'order'=>array(
-		
+
 
 		'block_view'=>'items',
 
@@ -486,8 +497,8 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 		),
-		
-		
+
+
 		'items'=>array(
 			'view'=>'general',
 			'period'=>'year',
@@ -498,7 +509,7 @@ $default_state=array(
 			'lookup_family'=>'',
 			'sf'=>0,
 			'nr'=>500,
-			
+
 		),
 
 		'post_transactions'=>array(
@@ -516,18 +527,18 @@ $default_state=array(
 
 
 
-		
+
+		),
+
 	),
 
-),
+	'order_in_process_by_customer'=>array(
 
-'order_in_process_by_customer'=>array(
-		
 
 		'block_view'=>'items',
 
-	
-		
+
+
 		'items'=>array(
 			'view'=>'basket',
 			'order'=>'code',
@@ -536,19 +547,19 @@ $default_state=array(
 			'f_value'=>'',
 			'sf'=>0,
 			'nr'=>500,
-			
+
 		),
 
-		
 
-),
-'order_cancelled'=>array(
-		
+
+	),
+	'order_cancelled'=>array(
+
 
 		'block_view'=>'items',
 
-	
-		
+
+
 		'items'=>array(
 			'view'=>'basket',
 			'order'=>'code',
@@ -557,12 +568,12 @@ $default_state=array(
 			'f_value'=>'',
 			'sf'=>0,
 			'nr'=>500,
-			
+
 		),
 
-		
 
-),
+
+	),
 
 	'reports'=>array(
 		'view'=>'sales',
@@ -700,9 +711,9 @@ $default_state=array(
 
 
 	),
-	
+
 	'payment'=>array(
-	'block_view'=>'details',
+		'block_view'=>'details',
 		'changelog'=>array(
 			'where'=>'where true',
 			'f_field'=>'notes',
@@ -717,7 +728,7 @@ $default_state=array(
 			'elements'=>''
 		),
 	),
-	
+
 	'orders_lists'=>array(
 
 		'store'=>'',
@@ -2037,7 +2048,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>100,
 		),
-			'edit_components'=>array(
+		'edit_components'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -2596,8 +2607,8 @@ $default_state=array(
 
 
 		),
-		
-			'dns'=>array(
+
+		'dns'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -2609,8 +2620,8 @@ $default_state=array(
 
 
 		),
-		
-			'invoices'=>array(
+
+		'invoices'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -2622,7 +2633,7 @@ $default_state=array(
 
 
 		),
-			'offers'=>array(
+		'offers'=>array(
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -2632,7 +2643,7 @@ $default_state=array(
 			'f_show'=>false,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
 		),
-		
+
 		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -3171,7 +3182,7 @@ $default_state=array(
 		),
 
 	),
-	
+
 	'preferences'=>array(
 		'view'=>'color'
 	),
@@ -3582,9 +3593,9 @@ $default_state=array(
 		'marketing_block_view'=>'stores',
 		'orders_view'=>'orders',
 		'stats_view'=>'sales',
-		
-		
-			'pending_orders'=>array(
+
+
+		'pending_orders'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -3597,7 +3608,7 @@ $default_state=array(
 			'elements'=>array('ReadytoShip'=>1,'WaitingforPaymentConfirmation'=>1,'PackedDone'=>1,'InWarehouse'=>1,'SubmittedbyCustomer'=>1,'InProcessbyCustomer'=>1),
 
 		),
-		
+
 		'stores'=>array(
 			'percentages'=>false,
 			'view'=>'general',
@@ -4160,7 +4171,7 @@ $default_state=array(
 			'nr'=>100,
 		),
 		'payments'=>array(
-			
+
 			'f_field'=>'id',
 			'f_value'=>'',
 			'f_show'=>true,
@@ -4169,7 +4180,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>50,
 			'view'=>'general'
-			
+
 
 		),
 
@@ -4492,7 +4503,7 @@ $default_state=array(
 			'percentage'=>0,
 			'mode'=>'all',
 			'avg'=>'totals',
-				'elements_type'=>'section',
+			'elements_type'=>'section',
 
 			'elements'=>array(
 				'section'=>array('System'=>1, 'Info'=>1, 'Department'=>1, 'Family'=>1, 'Product'=>1, 'FamilyCategory'=>1, 'ProductCategory' =>1),

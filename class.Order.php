@@ -5153,7 +5153,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$deals_component_data[$row['Deal Component Key']]=$row;
 		}
 
-		$sql=sprintf("select * from `Deal Component Dimension` left join  `Category Bridge` on (`Category Key`=`Deal Component Trigger Key`) where `Deal Component Trigger`='Customer Category' and `Subject Key` =%d  and `Deal Component Status`='Active' $where",
+		$sql=sprintf("select * from `Deal Component Dimension` left join  `List Customer Bridge` on (`List Key`=`Deal Component Trigger Key`) where `Deal Component Trigger`='Customer List' and `Customer Key` =%d  and `Deal Component Status`='Active' $where",
 			$this->data['Order Customer Key']
 		);
 		$res=mysql_query($sql);
