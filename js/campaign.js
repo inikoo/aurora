@@ -214,7 +214,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: state.customers.f_value
         };
 
-        tableid = 2; // Change if you have more the 1 table
+        tableid = 2; 
         tableDivEL = "table" + tableid;
         var productsColumnDefs = [
         {

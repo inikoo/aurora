@@ -548,11 +548,11 @@ function customer_list() {
 	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
 	else $number_results=20;
 	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
-	else$order='code';
+	else $order='key';
 	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
-	else$order_dir='';
+	else $order_dir='desc';
 	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
-	else$f_field='code';
+	else $f_field='name';
 	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
 	else$f_value='';
 	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
@@ -617,9 +617,9 @@ function customer_list() {
 	$filter_msg='';
 
 	switch ($f_field) {
-	case('code'):
+	case('id'):
 		if ($filtered>0  or  ($total==0 and $filtered>0))
-			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
+			$filter_msg=" ".$total." "._('with id like')." <b>$f_value</b>";
 		break;
 	case('name'):
 		if ($filtered>0  or  ($total==0 and $filtered>0))
@@ -1135,10 +1135,15 @@ function product_list() {
 	else
 		$f_value='';
 
-	if (isset( $_REQUEST['store_key']))
-		$store_key=$_REQUEST['store_key'];
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else
-		$store_key='';
+		$parent_key='';
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='';
 
 
 	if (isset( $_REQUEST['tableid']))
@@ -1155,13 +1160,27 @@ function product_list() {
 	$filter_msg='';
 
 
+	switch ($parent) {
+	case 'store':
+		if (!in_array($parent_key,$user->stores)) {
+			$where=sprintf('where false ');
+		} else {
+			$where=sprintf('where `Product Store Key`=%d',$parent_key);
+		}
 
-	if (!in_array($store_key,$user->stores)) {
-		$where=sprintf('where false ');
-	} else {
-		$where=sprintf('where `Product Store Key`=%d',$store_key);
-
+		break;
+	case 'department':
+		$where=sprintf('where `Product Department Key`=%d',$parent_key);
+		break;
+	case 'family':
+		$where=sprintf('where `Product Family Key`=%d',$parent_key);
+		break;	
+	default:
+		exit;
+		break;
 	}
+
+
 
 
 

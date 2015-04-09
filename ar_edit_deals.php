@@ -116,6 +116,14 @@ case('edit_deal_dates'):
 
 	update_deal($data);
 	break;
+case('update_deal_status'):
+	$data=prepare_values($_REQUEST, array(
+			'value'=>array('type'=>'string'),
+			'deal_key'=>array('type'=>'key'),
+		));
+
+	update_deal_status($data);
+	break;
 
 case('update_deal_metadata_status'):
 	$data=prepare_values($_REQUEST, array(
@@ -133,6 +141,10 @@ case('edit_campaigns'):
 case('edit_deals'):
 	list_deals_for_edition();
 	break;
+case('deals'):
+	list_deals();
+	break;
+
 
 case('deal_components'):
 	list_deal_components_for_edition();
@@ -952,7 +964,7 @@ function list_deals_for_edition() {
 		$order='DM.`Deal Component Name`';
 
 
-	$sql="select `Deal Number Active Components`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
+	$sql="select `Deal Term Allowances Label`,`Deal Code`,`Deal Number Active Components`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
  	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Component Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
@@ -1073,6 +1085,8 @@ function list_deals_for_edition() {
 		//}
 		$adata[]=array(
 			'status'=>$status,
+			'code'=>$row['Deal Code'],
+			'term_allowances_label'=>$row['Deal Term Allowances Label'],
 			'name'=>$name,
 			'description'=>'<span id="deal_metadata_description_'.$deal_metadata->id.'" style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input onKeyUp="deal_metadata_description_changed('.$deal_metadata->id.')"  id="deal_metadata_description_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Component Name'].'"  ovalue="'.$row['Deal Component Name'].'"  /><br/>'.$edit,
 			'dates'=>''
@@ -1155,19 +1169,21 @@ function update_deal_metadata_status($data) {
 
 		switch ($deal_metadata->data['Deal Component Status']) {
 		case 'Waiting':
-			$state=sprintf('<img src="art/icons/bullet_orange.png" alt="%s" title="%s">', _('Waiting'), _('Offer waiting'));
+			$state=sprintf('<span id="component_state_%d"><img src="art/icons/bullet_orange.png" alt="%s" title="%s"></span>', $deal_metadata->data['Deal Component Key'], _('Waiting'), _('Offer waiting'));
 			break;
 		case 'Active':
-			$state=sprintf('<img src="art/icons/bullet_green.png" alt="%s" title="%s">', _('Active'), _('Offer active'));
+			$state=sprintf('<span id="component_state_%d"><img src="art/icons/bullet_green.png" alt="%s" title="%s"></span>', $deal_metadata->data['Deal Component Key'], _('Active'), _('Offer active'));
 			break;
 		case 'Suspended':
-			$state=sprintf('<img src="art/icons/bullet_red.png" alt="%s" title="%s">', _('Suspended'), _('Offer suspended'));
+			$state=sprintf('<span id="component_state_%d"><img src="art/icons/bullet_red.png" alt="%s" title="%s"></span>', $deal_metadata->data['Deal Component Key'], _('Suspended'), _('Offer suspended'));
 			break;
 		case 'Finish':
-			$state=sprintf('<img src="art/icons/bullet_grey.png" alt="%s" title="%s">', _('Finished'), _('Offer finished'));
+			$state=sprintf('<span id="component_state_%d"><img src="art/icons/bullet_grey.png" alt="%s" title="%s"></span>', $deal_metadata->data['Deal Component Key'], _('Finished'), _('Offer finished'));
 			break;
 		default:
-			$state=$deal_metadata->data['Deal Status'];
+			$state=sprintf('<span id="component_state_%d"></span>', $row['Deal Component Key']);
+
+			$state=$row['Deal Status'];
 		}
 
 		$response=array(
@@ -1182,6 +1198,79 @@ function update_deal_metadata_status($data) {
 	}
 	echo json_encode($response);
 }
+
+
+function update_deal_status($data) {
+
+
+
+	require_once 'class.DealCampaign.php';
+
+	$deal=new Deal($data['deal_key']);
+	$deal->update_status($data['value']);
+
+
+	if ($deal->error) {
+		$response=array(
+			'state'=>400,
+			'msg'=>$deal->msg
+		);
+	}
+	else {
+
+
+
+		switch ($deal->data['Deal Status']) {
+		case 'Active':
+		case 'Waiting':
+			$edit_status=sprintf('<div id="deal_state_edit_%d" class="buttons small"><button class="negative" onClick="edit_deal_state(%d,\'Suspended\')">%s</button></div>',
+				$deal->data['Deal Key'],
+				$deal->data['Deal Key'],
+				_('Suspend')
+			);
+			break;
+		case 'Suspended':
+			$edit_status=sprintf('<div  id="deal_state_edit_%d" class="buttons small"><button class="positive" onClick="edit_deal_state(%d,\'Active\')">%s</button></div>',
+				$deal->data['Deal Key'],
+				$deal->data['Deal Key'],
+				_('Activate'));
+			break;
+		default:
+			$edit_status=$deal->data['Deal Status'];
+		}
+
+
+		switch ($deal->data['Deal Status']) {
+		case 'Waiting':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_orange.png" alt="%s" title="%s"></span>',$deal->data['Deal Key'],_('Waiting'),_('Offer waiting'));
+			break;
+		case 'Active':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_green.png" alt="%s" title="%s"></span>',$deal->data['Deal Key'],_('Active'),_('Offer active'));
+			break;
+		case 'Suspended':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_red.png" alt="%s" title="%s"></span>',$deal->data['Deal Key'],_('Suspended'),_('Offer suspended'));
+			break;
+		case 'Finish':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_grey.png" alt="%s" title="%s"></span>',$deal->data['Deal Key'],_('Finished'),_('Offer finished'));
+			break;
+		default:
+			$state=sprintf('<span id="deal_state_%d">%s</span>',$row['Deal Key'],$row['Deal Status']);
+		}
+
+
+		$response=array(
+			'state'=>200,
+			'msg'=>'ok',
+			'key'=>$deal->id,
+			'status'=>$deal->get_xhtml_status(),
+			'button_edit_status'=>$edit_status,
+			'status_icon'=>$state
+
+		);
+	}
+	echo json_encode($response);
+}
+
 
 function update_deal($data) {
 
@@ -1431,13 +1520,22 @@ function create_deal($data) {
 		case 'Product Quantity Ordered':
 			$terms='order '.$deal_data['if_order_more'];
 			$terms_label=_('Buy').' '.$deal_data['if_order_more'];
+
+
+			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
+			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
+
+
 			break;
 		case 'Department For Every Quantity Any Product Ordered':
 		case 'Family For Every Quantity Any Product Ordered':
 
 			$terms='for every '.$deal_data['for_every_ordered'];
 			$terms_label=_('For every').' '.number($deal_data['for_every_ordered']).' '._('you buy');
-			$terms_label=sprintf(_('buy %1$s',number($deal_data['for_every_ordered'])));
+			$terms_label=sprintf(_('buy %1$s'),number($deal_data['for_every_ordered']));
+			
+			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
+			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
 			break;
 
@@ -1445,7 +1543,10 @@ function create_deal($data) {
 		case 'Family For Every Quantity Ordered':
 		case 'Product For Every Quantity Ordered':
 			$terms='for every '.$deal_data['for_every_ordered'];
-			$terms_label=sprintf(_('For every %1$s you buy',number($deal_data['for_every_ordered'])));
+			$terms_label=sprintf(_('For every %1$s you buy'),number($deal_data['for_every_ordered']));
+			
+			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
+			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
 			break;
 
@@ -1660,7 +1761,7 @@ function create_deal($data) {
 				$terms_label.=_('forth order');
 				break;
 			default:
-				$terms_label.=sprintf(_('%1$sth order',number($deal_data['order_number'])));
+				$terms_label.=sprintf(_('%1$sth order'),number($deal_data['order_number']));
 
 
 			}
@@ -1688,8 +1789,6 @@ function create_deal($data) {
 			}
 
 			$terms=money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type.' & '.number($deal_data['order_interval']).' days since last order';
-
-
 			$terms=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_interval'];
 			$terms_label='+'.money($deal_data['amount'], $store->data['Store Currency Code']).' & '.sprintf(_('%1$s days from last order',number($deal_data['order_interval'])));
 			$deal_data['Deal Component Terms']=$deal_data['amount'].';'.$deal_data['amount_type'].';'.$deal_data['order_interval'];
@@ -1697,13 +1796,7 @@ function create_deal($data) {
 
 		case 'Order Interval':
 			$terms=number($deal_data['order_interval']).' days since last order';
-
-
-
-			$terms_label=sprintf(_('%1$s days from last order',number($deal_data['order_interval'])));
-
-
-
+			$terms_label=sprintf(_('%1$s days from last order'),number($deal_data['order_interval']));
 			$deal_data['Deal Component Terms']=$deal_data['order_interval'];
 			break;
 		case 'Order Number':
@@ -1729,60 +1822,6 @@ function create_deal($data) {
 			break;
 		default:
 			exit('Unknown terms >'.$deal_data['Deal Terms Type'].'<');
-		}
-
-
-		switch ($deal_data['Deal Component Allowance Type']) {
-		case 'Department Percentage Off':
-		case 'Family Percentage Off':
-		case 'Product Percentage Off':
-			$deal_data['Deal Component Allowance Type']='Percentage Off';
-			$allowances=$deal_data['percentage_off'].'% off';
-			$allowances_label=$deal_data['percentage_off']._('% off');
-			break;
-
-		case 'Percentage Off':
-			$allowances=$deal_data['percentage_off'].'% off';
-			$allowances_label=$deal_data['percentage_off']._('% off');
-			break;
-		case 'Get Same Free':
-			$allowances=$deal_data['get_same_free'].' free';
-			$allowances_label=', '.$deal_data['get_same_free'].' '._('free');
-			$allowances_label=' '.sprintf(_('get %1$s free bonus',number($deal_data['get_same_free'])));
-
-			break;
-		case 'Get Cheapest Free':
-			$allowances='cheapest '.$deal_data['get_same_free'].' free';
-			$allowances_label=' '.sprintf(_('get %1$s free',number($deal_data['get_same_free'])));
-			$deal_data['Deal Component Terms']=$deal_data['for_every_ordered'];
-			$deal_data['Deal Component Allowance']=$deal_data['get_same_free'];
-			break;
-		case 'Free Shipping':
-
-			$deal_data['Deal Component Allowance Type']='Get Free';
-			$deal_data['Deal Component Allowance Target']='Shipping';
-
-			$allowances='free shipping';
-			$allowances_label=_('free shipping');
-			break;
-		case 'Free Charges':
-			$deal_data['Deal Component Allowance Type']='Get Free';
-			$deal_data['Deal Component Allowance Target']='Charge';
-			$allowances='free charges';
-			$allowances_label=_('free charges');
-			break;
-
-		case 'Clone':
-			$deal->update(array('Deal Mirror Metadata'=>$deal_data['Deal Component Allowance Target Key']), 'no_history');
-			break;
-		case 'Amount Off':
-			$deal_data['Deal Component Allowance']=$deal_data['amount_off'];
-			$allowances=$deal_data['amount_off']." off";
-			$allowances_label=money($deal_data['amount_off'], $store->data['Store Currency Code']).' '._('amount off');
-
-			break;
-		default:
-			exit('Unknown Allowance: '.$deal_data['Deal Component Allowance Type']);
 		}
 
 
@@ -1813,7 +1852,116 @@ function create_deal($data) {
 			}
 
 
-		}else {
+		}
+		else {
+			switch ($deal_data['Deal Component Allowance Target']) {
+			case 'Department':
+				$department=new Department($deal_data['Deal Component Allowance Target Key']);
+				$deal_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="department.php?id=%d">%s</a>',
+					$department->id,
+					$department->data['Product Department Code']
+				);
+				break;
+			case 'Family':
+				$family=new Family($deal_data['Deal Component Allowance Target Key']);
+				$deal_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',
+					$family->id,
+					$family->data['Product Family Code']
+				);
+				break;
+			case 'Product':
+
+				$product=new Product('pid', $deal_data['Deal Component Allowance Target Key']);
+				$deal_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',
+					$product->pid,
+					$product->data['Product Code']
+				);
+				break;
+			case 'Shipping':
+				$deal_data['Deal Component Allowance Target XHTML Label']='';
+				break;
+			case 'Charge':
+				$deal_data['Deal Component Allowance Target XHTML Label']='';
+				break;
+			case 'Order':
+				$deal_data['Deal Component Allowance Target XHTML Label']='';
+				break;
+
+			default:
+				exit('Unknown target: >'.$deal_data['Deal Component Allowance Target'].'<');
+			}
+
+			switch ($deal_data['Deal Component Allowance Type']) {
+			case 'Department Percentage Off':
+			case 'Family Percentage Off':
+			case 'Product Percentage Off':
+				$deal_data['Deal Component Allowance Type']='Percentage Off';
+				$allowances=$deal_data['percentage_off'].'% off';
+				$allowances_label=$deal_data['percentage_off']._('% off');
+				break;
+
+			case 'Percentage Off':
+				$allowances=$deal_data['percentage_off'].'% off';
+				$allowances_label=$deal_data['percentage_off']._('% off');
+				break;
+			case 'Get Same Free':
+				$allowances=$deal_data['get_same_free'].' free';
+				$allowances_label=', '.$deal_data['get_same_free'].' '._('free');
+				$allowances_label=' '.sprintf(_('get %1$s free bonus'),number($deal_data['get_same_free']));
+
+				break;
+			case 'Get Cheapest Free':
+				$allowances='cheapest '.$deal_data['get_same_free'].' free';
+				$allowances_label=' '.sprintf(_('get %1$s free'),number($deal_data['get_same_free']));
+				$deal_data['Deal Component Terms']=$deal_data['for_every_ordered'];
+				$deal_data['Deal Component Allowance']=$deal_data['get_same_free'];
+				break;
+			case 'Free Shipping':
+
+				$deal_data['Deal Component Allowance Type']='Get Free';
+				$deal_data['Deal Component Allowance Target']='Shipping';
+
+				$allowances='free shipping';
+				$allowances_label=_('free shipping');
+				break;
+			case 'Free Charges':
+				$deal_data['Deal Component Allowance Type']='Get Free';
+				$deal_data['Deal Component Allowance Target']='Charge';
+				$allowances='free charges';
+				$allowances_label=_('free charges');
+				break;
+
+			case 'Clone':
+				$deal->update(array('Deal Mirror Metadata'=>$deal_data['Deal Component Allowance Target Key']), 'no_history');
+				break;
+			case 'Amount Off':
+				$deal_data['Deal Component Allowance']=$deal_data['amount_off'];
+				$allowances=$deal_data['amount_off']." off";
+				$allowances_label=money($deal_data['amount_off'], $store->data['Store Currency Code']).' '._('amount off');
+
+				break;
+			case 'Bonus Product From Family':
+				$deal_data['Deal Component Allowance Type'] = 'Get Free';
+				$deal_data['Deal Component Allowance Target'] = 'Family';
+				$deal_data['Deal Component Allowance'] = '1;'.$deal_data['default_free_product_from_family'];
+				$allowances = 'get one form family '.$family->data['Product Family Code'];
+				$allowances_label=sprintf(_('get one form family %1$s'),$deal_data['Deal Component Allowance Target XHTML Label']);
+
+				break;
+			case 'Bonus Product':
+				$deal_data['Deal Component Allowance Type']='Get Free';
+				$deal_data['Deal Component Allowance Target']='Product';
+				$deal_data['Deal Component Allowance'] = '1';
+				$allowances = 'get one '.$product->data['Product Code'];
+				$allowances_label=sprintf(_('get one %1$s'),$deal_data['Deal Component Allowance Target XHTML Label']);
+				break;
+
+			default:
+				exit('Unknown Allowance: '.$deal_data['Deal Component Allowance Type']);
+			}
+
+
+
 
 			$deal_component_data=array(
 				'Deal Component Name'=>$deal_data['Deal Name'],
@@ -1832,43 +1980,10 @@ function create_deal($data) {
 
 
 
-			switch ($deal_data['Deal Component Allowance Target']) {
-			case 'Department':
-				$department=new Department($deal_data['Deal Component Allowance Target Key']);
-				$deal_component_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="department.php?id=%d">%s</a>',
-					$department->id,
-					$department->data['Product Department Code']
-				);
-				break;
-			case 'Family':
-				$family=new Family($deal_data['Deal Component Allowance Target Key']);
-				$deal_component_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',
-					$family->id,
-					$family->data['Product Family Code']
-				);
-				break;
-			case 'Product':
 
-				$product=new Product('pid', $deal_data['Deal Component Allowance Target Key']);
-				$deal_component_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',
-					$product->pid,
-					$product->data['Product Code']
-				);
-				break;
-			case 'Shipping':
-				$deal_component_data['Deal Component Allowance Target XHTML Label']='';
-				break;
-			case 'Charge':
-				$deal_component_data['Deal Component Allowance Target XHTML Label']='';
-				break;
-			case 'Order':
-				$deal_component_data['Deal Component Allowance Target XHTML Label']='';
-				break;
-			default:
-				exit('Unknown target: >'.$deal_data['Deal Component Allowance Target'].'<');
-			}
 
 			//print_r($deal_component_data);
+
 			$component=$deal->add_component($deal_component_data);
 
 		}
@@ -2295,6 +2410,376 @@ function delete_campaign($data) {
 	echo json_encode($response);
 
 
+
+}
+
+function list_deals() {
+
+
+
+	if ( isset($_REQUEST['parent']))
+		$parent= $_REQUEST['parent'];
+	else {
+		exit("no parent arg");
+	}
+
+	if ( isset($_REQUEST['parent_key']))
+		$parent_key= $_REQUEST['parent_key'];
+	else {
+		exit("no parent key arg");
+	}
+
+
+	if ( isset($_REQUEST['referrer']))
+		$referrer= $_REQUEST['referrer'];
+	else {
+		$referrer='marketing';
+	}
+
+
+	$conf=$_SESSION['state'][$parent]['edit_offers'];
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+	} else
+		$number_results=$conf['nr'];
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	$_SESSION['state'][$parent]['edit_offers']['order']=$order;
+	$_SESSION['state'][$parent]['edit_offers']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['edit_offers']['nr']=$number_results;
+	$_SESSION['state'][$parent]['edit_offers']['sf']=$start_from;
+	$_SESSION['state'][$parent]['edit_offers']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
+
+	if ($parent=='store') {
+
+		if (isset( $_REQUEST['elements']))
+			$elements=$_REQUEST['elements'];
+		else
+			$elements=$conf['elements'];
+
+
+
+		if (isset( $_REQUEST['elements_order'])) {
+			$elements['Order']=$_REQUEST['elements_order'];
+		}
+		if (isset( $_REQUEST['elements_department'])) {
+			$elements['Department']=$_REQUEST['elements_department'];
+		}
+		if (isset( $_REQUEST['elements_family'])) {
+			$elements['Family']=$_REQUEST['elements_family'];
+		}
+		if (isset( $_REQUEST['elements_product'])) {
+			$elements['Product']=$_REQUEST['elements_product'];
+		}
+
+		$_SESSION['state'][$parent]['offers']['elements']=$elements;
+
+
+	}
+
+
+
+
+
+	if ($parent=='store') {
+		$where=sprintf("where  `Deal Trigger`='Order' and  `Deal Store Key`=%d     ",$parent_key);
+
+
+
+	}elseif ($parent=='campaign') {
+		$where=sprintf("where  `Deal Campaign Key`=%d     ",$parent_key);
+	}
+	elseif ($parent=='department')
+		$where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_key);
+	elseif ($parent=='family')
+		$where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_key);
+	elseif ($parent=='product')
+		$where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_key);
+	elseif ($parent=='customer')
+		$where=sprintf("where  `Deal Trigger`='Customer' and  `Deal Trigger Key`=%d   ",$parent_key);
+	elseif ($parent=='customer_categories')
+		$where=sprintf("where    `Deal Trigger`='Customer Category' and  `Deal Trigger Key`=%d   ",$parent_key);
+	elseif ($parent=='customers_list')
+		$where=sprintf("where    `Deal Trigger`='Customer List' and  `Deal Trigger Key`=%d   ",$parent_key);
+	elseif ($parent=='marketing')
+		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
+	else
+		$where=sprintf("where false ");;
+
+
+
+
+
+	// print "$parent $where";
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='description' and $f_value!='')
+		$wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Deal Code` like '%".addslashes($f_value)."%'";
+
+
+
+
+
+
+
+	$sql="select count( distinct `Deal Key`) as total from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  $where $wheref";
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count( distinct `Deal Key`) as total_without_filters from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  $where ";
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=number($total_records)." ".ngettext('offer','offers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>=10)
+		$rtext_rpp='('._("Showing all").')';
+	else
+		$rtext_rpp='';
+
+
+
+
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this name ")." <b>".$f_value."*</b> ";
+			break;
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this code ")." <b>*".$f_value."*</b> ";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with description like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with name like')." <b>".$f_value."*</b>";
+			break;
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with code like')." <b>*".$f_value."*</b>";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+	if ($order=='code')
+		$order='`Deal Code`';
+	elseif ($order=='description')
+		$order='`Deal Name`,`Deal Description`';
+	elseif ($order=='orders')
+		$order='`Deal Total Acc Used Orders`';
+	elseif ($order=='customers')
+		$order='`Deal Total Acc Used Customers`';
+	elseif ($order=='store')
+		$order='`Store Code`';
+	elseif ($order=='state')
+		$order='`Deal Status`';
+	else
+		$order='`Deal Name`';
+
+
+	$sql="select *  from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  left join `Store Dimension` S on (S.`Store Key`=`Deal Store Key`)  $where  $wheref  group by `Deal Key` order by $order $order_direction limit $start_from,$number_results    ";
+	//print $sql;
+	$res = mysql_query($sql);
+
+	$total=mysql_num_rows($res);
+	$adata=array();
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		$name=sprintf('<a href="deal.php?id=%d&referrer=%s">%s</a>',$row['Deal Key'],$referrer,$row['Deal Name']);
+		$code=sprintf('<a href="deal.php?id=%d&referrer=%s">%s</a>',$row['Deal Key'],$referrer,$row['Deal Code']);
+
+		$orders=number($row['Deal Total Acc Used Orders']);
+		$customers=number($row['Deal Total Acc Used Customers']);
+
+
+		switch ($row['Deal Status']) {
+		case 'Waiting':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_orange.png" alt="%s" title="%s"></span>',$row['Deal Key'],_('Waiting'),_('Offer waiting'));
+			break;
+		case 'Active':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_green.png" alt="%s" title="%s"></span>',$row['Deal Key'],_('Active'),_('Offer active'));
+			break;
+		case 'Suspended':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_red.png" alt="%s" title="%s"></span>',$row['Deal Key'],_('Suspended'),_('Offer suspended'));
+			break;
+		case 'Finish':
+			$state=sprintf('<span id="deal_state_%d"><img src="art/icons/bullet_grey.png" alt="%s" title="%s"></span>',$row['Deal Key'],_('Finished'),_('Offer finished'));
+			break;
+		default:
+			$state=sprintf('<span id="deal_state_%d">%s</span>',$row['Deal Key'],$row['Deal Status']);
+		}
+
+
+
+		$duration='';
+		if ($row['Deal Expiration Date']=='' and $row['Deal Begin Date']=='') {
+			$duration=_('Permanent');
+		}else {
+
+			if ($row['Deal Begin Date']!='') {
+				$duration=strftime("%x", strtotime($row['Deal Begin Date']." +00:00"));
+
+			}
+			$duration.=' - ';
+			if ($row['Deal Expiration Date']!='') {
+				$duration.=strftime("%x", strtotime($row['Deal Expiration Date']." +00:00"));
+
+			}else {
+				$duration.=_('Present');
+			}
+
+		}
+
+switch ($row['Deal Status']) {
+		case 'Active':
+		case 'Waiting':
+			$edit_status=sprintf('<div id="deal_state_edit_%d" class="buttons small"><button class="negative" onClick="edit_deal_state(%d,\'Suspended\')">%s</button></div>',
+				$row['Deal Key'],
+				$row['Deal Key'],
+				_('Suspend')
+			);
+			break;
+		case 'Suspended':
+			$edit_status=sprintf('<div  id="deal_state_edit_%d" class="buttons small"><button class="positive" onClick="edit_deal_state(%d,\'Active\')">%s</button></div>',
+				$row['Deal Key'],
+				$row['Deal Key'],
+				_('Activate'));
+			break;
+		default:
+			$edit_status=$row['Deal Status'];
+		}
+
+
+
+		$store=sprintf("<a href='marketing.php?store=%d'>%s</a>",$row['Deal Store Key'],$row['Store Code']);
+
+
+		$adata[]=array(
+			'store'=>$store,
+			'code'=>$code,
+			'name'=>$name,
+			'description'=>sprintf('<b title="%s">%s</b> %s<br/>%s',$row['Deal Description'],$row['Deal Code'],$row['Deal Name'],$row['Deal Term Allowances']),
+			'orders'=>$orders,
+			'customers'=>$customers,
+			'duration'=>$duration,
+			'state'=>$state,
+			'edit_status'=>$edit_status,
+			'term_allowances_label'=>$row['Deal Component XHTML Terms Description Label']
+
+
+		);
+	}
+	mysql_free_result($res);
+
+
+
+	// if($total<$number_results)
+	//  $rtext=$total.' '.ngettext('store','stores',$total);
+	//else
+	//  $rtext='';
+
+	//   $total_records=ceil($total_records/$number_results)+$total_records;
+
+	$response=array('resultset'=>
+		array(
+
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+
+
+		)
+	);
+	echo json_encode($response);
 
 }
 

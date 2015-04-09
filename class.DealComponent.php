@@ -669,31 +669,7 @@ class DealComponent extends DB_Table {
 			$this->update_status_from_dates($force=true);
 		}
 
-/*
-		if ($this->data['Deal Component Status']=='Active') {
-			$from_date=false;
-			if ($this->data['Deal Component Begin Date']=='') {
-				$from_date=gmdate("Y-m-d H:i:s");
-			}else {
-				if (strtotime($this->data['Deal Component Begin Date'].' +0:00')>time()  ) {
-					$from_date=gmdate("Y-m-d H:i:s");
-				}
 
-			}
-			if ($from_date) {
-				$this->update_field_switcher('Deal Component Begin Date',$from_date);
-			}
-			$this->update_field_switcher('Deal Component Public','Yes');
-
-
-
-		}
-
-		$deal= new Deal($this->data['Deal Component Deal Key']);
-
-		$deal->update_status_from_components();
-		$deal->update_number_components();
-		*/
 	}
 
 

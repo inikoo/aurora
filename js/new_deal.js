@@ -7,14 +7,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
     session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
     labels = session_data.label;
- 	
- 
+
+
     tables = new function() {
 
         this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-            elLiner.innerHTML = oData;
+            elLiner.innerHTML = '';
+            if(oData!= undefined){
             elLiner.innerHTML = oData.replace(/<.*?>/g, '');
-
+}
         };
 
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -88,8 +89,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             ,
             sortedBy: {
-                key: 'code',
-                dir: ''
+                key: 'key',
+                dir: 'desc'
             },
             dynamicData: true
 
@@ -321,7 +322,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         }];
-        request = "ar_quick_tables.php?tipo=product_list&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
+        request = "ar_quick_tables.php?tipo=product_list&parent=store&parent_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
 
         this.dataSource103 = new YAHOO.util.DataSource(request);
         this.dataSource103.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -451,7 +452,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             ,
             sortedBy: {
-                key: 'key',
+                key: 'name',
                 dir: ''
             },
             dynamicData: true
@@ -603,7 +604,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
         request = "ar_quick_tables.php?tipo=category_list&subject=Customer&branch_type=Head&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-		//alert(request)
+        //alert(request)
         this.dataSource106 = new YAHOO.util.DataSource(request);
         this.dataSource106.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource106.connXhrMode = "queueRequests";
@@ -675,7 +676,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             key: "key",
             label: "",
             hidden: true
-        },  {
+        }, {
             key: "date",
             label: labels.Date,
             width: 90,
@@ -684,7 +685,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
-        },  {
+        }, {
             key: "name",
             formatter: "remove_links",
             label: labels.Name,
@@ -706,7 +707,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
         request = "ar_quick_tables.php?tipo=list_list&subject=Customer&list_type=Static&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-		
+
         this.dataSource107 = new YAHOO.util.DataSource(request);
         this.dataSource107.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource107.connXhrMode = "queueRequests";
@@ -724,7 +725,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
             },
-            fields: ["name", 'key', 'items','date']
+            fields: ["name", 'key', 'items', 'date']
         };
 
 
@@ -792,13 +793,13 @@ function trigger_changed(value) {
     case 'Family':
         show_dialog_families_list('trigger');
         Dom.setStyle(['trigger_family_options', 'family_terms_select'], 'display', '')
-        terms_changed('Department Quantity Ordered')
+        terms_changed('Family Quantity Ordered')
         break;
     case 'Product':
         show_dialog_products_list('trigger');
         Dom.setStyle(['trigger_product_options', 'product_terms_select'], 'display', '')
 
-        terms_changed('Department Quantity Ordered')
+        terms_changed('Family Quantity Ordered')
         break;
     case 'Customer':
         show_dialog_customers_list();
@@ -829,6 +830,7 @@ function show_dialog_campaigns_list() {
 
 function show_dialog_departments_list(scope) {
 
+
     if (scope == 'trigger') {
         var scope_element = 'trigger_select'
         asset_select_scope = 'trigger'
@@ -841,9 +843,9 @@ function show_dialog_departments_list(scope) {
     }
 
     region1 = Dom.getRegion(scope_element);
-   
+
     region2 = Dom.getRegion('dialog_departments_list');
-    var pos = [region1.left - 2, region1.top+1 ]
+    var pos = [region1.left - 2, region1.top + 1]
     Dom.setXY('dialog_departments_list', pos);
     dialog_departments_list.show();
 
@@ -857,13 +859,16 @@ function show_dialog_families_list(scope) {
     } else if (scope == 'target_bis') {
         var scope_element = 'allowances_select'
         asset_select_scope = 'target_bis'
+    } else if (scope == 'free_product_from_family') {
+        var scope_element = 'allowances_select'
+        asset_select_scope = 'free_product_from_family'
     } else {
         var scope_element = 'customer_terms_select'
         asset_select_scope = 'target'
     }
     region1 = Dom.getRegion(scope_element);
     region2 = Dom.getRegion('dialog_families_list');
-    var pos = [region1.left - 2, region1.top+1 ]
+    var pos = [region1.left - 2, region1.top + 1]
     Dom.setXY('dialog_families_list', pos);
     dialog_families_list.show();
 }
@@ -876,21 +881,34 @@ function show_dialog_products_list(scope) {
     } else if (scope == 'target_bis') {
         var scope_element = 'allowances_select'
         asset_select_scope = 'target_bis'
+    } else if (scope == 'default_free_product_from_family') {
+        var scope_element = 'allowances_select'
+        asset_select_scope = 'default_free_product_from_family'
     } else {
         var scope_element = 'customer_terms_select'
         asset_select_scope = 'target'
     }
 
+
+    if (scope != 'default_free_product_from_family') {
+        table_id = 103;
+        var table = tables['table' + table_id];
+        var datasource = tables['dataSource' + table_id];
+        request = "ar_quick_tables.php?tipo=product_list&parent=store&parent_key=" + Dom.get('store_key').value + "&tableid=103&nr=20&sf=0";
+        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+    }
+
+
     region1 = Dom.getRegion(scope_element);
     region2 = Dom.getRegion('dialog_products_list');
-    var pos = [region1.left - 2, region1.top+1 ]
+    var pos = [region1.left - 2, region1.top + 1]
     Dom.setXY('dialog_products_list', pos);
     dialog_products_list.show();
 }
 
 function show_dialog_customers_list() {
     region1 = Dom.getRegion('trigger_select');
-    var pos = [region1.left - 2, region1.top+1 ]
+    var pos = [region1.left - 2, region1.top + 1]
     Dom.setXY('dialog_customers_list', pos);
     dialog_customers_list.show();
 }
@@ -904,15 +922,15 @@ function show_dialog_deals_list() {
 }
 
 function show_dialog_customer_categories_list() {
-     region1 = Dom.getRegion('trigger_select');
-    var pos = [region1.left - 2, region1.top+1 ]
+    region1 = Dom.getRegion('trigger_select');
+    var pos = [region1.left - 2, region1.top + 1]
     Dom.setXY('dialog_customer_categories_list', pos);
     dialog_customer_categories_list.show();
 }
 
 function show_dialog_customer_lists_list() {
-     region1 = Dom.getRegion('trigger_select');
-    var pos = [region1.left - 2, region1.top+1 ]
+    region1 = Dom.getRegion('trigger_select');
+    var pos = [region1.left - 2, region1.top + 1]
     Dom.setXY('dialog_customer_lists_list', pos);
     dialog_customer_lists_list.show();
 }
@@ -968,7 +986,7 @@ function select_department_from_list(oArgs) {
 
 function select_family_from_list(oArgs) {
 
-
+    //alert(asset_select_scope)
     record = tables.table102.getRecord(oArgs.target);
     if (asset_select_scope == 'trigger') {
         Dom.get('trigger').value = 'Family';
@@ -980,6 +998,22 @@ function select_family_from_list(oArgs) {
         Dom.get('target').value = 'Family';
         Dom.get('target_key').value = record.getData('key');
         Dom.get('target_bis_family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+    } else if (asset_select_scope == 'free_product_from_family') {
+
+        Dom.get('target').value = 'Family';
+        Dom.get('target_key').value = record.getData('key');
+        Dom.get('target_bis_family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+
+
+        table_id = 103;
+        var table = tables['table' + table_id];
+        var datasource = tables['dataSource' + table_id];
+        request = "ar_quick_tables.php?tipo=product_list&parent=family&parent_key=" + record.getData('key') + "&tableid=103&nr=20&sf=0";
+        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+        Dom.setStyle(['default_free_product_from_family_options'], 'display', '');
+        show_dialog_products_list('default_free_product_from_family');
+
     } else {
         Dom.get('target').value = 'Family';
         Dom.get('target_key').value = record.getData('key');
@@ -1005,6 +1039,10 @@ function select_product_from_list(oArgs) {
         Dom.get('target').value = 'Product';
         Dom.get('target_key').value = record.getData('key');
         Dom.get('target_bis_product_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+    } else if (asset_select_scope == 'default_free_product_from_family') {
+
+        Dom.get('default_free_product_from_family').value = record.getData('code');
+        Dom.get('default_free_product_from_family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
     } else {
         Dom.get('target').value = 'Product';
         Dom.get('target_key').value = record.getData('key');
@@ -1044,7 +1082,7 @@ function select_customer_list_from_list(oArgs) {
     record = tables.table107.getRecord(oArgs.target);
     Dom.get('trigger').value = 'Customer List';
     Dom.get('trigger_key').value = record.getData('key');
-    Dom.get('customer_list_formated').innerHTML = record.getData('name') ;
+    Dom.get('customer_list_formated').innerHTML = record.getData('name');
     dialog_customer_lists_list.hide()
 }
 
@@ -1140,7 +1178,8 @@ function terms_changed(value) {
 
         allowances_changed('Percentage Off');
         break;
-    case 'Department For Every Any Product Quantity Ordered':
+    case 'Department For Every Quantity Any Product Ordered':
+    
         Dom.setStyle('for_every_ordered_tr', 'display', '');
         Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
         allowances_changed('Get Cheapest Free');
@@ -1261,7 +1300,7 @@ function terms_changed(value) {
 }
 
 function allowances_changed(value) {
-    Dom.setStyle(['percentage_off_tr', 'get_same_free_tr', 'target_bis_department_options', 'target_bis_family_options', 'target_bis_product_options', 'clone_deal_options'], 'display', 'none')
+    Dom.setStyle(['percentage_off_tr', 'get_same_free_tr', 'target_bis_department_options', 'target_bis_family_options', 'target_bis_product_options', 'default_free_product_from_family_options', 'clone_deal_options'], 'display', 'none')
 
     validate_scope_data.deal.percentage_off.required = false;
     validate_scope_data.deal.get_same_free.required = false;
@@ -1306,9 +1345,16 @@ function allowances_changed(value) {
         show_dialog_deals_list()
         break;
 
+    case 'Bonus Product From Family':
+        Dom.setStyle(['target_bis_family_options'], 'display', '');
 
+        show_dialog_families_list('free_product_from_family');
+        break;
 
-
+    case 'Bonus Product':
+        Dom.setStyle(['target_bis_product_options'], 'display', '');
+        show_dialog_products_list('target_bis');
+        break;
     }
     validate_scope('deal')
 
@@ -1630,6 +1676,21 @@ function init() {
                 'validation': false,
                 'ar': false
             },
+
+            'default_free_product_from_family': {
+                'changed': true,
+                'validated': false,
+                'required': false,
+                'dbname': 'default_free_product_from_family',
+                'name': 'default_free_product_from_family',
+
+                'validation': false,
+                'ar': false
+            },
+
+
+
+
             'voucher_code': {
                 'changed': false,
                 'validated': false,
@@ -1970,9 +2031,8 @@ function init() {
         draggable: false
     });
     dialog_departments_list.render();
-    Event.addListener("update_department", "click", show_dialog_departments_list, 'trigger');
-    Event.addListener("target_update_department", "click", show_dialog_departments_list, 'target');
-    Event.addListener("target_bis_update_department", "click", show_dialog_departments_list, 'target');
+   // Event.addListener("target_update_department", "click", show_dialog_departments_list, 'target');
+    //Event.addListener("target_bis_update_department", "click", show_dialog_departments_list, 'target');
 
     dialog_families_list = new YAHOO.widget.Dialog("dialog_families_list", {
         visible: false,
@@ -1982,9 +2042,9 @@ function init() {
     });
 
     dialog_families_list.render();
-    Event.addListener("update_family", "click", show_dialog_families_list, "trigger");
-    Event.addListener("target_update_family", "click", show_dialog_families_list, "target");
-    Event.addListener("target_bis_update_family", "click", show_dialog_families_list, "target");
+   // Event.addListener("update_family", "click", show_dialog_families_list, "trigger");
+   // Event.addListener("target_update_family", "click", show_dialog_families_list, "target");
+   // Event.addListener("target_bis_update_family", "click", show_dialog_families_list, "target");
 
     dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
         visible: false,
@@ -1993,9 +2053,9 @@ function init() {
         draggable: false
     });
     dialog_products_list.render();
-    Event.addListener("update_product", "click", show_dialog_products_list, "trigger");
-    Event.addListener("target_update_product", "click", show_dialog_products_list, "target");
-    Event.addListener("target_bis_update_product", "click", show_dialog_products_list, "target");
+    //Event.addListener("update_product", "click", show_dialog_products_list, "trigger");
+    //Event.addListener("target_update_product", "click", show_dialog_products_list, "target");
+    //Event.addListener("target_bis_update_product", "click", show_dialog_products_list, "target");
 
     dialog_customers_list = new YAHOO.widget.Dialog("dialog_customers_list", {
         visible: false,

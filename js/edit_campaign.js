@@ -6,8 +6,8 @@ var validate_scope_metadata;
 
 function change_block(e) {
 
-    var ids = ["description", "state"];
-    var block_ids = ["d_description", "d_state"];
+    var ids = ["description", "state","deals"];
+    var block_ids = ["d_description", "d_state","d_deals"];
 
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('d_' + this.id, 'display', '');
@@ -18,6 +18,143 @@ function change_block(e) {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=campaign-edit_block_view&value=' + this.id, {});
 
 }
+
+
+YAHOO.util.Event.addListener(window, "load", function() {
+
+    session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
+    labels = session_data.label;
+    state = session_data.state;
+
+    tables = new function() {
+
+  
+
+        tableid = 2; 
+        tableDivEL = "table" + tableid;
+        var productsColumnDefs = [
+        {
+            key: "key",
+            label: "",
+            width: 20,
+            sortable: false,
+            isPrimaryKey: true,
+            hidden: true
+        }, 
+        {
+            key: "state",
+            label: "",
+            width: 10,
+            sortable: false
+        },
+
+        {
+            key: "code",
+            label: labels.Code,
+            width: 110,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, 
+        {
+            key: "term_allowances_label",
+            label: labels.Description,
+            width: 340,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+            },
+            
+           {
+            key: "edit_status",
+            label: "",
+            width: 150,
+            sortable: true,
+            className: "aleft",
+            
+            }  
+            
+        ];
+
+        request = "ar_edit_deals.php?tipo=deals&parent=campaign&parent_key=" + Dom.get('campaign_key').value + '$sf=0&tableid=' + tableid;
+     //   alert(request)
+        this.dataSource2 = new YAHOO.util.DataSource(request);
+        this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource2.connXhrMode = "queueRequests";
+        this.dataSource2.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rowsPerPage: "resultset.records_perpage",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+
+            },
+
+            fields: [ "key", "state", "code", "term_allowances_label","edit_status"]
+        };
+
+
+        this.table2 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs, this.dataSource2, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: state.edit_offers.nr,
+                containers: 'paginator1',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+            })
+
+            ,
+            sortedBy: {
+                key: state.edit_offers.order,
+                dir: state.edit_offers.order_dir
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table2.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+        this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table2.request = request;
+        this.table2.table_id = tableid;
+        this.table2.subscribe("renderEvent", myrenderEvent);
+        this.table2.getDataSource().sendRequest(null, {
+            success: function(request, response, payload) {
+                if (response.results.length == 0) {
+                    //   get_part_elements_numbers()
+                } else {
+                    // this.onDataReturnInitializeTable(request, response, payload);
+                }
+            },
+            scope: this.table2,
+            argument: this.table2.getState()
+        });
+        this.table2.filter = {
+            key: state.edit_offers.f_field,
+            value: state.edit_offers.f_value
+        };
+    };
+});
 
 
 
@@ -228,6 +365,41 @@ function post_item_updated_actions(branch, r){
 	location.reload(); 
 }
 
+function new_deal() {
+    location.href = "new_deal.php?parent=campaign&parent_key=" + Dom.get('campaign_key').value;
+}
+
+
+function edit_deal_state(deal_key, state) {
+    var request = 'ar_edit_deals.php?tipo=update_deal_status&value=' + state + '&deal_key=' + deal_key
+
+    //alert(request)  
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+				Dom.get('deal_state_edit_'+r.key).innerHTML=r.button_edit_status
+				Dom.get('deal_state_'+r.key).innerHTML=r.status_icon
+
+            } else {
+
+            }
+           
+
+        }
+    });
+}
+
+
+
+
+
+
+
 function init() {
 
     session_data=YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
@@ -361,9 +533,9 @@ function init() {
 
 
 
-    init_search('products_store');
+    init_search('marketing_store');
 
-    var ids = ["description", "state"];
+    var ids = ["description", "state","deals"];
     Event.addListener(ids, "click", change_block);
 
     Event.addListener('save_edit_campaign_description', "click", save_description);
@@ -420,8 +592,36 @@ function init() {
     Event.addListener(['v_calpop1', 'v_calpop2'], "keyup", date_changed);
 
 
+  
 
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+
+
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+

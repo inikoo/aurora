@@ -1044,7 +1044,7 @@ function list_deals() {
 	elseif ($parent=='customer_categories')
 		$where=sprintf("where    `Deal Trigger`='Customer Category' and  `Deal Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='customers_list')
-		$where=sprintf("where    `Deal Trigger`='Customer List' and  `Deal Trigger Key`=%d   ",$parent_key);		
+		$where=sprintf("where    `Deal Trigger`='Customer List' and  `Deal Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='marketing')
 		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
 	else
@@ -1071,7 +1071,7 @@ function list_deals() {
 
 
 	$sql="select count( distinct `Deal Key`) as total from `Deal Dimension` left join `Deal Component Dimension` on (`Deal Component Deal Key`=`Deal Key`)  $where $wheref";
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1491,17 +1491,41 @@ function list_deal_components() {
 
 
 		switch ($row['Deal Component Allowance Target']) {
-
+		case 'Department':
+			$allowance_target=_('FamDepartmentily');
+			break;
+		case 'Family':
+			$allowance_target=_('Family');
+			break;
+		case 'Product':
+			$allowance_target=_('Product');
+			break;
 		default:
 			$allowance_target=$row['Deal Component Allowance Target'];
 		}
 
 
 
+
 		$allowance=$row['Deal Component Allowance Description'];
-		if ($row['Deal Component Allowance Target XHTML Label']!='') {
-			$allowance.=' ('.$allowance_target.' '.$row['Deal Component Allowance Target XHTML Label'].')';
-		}
+			if ($row['Deal Component Allowance Target XHTML Label']!=''
+
+					and !($row['Deal Component Allowance Type']=='Get Free' and in_array($row['Deal Component Allowance Target'],array('Product','Family')))
+
+					and !in_array($row['Deal Component Terms Type'],
+						array(
+							'Department Quantity Ordered',
+							'Department For Every Quantity Ordered',
+							'Department For Every Quantity Any Product Ordered',
+							'Family Quantity Ordered',
+							'Family For Every Quantity Ordered',
+							'Family For Every Quantity Any Product Ordered',
+							'Product Quantity Ordered',
+							'Product For Every Quantity Ordered'
+
+						))) {
+					$allowance.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
+				}
 
 
 		$adata[]=array(

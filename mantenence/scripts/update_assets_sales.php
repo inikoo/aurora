@@ -46,6 +46,34 @@ print date('r')." Start\n";
 
 
 
+$sql="select count(*) as total from `Product Family Dimension`  ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+$lap_time0=date('U');
+$sql="select * from `Product Family Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$family=new Family($row['Product Family Key']);
+	$family->update_product_data();
+	$family->update_up_today_sales();
+	$family->update_interval_sales();
+	$family->update_last_period_sales();
+	unset($family);
+	$contador++;
+	$lap_time1=date('U');
+print 'Fam Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+}
+$lap_time1=date('U');
+print date('r')." Fam\n";
+
+print 'Fam Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
+
+
+
 $sql="select count(*) as total from `Product Dimension`";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -61,6 +89,7 @@ $lap_time0=date('U');
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result)   ) {
 	$product=new Product('pid',$row['Product ID']);
+	$product->load_acc_data();
 	$product->update_availability();
 	$product->update_up_today_sales();
 	$product->update_interval_sales();
@@ -99,34 +128,6 @@ $lap_time1=date('U');
 print date('r')." Store\n";
 
 print 'Store Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-
-
-
-$sql="select count(*) as total from `Product Family Dimension`  ";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-$lap_time0=date('U');
-$sql="select * from `Product Family Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$family=new Family($row['Product Family Key']);
-	$family->update_product_data();
-	$family->update_up_today_sales();
-	$family->update_interval_sales();
-	$family->update_last_period_sales();
-	unset($family);
-	$contador++;
-	//$lap_time1=date('U');
-	//print 'Fam '.percentage($contador,$total,3)."  cc  ".($lap_time1-$lap_time0)."s  ".($lap_time1-$lap_time0)/$contador." cc  \r";
-}
-$lap_time1=date('U');
-print date('r')." Fam\n";
-
-print 'Fam Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
 
