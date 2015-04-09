@@ -42,7 +42,7 @@
 				<table class="show_info_product">
 					<tr>
 						
-						<td colspan="2" class="aright">{$deal->get('Deal Term Allowances')} </td>
+						<td colspan="2" class="aright"><span title="{$deal->get('Deal Term Allowances')|strip_tags}">{$deal->get('Deal Term Allowances Label')}</span></td>
 					</tr>
 					<tr>
 						<td>{t}Validity{/t}</td>

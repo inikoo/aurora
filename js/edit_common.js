@@ -1062,7 +1062,7 @@ function save_edit_general_bulk(branch) {
    //  alert(request+'?'+postData);return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-          //  alert(o.responseText)
+        //  alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
@@ -1165,12 +1165,12 @@ function save_new_general(branch) {
     parent = validate_scope_metadata[branch]['key_name'];
     jsonificated_values = YAHOO.lang.JSON.stringify(values);
 
-    //  alert(scope_edit_ar_file);
+
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
-    
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-             alert(o.responseText)
+     //        alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {

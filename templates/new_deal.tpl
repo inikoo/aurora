@@ -63,7 +63,7 @@
 				<td class="label">{t}Department{/t}:</td>
 				<td class="input"> 
 				<div class="buttons small left">
-					<span style="float:left;margin-right:10px" id="department_formated"></span> <button style id="update_department">{t}Change department{/t}</button> 
+					<span style="float:left;margin-right:10px" id="department_formated"></span> <button  id="update_department" onClick="show_dialog_departments_list('trigger')">{t}Change department{/t}</button> 
 				</div>
 				</td>
 				<td class="messages"></td>
@@ -72,7 +72,7 @@
 				<td class="label">{t}Family{/t}:</td>
 				<td class="input"> 
 				<div class="buttons small left">
-					<span style="float:left;margin-right:10px" id="family_formated"></span> <button style id="update_family">{t}Change family{/t}</button> 
+					<span style="float:left;margin-right:10px" id="family_formated"></span> <button  id="update_family" onClick="show_dialog_families_list('trigger')">{t}Change family{/t}</button> 
 				</div>
 				</td>
 				<td class="messages"></td>
@@ -81,7 +81,7 @@
 				<td class="label">{t}Product{/t}:</td>
 				<td class="input"> 
 				<div class="buttons small left">
-					<span style="float:left;margin-right:10px" id="product_formated"></span> <button style id="update_product">{t}Change product{/t}</button> 
+					<span style="float:left;margin-right:10px" id="product_formated"></span> <button  id="update_product" onClick="show_dialog_products_list('trigger')">{t}Change product{/t}</button> 
 				</div>
 				</td>
 				<td class="messages"></td>
@@ -240,7 +240,7 @@
 			<td class="label">{t}Department{/t}:</td>
 			<td class="input"> 
 			<div class="buttons small left">
-				<span style="float:left;margin-right:10px" id="target_department_formated"></span> <button style id="target_update_department">{t}Change department{/t}</button> 
+				<span style="float:left;margin-right:10px" id="target_department_formated"></span> <button id="target_update_department" onClick="show_dialog_departments_list('target')">{t}Change department{/t}</button> 
 			</div>
 			</td>
 			<td class="messages"></td>
@@ -249,7 +249,7 @@
 			<td class="label">{t}Family{/t}:</td>
 			<td class="input"> 
 			<div class="buttons small left">
-				<span style="float:left;margin-right:10px" id="target_family_formated"></span> <button style id="target_update_family">{t}Change family{/t}</button> 
+				<span style="float:left;margin-right:10px" id="target_family_formated"></span> <button  id="target_update_family"  onClick="show_dialog_families_list('target')">{t}Change family{/t}</button> 
 			</div>
 			</td>
 			<td class="messages"></td>
@@ -258,7 +258,7 @@
 			<td class="label">{t}Product{/t}:</td>
 			<td class="input"> 
 			<div class="buttons small left">
-				<span style="float:left;margin-right:10px" id="target_product_formated"></span> <button style id="target_update_product">{t}Change product{/t}</button> 
+				<span style="float:left;margin-right:10px" id="target_product_formated"></span> <button  id="target_update_product" onClick="show_dialog_products_list('target')">{t}Change product{/t}</button> 
 			</div>
 			</td>
 			<td class="messages"></td>
@@ -378,6 +378,8 @@
 					<option value="Department Percentage Off">{t}Percentage off{/t} ({t}department{/t})</option>
 					<option value="Family Percentage Off">{t}Percentage off{/t} ({t}family{/t})</option>
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}products{/t})</option>
+					
+					
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
 					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
@@ -397,6 +399,8 @@
 					<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
 					<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+				    <option value="Bonus Product From Family">{t}Free Product from a Bonus Family{/t}</option>
+					<option value="Bonus Product">{t}Free product{/t}</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
 					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
@@ -407,6 +411,8 @@
 					<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
 					<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+			        <option value="Bonus Product From Family">{t}Free Product from a Bonus Family{/t}</option>
+					<option value="Bonus Product">{t}Free product{/t}</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
 					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
@@ -417,6 +423,8 @@
 					<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
 					<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+					<option value="Bonus Product From Family">{t}Free Product from a Bonus Family{/t}</option>
+					<option value="Bonus Product">{t}Free product{/t}</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
 					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
@@ -427,6 +435,8 @@
 					<option value="Department Percentage Off">{t}Percentage off{/t} ({t}Department{/t})</option>
 					<option value="Family Percentage Off">{t}Percentage off{/t} ({t}Family{/t})</option>
 					<option value="Product Percentage Off">{t}Percentage off{/t} ({t}Products{/t})</option>
+					<option value="Bonus Product From Family">{t}Free Product from a Bonus Family{/t}</option>
+					<option value="Bonus Product">{t}Free product{/t}</option>
 					<option value="Free Shipping">{t}Free Shipping{/t}</option>
 					<option value="Free Charges">{t}Free Charges{/t}</option>
 					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
@@ -439,7 +449,7 @@
 			<td class="label">{t}Department{/t}:</td>
 			<td class="input"> 
 			<div class="buttons small left">
-				<span style="float:left;margin-right:10px" id="target_bis_department_formated"></span> <button style id="target_bis_update_department">{t}Change department{/t}</button> 
+				<span style="float:left;margin-right:10px" id="target_bis_department_formated"></span> <button style id="target_bis_update_department" onClick="show_dialog_departments_list('target_bis')">{t}Change department{/t}</button> 
 			</div>
 			</td>
 			<td class="messages"></td>
@@ -448,7 +458,7 @@
 			<td class="label">{t}Family{/t}:</td>
 			<td class="input"> 
 			<div class="buttons small left">
-				<span style="float:left;margin-right:10px" id="target_bis_family_formated"></span> <button style id="target_bis_update_family">{t}Change family{/t}</button> 
+				<span style="float:left;margin-right:10px" id="target_bis_family_formated"></span> <button style id="target_bis_update_family" onClick="show_dialog_families_list('target_bis')">{t}Change family{/t}</button> 
 			</div>
 			</td>
 			<td class="messages"></td>
@@ -457,11 +467,22 @@
 			<td class="label">{t}Product{/t}:</td>
 			<td class="input"> 
 			<div class="buttons small left">
-				<span style="float:left;margin-right:10px" id="target_bis_product_formated"></span> <button style id="target_bis_update_product">{t}Change product{/t}</button> 
+				<span style="float:left;margin-right:10px" id="target_bis_product_formated"></span> <button style id="target_bis_update_product" onClick="show_dialog_products_list('target_bis')">{t}Change product{/t}</button> 
 			</div>
 			</td>
 			<td class="messages"></td>
 		</tr>
+		<tr id="default_free_product_from_family_options" style="display:none">
+			<td class="label">{t}Default Product{/t}:</td>
+			<td class="input"> 
+			<input type="hidden" id="default_free_product_from_family"  value="" >
+			<div class="buttons small left">
+				<span style="float:left;margin-right:10px" id="default_free_product_from_family_formated"></span> <button style id="default_free_product_from_family_update_product" onClick="show_dialog_products_list('default_free_product_from_family')">{t}Change product{/t}</button> 
+			</div>
+			</td>
+			<td class="messages"></td>
+		</tr>
+		
 		<tr id="clone_deal_options" style="display:none">
 			<td class="label">{t}Deal{/t}:</td>
 			<td class="input"> 

@@ -2001,6 +2001,17 @@ $default_state=array(
 			'nr'=>100,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
 		),
+		
+		'edit_offers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+		),
 	),
 
 

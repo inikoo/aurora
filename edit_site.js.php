@@ -759,7 +759,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                    ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			  			];
 			       
-		this.dataSource7 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=product_list&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0");
+		this.dataSource7 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=product_list&parent=store&parent_key="+Dom.get('store_key').value+"&tableid="+tableid+"&nr=20&sf=0");
 	    this.dataSource7.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource7.connXhrMode = "queueRequests";
 	    	    this.dataSource7.table_id=tableid;

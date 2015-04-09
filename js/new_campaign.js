@@ -70,12 +70,14 @@ function start_now() {
          Dom.setStyle(['v_calpop1', 'calpop1'], 'display', 'none');
         var d = new Date()
         year = d.getFullYear(),
-            month = d.getMonth(),
+            month = d.getMonth()+1,
             day = d.getDate();
         if (month < 10) month = '0' + month;
         if (day < 10) day = '0' + day;
         var date = day + "-" + month + "-" + year;
         Dom.get("v_calpop1").value=date
+       
+       
        
         validate_general('campaign', 'from', date);
     }

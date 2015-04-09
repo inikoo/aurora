@@ -110,8 +110,36 @@ $smarty->assign('search_scope','products');
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+
+
+ $tipo_filter=$_SESSION['state']['campaign']['edit_offers']['f_field'];
+ $smarty->assign('filter2',$tipo_filter);
+ $smarty->assign('filter_value2',$_SESSION['state']['campaign']['offers']['f_value']);
+ $filter_menu=array(
+ 	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+ 	'code'=>array('db_key'=>'name','menu_label'=>_('Code'),'label'=>_('Code')),
+
+ 	);
+ $smarty->assign('filter_menu2',$filter_menu);
+ $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+
+
+
+
 $session_data=base64_encode(json_encode(array(
   'label'=>array(
+  	'Number'=>_('Number'),
+ 		'Customer'=>_('Customer'),
+ 		'Orders'=>_('Orders'),
+ 		'Code'=>_('Code'),
+ 		'Description'=>_('Description'),
+ 		'Date'=>_('Date'),
+ 		'Number'=>_('Number'),
+ 		'ID'=>_('ID'),
+ 		'Name'=>_('Name'),
+ 		'Location'=>_('Location'),
+ 		'Duration'=>_('Duration'),
+ 		
     'Invalid_code'=>_('Invalid code'),
     'Invalid_name'=>_('Invalid name'),
     'Invalid_description'=>_('Invalid description'),
@@ -123,7 +151,11 @@ $session_data=base64_encode(json_encode(array(
     'Page'=>_('Page'),
     'of'=>_('of')
 
-    )
+    ),
+    'state'=>array(
+ 		
+ 		'edit_offers'=>$_SESSION['state']['campaign']['edit_offers']
+ 		)
   )));
 $smarty->assign('session_data',$session_data);
 
