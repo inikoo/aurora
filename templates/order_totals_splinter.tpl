@@ -22,7 +22,7 @@
 						<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
 					</tr>
 
-<tr {if $order->get('Order Deal Amount Off')==0 }style="display:none"{/if} id="tr_order_amount_off" > 
+                    <tr {if $order->get('Order Deal Amount Off')==0 }style="display:none"{/if} id="tr_order_amount_off" > 
 						<td class="aright">{t}Ammount Off{/t}</td>
 						<td width="100" class="aright"><span id="order_items_discount">{$order->get('Deal Amount Off')}</span></td>
 					</tr>

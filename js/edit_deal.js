@@ -414,6 +414,10 @@ function edit_component_state(deal_component_key, state) {
 
 
 
+function new_deal_component() {
+    location.href = "new_deal_component.php?deal_key=" + Dom.get('deal_key').value+'&referer=edit_deal';;
+}
+
 
 
 

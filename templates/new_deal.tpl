@@ -308,9 +308,11 @@
 			<tr>
 				<td class="label">{t}Amount type{/t}</td>
 				<td class="input"> 
-				<input type="hidden" id="amount_type" value='Order Total Amount'> 
+				<input type="hidden" id="amount_type" value='Order Total Net Amount'> 
 				<div class="buttons small left">
-					<button id="amount_type_total" >{t}Total{/t}</button> <button id="amount_type_net" class="selected">{t}Total Net{/t}</button> <button id="amount_type_items">{t}Items Net{/t}</button> 
+					<button id="amount_type_total" >{t}Total{/t}</button> 
+					<button id="amount_type_net" class="selected">{t}Total Net{/t}</button> 
+					<button id="amount_type_items">{t}Items Net{/t}</button> 
 				</div>
 				</td>
 				<td class="messages"></td>
