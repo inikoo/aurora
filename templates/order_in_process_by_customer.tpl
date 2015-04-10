@@ -3,14 +3,18 @@
 	{include file='orders_navigation.tpl'} 
 	<input type="hidden" id="order_key" value="{$order->id}" />
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store-&gt;id}&amp;view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
+				{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} 
+
+			<span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 		</div>
 		<div class="buttons">
-			{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button onclick="window.location='order.php?id={$order-&gt;id}&amp;modify=1'"> {t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+					{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
+
+			<button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -57,15 +61,15 @@
 					<td width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
 				{/if} 
-				<tr>
+				<tr >
 					<td class="aright">{t}Shipping{/t}</td>
 					<td width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
-				<tr {if $order->
-					get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
-					<td class="aright"> {t}Insurance{/t}</td>
-					<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
-				</tr>
+					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+						<td class="aright"> {t}Insurance{/t}</td>
+						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+					</tr>
+				
 				<tr style="border-top:1px solid #777">
 					<td class="aright">{t}Net{/t}</td>
 					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
@@ -109,12 +113,16 @@
 				</tr>
 			</table>
 			<div id="deals_div">
-				{include file='order_deals_splinter.tpl'} 
-			</div>
-			<div id="vouchers_div">
-				{include file='order_vouchers_splinter.tpl'} 
-			</div>
+						{include file='order_deals_splinter.tpl'} 
+
+					</div>
+					<div id="vouchers_div">
+						{include file='order_vouchers_splinter.tpl'} 
+					</div>
 		</div>
+		
+		
+		
 		<div style="clear:both">
 		</div>
 	</div>
@@ -151,9 +159,7 @@
 			<td colspan="2">{t}Reason of cancellation{/t}</td>
 		</tr>
 		<tr>
-			<td colspan="2"> 
-			<textarea style="height:100px;width:100%" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea>
-			</td>
+			<td colspan="2"> <textarea style="height:100px;width:100%" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea> </td>
 		</tr>
 		<tr id="cancel_buttons">
 			<td colspan="2"> 
