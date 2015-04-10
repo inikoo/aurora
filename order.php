@@ -116,7 +116,7 @@ $order=new Order($order_id);
 $store=new Store($order->data['Order Store Key']);
 
 
-if (true) {
+if (false) {
 
 
 			$order->update_number_items();
