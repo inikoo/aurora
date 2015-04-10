@@ -113,6 +113,15 @@
 				</tr>
 			</table>
 		</div>
+		
+		<div id="deals_div">
+						{include file='order_deals_splinter.tpl'} 
+
+					</div>
+					<div id="vouchers_div">
+						{include file='order_vouchers_splinter.tpl'} 
+					</div>
+		
 		<div style="clear:both">
 		</div>
 	</div>
