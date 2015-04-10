@@ -436,6 +436,7 @@ class Deal extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+		
 		case('Deal Begin Date'):
 			$this->update_begin_date($value,$options);
 			break;
@@ -526,7 +527,7 @@ class Deal extends DB_Table {
 		$old_components=$this->get_components();
 
 		$deal_component=new DealComponent('find create',$data);
-
+		$deal_component->update_status($this->data['Deal Status']);
 		$this->update_number_components();
 		$deal_component->update_target_bridge();
 
@@ -641,11 +642,16 @@ class Deal extends DB_Table {
 			);
 			mysql_query($sql);
 			$this->data['Deal Status']=$value;
+			
+			
+		
 		}else {
 
 
 			$this->update_status_from_dates($force=true);
 		}
+
+	
 
 
 	}
@@ -672,35 +678,35 @@ class Deal extends DB_Table {
 
 
 		if (strtotime($this->data['Deal Begin Date'].' +0:00')<=strtotime('now +0:00')) {
+		
+		
+		
 			$this->update_field_switcher('Deal Status','Active','no_history');
 		}
 
 
 
-	
 
 
-	foreach ($this->get_deal_component_keys() as $deal_component_key) {
-		$deal_compoment=new DealComponent($deal_component_key);
-		$deal_compoment->update_status_from_dates();
+
+		
 	}
-}
 
-function get_from_date() {
-	if ($this->data['Deal Begin Date']=='') {
-		return '';
-	}else {
-		return gmdate('d-m-Y',strtotime($this->data['Deal Begin Date'].' +0:00' ));
+	function get_from_date() {
+		if ($this->data['Deal Begin Date']=='') {
+			return '';
+		}else {
+			return gmdate('d-m-Y',strtotime($this->data['Deal Begin Date'].' +0:00' ));
+		}
 	}
-}
 
-function get_to_date() {
-	if ($this->data['Deal Expiration Date']=='') {
-		return '';
-	}else {
-		return gmdate('d-m-Y',strtotime($this->data['Deal Expiration Date'].' +0:00' ));
+	function get_to_date() {
+		if ($this->data['Deal Expiration Date']=='') {
+			return '';
+		}else {
+			return gmdate('d-m-Y',strtotime($this->data['Deal Expiration Date'].' +0:00' ));
+		}
 	}
-}
 
 
 }

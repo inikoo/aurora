@@ -10,7 +10,9 @@ function get_offers_elements_numbers() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 for (i in r.elements_numbers) {
-              //  alert('offer_elements_'+ i +'_number '+'  '+Dom.get('offer_elements_'+ i +'_number')+'  '+r.elements_numbers[i])
+              // alert('offer_elements_'+ i +'_number '+'  '+Dom.get('offer_elements_'+ i +'_number')+'  '+r.elements_numbers[i])
+               
+               if( Dom.get('offer_elements_' + i + '_number')!=undefined)
                     Dom.get('offer_elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                 }
             }

@@ -4837,30 +4837,30 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 			$transaction_data=$this->add_order_transaction($data);
 			$this->skip_update_after_individual_transaction=false;
-			
+
 			$sql=sprintf("insert into `Order Meta Transaction Deal Dimension` (`Order Meta Transaction Deal Type`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,
 				`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,
 				`Bonus Product Key`,`Bonus Product ID`,`Bonus Product Family Key`,`Bonus Order Transaction Fact Key`
 				)
 			values (%s,%d, %d,%d,%d,%s,%f,%f,%f,%d,%d,%d,%d)  "
-					,prepare_mysql('Order Get Free')
-					,$this->id
+				,prepare_mysql('Order Get Free')
+				,$this->id
 
 
-					,$allowance_data['Deal Campaign Key']
-					,$allowance_data['Deal Key']
-					,$allowance_data['Deal Component Key']
-					,prepare_mysql($allowance_data['Deal Info'])
-					,0
-					,0
-					,$allowance_data['Get Free']
-					,$allowance_data['Product Key']
-					,$allowance_data['Product ID']
-					,$allowance_data['Product Family Key']
-					,$transaction_data['otf_key']
+				,$allowance_data['Deal Campaign Key']
+				,$allowance_data['Deal Key']
+				,$allowance_data['Deal Component Key']
+				,prepare_mysql($allowance_data['Deal Info'])
+				,0
+				,0
+				,$allowance_data['Get Free']
+				,$allowance_data['Product Key']
+				,$allowance_data['Product ID']
+				,$allowance_data['Product Family Key']
+				,$transaction_data['otf_key']
 
-				);
-				mysql_query($sql);
+			);
+			mysql_query($sql);
 
 
 		}
@@ -5019,23 +5019,23 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				while ($row2=mysql_fetch_assoc($res2)) {
 
 					$items[]=array(
-						
-							'pid'=>$row2['Product ID'],
-							'product_key'=>$row2['Product Current Key'],
-							'family_key'=>$row2['Product Family Key'],
-							'code'=>$row2['Product Code'],
-							'name'=>$row2['Product Name'],
-							'selected'=>($row2['Product ID']==$row['Bonus Product ID']?true:false),
-							'deal_info'=>$row['Deal Info'],
-						
+
+						'pid'=>$row2['Product ID'],
+						'product_key'=>$row2['Product Current Key'],
+						'family_key'=>$row2['Product Family Key'],
+						'code'=>$row2['Product Code'],
+						'name'=>$row2['Product Name'],
+						'selected'=>($row2['Product ID']==$row['Bonus Product ID']?true:false),
+						'deal_info'=>$row['Deal Info'],
+
 					);
 
 				}
-				
+
 				$deal_bonus_items[$row['Deal Component Key']]=array(
-						'type'=>'choose_from_family',
-						'items'=>$items
-					);
+					'type'=>'choose_from_family',
+					'items'=>$items
+				);
 
 			}
 			elseif ($row['Deal Component Allowance Target']=='Product') {
@@ -5109,6 +5109,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			}else {
 				$this->deals['Order']['Terms Multiplicity']=1;
 			}
+
 
 			$this->test_deal_terms($deal_component_data);
 
@@ -5328,6 +5329,102 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		switch ($deal_component_data['Deal Component Terms Type']) {
+
+		case('Order Number'):
+
+			$order_number_term=$deal_component_data['Deal Component Terms']-1;
+
+
+
+
+			$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and  `Order Current Dispatch State` not in ('Cancelled','Suspended','Cancelled by Customer') ",
+				$this->data['Order Customer Key'],
+				$this->id
+			);
+
+			$res3=mysql_query($sql);
+			if ($__row=mysql_fetch_assoc($res3)) {
+
+
+				if ($__row['num']==$order_number_term) {
+					$this->deals['Order']['Terms']=true;
+					$this->get_allowances_from_deal_component_data($deal_component_data);
+				}
+			}
+
+
+
+
+			break;
+
+		case('Voucher AND Order Number'):
+			$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
+
+			$order_number_term=$terms[1]-1;
+
+
+			$sql=sprintf("select count(*) as num from `Voucher Order Bridge` where `Deal Key`=%d and `Order Key`=%d ",
+				$deal_component_data['Deal Component Deal Key'],
+				$this->id
+			);
+
+			$res2=mysql_query($sql);
+			if ($_row=mysql_fetch_assoc($res2)) {
+
+
+				if ($_row['num']>0) {
+
+					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and  `Order Current Dispatch State` not in ('Cancelled','Suspended','Cancelled by Customer') ",
+						$this->data['Order Customer Key'],
+						$this->id
+					);
+
+					$res3=mysql_query($sql);
+					if ($__row=mysql_fetch_assoc($res3)) {
+
+
+						if ($__row['num']==$order_number_term) {
+							$this->deals['Order']['Terms']=true;
+							$this->get_allowances_from_deal_component_data($deal_component_data);
+						}
+					}
+
+
+				}
+			}
+			break;
+
+
+		case('Voucher AND Amount'):
+
+			$sql=sprintf("select count(*) as num from `Voucher Order Bridge` where `Deal Key`=%d and `Order Key`=%d ",
+				$deal_component_data['Deal Component Deal Key'],
+				$this->id
+			);
+
+			$res2=mysql_query($sql);
+			if ($_row=mysql_fetch_assoc($res2)) {
+
+
+				if ($_row['num']>0) {
+
+					$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
+					$amount_term=$terms[1];
+					$amount_type=$terms[2];
+
+					if ($this->data[$amount_type]>=$amount_term) {
+						$this->deals['Order']['Terms']=true;
+						$this->get_allowances_from_deal_component_data($deal_component_data);
+					}
+
+
+
+
+				}
+			}
+			break;
+
+
 		case('Voucher'):
 
 			$sql=sprintf("select count(*) as num from `Voucher Order Bridge` where `Deal Key`=%d and `Order Key`=%d ",
@@ -5434,7 +5531,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$amount_term=$terms[0];
 			$amount_type=$terms[1];
 
-			$order_number_term=$terms[2];
+			$order_number_term=$terms[2]-1;
 
 			$order_number_term_ok=false;
 			$amount_term_ok=false;

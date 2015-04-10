@@ -345,6 +345,10 @@ function show_dialog_new_email_campaign(){
 }
 
 
+function new_deal_component() {
+    location.href = "new_deal_component.php?deal_key=" + Dom.get('deal_key').value+'&referer=deal';
+}
+
 function init(){
 	ids=['details','campaigns','orders','customers','email_remainder'];
 

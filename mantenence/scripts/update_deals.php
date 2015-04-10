@@ -47,30 +47,26 @@ global $myconf;
 
 
 
-$sql="select * from `Deal Campaign Dimension`";
+$sql="select `Deal Campaign Key` from `Deal Campaign Dimension` order by  `Deal Campaign Key` desc";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
 	$campaign=new DealCampaign($row['Deal Campaign Key']);
-
 	$campaign->update_status_from_dates();
-
-	unset($campaign);
 
 }
 
 
-$sql="select * from `Deal Dimension` ";
+$sql="select `Deal Key` from `Deal Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
 	$deal=new Deal($row['Deal Key']);
+	$deal->update_status_from_dates();
 
-	$deal->update_term_allowances();
+	foreach ($deal->get_deal_component_keys() as $deal_component_key) {
+		$deal_compoment=new DealComponent($deal_component_key);
+		$deal_compoment->update_status_from_dates();
+	}
 
-	unset($deal);
 
 }
 

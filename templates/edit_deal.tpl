@@ -158,10 +158,10 @@
 		</table>
 	</div>
 	<div id="d_allowances" class="edit_block" style="width:890px;padding:20px 20px;{if $edit_block_view!='allowances'}display:none{/if}">
-		<span class="clean_table_title" style="margin-right:5px">Allowances</span>
+		<span class="clean_table_title" style="margin-right:5px">{t}Allowances{/t}</span> 
 		<div class="buttons small left">
-				<button id="new_deal_component" onclick="new_deal_component()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
-			</div> 
+			<button id="new_deal_component" onclick="new_deal_component()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
+		</div>
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 

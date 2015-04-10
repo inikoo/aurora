@@ -538,7 +538,7 @@ function validate_scope_edit(branch) {
         //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             errors = true;
-              alert(branch +'.'+items+'.'+validate_scope_data[branch][items].name+' change:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
+             // alert(branch +'.'+items+'.'+validate_scope_data[branch][items].name+' change:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
         }
         if (validate_scope_data[branch][items].changed == true) {
             changed = true;
@@ -1170,7 +1170,7 @@ function save_new_general(branch) {
    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-     //        alert(o.responseText)
+       //      alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {

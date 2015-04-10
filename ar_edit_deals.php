@@ -1210,6 +1210,15 @@ function update_deal_status($data) {
 	$deal->update_status($data['value']);
 
 
+	foreach ($deal->get_deal_component_keys() as $deal_component_key) {
+		$deal_compoment=new DealComponent($deal_component_key);
+		$deal_compoment->update_status($data['value']);
+	}
+
+
+
+
+
 	if ($deal->error) {
 		$response=array(
 			'state'=>400,
@@ -1296,8 +1305,21 @@ function update_deal($data) {
 	}
 
 
+	if ($data['key']=='Deal Status') {
+		$deal->update_status($data['newvalue']);
+		foreach ($deal->get_deal_component_keys() as $deal_component_key) {
+			$deal_compoment=new DealComponent($deal_component_key);
+			$deal_compoment->update_status($value);
+		}
 
-	$deal->update(array($data['key']=>$data['newvalue']));
+
+
+	}else {
+		$deal->update(array($data['key']=>$data['newvalue']));
+
+	}
+
+
 
 	if (!$deal->error) {
 
@@ -1533,7 +1555,7 @@ function create_deal($data) {
 			$terms='for every '.$deal_data['for_every_ordered'];
 			$terms_label=_('For every').' '.number($deal_data['for_every_ordered']).' '._('you buy');
 			$terms_label=sprintf(_('buy %1$s'),number($deal_data['for_every_ordered']));
-			
+
 			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
 			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
@@ -1544,7 +1566,7 @@ function create_deal($data) {
 		case 'Product For Every Quantity Ordered':
 			$terms='for every '.$deal_data['for_every_ordered'];
 			$terms_label=sprintf(_('For every %1$s you buy'),number($deal_data['for_every_ordered']));
-			
+
 			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
 			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
@@ -1591,10 +1613,11 @@ function create_deal($data) {
 			}
 
 
-			$terms='voucher '.data['Voucher Code'].' '.($deal_data['voucher_type']=='Private'?'(Private) ':'').'& '.money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type;
+			$terms='voucher '.$voucher->data['Voucher Code'].' '.($deal_data['voucher_type']=='Private'?'(Private) ':'').'& '.money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type;
 			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'').' & +'.money($deal_data['amount'], $store->data['Store Currency Code']).' '.$amount_type_formated;
 
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'].';'.$deal_data['amount'].';'.$deal_data['amount_type'];
+			break;
 		case 'Voucher AND Order Number':
 
 			if ($deal_data['voucher_code_type']=='Random') {
@@ -1843,8 +1866,9 @@ function create_deal($data) {
 				$deal_component_data['Deal Component Allowance Lock']=$row['Deal Component Allowance Lock'];
 				$deal_component_data['Deal Component Terms Description']=$terms;
 				$deal_component_data['Deal Component XHTML Terms Description Label']=$terms_label;
-				$deal_component_data['Deal Component Allowance Target Type']=$row['Deal Component Allowance Target Type'];
+				$deal_component_data['Deal Component Allowance Target Type']=($no_items?'No Items':'Items');
 				$deal_component_data['Deal Component Mirror Metadata']=$row['Deal Component Key'];
+
 
 				$component=$deal->add_component($deal_component_data);
 
@@ -2707,7 +2731,7 @@ function list_deals() {
 
 		}
 
-switch ($row['Deal Status']) {
+		switch ($row['Deal Status']) {
 		case 'Active':
 		case 'Waiting':
 			$edit_status=sprintf('<div id="deal_state_edit_%d" class="buttons small"><button class="negative" onClick="edit_deal_state(%d,\'Suspended\')">%s</button></div>',

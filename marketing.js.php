@@ -305,6 +305,16 @@ function init(){
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
    
+     Event.addListener('clean_table_filter_show10', "click", show_filter, 10);
+    Event.addListener('clean_table_filter_hide10', "click", hide_filter, 10);
+
+   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 10;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input10", "f_container10", oACDS);
+    oAutoComp.minQueryLength = 10;
+
+
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -421,6 +431,18 @@ YAHOO.util.Event.onContentReady("rppmenu1", function () {
     });
 YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
+
+YAHOO.util.Event.onContentReady("rppmenu10", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu10", {trigger:"rtext_rpp10" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+YAHOO.util.Event.onContentReady("filtermenu10", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu10", {trigger:"filter_name10"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 

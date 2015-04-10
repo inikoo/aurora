@@ -21,98 +21,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
 
 
-        var tableid = 100;
-        var tableDivEL = "table" + tableid;
-
-        var ColumnDefs = [{
-            key: "key",
-            label: "",
-            hidden: true
-        }, {
-            key: "code",
-            formatter: "remove_links",
-            label: labels.Code,
-            width: 30,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "name",
-            formatter: "remove_links",
-            label: labels.Name,
-            width: 200,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }];
-        request = "ar_quick_tables.php?tipo=campaign_list&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-        this.dataSource100 = new YAHOO.util.DataSource(request);
-        this.dataSource100.responseType = YAHOO.util.DataSource.TYPE_JSON;
-        this.dataSource100.connXhrMode = "queueRequests";
-        this.dataSource100.table_id = tableid;
-
-        this.dataSource100.responseSchema = {
-            resultsList: "resultset.data",
-            metaFields: {
-                rowsPerPage: "resultset.records_perpage",
-                rtext: "resultset.rtext",
-                rtext_rpp: "resultset.rtext_rpp",
-                sort_key: "resultset.sort_key",
-                sort_dir: "resultset.sort_dir",
-                tableid: "resultset.tableid",
-                filter_msg: "resultset.filter_msg",
-                totalRecords: "resultset.total_records"
-            },
-            fields: ["name", 'code', 'key']
-        };
-
-
-        this.table100 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource100, {
-            renderLoopSize: 50,
-            generateRequest: myRequestBuilder,
-            paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: 20,
-                containers: 'paginator100',
-                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
-                previousPageLinkLabel: "<",
-                nextPageLinkLabel: ">",
-                firstPageLinkLabel: "<<",
-                lastPageLinkLabel: ">>",
-                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
-                alwaysVisible: false,
-                template: "{PreviousPageLink}<strong id='paginator_info100'>{CurrentPageReport}</strong>{NextPageLink}"
-            })
-
-            ,
-            sortedBy: {
-                key: 'key',
-                dir: 'desc'
-            },
-            dynamicData: true
-
-        }
-
-        );
-
-        this.table100.handleDataReturnPayload = myhandleDataReturnPayload;
-        this.table100.doBeforeSortColumn = mydoBeforeSortColumn;
-        //this.table100.subscribe("cellClickEvent", this.table100.onEventShowCellEditor);
-        this.table100.prefix = '';
-        this.table100.subscribe("rowMouseoverEvent", this.table100.onEventHighlightRow);
-        this.table100.subscribe("rowMouseoutEvent", this.table100.onEventUnhighlightRow);
-        this.table100.subscribe("rowClickEvent", select_campaign_from_list);
-
-
-
-        this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table100.filter = {
-            key: 'code',
-            value: ''
-        };
 
         var tableid = 101;
         var tableDivEL = "table" + tableid;
@@ -384,96 +292,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: ''
         };
 
-        var tableid = 104;
-        var tableDivEL = "table" + tableid;
-
-        var ColumnDefs = [{
-            key: "key",
-            label: "",
-            hidden: true
-        }, {
-            key: "formated_id",
-            formatter: "remove_links",
-            label: labels.ID,
-            width: 30,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "name",
-            formatter: "remove_links",
-            label: labels.Name,
-            width: 200,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }];
-        request = "ar_quick_tables.php?tipo=customer_list&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-        this.dataSource104 = new YAHOO.util.DataSource(request);
-        this.dataSource104.responseType = YAHOO.util.DataSource.TYPE_JSON;
-        this.dataSource104.connXhrMode = "queueRequests";
-        this.dataSource104.table_id = tableid;
-
-        this.dataSource104.responseSchema = {
-            resultsList: "resultset.data",
-            metaFields: {
-                rowsPerPage: "resultset.records_perpage",
-                rtext: "resultset.rtext",
-                rtext_rpp: "resultset.rtext_rpp",
-                sort_key: "resultset.sort_key",
-                sort_dir: "resultset.sort_dir",
-                tableid: "resultset.tableid",
-                filter_msg: "resultset.filter_msg",
-                totalRecords: "resultset.total_records"
-            },
-            fields: ["name", 'key', 'formated_id']
-        };
-
-
-        this.table104 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource104, {
-            renderLoopSize: 50,
-            generateRequest: myRequestBuilder,
-            paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: 20,
-                containers: 'paginator104',
-                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
-                previousPageLinkLabel: "<",
-                nextPageLinkLabel: ">",
-                firstPageLinkLabel: "<<",
-                lastPageLinkLabel: ">>",
-                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
-                alwaysVisible: false,
-                template: "{PreviousPageLink}<strong id='paginator_info104'>{CurrentPageReport}</strong>{NextPageLink}"
-            })
-
-            ,
-            sortedBy: {
-                key: 'name',
-                dir: ''
-            },
-            dynamicData: true
-
-        }
-
-        );
-
-        this.table104.handleDataReturnPayload = myhandleDataReturnPayload;
-        this.table104.doBeforeSortColumn = mydoBeforeSortColumn;
-        this.table104.prefix = '';
-        this.table104.subscribe("rowMouseoverEvent", this.table104.onEventHighlightRow);
-        this.table104.subscribe("rowMouseoutEvent", this.table104.onEventUnhighlightRow);
-        this.table104.subscribe("rowClickEvent", select_customer_from_list);
-        this.table104.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table104.filter = {
-            key: 'name',
-            value: ''
-        };
-
-
+        
         var tableid = 105;
         var tableDivEL = "table" + tableid;
 
@@ -566,210 +385,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: ''
         };
 
-        var tableid = 106;
-        var tableDivEL = "table" + tableid;
-
-        var ColumnDefs = [{
-            key: "key",
-            label: "",
-            hidden: true
-        }, {
-            key: "code",
-            formatter: "remove_links",
-            label: labels.Code,
-            width: 50,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "label",
-            formatter: "remove_links",
-            label: labels.Label,
-            width: 180,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "subjects",
-            label: labels.Customers,
-            width: 180,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }];
-        request = "ar_quick_tables.php?tipo=category_list&subject=Customer&branch_type=Head&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-        //alert(request)
-        this.dataSource106 = new YAHOO.util.DataSource(request);
-        this.dataSource106.responseType = YAHOO.util.DataSource.TYPE_JSON;
-        this.dataSource106.connXhrMode = "queueRequests";
-        this.dataSource106.table_id = tableid;
-
-        this.dataSource106.responseSchema = {
-            resultsList: "resultset.data",
-            metaFields: {
-                rowsPerPage: "resultset.records_perpage",
-                rtext: "resultset.rtext",
-                rtext_rpp: "resultset.rtext_rpp",
-                sort_key: "resultset.sort_key",
-                sort_dir: "resultset.sort_dir",
-                tableid: "resultset.tableid",
-                filter_msg: "resultset.filter_msg",
-                totalRecords: "resultset.total_records"
-            },
-            fields: ["label", 'code', 'key', 'subjects']
-        };
-
-
-        this.table106 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource106, {
-            renderLoopSize: 50,
-            generateRequest: myRequestBuilder,
-            paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: 20,
-                containers: 'paginator106',
-                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
-                previousPageLinkLabel: "<",
-                nextPageLinkLabel: ">",
-                firstPageLinkLabel: "<<",
-                lastPageLinkLabel: ">>",
-                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
-                alwaysVisible: false,
-                template: "{PreviousPageLink}<strong id='paginator_info106'>{CurrentPageReport}</strong>{NextPageLink}"
-            })
-
-            ,
-            sortedBy: {
-                key: 'code',
-                dir: ''
-            },
-            dynamicData: true
-
-        }
-
-        );
-
-        this.table106.handleDataReturnPayload = myhandleDataReturnPayload;
-        this.table106.doBeforeSortColumn = mydoBeforeSortColumn;
-        //this.table106.subscribe("cellClickEvent", this.table106.onEventShowCellEditor);
-        this.table106.prefix = '';
-        this.table106.subscribe("rowMouseoverEvent", this.table106.onEventHighlightRow);
-        this.table106.subscribe("rowMouseoutEvent", this.table106.onEventUnhighlightRow);
-        this.table106.subscribe("rowClickEvent", select_customer_category_from_list);
-
-        this.table106.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table106.filter = {
-            key: 'code',
-            value: ''
-        };
-
-
-
-        var tableid = 107;
-        var tableDivEL = "table" + tableid;
-
-        var ColumnDefs = [{
-            key: "key",
-            label: "",
-            hidden: true
-        }, {
-            key: "date",
-            label: labels.Date,
-            width: 90,
-            sortable: true,
-            className: "aright",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
-            }
-        }, {
-            key: "name",
-            formatter: "remove_links",
-            label: labels.Name,
-            width: 180,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "items",
-            formatter: "remove_links",
-            label: labels.Customers,
-            width: 90,
-            sortable: true,
-            className: "aright",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }];
-        request = "ar_quick_tables.php?tipo=list_list&subject=Customer&list_type=Static&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-
-        this.dataSource107 = new YAHOO.util.DataSource(request);
-        this.dataSource107.responseType = YAHOO.util.DataSource.TYPE_JSON;
-        this.dataSource107.connXhrMode = "queueRequests";
-        this.dataSource107.table_id = tableid;
-
-        this.dataSource107.responseSchema = {
-            resultsList: "resultset.data",
-            metaFields: {
-                rowsPerPage: "resultset.records_perpage",
-                rtext: "resultset.rtext",
-                rtext_rpp: "resultset.rtext_rpp",
-                sort_key: "resultset.sort_key",
-                sort_dir: "resultset.sort_dir",
-                tableid: "resultset.tableid",
-                filter_msg: "resultset.filter_msg",
-                totalRecords: "resultset.total_records"
-            },
-            fields: ["name", 'key', 'items', 'date']
-        };
-
-
-        this.table107 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource107, {
-            renderLoopSize: 50,
-            generateRequest: myRequestBuilder,
-            paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: 20,
-                containers: 'paginator107',
-                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
-                previousPageLinkLabel: "<",
-                nextPageLinkLabel: ">",
-                firstPageLinkLabel: "<<",
-                lastPageLinkLabel: ">>",
-                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
-                alwaysVisible: false,
-                template: "{PreviousPageLink}<strong id='paginator_info107'>{CurrentPageReport}</strong>{NextPageLink}"
-            })
-
-            ,
-            sortedBy: {
-                key: 'date',
-                dir: 'desc'
-            },
-            dynamicData: true
-
-        }
-
-        );
-
-        this.table107.handleDataReturnPayload = myhandleDataReturnPayload;
-        this.table107.doBeforeSortColumn = mydoBeforeSortColumn;
-        //this.table107.subscribe("cellClickEvent", this.table107.onEventShowCellEditor);
-        this.table107.prefix = '';
-        this.table107.subscribe("rowMouseoverEvent", this.table107.onEventHighlightRow);
-        this.table107.subscribe("rowMouseoutEvent", this.table107.onEventUnhighlightRow);
-        this.table107.subscribe("rowClickEvent", select_customer_list_from_list);
-
-        this.table107.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table107.filter = {
-            key: 'name',
-            value: ''
-        };
-
+       
 
 
 
@@ -820,13 +436,6 @@ function trigger_changed(value) {
 }
 
 
-function show_dialog_campaigns_list() {
-    region1 = Dom.getRegion('select_campaign');
-    region2 = Dom.getRegion('dialog_campaigns_list');
-    var pos = [region1.left, region1.top]
-    Dom.setXY('dialog_campaigns_list', pos);
-    dialog_campaigns_list.show();
-}
 
 function show_dialog_departments_list(scope) {
 
@@ -906,12 +515,6 @@ function show_dialog_products_list(scope) {
     dialog_products_list.show();
 }
 
-function show_dialog_customers_list() {
-    region1 = Dom.getRegion('trigger_select');
-    var pos = [region1.left - 2, region1.top + 1]
-    Dom.setXY('dialog_customers_list', pos);
-    dialog_customers_list.show();
-}
 
 function show_dialog_deals_list() {
     region1 = Dom.getRegion('allowances_select');
@@ -921,45 +524,7 @@ function show_dialog_deals_list() {
     dialog_deals_list.show();
 }
 
-function show_dialog_customer_categories_list() {
-    region1 = Dom.getRegion('trigger_select');
-    var pos = [region1.left - 2, region1.top + 1]
-    Dom.setXY('dialog_customer_categories_list', pos);
-    dialog_customer_categories_list.show();
-}
 
-function show_dialog_customer_lists_list() {
-    region1 = Dom.getRegion('trigger_select');
-    var pos = [region1.left - 2, region1.top + 1]
-    Dom.setXY('dialog_customer_lists_list', pos);
-    dialog_customer_lists_list.show();
-}
-
-
-function select_campaign_from_list(oArgs) {
-
-    Dom.setStyle('new_campaign_fields', 'display', 'none')
-
-    record = tables.table100.getRecord(oArgs.target);
-
-    Dom.removeClass(['select_campaign', 'new_campaign'], 'selected');
-    Dom.get('campaign_key').value = record.getData('key');
-
-    Dom.get('campaign_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
-    Dom.get('select_campaign').innerHTML = Dom.get('select_campaign').getAttribute('alt_label');
-
-    dialog_campaigns_list.hide();
-    validate_scope_data.deal.campaign_key.required = true;
-    validate_scope_data.deal.campaign_code.required = false;
-    validate_scope_data.deal.campaign_name.required = false;
-    validate_scope_data.deal.campaign_name.required = false;
-    validate_scope_data.deal.from.required = false;
-    validate_scope_data.deal.to.required = false;
-
-    validate_scope_data.deal.campaign_key.validated = true;
-    validate_scope('deal')
-
-}
 
 function select_department_from_list(oArgs) {
 
@@ -1053,38 +618,6 @@ function select_product_from_list(oArgs) {
     dialog_products_list.hide();
 }
 
-function select_customer_from_list(oArgs) {
-
-    Dom.setStyle('trigger_customer_options', 'display', '')
-
-    record = tables.table104.getRecord(oArgs.target);
-    Dom.get('trigger').value = 'Customer';
-    Dom.get('trigger_key').value = record.getData('key');
-    Dom.get('customer_formated').innerHTML = record.getData('formated_id') + " (" + record.getData('name') + ") ";
-    dialog_customers_list.hide();
-}
-
-function select_customer_category_from_list(oArgs) {
-
-    Dom.setStyle('trigger_customer_category_options', 'display', '')
-
-    record = tables.table106.getRecord(oArgs.target);
-    Dom.get('trigger').value = 'Customer Category';
-    Dom.get('trigger_key').value = record.getData('key');
-    Dom.get('customer_category_formated').innerHTML = record.getData('code') + " (" + record.getData('label') + ") ";
-    dialog_customer_categories_list.hide();
-}
-
-function select_customer_list_from_list(oArgs) {
-
-    Dom.setStyle('trigger_customer_list_options', 'display', '')
-
-    record = tables.table107.getRecord(oArgs.target);
-    Dom.get('trigger').value = 'Customer List';
-    Dom.get('trigger_key').value = record.getData('key');
-    Dom.get('customer_list_formated').innerHTML = record.getData('name');
-    dialog_customer_lists_list.hide()
-}
 
 function select_deal_from_list(oArgs) {
 
@@ -1360,43 +893,6 @@ function allowances_changed(value) {
 
 }
 
-function select_voucher_code_type() {
-
-    if (this.id == 'voucher_code_random') {
-        Dom.removeClass('voucher_code_custome', 'selected');
-        Dom.addClass('voucher_code_random', 'selected');
-        Dom.setStyle('voucher_code_tr', 'display', 'none')
-        Dom.get('voucher_code').value = '';
-        Dom.get('voucher_code_type').value = 'Random';
-        validate_scope_data.deal.voucher_code.required = false;
-
-
-    } else {
-        Dom.addClass('voucher_code_custome', 'selected');
-        Dom.removeClass('voucher_code_random', 'selected');
-        Dom.setStyle('voucher_code_tr', 'display', '');
-        Dom.get('voucher_code').focus();
-        Dom.get('voucher_code_type').value = 'Custome';
-        validate_scope_data.deal.voucher_code.required = true;
-
-    }
-
-    validate_scope('deal')
-}
-
-function select_voucher_type() {
-
-    if (this.id == 'voucher_type_public') {
-        Dom.addClass('voucher_type_public', 'selected');
-        Dom.removeClass('voucher_type_private', 'selected');
-        Dom.get('voucher_type').value = 'Public';
-
-    } else {
-        Dom.removeClass('voucher_type_public', 'selected');
-        Dom.addClass('voucher_type_private', 'selected');
-        Dom.get('voucher_type').value = 'Private';
-    }
-}
 
 function select_amount_type() {
 
@@ -1417,81 +913,6 @@ function select_amount_type() {
     }
 }
 
-
-
-function date_changed() {
-
-    if (this.id == 'v_calpop1') {
-
-        validate_general('deal', 'from', this.value);
-    } else if (this.id == 'v_calpop2') {
-        validate_general('deal', 'to', this.value);
-
-    }
-}
-
-function handleSelect(type, args, obj) {
-
-    var dates = args[0];
-    var date = dates[0];
-    var year = date[0],
-        month = date[1],
-        day = date[2];
-
-
-    if (month < 10) month = '0' + month;
-    if (day < 10) day = '0' + day;
-    var txtDate1 = document.getElementById("v_calpop" + this.id);
-    txtDate1.value = day + "-" + month + "-" + year;
-    this.hide();
-
-    if (this.id == 1) {
-        validate_general('deal', 'from', txtDate1.value);
-    } else if (this.id == 2) {
-        validate_general('deal', 'to', txtDate1.value);
-    }
-}
-
-function start_now() {
-
-    if (Dom.hasClass("start_now", "selected")) {
-        Dom.removeClass("start_now", "selected")
-        Dom.setStyle(['v_calpop1', 'calpop1'], 'display', '');
-    } else {
-        Dom.addClass("start_now", "selected")
-        Dom.setStyle(['v_calpop1', 'calpop1'], 'display', 'none');
-        var d = new Date()
-        year = d.getFullYear(),
-            month = d.getMonth(),
-            day = d.getDate();
-        if (month < 10) month = '0' + month;
-        if (day < 10) day = '0' + day;
-        var date = day + "-" + month + "-" + year;
-        Dom.get("v_calpop1").value = date
-
-        validate_general('deal', 'from', date);
-    }
-}
-
-function permanent_campaign() {
-
-    if (Dom.hasClass("to_permanent", "selected")) {
-        Dom.removeClass("to_permanent", "selected")
-        Dom.setStyle(['v_calpop2', 'calpop2'], 'display', '');
-        validate_scope_data.deal.to.validated = false;
-        validate_scope('deal');
-    } else {
-        Dom.addClass("to_permanent", "selected")
-        Dom.setStyle(['v_calpop2', 'calpop2'], 'display', 'none');
-
-        validate_scope_data.deal.to.validated = true;
-        validate_scope_data.deal.to.changed = true;
-
-        Dom.get("v_calpop2").value = '';
-        validate_scope('deal');
-
-    }
-}
 
 
 function validate_campaign_code(query) {
@@ -1591,61 +1012,7 @@ function init() {
     validate_scope_data = {
 
         'deal': {
-            'code': {
-                'changed': false,
-                'validated': false,
-                'required': true,
-                'dbname': 'Deal Code',
-                'group': 1,
-                'type': 'item',
-                'name': 'deal_code',
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_code
-                }],
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=is_deal_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
-            },
-            'name': {
-                'changed': false,
-                'validated': false,
-                'required': true,
-                'dbname': 'Deal Name',
-                'group': 1,
-                'type': 'item',
-                'name': 'deal_name',
-
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_name
-                }],
-                'ar': false
-            },
-            'description': {
-                'changed': false,
-                'validated': true,
-                'required': false,
-                'dbname': 'Deal Description',
-                'group': 1,
-                'type': 'item',
-                'name': 'deal_description',
-
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_description
-                }],
-                'ar': false
-            },
-            'terms': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'dbname': 'Deal Terms Type',
-                'name': 'terms',
-
-                'validation': false,
-                'ar': false
-            },
+          
             'allowances': {
                 'changed': false,
                 'validated': false,
@@ -1689,111 +1056,6 @@ function init() {
             },
 
 
-
-
-            'voucher_code': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'dbname': 'voucher_code',
-                'name': 'voucher_code',
-
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_code
-                }],
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=is_voucher_code_in_store&store_key=' + Dom.get('store_key').value + '&query='
-            },
-            'voucher_code_type': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'dbname': 'voucher_code_type',
-                'name': 'voucher_code_type',
-
-                'validation': false,
-                'ar': false
-            },
-            'voucher_type': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'dbname': 'voucher_type',
-                'name': 'voucher_type',
-
-                'validation': false,
-                'ar': false
-            },
-            'amount': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'name': 'amount',
-                'dbname': 'amount',
-                'validation': [{
-                    'numeric': "money",
-                    'invalid_msg': labels.Invalid_amount
-                }],
-                'ar': false
-            },
-            'amount_type': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'name': 'amount_type',
-                'dbname': 'amount_type',
-                'validation': false,
-                'ar': false
-            },
-            'if_order_more': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'name': 'if_order_more',
-                'dbname': 'if_order_more',
-                'validation': [{
-                    'numeric': "positive integer",
-                    'invalid_msg': labels.Invalid_number
-                }],
-                'ar': false
-            },
-            'for_every_ordered': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'name': 'for_every_ordered',
-                'dbname': 'for_every_ordered',
-                'validation': [{
-                    'numeric': "positive integer",
-                    'invalid_msg': labels.Invalid_number
-                }],
-                'ar': false
-            },
-            'order_interval': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'name': 'order_interval',
-                'dbname': 'order_interval',
-                'validation': [{
-                    'numeric': "positive integer",
-                    'invalid_msg': labels.Invalid_number
-                }],
-                'ar': false
-            },
-            'order_number': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'name': 'order_number',
-                'dbname': 'order_number',
-                'validation': [{
-                    'numeric': "positive integer",
-                    'invalid_msg': labels.Invalid_number
-                }],
-                'ar': false
-            },
             'percentage_off': {
                 'changed': false,
                 'validated': false,
@@ -1830,108 +1092,8 @@ function init() {
                 }],
                 'ar': false
             },
-            'trigger': {
-                'changed': false,
-                'validated': true,
-                'required': true,
-                'name': 'trigger',
-                'dbname': 'Deal Trigger',
-            },
-            'trigger': {
-                'changed': false,
-                'validated': true,
-                'required': true,
-                'name': 'trigger',
-                'dbname': 'Deal Trigger',
-            },
-            'trigger_key': {
-                'changed': false,
-                'validated': true,
-                'required': true,
-                'name': 'trigger_key',
-                'dbname': 'Deal Trigger Key',
-            },
-            'campaign_key': {
-                'changed': false,
-                'validated': (Dom.get('scope_subject').value == 'Campaign' ? true : false),
-                'required': true,
-                'group': 1,
-                'type': 'item',
-                'name': 'campaign_key',
-                'dbname': 'Deal Campaign Key',
-                'validation': [{
-                    'numeric': 'positive',
-                    'invalid_msg': ''
-                }]
-            },
-            'campaign_code': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'campaign_code',
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=is_campaign_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
-                'dbname': 'Deal Campaign Code'
-            },
-            'campaign_name': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'campaign_name',
-                'ar': false,
-                'dbname': 'Deal Campaign Name',
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_name
-                }]
-            },
-            'campaign_description': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'campaign_description',
-                'ar': false,
-                'dbname': 'Deal Campaign Description',
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_description
-                }]
-            },
-            'from': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'v_calpop1',
-                'ar': false,
-                'dbname': 'Deal Campaign Valid From',
-                'validation': [{
-                    'regexp': "\d{2}-\d{2}-\d{4}",
-                    'invalid_msg': labels.Invalid_date
-                }]
-            },
-            'to': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'v_calpop2',
-                'ar': false,
-                'dbname': 'Deal Campaign Valid To',
-                'validation': [{
-                    'regexp': "\d{2}-\d{2}-\d{4}",
-                    'invalid_msg': labels.Invalid_date
-                }]
-            }
-
+          
+          
 
         }
     };
@@ -1946,7 +1108,7 @@ function init() {
         }
     };
 
-
+/*
     switch (Dom.get('trigger').value) {
     case 'Department':
         terms_changed('Department Quantity Ordered');
@@ -1967,63 +1129,14 @@ function init() {
         terms_changed('Voucher');
         break;
     }
-
-    switch (Dom.get('scope_subject').value) {
-    case 'Campaign':
+*/
+   
         init_search('marketing_store');
 
-        break;
-    case 'Customer':
-    case 'Customer Category':
-    case 'Customer List':
-        init_search('customers_store');
-        break;
-    default:
-        init_search('products_store');
-    }
-
-    cal1 = new YAHOO.widget.Calendar("calpop1", "campaign_from_Container", {
-        title: "Start:",
-        mindate: new Date(),
-        close: true
-    });
-    cal1.update = updateCal;
-    cal1.id = '1';
-    cal1.render();
-    cal1.update();
-    cal1.selectEvent.subscribe(handleSelect, cal1, true);
-
-    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
-
-
-    cal2 = new YAHOO.widget.Calendar("calpop2", "campaign_to_Container", {
-        title: "Until:",
-        mindate: new Date(),
-        close: true
-    });
-    cal2.update = updateCal;
-    cal2.id = '2';
-    cal2.render();
-    cal2.update();
-    cal2.selectEvent.subscribe(handleSelect, cal2, true);
-
-    YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-
-    Event.addListener(['v_calpop1', 'v_calpop2'], "keyup", date_changed);
-
-    YAHOO.util.Event.addListener('to_permanent', "click", permanent_campaign)
-    YAHOO.util.Event.addListener('start_now', "click", start_now)
-
-    dialog_campaigns_list = new YAHOO.widget.Dialog("dialog_campaigns_list", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_campaigns_list.render();
-    Event.addListener("select_campaign", "click", show_dialog_campaigns_list);
-    Event.addListener('new_campaign', "click", new_campaign);
-
+  
+  
+  
+  
     dialog_departments_list = new YAHOO.widget.Dialog("dialog_departments_list", {
         visible: false,
         close: true,
@@ -2031,9 +1144,7 @@ function init() {
         draggable: false
     });
     dialog_departments_list.render();
-   // Event.addListener("target_update_department", "click", show_dialog_departments_list, 'target');
-    //Event.addListener("target_bis_update_department", "click", show_dialog_departments_list, 'target');
-
+  
     dialog_families_list = new YAHOO.widget.Dialog("dialog_families_list", {
         visible: false,
         close: true,
@@ -2042,9 +1153,6 @@ function init() {
     });
 
     dialog_families_list.render();
-   // Event.addListener("update_family", "click", show_dialog_families_list, "trigger");
-   // Event.addListener("target_update_family", "click", show_dialog_families_list, "target");
-   // Event.addListener("target_bis_update_family", "click", show_dialog_families_list, "target");
 
     dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
         visible: false,
@@ -2053,18 +1161,7 @@ function init() {
         draggable: false
     });
     dialog_products_list.render();
-    //Event.addListener("update_product", "click", show_dialog_products_list, "trigger");
-    //Event.addListener("target_update_product", "click", show_dialog_products_list, "target");
-    //Event.addListener("target_bis_update_product", "click", show_dialog_products_list, "target");
-
-    dialog_customers_list = new YAHOO.widget.Dialog("dialog_customers_list", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_customers_list.render();
-    Event.addListener("update_customer", "click", show_dialog_customers_list);
+ 
 
     dialog_deals_list = new YAHOO.widget.Dialog("dialog_deals_list", {
         visible: false,
@@ -2075,104 +1172,7 @@ function init() {
     dialog_deals_list.render();
     Event.addListener("update_clone_deal", "click", show_dialog_deals_list);
 
-    dialog_customer_categories_list = new YAHOO.widget.Dialog("dialog_customer_categories_list", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_customer_categories_list.render();
-    Event.addListener("update_customer_category", "click", show_dialog_customer_categories_list);
-
-    dialog_customer_lists_list = new YAHOO.widget.Dialog("dialog_customer_lists_list", {
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_customer_lists_list.render();
-    Event.addListener("update_customer_list", "click", show_dialog_customer_lists_list);
-
-
-
-
-
-
-
-    Event.addListener(['voucher_code_random', 'voucher_code_custome'], "click", select_voucher_code_type);
-    Event.addListener(['voucher_type_public', 'voucher_type_private'], "click", select_voucher_type);
-    Event.addListener(['amount_type_total', 'amount_type_net', 'amount_type_items'], "click", select_amount_type);
-
-    var campaign_code_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_code);
-    campaign_code_oACDS.queryMatchContains = true;
-    var campaign_code_oAutoComp = new YAHOO.widget.AutoComplete("campaign_code", "campaign_code_Container", campaign_code_oACDS);
-    campaign_code_oAutoComp.minQueryLength = 0;
-    campaign_code_oAutoComp.queryDelay = 0.1;
-
-    var campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_name);
-    campaign_name_oACDS.queryMatchContains = true;
-    var campaign_name_oAutoComp = new YAHOO.widget.AutoComplete("campaign_name", "campaign_name_Container", campaign_name_oACDS);
-    campaign_name_oAutoComp.minQueryLength = 0;
-    campaign_name_oAutoComp.queryDelay = 0.1;
-
-    var campaign_description_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_description);
-    campaign_description_oACDS.queryMatchContains = true;
-    var campaign_description_oAutoComp = new YAHOO.widget.AutoComplete("campaign_description", "campaign_description_Container", campaign_description_oACDS);
-    campaign_description_oAutoComp.minQueryLength = 0;
-    campaign_description_oAutoComp.queryDelay = 0.1;
-
-    var deal_code_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_code);
-    deal_code_oACDS.queryMatchContains = true;
-    var deal_code_oAutoComp = new YAHOO.widget.AutoComplete("deal_code", "deal_code_Container", deal_code_oACDS);
-    deal_code_oAutoComp.minQueryLength = 0;
-    deal_code_oAutoComp.queryDelay = 0.1;
-
-    var deal_name_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_name);
-    deal_name_oACDS.queryMatchContains = true;
-    var deal_name_oAutoComp = new YAHOO.widget.AutoComplete("deal_name", "deal_name_Container", deal_name_oACDS);
-    deal_name_oAutoComp.minQueryLength = 0;
-    deal_name_oAutoComp.queryDelay = 0.1;
-
-    var deal_description_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_description);
-    deal_description_oACDS.queryMatchContains = true;
-    var deal_description_oAutoComp = new YAHOO.widget.AutoComplete("deal_description", "deal_description_Container", deal_description_oACDS);
-    deal_description_oAutoComp.minQueryLength = 0;
-    deal_description_oAutoComp.queryDelay = 0.1;
-
-    var voucher_code_oACDS = new YAHOO.util.FunctionDataSource(validate_voucher_code);
-    voucher_code_oACDS.queryMatchContains = true;
-    var voucher_code_oAutoComp = new YAHOO.widget.AutoComplete("voucher_code", "voucher_code_Container", voucher_code_oACDS);
-    voucher_code_oAutoComp.minQueryLength = 0;
-    voucher_code_oAutoComp.queryDelay = 0.1;
-
-    var amount_oACDS = new YAHOO.util.FunctionDataSource(validate_amount);
-    amount_oACDS.queryMatchContains = true;
-    var amount_oAutoComp = new YAHOO.widget.AutoComplete("amount", "amount_Container", amount_oACDS);
-    amount_oAutoComp.minQueryLength = 0;
-    amount_oAutoComp.queryDelay = 0.1;
-    var if_order_more_oACDS = new YAHOO.util.FunctionDataSource(validate_if_order_more);
-    if_order_more_oACDS.queryMatchContains = true;
-    var if_order_more_oAutoComp = new YAHOO.widget.AutoComplete("if_order_more", "if_order_more_Container", if_order_more_oACDS);
-    if_order_more_oAutoComp.minQueryLength = 0;
-    if_order_more_oAutoComp.queryDelay = 0.1;
-
-    var for_every_ordered_oACDS = new YAHOO.util.FunctionDataSource(validate_for_every_ordered);
-    for_every_ordered_oACDS.queryMatchContains = true;
-    var for_every_ordered_oAutoComp = new YAHOO.widget.AutoComplete("for_every_ordered", "for_every_ordered_Container", for_every_ordered_oACDS);
-    for_every_ordered_oAutoComp.minQueryLength = 0;
-    for_every_ordered_oAutoComp.queryDelay = 0.1;
-
-    var order_interval_oACDS = new YAHOO.util.FunctionDataSource(validate_order_interval);
-    order_interval_oACDS.queryMatchContains = true;
-    var order_interval_oAutoComp = new YAHOO.widget.AutoComplete("order_interval", "order_interval_Container", order_interval_oACDS);
-    order_interval_oAutoComp.minQueryLength = 0;
-    order_interval_oAutoComp.queryDelay = 0.1;
-
-    var order_number_oACDS = new YAHOO.util.FunctionDataSource(validate_order_number);
-    order_number_oACDS.queryMatchContains = true;
-    var order_number_oAutoComp = new YAHOO.widget.AutoComplete("order_number", "order_number_Container", order_number_oACDS);
-    order_number_oAutoComp.minQueryLength = 0;
-    order_number_oAutoComp.queryDelay = 0.1;
+  
 
     var percentage_off_oACDS = new YAHOO.util.FunctionDataSource(validate_percentage_off);
     percentage_off_oACDS.queryMatchContains = true;
@@ -2194,30 +1194,16 @@ function init() {
 
     YAHOO.util.Event.addListener('save_new_deal', "click", save_new_deal);
 
-    Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
-    Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
     Event.addListener('clean_table_filter_show101', "click", show_filter, 101);
     Event.addListener('clean_table_filter_hide101', "click", hide_filter, 101);
     Event.addListener('clean_table_filter_show102', "click", show_filter, 102);
     Event.addListener('clean_table_filter_hide102', "click", hide_filter, 102);
     Event.addListener('clean_table_filter_show103', "click", show_filter, 103);
     Event.addListener('clean_table_filter_hide103', "click", hide_filter, 103);
-    Event.addListener('clean_table_filter_show104', "click", show_filter, 104);
-    Event.addListener('clean_table_filter_hide104', "click", hide_filter, 104);
     Event.addListener('clean_table_filter_show105', "click", show_filter, 105);
     Event.addListener('clean_table_filter_hide105', "click", hide_filter, 105);
     
-    Event.addListener('clean_table_filter_show106', "click", show_filter, 106);
-    Event.addListener('clean_table_filter_hide106', "click", hide_filter, 106);
-    Event.addListener('clean_table_filter_show107', "click", show_filter, 107);
-    Event.addListener('clean_table_filter_hide107', "click", hide_filter, 107);
-
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS.queryMatchContains = true;
-    oACDS.table_id = 100;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input100", "f_container100", oACDS);
-    oAutoComp.minQueryLength = 100;
-
+    
     var oACDS101 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS101.queryMatchContains = true;
     oACDS101.table_id = 101;
@@ -2236,32 +1222,15 @@ function init() {
     var oAutoComp103 = new YAHOO.widget.AutoComplete("f_input103", "f_container103", oACDS103);
     oAutoComp103.minQueryLength = 0;
 
-    var oACDS104 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS104.queryMatchContains = true;
-    oACDS104.table_id = 104;
-    var oAutoComp104 = new YAHOO.widget.AutoComplete("f_input104", "f_container104", oACDS104);
-    oAutoComp104.minQueryLength = 0;
-
+  
     var oACDS105 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS105.queryMatchContains = true;
     oACDS105.table_id = 105;
     var oAutoComp105 = new YAHOO.widget.AutoComplete("f_input105", "f_container105", oACDS105);
     oAutoComp105.minQueryLength = 0;
 
-    var oACDS106 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS106.queryMatchContains = true;
-    oACDS106.table_id = 106;
-    var oAutoComp106 = new YAHOO.widget.AutoComplete("f_input106", "f_container106", oACDS106);
-    oAutoComp106.minQueryLength = 0;
-
-    var oACDS107 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS107.queryMatchContains = true;
-    oACDS107.table_id = 107;
-    var oAutoComp107 = new YAHOO.widget.AutoComplete("f_input107", "f_container107", oACDS107);
-    oAutoComp107.minQueryLength = 0;
-
+ 
     YAHOO.util.Event.addListener(['go_to_new', 'create_other_deal'], "click", after_actions_changed);
-
 
 }
 
