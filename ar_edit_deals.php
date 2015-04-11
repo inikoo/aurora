@@ -1384,13 +1384,23 @@ function create_campaign($data) {
 
 	if ($store->id) {
 
-
 		$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'], $data['values']['Deal Campaign Valid To'], '', 'only_dates');
 
-		$data['values']['Deal Campaign Valid From']=$dates['mysql_from'].' 00:00:00';
+
+		if ($dates['mysql_from']==date('Y-m-d')) {
+			$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s');
+		}else {
+
+			$date = new DateTime($dates['mysql_from'].' 00:00:00', new DateTimeZone($store->data['Store Timezone']));
+			$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s',$date->format('U'));
+		}
+
+		$date = new DateTime($dates['mysql_to'].' 23:59:59', new DateTimeZone($store->data['Store Timezone']));
 
 
-		$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?$dates['mysql_to'].' 23:59:59':'');
+		$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?  gmdate('Y-m-d H:i:s',$date->format('U')):''   );
+
+
 
 		$campaign_data=$data['values'];
 		$campaign=$store->add_campaign($campaign_data);
@@ -1443,12 +1453,22 @@ function create_deal($data) {
 
 		}else {
 
-			$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'], $data['values']['Deal Campaign Valid To'], '', 'only_dates');
-
-			$data['values']['Deal Campaign Valid From']=$dates['mysql_from'].' 00:00:00';
+		$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'], $data['values']['Deal Campaign Valid To'], '', 'only_dates');
 
 
-			$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?$dates['mysql_to'].' 23:59:59':'');
+		if ($dates['mysql_from']==date('Y-m-d')) {
+			$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s');
+		}else {
+
+			$date = new DateTime($dates['mysql_from'].' 00:00:00', new DateTimeZone($store->data['Store Timezone']));
+			$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s',$date->format('U'));
+		}
+
+		$date = new DateTime($dates['mysql_to'].' 23:59:59', new DateTimeZone($store->data['Store Timezone']));
+
+
+		$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?  gmdate('Y-m-d H:i:s',$date->format('U')):''   );
+
 
 			$campaign_data=$data['values'];
 			$campaign=$store->add_campaign($campaign_data);
