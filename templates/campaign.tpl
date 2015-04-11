@@ -6,7 +6,7 @@
 	<input type="hidden" value="{$campaign->id}" id="subject_key" />
 	<input type="hidden" value="campaign" id="subject" />
 	<div style="padding:0 20px">
-		{include file='assets_navigation.tpl'} 
+		{include file='marketing_navigation.tpl'} 
 		<div class="branch">
 			{if $referrer=='store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if} <a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; {$campaign->get('Deal Campaign Code')}</span> {else} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; {$campaign->get('Deal Campaign Code')}</span> {/if} 
 		</div>
@@ -24,7 +24,7 @@
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Deals{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers"> <span> {t}Customers{/t}</span></span></li>
 		</ul>
@@ -32,15 +32,53 @@
 		</div>
 	</div>
 	<div style="padding:0 20px">
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:0px 0 40px 0">
+			
+			
+			
+			<div class="left_block" >
 			<h2>
 				{$campaign->get('Deal Campaign Name')} 
 			</h2>
 			<p style="width:300px">
 				{$campaign->get('Deal Campaign Description')} 
 			</p>
+			
+			</div>
+			
+			<div class="left_block info_boxes" >
+				<div class="box">
+					{t}Customers{/t} 
+					<div style="">
+						{$campaign->get('Used Customers')} 
+					</div>
+				</div>
+				<div class="box"  >
+					{t}Orders{/t} 
+					<div >
+						{$campaign->get('Used Orders')} 
+					</div>
+				</div>
+				<div style="clear:both"> 	&nbsp;</div>
+			</div>
+			
+			<div class="left_block">
+				
+				<table border="0" class="show_info_product">
+					<tr>
+						<td style="width:150px">{t}Validity{/t}:</td>
+						<td class="aright">{$campaign->get('Duration')}</td>
+					</tr>
+					
+				</table>
+				
+			</div>
+			
+			
+			
+			
 		</div>
-		<div id="block_customers" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_customers" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span id="table_title" class="clean_table_title">{t}Customers{/t}</span> 
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>
@@ -48,7 +86,7 @@
 			<div id="table1" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_orders" style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_orders" style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span id="table_title" class="clean_table_title">{t}Orders{/t}</span> 
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>
@@ -56,7 +94,7 @@
 			<div id="table0" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title" style="margin-right:5px">{t}Offers{/t}</span> 
 			<div class="buttons small left">
 				<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 

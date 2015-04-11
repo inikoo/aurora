@@ -19,46 +19,46 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<table class="edit" style="margin-top:20px;width:900px" border="0">
+	<table id="new_campaign" class="edit"  border="0">
 		<tr>
 			<td class="label" style="width:120px">{t}Code{/t}:</td>
-			<td style="text-align:left;width:400px"> 
+			<td class="input"> 
 				<div>
-					<input style="text-align:left;width:370px" id="campaign_code" value='' ovalue=""> 
+					<input class="short" id="campaign_code" value="" ovalue=""> 
 					<div id="campaign_code_Container">
 					</div>
 				</div>
 			</td>
-			<td style=""> 
+			<td class="messages"> 
 				<div id="campaign_code_msg" class="edit_td_alert">
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<td class="label">{t}Name{/t}:</td>
-			<td style="text-align:left"> 
+			<td class="input"> 
 				<div>
-					<input style="text-align:left;width:370px" id="campaign_name" value='' ovalue=""> 
+					<input  id="campaign_name" value="" ovalue=""> 
 					<div id="campaign_name_Container">
 					</div>
 				</div>
 			</td>
-			<td> 
-				<div style="float:left;width:180px" id="campaign_name_msg" class="edit_td_alert">
+			<td class="messages"> 
+				<div id="campaign_name_msg" class="edit_td_alert">
 				</div>
 			</td>
 		</tr>
-		<tr style="height:110px">
+		<tr id="campaign_description_tr">
 			<td class="label">{t}Description{/t}:</td>
-			<td style="text-align:left;"> 
+			<td class="input"> 
 				<div>
-					<textarea style="text-align:left;width:370px;height:100px;resize:horizontal" id="campaign_description" value='' ovalue=""></textarea> 
+					<textarea id="campaign_description" value="" ovalue=""></textarea> 
 					<div id="campaign_description_Container">
 					</div>
 				</div>
 			</td>
-			<td> 
-				<div style="float:left;width:180px" id="campaign_description_msg" class="edit_td_alert">
+			<td class="messages"> 
+				<div id="campaign_description_msg" class="edit_td_alert">
 				</div>
 			</td>
 		</tr>
@@ -69,7 +69,7 @@
 					<input id="v_calpop1" style="text-align:right;float:left" class="text" type="text" size="10" maxlength="10" value="" ovalue="" />
 					<div id="campaign_from_Container" style="position:absolute;display:none; z-index:2">
 					</div>
-					<img id="calpop1" style="height:16px;width:16px;float:left;margin-left:4px;cursor:pointer;text-align:right;position:relative;bottom:1px;z-index:0;margin-right:20px" src="art/icons/calendar_view_month.png" align="top" alt="" /> <button id="start_now">{t}Start now{/t}</button> 
+					<img id="calpop1" class="calendar_pop"  src="art/icons/calendar_view_month.png" align="top" alt="" /> <button id="start_now">{t}Start now{/t}</button> 
 				</div>
 			</td>
 			<td> 
@@ -81,10 +81,10 @@
 			<td class="label">{t}Until{/t}:</td>
 			<td style="text-align:left;width:400px"> 
 				<div class="buttons small left">
-					<input id="v_calpop2" style="text-align:right;float:left" class="text" type="text" size="10" maxlength="10" value='' ovalue="" />
+					<input id="v_calpop2" style="text-align:right;float:left" class="text" type="text" size="10" maxlength="10" value="" ovalue="" />
 					<div id="campaign_to_Container" style="position:absolute;display:none; z-index:2">
 					</div>
-					<img id="calpop2" style="height:16px;width:16px;float:left;margin-left:4px;cursor:pointer;text-align:right;position:relative;bottom:1px;z-index:0;margin-right:20px" src="art/icons/calendar_view_month.png" align="top" alt="" /> <button id="to_permanent" >{t}Permanent{/t}</button> 
+					<img id="calpop2" class="calendar_pop" src="art/icons/calendar_view_month.png" align="top" alt="" /> <button id="to_permanent" >{t}Permanent{/t}</button> 
 				</div>
 			</td>
 			<td> 

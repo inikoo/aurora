@@ -157,6 +157,15 @@ class DealCampaign extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
+		case 'Used Orders':
+		case 'Used Customers':
+		case 'Applied Orders':
+		case 'Applied Customers':
+		
+			
+			return number($this->data['Deal Campaign Total Acc '.$key]);
+		
+			break;
 		case 'Interval':
 		case 'Duration':
 			if (!$this->data['Deal Campaign Valid To'] ) {

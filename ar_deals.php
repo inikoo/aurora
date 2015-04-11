@@ -150,7 +150,6 @@ function code_in_other_deal($data) {
 
 function list_customers() {
 
-	global $myconf;
 
 	if (isset($_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
@@ -289,9 +288,10 @@ function list_customers() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
 	else
-		$rtext_rpp=_("Showing all customers");
-
+		$rtext_rpp='';
 
 
 
@@ -362,13 +362,21 @@ function list_customers() {
 
 	if ($order=='orders')
 		$order='orders';
+	else if ($order=='id')
+		$order='customer_id';	
 	elseif ($order=='location')
 		$order='`Customer Main Location`';
+	elseif ($order=='last_order')
+		$order='last_order';
+			
 	else
 		$order='`Customer Name`';
 
 
-	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,count(distinct O.`Order Key`) as orders from $table $where $wheref group by `Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
+	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,
+	count(distinct O.`Order Key`) as orders ,
+	max(O.`Order Date`) as last_order from
+	$table $where $wheref group by `Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
 
 
 	$data=array();
@@ -376,17 +384,16 @@ function list_customers() {
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-		$id="<a href='customer.php?p=cs&id=".$row['customer_id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$row['customer_id']).'</a>';
+		$id="<a href='customer.php?p=cs&id=".$row['customer_id']."'>".sprintf("%05d",$row['customer_id']).'</a>';
 
 		$data[]=array(
 			'id'=>$id,
 			'name'=>sprintf('<a href="customer.php?id=%d">%s</a>',$row['customer_id'],$row['Customer Name']),
 			'location'=>$row['Customer Main Location'],
-			// 'charged'=>money($row['charged']),
 			'orders'=>number($row['orders']),
-			// 'to_dispatch'=>number($row['to_dispatch']),
-			// 'dispatched'=>number($row['dispatched']),
-			// 'nodispatched'=>number($row['nodispatched'])
+			'last_order'=> strftime("%e %b %y", strtotime($row['last_order'].' +0:00')),
+
+
 
 		);
 	}
@@ -635,7 +642,7 @@ function list_orders($can_see_customers=false) {
 	}
 
 
-	$sql=sprintf("select * from `Order Deal Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results"
+	$sql=sprintf("select `Order Customer Key`,`Order Customer Name`,O.`Order Key`,`Order Public ID`,`Order Date`,`Order Current Dispatch State`,`Order Total Amount`,`Order Currency` from `Order Deal Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results"
 		,$where
 		,$wheref
 	);
@@ -648,7 +655,7 @@ function list_orders($can_see_customers=false) {
 		if ($can_see_customers)
 			$customer='<a href="customer.php?id='.$row['Order Customer Key'].'">'.$row['Order Customer Name'].'</a>';
 		else
-			$customer=$myconf['customer_id_prefix'].sprintf("%05d",$row['Order Customer Key']);
+			$customer=sprintf("%05d",$row['Order Customer Key']);
 
 
 
@@ -656,6 +663,9 @@ function list_orders($can_see_customers=false) {
 			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'customer_name'=>$customer,
 			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
+
+			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency'])
 
 
 		);
@@ -1508,24 +1518,24 @@ function list_deal_components() {
 
 
 		$allowance=$row['Deal Component Allowance Description'];
-			if ($row['Deal Component Allowance Target XHTML Label']!=''
+		if ($row['Deal Component Allowance Target XHTML Label']!=''
 
-					and !($row['Deal Component Allowance Type']=='Get Free' and in_array($row['Deal Component Allowance Target'],array('Product','Family')))
+			and !($row['Deal Component Allowance Type']=='Get Free' and in_array($row['Deal Component Allowance Target'],array('Product','Family')))
 
-					and !in_array($row['Deal Component Terms Type'],
-						array(
-							'Department Quantity Ordered',
-							'Department For Every Quantity Ordered',
-							'Department For Every Quantity Any Product Ordered',
-							'Family Quantity Ordered',
-							'Family For Every Quantity Ordered',
-							'Family For Every Quantity Any Product Ordered',
-							'Product Quantity Ordered',
-							'Product For Every Quantity Ordered'
+			and !in_array($row['Deal Component Terms Type'],
+				array(
+					'Department Quantity Ordered',
+					'Department For Every Quantity Ordered',
+					'Department For Every Quantity Any Product Ordered',
+					'Family Quantity Ordered',
+					'Family For Every Quantity Ordered',
+					'Family For Every Quantity Any Product Ordered',
+					'Product Quantity Ordered',
+					'Product For Every Quantity Ordered'
 
-						))) {
-					$allowance.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
-				}
+				))) {
+			$allowance.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
+		}
 
 
 		$adata[]=array(

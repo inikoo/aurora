@@ -31,13 +31,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
         var ColumnDefs = [{
             key: "order",
             label: labels.Number,
-            width: 90,
+            width: 70,
             className: "aleft",
             sortable: true,
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }, {
+        },
+         {
+            key: "date",
+            label: labels.Date,
+            sortable: true,
+            width: 70,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+         } , {
             key: "customer_name",
             label: labels.Customer,
             width: 220,
@@ -46,9 +56,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }, {
-            key: "date",
-            label: labels.Date,
+        },
+        {
+            key: "dispatch_state",
+            label: labels.State,
+            width: 120,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }  ,
+         {
+            key: "total_amount",
+            label: labels.Total,
             sortable: true,
             width: 100,
             className: "aright",
@@ -65,11 +86,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.dataSource0.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
-
-
-
-
-                rtext: "resultset.rtext",
+              rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
                 rowsPerPage: "resultset.records_perpage",
                 sort_key: "resultset.sort_key",
@@ -80,7 +97,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: ["id", "order", "customer_name", "date", "dispatched", "undispatched"]
+            fields: ["id", "order", "customer_name", "date", "dispatch_state", "total_amount"]
         };
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource0, {
@@ -124,9 +141,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
         ColumnDefs = [{
             key: "id",
             label: labels.Id,
-            width: 45,
+            width: 75,
             sortable: true,
-            className: "aleft",
+            className: "aright",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
@@ -157,7 +174,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
-        }];
+        }, {
+            key: "last_order",
+            label: labels.Last_Order,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }
+        ];
 
 
         this.dataSource1 = new YAHOO.util.DataSource("ar_deals.php?tipo=customers&parent=campaign&parent_key=" + Dom.get('campaign_key').value + "&tableid=" + tableid);
@@ -177,7 +204,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: ["name", "dispatched", "nodispatched", "charged", "to_dispatch", "orders", "location", "id"]
+            fields: ["name", "orders", "location", "id","last_order"]
         };
 
 
@@ -214,10 +241,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: state.customers.f_value
         };
 
-        tableid = 2; 
+        tableid = 2;
         tableDivEL = "table" + tableid;
-        var productsColumnDefs = [
-        {
+        var productsColumnDefs = [{
             key: "key",
             label: "",
             width: 20,
