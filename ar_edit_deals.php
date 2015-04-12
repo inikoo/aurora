@@ -1453,21 +1453,21 @@ function create_deal($data) {
 
 		}else {
 
-		$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'], $data['values']['Deal Campaign Valid To'], '', 'only_dates');
+			$dates=prepare_mysql_dates($data['values']['Deal Campaign Valid From'], $data['values']['Deal Campaign Valid To'], '', 'only_dates');
 
 
-		if ($dates['mysql_from']==date('Y-m-d')) {
-			$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s');
-		}else {
+			if ($dates['mysql_from']==date('Y-m-d')) {
+				$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s');
+			}else {
 
-			$date = new DateTime($dates['mysql_from'].' 00:00:00', new DateTimeZone($store->data['Store Timezone']));
-			$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s',$date->format('U'));
-		}
+				$date = new DateTime($dates['mysql_from'].' 00:00:00', new DateTimeZone($store->data['Store Timezone']));
+				$data['values']['Deal Campaign Valid From']=gmdate('Y-m-d H:i:s',$date->format('U'));
+			}
 
-		$date = new DateTime($dates['mysql_to'].' 23:59:59', new DateTimeZone($store->data['Store Timezone']));
+			$date = new DateTime($dates['mysql_to'].' 23:59:59', new DateTimeZone($store->data['Store Timezone']));
 
 
-		$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?  gmdate('Y-m-d H:i:s',$date->format('U')):''   );
+			$data['values']['Deal Campaign Valid To']=($dates['mysql_to']!=''?  gmdate('Y-m-d H:i:s',$date->format('U')):''   );
 
 
 			$campaign_data=$data['values'];
@@ -1554,7 +1554,7 @@ function create_deal($data) {
 
 		}
 
-
+		$voucher_key='';
 
 		switch ($deal_data['Deal Terms Type']) {
 		case 'Department Quantity Ordered':
@@ -1613,7 +1613,7 @@ function create_deal($data) {
 			);
 
 			$voucher=new Voucher('create', $voucher_data);
-
+			$voucher_key=$voucher->id;
 
 
 
@@ -1659,6 +1659,7 @@ function create_deal($data) {
 			);
 			$voucher=new Voucher('create', $voucher_data);
 
+			$voucher_key=$voucher->id;
 
 
 
@@ -1709,6 +1710,8 @@ function create_deal($data) {
 			);
 
 			$voucher=new Voucher('create', $voucher_data);
+			$voucher_key=$voucher->id;
+
 			$terms='voucher '.$voucher->data['Voucher Code'].' & '.$deal_data['order_interval'].' days since last order';
 			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'').' & '.number($deal_data['order_interval']).' '._('days');
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'].';'.$deal_data['order_interval'];
@@ -1739,6 +1742,8 @@ function create_deal($data) {
 
 
 			$voucher=new Voucher('create', $voucher_data);
+			$voucher_key=$voucher->id;
+
 			$terms='voucher '.$voucher->data['Voucher Code'];
 			$terms_label=_('Voucher').': <b>'.$voucher->data['Voucher Code'].'</b>'.($deal_data['voucher_type']=='Private'?' ('._('Internal use only').')':'');
 			$deal_data['Deal Component Terms']=$voucher->data['Voucher Code'];
@@ -1866,6 +1871,9 @@ function create_deal($data) {
 		default:
 			exit('Unknown terms >'.$deal_data['Deal Terms Type'].'<');
 		}
+
+
+		$deal->update(array('Deal Voucher Key'=>$voucher_key),'no_history');
 
 
 		if ($deal_data['Deal Component Allowance Type']=='Clone') {
