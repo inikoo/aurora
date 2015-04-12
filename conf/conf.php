@@ -1999,7 +1999,7 @@ $default_state=array(
 			'nr'=>100,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
 		),
-		
+
 		'edit_offers'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
@@ -2019,10 +2019,19 @@ $default_state=array(
 		'edit_block_view'=>'state',
 		'orders'=>array(
 			'order'=>'date',
-			'order_dir'=>'',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements'=>array()
+		),
+		'orders_with_voucher'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
 			'f_field'=>'public_id',
 			'f_value'=>'',
 			'f_show'=>false,

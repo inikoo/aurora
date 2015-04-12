@@ -174,6 +174,16 @@ class Deal extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
+		
+				case 'Used Orders':
+		case 'Used Customers':
+		case 'Applied Orders':
+		case 'Applied Customers':
+		
+			
+			return number($this->data['Deal Total Acc '.$key]);
+
+		
 		case 'Duration':
 			$duration='';
 			if ($this->data['Deal Expiration Date']=='' and $this->data['Deal Begin Date']=='') {
@@ -406,6 +416,22 @@ class Deal extends DB_Table {
 		return $allowances;
 
 
+	}
+
+
+	function get_applied_vouchers(){
+		
+		$sql=sprintf("select count(*) as num from `Voucher Order Bridge` where `Deal Key`=%d",
+		$this->id
+		);
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+			return $row['num'];
+		}else{
+			return 0;
+		}
+	
+	
 	}
 
 
@@ -705,6 +731,16 @@ class Deal extends DB_Table {
 			return '';
 		}else {
 			return gmdate('d-m-Y',strtotime($this->data['Deal Expiration Date'].' +0:00' ));
+		}
+	}
+
+	function is_voucher(){
+		if(in_array($this->data['Deal Terms Type'],array(
+		'Voucher AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Voucher'
+		))){
+			return true;
+		}else{
+			return false;
 		}
 	}
 

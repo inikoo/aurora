@@ -69,6 +69,11 @@ $smarty->assign('campaign',$campaign);
 
 $smarty->assign('store_key',$store->id);
 
+
+if(!$deal->is_voucher() and $_SESSION['state']['deal']['view']=='vouchers'){
+$_SESSION['state']['deal']['view']='details';
+}
+
 $smarty->assign('block_view',$_SESSION['state']['deal']['view']);
 
 $css_files=array(
@@ -81,7 +86,8 @@ $css_files=array(
  'css/button.css',
  'css/container.css',
  'css/table.css',
- 'theme.css.php'
+ 'theme.css.php',
+ 'css/deal.css'
 
  );
 
@@ -208,11 +214,25 @@ $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 
 
+$tipo_filter=$_SESSION['state']['deal']['orders_with_voucher']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['deal']['orders_with_voucher']['f_value']);
+$filter_menu=array(
+ 'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number'),'label'=>_('Number')),
+ 'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name'),'label'=>_('Customer')),
+
+
+ );
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+
+
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->assign('paginator_menu2',$paginator_menu);
+$smarty->assign('paginator_menu3',$paginator_menu);
 
 
 $session_data=base64_encode(json_encode(array(

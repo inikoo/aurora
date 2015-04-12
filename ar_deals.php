@@ -78,6 +78,11 @@ case('orders'):
 	$can_see_customers=$user->can_view('customers');
 	list_orders($can_see_customers);
 	break;
+	
+case('orders_with_voucher'):
+	$can_see_customers=$user->can_view('customers');
+	list_orders_with_voucher($can_see_customers);
+	break;
 case('customers'):
 	list_customers();
 	break;
@@ -494,12 +499,12 @@ function list_orders($can_see_customers=false) {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	$_SESSION['state']['deal'][$_conf]['order']=$order;
-	$_SESSION['state']['deal'][$_conf]['order_dir']=$order_direction;
-	$_SESSION['state']['deal'][$_conf]['nr']=$number_results;
-	$_SESSION['state']['deal'][$_conf]['sf']=$start_from;
-	$_SESSION['state']['deal'][$_conf]['f_field']=$f_field;
-	$_SESSION['state']['deal'][$_conf]['f_value']=$f_value;
+	$_SESSION['state'][$_conf]['order']['order']=$order;
+	$_SESSION['state'][$_conf]['order']['order_dir']=$order_direction;
+	$_SESSION['state'][$_conf]['order']['nr']=$number_results;
+	$_SESSION['state'][$_conf]['order']['sf']=$start_from;
+	$_SESSION['state'][$_conf]['order']['f_field']=$f_field;
+	$_SESSION['state'][$_conf]['order']['f_value']=$f_value;
 
 
 	$_order=$order;
@@ -575,7 +580,7 @@ function list_orders($can_see_customers=false) {
 	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif ($total_records)
+	elseif ($total_records>10)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -687,6 +692,276 @@ function list_orders($can_see_customers=false) {
 	);
 	echo json_encode($response);
 }
+
+function list_orders_with_voucher($can_see_customers=false) {
+
+	if (isset($_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		exit('no parent');
+	}
+
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit('no parent_key');
+	}
+	
+	if (isset($_REQUEST['voucher_key'])) {
+		$voucher_key=$_REQUEST['voucher_key'];
+	}else {
+		exit('no v');
+	}
+	
+	
+
+	switch ($parent) {
+	case 'campaign':
+		$_conf='campaign';
+		break;
+	case 'voucher':
+		$_conf='voucher';
+		break;	
+		
+	case 'deal':
+		$_conf='deal';
+		break;
+
+	default:
+		exit('unknown parent');
+		break;
+	}
+
+
+	$conf=$_SESSION['state'][$_conf]['orders_with_voucher'];
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (!is_numeric($start_from))
+		$start_from=0;
+
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	$_SESSION['state'][$_conf]['orders_with_voucher']['order']=$order;
+	$_SESSION['state'][$_conf]['orders_with_voucher']['order_dir']=$order_direction;
+	$_SESSION['state'][$_conf]['orders_with_voucher']['nr']=$number_results;
+	$_SESSION['state'][$_conf]['orders_with_voucher']['sf']=$start_from;
+	$_SESSION['state'][$_conf]['orders_with_voucher']['f_field']=$f_field;
+	$_SESSION['state'][$_conf]['orders_with_voucher']['f_value']=$f_value;
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+
+$where=sprintf(" where `Voucher Key`=%d  ",$voucher_key);
+
+
+
+	$wheref='';
+
+	if (($f_field=='customer_name')  and $f_value!='') {
+		$wheref="  and  `Order Customer Name` like '%".addslashes($f_value)."%'";
+	}
+	elseif (($f_field=='postcode')  and $f_value!='') {
+		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+	}
+	elseif ($f_field=='public_id')
+		$wheref.=" and  `Order Public ID`  like '".addslashes($f_value)."%'";
+
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Order Invoiced Balance Total Amount`<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Order Invoiced Balance Total Amount`>=".$f_value."    ";
+	elseif ($f_field=='country' and  $f_value!='') {
+		if ($f_value=='UNK') {
+			$wheref.=" and  `Order Billing To Country Code`='".$f_value."'    ";
+			$find_data=' '._('a unknown country');
+		} else {
+			$f_value=Address::parse_country($f_value);
+			if ($f_value!='UNK') {
+				$wheref.=" and  `Order Billing To Country Code`='".$f_value."'    ";
+				$country=new Country('code',$f_value);
+				$find_data=' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" alt="'.$country->data['Country Code'].'"/>';
+			}
+		}
+	}
+
+
+
+	$sql="select count(DISTINCT B.`Order Key`) as total from `Voucher Order Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    $where $wheref";
+	// print $sql;
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(DISTINCT B.`Order Key`) as total from  `Voucher Order Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)  $where      ";
+		$res = mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+
+	}
+
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+	else
+		$rtext_rpp='';
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('customer_name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No order with customer like")." <b>$f_value</b> ";
+			break;
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No order with number like")." <b>$f_value</b> ";
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No order with balance")."< <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No order with balance")."> <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No order from")." <b>".$find_data."</b> ";
+			break;
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('customer_name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+			break;
+		case('public_id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('with Number like')." <b>".$f_value."*</b>";
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('which balance')."< ".money($f_value,$currency);
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('which balance')."> ".money($f_value,$currency);
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('order','orders',$total)." "._('from')." ".$find_data;
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+
+
+
+	if ($order=='order') {
+		$order='`Order Public ID`';
+
+	} else {
+		$order='`Order Date`';
+
+	}
+
+
+	$sql=sprintf("select `Order Customer Key`,`Order Customer Name`,O.`Order Key`,`Order Public ID`,`Order Date`,`Order Current Dispatch State`,`Order Total Amount`,`Order Currency` from `Voucher Order Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results"
+		,$where
+		,$wheref
+	);
+	//  print $sql;
+
+	$res=mysql_query($sql);
+	$data=array();
+
+	while ($row= mysql_fetch_array($res, MYSQL_ASSOC) ) {
+		if ($can_see_customers)
+			$customer='<a href="customer.php?id='.$row['Order Customer Key'].'">'.$row['Order Customer Name'].'</a>';
+		else
+			$customer=sprintf("%05d",$row['Order Customer Key']);
+
+
+
+		$data[]=array(
+			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
+			'customer_name'=>$customer,
+			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
+
+			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency'])
+
+
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
 
 function list_campaigns() {
 

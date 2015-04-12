@@ -1,0 +1,6 @@
+.left_block{width:450px;float:left;margin-bottom:10px}
+.right_block{width:450px;float:right}
+
+.info_boxes{font-size:80%;text-align:center;margin-left:20px}
+.info_boxes .box{margin-left:10px;border:1px solid #777;float:right;width:110px;padding:5px 0px}
+.info_boxes .box div{font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px}
