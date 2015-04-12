@@ -247,6 +247,7 @@ $session_data=base64_encode(json_encode(array(
     'Terms'=>_('Terms'),
     'Allowance'=>_('Allowance'),
     'Interval'=>_('Interval'),
+    'Offer'=>_('Offer'),
 
 
     'Page'=>_('Page'),

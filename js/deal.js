@@ -442,9 +442,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
+        } ,
+         {
+            key: "deal_used",
+            label: labels.Offer,
+            sortable: true,
+            width: 30,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
         }];
 
-		request="ar_deals.php?tipo=orders_with_voucher&sf=0&voucher_key="+Dom.get('voucher_key').value+"&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
+		request="ar_deals.php?tipo=orders_with_voucher&sf=0&voucher_key="+Dom.get('voucher_key').value+"&parent=deal&deal_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
 	//	alert(request)
         this.dataSource3 = new YAHOO.util.DataSource(request);
         this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -462,7 +472,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["id", "order", "customer_name", "date", "total_amount","dispatch_state"]
+            fields: ["id", "order", "customer_name", "date", "total_amount","dispatch_state","deal_used"]
         };
 
         this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource3, {
