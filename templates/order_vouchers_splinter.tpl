@@ -2,7 +2,7 @@
 <table border="0" id="vouchers" style="width:100%;font-size:95%;margin-bottom:5px" class="edit">
 	{foreach from=$order->get_vouchers_info() item=voucher name=vouchers} 
 	{if $smarty.foreach.vouchers.first}
-	<tr class=title>
+	<tr class="title">
 	<td>{t}Vouchers{/t}</td>
 	</tr>
 	{/if}
@@ -14,6 +14,8 @@
 	</tr>
 	{/foreach} 
 </table>
+{if $modify_voucher}
 <div class="buttons left small" style="font-size:105%">
 	<button id="add_voucher" onClick="show_dialog_add_voucher()"><img src="art/icons/add.png"> {t}Voucher{/t}</button> 
 </div>
+{/if}

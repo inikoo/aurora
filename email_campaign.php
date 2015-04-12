@@ -117,7 +117,7 @@ case 'Creating':
 
     $js_files[]='js/edit_common.js';
     $js_files[]='email_campaign_in_process.js.php?email_campaign_key='.$email_campaign->id;
-    $js_files[]='js/sugar-0.9.5.min.js';
+    //$js_files[]='js/sugar-0.9.5.min.js'; took off 12/04/16 no ideal what is sugar i dont like it
     $tpl_file='email_campaign_in_process.tpl';
     $current_content_key=$email_campaign->get_first_content_key();
     $smarty->assign('current_content_key',$current_content_key);

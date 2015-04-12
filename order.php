@@ -35,7 +35,9 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/edit.css',
 	'css/order.css',
+	
 	'theme.css.php'
 );
 
