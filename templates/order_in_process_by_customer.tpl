@@ -61,15 +61,15 @@
 					<td width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
 				{/if} 
-				<tr >
+				<tr>
 					<td class="aright">{t}Shipping{/t}</td>
 					<td width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
-					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
-						<td class="aright"> {t}Insurance{/t}</td>
-						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
-					</tr>
-				
+				<tr {if $order->
+					get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+					<td class="aright"> {t}Insurance{/t}</td>
+					<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+				</tr>
 				<tr style="border-top:1px solid #777">
 					<td class="aright">{t}Net{/t}</td>
 					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
@@ -113,16 +113,12 @@
 				</tr>
 			</table>
 			<div id="deals_div">
-						{include file='order_deals_splinter.tpl'} 
-
-					</div>
-					<div id="vouchers_div">
-						{include file='order_vouchers_splinter.tpl'} 
-					</div>
+				{include file='order_deals_splinter.tpl'} 
+			</div>
+			<div id="vouchers_div">
+				{include file='order_vouchers_splinter.tpl' modify_voucher=false} 
+			</div>
 		</div>
-		
-		
-		
 		<div style="clear:both">
 		</div>
 	</div>
@@ -159,7 +155,9 @@
 			<td colspan="2">{t}Reason of cancellation{/t}</td>
 		</tr>
 		<tr>
-			<td colspan="2"> <textarea style="height:100px;width:100%" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea> </td>
+			<td colspan="2"> 
+			<textarea style="height:100px;width:100%" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea>
+			</td>
 		</tr>
 		<tr id="cancel_buttons">
 			<td colspan="2"> 

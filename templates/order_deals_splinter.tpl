@@ -1,8 +1,7 @@
-
-<table border="0" id="vouchers" style="width:100%;font-size:95%;margin-bottom:5px" class="edit">
+<table border="0" id="offers" style="width:100%;font-size:95%;margin-bottom:5px" class="edit">
 	{foreach from=$order->get_deals_info() item=deal name=deals} 
 	{if $smarty.foreach.deals.first}
-	<tr class=title>
+	<tr class="title">
 	<td>{t}Offers{/t}</td>
 	</tr>
 	{/if}

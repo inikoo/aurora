@@ -139,7 +139,18 @@
 					</td>
 				</tr>
 				{/if} 
+				
+				
+				
+				
 			</table>
+			<div id="deals_div" style="clear:both">
+						{include file='order_deals_splinter.tpl'} 
+
+					</div>
+					<div id="vouchers_div">
+						{include file='order_vouchers_splinter.tpl' modify_voucher=false} 
+					</div>
 		</div>
 		<div style="clear:both">
 		</div>
