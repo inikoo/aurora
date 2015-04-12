@@ -154,9 +154,9 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 
 $session_data=base64_encode(json_encode(array(
 			'label'=>array(
-			
-						'Last_Order'=>_('Last Order'),
-		'State'=>_('State'),
+
+				'Last_Order'=>_('Last Order'),
+				'State'=>_('State'),
 				'Id'=>_('Id'),
 				'Total'=>_('Total'),
 				'Number'=>_('Number'),

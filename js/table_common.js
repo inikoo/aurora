@@ -106,6 +106,7 @@ var myhandleDataReturnPayload = function(oRequest, oResponse, oPayload) {
             // YAHOO.util.Dom.setStyle('paginator'+oResponse.meta.tableid,'color','red');
             // alert(oResponse.meta.rowsPerPage+' '+oResponse.meta.totalRecords)
         }
+      
         if (oPayload.totalRecords == 0) {
             var table = YAHOO.util.Dom.get('table' + oResponse.meta.tableid).getElementsByTagName("table")[0];
             table.tHead.style.display = 'none';
@@ -322,6 +323,7 @@ function myrenderEvent() {
     paginator = ostate.pagination
 
     if (paginator.totalRecords <= paginator.rowsPerPage) {
+
         Dom.setStyle('paginator' + this.table_id, 'display', 'none')
     }
 }

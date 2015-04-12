@@ -1979,13 +1979,12 @@ $default_state=array(
 
 		),
 		'customers'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
+			'order'=>'orders',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'orders',
-			'f_value'=>'desc',
+			'f_field'=>'name',
+			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array()
 		),
