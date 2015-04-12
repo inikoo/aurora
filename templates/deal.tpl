@@ -49,15 +49,20 @@
 				<div class="box"  >
 					{t}Orders{/t} 
 					<div >
-						{$deal->get('Used Orders')} 
+						{$deal->get('Used Orders')}
+						<br/><span>{$deal->get_percentage_orders()}</span> 
 					</div>
 				</div>
 				{if $deal->is_voucher()}
 				<div class="box" >
-					{t}vouchers Vouchers{/t} 
+					{t}Applied Vouchers{/t} 
 					<div >
 						{$deal->get_applied_vouchers()} 
+						<br/><span>{$deal->get_percentage_applied_vouchers()}</span>
+					
 					</div>
+					
+					
 				</div>
 				{/if}
 				
@@ -201,6 +206,27 @@
 		</ul>
 	</div>
 </div>
+<div id="rppmenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
 <div id="dialog_new_email_campaign" style="padding:20px 10px 20px 10px;width:400px">
 	<table class="edit" border="0" style="margin:0px auto">
 		<tr>

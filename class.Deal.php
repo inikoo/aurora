@@ -174,16 +174,16 @@ class Deal extends DB_Table {
 			return $this->data[$key];
 
 		switch ($key) {
-		
-				case 'Used Orders':
+
+		case 'Used Orders':
 		case 'Used Customers':
 		case 'Applied Orders':
 		case 'Applied Customers':
-		
-			
+
+
 			return number($this->data['Deal Total Acc '.$key]);
 
-		
+
 		case 'Duration':
 			$duration='';
 			if ($this->data['Deal Expiration Date']=='' and $this->data['Deal Begin Date']=='') {
@@ -419,21 +419,52 @@ class Deal extends DB_Table {
 	}
 
 
-	function get_applied_vouchers(){
-		
+	function get_applied_vouchers() {
+
 		$sql=sprintf("select count(*) as num from `Voucher Order Bridge` where `Deal Key`=%d",
-		$this->id
+			$this->id
 		);
 		$res=mysql_query($sql);
-		if($row=mysql_fetch_assoc($res)){
+		if ($row=mysql_fetch_assoc($res)) {
 			return $row['num'];
-		}else{
+		}else {
 			return 0;
 		}
+
+
+	}
+
+
+	function get_percentage_orders() {
+
+		$total_orders=0;
+		$dates=prepare_mysql_dates($this->data['Deal Begin Date'], $this->data['Deal Expiration Date'], '`Order Date`');
+		$sql=sprintf("select  count(*) as num  from `Order Dimension` where true   %s",$dates['mysql']);
+		//print $sql;
+		//exit;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$total_orders=$row['num'];
+		}
 	
+		return percentage($this->data['Deal Total Acc Used Orders'],$total_orders);
 	
 	}
 
+	function get_percentage_applied_vouchers() {
+	$total_orders=0;
+		$dates=prepare_mysql_dates($this->data['Deal Begin Date'], $this->data['Deal Expiration Date'], '`Order Date`');
+		$sql=sprintf("select  count(*) as num  from `Order Dimension` where true   %s",$dates['mysql']);
+		//print $sql;
+		//exit;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$total_orders=$row['num'];
+		}
+	
+		return percentage($this->get_applied_vouchers(),$total_orders);
+
+	}
 
 	function update_term_allowances() {
 
@@ -462,7 +493,7 @@ class Deal extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
-		
+
 		case('Deal Begin Date'):
 			$this->update_begin_date($value,$options);
 			break;
@@ -668,16 +699,16 @@ class Deal extends DB_Table {
 			);
 			mysql_query($sql);
 			$this->data['Deal Status']=$value;
-			
-			
-		
+
+
+
 		}else {
 
 
 			$this->update_status_from_dates($force=true);
 		}
 
-	
+
 
 
 	}
@@ -704,9 +735,9 @@ class Deal extends DB_Table {
 
 
 		if (strtotime($this->data['Deal Begin Date'].' +0:00')<=strtotime('now +0:00')) {
-		
-		
-		
+
+
+
 			$this->update_field_switcher('Deal Status','Active','no_history');
 		}
 
@@ -715,7 +746,7 @@ class Deal extends DB_Table {
 
 
 
-		
+
 	}
 
 	function get_from_date() {
@@ -734,12 +765,12 @@ class Deal extends DB_Table {
 		}
 	}
 
-	function is_voucher(){
-		if(in_array($this->data['Deal Terms Type'],array(
-		'Voucher AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Voucher'
-		))){
+	function is_voucher() {
+		if (in_array($this->data['Deal Terms Type'],array(
+					'Voucher AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Voucher'
+				))) {
 			return true;
-		}else{
+		}else {
 			return false;
 		}
 	}
