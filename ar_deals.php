@@ -78,7 +78,7 @@ case('orders'):
 	$can_see_customers=$user->can_view('customers');
 	list_orders($can_see_customers);
 	break;
-	
+
 case('orders_with_voucher'):
 	$can_see_customers=$user->can_view('customers');
 	list_orders_with_voucher($can_see_customers);
@@ -478,7 +478,7 @@ function list_orders($can_see_customers=false) {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -630,17 +630,24 @@ function list_orders($can_see_customers=false) {
 
 
 
-
-
-
-
-	if ($order=='order') {
+if ($order=='order') {
 		$order='`Order Public ID`';
-
+	}elseif ($order=='customer_name') {
+		if ($can_see_customers) {
+			$order='`Order Customer Name`';
+		}else {
+			$order='`Order Public ID`';
+		}
+	}elseif ($order=='dispatch_state') {
+		$order='`Order Current Dispatch State`';
+	}elseif ($order=='total_amount') {
+		$order='`Order Total Amount`';
+	}elseif ($order=='deal_used') {
+		$order='deal_used';
 	} else {
 		$order='`Order Date`';
-
 	}
+
 
 
 	$sql=sprintf("select `Order Customer Key`,`Order Customer Name`,O.`Order Key`,`Order Public ID`,`Order Date`,`Order Current Dispatch State`,`Order Total Amount`,`Order Currency` from `Order Deal Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results"
@@ -701,28 +708,27 @@ function list_orders_with_voucher($can_see_customers=false) {
 		exit('no parent');
 	}
 
-	if (isset($_REQUEST['parent_key'])) {
-		$parent_key=$_REQUEST['parent_key'];
-	}else {
-		exit('no parent_key');
-	}
-	
+
+
 	if (isset($_REQUEST['voucher_key'])) {
 		$voucher_key=$_REQUEST['voucher_key'];
 	}else {
-		exit('no v');
+		exit('no voucher');
 	}
-	
-	
+
+	if (isset($_REQUEST['deal_key'])) {
+		$deal_key=$_REQUEST['deal_key'];
+	}else {
+		exit('no deal_key');
+	}
+
 
 	switch ($parent) {
-	case 'campaign':
-		$_conf='campaign';
-		break;
+
 	case 'voucher':
 		$_conf='voucher';
-		break;	
-		
+		break;
+
 	case 'deal':
 		$_conf='deal';
 		break;
@@ -757,7 +763,7 @@ function list_orders_with_voucher($can_see_customers=false) {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -792,7 +798,7 @@ function list_orders_with_voucher($can_see_customers=false) {
 
 
 
-$where=sprintf(" where `Voucher Key`=%d  ",$voucher_key);
+	$where=sprintf(" where `Voucher Key`=%d  ",$voucher_key);
 
 
 
@@ -905,16 +911,29 @@ $where=sprintf(" where `Voucher Key`=%d  ",$voucher_key);
 
 	if ($order=='order') {
 		$order='`Order Public ID`';
-
+	}elseif ($order=='customer_name') {
+		if ($can_see_customers) {
+			$order='`Order Customer Name`';
+		}else {
+			$order='`Order Public ID`';
+		}
+	}elseif ($order=='dispatch_state') {
+		$order='`Order Current Dispatch State`';
+	}elseif ($order=='total_amount') {
+		$order='`Order Total Amount`';
+	}elseif ($order=='deal_used') {
+		$order='deal_used';
 	} else {
 		$order='`Order Date`';
-
 	}
 
 
-	$sql=sprintf("select `Order Customer Key`,`Order Customer Name`,O.`Order Key`,`Order Public ID`,`Order Date`,`Order Current Dispatch State`,`Order Total Amount`,`Order Currency` from `Voucher Order Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results"
-		,$where
-		,$wheref
+
+
+	$sql=sprintf("select  (select count(*) from `Order Deal Bridge` ODB where ODB.`Order Key`=B.`Order Key` and ODB.`Deal Key`=%d) as deal_used , `Order Customer Key`,`Order Customer Name`,O.`Order Key`,`Order Public ID`,`Order Date`,`Order Current Dispatch State`,`Order Total Amount`,`Order Currency` from `Voucher Order Bridge` B left join `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    %s %s  group by   B.`Order Key` order by  $order $order_direction  limit $start_from,$number_results",
+		$deal_key,
+		$where,
+		$wheref
 	);
 	//  print $sql;
 
@@ -935,7 +954,8 @@ $where=sprintf(" where `Voucher Key`=%d  ",$voucher_key);
 			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
 			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
 
-			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency'])
+			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
+			'deal_used'=>($row['deal_used']?'<img src="art/icons/accept.png">':'<img src="art/icons/accept_bw_hidden.png">')
 
 
 		);
@@ -1047,7 +1067,7 @@ function list_campaigns() {
 	elseif ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Deal Campaign Code` like '".addslashes($f_value)."%'";
 
-	
+
 
 
 
@@ -1056,7 +1076,7 @@ function list_campaigns() {
 
 
 	$sql="select count(*) as total from `Deal Campaign Dimension` $where $wheref";
-	
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1529,7 +1549,7 @@ function list_deals() {
 	$response=array('resultset'=>
 		array(
 
-		'data'=>$adata,
+			'data'=>$adata,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,
