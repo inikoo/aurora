@@ -363,17 +363,17 @@ function list_customers() {
 	if ($order=='orders')
 		$order='orders';
 	else if ($order=='id')
-		$order='customer_id';	
-	elseif ($order=='location')
-		$order='`Customer Main Location`';
-	elseif ($order=='last_order')
-		$order='last_order';
-			
-	else
-		$order='`Customer Name`';
+			$order='customer_id';
+		elseif ($order=='location')
+			$order='`Customer Main Location`';
+		elseif ($order=='last_order')
+			$order='last_order';
+
+		else
+			$order='`Customer Name`';
 
 
-	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,
+		$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,
 	count(distinct O.`Order Key`) as orders ,
 	max(O.`Order Date`) as last_order from
 	$table $where $wheref group by `Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
@@ -473,10 +473,7 @@ function list_orders($can_see_customers=false) {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+	
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -501,7 +498,6 @@ function list_orders($can_see_customers=false) {
 	$_SESSION['state']['deal'][$_conf]['order_dir']=$order_direction;
 	$_SESSION['state']['deal'][$_conf]['nr']=$number_results;
 	$_SESSION['state']['deal'][$_conf]['sf']=$start_from;
-	$_SESSION['state']['deal'][$_conf]['where']=$where;
 	$_SESSION['state']['deal'][$_conf]['f_field']=$f_field;
 	$_SESSION['state']['deal'][$_conf]['f_value']=$f_value;
 
@@ -776,27 +772,47 @@ function list_campaigns() {
 	elseif ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Deal Campaign Code` like '".addslashes($f_value)."%'";
 
+	
+
+
+
+
+
+
+
 	$sql="select count(*) as total from `Deal Campaign Dimension` $where $wheref";
-	//  print $sql;
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
 		$total=$row['total'];
 	}
-	mysql_free_result($result);
+	if ($wheref!='') {
+		$sql="select count(*) as total_without_filters from `Deal Campaign Dimension`   $where ";
 
-	if ($wheref=='') {
-		$filtered=0;
-		$total_records=$total;
-	} else {
-		$sql="select count(*) as total `Deal Campaign Dimension`   $where ";
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_records=$row['total'];
-			$filtered=$total_records-$total;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
 		}
-		mysql_free_result($result);
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
 	}
+	mysql_free_result($res);
+
+
+
+
+
+
+
+
+
 
 	$rtext=number($total_records)." ".ngettext('campaign','campaigns',$total_records);
 	if ($total_records>$number_results)
@@ -857,7 +873,7 @@ function list_campaigns() {
 		$order='`Deal Campaign Name`';
 
 
-	$sql="select *  from `Deal Campaign Dimension` left join `Store Dimension` S on (S.`Store Key`=`Deal Campaign Store Key`)  $where order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Deal Campaign Dimension` left join `Store Dimension` S on (S.`Store Key`=`Deal Campaign Store Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -902,14 +918,6 @@ function list_campaigns() {
 	mysql_free_result($res);
 
 
-
-	// if($total<$number_results)
-	//  $rtext=$total.' '.ngettext('store','stores',$total);
-	//else
-	//  $rtext='';
-
-	//   $total_records=ceil($total_records/$number_results)+$total_records;
-
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$adata,
@@ -929,7 +937,7 @@ function list_campaigns() {
 
 function list_deals() {
 
-
+	global $user;
 
 	if ( isset($_REQUEST['parent']))
 		$parent= $_REQUEST['parent'];
@@ -1058,7 +1066,7 @@ function list_deals() {
 	elseif ($parent=='marketing')
 		$where=sprintf("where   `Deal Store Key`=%d     ",$parent_key);
 	else
-		$where=sprintf("where false ");;
+		$where=sprintf("where `Deal Store Key` in (%s)",join(',',$user->stores));
 
 
 
@@ -1068,11 +1076,11 @@ function list_deals() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+		$wheref.=" and `Deal Terms Description` like '%".addslashes($f_value)."%'   ";
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Deal Code` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Deal Code` like '".addslashes($f_value)."%'";
 
 
 
@@ -1231,7 +1239,7 @@ function list_deals() {
 			'store'=>$store,
 			'code'=>$code,
 			'name'=>$name,
-			'description'=>sprintf('<b title="%s">%s</b> %s<br/>%s',$row['Deal Description'],$row['Deal Code'],$row['Deal Name'],$row['Deal Term Allowances']),
+			'description'=>sprintf('<span title="%s">%s</span>',strip_tags($row['Deal Term Allowances']),$row['Deal Term Allowances Label']),
 			'orders'=>$orders,
 			'customers'=>$customers,
 			'duration'=>$duration,
@@ -1243,32 +1251,19 @@ function list_deals() {
 	mysql_free_result($res);
 
 
-
-	// if($total<$number_results)
-	//  $rtext=$total.' '.ngettext('store','stores',$total);
-	//else
-	//  $rtext='';
-
-	//   $total_records=ceil($total_records/$number_results)+$total_records;
-
 	$response=array('resultset'=>
 		array(
 
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
+		'data'=>$adata,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,
 			'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
 			'records_offset'=>$start_from,
-
 			'records_perpage'=>$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
 
 
 		)
@@ -1800,11 +1795,22 @@ function list_marketing_per_store() {
 	//print $sql;
 	$total=mysql_num_rows($res);
 
-
+	$total_ecampaigns=0;
+	$total_newsletters=0;
+	$total_reminders=0;
+	$total_campaigns=0;
+	$total_deals=0;
 
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$name=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
 		$code=sprintf('<a href="marketing.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+
+		$total_ecampaigns+=$row['Store Email Campaigns'];
+		$total_newsletters+=$row['Store Newsletters'];
+		$total_reminders+=$row['Store Active Email Reminders'];
+		$total_campaigns+=$row['Store Active Deal Campaigns'];
+		$total_deals+=$row['Store Active Deals'];
+
 
 		$adata[]=array(
 			'code'=>$code,
@@ -1819,31 +1825,25 @@ function list_marketing_per_store() {
 		);
 	}
 	mysql_free_result($res);
-	/*
-        if ($percentages) {
-            $sum_total='100.00%';
-            $sum_active='100.00%';
-            $sum_new='100.00%';
-            $sum_lost='100.00%';
-            $sum_contacts='100.00%';
-            $sum_new_contacts='100.00%';
-        } else {
-            $sum_total=number($total_customers);
-            $sum_active=number($total_active);
-            $sum_new=number($total_new);
-            $sum_lost=number($total_lost);
-            $sum_contacts=number($total_contacts);
-            $sum_new_contacts=number($total_new_contacts);
-        }
-
-    */
-	$adata[]=array(
-		'name'=>'',
-		'code'=>_('Total'),
 
 
-	);
+	if ($total_records<=$number_results) {
 
+		$adata[]=array(
+			'name'=>'',
+			'code'=>_('Total'),
+			'name'=>'',
+			'ecampaigns'=>number($total_ecampaigns) ,
+			'newsletters'=>number($total_newsletters),
+			'reminders'=>number($total_reminders),
+			'campaigns'=>number($total_campaigns),
+			'deals'=>number($total_deals)
+
+
+		);
+	}else {
+		$adata[]=array();
+	}
 
 	// if($total<$number_results)
 	//  $rtext=$total.' '.ngettext('store','stores',$total);

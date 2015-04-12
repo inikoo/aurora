@@ -12,7 +12,7 @@
 		</div>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Campaign{/t}, {$campaign->get('Deal Campaign Name')} {if $campaign->get('Deal Campaign Code')!={$campaign->get('Deal Campaign Name')}}<span class="id">{$campaign->get('Deal Campaign Code')}</span>{/if}</span> 
+				<span class="main_title"><img  id="title_icon" src="art/icons/campaign.png" title="{t}Campaign{/t}"> {$campaign->get('Deal Campaign Name')} {if $campaign->get('Deal Campaign Code')!={$campaign->get('Deal Campaign Name')}}<span class="id">{$campaign->get('Deal Campaign Code')}</span>{/if}</span> 
 			</div>
 			<div class="buttons">
 				{if $modify} <button onclick="window.location='edit_campaign.php?id={$campaign->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>{/if} 
