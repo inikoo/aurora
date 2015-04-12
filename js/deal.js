@@ -447,8 +447,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             key: "deal_used",
             label: labels.Offer,
             sortable: true,
-            width: 30,
-            className: "aright",
+            width: 40,
+            className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
@@ -652,6 +652,18 @@ function init() {
     oACDS1.table_id = 1;
     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
     oAutoComp1.minQueryLength = 0;
+    
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+    
+    var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
 
 
     Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web_site'], "click", change_block);
@@ -663,10 +675,30 @@ function init() {
     YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
     YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+   YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+YAHOO.util.Event.onContentReady("rppmenu3", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {
+        trigger: "rtext_rpp3"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu3", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
+        trigger: "filter_name3"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
 
 YAHOO.util.Event.onContentReady("rppmenu2", function() {
     var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
