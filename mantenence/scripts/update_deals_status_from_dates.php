@@ -60,8 +60,8 @@ $sql="select `Deal Key` from `Deal Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$deal=new Deal($row['Deal Key']);
-	$deal->update_term_allowances();
-$deal->update_status_from_dates();
+	// $deal->update_term_allowances();
+	$deal->update_status_from_dates();
 	foreach ($deal->get_deal_component_keys() as $deal_component_key) {
 		$deal_compoment=new DealComponent($deal_component_key);
 		$deal_compoment->update_status_from_dates();
