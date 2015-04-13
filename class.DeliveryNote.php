@@ -1218,7 +1218,7 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 		$part_index=0;
-		$debug_txt=sprintf("creating itf %s %s",$row['Product Code'],$sql);
+		$debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
 			$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
 
