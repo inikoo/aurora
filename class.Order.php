@@ -623,7 +623,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 
-		  $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sql);
+		  $sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
 
 		mysql_query($sql);
 
