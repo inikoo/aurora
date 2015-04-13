@@ -89,7 +89,8 @@
 			<div style="clear:both;">
 			</div>
 		</div>
-		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+		
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 			<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='notes'}selected{/if}" id="notes"> <span> {t}History/Notes{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
@@ -100,8 +101,9 @@
 		</ul>
 		<div class="tabs_base">
 		</div>
-		<div style="padding:0px 20px 10px 20px">
-			<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;">
+	
+	<div style="padding:0px 20px 10px 20px">
+		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;padding-top:0;margin:0px 0 40px 0;">
 				<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
 					<div id="period_label_container" style="{if $period==''}display:none{/if}">
 						<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
@@ -199,15 +201,17 @@
 		</div>
 	</div>
 </div>
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-	<span class="clean_table_title">{t}Description{/t}</span> 
-	<div class="table_top_bar space">
-	</div>
-	<div>
-		{$family->get('Product Family Description')} 
-	</div>
-</div>
-<div id="block_notes" style="{if $block_view!='notes'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+			<span class="clean_table_title">{t}Description{/t}</span> 
+			<div class="table_top_bar space">
+			</div>
+			<div>
+				{$family->get('Product Family Description')} 
+			</div>
+		</div>
+		
+		<div id="block_notes" style="{if $block_view!='notes'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 	<div style="clear:both;">
 		<span class="clean_table_title">{t}History/Notes{/t}</span> 
 		<div class="elements_chooser">
@@ -220,7 +224,7 @@
 		</div>
 	</div>
 </div>
-<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 	<span class="clean_table_title">{t}Pages{/t}</span> 
 	<div class="table_top_bar space">
 	</div>
@@ -228,7 +232,7 @@
 	<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
 	</div>
 </div>
-<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 	<div class="data_table" style="margin-top:10px;clear:both">
 		<span id="table_title" class="clean_table_title">{t}Products{/t} <img id="export_csv0" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
 		<div class="elements_chooser">
@@ -291,8 +295,9 @@
 	<div id="table0" class="data_table_container dtable btable with_total " style="{if $products_table_type=='thumbnails'}display:none{/if};font-size:90%">
 	</div>
 </div>
-</div>
-<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:0px 0 40px 0">
+	</div>
+	
+	<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:0px 0 40px 0">
 	<div style="padding:0px 20px">
 		<span class="clean_table_title">Offers</span> 
 		<div class="buttons small left">
@@ -306,9 +311,11 @@
 	</div>	
 
 </div>
-<div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+	<div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 </div>
+	
 </div>
+
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">

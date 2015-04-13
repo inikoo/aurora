@@ -595,7 +595,7 @@ class Order extends DB_Table {
 			'Delivery Note Email'=>$this->data['Order Email']
 
 		);
-     $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('new DN'.$this->id));mysql_query($sql);
+		$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('new DN'.$this->id));mysql_query($sql);
 
 
 		$dn=new DeliveryNote('create',$data_dn,$this);
@@ -612,10 +612,10 @@ class Order extends DB_Table {
 
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
-		
-		  $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
 
-		
+		$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
+
+
 		$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
 			,prepare_mysql($date)
 			,prepare_mysql($this->data['Order Current Dispatch State'])
@@ -623,7 +623,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 
-		  $sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
+		$sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
 
 		mysql_query($sql);
 
@@ -4516,7 +4516,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 	function apply_items_discounts() {
 
-
+		//print_r($this->allowance);
 		foreach ($this->allowance['Percentage Off'] as $otf_key=>$allowance_data) {
 
 
@@ -4542,7 +4542,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 
-		foreach ($this->allowance['Get Free'] as $allowance_data) {
+		foreach ($this->allowance['Order Get Free'] as $allowance_data) {
 
 
 			//print_r($allowance_data);
@@ -5151,6 +5151,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 			foreach ($deals_component_data as $deal_component_data ) {
 
+
+
 				$terms_ok=false;
 				$this->deals['Family']['Deal']=true;
 				if (isset($this->deals['Family']['Deal Multiplicity'])) {
@@ -5331,6 +5333,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 	}
+	
+	
 	function test_deal_terms($deal_component_data) {
 
 
@@ -5408,13 +5412,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$deal_component_data['Deal Component Deal Key'],
 				$this->id
 			);
-
 			$res2=mysql_query($sql);
 			if ($_row=mysql_fetch_assoc($res2)) {
-
-
 				if ($_row['num']>0) {
-
 					$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
 					$amount_term=$terms[1];
 					$amount_type=$terms[2];
@@ -5423,10 +5423,6 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 						$this->deals['Order']['Terms']=true;
 						$this->get_allowances_from_deal_component_data($deal_component_data);
 					}
-
-
-
-
 				}
 			}
 			break;
@@ -5534,6 +5530,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 			$terms=preg_split('/;/',$deal_component_data['Deal Component Terms']);
+
+
 
 			$amount_term=$terms[0];
 			$amount_type=$terms[1];
@@ -5665,6 +5663,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$deal_component_data['Deal Component Allowance Target Key']
 			);
 
+
 			$res2=mysql_query($sql);
 			while ($deal_component_data2=mysql_fetch_array($res2)) {
 				$qty=$deal_component_data2['qty'];
@@ -5721,15 +5720,21 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			);
 
 			$res2=mysql_query($sql);
-			if ($deal_component_data2=mysql_fetch_array($res2)) {
+			if ($deal_component_data2=mysql_fetch_assoc($res2)) {
+
+
+
 				$qty=$deal_component_data2['qty'];
 			}
+
 			if ($qty>=$deal_component_data['Deal Component Terms']) {
 				$terms_ok=true;
+				// print "xxxx\n";
 				$this->get_allowances_from_deal_component_data($deal_component_data);
+				//  print "----\n";
 			}
 
-
+			break;
 
 		case('Product For Every Quantity Ordered'):
 
@@ -6029,6 +6034,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$product=new Product('pid',$deal_component_data['Deal Component Allowance Target Key']);
 
 				$get_free_allowance=$deal_component_data['Deal Component Allowance'];
+
+				//print_r($deal_component_data);
+
 				if (isset($this->allowance['Order Get Free'][$product_pid])) {
 					$this->allowance['Order Get Free'][$product_pid]['Get Free']+=$get_free_allowance;
 				} else {

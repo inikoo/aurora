@@ -1218,8 +1218,8 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 		$part_index=0;
-		$debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
-			$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
+//		$debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
+	//		$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
 
 		$multipart_data=sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->data['Product Code']);
@@ -1229,6 +1229,11 @@ class DeliveryNote extends DB_Table {
 
 
 			$part = new Part ('sku',$part_data['Part SKU']);
+			
+				//$debug_txt=sprintf("creating itf2 %s %s",$part->data['Part SKU'],$part_data['Parts Per Product']);
+			    //$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
+
+			
 
 			if ($part->sku) {
 
@@ -1446,8 +1451,8 @@ class DeliveryNote extends DB_Table {
 			//print " x $items_to_dispatch  x \n";
 
 
-			$debug_txt=sprintf("$items_to_dispatch %s %s",$row['Product Code'],$items_to_dispatch);
-			$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
+			//$debug_txt=sprintf("$items_to_dispatch %s %s",$row['Product Code'],$items_to_dispatch);
+			//$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
 
 			$this->create_inventory_transaction_fact_item(
