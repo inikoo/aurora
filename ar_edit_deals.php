@@ -52,6 +52,13 @@ case('create_deal'):
 		));
 	create_deal($data);
 	break;
+case('create_allowance'):
+	$data=prepare_values($_REQUEST, array(
+			'parent_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array')
+		));
+	create_deal_allowance($data);
+	break;	
 case('create_campaign'):
 	$data=prepare_values($_REQUEST, array(
 			'parent_key'=>array('type'=>'key'),
@@ -2052,6 +2059,211 @@ function create_deal($data) {
 		echo json_encode($response);
 	}
 }
+
+function create_allowance($data) {
+
+	global $smarty;
+
+	include_once 'class.Store.php';
+	include_once 'class.Deal.php';
+	include_once 'class.DealCampaign.php';
+
+	$deal=new Deal('id', $data['parent_key']);
+
+	putenv('LC_ALL='.$store->data['Store Locale'].'.UTF-8');
+	//setlocale(LC_ALL,$store->data['Store Locale'].'.UTF-8');
+	bindtextdomain("inikoo", "./locales");
+	textdomain("inikoo");
+	
+	
+	if ($deal->id) {
+
+		
+
+		$deal_data=$data['values'];
+		$deal_data['Deal Store Key']=$store->id;
+
+		
+
+		
+
+		if ($deal_data['Deal Component Allowance Type']=='Clone') {
+
+
+			$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Deal Key`=%d",
+				$deal_data['Deal Component Allowance Target Key']);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$deal_component_data=$deal_data;
+				$deal_component_data['Deal Component Allowance Type']=$row['Deal Component Allowance Type'];
+				$deal_component_data['Deal Component Allowance Target']=$row['Deal Component Allowance Target'];
+				$deal_component_data['Deal Component Allowance Target Key']=$row['Deal Component Allowance Target Key'];
+				$deal_component_data['Deal Component Allowance Target XHTML Label']=$row['Deal Component Allowance Target XHTML Label'];
+				$deal_component_data['Deal Component Allowance Description']=$row['Deal Component Allowance Description'];
+				$deal_component_data['Deal Component XHTML Allowance Description Label']=$row['Deal Component XHTML Allowance Description Label'];
+				$deal_component_data['Deal Component Allowance']=$row['Deal Component Allowance'];
+				$deal_component_data['Deal Component Allowance Lock']=$row['Deal Component Allowance Lock'];
+				$deal_component_data['Deal Component Terms Description']=$terms;
+				$deal_component_data['Deal Component XHTML Terms Description Label']=$terms_label;
+				$deal_component_data['Deal Component Allowance Target Type']=($no_items?'No Items':'Items');
+				$deal_component_data['Deal Component Mirror Metadata']=$row['Deal Component Key'];
+
+
+				$component=$deal->add_component($deal_component_data);
+
+
+			}
+
+
+		}
+		else {
+			switch ($deal_data['Deal Component Allowance Target']) {
+			case 'Department':
+				$department=new Department($deal_data['Deal Component Allowance Target Key']);
+				$deal_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="department.php?id=%d">%s</a>',
+					$department->id,
+					$department->data['Product Department Code']
+				);
+				break;
+			case 'Family':
+				$family=new Family($deal_data['Deal Component Allowance Target Key']);
+				$deal_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',
+					$family->id,
+					$family->data['Product Family Code']
+				);
+				break;
+			case 'Product':
+
+				$product=new Product('pid', $deal_data['Deal Component Allowance Target Key']);
+				$deal_data['Deal Component Allowance Target XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',
+					$product->pid,
+					$product->data['Product Code']
+				);
+				break;
+			case 'Shipping':
+				$deal_data['Deal Component Allowance Target XHTML Label']='';
+				break;
+			case 'Charge':
+				$deal_data['Deal Component Allowance Target XHTML Label']='';
+				break;
+			case 'Order':
+				$deal_data['Deal Component Allowance Target XHTML Label']='';
+				break;
+
+			default:
+				exit('Unknown target: >'.$deal_data['Deal Component Allowance Target'].'<');
+			}
+
+			switch ($deal_data['Deal Component Allowance Type']) {
+			case 'Department Percentage Off':
+			case 'Family Percentage Off':
+			case 'Product Percentage Off':
+				$deal_data['Deal Component Allowance Type']='Percentage Off';
+				$allowances=$deal_data['percentage_off'].'% off';
+				$allowances_label=$deal_data['percentage_off']._('% off');
+				break;
+
+			case 'Percentage Off':
+				$allowances=$deal_data['percentage_off'].'% off';
+				$allowances_label=$deal_data['percentage_off']._('% off');
+				break;
+			case 'Get Same Free':
+				$allowances=$deal_data['get_same_free'].' free';
+				$allowances_label=', '.$deal_data['get_same_free'].' '._('free');
+				$allowances_label=' '.sprintf(_('get %1$s free bonus'),number($deal_data['get_same_free']));
+
+				break;
+			case 'Get Cheapest Free':
+				$allowances='cheapest '.$deal_data['get_same_free'].' free';
+				$allowances_label=' '.sprintf(_('get %1$s free'),number($deal_data['get_same_free']));
+				$deal_data['Deal Component Terms']=$deal_data['for_every_ordered'];
+				$deal_data['Deal Component Allowance']=$deal_data['get_same_free'];
+				break;
+			case 'Free Shipping':
+
+				$deal_data['Deal Component Allowance Type']='Get Free';
+				$deal_data['Deal Component Allowance Target']='Shipping';
+
+				$allowances='free shipping';
+				$allowances_label=_('free shipping');
+				break;
+			case 'Free Charges':
+				$deal_data['Deal Component Allowance Type']='Get Free';
+				$deal_data['Deal Component Allowance Target']='Charge';
+				$allowances='free charges';
+				$allowances_label=_('free charges');
+				break;
+
+			case 'Clone':
+				$deal->update(array('Deal Mirror Metadata'=>$deal_data['Deal Component Allowance Target Key']), 'no_history');
+				break;
+			case 'Amount Off':
+				$deal_data['Deal Component Allowance']=$deal_data['amount_off'];
+				$allowances=$deal_data['amount_off']." off";
+				$allowances_label=money($deal_data['amount_off'], $store->data['Store Currency Code']).' '._('amount off');
+
+				break;
+			case 'Bonus Product From Family':
+				$deal_data['Deal Component Allowance Type'] = 'Get Free';
+				$deal_data['Deal Component Allowance Target'] = 'Family';
+				$deal_data['Deal Component Allowance'] = '1;'.$deal_data['default_free_product_from_family'];
+				$allowances = 'get one form family '.$family->data['Product Family Code'];
+				$allowances_label=sprintf(_('get one form family %1$s'),$deal_data['Deal Component Allowance Target XHTML Label']);
+
+				break;
+			case 'Bonus Product':
+				$deal_data['Deal Component Allowance Type']='Get Free';
+				$deal_data['Deal Component Allowance Target']='Product';
+				$deal_data['Deal Component Allowance'] = '1';
+				$allowances = 'get one '.$product->data['Product Code'];
+				$allowances_label=sprintf(_('get one %1$s'),$deal_data['Deal Component Allowance Target XHTML Label']);
+				break;
+
+			default:
+				exit('Unknown Allowance: '.$deal_data['Deal Component Allowance Type']);
+			}
+
+
+
+
+			$deal_component_data=array(
+				'Deal Component Name'=>$deal_data['Deal Name'],
+				'Deal Component XHTML Name Label'=>$deal_data['Deal Name'],
+				'Deal Component Terms Description'=>$terms,
+				'Deal Component XHTML Terms Description Label'=>$terms_label,
+				'Deal Component Allowance Description'=>$allowances,
+				'Deal Component XHTML Allowance Description Label'=>$allowances_label,
+				'Deal Component Public'=>'Yes',
+				'Deal Component Allowance Target Type'=>($no_items?'No Items':'Items')
+
+
+			);
+			$deal_component_data=array_merge($deal_component_data, $deal_data);
+
+
+
+
+
+
+			//print_r($deal_component_data);
+
+			$component=$deal->add_component($deal_component_data);
+
+		}
+
+		$deal->update_term_allowances();
+		$smarty->assign('deal', $deal);
+		$new_deal_message=$smarty->fetch('ar_messages/new_deal.tpl');
+
+		$response=array('state'=>200, 'action'=>'created', 'deal_key'=>$deal->id, 'message'=>$new_deal_message);
+		echo json_encode($response);
+
+	}else {
+		$response=array('state'=>404, 'resp'=>'store_not_found');
+		echo json_encode($response);
+	}
+}
+
 
 function get_vocher_code($store_key, $count=0) {
 	if ($count<3) {
