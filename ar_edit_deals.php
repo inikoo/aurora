@@ -1502,6 +1502,7 @@ function create_deal($data) {
 				$department->data['Product Department Code']
 			);
 			$no_items=false;
+			break;
 		case 'Family':
 			$family=new Family($deal_data['Deal Trigger Key']);
 			$deal_data['Deal Trigger XHTML Label']=sprintf('<a href="family.php?id=%d">%s</a>',
@@ -1509,6 +1510,7 @@ function create_deal($data) {
 				$family->data['Product Family Code']
 			);
 			$no_items=false;
+			break;
 		case 'Product':
 			$product=new Product('pid', $deal_data['Deal Trigger Key']);
 			$deal_data['Deal Trigger XHTML Label']=sprintf('<a href="product.php?pid=%d">%s</a>',
@@ -1516,6 +1518,7 @@ function create_deal($data) {
 				$product->data['Product Code']
 			);
 			$no_items=false;
+			break;
 		case 'Customer':
 			$customer=new Customer($deal_data['Deal Trigger Key']);
 			$deal_data['Deal Trigger XHTML Label']=sprintf('<a href="customer.php?id=%d">%s</a>',

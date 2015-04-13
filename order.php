@@ -132,6 +132,8 @@ if (false) {
 
 			$order->update_shipping(false,false);
 			$order->update_charges(false,false);
+			
+			
 			$order->update_discounts_no_items(false);
 
 			
