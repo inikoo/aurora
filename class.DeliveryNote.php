@@ -1445,7 +1445,6 @@ class DeliveryNote extends DB_Table {
 
 
 			$debug_txt=sprintf("$items_to_dispatch %s %s",$row['Product Code'],$items_to_dispatch);
-
 			$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
 
