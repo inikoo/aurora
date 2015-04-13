@@ -595,7 +595,7 @@ class Order extends DB_Table {
 			'Delivery Note Email'=>$this->data['Order Email']
 
 		);
-  $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('new DN'.$this->id));mysql_query($sql);
+     $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('new DN'.$this->id));mysql_query($sql);
 
 
 		$dn=new DeliveryNote('create',$data_dn,$this);
@@ -622,6 +622,8 @@ class Order extends DB_Table {
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,$this->id
 		);
+
+		  $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sql);
 
 		mysql_query($sql);
 
