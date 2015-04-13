@@ -13,9 +13,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         this.remove_links = function(elLiner, oRecord, oColumn, oData) {
             elLiner.innerHTML = '';
-            if(oData!= undefined){
-            elLiner.innerHTML = oData.replace(/<.*?>/g, '');
-}
+            if (oData != undefined) {
+                elLiner.innerHTML = oData.replace(/<.*?>/g, '');
+            }
         };
 
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -292,7 +292,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: ''
         };
 
-        
+
         var tableid = 105;
         var tableDivEL = "table" + tableid;
 
@@ -385,7 +385,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: ''
         };
 
-       
+
 
 
 
@@ -434,8 +434,6 @@ function trigger_changed(value) {
         break;
     }
 }
-
-
 
 function show_dialog_departments_list(scope) {
 
@@ -515,7 +513,6 @@ function show_dialog_products_list(scope) {
     dialog_products_list.show();
 }
 
-
 function show_dialog_deals_list() {
     region1 = Dom.getRegion('allowances_select');
     region2 = Dom.getRegion('dialog_deals_list');
@@ -524,9 +521,8 @@ function show_dialog_deals_list() {
     dialog_deals_list.show();
 }
 
-
-
 function select_department_from_list(oArgs) {
+
 
     record = tables.table101.getRecord(oArgs.target);
     if (asset_select_scope == 'trigger') {
@@ -540,6 +536,7 @@ function select_department_from_list(oArgs) {
         Dom.get('target').value = 'Department';
         Dom.get('target_key').value = record.getData('key');
         Dom.get('target_bis_department_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+   
     } else {
         Dom.get('target').value = 'Department';
         Dom.get('target_key').value = record.getData('key');
@@ -618,7 +615,6 @@ function select_product_from_list(oArgs) {
     dialog_products_list.hide();
 }
 
-
 function select_deal_from_list(oArgs) {
 
     record = tables.table105.getRecord(oArgs.target);
@@ -628,250 +624,48 @@ function select_deal_from_list(oArgs) {
     dialog_deals_list.hide();
 }
 
-function new_campaign() {
-    Dom.removeClass(['select_campaign', 'new_campaign'], 'selected');
-    Dom.addClass('new_campaign', 'selected');
-    Dom.get('campaign_key').value = 0;
-    Dom.setStyle('new_campaign_fields', 'display', '');
-    Dom.get('select_campaign').innerHTML = Dom.get('select_campaign').getAttribute('label');
-    Dom.get('campaign_formated').innerHTML = '';
 
-    validate_scope_data.deal.campaign_key.required = false;
-    validate_scope_data.deal.campaign_code.required = true;
-    validate_scope_data.deal.campaign_name.required = true;
-    validate_scope_data.deal.campaign_name.required = true;
-    validate_scope_data.deal.from.required = true;
-    validate_scope_data.deal.to.required = true;
-
-    validate_scope('deal')
-
-
-
-
-}
-
-function terms_changed(value) {
-
-    Dom.setStyle(['amount_options', 'voucher_options', 'if_order_more_tr', 'order_interval_tr', 'order_number_tr', 'for_every_ordered_tr', 'target_department_options', 'target_family_options', 'target_product_options'], 'display', 'none');
-    Dom.setStyle(['order_more_than_allowances_select', 'for_every_allowances_select', 'voucher_allowances_select', 'every_order_allowances_select', 'next_order_allowances_select', 'amount_allowances_select', 'order_interval_allowances_select', 'order_number_allowances_select', 'for_every_any_product_allowances_select'], 'display', 'none');
-
-    validate_scope_data.deal.voucher_code.required = false;
-    validate_scope_data.deal.amount.required = false;
-    validate_scope_data.deal.if_order_more.required = false;
-    validate_scope_data.deal.for_every_ordered.required = false;
-    validate_scope_data.deal.order_interval.required = false;
-    validate_scope_data.deal.order_number.required = false;
-
-
-    Dom.get('terms').value = value;
-
-    switch (value) {
-    case 'Customer Department Quantity Ordered':
-        Dom.setStyle(['if_order_more_tr', 'target_department_options'], 'display', '');
-        Dom.setStyle('order_more_than_allowances_select', 'display', '');
-
-        show_dialog_departments_list('target')
-        allowances_changed('Percentage Off')
-        Dom.get('terms').value = 'Department Quantity Ordered';
-        break;
-    case 'Customer Family Quantity Ordered':
-
-        Dom.setStyle(['if_order_more_tr', 'target_family_options'], 'display', '');
-        Dom.setStyle('order_more_than_allowances_select', 'display', '');
-
-        show_dialog_families_list('target')
-
-        allowances_changed('Percentage Off');
-        Dom.get('terms').value = 'Family Quantity Ordered';
-
-        break;
-    case 'Customer Product Quantity Ordered':
-        Dom.setStyle(['if_order_more_tr', 'target_product_options'], 'display', '');
-        Dom.setStyle('order_more_than_allowances_select', 'display', '');
-        show_dialog_products_list('target')
-
-        allowances_changed('Percentage Off');
-        Dom.get('terms').value = 'Product Quantity Ordered';
-        break;
-    case 'Department Quantity Ordered':
-        Dom.setStyle('if_order_more_tr', 'display', '');
-        Dom.setStyle('order_more_than_allowances_select', 'display', '');
-
-        allowances_changed('Percentage Off');
-        break;
-    case 'Family Quantity Ordered':
-        Dom.setStyle('if_order_more_tr', 'display', '');
-        Dom.setStyle('order_more_than_allowances_select', 'display', '');
-
-        allowances_changed('Percentage Off');
-        break;
-    case 'Product Quantity Ordered':
-        Dom.setStyle('if_order_more_tr', 'display', '');
-        Dom.setStyle('order_more_than_allowances_select', 'display', '');
-
-        allowances_changed('Percentage Off');
-        break;
-    case 'Department For Every Quantity Any Product Ordered':
-    
-        Dom.setStyle('for_every_ordered_tr', 'display', '');
-        Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
-        allowances_changed('Get Cheapest Free');
-        break;
-    case 'Family For Every Quantity Any Product Ordered':
-        Dom.setStyle('for_every_ordered_tr', 'display', '');
-        Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
-        allowances_changed('Get Cheapest Free');
-
-        break;
-    case 'Department For Every Quantity Ordered':
-        Dom.setStyle('for_every_ordered_tr', 'display', '');
-        Dom.setStyle('for_every_allowances_select', 'display', '');
-        allowances_changed('Get Same Free');
-        break;
-    case 'Family For Every Quantity Ordered':
-        Dom.setStyle('for_every_ordered_tr', 'display', '');
-        Dom.setStyle('for_every_allowances_select', 'display', '');
-        allowances_changed('Get Same Free');
-
-        break;
-    case 'Product For Every Quantity Ordered':
-        Dom.setStyle('for_every_ordered_tr', 'display', '');
-        Dom.setStyle('for_every_allowances_select', 'display', '');
-        allowances_changed('Get Same Free');
-
-        break;
-
-
-
-    case 'Voucher':
-        Dom.setStyle('voucher_options', 'display', '');
-        Dom.setStyle('voucher_allowances_select', 'display', '');
-        allowances_changed('Percentage Off');
-
-        break;
-    case 'Amount':
-        Dom.setStyle('amount_options', 'display', '');
-        Dom.get('amount').focus();
-        Dom.setStyle('amount_allowances_select', 'display', '');
-        allowances_changed('Percentage Off');
-        break;
-    case 'Order Interval':
-        Dom.setStyle('order_interval_tr', 'display', '');
-        Dom.get('order_interval').focus();
-        Dom.setStyle('order_interval_allowances_select', 'display', '');
-        allowances_changed('Percentage Off');
-
-        break;
-    case 'Order Number':
-        Dom.setStyle('order_number_tr', 'display', '');
-        Dom.get('order_number').focus();
-        Dom.setStyle('order_number_allowances_select', 'display', '');
-        allowances_changed('Percentage Off');
-
-        break;
-    case 'Voucher AND Amount':
-
-        Dom.setStyle('voucher_options', 'display', '');
-        Dom.setStyle('amount_options', 'display', '');
-        Dom.setStyle('voucher_allowances_select', 'display', '');
-
-        Dom.get('amount').focus();
-        allowances_changed('Percentage Off');
-
-        break;
-    case 'Voucher AND Order Number':
-        Dom.setStyle('voucher_options', 'display', '');
-        Dom.setStyle('order_number_tr', 'display', '');
-        Dom.setStyle('voucher_allowances_select', 'display', '');
-
-        Dom.get('order_number').focus();
-        allowances_changed('Percentage Off');
-
-        break;
-    case 'Voucher AND Order Interval':
-        Dom.setStyle('voucher_options', 'display', '');
-        Dom.setStyle('order_interval_tr', 'display', '');
-        Dom.setStyle('voucher_allowances_select', 'display', '');
-
-        Dom.get('order_interval').focus();
-        allowances_changed('Percentage Off');
-
-        break;
-    case 'Amount AND Order Number':
-        Dom.setStyle('amount_options', 'display', '');
-        Dom.setStyle('order_number_tr', 'display', '');
-        Dom.setStyle('voucher_allowances_select', 'display', '');
-
-        Dom.get('amount').focus();
-        allowances_changed('Percentage Off');
-        break;
-    case 'Amount AND Order Interval':
-        Dom.setStyle('amount_options', 'display', '');
-        Dom.setStyle('order_interval_tr', 'display', '');
-        Dom.setStyle('order_interval_allowances_select', 'display', '');
-
-        Dom.get('amount').focus();
-        allowances_changed('Percentage Off');
-        break;
-    case 'Every Order':
-        Dom.setStyle('every_order_allowances_select', 'display', '');
-
-        allowances_changed('Percentage Off')
-        break;
-    case 'Next Order':
-        Dom.setStyle('next_order_allowances_select', 'display', '');
-
-        allowances_changed('Percentage Off')
-        break;
-    default:
-
-
-    }
-
-    validate_scope('deal')
-
-}
 
 function allowances_changed(value) {
     Dom.setStyle(['percentage_off_tr', 'get_same_free_tr', 'target_bis_department_options', 'target_bis_family_options', 'target_bis_product_options', 'default_free_product_from_family_options', 'clone_deal_options'], 'display', 'none')
 
-    validate_scope_data.deal.percentage_off.required = false;
-    validate_scope_data.deal.get_same_free.required = false;
+    validate_scope_data.allowance.percentage_off.required = false;
+    validate_scope_data.allowance.get_same_free.required = false;
     Dom.get('allowances').value = value;
     switch (value) {
     case 'Department Percentage Off':
         Dom.setStyle(['percentage_off_tr', 'target_bis_department_options'], 'display', '');
         show_dialog_departments_list('target_bis')
-        validate_scope_data.deal.percentage_off.required = true;
+        validate_scope_data.allowance.percentage_off.required = true;
 
         break;
     case 'Family Percentage Off':
         Dom.setStyle(['percentage_off_tr', 'target_bis_family_options'], 'display', '');
         show_dialog_families_list('target_bis');
-        validate_scope_data.deal.percentage_off.required = true;
+        validate_scope_data.allowance.percentage_off.required = true;
 
         break;
     case 'Product Percentage Off':
         Dom.setStyle(['percentage_off_tr', 'target_bis_product_options'], 'display', '');
         show_dialog_products_list('target_bis');
-        validate_scope_data.deal.percentage_off.required = true;
+        validate_scope_data.allowance.percentage_off.required = true;
 
         break;
     case 'Percentage Off':
         Dom.setStyle('percentage_off_tr', 'display', '');
-        validate_scope_data.deal.percentage_off.required = true;
+        validate_scope_data.allowance.percentage_off.required = true;
         break;
     case 'Amount Off':
         Dom.setStyle('amount_off_tr', 'display', '');
-        validate_scope_data.deal.amount_off.required = true;
+        validate_scope_data.allowance.amount_off.required = true;
         break;
     case 'Get Same Free':
         Dom.setStyle('get_same_free_tr', 'display', '');
-        validate_scope_data.deal.get_same_free.required = true;
+        validate_scope_data.allowance.get_same_free.required = true;
         break;
     case 'Get Cheapest Free':
         Dom.setStyle('get_same_free_tr', 'display', '');
-        validate_scope_data.deal.get_same_free.required = true;
+        validate_scope_data.allowance.get_same_free.required = true;
         break;
     case 'Clone':
         Dom.setStyle('clone_deal_options', 'display', '');
@@ -889,120 +683,47 @@ function allowances_changed(value) {
         show_dialog_products_list('target_bis');
         break;
     }
-    validate_scope('deal')
+    validate_scope('allowance')
 
 }
 
 
-function select_amount_type() {
-
-    Dom.removeClass(['amount_type_total', 'amount_type_net', 'amount_type_items'], 'selected');
-
-
-    if (this.id == 'amount_type_total') {
-        Dom.addClass('amount_type_total', 'selected');
-        Dom.get('amount_type').value = 'Order Total Amount';
-
-    } else if (this.id == 'amount_type_net') {
-        Dom.addClass('amount_type_net', 'selected');
-        Dom.get('amount_type').value = 'Order Total Net Amount';
-
-    } else {
-        Dom.addClass('amount_type_items', 'selected');
-        Dom.get('amount_type').value = 'Order Items Net Amount';
-    }
-}
 
 
 
-function validate_campaign_code(query) {
-    validate_general('deal', 'campaign_code', query);
-}
-
-function validate_campaign_name(query) {
-
-    validate_general('deal', 'campaign_name', query);
-}
-
-function validate_campaign_description(query) {
-    validate_general('deal', 'campaign_description', query);
-}
-
-function validate_deal_code(query) {
-    validate_general('deal', 'code', query);
-}
-
-function validate_deal_name(query) {
-
-    validate_general('deal', 'name', query);
-}
-
-function validate_deal_description(query) {
-    validate_general('deal', 'description', query);
-}
-
-function validate_voucher_code(query) {
-    validate_general('deal', 'voucher_code', query);
-}
-
-function validate_amount(query) {
-    validate_general('deal', 'amount', query);
-}
-
-function validate_if_order_more(query) {
-    validate_general('deal', 'if_order_more', query);
-}
-
-function validate_for_every_ordered(query) {
-    validate_general('deal', 'for_every_ordered', query);
-}
 
 function validate_order_interval(query) {
-    validate_general('deal', 'order_interval', query);
+    validate_general('allowance', 'order_interval', query);
 }
 
 function validate_order_number(query) {
-    validate_general('deal', 'order_number', query);
+    validate_general('allowance', 'order_number', query);
 }
 
 function validate_percentage_off(query) {
-    validate_general('deal', 'percentage_off', query);
+    validate_general('allowance', 'percentage_off', query);
 }
 
 function validate_amount_off(query) {
-    validate_general('deal', 'amount_off', query);
+    validate_general('allowance', 'amount_off', query);
 }
 
 function validate_get_same_free(query) {
-    validate_general('deal', 'get_same_free', query);
+    validate_general('allowance', 'get_same_free', query);
 }
 
-function save_new_deal() {
-    save_new_general('deal');
+function save_new_allowance() {
+    save_new_general('allowance');
 }
 
 function post_new_create_actions(branch, response) {
-    if (Dom.get('post_create_action').value == 'go_to_new') {
-        window.location = "deal.php?id=" + response.deal_key
-    } else {
-        Dom.get('new_deal_msg').innerHTML = response.message
-        Dom.get('deal_code').value = '';
-        validate_general('deal', 'code', '');
 
-    }
+ window.location = "deal.php?id=" + response.deal_key
+ 
+   
 }
 
-function after_actions_changed() {
 
-    Dom.get('go_to_new').src = 'art/icons/checkbox_unchecked.png'
-    Dom.get('create_other_deal').src = 'art/icons/checkbox_unchecked.png'
-    this.src = 'art/icons/checkbox_checked.png'
-
-    Dom.get('post_create_action').value = this.id
-
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=deal-post_create_action&value=' + this.id, {});
-
-}
 
 function init() {
     session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
@@ -1011,8 +732,8 @@ function init() {
 
     validate_scope_data = {
 
-        'deal': {
-          
+        'allowance': {
+
             'allowances': {
                 'changed': false,
                 'validated': false,
@@ -1092,51 +813,127 @@ function init() {
                 }],
                 'ar': false
             },
-          
-          
+
+
 
         }
     };
 
 
     validate_scope_metadata = {
-        'deal': {
+        'allowance': {
             'type': 'new',
             'ar_file': 'ar_edit_deals.php',
-            'key_name': 'store_key',
-            'key': Dom.get('store_key').value
+            'key_name': 'deal_key',
+            'key': Dom.get('deal_key').value
         }
     };
 
-/*
-    switch (Dom.get('trigger').value) {
-    case 'Department':
-        terms_changed('Department Quantity Ordered');
-        break;
-    case 'Family':
-        terms_changed('Family Quantity Ordered');
-        break;
-    case 'Product':
-        terms_changed('Product Quantity Ordered');
-        break;
-    case 'Customer':
-    case 'Customer Category':
-    case 'Customer List':
-        terms_changed('Voucher');
 
+    switch (Dom.get('terms_type').value) {
+
+    case 'Customer Department Quantity Ordered':
+        Dom.setStyle('order_more_than_allowances_select', 'display', '');
+        allowances_changed('Percentage Off')
         break;
-    case 'Order':
-        terms_changed('Voucher');
+    case 'Customer Family Quantity Ordered':
+        Dom.setStyle('order_more_than_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
         break;
+    case 'Customer Product Quantity Ordered':
+        Dom.setStyle('order_more_than_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Department Quantity Ordered':
+        Dom.setStyle('if_order_more_tr', 'display', '');
+        Dom.setStyle('order_more_than_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Family Quantity Ordered':
+        Dom.setStyle('order_more_than_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Product Quantity Ordered':
+        Dom.setStyle('order_more_than_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Department For Every Quantity Any Product Ordered':
+        Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
+        allowances_changed('Get Cheapest Free');
+        break;
+    case 'Family For Every Quantity Any Product Ordered':
+        Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
+        allowances_changed('Get Cheapest Free');
+        break;
+    case 'Department For Every Quantity Ordered':
+        Dom.setStyle('for_every_allowances_select', 'display', '');
+        allowances_changed('Get Same Free');
+        break;
+    case 'Family For Every Quantity Ordered':
+        Dom.setStyle('for_every_allowances_select', 'display', '');
+        allowances_changed('Get Same Free');
+        break;
+    case 'Product For Every Quantity Ordered':
+        Dom.setStyle('for_every_allowances_select', 'display', '');
+        allowances_changed('Get Same Free');
+        break;
+    case 'Voucher':
+        Dom.setStyle('voucher_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Amount':
+        Dom.setStyle('amount_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Order Interval':
+        Dom.setStyle('order_interval_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Order Number':
+        Dom.setStyle('order_number_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Voucher AND Amount':
+        Dom.setStyle('voucher_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Voucher AND Order Number':
+        Dom.setStyle('voucher_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Voucher AND Order Interval':
+        Dom.setStyle('voucher_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Amount AND Order Number':
+        Dom.setStyle('voucher_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Amount AND Order Interval':
+        Dom.setStyle('order_interval_allowances_select', 'display', '');
+        allowances_changed('Percentage Off');
+        break;
+    case 'Every Order':
+        Dom.setStyle('every_order_allowances_select', 'display', '');
+        allowances_changed('Percentage Off')
+        break;
+    case 'Next Order':
+        Dom.setStyle('next_order_allowances_select', 'display', '');
+        allowances_changed('Percentage Off')
+        break;
+    default:
+
+
+
     }
-*/
-   
-        init_search('marketing_store');
 
-  
-  
-  
-  
+
+    init_search('marketing_store');
+
+
+
+
+
     dialog_departments_list = new YAHOO.widget.Dialog("dialog_departments_list", {
         visible: false,
         close: true,
@@ -1144,7 +941,7 @@ function init() {
         draggable: false
     });
     dialog_departments_list.render();
-  
+
     dialog_families_list = new YAHOO.widget.Dialog("dialog_families_list", {
         visible: false,
         close: true,
@@ -1161,7 +958,7 @@ function init() {
         draggable: false
     });
     dialog_products_list.render();
- 
+
 
     dialog_deals_list = new YAHOO.widget.Dialog("dialog_deals_list", {
         visible: false,
@@ -1172,7 +969,7 @@ function init() {
     dialog_deals_list.render();
     Event.addListener("update_clone_deal", "click", show_dialog_deals_list);
 
-  
+
 
     var percentage_off_oACDS = new YAHOO.util.FunctionDataSource(validate_percentage_off);
     percentage_off_oACDS.queryMatchContains = true;
@@ -1192,7 +989,7 @@ function init() {
     get_same_free_oAutoComp.minQueryLength = 0;
     get_same_free_oAutoComp.queryDelay = 0.1;
 
-    YAHOO.util.Event.addListener('save_new_deal', "click", save_new_deal);
+    YAHOO.util.Event.addListener('save_new_allowance', "click", save_new_allowance);
 
     Event.addListener('clean_table_filter_show101', "click", show_filter, 101);
     Event.addListener('clean_table_filter_hide101', "click", hide_filter, 101);
@@ -1202,8 +999,8 @@ function init() {
     Event.addListener('clean_table_filter_hide103', "click", hide_filter, 103);
     Event.addListener('clean_table_filter_show105', "click", show_filter, 105);
     Event.addListener('clean_table_filter_hide105', "click", hide_filter, 105);
-    
-    
+
+
     var oACDS101 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS101.queryMatchContains = true;
     oACDS101.table_id = 101;
@@ -1222,14 +1019,14 @@ function init() {
     var oAutoComp103 = new YAHOO.widget.AutoComplete("f_input103", "f_container103", oACDS103);
     oAutoComp103.minQueryLength = 0;
 
-  
+
     var oACDS105 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS105.queryMatchContains = true;
     oACDS105.table_id = 105;
     var oAutoComp105 = new YAHOO.widget.AutoComplete("f_input105", "f_container105", oACDS105);
     oAutoComp105.minQueryLength = 0;
 
- 
+
     YAHOO.util.Event.addListener(['go_to_new', 'create_other_deal'], "click", after_actions_changed);
 
 }

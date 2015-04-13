@@ -44,6 +44,8 @@ if (isset($_REQUEST['referer']) and $_REQUEST['referer']=='edit_deal') {
 
 }
 
+
+
 switch ($deal->data['Deal Trigger']) {
 case 'Order':
 
