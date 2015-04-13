@@ -1428,7 +1428,8 @@ class DeliveryNote extends DB_Table {
 
 		if (!$date)$date=gmdate("Y-m-d H:i:s");
 
-		$sql=sprintf('select OTF.`Order Quantity`,`No Shipped Due No Authorized`,OTF.`Product Key`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and `Current Dispatching State` in ("Submitted by Customer","In Process")  '
+		$sql=sprintf('select OTF.`Order Quantity`,`No Shipped Due No Authorized`,OTF.`Product Key`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`) 
+		where `Order Key`=%d  and `Current Dispatching State` in ("Submitted by Customer","In Process")  '
 			,$order_key);
 		$res=mysql_query($sql);
 
