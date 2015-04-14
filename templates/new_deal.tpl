@@ -200,7 +200,7 @@
 				<input type="hidden" id="target" value="{$target}"> 
 				<input type="hidden" id="target_key" value="{$target_key}"> 
 				<select id="department_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Department'}display:none{/if}">
-					<option value="Department Quantity Ordered">{t}Order more than{/t} (any product)</option>
+					<option value="Department Quantity Ordered">{t}Order n or more{/t} (any product)</option>
 					<option value="Department For Every Quantity Any Product Ordered">{t}For every (any product){/t}</option>
 					<option value="Department For Every Quantity Ordered">{t}For every (same product){/t}</option>
 				</select>
@@ -210,16 +210,16 @@
 					<option value="Family For Every Quantity Ordered">{t}For every{/t} (same product)</option>
 				</select>
 				<select id="product_terms_select" onchange="terms_changed(this.value)" style="{if $trigger!='Product'}display:none{/if}">
-					<option value="Product Quantity Ordered">{t}Order more than{/t}</option>
+					<option value="Product Quantity Ordered">{t}Order n or more{/t}</option>
 					<option value="Product For Every Quantity Ordered">{t}For every{/t}</option>
 				</select>
 				<select id="customer_terms_select" onchange="terms_changed(this.value)" style="{if !($trigger=='Customer' or  $trigger=='Customer Category' or  $trigger=='Customer List') }display:none{/if}">
 					<option value="Voucher">{t}Voucher{/t}</option>
 					<option value="Amount">{t}Amount{/t}</option>
 					<option value="Every Order">{t}Every Order{/t}</option>
-					<option value="Customer Department Quantity Ordered">{t}Order more than{/t} ({t}Department{/t})</option>
-					<option value="Customer Family Quantity Ordered">{t}Order more than{/t} ({t}Family{/t})</option>
-					<option value="Customer Product Quantity Ordered">{t}Order more than{/t} ({t}Product{/t})</option>
+					<option value="Customer Department Quantity Ordered">{t}Order n or more{/t} ({t}Department{/t})</option>
+					<option value="Customer Family Quantity Ordered">{t}Order n or more{/t} ({t}Family{/t})</option>
+					<option value="Customer Product Quantity Ordered">{t}Order n or more{/t} ({t}Product{/t})</option>
 				</select>
 				<select id="customer_terms_select" onchange="terms_changed(this.value)"  style="{if $trigger!='Order'}display:none{/if}">
 					<option value="Voucher">{t}Voucher{/t}</option>
@@ -319,7 +319,7 @@
 			</tr>
 		</tbody>
 		<tr id="if_order_more_tr" style="display:none">
-			<td class="label">{t}If order more than{/t}:</td>
+			<td class="label">{t}If n or more{/t}:</td>
 			<td class="input very_short"> 
 				<input id="if_order_more" value="" ovalue=""> <span>{t}outers{/t}</span>
 				<div id="if_order_more_Container">
