@@ -1,5 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
+	<input type="hidden" value="{$session_data}" id="session_data" />
+
 	{include file='assets_navigation.tpl'} 
 	<input type="hidden" id="store_key" value="{$store->id}"> 
 	<div class="branch">
@@ -20,8 +22,7 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
 		<li> <span class="item {if $edit=='invoice'}selected{/if}" id="invoice"> <span> {t}Invoicing{/t}</span></span></li>
-		<li style="display:none"> <span class="item {if $edit=='campaigns'}selected{/if}" id="campaigns"> <span> {t}Deal Templates{/t}</span></span></li>
-		<li> <span class="item {if $edit=='discounts'}selected{/if}" id="discounts"> <span> {t}Deals{/t}</span></span></li>
+		<li> <span class="item {if $edit=='discounts'}selected{/if}" id="discounts"> <span> {t}Offers{/t}</span></span></li>
 		<li> <span class="item {if $edit=='charges'}selected{/if}" id="charges"> <span> {t}Charges{/t}</span></span></li>
 		<li> <span class="item {if $edit=='shipping'}selected{/if}" id="shipping"> <span> {t}Shipping{/t}</span></span></li>
 		<li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"><span> {t}Images{/t}</span></span></li>
@@ -256,52 +257,22 @@
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" id="d_discounts">
-			<div class="buttons">
-				<button id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button> <button style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button> 
+		
+		
+			        <span class="clean_table_title" style="margin-right:5px">{t}Offers{/t}</span> 
+			<div class="buttons small left">
+				<button id="new_deal" onclick="new_deal()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
 			</div>
-			<div class="data_table" style="clear:both">
-				<span class="clean_table_title">{t}Deals{/t}</span> 
-				<div class="buttons">
-					<button id="add_deal"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
-				</div>
-				<div class="table_top_bar space">
-				</div>
-				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
-				<div id="table4" class="data_table_container dtable btable">
-				</div>
+			<div class="table_top_bar space">
 			</div>
+			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
+			<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
+			</div>
+
+		
+		
 		</div>
-		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='campaigns'}display:none{/if}" id="d_campaigns">
-			<div class="buttons">
-				<button id="add_campaign"><img src="art/icons/add.png" alt=""> {t}Add Template{/t}</button> <button id="close_edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Store Deals{/t}</button> <button style="display:none" class="positive" id="save_new_campaign">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_campaign">{t}Cancel{/t}</button> 
-			</div>
-			<div class="new_item_dialog" id="new_campaign_dialog" style="display:none">
-				<div id="new_campaign_messages" class="messages_block">
-				</div>
-				<table class="edit">
-					<tr>
-						<td>{t}Template Name{/t}:</td>
-						<td> 
-						<input id="new_campaign_name" onkeyup="new_campaign_changed(this)" onmouseup="new_campaign_changed(this)" onchange="new_campaign_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Template Description{/t}:</td>
-						<td> 
-						<input id="new_campaign_description" onkeyup="new_campaign_changed(this)" onmouseup="new_campaign_changed(this)" onchange="new_campaign_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div class="data_table" style="clear:both">
-				<span class="clean_table_title">{t}Deal Templates{/t}</span> 
-				<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
-				</div>
-				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
-				<div id="table3" class="data_table_container dtable btable">
-				</div>
-			</div>
-		</div>
+		
 		<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='charges'}display:none{/if}" id="d_charges">
 			<div class="data_table">
 				<span class="clean_table_title">{t}Charges{/t}</span> 

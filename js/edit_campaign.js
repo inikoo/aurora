@@ -32,7 +32,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         tableid = 2; 
         tableDivEL = "table" + tableid;
-        var productsColumnDefs = [
+        var ColumnDefs = [
         {
             key: "key",
             label: "",
@@ -103,7 +103,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         };
 
 
-        this.table2 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs, this.dataSource2, {
+        this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource2, {
             renderLoopSize: 50,
             generateRequest: myRequestBuilder,
             paginator: new YAHOO.widget.Paginator({

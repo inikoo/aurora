@@ -94,7 +94,7 @@ $js_files=array(
 	'js/pages_common.js',
 	'js/edit_common.js',
 	'country_select.js.php',
-	'edit_store.js.php',
+	'js/edit_store.js',
 
 );
 
@@ -264,6 +264,41 @@ else {
 
 
 $smarty->assign('email_credentials',$credentials);
+
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+
+				'Last_Order'=>_('Last Order'),
+				'State'=>_('State'),
+				'Id'=>_('Id'),
+				'Total'=>_('Total'),
+				'Number'=>_('Number'),
+				'Customer'=>_('Customer'),
+				'Customers'=>_('Customers'),
+				'Orders'=>_('Orders'),
+				'Code'=>_('Code'),
+				'Description'=>_('Description'),
+				'Date'=>_('Date'),
+				'Number'=>_('Number'),
+				'ID'=>_('ID'),
+				'Name'=>_('Name'),
+				'Location'=>_('Location'),
+				'Duration'=>_('Duration'),
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'edit_departments'=>$_SESSION['state']['store']['edit_departments'],
+				'edit_pages'=>$_SESSION['state']['store']['edit_pages'],
+				'campaigns'=>$_SESSION['state']['store']['campaigns'],
+				'edit_charges'=>$_SESSION['state']['store']['edit_charges'],
+				'edit_offers'=>$_SESSION['state']['store']['edit_offers'],
+							'history'=>$_SESSION['state']['store']['history']
+
+			)
+		)));
+$smarty->assign('session_data',$session_data);
 
 
 $smarty->display('edit_store.tpl');
