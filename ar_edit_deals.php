@@ -2757,33 +2757,6 @@ function list_deals() {
 	$_SESSION['state'][$parent]['edit_offers']['f_field']=$f_field;
 	$_SESSION['state'][$parent]['edit_offers']['f_value']=$f_value;
 
-	if ($parent=='store') {
-
-		if (isset( $_REQUEST['elements']))
-			$elements=$_REQUEST['elements'];
-		else
-			$elements=$conf['elements'];
-
-
-
-		if (isset( $_REQUEST['elements_order'])) {
-			$elements['Order']=$_REQUEST['elements_order'];
-		}
-		if (isset( $_REQUEST['elements_department'])) {
-			$elements['Department']=$_REQUEST['elements_department'];
-		}
-		if (isset( $_REQUEST['elements_family'])) {
-			$elements['Family']=$_REQUEST['elements_family'];
-		}
-		if (isset( $_REQUEST['elements_product'])) {
-			$elements['Product']=$_REQUEST['elements_product'];
-		}
-
-		$_SESSION['state'][$parent]['offers']['elements']=$elements;
-
-
-	}
-
 
 
 

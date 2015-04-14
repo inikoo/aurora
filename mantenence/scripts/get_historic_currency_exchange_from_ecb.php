@@ -48,6 +48,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
+// get eurofxref-hist.csv from : https://www.ecb.euxropa.eu/stats/exchange/eurofxref/html/index.en.html
 $csv_file='eurofxref-hist.csv';
 $handle_csv = fopen($csv_file, "r");
 $__cols=array();
