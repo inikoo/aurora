@@ -12,14 +12,12 @@
 	<input type="hidden" id="subject" value="warehouse" />
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
-		{*}
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
 		</div>
-		
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if $modify} <button style="height:25px;width:27px" onclick="window.location='edit_inventory.php?id={$warehouse->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt="{t}Configuration{/t}" title="{t}Configuration{/t}"></button> <button onclick="window.location='edit_parts.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Parts{/t}</button> {/if} <button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button> <button style="display:none" onclick="window.location='parts_movements.php?id={$warehouse->id}'"><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button> <button style="display:none" onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='parts_lists.php?warehouse_id={$warehouse->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='part_categories.php?&amp;warehouse_id={$warehouse-&gt;id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+				{if $modify} <button style="height:25px;width:27px" onclick="window.location='edit_inventory.php?id={$warehouse->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt="{t}Configuration{/t}" title="{t}Configuration{/t}"></button> <button onclick="window.location='edit_parts.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Parts{/t}</button> {/if} <button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button> <button onclick="window.location='parts_movements.php?id={$warehouse->id}'" style="display:none"><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button> <button style="display:none" onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='parts_lists.php?warehouse_id={$warehouse->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='part_categories.php?&amp;warehouse_id={$warehouse->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title"><img src="art/icons/warehouse.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Inventory{/t} <span style="font-style:italic">({t}Parts{/t})</span> </span> 
@@ -27,7 +25,6 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		{*}
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t}</span></span></li>
@@ -109,6 +106,7 @@
 					</div>
 					<script type="text/javascript">
 
+
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "part_history_plot_object", "930", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -118,8 +116,10 @@
 		so.write("stock_history_plot");
 		// ]]>
 	
+					
 					</script>
 					<script>
+
 
 
 var flashMovie;
@@ -134,6 +134,7 @@ function reloadSettings(file) {
   
   }
 	
+					
 					</script>
 				</div>
 			</div>
