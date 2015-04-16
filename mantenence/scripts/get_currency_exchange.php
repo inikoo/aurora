@@ -58,8 +58,8 @@ foreach ($currencies as $currency1) {
 			$date=gmdate('Y-m-d');
 			$exchange=get_currency_other($currency1,$currency2);
 			
-			$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s%s,%f)  ON DUPLICATE KEY UPDATE `Exchange`=%f ",
-			prepare_mysql($date),$currency1,$currency2,$exchange,$exchange);
+			$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f)  ON DUPLICATE KEY UPDATE `Exchange`=%f ",
+			prepare_mysql($date),prepare_mysql($currency1.$currency2),$exchange,$exchange);
 			mysql_query($sql);
 			//print "$sql\n";
 		}
