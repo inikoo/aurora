@@ -60,8 +60,8 @@ foreach ($currencies as $currency1) {
 			
 			$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s%s,%f)  ON DUPLICATE KEY UPDATE `Exchange`=%f ",
 			prepare_mysql($date),$currency1,$currency2,$exchange,$exchange);
-			//mysql_query($sql);
-			print "$sql\n";
+			mysql_query($sql);
+			//print "$sql\n";
 		}
 
 	}
