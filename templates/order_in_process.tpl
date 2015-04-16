@@ -389,4 +389,4 @@
 			</tr>
 		</table>
 	</div>
-	{include file='add_payment_splinter.tpl'} {include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='footer.tpl'} 
+	{include file='add_payment_splinter.tpl' subject='order'} {include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='footer.tpl'} 

@@ -26,7 +26,11 @@ $store=new Store($invoice->data['Invoice Store Key']);
 
 
 $invoice->update_payment_state();
+
+//exit;
 $invoice->update_totals();
+
+
 
 //print_r($invoice->data);
 
@@ -56,7 +60,6 @@ if(isset($_REQUEST['ref']) and in_array($_REQUEST['ref'],array('c')))  {
 
 }
 
-$js_file='invoice.js.php';
 $template='invoice.tpl';
 
 $smarty->assign('invoice',$invoice);
@@ -89,10 +92,13 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+		'js/php.default.min.js',
+
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
-	$js_file
+	'js/add_payment.js',
+	'invoice.js.php'
 );
 
 

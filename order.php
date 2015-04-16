@@ -568,6 +568,7 @@ else {
 
 		);
 	}
+	
 	$number_invoices=count($invoices_data);
 	if ($number_invoices!=1) {
 		$current_invoice_key='';

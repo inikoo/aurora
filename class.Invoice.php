@@ -1790,7 +1790,7 @@ class Invoice extends DB_Table {
 
 
 		$paid_amount=0;
-		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` where `Invoice Key`=%d",
+		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` B left join `Payment Dimension` P  on (B.`Payment Key`=P.`Payment Key`)  where `Invoice Key`=%d and `Payment Transaction Status`='Completed'",
 			$this->id
 		);
 		$res=mysql_query($sql);
@@ -1844,6 +1844,7 @@ class Invoice extends DB_Table {
 	function apply_payment($payment) {
 
 
+/*
 
 		if ($this->data['Invoice Outstanding Total Amount']>0) {
 
@@ -1862,19 +1863,11 @@ class Invoice extends DB_Table {
 				$payment_amount_used=round($payment->data['Payment Balance'],2);
 			}
 
-
-
-
-
-
 		}
 		else {// Refund
 
 			if ($payment->data['Payment Balance']<=$this->data['Invoice Outstanding Total Amount']) {
-
 				$to_pay=$this->data['Invoice Outstanding Total Amount'];
-
-
 				$payment_amount_not_used=$payment->data['Payment Balance']-$to_pay;
 				$payment_amount_used=$to_pay;
 			}else {
@@ -1885,11 +1878,15 @@ class Invoice extends DB_Table {
 
 
 		}
+		
+		*/
+		
+		
 
 		$payment_date_to_update=array(
 			'Payment Invoice Key'=>$this->id,
-			'Payment Balance'=>$payment_amount_not_used,
-			'Payment Amount Invoiced'=>$payment_amount_used
+		//	'Payment Balance'=>$payment_amount_not_used,
+	//		'Payment Amount Invoiced'=>$payment_amount_used
 		);
 		//print_r($payment_date_to_update);
 		$payment->update($payment_date_to_update);
@@ -1899,7 +1896,7 @@ class Invoice extends DB_Table {
 			$payment->id,
 			$payment->data['Payment Account Key'],
 			$payment->data['Payment Service Provider Key'],
-			$payment_amount_used
+			$payment->data['Payment Amount']
 		);
 		mysql_query($sql);
 
@@ -1908,7 +1905,7 @@ class Invoice extends DB_Table {
 
 
 
-		return $payment_amount_not_used;
+		return 0;
 
 	}
 

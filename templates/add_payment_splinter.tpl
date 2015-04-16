@@ -49,7 +49,7 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<span id="save_add_payment_wait" style="display:none"><img src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span> <button id="save_add_payment" class="positive disabled" id="save_add_payment" onclick="save_add_payment()">{t}Save{/t}</button> <button id="close_add_payment" class="negative" onclick="hide_add_payment()">{t}Cancel{/t}</button> 
+				<span id="save_add_payment_wait" style="display:none"><img src="art/loading.gif" alt="" /> {t}Processing Request{/t}</span> <button id="save_add_payment" class="positive disabled" id="save_add_payment" onclick="save_add_payment('{$subject}')">{t}Save{/t}</button> <button id="close_add_payment" class="negative" onclick="hide_add_payment()">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
