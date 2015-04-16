@@ -465,6 +465,18 @@ case('new_page'):
 	new_page($data);
 	break;
 
+case 'edit_page_content_display_type':
+	$data=prepare_values($_REQUEST,array(
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string'),
+			'id'=>array('type'=>'key'),
+			'content_template_filename'=>array('type'=>'string'),
+			'table_record_index'=>array('type'=>'numeric','optional'=>true)
+		));
+	edit_page_content_display_type($data);
+	break;
+
 case('edit_page_layout'):
 	edit_page_layout();
 	break;
@@ -744,7 +756,58 @@ function clear_cache($data) {
 
 }
 
+function edit_page_content_display_type($data) {
 
+	global $editor;
+	$page=new Page($data['id']);
+	$page->editor=$editor;
+
+	if (!array_key_exists('okey',$data)) {
+		$data['okey']=$data['key'];
+	}
+
+	$value=stripslashes(urldecode($data['newvalue']));
+
+
+	$page->update_field_switcher($data['key'],$value);
+
+	$updated=$page->updated;
+	$new_value=$page->new_value;
+	$msg=$page->msg;
+
+	if ($value=='Source') {
+
+
+
+		$page->update_field_switcher('filename','','no_history');
+
+	}elseif ($value=='Template') {
+
+
+		$page->update_field_switcher('filename',$data['content_template_filename']);
+
+	}
+
+
+
+
+
+	if ($updated) {
+
+		$response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$new_value,'page_key'=>$page->id);
+
+
+
+		if (array_key_exists('table_record_index', $data)) {
+			$response['record_index']=(int) $data['table_record_index'];
+		}
+
+	} else {
+		$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key'],'page_key'=>$page->id);
+	}
+	echo json_encode($response);
+
+}
 
 function edit_page($data) {
 

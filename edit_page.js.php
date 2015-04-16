@@ -1464,8 +1464,8 @@ function save_content_display_type(){
 
 
 
- var request = 'ar_edit_sites.php?tipo=edit_page&newvalue=' + Dom.get('content_display_type').value + '&id=' + Dom.get('page_key').value+'&okey=content_display_type&key=Page Store Content Display Type';
-   
+ var request = 'ar_edit_sites.php?tipo=edit_page_content_display_type&newvalue=' + Dom.get('content_display_type').value + '&id=' + Dom.get('page_key').value+'&okey=content_display_type&key=Page Store Content Display Type&content_template_filename='+Dom.get('content_template_filename').value;
+   //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
            // alert(o.responseText);

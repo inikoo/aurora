@@ -741,6 +741,8 @@ class Page extends DB_Table {
 			if (array_key_exists($field,$base_data)) {
 
 				if ($value!=$this->data[$field]) {
+				
+				
 
 					$this->update_field($field,$value,$options);
 				}

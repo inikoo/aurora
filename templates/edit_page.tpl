@@ -387,8 +387,8 @@
 						</td>
 					</tr>
 					<tr class="space10" id="content_display_type_template_showcase" style="{if $page->get('Page Store Content Display Type')!='Template'}display:none;{/if}">
-						<td class="label">{t}Template{/t}:</td>
-						<td> <img style="border:1px solid #ccc" src="art/page_layout_product_thumbnails.png" /> </td>
+						<td class="label">{t}Template{/t}:<input id="content_template_filename" value="family_buttons" type="hidden"></td>
+						<td class="selected"> <img style="border:1px solid #ccc" src="art/page_layout_product_thumbnails.png" /> </td>
 					</tr>
 					<tr>
 					
