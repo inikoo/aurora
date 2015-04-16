@@ -121,7 +121,8 @@ function cancel_payment($data) {
 
 	$payment_key=$data['payment_key'];
 	$payment=new Payment($payment_key);
-	$order=new Order($data['order_key']);
+	$order=new Order($payment->data['Payment Order Key']);
+	$invoice=new Order($payment->data['Payment Invoice Key']);
 
 
 
@@ -187,15 +188,17 @@ function cancel_payment($data) {
 	);
 	$payment->update($data_to_update);
 
-$order->update_payment_state();
-
-		$response=array(
-			'state'=>200,
-			'payment_key'=>$payment->id,
-			'status'=>$payment->data['Payment Transaction Status'],
-			'created_time_interval'=>$payment->get_formated_time_lapse('Created Date'),
-			'order_dispatch_status'=>$order->data['Order Current Dispatch State']
-		);
+	$order->update_payment_state();
+	if ($invoice->id) {
+		$invoice->update_payment_state();
+	}
+	$response=array(
+		'state'=>200,
+		'payment_key'=>$payment->id,
+		'status'=>$payment->data['Payment Transaction Status'],
+		'created_time_interval'=>$payment->get_formated_time_lapse('Created Date'),
+		'order_dispatch_status'=>$order->data['Order Current Dispatch State']
+	);
 
 
 
@@ -456,6 +459,117 @@ function set_payment_as_completed($data) {
 
 
 
+function add_payment_to_invoice($data) {
+
+	global $user;
+
+	$invoice=new Invoice($data['parent_key']);
+	$payment_account=new Payment_Account($data['payment_account_key']);
+
+	$orders_invoice=$invoice->get_orders_ids();
+
+	$order_key=array_pop($orders_invoice);
+
+	$order=new Order($order_key);
+
+
+	if (!$invoice->id) {
+		$response=array('state'=>400,'msg'=>'error: order dont exists','type_error'=>'invalid_invoice_key');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+	if (!$payment_account->id) {
+		$response=array('state'=>400,'msg'=>'error: payment account dont exists','type_error'=>'invalid_payment_account_keyy');
+		echo json_encode($response);
+		return;
+	}
+
+	if (!$payment_account->in_store($order->data['Order Store Key'])) {
+		$response=array('state'=>400,'msg'=>'error: payment account not in this site','type_error'=>'payment_account_not_in_store');
+		echo json_encode($response);
+		return;
+	}
+
+
+	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
+
+
+
+
+	$payment_data=array(
+		'Payment Account Key'=>$payment_account->id,
+		'Payment Account Code'=>$payment_account->data['Payment Account Code'],
+		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
+		'Payment Order Key'=>$order_key,
+		'Payment Store Key'=>$invoice->data['Invoice Store Key'],
+		'Payment Customer Key'=>$invoice->data['Invoice Customer Key'],
+		'Payment Submit Type'=>'Manual',
+		'Payment User Key'=>$user->id,
+		'Payment Balance'=>$data['payment_amount'],
+		'Payment Amount'=>$data['payment_amount'],
+		'Payment Refund'=>0,
+		'Payment Currency Code'=>$invoice->data['Invoice Currency'],
+		'Payment Completed Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
+		'Payment Transaction Status'=>'Completed',
+		'Payment Transaction ID'=>$data['payment_reference'],
+		'Payment Method'=>$data['payment_method'],
+
+	);
+
+	$payment=new Payment('create',$payment_data);
+
+	$paymnet_balance=$invoice->apply_payment($payment);
+
+
+
+	$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
+		$order_key,
+		$payment->id,
+		$payment_account->id,
+		$payment_account->data['Payment Service Provider Key'],
+		$payment->data['Payment Amount'],
+		$payment->data['Payment Amount']
+	);
+	mysql_query($sql);
+
+
+
+
+
+	$updated_data=array(
+
+		'invoice_total_paid'=>$invoice->get('Paid Amount'),
+		'invoice_total_to_pay'=>$invoice->get('Outstanding Total Amount')
+
+	);
+
+	$payments_data=array();
+	foreach ($invoice->get_payment_objects('',true,true) as $payment) {
+		$payments_data[$payment->id]=array(
+			'date'=>$payment->get('Created Date'),
+			'amount'=>$payment->get('Amount'),
+			'status'=>$payment->get('Payment Transaction Status')
+		);
+	}
+
+
+
+	$response=array('state'=>200,
+		'result'=>'updated',
+		'data'=>$updated_data,
+		'payments_data'=>$payments_data,
+		'invoice_total_paid'=>$invoice->data['Invoice Paid Amount'],
+		'invoice_total_to_pay'=>$invoice->data['Invoice Outstanding Total Amount']
+	);
+
+	echo json_encode($response);
+
+}
 
 function add_payment_to_order($data) {
 
@@ -488,7 +602,8 @@ function add_payment_to_order($data) {
 	$payment_service_provider=new Payment_Service_Provider($payment_account->data['Payment Service Provider Key']);
 
 
-	$billing_to=new Billing_To($order->data['Order Billing To Keys']);
+
+
 
 
 	$payment_data=array(
@@ -744,15 +859,9 @@ function refund_payment($data) {
 
 	}
 
-
-
-
-	if ($data['parent']=='order') {
-		$order_key=$data['parent_key'];
-	}else {
-		$order_key=0;
-	}
-
+	$order=new Order($payment->data['Payment Order Key']);
+	$invoice=new Invoice($payment->data['Payment Invoice Key']);
+	
 
 
 	$payment->update(array(
@@ -765,7 +874,7 @@ function refund_payment($data) {
 		'Payment Type'=>'Refund',
 
 		'Payment Service Provider Key'=>$payment->data['Payment Service Provider Key'],
-		'Payment Order Key'=>$order_key,
+		'Payment Order Key'=>$order->id,
 		'Payment Store Key'=>$payment->data['Payment Store Key'],
 		'Payment Customer Key'=>$payment->data['Payment Customer Key'],
 
@@ -783,7 +892,6 @@ function refund_payment($data) {
 		'Payment Related Payment Transaction ID'=>$payment->data['Payment Transaction ID'],
 		'Payment Submit Type'=>$refunded_data['submit_type'],
 		'Payment User Key'=>$user->id,
-
 	);
 
 	$refund_payment=new Payment('create',$payment_data);
@@ -791,7 +899,6 @@ function refund_payment($data) {
 	$refund_payment->load_payment_account();
 
 
-	$order=new Order($order_key);
 	if ($order->id) {
 
 		$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
@@ -846,6 +953,9 @@ function refund_payment($data) {
 		);
 
 		echo json_encode($response);
+	}
+	if ($invoice->id) {
+		$invoice->apply_payment($payment);
 	}
 
 

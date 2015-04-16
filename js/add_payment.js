@@ -16,7 +16,6 @@ function save_credit_payment() {
         Dom.setStyle('save_credit_payment_wait', 'display', '')
         Dom.setStyle(['save_credit_payment', 'close_credit_payment'], 'display', 'none')
 
-
         var request = 'ar_edit_payments.php?tipo=credit_payment&credit_amount=' + Dom.get('credit_payment_amount').value + "&credit_reference=" + Dom.get('credit_payment_reference').value + "&payment_key=" + Dom.get('credit_payment_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
         //alert(request);return;
         YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -78,7 +77,7 @@ function save_refund_payment() {
 }
 
 
-function save_add_payment() {
+function save_add_payment(subject) {
 
     if (Dom.hasClass('save_add_payment', 'disabled')) {
         // add_credit_note_show_errors()
@@ -89,11 +88,16 @@ function save_add_payment() {
         Dom.setStyle(['save_add_payment', 'close_add_payment'], 'display', 'none')
 
 
-        var request = 'ar_edit_payments.php?tipo=add_payment&payment_amount=' + Dom.get('add_payment_amount').value + "&payment_method=" + Dom.get('add_payment_method').value + "&payment_reference=" + Dom.get('add_payment_reference').value + "&payment_account_key=" + Dom.get('add_payment_payment_account_key').value + '&parent_key=' + Dom.get('order_key').value + '&parent=order'
-
+        var request = 'ar_edit_payments.php?tipo=add_payment&payment_amount=' + Dom.get('add_payment_amount').value + "&payment_method=" + Dom.get('add_payment_method').value + "&payment_reference=" + Dom.get('add_payment_reference').value + "&payment_account_key=" + Dom.get('add_payment_payment_account_key').value 
+		if(subject=='order'){
+			request+='&parent_key=' + Dom.get('order_key').value + '&parent=order'
+		}else if(subject=='invoice'){
+			request+='&parent_key=' + Dom.get('invoice_key').value + '&parent=invoice'
+		}
+		
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //      alert(o.responseText)
+                  //   alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
                 location.reload()
@@ -154,7 +158,7 @@ if(  Dom.hasClass('save_cancel_payment', 'disabled')){
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-          
+          alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
           
@@ -255,9 +259,9 @@ function complete_payment() {
 
 function add_payment(parent, parent_key) {
 
-    if (parent == 'order') {
-        max_amount = Dom.get('show_add_payment_to_order').getAttribute('amount')
-        add_payment_to_order(parent_key, max_amount)
+    if (parent == 'order' || parent == 'invoice') {
+        max_amount = Dom.get('show_add_payment').getAttribute('amount')
+        show_add_payment_dialog(parent_key, max_amount)
     }
 
 }
@@ -350,7 +354,7 @@ function add_payment_pay_max_amount() {
 
 }
 
-function add_payment_to_order(order_key, max_amount) {
+function show_add_payment_dialog(order_key, max_amount) {
 
     Dom.get('add_payment_reference').value = '';
     Dom.get('add_payment_max_amount').value = max_amount;
@@ -365,7 +369,7 @@ function add_payment_to_order(order_key, max_amount) {
     Dom.get('add_payment_payment_account_key').value = ''
     can_submit_payment()
 
-    region1 = Dom.getRegion('show_add_payment_to_order');
+    region1 = Dom.getRegion('show_add_payment');
     region2 = Dom.getRegion('dialog_add_payment');
 
     var pos = [region1.right - region2.width, region1.top]
@@ -553,7 +557,7 @@ function add_credit_note_to_customer() {
     Dom.get('add_payment_payment_account_key').value = ''
     can_submit_payment()
 
-    region1 = Dom.getRegion('show_add_payment_to_order');
+    region1 = Dom.getRegion('show_add_payment');
     region2 = Dom.getRegion('dialog_add_payment');
 
     var pos = [region1.right - region2.width, region1.top]

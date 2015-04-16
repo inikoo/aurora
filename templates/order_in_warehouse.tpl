@@ -206,4 +206,4 @@
 		</ul>
 	</div>
 </div>
-{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='add_payment_splinter.tpl'} {include file='assign_picker_packer_splinter.tpl'} {include file='footer.tpl'} 
+{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='add_payment_splinter.tpl' subject='order'} {include file='assign_picker_packer_splinter.tpl'} {include file='footer.tpl'} 

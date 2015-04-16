@@ -331,4 +331,4 @@
 		</div>
 	</div>
 </div>
-{include file='add_payment_splinter.tpl'} {include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl' subject='order'} {include file='footer.tpl'} 

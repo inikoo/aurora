@@ -236,12 +236,13 @@ function imported_records_myrenderEvent() {
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
 
-               alert(o.responseText)
+            //   alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 
                 if (r.state == 200) {
                
                     for (i in r.elements_numbers) {
+                    	if(  Dom.get('elements_' + i + '_number')!=undefined)
                         Dom.get('elements_' + i + '_number').innerHTML = r.elements_numbers[i]
                     }
                 }

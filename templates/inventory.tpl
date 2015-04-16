@@ -8,7 +8,7 @@
 	<input type="hidden" value="warehouse" id="parent" />
 	<input type="hidden" id="parts_table_id" value="2" />
 	<input type="hidden" id="calendar_id" value="{$calendar_id}" />
-	<input type="hidden" id="link_extra_argument" value="&warehouse_id=1" />
+	<input type="hidden" id="link_extra_argument" value="&amp;warehouse_id=1" />
 	<input type="hidden" id="subject" value="warehouse" />
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
@@ -17,7 +17,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if $modify} <button style="height:25px;width:27px" onclick="window.location='edit_inventory.php?id={$warehouse->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt="{t}Configuration{/t}" title="{t}Configuration{/t}"></button> <button onclick="window.location='edit_parts.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Parts{/t}</button> {/if} <button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button> <button style="display:none" onclick="window.location='parts_movements.php?id={$warehouse->id}'"><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button> <button style="display:none" onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='parts_lists.php?warehouse_id={$warehouse->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='part_categories.php?&warehouse_id={$warehouse->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+				{if $modify} <button style="height:25px;width:27px" onclick="window.location='edit_inventory.php?id={$warehouse->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt="{t}Configuration{/t}" title="{t}Configuration{/t}"></button> <button onclick="window.location='edit_parts.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Parts{/t}</button> {/if} <button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button> <button style="display:none" onclick="window.location='parts_movements.php?id={$warehouse->id}'"><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button> <button style="display:none" onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='parts_lists.php?warehouse_id={$warehouse->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='part_categories.php?&amp;warehouse_id={$warehouse-&gt;id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title"><img src="art/icons/warehouse.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Inventory{/t} <span style="font-style:italic">({t}Parts{/t})</span> </span> 
@@ -54,33 +54,16 @@
 					<div id="part_stock_state_chooser" style="{if $elements_part_elements_type!='stock_state'}display:none{/if}">
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.Error}selected{/if} label_part_Error" id="elements_Error" table_type="Error">{t}Error{/t} (<span id="elements_Error_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.OutofStock}selected{/if} label_part_OutofStock" id="elements_OutofStock" table_type="OutofStock">{t}Out of Stock{/t} (<span id="elements_OutofStock_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.VeryLow}selected{/if} label_part_VeryLow" id="elements_VeryLow" table_type="VeryLow">{t}Very Low{/t} (<span id="elements_VeryLow_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.Low}selected{/if} label_part_Low" id="elements_Low" table_type="Low">{t}Low{/t} (<span id="elements_Low_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_stock_state.Normal}selected{/if} label_part_Normal" id="elements_Normal" table_type="Normal">{t}Ok{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:30px" class=" table_type transaction_type state_details {if $elements_stock_state.Excess}selected{/if} label_part_Excess" id="elements_Excess" table_type="Excess">{t}Excess{/t} (<span id="elements_Excess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details  label_part_NotInUse">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.NotInUse}selected{/if} label_part_NotInUse" id2="elements_NotInUse" id3="elements_NotInUse_tris" id="elements_NotInUse_bis" table_type="NotInUse" title="{t}Not In Use{/t}">{t}NiU{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.InUse}selected{/if} label_part_InUse" id2="elements_InUse" id3="elements_InUse_tris" id="elements_InUse_bis" table_type="InUse" title="{t}In Use{/t}">{t}iU{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details  label_part_NotInUse">[</span> 
 					</div>
-				
-				<div id="part_next_shipment_chooser" style="{if $elements_part_elements_type!='next_shipment'}display:none{/if}">
-						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_next_shipment.Set}selected{/if} label_part_Set" id="elements_Set" table_type="Set">{t}Set{/t} (<span id="elements_Set_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_next_shipment.Overdue}selected{/if} label_part_Overdue" id="elements_Overdue" table_type="Overdue">{t}Overdue{/t} (<span id="elements_Overdue_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-		<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_next_shipment.None}selected{/if} label_part_None" id="elements_None" table_type="None">{t}None{/t} (<span id="elements_None_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-				<span style="float:right;margin-left:2px" class=" table_type transaction_type state_details  label_part_NotInUse">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.NotInUse}selected{/if} label_part_NotInUse" id2="elements_NotInUse" id3="elements_NotInUse_bis"    id="elements_NotInUse_tris" table_type="NotInUse" title="{t}Not In Use{/t}">{t}NiU{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.InUse}selected{/if} label_part_InUse" id2="elements_InUse" id3="elements_InUse_bis"  id="elements_InUse_tris" table_type="InUse" title="{t}In Use{/t}">{t}iU{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details  label_part_NotInUse">[</span> 
-				
-				</div>
-				
-				
-				
-				
+					<div id="part_next_shipment_chooser" style="{if $elements_part_elements_type!='next_shipment'}display:none{/if}">
+						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_next_shipment.Set}selected{/if} label_part_Set" id="elements_Set" table_type="Set">{t}Set{/t} (<span id="elements_Set_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_next_shipment.Overdue}selected{/if} label_part_Overdue" id="elements_Overdue" table_type="Overdue">{t}Overdue{/t} (<span id="elements_Overdue_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_next_shipment.None}selected{/if} label_part_None" id="elements_None" table_type="None">{t}None{/t} (<span id="elements_None_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details  label_part_NotInUse">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.NotInUse}selected{/if} label_part_NotInUse" id2="elements_NotInUse" id3="elements_NotInUse_bis" id="elements_NotInUse_tris" table_type="NotInUse" title="{t}Not In Use{/t}">{t}NiU{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details ">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $elements_use.InUse}selected{/if} label_part_InUse" id2="elements_InUse" id3="elements_InUse_bis" id="elements_InUse_tris" table_type="InUse" title="{t}In Use{/t}">{t}iU{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details  label_part_NotInUse">[</span> 
+					</div>
 				</div>
 				<div class="table_top_bar">
 				</div>
 				<div class="clusters">
 					<div class="buttons small left cluster">
-						<button class="{if $parts_view=='general'}selected{/if}" id="parts_general" name="general">{t}Description{/t}</button> 
-						<button class="{if $parts_view=='stock'}selected{/if}" id="parts_stock" name="stock">{t}Stock{/t}</button> 
-						<button class="{if $parts_view=='locations'}selected{/if}" id="parts_locations" name="locations">{t}Locations{/t}</button> 
-						<button class="{if $parts_view=='sales'}selected{/if}" id="parts_sales" name="sales">{t}Sales{/t}</button> 
-						<button class="{if $parts_view=='forecast'}selected{/if}" id="parts_forecast" name="forecast">P/F</button> 
-						<button class="{if $parts_view=='properties'}selected{/if}" id="parts_properties" name="properties">{t}Properties{/t}</button> 
-
-			</div>
+						<button class="{if $parts_view=='general'}selected{/if}" id="parts_general" name="general">{t}Description{/t}</button> <button class="{if $parts_view=='stock'}selected{/if}" id="parts_stock" name="stock">{t}Stock{/t}</button> <button class="{if $parts_view=='locations'}selected{/if}" id="parts_locations" name="locations">{t}Locations{/t}</button> <button class="{if $parts_view=='sales'}selected{/if}" id="parts_sales" name="sales">{t}Sales{/t}</button> <button class="{if $parts_view=='forecast'}selected{/if}" id="parts_forecast" name="forecast">P/F</button> <button class="{if $parts_view=='properties'}selected{/if}" id="parts_properties" name="properties">{t}Properties{/t}</button> 
+					</div>
 					<div class="buttons small left cluster" id="part_period_options" style="{if $parts_view=='general' or $parts_view=='locations' };display:none{/if}">
 						<button class="{if $parts_period=='all'}selected{/if}" period="all" id="parts_period_all">{t}All{/t}</button> <button style="margin-left:4px" class="{if $parts_period=='yeartoday'}selected{/if}" period="yeartoday" id="parts_period_yeartoday">{t}YTD{/t}</button> <button class="{if $parts_period=='monthtoday'}selected{/if}" period="monthtoday" id="parts_period_monthtoday">{t}MTD{/t}</button> <button class="{if $parts_period=='weektoday'}selected{/if}" period="weektoday" id="parts_period_weektoday">{t}WTD{/t}</button> <button class="{if $parts_period=='today'}selected{/if}" period="today" id="parts_period_today">{t}Today{/t}</button> <button style="margin-left:4px" class="{if $parts_period=='yesterday'}selected{/if}" period="yesterday" id="parts_period_yesterday">{t}YD{/t}</button> <button class="{if $parts_period=='last_w'}selected{/if}" period="last_w" id="parts_period_last_w">{t}LW{/t}</button> <button class="{if $parts_period=='last_m'}selected{/if}" period="last_m" id="parts_period_last_m">{t}LM{/t}</button> <button style="margin-left:4px" class="{if $parts_period=='three_year'}selected{/if}" period="three_year" id="parts_period_three_year">{t}3Y{/t}</button> <button class="{if $parts_period=='year'}selected{/if}" period="year" id="parts_period_year">{t}1Yr{/t}</button> <button class="{if $parts_period=='six_month'}selected{/if}" period="six_month" id="parts_period_six_month">{t}6M{/t}</button> <button class="{if $parts_period=='quarter'}selected{/if}" period="quarter" id="parts_period_quarter">{t}1Qtr{/t}</button> <button class="{if $parts_period=='month'}selected{/if}" period="month" id="parts_period_month">{t}1M{/t}</button> <button class="{if $parts_period=='ten_day'}selected{/if}" period="ten_day" id="parts_period_ten_day">{t}10D{/t}</button> <button class="{if $parts_period=='week'}selected{/if}" period="week" id="parts_period_week">{t}1W{/t}</button> 
 					</div>
@@ -97,15 +80,9 @@
 		</div>
 		<div id="block_movements" class="block" style="{if $block_view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<span class="clean_table_title">{t}Parts Stock Transactions{/t}</span> 
-<div class="elements_chooser">
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.OIP}selected{/if}" id="transactions_type_elements_OIP" table_type="OIP">{t}OIP{/t} (<span id="transactions_type_elements_OIP_numbers"></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Out}selected{/if}" id="transactions_type_elements_Out" table_type="Out">{t}Out{/t} (<span id="transactions_type_elements_Out_numbers"></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.In}selected{/if}" id="transactions_type_elements_In" table_type="In">{t}In{/t} (<span id="transactions_type_elements_In_numbers"></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Audit}selected{/if}" id="transactions_type_elements_Audit" table_type="Audit">{t}Audits{/t} (<span id="transactions_type_elements_Audit_numbers"></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.NoDispatched}selected{/if}" id="transactions_type_elements_NoDispatched" table_type="NoDispatched">{t}No Dispatched{/t} (<span id="transactions_type_elements_NoDispatched_numbers"></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Move}selected{/if}" id="transactions_type_elements_Move" table_type="Move">{t}Movements{/t} (<span id="transactions_type_elements_Move_numbers"></span>)</span> 
+			<div class="elements_chooser">
+				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.OIP}selected{/if}" id="transactions_type_elements_OIP" table_type="OIP">{t}OIP{/t} (<span id="transactions_type_elements_OIP_numbers"></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Out}selected{/if}" id="transactions_type_elements_Out" table_type="Out">{t}Out{/t} (<span id="transactions_type_elements_Out_numbers"></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.In}selected{/if}" id="transactions_type_elements_In" table_type="In">{t}In{/t} (<span id="transactions_type_elements_In_numbers"></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Audit}selected{/if}" id="transactions_type_elements_Audit" table_type="Audit">{t}Audits{/t} (<span id="transactions_type_elements_Audit_numbers"></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.NoDispatched}selected{/if}" id="transactions_type_elements_NoDispatched" table_type="NoDispatched">{t}No Dispatched{/t} (<span id="transactions_type_elements_NoDispatched_numbers"></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transactions_type_elements.Move}selected{/if}" id="transactions_type_elements_Move" table_type="Move">{t}Movements{/t} (<span id="transactions_type_elements_Move_numbers"></span>)</span> 
 			</div>
-
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
@@ -127,7 +104,8 @@
 					<div id="stock_history_plot">
 						<strong>You need to upgrade your Flash Player</strong> 
 					</div>
-<script type="text/javascript">
+					<script type="text/javascript">
+
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "part_history_plot_object", "930", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -136,7 +114,10 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("stock_history_plot");
 		// ]]>
-	</script> <script>
+	
+					</script>
+					<script>
+
 
 var flashMovie;
 
@@ -149,7 +130,8 @@ function reloadSettings(file) {
   flashMovie = document.getElementById(chart_id);
   
   }
-	</script> 
+	
+					</script>
 				</div>
 			</div>
 			<div id="stock_history_list_subblock" class="edit_block_content" style="{if $stock_history_block!='list'}display:none{/if}">
@@ -278,7 +260,7 @@ function reloadSettings(file) {
 			</div>
 			</td>
 		</tr>
-				<tr>
+		<tr>
 			<td> 
 			<div class="buttons small">
 				<button id="parts_element_chooser_next_shipment" style="float:none;margin:0px auto;min-width:120px" onclick="change_parts_element_chooser('next_shipment')" class="{if $elements_part_elements_type=='next_shipment'}selected{/if}"> {t}Next Shipment{/t}</button> 

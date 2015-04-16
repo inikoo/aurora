@@ -66,21 +66,12 @@ class Payment extends DB_Table {
 		}
 
 		$data=$this->base_data();
-
-
-
 		foreach ( $raw_data as $key=> $value) {
 			if (array_key_exists($key,$data))
 				$data[$key]=$value;
 
 		}
-
-
-
-
 		$this->found=false;
-
-
 		if (!$this->found and $create) {
 			$this->create($data);
 
@@ -93,11 +84,6 @@ class Payment extends DB_Table {
 
 	function get($key='') {
 
-
-
-
-
-
 		if (isset($this->data[$key]))
 			return $this->data[$key];
 
@@ -108,9 +94,6 @@ class Payment extends DB_Table {
 		break;
 		case 'Transaction Status':
 		switch ($this->data['Payment Transaction Status']) {
-		//'Pending','Completed','Cancelled','Error'
-			
-			
 			case 'Pending':
 				return _('Pending');
 				break;

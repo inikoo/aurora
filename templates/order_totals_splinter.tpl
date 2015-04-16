@@ -62,10 +62,11 @@
 					</tr>
 					<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
-						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
+						<div class="buttons small left" >
+							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
 						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> 
+						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				</table>
@@ -149,10 +150,9 @@
 					</tr>
 					<tr id="tr_order_total_to_pay_invoiced" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
-						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order_invoiced" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
-						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
+						
+						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label_invoiced">{t}To Refund{/t}</span> 
+						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
 				</table>

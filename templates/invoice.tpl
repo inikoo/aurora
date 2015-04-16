@@ -1,6 +1,10 @@
 {include file='header.tpl'} 
 <div id="bd" style="{*}{if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}background-image:url('art/stamp.paid.en.png');background-repeat:no-repeat;background-position:280px 50px{/if}{*}">
 	<input type="hidden" id="invoice_key" value="{$invoice->id}" />
+	<input type="hidden" value="{$invoice->get('Invoice Currency')}" id="currency_code" />
+	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
+	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+
 	{include file='orders_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=invoices">&#8704; {t}Invoices{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=invoices">{t}Invoices{/t} ({$store->get('Store Code')})</a> &rarr; {$invoice->get('Invoice Public ID')}</span> 
@@ -89,6 +93,14 @@
 					<td class="aright">{t}Total{/t}</td>
 					<td width="100" class="aright"><b>{$invoice->get('Total Amount')}</b></td>
 				</tr>
+				<tr id="tr_order_total_to_pay" style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}">
+						<td class="aright"> 
+						<div class="buttons small left">
+							<button style="{if $invoice->get('Invoice Outstanding Total Amount')<0}display:none{/if}" id="show_add_payment" amount="{$invoice->get('Invoice Outstanding Total Amount')}" onclick="add_payment('invoice','{$invoice->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
+						</div>
+						<span style="{if $invoice->get('Invoice Outstanding Total Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> <span style="{if $invoice->get('Invoice To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
+						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$invoice->get('Outstanding Total Amount')}</td>
+					</tr>
 			</table>
 		</div>
 		<div id="dates">
@@ -208,7 +220,7 @@
 		</table>
 	</div>
 	<div style="margin-top:20px">
-		<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span> 
+		<span id="table_title_items" class="clean_table_title" >{t}Items{/t}</span> 
 		<div class="table_top_bar ">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name='' filter_value='' no_filter=1 } 
@@ -289,4 +301,6 @@
 		</tr>
 	</table>
 </div>
+
+{include file='add_payment_splinter.tpl' subject='invoice'} 
 {include file='footer.tpl'} 

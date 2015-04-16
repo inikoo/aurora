@@ -654,8 +654,8 @@ function save_change_discount() {
                         Dom.setStyle('tr_order_total_to_pay', 'display', 'none')
 
                     }
-                    if (Dom.get('show_add_payment_to_order') != undefined) {
-                        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
+                    if (Dom.get('show_add_payment') != undefined) {
+                        Dom.get('show_add_payment').setAttribute('amount', r.order_total_to_pay)
                     }
 
 
@@ -986,11 +986,11 @@ function update_order_data(r) {
 
 
         if (r.order_total_to_pay > 0) {
-            Dom.setStyle(['show_add_payment_to_order', 'to_pay_label'], 'display', '')
+            Dom.setStyle(['show_add_payment', 'to_pay_label'], 'display', '')
             Dom.setStyle(['to_refund_label'], 'display', 'none')
 
         } else {
-            Dom.setStyle(['show_add_payment_to_order', 'to_pay_label'], 'display', 'none')
+            Dom.setStyle(['show_add_payment', 'to_pay_label'], 'display', 'none')
             Dom.setStyle(['to_refund_label'], 'display', '')
 
 
@@ -1004,14 +1004,14 @@ function update_order_data(r) {
         }
 
 
-        Dom.setStyle('show_add_payment_to_order', 'display', 'none')
+        Dom.setStyle('show_add_payment', 'display', 'none')
         Dom.setStyle('show_add_credit_note_to_customer', 'display', 'none')
 
     }
 
 
-    if (Dom.get('show_add_payment_to_order') != undefined) {
-        Dom.get('show_add_payment_to_order').setAttribute('amount', r.order_total_to_pay)
+    if (Dom.get('show_add_payment') != undefined) {
+        Dom.get('show_add_payment').setAttribute('amount', r.order_total_to_pay)
     }
     if (Dom.get('show_add_credit_note_to_customer') != undefined) {
         Dom.get('show_add_credit_note_to_customer').setAttribute('amount', r.order_total_to_pay)

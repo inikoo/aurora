@@ -4493,7 +4493,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	function update_discounts_items() {
 
 
-		$this->allowance=array('Percentage Off'=>array(),'Get Free'=>array());
+		$this->allowance=array('Percentage Off'=>array(),'Get Free'=>array(),'Order Get Free'=>array() );
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
 		$sql=sprintf('update `Order Transaction Fact` set `Order Transaction Total Discount Amount`=0 , `Order Transaction Amount`=`Order Transaction Gross Amount` where `Order Key`=%d  '
