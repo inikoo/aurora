@@ -138,7 +138,6 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('template_string','ecom_'.$page->data['Page Store Content Template Filename'].'.tpl');
 
 
-
 	$css_files[]='css/ecom_'.$page->data['Page Store Content Template Filename'].'.css';
 
 	$js_files[]='js/ecom_'.$page->data['Page Store Content Template Filename'].'.js';
