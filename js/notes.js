@@ -27,37 +27,36 @@ var onCellClick = function(oArgs) {
             Dom.setY('dialog_edit_note', y)
             dialog_edit_note.show();
             break;
-                case 'dialog':
+        case 'dialog':
         case 'dialog_delete':
-         if (record.getData('can_delete')) {
-            show_cell_dialog(this, oArgs);
-            }else{
+            if (record.getData('can_delete')) {
+                show_cell_dialog(this, oArgs);
+            } else {
 
 
 
-                    if (record.getData('strikethrough') == 'Yes')
-                    var action = 'unstrikethrough_';
-                    else var action = 'strikethrough_';
-                    request = ar_file + '?tipo=' + action + 'history&parent=' + Dom.get('subject').value + myBuildUrl(this, record)
-                    YAHOO.util.Connect.asyncRequest('GET', request, {
-                        success: function(o) {
-                            //         alert(o.responseText);
-                            var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (record.getData('strikethrough') == 'Yes') var action = 'unstrikethrough_';
+                else var action = 'strikethrough_';
+                request = ar_file + '?tipo=' + action + 'history&parent=' + Dom.get('subject').value + myBuildUrl(this, record)
+                YAHOO.util.Connect.asyncRequest('GET', request, {
+                    success: function(o) {
+                        //         alert(o.responseText);
+                        var r = YAHOO.lang.JSON.parse(o.responseText);
 
-                            var data = record.getData();
-                            data['strikethrough'] = r.strikethrough;
-                            data['delete'] = r.delete;
+                        var data = record.getData();
+                        data['strikethrough'] = r.strikethrough;
+                        data['delete'] = r.delete;
 
-                            //data['delete_type']=r.delete_type;
-                            this.updateRow(recordIndex, data);
+                        //data['delete_type']=r.delete_type;
+                        this.updateRow(recordIndex, data);
 
 
-                        },
-                        failure: function(o) {
+                    },
+                    failure: function(o) {
 
-                        },
-                        scope: this
-                    });
+                    },
+                    scope: this
+                });
 
 
             }
@@ -159,25 +158,24 @@ function save_delete_history_record_from_list() {
 
     var table = tables['table' + Dom.get('delete_from_list_table_id').value];
     var table_record_index = Dom.get('delete_from_list_record_index').value;
-	    var history_id = Dom.get('delete_from_list_history_key').value;
+    var history_id = Dom.get('delete_from_list_history_key').value;
 
-request='ar_edit_notes.php?tipo=delete_history&parent=' + Dom.get('subject').value+'&parent_key=' + Dom.get('subject_key').value + '&key='+history_id;
-   YAHOO.util.Connect.asyncRequest('GET',request, {
+    request = 'ar_edit_notes.php?tipo=delete_history&parent=' + Dom.get('subject').value + '&parent_key=' + Dom.get('subject_key').value + '&key=' + history_id;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
 
         success: function(o) {
-//alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200 && r.action == 'deleted') {
 
                 table.deleteRow(parseInt(table_record_index));
                 dialog_delete_history_record_from_list.hide();
-				
-				get_history_numbers()
-				
-				//Dom.get('elements_attachments_number').innerHTML=r.elements_numbers.Attachments;
-				//Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
-				
+
+                get_history_numbers()
+
+                //Dom.get('elements_attachments_number').innerHTML=r.elements_numbers.Attachments;
+                //Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
             } else {
                 alert(r.msg);
             }
@@ -197,8 +195,8 @@ request='ar_edit_notes.php?tipo=delete_history&parent=' + Dom.get('subject').val
 }
 
 
-function cancel_delete_history_record_from_list(){
-dialog_delete_history_record_from_list.hide();
+function cancel_delete_history_record_from_list() {
+    dialog_delete_history_record_from_list.hide();
 }
 
 
@@ -210,7 +208,7 @@ function save_attachment() {
     //alert(request)
     var uploadHandler = {
         upload: function(o) {
-       // alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(base64_decode(o.responseText));
 
             if (r.state == 200) {
@@ -220,7 +218,7 @@ function save_attachment() {
                 datasource.sendRequest('', table.onDataReturnInitializeTable, table);
                 close_dialog('attach');
                 //Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
-				get_history_numbers()
+                get_history_numbers()
 
 
             } else {
@@ -290,15 +288,15 @@ function save(tipo) {
 
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
-               
+
                     close_dialog(tipo)
                     var table = tables['table' + Dom.get('history_table_id').value];
                     var datasource = tables['dataSource' + Dom.get('history_table_id').value];
                     var request = '';
                     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-                     
-				//Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
-get_history_numbers()
+
+                    //Dom.get('elements_notes_number').innerHTML=r.elements_numbers.Notes;
+                    get_history_numbers()
 
 
                 } else Dom.get(tipo + '_msg').innerHTML = r.msg;
@@ -316,7 +314,7 @@ get_history_numbers()
         //alert(request)
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-               // alert(o.responseText)
+                // alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
 
@@ -337,10 +335,10 @@ get_history_numbers()
                         Dom.setStyle(['sticky_note_div', 'sticky_note_bis_tr'], 'display', '');
 
                     }
-					
-					
-					
-					
+
+
+
+
                     var table = tables['table' + Dom.get('history_table_id').value];
                     var datasource = tables['dataSource' + Dom.get('history_table_id').value];
                     var request = '';
@@ -356,7 +354,7 @@ get_history_numbers()
 
         break;
 
-  
+
     }
 
 
@@ -416,7 +414,7 @@ function close_dialog(tipo) {
 
         Dom.get('upload_attach_file').value = '';
         Dom.get('attachment_caption').value = '';
-Dom.get('attach_msg').innerHTML='';
+        Dom.get('attach_msg').innerHTML = '';
         dialog_attach.hide();
 
         break;
@@ -458,7 +456,7 @@ Dom.get('attach_msg').innerHTML='';
 
 
 function show_dialog_attach() {
-        region1 = Dom.getRegion('attach');
+    region1 = Dom.getRegion('attach');
     region2 = Dom.getRegion('dialog_attach');
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('dialog_attach', pos);
@@ -468,7 +466,7 @@ function show_dialog_attach() {
 }
 
 function show_dialog_note() {
-        region1 = Dom.getRegion('note');
+    region1 = Dom.getRegion('note');
     region2 = Dom.getRegion('dialog_note');
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('dialog_note', pos);
@@ -499,11 +497,11 @@ function show_cell_dialog(datatable, oArgs) {
     case 'delete_note':
 
         Dom.get('delete_from_list_history_key').value = record.getData('key');
-        Dom.get('delete_from_list_record_index').value=recordIndex;
-        Dom.get('delete_from_list_table_id').value=datatable.table_id;
-        
+        Dom.get('delete_from_list_record_index').value = recordIndex;
+        Dom.get('delete_from_list_table_id').value = datatable.table_id;
 
-        
+
+
         //Dom.get('delete_from_list_category_code').innerHTML = record.getData('code');
         region1 = Dom.getRegion(target);
         region2 = Dom.getRegion('dialog_delete_history_record_from_list');
@@ -570,7 +568,7 @@ function init_notes() {
 
 
 
-dialog_delete_history_record_from_list =  new YAHOO.widget.Dialog("dialog_delete_history_record_from_list", {
+    dialog_delete_history_record_from_list = new YAHOO.widget.Dialog("dialog_delete_history_record_from_list", {
 
         visible: false,
         close: true,
@@ -590,7 +588,7 @@ dialog_delete_history_record_from_list =  new YAHOO.widget.Dialog("dialog_delete
 
     Event.addListener("attach", "click", show_dialog_attach);
 
-  
+
 
 
 }

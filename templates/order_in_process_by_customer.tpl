@@ -11,10 +11,13 @@
 
 			<span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 		</div>
-		<div class="buttons">
-					{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
+							{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
 
-			<button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+		<div class="buttons small" style=";position:relative;top:5px">
+
+			<button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> 
+			<button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button>
+			<button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -35,62 +38,7 @@
 			</div>
 		</div>
 		<div id="totals">
-			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
-				{if $order->get('Order Items Discount Amount')!=0 } 
-				<tr>
-					<td class="aright">{t}Items Gross{/t}</td>
-					<td width="100" class="aright">{$order->get('Items Gross Amount')}</td>
-				</tr>
-				<tr>
-					<td class="aright">{t}Discounts{/t}</td>
-					<td width="100" class="aright">-{$order->get('Items Discount Amount')}</td>
-				</tr>
-				{/if} 
-				<tr>
-					<td class="aright">{t}Items Net{/t}</td>
-					<td width="100" class="aright">{$order->get('Items Net Amount')}</td>
-				</tr>
-				{if $order->get('Order Net Credited Amount')!=0 } 
-				<tr>
-					<td class="aright">{t}Credits{/t}</td>
-					<td width="100" class="aright">{$order->get('Net Credited Amount')}</td>
-				</tr>
-				{/if} {if $order->get('Order Charges Net Amount')} 
-				<tr>
-					<td class="aright">{t}Charges{/t}</td>
-					<td width="100" class="aright">{$order->get('Charges Net Amount')}</td>
-				</tr>
-				{/if} 
-				<tr>
-					<td class="aright">{t}Shipping{/t}</td>
-					<td width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
-				</tr>
-				<tr {if $order->
-					get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
-					<td class="aright"> {t}Insurance{/t}</td>
-					<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
-				</tr>
-				<tr style="border-top:1px solid #777">
-					<td class="aright">{t}Net{/t}</td>
-					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
-				</tr>
-				<tr style="border-bottom:1px solid #777">
-					<td class="aright">{t}VAT{/t}</td>
-					<td width="100" class="aright">{$order->get('Total Tax Amount')}</td>
-				</tr>
-				<tr style="border-bottom:1px solid #777">
-					<td class="aright">{t}Total{/t}</td>
-					<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
-				</tr>
-				<tr id="tr_order_total_paid" style="border-top:1px solid #777;{if $order->get('Order To Pay Amount')==0 }display:none{/if}">
-					<td class="aright">{t}Paid{/t}</td>
-					<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
-				</tr>
-				<tr id="tr_order_total_paid" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-					<td class="aright"> {t}To Pay{/t}</td>
-					<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
-				</tr>
-			</table>
+			{include file='order_totals_splinter.tpl'} {include file='order_sticky_note_splinter.tpl'} 
 		</div>
 		<div id="dates">
 			{if $order->get_notes()} 
