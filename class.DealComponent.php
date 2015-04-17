@@ -38,7 +38,7 @@ class DealComponent extends DB_Table {
 
 	function get_data($tipo,$tag) {
 
-		if ($tipo=='id'){
+		if ($tipo=='id') {
 			$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Key`=%d",$tag);
 		}
 		//    elseif($tipo=='code')
@@ -264,7 +264,8 @@ class DealComponent extends DB_Table {
 				return preg_replace('/[^\d]/','',$match[0]).' month';
 			if (preg_match('/order (within|since|every) \d+ weeks?/i',$term_description,$match))
 				return preg_replace('/[^\d]/','',$match[0]).' week';
-
+			if (preg_match('/\d+ days?/i',$term_description,$match))
+				return preg_replace('/[^\d]/','',$match[0]).' day';
 
 
 			break;
@@ -523,7 +524,7 @@ class DealComponent extends DB_Table {
 			}
 
 			$term_description="for every ".number($thin_description);
-			return array($term_description,false,'');	
+			return array($term_description,false,'');
 		default:
 			$term_description=$thin_description;
 			return array($term_description,false,'');
@@ -658,14 +659,14 @@ class DealComponent extends DB_Table {
 	function update_status($value) {
 
 
-		if($value=='Suspended'){
+		if ($value=='Suspended') {
 			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Status`=%s where `Deal Component Key`=%d"
 				,prepare_mysql($value)
 				,$this->id
 			);
 			mysql_query($sql);
 			$this->data['Deal Component Status']=$value;
-		}else{
+		}else {
 			$this->update_status_from_dates($force=true);
 		}
 
@@ -681,10 +682,10 @@ class DealComponent extends DB_Table {
 		}
 
 
-		if(!$force and $this->data['Deal Component Status']=='Suspended'){
+		if (!$force and $this->data['Deal Component Status']=='Suspended') {
 			return;
 		}
-		
+
 		if ( strtotime($this->data['Deal Component Begin Date'].' +0:00')>=strtotime('now +0:00')) {
 			$this->update_field_switcher('Deal Component Status','Waiting','no_history');
 		}
@@ -694,7 +695,7 @@ class DealComponent extends DB_Table {
 			$this->update_field_switcher('Deal Component Status','Active','no_history');
 		}
 
-		
+
 	}
 
 	function update_terms_allowances($data,$options='') {
@@ -729,6 +730,17 @@ class DealComponent extends DB_Table {
 		if ($term_metadata!=$this->data['Deal Component Terms']) {
 			$term_changed=true;
 		}
+
+
+
+/*
+print "** $allowance_changed $term_changed **\n";
+
+print "** T: $term_description -> $term_metadata **\n";
+print "** A: $allowance_description -> $allowance_metadata **\n";
+print $this->data['Deal Component Public'];
+return;
+*/
 
 		if ($allowance_changed or $term_changed) {
 
@@ -765,31 +777,33 @@ class DealComponent extends DB_Table {
 				$old_metadata->update_field_switcher('Deal Component Status','Finish');
 
 
-
+				
 				$old_metadata->update_field_switcher('Deal Component Expiration Date',gmdate('Y-m-d H:i:s'));
 
 				if ($this->data['Deal Component Status']!='Active') {
 					$deal_metadata_data['Deal Component Public']='No';
 				}
-				$deal_metadata_data['Deal Component Expiration Date']='';
 
 				$deal_metadata_data['Deal Component Total Acc Used Orders']=0;
 				$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
 				unset($deal_metadata_data['Deal Component Key']);
 				$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
-                $deal_metadata_data['Deal Component Allowance Description']=$allowance_description;
+				$deal_metadata_data['Deal Component Allowance Description']=$allowance_description;
 				$deal_metadata_data['Deal Component Allowance']=$allowance_metadata;
+				
 				$deal_metadata_data['Deal Component Terms Description']=$term_description;
 				$deal_metadata_data['Deal Component Terms']=$term_metadata;
-				
-				
 
-				
+
+				$deal_metadata_data['Deal Component XHTML Allowance Description Label']=$allowance_description;
+
+
 				$this->create($deal_metadata_data);
 
 				$deal=new Deal($this->data['Deal Component Deal Key']);
 				$deal->update_field_switcher('Deal Description',$this->get('Description'));
-	
+
+				$deal->update_term_allowances();
 
 
 			}
@@ -802,7 +816,7 @@ class DealComponent extends DB_Table {
 		}
 
 
-		
+
 
 
 
@@ -850,7 +864,7 @@ class DealComponent extends DB_Table {
 	}
 
 
-function update_usage() {
+	function update_usage() {
 
 
 
@@ -892,7 +906,7 @@ function update_usage() {
 			$this->id
 		);
 		mysql_query($sql);
-		
+
 	}
 
 }

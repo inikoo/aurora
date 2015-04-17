@@ -388,15 +388,28 @@ deal_save(deal_key,'allowance');
 function save_metadata_deal(key) {
 
     var request = 'tipo=update_deal_metadata&deal_metadata_key=' + key + '&name=' + encodeURIComponent(Dom.get('deal_metadata_description_input' + key).value) + '&terms=' + encodeURIComponent(Dom.get('deal_term' + key).value) + '&allowances=' + encodeURIComponent(Dom.get('deal_allowance' + key).value)
-    alert(request)
     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_deals.php', {
         success: function(o) {
-            alert(o.responseText);
+            //alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
             
             
-                Dom.get('deal_metadata_description_'+r.deal_metadata_key).innerHTML=r.deal_metadata_description;
+            
+                  table_id = 4;
+        var table = tables['table' + table_id];
+        var datasource = tables['dataSource' + table_id];
+        request =table.request
+        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+            
+                //Dom.get('deal_metadata_description_'+r.deal_metadata_key).innerHTML=r.deal_metadata_description;
+                
+                //Dom.get('deal_metadata_description_'+r.deal_metadata_key).innerHTML=r.deal_metadata_description;
+
+                //deal_metadata_description
+                
+                
                 //Dom.get('deal_'+key+deal_key).setAttribute=('ovalue',r.newvalue);
                 //Dom.get('deal_'+key+deal_key).value=r.newvalue;
                 //Dom.get('deal_'+key+'_save'+deal_key).style.display='none';
@@ -1359,19 +1372,23 @@ function select_department(oArgs) {
 }
 
 
+function show_new_family_page_dialog() {
 
-function show_new_family_page_dialog(){
 
-var number_sites=Dom.get('number_sites').value;
-if(number_sites==0){
-return;
-}else if(number_sites==1){
-new_family_page(Dom.get('site_key').value);
-}else{
-alert("todo")
+
+    var number_sites = Dom.get('number_sites').value;
+    
+    
+    if (number_sites == 0) {
+        alert("this store dont have website")
+    } else if (number_sites == 1) {
+        new_family_page(Dom.get('site_key').value);
+    } else {
+        alert("todo")
+    }
+
 }
 
-}
 
 
 function update_page_preview_snapshot(page_key){
