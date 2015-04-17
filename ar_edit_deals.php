@@ -502,6 +502,7 @@ function update_deal_metadata($data) {
 			'deal_metadata_key'=>$deal_metadata->id,
 			'deal_metadata_description'=>$deal_metadata->get('Description'),
 			'deal_metadata_name'=>$deal_metadata->get('Deal Component Name'),
+			'deal_key'=>$deal_metadata->get('Deal Component Deal Key'),
 
 		);
 
