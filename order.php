@@ -54,7 +54,8 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
-	'js/edit_order_details.js'
+	'js/edit_order_details.js',
+	'js/order_notes_common.js'
 );
 
 

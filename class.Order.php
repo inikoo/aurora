@@ -1816,6 +1816,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		switch ($key) {
+		case("Sticky Note"):
+			return nl2br($this->data['Order Sticky Note']);
+			break;
 		case('Deal Amount Off'):
 			return money(-1*$this->data['Order Deal Amount Off'],$this->currency_code);
 		case('Items Gross Amount After No Shipped'):
@@ -2113,16 +2116,17 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			break;
 		case('Order Tax Number'):
 			$this->update_field($field,$value,$options);
-
 			$this->update_tax();
-
 			break;
-
 		case('Order XHTML Invoices'):
 			$this->update_xhtml_invoices();
 			break;
 		case('Order XHTML Delivery Notes'):
 			$this->update_xhtml_delivery_notes();
+			break;
+		case('Sticky Note'):
+			$this->update_field('Order '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
 			break;
 		default:
 			$base_data=$this->base_data();
@@ -5333,8 +5337,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 	}
-	
-	
+
+
 	function test_deal_terms($deal_component_data) {
 
 

@@ -1,32 +1,26 @@
 {include file='header.tpl'} 
-
-		<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
-	<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
-		<input type="hidden" value="{$decimal_point}" id="decimal_point" />
-		<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
-		<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
-		<input type="hidden" value="customer" id="subject" />
-		<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
-
+<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
+<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
+<input type="hidden" value="{$decimal_point}" id="decimal_point" />
+<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
+<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
+<input type="hidden" value="customer" id="subject" />
+<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
 <div id="bd" style="background-image:url('art/stamp.cancel.en.png');background-repeat:no-repeat;background-position:300px 50px">
 	{include file='orders_navigation.tpl'} 
 	<input type="hidden" id="order_key" value="{$order->id}" />
-		<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; 
-			{if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> 
-			{else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if}
-			{else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a>
-			{/if}
-			 &rarr; {$order->get('Order Public ID')}</span> 
-		</div>
-
+	<div class="branch ">
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')}</span> 
+	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-				{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} 
- <span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
+			{if $order_prev.id}<img class="previous" onmouseover="this.src='art/{if $order_prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$order_prev.title}" onclick="window.location='{$order_prev.link}'" src="art/{if $order_prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons">{t}Order{/t} <span>{$order->get('Order Public ID')}</span> <span class="subtitle">({$order->get_formated_dispatch_state()})</span></span> 
 		</div>
-		<div class="buttons">
-			{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
+					{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
+
+			<div class="buttons small" style="position:relative;top:5px">
+				<button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> 
+
 		</div>
 		<div style="clear:both">
 		</div>
@@ -77,10 +71,11 @@
 					<td class="aright">{t}Shipping{/t}</td>
 					<td width="100" class="aright">{$order->get('Shipping Net Amount')}</td>
 				</tr>
-					<tr {if $order->get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
-						<td class="aright"> {t}Insurance{/t}</td>
-						<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
-					</tr>
+				<tr {if $order->
+					get('Order Insurance Net Amount')==0 }style="display:none"{/if} id="tr_order_insurance" > 
+					<td class="aright"> {t}Insurance{/t}</td>
+					<td id="order_insurance" width="100" class="aright">{$order->get('Insurance Net Amount')}</td>
+				</tr>
 				<tr>
 					<td class="aright">{t}Net{/t}</td>
 					<td width="100" class="aright">{$order->get('Total Net Amount')}</td>
@@ -94,19 +89,19 @@
 					<td width="100" class="aright"><b>{$order->get('Total Amount')}</b></td>
 				</tr>
 				<tr id="tr_order_total_paid" style="border-top:1px solid #777;">
-						<td class="aright"> <img style="display:none" id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
-						<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
-					</tr>
+					<td class="aright"> <img style="display:none" id="order_paid_info" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
+					<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
+				</tr>
 				<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
-						<td class="aright"> 
-						<div class="buttons small left">
-							<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
-						</div>
-						<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> 
-						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
-						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
-					</tr>
+					<td class="aright"> 
+					<div class="buttons small left">
+						<button style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="show_add_payment_to_order" amount="{$order->get('Order To Pay Amount')}" onclick="add_payment('order','{$order->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
+					</div>
+					<span style="{if $order->get('Order To Pay Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> <span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
+					<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
+				</tr>
 			</table>
+			{include file='order_sticky_note_splinter.tpl'} 
 		</div>
 		<div id="dates">
 			{if $order->get_notes()} 
@@ -131,20 +126,19 @@
 			{/if} 
 		</div>
 		<div style="clear:both">
+		</div>
+		<img id="show_order_details" style="cursor:pointer;margin-top:10px" src="art/icons/arrow_sans_lowerleft.png" /> 
+		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+			<div class="buttons small right" style="float:right;width:350px">
+				<button style="margin-top:5px;margin-bottom:10px;clear:both" id="undo_cancel" onclick="undo_cancel()"><img id="undo_cancel_img" style="width:12px" src="art/icons/arrow_rotate_anticlockwise.png"> {t}Undo Cancel{/t}</button> 
 			</div>
-			<img id="show_order_details" style="cursor:pointer;margin-top:10px" src="art/icons/arrow_sans_lowerleft.png" /> 
-			<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-				<div class="buttons small right" style="float:right;width:350px">
-								
-					<button style="margin-top:5px;margin-bottom:10px;clear:both" id="undo_cancel" onClick="undo_cancel()"><img id="undo_cancel_img" style="width:12px" src="art/icons/arrow_rotate_anticlockwise.png"> {t}Undo Cancel{/t}</button> 
-				</div>
-				{include file='order_details_splinter.tpl'}
-				<div style="clear:both">
-				</div>
-				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
-			</div>
+			{include file='order_details_splinter.tpl'} 
 			<div style="clear:both">
 			</div>
+			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+		</div>
+		<div style="clear:both">
+		</div>
 	</div>
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 

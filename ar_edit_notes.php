@@ -328,6 +328,10 @@ function get_parent_object($data) {
 		include_once 'class.Part.php';
 		$subject=new Part($data['parent_key']);
 		break;
+	case 'order':
+		include_once 'class.Order.php';
+		$subject=new Order($data['parent_key']);
+		break;	
 	case 'supplier':
 		include_once 'class.Supplier.php';
 		$subject=new Supplier($data['parent_key']);

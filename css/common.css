@@ -594,7 +594,7 @@ span.todo,div.todo {background-color: #C8E02B}
 div.todo {;padding:20px} 
 
 .sticky_note {border:1px solid #BAB84E;background:#EDEB82;float:left;width:300px;padding:0;margin-left:20px}
-
+.sticky_note.pink{background:#ff7dbd;border:1px solid #e52789}
 
 #bd.out_of_stock{background-image:url('../art/out_of_stock.png');;background-repeat:repeat-x;}
 #bd.discontinued{background-image:url('../art/discontinued_gradient.png');;background-repeat:repeat-x;}
