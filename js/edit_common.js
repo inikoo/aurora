@@ -551,9 +551,11 @@ function validate_scope_edit(branch) {
     Dom.removeClass('reset_edit_' + branch, 'disabled');
     //	alert(branch+" c "+changed+' errors:'+errors)
     if (changed) {
-        //alert('save_edit_' + branch)  
+   
         Dom.removeClass('save_edit_' + branch, 'disabled');
         Dom.removeClass('reset_edit_' + branch, 'disabled');
+        
+     //  alert('save_edit_' + branch)
 
     } else {
         Dom.addClass('save_edit_' + branch, 'disabled');
@@ -563,7 +565,7 @@ function validate_scope_edit(branch) {
 
 
     if (errors) {
-        //alert('x')
+        
         Dom.addClass('save_edit_' + branch, 'disabled');
     }
     //else {
@@ -571,6 +573,9 @@ function validate_scope_edit(branch) {
     //  Dom.removeClass('save_edit_'+branch,'disabled');
     // }
  //   alert(branch)
+ 
+        
+ 
 }
 
 

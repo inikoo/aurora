@@ -31,24 +31,23 @@
 					<div style="float:right" id="html_editor_msg">
 					</div>
 					<div class="buttons small">
-						<button style="display:none" id="download_page_content">{t}Download{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> <button class="positive disabled" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_page_content">{t}Reset{/t}</button> 
+						<button style="display:none" id="download_page_content">{t}Download{/t}</button> 
+						<button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> 
+						<button class="positive disabled" id="save_edit_page_splinter">{t}Save{/t}</button>
+					 <button class="negative disabled" id="reset_edit_page_splinter">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2" style="padding:5px 0"> 
 					<form onsubmit="return false;">
-<textarea id="html_editor" style="width:100%;height:400px">{$splinter->display_content()}</textarea> 
+						<textarea id="html_editor"  >{$splinter->display_content()}</textarea> 
+
 					</form>
+					
 					</td>
 				</tr>
-				<tr class="buttons">
-					<td colspan="2"> 
-					<div class="buttons">
-						<button style="margin-right:10px" id="save_edit_location_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_location_description" class="negative disabled">{t}Reset{/t}</button> 
-					</div>
-					</td>
-				</tr>
+				
 			</table>
 		</div>
 		<div id="images_block" style="{if $edit_block!='images'}display:none{/if}">
