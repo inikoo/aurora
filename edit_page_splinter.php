@@ -111,6 +111,8 @@ $smarty->assign('search_scope','site');
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
+		$yui_path.'assets/skins/sam/editor.css',
+
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	'css/common.css',
@@ -118,6 +120,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
+	'css/edit_page.css',
 	'theme.css.php'
 
 );
@@ -130,11 +133,15 @@ $js_files=array(
 	$yui_path.'autocomplete/autocomplete-min.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+    $yui_path.'editor/editor-min.js',
+$yui_path.'slider/slider-min.js',
+	$yui_path.'colorpicker/colorpicker-min.js',
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'edit_page_splinter.js.php'
+	'js/editor_image_uploader.js',
+	'js/edit_page_splinter.js'
 );
 
 $edit_block='description';

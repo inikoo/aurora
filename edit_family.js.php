@@ -397,8 +397,8 @@ function save_metadata_deal(key) {
             
             
                   table_id = 4;
-        var table = tables['table' + table_id];
-        var datasource = tables['dataSource' + table_id];
+        		   var table = tables['table' + table_id];
+        		   var datasource = tables['dataSource' + table_id];
         request =table.request
         datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 

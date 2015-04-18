@@ -15,3 +15,5 @@ server_files/tmp/*
 *.sublime-project
 
 *.php~
+
+mantenence/scripts/paso_shipping.php
