@@ -1601,11 +1601,10 @@ function set_as_dispatched(dn_key, staff_key, referrer, referrer_key) {
     if (referrer == 'order') {
         request += '&order_key=' + referrer_key
     }
-    alert(request);
-    return;
+    
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-            //  alert(o.responseText)
+              alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -1616,6 +1615,8 @@ function set_as_dispatched(dn_key, staff_key, referrer, referrer_key) {
 
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;
+                }else if (referrer == 'order') {
+                    window.location = 'order.php?id=' + referrer_key;
                 }
 
             }
@@ -1658,6 +1659,8 @@ function update_auto_account_payments(value) {
 }
 
 function approve_dispatching(dn_key, staff_key, referrer, referrer_key) {
+    
+    
     if (Dom.get('approve_dispatching_img_' + dn_key) != undefined) Dom.get('approve_dispatching_img_' + dn_key).src = 'art/loading.gif';
 
 

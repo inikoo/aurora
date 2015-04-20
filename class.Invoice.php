@@ -1780,7 +1780,7 @@ class Invoice extends DB_Table {
 	}
 
 	function get_operations($user,$parent='order') {
-		include_once 'order_common_functions.php';
+		include_once 'common_order_functions.php';
 
 		return get_invoice_operations($this->data,$user,$parent);
 	}

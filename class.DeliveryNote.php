@@ -831,8 +831,9 @@ class DeliveryNote extends DB_Table {
 			$map_to_otf_key=$row['Order Transaction Fact Key'];
 			$map_to_otf_metadata='';
 			$state='In Warehouse';
-			$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s where `Order Post Transaction Key`=%d  ",
+			$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s ,`Delivery Note Key`=%d where `Order Post Transaction Key`=%d  ",
 				prepare_mysql($state),
+				$this->id,
 				$row['Order Post Transaction Key']
 			);
 			mysql_query($sql);
@@ -1218,8 +1219,8 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 		$part_index=0;
-//		$debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
-	//		$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
+		//  $debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
+		//  $xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
 
 		$multipart_data=sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->data['Product Code']);
@@ -1229,11 +1230,11 @@ class DeliveryNote extends DB_Table {
 
 
 			$part = new Part ('sku',$part_data['Part SKU']);
-			
-				//$debug_txt=sprintf("creating itf2 %s %s",$part->data['Part SKU'],$part_data['Parts Per Product']);
-			    //$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
-			
+			//$debug_txt=sprintf("creating itf2 %s %s",$part->data['Part SKU'],$part_data['Parts Per Product']);
+			//$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
+
+
 
 			if ($part->sku) {
 
@@ -1528,6 +1529,14 @@ class DeliveryNote extends DB_Table {
 			);
 			mysql_query($sql);
 			//print "$sql\n";
+		}
+
+		if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
+			$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s  where `Delivery Note Key`=%d   ",
+				prepare_mysql('In Warehouse'),
+				$this->id
+			);
+			mysql_query($sql);
 		}
 
 
@@ -1836,6 +1845,19 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 		//print $sql;
 
+		$sql=sprintf("delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d  ",
+			$this->id);
+		mysql_query($sql);
+
+		if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
+			$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s  where `Delivery Note Key`=%d   ",
+				prepare_mysql('In Process'),
+				$this->id
+			);
+			mysql_query($sql);
+		}
+
+
 		foreach ($orders as $order) {
 			$order->update_xhtml_delivery_notes();
 		}
@@ -1851,20 +1873,23 @@ class DeliveryNote extends DB_Table {
 	function cancel($note='',$date=false,$force=false) {
 
 
-		//print_r($this->data);
 
 		$this->cancelled=false;
+		$this->deleted=false;
+
 		if (preg_match('/Dispatched/',$this->data ['Delivery Note State'])) {
 			$this->msg=_('Delivery Note can not be cancelled,because has already been dispatched');
 			return;
 		}
-		if (preg_match('/Cancelled/',$this->data ['Delivery Note State'])) {
-			$this->_('Order is already cancelled');
+		if ($this->data ['Delivery Note State']=='Cancelled') {
+			$this->msg=_('Order is already cancelled');
 			return;
 		} else {
 
 			if (!$date)
 				$date=gmdate('Y-m-d H:i:s');
+
+
 
 
 			if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State']) or $force) {
@@ -1873,6 +1898,7 @@ class DeliveryNote extends DB_Table {
 
 
 				$this->delete();
+				$this->deleted=true;
 				$this->cancelled=true;
 				return;
 
@@ -1881,6 +1907,8 @@ class DeliveryNote extends DB_Table {
 				$this->data ['Delivery Note State'] = 'Cancelled to Restock';
 
 			}
+
+
 
 			$this->data ['Delivery Note Dispatch Method'] ='NA';
 
@@ -1895,6 +1923,16 @@ class DeliveryNote extends DB_Table {
 				,$this->id);
 			if (! mysql_query($sql))
 				exit ("$sql arror can not update cancel\n");
+
+			if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
+				$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s  where `Delivery Note Key`=%d   ",
+					prepare_mysql('In Process'),
+					$this->id
+				);
+				mysql_query($sql);
+			}
+
+
 
 			$this->cancelled=true;
 		}
@@ -2188,6 +2226,9 @@ class DeliveryNote extends DB_Table {
 	function get_formated_state() {
 
 		$state=$this->get_state();
+
+
+
 		switch ($state) {
 		case 'Dispatched':
 			return _('Dispatched');
@@ -2219,6 +2260,9 @@ class DeliveryNote extends DB_Table {
 		case 'Packer Assigned':
 			return _('Packer Assigned');
 			break;
+		case 'Cancelled to Restock':
+			return _('Cancelled to Restock');
+			break;
 		case 'Unknown':
 			return _('Unknown');
 			break;
@@ -2241,6 +2285,11 @@ class DeliveryNote extends DB_Table {
 		if ($this->data['Delivery Note State']=='Dispatched') {
 			return 'Dispatched';
 		}
+
+		if ($this->data['Delivery Note State']=='Cancelled to Restock') {
+			return 'Cancelled to Restock';
+		}
+
 		if ($this->data['Delivery Note Fraction Picked']==1 and $this->data['Delivery Note Fraction Packed']==1) {
 
 			if ($this->data['Delivery Note Approved Done']=='Yes') {
@@ -2319,7 +2368,7 @@ class DeliveryNote extends DB_Table {
 
 
 	function get_operations($user,$parent='order',$parent_key='') {
-		include_once 'order_common_functions.php';
+		include_once 'common_order_functions.php';
 
 		return get_dn_operations($this->data,$user,$parent,$parent_key);
 	}

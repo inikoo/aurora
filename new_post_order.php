@@ -59,9 +59,9 @@ $js_files=array(
 	$yui_path.'datatable/datatable-min.js',
 	$yui_path.'dragdrop/dragdrop-min.js',
 	$yui_path.'container/container-min.js',
-
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
@@ -70,7 +70,7 @@ $js_files=array(
 	'address_data.js.php?tipo=customer&id='.$customer->id,
 	'edit_delivery_address_js/common.js',
 	'js/edit_common.js',
-	'new_post_order.js.php',
+	'js/new_post_order.js',
 );
 
 
@@ -131,11 +131,112 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $order_post_transactions_in_process=$order->get_post_transactions_in_process_data();
-//print_r($order_post_transactions_in_process);
-//exit;
+
 $smarty->assign('order_post_transactions_in_process',$order_post_transactions_in_process);
 
+
+
+
+$dns_data=array();
+foreach ($order->get_delivery_notes_objects() as $dn) {
+
+	if (!in_array($dn->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages')))
+		continue;
+
+	$current_delivery_note_key=$dn->id;
+
+	$missing_dn_data=false;
+	$missing_dn_str='';
+	$dn_data='';
+	if ($dn->data['Delivery Note Weight']) {
+		$dn_data=$dn->get('Weight');
+	}else {
+		$missing_dn_data=true;
+		$missing_dn_str=_('weight');
+
+	}
+
+	if ($dn->data['Delivery Note Number Parcels']!='') {
+		$dn_data.=', '.$dn->get_formated_parcels();
+	}else {
+		$missing_dn_data=true;
+		$missing_dn_str.=', '._('parcels');
+	}
+	$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+
+
+	if ($dn->data['Delivery Note Shipper Consignment']!='') {
+		$dn_data.=', '. $dn->get('Consignment');
+	}else {
+		$missing_dn_data=true;
+		$missing_dn_str.=', '._('consignment');
+	}
+	$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+	$dn_data=preg_replace('/^,/','',$dn_data);
+
+	if ($missing_dn_data  and in_array($order->data['Order Current Dispatch State'],array('Packed Done','Packed')) ) {
+		$dn_data.=' <img src="art/icons/exclamation.png" style="height:14px;vertical-align:-3px"> <span style="font-style:italic;color:#ea6c59">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$dn->id.')" style="cursor:pointer;display:none" src="art/icons/edit.gif"> ';
+	}
+
+	$dns_data[]=array(
+		'key'=>$dn->id,
+		'number'=>$dn->data['Delivery Note ID'],
+		'state'=>$dn->data['Delivery Note XHTML State'],
+		'dispatch_state'=>$dn->data['Delivery Note State'],
+		'data'=>$dn_data,
+		'operations'=>$dn->get_operations($user,'order',$order->id),
+	);
+
+	//print_r($dns_data);
+
+}
+$number_dns=count($dns_data);
+if ($number_dns!=1) {
+	$current_delivery_note_key='';
+}
+$smarty->assign('current_delivery_note_key',$current_delivery_note_key);
+$smarty->assign('number_dns',$number_dns);
+$smarty->assign('dns_data',$dns_data);
+
+
+
+$smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
+
+
+
+
 $template='new_post_order.tpl';
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Code'=>_('Code'),
+				'Description'=>_('Description'),
+				'Stock'=>_('Stock'),
+				'Ordered'=>_('Ordered'),
+				'Qty'=>_('Qty'),
+				'Operation'=>_('Operation'),
+				'Reason'=>_('Reason'),
+				'Notes'=>_('Notes'),
+				'Refund'=>_('Refund'),
+				'Credit'=>_('Credit'),
+				'Resend'=>_('Resend'),
+				'Damaged'=>_('Damaged'),
+				'Not_Received'=>_('Not_Received'),
+				'Dontlikeit'=>_('Dont like it'),
+				'Other'=>_('Other'),
+				'Yes'=>_('Yes'),
+				'No'=>_('No'),
+				'Rtn'=>_('Return'),
+
+
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'post_transactions'=>$_SESSION['state']['order']['post_transactions']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
 
 $smarty->display($template);
 ?>

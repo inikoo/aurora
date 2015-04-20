@@ -24,7 +24,7 @@ include_once 'class.Invoice.php';
 include_once 'class.DeliveryNote.php';
 include_once 'class.TaxCategory.php';
 include_once 'class.CurrencyExchange.php';
-require_once 'order_common_functions.php';
+require_once 'common_order_functions.php';
 
 
 class Order extends DB_Table {
@@ -658,6 +658,7 @@ class Order extends DB_Table {
 			$dispatch_method='Collection';
 		else
 			$dispatch_method='Dispatch';
+
 		if ($type=='Replacement')
 			$suffix='rpl';
 		elseif ($type=='Missing') {
@@ -665,10 +666,18 @@ class Order extends DB_Table {
 			$type='Shortages';
 		}else
 			$suffix='r';
+
+
+
+		$dn_id= $this->get_replacement_id($this->data['Order Public ID'].$suffix);
+
+
+
+
 		$data_dn=array(
 			'Delivery Note Date Created'=>$date,
-			'Delivery Note ID'=>$this->data['Order Public ID']."$suffix",
-			'Delivery Note File As'=>$this->data['Order File As']."$suffix",
+			'Delivery Note ID'=>$dn_id,
+			'Delivery Note File As'=>$dn_id,
 			'Delivery Note Type'=>$type,
 			'Delivery Note Title'=>$title,
 			'Delivery Note Dispatch Method'=>$dispatch_method,
@@ -686,8 +695,6 @@ class Order extends DB_Table {
 		$dn->create_post_order_inventory_transaction_fact($this->id,$date);
 		$this->update_delivery_notes('save');
 		//TODO!!!
-
-
 		//$this->update_post_dispatch_state();
 
 		$this->update_full_search();
@@ -6776,6 +6783,16 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 
 
+		$sql=sprintf("select  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Operation`='Resend' and (POT.`Delivery Note Key`=0 or POT.`Delivery Note Key` is NULL)  and POT.`Order Key`=%d ",
+			$this->id
+		);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$data['Resend']['In_Process_Products']=$row['num'];
+
+		}
+
 		return $data;
 
 	}
@@ -6959,13 +6976,15 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		if ($this->created_post_transaction or $this->update_post_transaction) {
 
-			$sql=sprintf('select `Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
+			$sql=sprintf('select `Order Key`,`State`,`Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
 			$res2=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res2)) {
 				$transaction_data['Quantity']=$row['Quantity'];
 				$transaction_data['Operation']=$row['Operation'];
 				$transaction_data['Reason']=$row['Reason'];
+				$transaction_data['State']=$row['State'];
 				$transaction_data['To Be Returned']=$row['To Be Returned'];
+				$transaction_data['Order Key']=$row['Order Key'];
 			}
 
 
@@ -6975,7 +6994,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$transaction_data['Quantity']='';
 			$transaction_data['Operation']='';
 			$transaction_data['Reason']='';
+			$transaction_data['State']='';
 			$transaction_data['To Be Returned']='';
+			$transaction_data['Order Key']='';
 		}
 		return $transaction_data;
 
@@ -8037,7 +8058,30 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
 	}
 
+	function get_replacement_id($dn_id,$suffix_counter='') {
+		$sql=sprintf("select `Delivery Note ID` from `Delivery Note Dimension` where `Delivery Note Store Key`=%d and `Delivery Note ID`=%s ",
+			$this->data['Order Store Key'],
+			prepare_mysql($dn_id.$suffix_counter)
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($suffix_counter>100) {
+				return $dn_id.$suffix_counter;
+			}
+
+			if (!$suffix_counter) {
+				$suffix_counter=2;
+			}else {
+				$suffix_counter++;
+			}
+
+			return $this->get_replacement_id($dn_id,$suffix_counter);
+
+		}else {
+			return $dn_id.$suffix_counter;
+		}
+
+	}
+
 }
-
-
 ?>

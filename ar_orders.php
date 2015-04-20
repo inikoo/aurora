@@ -17,7 +17,7 @@ require_once 'class.Order.php';
 require_once 'class.Invoice.php';
 
 require_once 'ar_common.php';
-require_once 'order_common_functions.php';
+require_once 'common_order_functions.php';
 
 if (!isset($output_type))
 	$output_type='ajax';
@@ -674,7 +674,7 @@ function list_orders() {
 				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
 				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
 				'customer'=>$customer,
-				'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: order_common_functions.php
+				'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: common_order_functions.php
 				'payment_state'=>get_order_formated_payment_state($data),
 
 				'total_amount'=>money($data['Order Total Amount'],$data['Order Currency']).$mark,
@@ -1039,13 +1039,21 @@ function list_transactions_in_dn() {
 	$_SESSION['state']['dn']['transactions']['f_value']=$f_value;
 
 
+	$dn=new DeliveryNote($parent_key);
+
+
+	$filter_msg='';
+	$wheref='';
 	$table=' `Inventory Transaction Fact` ITF left join   `Order Transaction Fact`OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)   ';
 
 	$where=sprintf(' where   ITF.`Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"',$parent_key);
 
 
-	$filter_msg='';
-	$wheref='';
+	if (($f_field=='code')  and $f_value!='') {
+		$wheref="  and  `Product Code` like '".addslashes($f_value)."%'";
+	}
+
+
 
 
 	$sql="select count(*) as total from $table   $where $wheref ";
@@ -1073,10 +1081,34 @@ function list_transactions_in_dn() {
 	mysql_free_result($res);
 
 
-	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("There isn't any item with code like ")." <b>".$f_value."*</b> ";
+			break;
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('items with code like')." <b>".$f_value."*</b>";
+			break;
+
+		}
+	}
+	else
+		$filter_msg='';
+
+
+	$rtext=number($total_records)." ".ngettext('item','items',$total_records);
+
+
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif ($total_records)
+	elseif ($total_records>10)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1120,8 +1152,23 @@ function list_transactions_in_dn() {
 			}
 		}
 
+		switch ($dn->data['Delivery Note State']) {
+		case 'Dispatched':
+			$state=_('dispatched');
+			break;
+		case 'Cancelled':
+			$state='';
+			break;
+		case 'Cancelled to Restock':
+			$state=_('to be restocked');
+			break;
+		default:
+			$state=_('to be dispatched');
+			break;
+		}
 
-		$notes='<b>'.number(-1*$row['Inventory Transaction Quantity']).'</b> '._('dispatched').'<br/>';
+
+		$notes='<b>'.number(-1*$row['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
 
 		if ($row['Out of Stock']!=0) {
 			$notes.='<span style="margin-left:10px">'.number($row['Out of Stock']).'</span> '._('out of stock').'<br/>';
@@ -2537,16 +2584,11 @@ function list_post_transactions() {
 
 
 
-
-
-
-
-
-
-
 	$table='`Order Post Transaction Dimension` POT
-	left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`)
-    left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)';
+	left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
+    left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+    left join `Delivery Note Dimension`  DN on (POT.`Delivery Note Key`=DN.`Delivery Note Key`)
+    ';
 	$where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
 
 	$sql="select count(*) as total from  `Order Post Transaction Dimension` POT $where ";
@@ -2612,7 +2654,7 @@ function list_post_transactions() {
 	$order=' order by O.`Product Code`';
 	$order='';
 
-	$sql="select POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,OTF.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
+	$sql="select POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,DN.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
 	from $table
 	$where $order  ";
 
@@ -2631,7 +2673,7 @@ function list_post_transactions() {
 		case 'Resend':
 			switch ($row['State']) {
 			case 'In Process':
-				$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$order_id,_('Item to be resended in process'));
+				$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$parent_key,_('Item to be resended in process'));
 				break;
 			case 'In Warehouse':
 				$notes.=sprintf('%s (<a href="dn.php?id=%d">%s</a>)',_('In warehouse'),$row['Delivery Note Key'],$row['Delivery Note ID']);
@@ -2678,33 +2720,7 @@ function list_post_transactions() {
 
 		$notes=preg_replace('/^,/','',$notes);
 
-		/*
-		switch ($row['Operation']) {
-		case 'Resend':
-			$notes=_('Resend');
-			break;
-		case 'Refund':
-			$notes=_('Refund');
-			break;
-		default:
-			$notes='';
 
-		}
-		switch ($row['State']) {
-		case 'In Process':
-			$notes.=sprintf(', <a href="new_post_order.php?id=%d">%s</a>',$order_id,_('In Process'));
-			break;
-		case 'In Warehouse':
-			$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('In Warehouse'),$row['Delivery Note Key'],$row['Delivery Note ID']);
-			break;
-		case 'Dispatched':
-			$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$row['Delivery Note Key'],$row['Delivery Note ID']);
-			break;
-		default:
-			$notes.='';
-
-		}
-*/
 
 		$quantity=number($row['Quantity']);
 
@@ -4656,7 +4672,7 @@ function transactions_in_warehouse() {
 		}
 
 
-		
+
 
 
 

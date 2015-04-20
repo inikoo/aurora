@@ -9,7 +9,7 @@ include_once 'class.Payment_Service_Provider.php';
 
 require_once 'class.User.php';
 include_once 'class.PartLocation.php';
-require_once 'order_common_functions.php';
+require_once 'common_order_functions.php';
 
 
 
@@ -88,16 +88,19 @@ case('update_order_special_intructions'):
 	break;
 
 
-
-
-case('delivery_note_undo_dispatch'):
+case('cancel_replacement'):
 	$data=prepare_values($_REQUEST,array(
-
 			'dn_key'=>array('type'=>'key'),
-
-
 		));
-	delivery_note_undo_dispatch($data);
+	cancel_replacement($data);
+
+	break;
+
+case('undo_delivery_note_dispatch'):
+	$data=prepare_values($_REQUEST,array(
+			'dn_key'=>array('type'=>'key'),
+		));
+	undo_delivery_note_dispatch($data);
 
 	break;
 
@@ -811,7 +814,7 @@ function cancel_order($data) {
 		$response=array(
 			'state'=>200,
 			'order_key'=>$order->id,
-			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: order_common_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: common_order_functions.php
 			'payment_state'=>get_order_formated_payment_state($order->data),
 			'operations'=>get_orders_operations($order->data,$user)
 
@@ -840,7 +843,7 @@ function undo_cancel_order($data) {
 		$response=array(
 			'state'=>200,
 			'order_key'=>$order->id,
-			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: order_common_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: common_order_functions.php
 			'payment_state'=>get_order_formated_payment_state($order->data),
 			'operations'=>get_orders_operations($order->data,$user)
 
@@ -1533,7 +1536,14 @@ function edit_new_post_order($data) {
 
 
 	$transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
-	//print_r($transaction_data);
+
+
+
+	$notes=post_transaction_notes($transaction_data);
+
+
+
+
 	if ($order->updated) {
 		$response= array(
 			'state'=>200,
@@ -1541,6 +1551,7 @@ function edit_new_post_order($data) {
 			'quantity'=>$transaction_data['Quantity'],
 			'operation'=>$transaction_data['Operation'],
 			'reason'=>$transaction_data['Reason'],
+			'notes'=>$notes,
 			'to_be_returned'=>$transaction_data['To Be Returned'],
 			'data'=>$order->get_post_transactions_in_process_data(),
 			'new_value'=>$transaction_data[$_key]
@@ -2013,7 +2024,7 @@ function post_transactions_to_process() {
 		$number_results=$_REQUEST['nr'];
 
 
-	}      else
+	}else
 		$number_results=$conf['nr'];
 
 	if (isset( $_REQUEST['o']))
@@ -2054,7 +2065,9 @@ function post_transactions_to_process() {
 
 
 
-	$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) left join `Order Post Transaction Dimension` POT on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  ';
+	$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) left join `Order Post Transaction Dimension` POT on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
+
+	left join `Delivery Note Dimension`  DN on (POT.`Delivery Note Key`=DN.`Delivery Note Key`)  ';
 	$where=sprintf(' where `Order Quantity`>0 and OTF.`Order Key`=%d ',$parent_key);
 	$sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
 
@@ -2074,7 +2087,6 @@ function post_transactions_to_process() {
 	$sql="select count(*) as total from $table   $where $wheref   ";
 
 	// print_r($conf);exit;
-	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2162,9 +2174,9 @@ function post_transactions_to_process() {
 
 
 
-	$sql="select IFNULL(`State`,'') as `State`,`Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select DN.`Delivery Note ID`,POT.`Delivery Note Key`,IFNULL(`State`,'') as `State`,`Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
-
+	//print $sql;
 	$res = mysql_query($sql);
 
 	$adata=array();
@@ -2172,7 +2184,7 @@ function post_transactions_to_process() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		if (is_numeric($row['Product Availability']))
-			$stock=number($row['Product Availability']);
+			$stock=number($row['Product Availability'],0);
 		else
 			$stock='?';
 
@@ -2202,16 +2214,21 @@ function post_transactions_to_process() {
 
 		$deal_info='';
 		if ($row['Deal Info']!='') {
-			$deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
+			$deal_info=' <br><span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
 
 
-
+		$stock_info=sprintf(" %s: <b>%s</b>",_('Stock'),$stock);
 
 
 
 
 		$submited_post_transactions_info='';
+
+
+
+		$notes=post_transaction_notes($row);
+
 
 
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
@@ -2220,7 +2237,7 @@ function post_transactions_to_process() {
 			'order_key'=>$row['Order Key'],
 			'pid'=>$row['Product ID'],
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].$deal_info.$submited_post_transactions_info,
+			'description'=>$row['Product XHTML Short Description'].$stock_info.$deal_info,
 
 			'stock'=>$stock,
 			'ordered'=>$row['Delivery Note Quantity'].' ('.money($row['charged'],$row['Invoice Currency Code']).')',
@@ -2234,6 +2251,7 @@ function post_transactions_to_process() {
 			'operation'=>$row['Operation'],
 			'reason'=>$row['Reason'],
 			'to_be_returned'=>$row['To Be Returned'],
+			'notes'=>$notes
 		);
 
 
@@ -2262,7 +2280,7 @@ function post_transactions_to_process() {
 
 function list_pending_orders() {
 	date_default_timezone_set(TIMEZONE) ;
-	include_once 'order_common_functions.php';
+	include_once 'common_order_functions.php';
 
 	global $user;
 
@@ -2615,7 +2633,7 @@ function list_pending_orders() {
 			'store'=>$store,
 			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
 			'operations'=>$operations,
-			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: common_order_functions.php
 			'payment_state'=>get_order_formated_payment_state($row),
 			'see_link'=>$see_link
 		);
@@ -4899,7 +4917,7 @@ function update_percentage_discount($data) {
 		'to_charge'=>$transaction_data['to_charge'],
 		//'discount_data'=>$adata,
 		'discounts'=>($discounts!=0?true:false),
-				'amount_off'=>($order->data['Order Deal Amount Off']!=0?true:false),
+		'amount_off'=>($order->data['Order Deal Amount Off']!=0?true:false),
 
 		//'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
 		'charges'=>$order->data['Order Charges Net Amount'],
@@ -5155,6 +5173,16 @@ function set_as_dispatched_dn($data) {
 	elseif ($dn->data['Delivery Note Dispatch Method']=='Collection') {
 		$dn->set_as_collected(array());
 
+	}
+
+
+	if (in_array($dn->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
+		$state='Dispatched';
+		$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s  where `Delivery Note Key`=%d   ",
+			prepare_mysql($state),
+			$dn->id
+		);
+		mysql_query($sql);
 	}
 
 
@@ -5579,10 +5607,32 @@ function new_orphan_refund($data) {
 
 
 
+function cancel_replacement($data) {
+	$dn_key=$data['dn_key'];
+
+	$delivery_note=new DeliveryNote($dn_key);
+
+	$orders=$delivery_note->get_orders_ids();
 
 
+	$delivery_note->cancel('',false,true);
 
-function delivery_note_undo_dispatch($data) {
+
+	$response=array('state'=>200,
+		'result'=>'updated',
+		'dn_key'=>$delivery_note->id,
+		'deleted'=>$delivery_note->deleted,
+		'order_link'=>sprintf('order.php?id=%d',array_pop($orders))
+
+
+	);
+
+	echo json_encode($response);
+
+}
+
+
+function undo_delivery_note_dispatch($data) {
 	$dn_key=$data['dn_key'];
 
 	$delivery_note=new DeliveryNote($dn_key);
@@ -5989,5 +6039,8 @@ function categorize_invoice($data) {
 	echo json_encode($response);
 
 }
+
+
+
 
 ?>

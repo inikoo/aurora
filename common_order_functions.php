@@ -232,17 +232,16 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 
 
-
 	if ($row['Delivery Note State']=='Ready to be Picked') {
 
-	$operations.='<div class="buttons small '.$class.'">';
+		$operations.='<div class="buttons small '.$class.'">';
 		if ($parent=='order') {
-		
-				$operations.='<button style="display:none"  class="first" onClick="show_dialog_process_delivery_note(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/lorry_go.png"> '._('Process Delivery Note')."</button>";
+
+			$operations.='<button style="display:none"  class="first" onClick="show_dialog_process_delivery_note(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/lorry_go.png"> '._('Process Delivery Note')."</button>";
 
 		}else {
 
-		
+
 
 			if ($user->can_edit('assign_pp')) {
 				$operations.='<button  class="first" onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/user.png"> '._('Assign Picker')."</button>";
@@ -381,7 +380,8 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 		}
 
-	}elseif ($row['Delivery Note State']=='Packed Done') {
+	}
+	elseif ($row['Delivery Note State']=='Packed Done') {
 
 		$operations.='<div class="buttons small '.$class.'">';
 
@@ -389,7 +389,8 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 		if ($user->can_edit('orders')) {
 
-			$operations.=' <button '.($row['Delivery Note Invoiced']=='No'?' class="disabled" title="'._('Order not invoiced'):'') .' onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
+		
+			$operations.=' <button '.($row['Delivery Note Invoiced']=='No' and  $row['Delivery Note Type']=='Order' ?' class="disabled" title="'._('Order not invoiced'):'') .'" onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
 
 			$operations.='</div>';
 		}else {
@@ -412,5 +413,58 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 }
 
+function post_transaction_notes($data){
+		$notes='';
+
+		switch ($data['Operation']) {
+		case 'Resend':		
+			switch ($data['State']) {
+			case 'In Process':
+				$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$data['Order Key'],_('Item to be resended in process'));
+				break;
+			case 'In Warehouse':
+				$notes.=sprintf('%s (<a href="dn.php?id=%d">%s</a>)',_('In warehouse'),$data['Delivery Note Key'],$data['Delivery Note ID']);
+
+
+				break;
+			case 'Dispatched':
+				$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$data['Delivery Note Key'],$data['Delivery Note ID']);
+				break;
+			default:
+				$notes.='';
+
+			}
+
+			break;
+		case 'Refund':
+			$notes=_('Refund');
+			break;
+		case 'Credit':
+			switch ($data['State']) {
+			case 'In Process':
+				$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$data['Order Key'],_('Credit in process'));
+				break;
+			case 'Saved':
+				$notes.=sprintf('<a href="customer.php?id=%d">%s</a>',$data['Customer Key'],_('Credit in customer file'));
+				break;
+			case 'Dispatched':
+				$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$data['Delivery Note Key'],$data['Delivery Note ID']);
+				break;
+			default:
+				$notes.='';
+
+			}
+
+			break;
+
+		default:
+			$notes='';
+		}
+
+
+		$notes=preg_replace('/^,/','',$notes);
+		
+		return $notes;
+}
 
 ?>
