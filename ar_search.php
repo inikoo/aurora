@@ -58,8 +58,6 @@ case('site'):
 			'q'=>array('type'=>'string'),
 			'site_id'=>array('type'=>'key')
 		));
-
-
 	if (!in_array($data['site_id'],$user->websites)) {
 		return;
 	}
@@ -2321,12 +2319,14 @@ function search_site($data) {
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if (strtolower($row['Page Code'])==strtolower($q)) {
-			$factor=530;
+			$factor=1000;
 		} else {
 			$factor=520;
 		}
 		$candidates[$row['Page Key']]=$factor;
 	}
+
+
 
 	$sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Parent Code` like "%s%%" limit 100 ',
 		addslashes($data['site_id']),
@@ -2339,11 +2339,16 @@ function search_site($data) {
 		} else {
 			$factor=200;
 		}
-		$candidates[$row['Page Key']]=$factor;
+
+		if (isset($candidates[$row['Page Key']])) {
+			$candidates[$row['Page Key']]+=$factor;
+		}else {
+
+			$candidates[$row['Page Key']]=$factor;
+		}
 	}
 
 	//`Page Store Title`,`Page Store Description`,`Page Store Source`)
-
 
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
 
@@ -2353,7 +2358,14 @@ function search_site($data) {
 	);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-		$candidates[$row['Page Key']]=$row['score']*3;
+
+		if (isset($candidates[$row['Page Key']])) {
+			$candidates[$row['Page Key']]+=$row['score']*3;
+		}else {
+			$candidates[$row['Page Key']]=$row['score']*3;
+		}
+
+
 	}
 
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Description`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Description`) AGAINST ("%s")  ',
@@ -2364,7 +2376,13 @@ function search_site($data) {
 	);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-		$candidates[$row['Page Key']]=$row['score']*2;
+
+		if (isset($candidates[$row['Page Key']])) {
+			$candidates[$row['Page Key']]+=$row['score']*2;
+		}else {
+			$candidates[$row['Page Key']]=$row['score']*2;
+		}
+
 	}
 
 
@@ -2376,7 +2394,11 @@ function search_site($data) {
 	);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-		$candidates[$row['Page Key']]=$row['score'];
+		if (isset($candidates[$row['Page Key']])) {
+			$candidates[$row['Page Key']]+=$row['score'];
+		}else {
+			$candidates[$row['Page Key']]=$row['score'];
+		}
 	}
 
 
