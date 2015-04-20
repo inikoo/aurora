@@ -1922,17 +1922,21 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	}
 
-function get_formated_discounts() {
-		$formated_discounts='';
-		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
-		//return $sql;
-		//print $sql;
+	function get_deals_data(){
+		$deals=array();
+		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$formated_discounts.=', <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <b>'.$row['Deal Component Allowance Description'].'</b></span>';
+			$deals[]=array(
+				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
+				'Terms Label'=>$row['Deal Component XHTML Terms Description Label'],
+				'Terms Type'=>$row['Deal Component Terms Type'],
+				'Status'=>$row['Deal Component Status'],
+				'Name'=>$row['Deal Name'],
+				'Description'=>$row['Deal Description']			
+			);
 		}
-		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
-		return $formated_discounts;
+		return $deals;
 	}
 
 
