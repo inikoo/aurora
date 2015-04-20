@@ -251,7 +251,7 @@ class Family extends DB_Table {
 
 			$sql=sprintf("insert into `Product Family Default Currency` (`Product Family Key`) values (%d)",$this->id);
 			mysql_query($sql);
-			
+
 			$sql=sprintf("insert into `Product Family Data Dimension` (`Product Family Key`) values (%d)",$this->id);
 			mysql_query($sql);
 
@@ -389,9 +389,9 @@ class Family extends DB_Table {
 			$this->data['Product Family Code']=$value;
 			$this->update_full_search();
 
-$sql=sprintf("update `Product Dimension` set `Product Family Code`=%s where `Product Family Key`=%d ",
-			prepare_mysql($value),
-			$this->id
+			$sql=sprintf("update `Product Dimension` set `Product Family Code`=%s where `Product Family Key`=%d ",
+				prepare_mysql($value),
+				$this->id
 			);
 			mysql_query($sql);
 
@@ -448,13 +448,13 @@ $sql=sprintf("update `Product Dimension` set `Product Family Code`=%s where `Pro
 
 			$this->data['Product Family Name']=$value;
 			$this->update_full_search();
-			
+
 			$sql=sprintf("update `Product Dimension` set `Product Family Name`=%s where `Product Family Key`=%d ",
-			prepare_mysql($value),
-			$this->id
+				prepare_mysql($value),
+				$this->id
 			);
 			mysql_query($sql);
-			
+
 			$this->add_history(array(
 					'Indirect Object'=>'Product Family Name'
 					,'History Abstract'=>('Product Family Name Changed').' ('.$this->get('Product Family Name').')'
@@ -1602,7 +1602,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$orders_keys[$row['Order Key']]=$row['Order Key'];
 
 		}
-	
+
 		return $orders_keys;
 
 	}
@@ -1629,22 +1629,22 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			//print "$sql\n";
 			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$family=new Family($row['Product Family Key']);
-				
-//				print $family->id." xxx\n";
-				
+
+				//    print $family->id." xxx\n";
+
 				$family_orders_keys=$family->get_orders_keys();
 
 				$number_common_orders=count(array_intersect_key($orders_keys,$family_orders_keys));
-				
-	/*
-	
+
+				/*
+
 				$sql=sprintf("select count(distinct `Order Key`) as num from `Order Transaction Fact` where `Product Family Key`=%d  and `Order Key` in (select `Order Key` from `Order Transaction Fact` where `Product Family Key`=%d   ) ",
 				$this->id,
 				$row['Product Family Key']
-				
+
 				);
-				
-				
+
+
 				$res2=mysql_query($sql);
 		//print "$sql\n";
 		if ($row2=mysql_fetch_assoc($res2)) {
@@ -1653,10 +1653,10 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$number_common_orders=0;
 		}
 
-		*/		
-				
-				
-				
+		*/
+
+
+
 				$probability=$number_common_orders/$orders;
 				// print $family->id." $probability\n";
 
@@ -1672,16 +1672,16 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 					mysql_query($sql);
 					//    print "$sql\n";
 
-				}else{
-				
+				}else {
+
 					$sql=sprintf("delete from `Product Family Sales Correlation` where `Family A Key`=%d and `Family B Key`=%d",
 						$this->id,
 						$row['Product Family Key']
-					
+
 					);
 					mysql_query($sql);
-					
-					
+
+
 				}
 
 			}
@@ -1710,9 +1710,9 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$this->id);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if($row['Product Family Key']==$this->id){
+			if ($row['Product Family Key']==$this->id) {
 				continue;
-			}	
+			}
 
 			$other_finger_print=strtolower($row['Product Family Code'].' '.$row['Product Family Name']);
 			$weight=sentence_similarity($finger_print,$other_finger_print)/100;
@@ -1922,7 +1922,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	}
 
-	function get_formated_discounts() {
+function get_formated_discounts() {
 		$formated_discounts='';
 		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
 		//return $sql;
@@ -1934,52 +1934,64 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
 		return $formated_discounts;
 	}
-	
-	function get_valid_to(){
-	
-		if($this->data['Product Family Record Type']=='Discontinued'){
-			return $this->data['Product Family Valid To'];
-		}else{
-			return gmdate("Y-m-d H:i:s");
+
+
+	function get_formated_discounts() {
+		$formated_discounts='';
+		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$formated_discounts.=', <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <b>'.$row['Deal Component Allowance Description'].'</b></span>';
 		}
-	
-	
+		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
+		return $formated_discounts;
 	}
 
-function update_sales_averages() {
+	function get_valid_to() {
 
-include_once('common_stat_functions.php');
+		if ($this->data['Product Family Record Type']=='Discontinued') {
+			return $this->data['Product Family Valid To'];
+		}else {
+			return gmdate("Y-m-d H:i:s");
+		}
+
+
+	}
+
+	function update_sales_averages() {
+
+		include_once 'common_stat_functions.php';
 
 		$sql=sprintf("select sum(`Sales`) as sales,sum(`Availability`) as availability  from `Order Spanshot Fact` where `Product Family Key`=%d   group by `Date`;",
 			$this->id
 		);
 		$res=mysql_query($sql);
-	
+
 		$counter_available=0;
 		$counter=0;
 		$sum=0;
-		while($row=mysql_fetch_assoc($res)) {
-				
-				$sum+=$row['sales'];
-				$counter++;
-				if($row['sales']==$row['availability']){
-					$counter_available++;
-				}
-				
-				
-		}	
-		
-		
-			if($counter>0){
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$sum+=$row['sales'];
+			$counter++;
+			if ($row['sales']==$row['availability']) {
+				$counter_available++;
+			}
+
+
+		}
+
+
+		if ($counter>0) {
 			$this->data['Product Family Number Days on Sale']=$counter;
 			$this->data['Product Family Avg Day Sales']=$sum/$counter;
-				$this->data['Product Family Number Days Available']=$counter_available;
-	
+			$this->data['Product Family Number Days Available']=$counter_available;
+
 		}else {
 			$this->data['Product Family Number Days on Sale']=0;
 			$this->data['Product Family Avg Day Sales']=0;
 			$this->data['Product Family Number Days Available']=0;
-			
+
 
 		}
 
@@ -1991,23 +2003,23 @@ include_once('common_stat_functions.php');
 		$max_value=0;
 		$counter=0;
 		$sum=0;
-		while($row=mysql_fetch_assoc($res)) {
-				$data_sales[]=$row['sales'];
-				$sum+=$row['sales'];
-				$counter++;
-				if($row['sales']>$max_value){
-					$max_value=$row['sales'];
-				}
-		}	
-			
-			
-			if($counter>0){
-			
-			
-			
-			
-			
-			
+		while ($row=mysql_fetch_assoc($res)) {
+			$data_sales[]=$row['sales'];
+			$sum+=$row['sales'];
+			$counter++;
+			if ($row['sales']>$max_value) {
+				$max_value=$row['sales'];
+			}
+		}
+
+
+		if ($counter>0) {
+
+
+
+
+
+
 			$this->data['Product Family Number Days with Sales']=$counter;
 			$this->data['Product Family Avg with Sale Day Sales']=$sum/$counter;
 			$this->data['Product Family STD with Sale Day Sales']=standard_deviation($data_sales);
@@ -2021,7 +2033,7 @@ include_once('common_stat_functions.php');
 		}
 
 		$sql=sprintf("update `Product Family Dimension` set `Product Family Number Days on Sale`=%d,`Product Family Avg Day Sales`=%d,`Product Family Number Days Available`=%f,`Product Family Number Days with Sales`=%d,`Product Family Avg with Sale Day Sales`=%f,`Product Family STD with Sale Day Sales`=%f,`Product Family Max Day Sales`=%f where `Product Family Key`=%d",
-		$this->data['Product Family Number Days on Sale'],
+			$this->data['Product Family Number Days on Sale'],
 			$this->data['Product Family Avg Day Sales'],
 			$this->data['Product Family Number Days Available'],
 			$this->data['Product Family Number Days with Sales'],

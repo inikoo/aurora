@@ -4912,6 +4912,36 @@ class Page extends DB_Table {
 		return $products;
 
 	}
+	
+		function get_offer_badges() {
+
+		$badges=array();
+
+		switch ($this->data['Page Store Section']) {
+		case 'Family Catalogue':
+			$family=new Family($this->data['Page Parent Key']);
+			$deals=$family->get_deals_data();
+
+			break;
+		default:
+			$deals=array();
+		}
+
+		foreach ($deals as $deal) {
+			if ($deal['Status']=='Active' and !preg_match('/Voucher/',$deal['Terms Type'])) {
+				$badges[]=sprintf('<div class="offer"><div class="name">%s</div><div class="allowances">%s</div> <div class="terms">%s</div></div>',
+					$deal['Name'],
+					$deal['Allowance Label'],
+					$deal['Terms Label']
+
+				);
+			}
+		}
+
+		return $badges;
+
+
+	}
 
 
 }
