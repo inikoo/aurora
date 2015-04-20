@@ -26,27 +26,6 @@ $css_files=array(
 );
 
 
-$js_files=array(
-
-	$yui_path.'utilities/utilities.js',
-	$yui_path.'json/json-min.js',
-	$yui_path.'paginator/paginator-min.js',
-	$yui_path.'datasource/datasource-min.js',
-	$yui_path.'autocomplete/autocomplete-min.js',
-	$yui_path.'datatable/datatable.js',
-	$yui_path.'container/container-min.js',
-	$yui_path.'menu/menu-min.js',
-	$yui_path.'calendar/calendar-min.js',
-	'js/common.js',
-	'js/table_common.js',
-	'js/edit_common.js',
-	'js/search.js',
-	'warehouse_orders.js.php',
-
-	'js/common_assign_picker_packer.js',
-	'js/csv_common.js'
-);
-
 
 
 $js_files=array(
@@ -60,13 +39,14 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-
+'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
 	'js/common_assign_picker_packer.js',
-	'js/common_edit_delivery_note.js'
+	'js/common_edit_delivery_note.js',
+	'js/dn.js'
 
 
 );
@@ -106,19 +86,18 @@ $smarty->assign('store_id',$store->id);
 $smarty->assign('warehouse',$warehouse);
 
 
-$js_files[]='dn.js.php';
 $template='dn.tpl';
 
 
 
 
-$tipo_filter=$_SESSION['state']['products']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['dn']['transactions']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['products']['table']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['dn']['transactions']['f_value']);
 $filter_menu=array(
-	'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code')
-	,'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
-	,'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+	'code'=>array('db_key'=>'reference','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code')
+//	,'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+//	,'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
 
 );
 $smarty->assign('filter_menu0',$filter_menu);
@@ -218,6 +197,29 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Delivery Note').' '.$dn->get('Delivery Note ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-//print $template;
+
+
+$session_data=base64_encode(json_encode(array(
+ 	'label'=>array(
+ 		'Product'=>_('Product'),
+ 		'Ordered'=>_('Ordered'),
+ 		'Dispatched'=>_('Dispatched'),
+ 		'Required_Parts'=>_('Required Parts'),
+ 		'Picked'=>_('Picked'),
+ 		'Packed'=>_('Packed'),
+ 		'Part_Notes'=>_('Part Notes'),
+ 		'Alias'=>_('Alias'),
+ 		'Name'=>_('Name'),
+ 
+
+		'Page'=>_('Page'),
+ 		'of'=>_('of')
+ 		),
+ 	'state'=>array(
+ 		'transactions'=>$_SESSION['state']['dn']['transactions']
+ 		)
+ 	)));
+ $smarty->assign('session_data',$session_data);
+
 $smarty->display($template);
 ?>

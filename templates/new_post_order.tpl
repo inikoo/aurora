@@ -1,6 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
 	{include file='assets_navigation.tpl'} 
+	<input type="hidden" value="{$session_data}" id="session_data" />
 	<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
 	<input type="hidden" value="{$store->id}" id="store_id" />
 	<input type="hidden" value="{$store->id}" id="store_key" />
@@ -17,7 +18,7 @@
 			<span class="main_title">{t}PDOs of Order{/t} <span class="id">{$order->get('Order Public ID')}</span> </span> 
 		</div>
 		<div class="buttons">
-			<button id="cancel" style="display:none" class="negative">{t}Cancel Post Order{/t}</button> <button onclick="window.location='order.php?id={$order->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Go back to order{/t}</button> <button id="show_mark_all_for_refund">{t}Refund all order{/t}</button> 
+			<button id="cancel" style="display:none" class="negative">{t}Cancel Post Order{/t}</button> <button onclick="window.location='order.php?id={$order->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Go back to order{/t}</button> <button id="show_mark_all_for_refund">{t}Refund{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -25,7 +26,7 @@
 	<div style="clear:both">
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
-		<div style="width:320px;float:left">
+		<div style="width:310px;float:left;xborder:1px solid red">
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
@@ -50,10 +51,18 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="width:400px;float:right">
+		<div style="width:290px;float:left;">
+		 	{include  file='post_order_dns_splinter.tpl' dns_data=$dns_data number_dns=$number_dns}
+		
+		</div>
+		<div style="width:300px;float:right;xborder:1px solid red">
 			<table border="0" style="width:100%;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 			
-			
+			<tr>
+					<td></td>
+					<td style="border-top:1px solid #333;" class="aright">{t}Items Net{/t}</td>
+					<td style="border-top:1px solid #333;"  id="order_charges" width="100" class="aright">{$order->get('Invoiced Items Amount')}</td>
+				</tr>
 				<tr>
 					<td></td>
 					<td style="border-top:1px solid #333;" class="aright">{t}Charges{/t}</td>
@@ -92,15 +101,26 @@
 					<td style="border-bottom:1px solid #333;" class="aright">{t}Original Total{/t}</td>
 					<td id="order_total" width="100" class="aright" style="border-bottom:1px solid #333;font-weight:800">{$order->get('Total Amount')}</td>
 				</tr>
-				<tr id="resend" style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none;{/if};border-bottom:1px solid #ccc;margin-bottom:10px">
+				
+				<tbody id="resend" style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none;{/if};" >
+				<tr id="resend" >
 					<td> 
-					<div class="buttons small">
-						<button style="{if $order_post_transactions_in_process.Resend.State!='In Process'}display:none{/if}" id="send">{t}Send to Warehouse{/t}</button> 
-					</div>
+					
 					</td>
 					<td class="aright">{t}Replacements Value{/t}:</td>
 					<td id="Resend_Formated_Market_Value" class="aright">{$order_post_transactions_in_process.Resend.Formated_Market_Value}</td>
 				</tr>
+				
+				<tr style="border-bottom:1px solid #ccc;margin-bottom:10px">
+				<td colspan=3>
+				<div class="buttons small">
+						<button style="{if $order_post_transactions_in_process.Resend.In_Process_Products==0}display:none{/if};margin-right:0px" id="send"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> 
+					</div>
+				</td>
+				</tr>
+				</tbody>
+				
+				
 				<tr id="credit" style="{if $order_post_transactions_in_process.Credit.Distinct_Products==0}display:none;{/if};border-bottom:1px solid #ccc;margin-bottom:10px">
 					<td> 
 					<div class="buttons small">
@@ -135,10 +155,9 @@
 	</div>
 	<div class="data_table" style="clear:both;margin-top:10px">
 		<span id="table_title" class="clean_table_title">{t}Ordered Items{/t}</span> 
-		<div class="table_top_bar" style="margin-bottom:5px">
+		<div class="table_top_bar space" ">
 		</div>
-		<div id="list_options0">
-		</div>
+		
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" style="font-size:80%" class="data_table_container dtable btable">
 		</div>

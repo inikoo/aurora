@@ -671,7 +671,7 @@ if ($order=='order') {
 			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'customer_name'=>$customer,
 			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
-			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: common_order_functions.php
 
 			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency'])
 
@@ -952,7 +952,7 @@ function list_orders_with_voucher($can_see_customers=false) {
 			'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'customer_name'=>$customer,
 			'date'=> strftime("%e %b %y", strtotime($row['Order Date'].' +0:00')),
-			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: order_common_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: common_order_functions.php
 
 			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
 			'deal_used'=>($row['deal_used']?'<img src="art/icons/accept.png">':'<img src="art/icons/accept_bw_hidden.png">')

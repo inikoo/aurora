@@ -134,7 +134,7 @@ request="ar_orders.php?tipo=transactions_dispatched&tableid=0&sf=0&parent=order&
 				     {key:"code", label:"<?php echo _('Code')?>",width:60,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"<?php echo _('Description')?>",width:275,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 //    ,{key:"tariff_code",label:"<?php echo _('Tarrif Code')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"dispatched",label:"<?php echo _('Dispatched')?>", width:65,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"dispatched",label:"<?php echo _('Original Qty')?>", width:65,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				 				       ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				 				       ,{key:"operation",label:"<?php echo _('Operation')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				 				       ,{key:"reason",label:"<?php echo _('Reason')?>", width:90,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
