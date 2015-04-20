@@ -1533,9 +1533,8 @@ function edit_new_post_order($data) {
 		exit;
 	}
 
-
-
 	$transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
+
 
 
 

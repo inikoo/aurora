@@ -6831,12 +6831,16 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	}
 
 	function create_post_transaction_in_process($otf_key,$key,$values) {
+					
 
 
 		if (!preg_match('/^(Quantity|Operation|Reason|To Be Returned)$/',$key)) {
 			$this->error=true;
 			return;
 		}
+		
+		
+		
 		$this->deleted_post_transaction=false;
 		$this->update_post_transaction=false;
 		$this->created_post_transaction=false;
@@ -6846,6 +6850,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		if ($row=mysql_fetch_assoc($res)) {
 			if ($row['Order Key']!=$this->id) {
 				$this->error=true;
+
 				return;
 			}
 
@@ -6972,11 +6977,10 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 		$transaction_data=array();
 
+	
 
-
-		if ($this->created_post_transaction or $this->update_post_transaction) {
-
-			$sql=sprintf('select `Order Key`,`State`,`Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
+			$sql=sprintf('select `Order Key`,`State`,`Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',
+			$otf_key);
 			$res2=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res2)) {
 				$transaction_data['Quantity']=$row['Quantity'];
@@ -6987,6 +6991,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$transaction_data['Order Key']=$row['Order Key'];
 			}
 
+if ($this->created_post_transaction or $this->update_post_transaction) {
 
 			$transaction_data['Order Post Transaction Key']=$opt_key;
 		}
@@ -6998,6 +7003,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$transaction_data['To Be Returned']='';
 			$transaction_data['Order Key']='';
 		}
+		
+		
 		return $transaction_data;
 
 	}
