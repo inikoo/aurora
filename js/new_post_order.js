@@ -231,13 +231,12 @@ var CellEdit = function(callback, newValue) {
 
         var data = record.getData();
 
-        request = 'tipo=edit_new_post_order&order_key=' + data['order_key'] + '&key=quantity&new_value=' + encodeURIComponent(newValue) + '&otf_key=' + data['otf_key'];
+        request = 'tipo=edit_new_post_order&order_key=' + data['order_key'] + '&key='+column.object+'&new_value=' + encodeURIComponent(newValue) + '&otf_key=' + data['otf_key'];
 
-        
         
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-              //   alert(o.responseText);
+               //  alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -293,12 +292,12 @@ var CellEdit = function(callback, newValue) {
 
 
                 } else {
-                    alert(r.msg);
+                    //alert('msg:'+r.msg);
                     callback();
                 }
             },
             failure: function(o) {
-                alert(o.statusText);
+               // alert(o.statusText);
                 callback();
             },
             scope: this
@@ -484,7 +483,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             editor: new YAHOO.widget.TextboxCellEditor({
                 asyncSubmitter: CellEdit
             }),
-            object: 'new_order'
+            object: 'quantity'
         }, {
             key: "add",
             label: "",

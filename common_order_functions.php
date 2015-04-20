@@ -415,7 +415,6 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 function post_transaction_notes($data){
 		$notes='';
-
 		switch ($data['Operation']) {
 		case 'Resend':		
 			switch ($data['State']) {
