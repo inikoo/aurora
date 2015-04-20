@@ -6768,10 +6768,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$data['Credit']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
 		}
 
-		$sql=sprintf("select  `State`,`Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History DImension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
+		$sql=sprintf("select  `State`,`Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
 			$this->id
 		);
-
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$data['Resend']['Distinct_Products']=$row['num'];
