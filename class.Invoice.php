@@ -1816,12 +1816,15 @@ class Invoice extends DB_Table {
 
 			if ($this->data['Invoice Paid Amount']==0) {
 				$this->set_as_not_paid();
+				return;
+			}	
+				
 
-			}elseif ($this->data['Invoice Outstanding Total Amount']==0) {
+			if ($this->data['Invoice Outstanding Total Amount']<=0) {
 
 				$this->set_as_full_paid();
 
-			}elseif ($this->data['Invoice Paid Amount']>0) {
+			}else {
 				$this->set_as_parcially_paid();
 			}
 
