@@ -7,6 +7,7 @@ var panel2;
 
 var edit_delivery_address;
 
+
 function post_change_main_delivery_address() {
 
     var ar_file = 'ar_edit_orders.php';
@@ -162,37 +163,68 @@ var myonCellClick = function(oArgs) {
 
 
 
+                                Dom.get('refund_marked_items_value').value = r.data.Refund.Amount
+                                Dom.get('refund_items_value').value = r.data.Refund.Other_Items_Amount
+
+                                if (r.data.Refund.Amount == 0) {
+                                    Dom.setStyle('refund_marked_items_tr', 'display', 'none')
+                                       Dom.setStyle('show_mark_all_for_refund', 'display', '')
+                                 
+                                    
+                                    
+                                } else {
+                                    Dom.setStyle('refund_marked_items_tr', 'display', '')
+                                       Dom.setStyle('show_mark_all_for_refund', 'display', 'none')
+
+                                }
+
+
+                                Dom.get('refund_marked_items_original_formated_value').innerHTML = r.data.Refund.Formated_Amount
+                                Dom.get('refund_marked_items_formated_value').innerHTML = r.data.Refund.Formated_Amount
+
+                                Dom.get('refund_items_original_formated_value').innerHTML = r.data.Refund.Formated_Other_Items_Amount
+                                
+                                
+                                Dom.get('refund_items_formated_value').innerHTML = r.data.Refund.Formated_Other_Items_Amount
+
+								recalcuate_refund_total()	
+
+
                                 if (r.data['Refund']['Distinct_Products'] == 0) {
                                     Dom.setStyle('refund', 'display', 'none');
                                 } else {
                                     Dom.setStyle('refund', 'display', '');
+
+
+
+
                                 }
                                 if (r.data['Credit']['Distinct_Products'] == 0) {
                                     Dom.setStyle('credit', 'display', 'none');
                                 } else {
                                     Dom.setStyle('credit', 'display', '');
                                 }
-                                
+
 
                                 if (r.data['Resend']['Distinct_Products'] == 0) {
                                     Dom.setStyle(['resend', 'shipping_block', 'send'], 'display', 'none');
                                 } else {
                                     Dom.setStyle(['resend', 'shipping_block', 'send'], 'display', '');
                                 }
-                                
-                                
-                                
-                                 if (r.data['Resend']['In_Process_Products'] == 0) {
-                                    Dom.setStyle([ 'send'], 'display', 'none');
+
+
+
+                                if (r.data['Resend']['In_Process_Products'] == 0) {
+                                    Dom.setStyle(['send'], 'display', 'none');
                                 } else {
-                                    Dom.setStyle([ 'send'], 'display', '');
+                                    Dom.setStyle(['send'], 'display', '');
                                 }
-                                
-                                
-                                
-                                
-                                
-                                
+
+
+
+
+
+
 
                             }
                         }
@@ -231,12 +263,12 @@ var CellEdit = function(callback, newValue) {
 
         var data = record.getData();
 
-        request = 'tipo=edit_new_post_order&order_key=' + data['order_key'] + '&key='+column.object+'&new_value=' + encodeURIComponent(newValue) + '&otf_key=' + data['otf_key'];
+        request = 'tipo=edit_new_post_order&order_key=' + data['order_key'] + '&key=' + column.object + '&new_value=' + encodeURIComponent(newValue) + '&otf_key=' + data['otf_key'];
 
-        
+
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
-               //  alert(o.responseText);
+                //  alert(o.responseText);
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
@@ -246,44 +278,44 @@ var CellEdit = function(callback, newValue) {
                         return;
                     }
 
-                   if (r.result == 'updated') {
-                            datatable.updateCell(record, 'quantity', r.quantity);
-                            datatable.updateCell(record, 'notes', r.notes);
-                            datatable.updateCell(record, 'operation', r.operation);
-                            datatable.updateCell(record, 'reason', r.reason);
-                            datatable.updateCell(record, 'to_be_returned', r.to_be_returned);
-                            if (r.data != undefined) {
-                                for (x in r.data) {
-                                    for (y in r.data[x]) {
-                                        if (Dom.get(x + '_' + y) != null) Dom.get(x + '_' + y).innerHTML = r.data[x][y];
-                                    }
-
-                                }
-
-
-
-                                if (r.data['Refund']['Distinct_Products'] == 0) {
-                                    Dom.setStyle('refund', 'display', 'none');
-                                } else {
-                                    Dom.setStyle('refund', 'display', '');
-                                }
-                                if (r.data['Credit']['Distinct_Products'] == 0) {
-                                    Dom.setStyle('credit', 'display', 'none');
-                                } else {
-                                    Dom.setStyle('credit', 'display', '');
-                                }
-
-                                if (r.data['Resend']['Distinct_Products'] == 0) {
-
-
-                                    Dom.setStyle(['resend', 'shipping_block', 'send'], 'display', 'none');
-                                } else {
-
-                                    Dom.setStyle(['resend', 'shipping_block', 'send'], 'display', '');
+                    if (r.result == 'updated') {
+                        datatable.updateCell(record, 'quantity', r.quantity);
+                        datatable.updateCell(record, 'notes', r.notes);
+                        datatable.updateCell(record, 'operation', r.operation);
+                        datatable.updateCell(record, 'reason', r.reason);
+                        datatable.updateCell(record, 'to_be_returned', r.to_be_returned);
+                        if (r.data != undefined) {
+                            for (x in r.data) {
+                                for (y in r.data[x]) {
+                                    if (Dom.get(x + '_' + y) != null) Dom.get(x + '_' + y).innerHTML = r.data[x][y];
                                 }
 
                             }
+
+
+
+                            if (r.data['Refund']['Distinct_Products'] == 0) {
+                                Dom.setStyle('refund', 'display', 'none');
+                            } else {
+                                Dom.setStyle('refund', 'display', '');
+                            }
+                            if (r.data['Credit']['Distinct_Products'] == 0) {
+                                Dom.setStyle('credit', 'display', 'none');
+                            } else {
+                                Dom.setStyle('credit', 'display', '');
+                            }
+
+                            if (r.data['Resend']['Distinct_Products'] == 0) {
+
+
+                                Dom.setStyle(['resend', 'shipping_block', 'send'], 'display', 'none');
+                            } else {
+
+                                Dom.setStyle(['resend', 'shipping_block', 'send'], 'display', '');
+                            }
+
                         }
+                    }
 
 
                     callback(true, r.new_value);
@@ -297,7 +329,7 @@ var CellEdit = function(callback, newValue) {
                 }
             },
             failure: function(o) {
-               // alert(o.statusText);
+                // alert(o.statusText);
                 callback();
             },
             scope: this
@@ -514,9 +546,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
                     label: labels.Refund + '<br>',
                     value: 'Refund'
                 }, {
-                    label: labels.Credit + '<br>',
-                    value: 'Credit'
-                }, {
                     label: labels.Resend + '<br>',
                     value: 'Resend'
                 }],
@@ -573,6 +602,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "notes",
             label: labels.Notes,
+            className: "aright",
             width: 100,
             hidden: false,
             sortable: false
@@ -720,7 +750,7 @@ function create_delivery_note() {
     var request = 'tipo=send_post_order_to_warehouse&order_key=' + Dom.get('order_key').value;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-          //  alert(o.responseText)
+            //  alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 window.location = 'new_post_order.php?id=' + r.order_key;
@@ -806,7 +836,7 @@ function init() {
     // YAHOO.util.Event.addListener('done', "click",create_delivery_note);
     dialog_mark_all_for_refund = new YAHOO.widget.Dialog("dialog_mark_all_for_refund", {
         visible: false,
-        close: true,
+        close: false,
         underlay: "none",
         draggable: false
     });
@@ -821,9 +851,6 @@ function init() {
     // alert("xx")
     //  YAHOO.util.Event.addListener("save_credit", "click", save_credit);
     //  YAHOO.util.Event.addListener("cancel_saved_credit", "click", cancel_saved_credit);
-
-
-
 }
 
 
@@ -835,14 +862,52 @@ YAHOO.util.Event.onDOMReady(init);
 
 function recalcuate_refund_total() {
 
-    refund = 0.00;
-    if (Dom.get('refund_items_switch').getAttribute('valor') == 'Yes') refund = parseFloat(Dom.get('refund_items_value').value) + refund;
-    if (Dom.get('refund_shipping_switch').getAttribute('valor') == 'Yes') refund = parseFloat(Dom.get('refund_shipping_value').value) + refund;
+    refund = parseFloat(Dom.get('refund_marked_items_value').value);
+
+    if (Dom.get('refund_items_switch').getAttribute('valor') == 'Yes') {
+        refund = parseFloat(Dom.get('refund_items_value').value) + refund;
+        Dom.get('refund_items_formated_value').innerHTML = Dom.get('refund_currency_symbol').value + parseFloat(Dom.get('refund_items_value').value).toFixed(2)
+
+
+        if ((Dom.get('refund_reason').value == '')) {
+            Dom.setStyle('bulk_items_info', 'display', '')
+
+        } else {
+            Dom.setStyle('show_other_items_options', 'display', '')
+
+        }
+
+    } else {
+        Dom.get('refund_items_formated_value').innerHTML = Dom.get('refund_currency_symbol').value + parseFloat('0').toFixed(2)
+        Dom.setStyle('bulk_items_info', 'display', 'none')
+
+    }
+    if (Dom.get('refund_shipping_switch').getAttribute('valor') == 'Yes') {
+        refund = parseFloat(Dom.get('refund_shipping_value').value) + refund;
+        Dom.get('shipping').innerHTML = Dom.get('refund_currency_symbol').value + parseFloat(Dom.get('refund_shipping_value').value).toFixed(2)
+
+    } else {
+        Dom.get('shipping').innerHTML = Dom.get('refund_currency_symbol').value + parseFloat('0').toFixed(2)
+
+    }
+
     if (Dom.get('refund_charges_switch').getAttribute('valor') == 'Yes') refund = parseFloat(Dom.get('refund_charges_value').value) + refund;
     if (Dom.get('refund_net_adjusts_switch').getAttribute('valor') == 'Yes') refund = parseFloat(Dom.get('refund_net_adjusts_value').value) + refund;
-    if (Dom.get('refund_tax_switch').getAttribute('valor') == 'Yes') refund = parseFloat(Dom.get('refund_tax_value').value) + refund;
+    if (Dom.get('refund_tax_switch').getAttribute('valor') == 'Yes') {
+        refund = parseFloat(Dom.get('refund_tax_value').value) + refund;
+        Dom.get('tax').innerHTML = Dom.get('refund_currency_symbol').value + parseFloat(Dom.get('refund_tax_value').value).toFixed(2)
+
+    } else {
+        Dom.get('tax').innerHTML = Dom.get('refund_currency_symbol').value + parseFloat('0').toFixed(2)
+
+    }
     if (Dom.get('refund_tax_adjusts_switch').getAttribute('valor') == 'Yes') refund = parseFloat(Dom.get('refund_tax_adjusts_value').value) + refund;
     Dom.get('refund_total').innerHTML = Dom.get('refund_currency_symbol').value + refund.toFixed(2)
+    Dom.get('Refund_Formated_Amount').innerHTML = Dom.get('refund_currency_symbol').value + refund.toFixed(2)
+
+
+
+    validate_full_refund()
 
 }
 
@@ -850,7 +915,7 @@ function recalcuate_refund_total() {
 function switch_refund_element(o) {
 
     if (o.getAttribute('valor') == 'Yes') {
-        o.src = 'art/icons/cross_bw.png';
+        o.src = 'art/icons/accept_bw.png';
 
         o.setAttribute('valor', 'No')
     } else {
@@ -872,6 +937,8 @@ function change_refund_reason(value, o) {
     Dom.addClass(o, 'selected')
     Dom.get('refund_reason').value = value
 
+    Dom.setStyle('hide_other_items_options', 'display', '')
+
     validate_full_refund()
 
 }
@@ -888,15 +955,45 @@ function change_refund_action(value, o) {
 }
 
 
-function validate_full_refund() {
-    if (Dom.get('refund_reason').value != '' && Dom.get('refund_action').value != '') {
+function hide_bulk_items_info() {
 
-        Dom.removeClass("save_full_refund", "disabled")
+    Dom.setStyle('show_other_items_options', 'display', '')
+    Dom.setStyle('bulk_items_info', 'display', 'none')
+
+
+}
+
+function show_bulk_items_info() {
+
+    Dom.setStyle('show_other_items_options', 'display', 'none')
+    Dom.setStyle('bulk_items_info', 'display', '')
+
+
+}
+
+
+
+function validate_full_refund() {
+
+    if (Dom.get('refund_action').value == '') {
+        Dom.addClass("save_full_refund", "disabled")
+        return;
+    }
+
+    if (Dom.get('refund_items_switch').getAttribute('valor') == 'Yes') {
+        if ((Dom.get('refund_reason').value != '')) {
+            Dom.removeClass("save_full_refund", "disabled")
+        } else {
+            Dom.addClass("save_full_refund", "disabled")
+        }
 
     } else {
-        Dom.addClass("save_full_refund", "disabled")
 
+        Dom.removeClass("save_full_refund", "disabled")
     }
+
+
+
 
 }
 
@@ -916,13 +1013,19 @@ function mark_all_for_refund_return(value) {
 }
 
 
+function cancel_full_refund() {
+
+    dialog_mark_all_for_refund.hide()
+
+}
+
 function show_dialog_mark_all_for_refund() {
 
-    region1 = Dom.getRegion('show_mark_all_for_refund');
+    region1 = Dom.getRegion('totals');
     region2 = Dom.getRegion('dialog_mark_all_for_refund');
-    region3 = Dom.getRegion('order_net');
+    region3 = Dom.getRegion('order_items_net_label');
 
-    var pos = [region3.left - region2.width - 40, region1.bottom]
+    var pos = [region3.left -region2.width, region1.top]
     Dom.setXY('dialog_mark_all_for_refund', pos);
     dialog_mark_all_for_refund.show()
 
