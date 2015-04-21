@@ -2414,7 +2414,7 @@ function list_transactions_dispatched() {
 
    	$where $order  ";
 
-
+//print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -2934,7 +2934,7 @@ function list_transactions_in_order() {
 
 	$adata=array();
 	$sql="select * from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
-
+//print $sql;
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
