@@ -45,7 +45,8 @@ $css_files=array(
 	'css/table.css',
 	'css/edit.css',
 	'css/edit_address.css',
-	'theme.css.php'
+	'css/new_post_order.css',
+	'theme.css.php',
 );
 
 

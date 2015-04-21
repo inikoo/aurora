@@ -6720,21 +6720,36 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 	function get_post_transactions_in_process_data() {
 		$data=array(
-			'Refund'=>array('In_Process_Products'=>0,'Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency'])),
-			'Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>''),
-			'Resend'=>array('Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency']),'state'=>''),
+			'Refund'=>array(
+				'In_Process_Products'=>0,
+				'Distinct_Products'=>0,
+				'Amount'=>0,
+				'Other_Items_Amount'=>$this->data['Order Invoiced Items Amount'],
+				'Formated_Amount'=>money(0,$this->data['Order Currency']),
+				'Formated_Other_Items_Amount'=>money($this->data['Order Invoiced Items Amount'],$this->data['Order Currency']),
+				'Formated_Zero_Amount'=>money(0,$this->data['Order Currency'])
+			),
+			'Resend'=>array('In_Process_Products'=>0,'Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency']),'state'=>''),
 			'Saved_Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>'')
 
+
+
 		);
+		
+		
+		
+		
 		$sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and POT.`Order Key`=%d and   `Operation`='Refund'",
 			$this->id
 
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
+			if($row['num']>0){	
 			$data['Refund']['Distinct_Products']=$row['num'];
 			$data['Refund']['Amount']=$row['value'];
 			$data['Refund']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
+			}
 		}
 
 		$sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and POT.`Order Key`=%d and   `Operation`='Credit'",
@@ -6745,8 +6760,6 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$sql=sprintf("select `Invoice Currency Code`, sum(POT.`Credit`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where   POT.`Order Key`=%d and   `Operation`='Credit' and `State`='Saved'  ",
 			$this->id
 		);
-
-
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$data['Saved_Credit']['Distinct_Products']=$row['num'];
@@ -6792,6 +6805,11 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 
+
+		$data['Refund']['Other_Items_Amount']-=$data['Refund']['Amount'];
+		$data['Refund']['Formated_Other_Items_Amount']=money($data['Refund']['Other_Items_Amount'],$this->data['Order Currency']);
+
+
 		return $data;
 
 	}
@@ -6830,16 +6848,16 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	}
 
 	function create_post_transaction_in_process($otf_key,$key,$values) {
-					
+
 
 
 		if (!preg_match('/^(Quantity|Operation|Reason|To Be Returned)$/',$key)) {
 			$this->error=true;
 			return;
 		}
-		
-		
-		
+
+
+
 		$this->deleted_post_transaction=false;
 		$this->update_post_transaction=false;
 		$this->created_post_transaction=false;
@@ -6976,21 +6994,21 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 		$transaction_data=array();
 
-	
 
-			$sql=sprintf('select `Order Key`,`State`,`Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',
+
+		$sql=sprintf('select `Order Key`,`State`,`Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',
 			$otf_key);
-			$res2=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res2)) {
-				$transaction_data['Quantity']=$row['Quantity'];
-				$transaction_data['Operation']=$row['Operation'];
-				$transaction_data['Reason']=$row['Reason'];
-				$transaction_data['State']=$row['State'];
-				$transaction_data['To Be Returned']=$row['To Be Returned'];
-				$transaction_data['Order Key']=$row['Order Key'];
-			}
+		$res2=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res2)) {
+			$transaction_data['Quantity']=$row['Quantity'];
+			$transaction_data['Operation']=$row['Operation'];
+			$transaction_data['Reason']=$row['Reason'];
+			$transaction_data['State']=$row['State'];
+			$transaction_data['To Be Returned']=$row['To Be Returned'];
+			$transaction_data['Order Key']=$row['Order Key'];
+		}
 
-if ($this->created_post_transaction or $this->update_post_transaction) {
+		if ($this->created_post_transaction or $this->update_post_transaction) {
 
 			$transaction_data['Order Post Transaction Key']=$opt_key;
 		}
@@ -7002,8 +7020,8 @@ if ($this->created_post_transaction or $this->update_post_transaction) {
 			$transaction_data['To Be Returned']='';
 			$transaction_data['Order Key']='';
 		}
-		
-		
+
+
 		return $transaction_data;
 
 	}
