@@ -66,7 +66,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 request="ar_orders.php?tipo=transactions_dispatched&tableid=0&sf=0&parent=order&parent_key="+Dom.get('order_key').value
-
+//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

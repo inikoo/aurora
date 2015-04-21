@@ -1855,6 +1855,11 @@ class DeliveryNote extends DB_Table {
 				$this->id
 			);
 			mysql_query($sql);
+			
+			
+			$sql=sprintf("delete from `Order Transaction Fact` where `Delivery Note Key`=%d and `Order Transaction Type`='Resend'",$this->id);
+			mysql_query($sql);
+			
 		}
 
 

@@ -745,12 +745,7 @@ function clear_cache($data) {
 	}
 
 	$request=$site_protocol.'://'.$site->data['Site URL']."/maintenance/clear_cache.php?sk=x";
-
-
-
 	$template_response=file_get_contents($request);
-
-
 	$response= array('state'=>200,'template_response'=>$template_response);
 	echo json_encode($response);
 
