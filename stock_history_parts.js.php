@@ -75,19 +75,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=2;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
-				    {key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?php echo _('Description')?>",width:300,<?php echo($_SESSION['state']['stock_history']['parts']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"sku", label:"<?php echo _('SKU')?>", hidden:true,width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"reference", label:"<?php echo _('Reference')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"description", label:"<?php echo _('Description')?>",hidden:true,width:300,<?php echo($_SESSION['state']['stock_history']['parts']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 	  ,{key:"locations", label:"<?php echo _('Locations')?>", width:65,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"stock", label:"<?php echo _('Stock')?>", width:65,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"value_at_cost", label:"<?php echo _('Cost Value')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				      ,{key:"value_at_end_day", label:"<?php echo _('C Value (ED)')?>", width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"commercial_value", label:"<?php echo _('Com Value')?>", width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					      ,{key:"last_sold", label:"<?php echo _('Last Sold')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					      ,{key:"delta_last_sold", label:"<?php echo _('Last Sold')." &Delta; "._('days')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				      ,{key:"last_booked_in", label:"<?php echo _('Last Booked in')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					      ,{key:"delta_last_booked_in", label:"<?php echo _('Last Booked in')." &Delta; "._('days')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					    
+					    
+					      ,{key:"last_sold", hidden:true,label:"<?php echo _('Last Sold')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					      ,{key:"delta_last_sold", hidden:true, label:"<?php echo _('Last Sold')." &Delta; "._('days')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"last_booked_in",  hidden:true,label:"<?php echo _('Last Booked in')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					      ,{key:"delta_last_booked_in", hidden:true, label:"<?php echo _('Last Booked in')." &Delta; "._('days')?>", width:160,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 	];
 request="ar_parts.php?tipo=parts_at_date&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0&date="+Dom.get('date').value;
@@ -110,7 +114,7 @@ request="ar_parts.php?tipo=parts_at_date&parent=warehouse&parent_key="+Dom.get('
 		
 		fields: [
 			 "sku"
-			 ,"description","locations","value_at_cost","stock","value_at_end_day","commercial_value","last_sold","last_booked_in","delta_last_sold","delta_last_booked_in"
+			 ,"description","locations","value_at_cost","stock","value_at_end_day","commercial_value","last_sold","last_booked_in","delta_last_sold","delta_last_booked_in","reference"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

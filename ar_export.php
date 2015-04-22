@@ -49,6 +49,8 @@ function export($data) {
 		'fetch_type'=>$fetch_type
 	);
 
+//	print_r($export_data);
+
 	list($fork_key,$msg)=new_fork('export',$export_data,$account_code);
 
 
@@ -99,7 +101,8 @@ function get_sql_query($data) {
 		break;	
 	case 'dn':
 		return dn_sql_query($data);
-		break; case 'part_stock_historic':
+		break; 
+	case 'part_stock_historic':
 		return part_stock_historic_sql_query($data);
 		break;
 	default:
@@ -130,32 +133,25 @@ function part_stock_historic_sql_query($data) {
 	}
 	$sql_count="select count(Distinct P.`Part SKU`) as num from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
 
-	$data['fields']=preg_replace('/value_at_end_day/','sum(`Value At Day Cost`) as value_at_end_day',$data['fields']);
-	$data['fields']=preg_replace('/locations/','count(DISTINCT `Location Key`) as locations',$data['fields']);
-	$data['fields']=preg_replace('/value_at_cost/','sum(`Value At Cost`) as value_at_cost',$data['fields']);
-	$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as stock',$data['fields']);
-	$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as commercial_value',$data['fields']);
-	$data['fields']=	addslashes($data['fields']);
+	$data['fields']=preg_replace('/value_at_end_day/','sum(`Value At Day Cost`) as `'._('Value at end day').'`',$data['fields']);
+	$data['fields']=preg_replace('/locations/','count(DISTINCT `Location Key`) as  `'._('Locations').'`',$data['fields']);
+	$data['fields']=preg_replace('/value_at_cost/','sum(`Value At Cost`) as `'._('Value at cost').'`',$data['fields']);
+	$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as  `'._('Stock').'`',$data['fields']);
+	$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as  `'._('Commercial value').'`',$data['fields']);
+	$data['fields']=addslashes($data['fields']);
 	
 	$data['fields']=preg_replace('/delta_last_sold/',sprintf('DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold',prepare_mysql($data['date'])),$data['fields']);
 	$data['fields']=preg_replace('/delta_last_booked_in/',sprintf('DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in',prepare_mysql($data['date'])),$data['fields']);
 	$data['fields']=preg_replace('/delta_last_purchased/',sprintf('DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased',prepare_mysql($data['date'])),$data['fields']);
 
-	//print $data['fields'];
-//	$sql_data="select sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ";
 
-	$sql_data=sprintf("select %s from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by ISF.`Part SKU` ",
+	$sql_data=sprintf("select %s from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU` order by ISF.`Part SKU` ",
 		$data['fields']
 	);
-	/*
-	$sql_data=sprintf("select %s from %s %s %s",
-		addslashes($data['fields']),
-		$table,
-		$where,
-		$group
-	);*/
-	//print $sql_data;
-	//exit;
+
+
+
+
 	return array($sql_count,$sql_data,$fetch_type);
 }
 

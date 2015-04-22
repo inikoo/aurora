@@ -956,6 +956,8 @@ function list_parts_at_date() {
 		$order='`Part Current Stock`';
 	elseif ($order=='sku')
 		$order='ISF.`Part SKU`';
+	elseif ($order=='reference')
+		$order='`Part Refence`';	
 	elseif ($order=='description')
 		$order='`Part Unit Description`';
 	elseif ($order=='locations')
@@ -990,7 +992,7 @@ function list_parts_at_date() {
 	$group='';
 
 
-	$sql=sprintf("select DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased,DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in,DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold,`Part Last Sale Date`,`Part Last Booked In Date`,`Part Last Purchase Date`,ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ",
+	$sql=sprintf("select `Part Reference`,DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased,DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in,DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold,`Part Last Sale Date`,`Part Last Booked In Date`,`Part Last Purchase Date`,ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ",
 		prepare_mysql($date),
 		prepare_mysql($date),
 		prepare_mysql($date)
@@ -1010,6 +1012,8 @@ function list_parts_at_date() {
 		$adata[]=array(
 			'locations'=>number($data['locations']),
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
+			'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part Reference']),
+
 			'description'=>$data['Part Unit Description'],
 			'description_small'=>$data['Part Unit Description'].'<br/>'.$data['Part XHTML Currently Used In'],
 			'stock'=>sprintf('<span title="%s: %s">%s</span>',_('Open Value'),number($data['stock_open']),number($data['stock'])),
