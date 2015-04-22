@@ -163,7 +163,7 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
-$smarty->assign('transaction_type',$_SESSION['state']['stock_history']['transactions']['view']);
+$smarty->assign('transaction_type',$_SESSION['state']['stock_history']['transactions']['elements']);
 
 
 
