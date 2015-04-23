@@ -1,6 +1,16 @@
 <?php
+/*
 
-$table_key=8;
+ About:
+ Autor: Raul Perusquia <raul@inikoo.com>
+ Created: 23 April 2015 16:23:51 BST, Sheffield UK
+	
+ Copyright (c) 2015, Inikoo
+
+ Version 2.0
+*/
+
+$table_key=7;
 
 $user_maps=array();
 $user_map_selected_key=0;
@@ -22,19 +32,20 @@ if($row=mysql_fetch_assoc($res)){
 		list($field,$checked)=preg_split('/\|/',$default_field);
 		switch($field){
 
-		case '`Product Family Code`':
+		case '`Product Department Code`':
 			$field_label=_('Code');
 			break;
-		case '`Product Family Name`':
+		case '`Product Department Name`':
 			$field_label=_('Name');
 			break;
-		case '`Product Family Total Acc Invoiced Amount`':
+		case '`Product Department Total Acc Invoiced Amount`':
 			$field_label=_('Sales').' ('._('all').')';
 			break;	
-		case '`Product Family 1 Year Acc Invoiced Amount`':
+		case '`Product Department 1 Year Acc Invoiced Amount`':
 			$field_label=_('Sales').' ('._('1y').')';
 			break;	
-	
+
+			
 			
 			
 		default:
@@ -51,11 +62,11 @@ if($row=mysql_fetch_assoc($res)){
 	}
 }
 
-$smarty->assign('number_export_families_fields',count($export_fields));
+$smarty->assign('number_export_departments_fields',count($export_fields));
 
-$smarty->assign('export_families_fields',$export_fields);
-$smarty->assign('export_families_map','Default');
-$smarty->assign('export_families_map_is_default',true);
+$smarty->assign('export_departments_fields',$export_fields);
+$smarty->assign('export_departments_map','Default');
+$smarty->assign('export_departments_map_is_default',true);
 
 
 ?>

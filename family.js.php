@@ -903,6 +903,33 @@ function new_deal () {
 
 function init() {
 
+ dialog_export['products'] = new YAHOO.widget.Dialog("dialog_export_products", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export['products'].render();
+    
+      
+      
+    
+    Event.addListener("export_products", "click", show_export_dialog, 'products');
+    Event.addListener("export_csv_products", "click", export_table, {
+        output: 'csv',
+        table: 'products',
+        parent: 'family',
+        'parent_key': Dom.get('family_key').value
+    });
+    Event.addListener("export_xls_products", "click", export_table, {
+        output: 'xls',
+        table: 'products',
+        parent: 'family',
+        'parent_key': Dom.get('family_key').value
+    });
+    
+   
+
     get_sales(Dom.get('from').value, Dom.get('to').value)
 
     //get_product_element_numbers()

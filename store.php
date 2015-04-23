@@ -512,6 +512,7 @@ $smarty->assign('page_elements_type',$_SESSION['state']['store']['pages']['eleme
 
 include_once 'products_export_common.php';
 include_once 'families_export_common.php';
+include_once 'departments_export_common.php';
 
 $sales_max_sample_domain=1;
 
