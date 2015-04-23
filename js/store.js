@@ -2765,7 +2765,7 @@ function init() {
         parent: 'store',
         'parent_key': Dom.get('store_key').value
     });
-    Event.addListener("export_xlsproducts", "click", export_table, {
+    Event.addListener("export_xls_products", "click", export_table, {
         output: 'xls',
         table: 'products',
         parent: 'store',
