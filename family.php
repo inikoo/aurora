@@ -83,7 +83,7 @@ $css_files=array(
 	'css/table.css',
 	'css/edit.css',
 	'css/calendar.css',
-		'css/d3_calendar.css',
+	'css/d3_calendar.css',
 
 	'theme.css.php'
 );
@@ -106,7 +106,7 @@ $js_files=array(
 	'js/edit_common.js',
 	'js/assets_common.js',
 	'js/search.js',
-
+	'js/export_common.js',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
@@ -464,6 +464,8 @@ if ($family->data['Product Family Max Day Sales']>0) {
 }
 
 $smarty->assign('sales_max_sample_domain',$sales_max_sample_domain);
+
+include_once 'products_export_common.php';
 
 $smarty->display('family.tpl');
 

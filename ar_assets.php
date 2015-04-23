@@ -318,7 +318,7 @@ function list_departments() {
 	global $user,$corporate_currency;
 
 	if (isset( $_REQUEST['parent_key']) and  is_numeric( $_REQUEST['parent_key']))
-		$store_id=$_REQUEST['parent_key'];
+		$parent_key=$_REQUEST['parent_key'];
 	else {
 		exit();
 
@@ -431,31 +431,11 @@ function list_departments() {
 	$_SESSION['state'][$conf_table]['departments']['period']=$period;
 	$_SESSION['state'][$conf_table]['departments']['avg']=$avg;
 
-	if (count($user->stores)==0)
-		$where="where false";
-	else {
 
-		switch ($parent) {
-		case('store'):
-			if (in_array($store_id,$user->stores))
-				$where=sprintf("where  `Product Department Store Key`=%d",$store_id);
-			else
-				$where=sprintf("where  false");
-			break;
-		default:
-
-			$where=sprintf("where `Product Department Store Key` in (%s)",join(',',$user->stores));
-
-		}
-	}
-
-	$filter_msg='';
-	$wheref=wheref_departments($f_field,$f_value);
+	include_once('splinters/departments_prepare_list.php');
 
 
-
-	$sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
-
+	$sql="select count(*) as total from $table $where $wheref";
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res)) {
 		$total=$row['total'];
@@ -465,7 +445,7 @@ function list_departments() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Product Department Dimension`   $where ";
+		$sql="select count(*) as total from $table $where ";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -609,7 +589,7 @@ function list_departments() {
          sum(`Product Department Stock Value`)stock_value,sum(`Product Department Surplus Availability Products`)surplus,sum(`Product Department Optimal Availability Products`) optimal,
          sum(`Product Department Low Availability Products`) low,sum(`Product Department Critical Availability Products`) critical,
          sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families
-         from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref ";
+         from $table $where $wheref ";
 	$result=mysql_query($sql);
 	//print $sql;
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -634,7 +614,7 @@ function list_departments() {
 	$sum_total_sales=0;
 	$sum_month_sales=0;
 	$sql="select  max(`Product Department $period_tag Acc Days Available`) as 'Product Department $period_tag Acc Days Available',max(`Product Department $period_tag Acc Days On Sale`) as 'Product Department $period_tag Acc Days On Sale', sum(if(`Product Department $period_tag Acc Profit`<0,`Product Department $period_tag Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department $period_tag Acc Profit`>=0,`Product Department $period_tag Acc Profit`,0)) as total_profit_plus,sum(`Product Department $period_tag Acc Invoiced Amount`) as sum_total_sales
-	from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref  ";
+	from $table $where $wheref  ";
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -681,7 +661,7 @@ function list_departments() {
 
 
 
-	$sql="select *  from `Product Department Dimension` PDD left join `Product Department Data Dimension` D on (PDD.`Product Department Key`=D.`Product Department Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select * from $table $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 	$adata=array();
@@ -1068,13 +1048,13 @@ function list_products() {
 		$avg=$_REQUEST['avg'];
 	} else
 		$avg=$conf['avg'];
-		
-		
-		if (isset( $_REQUEST['avg_reorder'])) {
+
+
+	if (isset( $_REQUEST['avg_reorder'])) {
 		$avg_reorder=$_REQUEST['avg_reorder'];
 	} else
 		$avg_reorder=$conf['avg_reorder'];
-		
+
 
 	if (isset( $_REQUEST['period'])) {
 		$period=$_REQUEST['period'];
@@ -1530,48 +1510,48 @@ function list_products() {
 
 
 		}
-		
-		
-		
-		
-			if ($avg_reorder=='totals')
-				$factor=1;
-			elseif ($avg_reorder=='month') {
-				if ($row["Product $db_interval Acc Days On Sale"]>0)
-					$factor=30.4368499/$row["Product $db_interval Acc Days On Sale"];
-				else
-					$factor='ND';
-			}
-			elseif ($avg_reorder=='week') {
-				if ($row["Product $db_interval Acc Days On Sale"]>0)
-					$factor=7/$row["Product $db_interval Acc Days On Sale"];
-				else
-					$factor='ND';
-			}
-			elseif ($avg_reorder=='month_eff') {
-				if ($row["Product $db_interval Acc Days Available"]>0)
-					$factor=30.4368499/$row["Product $db_interval Acc Days Available"];
-				else
-					$factor='ND';
-			}
-			elseif ($avg_reorder=='week_eff') {
-				if ($row["Product $db_interval Acc Days Available"]>0)
-					$factor=7/$row["Product $db_interval Acc Days Available"];
-				else
-					$factor='ND';
-			}
 
-			if ($factor=='ND') {
-				$sales_reorder=_('ND');
-				$sold_reorder=_('ND');
-			} else {
-				$sales_reorder=($row["Product $db_interval Acc Invoiced Amount"]*$factor);
-				$sold_reorder=$row["Product $db_interval Acc Quantity Invoiced"]*$factor;
-			}
 
-		
-		
-		
+
+
+		if ($avg_reorder=='totals')
+			$factor=1;
+		elseif ($avg_reorder=='month') {
+			if ($row["Product $db_interval Acc Days On Sale"]>0)
+				$factor=30.4368499/$row["Product $db_interval Acc Days On Sale"];
+			else
+				$factor='ND';
+		}
+		elseif ($avg_reorder=='week') {
+			if ($row["Product $db_interval Acc Days On Sale"]>0)
+				$factor=7/$row["Product $db_interval Acc Days On Sale"];
+			else
+				$factor='ND';
+		}
+		elseif ($avg_reorder=='month_eff') {
+			if ($row["Product $db_interval Acc Days Available"]>0)
+				$factor=30.4368499/$row["Product $db_interval Acc Days Available"];
+			else
+				$factor='ND';
+		}
+		elseif ($avg_reorder=='week_eff') {
+			if ($row["Product $db_interval Acc Days Available"]>0)
+				$factor=7/$row["Product $db_interval Acc Days Available"];
+			else
+				$factor='ND';
+		}
+
+		if ($factor=='ND') {
+			$sales_reorder=_('ND');
+			$sold_reorder=_('ND');
+		} else {
+			$sales_reorder=($row["Product $db_interval Acc Invoiced Amount"]*$factor);
+			$sold_reorder=$row["Product $db_interval Acc Quantity Invoiced"]*$factor;
+		}
+
+
+
+
 
 		if ($db_interval=='Total' or $db_interval=='3 Year') {
 
@@ -1747,9 +1727,9 @@ function list_products() {
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Valid To']." +00:00")):''),
 			'last_update'=>($row['Product Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Last Updated']." +00:00"))),
 			"package_type"=>$package_type,
-			
 
-			
+
+
 			"package_weight"=>weight($row['Product Package Weight'],'Kg',3,false,true),
 			"package_dimension"=>$row['Product Package XHTML Dimensions'],
 			"package_volume"=>volume($row['Product Package Dimensions Volume']),
@@ -2104,69 +2084,8 @@ function list_families() {
 	$_SESSION['state'][$conf_table]['families']['elements']=$elements;
 	$_SESSION['state'][$conf_table]['families']['parent']=$parent;
 
-	//  $where.=" and `Product Department Key`=".$id;
-	//print $conf_table;
-	//print_r($_SESSION['state'][$conf_table]['families']);
 
-
-	switch ($parent) {
-	case('store'):
-
-		$where=sprintf(' where `Product Family Store Key`=%d',$parent_key);
-		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`)';
-		break;
-	case('department'):
-
-		$where=sprintf(' where `Product Family Main Department Key`=%d',$parent_key);
-		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`)';
-
-		break;
-	case('category'):
-
-		$where=sprintf(' where `Category Key`=%d',$parent_key);
-		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`) left join `Category Bridge` on (`Subject`="Family" and `Subject Key`=`Product Family Key`)';
-
-		break;
-
-	default:
-		if (count($user->stores)==0)
-			$where="where false";
-		else {
-
-			$where=sprintf("where `Product Family Store Key` in (%s) ",join(',',$user->stores));
-		}
-		$table='`Product Family Dimension` F left join `Product Family Data Dimension` FD on (FD.`Product Family Key`=F.`Product Family Key`)';
-
-
-	}
-
-
-	$_elements='';
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and `Product Family Record Type` in ('.$_elements.')' ;
-	}
-
-
-
-
-
-	//print $where;
-
-
-
-	$filter_msg='';
-	$wheref='';
-	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and `Product Family Code`  like '".addslashes($f_value)."%'";
-	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and `Product Family Name`  like '%".addslashes($f_value)."%'";
+	include_once 'splinters/families_prepare_list.php';
 
 	$sql="select count(*) as total from $table $where $wheref";
 

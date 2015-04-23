@@ -1110,6 +1110,61 @@ function new_deal () {
 }
 
 function init() {
+
+  dialog_export['products'] = new YAHOO.widget.Dialog("dialog_export_products", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export['products'].render();
+    
+    dialog_export['families'] = new YAHOO.widget.Dialog("dialog_export_families", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export['families'].render();
+    
+      
+    
+    Event.addListener("export_products", "click", show_export_dialog, 'products');
+    Event.addListener("export_csv_products", "click", export_table, {
+        output: 'csv',
+        table: 'products',
+        parent: 'department',
+        'parent_key': Dom.get('department_key').value
+    });
+    Event.addListener("export_xls_products", "click", export_table, {
+        output: 'xls',
+        table: 'products',
+        parent: 'department',
+        'parent_key': Dom.get('department_key').value
+    });
+    
+        Event.addListener("export_families", "click", show_export_dialog, 'families');
+    Event.addListener("export_csv_families", "click", export_table, {
+        output: 'csv',
+        table: 'families',
+        parent: 'department',
+        'parent_key': Dom.get('department_key').value
+    });
+    Event.addListener("export_xls_families", "click", export_table, {
+        output: 'xls',
+        table: 'families',
+        parent: 'department',
+        'parent_key': Dom.get('department_key').value
+    });
+   
+    
+
+
+    Event.addListener("export_result_download_link_products", "click", download_export_file, 'products');
+
+
+
+
     get_sales(Dom.get('from').value, Dom.get('to').value)
 
     //get_product_element_numbers()

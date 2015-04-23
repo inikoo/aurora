@@ -292,7 +292,9 @@
 </div>
 <div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	<div class="data_table" style="clear:both;">
-		<span class="clean_table_title">{t}Departments{/t} <img class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+		<span class="clean_table_title">{t}Departments{/t} 
+	<img id="export_departments" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
+		</span> 
 		<div class="table_top_bar">
 		</div>
 		<input type="hidden" id="departments_view" value="{$department_view}"> 
@@ -323,7 +325,9 @@
 </div>
 <div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	<div class="data_table" style="margin:0px;clear:both">
-		<span class="clean_table_title">{t}Families{/t} <img id="export_csv1" tipo="families_in_department" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+		<span class="clean_table_title">{t}Families{/t} 
+	<img id="export_families" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
+		</span> 
 		<div class="elements_chooser">
 			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.NoSale}selected{/if} label_family_products_nosale" id="elements_family_nosale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_NoSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinued}selected{/if} label_family_products_discontinued" id="elements_family_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinuing}selected{/if} label_family_products_discontinued" id="elements_family_discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_Discontinuing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.Normal}selected{/if} label_family_products_normal" id="elements_family_normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.InProcess}selected{/if} label_family_products_inprocess" id="elements_family_inprocess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_InProcess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 		</div>
@@ -356,7 +360,9 @@
 	</div>
 </div>
 <div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-	<span class="clean_table_title">{t}Products{/t} <img id="export_products" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> </span> 
+	<span class="clean_table_title">{t}Products{/t} 
+	<img id="export_products" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
+	</span> 
 	<div class="elements_chooser">
 		<img class="menu" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 		<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
@@ -678,4 +684,9 @@
 		</tbody>
 	</table>
 </div>
-{include file='assert_elements_splinter.tpl'} {include file='notes_splinter.tpl'} {include file='export_splinter.tpl' id='products' export_fields=$export_products_fields map=$export_products_map is_map_default={$export_products_map_is_default}} {include file='export_splinter.tpl' id='families' export_fields=$export_families_fields map=$export_families_map is_map_default={$export_families_map_is_default}} {include file='footer.tpl'} 
+{include file='assert_elements_splinter.tpl'} {include file='notes_splinter.tpl'} 
+{include file='export_splinter.tpl' id='products' export_fields=$export_products_fields map=$export_products_map is_map_default={$export_products_map_is_default}} 
+{include file='export_splinter.tpl' id='families' export_fields=$export_families_fields map=$export_families_map is_map_default={$export_families_map_is_default}}
+{include file='export_splinter.tpl' id='departments' export_fields=$export_departments_fields map=$export_departments_map is_map_default={$export_departments_map_is_default}}
+
+ {include file='footer.tpl'} 

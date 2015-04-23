@@ -234,7 +234,9 @@
 </div>
 		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 	<div class="data_table" style="margin-top:10px;clear:both">
-		<span id="table_title" class="clean_table_title">{t}Products{/t} <img id="export_csv0" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
+		<span id="table_title" class="clean_table_title">{t}Products{/t} 
+	            <img id="export_products" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
+		</span> 
 		<div class="elements_chooser">
 			<img class="menu" id="product_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 			<div id="product_type_chooser" style="{if $elements_product_elements_type!='type'}display:none{/if}">
@@ -422,4 +424,7 @@
 		</tbody>
 	</table>
 </div>
-{include file='assert_elements_splinter.tpl'} {include file='notes_splinter.tpl'} {include file='footer.tpl'} 
+{include file='assert_elements_splinter.tpl'}
+{include file='export_splinter.tpl' id='products' export_fields=$export_products_fields map=$export_products_map is_map_default={$export_products_map_is_default}} 
+
+{include file='notes_splinter.tpl'} {include file='footer.tpl'} 

@@ -49,7 +49,7 @@ function export($data) {
 		'fetch_type'=>$fetch_type
 	);
 
-//	print_r($export_data);
+	// print_r($export_data);
 
 	list($fork_key,$msg)=new_fork('export',$export_data,$account_code);
 
@@ -98,10 +98,10 @@ function get_sql_query($data) {
 		break;
 	case 'part_locations':
 		return part_locations_sql_query($data);
-		break;	
+		break;
 	case 'dn':
 		return dn_sql_query($data);
-		break; 
+		break;
 	case 'part_stock_historic':
 		return part_stock_historic_sql_query($data);
 		break;
@@ -139,7 +139,7 @@ function part_stock_historic_sql_query($data) {
 	$data['fields']=preg_replace('/stock/','sum(`Quantity On Hand`) as  `'._('Stock').'`',$data['fields']);
 	$data['fields']=preg_replace('/commercial_value/','sum(`Value Commercial`) as  `'._('Commercial value').'`',$data['fields']);
 	$data['fields']=addslashes($data['fields']);
-	
+
 	$data['fields']=preg_replace('/delta_last_sold/',sprintf('DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold',prepare_mysql($data['date'])),$data['fields']);
 	$data['fields']=preg_replace('/delta_last_booked_in/',sprintf('DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in',prepare_mysql($data['date'])),$data['fields']);
 	$data['fields']=preg_replace('/delta_last_purchased/',sprintf('DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased',prepare_mysql($data['date'])),$data['fields']);
@@ -359,10 +359,10 @@ function locations_sql_query($data) {
 	}elseif ($parent=='warehouse_area') {
 		$conf_node='warehouse_area';
 	}
-	
+
 	$conf=$_SESSION['state'][$conf_node]['locations'];
 
-//	$elements_type=$conf['elements'];
+	// $elements_type=$conf['elements'];
 
 	$elements=$conf['elements'];
 	$f_field=$conf['f_field'];
@@ -392,10 +392,10 @@ function part_locations_sql_query($data) {
 	}elseif ($parent=='warehouse_area') {
 		$conf_node='warehouse_area';
 	}
-	
+
 	$conf=$_SESSION['state'][$conf_node]['part_locations'];
 
-//	$elements_type=$conf['elements'];
+	// $elements_type=$conf['elements'];
 
 	//$elements=$conf['elements'];
 	$f_field=$conf['f_field'];
@@ -415,16 +415,16 @@ function part_locations_sql_query($data) {
 
 function products_sql_query($data) {
 
-global $inikoo_public_url;
+	global $inikoo_public_url;
 
 	global $user;
 	$fetch_type='simple';
 
 	$parent_key=$data['parent_key'];
 	$parent=$data['parent'];
-	
-	
-		if ($parent=='store') {
+
+
+	if ($parent=='store') {
 		$conf_table='store';
 	}
 	elseif ($parent=='department') {
@@ -437,12 +437,12 @@ global $inikoo_public_url;
 		$conf_table='stores';
 	}elseif ($parent=='category') {
 		$conf_table='product_categories';
-	}else{
+	}else {
 		exit('');
 	}
-	
-	
-	
+
+
+
 	$conf=$_SESSION['state'][$conf_table]['products'];
 
 	$elements_type=$conf['elements_type'];
@@ -454,14 +454,98 @@ global $inikoo_public_url;
 
 	include_once 'splinters/products_prepare_list.php';
 
-	$sql_count="select count(Distinct P.`Product ID`) as num from $table $where $wheref limit 5000";
+	$sql_count="select count(Distinct P.`Product ID`) as num from $table $where $wheref";
 	$fields=addslashes($data['fields']);
-	
-	
-		$fields=preg_replace('/`Image URL`/','CONCAT("'.$inikoo_public_url.'public_image?id=",`Product Main Image Key`)',$fields);
 
-	
-	
+
+	$fields=preg_replace('/`Image URL`/','CONCAT("'.$inikoo_public_url.'public_image?id=",`Product Main Image Key`)',$fields);
+
+
+
+	$sql_data="select $fields from $table $where $wheref ";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}
+
+function families_sql_query($data) {
+
+	global $inikoo_public_url;
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+
+	if ($parent=='store') {
+		$conf_table='store';
+	}elseif ($parent=='department') {
+		$conf_table='department';
+	}elseif ($parent=='none') {
+		$conf_table='stores';
+	}else {
+		exit('');
+	}
+
+
+
+	$conf=$_SESSION['state'][$conf_table]['families'];
+
+//	$elements_type=$conf['elements_type'];
+
+	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	include_once 'splinters/families_prepare_list.php';
+
+	$sql_count="select count(Distinct F.`Product Family Key`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+
+
+	$sql_data="select $fields from $table $where $wheref ";
+
+	return array($sql_count,$sql_data,$fetch_type);
+}
+
+function departments_sql_query($data) {
+
+	global $inikoo_public_url;
+
+	global $user;
+	$fetch_type='simple';
+
+	$parent_key=$data['parent_key'];
+	$parent=$data['parent'];
+
+
+	if ($parent=='store') {
+		$conf_table='store';
+	}elseif ($parent=='none') {
+		$conf_table='stores';
+	}else {
+		exit('');
+	}
+
+
+
+	$conf=$_SESSION['state'][$conf_table]['departments'];
+
+//	$elements_type=$conf['elements_type'];
+
+//	$elements=$conf['elements'];
+	$f_field=$conf['f_field'];
+	$f_value=$conf['f_value'];
+	$awhere='';
+
+	include_once 'splinters/departments_prepare_list.php';
+
+	$sql_count="select count(Distinct D.`Product Department Key`) as num from $table $where $wheref";
+	$fields=addslashes($data['fields']);
+
+
 	$sql_data="select $fields from $table $where $wheref ";
 
 	return array($sql_count,$sql_data,$fetch_type);

@@ -12,7 +12,7 @@
  Version 2.0
 */
 include_once 'common.php';
-include_once('common_date_functions.php');
+include_once 'common_date_functions.php';
 
 include_once 'class.Store.php';
 include_once 'class.Department.php';
@@ -65,11 +65,13 @@ $smarty->assign('store_key',$store->id);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
-	
+include_once 'products_export_common.php';
+include_once 'families_export_common.php';
 
-if(isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('details','sales','categories','families','products','deals','web')) ){
 
-$_SESSION['state']['department']['block_view']=$_REQUEST['block_view'];
+if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('details','sales','categories','families','products','deals','web')) ) {
+
+	$_SESSION['state']['department']['block_view']=$_REQUEST['block_view'];
 }
 
 $block_view=$_SESSION['state']['department']['block_view'];
@@ -106,13 +108,14 @@ $js_files=array(
 	'js/edit_common.js',
 	'js/assets_common.js',
 	'js/search.js',
-	
+	'js/export_common.js',
+
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
 	'js/asset_elements.js',
-		'js/d3.v3.min.js',
+	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
 	'department.js.php'
 
@@ -503,7 +506,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }

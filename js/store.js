@@ -722,6 +722,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         ];
 
         request = "ar_assets.php?tipo=families&sf=0&parent=store&parent_key=" + Dom.get('store_key').value + "&tableid=" + tableid;
+      //  alert(request)
         this.dataSource1 = new YAHOO.util.DataSource(request);
         this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource1.connXhrMode = "queueRequests";
@@ -2758,6 +2759,24 @@ function init() {
         draggable: false
     });
     dialog_export['products'].render();
+    
+    dialog_export['families'] = new YAHOO.widget.Dialog("dialog_export_families", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export['families'].render();
+    
+    dialog_export['departments'] = new YAHOO.widget.Dialog("dialog_export_departments", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export['departments'].render();
+    
+    
     Event.addListener("export_products", "click", show_export_dialog, 'products');
     Event.addListener("export_csv_products", "click", export_table, {
         output: 'csv',
@@ -2771,6 +2790,36 @@ function init() {
         parent: 'store',
         'parent_key': Dom.get('store_key').value
     });
+    
+        Event.addListener("export_families", "click", show_export_dialog, 'families');
+    Event.addListener("export_csv_families", "click", export_table, {
+        output: 'csv',
+        table: 'families',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    Event.addListener("export_xls_families", "click", export_table, {
+        output: 'xls',
+        table: 'families',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    
+        Event.addListener("export_departments", "click", show_export_dialog, 'departments');
+    Event.addListener("export_csv_departments", "click", export_table, {
+        output: 'csv',
+        table: 'departments',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    Event.addListener("export_xls_departments", "click", export_table, {
+        output: 'xls',
+        table: 'departments',
+        parent: 'store',
+        'parent_key': Dom.get('store_key').value
+    });
+    
+    
 
 
     Event.addListener("export_result_download_link_products", "click", download_export_file, 'products');
