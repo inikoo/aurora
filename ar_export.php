@@ -458,11 +458,11 @@ global $inikoo_public_url;
 	$fields=addslashes($data['fields']);
 	
 	
-		$fields=preg_replace('/`Image UR`/','CONCAT("'.$inikoo_public_url.'public_image?id=",`Product Main Image Key`)',$fields);
+		$fields=preg_replace('/`Image URL`/','CONCAT("'.$inikoo_public_url.'public_image?id=",`Product Main Image Key`)',$fields);
 
 	
 	
-	$sql_data="select $fields from $table $where $wheref limit 5000";
+	$sql_data="select $fields from $table $where $wheref ";
 
 	return array($sql_count,$sql_data,$fetch_type);
 }

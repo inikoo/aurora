@@ -70,7 +70,14 @@ CREATE TABLE IF NOT EXISTS `Voucher Order Bridge` (
 //Order Transaction Deal Bridge: add Deal Component Key to primary key!!!!! do it manually in phpmuyadmin
 //NOW that can be more than one Transaction Deal Bridge check oif adding discuanst manually actually worls plis
 
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Items Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Items Amount`;
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Shipping Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Shipping Amount`;
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Charges Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Charges Amount`;
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Insurance Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Insurance Amount`;
+ALTER TABLE `Order Dimension` ADD `Order Invoiced Items Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Order Invoiced Items Amount`;
 
+
+UPDATE `dw`.`Table Dimension` SET `Table Export Fields` = '`Product Main Department Code`|1,`Product Family Code`|1,P.`Product ID`|1,`Product Code`|1,`Product Name`|1,`Product Price`|1,`Product RRP`|1,Image URL|0,`Product Tariff Code`|0,`Product Duty Rate`|0,`Product Total Acc Invoiced Amount`|0,`Product 1 Year Acc Invoiced Amount`|0' WHERE `Table Dimension`.`Table Key` = 9; 
 
 
 
