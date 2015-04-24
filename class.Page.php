@@ -741,8 +741,8 @@ class Page extends DB_Table {
 			if (array_key_exists($field,$base_data)) {
 
 				if ($value!=$this->data[$field]) {
-				
-				
+
+
 
 					$this->update_field($field,$value,$options);
 				}
@@ -4912,8 +4912,8 @@ class Page extends DB_Table {
 		return $products;
 
 	}
-	
-		function get_offer_badges() {
+
+	function get_offer_badges() {
 
 		$badges=array();
 
@@ -4943,6 +4943,28 @@ class Page extends DB_Table {
 
 	}
 
+
+	function refresh_cache() {
+	global $account_code,$memcache_ip;
+
+
+		$site=new Site($this->data['Page Site Key']);
+		if ($site->data['Site SSL']=='Yes') {
+			$site_protocol='https';
+		}else {
+			$site_protocol='http';
+		}
+		$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$this->id."&sk=x");
+
+		$mem = new Memcached();
+		$mem->addServer($memcache_ip, 11211);
+
+		$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$this->data['Page Code']), $this->id, 172800);
+		$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($this->data['Page Code'])), $this->id, 172800);
+
+		return $template_response;
+
+	}
 
 }
 

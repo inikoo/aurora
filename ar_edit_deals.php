@@ -91,7 +91,8 @@ case('edit_campaign_state'):
 
 case('update_deal_metadata'):
 	$data=prepare_values($_REQUEST, array(
-			'name'=>array('type'=>'string'),
+			'terms_label'=>array('type'=>'string'),
+			'allowances_label'=>array('type'=>'string'),
 			'terms'=>array('type'=>'string'),
 			'allowances'=>array('type'=>'string'),
 			'deal_metadata_key'=>array('type'=>'key'),
@@ -490,13 +491,39 @@ function update_deal_metadata($data) {
 
 	$deal_metadata=new DealComponent($data['deal_metadata_key']);
 
-	$deal_metadata->update_field_switcher('Deal Component Name', $data['name']);
+	$deal_metadata->update_field_switcher('Deal Component XHTML Allowance Description Label', $data['allowances_label']);
+	$deal_metadata->update_field_switcher('Deal Component XHTML Terms Description Label', $data['terms_label']);
+
+
+
 
 	$deal_metadata->update_terms_allowances(array(
 			'Terms'=>$data['terms'],
 			'Allowances'=>$data['allowances'])
 	);
 	if (!$deal_metadata->error) {
+	
+	
+		switch ($deal_metadata->data['Deal Component Allowance Target']) {
+		    case 'Family':
+		        $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d  ",
+		        $deal_metadata->data['Deal Component Allowance Target Key']
+		        );
+		        $res=mysql_query($sql);
+		        while($row=mysql_fetch_assoc($res)){
+		        	$page=new Page($row['Page Key']);
+		        	$page->refresh_cache();
+		        }
+		        
+		        
+		        break;
+		    default:
+		        
+		        break;
+		}
+
+	
+	
 		$response= array('state'=>200,
 			'updated'=>$deal_metadata->updated,
 			'deal_metadata_key'=>$deal_metadata->id,
@@ -972,9 +999,9 @@ function list_deals_for_edition() {
 		$order='DM.`Deal Component Name`';
 
 
-	$sql="select `Deal Term Allowances Label`,`Deal Code`,`Deal Number Active Components`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
+	$sql="select DM.`Deal Component XHTML Allowance Description Label`,DM.`Deal Component XHTML Terms Description Label`,`Deal Term Allowances Label`,`Deal Code`,`Deal Number Active Components`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
  	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Component Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
+//	print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
 	$adata=array();
@@ -1072,7 +1099,7 @@ function list_deals_for_edition() {
 
 		);
 
-		if ($row['Deal Number Active Components']==1) {
+//		if ($row['Deal Number Active Components']==1) {
 
 			$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
 
@@ -1082,7 +1109,11 @@ function list_deals_for_edition() {
 
 			);
 
-		}
+	//	}
+	
+	if ($row['Deal Number Active Components']>1) {
+			$name.=sprintf('<img src="art/icons/bullet_error.png"  title="%s" />',_('Editing this will affect other allowances'));
+	}
 
 		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span> <img style='cursor:pointer' onClick='deal_show_edit_state(this,".$deal_metadata->id.",\"".$deal_metadata->data['Deal Component Status']."\")'  src='art/icons/edit.gif'>";
 		$status.= '<div style="margin-top:10px;margin-left:0px;display:none" id="suspend_deal_button'.$deal_metadata->id.'"  class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative" style="margin-left:0"> '._("Suspend").'</button></div>';
@@ -1096,7 +1127,12 @@ function list_deals_for_edition() {
 			'code'=>$row['Deal Code'],
 			'term_allowances_label'=>$row['Deal Term Allowances Label'],
 			'name'=>$name,
-			'description'=>'<span id="deal_metadata_description_'.$deal_metadata->id.'" style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input onKeyUp="deal_metadata_description_changed('.$deal_metadata->id.')"  id="deal_metadata_description_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Component Name'].'"  ovalue="'.$row['Deal Component Name'].'"  /><br/>'.$edit,
+			'description'=>'<span id="deal_metadata_description_'.$deal_metadata->id.'" style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/>
+			<table>
+			<tr><td>'._('Terms').': </td><td><input onKeyUp="deal_metadata_description_changed(\'terms\','.$deal_metadata->id.')"  id="deal_metadata_terms_label_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Component XHTML Terms Description Label'].'"  ovalue="'.$row['Deal Component XHTML Terms Description Label'].'"  /></td></tr>
+			<tr><td>'._('Allowances').': </td><td><input onKeyUp="deal_metadata_description_changed(\'allowances\','.$deal_metadata->id.')"  id="deal_metadata_allowances_label_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Component XHTML Allowance Description Label'].'"  ovalue="'.$row['Deal Component XHTML Allowance Description Label'].'"  /></td></tr>
+			</table>
+			'.$edit,
 			'dates'=>''
 
 
@@ -1194,6 +1230,26 @@ function update_deal_metadata_status($data) {
 			$state=$row['Deal Status'];
 		}
 
+
+		switch ($deal_metadata->data['Deal Component Allowance Target']) {
+		    case 'Family':
+		        $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d  ",
+		        $deal_metadata->data['Deal Component Allowance Target Key']
+		        );
+		        $res=mysql_query($sql);
+		        while($row=mysql_fetch_assoc($res)){
+		        	$page=new Page($row['Page Key']);
+		        	$page->refresh_cache();
+		        }
+		        
+		        
+		        break;
+		    default:
+		        
+		        break;
+		}
+
+
 		$response=array(
 			'state'=>200,
 			'msg'=>'ok',
@@ -1273,6 +1329,10 @@ function update_deal_status($data) {
 		default:
 			$state=sprintf('<span id="deal_state_%d">%s</span>',$row['Deal Key'],$row['Deal Status']);
 		}
+
+
+
+
 
 
 		$response=array(

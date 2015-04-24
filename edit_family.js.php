@@ -319,7 +319,7 @@ function activate_deal_metadata(deal_metadata_key){
 	var request='ar_edit_deals.php?tipo=update_deal_metadata_status&value=Active&deal_metadata_key=' + deal_metadata_key
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    		   	//    alert(o.responseText)
+		    		   	//  alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    
 		    if(r.state==200){
@@ -335,7 +335,7 @@ function suspend_deal_metadata(deal_metadata_key){
 	var request='ar_edit_deals.php?tipo=update_deal_metadata_status&value=Suspended&deal_metadata_key=' + deal_metadata_key
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    		   	    alert(o.responseText)
+		    		   	//    alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		   
 		    if(r.state==200){
@@ -357,7 +357,7 @@ function fill_edit_deal_form(deal_key){
 		//alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    		   	    alert(o.responseText)
+		    		   	 //   alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    //  alert(r.state)
 		    if(r.state==200){
@@ -387,7 +387,9 @@ deal_save(deal_key,'allowance');
 
 function save_metadata_deal(key) {
 
-    var request = 'tipo=update_deal_metadata&deal_metadata_key=' + key + '&name=' + encodeURIComponent(Dom.get('deal_metadata_description_input' + key).value) + '&terms=' + encodeURIComponent(Dom.get('deal_term' + key).value) + '&allowances=' + encodeURIComponent(Dom.get('deal_allowance' + key).value)
+    var request = 'tipo=update_deal_metadata&deal_metadata_key=' + key + '&terms_label=' + encodeURIComponent(Dom.get('deal_metadata_terms_label_input' + key).value) +'&allowances_label=' + encodeURIComponent(Dom.get('deal_metadata_allowances_label_input' + key).value) + '&terms=' + encodeURIComponent(Dom.get('deal_term' + key).value) + '&allowances=' + encodeURIComponent(Dom.get('deal_allowance' + key).value)
+//  alert('ar_edit_deals.php?'+request)
+  
     YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_deals.php', {
         success: function(o) {
             //alert(o.responseText);
@@ -484,30 +486,30 @@ function deal_term_reset(deal_key){
 }
 
 
-function deal_metadata_description_changed(deal_metadata_key){
-old_value=Dom.get('deal_metadata_description_input'+deal_metadata_key).getAttribute('ovalue');
-    new_value=Dom.get('deal_metadata_description_input'+deal_metadata_key).value;
-    
-    
-     if(old_value!=new_value){
-	Dom.removeClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
-if(new_value=='')
-		Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
-else
-	Dom.removeClass('save_metadata_deal'+deal_metadata_key,'disabled')
+function deal_metadata_description_changed(label,deal_metadata_key) {
+
+//alert('deal_metadata_'+label+'_label_input' + deal_metadata_key)
+    old_value = Dom.get('deal_metadata_'+label+'_label_input' + deal_metadata_key).getAttribute('ovalue');
+    new_value = Dom.get('deal_metadata_'+label+'_label_input' + deal_metadata_key).value;
 
 
+    if (old_value != new_value) {
+        Dom.removeClass('cancel_metadata_deal' + deal_metadata_key, 'disabled')
+        if (new_value == '') Dom.addClass('save_metadata_deal' + deal_metadata_key, 'disabled')
+        else Dom.removeClass('save_metadata_deal' + deal_metadata_key, 'disabled')
+
+
+
+
+    } else {
+
+        Dom.addClass('save_metadata_deal' + deal_metadata_key, 'disabled')
+        Dom.addClass('cancel_metadata_deal' + deal_metadata_key, 'disabled')
+    }
 
 
 }
-else{
 
-Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
-		Dom.addClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
-}
-
-
-}
 
 function deal_show_edit_state(o, id, tag) {
 
