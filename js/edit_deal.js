@@ -406,7 +406,6 @@ function edit_component_state(deal_component_key, state) {
             } else {
 
             }
-            Dom.get('send_reset_password_msg').innerHTML = r.msg;
 
         }
     });

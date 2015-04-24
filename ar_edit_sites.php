@@ -649,7 +649,7 @@ function publish_page_elements($data) {
 
 
 function refresh_cache_page($data) {
-	global $account_code,$memcache_ip;
+
 	$page=new Page($data['page_key']);
 
 	if (!$page->id) {
@@ -657,22 +657,8 @@ function refresh_cache_page($data) {
 		echo json_encode($response);
 		return;
 	}
-
-	$site=new Site($page->data['Page Site Key']);
-	if ($site->data['Site SSL']=='Yes') {
-		$site_protocol='https';
-	}else {
-		$site_protocol='http';
-	}
-	$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
-
-	$mem = new Memcached();
-	$mem->addServer($memcache_ip, 11211);
-
-	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.$page->data['Page Code']), $page->id, 172800);
-	$mem->set('ECOMP'.md5($account_code.$site->id.'/'.strtolower($page->data['Page Code'])), $page->id, 172800);
-
-
+	
+	$template_response=$page->refresh_smarty_cache();
 	$response= array('state'=>200,'template_response'=>$template_response);
 	echo json_encode($response);
 
