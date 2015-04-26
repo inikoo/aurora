@@ -13,7 +13,6 @@
 if (!isset($inikoo_account))exit;
 
 
-$order->update_no_normal_totals('save');
 $js_files[]='js/php.default.min.js';
 $js_files[]='js/add_payment.js';
 $js_files[]='js/common_order_not_dispatched.js?141007';

@@ -2442,11 +2442,10 @@ function add_voucher_to_order($data) {
 	$voucher->update_usage();
 	$order->update_discounts_items();
 
-	$order->update_item_totals_from_order_transactions();
+	$order->update_totals();
 	$order->update_discounts_no_items();
-	$order->update_no_normal_totals();
-	$order->update_item_totals_from_order_transactions();
-	$order->update_totals_from_order_transactions();
+	$order->update_totals();
+	
 	$order->update_number_items();
 	$order->update_number_products();
 
@@ -2591,12 +2590,11 @@ function remove_voucher_from_order($data) {
 	$voucher->update_usage();
 	$order->update_discounts_items();
 
-	$order->update_item_totals_from_order_transactions();
+		$order->update_totals();
 
 	$order->update_discounts_no_items();
-	$order->update_no_normal_totals();
-	$order->update_item_totals_from_order_transactions();
-	$order->update_totals_from_order_transactions();
+		$order->update_totals();
+
 	$order->update_number_items();
 	$order->update_number_products();
 

@@ -842,62 +842,7 @@ function list_transactions_in_invoice() {
 	}
 
 
-	/*
-        $invoice=new Invoice($order_id);
-
-
-
-        if ($invoice->data['Invoice Shipping Net Amount']!=0) {
-
-            $data[]=array(
-
-                        'code'=>'',
-                        'description'=>_('Shipping'),
-                        'tariff_code'=>'',
-                        'quantity'=>'',
-                        'gross'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency']),
-                        'discount'=>'',
-                        'to_charge'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency'])
-                    );
-
-        }
-        if ($invoice->data['Invoice Charges Net Amount']!=0) {
-            $data[]=array(
-
-                        'code'=>'',
-                        'description'=>_('Charges'),
-                        'tariff_code'=>'',
-                        'quantity'=>'',
-                        'gross'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency']),
-                        'discount'=>'',
-                        'to_charge'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency'])
-                    );
-        }
-        if ($invoice->data['Invoice Total Tax Amount']!=0) {
-            $data[]=array(
-
-                        'code'=>'',
-                        'description'=>_('Tax'),
-                        'tariff_code'=>'',
-                        'quantity'=>'',
-                        'gross'=>money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency']),
-                        'discount'=>'',
-                        'to_charge'=>money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency'])
-                    );
-        }
-
-        $data[]=array(
-
-                    'code'=>'',
-                    'description'=>_('Total'),
-                    'tariff_code'=>'',
-                    'quantity'=>'',
-                    'gross'=>'',
-                    'discount'=>'',
-                    'to_charge'=>'<b>'.money($invoice->data['Invoice Total Amount'],$invoice->data['Invoice Currency']).'</b>'
-                );
-
-             */
+	
 
 
 	$response=array('resultset'=>
@@ -928,7 +873,7 @@ function list_transactions_in_refund() {
 	$total_picks=0;
 
 	$data=array();
-	$sql="select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+	$sql="select `Invoice Transaction Tax Refund Items`,`Invoice Transaction Net Refund Items`,`Refund Quantity`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
 	$result=mysql_query($sql);
 
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -936,24 +881,31 @@ function list_transactions_in_refund() {
 		$data[]=array(
 			'code'=>$code,
 			'description'=>$row['Product XHTML Short Description'],
+			'tariff_code'=>$row['Product Tariff Code'],
+
 			'charged'=>$row['Invoice Quantity'].'/'.money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']).'('.money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']).')',
-			'refund_net'=>money($row['Invoice Transaction Net Refund Amount'],$row['Invoice Currency Code']),
-			'refund_tax'=>money($row['Invoice Transaction Tax Refund Amount'],$row['Invoice Currency Code'])
+			'refund_net'=>money($row['Invoice Transaction Net Refund Items'],$row['Invoice Currency Code']),
+			'refund_tax'=>money($row['Invoice Transaction Tax Refund Items'],$row['Invoice Currency Code']),
+			
+			'quantity'=>number($row['Refund Quantity']),
+			'refund'=>money($row['Invoice Transaction Net Refund Amount']+$row['Invoice Transaction Tax Refund Amount'],$row['Invoice Currency Code'])
+			
 		);
 	}
+	
 	$sql="select * from `Order No Product Transaction Fact`    $where   ";
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$data[]=array(
 			'code'=>'',
 			'description'=>$row['Transaction Description'],
-			'refund_net'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
-			'refund_tax'=>money($row['Transaction Invoice Tax Amount'],$row['Currency Code'])
-
+			'refund_net'=>money($row['Transaction Refund Net Amount'],$row['Currency Code']),
+			'refund_tax'=>money($row['Transaction Refund Tax Amount'],$row['Currency Code']),
+			'refund'=>money($row['Transaction Refund Net Amount']+$row['Transaction Refund Tax Amount'],$row['Currency Code'])
 		);
 	}
 
-
+/*
 	$invoice=new Invoice($order_id);
 
 	if ($invoice->data['Invoice Shipping Net Amount']!=0) {
@@ -972,14 +924,16 @@ function list_transactions_in_refund() {
 			'refund_net'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency'])
 		);
 	}
-
+	*/
+/*
 	$data[]=array(
 		'code'=>'',
 		'description'=>_('Total'),
-		'refund_net'=>'<b>'.money($invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Currency']).'</b>',
-		'refund_tax'=>'<b>'.money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency']).'</b>'
+		'refund_net'=>'<b>'.money($invoice->data['Invoice Refund Net Amount'],$invoice->data['Invoice Currency']).'</b>',
+		'refund_tax'=>'<b>'.money($invoice->data['Invoice Refund Tax Amount'],$invoice->data['Invoice Currency']).'</b>'
 
 	);
+	*/
 
 	$response=array('resultset'=>
 		array('state'=>200,
@@ -1135,8 +1089,7 @@ function list_transactions_in_dn() {
 	$data=array();
 	$sql="select * from $table $where   ";
 
-	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-	//print $sql;
+	
 	$result=mysql_query($sql);
 	$total_gross=0;
 	$total_discount=0;
@@ -2414,7 +2367,7 @@ function list_transactions_dispatched() {
 
    	$where $order  ";
 
-//print $sql;
+	//print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -2654,7 +2607,7 @@ function list_post_transactions() {
 	$order=' order by O.`Product Code`';
 	$order='';
 
-	$sql="select POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,DN.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
+	$sql="select POT.`Refund Key`,POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,DN.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
 	from $table
 	$where $order  ";
 
@@ -2690,28 +2643,23 @@ function list_post_transactions() {
 
 			break;
 		case 'Refund':
-			$notes=_('Refund');
-			break;
 		case 'Credit':
-			//'In Process','In Warehouse','Dispatched','Saved','Applied'
 			switch ($row['State']) {
 			case 'In Process':
-				$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$order_id,_('Credit in process'));
+				$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$parent_key,_('Refund in process'));
 				break;
-			case 'Saved':
-				$notes.=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Customer Key'],_('Credit in customer file'));
+			case 'Applied':
+				$notes.=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Refund Key'],_('Refunded'));
 
 
-				break;
-			case 'Dispatched':
-				$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$row['Delivery Note Key'],$row['Delivery Note ID']);
-				break;
+			
 			default:
 				$notes.='';
 
 			}
 
 			break;
+	
 
 		default:
 			$notes='';
@@ -2934,7 +2882,7 @@ function list_transactions_in_order() {
 
 	$adata=array();
 	$sql="select * from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
-//print $sql;
+	//print $sql;
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

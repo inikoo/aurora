@@ -26,12 +26,13 @@
 						<td class="aright">{t}Ammount Off{/t}</td>
 						<td width="100" class="aright"><span id="order_items_discount">{$order->get('Deal Amount Off')}</span></td>
 					</tr>
-					
+					{*}
 					<tr id="tr_order_credits" {if $order->
 						get('Order Net Credited Amount')==0}style="display:none"{/if}> 
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_credits" /> {t}Credits{/t}</td>
 						<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
 					</tr>
+					{*}
 					<tr id="tr_order_items_charges">
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
 						<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
@@ -109,12 +110,9 @@
 						<td class="aright"> {t}Insurance{/t}</td>
 						<td id="order_insurance" width="100" class="aright">{$order->get('Invoiced Insurance Amount')}</td>
 					</tr>
-					{if $order->get('Order Invoiced Refund Net Amount')!=0} 
-					<tr>
-						<td class="aright"><i>{t}Refunds (N){/t}</i></td>
-						<td width="100" class="aright">{$order->get('Invoiced Refund Net Amount')}</td>
-					</tr>
-					{/if} {if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
+					
+					
+					 {if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
 					<tr class="adjust" style="color:red">
 						<td class="aright">{t}Adjusts (N){/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Total Net Adjust Amount')}</td>
@@ -124,12 +122,7 @@
 						<td class="aright">{t}Total Net{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Total Net Amount')}</td>
 					</tr>
-					{if $order->get('Order Invoiced Refund Tax Amount')!=0} 
-					<tr>
-						<td class="aright"><i>{t}Refunds (Tax){/t}</i></td>
-						<td width="100" class="aright">{$order->get('Invoiced Refund Tax Amount')}</td>
-					</tr>
-					{/if} 
+					
 					<tr>
 						<td class="aright">{t}Tax{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Total Tax Amount')}</td>
@@ -144,10 +137,35 @@
 						<td class="aright">{t}Total{/t}</td>
 						<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
 					</tr>
+					{if $order->get('Order Invoiced Refund Net Amount')!=0} 
+					<tr style="border-top:1px solid #777;">
+						<td class="aright"><i>{t}Refunds (N){/t}</i></td>
+						<td width="100" class="aright">{$order->get('Invoiced Refund Net Amount')}</td>
+					</tr>
+					{/if}
+					{if $order->get('Order Invoiced Refund Tax Amount')!=0} 
+					<tr >
+						<td class="aright"><i>{t}Refunds (Tax){/t}</i></td>
+						<td width="100" class="aright">{$order->get('Invoiced Refund Tax Amount')}</td>
+					</tr>
+					{/if} 
+					{if $order->get('Order Invoiced Refund Net Amount')!=0 or $order->get('Order Invoiced Refund Tax Amount')!=0  } 
+					<tr style="border-bottom:1px solid #777;">
+						<td class="aright"><i>{t}Refunds Total{/t}</i></td>
+						<td width="100" class="aright">{$order->get('Invoiced Refund Total Amount')}</td>
+					</tr>
+					{/if} 
+					
 					<tr id="tr_order_total_paid_invoiced" style="border-top:1px solid #777;">
 						<td class="aright"><img id="order_paid_info_invoiced" src="art/icons/information.png" style="height:14px;vertical-align:-1.5px" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
 						<td id="order_total_paid_invoiced" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
+					
+						<tr id="tr_order_total_paid_refunded" style="display:none">
+						<td class="aright"> {t}Refunded{/t}</td>
+						<td id="order_total_paid_refunded" width="100" class="aright">{$order->get('Paid Refunds Amount')}</td>
+					</tr>
+					
 					<tr id="tr_order_total_to_pay_invoiced" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">
 						<td class="aright"> 
 						
@@ -155,5 +173,7 @@
 						<span style="{if $order->get('Order To Pay Amount')<0}display:none{/if}" id="to_pay_label_invoiced">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay_invoiced" width="100" class="aright" style="font-weight:800">{$order->get('To Pay Amount')}</td>
 					</tr>
+					
+					
 				</table>
 			</div>

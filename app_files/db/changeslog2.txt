@@ -81,3 +81,10 @@ UPDATE `Table Dimension` SET `Table Export Fields` = '`Product Main Department C
 UPDATE `Table Dimension` SET `Table Export Fields` = '`Product Department Code`|1,`Product Department Name`|1,`Product Department Total Acc Invoiced Amount`|0,`Product Department 1 Year Acc Invoiced Amount`|0' WHERE `Table Dimension`.`Table Key` = 7; 
 UPDATE `Table Dimension` SET `Table Export Fields` = '`Product Family Code`|1,`Product Family Name`|1,`Product Family Total Acc Invoiced Amount`|0,`Product Family 1 Year Acc Invoiced Amount`|0' WHERE `Table Dimension`.`Table Key` = 8; 
 
+from here 25/04/2015 09:19
+ALTER TABLE `Order Transaction Fact` ADD `Refund Quantity` FLOAT NOT NULL DEFAULT '0' AFTER `Invoice Quantity`; 
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `Delivery Note Key` `Delivery Note Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL; 
+ALTER TABLE `Order No Product Transaction Fact` ADD `Transaction Refund Net Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Transaction Invoice Tax Amount`, ADD `Transaction Refund Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Transaction Refund Net Amount`;
+ALTER TABLE `Order Post Transaction Dimension` ADD `Refund Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Delivery Note Key`; 
+ALTER TABLE `Invoice Dimension` ADD `Invoice Credit Net Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Invoice Insurance Net Amount`; 
+ALTER TABLE `Invoice Dimension` ADD `Invoice Credit Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Invoice Insurance Tax Amount`; 

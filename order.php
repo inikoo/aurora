@@ -37,7 +37,7 @@ $css_files=array(
 	'css/table.css',
 	'css/edit.css',
 	'css/order.css',
-	
+
 	'theme.css.php'
 );
 
@@ -122,41 +122,38 @@ $store=new Store($order->data['Order Store Key']);
 if (false) {
 
 
-			$order->update_number_items();
-			$order->update_number_products();
-			$order->update_insurance();
+	$order->update_number_items();
+	$order->update_number_products();
+	$order->update_insurance();
 
-			$order->update_discounts_items();
-			$order->update_item_totals_from_order_transactions();
+	$order->update_discounts_items();
+	$order->update_totals();
 
 
 
-			$order->update_shipping(false,false);
-			$order->update_charges(false,false);
-			
-			
-			$order->update_discounts_no_items(false);
+	$order->update_shipping(false,false);
+	$order->update_charges(false,false);
 
-			
-			$order->update_deal_bridge();
 
-			$order->update_deals_usage();
+	$order->update_discounts_no_items(false);
 
-			$order->update_no_normal_totals();
-			//print "xxx\n";
-			$order->update_item_totals_from_order_transactions();
-			$order->update_totals_from_order_transactions();
-			$order->update_number_items();
-			$order->update_number_products();
-			
-			
+
+	$order->update_deal_bridge();
+
+	$order->update_deals_usage();
+
+	$order->update_totals();
+
+	$order->update_number_items();
+	$order->update_number_products();
+
+
 
 
 
 }
-
-
-
+//$order->update_totals();
+//$order->update_payment_state();
 if (!$order->id) {
 	header('Location: orders_server.php?msg=order_not_found');
 	exit;
@@ -553,23 +550,26 @@ else {
 	$smarty->assign('dns_data',$dns_data);
 
 
-
+	$to_refund_amount=0;
 	$invoices_data=array();
 	foreach ($order->get_invoices_objects() as $invoice) {
 		$current_invoice_key=$invoice->id;
 
-		//print_r($invoice);
-
+		if ($invoice->data['Invoice Type']=='Refund') {
+			$to_refund_amount+=$invoice->data['Invoice Outstanding Total Amount'];
+		}
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
 			'operations'=>$invoice->get_operations($user,'order',$order->id),
 			'number'=>$invoice->data['Invoice Public ID'],
 			'state'=>$invoice->get_xhtml_payment_state(),
+			'to_pay'=>$invoice->data['Invoice Outstanding Total Amount'],
 			'data'=>'',
+
 
 		);
 	}
-	
+
 	$number_invoices=count($invoices_data);
 	if ($number_invoices!=1) {
 		$current_invoice_key='';
@@ -577,6 +577,7 @@ else {
 	$smarty->assign('current_invoice_key',$current_invoice_key);
 	$smarty->assign('number_invoices',$number_invoices);
 	$smarty->assign('invoices_data',$invoices_data);
+	$smarty->assign('to_refund_amount',$to_refund_amount);
 
 
 	$order_current_dispatch_state=$order->get('Order Current Dispatch State');

@@ -122,7 +122,7 @@ function cancel_payment($data) {
 	$payment_key=$data['payment_key'];
 	$payment=new Payment($payment_key);
 	$order=new Order($payment->data['Payment Order Key']);
-	$invoice=new Order($payment->data['Payment Invoice Key']);
+	$invoice=new Invoice($payment->data['Payment Invoice Key']);
 
 
 
@@ -176,6 +176,11 @@ function cancel_payment($data) {
 		return;
 	}
 
+
+	$customer=new Customer($payment->data['Payment Customer Key']);
+	$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']+$payment->data['Payment Amount'],'no_history');
+
+
 	$data_to_update=array(
 
 		'Payment Completed Date'=>'',
@@ -187,6 +192,24 @@ function cancel_payment($data) {
 
 	);
 	$payment->update($data_to_update);
+	$payment->update_balance();
+	
+	
+	
+	
+
+
+
+	$sql=sprintf("delete from `Invoice Payment Bridge` where `Payment Key`=%d ",$payment->id);
+	mysql_query($sql);
+
+	$sql=sprintf("select `Payment Key` from  `Payment Dimension` where `Payment Key`=%d  ",$payment->data['Payment Related Payment Key']);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$_payment=new Payment($row['Payment Key']);
+		$_payment->update_balance();
+	}
+
 
 	$order->update_payment_state();
 	if ($invoice->id) {
@@ -523,7 +546,7 @@ function add_payment_to_invoice($data) {
 
 	$payment=new Payment('create',$payment_data);
 
-	$paymnet_balance=$invoice->apply_payment($payment);
+	$payment_balance=$invoice->apply_payment($payment);
 
 
 
@@ -539,7 +562,7 @@ function add_payment_to_invoice($data) {
 
 
 
-
+	$order->update_payment_state();
 
 	$updated_data=array(
 
@@ -689,6 +712,9 @@ function add_payment_to_order($data) {
 
 function credit_payment($data) {
 
+
+
+
 	global $user;
 
 	$credit_amount=round($data['credit_amount'],2);
@@ -698,12 +724,6 @@ function credit_payment($data) {
 	$payment->load_payment_service_provider();
 
 
-
-	if ($data['parent']=='order') {
-		$order_key=$data['parent_key'];
-	}else {
-		$order_key=0;
-	}
 
 
 
@@ -725,7 +745,7 @@ function credit_payment($data) {
 		'Payment Type'=>'Credit',
 
 		'Payment Service Provider Key'=>$payment_account->data['Payment Service Provider Key'],
-		'Payment Order Key'=>$order_key,
+		'Payment Order Key'=>$payment->data['Payment Order Key'],
 		'Payment Store Key'=>$payment->data['Payment Store Key'],
 		'Payment Customer Key'=>$payment->data['Payment Customer Key'],
 
@@ -755,7 +775,7 @@ function credit_payment($data) {
 	$refund_payment->load_payment_account();
 
 
-	$order=new Order($order_key);
+	$order=new Order($payment->data['Payment Order Key']);
 	if ($order->id) {
 
 		$sql=sprintf("insert into `Order Payment Bridge` values (%d,%d,%d,%d,%.2f,'No') ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
@@ -813,6 +833,18 @@ function credit_payment($data) {
 	}
 
 
+if ($data['parent']=='invoice') {
+		$invoice=new Invoice($data['parent_key']);
+	}else {
+		$invoice=new Invoice($payment->data['Payment Invoice Key']);
+	}
+
+
+	if ($invoice->id) {
+		$invoice->apply_payment($refund_payment);
+	}
+
+
 }
 
 
@@ -860,8 +892,7 @@ function refund_payment($data) {
 	}
 
 	$order=new Order($payment->data['Payment Order Key']);
-	$invoice=new Invoice($payment->data['Payment Invoice Key']);
-	
+
 
 
 	$payment->update(array(
@@ -954,11 +985,19 @@ function refund_payment($data) {
 
 		echo json_encode($response);
 	}
+
+	if ($data['parent']=='invoice') {
+		$invoice=new Invoice($data['parent_key']);
+	}else {
+		$invoice=new Invoice($payment->data['Payment Invoice Key']);
+	}
+
+
 	if ($invoice->id) {
 		$invoice->apply_payment($payment);
 	}
 
-
+	
 }
 
 

@@ -204,14 +204,7 @@ case('add_credit_to_order'):
 		));
 	add_credit_to_order($data);
 	break;
-case('mark_all_for_refund_order'):
-	$data=prepare_values($_REQUEST,array(
-			'order_key'=>array('type'=>'key')
-		));
-	mark_all_for_refund_order($data);
-	break;
 
-	break;
 case('cancel_saved_credit'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
@@ -499,11 +492,13 @@ case('update_billing_to_key_from_address'):
 	break;
 
 
-case('create_refund'):
+case('refund_order'):
 	$data=prepare_values($_REQUEST,array(
-			'order_key'=>array('type'=>'key')
+			'order_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array')
+
 		));
-	create_refund($data);
+	refund_order($data);
 	break;
 case('send_post_order_to_warehouse'):
 	$data=prepare_values($_REQUEST,array(
@@ -3844,15 +3839,27 @@ function create_invoice_order($data) {
 	$payments=$order->get_payment_objects('Completed');
 
 	foreach ($payments as $payment) {
-		$paymnet_balance=$invoice->apply_payment($payment);
-		//print $paymnet_balance."x";
-
-		//$invoice->data['Invoice '];
-		if ($paymnet_balance!=0) {
-			break;
-		}
+		$payment_balance=$invoice->apply_payment($payment);
 
 	}
+	
+	foreach ($invoice->get_delivery_notes_objects() as $key=>$dn) {
+			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $invoice->id,$key);
+			mysql_query( $sql );
+			$invoice->update_xhtml_delivery_notes();
+			$dn->update(array('Delivery Note Invoiced'=>'Yes'));
+			$dn->update_xhtml_invoices();
+		}
+		foreach ($invoice->get_orders_objects() as $key=>$order) {
+			$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $invoice->id );
+			mysql_query( $sql );
+			$invoice->update_xhtml_orders();
+			$order->update_xhtml_invoices();
+			$order->update_totals();
+			$order->set_as_invoiced();
+			$order->update_customer_history();
+		}
+	
 
 	include 'splinters/new_fork.php';
 	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'invoice_created','subject_key'=>$invoice->id),$account_code);
@@ -3944,10 +3951,12 @@ function send_post_order_to_warehouse($data) {
 
 }
 
-function create_refund($data) {
+function refund_order($data) {
 
-	$date=date("Y-m-d H:i:s");
+	$date=gmdate("Y-m-d H:i:s");
 	$order=new Order($data['order_key']);
+
+	
 
 	$refund=$order->create_refund(array(
 			'Invoice Metadata'=>'',
@@ -3955,6 +3964,196 @@ function create_refund($data) {
 		)
 	);
 
+	if ($data['values']['refund_items']=='Yes') {
+		$data['values']['refund_marked_items']='No';
+	}
+
+	if ($data['values']['refund_items']=='No' and $data['values']['refund_marked_items']=='No') {
+
+		$sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Key`=%d  and `State`='In Process' and `Operation`='Refund'  ",
+			$order->id
+		);
+		mysql_query($sql);
+
+
+	}
+
+
+	if ($data['values']['refund_items']=='Yes') {
+
+
+		$sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Key`=%d  and `State`='In Process'  ",
+			$order->id
+		);
+		mysql_query($sql);
+
+
+		$sql=sprintf("select OTF.`Order Transaction Fact Key`, `Invoice Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as value  from  `Order Transaction Fact` OTF where `Invoice Quantity`>0 and OTF.`Order Key`=%d ",
+			$order->id
+
+		);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`,`Credit`) values (%d,%d,%f,%s,%s,%s,%d,%f)",
+				$row['Order Transaction Fact Key'],
+				$order->id,
+				$row['Invoice Quantity'],
+				prepare_mysql('Refund'),
+				prepare_mysql($data['values']['reason']),
+				prepare_mysql($data['values']['items_to_be_returned']),
+				$order->data['Order Customer Key'],
+				$row['value']
+			);
+
+			// print "$sql\n";
+
+			mysql_query($sql);
+
+
+		}
+
+	}
+
+
+	$sql=sprintf("select `Order Post Transaction Key`,`Invoice Transaction Charges Tax Amount`,`Invoice Transaction Charges Amount`,`Invoice Transaction Insurance Tax Amount`,`Invoice Transaction Insurance Amount`,`Invoice Transaction Shipping Tax Amount`,`Invoice Transaction Shipping Amount`,`Invoice Transaction Item Tax Amount`,POT.`Quantity`,POT.`Order Transaction Fact Key`, `Invoice Quantity`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`
+	 from  `Order Transaction Fact` OTF left join `Order Post Transaction Dimension` POT  on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)  where POT.`Order Key`=%d  and `State`='In Process' and `Operation`='Refund'  ",
+		$order->id
+	);
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$net_items=0;
+		$net_shipping=0;
+		$net_charges=0;
+		$net_insurance=0;
+
+		$tax_items=0;
+		$tax_shipping=0;
+		$tax_charges=0;
+		$tax_insurance=0;
+
+		if ($row['Invoice Quantity']==0) {
+			continue;
+		}
+
+		$factor=-1.0*$row['Quantity']/$row['Invoice Quantity'];
+
+		if ($data['values']['refund_items']=='Yes' or $data['values']['refund_marked_items']=='Yes') {
+
+			if ($data['values']['refund_net']=='Yes') {
+				$net_items=$factor*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']);
+			}
+			if ($data['values']['refund_tax']=='Yes') {
+				$tax_items=$factor*$row['Invoice Transaction Item Tax Amount'];
+			}
+
+		}
+
+		if ($data['values']['refund_shipping']=='Yes' ) {
+		if ($data['values']['refund_net']=='Yes') {
+			$net_shipping=$factor*$row['Invoice Transaction Shipping Amount'];
+			}
+			if ($data['values']['refund_tax']=='Yes') {
+				$tax_shipping=$factor*$row['Invoice Transaction Shipping Tax Amount'];
+			}
+
+		}
+
+		if ($data['values']['refund_charges']=='Yes' ) {
+		if ($data['values']['refund_net']=='Yes') {
+			$net_charges=$factor*$row['Invoice Transaction Charges Amount'];
+			}
+			if ($data['values']['refund_tax']=='Yes') {
+				$tax_charges=$factor*$row['Invoice Transaction Charges Tax Amount'];
+			}
+		}
+
+		if ($data['values']['refund_insurance']=='Yes' ) {
+		if ($data['values']['refund_net']=='Yes') {
+			$net_insurance=$factor*$row['Invoice Transaction Insurance Amount'];
+			}
+			if ($data['values']['refund_tax']=='Yes') {
+				$tax_insurance=$factor*$row['Invoice Transaction Insurance Tax Amount'];
+			}
+		}
+
+
+
+		$net=$net_items+$net_shipping+$net_charges+$net_insurance;
+		$tax=$tax_items+$tax_shipping+$tax_charges+$tax_insurance;
+
+
+		$refund_transaction_data=array(
+			'Order Transaction Fact Key'=>$row['Order Transaction Fact Key'],
+
+			'Refund Quantity'=>$row['Quantity'],
+
+
+			'Invoice Transaction Net Refund Items'=>$net_items,
+			'Invoice Transaction Net Refund Shipping'=>$net_shipping,
+			'Invoice Transaction Net Refund Charges'=>$net_charges,
+			'Invoice Transaction Net Refund Insurance'=>$net_insurance,
+
+			'Invoice Transaction Net Refund Amount'=>$net,
+			'Invoice Transaction Tax Refund Items'=>$tax_items,
+			'Invoice Transaction Tax Refund Shipping'=>$tax_shipping,
+			'Invoice Transaction Tax Refund Charges'=>$tax_charges,
+			'Invoice Transaction Tax Refund Insurance'=>$tax_insurance,
+
+			'Invoice Transaction Tax Refund Amount'=>$tax,
+			'Refund Metadata'=>''
+
+		);
+
+		$refund->add_refund_transaction($refund_transaction_data);
+
+
+		$sql=sprintf('update `Order Post Transaction Dimension` set `Refund Key`=%d, `State`="Applied" where `Order Post Transaction Key`=%d ',
+			$refund->id,
+			$row['Order Post Transaction Key']
+		);
+		mysql_query($sql);
+
+
+
+	}
+
+
+
+
+
+	if ($data['values']['refund_shipping']=='Yes' ) {
+
+
+		$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Invoice Net Amount`,`Transaction Invoice Tax Amount` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Shipping' ",
+			$order->id
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			if ($data['values']['refund_tax']=='Yes') {
+				$tax_amount=$row['Transaction Invoice Tax Amount'];
+			}else {
+				$tax_amount=0;
+			}
+
+			$refund_transaction_data=array(
+				'Order Key'=>$order->id,
+				'Transaction Refund Net Amount'=>-1.0*$row['Transaction Invoice Net Amount'],
+				'Transaction Refund Tax Amount'=>-1.0*$tax_amount,
+				'Order No Product Transaction Fact Key'=>$row['Order No Product Transaction Fact Key']
+			);
+
+			$refund->add_refund_no_product_transaction($refund_transaction_data);
+		}
+
+	}
+
+	$order->update_totals();
+	$order->update_payment_state();
 
 
 	if (!$order->error) {
@@ -5289,23 +5488,6 @@ function approve_dispatching_dn($data) {
 	}
 }
 
-function mark_all_for_refund_order($data) {
-	$order_key=$data['order_key'];
-	$order=new Order($order_key);
-
-	$order->mark_all_transactions_for_refund();
-	if (!$order->error) {
-		$response= array('state'=>200,'order_key'=>$order->id);
-		echo json_encode($response);
-		return;
-
-	}else {
-		$response= array('state'=>400,'msg'=>$order->msg);
-		echo json_encode($response);
-		return;
-
-	}
-}
 
 function add_credit_to_order($data) {
 	$order_key=$data['order_key'];
@@ -5493,6 +5675,9 @@ function new_orphan_refund($data) {
 
 
 	);
+	
+	
+	
 	$refund=new Invoice('create refund',$refund_data);
 	$refund->categorize();
 

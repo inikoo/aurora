@@ -26,8 +26,8 @@
 	<div class="tabs_base">
 	</div>
 	<div style="border:1px solid white">
-	<div id="calendar_container">
-		<div id="period_label_container" style="{if $period==''}display:none{/if}">
+	<div id="calendar_container" >
+		<div id="period_label_container" style="{if $period==''}display:none{/if};">
 			<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
 		</div>
 		{include file='calendar_splinter.tpl' } 

@@ -4,7 +4,6 @@
 <div id="bd" style="padding:0">
 	<div style="padding:0 20px">
 		{include file='reports_navigation.tpl'} 
-				{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_geo_sales_country.php'} 
 
 		<div class="branch" style="width:300px;padding-top:5px">
 			<span><a href="report_geo_sales.php?world=1">{t}World{/t}</a> &rarr; <a href="report_geo_sales.php?continent={$continent_code}">{$continent_name}</a> &rarr; <a href="report_geo_sales.php?wregion={$wregion_code}">{$wregion_name}</a> &rarr;<a href="report_geo_sales.php?country={$country_code}">{$country_name}</a></span> 
@@ -22,6 +21,8 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		
+		
 		<div style="float:left;">
 			<h2>
 				{$country_name} [{$country_code}]
@@ -38,15 +39,7 @@
 								<td>{t}GNP{/t}:</td>
 								<td class="price aright">{$country->get('GNP')}</td>
 							</tr>
-							<tr>
-								<td>{t}Sold Since{/t}:</td>
-								<td class="aright">{$country->get('For Sale Since Date')} </td>
-								{if $edit} 
-								<td class="aright">
-								<input style="text-align:right" class="date_input" size="8" type="text" id="v_invoice_date" value="{$v_po_date_invoice}" name="invoice_date" />
-								</td>
-								{/if} 
-							</tr>
+							
 						</table>
 					</div>
 					<div style="width:220px;float:left">
@@ -88,6 +81,10 @@
 		</div>
 	</div>
 	<div id="block_overview" style="{if $view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	
+					{include file='calendar_splinter.tpl' calendar_id='sales' calendar_link='report_geo_sales_country.php'} 
+
+	
 		<div id="plot" class="top_bar" style="position:relative;clear:both;padding:0;margin:0">
 			<ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px ">
 				<li> <span class="item {if $plot_tipo=='plot_all_stores'}selected{/if}" onclick="change_plot(this)" id="plot_all_stores" tipo="par_all"> <span>{t}All Stores{/t}</span> </span> </li>
@@ -170,26 +167,45 @@
 		</div>
 	</div>
 	<div id="block_customers" style="{if $view!='customers'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<div id="the_table" class="data_table" style="clear:both">
-			<span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
-			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
+		<div style="clear:both">
+				<span class="clean_table_title">{t}Customers List{/t} 
+				<img  id="export_customers" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+				</span> 
+				
+					<div class="elements_chooser" id="customer_type_chooser">
+									<img class="menu" id="customer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
+
+						<div id="customer_activity_chooser" style="{if $elements_customers_elements_type!='activity'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_activity.Lost}selected{/if} label_all_contacts_lost" id="elements_Lost" table_type="lost">{t}Lost{/t} (<span id="elements_Lost_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Losing}selected{/if} label_all_contacts_losing" id="elements_Losing" table_type="losing">{t}Losing{/t} (<span id="elements_Losing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_activity.Active}selected{/if} label_all_contacts_active" id="elements_Active" table_type="active">{t}Active{/t} (<span id="elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="customer_level_type_chooser" style="{if $elements_customers_elements_type!='level_type'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.VIP}selected{/if} label_customer_VIP" id="elements_VIP" table_type="VIP">{t}VIP{/t} (<span id="elements_VIP_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Partner}selected{/if} label_customer_Partner" id="elements_Partner" table_type="Partner">{t}Partner{/t} (<span id="elements_Partner_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Staff}selected{/if} label_customer_Staff" id="elements_Staff" table_type="Staff">{t}Staff{/t} (<span id="elements_Staff_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_level_type.Normal}selected{/if} label_customer_Normal" id="elements_Normal" table_type="Normal">{t}Normal{/t} (<span id="elements_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="customer_location_chooser" style="{if $elements_customers_elements_type!='location'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_location.Export}selected{/if} label_customer_Export" id="elements_Export" table_type="Export">{t}Export{/t} (<span id="elements_Export_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>
+
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_location.Domestic}selected{/if} label_customer_Domestic" id="elements_Domestic" table_type="Domestic">{t}Domestic{/t} (<span id="elements_Domestic_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						<div id="customer_orders_chooser">
+							<span style="float:right;margin-left:2px;margin-right:10px" class=" table_type transaction_type state_details">]</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if  $orders_type=='contacts_with_orders'}selected{/if}" id="elements_orders_type_contacts_with_orders" table_type="contacts_with_orders" title="{t}Contacts with Orders{/t}">{t}With Orders{/t}</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details">|</span> <span style="float:right;margin-left:2px" class=" table_type transaction_type state_details {if $orders_type=='all_contacts'}selected{/if}" id="elements_orders_type_all_contacts" table_type="all_contacts" title="{t}All Contacts{/t}">{t}All{/t}</span> <span style="float:right;margin-left:0px" class=" table_type transaction_type state_details">[</span> 
+						</div>
+					</div>
+				
+				<div class="table_top_bar">
+				</div>
+				<div class="clusters">
+					<div class="buttons small left cluster">
+						<button class="table_option {if $customer_view=='general'}selected{/if}" id="general">{t}General{/t}</button> <button class="table_option {if $customer_view=='contact'}selected{/if}" id="contact">{t}Contact{/t}</button> <button class="table_option {if $customer_view=='address'}selected{/if}" id="address">{t}Address{/t}</button> <button class="table_option {if $customer_view=='balance'}selected{/if}" id="balance">{t}Balance{/t}</button> <button class="table_option {if $customer_view=='rank'}selected{/if}" id="rank">{t}Ranking{/t}</button> <button class="table_option {if $customer_view=='weblog'}selected{/if}" id="weblog">{t}WebLog{/t}</button> 
+					</div>
+					<div style="clear:both">
+					</div>
+				</div>
+				{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+				<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
+				</div>
 			</div>
-			<table style="float:left;margin:0 0 0 0px ;padding:0" class="options">
-				<tr>
-					<td class="{if $customer_view=='general'}selected{/if}" id="general">{t}General{/t}</td>
-					<td class="{if $customer_view=='contact'}selected{/if}" id="contact">{t}Contact{/t}</td>
-					<td class="{if $customer_view=='address'}selected{/if}" id="address">{t}Address{/t}</td>
-					<td class="{if $customer_view=='balance'}selected{/if}" id="balance">{t}Balance{/t}</td>
-					<td class="{if $customer_view=='rank'}selected{/if}" id="rank">{t}Ranking{/t}</td>
-				</tr>
-			</table>
-			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-			<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
-			</div>
-		</div>
 	</div>
-</div>
-<div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	<div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	<span id="table_title" class="clean_table_title">{t}Counties{/t}</span> 
 	<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 	</div>
@@ -197,6 +213,8 @@
 	<div id="table0" class="data_table_container dtable btable">
 	</div>
 </div>
+</div>
+
 <div id="photo_container" style="display:none;float:left;border:0px solid #777;width:510px;height:320px">
 	<iframe id="the_map" src="map.php?country=" frameborder="0" scrolling="no" width="550" height="420"></iframe> 
 </div>
@@ -260,7 +278,5 @@
 		</ul>
 	</div>
 </div>
-</div>
-</div>
-</div>
+
 {include file='footer.tpl'} 

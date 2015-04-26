@@ -1,6 +1,9 @@
 {include file='header.tpl'} 
 <div id="bd" style="{*}{if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}background-image:url('art/stamp.paid.en.png');background-repeat:no-repeat;background-position:280px 50px{/if}{*}">
 	<input type="hidden" id="invoice_key" value="{$invoice->id}" />
+	<input type="hidden" id="invoice_type" value="{$invoice->get('Invoice Type')}" />
+	
+	
 	<input type="hidden" value="{$invoice->get('Invoice Currency')}" id="currency_code" />
 	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
 	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
@@ -74,6 +77,13 @@
 					<td class="aright">{t}Insurance{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Insurance Net Amount')}</td>
 				</tr>
+				{if $invoice->get('Invoice Credit Net Amount')!=0}
+				<tr >
+					<td class="aright">{t}Credits{/t}</td>
+					<td width="100" class="aright">{$invoice->get('Credit Net Amount')}</td>
+				</tr>
+				{/if}
+				
 				<tr style="border-top:1px solid #777;border-bottom:1px solid #777">
 					<td class="aright">{t}Total Net{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Total Net Amount')}</td>
@@ -83,7 +93,8 @@
 					<td class="aright">{$tax.name}</td>
 					<td width="100" class="aright">{$tax.amount}</td>
 				</tr>
-				{/foreach} {if $invoice->get('Invoice Total Tax Adjust Amount')!=0} 
+				{/foreach} 
+				{if $invoice->get('Invoice Total Tax Adjust Amount')!=0} 
 				<tr style="color:red">
 					<td class="aright">{t}Adjust Tax{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Total Tax Adjust Amount')}</td>
@@ -96,9 +107,10 @@
 				<tr id="tr_order_total_to_pay" style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}">
 						<td class="aright"> 
 						<div class="buttons small left">
-							<button style="{if $invoice->get('Invoice Outstanding Total Amount')<0}display:none{/if}" id="show_add_payment" amount="{$invoice->get('Invoice Outstanding Total Amount')}" onclick="add_payment('invoice','{$invoice->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
+							<button style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}" id="show_add_payment" amount="{$invoice->get('Invoice Outstanding Total Amount')}" onclick="add_payment('invoice','{$invoice->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button> 
 						</div>
-						<span style="{if $invoice->get('Invoice Outstanding Total Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> <span style="{if $invoice->get('Invoice To Pay Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
+						<span style="{if $invoice->get('Invoice Outstanding Total Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span> 
+						<span style="{if $invoice->get('Invoice Outstanding Total Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
 						<td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$invoice->get('Outstanding Total Amount')}</td>
 					</tr>
 			</table>

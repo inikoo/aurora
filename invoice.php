@@ -24,16 +24,30 @@ if (!$invoice->id)
 $customer=new Customer($invoice->data['Invoice Customer Key']);
 $store=new Store($invoice->data['Invoice Store Key']);
 
+/*
+if($invoice->data['Invoice Type']=='Invoice'){
+$invoice->update_totals();
 
+}else{
+$invoice->update_refund_totals();
+
+}
+
+$invoice->update_payment_state();
+*/
+/*
 $invoice->update_payment_state();
 
 //exit;
 $invoice->update_totals();
 
+if($invoice->data['Invoice Type']=='Refund'){
+$invoice->update_refund_totals();
+}
 
-
+$invoice->update_payment_state();
 //print_r($invoice->data);
-
+*/
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 

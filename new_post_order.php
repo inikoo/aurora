@@ -18,7 +18,6 @@ if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])) {
 }
 
 $order_id=$_REQUEST['id'];
-$_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 if (!$order->id) {
 	header('Location: orders_server.php?msg=order_not_found');
@@ -29,6 +28,7 @@ if (!($user->can_view('stores') and in_array($order->data['Order Store Key'],$us
 	header('Location: orders_server.php');
 	exit;
 }
+
 
 $customer=new Customer($order->get('Order Customer Key'));
 $store=new Customer($order->get('Order Store key'));
@@ -199,6 +199,37 @@ $smarty->assign('number_dns',$number_dns);
 $smarty->assign('dns_data',$dns_data);
 
 
+$invoices_data=array();
+foreach ($order->get_invoices_objects() as $invoice) {
+	
+	if($invoice->data['Invoice Type']!='Refund'){
+		continue;
+	}
+	
+	$current_invoice_key=$invoice->id;
+
+	//print_r($invoice);
+
+	$invoices_data[]=array(
+		'key'=>$invoice->id,
+		'operations'=>$invoice->get_operations($user,'order',$order->id),
+		'number'=>$invoice->data['Invoice Public ID'],
+		'state'=>$invoice->get_xhtml_payment_state(),
+		'data'=>'',
+
+	);
+}
+
+$number_invoices=count($invoices_data);
+if ($number_invoices!=1) {
+	$current_invoice_key='';
+}
+$smarty->assign('current_refund_key',$current_invoice_key);
+$smarty->assign('number_refunds',$number_invoices);
+$smarty->assign('refunds_data',$invoices_data);
+
+
+
 
 $smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
 
@@ -237,6 +268,8 @@ $session_data=base64_encode(json_encode(array(
 			)
 		)));
 $smarty->assign('session_data',$session_data);
+
+
 
 $smarty->display($template);
 ?>
