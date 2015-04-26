@@ -31,6 +31,24 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
+
+$sql="select `Order Key`from `Order Dimension`  where `Order Public ID`='225129' order by  `Order Key` desc ";
+$sql="select `Order Key`from `Order Dimension`   order by  `Order Key` desc ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$order=new Order($row['Order Key']);
+
+	$order->update_totals();
+	if ($order->get_number_payments()>0) {
+	//	print "xxx";
+		$order->update_payment_state();
+	}
+	print $order->data['Order Public ID']."      \r";
+}
+
+exit;
+
 /*
 $sql="select `Order Key`from `Order Dimension`  ";
 
@@ -54,14 +72,14 @@ $sql="select `Order Original Metadata` as Metadata from `Order Dimension` where 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-/*
+	/*
 	if (preg_match('/U/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/U/','',$row['Metadata']);
 		$sql=sprintf("update orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
 		mysql_query($sql);
 	}
-*/	
+*/
 	if (preg_match('/F/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/F/','',$row['Metadata']);
 		$sql=sprintf("update fr_orders_data.orders set last_transcribed=null where fr_orders_data.orders.id =%d",$order_data_id);
@@ -79,14 +97,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$sql=sprintf("update it_orders_data.orders set last_transcribed=null where it_orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
 		mysql_query($sql);
-	}	
-	
-		if (preg_match('/P/',$row['Metadata'])) {
+	}
+
+	if (preg_match('/P/',$row['Metadata'])) {
 		$order_data_id=preg_replace('/P/','',$row['Metadata']);
 		$sql=sprintf("update pl_orders_data.orders set last_transcribed=null where pl_orders_data.orders.id =%d",$order_data_id);
 		print "$sql\n";
 		mysql_query($sql);
-	}	
+	}
 }
 
 

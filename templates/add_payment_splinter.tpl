@@ -56,6 +56,10 @@
 	</table>
 </div>
 <div id="dialog_refund_payment" style="padding:20px 20px 10px 20px">
+
+	<input type="hidden" value="" id="refund_payment_type"> 
+	<input type="hidden" value="" id="refund_payment_invoice_key"> 
+
 	<input type="hidden" value="" id="refund_payment_key"> 
 	<input type="hidden" value="" id="refund_payment_max_amount"> 
 	<input type="hidden" value="" id="refund_payment_outstanding_amount"> 
@@ -111,6 +115,11 @@
 
 
 <div id="dialog_credit_payment" style="padding:20px 20px 10px 20px">
+
+	<input type="hidden" value="" id="credit_payment_type"> 
+	<input type="hidden" value="" id="credit_payment_invoice_key"> 
+
+
 	<input type="hidden" value="" id="credit_payment_key"> 
 	<input type="hidden" value="" id="credit_payment_max_amount"> 
 	<input type="hidden" value="" id="credit_payment_outstanding_amount"> 

@@ -13,17 +13,6 @@
  if (!isset($inikoo_account))exit;
 
 
-// $order->update_item_totals_from_order_transactions();
-
-//$order->update_no_normal_totals('save');
-//$order->update_discounts_no_items();
-//$order->update_discounts_no_items();
-
-
-//$order->update_tax();
-
-//$order->apply_payment_from_customer_account();
-
 
  $smarty->assign('elements',$_SESSION['state']['customer']['history']['elements']);
  $filter_menu=array(

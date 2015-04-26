@@ -349,18 +349,29 @@ class Payment extends DB_Table {
 
 	function update_balance() {
 		$invoiced_amount=0;
-		$sql=sprintf("select sum(`Amount`) as amount from `Invoice Payment Bridge` where `Invoice Key`=%d",$this->id);
+		$sql=sprintf("select ifnull(sum(`Amount`),0) as amount from `Invoice Payment Bridge` where `Payment Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$invoiced_amount=$row['amount'];
 		}
 
 		$this->data['Payment Amount Invoiced']=$invoiced_amount;
+		
+		
+		$refunded_amount=0;
+		$sql=sprintf("select ifnull(sum(`Payment Amount`),0) as amount from `Payment Dimension` where `Payment Related Payment Key`=%d  and `Payment Transaction Status`!='Cancelled' ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$refunded_amount=$row['amount'];
+		}
+
+		$this->data['Payment Refund']=$refunded_amount;
 
 		$this->data['Payment Balance']=$this->data['Payment Amount']-$this->data['Payment Refund']-$this->data['Payment Amount Invoiced'];
 
 
-		$sql=sprintf("update `Payment Dimension` set `Payment Amount Invoiced`=%.2f,`Payment Balance`=%.2f where `Payment Key`=%d",
+		$sql=sprintf("update `Payment Dimension` set `Payment Refund`=%.2f,`Payment Amount Invoiced`=%.2f,`Payment Balance`=%.2f where `Payment Key`=%d",
+			$this->data['Payment Refund'],
 			$this->data['Payment Amount Invoiced'],
 			$this->data['Payment Balance'],
 			$this->id

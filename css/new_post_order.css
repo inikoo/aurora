@@ -3,4 +3,10 @@
 .label{width:120px;text-align:right}
 .original_values{width:120px;text-align:right}
 .switch_element{width:40px}
+.switch_element img{cursor:pointer}
+
 .refund_values{width:120px;text-align:right}
+
+
+.refund_total{border:1px solid #777}
+.totals{border-top:1px solid #777}

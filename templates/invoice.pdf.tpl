@@ -159,7 +159,7 @@ div.inline { float:left; }
 			<tr>
 				<td style="width:8%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
-				<td style="width:8%;text-align:right">{t}Discount{/t}</td>
+				<td style="width:8%;text-align:right">{if $invoice->get('Invoice Type')=='Invoice'}{t}Discount{/t}{/if}</td>
 				<td style="width:8%;text-align:right">{t}Quantity{/t}</td>
 				<td style="width:10%;text-align:right">{t}Amount{/t}</td>
 			</tr>
@@ -170,6 +170,7 @@ div.inline { float:left; }
 				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
 				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
+				
 				<td style="width:8%;text-align:right">{$transaction['Invoice Quantity']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
 			</tr>
@@ -238,7 +239,7 @@ div.inline { float:left; }
 			</tr>
 		</tbody>
 	</table>
-	<br> <br> {if $number_orders==1} 
+	<br> <br> 
 	<table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
 		<tr class="title">
 			<td colspan="5">{t}Payments{/t}</td>
@@ -253,18 +254,18 @@ div.inline { float:left; }
 			</tr>
 		</thead>
 		<tbody>
-			{foreach from=$order->get_payment_objects('Completed',true,true) item=payment name=payments} 
+			{foreach from=$invoice->get_payment_objects('Completed',true,true) item=payment name=payments} 
 			<tr class="{if $smarty.foreach.payments.last}last{/if}">
 				<td style="text-align:left">{$payment->get('Method')} ({$payment->payment_service_provider->get('Payment Service Provider Name')})</td>
 				<td style="text-align:right">{$payment->get('Created Date')}</td>
 				<td style="text-align:left">{$payment->get('Transaction Status')}</td>
 				<td style="text-align:left">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()|strip_tags}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')=='Refund'}, {/if}{$payment->get('Payment Transaction ID')|strip_tags}</td>
-				<td style="text-align:right">{$payment->formated_amount}</td>
+				<td style="text-align:right">{$payment->get('Amount')}</td>
 			</tr>
 			{/foreach} 
 		</tbody>
 	</table>
-	{/if} <br> 
+	 <br> 
 	<div style="text-align: center; font-style: italic;">
 		{include file="string:{$store->get('Store Invoice Message')}" } 
 	</div>

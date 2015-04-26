@@ -33,6 +33,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
+		'css/calendar.css',
 	'theme.css.php'
 );
 
@@ -267,6 +268,16 @@ $smarty->assign('filter_value1',$_SESSION['state']['world']['wregions']['f_value
 $paginator_menu1=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu1);
 
+
+
+
+
+
+
+
+
+
+
 //Top countries in the world
 $top_countries=array();
 $sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE `Invoice Date`>%s and  `Invoice Date`<%s group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
@@ -381,7 +392,6 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('no_sales_message',_("There's no sales from"));
 $smarty->assign('parent','reports');
 $smarty->assign('title',_('Sales by location'));
-
 
 
 

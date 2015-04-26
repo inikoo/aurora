@@ -2,10 +2,6 @@
 /*
   File: Delivery Note.php
 
-  This file contains the DeliveryNote Class
-
-  Each delivery note has to be associated with a contact if no contac data is provided when the Delivery Note is created an anonimous contact will be created as well.
-
 
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
@@ -2545,20 +2541,11 @@ class DeliveryNote extends DB_Table {
 
 
 		$state=$this->get_state();
-
-
-
-
 		$this->update_state($state);
 
 
 		foreach ($this->get_orders_objects() as $order) {
-
-			$order->update_item_totals_from_order_transactions();
-			$order->update_totals_from_order_transactions();
-
-
-
+			$order->update_totals();
 			$order->update_dispatch_state();
 		}
 
@@ -3092,7 +3079,7 @@ class DeliveryNote extends DB_Table {
 
 
 			foreach ($this->get_orders_objects() as $order_key=>$order) {
-				$order->update_no_normal_totals();
+				$order->update_totals();
 			}
 
 
@@ -3254,7 +3241,7 @@ class DeliveryNote extends DB_Table {
 			mysql_query($sql);
 
 			foreach ($this->get_orders_objects() as $order_key=>$order) {
-				$order->update_no_normal_totals();
+				$order->update_totals();
 			}
 
 
