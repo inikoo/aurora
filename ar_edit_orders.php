@@ -3842,24 +3842,24 @@ function create_invoice_order($data) {
 		$payment_balance=$invoice->apply_payment($payment);
 
 	}
-	
+
 	foreach ($invoice->get_delivery_notes_objects() as $key=>$dn) {
-			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $invoice->id,$key);
-			mysql_query( $sql );
-			$invoice->update_xhtml_delivery_notes();
-			$dn->update(array('Delivery Note Invoiced'=>'Yes'));
-			$dn->update_xhtml_invoices();
-		}
-		foreach ($invoice->get_orders_objects() as $key=>$order) {
-			$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $invoice->id );
-			mysql_query( $sql );
-			$invoice->update_xhtml_orders();
-			$order->update_xhtml_invoices();
-			$order->update_totals();
-			$order->set_as_invoiced();
-			$order->update_customer_history();
-		}
-	
+		$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $invoice->id,$key);
+		mysql_query( $sql );
+		$invoice->update_xhtml_delivery_notes();
+		$dn->update(array('Delivery Note Invoiced'=>'Yes'));
+		$dn->update_xhtml_invoices();
+	}
+	foreach ($invoice->get_orders_objects() as $key=>$order) {
+		$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $invoice->id );
+		mysql_query( $sql );
+		$invoice->update_xhtml_orders();
+		$order->update_xhtml_invoices();
+		$order->update_totals();
+		$order->set_as_invoiced();
+		$order->update_customer_history();
+	}
+
 
 	include 'splinters/new_fork.php';
 	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'invoice_created','subject_key'=>$invoice->id),$account_code);
@@ -3956,7 +3956,7 @@ function refund_order($data) {
 	$date=gmdate("Y-m-d H:i:s");
 	$order=new Order($data['order_key']);
 
-	
+
 
 	$refund=$order->create_refund(array(
 			'Invoice Metadata'=>'',
@@ -4052,8 +4052,8 @@ function refund_order($data) {
 		}
 
 		if ($data['values']['refund_shipping']=='Yes' ) {
-		if ($data['values']['refund_net']=='Yes') {
-			$net_shipping=$factor*$row['Invoice Transaction Shipping Amount'];
+			if ($data['values']['refund_net']=='Yes') {
+				$net_shipping=$factor*$row['Invoice Transaction Shipping Amount'];
 			}
 			if ($data['values']['refund_tax']=='Yes') {
 				$tax_shipping=$factor*$row['Invoice Transaction Shipping Tax Amount'];
@@ -4062,8 +4062,8 @@ function refund_order($data) {
 		}
 
 		if ($data['values']['refund_charges']=='Yes' ) {
-		if ($data['values']['refund_net']=='Yes') {
-			$net_charges=$factor*$row['Invoice Transaction Charges Amount'];
+			if ($data['values']['refund_net']=='Yes') {
+				$net_charges=$factor*$row['Invoice Transaction Charges Amount'];
 			}
 			if ($data['values']['refund_tax']=='Yes') {
 				$tax_charges=$factor*$row['Invoice Transaction Charges Tax Amount'];
@@ -4071,8 +4071,8 @@ function refund_order($data) {
 		}
 
 		if ($data['values']['refund_insurance']=='Yes' ) {
-		if ($data['values']['refund_net']=='Yes') {
-			$net_insurance=$factor*$row['Invoice Transaction Insurance Amount'];
+			if ($data['values']['refund_net']=='Yes') {
+				$net_insurance=$factor*$row['Invoice Transaction Insurance Amount'];
 			}
 			if ($data['values']['refund_tax']=='Yes') {
 				$tax_insurance=$factor*$row['Invoice Transaction Insurance Tax Amount'];
@@ -5675,9 +5675,9 @@ function new_orphan_refund($data) {
 
 
 	);
-	
-	
-	
+
+
+
 	$refund=new Invoice('create refund',$refund_data);
 	$refund->categorize();
 
@@ -5753,32 +5753,18 @@ function new_orphan_refund($data) {
 
 
 
-		/*
-
-		$refund->update(
-			array(
-				'Invoice Payment Account Key'=>$payment_account->id,
-				'Invoice Payment Account Code'=>$payment_account->data['Payment Account Code'],
-				'Invoice Payment Method'=>$payment_account->data['Payment Type'],
-				'Invoice Payment Key'=>$payment->id,
-				'Invoice Main Payment Method'=>'Customer Account'
-			));
-
-		$refund->pay_full_amount(array('Invoice Paid Date'=>gmdate('Y-m-d H:i:s'),'Payment Method'=>'Customer Account'));
-
-		$sql=sprintf("insert into `Invoice Payment Bridge` values (%d,%d,%d,%d,%.2f)  ON DUPLICATE KEY UPDATE `Amount`=%.2f ",
-			$refund->id,
-			$payment->id,
-			$payment_account->id,
-			$payment_account->data['Payment Service Provider Key'],
-			$total,$total);
-		//print $sql;
-		mysql_query($sql);
-*/
 		$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$total,'no_history');
 
 
-		$response= array('state'=>200,'account_balance'=>$customer->get('Account Balance'));
+		$formated_refund=sprintf(' <a href="invoice.php?id=%d">%s</a> <a target="_blank" href="invoice.pdf.php?id=%d"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf(\'invoice\',%d)" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> ',
+			$refund->id,
+			$refund->data['Invoice Public ID'],
+			$refund->id,
+			$refund->id
+		);
+
+
+		$response= array('state'=>200,'account_balance'=>$customer->get('Account Balance'),'formated_refund'=> $formated_refund);
 
 		echo json_encode($response);
 		return;

@@ -190,7 +190,12 @@
 							<table border=0 style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
 								<tr id="account_balance_tr">
 									<td id="account_balance_label">{t}Account Balance{/t}</td>
-									<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"><img id="edit_account_balance_button" src="art/icons/edit.gif" style="visibility:hidden;cursor:pointer"> {$customer->get('Account Balance')} </td>
+									<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"><img id="edit_account_balance_button" src="art/icons/add_bw.png" style="visibility:hidden;cursor:pointer"> {$customer->get('Account Balance')} </td>
+								</tr>
+								
+								<tr id="last_credit_note_tr" style="display:none">
+									
+									<td colspan=2 class="aright"  style="padding-right:20px">{t}Credit note{/t}: <span id="account_balance_last_credit_note"></span></td>
 								</tr>
 
 								<tr style="{if $customer->get_pending_payment_amount_from_account_balance()==0}display:none{/if}" >
@@ -1115,7 +1120,7 @@
 		<table class="edit" style="margin:10px;width:600px" border="0">
 
 			<tr class="title">
-				<td colspan=2>{t}Editing Account Balance{/t}</td>
+				<td colspan=2>{t}Add credit to account balance{/t}</td>
 			</tr><tr class="space5">
 			<td class="label" style="padding-bottom:10px">{t}Description{/t}:</td>
 			<td colspan=2  style="padding-bottom:10px;"> 

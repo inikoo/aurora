@@ -34,11 +34,11 @@
 				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending')}display:none{/if}" class="negative" onclick="cancel_pending_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> 
 				<button id="complete_payment_{$payment->id}" style="{if !( $payment->get('Payment Transaction Status')=='Pending')}display:none{/if}" class="positive" onclick="show_complete_payment_dialog({$payment->get('Payment Key')})">{t}Set as completed{/t}</button> 
 				{if  $payment->get('Payment Type')=='Payment' and  $payment->get('Payment Method')!='Account' and $payment->get('Payment Transaction Status')=='Completed'  }
-					{if  ($order->get('Order To Pay Amount')-$to_refund_amount)<0}
+					{if  ($order->get('Order To Pay Amount')- $order->get_to_refund_amount())<0}
 						<button style="margin-bottom:5px"  id="add_refund_{$payment->id}" class="{if  $order->get('Order To Pay Amount')<0}positive{/if}"  onclick="refund_payment({$payment->get('Payment Key')})"><img style="height:12.5px;width:12.5px" src="art/icons/add.png"> {t}Refund{/t}</button> 
 						<button style="margin-bottom:5px" id="add_credit_{$payment->id}" class="{if  $order->get('Order To Pay Amount')<0}positive{/if}" onclick="credit_payment({$payment->get('Payment Key')})"><img style="height:12.5px;width:12.5px" src="art/icons/add.png"> {t}Credit{/t}</button> 
 					{/if}
-					{if $to_refund_amount<0 }
+					{if $order->get_to_refund_amount()<0 }
 						{foreach from=$invoices_data item=invoice} 
 						{if  $invoice.to_pay<0}
 						<button  style="margin-bottom:5px" id="pay_refund_{$payment->id}"  onclick="pay_refund({$invoice.key},{$payment->get('Payment Key')},{$invoice.to_pay})">{t}Refund{/t} {$invoice.number}</button> 

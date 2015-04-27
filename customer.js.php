@@ -860,7 +860,7 @@ var tableid=10; // Change if you have more the 1 table
 		    success: function(request, response, payload) {
 		        if (response.results.length == 0) {
 		      
-		             get_offers_elements_numbers()
+		             //get_offers_elements_numbers()
 
 		        } else {
 		             this.onDataReturnInitializeTable(request, response, payload);
