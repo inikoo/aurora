@@ -23,3 +23,12 @@
     .yui-toolbar-group-insertitem {
     *width: auto;
 }
+
+
+#content_template_filename_options  img{height:100px;border:1px solid #ccc}
+#content_template_filename_options  img.selected{height:100px;border:1px solid #999;
+ -moz-box-shadow:    1px 1px 2px 2px #ccc;
+  -webkit-box-shadow: 1px 1px 2px 2px #ccc;
+  box-shadow:         1px 1px 2px 2px #ccc;
+
+}
