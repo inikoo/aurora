@@ -28,6 +28,15 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 $count=0;
 
+$sql="select `Part SKU` from `Part Dimension` where `Part Cost`=0";
+$resultx=mysql_query($sql);
+while ($rowx=mysql_fetch_array($resultx, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$rowx['Part SKU']);
+	
+	$part->update_cost();
+}
+
+exit;
 
 $sql="select `Part SKU` from `Part Dimension` where `Part Reference`='' or `Part Reference` IS NULL ";
 
