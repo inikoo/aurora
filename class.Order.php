@@ -2387,12 +2387,15 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
 		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount,
-		sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,sum(`Invoice Transaction Shipping Amount`) as shipping,
+		sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,
+		sum(`Invoice Transaction Shipping Amount`) as shipping,
 		sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where
 		`Order Key`=%d" ,$this->id);
 
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
+
+//print_r($row);
 
 			$total_not_dispatch_net=$row['out_of_stock_net']+$row['not_authorized_net']+$row['not_found_net']+$row['not_due_other_net'];
 			$total_not_dispatch_tax=$row['out_of_stock_tax']+$row['not_authorized_tax']+$row['not_found_tax']+$row['not_due_other_tax'];
@@ -2543,6 +2546,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 
+//		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount,
 
 
 		$net=0;
@@ -2555,30 +2559,78 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$sql = sprintf("select `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`
 			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 			where OTF.`Order Key`=%d",$this->id);
+			
+			
+			$sql = sprintf("select 
+		
+		(`Order Transaction Total Discount Amount`/`Order Transaction Gross Amount`) as discount_fraction_bis,
+		  `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`,
+		`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
+			
+			
+			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) 
+			where OTF.`Order Key`=%d",$this->id);	
 
-		//print $sql;
+		$sql = sprintf("select `Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,
+	ifnull((select max(ifnull(`Fraction Discount`,0)) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`),0 ) as discount_fraction,
+		  `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`,
+		`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
+			
+			
+			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) 
+			where OTF.`Order Key`=%d",$this->id);	
+
+	//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
 			//print_r($row);
-			$chargeable_qty=$row['Order Quantity']-$row['No Shipped Due Out of Stock']-$row['No Shipped Due No Authorized']-$row['No Shipped Due Not Found']-$row['No Shipped Due Other'];
+			
+			$ordered=$row['Order Quantity'];			
+			$no_dispatched=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
+			
+			$chargeable_qty=$ordered-$no_dispatched;
+			
+			
+			
+			
+			
+			
+			$discount_fraction=0;
+			
+			if($row['Order Transaction Gross Amount']>0){
+				$discount_fraction=$row['Order Transaction Total Discount Amount']/$row['Order Transaction Gross Amount'];
+			}
+		
+		
+//	$discount_fraction=$row['discount_fraction'];
+			
 			$gross_chargeable_amount=$chargeable_qty*$row['Product History Price'];
-			$discount=round($gross_chargeable_amount*$row['Fraction Discount'],2);
+			
+			$discount=round($gross_chargeable_amount*$discount_fraction,2);
+			
 			$chargeable_amount=$gross_chargeable_amount-$discount;
 			$gross+=$row['Order Quantity']*$row['Product History Price'];
 			$out_of_stock_amount+=($row['No Shipped Due Out of Stock'])*$row['Product History Price'];
 			$discounts+=$discount;
 			$chargeable_amount=round($chargeable_amount,2);
 
+	
+	
 			$_refund_tax=round($row['Invoice Transaction Tax Refund Items'],2);
 			$_refund_net=round($row['Invoice Transaction Net Refund Items'],2);
-
+	
+	
+	
 			$tax+=round($_refund_tax+($chargeable_amount*$row['Transaction Tax Rate']),2);
 			$net+=round($chargeable_amount+$_refund_net,2);
+	
+
 		}
 
 
 		//print "$net ";
+
 
 
 		$this->data['Order Balance Net Amount']=$net-$this->data['Order Deal Amount Off'];
@@ -2595,6 +2647,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->data['Order Outstanding Balance Total Amount']=$this->data['Order Balance Total Amount']-$this->data['Order Invoiced Balance Total Amount']+$this->data['Order Invoiced Outstanding Balance Total Amount'];
 
 
+		//print $this->data['Order Balance Net Amount'].' '.$this->data['Order Balance Tax Amount']." ".$this->data['Order Balance Total Amount']." \n";
 
 
 
@@ -2742,7 +2795,6 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->data['Order To Pay Amount']=round($this->data['Order Balance Total Amount']-$this->data['Order Payments Amount'],2);
 
 
-		//print $this->data['Order Balance Net Amount'].' '.$this->data['Order Balance Tax Amount']." ".$this->data['Order Balance Total Amount']." \n";
 
 
 		$sql=sprintf("update `Order Dimension` set
@@ -3397,7 +3449,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		mysql_query( $sql );
 
-		//print "$sql\n";
+		
 
 
 
