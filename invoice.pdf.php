@@ -157,6 +157,18 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 }
 
+$sql=sprintf("select * from `Order No Product Transaction Fact` where `Refund Key`=%d and `Transaction Type`='Credit' ", $invoice->id);
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	
+		$row['Product Code']=_('Credit');
+		$row['Product XHTML Short Description']=$row['Transaction Description'];
+		$row['Amount']=money(($row['Transaction Refund Net Amount']),$row['Currency Code']);
+		$row['Discount']='';
+		$transactions[]=$row;
+
+
+	}
 
 
 $transactions_out_of_stock=array();
@@ -179,6 +191,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 $smarty->assign('number_transactions_out_of_stock',count($transactions_out_of_stock));
 
 $smarty->assign('transactions_out_of_stock',$transactions_out_of_stock);
+
+
+
 
 
 

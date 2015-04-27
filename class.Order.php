@@ -2585,7 +2585,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->data['Order Balance Tax Amount']=$tax-round($this->data['Order Deal Amount Off']*$this->data['Order Tax Rate'],2);
 
 
-// print "Tax : ".$this->data['Order Balance Tax Amount'].' '.$tax." ".round($this->data['Order Deal Amount Off']*$this->data['Order Tax Rate'],2)."  \n";
+		// print "Tax : ".$this->data['Order Balance Tax Amount'].' '.$tax." ".round($this->data['Order Deal Amount Off']*$this->data['Order Tax Rate'],2)."  \n";
 
 
 		$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
@@ -2617,7 +2617,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$this->data['Order Balance Net Amount']+=round($row['Transaction Net Amount']+$row['Transaction Refund Net Amount'],2);
 			$this->data['Order Balance Tax Amount']+=round($row['Transaction Tax Amount']+$row['Transaction Refund Tax Amount'],2);
 
-//print "Tax : ".$this->data['Order Balance Tax Amount'].' '.round($row['Transaction Tax Amount']+$row['Transaction Refund Tax Amount'],2)." tax ship\n";
+			//print "Tax : ".$this->data['Order Balance Tax Amount'].' '.round($row['Transaction Tax Amount']+$row['Transaction Refund Tax Amount'],2)." tax ship\n";
 			$this->data['Order Balance Total Amount']+=$row['Transaction Net Amount']+$row['Transaction Tax Amount']+$row['Transaction Refund Net Amount']+$row['Transaction Refund Tax Amount'];
 			$this->data['Order Outstanding Balance Net Amount']+=$row['Transaction Net Amount']-$row['Transaction Invoice Net Amount']+$row['Transaction Outstanding Net Amount Balance'];
 			$this->data['Order Outstanding Balance Tax Amount']+=$row['Transaction Tax Amount']-$row['Transaction Invoice Tax Amount']+$row['Transaction Outstanding Tax Amount Balance'];
@@ -2742,7 +2742,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->data['Order To Pay Amount']=round($this->data['Order Balance Total Amount']-$this->data['Order Payments Amount'],2);
 
 
-//print $this->data['Order Balance Net Amount'].' '.$this->data['Order Balance Tax Amount']." ".$this->data['Order Balance Total Amount']." \n";
+		//print $this->data['Order Balance Net Amount'].' '.$this->data['Order Balance Tax Amount']." ".$this->data['Order Balance Total Amount']." \n";
 
 
 		$sql=sprintf("update `Order Dimension` set
@@ -6742,7 +6742,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 				'Net_Amount'=>0,
-				'Tax_Amount'=>0,	
+				'Tax_Amount'=>0,
 				'Formated_Net_Amount'=>money(0,$this->data['Order Currency']),
 				'Formated_Tax_Amount'=>money(0,$this->data['Order Currency']),
 				'Formated_Zero_Amount'=>money(0,$this->data['Order Currency']),
@@ -7938,7 +7938,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		$this->data['Order Balance Total Amount']=round($this->data['Order Balance Total Amount'],2);
 
-//print $payments_amount.' '.$this->data['Order Balance Total Amount'];
+		//print $payments_amount.' '.$this->data['Order Balance Total Amount'];
 
 
 
@@ -8228,6 +8228,23 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		}
 
 	}
+
+	function get_to_refund_amount() {
+		$to_refund_amount=0;
+
+		foreach ($this->get_invoices_objects() as $invoice) {
+			$current_invoice_key=$invoice->id;
+
+			if ($invoice->data['Invoice Type']=='Refund') {
+				$to_refund_amount+=$invoice->data['Invoice Outstanding Total Amount'];
+			}
+
+		}
+		
+		return $to_refund_amount;
+
+	}
+
 
 }
 ?>

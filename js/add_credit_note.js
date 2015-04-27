@@ -136,13 +136,13 @@ function add_credit_note(payment_account) {
 
                 Dom.get('account_balance').innerHTML = r.account_balance
 
-
+Dom.get('account_balance_last_credit_note').innerHTML=r.formated_refund;
 
                 dialog_add_credit_note.hide()
 
                 Dom.setStyle('save_add_credit_note_wait', 'display', 'none')
 
-                Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account'], 'display', '')
+                Dom.setStyle(['close_add_credit', 'add_credit_note_customer_account', 'add_credit_note_other_payment_account','last_credit_note_tr'], 'display', '')
 
 
                 if (r.state == 200) {

@@ -550,14 +550,11 @@ else {
 	$smarty->assign('dns_data',$dns_data);
 
 
-	$to_refund_amount=0;
 	$invoices_data=array();
 	foreach ($order->get_invoices_objects() as $invoice) {
 		$current_invoice_key=$invoice->id;
 
-		if ($invoice->data['Invoice Type']=='Refund') {
-			$to_refund_amount+=$invoice->data['Invoice Outstanding Total Amount'];
-		}
+		
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
 			'operations'=>$invoice->get_operations($user,'order',$order->id),
@@ -577,7 +574,6 @@ else {
 	$smarty->assign('current_invoice_key',$current_invoice_key);
 	$smarty->assign('number_invoices',$number_invoices);
 	$smarty->assign('invoices_data',$invoices_data);
-	$smarty->assign('to_refund_amount',$to_refund_amount);
 
 
 	$order_current_dispatch_state=$order->get('Order Current Dispatch State');

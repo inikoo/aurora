@@ -17,3 +17,5 @@ server_files/tmp/*
 *.php~
 
 mantenence/scripts/paso_shipping.php
+
+mantenence/scripts/create_part.php
