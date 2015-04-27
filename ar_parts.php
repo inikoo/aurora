@@ -854,24 +854,23 @@ function list_parts_at_date() {
 
 
 
-
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='used_in' and $f_value!='')
-		$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Part XHTML Currently Used In` like '%%".addslashes($f_value)."%%'";
 	elseif ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Part Unit Description` like '%%".addslashes($f_value)."%%'";
 	elseif ($f_field=='supplied_by' and $f_value!='')
-		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Part XHTML Currently Supplied By` like '%%".addslashes($f_value)."%%'";
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  ISF.`Part SKU` ='".addslashes($f_value)."'";
+elseif ($f_field=='reference' and $f_value!='')
+		$wheref.=" and  P.`Part Reference` like '".addslashes($f_value)."%%'";
 
-	$sql="select count(Distinct P.`Part SKU`) as total from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
+	$sql=sprintf("select count(Distinct P.`Part SKU`) as total from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref");
 
-
-	//print $sql;
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -884,7 +883,7 @@ function list_parts_at_date() {
 	} else {
 
 
-		$sql="select count(Distinct P.`Part SKU`) as total from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
+		$sql=sprintf("select count(Distinct P.`Part SKU`) as total_without_filters from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where ");
 
 
 
@@ -897,9 +896,7 @@ function list_parts_at_date() {
 
 	}
 
-	//print $sql;
-
-
+	
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
@@ -907,6 +904,9 @@ function list_parts_at_date() {
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
+		
+	
+		
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('sku'):
@@ -922,6 +922,9 @@ function list_parts_at_date() {
 		case('description'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
 			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with reference like ")." <b>".$f_value."*</b> ";
+			break;	
 		}
 	}
 	elseif ($filtered>0) {
@@ -941,6 +944,9 @@ function list_parts_at_date() {
 		case('description'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b>";
 			break;
+		case('reference'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with reference like')." <b>".$f_value."*</b>";
+			break;	
 		}
 	}
 	else
@@ -992,7 +998,7 @@ function list_parts_at_date() {
 	$group='';
 
 
-	$sql=sprintf("select `Part Reference`,DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased,DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in,DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold,`Part Last Sale Date`,`Part Last Booked In Date`,`Part Last Purchase Date`,ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ",
+	$sql=sprintf("select `Part Unit Description`,`Part Reference`,DATEDIFF(`Part Last Purchase Date`,%s) as delta_last_purchased,DATEDIFF(`Part Last Booked In Date`,%s) as delta_last_booked_in,DATEDIFF(`Part Last Sale Date`,%s) as delta_last_sold,`Part Last Sale Date`,`Part Last Booked In Date`,`Part Last Purchase Date`,ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ",
 		prepare_mysql($date),
 		prepare_mysql($date),
 		prepare_mysql($date)
@@ -1012,7 +1018,10 @@ function list_parts_at_date() {
 		$adata[]=array(
 			'locations'=>number($data['locations']),
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
-			'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part Reference']),
+			'reference'=>sprintf('<a href="part.php?sku=%d" title="%s">%s</a>',$data['Part SKU'],
+			$data['Part Unit Description'],
+			$data['Part Reference']
+			),
 
 			'description'=>$data['Part Unit Description'],
 			'description_small'=>$data['Part Unit Description'].'<br/>'.$data['Part XHTML Currently Used In'],

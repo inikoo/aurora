@@ -73,6 +73,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/calendar.css',
 
 	'theme.css.php'
 );
