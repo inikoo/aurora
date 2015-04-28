@@ -1505,55 +1505,7 @@ print "++++++++++\n";
 			$value_day_cost_low=$low*$value_day_cost_unit_cost;
 			$commercial_value_low=$low*$commercial_value_unit_cost;
 
-			/*
-
-			if ($stock>0 or $open>0 or $high>0 or $low>0) {
-				$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
-				$value_day_cost_unit_cost=$this->part->get_unit_cost($row['Date'].' 23:59:59');
-			}
-
-			if ($stock<=0) {
-				$value_day_cost=0;
-				$commercial_value=0;
-			}
-			else {
-				$value_day_cost=$stock*$value_day_cost_unit_cost;
-				$commercial_value=$stock*$commercial_value_unit_cost;
-			}
-			if ($open<=0) {
-				$value_day_cost_open=0;
-				$commercial_value_open=0;
-			}
-			else {
-				$value_day_cost_open=$open*$value_day_cost_unit_cost;
-				$commercial_value_open=$open*$commercial_value_unit_cost;
-			}
-
-			if ($high<=0) {
-				$value_day_cost_high=0;
-				$commercial_value_high=0;
-			}
-			else {
-				$value_day_cost_high=$high*$value_day_cost_unit_cost;
-				$commercial_value_high=$high*$commercial_value_unit_cost;
-			}
-
-			if ($low<=0) {
-				$value_day_cost_low=0;
-				$commercial_value_low=0;
-			}
-			else {
-				$value_day_cost_low=$low*$value_day_cost_unit_cost;
-				$commercial_value_low=$low*$commercial_value_unit_cost;
-			}
-
-
-			if ($value<0)$value=0;
-			if ($value_open<0)$value_open=0;
-			if ($value_low<0)$value_low=0;
-			if ($value_high<0)$value_high=0;
-
-			*/
+			
 
 			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
 			//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";

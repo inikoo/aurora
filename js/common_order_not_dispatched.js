@@ -1748,6 +1748,15 @@ function show_set_tax_number_dialog() {
 
 }
 
+function post_item_updated_actions(branch,r){
+if(branch=='order'){
+	if(r.key=='tax_number'){
+		
+		 location.reload(); 
+	}
+}
+}
+
 function show_dialog_add_voucher() {
 
     region1 = Dom.getRegion('add_voucher');

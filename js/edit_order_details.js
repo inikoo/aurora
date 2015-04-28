@@ -1,15 +1,14 @@
-
-function show_dialog_quick_edit_Order_Customer_Fiscal_Name(){
- region1 = Dom.getRegion('order_customer_fiscal_name_label');
+function show_dialog_quick_edit_Order_Customer_Fiscal_Name() {
+    region1 = Dom.getRegion('order_customer_fiscal_name_label');
     region2 = Dom.getRegion('dialog_quick_edit_Order_Customer_Fiscal_Name');
     var pos = [region1.left, region1.bottom]
     Dom.setXY('dialog_quick_edit_Order_Customer_Fiscal_Name', pos);
     dialog_quick_edit_Order_Customer_Fiscal_Name.show()
-Dom.get('Order_Customer_Fiscal_Name').focus()
+    Dom.get('Order_Customer_Fiscal_Name').focus()
 }
 
-function cancel_quick_edit_Order_Customer_Fiscal_Name(){
-Dom.get('Order_Customer_Fiscal_Name').value=Dom.get('Order_Customer_Fiscal_Name').getAttribute('ovalue')
+function cancel_quick_edit_Order_Customer_Fiscal_Name() {
+    Dom.get('Order_Customer_Fiscal_Name').value = Dom.get('Order_Customer_Fiscal_Name').getAttribute('ovalue')
     dialog_quick_edit_Order_Customer_Fiscal_Name.hide()
 
 }
@@ -20,7 +19,7 @@ function save_quick_edit_Order_Customer_Fiscal_Name() {
 
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-          
+
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -45,7 +44,7 @@ function save_quick_edit_Order_Customer_Fiscal_Name() {
 
 function init_edit_orders_details() {
 
-  dialog_quick_edit_Order_Customer_Fiscal_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Order_Customer_Fiscal_Name", {
+    dialog_quick_edit_Order_Customer_Fiscal_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Order_Customer_Fiscal_Name", {
 
         visible: false,
         close: true,
@@ -53,9 +52,25 @@ function init_edit_orders_details() {
         draggable: false
     });
     dialog_quick_edit_Order_Customer_Fiscal_Name.render();
+    
+    dialog_quick_edit_Order_Tax_Number = new YAHOO.widget.Dialog("dialog_quick_edit_Order_Tax_Number", {
+
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_quick_edit_Order_Tax_Number.render();
+    
+    
     Event.addListener("update_customer_fiscal_name", "click", show_dialog_quick_edit_Order_Customer_Fiscal_Name);
     Event.addListener("close_quick_edit_customer_fiscal_name", "click", cancel_quick_edit_Order_Customer_Fiscal_Name);
     Event.addListener("save_quick_edit_customer_fiscal_name", "click", save_quick_edit_Order_Customer_Fiscal_Name);
+
+    Event.addListener("update_order_tax_number", "click", show_dialog_quick_edit_Order_Tax_Number);
+    Event.addListener("close_quick_edit_order_tax_number", "click", cancel_quick_edit_Order_Tax_Number);
+    Event.addListener("save_quick_edit_order_tax_number", "click", save_quick_edit_Order_Tax_Number);
+
 
 
 }
