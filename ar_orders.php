@@ -745,7 +745,10 @@ function list_transactions_in_invoice() {
 	$total_picks=0;
 
 	$data=array();
-	$sql="select * from `Order Transaction Fact` O   left join  `Product Dimension` P on (O.`Product ID`=P.`Product ID`) $where order by O.`Product Code`  ";
+	$sql="select * from `Order Transaction Fact` O   
+left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) 
+ left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
+ 	 $where order by O.`Product Code`  ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
 	//   print $sql;
@@ -773,7 +776,7 @@ function list_transactions_in_invoice() {
 		$data[]=array(
 
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'],
+			'description'=>$row['Product History XHTML Short Description'],
 			'tariff_code'=>$row['Product Tariff Code'],
 			'quantity'=>number($row['Invoice Quantity']),
 			'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code']),
@@ -873,14 +876,14 @@ function list_transactions_in_refund() {
 	$total_picks=0;
 
 	$data=array();
-	$sql="select `Invoice Transaction Tax Refund Items`,`Invoice Transaction Net Refund Items`,`Refund Quantity`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+	$sql="select `Invoice Transaction Tax Refund Items`,`Invoice Transaction Net Refund Items`,`Refund Quantity`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product History XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
 	$result=mysql_query($sql);
 
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 		$data[]=array(
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'],
+			'description'=>$row['Product History XHTML Short Description'],
 			'tariff_code'=>$row['Product Tariff Code'],
 
 			'charged'=>$row['Invoice Quantity'].'/'.money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']).'('.money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']).')',
@@ -2175,7 +2178,7 @@ function transactions_to_process() {
 
 
 			'code'=>$code
-			,'description'=>$row['Product XHTML Short Description']
+			,'description'=>$row['Product History XHTML Short Description']
 			,'tariff_code'=>$row['Product Tariff Code']
 			,'quantity'=>$quantity
 			,'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code'])
@@ -2288,7 +2291,9 @@ function list_transactions_dispatched() {
 
 
 
-	$table='`Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)';
+	$table='`Order Transaction Fact` O 
+	left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) 
+ left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)';
 	$where=sprintf(' where `Order Transaction Type` not in ("Resend")  and  O.`Order Key`=%d',$parent_key);
 
 	$sql="select count(*) as total from $table  $where $wheref";
@@ -2360,7 +2365,7 @@ function list_transactions_dispatched() {
 	$order=' order by O.`Product Code`';
 
 
-	$sql="select  `Operation`,`Quantity`,`Order Bonus Quantity`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+	$sql="select  `Operation`,`Quantity`,`Order Bonus Quantity`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product History XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
    	from $table
    	         left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
          left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
@@ -2407,9 +2412,9 @@ function list_transactions_dispatched() {
 		}
 
 
-		$description=$row['Product XHTML Short Description'];
+		$description=$row['Product History XHTML Short Description'];
 		if ($row['Deal Info']!='') {
-			$description.='<br/> <span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].'</span>';
+			$description.='<br/> <span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
 
 		$data[]=array(
@@ -2607,7 +2612,7 @@ function list_post_transactions() {
 	$order=' order by O.`Product Code`';
 	$order='';
 
-	$sql="select POT.`Refund Key`,POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,DN.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`
+	$sql="select POT.`Refund Key`,POT.`Customer Key`,`Reason`,OTF.`Invoice Currency Code`,`Credit`,OTF.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,OTF.`Delivery Note Quantity`,DN.`Delivery Note ID`,POT.`Delivery Note Key`,P.`Product ID`,OTF.`Product Code`,`Product History XHTML Short Description`
 	from $table
 	$where $order  ";
 
@@ -2683,7 +2688,7 @@ function list_post_transactions() {
 		$data[]=array(
 
 			'code'=>$code
-			,'description'=>$row['Product XHTML Short Description']
+			,'description'=>$row['Product History XHTML Short Description']
 			,'dn'=>sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID'])
 			,'dispatched'=>number($row['Shipped Quantity'])
 			,'quantity'=>$quantity
@@ -2881,7 +2886,14 @@ function list_transactions_in_order() {
 	$total_picks=0;
 
 	$adata=array();
-	$sql="select * from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select *,
+		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
+
+	
+	 from `Order Transaction Fact` OTF 
+left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) 
+ left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)	
+	 $where  order by $order $order_direction limit $start_from,$number_results ";
 	//print $sql;
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
 	$result=mysql_query($sql);
@@ -2900,12 +2912,31 @@ function list_transactions_in_order() {
 				$quantity=number($row['Order Bonus Quantity']).' '._('free');
 			}
 		}
+		
+		
+		if (is_numeric($row['Product Availability']))
+			$stock=number($row['Product Availability']);
+		else
+			$stock='?';
+		
+		$deal_info='';
+		if ($row['Deal Info']!='') {
+			$deal_info='<br/> <span class="deal_info">'.$row['Deal Info'].'</span>';
+		}
+
+
+if ($parent=='order_cancelled' or $parent=='order_suspended') {
+$description=$row['Product History XHTML Short Description'].$deal_info;
+
+}else{
+$description=$row['Product History XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+}
 
 
 		$adata[]=array(
 
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'],
+			'description'=>$description,
 			'tariff_code'=>$row['Product Tariff Code'],
 			'quantity'=>$quantity,
 			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
@@ -4377,7 +4408,9 @@ function transactions_in_warehouse() {
 
 	$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 	$where=sprintf(' where   `Order Key`=%d',$order_id);
-	$sql_qty='`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+	$sql_qty='`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,
+	(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
+	,`Current Dispatching State`';
 
 
 
@@ -4483,7 +4516,7 @@ function transactions_in_warehouse() {
 
 
 
-	$sql="select `Order Bonus Quantity`,`Delivery Note Quantity`,`Picked Quantity`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Order Bonus Quantity`,`Delivery Note Quantity`,`Picked Quantity`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product History XHTML Short Description`,`Product History Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 
 	$res = mysql_query($sql);
@@ -4526,7 +4559,7 @@ function transactions_in_warehouse() {
 
 		$deal_info='';
 		if ($row['Deal Info']!='') {
-			$deal_info='<br/> <span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].'</span>';
+			$deal_info='<br/> <span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
 
 		$not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
@@ -4638,8 +4671,8 @@ function transactions_in_warehouse() {
 			'pid'=>$row['Product ID'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info,
-			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
+			'description'=>$row['Product History XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info,
+			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product History Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
 			'family'=>$row['Product Family Name'],
 			'dept'=>$row['Product Main Department Name'],
 			'expcode'=>$row['Product Tariff Code'],

@@ -53,24 +53,13 @@ function init_edit_orders_details() {
     });
     dialog_quick_edit_Order_Customer_Fiscal_Name.render();
     
-    dialog_quick_edit_Order_Tax_Number = new YAHOO.widget.Dialog("dialog_quick_edit_Order_Tax_Number", {
-
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_quick_edit_Order_Tax_Number.render();
-    
+     
     
     Event.addListener("update_customer_fiscal_name", "click", show_dialog_quick_edit_Order_Customer_Fiscal_Name);
     Event.addListener("close_quick_edit_customer_fiscal_name", "click", cancel_quick_edit_Order_Customer_Fiscal_Name);
     Event.addListener("save_quick_edit_customer_fiscal_name", "click", save_quick_edit_Order_Customer_Fiscal_Name);
 
-    Event.addListener("update_order_tax_number", "click", show_dialog_quick_edit_Order_Tax_Number);
-    Event.addListener("close_quick_edit_order_tax_number", "click", cancel_quick_edit_Order_Tax_Number);
-    Event.addListener("save_quick_edit_order_tax_number", "click", save_quick_edit_Order_Tax_Number);
-
+  
 
 
 }

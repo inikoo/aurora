@@ -114,7 +114,9 @@ if ( in_array($invoice->data['Invoice Delivery Country Code'],get_countries_EC_F
 
 
 $transactions=array();
-$sql=sprintf("select `Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d order by `Product Code`", $invoice->id);
+$sql=sprintf("select `Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+ from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join 
+  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d order by `Product Code`", $invoice->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -122,11 +124,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$row['Discount']=($row['Invoice Transaction Total Discount Amount']==0?'':percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount'],0));
 
 	if ($row['Product RRP']!=0) {
-		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
+		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].' <br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
 	}
 
 	if ($print_tariff_code)
-		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
+		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
 
 	$transactions[]=$row;
 
@@ -134,7 +136,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-$sql=sprintf("select `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Refund Quantity`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Refund Key`=%d order by `Product Code`", $invoice->id);
+$sql=sprintf("select `Product History XHTML Short Description`,`Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Refund Quantity`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Refund Key`=%d order by `Product Code`", $invoice->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -147,11 +149,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$row['Discount']='';
 	$row['Invoice Quantity']=$row['Refund Quantity'];
 	if ($row['Product RRP']!=0) {
-		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
+		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
 	}
 
 	if ($print_tariff_code)
-		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
+		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
 
 	$transactions[]=$row;
 
@@ -172,7 +174,11 @@ $sql=sprintf("select * from `Order No Product Transaction Fact` where `Refund Ke
 
 
 $transactions_out_of_stock=array();
-$sql=sprintf("select (`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as qty,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d and (`No Shipped Due Out of Stock`>0  or  `No Shipped Due No Authorized`>0 or `No Shipped Due Not Found`>0 or `No Shipped Due Other` )  order by `Product Code`", $invoice->id);
+$sql=sprintf("select `Product History XHTML Short Description`,(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as qty,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O 
+ left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) 
+ left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
+ 
+  where `Invoice Key`=%d and (`No Shipped Due Out of Stock`>0  or  `No Shipped Due No Authorized`>0 or `No Shipped Due Not Found`>0 or `No Shipped Due Other` )  order by `Product Code`", $invoice->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -180,7 +186,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$row['Discount']='';
 
 	if ($row['Product RRP']!=0) {
-		$row['Product XHTML Short Description']=$row['Product XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
+		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
 	}
 
 	$row['Quantity']='<span >('.$row['qty'].')</span>';
