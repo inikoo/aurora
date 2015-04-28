@@ -45,13 +45,12 @@
 		<tr>
 			<td id="order_customer_fiscal_name_label">{t}Customer Fiscal Name{/t}:</td>
 			<td id="order_customer_fiscal_name" class="aright">{$order->get('Order Customer Fiscal Name')}</td>
-			<td class="aright"><img id="update_customer_fiscal_name" onClick="show_update_customer_fiscal_name()" style="cursor:pointer" src="art/icons/edit.gif"></td>
+			<td class="aright"><img id="update_customer_fiscal_name"  style="cursor:pointer" src="art/icons/edit.gif"></td>
 		</tr>
 		<tr>
 			<td>{t}Tax Number{/t}:</td>
 			<td class="aright" id="update_order_tax_number_value">{$order->get('Order Tax Number')}</td>
-			<td class="aright"><img id="update_order_tax_number" xonClick="show_set_tax_number_dialog_from_details()" style="cursor:pointer" src="art/icons/edit.gif"></td>
-			{*}Use sema method as for change the tax number when is othe rEU state{*}
+			<td class="aright"><img id="update_order_tax_number" onclick="show_set_tax_number_dialog_from_details()" style="cursor:pointer" src="art/icons/edit.gif"></td>
 		</tr>
 		<tr>
 			<td>{t}Customer Name{/t}:</td>
@@ -91,7 +90,7 @@
 <div id="dialog_quick_edit_Order_Customer_Fiscal_Name" style="padding:10px">
 		<table style="margin:10px">
 			<tr>
-				<td>{t}Customer Fiscal Name:{/t}</td>
+				<td>{t}Customer Fiscal Name{/t}:</td>
 				<td> 
 				<div >
 					<input style="width:300px" type="text" id="Order_Customer_Fiscal_Name" value="{$order->get('Order Customer Fiscal Name')}" ovalue="{$order->get('Order Customer Fiscal Name')}" valid="0"> 
@@ -109,3 +108,6 @@
 			</tr>
 		</table>
 	</div>
+	
+	
+	

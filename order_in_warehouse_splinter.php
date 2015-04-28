@@ -46,7 +46,7 @@ if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {
 
 	$js_files[]='js/edit_delivery_address_common.js';
 	$js_files[]='js/edit_billing_address_common.js';
-	$js_files[]='js/common_order_not_dispatched.js?141007';
+	$js_files[]='js/common_order_not_dispatched.js?150428';
 
 	$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 
