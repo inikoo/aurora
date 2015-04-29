@@ -1,5 +1,5 @@
 <div id="bd" style="padding:20px 15px">
-	<div id="families" class="content">
+	<div id="departments" class="content">
 		{$page->get_primary_content()}
 	
 	    {foreach from=$_departments item=department} 

@@ -29,7 +29,7 @@
 			<li style="display:none"><span class="item {if $block_view=='properties'}selected{/if}" id="properties"> <span>{t}HTML Setup{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='page_header'}selected{/if}" id="page_header"> <span> {t}Header{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='page_footer'}selected{/if}" id="page_footer"> <span> {t}Footer{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='content'}selected{/if}" id="content"><span> {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
+			<li> <span class="item {if $block_view=='content'}selected{/if}" id="content"><span>{if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='style'}selected{/if}" id="style"><span> {t}Style{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='media'}selected{/if}" id="media"><span> {t}Media{/t}</span></span></li>
@@ -201,7 +201,11 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px;" id="d_content">
 			<div class="buttons left small tabs">
-				<button style="{if $content_view=='content'}margin-left:30px{/if}" id="show_page_includes_block" class="indented {if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> <button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
+				<button style="{if $content_view=='content'}margin-left:30px{/if}" id="show_page_includes_block" class="indented {if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> 
+				<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> 
+				<button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
+				<button style="{if !($page->get('Page Store Section')=='Family Catalogue' or $page->get('Page Store Section')=='Product Description') }display:none{/if}"  id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
+				<button style="{if !($page->get('Page Store Section')=='Family Catalogue') }display:none{/if}"   id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -375,7 +379,10 @@
 					</div>
 				</div>
 			</div>
-			<div style="{if $content_view!='content'}display:none{/if};min-height:400px" id="page_content_block">
+			<div style="{if $content_view!='content' or !($page->get('Page Store Section')=='Family Catalogue' or $page->get('Page Store Section')=='Product Description')  }display:none{/if};min-height:400px" id="page_content_block">
+			
+			
+			
 				<table  border=0 class="edit" style="padding:20px;margin-top:20px;margin-left:20px;width:900px">
 					<tr>
 						<td style="width:120px" class="label">{t}Content source type{/t}:</td>
@@ -395,7 +402,7 @@
 							<img class="selected"  src="art/page_layout_product_thumbnails.png" /> 
 							</td>
 						{else if $page->get('Page Store Section')=='Product Description'}
-							<input id="content_template_filename" value="family_buttons" type="hidden"></td>
+							<input id="content_template_filename" value="product" type="hidden"></td>
 							<td  id="content_template_filename_options"> 
 							<img class="selected"  src="art/page_layout_product.png" /> 
 							</td>
@@ -429,6 +436,8 @@
 					</tr>
 				</table>
 			</div>
+			
+			
 			<div style="{if $content_view!='includes'}display:none{/if};margin:10px 20px;" id="page_includes_block">
 				<table class="edit" border="0" style="width:100%">
 					<tr class="title">
