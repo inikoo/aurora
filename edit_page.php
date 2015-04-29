@@ -126,11 +126,22 @@ $smarty->assign('block_view',$_SESSION['state']['page']['editing']);
 
 $content_view=$_SESSION['state']['page']['editing_content_block'];
 if (isset($_REQUEST['content_view'])) {
-	$valid_views=array('header','content','footer','product_list','product_buttons');
+	$valid_views=array('includes','header','footer','content','products');
 	if (in_array($_REQUEST['content_view'], $valid_views))
 		$content_view=$_REQUEST['content_view'];
 
 }
+
+
+
+if($content_view=='products' and $page->data['Page Store Section']=='Family Catalogue'){
+	$content_view='header';
+}
+
+if($content_view=='content' and !in_array($page->data['Page Store Section'],array('Family Catalogue','Product Description'))){
+	$content_view='header';
+}
+
 $smarty->assign('content_view',$content_view);
 
 

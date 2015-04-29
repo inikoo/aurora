@@ -69,9 +69,9 @@ if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-	'css/button.css',
-	'css/ecom_style.css',
-	'css/ecom_order_fields.css'
+		$yui_path.'menu/assets/skins/sam/menu.css',
+		'css/ecom_inikoo.css',
+	'css/ecom_style.css'
 );
 
 $js_files=array(
@@ -81,6 +81,9 @@ $js_files=array(
 	'js/page_store.js'
 );
 
+if ($logged and $site->data['Site Checkout Method']=='Inikoo') {
+		$css_files[]='css/ecom_order_fields.css';
+	}
 
 
 

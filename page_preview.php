@@ -163,5 +163,19 @@ $smarty->assign('parent_url','site.php?id='.$site->id);
 $parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
 $smarty->assign('parent_title',$parent_title);
 
+
+	include 'ecom_template_assignments.php';
+
+	if ($page->data['Page Store Section Type']=='Family') {
+		$smarty->assign('_products',$page->get_products_data());
+	}
+	elseif ($page->data['Page Store Section Type']=='Department') {
+		$smarty->assign('_families',$page->get_families_data());
+	}elseif ($page->data['Page Store Section Type']=='Product') {
+
+		$smarty->assign('product',$page->get_product_data());
+	}
+
+
 $smarty->display('page_preview.tpl');
 ?>

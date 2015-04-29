@@ -19,3 +19,7 @@
 
 .order_but{width:180px !important}
 
+.logged_out_price{color:green;}
+.logged_out_price a{color:green;font-weight: 800}
+
+ .rrp{display:block}

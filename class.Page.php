@@ -4820,11 +4820,34 @@ class Page extends DB_Table {
 		return $families;
 
 	}
+	
+	
+	function display_button_only_inikoo($product) {
+
+		$quantity=$this->get_button_ordered_quantity($product);
+
+		$message=$this->get_button_text($product,$quantity);
+
+
+
+
+
+		$form=sprintf('<div  class="ind_form_button_only">%s</div><div style="clear:both"></div>',
+
+
+			$message
+		);
+
+
+
+
+		return $form;
+	}
 
 	function get_product_data() {
 		$product_data=array();
 
-		$sql=sprintf("select `Product ID` from `Product Dimension` P where `Product ID`=%d ",
+		$sql=sprintf("select `Product ID` from `Product Dimension` P  where `Product ID`=%d ",
 			$this->data['Page Parent Key']
 		);
 
@@ -4840,8 +4863,13 @@ class Page extends DB_Table {
 
 			if ($this->logged) {
 				$button=$this->display_button_inikoo($product);
+				$button_only=$this->display_button_only_inikoo($product);
+				$price=$this->get_button_price($product);
 			}else {
-				$button=$this->display_button_logged_out($product);
+				$button='';
+				$button_only='';
+				$price='<div class="product_log_out_price">'._('For prices, please').' <a  style="font-weight:800" href="login.php?from='.$this->id.'" >'._('login').'</a> '._('or').' <a   href="registration.php">'._('register').'</a> </div>';
+
 			}
 
 			$images=array();
@@ -4852,10 +4880,20 @@ class Page extends DB_Table {
 				'img'=>$product->data['Product Main Image'],
 				'images'=>$images,
 				'quantity'=>$quantity,
-				'price'=>$this->get_button_price($product),
+				'price'=>$price,
 				'rrp'=>$this->get_button_rrp($product),
 				'button'=>$button,
-				'description'=>$product->data['Product Description']
+				'button_only'=>$button_only,
+				'description'=>$product->data['Product Description'],
+				'unit_weight'=>$product->get('Unit Weight'),
+				'package_weight'=>$product->get('Package Weight'),
+				'unit_dimensions'=>$product->get('Product Unit XHTML Dimensions'),
+				'ingrediens'=> $product->get('Product Unit XHTML Materials'),
+				'units'=> $product->get('Product Units Per Case'),
+				'origin'=> $product->get('Origin Country')
+
+
+
 			);
 
 
