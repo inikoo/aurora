@@ -1,4 +1,4 @@
-<div id="product_bd" style="padding:5px 20px 15px 20px">
+<div id="product_bd" style="padding:5px 20px 15px 20px;clear:both">
 	<div class="content">
 		<div class="product" stxyle="border:1px solid #ccc;background-color:#fff">
 			<div class="images" style="float:left;width:310px;">

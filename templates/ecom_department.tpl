@@ -1,4 +1,4 @@
-<div id="bd" style="padding:20px 15px">
+<div id="bd" style="padding:20px 15px;clear:both">
 	<div id="families" class="content">
 		{$page->get_primary_content()}
 	
