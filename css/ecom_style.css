@@ -49,3 +49,15 @@ position: relative;
 .basket_info{display:none}
 #top_bar .checkout_info .basket{position:relative;top:2px;margin-left:20px}
 }
+
+#branch{
+margin-left:20px;
+	padding-top:10px;
+	font-family: Gill Sans, Verdana;
+	font-size: 11px;
+	line-height: 14px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-weight: bold;width:400px
+	}
+#parent_branch{float:left;margin-right:5px;}
