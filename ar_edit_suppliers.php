@@ -73,16 +73,12 @@ case('edit_supplier_quick'):
 	edit_supplier();
 	break;
 case('edit_supplier_product_supplier'):
-
 case('edit_supplier_product_state'):
 case('edit_supplier_product_unit'):
 case('edit_supplier_product_description'):
-
 case('edit_supplier_product_health_and_safety'):
-
 case('edit_supplier_product'):
 case('edit_product_description'):
-case('edit_supplier_product_cost'):
 
 
 
@@ -96,6 +92,19 @@ case('edit_supplier_product_cost'):
 		));
 	edit_supplier_product($data);
 	break;
+	
+case('edit_supplier_product_cost'):
+
+
+
+	$data=prepare_values($_REQUEST,array(
+			'sp_id'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array'),
+	
+		));
+	edit_supplier_product_cost($data);
+	break;	
+	
 case('delete_MSDS_file'):
 	require_once 'class.Attachment.php';
 	$data=prepare_values($_REQUEST,array(
@@ -363,6 +372,81 @@ function edit_supplier_product($data) {
 
 }
 
+function edit_supplier_product_cost($data) {
+		global $editor;
+
+	
+	$values=$data['values'];
+	
+	$supplier_product=new SupplierProduct('pid',$data['sp_id']);
+	
+	$old_units=$supplier_product->data['Supplier Product Units Per Case'];
+	$old_cost=$supplier_product->data['Supplier Product Cost Per Case'];
+
+	if (!$supplier_product->id) {
+		$response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
+		echo json_encode($response);
+		exit;
+	}
+
+
+	$supplier_product->editor=$editor;
+
+	
+	$_data=array(
+		'Supplier Product Units Per Case'=>$supplier_product->data['Supplier Product Units Per Case'],
+		'Supplier Product Cost Per Case'=>$supplier_product->data['Supplier Product Cost Per Case'],
+
+	);
+	
+	if(isset($values['Supplier Product Units Per Case'])){
+	
+	
+		$_data['Supplier Product Units Per Case']=$values['Supplier Product Units Per Case']['value'];
+	}
+		if(isset($values['Supplier Product Cost Per Case'])){
+		$_data['Supplier Product Cost Per Case']=$values['Supplier Product Cost Per Case']['value'];
+	}
+	
+	$supplier_product->update_cost_and_units_per_case($_data['Supplier Product Cost Per Case'],$_data['Supplier Product Units Per Case']);
+
+	
+
+
+	if (!$supplier_product->error) {
+	
+		$response=array();
+		
+		
+		if($old_cost!=$supplier_product->data['Supplier Product Cost Per Case']){
+			$response[]=array(
+			'state'=>200,
+			'key'=>'Supplier_Product_Cost_Per_Case',
+			'newvalue'=>$supplier_product->data['Supplier Product Cost Per Case']
+			);
+		}
+		
+		if($old_units!=$supplier_product->data['Supplier Product Units Per Case']){
+			$response[]=array(
+			'state'=>200,
+			'key'=>'Supplier_Product_Units_Per_Case',
+			'newvalue'=>$supplier_product->data['Supplier Product Units Per Case']
+			);
+		}
+	
+	
+	
+	
+	
+		
+
+
+	} else {
+		$response= array('state'=>400,'msg'=>$supplier_product->msg);
+	}
+	echo json_encode($response);
+
+}
 
 
 

@@ -12,6 +12,11 @@
  Version 2.0
 */
 require_once 'common.php';
+require_once 'class.Supplier.php';
+require_once 'class.SupplierProduct.php';
+require_once 'class.Location.php';
+require_once 'class.Staff.php';
+
 require_once 'class.PurchaseOrder.php';
 include_once 'class.SupplierDeliveryNote.php';
 require_once 'ar_edit_common.php';
@@ -705,13 +710,14 @@ function po_transactions_to_process() {
 
 	}
 
-
 	if ($display=='all_products') {
 		$table=' `Supplier Product Dimension` PD left join `Supplier Product History Dimension` PHD on (`Supplier Product Current Key`=`SPH Key`)';
 		$where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
 		$sql_qty=sprintf(',
         IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product ID`=PD.`Supplier Product ID` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`,
-        IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product ID`=PD.`Supplier Product ID` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ',$purchase_order_key,$purchase_order_key);
+        IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product ID`=PD.`Supplier Product ID` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ,
+        PD.`Supplier Product ID`,PD.`Supplier Product Current Key` as spk
+        ',$purchase_order_key,$purchase_order_key);
 
 
 
@@ -720,9 +726,9 @@ function po_transactions_to_process() {
 	} else {
 		$table='  `Purchase Order Transaction Fact` OTF
                left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Key`)
-               left join `Supplier Product Dimension` PD on (OTF.`Supplier Product ID`=PD.`Supplier Product ID`) ';
+               left join `Supplier Product Dimension` PD on (PHD.`Supplier Product ID`=PD.`Supplier Product ID`) ';
 		$where=sprintf(' where  `Purchase Order Key`=%d',$purchase_order_key);
-		$sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`';
+		$sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`,PD.`Supplier Product ID`,PHD.`SPH Key` as spk ';
 
 
 
@@ -829,9 +835,11 @@ function po_transactions_to_process() {
 			$unit_type='piece';
 		}
 		$adata[]=array(
-			'id'=>$row['Supplier Product Current Key'],
-			'code'=>$row['Supplier Product Code'],
-			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']).' '.$row['Supplier Product Unit Type'].'</span>',
+			'key'=>$row['spk'],
+			'pid'=>$row['Supplier Product ID'],
+
+			'code'=>sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product ID'],$row['Supplier Product Code']),
+			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']/$row['SPH Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],
 			'store_as'=>$row['Supplier Product XHTML Store As'],
 
@@ -874,29 +882,57 @@ function po_transactions_to_process() {
 
 function edit_new_porder() {
 
-	$purchase_order_key=$_SESSION['state']['porder']['id'];
-	$supplier_product_key=$_REQUEST['id'];
+	$purchase_order_key=$_REQUEST['po_key'];
+	$supplier_product_key=$_REQUEST['key'];
 	$quantity=$_REQUEST['newvalue'];
 
 	if (!isset($_REQUEST['qty_type']))
 		$quantity_type='ea';
 	else
 		$quantity_type=$_REQUEST['qty_type'];
+
+
+if (!isset($_REQUEST['sph_use_type']))
+		$sph_use_type='orignal';
+	else
+		$sph_use_type=$_REQUEST['sph_use_type'];
+
+
+
 	if (is_numeric($quantity) and $quantity>=0) {
 
 		$order=new PurchaseOrder($purchase_order_key);
 
 
-		$supplier_product=new SupplierProduct('key',$supplier_product_key);
+
+
+		// Decide if you want to use the current SPH from SP ID or the original SPH
+
+
+		if ($sph_use_type=='current') {
+
+			$supplier_product=new SupplierProduct('pid',$_REQUEST['pid']);
+			$spk=$supplier_product->data['Supplier Product Current Key'];
+
+		}else {
+			$supplier_product=new SupplierProduct('key',$supplier_product_key);
+			$spk=$supplier_product_key;
+		}
+
+
+
 
 		$gross=$quantity*$supplier_product->data['SPH Case Cost'];
+
+
+
 
 
 		$data=array(
 
 			'date'=>date('Y-m-d H:i:s')
 			,'Supplier Product ID'=>$supplier_product->data['Supplier Product ID']
-			,'Supplier Product Key'=>$supplier_product->data['Supplier Product Current Key']
+			,'Supplier Product Key'=>$spk
 
 			,'amount'=>$gross
 			,'qty'=>$quantity
@@ -986,7 +1022,12 @@ function edit_new_supplier_dn($data) {
 
 
 		$sdn=new   SupplierDeliveryNote($data['supplier_delivery_note_key']);
+		
+		
+		
 		$transaction_data=$sdn->add_order_transaction($_data);
+		
+		
 		$adata=array();
 		$updated_data=array(
 
@@ -1368,7 +1409,7 @@ function dn_transactions_to_count() {
 	$res = mysql_query($sql);
 
 	$adata=array();
-	print $sql;
+	
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 

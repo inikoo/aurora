@@ -35,7 +35,6 @@ function formated_price($data) {
 
   
 
-
     $locale=$data['locale'];
 
 
@@ -131,7 +130,10 @@ function formated_price($data) {
 
         if ( is_array($data) and isset($data['price per unit text'])  ) {
             $str=$data['price per unit text']." $price";
-        } else {
+        }elseif ( is_array($data) and isset($data['Product Unit Type'])  ) {
+            $str=$price.' '._('per').' '.$data['Product Unit Type'];
+        }  
+        else {
             if ($data['Product Units Per Case']>1)
                 $str="$price/".$data['Product Units Per Case']." ($price_per_unit per unit)";
             else

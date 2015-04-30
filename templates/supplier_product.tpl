@@ -16,15 +16,10 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-							{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
-
-				<span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
+				{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
 			</div>
 			<div class="buttons">
-							{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if}
-
-			
-				<button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
+				{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -58,38 +53,32 @@
 						<td>{t}Name{/t}:</td>
 						<td class="aright">{$supplier_product->get('Supplier Product Name')}</td>
 					</tr>
-					
 				</table>
-				
 				<table class="show_info_product">
-				
-					
 					<tbody style="{if $supplier_product->get('Supplier Product Units Per Case')==1 }display:none{/if}">
 						<tr>
-							<td>{t}Units per Case{/t}:</td>
+							<td>{t}Units per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get('Units Per Case')}</td>
 						</tr>
 						<tr>
-							<td>{t}Cost{/t}:</td>
+							<td>{t}Cost per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get_formated_price_per_case()}</td>
 						</tr>
 						<tr>
-							<td>{t}Cost{/t}:</td>
+							<td>{t}Cost per unit{/t}:</td>
 							<td class="aright">{$supplier_product->get_formated_price_per_unit()}</td>
 						</tr>
 					</tbody>
 					<tbody style="{if $supplier_product->get('Supplier Product Units Per Case')>1 }display:none{/if}">
 						<tr>
-							<td>{t}Units per Case{/t}:</td>
+							<td>{t}Units per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get('Units Per Case')}</td>
 						</tr>
 						<tr>
-							<td>{t}Cost per Case{/t}:</td>
+							<td>{t}Cost per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get_formated_price_per_case()}</td>
 						</tr>
 					</tbody>
-					
-					
 				</table>
 			</div>
 			<div style="width:280px;float:left;margin-left:20px">
@@ -235,7 +224,8 @@
 						<li> <span class="item {if $sales_block=='supplier_product_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="supplier_product_sales_timeseries"> <span>{t}Supplier Product Sales History{/t}</span> </span> </li>
 					</ul>
 					<div id="block_plot_supplier_product_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_block!='plot_supplier_product_sales'}display:none{/if}">
-<script type="text/javascript">
+						<script type="text/javascript">
+
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -243,7 +233,8 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("block_plot_supplier_product_sales");
 		// ]]>
-	</script> 
+	
+						</script>
 						<div style="clear:both">
 						</div>
 					</div>
@@ -293,7 +284,8 @@
 				<div id="stock_history_plot_div">
 					<strong>You need to upgrade your Flash Player</strong> 
 				</div>
-<script type="text/javascript">
+				<script type="text/javascript">
+
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "supplier_product_history_plot_object", "930", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -302,7 +294,10 @@
 		so.addVariable("preloader_color", "#999999");
 		so.write("stock_history_plot_div");
 		// ]]>
-	</script> <script>
+	
+				</script>
+				<script>
+
 
 var flashMovie;
 
@@ -315,7 +310,8 @@ function reloadSettings(file) {
   flashMovie = document.getElementById(chart_id);
   
   }
-	</script> 
+	
+				</script>
 			</div>
 			<div id="block_stock_history_list" class="edit_block_content" style="{if $stock_history_block!='stock_history_list'}display:none{/if}">
 				<span class="clean_table_title" style="clear:both;">{t}Stock History{/t} </span> 

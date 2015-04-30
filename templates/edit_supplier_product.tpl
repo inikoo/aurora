@@ -54,8 +54,8 @@
 			<div class="buttons small left tabs">
 				<button class="indented item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
 				<button class="item {if $description_block=='supplier'}selected{/if}" id="description_block_supplier" block_id="supplier">{t}Supplier{/t}</button> 
-				<button class="item {if $description_block=='cost'}selected{/if}" id="description_block_cost" block_id="cost">{t}Units, Cost{/t}</button> 
-				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name, Codes{/t}</button> 
+				<button class="item {if $description_block=='cost'}selected{/if}" id="description_block_cost" block_id="cost">{t}Carton Cost & Units{/t}</button> 
+				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name,Codes{/t}</button> 
 				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> <button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 			</div>
 			<div class="tabs_base">
@@ -90,8 +90,8 @@
 							<div id="Supplier_Product_Cost_Per_Case_Container">
 							</div>
 						</div>
-						<span id="Supplier_Product_Cost_Per_Case_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-						<td></td>
+						 </td>
+						<td><span id="Supplier_Product_Cost_Per_Case_msg" class="edit_td_alert" "></span></td>
 					</tr>
 				
 							<tr class="buttons">

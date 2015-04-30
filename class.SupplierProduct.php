@@ -633,39 +633,60 @@ class supplierproduct extends DB_Table {
 		//print "$sql\n";
 
 	}
-	function update_cost($value) {
-		$change_at='now';
 
-		$amount=$value;
-		if ($amount==$this->data['Supplier Product Cost Per Case']) {
+	function update_cost($value) {
+
+		if ($value==$this->data['Supplier Product Cost Per Case']) {
 			$this->updated=false;
-			$this->new_value=$amount;
+			$this->new_value=$value;
 			//$this->new_value=money($amount,$this->data['Supplier Product Currency']);
 			return;
 
 		}
 
+		$this->update_cost_and_units_per_case($value,$this->data['Supplier Product Units Per Case']);
 
+	}
+
+	function update_units_per_case($value) {
+
+		if ($amount==$this->data['Supplier Product Units Per Case']) {
+			$this->updated=false;
+			$this->new_value=$value;
+			return;
+
+		}
+
+		$this->update_cost_and_units_per_case($this->data['Supplier Product Cost Per Case'],$value);
+
+	}
+
+
+	function update_cost_and_units_per_case($amount,$units_per_case) {
+
+		$change_at='now';
 
 
 		$old_formated_price=$this->get('Formated Price');
-		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Case Cost`=%.2f "
+		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Case Cost`=%.2f  and `SPH Units Per Case`=%d",
 
 
-			,$this->pid
-			,$amount
+			$this->pid,
+			$amount,
+			$units_per_case
 		);
+
 
 		$res=mysql_query($sql);
 
 		$num_historic_records=mysql_num_rows($res);
 
 
-
 		if ($num_historic_records==0) {
 			$data=array(
-				'SPH Case Cost'=>$amount
-				,'Supplier Product ID'=>$this->pid
+				'SPH Case Cost'=>$amount,
+				'SPH Units Per Case'=>$units_per_case,
+				'Supplier Product ID'=>$this->pid
 			);
 			$this->create_key($data);
 
@@ -957,7 +978,7 @@ class supplierproduct extends DB_Table {
 
 	function change_current_key($new_current_key) {
 
-		$sql=sprintf("select `SPH Case Cost` from `Supplier Product History Dimension` where  `Supplier Product ID`=%d and `SPH Key`=%d "
+		$sql=sprintf("select `SPH Case Cost`,`SPH Units Per Case` from `Supplier Product History Dimension` where  `Supplier Product ID`=%d and `SPH Key`=%d "
 			,$this->pid
 			,$new_current_key
 		);
@@ -972,16 +993,21 @@ class supplierproduct extends DB_Table {
 		$row=mysql_fetch_array($res);
 
 		$price=$row['SPH Case Cost'];
+		$units=$row['SPH Units Per Case'];
 
 
-		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Cost Per Case`=%.2f,`Supplier Product Current Key`=%d  where `Supplier Product ID`=%d "
-			,$price
-			,$new_current_key
-			,$this->pid
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Cost Per Case`=%.2f,`Supplier Product Units per Case`=%d,
+		`Supplier Product Current Key`=%d  where `Supplier Product ID`=%d ",
+			$price,
+			$units,
+			$new_current_key,
+			$this->pid
 		);
-		//print $sql;
+
 		mysql_query($sql);
 		$this->data['Supplier Product Cost Per Case']=sprintf("%.2f",$price);
+		$this->data['Supplier Product Units Per Case']=$units;
+
 		$this->data['Supplier Product Current Key']=$new_current_key;
 
 		$this->id =$new_current_key;
@@ -1713,10 +1739,10 @@ class supplierproduct extends DB_Table {
 	function get_formated_price_per_case($locale='') {
 
 		$data=array(
-			'Product Price'=>$this->data['SPH Case Cost']*$this->data['SPH Units Per Case'],
+			'Product Price'=>$this->data['SPH Case Cost'],
 			'Product Units Per Case'=>1,
 			'Product Currency'=>$this->get('Supplier Product Currency'),
-			'Product Unit Type'=>_('Case'),
+			'Product Unit Type'=>_('carton'),
 
 			'Label'=>'',
 
@@ -2046,39 +2072,33 @@ class supplierproduct extends DB_Table {
 	}
 
 	function update_store_as() {
-		$used_in_products='';
 
 
 
 		$used_in_parts='';
-		$sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product ID`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
+		$sql=sprintf("select PD.`Part SKU`,PD.`Part Reference`,`Part Unit Description` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product ID`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
 			$this->pid
 		);
 		$result=mysql_query($sql);
 		$num_parts=0;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$used_in_parts.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+			$used_in_parts.=sprintf(', <a href="part.php?sku=%d" title="SKU%05d %s" >%s</a>',
+				$row['Part SKU'],
+				$row['Part SKU'],
+				strip_tags($row['Part Unit Description']),
+				$row['Part Reference']
+			);
 			$num_parts++;
 		}
 		$used_in_parts=preg_replace('/^, /','',$used_in_parts);
 
-		if ($num_parts==0)
-			$used_in_parts='';
-		else if ($num_parts==1)
-				$used_in_parts='SKU:'.$used_in_parts;
-			else
-				$used_in_parts='SKUs:'.$used_in_parts;
 
-			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Store As`=%s where  `Supplier Product ID`=%d"
-				,prepare_mysql($used_in_parts)
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Store As`=%s where  `Supplier Product ID`=%d",
+			prepare_mysql($used_in_parts),
 
-				,$this->pid
-			);
-		//print "$sql\n";
-		if (!mysql_query($sql))
-			exit("$sql error can not update used in insuppiler product \n");
-
-		//exit;
+			$this->pid
+		);
+		mysql_query($sql);
 
 
 	}

@@ -1,4 +1,6 @@
 {include file='header.tpl'}
+<input id="dn_key" value="{$supplier_dn->id}" type="hidden" />
+
 <div id="time2_picker" class="time_picker_div"></div>
 <div id="bd" >
 
@@ -60,33 +62,26 @@
 
 
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
-  <span class="clean_table_title">{t}Supplier Products{/t}</span>
-  	<div id="table_type">
+	<span class="clean_table_title">{t}Supplier Products{/t}</span> 
+			<div id="table_type">
 	  <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
 	  <span id="set_damages_bis" style="float:right;color:brown" class="table_type state_details">{t}Set Damaged{/t}</span>
 	  <span id="set_received" style="display:none;float:right;color:brown" class="table_type state_details">{t}Set Received{/t}</span>
 	</div>
+		<div class="elements_chooser">
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$supplier_dn->get('Number Items')}</span>)</span> 
+		</div>
+		
+		<div class="table_top_bar space">
+		</div>
+		
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
+		<div id="table0" style="font-size:80%" class="data_table_container dtable btable">
+		</div>
+	
+	</div>
 
-
-
-  <div id="list_options0"> 
-      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      
-      
-
-      
-     
-     
-    </div>
-
-  
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-  </div>
-  <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable"> </div>
-</div>
 
 </div> 
 
@@ -129,7 +124,7 @@
    
         <input type="hidden" id="checked_by" value="{$user_staff_key}"/>
 
-      <td class="aright">{t}Checked By{/t}:</td><td style="position:relative"> <span id="get_checker" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="checked_by_alias">{$user}</span></td>
+      <td class="aright">{t}Checked By{/t}:</td><td style="position:relative"> <span id="get_checker" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="checked_by_alias"></span></td>
     </tr>
 
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">

@@ -1,11 +1,14 @@
 <?php
 include_once 'common.php';
+include_once 'class.Staff.php';
+
 include_once 'class.Supplier.php';
 include_once 'class.PurchaseOrder.php';
 include_once 'class.SupplierDeliveryNote.php';
 include_once 'class.CompanyArea.php';
 
 
+$corporation=new Account();
 
 ///print_r($_REQUEST);
 
@@ -246,8 +249,9 @@ case('Inputted'):
 	$operators_data=array();
 	$contador=0;
 	foreach ($operators as $operator) {
-		if (fmod($contador,$number_cols)==0 and $contador>0)
+		if (fmod($contador,$number_cols)==0 and $contador>0) {
 			$row++;
+		}
 		$tmp=array();
 		foreach ($operator as $key=>$value) {
 			$tmp[preg_replace('/\s/','',$key)]=$value;
@@ -276,6 +280,62 @@ case('Inputted'):
 	$smarty->assign('default_loading_location_key',$default_loading_location_key);
 	$smarty->assign('default_loading_location_code',$default_loading_location_code);
 
+
+	$number_cols=5;
+	$loading_locations=array();
+	$sql=sprintf("select `Location Key`,`Location Code` from `Location Dimension` where `Location Mainly Used For`='Loading'   ");
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+		$loading_locations[]=array(
+			'key'=>$row['Location Key'],
+			'code'=>$row['Location Code'],
+			'mod'=>fmod($contador,$number_cols),
+			'number_cols'=>$number_cols
+		);
+		$contador++;
+	}
+
+
+
+
+	$smarty->assign('loading_locations',$loading_locations);
+	$smarty->assign('number_loading_locations',count($loading_locations));
+
+
+
+
+
+
+	/******
+	$loading_locations=array();
+
+	$number_cols=5;
+	$row=0;
+	$contador=0;
+
+	$sql=sprintf("select `Location Key`,`Location Code` from `Location Dimension` where `Location Mainly Used For`='Loading'   ");
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		if (fmod($contador,$number_cols)==0 and $contador>0) {
+			$row++;
+		}
+
+		$_loading_locations=array(
+			'key'=>$row['Location Key'],
+			'code'=>$row['Location Code'],
+		);
+
+		$contador++;
+
+	}
+	$smarty->assign('loading_locations',$loading_locations);
+
+*****/
+
 	$js_files[]='js/edit_common.js';
 
 	$js_files[]='supplier_dn_inputted.js.php';
@@ -293,18 +353,31 @@ case('Inputted'):
 	break;
 case('Received'):
 
-	$sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` as position_id from `Staff Dimension` where `Staff Currently Working`='Yes' order by alias ");
-	$res = mysql_query($sql);
-	$num_cols=5;
-	$staff=array();
-	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		$staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
+	
+
+$pickers=$corporation->get_current_staff_with_position_code('PICK');
+$number_cols=5;
+$row=0;
+$pickers_data=array();
+$contador=0;
+foreach ($pickers as $picker) {
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$row++;
+	$tmp=array();
+	foreach ($picker as $key=>$value) {
+		$tmp[preg_replace('/\s/','',$key)]=$value;
 	}
-	foreach ($staff as $key=>$_staff) {
-		$staff[$key]['mod']=fmod($key,$num_cols);
-	}
-	$smarty->assign('staff',$staff);
-	$smarty->assign('staff_cols',$num_cols);
+	$pickers_data[$row][]=$tmp;
+	$contador++;
+}
+
+$smarty->assign('staff',$pickers_data);
+$smarty->assign('number_staff',count($pickers_data));
+
+
+
+
+
 
 	$js_files[]='supplier_dn_received.js.php';
 	$js_files[]='js/edit_common.js';
