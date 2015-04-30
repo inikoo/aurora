@@ -524,7 +524,7 @@ class Site extends DB_Table {
 			'Page Store Section'=>'Department Catalogue',
 			'Page Store Last Update Date'=>gmdate('Y-m-d H:i:s'),
 			'Page Store Last Structural Change Date'=>gmdate('Y-m-d H:i:s'),
-            'Page Locale'=>$this->data['Site Locale'],
+			'Page Locale'=>$this->data['Site Locale'],
 			'Page Source Template'=>'',
 			'Page Description'=>$department->data['Product Department Name'],
 			'Page Title'=>$department->data['Product Department Name'],
@@ -575,8 +575,8 @@ class Site extends DB_Table {
 
 	function add_family_page($family_key,$raw_data) {
 
-$this->new_page=false;
-/*
+		$this->new_page=false;
+		/*
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d and `Page Site Key`=%d",
 			$family_key,
 			$this->id
@@ -620,7 +620,7 @@ $this->new_page=false;
 			'Page Title'=>$family->data['Product Family Name'],
 			'Page Short Title'=>$family->data['Product Family Name'],
 			'Page Store Title'=>$family->data['Product Family Name'],
-            'Page Locale'=>$this->data['Site Locale'],
+			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
 			'Page Footer Key'=>$this->data['Site Default Footer Key'],
@@ -646,7 +646,7 @@ $this->new_page=false;
 
 
 		$page=new Page('find',$page_data,'create');
-		
+
 		if ($page->new) {
 			include_once 'class.Department.php';
 			$department=new Department($family->data['Product Family Main Department Key']);
@@ -719,7 +719,7 @@ $this->new_page=false;
 			'Page Title'=>$product->data['Product Name'],
 			'Page Short Title'=>$product->data['Product Name'],
 			'Page Store Title'=>$product->data['Product Name'],
-            'Page Locale'=>$this->data['Site Locale'],
+			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
 			'Page Footer Key'=>$this->data['Site Default Footer Key'],
@@ -1590,108 +1590,64 @@ $this->new_page=false;
 		mysql_query($sql);
 	}
 
-	function add_image($image_key) {
 
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+
+	function add_favicon($image_key) {
+
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`!=%d",$this->id,$image_key);
+
+
 		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->nochange=true;
-			$this->msg=_('Image already uploaded');
-			return;
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d  ",$this->id,$row['Image Key']);
+			mysql_query($sql);
+			
+
+
+			$image=new Image($row['Image Key']);
+			$image->delete();
 		}
 
 
-		$number_images=$this->get_number_of_images();
-		if ($number_images==0) {
-			$principal='Yes';
-		} else {
-			$principal='No';
-		}
+
+
 
 		$sql=sprintf("insert into `Image Bridge` values ('Site Favicon',%d,%d,%s,'')"
 			,$this->id
 			,$image_key
-			,prepare_mysql($principal)
+			,prepare_mysql('Yes')
 
 		);
 
 		mysql_query($sql);
 
+		$image=new Image($image_key);
 
-		if ($principal=='Yes') {
-			$this->update_main_image($image_key);
-		}
+		if ($image->data['Image Height']!=0)
+			$ratio=$image->data['Image Width']/$image->data['Image Height'];
+		else
+			$ratio=1;
 
-
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-			,$this->id
-			,$image_key
+		include_once 'common_units_functions.php';
+		$this->new_value=array(
+			'name'=>$image->data['Image Filename'],
+			'small_url'=>'image.php?id='.$image->data['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$image->data['Image Key'].'&size=thumbnail',
+			'filename'=>$image->data['Image Filename'],
+			'ratio'=>$ratio,
+			'caption'=>'',
+			'is_principal'=>'Yes',
+			'id'=>$image->data['Image Key'],
+			'size'=>formatSizeUnits($image->data['Image File Size']
+			)
 		);
 
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			include_once 'common_units_functions.php';
-			$this->new_value=array(
-				'name'=>$row['Image Filename'],
-				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio,
-				'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],
-				'id'=>$row['Image Key'],
-				'size'=>formatSizeUnits($row['Image File Size']
-				)
-			);
-		}
 
 		$this->updated=true;
 		$this->msg=_("image added");
 	}
 
-	function remove_image($image_key) {
-
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
-			mysql_query($sql);
-			$this->updated=true;
-			$number_images=$this->get_number_of_images();
-			if ($number_images==0) {
-				$main_image_src='art/nopic.png';
-				$main_image_key=0;
-				$this->data['Product Main Image']=$main_image_src;
-				$this->data['Product Main Image Key']=$main_image_key;
-
-
-			} else if ($row['Is Principal']=='Yes') {
-
-					$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  ",$this->id);
-					$res2=mysql_query($sql);
-					if ($row2=mysql_fetch_assoc($res2)) {
-						$this->update_main_image($row2['Image Key']) ;
-					}
-				}
-
-
-		} else {
-			$this->error=true;
-			$this->msg='image not associated';
-
-		}
-
-
-
-
-
-	}
 
 	function get_number_of_images() {
 		$number_of_images=0;
@@ -1703,31 +1659,7 @@ $this->new_page=false;
 		return $number_of_images;
 	}
 
-	function update_main_image($image_key) {
 
-		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
-		$res=mysql_query($sql);
-		if (!mysql_num_rows($res)) {
-			$this->error=true;
-			$this->msg='image not associated';
-		}
-
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Site Favicon' and `Subject Key`=%d  ",$this->id);
-		mysql_query($sql);
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
-		mysql_query($sql);
-
-
-		$main_image_src='image.php?id='.$image_key.'&size=small';
-		$main_image_key=$image_key;
-
-		$this->data['Product Main Image']=$main_image_src;
-		$this->data['Product Main Image Key']=$main_image_key;
-
-
-		$this->updated=true;
-
-	}
 
 	function get_images_slidesshow() {
 

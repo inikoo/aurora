@@ -30,6 +30,50 @@ var scope='favicon';
 var scope_key=id;
 
 
+
+
+
+function upload_favicon() {
+
+
+    if (Dom.get('upload_favicon_input').value == '') {
+
+        return;
+    }
+
+
+	scope='favicon';
+    YAHOO.util.Connect.setForm('testForm', true);
+    var request = 'ar_edit_images.php?tipo=upload_image&scope=' + scope + '&scope_key=' + Dom.get('site_key').value;
+   
+    var uploadHandler = {
+        upload: function(o) {
+       //   alert(o.responseText)   
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+                Dom.get('upload_favicon_input').value = '';
+               
+               Dom.get('favicon_img').src=r.data.small_url;
+Dom.setStyle('favicon_tr','display','')
+
+            } else {
+                Dom.get('upload_favicon_input').value = '';
+                alert(r.msg);
+            }
+
+
+        }
+    };
+
+    YAHOO.util.Connect.asyncRequest('POST', request, uploadHandler);
+
+
+
+};
+
+
+
 function validate_page_flag_label(query){
 
 
@@ -1560,7 +1604,7 @@ dialog_delete_header = new YAHOO.widget.Dialog("dialog_delete_header", {visible 
     dialog_upload_search.render();
 
 
-    YAHOO.util.Event.on('uploadButton', 'click', upload_image);
+    YAHOO.util.Event.on('upload_favicon', 'click', upload_favicon);
 
     ids = ['page_properties', 'page_html_head', 'page_header'];
     YAHOO.util.Event.addListener(ids, "click", change_edit_pages_view, {
