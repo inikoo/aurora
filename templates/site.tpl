@@ -24,7 +24,10 @@
 				{if $modify} <button onclick="go_edit()"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title"><img src="art/icons/site.png" style="height:18px;position:relative;bottom:2px" /> {$site->get('Site Name')} ({$site->get('Site URL')}) </span> 
+				<span class="main_title"><img src="art/icons/site.png" style="height:18px;position:relative;bottom:2px" /> {$site->get('Site Name')} ({$site->get('Site URL')}) {if $site->get_favicon_url()!=''}<img id="favicon_img" style="width:16px;height:16px" src="{$site->get_favicon_url()}">{/if}
+				
+				
+				</span> 
 			</div>
 			<div style="clear:both">
 			</div>
