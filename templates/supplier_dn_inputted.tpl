@@ -18,7 +18,7 @@
 		</div>
 	<div class="buttons">
 		<button class="negative" id="delete_dn">{t}Delete{/t}</button> 
-		<button id="save_inputted_dn">{t}Save Delivery Note{/t}</button>
+		<button id="mark_as_received">{t}Mark as Received{/t}</button>
 	</div>
 	<div style="clear:both"></div>
 	</div>
@@ -137,7 +137,15 @@
 			<td style="width:150px;padding-left:5px"> <span id="location_code">{$default_loading_location_code}</span> </td>
 		</tr>
 		<tr>
-			<td colspan="2" style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> <span style="margin-left:50px" class="state_details" onclick="received_order_save(this)">Save</span> </td>
+		
+			<td colspan="2" style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> 
+			<div class="buttons">
+			<button  onclick="received_order_save()" class="positive">{t}Save{/t}</button>
+			<button  onclick="received_order_cancel()" class="negative">{t}Cancel{/t}</button>
+			
+			</div>
+			 </td>
+		
 		</tr>
 	</table>
 </div>
@@ -161,11 +169,12 @@
 <div id="location_dialog" class="yuimenu location_list">
 	<div class="bd">
 		<table border="1">
-			{foreach from=$location item=_location name=foo} {if $_location.mod==0}
+			{foreach from=$loading_locations item=_location name=foo} 
+			{if $_location.mod==0}
 			<tr>
 				{/if} 
 				<td location_key="{$_location.key}" id="receivers{$_location.key}" onclick="select_location(this,event)">{$_location.code}</td>
-				{if $_location.mod==$location_cols}
+				{if $_location.mod==$_location.number_cols}
 			</tr>
 			{/if} {/foreach} 
 		</table>

@@ -111,7 +111,7 @@ function myonCellClick(oArgs) {
 }
 	var ar_file='ar_edit_porders.php';
 	request='tipo=edit_new_supplier_dn&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id']+'&supplier_delivery_note_key='+Dom.get('supplier_delivery_note_key').value+'&sp_key='+data["sp_key"];
-		//alert(ar_file+'?'+request);return;
+		alert(ar_file+'?'+request);return;
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {

@@ -360,7 +360,7 @@ case('delete'):
   
 } 
   
-var received_order_save=function(o){
+function received_order_save(o){
 
     var received_date=Dom.get('v_calpop1').value;
     var received_time=Dom.get('v_time').value;
@@ -374,7 +374,7 @@ var received_order_save=function(o){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		    //alert(o.responseText);
+		    alert(o.responseText);
 		   
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
@@ -391,30 +391,52 @@ var received_order_save=function(o){
 
      
 
+function show_received_dialog(){
 
+  region1 = Dom.getRegion('mark_as_received');
+    region2 = Dom.getRegion('received_dialog');
+    var pos = [region1.left - region2.width , region1.top]
+    Dom.setXY('received_dialog', pos);
 
+received_dialog.show()
 
+}
 
+function show_location_dialog(){
+
+  region1 = Dom.getRegion('get_location');
+    region2 = Dom.getRegion('received_dialog');
+    var pos = [region1.left - region2.width , region1.top]
+    Dom.setXY('location_dialog', pos);
+
+location_dialog.show()
+
+}
+
+function received_order_cancel(){
+	received_dialog.hide()
+
+}
 
 function init(){
     
  
-  alert("x")
+  
 
-  received_dialog = new YAHOO.widget.Dialog("received_dialog", {context:["receive_dn","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+  received_dialog = new YAHOO.widget.Dialog("received_dialog", {visible : false,close:true,underlay: "none",draggable:false});
     received_dialog.render();
 
     
-    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_receiver","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
 
-    location_dialog = new YAHOO.widget.Dialog("location_dialog", {context:["get_location","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    location_dialog = new YAHOO.widget.Dialog("location_dialog",{visible : false,close:false,underlay: "none",draggable:false});
     location_dialog.render();
 
     
-    Event.addListener("receive_dn", "click", received_dialog.show,received_dialog , true);
-    Event.addListener("get_receiver", "click", staff_dialog.show,staff_dialog , true);
-    Event.addListener("get_location", "click", location_dialog.show,location_dialog , true);
+    Event.addListener("mark_as_received", "click",show_received_dialog);
+    Event.addListener("get_receiver", "click",  staff_dialog.staff_dialog,received_dialog , true);
+    Event.addListener("get_location", "click", show_location_dialog);
 
 
 

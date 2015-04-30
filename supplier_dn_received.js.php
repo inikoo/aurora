@@ -2,7 +2,6 @@
     include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;var Event = YAHOO.util.Event;
-var dn_key='<?php echo $_SESSION['state']['supplier_dn']['id'] ?>'
 
 
 
@@ -251,7 +250,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier_dn']['products']['nr']?>,containers : 'paginator', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -261,8 +260,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['supplier_dn']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['supplier_dn']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
 								 
@@ -276,7 +275,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", myonCellClick);
 
 
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dn']['products']['f_value']?>'};
 	    }
 	    }
     );
@@ -296,7 +295,7 @@ var select_staff=function(o,e){
   
 var checked_order_save=function(o){
  var staff_key=Dom.get('checked_by').value;
-    var request='ar_edit_porders.php?tipo=set_dn_as_checked&id='+escape(dn_key)+'&staff_key='+escape(staff_key);
+    var request='ar_edit_porders.php?tipo=set_dn_as_checked&id='+escape(Dom.get('dn_key').value)+'&staff_key='+escape(staff_key);
    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
@@ -306,7 +305,7 @@ var checked_order_save=function(o){
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
-		//	location.href='supplier_dn.php?id='+dn_key;
+		//	location.href='supplier_dn.php?id='+Dom.get('dn_key').value;
 
 			
 
@@ -320,7 +319,7 @@ var checked_order_save=function(o){
 function take_values_from_dn(){
 
 	var ar_file='ar_edit_porders.php';
-	request='tipo=take_values_from_dn&dn_key='+dn_key;
+	request='tipo=take_values_from_dn&dn_key='+Dom.get('dn_key').value;
 	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',

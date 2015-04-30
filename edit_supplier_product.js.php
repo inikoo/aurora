@@ -228,7 +228,7 @@ function validate_Supplier_Product_Unit_Type(query) {
 }
 
 function validate_Supplier_Product_Units_Per_Case(query) {
-	validate_general('supplier_product_unit', 'Units_Per_Case', query);
+	validate_general('supplier_product_cost', 'Supplier_Product_Units_Per_Case', query);
 }
 
 function validate_Supplier_Product_General_Description(query) {
@@ -572,7 +572,7 @@ function save_edit_supplier() {
 }
 
 function save_edit_cost(){
-    save_edit_general('supplier_product_cost');
+    save_edit_general_bulk('supplier_product_cost');
 
 }
 
@@ -1129,7 +1129,18 @@ init_search('supplier_products_supplier');
 
  validate_scope_data = {
    'supplier_product_cost':{
-    'Supplier_Product_Cost_Per_Case': {
+    'Supplier_Product_Units_Per_Case': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+						'dbname': 'Supplier Product Units Per Case',
+
+			'name': 'Supplier_Product_Units_Per_Case',
+			'ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Cost')?>'}]
+    }
+    ,'Supplier_Product_Cost_Per_Case': {
 			'changed': false,
 			'validated': true,
 			'required': true,
@@ -1139,8 +1150,16 @@ init_search('supplier_products_supplier');
 
 			'name': 'Supplier_Product_Cost_Per_Case',
 			'ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Cost')?>'}]
-    }}
-     , 'supplier_product_supplier':{
+    }
+    
+    
+    
+    }
+    
+    
+    
+     
+    ,'supplier_product_supplier':{
     'Supplier_Product_Supplier_Key': {
 			'changed': false,
 			'validated': true,
@@ -1218,18 +1237,8 @@ init_search('supplier_products_supplier');
 			}]
 			
 		}
-				,'Units_Per_Case': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Supplier Product Units Per Case',
-			'name': 'Supplier_Product_Units_Per_Case',
-			'ar': false,
-			'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]
 			
-		}
+	
 		,'duty_rate': {
 			'changed': false,
 			'validated': true,

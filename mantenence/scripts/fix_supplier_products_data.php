@@ -1,6 +1,11 @@
 <?php
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+/*
+@author Raul Perusquia <rulovico@gmail.com>
+Created: 29 April 2015 17:19:18 CEST, Cala de Mijas,  Spain 
+
+Copyright (c) 2015 Inikoo Ltd
+*/
+
 include_once '../../conf/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
@@ -34,18 +39,14 @@ date_default_timezone_set('UTC');
 
 $options='no_history';
 
-$sql="select `Supplier Product ID` from `Supplier Product Dimension`  ";
+$sql="select `Supplier Product ID` from `Supplier Product Dimension` ";
 
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)   ) {
 	$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
 
 
-	$supplier_product->update_stock();
-	$supplier_product->update_days_available();
-	$supplier_product->update_up_today_sales();
-	$supplier_product->update_last_period_sales();
-	$supplier_product->update_interval_sales();
+	$supplier_product->update_store_as();
 
 	print $row['Supplier Product ID']."\r";
 

@@ -88,3 +88,8 @@ ALTER TABLE `Order No Product Transaction Fact` ADD `Transaction Refund Net Amou
 ALTER TABLE `Order Post Transaction Dimension` ADD `Refund Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Delivery Note Key`; 
 ALTER TABLE `Invoice Dimension` ADD `Invoice Credit Net Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Invoice Insurance Net Amount`; 
 ALTER TABLE `Invoice Dimension` ADD `Invoice Credit Tax Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Invoice Insurance Tax Amount`; 
+
+
+//====here
+
+run fix_supplier_products_data.php

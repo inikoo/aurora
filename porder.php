@@ -62,20 +62,6 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-	'css/edit.css',
-	'theme.css.php'
-
-);
-
-$css_files=array(
-	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-	$yui_path.'menu/assets/skins/sam/menu.css',
-	$yui_path.'assets/skins/sam/autocomplete.css',
-	$yui_path.'calendar/assets/skins/sam/calendar.css',
-	'css/common.css',
-	'css/container.css',
-	'css/button.css',
-	'css/table.css',
 	'css/part_locations.css',
 	'css/edit.css',
 	'theme.css.php'
@@ -91,6 +77,7 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/php.default.min.js',
 	'js/search.js',
 	'js/common.js',
 	'js/table_common.js',
@@ -101,10 +88,6 @@ $js_files=array(
 
 
 $po_id = $po->id;
-$_SESSION['state']['porder']['id']=$po->id;
-$_SESSION['state']['porder']['supplier_key']=$supplier->id;
-$_SESSION['state']['supplier']['id']=$supplier->id;
-//print_r($po->data);
 $smarty->assign('po',$po);
 $smarty->assign('supplier',$supplier);
 $smarty->assign('supplier_id',$supplier->id);
@@ -174,7 +157,7 @@ case('In Process'):
 
 
 
-	$js_files[]='porder_in_process.js.php';
+	$js_files[]='js/porder_in_process.js';
 	$js_files[]='js/edit_common.js';
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
@@ -203,15 +186,32 @@ case('In Process'):
 
 
 	$tipo_filter2='alias';
-			$filter_menu2=array(
-				'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
-				'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
-			);
-			$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
-			$smarty->assign('filter_menu2',$filter_menu2);
-			$smarty->assign('filter2',$tipo_filter2);
-			$smarty->assign('filter_value2','');
+	$filter_menu2=array(
+		'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+		'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+	);
+	$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+	$smarty->assign('filter_menu2',$filter_menu2);
+	$smarty->assign('filter2',$tipo_filter2);
+	$smarty->assign('filter_value2','');
 
+	$session_data=base64_encode(json_encode(array(
+				'label'=>array(
+					'Code'=>_('Code'),
+					'Reference'=>_('Parts'),
+					'Description'=>_('Supplier Carton Description'),
+					'Qty'=>_('Cartons'),
+					'Net_Cost'=>_('Net Cost'),
+					'Unit'=>_('Unit'),
+
+					'Page'=>_('Page'),
+					'of'=>_('of')
+				),
+				'state'=>array(
+					'porder'=>$_SESSION['state']['porder']
+				)
+			)));
+	$smarty->assign('session_data',$session_data);
 
 
 

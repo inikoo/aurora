@@ -1,4 +1,6 @@
 {include file='header.tpl'} 
+		<input type="hidden" value="{$session_data}" id="session_data" />
+
 <input type="hidden" value="{$products_display_type}" id="products_display_type"> 
 <input type="hidden" value="{$po->id}" id="po_key"> 
 <input type="hidden" value="{$supplier->id}" id="supplier_key"> 
