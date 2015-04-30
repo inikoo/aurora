@@ -152,8 +152,8 @@ if (false) {
 
 
 }
-//$order->update_totals();
-//$order->update_payment_state();
+$order->update_totals();
+$order->update_payment_state();
 if (!$order->id) {
 	header('Location: orders_server.php?msg=order_not_found');
 	exit;
