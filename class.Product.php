@@ -5236,7 +5236,7 @@ class product extends DB_Table {
 	function get_main_page_url($site_key) {
 
 		$url='';
-		$sql=sprintf("select `Page URL` from `Page Product Dimension` PPD left join `Page Store Dimension` PSD on (PPD.`Page Key`=PSD.`Page Key`) left join `Page Dimension` PD on (PPD.`Page Key`=PD.`Page Key`) where `Product ID`=%d and `Page Site Key`=%d order by `Page Store Total Acc Requests` desc limit 1 ",
+		$sql=sprintf("select `Page URL` from `Page Product Dimension` PPD left join `Page Store Dimension` PSD on (PPD.`Page Key`=PSD.`Page Key`) left join `Page Dimension` PD on (PPD.`Page Key`=PD.`Page Key`) left join `Page Store Data Dimension` PSDD on (PD.`Page Key`=PSDD.`Page Key`) where `Product ID`=%d and `Page Site Key`=%d order by `Page Store Total Acc Requests` desc limit 1 ",
 			$this->pid,
 			$site_key
 
