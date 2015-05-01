@@ -969,7 +969,7 @@ class Order extends DB_Table {
 
 		$this->update_deals_usage();
 
-		$update_totals();
+		$this->update_totals();
 		$this->update_number_items();
 		$this->update_number_products();
 
