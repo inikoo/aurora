@@ -369,9 +369,9 @@ class Page extends DB_Table {
 				$this->id,
 				$this->data['Page Site Key'],
 				prepare_mysql($this->data['Page URL']),
-				prepare_mysql($this->data['Page Store Title']),
-				prepare_mysql($this->data['Page Store Description']),
-				prepare_mysql($content)
+				prepare_mysql($this->data['Page Store Title'],false),
+				prepare_mysql($this->data['Page Store Description'],false),
+				prepare_mysql($content,false)
 			);
 			mysql_query($sql);
 
@@ -391,14 +391,11 @@ class Page extends DB_Table {
 
 		if ($this->data['Page Type']=='Store') {
 
-			//print "=========================\n";
-			//print $this->get_xhtml_content();
-			//print "-------------------------\n";
-			//print $this->get_plain_content();
-			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Description`=%s,`Page Store Content`=%s where `Page Key`=%d",
-				prepare_mysql($this->data['Page Store Title']),
-				prepare_mysql($this->data['Page Store Description']),
-				prepare_mysql($this->get_plain_content()),
+	
+			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Resume`=%s,`Page Store Content`=%s where `Page Key`=%d",
+				prepare_mysql($this->data['Page Store Title'],false),
+				prepare_mysql($this->data['Page Store Description'],false),
+				prepare_mysql($this->get_plain_content(),false),
 
 				$this->id
 			);
