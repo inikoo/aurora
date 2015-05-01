@@ -1,4 +1,4 @@
-<input type='hidden' id="supplier_id" value="{$supplier_id}">
+<input type='hidden' id="supplier_id" value="{if isset($supplier)}{$supplier->id}{/if}">
 
 <span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_suppliers.php">{t}here{/t}</a>.</span>
 

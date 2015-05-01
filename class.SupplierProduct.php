@@ -72,6 +72,9 @@ class supplierproduct extends DB_Table {
 
 		$data['SPH Units Per Case']=$raw_data['SPH Units Per Case'];
 		$data['SPH Case Cost']=$raw_data['SPH Case Cost'];
+		$data['Supplier Product Units Per Case']=$data['SPH Units Per Case'];
+		$data['Supplier Product Cost Per Case']=$data['SPH Case Cost'];
+
 
 		if ($data['Supplier Product Code']=='' or $raw_data['SPH Case Cost']=='' ) {
 			$this->error=true;
@@ -313,10 +316,20 @@ class supplierproduct extends DB_Table {
 
 	}
 	function create_code($data) {
+
+
+		unset($data['SPH Units Per Case']);
+		unset($data['SPH Case Cost']);
+
+
+		/*
+
 		$base_data=array(
 			'Supplier Key'=>1,
 			'Supplier Product Code'=>'',
 			'Supplier Product Name'=>'',
+			'Supplier Product Description'=>'',
+			'Supplier Product Description'=>'',
 			'Supplier Product Description'=>'',
 
 			'Supplier Product Valid From'=>gmdate("Y-m-d H:i:s"),
@@ -324,34 +337,47 @@ class supplierproduct extends DB_Table {
 
 		);
 
+
+
 		foreach ($data as $key=>$value) {
 			if (isset($base_data[$key]))
 				$base_data[$key]=_trim($value);
-		}
-		$supplier=new Supplier($base_data['Supplier Key']);
-		$base_data['Supplier Code']=$supplier->data['Supplier Code'];
-		$base_data['Supplier Name']=$supplier->data['Supplier Name'];
-		$base_data['Supplier Product Current Key']=$this->key;
+	*/
+		$supplier=new Supplier($data['Supplier Key']);
+		$data['Supplier Code']=$supplier->data['Supplier Code'];
+		$data['Supplier Name']=$supplier->data['Supplier Name'];
+		$data['Supplier Product Current Key']=$this->key;
 
 
 		$keys='(';
 		$values='values(';
-		foreach ($base_data as $key=>$value) {
+		foreach ($data as $key=>$value) {
 
 
 			$keys.="`$key`,";
-			$values.=prepare_mysql($value).",";
 
+			if (in_array($key,array('Supplier Product Unit Dimensions Depth','Supplier Product Unit Dimensions Length','Supplier Product Unit Dimensions Diameter','Supplier Product Unit Dimensions Width Display','Supplier Product Unit Dimensions Depth Display',
+			'Supplier Product Unit Dimensions Length Display','Supplier Product Unit Dimensions Diameter Display','Supplier Product Package Dimensions Width','Supplier Product Package Dimensions Depth',
+			'Supplier Product Package Dimensions Length','Supplier Product Package Dimensions Diameter', 'Supplier Product Package Dimensions Width Display' , 'Supplier Product Package Dimensions Depth Display' ,
+			 'Supplier Product Proper Shipping Name' ,'Supplier Product Hazard Indentification Number', 'Supplier Product Main Image Key'
+			
+			))) {
+				$values.=prepare_mysql($value,false).",";
+			}else {
+				$values.=prepare_mysql($value).",";
+			}
 
 		}
+
+
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
 		$sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
 		//print "$sql\n\n";
 		if (mysql_query($sql)) {
 			//print mysql_affected_rows()."\n";
-			$this->code = $base_data['Supplier Product Code'];
-			$this->supplier_key = $base_data['Supplier Key'];
+			$this->code = $data['Supplier Product Code'];
+			$this->supplier_key = $data['Supplier Key'];
 			$this->pid=mysql_insert_id();
 			$this->new_key_id=$this->pid;
 			$this->new_code=true;
@@ -363,7 +389,7 @@ class supplierproduct extends DB_Table {
 			mysql_query($sql);
 			$this->get_data('pid',$this->pid);
 		} else {
-			print "$sql  Error can not create Supplier Product\n";
+			print mysql_error();
 			exit;
 		}
 
@@ -650,7 +676,7 @@ class supplierproduct extends DB_Table {
 
 	function update_units_per_case($value) {
 
-		if ($amount==$this->data['Supplier Product Units Per Case']) {
+		if ($value==$this->data['Supplier Product Units Per Case']) {
 			$this->updated=false;
 			$this->new_value=$value;
 			return;
@@ -2108,7 +2134,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
 		$res=mysql_query($sql);
-	
+
 		if ($row=mysql_fetch_assoc($res)) {
 
 			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
