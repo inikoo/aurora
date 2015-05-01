@@ -2108,6 +2108,7 @@ class supplierproduct extends DB_Table {
 
 		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
 		$res=mysql_query($sql);
+	
 		if ($row=mysql_fetch_assoc($res)) {
 
 			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Supplier Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);

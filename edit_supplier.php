@@ -162,7 +162,7 @@ $smarty->assign('units_list',$units);
 $smarty->assign('units_list_selected','ea');
 
 $currencies=array();
-$sql=sprintf("select `Currency Code`,`Currency Name` from kbase.`Currency Dimension");
+$sql=sprintf("select `Currency Code`,`Currency Name` from kbase.`Currency Dimension`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$currencies[$row['Currency Code']]=sprintf("(%s) %s",$row['Currency Code'],$row['Currency Name']);

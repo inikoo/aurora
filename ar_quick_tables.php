@@ -74,6 +74,7 @@ case('active_staff_list'):
 case('store_list'):
 	store_list();
 	break;
+
 case('category_list'):
 	category_list();
 	break;
@@ -1174,7 +1175,7 @@ function product_list() {
 		break;
 	case 'family':
 		$where=sprintf('where `Product Family Key`=%d',$parent_key);
-		break;	
+		break;
 	default:
 		exit;
 		break;
@@ -2621,12 +2622,13 @@ function category_list() {
 	else$tableid=0;
 
 	if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
-	else {
-		exit('no store');
-	}
 
-	if (isset( $_REQUEST['subject']))$subject=$_REQUEST['subject'];
-	else {
+
+	if (isset( $_REQUEST['subject'])) {
+		$subject=$_REQUEST['subject'];
+	}elseif (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
 		exit('no subject');
 	}
 
@@ -2641,15 +2643,22 @@ function category_list() {
 	$filter_msg='';
 
 
-
-	if (!in_array($store_key,$user->stores)) {
-		$where=sprintf('where false ');
-	} else {
-		$where=sprintf('where `Category Store Key`=%d',$store_key);
+	if (isset($store_key)) {
+		if (!in_array($store_key,$user->stores)) {
+			$where=sprintf('where false ');
+		} else {
+			$where=sprintf('where `Category Store Key`=%d',$store_key);
+		}
+	}else {
+		$where='where true ';
 	}
 
-	$where.=sprintf(' and `Category Subject`=%s',prepare_mysql($subject));
 
+	if (isset($subject)) {
+		$where.=sprintf(' and `Category Subject`=%s',prepare_mysql($subject));
+	}else {
+		$where.=sprintf(' and `Category Parent Key`=%d',$parent_key);
+	}
 	if ($branch_type!='') {
 		$where.=sprintf(' and `Category Branch Type`=%s',prepare_mysql($branch_type));
 
@@ -2733,7 +2742,7 @@ function category_list() {
 
 
 	$adata=array();
-	$sql="select  * from `Category Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Category Key`,`Category Label`,`Category Code`,`Category Plain Branch Tree`,`Category Number Subjects` from `Category Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
@@ -2782,6 +2791,8 @@ function category_list() {
 
 	echo json_encode($response);
 }
+
+
 
 function list_list() {
 
