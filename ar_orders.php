@@ -745,8 +745,8 @@ function list_transactions_in_invoice() {
 	$total_picks=0;
 
 	$data=array();
-	$sql="select * from `Order Transaction Fact` O   
-left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) 
+	$sql="select * from `Order Transaction Fact` O
+left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
  left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
  	 $where order by O.`Product Code`  ";
 
@@ -845,7 +845,7 @@ left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
 	}
 
 
-	
+
 
 
 	$response=array('resultset'=>
@@ -889,13 +889,13 @@ function list_transactions_in_refund() {
 			'charged'=>$row['Invoice Quantity'].'/'.money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']).'('.money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']).')',
 			'refund_net'=>money($row['Invoice Transaction Net Refund Items'],$row['Invoice Currency Code']),
 			'refund_tax'=>money($row['Invoice Transaction Tax Refund Items'],$row['Invoice Currency Code']),
-			
+
 			'quantity'=>number($row['Refund Quantity']),
 			'refund'=>money($row['Invoice Transaction Net Refund Amount']+$row['Invoice Transaction Tax Refund Amount'],$row['Invoice Currency Code'])
-			
+
 		);
 	}
-	
+
 	$sql="select * from `Order No Product Transaction Fact`    $where   ";
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -908,7 +908,7 @@ function list_transactions_in_refund() {
 		);
 	}
 
-/*
+	/*
 	$invoice=new Invoice($order_id);
 
 	if ($invoice->data['Invoice Shipping Net Amount']!=0) {
@@ -928,7 +928,7 @@ function list_transactions_in_refund() {
 		);
 	}
 	*/
-/*
+	/*
 	$data[]=array(
 		'code'=>'',
 		'description'=>_('Total'),
@@ -1092,7 +1092,7 @@ function list_transactions_in_dn() {
 	$data=array();
 	$sql="select * from $table $where   ";
 
-	
+
 	$result=mysql_query($sql);
 	$total_gross=0;
 	$total_discount=0;
@@ -2291,8 +2291,8 @@ function list_transactions_dispatched() {
 
 
 
-	$table='`Order Transaction Fact` O 
-	left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) 
+	$table='`Order Transaction Fact` O
+	left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
  left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)';
 	$where=sprintf(' where `Order Transaction Type` not in ("Resend")  and  O.`Order Key`=%d',$parent_key);
 
@@ -2544,7 +2544,8 @@ function list_post_transactions() {
 
 	$table='`Order Post Transaction Dimension` POT
 	left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
-    left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+    left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
+    left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
     left join `Delivery Note Dimension`  DN on (POT.`Delivery Note Key`=DN.`Delivery Note Key`)
     ';
 	$where=sprintf(' where  POT.`Order Key`=%d ',$parent_key);
@@ -2657,14 +2658,14 @@ function list_post_transactions() {
 				$notes.=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Refund Key'],_('Refunded'));
 
 
-			
+
 			default:
 				$notes.='';
 
 			}
 
 			break;
-	
+
 
 		default:
 			$notes='';
@@ -2889,10 +2890,10 @@ function list_transactions_in_order() {
 	$sql="select *,
 		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
 
-	
-	 from `Order Transaction Fact` OTF 
-left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) 
- left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)	
+
+	 from `Order Transaction Fact` OTF
+left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
+ left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
 	 $where  order by $order $order_direction limit $start_from,$number_results ";
 	//print $sql;
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
@@ -2912,25 +2913,25 @@ left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
 				$quantity=number($row['Order Bonus Quantity']).' '._('free');
 			}
 		}
-		
-		
+
+
 		if (is_numeric($row['Product Availability']))
 			$stock=number($row['Product Availability']);
 		else
 			$stock='?';
-		
+
 		$deal_info='';
 		if ($row['Deal Info']!='') {
 			$deal_info='<br/> <span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
 
 
-if ($parent=='order_cancelled' or $parent=='order_suspended') {
-$description=$row['Product History XHTML Short Description'].$deal_info;
+		if ($parent=='order_cancelled' or $parent=='order_suspended') {
+			$description=$row['Product History XHTML Short Description'].$deal_info;
 
-}else{
-$description=$row['Product History XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info;
-}
+		}else {
+			$description=$row['Product History XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+		}
 
 
 		$adata[]=array(
