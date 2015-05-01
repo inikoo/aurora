@@ -604,7 +604,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
         request = "ar_quick_tables.php?tipo=category_list&subject=Customer&branch_type=Head&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-        //alert(request)
+       
         this.dataSource106 = new YAHOO.util.DataSource(request);
         this.dataSource106.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource106.connXhrMode = "queueRequests";

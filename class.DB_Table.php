@@ -730,7 +730,7 @@ abstract class DB_Table {
 		include_once 'common_units_functions.php';
 
 
-		if ($this->table_name=='Product')
+	if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
 		else
 			$subject_key=$this->id;
@@ -779,7 +779,7 @@ abstract class DB_Table {
 
 		include_once 'common_units_functions.php';
 
-		if ($this->table_name=='Product')
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
 		else
 			$subject_key=$this->id;

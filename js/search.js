@@ -280,6 +280,7 @@ function search(query, subject, search_scope) {
 
     var ar_file = 'ar_search.php';
 
+
     var request = 'tipo=' + subject + '&q=' + query + '&scope=' + search_scope;
     if (search_scope != '' && Dom.get(search_scope + '_id') != undefined) {
         request = request + '&' + search_scope + '_id=' + Dom.get(search_scope + '_id').value;
@@ -291,7 +292,7 @@ function search(query, subject, search_scope) {
    }
        
     Dom.get(subject + '_clean_search').src = 'art/loading.gif'
-  //  alert('ar_search.php?'+request);return;
+    //alert('ar_search.php?'+request);return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
          //   alert(o.responseText)

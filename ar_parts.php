@@ -114,11 +114,54 @@ case('warehouse_parts_stock_history'):
 case ('supplier_products_in_part_historic'):
 	list_supplier_products_in_part_historic();
 	break;
+case ('is_part_reference'):
+
+	$data=prepare_values($_REQUEST,array(
+			'query'=>array('type'=>'string')
+		));
+	is_part_reference($data);
+	break;	
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
 	echo json_encode($response);
 
+}
+
+
+function is_part_reference($data) {
+
+	$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description`  from `Part Dimension` where  `Part Reference`=%s  ",
+		prepare_mysql($data['query'])
+
+	);
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$msg=sprintf('%s <a href="part.php?sku=%d">%s</a>',
+			_('Another part already has this reference'),
+			$row['Part SKU'],
+			$row['Part Reference']
+		);
+
+		$response= array(
+			'state'=>200,
+			'found'=>1,
+			'msg'=>$msg
+		);
+		echo json_encode($response);
+		return;
+	}else {
+		$response= array(
+			'state'=>200,
+			'found'=>0,
+
+		);
+		echo json_encode($response);
+		return;
+
+	}
 }
 
 
