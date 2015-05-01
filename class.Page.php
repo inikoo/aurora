@@ -4820,8 +4820,8 @@ class Page extends DB_Table {
 		return $families;
 
 	}
-	
-	
+
+
 	function display_button_only_inikoo($product) {
 
 		$quantity=$this->get_button_ordered_quantity($product);
@@ -4983,7 +4983,7 @@ class Page extends DB_Table {
 
 
 	function refresh_cache() {
-	global $account_code,$memcache_ip;
+		global $account_code,$memcache_ip;
 
 
 		$site=new Site($this->data['Page Site Key']);

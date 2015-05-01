@@ -658,7 +658,7 @@ function refresh_cache_page($data) {
 		return;
 	}
 	
-	$template_response=$page->refresh_smarty_cache();
+	$template_response=$page->refresh_cache();
 	$response= array('state'=>200,'template_response'=>$template_response);
 	echo json_encode($response);
 
