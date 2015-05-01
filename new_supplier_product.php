@@ -13,7 +13,7 @@
 */
 
 include_once 'common.php';
-include_once 'class.Contact.php';
+include_once 'class.Supplier.php';
 
 
 if (!$user->can_view('suppliers')) {
@@ -53,8 +53,9 @@ $css_files=array(
 	'css/container.css',
 	'css/table.css',
 	'css/edit.css',
-	'css/edit_address.css',
-	'theme.css.php'
+	'theme.css.php',
+	'css/new_supplier_product.css'
+	
 );
 
 
@@ -70,19 +71,12 @@ $js_files=array(
 	$yui_path.'datatable/datatable-min.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
-	'js/search.php',
+	'js/search.js',
 	'js/edit_common.js',
-	'js/validate_telecom.js',
-	'js/country_address_labels.js',
-	'js/edit_address.js',
-	'edit_contact_from_parent.js.php',
-	'js/edit_contact_telecom.js',
-	'edit_contact_name.js.php',
-	'edit_contact_email.js.php',
-	'new_supplier_product.js.php'
-	//'new_contact.js.php?scope=staff'
+	'js/new_supplier_product.js'
 );
 
 
@@ -100,6 +94,22 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','suppliers');
 $smarty->assign('title',_('New Supplier Product'));
+
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Invalid_code'=>_('Invalid code'),
+				'Invalid_name'=>_('Invalid name'),
+				'Invalid_description'=>_('Invalid description'),
+				'Invalid_amount'=>_('Invalid amount'),
+				'Invalid_number'=>_('Invalid number'),
+				
+
+			)
+		)));
+$smarty->assign('session_data', $session_data);
+
+
 $smarty->display('new_supplier_product.tpl');
 
 

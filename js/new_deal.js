@@ -1600,7 +1600,7 @@ function init() {
                 'type': 'item',
                 'name': 'deal_code',
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': labels.Invalid_code
                 }],
                 'ar': 'find',
@@ -1616,7 +1616,7 @@ function init() {
                 'name': 'deal_name',
 
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': labels.Invalid_name
                 }],
                 'ar': false
@@ -1631,7 +1631,7 @@ function init() {
                 'name': 'deal_description',
 
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': labels.Invalid_description
                 }],
                 'ar': false
@@ -1699,7 +1699,7 @@ function init() {
                 'name': 'voucher_code',
 
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': labels.Invalid_code
                 }],
                 'ar': 'find',

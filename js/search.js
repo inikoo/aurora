@@ -14,6 +14,7 @@ var submit_search_on_enter = function(e, tipo) {
 
 function init_search(type) {
 
+
     subject = type;
     switch (type) {
     case 'staff':
@@ -101,7 +102,6 @@ function init_search(type) {
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_supplier_products);
         break;
     case 'supplier_products_supplier':
-
         var search_scope = 'supplier';
         subject = 'supplier_products';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_supplier_products_supplier);
@@ -163,7 +163,7 @@ var submit_search = function(e, data) {
       //  alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-               // 		alert(o.responseText)
+        //        		alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
                 if (r.state == 200) {
@@ -295,7 +295,7 @@ function search(query, subject, search_scope) {
     //alert('ar_search.php?'+request);return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-         //   alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 //   alert(subject+'_search_results')

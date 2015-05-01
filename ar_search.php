@@ -2114,7 +2114,7 @@ function search_supplier_products($data) {
 		//      $suppliers=0;
 
 	} else {
-		$suppliers=join(',',$user->suppliers);
+//		$suppliers=join(',',$user->suppliers);
 		$suppliers_where=' true ';
 		if ($user->data['User Type']=='Supplier' ) {
 
