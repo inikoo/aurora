@@ -268,7 +268,7 @@ function init() {
     validate_scope_metadata = {
         'part': {
             'type': 'new',
-            'ar_file': 'ar_edit_assets.php',
+            'ar_file': 'ar_edit_parts.php',
             'key_name': 'sp_pid',
             'key': Dom.get('sp_pid').value
         }

@@ -57,6 +57,17 @@ class supplierproduct extends DB_Table {
 		if (preg_match('/update/i',$options)) {
 			$update='update';
 		}
+		
+			if (!isset($raw_data['SPH Units Per Case']) or $raw_data['SPH Units Per Case']=='')
+			$raw_data['SPH Units Per Case']=1;
+
+		if (!isset($raw_data['SPH Case Cost']) or $raw_data['SPH Case Cost']=='')
+			$raw_data['SPH Case Cost']=$raw_data['Supplier Product Cost Per Case'];
+			
+		if (!isset($raw_data['SPH Currency']) or $raw_data['SPH Currency']=='')
+			$raw_data['SPH Currency']='GBP';
+
+		
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
 
@@ -64,17 +75,13 @@ class supplierproduct extends DB_Table {
 				$data[$key]=_trim($value);
 		}
 
-		if (!isset($raw_data['SPH Units Per Case']) or $raw_data['SPH Units Per Case']=='')
-			$raw_data['SPH Units Per Case']=1;
-
-		if (!isset($raw_data['SPH Case Cost']) or $raw_data['SPH Case Cost']=='')
-			$raw_data['SPH Case Cost']=$raw_data['Supplier Product Cost Per Case'];
-
+	
 		$data['SPH Units Per Case']=$raw_data['SPH Units Per Case'];
 		$data['SPH Case Cost']=$raw_data['SPH Case Cost'];
+		$data['SPH Currency']=$raw_data['SPH Currency'];
 		$data['Supplier Product Units Per Case']=$data['SPH Units Per Case'];
 		$data['Supplier Product Cost Per Case']=$data['SPH Case Cost'];
-
+		$data['Supplier Product Currency']=$data['SPH Currency'];
 
 		if ($data['Supplier Product Code']=='' or $raw_data['SPH Case Cost']=='' ) {
 			$this->error=true;
@@ -253,6 +260,7 @@ class supplierproduct extends DB_Table {
 		$base_data=array(
 			'SPH Case Cost'=>'',
 			'SPH Units Per Case'=>'1',
+			'SPH Currency'=>'GBP',
 			'SPH Type'=>'Normal',
 			'SPH Valid From'=>gmdate("Y-m-d H:i:s"),
 			'SPH Valid To'=>gmdate("Y-m-d H:i:s"),
@@ -320,6 +328,7 @@ class supplierproduct extends DB_Table {
 
 		unset($data['SPH Units Per Case']);
 		unset($data['SPH Case Cost']);
+		unset($data['SPH Currency']);
 
 
 		/*
@@ -520,7 +529,24 @@ class supplierproduct extends DB_Table {
 
 
 		switch ($key) {
+		
+		case 'Average Delivery Days':
+			include_once 'common_natural_language.php';
+			return seconds_to_string(24*3600*$this->data['Supplier Product Delivery Days']);
+			break;
+		case 'Origin':
+		
+			case 'Products Origin':
+			if ($this->data['Supplier Product Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code',$this->data['Supplier Product Origin Country Code']);
+				return sprintf('<img style="vertical-align:-1px" src="art/flags/%s.gif"/> %s',strtolower($country->data['Country 2 Alpha Code']),$country->get_country_name($this->locale));
+			}else {
+				return '';
+			}
+			break;
 		case 'Origin Country Code':
+		
 			if ($this->data['Supplier Product Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code',$this->data['Supplier Product Origin Country Code']);
@@ -660,17 +686,30 @@ class supplierproduct extends DB_Table {
 
 	}
 
+
+function update_currency($value) {
+
+		if ($value==$this->data['Supplier Product Currency']) {
+			$this->updated=false;
+			$this->new_value=$value;
+			return;
+
+		}
+
+		$this->update_sph($value,$this->data['Supplier Product Units Per Case'],$value);
+
+	}
+
 	function update_cost($value) {
 
 		if ($value==$this->data['Supplier Product Cost Per Case']) {
 			$this->updated=false;
 			$this->new_value=$value;
-			//$this->new_value=money($amount,$this->data['Supplier Product Currency']);
 			return;
 
 		}
 
-		$this->update_cost_and_units_per_case($value,$this->data['Supplier Product Units Per Case']);
+		$this->update_sph($value,$this->data['Supplier Product Units Per Case'],$this->data['Supplier Product Currency']);
 
 	}
 
@@ -682,24 +721,23 @@ class supplierproduct extends DB_Table {
 			return;
 
 		}
-
-		$this->update_cost_and_units_per_case($this->data['Supplier Product Cost Per Case'],$value);
-
+		$this->update_sph($this->data['Supplier Product Cost Per Case'],$value,$this->data['Supplier Product Currency']);
 	}
 
 
-	function update_cost_and_units_per_case($amount,$units_per_case) {
+	function update_sph($amount,$units_per_case,$currency) {
 
 		$change_at='now';
 
 
 		$old_formated_price=$this->get('Formated Price');
-		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Case Cost`=%.2f  and `SPH Units Per Case`=%d",
+		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Case Cost`=%.2f  and `SPH Units Per Case`=%d and `SPH Currency`=%s",
 
 
 			$this->pid,
 			$amount,
-			$units_per_case
+			$units_per_case,
+			prepare_mysql($currency)
 		);
 
 
@@ -707,11 +745,11 @@ class supplierproduct extends DB_Table {
 
 		$num_historic_records=mysql_num_rows($res);
 
-
 		if ($num_historic_records==0) {
 			$data=array(
 				'SPH Case Cost'=>$amount,
 				'SPH Units Per Case'=>$units_per_case,
+				'SPH Currency'=>$currency,
 				'Supplier Product ID'=>$this->pid
 			);
 			$this->create_key($data);
@@ -1004,7 +1042,7 @@ class supplierproduct extends DB_Table {
 
 	function change_current_key($new_current_key) {
 
-		$sql=sprintf("select `SPH Case Cost`,`SPH Units Per Case` from `Supplier Product History Dimension` where  `Supplier Product ID`=%d and `SPH Key`=%d "
+		$sql=sprintf("select `SPH Case Cost`,`SPH Units Per Case`,`SPH Currency` from `Supplier Product History Dimension` where  `Supplier Product ID`=%d and `SPH Key`=%d "
 			,$this->pid
 			,$new_current_key
 		);
@@ -1020,19 +1058,24 @@ class supplierproduct extends DB_Table {
 
 		$price=$row['SPH Case Cost'];
 		$units=$row['SPH Units Per Case'];
+		$currency=$row['SPH Currency'];
 
 
-		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Cost Per Case`=%.2f,`Supplier Product Units per Case`=%d,
+		$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Cost Per Case`=%.2f,`Supplier Product Units per Case`=%d,`Supplier Product Currency`=%s,
 		`Supplier Product Current Key`=%d  where `Supplier Product ID`=%d ",
 			$price,
 			$units,
+			prepare_mysql($currency),
 			$new_current_key,
 			$this->pid
 		);
+		
+	//	print $sql;
 
 		mysql_query($sql);
 		$this->data['Supplier Product Cost Per Case']=sprintf("%.2f",$price);
 		$this->data['Supplier Product Units Per Case']=$units;
+		$this->data['Supplier Product Currency']=$currency;
 
 		$this->data['Supplier Product Current Key']=$new_current_key;
 

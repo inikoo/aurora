@@ -1556,6 +1556,29 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 		}
 
 	}
+	
+	function update_default_currency($currency,$modify_products,$ratio){
+	
+	$this->update_field_switcher('Supplier Default Currency',$currency);
+	
+	if($modify_products=='Yes'){
+	
+		$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d ",
+		$this->id
+		);
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+			
+			$amount=$supplier_product->data['Supplier Product Cost Per Case']*$ratio;
+			
+			$supplier_product->update_sph($amount,$supplier_product->data['Supplier Product Units Per Case'],$currency);
+		
+		}	
+	}
+	
+	
+	}
 
 	function update_fax($telecom_key) {
 

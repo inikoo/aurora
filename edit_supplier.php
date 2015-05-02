@@ -241,6 +241,18 @@ $smarty->assign('filter_menu4',$filter_menu4);
 $smarty->assign('filter4',$tipo_filter4);
 $smarty->assign('filter_value4','');
 
+$tipo_filter5='code';
+$filter_menu5=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Country Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Country Name'),'label'=>_('Name')),
+);
+$smarty->assign('filter_name5',$filter_menu4[$tipo_filter4]['label']);
+$smarty->assign('filter_menu5',$filter_menu4);
+$smarty->assign('filter5',$tipo_filter5);
+$smarty->assign('filter_value5','');
+
+
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 

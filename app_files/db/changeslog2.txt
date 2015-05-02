@@ -93,3 +93,6 @@ ALTER TABLE `Invoice Dimension` ADD `Invoice Credit Tax Amount` DECIMAL(16,2) NO
 //====here
 
 run fix_supplier_products_data.php
+
+
+ALTER TABLE `Supplier Product History Dimension` ADD `SPH Currency` VARCHAR(3) NOT NULL DEFAULT 'GBP' AFTER `SPH Case Cost`; 

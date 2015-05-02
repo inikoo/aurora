@@ -32,7 +32,7 @@ case 'edit_supplier_product_part':
 		));
 	edit_supplier_product_part($data);
 
-break;
+	break;
 case('parts_in_supplier_product'):
 	list_parts_in_supplier_product();
 	break;
@@ -68,9 +68,24 @@ case('supplier_products'):
 	edit_supplier_product($data);
 	break;
 
-case('edit_supplier'):
 case('edit_supplier_quick'):
-	edit_supplier();
+	$data=prepare_values($_REQUEST,array(
+			'supplier_key'=>array('type'=>'key'),
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string')
+		));
+
+	edit_supplier_field($data['supplier_key'],$data['key'],$data['newvalue']);
+	break;
+
+case('edit_supplier'):
+	$data=prepare_values($_REQUEST,array(
+			'supplier_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array'),
+
+		));
+	edit_supplier($data);
 	break;
 case('edit_supplier_product_supplier'):
 case('edit_supplier_product_state'):
@@ -92,7 +107,7 @@ case('edit_product_description'):
 		));
 	edit_supplier_product($data);
 	break;
-	
+
 case('edit_supplier_product_cost'):
 
 
@@ -100,11 +115,11 @@ case('edit_supplier_product_cost'):
 	$data=prepare_values($_REQUEST,array(
 			'sp_id'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array'),
-	
+
 		));
 	edit_supplier_product_cost($data);
-	break;	
-	
+	break;
+
 case('delete_MSDS_file'):
 	require_once 'class.Attachment.php';
 	$data=prepare_values($_REQUEST,array(
@@ -113,8 +128,8 @@ case('delete_MSDS_file'):
 
 
 	delete_MSDS_attachment($data);
-	break;	
-	
+	break;
+
 case('add_MSDS_file'):
 	require_once 'class.Attachment.php';
 	$data=prepare_values($_REQUEST,array(
@@ -124,7 +139,7 @@ case('add_MSDS_file'):
 	$data['caption']='';
 
 	add_MSDS_attachment($data);
-	break;	
+	break;
 case('edit_supplier_product_properties'):
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array'),
@@ -133,7 +148,7 @@ case('edit_supplier_product_properties'):
 		));
 
 	edit_supplier_product_properties($data);
-		break;
+	break;
 case('complex_edit_supplier'):
 	complex_edit_supplier();
 	break;
@@ -155,18 +170,18 @@ default:
 
 }
 
-function edit_supplier() {
+function edit_supplier_field($supplier_key,$key,$value_data) {
 	global $editor;
-	$key=$_REQUEST['key'];
 	$okey=$key;
 
-	$supplier=new supplier($_REQUEST['supplier_key']);
+	$supplier=new supplier($supplier_key);
 
 	$supplier->editor=$editor;
 
+
 	if ($key=='Attach') {
 		// print_r($_FILES);
-		$note=stripslashes(urldecode($_REQUEST['newvalue']));
+		$note=stripslashes(urldecode($value_data));
 		$target_path = "uploads/".'attach_'.date('U');
 		$original_name=$_FILES['testFile']['name'];
 		$type=$_FILES['testFile']['type'];
@@ -202,10 +217,10 @@ function edit_supplier() {
 			,"dispatch_time"=>'Supplier Average Delivery Days'
 
 		);
-		if (array_key_exists($_REQUEST['key'],$key_dic))
-			$key=$key_dic[$_REQUEST['key']];
+		if (array_key_exists($key,$key_dic))
+			$key=$key_dic[$key];
 
-		$update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+		$update_data=array($key=>stripslashes(urldecode($value_data)));
 		//print_r($update_data);
 		$supplier->update($update_data);
 	}
@@ -225,7 +240,65 @@ function edit_supplier() {
 	} else {
 		$response= array('state'=>400,'msg'=>$supplier->msg,'key'=>$okey);
 	}
-	echo json_encode($response);
+	return $response;
+
+}
+
+
+function edit_supplier($data) {
+
+	$supplier=new Supplier($data['supplier_key']);
+	if (!$supplier->id) {
+		$response= array('state'=>400,'msg'=>'Supplier not found','key'=>$data['key']);
+		echo json_encode($response);
+		exit;
+	}
+
+
+	$values=array();
+	foreach ($data['values'] as $value_key=>$value_data) {
+		if ($value_data['value']=='') {
+			$values[$value_key]=$value_data;
+			unset($data['values'][$value_key]);
+		}
+	}
+
+	foreach ($data['values'] as $value_key=>$value_data) {
+
+		$values[$value_key]=$value_data;
+
+	}
+
+	$responses=array();
+
+	if (isset($values['Supplier Default Currency'])) {
+
+
+		$supplier->update_default_currency(
+			$values['Supplier Default Currency']['value'],
+			$values['modify_products_currency']['value'],
+			$values['products_currency_ratio']['value']
+		);
+
+		unset($values['Supplier Default Currency']);
+		unset($values['modify_products_currency']);
+		unset($values['products_currency_ratio']);
+		$responses[]= array('state'=>200,'newvalue'=>$supplier->data['Supplier Default Currency'],'key'=>'currency','action'=>'updated');
+	}
+
+
+
+
+	foreach ($values as $key=>$values_data) {
+
+		$responses[]=edit_supplier_field($supplier->id,$key,$values_data['value']);
+	}
+
+
+	if (isset($data['submit']))
+		return $responses;
+
+	echo json_encode($responses);
 
 }
 
@@ -279,7 +352,7 @@ function supplier_product_process_edit($supplier_product,$data) {
 
 	if (!$supplier_product->error) {
 		$response= array('state'=>200,'action'=>'updated','newvalue'=>$supplier_product->new_value,'key'=>$data['okey']);
-		
+
 	} else {
 		$response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$data['okey']);
 	}
@@ -349,18 +422,18 @@ function edit_supplier_product($data) {
 
 
 	if ($supplier_product->updated) {
-	
-	
-	
+
+
+
 		$response= array(
 			'state'=>200,
 			'newvalue'=>$supplier_product->new_value,
 			'key'=>$data['okey'],
 			'sp_current_key'=>$supplier_product->data['Supplier Product Current Key'],
 			'sp_pid'=>$supplier_product->pid
-			
+
 		);
-		if($key=='supplier_key'){
+		if ($key=='supplier_key') {
 			$response['newdata']=$supplier_product->new_data;
 		}
 
@@ -373,13 +446,13 @@ function edit_supplier_product($data) {
 }
 
 function edit_supplier_product_cost($data) {
-		global $editor;
+	global $editor;
 
-	
+
 	$values=$data['values'];
-	
+
 	$supplier_product=new SupplierProduct('pid',$data['sp_id']);
-	
+
 	$old_units=$supplier_product->data['Supplier Product Units Per Case'];
 	$old_cost=$supplier_product->data['Supplier Product Cost Per Case'];
 
@@ -392,53 +465,53 @@ function edit_supplier_product_cost($data) {
 
 	$supplier_product->editor=$editor;
 
-	
+
 	$_data=array(
 		'Supplier Product Units Per Case'=>$supplier_product->data['Supplier Product Units Per Case'],
 		'Supplier Product Cost Per Case'=>$supplier_product->data['Supplier Product Cost Per Case'],
 
 	);
-	
-	if(isset($values['Supplier Product Units Per Case'])){
-	
-	
+
+	if (isset($values['Supplier Product Units Per Case'])) {
+
+
 		$_data['Supplier Product Units Per Case']=$values['Supplier Product Units Per Case']['value'];
 	}
-		if(isset($values['Supplier Product Cost Per Case'])){
+	if (isset($values['Supplier Product Cost Per Case'])) {
 		$_data['Supplier Product Cost Per Case']=$values['Supplier Product Cost Per Case']['value'];
 	}
-	
-	$supplier_product->update_cost_and_units_per_case($_data['Supplier Product Cost Per Case'],$_data['Supplier Product Units Per Case']);
 
-	
+	$supplier_product->update_sph($_data['Supplier Product Cost Per Case'],$_data['Supplier Product Units Per Case'],$supplier_product->data['Supplier Product Currency']);
+
+
 
 
 	if (!$supplier_product->error) {
-	
+
 		$response=array();
-		
-		
-		if($old_cost!=$supplier_product->data['Supplier Product Cost Per Case']){
+
+
+		if ($old_cost!=$supplier_product->data['Supplier Product Cost Per Case']) {
 			$response[]=array(
-			'state'=>200,
-			'key'=>'Supplier_Product_Cost_Per_Case',
-			'newvalue'=>$supplier_product->data['Supplier Product Cost Per Case']
+				'state'=>200,
+				'key'=>'Supplier_Product_Cost_Per_Case',
+				'newvalue'=>$supplier_product->data['Supplier Product Cost Per Case']
 			);
 		}
-		
-		if($old_units!=$supplier_product->data['Supplier Product Units Per Case']){
+
+		if ($old_units!=$supplier_product->data['Supplier Product Units Per Case']) {
 			$response[]=array(
-			'state'=>200,
-			'key'=>'Supplier_Product_Units_Per_Case',
-			'newvalue'=>$supplier_product->data['Supplier Product Units Per Case']
+				'state'=>200,
+				'key'=>'Supplier_Product_Units_Per_Case',
+				'newvalue'=>$supplier_product->data['Supplier Product Units Per Case']
 			);
 		}
-	
-	
-	
-	
-	
-		
+
+
+
+
+
+
 
 
 	} else {
@@ -941,7 +1014,7 @@ function list_supplier_products() {
 
 
 			'name'=>$row['Supplier Product Name'],
-			'cost'=>money($row['SPH Case Cost']),
+			'cost'=>money($row['SPH Case Cost'],$row['SPH Currency']),
 			'usedin'=>$row['Supplier Product XHTML Sold As'],
 			'unit_type'=>$row['Supplier Product Unit Type'],
 			'units'=>$row['Supplier Product Units Per Case'],
@@ -1000,6 +1073,9 @@ function new_supplier($data) {
 function create_product($data) {
 	global $editor;
 
+
+	$supplier=new Supplier($data['parent_key']);
+
 	$sp_data=$data['values'];
 
 
@@ -1007,6 +1083,20 @@ function create_product($data) {
 	$sp_data['Supplier Key']=$data['parent_key'];
 	$sp_data['Supplier Key']=$data['parent_key'];
 	$sp_data['Supplier Product Valid From']=gmdate("Y-m-d H:i:s");
+
+
+	if (!isset($sp_data['SPH Currency'])) {
+		$sp_data['SPH Currency']=$supplier->data['Supplier Default Currency'];
+	}
+	if (!isset($sp_data['Supplier Product Origin Country Code'])) {
+		$sp_data['Supplier Product Origin Country Code']=$supplier->data['Supplier Products Origin Country Code'];
+	}
+
+	if (!isset($sp_data['Supplier Product Delivery Days'])) {
+		$sp_data['Supplier Product Delivery Days']=$supplier->data['Supplier Delivery Days'];
+	}
+
+
 
 
 
@@ -1331,12 +1421,12 @@ function list_parts_in_supplier_product() {
 				'sku'=>$row['Part SKU'],
 
 				'relation'=>$relation,
-				
+
 				'formated_sku'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']),
-			'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']),
-				
+				'reference'=>sprintf('<a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part Reference']),
+
 				'name'=>$row['Part Unit Description'].'<br>'.$row['Supplier Product Part Valid From'].' &rarr; '.$row['Supplier Product Part Valid To'],
-			//	'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
+				// 'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
 				'state'=>$state,
 				'state_value'=>$state_value,
 				'available_state'=>$available_state
@@ -1394,8 +1484,8 @@ function edit_supplier_product_part($data) {
 		$value=$data['newvalue'];
 		if (!in_array($value,array('Unlink','Link'))) {
 			$msg='wrong Supplier Product Part State value: '.$value;
-			
-				$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key']);
+
+			$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key']);
 			echo json_encode($response);
 			exit;
 			return;
@@ -1410,13 +1500,13 @@ function edit_supplier_product_part($data) {
 				$data['sppl_key']
 			);
 			mysql_query($sql);
-//print $sql;
+			//print $sql;
 			$state=sprintf('<img src="art/icons/brick_none.png" title="%s"> %s',_('Discontined'),_('Discontined'));
 
 
 			break;
-	case 'Link':
-		$state=sprintf('<img src="art/icons/link.png" title="%s"> %s',_('Link to part'),_('Linked to part'));
+		case 'Link':
+			$state=sprintf('<img src="art/icons/link.png" title="%s"> %s',_('Link to part'),_('Linked to part'));
 
 		}
 
@@ -1443,11 +1533,11 @@ function edit_supplier_product_part($data) {
 
 
 		$response= array('state'=>200,'newvalue'=>$value,'key'=>$data['key'],'state_formated'=>$state,'state_value'=>$value);
-		
-		if(isset($data['table_record_index'])){
-		$response['record_index']=(integer) $data['table_record_index'];
+
+		if (isset($data['table_record_index'])) {
+			$response['record_index']=(integer) $data['table_record_index'];
 		}
-		
+
 		echo json_encode($response);
 		exit;
 
