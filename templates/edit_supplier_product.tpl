@@ -86,7 +86,7 @@
 						<td style="width:200px" class="label">{t}Cost per outer{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
-							<input style="text-align:right;width:150px" id="Supplier_Product_Cost_Per_Case" value="{$supplier_product->get('Supplier Product Cost Per Case')}" ovalue="{$supplier_product->get('Supplier Product Cost Per Case')}" valid="0"> <span style="margin-left:160px">{$corporate_currency_symbol}</span>
+							<input style="text-align:right;width:150px" id="Supplier_Product_Cost_Per_Case" value="{$supplier_product->get('Supplier Product Cost Per Case')}" ovalue="{$supplier_product->get('Supplier Product Cost Per Case')}" valid="0"> <span style="margin-left:160px">{$supplier_product->get('Supplier Product Currency')}</span>
 							<div id="Supplier_Product_Cost_Per_Case_Container">
 							</div>
 						</div>

@@ -1,10 +1,10 @@
 {include file='header.tpl'} 
 <div id="bd">
-<input type="hidden" id="subject_key" value="{$supplier->id}" />
+	<input type="hidden" id="subject_key" value="{$supplier->id}" />
 	<input type="hidden" id="subject" value="supplier" />
 	<input type="hidden" id="supplier_key" value="{$supplier->id}"> {include file='suppliers_navigation.tpl'} 
-			<input type="hidden" id="supplier_products_table_id" value="0" />
-			<input type="hidden" id="main_address_key" value="{$supplier->get('Supplier Main Address Key')}"> 
+	<input type="hidden" id="supplier_products_table_id" value="0" />
+	<input type="hidden" id="main_address_key" value="{$supplier->get('Supplier Main Address Key')}"> 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <span id="title_name_bis">{$supplier->get('Supplier Name')}</span> ({t}Editing{/t})</span> 
 	</div>
@@ -26,6 +26,9 @@
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if}" id="d_details">
+			
+			<input id="modify_products_currency" value="Yes" ovalue="Yes" type="hidden">
+			<input id="products_currency_ratio" value="1" ovalue="1" type="hidden">
 			<table class="edit" border="0" style="clear:both;width:100%">
 				<tr class="first">
 					<td style="width:150px" class="label">Supplier Code:</td>
@@ -82,7 +85,6 @@
 					</td>
 					<td id="Supplier_Main_Telephone_msg" class="edit_td_alert"></td>
 				</tr>
-				
 				<tr>
 					<td class="label">{t}Fax{/t}:</td>
 					<td style="text-align:left"> 
@@ -123,9 +125,8 @@
 						<input style="text-align:right;width:100px" id="Supplier_Average_Delivery_Days" value="{$supplier->get('Supplier Average Delivery Days')}" ovalue="{$supplier->get('Supplier Average Delivery Days')}" valid="0"> {t}days{/t} 
 						<div id="Supplier_Average_Delivery_Days_Container">
 						</div>
-						<span style="margin-left:80px">{t}days{/t}</span>
+						<span style="margin-left:80px">{t}days{/t}</span> 
 					</div>
-					
 					</td>
 					<td id="Supplier_Average_Delivery_Days_msg" class="edit_td_alert"></td>
 				</tr>
@@ -137,6 +138,16 @@
 						<span style="float:left;margin-right:10px" id="Supplier_Products_Origin_Country_Code_formated">{$supplier->get('Products Origin Country Code')}</span> <button class="negative" style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="delete_Supplier_Products_Origin_Country_Code" onclick="delete_origin_country_code()">{t}Remove{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="update_Supplier_Products_Origin_Country_Code">{t}Change Origin{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')!=''}display:none{/if}" id="set_Supplier_Products_Origin_Country_Code">{t}Set Origin{/t}</button> 
 					</div>
 					<span id="Supplier_Products_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+					<td></td>
+				</tr>
+				<tr>
+					<td style="width:200px" class="label">{t}Currency{/t}:</td>
+					<td style="text-align:left"> 
+					<input type="hidden" id="Supplier_Default_Currency" value="{$supplier->get('Supplier Default Currency')}" ovalue="{$supplier->get('Supplier Default Currency')}" ovalue_formated="{$supplier->get('Supplier Default Currency')}" />
+					<div class="buttons small left">
+						<span style="float:left;margin-right:10px" id="Supplier_Default_Currency_formated">{$supplier->get('Supplier Default Currency')}</span> <button style="{if $supplier->get('Supplier Default Currency')==''}display:none{/if}" id="update_Supplier_Default_Currency">{t}Change Currency{/t}</button> <button style="{if $supplier->get('Supplier Default Currency')!=''}display:none{/if}" id="set_Supplier_Default_Currency">{t}Set Currency{/t}</button> <span style="font-size:80%">({t}Will change all supplier products currency{/t})</span>
+					</div>
+					<span id="Supplier_Default_Currency_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
 					<td></td>
 				</tr>
 				<tr class="buttons">
@@ -162,7 +173,6 @@
 			<div style="clear:both">
 			</div>
 		</div>
-	
 		<div class="edit_block" style="{if $edit!='products'}display:none{/if}" id="d_products">
 			<div class="data_table" style="clear:both">
 				<div id="suppliers_product_list">
@@ -170,14 +180,9 @@
 					<div class="buttons small left">
 						<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
 					</div>
-						<div class="elements_chooser">
-										<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-								<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
-
-
-	
-	</div>
+					<div class="elements_chooser">
+						<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+					</div>
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
@@ -197,7 +202,7 @@
 					<td> 
 					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="save_category(this)">
 						{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
-						<option {if $categories_value[$cat_key]="=''" }selected="selected" {/if} value="">{t}Unknown{/t}</option>
+						<option {if $categories_value[$cat_key]="=''" }selected="selected" {/if} value>{t}Unknown{/t}</option>
 						{/if} 
 						<option {if $categories_value[$cat_key]="=$sub_cat_key" }selected="selected" {/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Code')}</option>
 						{/foreach} 
@@ -222,8 +227,6 @@
 		</div>
 	</div>
 </div>
-
-
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -264,8 +267,6 @@
 		</ul>
 	</div>
 </div>
-
-
 <div id="rppmenu4" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -286,7 +287,6 @@
 		</ul>
 	</div>
 </div>
-
 <div id="rppmenu100" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -307,8 +307,6 @@
 		</ul>
 	</div>
 </div>
-
-
 <div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
@@ -327,25 +325,27 @@
 		</div>
 	</div>
 </div>
-
+<div id="dialog_currency_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="data_table">
+			<span class="clean_table_title">{t}Currencies{/t}</span> {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5} 
+			<div id="table5" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
 <div id="dialog_edit_supplier_product_state" style="padding:20px 20px 5px 20px">
 	<table>
 		<tr>
 			<td> 
-			<input id="edit_supplier_product_state_sp_id" value="" type="hidden"> 
-			<input id="edit_supplier_product_state_table_record_index" value="" type="hidden"> 
-			<input id="edit_supplier_product_state_table_id" value="" type="hidden"> 
+			<input id="edit_supplier_product_state_sp_id" value type="hidden"> 
+			<input id="edit_supplier_product_state_table_record_index" value type="hidden"> 
+			<input id="edit_supplier_product_state_table_id" value type="hidden"> 
 			<div id="supplier_product_state_operations" class="buttons small">
-			 <button class="buttons" onclick="save_supplier_product_state('Discontinued')" id="supplier_product_state_Discontinued"><img src="art/icons/brick_none.png"> {t}Discontinued{/t}</button> 		
- <button class="buttons" onclick="save_supplier_product_state('NoAvailable')" id="supplier_product_state_NoAvailable"><img src="art/icons/brick_error.png"> {t}No Available{/t}</button> 			
-
- <button class="buttons" onclick="save_supplier_product_state('Available')" id="supplier_product_state_Available"><img src="art/icons/brick.png"> {t}Available{/t}</button> 			
- </div>
-
-
+				<button class="buttons" onclick="save_supplier_product_state('Discontinued')" id="supplier_product_state_Discontinued"><img src="art/icons/brick_none.png"> {t}Discontinued{/t}</button> <button class="buttons" onclick="save_supplier_product_state('NoAvailable')" id="supplier_product_state_NoAvailable"><img src="art/icons/brick_error.png"> {t}No Available{/t}</button> <button class="buttons" onclick="save_supplier_product_state('Available')" id="supplier_product_state_Available"><img src="art/icons/brick.png"> {t}Available{/t}</button> 
+			</div>
 			</td>
 		</tr>
 	</table>
 </div>
-
 {include file='footer.tpl'} 

@@ -62,6 +62,9 @@ case('world_regions_list'):
 case('country_list'):
 	country_list();
 	break;
+case('currency_list'):
+	currency_list();
+	break;
 case('postal_codes_list'):
 	postal_code_list();
 	break;
@@ -1450,6 +1453,150 @@ function country_list() {
 			// 'records_order'=>$order,
 			// 'records_order_dir'=>$order_dir,
 			// 'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
+
+function currency_list() {
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else$order='code';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else$order_dir='';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else$f_field='wregion_code';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	$where=sprintf('where true ');
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Currency Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+	    $wheref=sprintf('  and  `Currency Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$sql="select count(*) as total from kbase.`Currency Dimension` $where $wheref  ";
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from kbase.`Currency Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('Currency','Currencies',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp="("._('Showing all').")";
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any currency with code")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('currencies with code like')." <b>$f_value</b>)";
+		break;
+case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any currency with name")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('currencies with name like')." <b>$f_value</b>)";
+		break;
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='code')
+		$order='`Currency Code`';
+	elseif ($order=='name')
+		$order='`Currency Name`';
+	else
+		$order='`Currency Code`';
+
+
+
+
+
+	$adata=array();
+	$sql="select * from kbase.`Currency Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+
+		$country_flag=sprintf('<img  src="art/flags/%s" alt="">',strtolower($row['Currency Flag']));
+
+
+
+		$adata[]=array(
+
+			'name'=>$row['Currency Name'],
+			'code'=>$row['Currency Code'],
+			'flag'=>$country_flag,
+
+			'symbol'=>$row['Currency Symbol'],
+
+
+
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
 			'rtext'=>$rtext,
 			'rtext_rpp'=>$rtext_rpp
 		)

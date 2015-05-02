@@ -412,6 +412,76 @@ var tableid=1; // Change if you have more the 1 table
 
 
 
+   var tableid=5; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [
+                   {key:"flag", label:"",width:25,sortable:false,className:"aleft"}
+                   ,{key:"code", label:"<?php echo _('Code')?>",width:25,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", label:"<?php echo _('Name')?>",width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"symbol", label:"<?php echo _('Symbol')?>",width:100,sortable:false}
+
+		];
+			       
+	    this.dataSource5 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=currency_list&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource5.connXhrMode = "queueRequests";
+	    	    this.dataSource5.table_id=tableid;
+
+	    this.dataSource5.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
+		},
+		
+		
+		fields: [
+			 "name","flag",'code','symbol'
+			 ]};
+
+	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource5
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator5', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table5.subscribe("cellClickEvent", this.table5.onEventShowCellEditor);
+
+ this.table5.subscribe("rowMouseoverEvent", this.table5.onEventHighlightRow);
+       this.table5.subscribe("rowMouseoutEvent", this.table5.onEventUnhighlightRow);
+      this.table5.subscribe("rowClickEvent", change_currency);
+     
+
+
+	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table5.filter={key:'code',value:''};
+
   var tableid=100; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
@@ -594,16 +664,14 @@ Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','')
 
 
 
-function show_dialog_country_list_bis(e){
+function show_dialog_country_list_bis(e) {
 
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_country_list_bis');
+    var pos = [region1.right + 5, region1.top - 120]
+    Dom.setXY('dialog_country_list_bis', pos);
+    dialog_country_list_bis.show()
 
-
-
-	region1 = Dom.getRegion(this); 
-    region2 = Dom.getRegion('dialog_country_list_bis'); 
-	var pos =[region1.right+5,region1.top-120]
-	Dom.setXY('dialog_country_list_bis', pos);
-dialog_country_list_bis.show()
 }
 
 function change_origin_country_code(oArgs) {
@@ -636,9 +704,54 @@ function change_origin_country_code(oArgs) {
 
 }
 
-function save_edit_supplier(){
- save_edit_general('supplier');
+function change_currency(oArgs) {
+    var currency = tables.table5.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+
+    Dom.get('Supplier_Default_Currency_formated').innerHTML = currency
+    Dom.setStyle(['update_Supplier_Default_Currency'], 'display', '')
+    Dom.setStyle('set_Supplier_Default_Currency', 'display', 'none')
+
+
+
+
+    value = currency;
+
+    validate_scope_data['supplier']['currency']['value'] = value;
+    
+    validate_scope_data.supplier.modify_products_currency.changed=true;
+     validate_scope_data.supplier.products_currency_ratio.changed=true;
+   
+    
+    Dom.get('Supplier_Default_Currency').value = value
+    ovalue = Dom.get('Supplier_Default_Currency').getAttribute('ovalue');
+    if (ovalue != value) {
+        validate_scope_data['supplier']['currency']['changed'] = true;
+    } else {
+        validate_scope_data['supplier']['currency']['changed'] = false;
+    }
+
+    validate_scope('supplier')
+
+    dialog_currency_list.hide();
+
 }
+
+
+
+function show_dialog_currency_list(e) {
+
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_currency_list');
+    var pos = [region1.right + 5, region1.top - 120]
+    Dom.setXY('dialog_currency_list', pos);
+    dialog_currency_list.show()
+
+}
+
+function save_edit_supplier() {
+    save_edit_general_bulk('supplier');
+}
+
 
 function reset_edit_supplier(){
  reset_edit_general('supplier')
@@ -783,6 +896,45 @@ function init(){
 			'validation':false
 			
 		}
+		,'currency': {
+			'changed': false,
+			'validated': true,
+			'required': false,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'Supplier Default Currency',
+			'name': 'Supplier_Default_Currency',
+			'ar': false,
+			'validation':false
+			
+		}
+		,'modify_products_currency': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'modify_products_currency',
+			'name': 'modify_products_currency',
+			'ar': false,
+			'validation':false
+			
+		}
+		,'products_currency_ratio': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+			'dbname': 'products_currency_ratio',
+			'name': 'products_currency_ratio',
+			'ar': false,
+			 'validation': [{
+                   'numeric': "money",
+                    'invalid_msg': 'wrong number'
+                }]
+			
+		}
 			,'dispatch_time':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Average_Delivery_Days','validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Invalid number')?>'}]}
 
   }
@@ -882,6 +1034,21 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     
     Event.addListener("set_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
     Event.addListener("update_Supplier_Products_Origin_Country_Code", "click", show_dialog_country_list_bis);
+
+
+  dialog_currency_list = new YAHOO.widget.Dialog("dialog_currency_list", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_currency_list.render();
+    
+    
+    Event.addListener("set_Supplier_Default_Currency", "click", show_dialog_currency_list);
+    Event.addListener("update_Supplier_Default_Currency", "click", show_dialog_currency_list);
+
 
 
  dialog_edit_supplier_product_state = new YAHOO.widget.Dialog("dialog_edit_supplier_product_state", {

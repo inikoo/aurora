@@ -8,15 +8,15 @@ include_once 'class.Part.php';
 $view_suppliers=$user->can_view('suppliers');
 
 
-$product_supplier_key=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
+$product_supplier_pid=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
 
-if (!$product_supplier_key) {
+if (!$product_supplier_pid) {
 	header('Location: suppliers.php?e');
 	exit();
 }
 
 
-$supplier_product= new SupplierProduct('pid',$product_supplier_key);
+$supplier_product= new SupplierProduct('pid',$product_supplier_pid);
 if (!$supplier_product->id) {
 	header('Location: suppliers.php');
 	exit;
@@ -81,15 +81,9 @@ $js_files=array(
 );
 
 
-$smarty->assign('pid',$supplier_product->id);
 
 $supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
-
-$_SESSION['state']['supplier_product']['code']=$supplier_product_code;
-$_SESSION['state']['supplier_product']['supplier_key']=$supplier_key;
-$_SESSION['state']['supplier_product']['pid']=$supplier_product->pid;
-$_SESSION['state']['supplier_product']['id']=$supplier_product->id;
 
 
 

@@ -89,6 +89,11 @@ if ($parent=='parts_family') {
 
 
 	$supplier_product=new SupplierProduct('pid',$_REQUEST['parent_key']);
+	
+	if(!$supplier_product->id){
+		exit('supplier product not found');
+	}
+	
 	$supplier=new Supplier($supplier_product->data['Supplier Key']);
 	$smarty->assign('supplier_product',$supplier_product);
 	$smarty->assign('supplier',$supplier);
