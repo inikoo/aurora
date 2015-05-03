@@ -69,7 +69,7 @@ case('edit_part_properties'):
 
 	edit_part_properties($data);
 	break;
-	
+
 case('edit_part_custom_field'):
 case('edit_part_unit'):
 case('edit_part_status'):
@@ -220,47 +220,40 @@ function part_process_edit($part,$data) {
 }
 
 function create_part($data) {
+	include_once 'class.Supplier.php';
+	include_once 'class.SupplierProduct.php';
+	include_once 'class.Category.php';
+
+	$user=$data['user'];
 
 	$_part=$data['values'];
 
 
 	$part_data['Part Most Recent']='Yes';
 
-	$sp=new SupplierProduct($data['parent_key']);
+	$sp=new SupplierProduct('pid',$data['values']['Supplier Product ID']);
 
 	$supplier=new Supplier($sp->get('Supplier Key'));
 
-
-	//print_r($sp);exit;
-
-	$part_data['Part XHTML Currently Supplied By']=sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code'));
-	$part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">%s</a>',$sp->id,$sp->get('Product Code'));
-
-
-
-	//$part_data['editor']=$editor;
-
-
 	$part_data=array(
-		//                  'editor'=>$editor,
+		'editor'=>$user->editor,
 		'Part Most Recent'=>'Yes',
-		'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-		//                 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 		'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$_part['Part Unit Description'])),
-
-		'part valid from'=>gmdate("Y-m-d H:i:s"),
-		'part valid to'=>gmdate("Y-m-d H:i:s"),
-		'Part Package Weight'=>$_part['Part Package Weight']
+		'Part Reference'=>$_part['Part Reference'],
+		'Part Valid From'=>gmdate("Y-m-d H:i:s"),
+		'Part Valid To'=>gmdate("Y-m-d H:i:s")
 	);
 
-	//print_r($part_data);exit;
 
 	$part=new Part('new',$part_data);
-	if ($part->new) {
-		print $part->msg;
+	if (!$part->new) {
+		$response= array('state'=>400,'action'=>'error','msg'=>$part->msg);
+		echo json_encode($response);
+		return;
 	}
-
-
+	$category=new Category($data['values']['Part Family Key']);
+	$category->skip_update_sales=true;
+	$category->associate_subject($part->sku);
 
 	$spp_header=array(
 		'Supplier Product Part Type'=>'Simple',
@@ -277,13 +270,17 @@ function create_part($data) {
 			'Supplier Product Part Type'=>'Simple'
 		)
 	);
-
-
-
 	$sp->new_current_part_list($spp_header,$spp_list);
 
+	$part->update_used_in();
+	$part->update_supplied_by();
+	$part->update_cost();
 
-	$response= array('state'=>200,'action'=>'created_','object_key'=>$part->id,'msg'=>$part->msg);
+	$sp->update_sold_as();
+	$sp->update_store_as();
+
+
+	$response= array('state'=>200,'action'=>'created_','object_key'=>$part->sku,'msg'=>$part->msg);
 	echo json_encode($response);
 
 
@@ -1429,14 +1426,14 @@ function edit_supplier_product_part($data) {
 	if ($data['key']=='state') {
 		$value=$data['newvalue'];
 		if (!in_array($value,array('Available','NoAvailable','Discontinued'))) {
-			
+
 			$msg='wrong Supplier Product Part State value: '.$value;
-			
-				$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key']);
+
+			$response= array('state'=>400,'msg'=>$msg,'key'=>$data['key']);
 			echo json_encode($response);
 			exit;
-			
-			
+
+
 			return;
 		}
 
@@ -1456,7 +1453,7 @@ function edit_supplier_product_part($data) {
 			break;
 		case 'Available':
 			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
-				
+
 				$data['sppl_key']
 			);
 			mysql_query($sql);
@@ -1466,11 +1463,11 @@ function edit_supplier_product_part($data) {
 
 		case 'NoAvailable':
 			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='No' where `Supplier Product Part Key`=%d",
-			
+
 				$data['sppl_key']
 			);
 			mysql_query($sql);
-			
+
 			$state=sprintf('<img src="art/icons/brick_error.png" title="%s"> %s',_('No Available'),_('No Available'));
 
 			break;
@@ -1500,11 +1497,11 @@ function edit_supplier_product_part($data) {
 
 
 		$response= array('state'=>200,'newvalue'=>$value,'key'=>$data['key'],'state_formated'=>$state,'state_value'=>$value);
-		
-		if(isset($data['table_record_index'])){
-		$response['record_index']=(integer) $data['table_record_index'];
+
+		if (isset($data['table_record_index'])) {
+			$response['record_index']=(integer) $data['table_record_index'];
 		}
-		
+
 		echo json_encode($response);
 		exit;
 

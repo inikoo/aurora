@@ -1493,7 +1493,7 @@ function currency_list() {
 	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Currency Code` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='name' and $f_value!='')
-	    $wheref=sprintf('  and  `Currency Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+		$wheref=sprintf('  and  `Currency Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 	$sql="select count(*) as total from kbase.`Currency Dimension` $where $wheref  ";
 
 	$res=mysql_query($sql);
@@ -1531,7 +1531,7 @@ function currency_list() {
 		elseif ($filtered>0)
 			$filter_msg=_('Showing')." $total ("._('currencies with code like')." <b>$f_value</b>)";
 		break;
-case('name'):
+	case('name'):
 		if ($total==0 and $filtered>0)
 			$filter_msg=_("There isn't any currency with name")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
@@ -2820,6 +2820,8 @@ function category_list() {
 		$wheref.=" and  `Category Plain Branch Tree` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='label' and $f_value!='')
 		$wheref.=" and  `Category Label` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Category Code` like '".addslashes($f_value)."%'";
 
 
 	$sql="select count(*) as total from `Category Dimension` $where $wheref  ";
@@ -2863,9 +2865,14 @@ function category_list() {
 		if ($total==0 and $filtered>0)
 			$filter_msg=_("There isn't any category with label")." <b>".$f_value."*</b> ";
 		elseif ($filtered>0)
-			$filter_msg=_('Showing')." $total ("._('categories with name label')." <b>$f_value</b>)";
+			$filter_msg=_('Showing')." $total ("._('with name label')." <b>$f_value</b>)";
 		break;
-
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any category with code")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('with code')." <b>$f_value</b>)";
+		break;
 	}
 
 

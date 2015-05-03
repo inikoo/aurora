@@ -8,6 +8,11 @@ var dialog_stock_history_timeline_group;
 var  link='inventory.php';
 
 
+var  families_period_ids=['families_period_all',
+ 'families_period_yesterday',
+ 'families_period_last_w',
+ 'families_period_last_m','families_period_three_year','families_period_year','families_period_yeartoday','families_period_six_month','families_period_quarter','families_period_month','families_period_ten_day','families_period_week','families_period_monthtoday','families_period_weektoday','families_period_today'];
+
 
 
 function submit_choose_day(){
@@ -313,6 +318,71 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 	    this.table2.filter={key:'<?php echo $_SESSION['state']['warehouse']['parts']['f_field']?>',value:'<?php echo $_SESSION['state']['warehouse']['parts']['f_value']?>'};
 		
 
+	    var tableid=3; 
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				
+				    {key:"code", label:"<?php echo _('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"label", label:"<?php echo _('Label')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"subjects", label:"<?php echo _('Parts')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"delta_sales", label:"<?php echo '&Delta;'._('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				
+				     ];
+	  request="ar_parts.php?tipo=part_categories&sf=0&tableid="+tableid+"&parent=category&parent_key="+Dom.get('part_families_category_key').value+'&scope=part_families'
+	 // alert(request)
+	  this.dataSource3 = new YAHOO.util.DataSource(request);
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			"code","subjects","sold","sales","label","delta_sales"
+			 ]};
+	    
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource3, {
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['warehouse']['families']['nr']?>,
+									      containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['warehouse']['families']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['families']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	    
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['warehouse']['families']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['families']['f_value']?>'};
+		this.table3.table_id=tableid;
+     	this.table3.subscribe("renderEvent", myrenderEvent);
 
 
 	};
@@ -320,14 +390,14 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 
 
 function change_block() {
-    ids = ['history', 'movements', 'parts']
-    block_ids = ['block_history', 'block_movements', 'block_parts']
+    ids = ['history', 'movements', 'parts','familes']
+    block_ids = ['block_history', 'block_movements', 'block_parts', 'block_families']
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
 
-  if (this.id == 'parts') {
+  if (this.id == 'parts' || this.id == 'families') {
         Dom.setStyle('calendar_container', 'display', 'none');
 
     } else {
@@ -335,14 +405,24 @@ function change_block() {
 
     }
 
-
-
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=warehouse-parts_view&value=' + this.id, {});
 }
 
 
 
+function change_families_period(e, table_id) {
 
+    tipo = this.id;
+
+    Dom.removeClass(families_period_ids, "selected")
+    Dom.addClass(this, "selected")
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '&period=' + this.getAttribute('period');
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+}
 
  
  
@@ -590,7 +670,7 @@ function init() {
 
 
 
-    Event.addListener(['history', 'movements', 'parts'], "click", change_block);
+    Event.addListener(['history', 'movements', 'parts','families'], "click", change_block);
     Event.addListener(["history_block_plot", "history_block_list"], "click", change_stock_history_block);
 
 
@@ -620,12 +700,38 @@ function init() {
     YAHOO.util.Event.addListener("change_stock_history_timeline_group", "click", show_dialog_stock_history_timeline_group);
 
 
+   Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
+ 
+
+
+  var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
+
+
+    YAHOO.util.Event.addListener(families_period_ids, "click", change_families_period, 3);
+
+
 
 }
 
 
 YAHOO.util.Event.onDOMReady(init);
 
+YAHOO.util.Event.onContentReady("rppmenu3", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu3", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {trigger:"filter_name3"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
 
 YAHOO.util.Event.onContentReady("rppmenu2", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });

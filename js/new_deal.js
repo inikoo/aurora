@@ -2200,8 +2200,10 @@ function init() {
     Event.addListener('clean_table_filter_hide101', "click", hide_filter, 101);
     Event.addListener('clean_table_filter_show102', "click", show_filter, 102);
     Event.addListener('clean_table_filter_hide102', "click", hide_filter, 102);
+    
     Event.addListener('clean_table_filter_show103', "click", show_filter, 103);
     Event.addListener('clean_table_filter_hide103', "click", hide_filter, 103);
+    
     Event.addListener('clean_table_filter_show104', "click", show_filter, 104);
     Event.addListener('clean_table_filter_hide104', "click", hide_filter, 104);
     Event.addListener('clean_table_filter_show105', "click", show_filter, 105);

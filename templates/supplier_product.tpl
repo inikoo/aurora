@@ -15,10 +15,11 @@
 			<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons" style="float:left">
-				{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
+			<div class="buttons  " style="float:left">
+				{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
+				<span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
 			</div>
-			<div class="buttons">
+			<div class="buttons ">
 				{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?parent=supplier_product&parent_key={$supplier_product->pid}'">{t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
@@ -84,12 +85,12 @@
 			<div style="width:280px;float:left;margin-left:20px">
 				<table class="show_info_product" style="{if $supplier_product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%">
 					<tr>
-						<td>{t}Current Stock{/t}:</td>
+						<td>{t}Associated parts{/t}:</td>
 					</tr>
 					{foreach from=$supplier_product->get_parts() item=part_data} 
 					<tr>
 						<td style="vertical-align:bottom">1&rarr;{$part_data.Parts_Per_Supplier_Product_Unit}</td>
-						<td style="vertical-align:bottom"><a href="part.php?sku={$part_data.part->sku}">{$part_data.part->get_sku()}</a></td>
+						<td style="vertical-align:bottom"><a href="part.php?sku={$part_data.part->sku}">{$part_data.part->get('Part Reference')}</a></td>
 						<td class="stock" style="padding:0">{$part_data.part->get('Current Stock')}</td>
 						<td>{$part_data.part->get('Part XHTML Available For Forecast')}</td>
 					</tr>

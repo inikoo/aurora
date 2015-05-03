@@ -98,7 +98,7 @@ $js_files=array(
 );
 
 
-if ($block_view=='parts') {
+if ($block_view=='parts' or  $block_view=='families') {
 	$js_files[]='inventory_light.js.php';
 }else {
 
@@ -189,6 +189,31 @@ $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
+
+
+
+$tipo_filter=$_SESSION['state']['warehouse']['families']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['warehouse']['families']['f_value']);
+
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Family Code'),'label'=>_('Code')),
+	'label'=>array('db_key'=>'code','menu_label'=>_('Family Name'),'label'=>_('Name')),
+
+);
+
+
+
+
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+$smarty->assign('families_view',$_SESSION['state']['warehouse']['families']['view']);
+$smarty->assign('families_period',$_SESSION['state']['warehouse']['families']['period']);
+
+
 
 
 

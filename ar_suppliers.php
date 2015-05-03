@@ -2229,11 +2229,13 @@ function list_part_in_supplier_product_historic() {
 	}
 
 
-	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>10)
 		$rtext_rpp=' ('._('Showing all').')';
+	else
+		$rtext_rpp='';	
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {

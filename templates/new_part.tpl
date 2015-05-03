@@ -23,7 +23,7 @@
 	</div>
 	{else} {include file='suppliers_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')} &rarr; {t}Adding Part{/t}</span> 
+		<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; <a href="supplier_product.php?pid={$supplier_product->pid}">{$supplier_product->get('Supplier Product Code')}</a> &rarr; {t}Adding Part{/t}</span> 
 	</div>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:15px">
 		<div class="buttons" style="float:left">
