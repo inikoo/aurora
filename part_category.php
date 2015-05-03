@@ -84,12 +84,12 @@ $js_files=array(
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/parts_common.js',
 	'js/edit_category_common.js',
-	
+
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'edit_stock.js.php',
-'part_category.js.php',
+	'part_category.js.php',
 );
 
 $smarty->assign('search_label',_('Parts'));
@@ -405,7 +405,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }

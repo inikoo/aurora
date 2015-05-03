@@ -38,11 +38,10 @@ function get_record_data(index) {
     var ar_file = 'ar_import.php';
     var request = ar_file + "?tipo=get_record_data&index=" + index + "&imported_records_key=" + Dom.get('imported_records_key').value;
  
- alert(request)
  YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-       // alert(o.responseText)
+       //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -368,7 +367,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init() {
 
-
     init_search(Dom.get('search_type').value);
   //  Event.addListener('new_map', "click", show_save_map);
     Event.addListener('browse_maps', "click", browse_maps);
@@ -401,7 +399,6 @@ function init() {
 
     get_record_data(Dom.get('index').value);
     Event.addListener(['insert_data'], "click", insert_data);
-
 
 }
 

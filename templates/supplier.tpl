@@ -384,6 +384,8 @@
 			<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
+		<div id="block_deliveries" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		</div>
 		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title">{t}History/Notes{/t}</span> 
 			<div class="elements_chooser">

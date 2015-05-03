@@ -10,17 +10,17 @@ var  families_period_ids=['families_period_all',
  'families_period_last_m','families_period_three_year','families_period_year','families_period_yeartoday','families_period_six_month','families_period_quarter','families_period_month','families_period_ten_day','families_period_week','families_period_monthtoday','families_period_weektoday','families_period_today'];
 
 
-function change_families_period(e,table_id){
+function change_families_period(e, table_id) {
 
-  tipo=this.id;
+    tipo = this.id;
 
- Dom.removeClass(families_period_ids,"selected")
- Dom.addClass(this,"selected")
-   
-    var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    var request='&period=' + this.getAttribute('period');
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+    Dom.removeClass(families_period_ids, "selected")
+    Dom.addClass(this, "selected")
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '&period=' + this.getAttribute('period');
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
 
@@ -145,7 +145,7 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 		
 
 
-	    var tableid=3; // Change if you have more the 1 table
+	    var tableid=3; 
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				
@@ -207,7 +207,6 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 
 
 	    
-	    this.table3.view='<?php echo$_SESSION['state']['part_categories']['view']?>';
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['warehouse']['families']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['families']['f_value']?>'};
 		this.table3.table_id=tableid;
      	this.table3.subscribe("renderEvent", myrenderEvent);
