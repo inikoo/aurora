@@ -808,7 +808,7 @@ ids=['elements_changes','elements_orders','elements_notes','elements_attachments
 
 
 function change_block() {
-    ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
+    ids = ["details", "products", "purchase_orders", "purchases", "sales", "history","deliveries"];
     block_ids = ["block_details", "block_products", "block_purchase_orders", "block_purchases", "block_sales", "block_history"];
 
     Dom.setStyle(block_ids, 'display', 'none');

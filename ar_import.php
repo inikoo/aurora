@@ -412,7 +412,7 @@ function update_ignore_record($data) {
 
 function get_record_data($data) {
 
-global $smarty;
+	global $smarty;
 
 	$index=$data['index'];
 	$imported_records_key=$data['imported_records_key'];
@@ -441,12 +441,12 @@ global $smarty;
 	}
 
 
-$smarty->assign('index',$index);
-$smarty->assign('number_of_records',$number_of_records);
-$smarty->assign('ignore_record',$ignore_record);
-$smarty->assign('index',$index);
-$smarty->assign('prev_index',($index > 1?$index-1:1));
-$smarty->assign('next_index',($index < $number_of_records?$index+1:$index));
+	$smarty->assign('index',$index);
+	$smarty->assign('number_of_records',$number_of_records);
+	$smarty->assign('ignore_record',$ignore_record);
+	$smarty->assign('index',$index);
+	$smarty->assign('prev_index',($index > 1?$index-1:1));
+	$smarty->assign('next_index',($index < $number_of_records?$index+1:$index));
 
 
 	$result="<table class='recordList' border=0  >
@@ -513,8 +513,7 @@ $smarty->assign('next_index',($index < $number_of_records?$index+1:$index));
 
 	$result.='</table>';
 
-	print $result;
-exit;
+	
 	$response=array('state'=>200,'result'=>$result,'index'=>$index);
 	echo json_encode($response);
 	exit;
