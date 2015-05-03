@@ -5,6 +5,9 @@
 	<input type="hidden" value="{$warehouse->id}" id="warehouse_id" />
 	<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
 	<input type="hidden" value="{$warehouse->id}" id="parent_key" />
+	<input type="hidden" value="{$warehouse->get('Warehouse Family Category Key')}" id="part_families_category_key" />
+
+	
 	<input type="hidden" value="warehouse" id="parent" />
 	<input type="hidden" id="parts_table_id" value="2" />
 	<input type="hidden" id="calendar_id" value="{$calendar_id}" />
@@ -28,11 +31,12 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Part's Families{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='movements'}selected{/if}" id="movements"> <span> {t}Movements{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Stock History{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container no_padding blocks">
-		<div id="calendar_container" style="{if $block_view=='parts'}display:none{/if}">
+		<div id="calendar_container" style="{if $block_view=='parts' or $block_view=='families' }display:none{/if}">
 			<div id="period_label_container" style="{if $period==''}display:none{/if}">
 				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
 			</div>
@@ -78,6 +82,35 @@
 				</div>
 			</div>
 		</div>
+		<div id="block_families" class="block" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		
+		<div class="data_table" style="clear:both;margin-bottom:20px">
+		<span class="clean_table_title" style="margin-right:5px"> {t}Subcategories{/t} </span> 
+		<div class="buttons small left">
+		<button id="new_deal" onclick="new_subcategory()" class="positive"><img  src="art/icons/add.png"> {t}New{/t}</button> 
+		</div>
+		<div class="table_top_bar">
+		</div>
+		<div class="clusters">
+			<div class="buttons small left cluster">
+				<button class="{if $families_view=='sales'}selected{/if}" id="subcategories_sales" name="sales"> {t}Sales{/t} </button> 
+			</div>
+			<div class="buttons small left cluster" id="period_options" style="{if $families_view=='general' or $families_view=='locations' };display:none{/if}">
+				<button class="{if $families_period=='all'}selected{/if}" period="all" id="families_period_all"> {t}All{/t} </button> <button style="margin-left:4px" class="{if $families_period=='yeartoday'}selected{/if}" period="yeartoday" id="families_period_yeartoday"> {t}YTD{/t} </button> <button class="{if $families_period=='monthtoday'}selected{/if}" period="monthtoday" id="families_period_monthtoday"> {t}MTD{/t} </button> <button class="{if $families_period=='weektoday'}selected{/if}" period="weektoday" id="families_period_weektoday"> {t}WTD{/t} </button> <button class="{if $families_period=='today'}selected{/if}" period="today" id="families_period_today"> {t}Today{/t} </button> <button style="margin-left:4px" class="{if $families_period=='yesterday'}selected{/if}" period="yesterday" id="families_period_yesterday"> {t}YD{/t} </button> <button class="{if $families_period=='last_w'}selected{/if}" period="last_w" id="families_period_last_w"> {t}LW{/t} </button> <button class="{if $families_period=='last_m'}selected{/if}" period="last_m" id="families_period_last_m"> {t}LM{/t} </button> <button style="margin-left:4px" class="{if $families_period=='three_year'}selected{/if}" period="three_year" id="families_period_three_year"> {t}3Y{/t} </button> <button class="{if $families_period=='year'}selected{/if}" period="year" id="families_period_year"> {t}1Yr{/t} </button> <button class="{if $families_period=='six_month'}selected{/if}" period="six_month" id="families_period_six_month"> {t}6M{/t} </button> <button class="{if $families_period=='quarter'}selected{/if}" period="quarter" id="families_period_quarter"> {t}1Qtr{/t} </button> <button class="{if $families_period=='month'}selected{/if}" period="month" id="families_period_month"> {t}1M{/t} </button> <button class="{if $families_period=='ten_day'}selected{/if}" period="ten_day" id="families_period_ten_day"> {t}10D{/t} </button> <button class="{if $families_period=='week'}selected{/if}" period="week" id="families_period_week"> {t}1W{/t} </button> 
+			</div>
+			<div class="buttons small left cluster" id="avg_options" style="{if $families_view!='sales' };display:none{/if};display:none">
+				<button class="{if $subcategories_avg=='totals'}selected{/if}" avg="totals" id="avg_totals"> {t}Totals{/t} </button> <button class="{if $subcategories_avg=='month'}selected{/if}" avg="month" id="avg_month"> {t}M AVG{/t} </button> <button class="{if $subcategories_avg=='week'}selected{/if}" avg="week" id="avg_week"> {t}W AVG{/t} </button> <button class="{if $subcategories_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff" id="avg_month_eff"> {t}M EAVG{/t} </button> <button class="{if $subcategories_avg=='week_eff'}selected{/if}" style="display:none" avg="week_eff" id="avg_week_eff"> {t}W EAVG{/t} </button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+		<div id="table3" class="data_table_container dtable btable" style="font-size:85%">
+		</div>
+	</div>
+		
+		</div>
+		
 		<div id="block_movements" class="block" style="{if $block_view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 			<span class="clean_table_title">{t}Parts Stock Transactions{/t}</span> 
 			<div class="elements_chooser">
@@ -176,7 +209,7 @@ function reloadSettings(file) {
 		</ul>
 	</div>
 </div>
-{if $block_view!='parts'} 
+{if !($block_view=='parts' or $block_view=='families')   } 
 <div id="change_plot_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr class="title">
@@ -234,6 +267,30 @@ function reloadSettings(file) {
 		</ul>
 	</div>
 </div>
+<div id="rppmenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
+
+
 {/if} {include file='export_splinter.tpl' id='parts' export_fields=$export_parts_fields map=$export_parts_map is_map_default={$export_parts_map_is_default}} 
 <div id="dialog_change_parts_element_chooser" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
@@ -273,7 +330,7 @@ function reloadSettings(file) {
 		</tr>
 	</table>
 </div>
-{if $block_view!='parts'} 
+{if !($block_view=='parts' or $block_view=='families')   } 
 <div id="dialog_stock_history_timeline_group" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
 		<tr style="height:5px">

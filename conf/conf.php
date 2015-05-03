@@ -2112,6 +2112,24 @@ $default_state=array(
 
 
 		),
+
+		'families'=>array(
+			'view'=>'sales',
+			'period'=>'yeartoday',
+			'percentages'=>false,
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'elements_type'=>'use',
+			'elements'=>array('use'=>array('InUse'=>1,'NotInUse'=>0))
+		),
+
 		'parts_lists'=>array(
 			'order'=>'name',
 			'order_dir'=>'',

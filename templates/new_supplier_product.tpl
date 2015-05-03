@@ -27,7 +27,7 @@
 			</div>
 			<div style="float:left;width:800px;">
 				<input type="hidden" value="{$supplier_key}" id="supplier_key" />
-				<table id="new_supplier_product" class="edit" border="1" >
+				<table id="new_supplier_product" class="edit" border="0" >
 					<tr class="title">
 						<td colspan="3">{t}Supplier Product Info{/t}</td>
 					</tr>
@@ -96,7 +96,7 @@
 					<tr>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="margin-right:10px;visibility:" id="save_new_product" class="positive disabled">{t}Continue{/t}</button> 
+							<button style="margin-right:10px;visibility:" id="save_new_product" class="positive disabled">{t}Save{/t}</button> 
 							<button style="margin-right:10px;visibility:" onclick="window.location='supplier.php?id={$supplier->id}'" class="negative">{t}Cancel{/t}</button> 
 						</div>
 						</td>

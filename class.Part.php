@@ -62,22 +62,18 @@ class part extends DB_Table {
 	function create($data) {
 		// print_r($data);
 		$base_data=array(
-			'part status'=>'In Use',
-			'part xhtml currently used in'=>'',
-			'part xhtml currently supplied by'=>'',
-			'part xhtml description'=>'',
-			'part unit description'=>'',
-			'part reference'=>'',
-			//'part package size metadata'=>'',
-			// 'part package volume'=>'',
-			//'part package minimun orthogonal volume'=>'',
-			//'part gross weight'=>'',
-			'part valid from'=>'',
-			'part valid to'=>'',
+			'Part Status'=>'In Use',
+			'Part XHTML Currently Used In'=>'',
+			'Part XHTML Currently Supplied By'=>'',
+			'Part XHTML Description'=>'',
+			'Part Unit Description'=>'',
+			'Part Reference'=>'',
+			'Part Valid From'=>'',
+			'Part Valid To'=>'',
 		);
 		foreach ($data as $key=>$value) {
-			if (isset( $base_data[strtolower($key)]) )
-				$base_data[strtolower($key)]=_trim($value);
+			if (isset( $base_data[$key]) )
+				$base_data[$key]=_trim($value);
 		}
 
 		//    if(!$this->valid_sku($base_data['part sku']) ){
@@ -85,8 +81,8 @@ class part extends DB_Table {
 		// }
 
 
-		if ($base_data['part xhtml description']=='') {
-			$base_data['part xhtml description']=strip_tags($base_data['part xhtml description']);
+		if ($base_data['Part XHTML Description']=='') {
+			$base_data['Part XHTML Description']=strip_tags($base_data['Part XHTML Description']);
 		}
 
 		$keys='(';
@@ -115,8 +111,8 @@ class part extends DB_Table {
 			$this->new=true;
 
 			$warehouse_key=1;
-			if (array_key_exists('warehouse key', $data) and is_numeric($data['warehouse key'])  and  $data['warehouse key']>0) {
-				$warehouse_key=$data['warehouse key'];
+			if (array_key_exists('Warehouse Key', $data) and is_numeric($data['Warehouse Key'])  and  $data['Warehouse Key']>0) {
+				$warehouse_key=$data['Warehouse Key'];
 			}
 
 			$sql=sprintf("insert into `Part Warehouse Bridge` values (%d,%d)",$this->sku,$warehouse_key);

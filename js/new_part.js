@@ -39,8 +39,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "label",
             formatter: "remove_links",
-            label: labels.Label,
-            width: 180,
+            label: labels.Name,
+            width: 200,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -48,8 +48,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "subjects",
-            label: labels.Customers,
-            width: 180,
+            label: labels.Parts,
+            width: 60,
             sortable: true,
             className: "aright",
             sortOptions: {
@@ -172,7 +172,7 @@ function save_new_part() {
 }
 
 function post_action(branch, r) {
-    window.location.href = 'part.php?pid=' + r.object_key;
+    window.location.href = 'part.php?sku=' + r.object_key;
 }
 
 
@@ -311,6 +311,18 @@ function init() {
 	
 	validate_part_description(Dom.get('part_description').value)
 	}
+	
+	
+	Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+	Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+  
+    var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS0.queryMatchContains = true;
+    oACDS0.table_id = 0;
+    var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);
+    oAutoComp0.minQueryLength = 0;
+
 
 }
 

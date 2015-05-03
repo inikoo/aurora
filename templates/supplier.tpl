@@ -18,12 +18,12 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons" style="float:left">
-				<span class="main_title"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px" /> <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> </span> 
+			<div class="buttons " style="float:left">
+				<span class="main_title no_buttons"><img src="art/icons/supplier.png" style="height:18px;position:relative;bottom:2px" /> <span id="supplier_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> </span> 
 			</div>
-			<div class="buttons">
+			<div class="buttons small" style="position:relative;top:5px">
 				<button onclick="window.location='edit_supplier.php?id={$supplier->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
-								<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button onclick="window.location='porder.php?new=1&supplier_id={$supplier->id}'"   id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Purchase Order{/t}</button> 
+				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
 
 			</div>
 			<div style="clear:both">
@@ -37,7 +37,8 @@
 						{if $supplier->get_image_src()} <img id="avatar" src="{$supplier->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="art/avatar_company.png" style="cursor:pointer;"> {/if} 
 					</div>
 					<h1 style="padding-bottom:0px;width:300px">
-						<span id="supplier_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="supplier_name">{$supplier->get('Supplier Name')}</span> <img onmouseover="Dom.addClass('supplier_name_heading','edit_over')" onmouseout="Dom.removeClass('supplier_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
+						<span id="supplier_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')">
+						<span id="supplier_name">{$supplier->get('Supplier Name')}</span> <img onmouseover="Dom.addClass('supplier_name_heading','edit_over')" onmouseout="Dom.removeClass('supplier_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
 					</h1>
 					<table class="supplier_show_data">
 						{if $supplier->get('Supplier Main Contact Key')} 

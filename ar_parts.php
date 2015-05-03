@@ -120,7 +120,7 @@ case ('is_part_reference'):
 			'query'=>array('type'=>'string')
 		));
 	is_part_reference($data);
-	break;	
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -701,7 +701,7 @@ function list_parts() {
 			$stock_state=$data['Part Stock State'];
 		}
 
-switch ($data['Part Package Type']) {
+		switch ($data['Part Package Type']) {
 		case('Bottle'):
 			$package_type=_('Bottle');
 			break;
@@ -751,18 +751,18 @@ switch ($data['Part Package Type']) {
 			'unknown_days'=>$unknown_days,
 			'gmroi'=>$gmroi,
 			'next_shipment'=>$next_shipment,
-						'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Valid From']." +00:00")),
+			'from'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Valid From']." +00:00")),
 			'to'=>(
 				($data['Part Main State']=='NotKeeping' or $data['Part Main State']=='Discontinued')
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Valid To']." +00:00")):''),
 			'last_update'=>($data['Part Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Part Last Updated']." +00:00"))),
 
 			"package_type"=>$package_type,
-"package_weight"=>weight($data['Part Package Weight']),
-"package_dimension"=>$data['Part Package XHTML Dimensions'],
-"package_volume"=>volume($data['Part Package Dimensions Volume']),
-"unit_weight"=>weight($data['Part Unit Weight']),
-"unit_dimension"=>$data['Part Unit XHTML Dimensions']
+			"package_weight"=>weight($data['Part Package Weight']),
+			"package_dimension"=>$data['Part Package XHTML Dimensions'],
+			"package_volume"=>volume($data['Part Package Dimensions Volume']),
+			"unit_weight"=>weight($data['Part Unit Weight']),
+			"unit_dimension"=>$data['Part Unit XHTML Dimensions']
 		);
 	}
 	/*
@@ -909,7 +909,7 @@ function list_parts_at_date() {
 		$wheref.=" and  `Part XHTML Currently Supplied By` like '%%".addslashes($f_value)."%%'";
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  ISF.`Part SKU` ='".addslashes($f_value)."'";
-elseif ($f_field=='reference' and $f_value!='')
+	elseif ($f_field=='reference' and $f_value!='')
 		$wheref.=" and  P.`Part Reference` like '".addslashes($f_value)."%%'";
 
 	$sql=sprintf("select count(Distinct P.`Part SKU`) as total from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref");
@@ -939,7 +939,7 @@ elseif ($f_field=='reference' and $f_value!='')
 
 	}
 
-	
+
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
@@ -947,9 +947,9 @@ elseif ($f_field=='reference' and $f_value!='')
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
-		
-	
-		
+
+
+
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 		case('sku'):
@@ -967,7 +967,7 @@ elseif ($f_field=='reference' and $f_value!='')
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with reference like ")." <b>".$f_value."*</b> ";
-			break;	
+			break;
 		}
 	}
 	elseif ($filtered>0) {
@@ -989,7 +989,7 @@ elseif ($f_field=='reference' and $f_value!='')
 			break;
 		case('reference'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with reference like')." <b>".$f_value."*</b>";
-			break;	
+			break;
 		}
 	}
 	else
@@ -1006,7 +1006,7 @@ elseif ($f_field=='reference' and $f_value!='')
 	elseif ($order=='sku')
 		$order='ISF.`Part SKU`';
 	elseif ($order=='reference')
-		$order='`Part Refence`';	
+		$order='`Part Refence`';
 	elseif ($order=='description')
 		$order='`Part Unit Description`';
 	elseif ($order=='locations')
@@ -1062,8 +1062,8 @@ elseif ($f_field=='reference' and $f_value!='')
 			'locations'=>number($data['locations']),
 			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
 			'reference'=>sprintf('<a href="part.php?sku=%d" title="%s">%s</a>',$data['Part SKU'],
-			$data['Part Unit Description'],
-			$data['Part Reference']
+				$data['Part Unit Description'],
+				$data['Part Reference']
 			),
 
 			'description'=>$data['Part Unit Description'],
@@ -2221,25 +2221,25 @@ function part_transactions() {
 			break;
 		case 'Sale':
 			$transaction_type=_('Sale');
-			break;	
+			break;
 		case 'No Dispatched':
 			$transaction_type=_('No Dispatched');
-			break;	
+			break;
 		case 'In':
 			$transaction_type=_('In');
-			break;		
+			break;
 		case 'Adjust':
 			$transaction_type=_('Adjust');
 			break;
 		case 'Not Found':
 			$transaction_type=_('Not Found');
-			break;				
+			break;
 		default:
 			$transaction_type=$data['Inventory Transaction Type'];
 			break;
 		}
 
-//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out'
+		//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out'
 
 		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
 		$adata[]=array(
@@ -2343,8 +2343,26 @@ function find_part() {
 function list_part_categories() {
 	global $corporate_currency;
 
-	$conf=$_SESSION['state']['part_categories']['subcategories'];
-	$conf2=$_SESSION['state']['part_categories'];
+	if (isset($_REQUEST['scope'])) {
+		$scope=$_REQUEST['scope'];
+	}else {
+		$scope='part_categories';
+	}
+
+
+	if ($scope=='part_categories') {
+
+		$_conf_1='part_categories';
+		$_conf_2='subcategories';
+
+	}else {
+		$_conf_1='warehouse';
+		$_conf_2='families';
+	}
+
+
+	$conf=$_SESSION['state'][$_conf_1][$_conf_2];
+	$conf2=$_SESSION['state'][$_conf_1];
 
 
 	$parent_key=$_REQUEST['parent_key'];
@@ -2392,22 +2410,39 @@ function list_part_categories() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['percentages'])) {
-		$percentages=$_REQUEST['percentages'];
-		$_SESSION['state']['part_categories']['percentages']=$percentages;
-	} else
-		$percentages=$_SESSION['state']['part_categories']['percentages'];
+	if ($scope=='part_categories') {
+
+		if (isset( $_REQUEST['percentages'])) {
+			$percentages=$_REQUEST['percentages'];
+			$_SESSION['state']['part_categories']['percentages']=$percentages;
+		} else
+			$percentages=$_SESSION['state']['part_categories']['percentages'];
 
 
 
-	if (isset( $_REQUEST['period'])) {
-		$period=$_REQUEST['period'];
-		$_SESSION['state']['part_categories']['period']=$period;
-	} else
-		$period=$_SESSION['state']['part_categories']['period'];
+		if (isset( $_REQUEST['period'])) {
+			$period=$_REQUEST['period'];
+			$_SESSION['state']['part_categories']['period']=$period;
+		} else
+			$period=$_SESSION['state']['part_categories']['period'];
+
+
+	}else {
+
+		if (isset( $_REQUEST['percentages'])) {
+			$percentages=$_REQUEST['percentages'];
+		} else
+			$percentages=$_SESSION['state']['warehouse']['families']['percentages'];
 
 
 
+		if (isset( $_REQUEST['period'])) {
+			$period=$_REQUEST['period'];
+		} else
+			$period=$_SESSION['state']['warehouse']['families']['period'];
+
+
+	}
 
 	if (isset( $_REQUEST['elements_type']))
 		$elements_type=$_REQUEST['elements_type'];
@@ -2432,16 +2467,16 @@ function list_part_categories() {
 
 
 
-
-	$_SESSION['state']['part_categories']['subcategories']['order']=$order;
-	$_SESSION['state']['part_categories']['subcategories']['order_dir']=$order_direction;
-	$_SESSION['state']['part_categories']['subcategories']['nr']=$number_results;
-	$_SESSION['state']['part_categories']['subcategories']['sf']=$start_from;
-	$_SESSION['state']['part_categories']['subcategories']['f_field']=$f_field;
-	$_SESSION['state']['part_categories']['subcategories']['f_value']=$f_value;
-	$_SESSION['state']['part_categories']['subcategories']['period']=$period;
-	$_SESSION['state']['part_categories']['subcategories']['elements']=$elements;
-	$_SESSION['state']['part_categories']['subcategories']['elements_type']=$elements_type;
+	$_SESSION['state'][$_conf_1][$_conf_2]['order']=$order;
+	$_SESSION['state'][$_conf_1][$_conf_2]['order_dir']=$order_direction;
+	$_SESSION['state'][$_conf_1][$_conf_2]['nr']=$number_results;
+	$_SESSION['state'][$_conf_1][$_conf_2]['sf']=$start_from;
+	$_SESSION['state'][$_conf_1][$_conf_2]['f_field']=$f_field;
+	$_SESSION['state'][$_conf_1][$_conf_2]['f_value']=$f_value;
+	$_SESSION['state'][$_conf_1][$_conf_2]['period']=$period;
+	$_SESSION['state'][$_conf_1][$_conf_2]['percentages']=$percentages;
+	$_SESSION['state'][$_conf_1][$_conf_2]['elements']=$elements;
+	$_SESSION['state'][$_conf_1][$_conf_2]['elements_type']=$elements_type;
 
 
 
@@ -2483,8 +2518,10 @@ function list_part_categories() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '".addslashes($f_value)."%'";
 
+	elseif ($f_field=='label' and $f_value!='')
+		$wheref.=" and  `Category Label` like '".addslashes($f_value)."%'";
 
 
 

@@ -135,7 +135,7 @@ $session_data=base64_encode(json_encode(array(
 				'Invalid_percentage'=>_('Invalid percentage'),
 				'Code'=>_('Code'),
 				'Label'=>_('Label'),
-				'Customers'=>_('Customers'),
+				'Parts'=>_('Parts'),
 				'Name'=>_('Name'),
 
 				'Page'=>_('Page'),
