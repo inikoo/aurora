@@ -518,7 +518,7 @@ function validate_scope(branch) {
 function is_valid_scope(branch) {
     var valid = true;
     for (items in validate_scope_data[branch]) {
-        //alert(branch +' '+items+' '+validate_scope_data[branch][items].name+' '+validate_scope_data[branch][items].validated) 
+        //alert(branch +' '+items+' '+validate_scope_data[branch][items].name+' '+validate_scope_data[branch][items].validated)
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             valid = false;
             break;
@@ -535,10 +535,10 @@ function validate_scope_edit(branch) {
     var changed = false;
     for (items in validate_scope_data[branch]) {
 
-        //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed) 
+        //alert(branch +' --> items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name+' chage:'+validate_scope_data[branch][items].changed+' '+changed)
         if (validate_scope_data[branch][items].validated == false || (validate_scope_data[branch][items].required && Dom.get(validate_scope_data[branch][items].name).value == '')) {
             errors = true;
-            // alert(branch +'.'+items+'.'+validate_scope_data[branch][items].name+' change:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ') 
+            // alert(branch +'.'+items+'.'+validate_scope_data[branch][items].name+' change:'+validate_scope_data[branch][items].changed+' '+' validated:'+validate_scope_data[branch][items].validated+' ')
         }
         if (validate_scope_data[branch][items].changed == true) {
             changed = true;
@@ -587,7 +587,7 @@ function validate_scope_new(branch) {
         //if(items=='user_handle')
         //alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
         if (validate_scope_data[branch][items].required == true && validate_scope_data[branch][items].validated == false) {
-            // alert(branch+' , '+items+" error")
+           //  alert(branch+' , '+items+" error")
             errors = true;
         }
     }
@@ -727,6 +727,7 @@ function validate_general_new(branch, items, query) {
             ar_validation(branch, items, query)
             return;
         } else {
+
             client_validation(branch, items, query)
         }
     } else {
