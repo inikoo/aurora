@@ -5231,6 +5231,15 @@ class product extends DB_Table {
 
 	}
 
+	function get_pages_keys() {
+		$page_keys=array();
+		$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Product' and  `Page Parent Key`=%d",$this->pid);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$page_keys[]=$row['Page Key'];
+		}
+		return $page_keys;
+	}
 
 
 	function get_main_page_url($site_key) {
@@ -5879,6 +5888,12 @@ class product extends DB_Table {
 		);
 
 		mysql_query($sql);
+		
+		$page_keys=$this->get_pages_keys();
+		foreach ($page_keys as $page_key) {
+			$page=new Page($page_key);
+			$page->update_image_key();
+		}
 
 		$this->updated=true;
 
