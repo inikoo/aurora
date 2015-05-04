@@ -62,6 +62,9 @@ $count=0;
 $store_key=2;
 $using_commas_as_decimal_point=true;
 $store=new Store($store_key);
+
+
+
 $department=new Department($store->data['Store Orphan Families Department']);
 $family=new Family($store->data['Store Orphan Products Family']);
 

@@ -133,19 +133,64 @@ class Order extends DB_Table {
 	}
 
 	function create_refund($data=false) {
-		$suffix='ref';
 
 
-		$refund_id= $this->get_refund_public_id($this->data['Order Public ID'].$suffix);
+		$store=new Store($this->data['Order Store Key']);
 
+
+		$invoice_public_id='';
+		if ($store->data['Store Refund Public ID Method']=='Same Invoice ID') {
+
+			foreach ($this->get_invoices_objects() as $_invoice) {
+				if ($_invoice->data['Invoice Type']=='Invoice') {
+					$invoice_public_id=$_invoice->data['Invoice Public ID'];
+				}
+			}
+
+
+
+
+		}else {
+
+			if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
+
+				$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
+					,$this->data['Order Store Key']);
+				mysql_query($sql);
+				$invoice_public_id=sprintf($store->data['Store Invoice Public ID Format'],mysql_insert_id());
+
+			}else {
+
+				$sql=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
+					,$this->data['Order Store Key']);
+				mysql_query($sql);
+				$invoice_public_id=mysql_insert_id();
+				$invoice_public_id=sprintf($store->data['Store Order Public ID Format'],mysql_insert_id());
+
+
+			}
+
+		}
+
+		if ($invoice_public_id!='') {
+			$invoice_public_id= $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
+		}
 
 		$refund_data=array(
 			'Invoice Customer Key'=>$this->data['Order Customer Key'],
 			'Invoice Store Key'=>$this->data['Order Store Key'],
-			'Order Key'=>$this->id,
+			'Order Key'=>$this->id
 
-			'Invoice Public ID'=>$refund_id
 		);
+
+
+		if ($invoice_public_id!='') {
+			$refund_data['Invoice Public ID']= $invoice_public_id;
+		}
+
+
+
+
 		if (!$data)$data=array();
 
 		if (array_key_exists('Invoice Metadata',$data))$refund_data['Invoice Metadata']=$data['Invoice Metadata'];
@@ -1150,10 +1195,26 @@ class Order extends DB_Table {
 
 
 
+
+		$store=new Store($this->data['Order Store Key']);
+		if ($store->data['Store Next Invoice Public ID Method']=='Order ID') {
+			$invoice_public_id=$this->data['Order Public ID'];
+		}else {
+
+			$sqla=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
+				,$this->data['Order Store Key']);
+			mysql_query($sqla);
+			$public_id=mysql_insert_id();
+
+			$invoice_public_id=sprintf($store->data['Store Invoice Public ID Format'],$public_id);
+
+		}
+
+
 		$data_invoice=array(
 			'Invoice Date'=>$date,
 			'Invoice Type'=>'Invoice',
-			'Invoice Public ID'=>$this->data['Order Public ID'],
+			'Invoice Public ID'=>$invoice_public_id,
 			'Delivery Note Keys'=>$delivery_note_keys,
 			'Order Key'=>$this->id,
 			'Invoice Store Key'=>$this->data['Order Store Key'],
@@ -2395,7 +2456,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$result = mysql_query( $sql );
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 
-//print_r($row);
+			//print_r($row);
 
 			$total_not_dispatch_net=$row['out_of_stock_net']+$row['not_authorized_net']+$row['not_found_net']+$row['not_due_other_net'];
 			$total_not_dispatch_tax=$row['out_of_stock_tax']+$row['not_authorized_tax']+$row['not_found_tax']+$row['not_due_other_tax'];
@@ -2546,7 +2607,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 
-//		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount,
+		//  sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount,
 
 
 		$net=0;
@@ -2559,72 +2620,72 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$sql = sprintf("select `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`
 			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 			where OTF.`Order Key`=%d",$this->id);
-			
-			
-			$sql = sprintf("select 
-		
+
+
+		$sql = sprintf("select
+
 		(`Order Transaction Total Discount Amount`/`Order Transaction Gross Amount`) as discount_fraction_bis,
 		  `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`,
 		`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
-			
-			
-			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) 
-			where OTF.`Order Key`=%d",$this->id);	
+
+
+			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)
+			where OTF.`Order Key`=%d",$this->id);
 
 		$sql = sprintf("select `Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,
 	ifnull((select max(ifnull(`Fraction Discount`,0)) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`),0 ) as discount_fraction,
 		  `Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`,
 		`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
-			
-			
-			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) 
-			where OTF.`Order Key`=%d",$this->id);	
 
-	//print $sql;
+
+			from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)
+			where OTF.`Order Key`=%d",$this->id);
+
+		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
 			//print_r($row);
-			
-			$ordered=$row['Order Quantity'];			
+
+			$ordered=$row['Order Quantity'];
 			$no_dispatched=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
-			
+
 			$chargeable_qty=$ordered-$no_dispatched;
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
 			$discount_fraction=0;
-			
-			if($row['Order Transaction Gross Amount']>0){
+
+			if ($row['Order Transaction Gross Amount']>0) {
 				$discount_fraction=$row['Order Transaction Total Discount Amount']/$row['Order Transaction Gross Amount'];
 			}
-		
-		
-//	$discount_fraction=$row['discount_fraction'];
-			
+
+
+			// $discount_fraction=$row['discount_fraction'];
+
 			$gross_chargeable_amount=$chargeable_qty*$row['Product History Price'];
-			
+
 			$discount=round($gross_chargeable_amount*$discount_fraction,2);
-			
+
 			$chargeable_amount=$gross_chargeable_amount-$discount;
 			$gross+=$row['Order Quantity']*$row['Product History Price'];
 			$out_of_stock_amount+=($row['No Shipped Due Out of Stock'])*$row['Product History Price'];
 			$discounts+=$discount;
 			$chargeable_amount=round($chargeable_amount,2);
 
-	
-	
+
+
 			$_refund_tax=round($row['Invoice Transaction Tax Refund Items'],2);
 			$_refund_net=round($row['Invoice Transaction Net Refund Items'],2);
-	
-	
-	
+
+
+
 			$tax+=round($_refund_tax+($chargeable_amount*$row['Transaction Tax Rate']),2);
 			$net+=round($chargeable_amount+$_refund_net,2);
-	
+
 
 		}
 
@@ -3449,7 +3510,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		mysql_query( $sql );
 
-		
+
 
 
 
@@ -3654,17 +3715,10 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 	function next_public_id() {
 
-
-
 		$sqla=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
 			,$this->data['Order Store Key']);
 		mysql_query($sqla);
-
-
-
-
 		$public_id=mysql_insert_id();
-
 
 		$this->data['Order Public ID']=sprintf($this->public_id_format,$public_id);
 		$this->data['Order File As']=$this->prepare_file_as($this->data['Order Public ID']);
@@ -8292,7 +8346,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			}
 
 		}
-		
+
 		return $to_refund_amount;
 
 	}
