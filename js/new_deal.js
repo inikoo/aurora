@@ -1468,7 +1468,7 @@ function start_now() {
         if (day < 10) day = '0' + day;
         var date = day + "-" + month + "-" + year;
         Dom.get("v_calpop1").value = date
-
+	
         validate_general('deal', 'from', date);
     }
 }
@@ -1885,7 +1885,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Name',
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': labels.Invalid_name
                 }]
             },
@@ -1899,7 +1899,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Description',
                 'validation': [{
-                    'regexp': "[a-z\d]+",
+                    'regexp': "[a-z\\d]+",
                     'invalid_msg': labels.Invalid_description
                 }]
             },
@@ -1913,7 +1913,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Valid From',
                 'validation': [{
-                    'regexp': "\d{2}-\d{2}-\d{4}",
+                    'regexp': "\\d{2}-\\d{2}-\\d{4}",
                     'invalid_msg': labels.Invalid_date
                 }]
             },
@@ -1927,7 +1927,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Valid To',
                 'validation': [{
-                    'regexp': "\d{2}-\d{2}-\d{4}",
+                    'regexp': "\\d{2}-\\d{2}-\\d{4}",
                     'invalid_msg': labels.Invalid_date
                 }]
             }
