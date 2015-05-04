@@ -36,6 +36,34 @@
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='invoice'}display:none{/if}" id="d_invoice">
 			<table style="margin:0;clear:both;width:870px" class="edit">
+				
+				<tr class="title">
+					<td colspan="3">{t}Number indexing{/t} <span style="color:red">(TODO)</span></td>
+				</tr>
+				
+				<tr>
+					<td style="width:200px" class="label">{t}Invoice number indexing{/t}:</td>
+					<td style="width:370px"> 
+						<div class="buttons small left">
+							<button class="{if $store->get('Store Next Invoice Public ID Method')=='Order ID'}selected{/if}">{t}Same as Order ID{/t}</button>
+							<button class="{if $store->get('Store Next Invoice Public ID Method')=='Invoice Public ID'}selected{/if}">{t}Independent Indexing{/t}</button>
+						</div>	
+					</td>
+					<td id="Store_VAT_Number_msg" class="edit_td_alert"></td>
+				</tr>
+				
+				<tr>
+					<td style="width:200px" class="label">{t}Refund number indexing{/t}:</td>
+					<td style="width:370px"> 
+						<div class="buttons small left">
+							<button class="{if $store->get('Store Refund Public ID Method')=='Same Invoice ID'}selected{/if}">{t}Same as invoice + Suffix{/t}</button>
+							<button class="{if $store->get('Store Refund Public ID Method')=='Next Invoice ID'}selected{/if}">{t}Next invoice number{/t}</button>
+						</div>	
+					</td>
+					<td id="Store_VAT_Number_msg" class="edit_td_alert"></td>
+				</tr>
+				
+				
 				<tr class="title">
 					<td colspan="3">{t}Invoice Details{/t} </td>
 				</tr>

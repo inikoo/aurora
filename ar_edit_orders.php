@@ -529,13 +529,7 @@ case('get_locations'):
 case('packing_aid_sheet'):
 	packing_aid_sheet();
 	break;
-case('create_invoice'):
-	$data=prepare_values($_REQUEST,array(
-			'dn_key'=>array('type'=>'key'),
-		));
 
-	create_invoice($data);
-	break;
 case('create_invoice_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
@@ -3787,36 +3781,6 @@ function packing_aid_sheet() {
 	echo json_encode($response);
 }
 
-function create_invoice($data) {
-	global $user;
-	$dn_key=$data['dn_key'];
-	$dn=new DeliveryNote($dn_key);
-	$invoice=$dn->create_invoice();
-	$invoice->categorize();
-	if (!$dn->error and $invoice->id) {
-		$response=array(
-			'state'=>200,
-			'invoice_key'=>$invoice->id
-		);
-
-		if (array_key_exists('order_key',$data)) {
-			$order=new Order($data['order_key']);
-			$response['order_key']=$order->id;
-
-			$response['order_operations']=get_orders_operations($order->data,$user);
-			$response['order_dispatch_state']=get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id);
-			$response['order_payment_state']=get_order_formated_payment_state($order->data);
-
-		}
-
-		echo json_encode($response);
-	} else {
-		$response=array('state'=>400,'msg'=>$dn->msg);
-		echo json_encode($response);
-
-	}
-
-}
 
 
 function create_invoice_order($data) {

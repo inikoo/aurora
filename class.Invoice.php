@@ -102,21 +102,26 @@ class Invoice extends DB_Table {
 
 	}
 
-	function next_public_id() {
-
-
-
-		$sql=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
+	function next_public_id($suffix='') {
+		$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
 			,$this->data['Invoice Store Key']);
 		mysql_query($sql);
-
-
-
-
 		$public_id=mysql_insert_id();
 
 
-		$this->data['Invoice Public ID']=sprintf($this->public_id_format,$public_id);
+		$this->data['Invoice Public ID']=sprintf($this->public_id_format_invoice,$public_id).$suffix;
+		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
+	}
+
+
+	function next_order_public_id($suffix='') {
+		$sql=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
+			,$this->data['Invoice Store Key']);
+		mysql_query($sql);
+		$public_id=mysql_insert_id();
+
+
+		$this->data['Invoice Public ID']=sprintf($this->public_id_format_order,$public_id).$suffix;
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 	}
 
@@ -194,7 +199,18 @@ class Invoice extends DB_Table {
 
 
 		}else {
-			$this->next_public_id();
+			$store=new Store($this->data['Invoice Store Key']);
+			if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
+
+				$this->next_public_id($store->data['Store Refund Suffix']);
+
+			}else {
+
+				$this->next_order_public_id($store->data['Store Refund Suffix']);
+			}
+
+
+
 		}
 
 
@@ -311,7 +327,20 @@ class Invoice extends DB_Table {
 
 
 		if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
-			$this->next_public_id();
+
+			$store=new Store($this->data['Invoice Store Key']);
+			if ($store->data['Store Refund Public ID Method']=='Invoice Public ID') {
+
+				$this->next_public_id();
+
+			}else {
+
+				$this->next_order_public_id();
+			}
+
+
+
+
 		}else {
 			$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 		}
@@ -2587,7 +2616,8 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Store Code']=$store->data['Store Code'];
 		$this->data['Invoice XHTML Store']=sprintf("<a href='store.php?id=%d'>%s</a>",$store->id,$store->get('Store Name'));
 
-		$this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+		$this->public_id_format_order=$store->data[ 'Store Order Public ID Format' ];
+		$this->public_id_format_invoice=$store->data[ 'Store Invoice Public ID Format' ];
 
 
 

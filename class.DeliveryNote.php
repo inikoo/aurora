@@ -3396,62 +3396,6 @@ class DeliveryNote extends DB_Table {
 
 
 
-	/*
-	function create_invoice($date=false) {
-		if (!$date)
-			$date=gmdate("Y-m-d H:i:s");
-
-		$tax_code='UNK';
-		$orders_ids='';
-		$sales_representatives=array();
-		$orders=$this->get_orders_objects();
-
-		$billing_to_key=false;
-
-		foreach ($orders as $order) {
-
-			$tax_code=$order->data['Order Tax Code'];
-			$order_ids=$order->id.',';
-			foreach ($order->get_sales_representative_keys() as $sales_representative_key) {
-				$sales_representatives[$sales_representative_key]=$sales_representative_key;
-			}
-
-
-			if ($order->data['Order Invoiced']=='No') {
-				$billing_to_key=$order->data['Order Billing To Key To Bill'];
-			}
-
-		}
-		$orders_ids=preg_replace('/\,$/','',$order_ids);
-
-		$data_invoice=array(
-			'Invoice Date'=>$date,
-			'Invoice Type'=>'Invoice',
-			'Invoice Public ID'=>$this->data['Delivery Note ID'],
-			'Delivery Note Keys'=>$this->id,
-			'Orders Keys'=>$orders_ids,
-			'Invoice Store Key'=>$this->data['Delivery Note Store Key'],
-			'Invoice Customer Key'=>$this->data['Delivery Note Customer Key'],
-			'Invoice Tax Code'=>$tax_code,
-			'Invoice Tax Shipping Code'=>$tax_code,
-			'Invoice Tax Charges Code'=>$tax_code,
-			'Invoice Sales Representative Keys'=>$sales_representatives,
-			'Invoice Billing To Key'=>$billing_to_key,
-			'Invoice Metadata'=>$this->data['Delivery Note Metadata']
-
-		);
-
-		$invoice=new Invoice ('create',$data_invoice);
-		$invoice->update_totals();
-
-		foreach ($orders as $order) {
-			$order->update_xhtml_state();
-
-		}
-
-		return $invoice;
-	}
-*/
 	function calculate_shipping() {
 		$shipping=0;
 		foreach ($this->get_orders_objects() as $order) {
