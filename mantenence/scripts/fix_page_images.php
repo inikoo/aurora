@@ -33,7 +33,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 
 
-$sql=sprintf("select`Page Store Section Type`,`Page Parent Key`,`Page Store Key`,`Page Store Image Key`,P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store' ");
+$sql=sprintf("select `Page Code`,`Page Store Section Type`,`Page Parent Key`,`Page Store Key`,`Page Store Image Key`,P.`Page Key`,`Page Store Section` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store' ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	$page=new Page($row['Page Key']);
@@ -46,45 +46,81 @@ while ($row=mysql_fetch_array($res)) {
 		$sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`) values ('Page',%d,%d)",
 			$page->id,
 			$page_image->id
-			);
+		);
 		mysql_query($sql);
 		//print "$sql\n";
 	}else {
 
-		if($row['Page Store Section Type']=='Product'){
+		if ($row['Page Store Section Type']=='Product') {
 			$product=new Product('pid',$row['Page Parent Key']);
-			if($product->id and $product->data['Product Main Image Key']){
+			if ($product->id and $product->data['Product Main Image Key']) {
 				$_page_image=new Image($product->data['Product Main Image Key']);
 				if ($_page_image->id) {
 					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
 					$image_key=$_page_image->id;
 				}
+			}else{
+					$page_image_source='art/nopic.png';
+				}
+
+
+
+
+		}
+		else if ($row['Page Store Section Type']=='Family') {
+				$family=new Family($row['Page Parent Key']);
+				if ($family->id and $family->data['Product Family Main Image Key']) {
+					$_page_image=new Image($family->data['Product Family Main Image Key']);
+					if ($_page_image->id) {
+						$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+						$image_key=$_page_image->id;
+					}
+				}else{
+					$page_image_source='art/nopic.png';
+				}
+
+
+
+
 			}
+		else if ($row['Page Store Section Type']=='Department') {
+				$department=new Department($row['Page Parent Key']);
+				if ($department->id and $department->data['Product Department Main Image Key']) {
+					$_page_image=new Image($department->data['Product Department Main Image Key']);
+					if ($_page_image->id) {
+						$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+						$image_key=$_page_image->id;
+					}
+				}
+				else{
+					$page_image_source='art/nopic.png';
+				}
 
 
 
 
-		}else{
+			}
+		else {
 			$page_image_source='art/nopic.png';
 		}
 
-		
+
 
 	}
 	unset($page_image);
 	$sql=sprintf("update `Page Store Dimension` set `Page Store Image URL`=%s where `Page Key`=%d",
 		prepare_mysql($page_image_source),
 		$page->id
-		);
+	);
 	//print "$sql\n";
 	mysql_query($sql);
 
-	if($image_key){
+	if ($image_key) {
 		$sql=sprintf("update `Page Store Dimension` set `Page Store Image Key`=%d where `Page Key`=%d",
 			$image_key,
 			$page->id
-			);
-		//	print "$sql\n";
+		);
+		// print "$sql\n";
 		mysql_query($sql);
 
 	}
@@ -92,7 +128,7 @@ while ($row=mysql_fetch_array($res)) {
 
 
 
-	
+
 
 
 
