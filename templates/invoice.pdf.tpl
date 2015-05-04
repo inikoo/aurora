@@ -107,6 +107,9 @@ div.inline { float:left; }
 			<div style="text-align: right">
 				{t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b> 
 			</div>
+			<div style="text-align: right">
+				{t}Order Number{/t}: <b>{$order->get('Order Public ID')}</b> 
+			</div>
 			{/if} </td>
 		</tr>
 	</table>
