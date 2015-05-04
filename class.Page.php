@@ -1248,9 +1248,9 @@ class Page extends DB_Table {
 				'Page Parent Code'=>$this->data['Page Parent Code'] ,
 				'Page Title'=>$this->data['Page Store Title'] ,
 				'Page Short Title'=>$this->data['Page Short Title'] ,
-				'Page Description'=>$this->data['Page Description'] ,
+				'Page Description'=>$this->data['Page Store Description'] ,
 				'Page URL'=>$this->data['Page URL'] ,
-				'Page Valid To'=>'NOW()' ,
+				'Page Valid To'=>gmdate('Y-m-d H:i:s') ,
 
 			);
 
