@@ -376,6 +376,7 @@ class Page extends DB_Table {
 			mysql_query($sql);
 
 			$this->update_see_also();
+			$this->update_image_key();
 
 		} else {
 			$this->error=true;
@@ -391,7 +392,7 @@ class Page extends DB_Table {
 
 		if ($this->data['Page Type']=='Store') {
 
-	
+
 			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Resume`=%s,`Page Store Content`=%s where `Page Key`=%d",
 				prepare_mysql($this->data['Page Store Title'],false),
 				prepare_mysql($this->data['Page Store Description'],false),
@@ -1267,30 +1268,54 @@ class Page extends DB_Table {
 	function update_image_key() {
 
 
-		$image_key='';
 
 		if ($this->data['Page Type']!='Store' )
 			return;
 
 
+		$page_image_source='art/nopic.png';
+		$image_key='';
 
-		switch ($this->data['Page Store Section']) {
-		case 'Department Catalogue':
+		switch ($this->data['Page Store Section Type']) {
+		case 'Department':
 			include_once 'class.Department.php';
 
 			$department=new Department($this->data['Page Parent Key']);
+			if ($department->id and $department->data['Product Department Main Image Key']) {
+				$_page_image=new Image($department->data['Product Department Main Image Key']);
+				if ($_page_image->id) {
+					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+					$image_key=$_page_image->id;
+				}
+			}
+
+
 
 			break;
-		case 'Family Catalogue':
+		case 'Family':
 			include_once 'class.Family.php';
 			$family=new Family($this->data['Page Parent Key']);
 
 			if ($family->id and $family->data['Product Family Main Image Key']) {
-				$image_key=$family->data['Product Family Main Image Key'];
-
+				$_page_image=new Image($family->data['Product Family Main Image Key']);
+				if ($_page_image->id) {
+					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+					$image_key=$_page_image->id;
+				}
 			}
 
 			break;
+		case 'Product':
+			include_once 'class.Product.php';
+			$product=new Product('pid',$row['Page Parent Key']);
+			if ($product->id and $product->data['Product Main Image Key']) {
+				$_page_image=new Image($product->data['Product Main Image Key']);
+				if ($_page_image->id) {
+					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+					$image_key=$_page_image->id;
+				}
+			}
+
 		default:
 
 			break;
@@ -1298,16 +1323,15 @@ class Page extends DB_Table {
 
 
 
+		$sql=sprintf("update `Page Store Dimension` set `Page Store Image Key`=%s ,`Page Store Image URL`=%s   where `Page Key`=%d ",
+			prepare_mysql($image_key),
+			prepare_mysql($page_image_source),
+			$this->id);
+		mysql_query($sql);
 
-		if ($image_key!=$this->data['Page Store Image Key']) {
+		$this->data['Page Store Image Key']=$image_key;
+		$this->data['Page Store Image URL']=$page_image_source;
 
-			$sql=sprintf("update `Page Store Dimension` set `Page Store Image Key`=%s  where `Page Key`=%d ",
-				prepare_mysql($image_key),
-				$this->id);
-			mysql_query($sql);
-
-			$this->data['Page Store Image Key']=$image_key;
-		}
 
 	}
 

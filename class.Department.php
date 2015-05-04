@@ -325,7 +325,7 @@ class Department extends DB_Table {
 			break;
 		case('Product Department Name'):
 			$this->update_name($value);
-			break;	
+			break;
 		case('Product Department Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
@@ -388,17 +388,17 @@ class Department extends DB_Table {
 
 
 			$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Code`=%s where `Product Family Main Department Key`=%d ",
-			prepare_mysql($code),
-			$this->id
+				prepare_mysql($code),
+				$this->id
 			);
 			mysql_query($sql);
-			
+
 			$sql=sprintf("update `Product Dimension` set `Product Main Department Code`=%s where `Product Main Department Key`=%d ",
-			prepare_mysql($code),
-			$this->id
+				prepare_mysql($code),
+				$this->id
 			);
 			mysql_query($sql);
-			
+
 
 			$editor_data=$this->get_editor_data();
 
@@ -456,14 +456,14 @@ class Department extends DB_Table {
 
 
 			$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Name`=%s where `Product Family Main Department Key`=%d ",
-			prepare_mysql($name),
-			$this->id
+				prepare_mysql($name),
+				$this->id
 			);
 			mysql_query($sql);
-			
+
 			$sql=sprintf("update `Product Dimension` set `Product Main Department Name`=%s where `Product Main Department Key`=%d ",
-			prepare_mysql($name),
-			$this->id
+				prepare_mysql($name),
+				$this->id
 			);
 			mysql_query($sql);
 
@@ -484,7 +484,7 @@ class Department extends DB_Table {
 		}
 
 	}
-	
+
 	function delete() {
 		$this->deleted=false;
 		$this->update_product_data();
@@ -1210,7 +1210,7 @@ class Department extends DB_Table {
 		}
 
 	}
-	
+
 	function get_main_image_key() {
 
 		return $this->data['Product Department Main Image Key'];
@@ -1242,6 +1242,14 @@ class Department extends DB_Table {
 		);
 
 		mysql_query($sql);
+
+		$page_keys=$this->get_pages_keys();
+		foreach ($page_keys as $page_key) {
+			$page=new Page($page_key);
+			$page->update_image_key();
+		}
+
+
 
 		$this->updated=true;
 
@@ -1321,7 +1329,7 @@ class Department extends DB_Table {
 
 	function get_pages_keys() {
 		$page_keys=array();
-		$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and  `Page Parent Key`=%d",$this->id);
+		$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Department' and  `Page Parent Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$page_keys[]=$row['Page Key'];

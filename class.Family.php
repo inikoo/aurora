@@ -670,7 +670,7 @@ class Family extends DB_Table {
 
 	function get_pages_keys() {
 		$page_keys=array();
-		$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and  `Page Parent Key`=%d",$this->id);
+		$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Family' and  `Page Parent Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$page_keys[]=$row['Page Key'];
@@ -1885,17 +1885,10 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$main_image_key,
 			$this->id
 		);
-
-
-
 		mysql_query($sql);
-
-
 
 		$page_keys=$this->get_pages_keys();
 		foreach ($page_keys as $page_key) {
-
-
 			$page=new Page($page_key);
 			$page->update_image_key();
 		}
