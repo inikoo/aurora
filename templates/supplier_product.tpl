@@ -19,7 +19,7 @@
 				{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
 				<span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
 			</div>
-			<div class="buttons ">
+			<div class="buttons">
 				{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?parent=supplier_product&parent_key={$supplier_product->pid}'">{t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
@@ -56,30 +56,55 @@
 					</tr>
 				</table>
 				<table class="show_info_product">
-					<tbody style="{if $supplier_product->get('Supplier Product Units Per Case')==1 }display:none{/if}">
+				    {if $supplier_product->get('Supplier Product Units Per Case')!=1 }
+					<tbody >
 						<tr>
 							<td>{t}Units per carton{/t}:</td>
-							<td class="aright">{$supplier_product->get('Units Per Case')}</td>
+							<td class="aright"><b>{$supplier_product->get('Units Per Case')}</b></td>
 						</tr>
 						<tr>
 							<td>{t}Cost per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get_formated_price_per_case()}</td>
 						</tr>
+						
 						<tr>
 							<td>{t}Cost per unit{/t}:</td>
 							<td class="aright">{$supplier_product->get_formated_price_per_unit()}</td>
 						</tr>
+						{if $corporate_currency!=$supplier_product->get('Supplier Product Currency')}
+						<tbody class="corporate_currency_cost">
+						<tr style="border-top:1px solid #ccc">
+							<td>Cost per carton</td>
+							<td class="aright">{$supplier_product->get_formated_price_per_case_in_corporate_currency()}</td>
+						</tr>
+						<tr>
+							<td>{t}Cost per unit{/t}:</td>
+							<td class="aright">{$supplier_product->get_formated_price_per_unit_in_corporate_currency()}</td>
+						</tr>
+						</tbody>
+						{/if}
 					</tbody>
-					<tbody style="{if $supplier_product->get('Supplier Product Units Per Case')>1 }display:none{/if}">
+					{else}
+					<tbody >
 						<tr>
 							<td>{t}Units per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get('Units Per Case')}</td>
 						</tr>
+						
 						<tr>
 							<td>{t}Cost per carton{/t}:</td>
 							<td class="aright">{$supplier_product->get_formated_price_per_case()}</td>
 						</tr>
+						{if $corporate_currency!=$supplier_product->get('Supplier Product Currency')}
+							<tbody class="corporate_currency_cost">
+						<tr style="border-top:1px solid #ccc">
+							<td>{t}Cost per carton{/t}</td>
+							<td class="aright">{$supplier_product->get_formated_price_per_case_in_corporate_currency()}</td>
+						</tr>
+						</tbosy>
+						{/if}
 					</tbody>
+					{/if}
 				</table>
 			</div>
 			<div style="width:280px;float:left;margin-left:20px">

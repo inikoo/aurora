@@ -32,7 +32,12 @@
 	<div style="clear:both">
 	</div>
 	<div class="prodinfo" style="clear:both;margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
-		<table style="width:200px;" class="order_header">
+		<table style="width:200px;" class="order_header" border=0>
+			
+			<tr class="currency_tr">
+				<td>{t}Currency{/t}</td>
+				<td  class=" aright">{$po->get('Purchase Order Currency Code')}</td>
+			</tr>
 			<tbody id="po_amounts" style="display:none">
 			<tr>
 				<td>{t}Goods{/t}:</td>
@@ -49,7 +54,11 @@
 			</tbody>
 			<tr>
 				<td>{t}Total{/t}</td>
-				<td id="total" class="stock aright ">{$po->get('Total Amount')}</td>
+				<td id="total" class="total aright ">{$po->get('Total Amount')}</td>
+			</tr>
+			<tr style="{if $corporate_currency==$po->get('Purchase Order Currency Code')}display:none{/if}">
+				<td></td>
+				<td id="total_corporate_currency" class="total_corporate_currency aright ">{$po->get('Total Amount Corporate Currency')}</td>
 			</tr>
 		</table>
 		<div style="border:0px solid red;width:290px;float:right">

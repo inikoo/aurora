@@ -30,9 +30,10 @@ if (isset($_REQUEST['id'])) {
 	);
 
 	$data=array(
-		'Purchase Order Supplier Key'=>$supplier->id
-		,'Purchase Order Supplier Name'=>$supplier->data['Supplier Name']
-		,'editor'=>$editor
+		'Purchase Order Supplier Key'=>$supplier->id,
+		'Purchase Order Supplier Name'=>$supplier->data['Supplier Name'],
+		'Purchase Order Currency Code'=>$supplier->data['Supplier Default Currency'],
+		'editor'=>$editor
 	);
 
 	$po=new PurchaseOrder('new',$data);
@@ -64,6 +65,7 @@ $css_files=array(
 	'css/table.css',
 	'css/part_locations.css',
 	'css/edit.css',
+	'css/porder.css',
 	'theme.css.php'
 );
 
@@ -88,10 +90,19 @@ $js_files=array(
 
 
 $po_id = $po->id;
+
+
+
+
+
+
+
+
 $smarty->assign('po',$po);
 $smarty->assign('supplier',$supplier);
 $smarty->assign('supplier_id',$supplier->id);
 $smarty->assign('supplier_key',$supplier->id);
+$smarty->assign('corporate_currency',$corporate_currency);
 
 $smarty->assign('search_label',_('Search'));
 $smarty->assign('search_scope','supplier_products');

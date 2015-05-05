@@ -57,17 +57,17 @@ class supplierproduct extends DB_Table {
 		if (preg_match('/update/i',$options)) {
 			$update='update';
 		}
-		
-			if (!isset($raw_data['SPH Units Per Case']) or $raw_data['SPH Units Per Case']=='')
+
+		if (!isset($raw_data['SPH Units Per Case']) or $raw_data['SPH Units Per Case']=='')
 			$raw_data['SPH Units Per Case']=1;
 
 		if (!isset($raw_data['SPH Case Cost']) or $raw_data['SPH Case Cost']=='')
 			$raw_data['SPH Case Cost']=$raw_data['Supplier Product Cost Per Case'];
-			
+
 		if (!isset($raw_data['SPH Currency']) or $raw_data['SPH Currency']=='')
 			$raw_data['SPH Currency']='GBP';
 
-		
+
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
 
@@ -75,7 +75,7 @@ class supplierproduct extends DB_Table {
 				$data[$key]=_trim($value);
 		}
 
-	
+
 		$data['SPH Units Per Case']=$raw_data['SPH Units Per Case'];
 		$data['SPH Case Cost']=$raw_data['SPH Case Cost'];
 		$data['SPH Currency']=$raw_data['SPH Currency'];
@@ -366,11 +366,11 @@ class supplierproduct extends DB_Table {
 			$keys.="`$key`,";
 
 			if (in_array($key,array('Supplier Product Unit Dimensions Depth','Supplier Product Unit Dimensions Length','Supplier Product Unit Dimensions Diameter','Supplier Product Unit Dimensions Width Display','Supplier Product Unit Dimensions Depth Display',
-			'Supplier Product Unit Dimensions Length Display','Supplier Product Unit Dimensions Diameter Display','Supplier Product Package Dimensions Width','Supplier Product Package Dimensions Depth',
-			'Supplier Product Package Dimensions Length','Supplier Product Package Dimensions Diameter', 'Supplier Product Package Dimensions Width Display' , 'Supplier Product Package Dimensions Depth Display' ,
-			 'Supplier Product Proper Shipping Name' ,'Supplier Product Hazard Indentification Number', 'Supplier Product Main Image Key'
-			
-			))) {
+						'Supplier Product Unit Dimensions Length Display','Supplier Product Unit Dimensions Diameter Display','Supplier Product Package Dimensions Width','Supplier Product Package Dimensions Depth',
+						'Supplier Product Package Dimensions Length','Supplier Product Package Dimensions Diameter', 'Supplier Product Package Dimensions Width Display' , 'Supplier Product Package Dimensions Depth Display' ,
+						'Supplier Product Proper Shipping Name' ,'Supplier Product Hazard Indentification Number', 'Supplier Product Main Image Key'
+
+					))) {
 				$values.=prepare_mysql($value,false).",";
 			}else {
 				$values.=prepare_mysql($value).",";
@@ -529,14 +529,14 @@ class supplierproduct extends DB_Table {
 
 
 		switch ($key) {
-		
+
 		case 'Average Delivery Days':
 			include_once 'common_natural_language.php';
 			return seconds_to_string(24*3600*$this->data['Supplier Product Delivery Days']);
 			break;
 		case 'Origin':
-		
-			case 'Products Origin':
+
+		case 'Products Origin':
 			if ($this->data['Supplier Product Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code',$this->data['Supplier Product Origin Country Code']);
@@ -546,7 +546,7 @@ class supplierproduct extends DB_Table {
 			}
 			break;
 		case 'Origin Country Code':
-		
+
 			if ($this->data['Supplier Product Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code',$this->data['Supplier Product Origin Country Code']);
@@ -560,10 +560,10 @@ class supplierproduct extends DB_Table {
 			break;
 		case('Product Cost Per Unit'):
 			return money($this->data['Supplier Product Cost Per Case']/$this->data['Supplier Product Units Per Case'],$this->data['Supplier Product Currency']);
-			break;	
+			break;
 		case('Supplier Product Cost Per Unit'):
 			return $this->data['Supplier Product Cost Per Case']/$this->data['Supplier Product Units Per Case'];
-			break;	
+			break;
 		case('Unit'):
 			return $this->get_formated_unit();
 			break;
@@ -693,7 +693,7 @@ class supplierproduct extends DB_Table {
 	}
 
 
-function update_currency($value) {
+	function update_currency($value) {
 
 		if ($value==$this->data['Supplier Product Currency']) {
 			$this->updated=false;
@@ -716,7 +716,7 @@ function update_currency($value) {
 		}
 
 		$this->update_sph($value,$this->data['Supplier Product Units Per Case'],$this->data['Supplier Product Currency']);
-$this->new_value=$this->get('Formated Cost');
+		$this->new_value=$this->get('Formated Cost');
 	}
 
 	function update_units_per_case($value) {
@@ -934,10 +934,10 @@ $this->new_value=$this->get('Formated Cost');
 
 
 		default:
-				
+
 			$base_data=$this->base_data();
 			if (array_key_exists($field,$base_data)) {
- 
+
 				if ($value!=$this->data[$field]) {
 					$this->update_field($field,$value,$options);
 				}
@@ -1076,8 +1076,8 @@ $this->new_value=$this->get('Formated Cost');
 			$new_current_key,
 			$this->pid
 		);
-		
-	//	print $sql;
+
+		// print $sql;
 
 		mysql_query($sql);
 		$this->data['Supplier Product Cost Per Case']=sprintf("%.2f",$price);
@@ -1827,6 +1827,35 @@ $this->new_value=$this->get('Formated Cost');
 
 		return formated_price($data);
 	}
+
+
+	function get_formated_price_per_case_in_corporate_currency($locale='') {
+		global $corporate_currency;
+
+		if ($corporate_currency!=$this->data['Supplier Product Currency']) {
+			include_once 'class.CurrencyExchange.php';
+
+			$currency_exchange = new CurrencyExchange($this->data['Supplier Product Currency'].$corporate_currency);
+			$exchange= $currency_exchange->get_current_exchange();
+
+		}else {
+			$exchange=1;
+		}
+
+		$data=array(
+			'Product Price'=>$this->data['SPH Case Cost']*$exchange,
+			'Product Units Per Case'=>1,
+			'Product Currency'=>$corporate_currency,
+			'Product Unit Type'=>_('carton'),
+
+			'Label'=>'',
+
+
+			'locale'=>$locale);
+
+		return formated_price($data);
+	}
+
 	function get_formated_price_per_unit($locale='') {
 
 		$data=array(
@@ -1842,6 +1871,37 @@ $this->new_value=$this->get('Formated Cost');
 
 		return formated_price_per_unit($data);
 	}
+
+	function get_formated_price_per_unit_in_corporate_currency($locale='') {
+
+		global $corporate_currency;
+
+		if ($corporate_currency!=$this->data['Supplier Product Currency']) {
+			include_once 'class.CurrencyExchange.php';
+
+			$currency_exchange = new CurrencyExchange($this->data['Supplier Product Currency'].$corporate_currency);
+			$exchange= $currency_exchange->get_current_exchange();
+
+		}else {
+			$exchange=1;
+		}
+
+
+		$data=array(
+			'Product Price'=>$this->data['SPH Case Cost']*$exchange,
+			'Product Units Per Case'=>$this->data['SPH Units Per Case'],
+			'Product Currency'=>$corporate_currency,
+			'Product Unit Type'=>$this->data['Supplier Product Unit Type'],
+
+			'Label'=>'',
+
+
+			'locale'=>$locale);
+
+		return formated_price_per_unit($data);
+	}
+
+
 	function units_convertion_factor($unit_from,$unit_to=false) {
 		return 1;
 	}
