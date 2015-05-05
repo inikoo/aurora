@@ -558,6 +558,9 @@ class supplierproduct extends DB_Table {
 		case('Units Per Case'):
 			return number($this->data['Supplier Product '.$key]);
 			break;
+		case('Product Cost Per Unit'):
+			return money($this->data['Supplier Product Cost Per Case']/$this->data['Supplier Product Units Per Case'],$this->data['Supplier Product Currency']);
+			break;	
 		case('Supplier Product Cost Per Unit'):
 			return $this->data['Supplier Product Cost Per Case']/$this->data['Supplier Product Units Per Case'];
 			break;	
@@ -713,7 +716,7 @@ function update_currency($value) {
 		}
 
 		$this->update_sph($value,$this->data['Supplier Product Units Per Case'],$this->data['Supplier Product Currency']);
-
+$this->new_value=$this->get('Formated Cost');
 	}
 
 	function update_units_per_case($value) {
@@ -725,6 +728,7 @@ function update_currency($value) {
 
 		}
 		$this->update_sph($this->data['Supplier Product Cost Per Case'],$value,$this->data['Supplier Product Currency']);
+		$this->new_value=$this->data['Supplier Product Units Per Case'];
 	}
 
 

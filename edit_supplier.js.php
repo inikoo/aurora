@@ -183,9 +183,8 @@ function post_item_updated_actions(branch, r) {
     //alert("x")
 }
 
-function change_suppliers_view(e, data) {
+function change_supplier_products_view(e, data) {
 
-alert('xx')
     var table = tables['table' + data.table_id];
     var tipo = this.id;
 
@@ -218,11 +217,11 @@ alert('xx')
 
     Dom.removeClass(['supplier_products_name', 'supplier_products_cost'], 'selected')
     Dom.addClass(this, 'selected')
-    change_suppliers_view_save(tipo)
+    change_supplier_products_view_save(tipo)
 
 }
 
-function change_suppliers_view_save(tipo) {
+function change_supplier_products_view_save(tipo) {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-edit_supplier_products-view&value=' + escape(tipo), {});
 
 }
@@ -242,16 +241,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				  ,{key:"sph_key", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				  ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
-				  ,{key:"name", label:"<?php echo _('Name')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+				  ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='name'?'':'hidden:true,')?>width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
 		
 
 		
-		,{key:"usedin", label:"<?php echo _('Used In')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		,{key:"usedin", label:"<?php echo _('Used In')?>", <?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='name'?'':'hidden:true,')?>width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 			//	  ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'supplier_product'}
 				
 				,{key:"units", className:"aright",label:"<?php echo _('U/Carton')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
-  ,{key:"cost", label:"<?php echo _('Cost/Carton')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
-			,{key:"state", label:"", width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
+  ,{key:"cost", label:"<?php echo _('Cost/Unit')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+			,{key:"state", label:"", <?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='name'?'':'hidden:true,')?>width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
 				    ,{key:"state_value", label:"",hidden:true}
 
 				  ];
