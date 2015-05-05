@@ -492,9 +492,6 @@ function edit_supplier_product_cost($data) {
 
 	$supplier_product->update_sph($_data['Supplier Product Cost Per Case'],$_data['Supplier Product Units Per Case'],$supplier_product->data['Supplier Product Currency']);
 
-
-
-
 	if (!$supplier_product->error) {
 
 		$response=array();

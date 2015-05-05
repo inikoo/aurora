@@ -655,7 +655,7 @@ class Order extends DB_Table {
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
 
-		$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
+	//	$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
 
 
 		$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
@@ -665,7 +665,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 
-		$sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
+	//	$sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
 
 		mysql_query($sql);
 

@@ -96,3 +96,7 @@ run fix_supplier_products_data.php
 
 
 ALTER TABLE `Supplier Product History Dimension` ADD `SPH Currency` VARCHAR(3) NOT NULL DEFAULT 'GBP' AFTER `SPH Case Cost`; 
+
+
+ALTER TABLE `Part Dimension` CHANGE `Part Cost` `Part Cost` DECIMAL(12,4) NULL DEFAULT '0.0000'; 
+
