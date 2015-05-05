@@ -419,8 +419,8 @@ function edit_supplier_product($data) {
 			$supplier_product->update_units_per_case($data['newvalue']);
 
 		}elseif ($key=='cost') {
-		$data['newvalue']= floatval(preg_replace('/[^\d\.]/', '', $data['newvalue']));
-		
+			$data['newvalue']= floatval(preg_replace('/[^\d\.]/', '', $data['newvalue']));
+
 			$supplier_product->update_cost($data['newvalue']*$supplier_product->data['Supplier Product Units Per Case']);
 
 		}else {

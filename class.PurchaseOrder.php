@@ -32,8 +32,8 @@ class PurchaseOrder extends DB_Table{
 		//print_r($data);
 
 
-		$data['Purchase Order Creation Date']=date('Y-m-d H:i:s');
-		$data['Purchase Order Last Updated Date']=date('Y-m-d H:i:s');
+		$data['Purchase Order Creation Date']=gmdate('Y-m-d H:i:s');
+		$data['Purchase Order Last Updated Date']=gmdate('Y-m-d H:i:s');
 		$data['Purchase Order Public ID']=$this->get_next_public_id($data['Purchase Order Supplier Key']);
 		$data['Purchase Order File As']=$this->get_file_as($data['Purchase Order Public ID']);
 		$base_data=$this->base_data();
@@ -112,8 +112,8 @@ class PurchaseOrder extends DB_Table{
 				return '';
 
 			break;
-			
-			case ('Purchase Order Current Dispatch State'):
+
+		case ('Purchase Order Current Dispatch State'):
 
 
 
@@ -124,9 +124,9 @@ class PurchaseOrder extends DB_Table{
 			case 'Partially Matched With DN':
 				return _('Partially Matched With DN');
 				break;
-				case 'Matched With DN':
+			case 'Matched With DN':
 				return _('Matched With DN');
-				break;	
+				break;
 			case 'Submitted':
 				return _('Submitted');
 				break;
@@ -148,7 +148,9 @@ class PurchaseOrder extends DB_Table{
 			case 'Unknown':
 				return _('Unknown');
 				break;
-		
+
+
+
 
 			default:
 				return $this->data['Purchase Order Current Dispatch State'];
@@ -156,7 +158,10 @@ class PurchaseOrder extends DB_Table{
 			}
 
 			break;
-			
+
+
+
+
 		default:
 
 			break;
@@ -167,8 +172,32 @@ class PurchaseOrder extends DB_Table{
 			return number($this->data ['Purchase Order Number Items']);
 		if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 			$amount='Purchase Order '.$key;
-			return money($this->data[$amount]);
+			return money($this->data[$amount],$this->data['Purchase Order Currency Code']);
 		}
+
+		if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount Corporate Currency)$/',$key)) {
+            global $corporate_currency;
+			$key=preg_replace('/ Corporate Currency/','',$key);
+			$amount='Purchase Order '.$key;
+
+			if ($corporate_currency!=$this->data['Purchase Order Currency Code']) {
+				include_once 'class.CurrencyExchange.php';
+
+				$currency_exchange = new CurrencyExchange($this->data['Purchase Order Currency Code'].$corporate_currency);
+				$exchange= $currency_exchange->get_current_exchange();
+
+			}else {
+				$exchange=1;
+			}
+
+
+
+			return money($this->data[$amount]*$exchange,$corporate_currency);
+		}
+
+
+
+
 
 
 		if (preg_match('/Date$/',$key)) {
@@ -423,9 +452,9 @@ class PurchaseOrder extends DB_Table{
 		$sql=sprintf("select `Supplier Product ID`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		
+
 			//print_r($row);
-		
+
 			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
 			$parts=$supplier_product->get_parts();
 			foreach ($parts as $part) {

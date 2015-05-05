@@ -771,8 +771,10 @@ function po_transactions_to_process() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records>10)
 		$rtext_rpp=' '._('(Showing all)');
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -817,7 +819,7 @@ function po_transactions_to_process() {
 
 
 
-	$sql="select  `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `SPH Currency`, `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -828,7 +830,7 @@ function po_transactions_to_process() {
 		if ($row['Purchase Order Quantity']==0)
 			$amount='';
 		else
-			$amount=money($row['Purchase Order Net Amount']);
+			$amount=money($row['Purchase Order Net Amount'],$row['SPH Currency']);
 
 		$unit_type=$row['Supplier Product Unit Type'];
 		if ($unit_type=='ea') {
@@ -839,7 +841,7 @@ function po_transactions_to_process() {
 			'pid'=>$row['Supplier Product ID'],
 
 			'code'=>sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product ID'],$row['Supplier Product Code']),
-			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['SPH Case Cost']/$row['SPH Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
+			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],
 			'store_as'=>$row['Supplier Product XHTML Store As'],
 
@@ -968,6 +970,7 @@ if (!isset($_REQUEST['sph_use_type']))
 			// ,'order_credits'=>$order->get('Net Credited Amount')
 			,'shipping'=>$order->get('Shipping Net Amount')
 			,'total'=>$order->get('Total Amount')
+			,'total_corporate_currency'=>$order->get('Total Amount Corporate Currency')
 			,'distinct_products'=>$order->get('Number Items')
 		);
 

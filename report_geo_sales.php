@@ -33,7 +33,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
-		'css/calendar.css',
+	'css/calendar.css',
 	'theme.css.php'
 );
 

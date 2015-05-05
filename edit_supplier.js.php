@@ -1125,6 +1125,8 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
     Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
     Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
+     Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
+    Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
     Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
     Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
     
@@ -1146,6 +1148,13 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     oACDS4.table_id = 4;
     var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
     oAutoComp4.minQueryLength = 0;
+    
+     var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS5.queryMatchContains = true;
+    oACDS5.table_id = 5;
+    var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
+    oAutoComp5.minQueryLength = 0;
+
 
  var oACDS100 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS100.queryMatchContains = true;

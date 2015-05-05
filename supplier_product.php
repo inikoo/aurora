@@ -52,6 +52,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/supplier_product.css',
 	'theme.css.php'
 );
 $js_files=array(
@@ -94,6 +95,10 @@ $modify=$user->can_edit('suppliers');
 $smarty->assign('search_label',_('Search'));
 $smarty->assign('search_scope','supplier_products');
 $smarty->assign('block_view',$_SESSION['state']['supplier_product']['block_view']);
+
+$smarty->assign('corporate_currency',$corporate_currency);
+
+
 
 $smarty->assign('stock_history_block',$_SESSION['state']['supplier_product']['stock_history_block']);
 $smarty->assign('sales_block',$_SESSION['state']['supplier_product']['sales_block']);
