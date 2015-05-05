@@ -409,20 +409,28 @@ function edit_supplier_product($data) {
 			,'description'=>'Supplier Product Description'
 			,'unit_type'=>'Supplier Product Unit Type'
 			,'units'=>'Supplier Product Units Per Case'
-			,"cost"=>'SPH Case Cost'
 
 			,"Supplier_Product_Supplier_Key"=>'supplier_key'
 		);
 		if (array_key_exists($key,$key_dic))
 			$key=$key_dic[$key];
 
+		if ($key=='Supplier Product Units Per Case') {
+			$supplier_product->update_units_per_case($data['newvalue']);
 
-		$supplier_product->update(array($key=>$data['newvalue']));
+		}elseif ($key=='cost') {
+		$data['newvalue']= floatval(preg_replace('/[^\d\.]/', '', $data['newvalue']));
+		
+			$supplier_product->update_cost($data['newvalue']*$supplier_product->data['Supplier Product Units Per Case']);
+
+		}else {
+			$supplier_product->update(array($key=>$data['newvalue']));
+		}
+
 	}
 
 
 	if ($supplier_product->updated) {
-
 
 
 		$response= array(
@@ -435,6 +443,9 @@ function edit_supplier_product($data) {
 		);
 		if ($key=='supplier_key') {
 			$response['newdata']=$supplier_product->new_data;
+		}
+		if ($key=='cost') {
+			$response['newvalue']=$supplier_product->get('Product Cost Per Unit');
 		}
 
 
@@ -473,20 +484,17 @@ function edit_supplier_product_cost($data) {
 	);
 
 	if (isset($values['Supplier Product Units Per Case'])) {
-
-	
-
 		$_data['Supplier Product Units Per Case']=$values['Supplier Product Units Per Case']['value'];
 	}
 	if (isset($values['Supplier Product Cost Per Unit'])) {
-	
+
 		if (isset($values['Supplier Product Units Per Case'])) {
-		$units=$values['Supplier Product Units Per Case']['value'];
-		}else{
+			$units=$values['Supplier Product Units Per Case']['value'];
+		}else {
 			$units=$old_units;
 		}
 
-	
+
 		$_data['Supplier Product Cost Per Case']=$values['Supplier Product Cost Per Unit']['value']*$units;
 	}
 
@@ -1011,8 +1019,8 @@ function list_supplier_products() {
 		}
 
 		$go=sprintf("<a href='edit_supplier_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Supplier Product ID']);
-		
-	
+
+
 
 		$data[]=array(
 			'sp_id'=>$row['Supplier Product ID'],
@@ -1022,7 +1030,7 @@ function list_supplier_products() {
 
 
 			'name'=>$row['Supplier Product Name'],
-			'cost'=>money($row['SPH Case Cost'],$row['SPH Currency']),
+			'cost'=>money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']),
 			'usedin'=>$row['Supplier Product XHTML Sold As'],
 			'unit_type'=>$row['Supplier Product Unit Type'],
 			'units'=>$row['Supplier Product Units Per Case'],
@@ -1335,10 +1343,10 @@ function list_parts_in_supplier_product() {
 		$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 		if ($total_records>$number_results)
 			$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-		elseif($total_records>10)
+		elseif ($total_records>10)
 			$rtext_rpp=' ('._('Showing all').')';
 		else
-			$rtext_rpp='';	
+			$rtext_rpp='';
 
 		if ($total==0 and $filtered>0) {
 			switch ($f_field) {
