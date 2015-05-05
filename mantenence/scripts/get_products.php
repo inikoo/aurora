@@ -1704,6 +1704,10 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
 
 	$supplier_product->update_sold_as();
 	$supplier_product->update_store_as();
+	
+	
+	
+	
 	$product->update_parts();
 	$part->update_used_in();
 	$part->update_supplied_by();

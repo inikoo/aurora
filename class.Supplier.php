@@ -344,7 +344,7 @@ class supplier extends DB_Table {
 
 		$this->data['Supplier ID']=$this->new_id();
 		$this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
-$this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
+		$this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 		$this->data['Supplier Main Plain Telephone']='';
 		$this->data['Supplier Main Plain FAX']='';
 		$this->data['Supplier Main Plain Email']='';
@@ -467,7 +467,7 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 			mysql_query($sql);
 		}
 
-		$sql=sprintf("select   
+		$sql=sprintf("select
 		                sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,
 		                sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
                          `Supplier Product Dimension` SPD
@@ -478,20 +478,20 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
                          left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`)
                          where SPD.`Supplier Key`=%d ;",
 			$this->id);
-			
-			
-			$sql=sprintf("select sum(if(`Part Stock State`='Error',1,0)) as availability_unknown,sum(if(`Part Stock State`='Normal',1,0)) as availability_optimal,sum(if(`Part Stock State`='Low',1,0)) as availability_low,sum(if(`Part Stock State`='VeryLow',1,0)) as availability_critical,sum(if(`Part Stock State`='Excess',1,0)) as availability_surplus,sum(if(`Part Stock State`='OutofStock',1,0)) as availability_outofstock from  `Supplier Product Part Dimension` SPPD  left join `Supplier Product Part List` SPPL  on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part List Key` )   left join `Part Dimension` PA on (PA.`Part SKU`=SPPL.`Part SKU`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where SPD.`Supplier Key`=%d  and `Supplier Product Part Most Recent`='Yes';",
+
+
+		$sql=sprintf("select sum(if(`Part Stock State`='Error',1,0)) as availability_unknown,sum(if(`Part Stock State`='Normal',1,0)) as availability_optimal,sum(if(`Part Stock State`='Low',1,0)) as availability_low,sum(if(`Part Stock State`='VeryLow',1,0)) as availability_critical,sum(if(`Part Stock State`='Excess',1,0)) as availability_surplus,sum(if(`Part Stock State`='OutofStock',1,0)) as availability_outofstock from  `Supplier Product Part Dimension` SPPD  left join `Supplier Product Part List` SPPL  on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part List Key` )   left join `Part Dimension` PA on (PA.`Part SKU`=SPPL.`Part SKU`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where SPD.`Supplier Key`=%d  and `Supplier Product Part Most Recent`='Yes';",
 			$this->id);
-			
+
 		//print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		//	$sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
+			// $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
 
 			$sql=sprintf("update `Supplier Dimension` set `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
 				//$row['for_sale'],
-			//	$row['discontinued'],
-			//	$row['not_for_sale'],
+				// $row['discontinued'],
+				// $row['not_for_sale'],
 				// $row['sale_unknown'],
 				$row['availability_optimal'],
 				$row['availability_low'],
@@ -509,7 +509,7 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 	}
 
 
-	
+
 
 
 
@@ -1043,20 +1043,20 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 
 
 			break;
-			
-			case('Supplier Sticky Note'):
+
+		case('Supplier Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
 		case('Sticky Note'):
 			$this->update_field('Supplier '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
-			break;		
-			case('Note'):
+			break;
+		case('Note'):
 			$this->add_note($value);
 			break;
 		case('Attach'):
 			$this->add_attach($value);
-			break;	
+			break;
 		case('Supplier Main Plain Telephone'):
 		case('Supplier Main Plain FAX'):
 
@@ -1092,9 +1092,23 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 			break;
 		case('Supplier Products Origin Country Code'):
 			$this->update_field($field,$value,$options);
-
 			$this->update_field('Supplier Products Origin',$this->get('Products Origin'),$options);
+			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+				$supplier_product->update(array('Supplier Product Origin Country Code'=>$value));
+			}
+			break;
+		case('Supplier Average Delivery Days'):
+			$this->update_field($field,$value,$options);
+			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
 
+				$supplier_product->update(array('Supplier Product Delivery Days'=>$value));
+			}
 			break;
 		default:
 
@@ -1556,28 +1570,28 @@ $this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 		}
 
 	}
-	
-	function update_default_currency($currency,$modify_products,$ratio){
-	
-	$this->update_field_switcher('Supplier Default Currency',$currency);
-	
-	if($modify_products=='Yes'){
-	
-		$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d ",
-		$this->id
-		);
-		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
-			$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
-			
-			$amount=$supplier_product->data['Supplier Product Cost Per Case']*$ratio;
-			
-			$supplier_product->update_sph($amount,$supplier_product->data['Supplier Product Units Per Case'],$currency);
-		
-		}	
-	}
-	
-	
+
+	function update_default_currency($currency,$modify_products,$ratio) {
+
+		$this->update_field_switcher('Supplier Default Currency',$currency);
+
+		if ($modify_products=='Yes') {
+
+			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d ",
+				$this->id
+			);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$supplier_product=new SupplierProduct('pid',$row['Supplier Product ID']);
+
+				$amount=$supplier_product->data['Supplier Product Cost Per Case']*$ratio;
+
+				$supplier_product->update_sph($amount,$supplier_product->data['Supplier Product Units Per Case'],$currency);
+
+			}
+		}
+
+
 	}
 
 	function update_fax($telecom_key) {
