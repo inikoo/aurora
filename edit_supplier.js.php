@@ -183,89 +183,147 @@ function post_item_updated_actions(branch, r) {
     //alert("x")
 }
 
+function change_suppliers_view(e, data) {
 
+alert('xx')
+    var table = tables['table' + data.table_id];
+    var tipo = this.id;
+
+
+
+    if (tipo == 'supplier_products_name') tipo = 'name';
+    else if (tipo == 'supplier_products_cost') tipo = 'cost';
+
+ 	table.hideColumn('name');
+    table.hideColumn('usedin');
+    table.hideColumn('state');
+    //  table.hideColumn('unit_type');
+    table.hideColumn('units');
+    table.hideColumn('cost');
+
+
+    if (tipo == 'name') {
+        table.showColumn('code');
+        table.showColumn('name');
+        table.showColumn('usedin');
+        table.showColumn('state');
+
+
+    } else if (tipo == 'cost') {
+        //    table.showColumn('unit_type');
+        table.showColumn('units');
+        table.showColumn('cost');
+
+    }
+
+    Dom.removeClass(['supplier_products_name', 'supplier_products_cost'], 'selected')
+    Dom.addClass(this, 'selected')
+    change_suppliers_view_save(tipo)
+
+}
+
+function change_suppliers_view_save(tipo) {
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-edit_supplier_products-view&value=' + escape(tipo), {});
+
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
-
-
-		 var tableid=0;
-		    var tableDivEL="table"+tableid;
+	
+	
+		    
+		var tableid=0;
+		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-						    {key:"go",label:'',width:20,}
+				  
+				    {key:"go",label:'',width:20}
 				  ,{key:"sp_id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
 				  ,{key:"sph_key", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				  ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
 				  ,{key:"name", label:"<?php echo _('Name')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
 		
-		
+
 		
 		,{key:"usedin", label:"<?php echo _('Used In')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				 // ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'supplier_product'}
+			//	  ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'supplier_product'}
 				
-				//,{key:"units", className:"aright",label:"<?php echo _('U/Case')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
-  //,{key:"cost", label:"<?php echo _('Cost/u')?>",<?php echo($_SESSION['state']['supplier']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+				,{key:"units", className:"aright",label:"<?php echo _('U/Carton')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+  ,{key:"cost", label:"<?php echo _('Cost/Carton')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
 			,{key:"state", label:"", width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
 				    ,{key:"state_value", label:"",hidden:true}
 
-
 				  ];
+		
 request="ar_edit_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get("supplier_key").value+"&sf=0&tableid="+tableid
-//alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
-
-   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		    this.dataSource0.connXhrMode = "queueRequests";
-		    this.dataSource0.responseSchema = {
-			resultsList: "resultset.data", 
-			metaFields: {
-			    rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-			},
+	
+	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource0.connXhrMode = "queueRequests";
+		this.dataSource0.responseSchema = {
+		    resultsList: "resultset.data", 
+		    metaFields: {
+			rowsPerPage:"resultset.records_perpage",
+			rtext:"resultset.rtext",
+			 rtext_rpp:"resultset.rtext_rpp",
+			sort_key:"resultset.sort_key",
+			sort_dir:"resultset.sort_dir",
+			tableid:"resultset.tableid",
+			filter_msg:"resultset.filter_msg",
+			totalRecords: "resultset.total_records"
+		    },
 			
-			fields: [
+		   fields: [
 				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go','state','sp_id','state_value'
 				 ]};
-	    
-		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+		
+		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 							     this.dataSource0, {
-								 //draggableColumns:true,
-								 renderLoopSize: 50,generateRequest : myRequestBuilder
-								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo$_SESSION['state']['supplier']['supplier_products']['nr']?>,containers : 'paginator0', 
-									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									 previousPageLinkLabel : "<",
-									 nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
+							     //draggableColumns:true,
+							     renderLoopSize: 50,generateRequest : myRequestBuilder
+							     ,paginator : new YAHOO.widget.Paginator({
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['edit_supplier_products']['nr']?>,containers : 'paginator0', 
+								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								     previousPageLinkLabel : "<",
+								     nextPageLinkLabel : ">",
+								     firstPageLinkLabel :"<<",
 									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-								     })
-								 
-								 ,sortedBy : {
-								    Key: "<?php echo$_SESSION['state']['supplier']['supplier_products']['order']?>",
-								     dir: "<?php echo$_SESSION['state']['supplier']['supplier_products']['order_dir']?>"
-								 }
-								 ,dynamicData : true
-								 
+								     ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								 })
+							     
+							     ,sortedBy : {
+								 key: "<?php echo$_SESSION['state']['supplier']['edit_supplier_products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['supplier']['edit_supplier_products']['order_dir']?>"
 							     }
-							     );
+							     ,dynamicData : true
+							     
+							 }
+							 );
+		
+						
+						 
+							 	this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+		this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+		this.table0.subscribe("cellClickEvent", onCellClick);
+	 
 		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_value']?>'};
-		this.table0.view='<?php echo$_SESSION['state']['supplier']['supplier_products']['view']?>';
+		        this.table0.request = request;
 
-		this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
-		this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-		this.table0.subscribe("cellClickEvent", onCellClick);
+		this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+		
+		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['edit_supplier_products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['edit_supplier_products']['f_value']?>'};
+		
+		
+
+
+	
+
+
+
 
 var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -562,11 +620,7 @@ this.table100.prefix='';
 
 	    this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table100.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
-	    //
-
-
-
-
+	   
     };});
 
 
@@ -1102,6 +1156,7 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 
 
   
+    Event.addListener(['supplier_products_name','supplier_products_cost'], "click", change_supplier_products_view, {table_id:0});
 
 
 	

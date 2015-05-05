@@ -2737,6 +2737,7 @@ $default_state=array(
 			'elements_type'=>'state',
 			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
 		),
+		
 		'suppliers'=>array(
 			'period'=>'year',
 			'percentage'=>0,
@@ -5019,6 +5020,20 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>'',
+			'elements_type'=>'state',
+			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
+
+		),
+		'edit_supplier_products'=>array(
+			'view'=>'name',
+			
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'sup_code',
+			'f_value'=>'','f_show'=>false,
+			
 			'elements_type'=>'state',
 			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
 

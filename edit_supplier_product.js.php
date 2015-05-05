@@ -193,8 +193,8 @@ function validate_Supplier_Product_Code(query) {
 	validate_general('supplier_product_unit', 'code', query);
 }
 
-function validate_Supplier_Product_Cost_Per_Case(query) {
-	validate_general('supplier_product_cost', 'Supplier_Product_Cost_Per_Case', query);
+function validate_Supplier_Product_Cost_Per_Unit(query) {
+	validate_general('supplier_product_cost', 'Supplier_Product_Cost_Per_Unit', query);
 }
 
 
@@ -1140,15 +1140,15 @@ init_search('supplier_products_supplier');
 			'name': 'Supplier_Product_Units_Per_Case',
 			'ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Cost')?>'}]
     }
-    ,'Supplier_Product_Cost_Per_Case': {
+    ,'Supplier_Product_Cost_Per_Unit': {
 			'changed': false,
 			'validated': true,
 			'required': true,
 			'group': 1,
 			'type': 'item',
-						'dbname': 'Supplier Product Cost Per Case',
+						'dbname': 'Supplier Product Cost Per Unit',
 
-			'name': 'Supplier_Product_Cost_Per_Case',
+			'name': 'Supplier_Product_Cost_Per_Unit',
 			'ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Cost')?>'}]
     }
     
@@ -1826,9 +1826,9 @@ Event.addListener('save_edit_supplier_product_supplier', "click", save_edit_supp
     supplier_product_name_oAutoComp.minQueryLength = 0;
     supplier_product_name_oAutoComp.queryDelay = 0.1;
 
- var supplier_product_cost_oACDS = new YAHOO.util.FunctionDataSource(validate_Supplier_Product_Cost_Per_Case);
+ var supplier_product_cost_oACDS = new YAHOO.util.FunctionDataSource(validate_Supplier_Product_Cost_Per_Unit);
     supplier_product_cost_oACDS.queryMatchContains = true;
-    var supplier_product_cost_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Product_Cost_Per_Case", "Supplier_Product_Cost_Per_Case_Container", supplier_product_cost_oACDS);
+    var supplier_product_cost_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Product_Cost_Per_Unit", "Supplier_Product_Cost_Per_Unit_Container", supplier_product_cost_oACDS);
     supplier_product_cost_oAutoComp.minQueryLength = 0;
     supplier_product_cost_oAutoComp.queryDelay = 0.1;
 

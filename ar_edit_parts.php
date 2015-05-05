@@ -274,7 +274,7 @@ function create_part($data) {
 
 	$part->update_used_in();
 	$part->update_supplied_by();
-	$part->update_cost();
+	$part->update_cost_from_supplier_products();
 
 	$sp->update_sold_as();
 	$sp->update_store_as();

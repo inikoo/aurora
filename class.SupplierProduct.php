@@ -558,6 +558,9 @@ class supplierproduct extends DB_Table {
 		case('Units Per Case'):
 			return number($this->data['Supplier Product '.$key]);
 			break;
+		case('Supplier Product Cost Per Unit'):
+			return $this->data['Supplier Product Cost Per Case']/$this->data['Supplier Product Units Per Case'];
+			break;	
 		case('Unit'):
 			return $this->get_formated_unit();
 			break;

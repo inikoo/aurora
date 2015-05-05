@@ -198,9 +198,9 @@ $smarty->assign('categories_value',$categories_value);
 $smarty->assign('default_country_2alpha','GB');
 
 
-$tipo_filter=$_SESSION['state']['supplier']['supplier_products']['f_field'];
+$tipo_filter=$_SESSION['state']['supplier']['edit_supplier_products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['supplier']['supplier_products']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier']['edit_supplier_products']['f_value']);
 
 $filter_menu=array(
 	//   'p.code'=>array('db_key'=>'p.code','menu_label'=>'Our Product Code','label'=>'Code'),
@@ -270,7 +270,10 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu100',$paginator_menu);
 
 
-$smarty->assign('elements_sp_state',$_SESSION['state']['supplier']['supplier_products']['elements']['state']);
+$smarty->assign('elements_sp_state',$_SESSION['state']['supplier']['edit_supplier_products']['elements']['state']);
+
+$smarty->assign('supplier_products_view',$_SESSION['state']['supplier']['edit_supplier_products']['view']);
+
 
 
 $smarty->display('edit_supplier.tpl');

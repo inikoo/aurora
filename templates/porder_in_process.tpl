@@ -33,6 +33,7 @@
 	</div>
 	<div class="prodinfo" style="clear:both;margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
 		<table style="width:200px;" class="order_header">
+			<tbody id="po_amounts" style="display:none">
 			<tr>
 				<td>{t}Goods{/t}:</td>
 				<td id="goods" class="aright">{$po->get('Items Net Amount')}</td>
@@ -45,6 +46,7 @@
 				<td>{t}Tax{/t}:</td>
 				<td id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
 			</tr>
+			</tbody>
 			<tr>
 				<td>{t}Total{/t}</td>
 				<td id="total" class="stock aright ">{$po->get('Total Amount')}</td>

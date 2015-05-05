@@ -54,7 +54,7 @@
 			<div class="buttons small left tabs">
 				<button class="indented item {if $description_block=='status'}selected{/if}" id="description_block_status" block_id="status">{t}Status{/t}</button> 
 				<button class="item {if $description_block=='supplier'}selected{/if}" id="description_block_supplier" block_id="supplier">{t}Supplier{/t}</button> 
-				<button class="item {if $description_block=='cost'}selected{/if}" id="description_block_cost" block_id="cost">{t}Carton Cost & Units{/t}</button> 
+				<button class="item {if $description_block=='cost'}selected{/if}" id="description_block_cost" block_id="cost">{t}Cost & Units per Carton{/t}</button> 
 				<button class="item {if $description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name,Codes{/t}</button> 
 				<button class="item {if $description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button style="display:none" class="item {if $description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> <button class="item {if $description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 			</div>
@@ -68,7 +68,7 @@
 						<td colspan="3">{t}Units{/t}</td>
 					</tr>
 					<tr class="space10">
-							<td style="width:180px" class="label">{t}Units per outer{/t}:</td>
+							<td style="width:180px" class="label">{t}Units per carton{/t}:</td>
 							<td style="text-align:left"> 
 							<div>
 								<input style="text-align:left;width:70px" id="Supplier_Product_Units_Per_Case" value="{$supplier_product->get('Supplier Product Units Per Case')}" ovalue="{$supplier_product->get('Supplier Product Units Per Case')}" valid="0"> 
@@ -83,15 +83,15 @@
 					</tr>
 				
 					<tr>
-						<td style="width:200px" class="label">{t}Cost per outer{/t}:</td>
+						<td style="width:200px" class="label">{t}Cost per unit{/t}:</td>
 						<td style="text-align:left"> 
 						<div>
-							<input style="text-align:right;width:150px" id="Supplier_Product_Cost_Per_Case" value="{$supplier_product->get('Supplier Product Cost Per Case')}" ovalue="{$supplier_product->get('Supplier Product Cost Per Case')}" valid="0"> <span style="margin-left:160px">{$supplier_product->get('Supplier Product Currency')}</span>
-							<div id="Supplier_Product_Cost_Per_Case_Container">
+							<input style="text-align:right;width:150px" id="Supplier_Product_Cost_Per_Unit" value="{$supplier_product->get('Supplier Product Cost Per Unit')}" ovalue="{$supplier_product->get('Supplier Product Cost Per Unit')}" valid="0"> <span style="margin-left:160px">{$supplier_product->get('Supplier Product Currency')}</span>
+							<div id="Supplier_Product_Cost_Per_Unit_Container">
 							</div>
 						</div>
 						 </td>
-						<td><span id="Supplier_Product_Cost_Per_Case_msg" class="edit_td_alert" "></span></td>
+						<td><span id="Supplier_Product_Cost_Per_Unit_msg" class="edit_td_alert" "></span></td>
 					</tr>
 				
 							<tr class="buttons">

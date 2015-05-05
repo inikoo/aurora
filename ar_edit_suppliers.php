@@ -474,11 +474,20 @@ function edit_supplier_product_cost($data) {
 
 	if (isset($values['Supplier Product Units Per Case'])) {
 
+	
 
 		$_data['Supplier Product Units Per Case']=$values['Supplier Product Units Per Case']['value'];
 	}
-	if (isset($values['Supplier Product Cost Per Case'])) {
-		$_data['Supplier Product Cost Per Case']=$values['Supplier Product Cost Per Case']['value'];
+	if (isset($values['Supplier Product Cost Per Unit'])) {
+	
+		if (isset($values['Supplier Product Units Per Case'])) {
+		$units=$values['Supplier Product Units Per Case']['value'];
+		}else{
+			$units=$old_units;
+		}
+
+	
+		$_data['Supplier Product Cost Per Case']=$values['Supplier Product Cost Per Unit']['value']*$units;
 	}
 
 	$supplier_product->update_sph($_data['Supplier Product Cost Per Case'],$_data['Supplier Product Units Per Case'],$supplier_product->data['Supplier Product Currency']);
@@ -494,8 +503,8 @@ function edit_supplier_product_cost($data) {
 		if ($old_cost!=$supplier_product->data['Supplier Product Cost Per Case']) {
 			$response[]=array(
 				'state'=>200,
-				'key'=>'Supplier_Product_Cost_Per_Case',
-				'newvalue'=>$supplier_product->data['Supplier Product Cost Per Case']
+				'key'=>'Supplier_Product_Cost_Per_Unit',
+				'newvalue'=>$supplier_product->get('Supplier Product Cost Per Unit')
 			);
 		}
 
@@ -778,11 +787,11 @@ function list_supplier_products() {
 
 
 	if ($parent=='supplier') {
-		$conf=$_SESSION['state']['supplier']['supplier_products'];
+		$conf=$_SESSION['state']['supplier']['edit_supplier_products'];
 		$conf_table='supplier';
 	}
 	elseif ($parent=='none') {
-		$conf=$_SESSION['state']['suppliers']['supplier_products'];
+		$conf=$_SESSION['state']['suppliers']['edit_supplier_products'];
 		$conf_table='suppliers';
 	}
 	else {
@@ -804,7 +813,6 @@ function list_supplier_products() {
 		$number_results=$_REQUEST['nr'];
 	else
 		$number_results=$conf['nr'];
-
 
 
 	if (isset( $_REQUEST['o']))
@@ -861,13 +869,13 @@ function list_supplier_products() {
 
 
 
-	$_SESSION['state'][$conf_table]['supplier_products']['order']=$order;
-	$_SESSION['state'][$conf_table]['supplier_products']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['supplier_products']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['supplier_products']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['supplier_products']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['supplier_products']['f_value']=$f_value;
-	$_SESSION['state'][$conf_table]['supplier_products']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['order']=$order;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['edit_supplier_products']['elements']=$elements;
 
 
 
@@ -1005,12 +1013,15 @@ function list_supplier_products() {
 			$state='';
 		}
 
+		$go=sprintf("<a href='edit_supplier_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Supplier Product ID']);
+		
+	
+
 		$data[]=array(
 			'sp_id'=>$row['Supplier Product ID'],
 			'sph_key'=>$row['Supplier Product Current Key'],
 			'code'=>$row['Supplier Product Code'],
-			'go'=>sprintf("<a href='edit_supplier_product.php?pid=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-				$row['Supplier Product ID']),
+			'go'=>$go,
 
 
 			'name'=>$row['Supplier Product Name'],

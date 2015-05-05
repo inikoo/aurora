@@ -180,11 +180,25 @@
 					<div class="buttons small left">
 						<button onclick="window.location='new_supplier_product.php?supplier_key={$supplier->id}'"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
 					</div>
+					
+					
+					
 					<div class="elements_chooser">
 						<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Discontinued}selected{/if}" id="elements_sp_state_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_sp_state_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.NoAvailable}selected{/if}" id="elements_sp_state_NoAvailable" table_type="NoAvailable">{t}No Available{/t} (<span id="elements_sp_state_NoAvailable_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements_sp_state.Available}selected{/if}" id="elements_sp_state_Available" table_type="Available">{t}Available{/t} (<span id="elements_sp_state_Available_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
 					</div>
-					<div class="table_top_bar space">
+					<div class="table_top_bar">
 					</div>
+					<div class="clusters">
+				<div class="buttons small left cluster" id="product_supplier_view_buttons">
+					<button class="table_option {if $supplier_products_view=='name'}selected{/if}" id="supplier_products_name">{t}Code{/t}/{t}Name{/t}</button> 
+					<button class="table_option {if $supplier_products_view=='cost'}selected{/if}" id="supplier_products_cost">{t}Units{/t}/{t}Cost{/t}</button> 
+				</div>
+				
+				<div style="clear:both">
+				</div>
+			</div>
+					
+					
 					{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 					<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
 					</div>
