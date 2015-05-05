@@ -806,7 +806,7 @@ function list_supplier_products() {
 			'weeks_until_out_of_stock'=>$weeks_until,
 			'supplier'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code']),
 			'name'=>$row['Supplier Product Name'],
-			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>',
+			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>',
 			'cost'=>money($row['SPH Case Cost'],$row['SPH Currency']),
 			'used_in'=>$used_in,
 			'profit'=>$profit,

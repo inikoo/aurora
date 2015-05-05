@@ -217,8 +217,8 @@ function CellEdit(callback, newValue) {
                 post_edit_in_table(r)
                 callback(true, r.newvalue);
             } else {
-                alert('EC7 ' + r.msg);
-                callback();
+               
+                callback(true,newValue);
             }
         },
         failure: function(o) {

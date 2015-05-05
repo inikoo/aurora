@@ -5213,12 +5213,7 @@ class product extends DB_Table {
 		foreach ($this->get_part_list() as $part_data) {
 			$part=$part_data['part'];
 
-			if ($part->data['Part Current Stock']>0 and !$date) {
-				$part_cost=$part->data['Part Current Stock Cost Per Unit'];
-			} else {
-				$part_cost=$part->get_unit_cost($date);
-			}
-
+			$part_cost=$part->data['Part Cost'];
 
 			$cost+=$part_cost*$part_data['Parts Per Product'];
 
@@ -5888,7 +5883,7 @@ class product extends DB_Table {
 		);
 
 		mysql_query($sql);
-		
+
 		$page_keys=$this->get_pages_keys();
 		foreach ($page_keys as $page_key) {
 			$page=new Page($page_key);

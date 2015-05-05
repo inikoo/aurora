@@ -1265,9 +1265,7 @@ class part extends DB_Table {
 		case('SKU'):
 			return sprintf('SKU%5d',$this->sku);
 			break;
-		case('Unit Cost'):
-			return $this->get_unit_cost($args);
-			break;
+		
 		case('Picking Location Key'):
 
 			return $this->get_picking_location_key();
@@ -2392,10 +2390,9 @@ function get_supplier_products_new($date=false) {
 
 	function get_current_formated_value_at_current_cost() {
 
-		//return number($this->data['Part Current On Hand Stock']*$this->get_unit_cost(),2);
 		$a=floatval(3.000*3.575);
 		$a=round(3.575+3.575+3.575,3);
-		return money($this->data['Part Current On Hand Stock']*$this->get_unit_cost());
+		return money($this->data['Part Current On Hand Stock']*$this->data['Part Cost']  );
 	}
 
 	function get_unit_commercial_value($datetime='') {
@@ -3025,21 +3022,21 @@ function get_supplier_products_new($date=false) {
 
 	function get_formated_unit_cost($date=false) {
 
-		return money($this->get_unit_cost($date));
+		return money($this->data['Part Cost'] );
 	}
 
 
-	function update_cost(){
-		$cost=$this->get_unit_cost();
-		$sql=sprintf("update `Part Dimension` set `Part Cost`=%.2f where `Part SKU`=%d",
+	function update_cost_from_supplier_products(){
+		$cost=$this->get_cost_from_supplier_products();
+		$sql=sprintf("update `Part Dimension` set `Part Cost`=%.4f where `Part SKU`=%d",
 		$cost,
 		$this->sku
 		);
 		mysql_query($sql);
 	}
 
-	function get_unit_cost($date=false) {
-
+	function get_cost_from_supplier_products($date=false) {
+		//this will be replace by getting the cost from the PO
 
 
 		if ($date) {

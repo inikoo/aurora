@@ -170,7 +170,7 @@ change_suppliers_view_save(tipo)
 }
 
 function change_suppliers_view_save(tipo) {
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=suppliers-suppliers-view&value=' + escape(tipo), {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-edit_supplier_products-view&value=' + escape(tipo), {});
 
 }
 

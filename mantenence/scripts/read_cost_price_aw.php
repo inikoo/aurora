@@ -50,7 +50,10 @@ $Data_Audit_ETL_Software="$software $version";
 $set_part_as_available=false;
 
 $csv_file='gb.csv';
+	$file_name='/data/excel_order/AWorder2002.xls';
 
+
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -70,6 +73,7 @@ $inicio=false;
 $counter=0;
 $read=false;
 
+
 while (($_cols = fgetcsv($handle_csv))!== false) {
 
 
@@ -84,10 +88,10 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	$code=$_cols[3];
 	$units=$_cols[5];
 	$description=$_cols[6];
-	
-	
+
+
 	//if(!$read)continue;
-	if ($code=='Glitter-20'){
+	if ($code=='Glitter-20') {
 		continue;
 	}
 	//print_r($_cols);
@@ -95,6 +99,60 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 	if (preg_match('/-/',$code) and is_numeric($cost) and is_numeric($units) ) {
 		$part=new Part('reference',$code);
 		if ($part->sku) {
+		
+		if($cost and is_numeric($cost)){
+		print "$code $cost \n";
+		
+			$sql=sprintf("update `Part Dimension` set `Part Cost`=%.4f where `Part SKU`=%d ",
+			$cost,
+			$part->sku
+			);
+			mysql_query($sql);
+			print "$sql\n";
+		
+		}
+		
+		
+
+
+		}
+	}
+
+	$counter++;
+	
+
+}
+
+exit;
+while (($_cols = fgetcsv($handle_csv))!== false) {
+
+
+
+	if (count($_cols)<25)continue;
+	foreach ($_cols as $key=>$value) {
+		$_cols[$key]=trim($value);
+	}
+
+
+	//print_r($_cols);
+	$code=$_cols[3];
+	$units=$_cols[5];
+	$description=$_cols[6];
+
+
+	//if(!$read)continue;
+	if ($code=='Glitter-20') {
+		continue;
+	}
+	//print_r($_cols);
+	$cost=$_cols[25];
+	if (preg_match('/-/',$code) and is_numeric($cost) and is_numeric($units) ) {
+		$part=new Part('reference',$code);
+		if ($part->sku) {
+		
+		print "$code $cost $num_sp\n";
+		
+		
 			$num_sp=count($part->get_supplier_products_new());
 			print "$code $cost $num_sp\n";
 			//print_r($part->get_supplier_products_new());
@@ -136,56 +194,56 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 				//print_r($spp_data);
 
 				$sp=new SupplierProduct('pid', $spp_data['Supplier Product ID']);
-//print "* $cost*";
+				//print "* $cost*";
 				$sp->update_cost($cost);
 
 				break;
 			}
 
 
-			if(count($part->get_supplier_products_new())==0 ){
+			if (count($part->get_supplier_products_new())==0 ) {
 				$sp_data=array(
-		'Supplier Key'=>1,
-		'Supplier Product Code'=>$code,
-		'Supplier Product Units Per Case'=>1,
-		'SPH Case Cost'=>sprintf("%.2f",$cost),
-		'Supplier Product Name'=>$description,
-		'Supplier Product Description'=>$description,
-		'Supplier Product Valid From'=>gmdate("Y-m-d H:i:s"),
-		'Supplier Product Valid To'=>gmdate("Y-m-d H:i:s"),
-	);
-	// print_r($sp_data);
-	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+					'Supplier Key'=>1,
+					'Supplier Product Code'=>$code,
+					'Supplier Product Units Per Case'=>1,
+					'SPH Case Cost'=>sprintf("%.2f",$cost),
+					'Supplier Product Name'=>$description,
+					'Supplier Product Description'=>$description,
+					'Supplier Product Valid From'=>gmdate("Y-m-d H:i:s"),
+					'Supplier Product Valid To'=>gmdate("Y-m-d H:i:s"),
+				);
+				// print_r($sp_data);
+				$supplier_product=new SupplierProduct('find',$sp_data,'create');
 
-$spp_header=array(
-		'Supplier Product Part Type'=>'Simple',
-		'Supplier Product Part Most Recent'=>'Yes',
-		'Supplier Product Part Valid From'=>gmdate("Y-m-d H:i:s"),
-		'Supplier Product Part Valid To'=>gmdate("Y-m-d H:i:s"),
-		'Supplier Product Part In Use'=>'Yes'
-	);
+				$spp_header=array(
+					'Supplier Product Part Type'=>'Simple',
+					'Supplier Product Part Most Recent'=>'Yes',
+					'Supplier Product Part Valid From'=>gmdate("Y-m-d H:i:s"),
+					'Supplier Product Part Valid To'=>gmdate("Y-m-d H:i:s"),
+					'Supplier Product Part In Use'=>'Yes'
+				);
 
-	$spp_list=array(
-		array(
-			'Part SKU'=>$part->data['Part SKU'],
-			'Supplier Product Units Per Part'=>$units,
-			'Supplier Product Part Type'=>'Simple'
-		)
-	);
-
-
-
-	$supplier_product->new_current_part_list($spp_header,$spp_list);
+				$spp_list=array(
+					array(
+						'Part SKU'=>$part->data['Part SKU'],
+						'Supplier Product Units Per Part'=>$units,
+						'Supplier Product Part Type'=>'Simple'
+					)
+				);
 
 
-			
+
+				$supplier_product->new_current_part_list($spp_header,$spp_list);
+
+
+
 			}
 
 			$part->update_supplied_by();
 
-		    //foreach ($part->get_product_ids() as $pid) {
-			//	$product=new Product('pid',$pid);
-			//	$product->update_parts();
+			//foreach ($part->get_product_ids() as $pid) {
+			// $product=new Product('pid',$pid);
+			// $product->update_parts();
 			//}
 
 
@@ -194,7 +252,7 @@ $spp_header=array(
 
 	$counter++;
 	//if ($counter>600)
-	//	exit;
+	// exit;
 
 }
 

@@ -3528,7 +3528,7 @@ class DeliveryNote extends DB_Table {
 
 			if ($qty_above_zero) {
 				$part=new Part($sku);
-				$unit_cost=$part->get_unit_cost($date);
+				$unit_cost=$part->data['Part Cost'];
 				$value_change+=$qty_above_zero*$unit_cost;
 			}
 
@@ -3541,7 +3541,7 @@ class DeliveryNote extends DB_Table {
 			$value_change=0;
 			if ($qty_below_zero) {
 				$part=new Part($sku);
-				$unit_cost=$part->get_unit_cost($date);
+				$unit_cost=$part->data['Part Cost'];
 				$value_change+=-$qty_below_zero*$unit_cost;
 
 			}

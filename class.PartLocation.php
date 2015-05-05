@@ -576,7 +576,7 @@ class PartLocation extends DB_Table {
 		if (is_numeric($value) and is_numeric($qty) and   $qty!=0   ) {
 			return $value/$qty;
 		}else {
-			return $this->part->get('Unit Cost',$date);
+			return $this->part->data['Part Cost'];
 		}
 
 
@@ -593,7 +593,7 @@ class PartLocation extends DB_Table {
 		if (is_numeric($value) and is_numeric($qty) and   $qty!=0   ) {
 			return $value/$qty;
 		}else {
-			return $this->part->get('Unit Cost',$date);
+			return $this->part->data['Part Cost'];
 		}
 
 	}
@@ -1490,7 +1490,6 @@ print "++++++++++\n";
 			$warehouse_key=1;
 
 			$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
-			//$value_day_cost_unit_cost=$this->part->get_unit_cost($row['Date'].' 23:59:59');
 
 			$value_day_cost_unit_cost=$this->part->data['Part Cost'];
 			$value_day_cost=$stock*$value_day_cost_unit_cost;
@@ -1643,7 +1642,9 @@ print "++++++++++\n";
 		}
 
 		$diff=$audit->data['Inventory Audit Quantity']-$stock;
-		$cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
+		//$cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
+		$cost_per_part=$this->part->data['Part Cost'];
+		
 		$cost=$diff*$cost_per_part;
 		//print $audit->data['Inventory Audit Type']."S: $stock ".$audit->data['Inventory Audit Quantity']."\n";
 		$notes='';
@@ -1803,7 +1804,7 @@ print "++++++++++\n";
 
 			if ($qty_above_zero) {
 
-				$unit_cost=$this->part->get_unit_cost($date);
+				$unit_cost=$this->part->data['Part Cost'];
 				$value_change+=$qty_above_zero*$unit_cost;
 			}
 
@@ -1815,7 +1816,7 @@ print "++++++++++\n";
 
 			$value_change=0;
 			if ($qty_below_zero) {
-				$unit_cost=$this->part->get_unit_cost($date);
+				$unit_cost=$this->part->data['Part Cost'];
 				$value_change+=-$qty_below_zero*$unit_cost;
 
 			}

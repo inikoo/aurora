@@ -34,7 +34,6 @@ var mydoBeforeSortColumn = function() {
         return true
     };
 var mydoBeforePaginatorChange = function(e) {
-
         return true
 
     };
@@ -280,8 +279,7 @@ var change_rpp = function(rpp, tableid) {
 
         var Dom = YAHOO.util.Dom;
         var table = tables['table' + tableid];
-        
-       
+
         table.get('paginator').setRowsPerPage(rpp)
 
     }
