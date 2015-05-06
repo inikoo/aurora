@@ -14,7 +14,11 @@
 		<input type="hidden" id="to" value="{$to}" />
 		<input type="hidden" id="calendar_id" value="sales" />
 		<input type="hidden" id="subject" value="category"> 
-		<input type="hidden" id="subject_key" value="{$category->id}"> 		
+		<input type="hidden" id="subject_key" value="{$category->id}"> 	
+		<input type="hidden" id="invoices_table_id" value="0"> 	
+		
+		
+			
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $root_category_store_key} {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Invoices{/t}</a> &rarr; {/if}<a href="invoices.php?store={$store->id}">{t}Invoices{/t} ({$store->get('Store Code')})</a> &rarr;<a href="invoice_categories.php?&store_key={$store->id}"> {t}Categories{/t} </a> &rarr; {else} <a href="orders_server.php">&#8704; {t}Invoices{/t}</a> &rarr; <a href="invoice_categories.php?&store_key=0"> {t}Categories{/t} </a> &rarr; {/if} {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
@@ -61,7 +65,9 @@
 	</div>
 	<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div id="children_table" class="data_table">
-			<span class="clean_table_title with_elements"> {t}Invoice list{/t}<img class="export_data_link" id="export_csv2" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> </span>
+			<span class="clean_table_title with_elements"> {t}Invoice list{/t}
+			 <img id="export_invoices" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif">
+			 </span>
 			<div class="elements_chooser">
 					<img class="menu" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 					<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
@@ -317,4 +323,5 @@
 		</tr>
 	</table>
 </div>
+{include file='export_splinter.tpl' id='invoices' export_fields=$export_invoices_fields map=$export_invoices_map is_map_default={$export_invoices_map_is_default}} 
 {include file='footer.tpl'} 

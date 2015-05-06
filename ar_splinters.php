@@ -105,7 +105,11 @@ function invoice_categories_sales_overview() {
 	}else {
 
 
-		$fields=sprintf(" `Invoice Category $period_db Acc Refunds` as refunds,`Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
+		$fields=sprintf(" `Invoice Category $period_db Acc Refunds` as refunds,
+		`Invoice Category $period_db Acc Invoices` as invoices,
+		`Invoice Category $period_db Acc Invoiced Amount` as sales,
+	
+		 `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
                         `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,`Invoice Category DC $period_db Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 	}
@@ -142,7 +146,9 @@ function invoice_categories_sales_overview() {
 		$category="<a  href='report_sales_main.php?invoice_category_key=".$row['Category Key']."&period=".$period."&view=categories'>".$row['Category Label'].'</a>';
 		//$invoices=sprintf('<a href="orders.php?view=invoices&invoice_type=invoices&splinter=1&cat_key=%d">%s</a>',$row['Category Key'], $invoice);
 		$invoices=sprintf('<a href="invoice_category.php?id=%d&period=%s">%s</a>',$row['Category Key'],$period,$invoices);
-		$refunds=sprintf('<a href="invoice_category.php?id=%d&period=%s">%s</a>',$row['Category Key'],$period,number($row['refunds']));
+		$refunds=sprintf('<a href="invoice_category.php?id=%d&period=%s" >%s</a>',$row['Category Key'],$period,
+		number($row['refunds'])
+		);
 
 		$adata[]=array(
 
