@@ -99,13 +99,13 @@ function invoice_categories_sales_overview() {
 
 	if ($period_db=='3 Year' or $period_db=='All') {
 
-		$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, '' as invoices_1yb, '' as sales_1yb,
+		$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Refunds` as refunds,`Invoice Category $period_db Acc Invoiced Amount` as sales, '' as invoices_1yb, '' as sales_1yb,
                         `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,''as dc_sales_1yb
                         " );
 	}else {
 
 
-		$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
+		$fields=sprintf(" `Invoice Category $period_db Acc Refunds` as refunds,`Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
                         `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,`Invoice Category DC $period_db Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 	}
@@ -124,6 +124,7 @@ function invoice_categories_sales_overview() {
 	$position=1;
 	$result=mysql_query($sql);
 	$sum_invoices=0;
+	$sum_refunds=0;
 	$sum_invoices_1yb=0;
 	$sum_dc_sales=0;
 	$sum_dc_sales_1yb=0;
@@ -131,6 +132,7 @@ function invoice_categories_sales_overview() {
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total++;
 		$sum_invoices+=$row['invoices'];
+		$sum_refunds+=$row['refunds'];
 		$sum_invoices_1yb+=$row['invoices_1yb'];
 
 		$sum_dc_sales+=$row['dc_sales'];
@@ -140,10 +142,14 @@ function invoice_categories_sales_overview() {
 		$category="<a  href='report_sales_main.php?invoice_category_key=".$row['Category Key']."&period=".$period."&view=categories'>".$row['Category Label'].'</a>';
 		//$invoices=sprintf('<a href="orders.php?view=invoices&invoice_type=invoices&splinter=1&cat_key=%d">%s</a>',$row['Category Key'], $invoice);
 		$invoices=sprintf('<a href="invoice_category.php?id=%d&period=%s">%s</a>',$row['Category Key'],$period,$invoices);
+		$refunds=sprintf('<a href="invoice_category.php?id=%d&period=%s">%s</a>',$row['Category Key'],$period,number($row['refunds']));
+
 		$adata[]=array(
 
 			'store'=>$category,
 			'invoices'=>$invoices,
+			'refunds'=>$refunds,
+
 			'invoices_1yb'=>number($row['invoices_1yb']),
 			'invoices_delta'=>'<span title="'.number($row['invoices_1yb']).'">'.delta($row['invoices'],$row['invoices_1yb']).'</span>',
 			'invoices_share'=>$row['invoices'],
@@ -172,6 +178,7 @@ function invoice_categories_sales_overview() {
 
 		'store'=>"<a href='report_sales_main.php?period=".$period."'>"._('Total').'</a>',
 		'invoices'=>number($sum_invoices),
+		'refunds'=>number($sum_refunds),
 		'invoices_1yb'=>'',
 		'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
 		'sales'=>'',
@@ -255,7 +262,7 @@ function store_sales_overview() {
 	$period_tag=get_interval_db_name($period);
 
 
-	$fields=sprintf(" `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Invoiced Amount` as sales, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,
+	$fields=sprintf(" `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Invoiced Amount` as sales, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,
                         `Store DC $period_tag Acc Invoiced Amount` as dc_sales,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 
@@ -292,6 +299,7 @@ function store_sales_overview() {
 
 			'store'=>$store,
 			'invoices'=>$invoices,
+			'refunds'=>$invoices,
 			'invoices_1yb'=>number($row['invoices_1yb']),
 			'invoices_delta'=>'<span title="'.number($row['invoices_1yb']).'">'.delta($row['invoices'],$row['invoices_1yb']).'</span>',
 			'invoices_share'=>$row['invoices'],
@@ -602,9 +610,9 @@ function list_families() {
 	$adata=array();
 	//print $sql;
 	$position=1;
-	
-	
-		$cache = new Memcached();
+
+
+	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
 	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
 
@@ -658,7 +666,7 @@ function list_families() {
 			'net_sales_delta'=>$delta_sales
 		);
 	}
-	
+
 
 
 
@@ -979,8 +987,8 @@ function list_parts_categories() {
 	$adata=array();
 	//print $sql;
 	$position=1;
-	
-	
+
+
 	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
 	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
@@ -1029,7 +1037,7 @@ function list_parts_categories() {
 
 		);
 	}
-	
+
 
 
 
@@ -1358,9 +1366,9 @@ function list_customers() {
 
 
 	$position=1;
-	
-	
-		$cache = new Memcached();
+
+
+	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
 	$sql_result=$cache->get($account_code.'SQL'.md5($sql));
 
@@ -1373,10 +1381,10 @@ function list_customers() {
 		mysql_free_result($result);
 		$cache->set($account_code.'SQL'.md5($sql),$sql_result,86400 );
 	}
-	
-	
-	
-	
+
+
+
+
 	foreach ($sql_result as $data) {
 
 
@@ -1427,7 +1435,7 @@ function list_customers() {
 
 		);
 	}
-	
+
 
 
 
