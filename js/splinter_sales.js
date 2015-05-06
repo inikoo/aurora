@@ -34,8 +34,9 @@ set_title(Dom.get('period').value)
         var tableid=0;
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
-				       {key:"store", label:Dom.get('label_Store').value, width:150,sortable:false,className:"aleft"}
-				       ,{key:"invoices", label:Dom.get('label_Invoices').value, width:90,sortable:false,className:"aright"}
+				       {key:"store", label:Dom.get('label_Store').value, width:90,sortable:false,className:"aleft"}
+				       ,{key:"invoices", label:Dom.get('label_Invoices').value, width:70,sortable:false,className:"aright"}
+				       ,{key:"refunds", label:Dom.get('label_Refunds').value, width:50,sortable:false,className:"aright"}
 				       ,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:90,sortable:false,className:"aright"}
 				       
 				       ,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:110,sortable:false,className:"aright"}
@@ -50,7 +51,9 @@ set_title(Dom.get('period').value)
 				        
 
 					 ];
-	    sales_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=sales&tableid="+tableid);
+		request="ar_splinters.php?tipo=sales&tableid="+tableid;
+		//alert(request)			 
+	    sales_tables.dataSourcetopprod = new YAHOO.util.DataSource(request);
 	//	alert("ar_splinters.php?tipo=sales&tableid="+tableid);
 	    sales_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    sales_tables.dataSourcetopprod.connXhrMode = "queueRequests";
@@ -70,7 +73,7 @@ set_title(Dom.get('period').value)
 		
 		fields: [
 			
-			 'store','invoices','invoices_share','sales','sales_share','invoices_delta','sales_delta','dc_sales','dc_sales_share','dc_sales_delta'
+			 'store','invoices','invoices_share','sales','sales_share','invoices_delta','sales_delta','dc_sales','dc_sales_share','dc_sales_delta','refunds'
 			 ]};
 			 
 		
