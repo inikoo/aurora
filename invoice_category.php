@@ -156,15 +156,11 @@ $tipo_filter=$_SESSION['state']['invoice_categories']['invoices']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['invoice_categories']['invoices']['f_value']);
 $filter_menu=array(
-	'invoice name'=>array('db_key'=>'invoice name','menu_label'=>_('Invoice Name'),'label'=>_('Name')),
-	'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Invoice Postcode'),'label'=>_('Postcode')),
-	'country'=>array('db_key'=>'country','menu_label'=>_('Invoice Country'),'label'=>_('Country')),
-	'min'=>array('db_key'=>'min','menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
-	'max'=>array('db_key'=>'min','menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
-	'last_more'=>array('db_key'=>'last_more','menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
-	'last_less'=>array('db_key'=>'last_more','menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
-	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
-	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Invoice Number starting with <i>x</i>'),'label'=>_('Invoice Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name starting with <i>x</i>'),'label'=>_('Customer')),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Invoice with a minimum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Invoice with a maximum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Invoice billed to country code <i>xxx</i>'),'label'=>_('Country Code'))
 
 );
 $smarty->assign('filter_menu0',$filter_menu);
@@ -286,15 +282,11 @@ $tipo_filter=$_SESSION['state']['invoice_categories']['no_assigned_invoices']['f
 $smarty->assign('filter3',$tipo_filter);
 $smarty->assign('filter_value3',$_SESSION['state']['invoice_categories']['no_assigned_invoices']['f_value']);
 $filter_menu=array(
-	'invoice name'=>array('db_key'=>'invoice name','menu_label'=>_('Invoice Name'),'label'=>_('Name')),
-	'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Invoice Postcode'),'label'=>_('Postcode')),
-	'country'=>array('db_key'=>'country','menu_label'=>_('Invoice Country'),'label'=>_('Country')),
-	'min'=>array('db_key'=>'min','menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
-	'max'=>array('db_key'=>'min','menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
-	'last_more'=>array('db_key'=>'last_more','menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
-	'last_less'=>array('db_key'=>'last_more','menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
-	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
-	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Invoice Number starting with <i>x</i>'),'label'=>_('Invoice Number')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name starting with <i>x</i>'),'label'=>_('Customer')),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Invoice with a minimum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Invoice with a maximum value of').' <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
+	'country'=>array('db_key'=>'country','menu_label'=>_('Invoice billed to country code <i>xxx</i>'),'label'=>_('Country Code'))
 
 );
 $smarty->assign('filter_menu3',$filter_menu);
