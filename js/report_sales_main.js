@@ -11,13 +11,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
 	    				{key:"store_key", label:'store key', width:0,hidden:true,sortable:false,className:"aleft"}
-				    	,{key:"name", label:Dom.get('label_Store').value, width:150,sortable:false,className:"aleft"}
-				    	,{key:"invoices", label:Dom.get('label_Invoices').value, width:90,sortable:false,className:"aright"}
-				    	,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:90,sortable:false,className:"aright"}
+				    	,{key:"name", label:Dom.get('label_Store').value, width:140,sortable:false,className:"aleft"}
+				    	,{key:"invoices", label:Dom.get('label_Invoices').value, width:80,sortable:false,className:"aright"}
+				    	,{key:"refunds", label:Dom.get('label_Refunds').value, width:80,sortable:false,className:"aright"}
+
+				    	,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:70,sortable:false,className:"aright"}
 				    	,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:110,sortable:false,className:"aright"}
 				    	,{key:"dc_sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?true:false),width:110,sortable:false,className:"aright"}
-				    	,{key:"sales_share", label:Dom.get('label_Sales_Share').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?false:true)}
-				    	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
+				    	,{key:"sales_share", label:Dom.get('label_Sales_Share').value, width:70,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?false:true)}
+				    	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:70,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 				    	,{key:"invoices_delta", label:Dom.get('label_Invoices_Delta').value, width:110,sortable:false,className:"aright"}
 				    	,{key:"sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright" ,hidden:(Dom.get('sales_currency').value=='store'?false:true)}
 				    	,{key:"dc_sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
@@ -44,7 +46,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 'store_key','name','invoices','invoices_share','sales','sales_share','invoices_delta','sales_delta','dc_sales','dc_sales_share','dc_sales_delta'
+			 'store_key','name','invoices','invoices_share','sales','sales_share','invoices_delta','sales_delta','dc_sales','dc_sales_share','dc_sales_delta','refunds'
 			 ]};
 			 
  	
@@ -90,13 +92,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    				{key:"category_key", label:'category key', width:0,hidden:true,sortable:false,className:"aleft"}
 				    	,{key:"store", label:Dom.get('label_Store').value, width:50,sortable:false,className:"aleft"}
 
-				    	,{key:"name", label:Dom.get('label_Category').value, width:100,sortable:false,className:"aleft"}
-				    	,{key:"invoices", label:Dom.get('label_Invoices').value, width:90,sortable:false,className:"aright"}
-				    	,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:90,sortable:false,className:"aright"}
+				    	,{key:"name", label:Dom.get('label_Category').value, width:70,sortable:false,className:"aleft"}
+				    	,{key:"invoices", label:Dom.get('label_Invoices').value, width:80,sortable:false,className:"aright"}
+				    	,{key:"refunds", label:Dom.get('label_Refunds').value, width:80,sortable:false,className:"aright"}
+	
+				    	,{key:"invoices_share", label:Dom.get('label_Invoices_Share').value, width:70,sortable:false,className:"aright"}
 				    	,{key:"sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?false:true),  width:110,sortable:false,className:"aright"}
 				    	,{key:"dc_sales", label:Dom.get('label_Sales').value, hidden:(Dom.get('sales_currency').value=='store'?true:false),width:110,sortable:false,className:"aright"}
 				    	,{key:"sales_share", label:Dom.get('label_Sales_Share').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?false:true)}
-				    	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
+				    	,{key:"dc_sales_share", label:Dom.get('label_Sales_Share').value, width:70,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
 				    	,{key:"invoices_delta", label:Dom.get('label_Invoices_Delta').value, width:110,sortable:false,className:"aright"}
 				    	,{key:"sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright" ,hidden:(Dom.get('sales_currency').value=='store'?false:true)}
 				    	,{key:"dc_sales_delta", label:Dom.get('label_Sales_Delta').value, width:110,sortable:false,className:"aright", hidden:(Dom.get('sales_currency').value=='store'?true:false)}
@@ -121,7 +125,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 'store','category_key','name','invoices','invoices_share','sales','sales_share','invoices_delta','sales_delta','dc_sales','dc_sales_share','dc_sales_delta'
+			 'store','category_key','name','invoices','invoices_share','sales','sales_share','invoices_delta','sales_delta','dc_sales','dc_sales_share','dc_sales_delta','refunds'
 			 ]};
 			 
  	

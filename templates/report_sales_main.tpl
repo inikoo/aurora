@@ -10,6 +10,7 @@
 			<input type="hidden" value="{t}Store{/t}" id="label_Store" />
 			<input type="hidden" value="{t}Category{/t}" id="label_Category" />
 			<input type="hidden" value="{t}Invoices{/t}" id="label_Invoices" />
+			<input type="hidden" value="{t}Refunds{/t}" id="label_Refunds" />
 			<input type="hidden" value="% {t}Invoices{/t}" id="label_Invoices_Share" />
 			<input type="hidden" value="&Delta;{t}Last Yr Invoices{/t}" id="label_Invoices_Delta" />
 			<input type="hidden" value="{t}Sales{/t}" id="label_Sales" />
