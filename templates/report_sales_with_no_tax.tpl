@@ -30,7 +30,7 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $view=='overview'}selected{/if}" id="overview"> <span> {t}Sales Overview{/t}</span></span></li>
 		<li> <span class="item {if $view=='customers'}selected{/if}" id="customers"> <span> {t}Customers{/t}</span></span></li>
-		<li> <span class="item {if $view=='invoices'}selected{/if}" id="invoices"> <span> {t}Invoices{/t}</span></span></li>
+		<li> <span class="item {if $view=='invoices'}selected{/if}" id="invoices"> <span> {t}Invoices & Refunds{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -58,18 +58,18 @@
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
-		<div id="table1" style="font-size:90%" class="data_table_container dtable btable with_total">
+		<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
 		</div>
 	</div>
 	<div id="block_invoices" style="{if $view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<span class="clean_table_title">{t}Invoices{/t} <a style="display:none" href="report_sales_with_no_tax_orders_csv.php"><img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
+		<span class="clean_table_title">{t}Invoices & Refunds{/t} <a style="display:none" href="report_sales_with_no_tax_orders_csv.php"><img id="export_csv1" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
 		<div class="elements_chooser"  id="elements_chooser_invoices">
 
 	</div>
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
-		<div id="table0" class="data_table_container dtable btable with_total" style="font-size:90%">
+		<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
 		</div>
 	</div>
 </div>

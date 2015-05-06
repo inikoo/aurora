@@ -17,7 +17,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-        var tableid = 0; 
+        var tableid = 0;
         var tableDivEL = "table" + tableid;
         var OrdersColumnDefs = [{
             key: "id",
@@ -97,18 +97,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }
         //  ,{key:"state", label:labels.Status, width:33,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-
         ];
 
-        request="ar_reports.php?tipo=invoices_with_no_tax&tableid="+tableid+'&sf=0'
-      
+        request = "ar_reports.php?tipo=invoices_with_no_tax&tableid=" + tableid + '&sf=0'
+
         this.dataSource0 = new YAHOO.util.DataSource(request);
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource0.connXhrMode = "queueRequests";
         this.dataSource0.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
-              rowsPerPage: "resultset.records_perpage",
+                rowsPerPage: "resultset.records_perpage",
                 RecordOffset: "resultset.records_offset",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
@@ -122,35 +121,35 @@ YAHOO.util.Event.addListener(window, "load", function() {
             fields: ["id", "state", "customer", "date", "date", "total_amount", "orders", "dns", "send_to", "tax_number"]
         };
 
-     
-        
-        
-        this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
-						     this.dataSource0, {
-						     draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : state.report_sales_with_no_tax.invoices.nr,
-									       containers : 'paginator0', 
-                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>"
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-									  })
-								     
-								     ,sortedBy : {
-									key: state.report_sales_with_no_tax.invoices.order,
-                dir: state.report_sales_with_no_tax.invoices.order_dir
-								     }
-							   ,dynamicData : true
 
-						     }
-						     );
-        
-        
-        
+
+
+        this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs, this.dataSource0, {
+            draggableColumns: true,
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: state.report_sales_with_no_tax.invoices.nr,
+                containers: 'paginator0',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: state.report_sales_with_no_tax.invoices.order,
+                dir: state.report_sales_with_no_tax.invoices.order_dir
+            },
+            dynamicData: true
+
+        });
+
+
+
         this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -203,7 +202,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "num_invoices",
-            label: labels.Invoices,
+            label: labels.InvRef,
             width: 50,
             sortable: true,
             className: "aright",
@@ -233,9 +232,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }
         //  ,{key:"state", label:labels.Status, width:33,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-
         ];
-        request = "ar_reports.php?tipo=customers_with_no_tax&tableid="+tableid+"&sf=0"
+        request = "ar_reports.php?tipo=customers_with_no_tax&tableid=" + tableid + "&sf=0"
         //alert(request)
         this.dataSource1 = new YAHOO.util.DataSource(request);
         this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -243,7 +241,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.dataSource1.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
-                  rowsPerPage: "resultset.records_perpage",
+                rowsPerPage: "resultset.records_perpage",
                 RecordOffset: "resultset.records_offset",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
@@ -262,7 +260,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             renderLoopSize: 50,
             generateRequest: myRequestBuilder,
             paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: state.report_sales_with_no_tax.customers.nr ,
+                rowsPerPage: state.report_sales_with_no_tax.customers.nr,
 
                 containers: 'paginator1',
                 pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
@@ -283,7 +281,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             dynamicData: true
 
         });
-          this.table1.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table1.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table1.doBeforeLoadData = mydoBeforeLoadData;
@@ -327,7 +325,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "invoices",
-            label: labels.Invoices,
+            label: labels.InvRef,
             width: 100,
             sortable: true,
             className: "aright",
@@ -367,18 +365,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         //  ,{key:"state", label:labels.Status, width:33,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-
         ];
 
-        request = "ar_reports.php?tipo=tax_overview&tableid=2"
-        //    alert(request)
+        request = "ar_reports.php?tipo=tax_overview&tableid="+tableid+"&sf=0"
+        
         this.dataSource2 = new YAHOO.util.DataSource(request);
         this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource2.connXhrMode = "queueRequests";
         this.dataSource2.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
-                 rowsPerPage: "resultset.records_perpage",
+                rowsPerPage: "resultset.records_perpage",
                 RecordOffset: "resultset.records_offset",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
@@ -739,7 +736,6 @@ function init() {
     get_tax_categories_elements_chooser(Dom.get('from').value, Dom.get('to').value)
 
     //  get_tax_categories_numbers(Dom.get('from').value,Dom.get('to').value)
-
 
     Event.addListener(['overview', 'customers', 'invoices'], "click", change_block);
 

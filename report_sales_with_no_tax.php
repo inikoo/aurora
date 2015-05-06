@@ -205,15 +205,17 @@ $smarty->assign('filter_value2','');
 
 $session_data=base64_encode(json_encode(array(
 			'label'=>array(
-				'Public_ID'=>_('Public_ID'),
+				'Public_ID'=>_('Public ID'),
 				'Date'=>_('Date'),
 				'Customer'=>_('Customer'),
-				'Tax_Number'=>_('Tax_Number'),
+				'Tax_Number'=>_('Tax Number'),
 				'Order'=>_('Order'),
-				'Delivery_Note'=>_('Delivery_Note'),
-				'Send_to'=>_('Send_to'),
+				'Delivery_Note'=>_('Delivery Note'),
+				'Send_to'=>_('Send to'),
 				'Total'=>_('Total'),
+				'Tax_Code'=>_('Tax Code'),
 				'Invoices'=>_('Invoices'),
+				'InvRef'=>_('Inv/Ref'),
 				'Net'=>_('Net'),
 				'Tax'=>_('Tax'),
 				'Category'=>_('Category'),
