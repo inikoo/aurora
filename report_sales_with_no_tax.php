@@ -10,6 +10,7 @@ $css_files=array(
 	$yui_path.'button/assets/skins/sam/button.css',
 	'css/common.css',
 	'css/container.css',
+	'css/calendar.css',
 	'css/button.css',
 	'css/table.css',
 	'theme.css.php'
@@ -33,7 +34,7 @@ $js_files=array(
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
-	'report_sales_with_no_tax.js.php'
+	'js/report_sales_with_no_tax.js'
 
 );
 
@@ -200,6 +201,33 @@ $smarty->assign('tax_categories',$tax_categories);
 $smarty->assign('filter_menu2',array());
 $smarty->assign('filter_name2','');
 $smarty->assign('filter_value2','');
+
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Public_ID'=>_('Public_ID'),
+				'Date'=>_('Date'),
+				'Customer'=>_('Customer'),
+				'Tax_Number'=>_('Tax_Number'),
+				'Order'=>_('Order'),
+				'Delivery_Note'=>_('Delivery_Note'),
+				'Send_to'=>_('Send_to'),
+				'Total'=>_('Total'),
+				'Invoices'=>_('Invoices'),
+				'Net'=>_('Net'),
+				'Tax'=>_('Tax'),
+				'Category'=>_('Category'),
+
+
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'report_sales_with_no_tax'=>$_SESSION['state']['report_sales_with_no_tax']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
+
 
 
 $smarty->display('report_sales_with_no_tax.tpl');
