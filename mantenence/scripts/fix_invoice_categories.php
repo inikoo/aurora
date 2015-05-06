@@ -37,6 +37,7 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$invoice=new Invoice ($row['Invoice Key']);
 	
+	/*
 	$customer=new Customer($invoice->data['Invoice Customer Key']);
 	
 	
@@ -52,8 +53,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 	);
 	mysql_query($sql);
-	
-	$invoice->categorize();
+	*/
+	$invoice->categorize(true);
 	print $invoice->id."\r";
 }
 

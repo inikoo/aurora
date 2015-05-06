@@ -5393,6 +5393,7 @@ function list_sales_per_store() {
 
 
 	$sum_total_invoices=0;
+	$sum_total_refunds=0;
 	$sum_total_total=0;
 
 	$_adata=array();
@@ -5408,6 +5409,8 @@ function list_sales_per_store() {
 			'name'=>$name,
 			'invoices'=>0,
 			'_invoices'=>0,
+			'refunds'=>0,
+			'_refunds'=>0,
 			'invoices_share'=>'',
 			'first_date'=>'',
 			'dc_sales'=>money(0,$corporate_currency),
@@ -5451,8 +5454,11 @@ function list_sales_per_store() {
 		$last_year_to=date("Y-m-d",strtotime($end.' -1 year'));
 		$last_year_date_interval=prepare_mysql_dates($last_year_from.' 00:00:00',$last_year_to.' 23:59:59','`Invoice Date`');
 
-		$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  $where $wheref ".$last_year_date_interval['mysql']." group by I.`Invoice Store Key`    ";
-		//print $sql;
+		$sql="select `Invoice Currency`,`Invoice Store Key`,
+		count(*) as invoices,
+		sum(`Invoice Total Net Amount`) as total,
+		sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from `Invoice Dimension` I  $where $wheref ".$last_year_date_interval['mysql']." group by I.`Invoice Store Key`    ";
+		
 		$res = mysql_query($sql);
 		$last_year_adata=array();
 		while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -5486,17 +5492,22 @@ function list_sales_per_store() {
 
 
 
-	$sql="select `Invoice Currency`,`Invoice Store Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total 	from `Invoice Dimension` I  left join `Store Dimension` on (`Invoice Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by I.`Invoice Store Key`    ";
+	$sql="select `Invoice Currency`,`Invoice Store Key`,
+	sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) as refunds,
+	sum(`Invoice Total Net Amount`) as total ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total 	from `Invoice Dimension` I  left join `Store Dimension` on (`Invoice Store Key`=`Store Key`)  $where $wheref ".$date_interval['mysql']." group by I.`Invoice Store Key`    ";
 	//print $sql;
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$sum_total_invoices+=$row['invoices'];
+		$sum_total_refunds+=$row['refunds'];
 
 		$sum_total_total+=$row['dc_total'];
 		// print_r($row);
 
 		$_adata[$row['Invoice Store Key']]['invoices']=number($row['invoices']);
 		$_adata[$row['Invoice Store Key']]['_invoices']=$row['invoices'];
+		$_adata[$row['Invoice Store Key']]['refunds']=number($row['refunds']);
+		$_adata[$row['Invoice Store Key']]['_refunds']=$row['refunds'];
 		$_adata[$row['Invoice Store Key']]['sales']=money($row['total'],$row['Invoice Currency']);
 		$_adata[$row['Invoice Store Key']]['_sales']=$row['total'];
 
@@ -5536,6 +5547,7 @@ function list_sales_per_store() {
 			'name'=>('Total'),
 			'code'=>'',
 			'invoices'=>number($sum_total_invoices),
+			'refunds'=>number($sum_total_refunds),
 			'dc_sales'=>money($sum_total_total,$corporate_currency),
 			'dc_sales_share'=>'',
 			'invoices_delta'=>'<span title="'.number($last_year_sum_total_invoices).'">'.delta($sum_total_invoices,$last_year_sum_total_invoices).'</span>',
@@ -5727,6 +5739,7 @@ function list_sales_per_invoice_category() {
 
 
 	$sum_total_invoices=0;
+	$sum_total_refunds=0;
 	$sum_total_total=0;
 
 	$_adata=array();
@@ -5745,6 +5758,8 @@ function list_sales_per_invoice_category() {
 			'name'=>$name,
 			'invoices'=>0,
 			'_invoices'=>0,
+			'refunds'=>0,
+			'_refunds'=>0,
 			'invoices_share'=>'',
 			'first_date'=>'',
 			'dc_sales'=>money(0,$corporate_currency),
@@ -5823,17 +5838,26 @@ function list_sales_per_invoice_category() {
 
 
 
-	$sql="select `Invoice Currency`,B.`Category Key`,count(*) as invoices,sum(`Invoice Total Net Amount`) as total ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from	`Invoice Dimension` I  left join `Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  $where $wheref ".$date_interval['mysql']." group by B.`Category Key`    ";
+	$sql="select `Invoice Currency`,B.`Category Key`,
+	
+	sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) as refunds,
+	sum(`Invoice Total Net Amount`) as total ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as dc_total from 
+	`Invoice Dimension` I  left join 
+	`Category Bridge` B on (`Invoice Key`=B.`Subject Key`) left join 
+	`Category Dimension` C on (C.`Category Key`=B.`Category Key`)  
+	$where $wheref ".$date_interval['mysql']." group by B.`Category Key`    ";
 	// print $sql;
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$sum_total_invoices+=$row['invoices'];
-
+$sum_total_refunds+=$row['refunds'];
 		$sum_total_total+=$row['dc_total'];
 		// print_r($row);
 
 		$_adata[$row['Category Key']]['invoices']=number($row['invoices']);
 		$_adata[$row['Category Key']]['_invoices']=$row['invoices'];
+		$_adata[$row['Category Key']]['refunds']=number($row['refunds']);
+		$_adata[$row['Category Key']]['_refunds']=$row['refunds'];
 		$_adata[$row['Category Key']]['sales']=money($row['total'],$row['Invoice Currency']);
 		$_adata[$row['Category Key']]['_sales']=$row['total'];
 
@@ -5874,6 +5898,7 @@ function list_sales_per_invoice_category() {
 			'store'=>('Total'),
 			'code'=>'',
 			'invoices'=>number($sum_total_invoices),
+			'refunds'=>number($sum_total_refunds),
 			'dc_sales'=>money($sum_total_total,$corporate_currency),
 			'dc_sales_share'=>'',
 			'invoices_delta'=>'<span title="'.number($last_year_sum_total_invoices).'">'.delta($sum_total_invoices,$last_year_sum_total_invoices).'</span>',

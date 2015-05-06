@@ -2123,7 +2123,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 					if (mysql_affected_rows()) {
 						$parent_category=new Category($parent_key);
+					
 						$parent_category->update_number_of_subjects();
+						
 						$parent_category->update_subjects_data();
 
 					}

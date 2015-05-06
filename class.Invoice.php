@@ -2356,7 +2356,7 @@ class Invoice extends DB_Table {
 	}
 
 
-	function categorize($args='') {
+	function categorize($skip_update_sales=false) {
 
 
 		$sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",
@@ -2383,11 +2383,13 @@ class Invoice extends DB_Table {
 
 		if ($category_key) {
 			$category=new Category($category_key);
-
+            $category->skip_update_sales=$skip_update_sales;
+            
+            
 			if ($category->id) {
 				//print "HOLA";
 				$category->associate_subject($this->id);
-
+                $this->update_field_switcher('Invoice Category Key',$this->id,'no_history');
 			}
 		}
 
