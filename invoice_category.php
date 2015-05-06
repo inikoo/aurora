@@ -73,6 +73,8 @@ $js_files=array(
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
+	'js/export_common.js',
+	
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/invoices_common.js',
 	'js/localize_calendar.js',
@@ -381,6 +383,7 @@ $smarty->assign('calendar_id','sales');
 $root_category=new Category($category->data['Category Root Key']);
 $smarty->assign('root_category_store_key',$root_category->data['Category Store Key']);
 
+include_once 'invoices_export_common.php';
 
 $smarty->display('invoice_category.tpl');
 ?>

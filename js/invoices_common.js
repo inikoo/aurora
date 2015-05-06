@@ -120,20 +120,24 @@ function init_invoices(){
     });
     dialog_export['invoices'].render();
 
-
     Event.addListener("export_invoices", "click", show_export_dialog, 'invoices');
+    
+      
+
     Event.addListener("export_csv_invoices", "click", export_table, {
         output: 'csv',
         table: 'invoices',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
+        parent: 'category',
+        parent_key: Dom.get('category_key').value
     });
+
     Event.addListener("export_xls_invoices", "click", export_table, {
         output: 'xls',
         table: 'invoices',
-        parent: 'store',
-        'parent_key': Dom.get('store_key').value
+        parent: 'category',
+        parent_key: Dom.get('category_key').value
     });
+
 
     Event.addListener("export_result_download_link_invoices", "click", download_export_file,'invoices');
 
@@ -149,8 +153,6 @@ function init_invoices(){
     });
     dialog_change_invoices_element_chooser.render();
     Event.addListener("invoice_element_chooser_menu_button", "click", show_dialog_change_invoices_element_chooser);
-
-
 
 
 }

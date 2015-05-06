@@ -421,18 +421,10 @@ function init() {
     dialog_change_invoices_element_chooser.render();
     Event.addListener("invoice_element_chooser_menu_button", "click", show_dialog_change_invoices_element_chooser);
 
-
-
-
     ids = ['subcategories', 'subjects', 'overview', 'history', 'sales', 'no_assigned'];
     Event.addListener(ids, "click", change_block);
 
     init_search('orders');
-
-
-
-
-
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
