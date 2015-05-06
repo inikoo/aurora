@@ -1,5 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
+		<input type="hidden" value="{$session_data}" id="session_data" />
 	<input type="hidden" id="corporate_country_code" value="{$corporate_country_code}"> 
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="from" value="{$from}" />
@@ -8,6 +9,7 @@
 	<input type="hidden" id="subject_key" value="" />
 		<input type="hidden" id="encoded_regions_selected" value="{$encoded_regions_selected}" />
 		<input type="hidden" id="encoded_tax_category_selected" value="{$encoded_tax_category_selected}" />
+		<input type="hidden" id="label_Wait" value="{t}Processing Request{/t}" />
 
 	
 	

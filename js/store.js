@@ -528,7 +528,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table0.doBeforeLoadData = mydoBeforeLoadData;
+       // this.table0.doBeforeLoadData = mydoBeforeLoadData;
         this.table0.table_id = tableid;
         this.table0.request = request;
         this.table0.subscribe("renderEvent", myrenderEvent);
@@ -1477,14 +1477,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.dataSource4.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
+                        
+                
+                             rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
-                rowsPerPage: "resultset.records_perpage",
                 sort_key: "resultset.sort_key",
                 sort_dir: "resultset.sort_dir",
                 tableid: "resultset.tableid",
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
+
             },
 
             fields: ['site', 'id', 'title', 'code', 'url', 'type', 'link_title', 'visitors', 'sessions', 'requests', 'users', 'products', 'products_out_of_stock', 'percentage_products_out_of_stock', 'list_products', 'button_products', 'products_sold_out', 'flag']

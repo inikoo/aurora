@@ -1841,7 +1841,7 @@ $default_state=array(
 		),
 
 		'overview'=>array(
-			'order'=>'date',
+			'order'=>'category',
 			'order_dir'=>'',
 
 			'sf'=>0,

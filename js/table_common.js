@@ -40,8 +40,12 @@ var mydoBeforePaginatorChange = function(e) {
 
 
 var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
-        //alert(oResponse.meta.RecordOffset)
-        // alert(oResponse.meta.rowsPerPage)
+        
+       if(oResponse.meta.RecordOffset == undefined){
+       //alert("error in table")
+       }
+      
+       
         // alert("a")
         if (oPayload != undefined) {
             oPayload.pagination = {

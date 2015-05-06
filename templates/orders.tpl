@@ -95,7 +95,8 @@
 			</div>
 		</div>
 		<div id="block_invoices" class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
-			<span class="clean_table_title">{t}Invoices{/t} <img id="export_invoices" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
+			<span class="clean_table_title">{t}Invoices{/t} 
+			<img id="export_invoices" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
 			<div class="elements_chooser">
 				<img class="menu" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 				<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
@@ -294,4 +295,7 @@
 		</tr>
 	</table>
 </div>
-{include file='export_splinter.tpl' id='orders' export_fields=$export_orders_fields map=$export_orders_map is_map_default={$export_orders_map_is_default}} {include file='export_splinter.tpl' id='dn' export_fields=$export_dn_fields map=$export_dn_map is_map_default={$export_dn_map_is_default}} {include file='export_splinter.tpl' id='invoices' export_fields=$export_invoices_fields map=$export_invoices_map is_map_default={$export_invoices_map_is_default}} {include file='footer.tpl'} 
+{include file='export_splinter.tpl' id='orders' export_fields=$export_orders_fields map=$export_orders_map is_map_default={$export_orders_map_is_default}}
+ {include file='export_splinter.tpl' id='dn' export_fields=$export_dn_fields map=$export_dn_map is_map_default={$export_dn_map_is_default}} 
+ {include file='export_splinter.tpl' id='invoices' export_fields=$export_invoices_fields map=$export_invoices_map is_map_default={$export_invoices_map_is_default}} 
+ {include file='footer.tpl'} 
