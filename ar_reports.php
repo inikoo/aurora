@@ -2920,10 +2920,12 @@ function tax_overview_europe($country) {
 
 	$sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
-
 	$data=array();
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	
+	
+	
 		$records++;
 		$sum_net+=$row['net_hq'];
 		$sum_tax+=$row['tax_hq'];
@@ -2947,7 +2949,7 @@ function tax_overview_europe($country) {
 	if ($country=='GB') {
 		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ';
 
-		$where_extra=" and `Destination Country 2 Alpha Code`  in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
+		$where_extra=" and `Invoice Billing Country 2 Alpha Code`  in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
 
 
 	}else {
@@ -2962,10 +2964,15 @@ sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Inv
 
 from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction Tax Code` ";
 
+	$sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
+
+
 
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	
+	
 		$records++;
 		$sum_net+=$row['net_hq'];
 		$sum_tax+=$row['tax_hq'];
@@ -2974,7 +2981,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 
 		$data[]=array(
 			//'tax_code'=>$row['Transaction Tax Code'].' ('.$row['Tax Category Name'].')',
-			'tax_code'=>$row['Transaction Tax Code'],
+			'tax_code'=>$row['Invoice Tax Code'],
 
 			'category'=>'EU (no '.$country.')',
 			'net'=>money($row['net_hq'],$corporate_currency),
@@ -2982,7 +2989,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 			'total'=>money($row['net_hq']+$row['tax_hq'],$corporate_currency),
 			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
 
-				$row['Transaction Tax Code'],$region,
+				$row['Invoice Tax Code'],$region,
 
 				number($row['invoices'])
 			)
@@ -2993,7 +3000,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 	if ($country=='GB') {
 		$where_extra=' and `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No" ';
 
-		$where_extra=" and `Destination Country 2 Alpha Code` not in ('GB','IM','AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
+		$where_extra=" and `Invoice Billing Country 2 Alpha Code` not in ('GB','IM','AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ";
 
 
 
@@ -3012,11 +3019,13 @@ sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Item Tax Amount`+`Inv
 
 from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction Tax Code`";
 
+	$sql="select `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where  $where_extra group by  `Invoice Tax Code` ";
 
 	//print $sql;
 	$res=mysql_query($sql);
 	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	
 		$records++;
 		$sum_net+=$row['net_hq'];
 		$sum_tax+=$row['tax_hq'];
@@ -3025,7 +3034,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 
 		$data[]=array(
 			//'tax_code'=>$row['Invoice Tax Code'].' ('.$row['Tax Category Name'].')',
-			'tax_code'=>$row['Transaction Tax Code'],
+			'tax_code'=>$row['Invoice Tax Code'],
 
 			'category'=>'no EU',
 			'net'=>money($row['net_hq'],$corporate_currency),
@@ -3033,7 +3042,7 @@ from `Order Transaction Fact` OTF   $where  $where_extra  group by  `Transaction
 			'total'=>money($row['tax_hq']+$row['net_hq'],$corporate_currency),
 			'invoices'=>sprintf('<a href="report_sales_with_no_tax.php?view=invoices&tax_category=%s&regions=%s">%s</a>',
 
-				$row['Transaction Tax Code'],'NOEU',
+				$row['Invoice Tax Code'],'NOEU',
 
 				number($row['invoices'])
 			)
@@ -5034,7 +5043,7 @@ function get_tax_categories_elements_chooser($data) {
 		if ($row['Tax Category Code']=='UNK')
 			$description='';
 		else
-			$description=': '.$row['Tax Category Name'];
+			$description=$row['Tax Category Name'];
 		$tax_categories[$row['Tax Category Key']]=array(
 			'code'=>$row['Tax Category Code'],
 			'name'=>$description,
@@ -5045,8 +5054,8 @@ function get_tax_categories_elements_chooser($data) {
 	$elements_tax_categories_customers_ids=array();
 	$elements_tax_categories_invoices_ids=array();
 	foreach ($tax_categories as $tax_category) {
-		$elements_chooser_customers.='<span onClick="change_elements(this,\'tax_categories_customers\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_customers">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_customers_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
-		$elements_chooser_invoices.='<span onClick="change_elements(this,\'tax_categories_invoices\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_invoices">'.$tax_category['code'].$tax_category['name'].' (<span id="elements_tax_category_'.$tax_category['code'].'_invoices_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
+		$elements_chooser_customers.='<span title="'.$tax_category['name'].'" onClick="change_elements(this,\'tax_categories_customers\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_customers">'.$tax_category['code'].' (<span id="elements_tax_category_'.$tax_category['code'].'_customers_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
+		$elements_chooser_invoices.='<span title="'.$tax_category['name'].'" onClick="change_elements(this,\'tax_categories_invoices\')" style="float:right;margin-left:12px" class="'.($tax_category['selected']?'selected':'').'" id="elements_tax_category_'.$tax_category['code'].'_invoices" >'.$tax_category['code'].' (<span id="elements_tax_category_'.$tax_category['code'].'_invoices_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>';
 		$elements_tax_categories_customers_ids[]='elements_tax_category_'.$tax_category['code'].'_customers';
 		$elements_tax_categories_invoices_ids[]='elements_tax_category_'.$tax_category['code'].'_invoices';
 	}
