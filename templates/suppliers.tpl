@@ -12,11 +12,11 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {t}Suppliers{/t}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons" style="float:right">
+			<div class="buttons small" style="position:relative;top:5px">
 				{if $modify} <button onclick="window.location='new_supplier.php'"><img src="art/icons/add.png" alt=""> {t}Add Supplier{/t}</button> <button onclick="window.location='edit_suppliers.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Suppliers{/t}</button> {/if} <button onclick="window.location='suppliers_stats.php?'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='suppliers_lists.php?'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='supplier_categories.php?id=0'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Suppliers{/t}</span> 
+				<span class="main_title no_buttons">{t}Suppliers{/t}</span> 
 			</div>
 			<div style="clear:both">
 			</div>

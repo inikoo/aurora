@@ -16,6 +16,8 @@ $addresses=$supplier->get_address_keys();
 
 
 
+
+
 //$addresses[$customer->data['Customer Billing Address Key']]=$customer->data['Customer Billing Address Key'];
 $address_data="\n";
 //$address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"] } ' );
@@ -83,22 +85,14 @@ var Dom   = YAHOO.util.Dom;
 var dialog_country_list_bis;
 
 
-
-function show_new_product_dialog(){
-    Dom.setStyle('new_product_dialog','display','');
-        Dom.setStyle('cancel_new_product','visibility','visible');
-        Dom.setStyle('save_new_product','visibility','visible');
-        Dom.addClass('save_new_product','disabled');
-
- Dom.setStyle('show_new_product_dialog_button','display','none');
-}
+var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
 
 function validate_product_units_per_case(query){
-validate_general('product','units_per_case',unescape(query));
+validate_general('product_settings','units_per_case',unescape(query));
 
 }
 function validate_product_price_per_case(query){
-validate_general('product','price_per_case',unescape(query));
+validate_general('product_settings','price_per_case',unescape(query));
 }
 
 function validate_supplier_code(query){
@@ -127,7 +121,7 @@ validate_general('supplier','www',unescape(query));
 }
 
 function validate_supplier_dispatch_time(query){
-validate_general('supplier','dispatch_time',unescape(query));
+validate_general('product_settings','dispatch_time',unescape(query));
 }
 
 
@@ -192,6 +186,8 @@ function change_supplier_products_view(e, data) {
 
     if (tipo == 'supplier_products_name') tipo = 'name';
     else if (tipo == 'supplier_products_cost') tipo = 'cost';
+    else if (tipo == 'supplier_products_dimensions') tipo = 'dimensions';
+    else if (tipo == 'supplier_products_po_data') tipo = 'po_data';
 
  	table.hideColumn('name');
     table.hideColumn('usedin');
@@ -199,6 +195,11 @@ function change_supplier_products_view(e, data) {
     //  table.hideColumn('unit_type');
     table.hideColumn('units');
     table.hideColumn('cost');
+    table.hideColumn('inners');
+    table.hideColumn('currency');
+    table.hideColumn('carton_cbm');
+    table.hideColumn('dispatch_days');
+    table.hideColumn('note_to_supplier');
 
 
     if (tipo == 'name') {
@@ -206,16 +207,22 @@ function change_supplier_products_view(e, data) {
         table.showColumn('name');
         table.showColumn('usedin');
         table.showColumn('state');
-
-
     } else if (tipo == 'cost') {
         //    table.showColumn('unit_type');
         table.showColumn('units');
         table.showColumn('cost');
-
+        table.showColumn('inners');
+        table.showColumn('currency');
+    }else if (tipo == 'dimensions') {
+        table.showColumn('carton_cbm');
+      
+    }else if (tipo == 'po_data') {
+        table.showColumn('dispatch_days');
+        table.showColumn('note_to_supplier');
+     
     }
 
-    Dom.removeClass(['supplier_products_name', 'supplier_products_cost'], 'selected')
+    Dom.removeClass(['supplier_products_name', 'supplier_products_cost','supplier_products_dimensions','supplier_products_po_data'], 'selected')
     Dom.addClass(this, 'selected')
     change_supplier_products_view_save(tipo)
 
@@ -246,16 +253,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		
 		,{key:"usedin", label:"<?php echo _('Used In')?>", <?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='name'?'':'hidden:true,')?>width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		,{key:"state", label:"", <?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='name'?'':'hidden:true,')?>width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
+				    ,{key:"state_value", label:"",hidden:true}
+		
 			//	  ,{key:"unit_type", label:"<?php echo _('Unit')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.DropdownCellEditor({asyncSubmitter: CellEdit,dropdownOptions:units_list,disableBtns:true}),object:'supplier_product'}
-				
+							,{key:"inners", width:400, className:"aright",label:"<?php echo _('U/Inner')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+	
 				,{key:"units", className:"aright",label:"<?php echo _('U/Carton')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:50, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
   ,{key:"cost", label:"<?php echo _('Cost/Unit')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
-			,{key:"state", label:"", <?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='name'?'':'hidden:true,')?>width:20,sortable:false,className:"aleft",action:'dialog',object:'supplier_product'}
-				    ,{key:"state_value", label:"",hidden:true}
+	  ,{key:"currency", label:"<?php echo _('Currency')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='cost'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				  ,{key:"carton_cbm", label:"<?php echo _('Carton CBM')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='dimensions'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+				  ,{key:"dispatch_days", label:"<?php echo _('Dispatch days')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='po_data'?'':'hidden:true,')?>width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+				  ,{key:"note_to_supplier", width:500,label:"<?php echo _('Note to supplier')?>",<?php echo($_SESSION['state']['supplier']['edit_supplier_products']['view']=='po_data'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier_product'}
+
 
 				  ];
 		
 request="ar_edit_suppliers.php?tipo=supplier_products&parent=supplier&parent_key="+Dom.get("supplier_key").value+"&sf=0&tableid="+tableid
+	//	alert(request)
 		this.dataSource0 = new YAHOO.util.DataSource(request);
 	
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -274,7 +290,7 @@ request="ar_edit_suppliers.php?tipo=supplier_products&parent=supplier&parent_key
 		    },
 			
 		   fields: [
-				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go','state','sp_id','state_value'
+				 "id","code","name","cost","usedin","units","unit_type","sph_key","delete","delete_type",'go','state','sp_id','state_value','inners','currency','carton_cbm','dispatch_days','note_to_supplier'
 				 ]};
 		
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -737,21 +753,20 @@ function change_origin_country_code(oArgs) {
     Dom.setStyle('set_Supplier_Products_Origin_Country_Code', 'display', 'none')
 
 
-
     value = country_code;
 
-    validate_scope_data['supplier']['origin']['value'] = value;
+    validate_scope_data['product_settings']['origin']['value'] = value;
 
     Dom.get('Supplier_Products_Origin_Country_Code').value = value
     ovalue = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue');
 
     if (ovalue != value) {
-        validate_scope_data['supplier']['origin']['changed'] = true;
+        validate_scope_data['product_settings']['origin']['changed'] = true;
     } else {
-        validate_scope_data['supplier']['origin']['changed'] = false;
+        validate_scope_data['product_settings']['origin']['changed'] = false;
     }
 
-    validate_scope('supplier')
+    validate_scope('product_settings')
 
     dialog_country_list_bis.hide();
 
@@ -766,24 +781,23 @@ function change_currency(oArgs) {
 
 
 
-
+ 
     value = currency;
+    validate_scope_data['product_settings']['currency']['value'] = value;
 
-    validate_scope_data['supplier']['currency']['value'] = value;
-    
-    validate_scope_data.supplier.modify_products_currency.changed=true;
-     validate_scope_data.supplier.products_currency_ratio.changed=true;
-   
+    validate_scope_data.product_settings.modify_products_currency.changed=true;
+     validate_scope_data.product_settings.products_currency_ratio.changed=true;
+  
     
     Dom.get('Supplier_Default_Currency').value = value
     ovalue = Dom.get('Supplier_Default_Currency').getAttribute('ovalue');
     if (ovalue != value) {
-        validate_scope_data['supplier']['currency']['changed'] = true;
+        validate_scope_data['product_settings']['currency']['changed'] = true;
     } else {
-        validate_scope_data['supplier']['currency']['changed'] = false;
+        validate_scope_data['product_settings']['currency']['changed'] = false;
     }
 
-    validate_scope('supplier')
+    validate_scope('product_settings')
 
     dialog_currency_list.hide();
 
@@ -805,9 +819,18 @@ function save_edit_supplier() {
     save_edit_general_bulk('supplier');
 }
 
+function save_edit_product_settings() {
+    save_edit_general_bulk('product_settings');
+}
+
 
 function reset_edit_supplier(){
  reset_edit_general('supplier')
+ 
+}
+
+function reset_edit_product_settings(){
+ reset_edit_general('product_settings')
   origin = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue')
       origin_formated = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue_formated')
       
@@ -916,90 +939,209 @@ function show_cell_dialog(datatable, oArgs) {
 
 }
 
+function post_bulk_save_actions(branch) {
+
+    if(branch=='product_settings'){
+    table_id = 0;
+                var table = tables['table' + table_id];
+                var datasource = tables['dataSource' + table_id];
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+    }
+
+}
+
 
 
 function init(){
 
+validate_scope_data = {
+    'supplier': {
+        'name': {
+            'changed': false,
+            'validated': true,
+            'required': true,
+            'group': 1,
+            'type': 'item',
+            'validation': [{
+                'regexp': "[a-z\\d]+",
+                'invalid_msg': '<?php echo _('Invalid Supplier Name')?>'
+            }],
+            'name': 'Supplier_Name',
+            'ar': false
+        },
+        'code': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'validation': [{
+                'regexp': "[a-z\\d]+",
+                'invalid_msg': '<?php echo _('Invalid Supplier Code')?>'
+            }],
+            'name': 'Supplier_Code',
+            'ar': 'find',
+            'ar_request': 'ar_suppliers.php?tipo=is_supplier_code&query='
+        },
+        'contact': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_Main_Contact_Name',
+            'validation': [{
+                'regexp': "[a-z\\d]+",
+                'invalid_msg': '<?php echo _('Invalid Contact Name ')?>'
+            }]
+        },
+        'email': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_Main_Email',
+            'validation': [{
+                'regexp': regexp_valid_email,
+                'invalid_msg': '<?php echo _('Invalid Email')?>'
+            }]
+        },
+        'qq': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_QQ',
+            'validation': [{
+                'numeric': 'positive',
+                'invalid_msg': '<?php echo _('Invalid QQ')?>'
+            }]
+        },
+        'telephone': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_Main_Telephone',
+            'validation': [{
+                'regexp': regex_valid_tel,
+                'invalid_msg': '<?php echo _('Invalid Telephone')?>'
+            }]
+        },
+        'fax': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_Main_Fax',
+            'validation': [{
+                'regexp':regex_valid_tel,
+                'invalid_msg': '<?php echo _('Invalid Fax')?>'
+            }]
+        },
+        'www': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_Main_Website',
+            'validation': [{
+                'regexp': regexp_valid_www,
+                'invalid_msg': '<?php echo _('Invalid URL')?>'
+            }]
+        }
 
+    },
+    'product_settings': {
+        'origin': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname': 'Supplier Products Origin Country Code',
+            'name': 'Supplier_Products_Origin_Country_Code',
+            'ar': false,
+            'validation': false
 
- validate_scope_data=
-{
-    'supplier':{
-    	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Name')?>'}],'name':'Supplier_Name'
-		,'ar':false}
-	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Code')?>'}]
-		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
-	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
-	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
-	,'qq':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_QQ','validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid QQ')?>'}]}
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
-	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Fax','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
-	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Website','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-,'origin': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Supplier Products Origin Country Code',
-			'name': 'Supplier_Products_Origin_Country_Code',
-			'ar': false,
-			'validation':false
-			
-		}
-		,'currency': {
-			'changed': false,
-			'validated': true,
-			'required': false,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'Supplier Default Currency',
-			'name': 'Supplier_Default_Currency',
-			'ar': false,
-			'validation':false
-			
-		}
-		,'modify_products_currency': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'modify_products_currency',
-			'name': 'modify_products_currency',
-			'ar': false,
-			'validation':false
-			
-		}
-		,'products_currency_ratio': {
-			'changed': false,
-			'validated': true,
-			'required': true,
-			'group': 1,
-			'type': 'item',
-			'dbname': 'products_currency_ratio',
-			'name': 'products_currency_ratio',
-			'ar': false,
-			 'validation': [{
-                   'numeric': "money",
-                    'invalid_msg': 'wrong number'
-                }]
-			
-		}
-			,'dispatch_time':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Average_Delivery_Days','validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Invalid number')?>'}]}
+        },
+        'currency': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname': 'Supplier Default Currency',
+            'name': 'Supplier_Default_Currency',
+            'ar': false,
+            'validation': false
 
-  }
+        },
+        'modify_products_currency': {
+            'changed': false,
+            'validated': true,
+            'required': true,
+            'group': 1,
+            'type': 'item',
+            'dbname': 'modify_products_currency',
+            'name': 'modify_products_currency',
+            'ar': false,
+            'validation': false
+
+        },
+        'products_currency_ratio': {
+            'changed': false,
+            'validated': true,
+            'required': true,
+            'group': 1,
+            'type': 'item',
+            'dbname': 'products_currency_ratio',
+            'name': 'products_currency_ratio',
+            'ar': false,
+            'validation': [{
+                'numeric': "money",
+                'invalid_msg': 'wrong number'
+            }]
+
+        },
+        'dispatch_time': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'name': 'Supplier_Average_Delivery_Days',
+            'validation': [{
+                'numeric': "positive integer",
+                'invalid_msg': '<?php echo _('Invalid number')?>'
+            }]
+        }
+
+    }
 };
 
 
- validate_scope_metadata={
-'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':Dom.get('supplier_key').value}
+validate_scope_metadata = {
+    'supplier': {
+        'type': 'edit',
+        'ar_file': 'ar_edit_suppliers.php',
+        'key_name': 'supplier_key',
+        'key': Dom.get('supplier_key').value
+    },
+     'product_settings': {
+        'type': 'edit',
+        'ar_file': 'ar_edit_suppliers.php',
+        'key_name': 'supplier_key',
+        'key': Dom.get('supplier_key').value
+    }
 };
 
-  init_search('supplier_products_supplier');
-
+init_search('supplier_products_supplier');
 
 	
 	
@@ -1118,6 +1260,9 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 	 Event.addListener('save_edit_supplier', "click", save_edit_supplier);
     Event.addListener('reset_edit_supplier', "click", reset_edit_supplier);
 
+	 Event.addListener('save_edit_product_settings', "click", save_edit_product_settings);
+    Event.addListener('reset_edit_product_settings', "click", reset_edit_product_settings);
+
 
  Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
@@ -1164,7 +1309,7 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 
 
   
-    Event.addListener(['supplier_products_name','supplier_products_cost'], "click", change_supplier_products_view, {table_id:0});
+    Event.addListener(['supplier_products_name','supplier_products_cost','supplier_products_dimensions','supplier_products_po_data'], "click", change_supplier_products_view, {table_id:0});
 
 
 	

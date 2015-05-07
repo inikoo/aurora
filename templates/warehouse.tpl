@@ -8,7 +8,9 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if $modify} <button onclick="window.location='edit_warehouse.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse{/t}</button> {/if} <button onclick="window.location='warehouse_stats.php?id={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='warehouse_map.php?id={$warehouse->id}'"><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button> <button id="location_audit"><img src="art/icons/application_view_gallery.png" alt=""> {t}Audit{/t}</button> 
+				{if $modify} 
+				<button onclick="window.location='edit_warehouse.php?id={$warehouse->id}&referrer=warehouse'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse{/t}</button> 
+				{/if} <button onclick="window.location='warehouse_stats.php?id={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='warehouse_map.php?id={$warehouse->id}'"><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button> <button id="location_audit"><img src="art/icons/application_view_gallery.png" alt=""> {t}Audit{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title"><img src="art/icons/warehouse.png" style="height:20px;position:relative;bottom:2px" title="{t}Warehouse{/t}" /> {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</span> 

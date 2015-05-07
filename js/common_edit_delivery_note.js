@@ -115,15 +115,9 @@ function change_shipper(value) {
 
 }
 
-function post_bulk_save_actions() {
-
+function post_bulk_save_actions(branch) {
 
     window.setTimeout(hide_dialog_set_dn_data, 500);
-
-
-
-
-
 
 }
 

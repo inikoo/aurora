@@ -1,0 +1,10 @@
+table.edit{width:890px}
+.edit td.label{width:250px}
+.edit td.input{width:300px;text-align:left}
+
+.edit td.input .short{width:150px}
+.edit td.input.very_short input{width:60px}
+.edit td.input.very_short span{margin-left:70px}
+
+.edit.product_settings{border-bottom:1px solid #ccc}
+.edit.product_settings tr.buttons td {padding-bottom:10px;}

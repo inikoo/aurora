@@ -78,6 +78,18 @@
 							</td>
 							<td style="width:200px" id="Supplier_Product_Units_Per_Case_msg" class="edit_td_alert"></td>
 						</tr>
+						
+						<tr >
+							<td style="width:180px" class="label">{t}Units per inner{/t}:</td>
+							<td style="text-align:left"> 
+							<div>
+								<input style="text-align:left;width:70px" id="Supplier_Product_Units_Per_Inner" value="{$supplier_product->get('Supplier Product Units Per Inner')}" ovalue="{$supplier_product->get('Supplier Product Units Per Inner')}" valid="0"> 
+								<div id="Supplier_Product_Units_Per_Inner_Container">
+								</div>
+							</div>
+							</td>
+							<td style="width:200px" id="Supplier_Product_Units_Per_Inner_msg" class="edit_td_alert"></td>
+						</tr>
 					<tr class="title">
 						<td colspan="3">{t}Cost{/t}</td>
 					</tr>

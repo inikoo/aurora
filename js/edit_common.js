@@ -198,7 +198,7 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-    //alert(ar_file+'?'+request);
+   // alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -1068,7 +1068,7 @@ function save_edit_general_bulk(branch) {
     //return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            //  alert(o.responseText)
+          //    alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
@@ -1116,7 +1116,7 @@ function save_edit_general_bulk(branch) {
             }
             Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer')
 
-            post_bulk_save_actions()
+            post_bulk_save_actions(branch)
 
             validate_scope_edit(branch)
 

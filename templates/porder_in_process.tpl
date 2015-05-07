@@ -1,17 +1,13 @@
 {include file='header.tpl'} 
-		<input type="hidden" value="{$session_data}" id="session_data" />
-
+<input type="hidden" value="{$session_data}" id="session_data" />
 <input type="hidden" value="{$products_display_type}" id="products_display_type"> 
 <input type="hidden" value="{$po->id}" id="po_key"> 
 <input type="hidden" value="{$supplier->id}" id="supplier_key"> 
 <input type="hidden" value="{$number_buyers}" id="number_buyers"> 
-
-
-
 <div id="time2_picker" class="time_picker_div">
 </div>
 <div id="bd">
-{include file='suppliers_navigation.tpl'} 
+	{include file='suppliers_navigation.tpl'} 
 	<div id="cal1Container" style="position:absolute;left:610px;top:120px;display:none;z-index:3">
 	</div>
 	<div class="branch ">
@@ -19,11 +15,11 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
+			<span class="main_title no_buttons">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
 		</div>
-		<div class="buttons">
-					<button   class="positive {if $po->get('Purchase Order Number Items')==0}disabled{/if}" id="submit_po">{t}Submit{/t}</button> 
-
+		<div class="buttons small" style="position:relative;top:5px">
+		<button style="height:18px" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
+			<button class="positive {if $po->get('Purchase Order Number Items')==0}disabled{/if}" id="submit_po">{t}Submit{/t}</button> 
 			<button class="negative" id="delete_po">{t}Delete{/t}</button> 
 		</div>
 		<div style="clear:both">
@@ -32,25 +28,24 @@
 	<div style="clear:both">
 	</div>
 	<div class="prodinfo" style="clear:both;margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
-		<table style="width:200px;" class="order_header" border=0>
-			
+		<table style="width:200px;" class="order_header" border="0">
 			<tr class="currency_tr">
 				<td>{t}Currency{/t}</td>
-				<td  class=" aright">{$po->get('Purchase Order Currency Code')}</td>
+				<td class=" aright">{$po->get('Purchase Order Currency Code')}</td>
 			</tr>
 			<tbody id="po_amounts" style="display:none">
-			<tr>
-				<td>{t}Goods{/t}:</td>
-				<td id="goods" class="aright">{$po->get('Items Net Amount')}</td>
-			</tr>
-			<tr>
-				<td>{t}Shipping{/t}:</td>
-				<td class="aright" id="shipping">{$po->get('Shipping Net Amount')}</td>
-			</tr>
-			<tr>
-				<td>{t}Tax{/t}:</td>
-				<td id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
-			</tr>
+				<tr>
+					<td>{t}Goods{/t}:</td>
+					<td id="goods" class="aright">{$po->get('Items Net Amount')}</td>
+				</tr>
+				<tr>
+					<td>{t}Shipping{/t}:</td>
+					<td class="aright" id="shipping">{$po->get('Shipping Net Amount')}</td>
+				</tr>
+				<tr>
+					<td>{t}Tax{/t}:</td>
+					<td id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
+				</tr>
 			</tbody>
 			<tr>
 				<td>{t}Total{/t}</td>
@@ -95,8 +90,7 @@
 	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
 		<div class="elements_chooser">
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
 		</div>
 		<div class="table_top_bar space">
 		</div>
@@ -132,7 +126,11 @@
 		</div>
 		<table style="width:250px">
 			<tr>
-				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> <div class="buttons"><button class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button></div> </td>
+				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> 
+				<div class="buttons">
+					<button class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button>
+				</div>
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -142,19 +140,14 @@
 		<div id="submit_dialog_msg">
 		</div>
 		<table class="edit" style="width:400px" border="0">
-		
-		<tr class="title">
-		<td colspan="2">{t}Submit purchse order{/t}</td>
-		</tr>
-		
+			<tr class="title">
+				<td colspan="2">{t}Submit purchse order{/t}</td>
+			</tr>
 			<tr>
 				<td class="label">{t}Submit Method{/t}:</td>
 				<td> 
 				<div class="buttons small" style="margin:0px 0;width:250px" id="submit_method_container">
-					<input type="hidden" value="{$default_submit_method}" ovalue="{$default_submit_method}" id="submit_method"> 
-					{foreach from=$submit_method item=unit_tipo key=name} 
-					<button style="float:left;margin-bottom:5px;margin-right:5px" onClick="change_submit_method(this)" class="radio{if $default_submit_method==$name} selected{/if}" id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</button> 
-					{/foreach} 
+					<input type="hidden" value="{$default_submit_method}" ovalue="{$default_submit_method}" id="submit_method"> {foreach from=$submit_method item=unit_tipo key=name} <button style="float:left;margin-bottom:5px;margin-right:5px" onclick="change_submit_method(this)" class="radio{if $default_submit_method==$name} selected{/if}" id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</button> {/foreach} 
 				</div>
 				</td>
 			</tr>
@@ -173,15 +166,13 @@
 			<tr class="buttons">
 				<td colspan="2"> 
 				<div class="buttons" style="margin-right:20px;text-align:right">
-				<span style="display:none" id="submit_order_wait"><img src="art/loading.gif"/> {t}Processing Request{/t}</span>
-					<button id="submit_order_button" class="positive" onclick="submit_order_save(this)">{t}Submit{/t}</button> <button style="display:none"onclick="cancel_order_save(this)">{t}Cancel{/t}</button> 
+					<span style="display:none" id="submit_order_wait"><img src="art/loading.gif" /> {t}Processing Request{/t}</span> <button id="submit_order_button" class="positive" onclick="submit_order_save(this)">{t}Submit{/t}</button> <button style="display:none" onclick="cancel_order_save(this)">{t}Cancel{/t}</button> 
 				</div>
 				</td>
 			</tr>
 		</table>
 	</div>
 </div>
-
 <div id="staff_dialog" style="width:400px;padding:20px 10px 20px 10px;xdisplay:none">
 	<input type="hidden" id="staff_dialog_type" value="assign_buyer"> 
 	<table class="edit" border="0" style="width:100%">
@@ -210,10 +201,8 @@
 			</div>
 			</td>
 		</tr>
-		
 	</table>
 </div>
-
 <div id="dialog_other_staff">
 	<input type="hidden" id="staff_list_parent_dialog" value=""> 
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
@@ -229,6 +218,4 @@
 		</div>
 	</div>
 </div>
-
-
 {include file='footer.tpl'} 
