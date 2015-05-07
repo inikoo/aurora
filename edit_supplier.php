@@ -66,9 +66,12 @@ $css_files=array(
 	'css/common.css',
 	'css/button.css',
 	'css/container.css',
-	'css/table.css'
+	'css/table.css',
+	'css/edit_address.css',
+'css/edit.css',
+	'css/edit_supplier.css',
+	'theme.css.php'
 );
-$css_files[]='theme.css.php';
 $js_files=array(
 
 	$yui_path.'utilities/utilities.js',
@@ -89,8 +92,8 @@ $js_files=array(
 	'js/edit_common.js',
 	'js/validate_telecom.js',
 	'js/supplier_products_common.js',
-			'js/country_address_labels.js',
-		'js/edit_address.js',
+	'js/country_address_labels.js',
+	'js/edit_address.js',
 	'address_data.js.php?tipo=supplier&id='.$supplier->id,
 	'edit_contact_from_parent.js.php',
 	'js/edit_contact_telecom.js',
@@ -145,10 +148,6 @@ $smarty->assign('number_of_contacts',$number_of_contacts);
 $smarty->assign('scope','Supplier');
 
 
-
-$css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
-$css_files[]='css/edit_address.css';
-$css_files[]='css/edit.css';
 
 $smarty->assign('from','supplier');
 $smarty->assign('css_files',$css_files);

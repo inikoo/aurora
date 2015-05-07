@@ -78,6 +78,7 @@ case('edit_supplier_quick'):
 
 	edit_supplier_field($data['supplier_key'],$data['key'],$data['newvalue']);
 	break;
+case('edit_product_settings'):
 
 case('edit_supplier'):
 	$data=prepare_values($_REQUEST,array(
@@ -193,28 +194,29 @@ function edit_supplier_field($supplier_key,$key,$value_data) {
 		}
 	}else {
 
-
+	
 
 		$key_dic=array(
-			'name'=>'Supplier Company Name'
-			,'code'=>'Supplier Code'
-			,'contact'=>'Supplier Main Contact Name'
-			,'email'=>'Supplier Main Plain Email'
-			,'telephone'=>'Supplier Main Plain Telephone'
-			,'fax'=>'Supplier Main Plain FAX'
-			,'www'=>'Supplier Website'
-			,'qq'=>'Supplier QQ'
-			,"address"=>'Address'
-			,"town"=>'Main Address Town'
-			,"postcode"=>'Main Address Town'
-			,"region"=>'Main Address Town'
-			,"country"=>'Main Address Country'
-			,"ship_address"=>'Main Ship To'
-			,"ship_town"=>'Main Ship To Town'
-			,"ship_postcode"=>'Main Ship To Postal Code'
-			,"ship_region"=>'Main Ship To Country Region'
-			,"ship_country"=>'Main Ship To Country'
-			,"dispatch_time"=>'Supplier Average Delivery Days'
+			'name'=>'Supplier Company Name',
+			'code'=>'Supplier Code',
+			'contact'=>'Supplier Main Contact Name',
+			'email'=>'Supplier Main Plain Email',
+			'telephone'=>'Supplier Main Plain Telephone',
+			'fax'=>'Supplier Main Plain FAX',
+			'www'=>'Supplier Website',
+			'qq'=>'Supplier QQ',
+			"address"=>'Address',
+			"town"=>'Main Address Town',
+			"postcode"=>'Main Address Town',
+			"region"=>'Main Address Town',
+			"country"=>'Main Address Country',
+			"ship_address"=>'Main Ship To',
+			"ship_town"=>'Main Ship To Town',
+			"ship_postcode"=>'Main Ship To Postal Code',
+			"ship_region"=>'Main Ship To Country Region',
+			"ship_country"=>'Main Ship To Country',
+			"dispatch_time"=>'Supplier Average Delivery Days',
+			
 
 		);
 		if (array_key_exists($key,$key_dic))
@@ -404,13 +406,18 @@ function edit_supplier_product($data) {
 
 
 		$key_dic=array(
-			'name'=>'Supplier Product Name'
-			,'code'=>'Supplier Product Code'
-			,'description'=>'Supplier Product Description'
-			,'unit_type'=>'Supplier Product Unit Type'
-			,'units'=>'Supplier Product Units Per Case'
-
-			,"Supplier_Product_Supplier_Key"=>'supplier_key'
+			'name'=>'Supplier Product Name',
+			'code'=>'Supplier Product Code',
+			'description'=>'Supplier Product Description',
+			'unit_type'=>'Supplier Product Unit Type',
+			'units'=>'Supplier Product Units Per Case',
+			'inners'=>'Supplier Product Units Per Inner',
+			"Supplier_Product_Supplier_Key"=>'supplier_key',
+			'carton_cbm'=>'Supplier Product Carton CBM',
+			'dispatch_days'=>'Supplier Product Delivery Days',
+			'note_to_supplier'=>'Supplier Product Note to Supplier',
+			'agent_supplier'=>'Supplier Product Agent Supplier Name'
+			
 		);
 		if (array_key_exists($key,$key_dic))
 			$key=$key_dic[$key];
@@ -425,6 +432,9 @@ function edit_supplier_product($data) {
 
 		}else {
 			$supplier_product->update(array($key=>$data['newvalue']));
+			if($key=='Supplier Product Delivery Days'){
+			// TODO mark as set up so it not changed from parent (Supplier Edit)
+			}
 		}
 
 	}
@@ -986,18 +996,23 @@ function list_supplier_products() {
 		$order='`Supplier Product ID`';
 	elseif ($order=='code')
 		$order='`Supplier Product Code`';
+	elseif ($order=='name')
+		$order='`Supplier Product Name`';
+	elseif ($order=='inners')
+		$order='`Supplier Product Units Per Inner`';
+	elseif ($order=='units')
+		$order='`Supplier Product Units Per Untis`';
+	elseif ($order=='cost')
+		$order=' (`SPH Case Cost`/`SPH Units Per Case`)';
 	elseif ($order='usedin')
 		$order='`Supplier Product XHTML Sold As`';
-
+	else
+		$order='`Supplier Product ID`';
 	$sql="select * from `Supplier Product Dimension` left join `Supplier Product History Dimension` H  on (`SPH Key`=`Supplier Product Current Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 	$data=array();
 
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-
-
 
 
 		switch ($row['Supplier Product State']) {
@@ -1006,13 +1021,9 @@ function list_supplier_products() {
 			break;
 		case 'No Available':
 			$state=sprintf('<img src="art/icons/brick_error.png" title="%s">',_('No Available'));
-
-
 			break;
 		case 'Discontined':
 			$state=sprintf('<img src="art/icons/brick_none.png" title="%s">',_('Discontined'));
-
-
 			break;
 		default:
 			$state='';
@@ -1034,9 +1045,16 @@ function list_supplier_products() {
 			'usedin'=>$row['Supplier Product XHTML Sold As'],
 			'unit_type'=>$row['Supplier Product Unit Type'],
 			'units'=>$row['Supplier Product Units Per Case'],
+			'inners'=>$row['Supplier Product Units Per Inner'],
+			'currency'=>$row['Supplier Product Currency'],
 
 			'state'=>$state,
-			'state_value'=>$row['Supplier Product State']
+			'state_value'=>$row['Supplier Product State'],
+
+			'carton_cbm'=>$row['Supplier Product Carton CBM'],
+			'dispatch_days'=>$row['Supplier Product Delivery Days'],
+			'note_to_supplier'=>$row['Supplier Product Note to Supplier'],
+			'agent_supplier'=>$row['Supplier Product Agent Supplier Name']
 
 
 		);

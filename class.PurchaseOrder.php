@@ -176,7 +176,7 @@ class PurchaseOrder extends DB_Table{
 		}
 
 		if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount Corporate Currency)$/',$key)) {
-            global $corporate_currency;
+			global $corporate_currency;
 			$key=preg_replace('/ Corporate Currency/','',$key);
 			$amount='Purchase Order '.$key;
 
@@ -215,6 +215,9 @@ class PurchaseOrder extends DB_Table{
 
 	}
 
+	function get_date($field) {
+		return strftime("%e %b %Y",strtotime($this->data[$field].' +0:00'));
+	}
 
 	function add_order_transaction($data) {
 

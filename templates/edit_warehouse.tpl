@@ -7,7 +7,7 @@
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:right">
-			<button onclick="window.location='warehouse.php?id={$warehouse->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='new_warehouse_area.php?warehouse_id={$warehouse->id}'"><img src="art/icons/add.png" alt=""> {t}Add Area{/t}</button> <button onclick="window.location='new_location.php?warehouse_id={$warehouse->id}&window=1'"><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button> 
+			<button onclick="window.location='{$link_back}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='new_warehouse_area.php?warehouse_id={$warehouse->id}'"><img src="art/icons/add.png" alt=""> {t}Add Area{/t}</button> <button onclick="window.location='new_location.php?warehouse_id={$warehouse->id}&window=1'"><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
 			<span class="main_title">{t}Editing Warehouse{/t}: <span class="id"><span class="warehouse_name">{$warehouse->get('Warehouse Name')}</span> (<span class="warehouse_code">{$warehouse->get('Warehouse Code')}</span>)</span></span> 
@@ -17,9 +17,10 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>
-		<li> <span class="item {if $edit=='flags'}selected{/if}" id="flags"> <span> {t}Flags{/t}</span></span></li>
+		<li> <span class="item {if $edit=='po'}selected{/if}" id="po"> <span> {t}Purchase Orders{/t}</span></span></li>
+		<li> <span class="item {if $edit=='flags'}selected{/if}" id="flags"> <span> {t}Location Flags{/t}</span></span></li>
 
-		<li> <span class="item {if $edit=='areas'}selected{/if}" id="areas"> <span> {t}Areas{/t}</span></span></li>
+		<li> <span class="item {if $edit=='areas'}selected{/if}" id="areas"> <span> {t}Warehouse Areas{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $edit=='shelfs'}selected{/if}" id="shelfs"> <span> {t}Shelfs{/t}</span></span></li>
 		<li> <span class="item {if $edit=='locations'}selected{/if}" id="locations"> <span> {t}Locations{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $edit=='shelf_types'}selected{/if}" id="shelf_types"> <span> {t}Shelf Types{/t}</span></span></li>
@@ -31,10 +32,10 @@
 			</div>
 			<table style="margin:0;width:100%" class="edit" border="0">
 				<tr class="title">
-					<td colspan="3"> {t}Warehouse Description{/t} </td>
+					<td colspan="3"> {t}Warehouse Description{/t} <span style="color:red">to do</span></td>
 				</tr>
 				<tr class="first">
-					<td style="width:150px" class="label">{t}Warehouse Code{/t}:</td>
+					<td style="width:150px" class="label">{t}Code{/t}:</td>
 					<td style="width:320px"> 
 					<div>
 						<input type="text" id="warehouse_code" value="{$warehouse->get('Warehouse Code')}" ovalue="{$warehouse->get('Warehouse Code')}" valid="0"> 
@@ -45,7 +46,7 @@
 					<td style="width:250px"> <span id="warehouse_code_msg"></span> </td>
 				</tr>
 				<tr>
-					<td class="label">{t}Warehouse Name{/t}:</td>
+					<td class="label">{t}Name{/t}:</td>
 					<td> 
 					<div>
 						<input type="text" id="warehouse_name" value="{$warehouse->get('Warehouse Name')}" ovalue="{$warehouse->get('Warehouse Name')}" valid="0"> 
@@ -55,6 +56,76 @@
 					</td>
 					<td> <span id="warehouse_name_msg"></span> </td>
 				</tr>
+				<tr class="space20">
+					<td class="label">{t}Company Name{/t}:</td>
+					<td> 
+					<div>
+						<input style="width:100%" id="Warehouse_Company_Name" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Company Name')}" ovalue="{$warehouse->get('Warehouse Company Name')}" />
+						<div id="Warehouse_Company_Name_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Warehouse_Company_Name_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr>
+					<td style="width:200px" class="label">{t}VAT Number{/t}:</td>
+					<td style="width:370px"> 
+					<div>
+						<input style="width:100%" id="Warehouse_VAT_Number" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse VAT Number')}" ovalue="{$warehouse->get('Warehouse VAT Number')}" />
+						<div id="Warehouse_VAT_Number_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Warehouse_VAT_Number_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr>
+					<td class="label">{t}Company Number{/t}:</td>
+					<td> 
+					<div>
+						<input style="width:100%" id="Warehouse_Company_Number" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Company Number')}" ovalue="{$warehouse->get('Warehouse Company Number')}" />
+						<div id="Warehouse_Company_Number_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Warehouse_Company_Number_msg" class="edit_td_alert"></td>
+				</tr>
+				
+				<tr>
+				<tr class="space20">
+					<td class="label">{t}Email{/t}:</td>
+					<td> 
+					<div>
+						<input style="width:100%" id="email" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Email')}" ovalue="{$warehouse->get('Warehouse Email')}" />
+						<div id="email_Container">
+						</div>
+					</div>
+					</td>
+					<td id="email_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr>
+					<td class="label">{t}Telephone{/t}:</td>
+					<td> 
+					<div>
+						<input style="width:100%" id="telephone" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Telephone')}" ovalue="{$warehouse->get('Warehouse Telephone')}" />
+						<div id="telephone_Container">
+						</div>
+					</div>
+					</td>
+					<td id="telephone_msg" class="edit_td_alert"></td>
+				</tr>
+				
+				<tr>
+					<td class="label">{t}Address{/t}:</td>
+					<td> 
+					<div style="height:120px">
+<textarea style="width:100%" id="address" changed="0" olength="{$warehouse->get('Warehouse Address')}" value="{$warehouse->get('Warehouse Address')}" ovalue="{$warehouse->get('Warehouse Address')}" ohash="{$warehouse->get('Product Description MD5 Hash')}" rows="6" cols="42">{$warehouse->get('Warehouse Address')}</textarea> 
+						<div id="address_Container">
+						</div>
+					</div>
+					</td>
+					<td id="address_msg" class="edit_td_alert"></td>
+				</tr>
+				
 				<tr class="buttons">
 					<td colspan="2"> 
 					<div class="buttons">
@@ -65,6 +136,38 @@
 				
 			</table>
 		</div>
+		
+		<div id="po_block" class="edit_block" style="{if $edit!='po'}display:none{/if}">
+			
+			<table style="margin:0;width:100%" class="edit" border="0">
+				<tr class="title">
+					<td colspan="3"> {t}Purchase Order Settings{/t} <span style="color:red">to do</span></td>
+				</tr>
+				
+				
+				<tr>
+					<td class="label">{t}Terms & Conditions{/t}:</td>
+					<td> 
+					<div style="height:120px">
+<textarea style="width:100%" id="terms_and_conditions" changed="0" olength="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" value="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" ovalue="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" ohash="{$warehouse->get('Product Description MD5 Hash')}" rows="6" cols="42">{$warehouse->get('Warehouse Default PO Terms and Conditions')}</textarea> 
+						<div id="address_Container">
+						</div>
+					</div>
+					</td>
+					<td id="address_msg" class="edit_td_alert"></td>
+				</tr>
+				
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons">
+						<button class="positive disabled" id="save_edit_po_settings" onclick="save_edit_po_settings()">{t}Save{/t}</button> <button id="reset_edit_po_settings" class="negative" onclick="reset_po_settings()">{t}Reset{/t}</button> 
+					</div>
+					</td>
+				</tr>
+				
+			</table>
+		</div>
+		
 		<div id="flags_block" class="edit_block" style="{if $edit!='flags'}display:none{/if}">
 			
 			<table style="margin:0;width:100%" class="edit" border="0">

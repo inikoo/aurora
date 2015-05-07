@@ -27,8 +27,7 @@
 	<div class="tabbed_container">
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if}" id="d_details">
 			
-			<input id="modify_products_currency" value="Yes" ovalue="Yes" type="hidden">
-			<input id="products_currency_ratio" value="1" ovalue="1" type="hidden">
+			
 			<table class="edit" border="0" style="clear:both;width:100%">
 				<tr class="first">
 					<td style="width:150px" class="label">Supplier Code:</td>
@@ -118,38 +117,7 @@
 					</td>
 					<td id="Supplier_Main_Website_msg" class="edit_td_alert"></td>
 				</tr>
-				<tr class="first">
-					<td class="label">{t}Dispatch Time{/t}:</td>
-					<td style="text-align:left"> 
-					<div>
-						<input style="text-align:right;width:100px" id="Supplier_Average_Delivery_Days" value="{$supplier->get('Supplier Average Delivery Days')}" ovalue="{$supplier->get('Supplier Average Delivery Days')}" valid="0"> {t}days{/t} 
-						<div id="Supplier_Average_Delivery_Days_Container">
-						</div>
-						<span style="margin-left:80px">{t}days{/t}</span> 
-					</div>
-					</td>
-					<td id="Supplier_Average_Delivery_Days_msg" class="edit_td_alert"></td>
-				</tr>
-				<tr>
-					<td style="width:200px" class="label">{t}Products Origin{/t}:</td>
-					<td style="text-align:left"> 
-					<input type="hidden" id="Supplier_Products_Origin_Country_Code" value="{$supplier->get('Supplier Products Origin Country Code')}" ovalue="{$supplier->get('Supplier Products Origin Country Code')}" ovalue_formated="{$supplier->get('Products Origin Country Code')}" />
-					<div class="buttons small left">
-						<span style="float:left;margin-right:10px" id="Supplier_Products_Origin_Country_Code_formated">{$supplier->get('Products Origin Country Code')}</span> <button class="negative" style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="delete_Supplier_Products_Origin_Country_Code" onclick="delete_origin_country_code()">{t}Remove{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="update_Supplier_Products_Origin_Country_Code">{t}Change Origin{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')!=''}display:none{/if}" id="set_Supplier_Products_Origin_Country_Code">{t}Set Origin{/t}</button> 
-					</div>
-					<span id="Supplier_Products_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-					<td></td>
-				</tr>
-				<tr>
-					<td style="width:200px" class="label">{t}Currency{/t}:</td>
-					<td style="text-align:left"> 
-					<input type="hidden" id="Supplier_Default_Currency" value="{$supplier->get('Supplier Default Currency')}" ovalue="{$supplier->get('Supplier Default Currency')}" ovalue_formated="{$supplier->get('Supplier Default Currency')}" />
-					<div class="buttons small left">
-						<span style="float:left;margin-right:10px" id="Supplier_Default_Currency_formated">{$supplier->get('Supplier Default Currency')}</span> <button style="{if $supplier->get('Supplier Default Currency')==''}display:none{/if}" id="update_Supplier_Default_Currency">{t}Change Currency{/t}</button> <button style="{if $supplier->get('Supplier Default Currency')!=''}display:none{/if}" id="set_Supplier_Default_Currency">{t}Set Currency{/t}</button> <span style="font-size:80%">({t}Will change all supplier products currency{/t})</span>
-					</div>
-					<span id="Supplier_Default_Currency_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
-					<td></td>
-				</tr>
+				
 				<tr class="buttons">
 					<td colspan="2"> 
 					<div class="buttons">
@@ -174,7 +142,63 @@
 			</div>
 		</div>
 		<div class="edit_block" style="{if $edit!='products'}display:none{/if}" id="d_products">
-			<div class="data_table" style="clear:both">
+			
+			
+			<input id="modify_products_currency" value="Yes" ovalue="Yes" type="hidden">
+			<input id="products_currency_ratio" value="1" ovalue="1" type="hidden">
+			<table class="edit product_settings" border="0"  >
+				
+				<tr class="title">
+				<td colspan=3>{t}Product Settings{/t}</span>
+				</tr>
+				
+				<tr class="first">
+					<td class="label">{t}Dispatch Time{/t}:</td>
+					<td class="input very_short"> 
+					<div>
+						<input  id="Supplier_Average_Delivery_Days" value="{$supplier->get('Supplier Average Delivery Days')}" ovalue="{$supplier->get('Supplier Average Delivery Days')}" valid="0"> {t}days{/t} 
+						<div id="Supplier_Average_Delivery_Days_Container">
+						</div>
+						
+					</div>
+					</td>
+					<td id="Supplier_Average_Delivery_Days_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr class="space10">
+					<td  class="label">{t}Products Origin{/t}:</td>
+					<td style="text-align:left"> 
+					<input type="hidden" id="Supplier_Products_Origin_Country_Code" value="{$supplier->get('Supplier Products Origin Country Code')}" ovalue="{$supplier->get('Supplier Products Origin Country Code')}" ovalue_formated="{$supplier->get('Products Origin Country Code')}" />
+					<div class="buttons small left">
+						<span style="float:left;margin-right:10px" id="Supplier_Products_Origin_Country_Code_formated">{$supplier->get('Products Origin Country Code')}</span> <button class="negative" style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="delete_Supplier_Products_Origin_Country_Code" onclick="delete_origin_country_code()">{t}Remove{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="update_Supplier_Products_Origin_Country_Code">{t}Change Origin{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')!=''}display:none{/if}" id="set_Supplier_Products_Origin_Country_Code">{t}Set Origin{/t}</button> 
+					</div>
+					<span id="Supplier_Products_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+					<td></td>
+				</tr>
+				<tr class="space10">
+					<td class="label">{t}Currency{/t}:</td>
+					<td style="text-align:left"> 
+					<input type="hidden" id="Supplier_Default_Currency" value="{$supplier->get('Supplier Default Currency')}" ovalue="{$supplier->get('Supplier Default Currency')}" ovalue_formated="{$supplier->get('Supplier Default Currency')}" />
+					<div class="buttons small left">
+						<span style="float:left;margin-right:10px" id="Supplier_Default_Currency_formated">{$supplier->get('Supplier Default Currency')}</span> <button style="{if $supplier->get('Supplier Default Currency')==''}display:none{/if}" id="update_Supplier_Default_Currency">{t}Change Currency{/t}</button> <button style="{if $supplier->get('Supplier Default Currency')!=''}display:none{/if}" id="set_Supplier_Default_Currency">{t}Set Currency{/t}</button> <span style="font-size:80%">({t}Will change all supplier products currency{/t})</span>
+					</div>
+					<span id="Supplier_Default_Currency_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
+					<td></td>
+				</tr>
+				<tr class="buttons">
+				<td></td>
+					<td colspan="2"> 
+					<div class="buttons left">
+											<button style="margin-right:10px;" id="reset_edit_product_settings" class="negative disabled">{t}Reset{/t}</button> 
+
+						<button style="margin-right:10px;" id="save_edit_product_settings" class="positive disabled">{t}Save{/t}</button> 
+					</div>
+					</td>
+					
+				</tr>
+			</table>
+			
+			
+			<div class="data_table" style="clear:both;margin-top:30px">
 				<div id="suppliers_product_list">
 					<span class="clean_table_title" style="margin-right:5px">{t}Supplier Products{/t} </span> 
 					<div class="buttons small left">
@@ -192,6 +216,9 @@
 				<div class="buttons small left cluster" id="product_supplier_view_buttons">
 					<button class="table_option {if $supplier_products_view=='name'}selected{/if}" id="supplier_products_name">{t}Code{/t}/{t}Name{/t}</button> 
 					<button class="table_option {if $supplier_products_view=='cost'}selected{/if}" id="supplier_products_cost">{t}Units{/t}/{t}Cost{/t}</button> 
+					<button class="table_option {if $supplier_products_view=='dimensions'}selected{/if}" id="supplier_products_dimensions">{t}Dimensions{/t}/{t}Size{/t}</button> 
+					<button class="table_option {if $supplier_products_view=='po_data'}selected{/if}" id="supplier_products_po_data">{t}Purchase order{/t}}</button> 
+
 				</div>
 				
 				<div style="clear:both">

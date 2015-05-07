@@ -2018,7 +2018,7 @@ class Page extends DB_Table {
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
 			<img class="button_feedback" style="display:none" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
 
-			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
+			$message=sprintf("<div class='order_but' style='text-align:left'>
 
 
                              <table border=0 >
