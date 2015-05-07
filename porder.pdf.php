@@ -53,6 +53,27 @@ $smarty->assign('warehouse',$warehouse);
 
 $transactions=array();
 
+$sql=sprintf("select * from `Purchase Order Transaction Fact` POTF 
+left join `Supplier Product Dimension` SPD on (POTF.`Supplier Product ID`=SPD.`Supplier Product ID`)
+left join `Supplier Product History Dimension` SPHD on (POTF.`Supplier Product Key`=SPHD.`SPH Key`)
+ where `Purchase Order Key`=%d order by `Supplier Product Store As` ", $po->id);
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+    $description=$row['Supplier Product Name'];
+	
+    $data['Code']=$row['Supplier Product Code'];
+    $data['Description']=$description;
+    $data['Units']=$row['SPH Units Per Case'];
+    $data['Price_Unit']=money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']);
+    $data['Cartons']=$row['Purchase Order Quantity'];
+     $data['Amount']=money($row['Purchase Order Net Amount'],$row['Currency Code']);
+
+	$transactions[]=$data;
+
+}
+
 $smarty->assign('transactions',$transactions);
 
 

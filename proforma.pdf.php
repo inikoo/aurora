@@ -29,9 +29,6 @@ setlocale(LC_ALL,$store->data['Store Locale'].'.UTF-8');
 bindtextdomain("inikoo", "./locales");
 textdomain("inikoo");
 
-
-
-
 include "external_libs/mpdf/mpdf.php";
 
 $mpdf=new mPDF('win-1252','A4','','',20,15,38,25,10,10);

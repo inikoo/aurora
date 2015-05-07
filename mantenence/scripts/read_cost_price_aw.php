@@ -101,7 +101,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 		if ($part->sku) {
 		
 		if($cost and is_numeric($cost)){
-		print "$code $cost \n";
+		print "$code $cost $units\n";
 		$cost=$cost*$units;
 			$sql=sprintf("update `Part Dimension` set `Part Cost`=%.4f where `Part SKU`=%d ",
 			$cost,

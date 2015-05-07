@@ -111,7 +111,7 @@ class CurrencyExchange {
 			,prepare_mysql($this->currency_pair)
 			,prepare_mysql($this->from));
 		$res3=mysql_query($sql);
-		//print $sql;
+		
 		if ($row3=mysql_fetch_array($res3, MYSQL_ASSOC)) {
 			$this->exchange=$row3['Exchange'];
 		}
@@ -155,6 +155,8 @@ class CurrencyExchange {
 
 
 	function load_currency_exchange($from=false,$to=false,$fixing_date=false) {
+	
+	
 
 		/*
 if(!$from)
@@ -292,7 +294,7 @@ while($row=mysql_fetch_assoc($res)){
 			$exchange=$this->get_current_exchange_from_yahoo();
 
 			if ($exchange) {
-				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "
+				$sql=sprintf("insert into `History Currency Exchange Dimension` values (%s,%s,%.8f) on duplicate key update `Exchange`=%.8f "
 					,prepare_mysql(date('Y-m-d')) ,prepare_mysql($this->currency_pair),$exchange,$exchange);
 				mysql_query($sql);
 			}
@@ -361,7 +363,7 @@ while($row=mysql_fetch_assoc($res)){
 
 			return $exchange;
 		}
-		return $false;
+		return false;
 
 
 	}
