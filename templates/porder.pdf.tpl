@@ -60,12 +60,12 @@ div.inline { float:left; }
 <table width="100%" style="font-size: 9pt;" border="0">
 	<tr>
 		<tr>
-			{if file_exists("art/invoice_logo.{$warehouse->get('Warehouse Code')}.jpg")}
+			{if file_exists("art/invoice_logo.{$po->get('Purchase Order Warehouse Code')}.jpg")}
 			<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$warehouse->get('Store Code')}.jpg" border="0" title="" alt=""></td>
 			{/if} 
-			<td style="width:250px;padding-left:10px;">{$warehouse->get('Warehouse Name')} 
+			<td style="width:250px;padding-left:10px;">{$po->get('Purchase Order Warehouse Name')} 
 			<div style="font-size:7pt">
-				{$warehouse->get('Warehouse Address')|nl2br} 
+				{$po->get('Purchase Order Warehouse Address')|nl2br} 
 			</div>
 			
 			</td>
@@ -79,9 +79,9 @@ div.inline { float:left; }
 	<table width="100%">
 		<tr>
 			<tr>
-				<td width="33%" style="color:#000;text-align: left;"> <small> {$warehouse->get('Store Company Name')}<br> {if $warehouse->get('Store VAT Number')!=''}{t}VAT Number{/t}: {$warehouse->get('Store VAT Number')}<br>{/if} {if $warehouse->get('Store Company Number')!=''}{t}Registration number{/t}: {$warehouse->get('Store Company Number')}{/if} </small></td>
+				<td width="33%" style="color:#000;text-align: left;"> <small> {$po->get('Purchase Order Warehouse Company Name')}<br> {if $po->get('Purchase Order Warehouse VAT Number')!=''}{t}VAT Number{/t}: {$po->get('Purchase Order Warehouse VAT Number')}<br>{/if} {if $po->get('Purchase Order Warehouse Company Number')!=''}{t}Registration number{/t}: {$po->get('Purchase Order Warehouse Company Number')}{/if} </small></td>
 				<td width="33%" style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
-				<td width="34%" style="text-align: right;"> <small> {if $warehouse->get('Store Telephone')!=''}{$warehouse->get('Store Telephone')}<br>{/if} {if $warehouse->get('Store Email')!=''}{$warehouse->get('Store Email')}{/if} </small></td>
+				<td width="34%" style="text-align: right;"> <small> {if $po->get('Purchase Order Warehouse Telephone')!=''}{$po->get('Purchase Order Warehouse Telephone')}<br>{/if} {if $po->get('Purchase Order Warehouse Email')!=''}{$po->get('Purchase Order Warehouse Email')}{/if} </small></td>
 			</tr>
 		</table>
 	</div>
@@ -95,7 +95,7 @@ div.inline { float:left; }
 			</td>
 			<td style="text-align: right"> 
 			<div>
-				{t}Dispatch Date{/t}:<b>{$po->get_date('Delivery Note Date')}</b> 
+				{t}Date{/t}:<b>{$po->get_date('Purchase Order Submitted Date')}</b> 
 			</div>
 			</td>
 		</tr>
@@ -104,7 +104,7 @@ div.inline { float:left; }
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
 			<div style="text-align: right">
-				{t}Supplier{/t}:<b> {$po->get('Purchase Order Supplier Name')}</b> ({$po->get('Delivery Note Customer Key')}) 
+				{t}Supplier{/t}:<b> {$po->get('Purchase Order Supplier Name')}</b> ({$po->get('Purchase Order Supplier Code')}) 
 			</div>
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
@@ -119,22 +119,16 @@ div.inline { float:left; }
 	</table>
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
 		<tr>
-			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span> 
-			<div>
-				{$po->get('Delivery Note XHTML Ship To')} 
-			</div>
-			</td>
+			
 			<td width="10%">&nbsp;</td>
 			<td width="45%" style="text-align: right"> 
 			<div style="text-align: right">
-				{t}Parcels{/t}:<b> </b> 
+				{t}Currency{/t}:<b>{$po->get('Purchase Order Currency Code')}</b> 
 			</div>
 			<div style="text-align: right">
-				{t}Weight{/t}: <b>{$po->get('Weight')}</b> 
+				{t}Iconterm{/t}: <b>{$po->get('Purchase Order Iconterm')}</b> 
 			</div>
-			<div style="text-align: right">
-				{t}Courier{/t}: <b> <span id="formated_consignment"></span></span> </b> 
-			</div>
+		
 			</td>
 		</tr>
 	</table>
@@ -144,23 +138,31 @@ div.inline { float:left; }
 			<tr>
 				<td style="width:8%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
-				<td style="width:8%;text-align:right">{t}RRP{/t}</td>
-				<td style="width:8%;text-align:right">{t}Ordered{/t}</td>
-				<td style="width:8%;text-align:right">{t}Dispatched{/t}</td>
-				<td style="text-align:right">{t}Notes{/t}</td>
+				<td style="width:8%;text-align:right">{t}U/Caton{/t}</td>
+				<td style="width:8%;text-align:right">{t}Price/U{/t}</td>
+				<td style="width:8%;text-align:right">{t}Cartons{/t}</td>
+				<td style="width:8%;text-align:right">{t}Amount{/t}</td>
 			</tr>
 		</thead>
 		<tbody>
 			{foreach from=$transactions item=transaction name=products} 
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
-				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
-				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
-				<td style="width:8%;text-align:right">{$transaction['RRP']}</td>
-				<td style="width:8%;text-align:right">{$transaction['Required']}</td>
-				<td style="width:8%;text-align:right"><b>{$transaction['dispatched']}</b></td>
-				<td style="text-align:right">{$transaction['notes']}</td>
+				<td style="width:8%;text-align:left">{$transaction['Code']}</td>
+				<td style="text-align:left">{$transaction['Description']}</td>
+				<td style="width:8%;text-align:right">{$transaction['Units']}</td>
+				<td style="width:8%;text-align:right">{$transaction['Price_Unit']}</td>
+				<td style="width:8%;text-align:right"><b>{$transaction['Cartons']}</b></td>
+				<td style="text-align:right">{$transaction['Amount']}</td>
 			</tr>
 			{/foreach} 
+		</tbody>
+				<tbody class="totals">
+
+			<tr class="total">
+			<td style="border:none" colspan="2" ></td>
+				<td colspan="3"><b>{t}Total{/t}</b></td>
+				<td>{$po->get('Total Amount')}</td>
+			</tr>
 		</tbody>
 	</table>
 	<br> <br> 

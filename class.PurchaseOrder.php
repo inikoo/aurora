@@ -73,7 +73,7 @@ class PurchaseOrder extends DB_Table{
 			$this->get_data('id',$this->id);
 			$supplier->update_orders();
 		}else
-			exit(" error can no create purchse order");
+			exit(" error can no create purchse order ".mysql_error());
 
 
 	}

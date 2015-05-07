@@ -1,6 +1,7 @@
 <?php
 
 include_once 'common.php';
+include_once 'class.Warehouse.php';
 include_once 'class.Supplier.php';
 include_once 'class.PurchaseOrder.php';
 include_once 'class.CompanyArea.php';
@@ -21,6 +22,10 @@ if (isset($_REQUEST['id'])) {
 	and is_numeric($_REQUEST['supplier_id'])
 	and $_REQUEST['supplier_id']>0
 ) {
+
+
+$warehouse=new Warehouse(1);
+
 	$supplier=new Supplier('id',$_REQUEST['supplier_id']);
 	$editor=array(
 		'Author Name'=>$user->data['User Alias'],
@@ -32,7 +37,18 @@ if (isset($_REQUEST['id'])) {
 	$data=array(
 		'Purchase Order Supplier Key'=>$supplier->id,
 		'Purchase Order Supplier Name'=>$supplier->data['Supplier Name'],
+		'Purchase Order Supplier Code'=>$supplier->data['Supplier Code'],
 		'Purchase Order Currency Code'=>$supplier->data['Supplier Default Currency'],
+		'Purchase Order Warehouse Key'=>$warehouse->data['Warehouse Key'],
+		'Purchase Order Warehouse Code'=>$warehouse->data['Warehouse Code'],
+		'Purchase Order Warehouse Name'=>$warehouse->data['Warehouse Name'],
+		'Purchase Order Warehouse Address'=>$warehouse->data['Warehouse Address'],
+		'Purchase Order Warehouse Company Name'=>$warehouse->data['Warehouse Company Name'],
+		'Purchase Order Warehouse Company Number'=>$warehouse->data['Warehouse Company Number'],
+		'Purchase Order Warehouse VAT Number'=>$warehouse->data['Warehouse VAT Number'],
+		'Purchase Order Warehouse Telephone'=>$warehouse->data['Warehouse Telephone'],
+		'Purchase Order Warehouse Email'=>$warehouse->data['Warehouse Email'],
+		
 		'editor'=>$editor
 	);
 
