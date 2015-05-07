@@ -4643,15 +4643,29 @@ class product extends DB_Table {
 	}
 
 	function get_formated_rrp($locale='') {
+	
+$data=array(
+			'Product Price'=>$this->data['Product RRP']/$this->data['Product Units Per Case'],
+			'Product Units Per Case'=>$this->data['Product Units Per Case'],
+			'Product Currency'=>$this->get('Product Currency'),
+			'Product Unit Type'=>$this->data['Product Unit Type'],
+			'Label'=>'',
 
+			'locale'=>$locale);
+
+		return formated_price($data);
+/*
 		$data=array(
 			'Product RRP'=>$this->data['Product RRP'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
 			'Product Currency'=>$this->get('Product Currency'),
 			'Product Unit Type'=>$this->data['Product Unit Type'],
+			'Label'=>'',
+
 			'locale'=>$locale);
 
 		return formated_rrp($data);
+		*/
 	}
 
 
@@ -4663,8 +4677,8 @@ class product extends DB_Table {
 			'Product Price'=>$this->data['Product Price'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
 			'Product Currency'=>$this->get('Product Currency'),
-			'Product Unit Type'=>$this->data['Product Unit Type'],
-
+			'Product Unit Type'=>_('outer'),
+			'Label'=>'',
 
 			'locale'=>$locale);
 
@@ -4672,7 +4686,19 @@ class product extends DB_Table {
 	}
 
 	function get_formated_price_per_unit($locale='') {
+	
+	$data=array(
+			'Product Price'=>$this->data['Product Price']/$this->data['Product Units Per Case'],
+			'Product Units Per Case'=>$this->data['Product Units Per Case'],
+			'Product Currency'=>$this->get('Product Currency'),
+			'Product Unit Type'=>$this->data['Product Unit Type'],
+			'Label'=>'',
 
+			'locale'=>$locale);
+
+		return formated_price($data);
+	
+/*
 		$data=array(
 			'Product Price'=>$this->data['Product Price'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
@@ -4684,6 +4710,8 @@ class product extends DB_Table {
 			'locale'=>$locale);
 
 		return formated_price_per_unit($data);
+		*/
+		
 	}
 
 	function update_units_per_case($units) {
