@@ -1200,7 +1200,7 @@ class Store extends DB_Table {
 
 		setlocale(LC_ALL, 'en_GB');
 
-		  print "$interval\t\t | $from_date | t\t todate:  $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+		//  print "$interval\t\t | $from_date | t\t todate:  $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
 
 
@@ -1250,7 +1250,7 @@ class Store extends DB_Table {
 
 		mysql_query($sql);
 		
-		print "$sql\n";
+		
 
 		$sql=sprintf("update `Store Default Currency` set
                      `Store DC $db_interval Acc Invoiced Discount Amount`=%.2f,
@@ -1262,7 +1262,7 @@ class Store extends DB_Table {
 			,$this->data["Store DC $db_interval Acc Profit"]
 			,$this->id
 		);
-		print "$sql\n";
+		//print "$sql\n";
 		mysql_query($sql);
 
 

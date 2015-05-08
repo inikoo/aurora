@@ -69,9 +69,16 @@ $_SESSION['lang']=1;
 
 chdir('../../');
 
-$corporation_currency_code='GBP';
 
-$sql=sprintf("select `Invoice Public ID`,`Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Currency`!='GBP'");
+
+$account=new Account(1);
+
+
+
+$sql=sprintf("select `Invoice Public ID`,`Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Currency`!=%s",
+prepare_mysql($account->data['Account Currency'])
+
+);
 $result=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
