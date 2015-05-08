@@ -1205,12 +1205,13 @@ class Store extends DB_Table {
 		$this->data["Store $db_interval Acc Invoiced Discount Amount"]=0;
 		$this->data["Store $db_interval Acc Invoiced Amount"]=0;
 		$this->data["Store $db_interval Acc Invoices"]=0;
+		$this->data["Store $db_interval Acc Refunds"]=0;
 		$this->data["Store $db_interval Acc Profit"]=0;
 		$this->data["Store DC $db_interval Acc Invoiced Amount"]=0;
 		$this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=0;
 		$this->data["Store DC $db_interval Acc Profit"]=0;
 
-		$sql=sprintf("select sum(if(`Invoice Type`='Invoice',1,0))  as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>=%s %s" ,
+		$sql=sprintf("select sum(if(`Invoice Type`='Invoice',1,0))  as invoices, sum(if(`Invoice Type`='Refund',1,0))  as refunds,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>=%s %s" ,
 			$this->id,
 			prepare_mysql($from_date),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
@@ -1222,6 +1223,7 @@ class Store extends DB_Table {
 			$this->data["Store $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
 			$this->data["Store $db_interval Acc Invoiced Amount"]=$row["net"];
 			$this->data["Store $db_interval Acc Invoices"]=$row["invoices"];
+			$this->data["Store $db_interval Acc Refunds"]=$row["refunds"];
 			$this->data["Store $db_interval Acc Profit"]=$row["profit"];
 			$this->data["Store DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
 			$this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
@@ -1232,11 +1234,13 @@ class Store extends DB_Table {
                      `Store $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `Store $db_interval Acc Invoiced Amount`=%.2f,
                      `Store $db_interval Acc Invoices`=%d,
+                      `Store $db_interval Acc Refunds`=%d,
                      `Store $db_interval Acc Profit`=%.2f
                      where `Store Key`=%d "
 			,$this->data["Store $db_interval Acc Invoiced Discount Amount"]
 			,$this->data["Store $db_interval Acc Invoiced Amount"]
 			,$this->data["Store $db_interval Acc Invoices"]
+			,$this->data["Store $db_interval Acc Refunds"]
 			,$this->data["Store $db_interval Acc Profit"]
 			,$this->id
 		);
@@ -1259,6 +1263,7 @@ class Store extends DB_Table {
 
 		if ($from_date_1yb) {
 			$this->data["Store $db_interval Acc 1YB Invoices"]=0;
+			$this->data["Store $db_interval Acc 1YB Refunds"]=0;
 			$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=0;
 			$this->data["Store $db_interval Acc 1YB Invoiced Amount"]=0;
 			$this->data["Store $db_interval Acc 1YB Profit"]=0;
@@ -1266,7 +1271,7 @@ class Store extends DB_Table {
 			$this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]=0;
 			$this->data["Store DC $db_interval Acc 1YB Profit"]=0;
 
-			$sql=sprintf("select  sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>%s and `Invoice Date`<%s" ,
+			$sql=sprintf("select  sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>%s and `Invoice Date`<%s" ,
 				$this->id,
 				prepare_mysql($from_date_1yb),
 				prepare_mysql($to_1yb)
@@ -1277,6 +1282,7 @@ class Store extends DB_Table {
 				$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
 				$this->data["Store $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
 				$this->data["Store $db_interval Acc 1YB Invoices"]=$row["invoices"];
+				$this->data["Store $db_interval Acc 1YB Refunds"]=$row["refunds"];
 				$this->data["Store $db_interval Acc 1YB Profit"]=$row["profit"];
 				$this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
 				$this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
@@ -1286,12 +1292,14 @@ class Store extends DB_Table {
 			$sql=sprintf("update `Store Data Dimension` set
                          `Store $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Store $db_interval Acc 1YB Invoices`=%.2f,
-                         `Store $db_interval Acc 1YB Profit`=%.2f
+                         `Store $db_interval Acc 1YB Invoices`=%d,
+                         `Store $db_interval Acc 1YB Refudns`=%d,
+                        `Store $db_interval Acc 1YB Profit`=%.2f
                          where `Store Key`=%d "
 				,$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]
 				,$this->data["Store $db_interval Acc 1YB Invoiced Amount"]
 				,$this->data["Store $db_interval Acc 1YB Invoices"]
+				,$this->data["Store $db_interval Acc 1YB Refunds"]
 				,$this->data["Store $db_interval Acc 1YB Profit"]
 				,$this->id
 			);

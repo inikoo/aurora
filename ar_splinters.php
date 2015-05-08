@@ -268,7 +268,7 @@ function store_sales_overview() {
 	$period_tag=get_interval_db_name($period);
 
 
-	$fields=sprintf(" `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Invoiced Amount` as sales, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,
+	$fields=sprintf(" `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Invoiced Amount` as sales, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,
                         `Store DC $period_tag Acc Invoiced Amount` as dc_sales,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 
@@ -280,32 +280,40 @@ function store_sales_overview() {
 
 
 
-	$sql=sprintf("select  S.`Store Key`,`Store Name`, `Store Currency Code` currency,%s from `Store Dimension` S left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`) ",$fields);
+	$sql=sprintf("select  `Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency,%s from `Store Dimension` S 
+		left join `Store Data Dimension` SD on (S.`Store Key`=SD.`Store Key`)
+
+	left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`)
+	
+	 ",$fields);
 	$adata=array();
 	//print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	$sum_invoices=0;
+	$sum_refunds=0;
 	$sum_invoices_1yb=0;
 	$sum_dc_sales=0;
 	$sum_dc_sales_1yb=0;
+
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total++;
 		$sum_invoices+=$row['invoices'];
+		$sum_refunds+=$row['refunds'];
 		$sum_invoices_1yb+=$row['invoices_1yb'];
 
 		$sum_dc_sales+=$row['dc_sales'];
 		$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
-		$invoice=number($row['invoices']);
-		$store="<a href='store.php?view=sales&period=".$period."&id=".$row['Store Key']."'>".$row['Store Name'].'</a>';
-		$invoices=sprintf('<a href="orders.php?store=%d&from=%s&to=%s&view=invoices">%s</a>',$row['Store Key'],$from,$to,$invoice);
+		$store="<a href='store.php?view=sales&period=".$period."&id=".$row['Store Key']."' title='".strip_tags($row['Store Name'])."' >".$row['Store Code'].'</a>';
+		$invoices=sprintf('<a href="orders.php?store=%d&from=%s&to=%s&view=invoices">%s</a>',$row['Store Key'],$from,$to,number($row['invoices']));
+		$refunds=sprintf('<a href="orders.php?store=%d&from=%s&to=%s&view=invoices">%s</a>',$row['Store Key'],$from,$to,number($row['refunds']));
 
 		$adata[]=array(
 
 			'store'=>$store,
 			'invoices'=>$invoices,
-			'refunds'=>$invoices,
+			'refunds'=>$refunds,
 			'invoices_1yb'=>number($row['invoices_1yb']),
 			'invoices_delta'=>'<span title="'.number($row['invoices_1yb']).'">'.delta($row['invoices'],$row['invoices_1yb']).'</span>',
 			'invoices_share'=>$row['invoices'],
@@ -336,6 +344,7 @@ function store_sales_overview() {
 
 		'store'=>"<a href='report_sales_main.php?period=".$period."'>"._('Total').'</a>',
 		'invoices'=>number($sum_invoices),
+		'refunds'=>number($sum_refunds),
 		'invoices_1yb'=>'',
 		'invoices_delta'=>'<span title="'.number($sum_invoices_1yb).'">'.delta($sum_invoices,$sum_invoices_1yb).'</span>',
 		'sales'=>'',
