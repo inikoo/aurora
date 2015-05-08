@@ -76,7 +76,7 @@ $account=new Account(1);
 
 
 $sql=sprintf("select `Invoice Public ID`,`Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Currency`!=%s",
-prepare_mysql($account->data['Account Currency'])
+	prepare_mysql($account->data['Account Currency'])
 
 );
 $result=mysql_query($sql);
@@ -120,7 +120,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 
-$sql=sprintf("select `Order Public ID`,`Order Key`,`Order Date`,`Order Currency` from `Order Dimension` where (`Order Currency Exchange`=1  or `Order Currency Exchange`=0 ) and `Order Currency`!='GBP'");
+$sql=sprintf("select `Order Public ID`,`Order Key`,`Order Date`,`Order Currency` from `Order Dimension` where (`Order Currency Exchange`=1  or `Order Currency Exchange`=0 ) and `Order Currency`!=%s",
+	prepare_mysql($account->data['Account Currency'])
+
+);
 $result=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -142,43 +145,5 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 
-exit;
-
-$sql="select  `Invoice Paid`,`Invoice Currency Exchange`,`Invoice Key`  from `Invoice Dimension` where `Invoice Currency Exchange`!=1;  ";
-
-$result=mysql_query($sql);
-//print $sql;
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d",$row['Invoice Currency Exchange'],$row['Invoice Key']);
-	print "$sql\n";
-	mysql_query($sql);
-
-	if ($row['Invoice Paid']=='Yes') {
-
-
-
-		$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  ",
-			$row['Invoice Key']);
-
-		$res2=mysql_query($sql);
-
-		while ($row2=mysql_fetch_assoc($res2)) {
-
-
-			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%.2f where `Map To Order Transaction Fact Key`=%d "
-				,$row2['Invoice Currency Exchange Rate']*($row2['Invoice Transaction Gross Amount']-$row2['Invoice Transaction Total Discount Amount']-$row2['Invoice Transaction Net Refund Items'])
-				,$row2['Order Transaction Fact Key']);
-
-			mysql_query( $sql );
-			print "$sql\n";
-		}
-
-
-
-	}
-
-	//exit;
-}
 
 ?>
