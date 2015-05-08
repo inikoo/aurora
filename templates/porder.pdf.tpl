@@ -107,14 +107,7 @@ div.inline { float:left; }
 				{t}Supplier{/t}:<b> {$po->get('Purchase Order Supplier Name')}</b> ({$po->get('Purchase Order Supplier Code')}) 
 			</div>
 			</td>
-			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
-			<div style="text-align: right">
-				{t}Parcels{/t}:<b> {$po->get_formated_parcels()}</b> 
-			</div>
-			<div style="text-align: right">
-				{t}Weight{/t}: <b>{$po->get('Weight')}</b> 
-			</div>
-			{/if} </td>
+			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> </td>
 		</tr>
 	</table>
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">

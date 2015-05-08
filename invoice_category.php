@@ -55,6 +55,7 @@ $css_files=array(
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
+	'css/calendar.css',
 	'css/table.css',
 	'theme.css.php'
 );
@@ -361,9 +362,12 @@ $_SESSION['state']['invoice_categories']['period']=$period;
 $_SESSION['state']['invoice_categories']['from']=$from;
 $_SESSION['state']['invoice_categories']['to']=$to;
 
+
+
+
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
-$smarty->assign('period',$period);
+$smarty->assign('period',get_interval_db_name($period));
 $smarty->assign('period_label',$period_label);
 $to_little_edian=($to==''?'':date("d-m-Y",strtotime($to)));
 $from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));

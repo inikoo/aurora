@@ -60,10 +60,10 @@ class TimeSeries {
 
 		if (!$this->name or !$this->freq)
 			return;
-			
-			
-			
-			
+
+
+
+
 		if (preg_match('/contact population \((\d)+\)\s*?/i',$this->name,$match)) {
 			$store_key_array=array();
 
@@ -864,38 +864,43 @@ class TimeSeries {
 
 	function save_day_values($date,$data) {
 
-		$sql=sprintf("insert into `Time Series Dimension` 
-		
-		`Time Series Date`,`Time Series Frequency`,`Time Series Name`,`Time Series Name Key`,
-		``,``,``,``,
-		``,``,``,``,
-		``,``,``,``,
+		$sql=sprintf("insert into `Time Series Dimension`
+
+		(`Time Series Date`,`Time Series Frequency`,`Time Series Name`,`Time Series Name Key`,
+		`Time Series Name Second Key`,`Time Series Parent Key`,`Time Series Label`,`Time Series Value`,
+		`Time Series Count`,`Open`,`High`,`Low`,
+		`Close`,`Volume`,`Adj Close`,`Time Series Type`,
+		`Time Series Metadata`,`Time Series Tag`)
 		values (
 		%s,%s,%s,%d,
 		%d,%d,%s,%f,
 		%d,%s,%s,%s,
 		%s,%s,%s,'Data',
-		'','','')
-  ON DUPLICATE KEY UPDATE  
+		'','')
+  ON DUPLICATE KEY UPDATE
   `Time Series Value`=%f ,`Time Series Count`=%d , `Open`=%s,`High`=%s,
-  `Low`=%s,`Close`=%s,`Volume`=%s,`Adj Close`=%s, 
+  `Low`=%s,`Close`=%s,`Volume`=%s,`Adj Close`=%s,
   `Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d ",
 			prepare_mysql($date),
 			prepare_mysql($this->freq),
 			prepare_mysql($this->name),
 			$this->name_key,
+
 			$this->name_key2,
 			$this->parent_key,
 			prepare_mysql($this->label),
 			$data['value'],
+
 			$data['count'],
 			prepare_mysql($data['open']),
 			prepare_mysql($data['high']),
 			prepare_mysql($data['low']),
+
 			prepare_mysql($data['close']),
 			prepare_mysql($data['volume']),
 			prepare_mysql($data['adj close']),
 			$data['value'],
+
 			$data['count'],
 			prepare_mysql($data['open']),
 			prepare_mysql($data['high']),
@@ -906,8 +911,6 @@ class TimeSeries {
 			$this->parent_key
 		);
 		mysql_query($sql);
-
-//print "$sql\n";
 
 	}
 
@@ -1513,9 +1516,9 @@ class TimeSeries {
 
 	}
 
-function get_site_users_requests_value_day($date,$last_close){
-	
-	$new=0;
+	function get_site_users_requests_value_day($date,$last_close) {
+
+		$new=0;
 
 
 		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD where  `Site Key`=%d and `Date`>=%s and `Date`<=%s  and `Is User`='Yes'",
@@ -1543,16 +1546,16 @@ function get_site_users_requests_value_day($date,$last_close){
 		//   print_r($data);
 
 		return $data;
-	
-	
+
+
 	}
 
-	function get_site_no_users_requests_value_day($date,$last_close){
-	
-	$new=0;
+	function get_site_no_users_requests_value_day($date,$last_close) {
+
+		$new=0;
 
 
-	$sql=sprintf("select count(*) as request  from `User Request Dimension` URD where  `Site Key`=%d and `Date`>=%s and `Date`<=%s  and `Is User`='No'",
+		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD where  `Site Key`=%d and `Date`>=%s and `Date`<=%s  and `Is User`='No'",
 			$this->name_key,
 			prepare_mysql($date.' 00:00:00'),
 			prepare_mysql($date.' 23:59:59')
@@ -1578,8 +1581,8 @@ function get_site_users_requests_value_day($date,$last_close){
 		//   print_r($data);
 
 		return $data;
-	
-	
+
+
 	}
 
 	function get_contact_population_value_day($date,$last_close) {
@@ -1794,7 +1797,7 @@ function get_site_users_requests_value_day($date,$last_close){
 		$last_close=0;
 
 		while ($row=mysql_fetch_array($res)) {
-		//print $row['date']."\n";
+			//print $row['date']."\n";
 			if ($row['date']==$start_day) {
 				$this->first=array(
 					'date'=>$row['date'],
@@ -2316,8 +2319,8 @@ function get_site_users_requests_value_day($date,$last_close){
 
 	function first_complete_day() {
 
-	if ($this->name=='Site No Users Requests' or $this->name=='Site Users Requests') {
-	$sql=sprintf("select `Site From` as the_date from `Site Dimension`  where  `Site Key`=%d ",
+		if ($this->name=='Site No Users Requests' or $this->name=='Site Users Requests') {
+			$sql=sprintf("select `Site From` as the_date from `Site Dimension`  where  `Site Key`=%d ",
 				$this->name_key
 
 			);
@@ -2326,8 +2329,8 @@ function get_site_users_requests_value_day($date,$last_close){
 
 			if ($row=mysql_fetch_array($res)) {
 
-			if($row['the_date']=='')
-				return;
+				if ($row['the_date']=='')
+					return;
 
 				$this->start_date=date("Y-m-d", strtotime($row['the_date']));
 				$this->start_day=$this->start_date;
@@ -2338,12 +2341,12 @@ function get_site_users_requests_value_day($date,$last_close){
 				$this->no_data=false;
 				return $this->start_date;
 
-			}else{
+			}else {
 				return;
 			}
-	
-	}
-	
+
+		}
+
 		if ($this->name=='customer population') {
 
 			$sql=sprintf("select min(`Customer First Order Date`) as the_date from `Customer Dimension`  where `Customer With Orders`='Yes' and `Customer Store Key`=%d ",
@@ -2511,7 +2514,7 @@ function get_site_users_requests_value_day($date,$last_close){
 			,$this->name_key
 
 		);
-		
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			return $row['date'];
@@ -2522,12 +2525,12 @@ function get_site_users_requests_value_day($date,$last_close){
 	}
 
 
-function site_last_day() {
+	function site_last_day() {
 		$sql=sprintf("select `Site To` as date from `Site Dimension` where `Site To` IS NOT NULL and `Site Key` =%d  "
 			,$this->name_key
 
 		);
-		
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			return $row['date'];
@@ -2543,7 +2546,7 @@ function site_last_day() {
 		if ($this->name=='customer population' or $this->name=='contact population') {
 			return $this->store_last_day();
 		}
-		
+
 		if ($this->name=='Site No Users Requests' or $this->name=='Site Users Requests') {
 			return $this->site_last_day();
 		}

@@ -769,7 +769,7 @@ class Department extends DB_Table {
 			$this->data["Product Department DC $db_interval Acc Profit"]=$row["dc_net"]-$row['dc_total_cost'];
 		}
 
-		$sql=sprintf("update `Product Department Dimension` set
+		$sql=sprintf("update `Product Department Data Dimension` set
                      `Product Department $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `Product Department $db_interval Acc Invoiced Amount`=%.2f,
                      `Product Department $db_interval Acc Invoices`=%d,
@@ -837,7 +837,7 @@ class Department extends DB_Table {
 
 			}
 
-			$sql=sprintf("update `Product Department Dimension` set
+			$sql=sprintf("update `Product Department Data Dimension` set
                          `Product Department $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Product Department $db_interval Acc 1YB Invoiced Amount`=%.2f,
                         `Product Department $db_interval Acc 1YB Invoiced Delta`=%f,
