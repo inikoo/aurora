@@ -1298,7 +1298,7 @@ class Store extends DB_Table {
                          `Store $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoiced Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoices`=%d,
-                         `Store $db_interval Acc 1YB Refudns`=%d,
+                         `Store $db_interval Acc 1YB Refunds`=%d,
                         `Store $db_interval Acc 1YB Profit`=%.2f
                          where `Store Key`=%d "
 				,$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]
