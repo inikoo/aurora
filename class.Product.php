@@ -1041,7 +1041,7 @@ class product extends DB_Table {
 			$this->new_id=true;
 			$this->new=true;
 
-			$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$this->new_id);
+			$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$this->pid);
 			mysql_query($sql);
 
 			$sql=sprintf("insert into  `Product Data Dimension`  (`Product ID`) values (%d) ",$this->pid);
