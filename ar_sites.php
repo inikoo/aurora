@@ -499,7 +499,7 @@ function list_pages() {
 
 
 	$sql="select count(*) as total from $table $where $wheref";
-//	print $sql;
+	// print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -582,7 +582,7 @@ function list_pages() {
 		$order='`Page Store Number Sold Out Products`';
 	elseif ($order=='percentage_products_out_of_stock')
 		$order='percentage_out_of_stock ';
-elseif ($order=='type')
+	elseif ($order=='type')
 		$order='`Page Store Section`';
 
 
@@ -624,7 +624,7 @@ elseif ($order=='type')
 		case 'Product Description':
 			$type=sprintf("f(<a href='product.php?pid=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
 			break;
-		
+
 		case 'Welcome':
 			$type=_('Welcome');
 			break;
@@ -663,10 +663,10 @@ elseif ($order=='type')
 			break;
 		case 'Payment Limbo':
 			$type=_('Payment Limbo');
-			break;	
+			break;
 		case 'Search':
 			$type=_('Search');
-			break;	
+			break;
 		default:
 			$type=_('Other').' '.$row['Page Store Section'];
 			break;
@@ -1098,7 +1098,7 @@ function list_sites() {
 		$parent='none';
 
 
-  
+
 	if (isset( $_REQUEST['parent_key']))
 		$parent_key=$_REQUEST['parent_key'];
 	else
@@ -1273,25 +1273,56 @@ function list_sites() {
 	}
 
 
-	if ($order=='name')
+	if ($order=='name'){
 		$order='`Site Name`';
-	elseif ($order=='url')
+	}elseif ($order=='url'){
 		$order='`Site URL`';
-
-	elseif ($order=='code')
+	}elseif ($order=='users'){
+		$order='`Site Total Acc Users`';
+	}elseif ($order=='code'){
 		$order='`Site Code`';
 
-	else {
-		$order=`Site Code`;
+	}elseif ($order=='pages'){
+		$order='`Site Number Pages`';
+	}elseif ($order=='products'){
+		$order='`Site Number Products`';
+    }elseif ($order=='visitors'){
+		$order='`Site Total Acc Visitors`';
+    }elseif ($order=='requests'){
+		$order='`Site Total Acc Requests`';
+    }elseif ($order=='sessions'){
+		$order='`Site Total Acc Sessions`';
+    }elseif ($order=='pages_products'){
+		$order='`Site Number Pages with Products`';
+    }elseif ($order=='pages_out_of_stock'){
+		$order='`Site Number Pages with Out of Stock Products`';
+    }elseif ($order=='pages_out_of_stock_percentage'){
+		$order='`Site Number Pages with Out of Stock Products`/`Site Number Pages with Products`';
+    }elseif ($order=='email_reminders_customers'){
+		$order='`Site Number Back in Stock Reminder Customers`';
+    }elseif ($order=='email_reminders_products'){
+		$order='`Site Number Back in Stock Reminder Products`';
+    }elseif ($order=='email_reminders_waiting'){
+		$order='`Site Number Back in Stock Reminder Waiting`';
+    }elseif ($order=='email_reminders_ready'){
+		$order='`Site Number Back in Stock Reminder Ready`';
+    }elseif ($order=='email_reminders_sent'){
+		$order='`Site Number Back in Stock Reminder Sent`';
+    }elseif ($order=='email_reminders_cancelled'){
+		$order='`Site Number Back in Stock Reminder Cancelled`';
+    }elseif ($order=='out_of_stock'){
+		$order='`Site Number Out of Stock Products`';
+    }elseif ($order=='out_of_stock_percentage'){
+		$order='`Site Number Out of Stock Products`/`Site Number Products`';
+    }
+    else {
+	
+		$order='`Site Code`';
+		
 	}
-
-	//print $order;
-	//    elseif($order='used_in')
-	//        $order='Supplier Product XHTML Sold As';
 
 	$sql="select `Site Number Back in Stock Reminder Customers`,`Site Number Back in Stock Reminder Products`,`Site Number Back in Stock Reminder Waiting`,`Site Number Back in Stock Reminder Ready`,`Site Number Back in Stock Reminder Sent`,`Site Number Back in Stock Reminder Cancelled`,`Site Number Products`,`Site Number Out of Stock Products`,`Site Number Pages with Out of Stock Products`,`Site Number Pages with Products`,`Site Number Pages`,`Site Total Acc Requests`,`Site Total Acc Sessions`,`Site Total Acc Visitors`,`Site Total Acc Users`,`Site Code`,`Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-	//print $sql;
 
 	$result=mysql_query($sql);
 	$data=array();
@@ -1427,7 +1458,7 @@ function list_page_stats() {
 	else
 		$f_value=$conf['f_value'];
 
-	
+
 	/*
 	if (isset( $_REQUEST['period']))
 		$period=$_REQUEST['period'];
@@ -1626,14 +1657,14 @@ function list_page_stats() {
 
 	//$sql=sprintf("select * from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Site Key`) left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
-	// print $sql; 
+	// print $sql;
 
 	$result=mysql_query($sql);
 
 
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
-//print_r($row);
+		//print_r($row);
 		switch ($group_by) {
 		case('users'):
 			$name="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
@@ -1670,10 +1701,10 @@ function list_page_stats() {
 				'email'=>$row['Customer Main Plain Email'],
 				'previous_page'=>$prev_page,
 				'ip'=>$row['IP'],
-								'os'=>$row['OS'],
-								'browser'=>$row['Browser'],
+				'os'=>$row['OS'],
+				'browser'=>$row['Browser'],
 
-							'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
+				'date'=>strftime("%a %e %b %y %H:%M:%S %Z", strtotime($row['Date']." +00:00")),
 
 			);
 			break;
@@ -2336,13 +2367,13 @@ function list_requests() {
 	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
 	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
 	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
-		$_SESSION['state'][$conf_table][$conf_var]['elements']=$elements;
+	$_SESSION['state'][$conf_table][$conf_var]['elements']=$elements;
 
 	$_SESSION['state'][$conf_table]['from']=$from;
 	$_SESSION['state'][$conf_table]['to']=$to;
 	$_SESSION['state'][$conf_table]['period']=$inteval_period;
-	
-	
+
+
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -2354,7 +2385,7 @@ function list_requests() {
 	}
 
 	switch ($parent) {
-	
+
 
 	case('page'):
 		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
@@ -2396,9 +2427,9 @@ function list_requests() {
 	if ($count_elements==0) {
 		$where.=' and false' ;
 	}elseif ($count_elements<2) {
-		
+
 		$where.=sprintf(" and `Is User`=%s ",
-		prepare_mysql($_key)
+			prepare_mysql($_key)
 		);
 	}
 
@@ -2492,19 +2523,19 @@ function list_requests() {
 	$_order=$order;
 	$_dir=$order_direction;
 
-	if($order=='page'){
+	if ($order=='page') {
 		$order='`Page Code`';
-	}else{
+	}else {
 
-	$order='`Date`';
-}
+		$order='`Date`';
+	}
 
 	$sql=sprintf("select URD.`Page Key` ,PSD.`Page Code`,PSD.`Page Store Section`,`IP`,`Customer Key`,`Customer Name`,`User Handle`, `Date` ,PP.`Page Key`,PP.`Page URL`
-	from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) 
-	left join `Page URL Dimension` PP on (URD.`User Request Referral Page URL Key`=PP.`Page URL Key`)  
+	from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`)
+	left join `Page URL Dimension` PP on (URD.`User Request Referral Page URL Key`=PP.`Page URL Key`)
 	left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
-//print $sql;
+	//print $sql;
 
 	$result=mysql_query($sql);
 
@@ -2527,7 +2558,7 @@ function list_requests() {
 			$previous_page='<b>'.$row['URL'].'</b> '.$previous_page;
 		}
 		*/
-		
+
 		$data[]=array(
 			'customer'=>$customer,
 			'handle'=>$row['User Handle'],
@@ -3856,11 +3887,11 @@ function list_products_email_reminder() {
 			'customers'=>number($row['customers']),
 			'first_created'=>strftime("%a %e %b %y %H:%M %Z", strtotime($row['first_created']." +00:00")),
 			'last_finish'=>($row['last_finish']?strftime("%a %e %b %y %H:%M %Z", strtotime($row['last_finish']." +00:00")):''),
-			'expected'=>($row['Product Next Supplier Shipment']?strftime("%a %e %b %y", strtotime($row['Product Next Supplier Shipment']." +00:00")):'<span style="color:#777;font-stype:italic">?</span>')	
-				
-				
-				
-		
+			'expected'=>($row['Product Next Supplier Shipment']?strftime("%a %e %b %y", strtotime($row['Product Next Supplier Shipment']." +00:00")):'<span style="color:#777;font-stype:italic">?</span>')
+
+
+
+
 
 		);
 	}
@@ -4309,7 +4340,7 @@ function get_interval_requests_elements_numbers($data) {
 		$where,$where_interval);
 
 	$res=mysql_query($sql);
-	
+
 	//print $sql;
 	while ($row=mysql_fetch_assoc($res)) {
 

@@ -13,7 +13,7 @@
 require_once 'common.php';
 
 require_once 'class.Part.php';
-//require_once 'common_functions.php';
+
 require_once 'ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
@@ -1515,6 +1515,7 @@ function part_stock_history() {
 
 		break;
 	case 'supplier_product':
+		require_once 'class.SupplierProduct.php';
 
 		$supplier_product=new SupplierProduct('pid',$parent_key);
 		$part_skus=$supplier_product->get_part_skus();

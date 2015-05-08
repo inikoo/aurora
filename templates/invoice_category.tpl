@@ -93,59 +93,41 @@
 							<tbody>
 								<tr>
 									<td> {t}Invoices{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,"Invoices")} </td>
+									<td class="aright"> {$category->get_period($period,"Acc Invoices")} </td>
 								</tr>
 								<tr>
 									<td> {t}Refunds{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Profit')} </td>
+									<td class="aright"> {$category->get_period($period,"Acc Refunds")} </td>
 								</tr>
-								<tr style="display:none">
-									<td> {t}Margin{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Margin')} </td>
+								<tr>
+									<td> {t}Amount{/t}: </td>
+									<td class="aright"> {$category->get_period($period,'Acc Invoiced Amount')} </td>
 								</tr>
-								<tr style="display:none">
-									<td> {t}GMROI{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc GMROI')} </td>
+								<tr>
+									<td> {t}Profit{/t}: </td>
+									<td class="aright"> {$category->get_period($period,'Acc Profit')} </td>
 								</tr>
-							</tbody>
+								
 						</table>
 					</div>
 					<div style="float:left;margin-left:20px">
 						<table style="width:200px;clear:both" class="show_info_product">
-							{foreach from=$period_tags item=period } 
-							<tbody id="info2_{$period.key}" style="{if $category_period!=$period.key}display:none{/if}">
-								{if $category->get_period($period.db,'Acc No Supplied')!=0} 
-								<tr>
-									<td> {t}Required{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Required')} </td>
+						
+						
+						
+						<tr >
+									<td> {t}Paid{/t}: </td>
+									<td class="aright"> {$category->get_period($period,'Acc Paid')} </td>
 								</tr>
-								<tr style="display:none">
-									<td> {t}No Supplied{/t}: </td>
-									<td class="aright error"> {$category->get_period($period.db,'Acc No Supplied')} </td>
+								<tr >
+									<td> {t}To Pay{/t}: </td>
+									<td class="aright"> {$category->get_period($period,'Acc To Pay')} </td>
 								</tr>
-								{/if} 
-								<tr>
-									<td> {t}Sold{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Sold')} </td>
-								</tr>
-								{if $category->get_period($period.db,'Acc Given')!=0} 
-								<tr>
-									<td> {t}Given for free{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Given')} </td>
-								</tr>
-								{/if} {if $category->get_period($period.db,'Acc Given')!=0} 
-								<tr>
-									<td> {t}Broken{/t}: </td>
-									<td class="aright"> {$category->get('Total Acc Broken')} </td>
-								</tr>
-								{/if} {if $category->get_period($period.db,'Acc Given')!=0} 
-								<tr>
-									<td> {t}Lost{/t}: </td>
-									<td class="aright"> { $category->get_period($period.db,'Acc Lost')} </td>
-								</tr>
-								{/if} 
 							</tbody>
-							{/foreach} 
+						
+						
+						
+						
 						</table>
 					</div>
 				</div>

@@ -42,6 +42,13 @@ function formated_price($data) {
 
 	$locale=$data['locale'];
 
+	if ($locale=='') {
+		$locale='en_GB';
+	}
+
+	if ($data['Product Units Per Case']==0) {
+		$data['Product Units Per Case']=1;
+	}
 
 	$price=money_locale($data['Product Price'],$locale,$data['Product Currency']);
 	$price_per_unit=money_locale($data['Product Price']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
@@ -145,8 +152,8 @@ function formated_price($data) {
 				$str="$price per unit";
 
 		}
-		
-		
+
+
 		if ($data=='from')
 			return 'Price from '.$str;
 		elseif ($label=='price')

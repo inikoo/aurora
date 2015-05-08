@@ -341,6 +341,7 @@ class Category extends DB_Table {
 	}
 
 	function get_period($period,$key) {
+	
 		return $this->get($period.' '.$key);
 	}
 
@@ -387,6 +388,28 @@ class Category extends DB_Table {
 				return money($this->data[$amount]);
 			}
 			return $key;
+			break;
+		case 'Invoice':
+
+
+			
+
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Invoices|Refunds)$/',$key)) {
+
+				$amount='Invoice Category '.$key;
+
+				return number($this->data[$amount]);
+			}
+
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit|Paid|To Pay)$/',$key)) {
+
+				$amount='Invoice Category '.$key;
+
+				return money($this->data[$amount]);
+			}
+			return $key;
+			break;	
+			
 		}
 
 		return false;
