@@ -4219,8 +4219,10 @@ class Page extends DB_Table {
 		//   print_r($image_data);
 		$image=new Image('find',$image_data,'create');
 
-		unlink("server_files/tmp/pp_image".$this->id."-clipped.png");
 
+		if (file_exists("server_files/tmp/pp_image".$this->id."-clipped.png")) {
+			unlink("server_files/tmp/pp_image".$this->id."-clipped.png");
+		}
 		$new_image_key=$image->id;
 		if (!$new_image_key) {
 			print $image->msg;

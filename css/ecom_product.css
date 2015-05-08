@@ -35,3 +35,6 @@ border-left:1px solid #aaa;border-right:1px solid #aaa;padding:10px 00px 10px 0p
 #specs{float:right;}
 #specs .icon{padding-right:10px;}
 #specs .title td{padding-top:10px;font-weight: 800}
+
+.gallery {width:305px;margin-left:0px;margin-top:10px}
+.gallery img.thumbs {height:60px;float:left;border:1px solid#ccc;padding:2px;margin:2px 2px 6px 2px;cursor:pointer}

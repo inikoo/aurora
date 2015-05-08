@@ -69,8 +69,8 @@ if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		$yui_path.'menu/assets/skins/sam/menu.css',
-		'css/ecom_inikoo.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	'css/ecom_inikoo.css',
 	'css/ecom_style.css'
 );
 
@@ -82,8 +82,8 @@ $js_files=array(
 );
 
 if ($logged and $site->data['Site Checkout Method']=='Inikoo') {
-		$css_files[]='css/ecom_order_fields.css';
-	}
+	$css_files[]='css/ecom_order_fields.css';
+}
 
 
 
@@ -130,7 +130,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
-$js_files[]='js/jquery.js';
+$js_files[]='js/jquery.min.js';
 
 if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('type_content','string');
