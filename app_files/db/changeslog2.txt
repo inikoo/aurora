@@ -98,5 +98,51 @@ run fix_supplier_products_data.php
 ALTER TABLE `Supplier Product History Dimension` ADD `SPH Currency` VARCHAR(3) NOT NULL DEFAULT 'GBP' AFTER `SPH Case Cost`; 
 
 
-ALTER TABLE `Part Dimension` CHANGE `Part Cost` `Part Cost` DECIMAL(12,4) NULL DEFAULT '0.0000'; 
+ALTER TABLE `Part Dimension` CHANGE `Part Cost` `Part Cost` DECIMAL(12,4) NULL DEFAULT '0.0000';
+
+
+
+
+
+ALTER TABLE `Store Data Dimension` ADD `Store Total Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Total Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 3 Year Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 3 Year Acc Invoices` ;
+
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Year Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Year Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Year To Day Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Year To Day Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Month To Day Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Month To Day Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Week To Day Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Week To Day Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 6 Month Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 6 Month Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Quarter Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Quarter Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Month Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Month Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 10 Day Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 10 Day Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Week Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Week Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Today Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Today Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Yesterday Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Yesterday Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Last Week Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Last Week Acc Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Last Month Acc Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Last Month Acc Invoices` ;
+
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Year Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Year Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Year To Day Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Year To Day Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Month To Day Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Month To Day Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Week To Day Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Week To Day Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 6 Month Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 6 Month Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Quarter Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Quarter Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Month Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Month Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 10 Day Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 10 Day Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store 1 Week Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Week Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Today Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Today Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Yesterday Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Yesterday Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Last Week Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Last Week Acc 1YB Invoices` ;
+ALTER TABLE `Store Data Dimension` ADD `Store Last Month Acc 1YB Refunds` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Last Month Acc 1YB Invoices` ;
+
+
+
+
+
+
+
+
+
+
+ 
 
