@@ -31,7 +31,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-//	'css/images.css',
+	// 'css/images.css',
 	'css/d3_calendar.css',
 	'theme.css.php'
 );
@@ -45,13 +45,15 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-	'js/jquery-1.4.4.min.js',
+	'js/jquery.min.js',
 	'js/barcode.js',
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/assets_common.js',
-
+	'js/fz.shadow.js',
+	'js/fz.js',
+	'js/imgpop.js',
 	'js/edit_common.js',
 	'js/localize_calendar.js',
 	'js/calendar_interval.js',
@@ -60,6 +62,7 @@ $js_files=array(
 	'js/search.js',
 	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
+	
 	'js/product.js'
 
 );
@@ -563,58 +566,58 @@ $smarty->assign('sales_max_sample_domain',$sales_max_sample_domain);
 
 
 $session_data=base64_encode(json_encode(array(
- 	'label'=>array(
- 		'Price'=>_('Price'),
- 		'Customer'=>_('Customer'),
- 		'Orders'=>_('Orders'),
- 		'Code'=>_('Code'),
- 		'Description'=>_('Description'),
- 		'Date'=>_('Date'),
- 		'WebSales_State'=>_('Web/Sales State'),
- 		'ID'=>_('ID'),
- 		'Name'=>_('Name'),
- 		'Sales'=>_('Sales'),
- 		'Profit'=>_('Profit'),
- 		'Available'=>_('Available'),
- 		'Forecast'=>_('Forecast'),
- 		'Parts'=>_('Parts'),
- 		'Supplied_by'=>_('Supplied by'),
- 		'GMROI'=>_('GMROI'),
- 		'Last_Update'=>_('Last Update'),
-  		'Since'=>_('Since'),
- 		'Until'=>_('Until'),
- 		'Pkg_Type'=>_('Pkg Type'),
- 		'Pkg_Weight'=>_('Pkg Weight'),
- 		'Pkg_Dim'=>_('Pkg Dim'),
- 		'Pkg_Vol'=>_('Pkg Vol'),
- 		'Unit_Weight'=>_('Unit Weight'),
- 		'Unit_Dim'=>_('Unit Dim'),
- 		'URL'=>_('URL'),
- 		'Users'=>_('Users'),
- 		'Pages'=>_('Pages'),
- 		'Products'=>_('Products'),
- 		'OoS'=>_('OoS'),
- 		'Pages_w_Prods'=>_('Pages w Prods'),
- 		'Pages_w_OoS'=>_('Pages w OoS'),
- 		'OK'=>_('OK'),
- 		'Low'=>_('Low'),
- 		'Critical'=>_('Critical'),
- 		'Gone'=>_('Gone'),
- 		'Unknown'=>_('Unknown'),
- 		'Families'=>_('Families'),
- 		'Discontinued'=>_('Discontinued'),
- 		'Sales_Type'=>_('Sales Type'),
- 		'Surplus'=>_('Surplus'),
- 		'Department'=>_('Department'),
+			'label'=>array(
+				'Price'=>_('Price'),
+				'Customer'=>_('Customer'),
+				'Orders'=>_('Orders'),
+				'Code'=>_('Code'),
+				'Description'=>_('Description'),
+				'Date'=>_('Date'),
+				'WebSales_State'=>_('Web/Sales State'),
+				'ID'=>_('ID'),
+				'Name'=>_('Name'),
+				'Sales'=>_('Sales'),
+				'Profit'=>_('Profit'),
+				'Available'=>_('Available'),
+				'Forecast'=>_('Forecast'),
+				'Parts'=>_('Parts'),
+				'Supplied_by'=>_('Supplied by'),
+				'GMROI'=>_('GMROI'),
+				'Last_Update'=>_('Last Update'),
+				'Since'=>_('Since'),
+				'Until'=>_('Until'),
+				'Pkg_Type'=>_('Pkg Type'),
+				'Pkg_Weight'=>_('Pkg Weight'),
+				'Pkg_Dim'=>_('Pkg Dim'),
+				'Pkg_Vol'=>_('Pkg Vol'),
+				'Unit_Weight'=>_('Unit Weight'),
+				'Unit_Dim'=>_('Unit Dim'),
+				'URL'=>_('URL'),
+				'Users'=>_('Users'),
+				'Pages'=>_('Pages'),
+				'Products'=>_('Products'),
+				'OoS'=>_('OoS'),
+				'Pages_w_Prods'=>_('Pages w Prods'),
+				'Pages_w_OoS'=>_('Pages w OoS'),
+				'OK'=>_('OK'),
+				'Low'=>_('Low'),
+				'Critical'=>_('Critical'),
+				'Gone'=>_('Gone'),
+				'Unknown'=>_('Unknown'),
+				'Families'=>_('Families'),
+				'Discontinued'=>_('Discontinued'),
+				'Sales_Type'=>_('Sales Type'),
+				'Surplus'=>_('Surplus'),
+				'Department'=>_('Department'),
 
-		'Page'=>_('Page'),
- 		'of'=>_('of')
- 		),
- 	'state'=>array(
- 		'product'=>$_SESSION['state']['product']
- 		)
- 	)));
- $smarty->assign('session_data',$session_data);
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'product'=>$_SESSION['state']['product']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
 
 $smarty->display('product.tpl');
 ?>

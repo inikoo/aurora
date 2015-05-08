@@ -33,11 +33,18 @@
 				</div>
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-						<img id="main_image" src="{$supplier_product->get('Supplier Product Main Image')}" style="vertical-align:middle;display:block;;width:190px;;margin:0px auto" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
+						<a href="{$supplier_product->get('Supplier Product Main Image')}" class="imgpop"><img id="main_image" src="{$supplier_product->get('Supplier Product Main Image')}" style="vertical-align:middle;display:block;;width:190px;;margin:0px auto" valign="center" border="1" id="image" alt="{t}Image{/t}" /></a>
 					</div>
 				</div>
 				<div style="width:160px;margin:auto;padding-top:5px">
-					{foreach from=$supplier_product->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} <img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /> {/if} {/foreach} 
+					 {foreach from=$supplier_product->get_images_slidesshow() item=image name=foo} 
+					 {if $image.is_principal==0}
+					  <a href="{$image.normal_url}" class="imgpop">
+					  <img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /> 
+					  </a>
+					  {/if}
+					  
+					   {/foreach} 
 				</div>
 			</div>
 			<div style="width:340px;float:left;margin-left:10px;">

@@ -4,9 +4,28 @@
 			<div class="images" style="float:left;width:310px;">
 				<div style="border:1px solid #ccc;background:#FFF">
 					<div class="wraptocenter">
-						<img src="{$product.img}"> 
+						<a href="{$product.img}" class="imgpop"><img src="{$product.img}"></a> 
 					</div>
 				</div>
+				
+				
+				<div style="{if $product.object->get_number_of_images()<=1}display:none{/if}">
+					<ul class="gallery">
+					
+						{foreach from=$product.object->get_images_slidesshow() item=image name=foo} 
+						{if $image.is_principal==0} 
+						    <li><a href="{$image.normal_url}"  class="imgpop">
+						    <img class="thumbs" src="{$image.small_url}" alt="{$image.name}" />
+						    </a>
+						    </li> 
+						{/if}
+						{/foreach} 
+						</ul>
+				</div>
+				
+				
+				
+				
 			</div>
 			<div class="information">
 				<h1 style="padding-top:5px;margin:2px 0;font-size:190%">
@@ -16,7 +35,7 @@
 					<div style="float:right;margin-right:4px">
 						{t}Product code{/t}: <span class="code">{$product.code}</span> 
 					</div>
-					{$product.price}
+					{$product.price}<br>
 					{$product.button_only}
 				</div>
 				<h3>

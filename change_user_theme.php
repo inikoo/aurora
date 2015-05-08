@@ -50,23 +50,31 @@ $js_files=array(
 		'js/table_common.js',
 		'js/search.js',
 		'js/change_user_theme.js',
-		'js/jquery-1.4.4.js'
+		'js/jquery.min.js'
 		);
 
 if(isset($_FILES['image']["name"])!='')
 {
 
 $current_image=$_FILES['image']['name'];
+
 //$new_image = $id.".png";
 echo $user_key;
 die();
 $new_image =$user_key.".png";
+
 $destination="uploads/".$new_image;
+
 $action = copy($_FILES['image']['tmp_name'], $destination);
+
 if (!$action) 
+
 {
+
 die('File copy failed');
+
 }else{
+
 	
 
      $sql="update `User Dimension` set `User Theme Background Status`='1' where `User Key`='$user_key'";
