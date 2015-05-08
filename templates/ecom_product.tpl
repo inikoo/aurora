@@ -4,7 +4,7 @@
 			<div class="images" style="float:left;width:310px;">
 				<div style="border:1px solid #ccc;background:#FFF">
 					<div class="wraptocenter">
-						<a href="{$product.img}" class="imgpop"><img src="{$product.img}"></a> 
+						<a href="{$product.normal_img}" class="imgpop"><img src="{$product.img}"></a> 
 					</div>
 				</div>
 				
