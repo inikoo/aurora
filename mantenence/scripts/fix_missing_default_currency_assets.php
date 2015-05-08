@@ -40,14 +40,35 @@ global $myconf;
 $sql="select `Product ID` from `Product Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result)   ) {
-	$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$row['Product ID']);
-	mysql_query($sql);
+
+	$sql=sprintf("select count(*) as num from `Product ID Default Currency` where `Product ID`=%d  ",
+		$row['Product ID']
+	);
+	$res2=mysql_query($sql);
+	if ($row2=mysql_fetch_assoc($res2)) {
+		if ($row2['num']==0) {
+			$sql=sprintf("insert into  `Product ID Default Currency`  (`Product ID`) values (%d) ",$row['Product ID']);
+			mysql_query($sql);
+			print "$sql\n";
+		}
+	}
 }
 $sql="select `Product Family Key` from `Product Family Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result)   ) {
-	$sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family Key`) values (%d) ",$row['Product Family Key']);
-	mysql_query($sql);
+
+
+	$sql=sprintf("select count(*) as num from `Product Family Default Currency` where `Product Family Key`=%d  ",
+		$row['Product Family Key']
+	);
+	$res2=mysql_query($sql);
+	if ($row2=mysql_fetch_assoc($res2)) {
+		if ($row2['num']==0) {
+			$sql=sprintf("insert into  `Product Family Default Currency`  (`Product Family Key`) values (%d) ",$row['Product Family Key']);
+			mysql_query($sql);
+			print "$sql\n";
+		}
+	}
 }
 
 
