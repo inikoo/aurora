@@ -2414,9 +2414,9 @@ function get_supplier_products_new($date=false) {
 			$product=new Product('pid',$product_part_list['Product ID']);
 
 
-			if ($product->pid) {
+			if ($product->pid and $product_part_list['Parts Per Product']>0) {
 				$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
-				$_price=$product->get_historic_price($datetime)/$product_part_list['Parts Per Product'];
+				//$_price=$product->get_historic_price($datetime)/$product_part_list['Parts Per Product'];
 				// print "**** ".$product->data['Product Name']." $price  $_price\n";
 
 				if ($price>0) {
