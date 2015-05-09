@@ -68,9 +68,9 @@ class CurrencyExchange {
 	function get_current_exchange() {
 
 
-		$this->exchange=get_current_exchange_from_yahoo();
+		$this->get_current_exchange_from_yahoo();
 		if (!$this->exchange or $this->exchange==1) {
-			$this->exchange=get_current_exchange_from_openexchangerates();
+			$this->get_current_exchange_from_openexchangerates();
 		}
 
 
