@@ -39,7 +39,6 @@ $to_update=array(
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
 	print "Error can not connect with database server\n";
-	print "->End.(GO DE) ".date("r")."\n";
 	exit;
 }
 
@@ -75,7 +74,7 @@ chdir('../../');
 
 $account=new Account(1);
 
-
+$corporation_currency_code=$account->data['Account Currency'];
 
 $sql=sprintf("select `Invoice Public ID`,`Invoice Key`,`Invoice Date`,`Invoice Currency` from `Invoice Dimension` where (`Invoice Currency Exchange`=1  or `Invoice Currency Exchange`=0 ) and `Invoice Currency`!=%s",
 	prepare_mysql($account->data['Account Currency'])
