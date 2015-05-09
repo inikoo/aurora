@@ -54,7 +54,9 @@ date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 
 mysql_set_charset('utf8');
-require_once 'timezone.php';
+
+define("TIMEZONE",'Europe/London');
+
 date_default_timezone_set(TIMEZONE) ;
 
 include_once '../../set_locales.php';
