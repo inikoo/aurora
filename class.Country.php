@@ -186,7 +186,7 @@ class Country {
 		include_once 'class.CurrencyExchange.php';
 
 		$currency_exchange = new CurrencyExchange($currency_code.$this->data['Country Currency Code'],$date);
-		$exchange= $currency_exchange->get_current_exchange();
+		$exchange= $currency_exchange->get_exchange();
 		return $exchange;
 
 	}

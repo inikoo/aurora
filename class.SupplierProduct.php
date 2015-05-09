@@ -1836,7 +1836,7 @@ class supplierproduct extends DB_Table {
 			include_once 'class.CurrencyExchange.php';
 
 			$currency_exchange = new CurrencyExchange($this->data['Supplier Product Currency'].$corporate_currency);
-			$exchange= $currency_exchange->get_current_exchange();
+			$exchange= $currency_exchange->get_exchange();
 
 		}else {
 			$exchange=1;
@@ -1880,7 +1880,7 @@ class supplierproduct extends DB_Table {
 			include_once 'class.CurrencyExchange.php';
 
 			$currency_exchange = new CurrencyExchange($this->data['Supplier Product Currency'].$corporate_currency);
-			$exchange= $currency_exchange->get_current_exchange();
+			$exchange= $currency_exchange->get_exchange();
 
 		}else {
 			$exchange=1;

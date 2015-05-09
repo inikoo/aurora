@@ -184,7 +184,7 @@ class PurchaseOrder extends DB_Table{
 				include_once 'class.CurrencyExchange.php';
 
 				$currency_exchange = new CurrencyExchange($this->data['Purchase Order Currency Code'].$corporate_currency);
-				$exchange= $currency_exchange->get_current_exchange();
+				$exchange= $currency_exchange->get_exchange();
 
 			}else {
 				$exchange=1;
