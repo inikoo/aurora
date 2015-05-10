@@ -27,9 +27,7 @@ if (!isset($_REQUEST['tipo'])) {
 	exit;
 }
 
-$editor=array(
-	'User Key'=>$user->id,
-);
+
 
 $tipo=$_REQUEST['tipo'];
 
@@ -41,9 +39,24 @@ case('dn_transactions_to_stock'):
 case('dn_transactions_to_count'):
 	dn_transactions_to_count();
 	break;
+case('edit_porder_quick'):
+	$data=prepare_values($_REQUEST,array(
+			'po_key'=>array('type'=>'key'),
+			'newvalue'=>array('type'=>'string'),
+			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string')
+		));
 
-case('edit_porder'):
-	edit_porder();
+	edit_porder_field($data['po_key'],$data['key'],$data['newvalue'],$data['okey']);
+	break;
+	
+case('edit_incoterm'):
+$data=prepare_values($_REQUEST,array(
+			'po_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array'),
+
+		));
+	edit_porder($data);
 	break;
 
 case('delete_po'):
@@ -244,44 +257,108 @@ function submit_purchase_order($data) {
 }
 
 
-function edit_porder() {
 
-	global $user;
-
-
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
-		$purchase_order_key=$_REQUEST['id'];
-		$_SESSION['state']['porder']['id']=$purchase_order_key;
-	} else
-		$purchase_order_key=$_SESSION['state']['porder']['id'];
-
-	$po=new PurchaseOrder($purchase_order_key);
+function edit_porder($data){
+//print_r($data['values']);
+	$po=new Supplier($data['po_key']);
+	if (!$po->id) {
+		$response= array('state'=>400,'msg'=>'PO not found','key'=>$data['key']);
+		echo json_encode($response);
+		exit;
+	}
 
 
-	$key_dic=array(
-		'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
+	$values=array();
+	foreach ($data['values'] as $value_key=>$value_data) {
+		if ($value_data['value']=='') {
+			$values[$value_key]=$value_data;
+			unset($data['values'][$value_key]);
+		}
+	}
 
+	foreach ($data['values'] as $value_key=>$value_data) {
 
-	);
-	if (array_key_exists($_REQUEST['key'],$key_dic))
-		$key=$key_dic[$_REQUEST['key']];
-
-
-	$po->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
-
-
-
-
-
-
-	if ($po->updated) {
-		$response= array('state'=>200,'newvalue'=>$po->new_value);
-
-	} else {
-		$response= array('state'=>400,'msg'=>$po->msg);
+		$values[$value_key]=$value_data;
 
 	}
-	echo json_encode($response);
+
+	$responses=array();
+
+
+
+
+
+
+	foreach ($values as $key=>$values_data) {
+
+		//print "$key ".$values_data['value']."\n";
+
+		$responses[]=edit_porder_field($po->id,$key,$values_data['value'],$values_data['okey']);
+	}
+
+
+	if (isset($data['submit']))
+		return $responses;
+
+	echo json_encode($responses);
+
+}
+
+
+function edit_porder_field($po_key,$key,$value_data,$okey='') {
+
+global $editor;
+
+
+	$po=new PurchaseOrder($po_key);
+
+	$po->editor=$editor;
+
+
+	if ($key=='Attach') {
+		// print_r($_FILES);
+		$note=stripslashes(urldecode($value_data));
+		$target_path = "uploads/".'attach_'.date('U');
+		$original_name=$_FILES['testFile']['name'];
+		$type=$_FILES['testFile']['type'];
+		$data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+		if (move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+			$po->add_attach($target_path,$data);
+
+		}
+	}else {
+
+
+$key_dic=array(
+		'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
+	);
+		if (array_key_exists($key,$key_dic)) {
+			$okey=$key;
+			$key=$key_dic[$key];
+		}
+
+		$update_data=array($key=>stripslashes(urldecode($value_data)));
+		//print_r($update_data);
+		$po->update($update_data);
+	}
+
+
+
+	if (!$po->error) {
+
+		if ($po->updated)
+			$response= array('state'=>200,'newvalue'=>$po->new_value,'key'=>$okey,'action'=>'updated');
+		else
+			$response= array('state'=>200,'newvalue'=>$po->get($key),'key'=>$okey,'action'=>'no_change');
+
+	} else {
+		$response= array('state'=>400,'msg'=>$po->msg,'key'=>$okey);
+	}
+	return $response;
+
+
+
 }
 
 
@@ -771,7 +848,7 @@ function po_transactions_to_process() {
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>10)
+	elseif ($total_records>10)
 		$rtext_rpp=' '._('(Showing all)');
 	else
 		$rtext_rpp='';
@@ -894,7 +971,7 @@ function edit_new_porder() {
 		$quantity_type=$_REQUEST['qty_type'];
 
 
-if (!isset($_REQUEST['sph_use_type']))
+	if (!isset($_REQUEST['sph_use_type']))
 		$sph_use_type='orignal';
 	else
 		$sph_use_type=$_REQUEST['sph_use_type'];
@@ -1025,12 +1102,12 @@ function edit_new_supplier_dn($data) {
 
 
 		$sdn=new   SupplierDeliveryNote($data['supplier_delivery_note_key']);
-		
-		
-		
+
+
+
 		$transaction_data=$sdn->add_order_transaction($_data);
-		
-		
+
+
 		$adata=array();
 		$updated_data=array(
 
@@ -1412,7 +1489,7 @@ function dn_transactions_to_count() {
 	$res = mysql_query($sql);
 
 	$adata=array();
-	
+
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 

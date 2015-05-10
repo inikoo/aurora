@@ -10,7 +10,7 @@ var checker_list;
 var submit_dialog;
 var staff_dialog;
 var delete_dialog;
-
+var dialog_incoterm_list;
 
 function change_submit_method(o) {
 
@@ -33,10 +33,10 @@ var myCellEdit = function(callback, newValue) {
 
         ar_file = 'ar_edit_porders.php';
 
-        var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record)+'&po_key='+Dom.get('po_key').value;
+        var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record) + '&po_key=' + Dom.get('po_key').value;
 
-        
-       // alert(ar_file+'?'+request);
+
+        // alert(ar_file+'?'+request);
         YAHOO.util.Connect.asyncRequest('POST', ar_file, {
             success: function(o) {
                 //alert(o.responseText);
@@ -108,9 +108,9 @@ var myonCellClick = function(oArgs) {
             else var new_qty = parseFloat(data['quantity']) - 1;
 
             var ar_file = 'ar_edit_porders.php';
-            request = 'tipo=edit_new_porder&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid']+ '&key=' + data['key']+'&po_key='+Dom.get('po_key').value;
+            request = 'tipo=edit_new_porder&key=quantity&newvalue=' + new_qty + '&oldvalue=' + data['quantity'] + '&pid=' + data['pid'] + '&key=' + data['key'] + '&po_key=' + Dom.get('po_key').value;
 
-           
+
             //alert(ar_file+'?'+request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
@@ -323,23 +323,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         var tableid = 0;
         var tableDivEL = "table" + tableid;
-        var ColumnDefs = [
-        {
+        var ColumnDefs = [{
             key: "key",
             label: '',
             width: 20,
             sortable: false,
             isPrimaryKey: true,
             hidden: true
-        }, 
-        { key: "pid",
+        }, {
+            key: "pid",
             label: '',
             width: 20,
             sortable: false,
             isPrimaryKey: true,
             hidden: true
-        },
-        {
+        }, {
             key: "code",
             label: labels.Code,
             width: 60,
@@ -400,12 +398,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
             object: 'new_order'
         },
 
-    //    , {
-     //       key: "unit_type",
-      //      label: labels.Unit,
-      //      width: 30,
-      //      className: "aleft"
-      //  }, 
+        //    , {
+        //       key: "unit_type",
+        //      label: labels.Unit,
+        //      width: 30,
+        //      className: "aleft"
+        //  }, 
         {
             key: "amount",
             label: labels.Net_Cost,
@@ -417,10 +415,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
         //,{key:"damaged_edit", label:labels.Damaged,width:60,className:"aright",hidden:true}
         //,{key:"damaged", label:labels.Damaged,width:60,className:"aright"}
         //,{key:"usable", label:Unusable,width:55,className:"aright"}
-
         ];
         request = "ar_edit_porders.php?tipo=po_transactions_to_process&tableid=" + tableid + '&id=' + Dom.get('po_key').value + '&supplier_key=' + Dom.get('supplier_key').value
-     
+
         this.dataSource0 = new YAHOO.util.DataSource(request);
 
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -438,7 +435,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["key","pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "store_as"]
+            fields: ["key", "pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "store_as"]
         };
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource0, {
@@ -582,6 +579,102 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+        var tableid = 6;
+        var tableDivEL = "table" + tableid;
+        var ColumnDefs = [{
+            key: "code",
+            label: labels.Code,
+            width: 25,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "name",
+            label: labels.Name,
+            width: 150,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "transport_method",
+            label: labels.Transport_type,
+            width: 100,
+            sortable: false
+        }
+
+        ];
+        request = "ar_quick_tables.php?tipo=incoterm_list&tableid=" + tableid + "&nr=20&sf=0"
+
+        this.dataSource6 = new YAHOO.util.DataSource(request);
+        this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource6.connXhrMode = "queueRequests";
+        this.dataSource6.table_id = tableid;
+
+        this.dataSource6.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                rowsPerPage: "resultset.records_perpage",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+            },
+
+
+            fields: ["name", 'code', 'transport_method']
+        };
+
+        this.table6 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource6, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: 20,
+                containers: 'paginator6',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: "code",
+                dir: ""
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table6.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table6.subscribe("cellClickEvent", this.table6.onEventShowCellEditor);
+        this.table6.subscribe("rowMouseoverEvent", this.table6.onEventHighlightRow);
+        this.table6.subscribe("rowMouseoutEvent", this.table6.onEventUnhighlightRow);
+        this.table6.subscribe("rowClickEvent", change_incoterm);
+
+
+
+        this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table6.filter = {
+            key: 'code',
+            value: ''
+        };
+
+
+
     }
 });
 
@@ -646,6 +739,25 @@ function show_submit_dialog() {
 
 }
 
+function show_edit_incoterm_dialog() {
+    region1 = Dom.getRegion('edit_incoterm');
+
+    region2 = Dom.getRegion('edit_incoterm_dialog');
+    var pos = [region1.left, region1.top]
+
+    Dom.setXY('edit_incoterm_dialog', pos);
+    edit_incoterm_dialog.show()
+
+}
+
+
+function show_edit_incoterm_edit_button() {
+    Dom.setStyle('edit_incoterm', 'display', '')
+}
+
+function hide_edit_incoterm_edit_button() {
+    Dom.setStyle('edit_incoterm', 'display', 'none')
+}
 
 function init() {
 
@@ -722,9 +834,234 @@ function init() {
     Event.addListener("all_products", "click", show_all_products);
 
 
+
+
 }
 
+function validate_port_export(query) {
+    validate_general('incoterm', 'port_export', unescape(query));
+}
 
+function validate_port_import(query) {
+    validate_general('incoterm', 'port_import', unescape(query));
+}
+
+function save_edit_incoterm() {
+    save_edit_general_bulk('incoterm');
+}
+
+function reset_edit_incoterm() {
+    reset_edit_general('incoterm')
+    incoterm = Dom.get('Purchase_Order_Incoterm').getAttribute('ovalue')
+    incoterm_formated = Dom.get('Purchase_Order_Incoterm').getAttribute('ovalue_formated')
+
+    Dom.get('Purchase_Order_Incoterm_formated').innerHTML = incoterm_formated
+
+    if (incoterm == '') {
+
+        Dom.setStyle(['update_Purchase_Order_Incoterm', 'delete_Purchase_Order_Incoterm'], 'display', 'none')
+        Dom.setStyle('set_Purchase_Order_Incoterm', 'display', '')
+
+
+
+    } else {
+        Dom.setStyle(['update_Purchase_Order_Incoterm', 'delete_Purchase_Order_Incoterm'], 'display', '')
+        Dom.setStyle('set_Purchase_Order_Incoterm', 'display', 'none')
+    }
+}
+
+function delete_incoterm() {
+
+    Dom.get('Purchase_Order_Incoterm_formated').innerHTML = ''
+    Dom.setStyle(['update_Purchase_Order_Incoterm', 'delete_Purchase_Order_Incoterm'], 'display', 'none')
+    Dom.setStyle('set_Purchase_Order_Incoterm', 'display', '')
+
+    value = '';
+
+    validate_scope_data['incoterm']['incoterm']['value'] = value;
+
+    Dom.get('Purchase_Order_Incoterm').value = value
+    ovalue = Dom.get('Purchase_Order_Incoterm').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['incoterm']['incoterm']['changed'] = true;
+    } else {
+        validate_scope_data['incoterm']['incoterm']['changed'] = false;
+    }
+    validate_scope('incoterm')
+
+}
+
+function show_dialog_incoterm_list(e) {
+
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_incoterm_list');
+    var pos = [region1.right + 5, region1.top - 120]
+    Dom.setXY('dialog_incoterm_list', pos);
+    dialog_incoterm_list.show()
+
+}
+
+function post_bulk_save_actions(branch) {
+    setTimeout(function() {
+        edit_incoterm_dialog.hide()
+    }, 400);
+
+
+}
+
+function post_item_updated_actions(branch, r) {
+
+    if (branch == 'incoterm') {
+        
+        switch (r.key) {
+        case 'incoterm':
+            Dom.get('incoterm').innerHTML = r.newvalue
+            break;
+        case 'port_export':
+            Dom.get('export_port').innerHTML = r.newvalue
+            break;
+        case 'port_import':
+            Dom.get('import_port').innerHTML = r.newvalue
+
+            break;
+        default:
+
+        }
+
+    }
+}
+
+function change_incoterm(oArgs) {
+    var incoterm = tables.table6.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+
+    Dom.get('Purchase_Order_Incoterm_formated').innerHTML = incoterm
+    Dom.setStyle(['update_Purchase_Order_Incoterm', 'delete_Purchase_Order_Incoterm'], 'display', '')
+    Dom.setStyle('set_Purchase_Order_Incoterm', 'display', 'none')
+
+    value = incoterm;
+    validate_scope_data['incoterm']['incoterm']['value'] = value;
+
+
+
+    Dom.get('Purchase_Order_Incoterm').value = value
+    ovalue = Dom.get('Purchase_Order_Incoterm').getAttribute('ovalue');
+    if (ovalue != value) {
+        validate_scope_data['incoterm']['incoterm']['changed'] = true;
+    } else {
+        validate_scope_data['incoterm']['incoterm']['changed'] = false;
+    }
+
+    validate_scope('incoterm')
+
+    dialog_incoterm_list.hide();
+
+}
+
+function init_edit_po() {
+
+    validate_scope_data = {
+
+        'incoterm': {
+
+            'incoterm': {
+                'changed': false,
+                'validated': true,
+                'required': false,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Purchase Order Incoterm',
+                'name': 'Purchase_Order_Incoterm',
+                'ar': false,
+                'validation': false
+
+            },
+
+            'port_import': {
+                'changed': false,
+                'validated': true,
+                'required': false,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Purchase Order Port of Import',
+                'name': 'Purchase_Order_Port_of_Import',
+                'validation': [{
+                    'regexp': "[a-z\d]*",
+                    'invalid_msg': ''
+                }]
+            },
+            'port_export': {
+                'changed': false,
+                'validated': true,
+                'required': false,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Purchase Order Port of Export',
+                'name': 'Purchase_Order_Port_of_Export',
+                'validation': [{
+                    'regexp': "[a-z\d]*",
+                    'invalid_msg': ''
+                }]
+            }
+
+        }
+
+    };
+
+
+    validate_scope_metadata = {
+        'incoterm': {
+            'type': 'edit',
+            'ar_file': 'ar_edit_porders.php',
+            'key_name': 'po_key',
+            'key': Dom.get('po_key').value
+        }
+    };
+
+    Event.addListener("incoterm_data", "mouseenter", show_edit_incoterm_edit_button);
+    Event.addListener("incoterm_data", "mouseleave", hide_edit_incoterm_edit_button);
+
+    edit_incoterm_dialog = new YAHOO.widget.Dialog("edit_incoterm_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    edit_incoterm_dialog.render();
+
+    dialog_incoterm_list = new YAHOO.widget.Dialog("dialog_incoterm_list", {
+
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_incoterm_list.render();
+
+    Event.addListener("set_Purchase_Order_Incoterm", "click", show_dialog_incoterm_list);
+    Event.addListener("update_Purchase_Order_Incoterm", "click", show_dialog_incoterm_list);
+
+
+    var supplier_port_export_oACDS = new YAHOO.util.FunctionDataSource(validate_port_export);
+    supplier_port_export_oACDS.queryMatchContains = true;
+    var supplier_port_export_oAutoComp = new YAHOO.widget.AutoComplete("Purchase_Order_Port_of_Export", "Purchase_Order_Port_of_Export_Container", supplier_port_export_oACDS);
+    supplier_port_export_oAutoComp.minQueryLength = 0;
+    supplier_port_export_oAutoComp.queryDelay = 0.1;
+
+    var supplier_port_import_oACDS = new YAHOO.util.FunctionDataSource(validate_port_import);
+    supplier_port_import_oACDS.queryMatchContains = true;
+    var supplier_port_import_oAutoComp = new YAHOO.widget.AutoComplete("Purchase_Order_Port_of_Import", "Purchase_Order_Port_of_Import_Container", supplier_port_import_oACDS);
+    supplier_port_import_oAutoComp.minQueryLength = 0;
+    supplier_port_import_oAutoComp.queryDelay = 0.1;
+
+    Event.addListener('save_edit_incoterm', "click", save_edit_incoterm);
+    Event.addListener('reset_edit_incoterm', "click", reset_edit_incoterm);
+
+
+
+}
+
+YAHOO.util.Event.onDOMReady(init_edit_po);
 
 YAHOO.util.Event.onDOMReady(init);
 YAHOO.util.Event.onContentReady("filtermenu0", function() {

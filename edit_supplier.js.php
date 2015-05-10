@@ -121,8 +121,18 @@ validate_general('supplier','www',unescape(query));
 }
 
 function validate_supplier_dispatch_time(query){
-validate_general('product_settings','dispatch_time',unescape(query));
+    validate_general('product_settings','dispatch_time',unescape(query));
 }
+
+function validate_port_export(query){
+    validate_general('po_settings','port_export',unescape(query));
+}
+
+function validate_port_import(query){
+    validate_general('po_settings','port_import',unescape(query));
+}
+
+
 
 
 
@@ -554,6 +564,78 @@ var tableid=1; // Change if you have more the 1 table
 
 	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table5.filter={key:'code',value:''};
+	    
+	    
+	       var tableid=6; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [
+                   {key:"code", label:"<?php echo _('Code')?>",width:25,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", label:"<?php echo _('Name')?>",width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"transport_method", label:"<?php echo _('Transport type')?>",width:100,sortable:false}
+
+		];
+		request="ar_quick_tables.php?tipo=incoterm_list&tableid="+tableid+"&nr=20&sf=0"
+	
+	    this.dataSource6 = new YAHOO.util.DataSource(request);
+	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource6.connXhrMode = "queueRequests";
+	    	    this.dataSource6.table_id=tableid;
+
+	    this.dataSource6.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
+		},
+		
+		
+		fields: [
+			 "name",'code','transport_method'
+			 ]};
+
+	    this.table6 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource6
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator6', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info6'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table6.subscribe("cellClickEvent", this.table6.onEventShowCellEditor);
+
+ this.table6.subscribe("rowMouseoverEvent", this.table6.onEventHighlightRow);
+       this.table6.subscribe("rowMouseoutEvent", this.table6.onEventUnhighlightRow);
+      this.table6.subscribe("rowClickEvent", change_incoterm);
+     
+
+
+	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table6.filter={key:'code',value:''};
+	    
 
   var tableid=100; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -696,8 +778,8 @@ var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_
 
 
 function change_block(e){
- var ids = ["products","details","company","categories"]; 
-    var block_ids = ["d_products","d_details","d_company","d_categories"]; 
+ var ids = ["products","details","po_settings","categories"]; 
+    var block_ids = ["d_products","d_details","d_po_settings","d_categories"]; 
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
@@ -707,18 +789,16 @@ Dom.addClass(this,'selected');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-edit&value='+this.id ,{});
 }
 
-function delete_origin_country_code(){
+function delete_origin_country_code() {
 
-Dom.get('Supplier_Products_Origin_Country_Code_formated').innerHTML=''
-Dom.setStyle(['update_Supplier_Products_Origin_Country_Code','delete_Supplier_Products_Origin_Country_Code'],'display','none')
-Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','')
+    Dom.get('Supplier_Products_Origin_Country_Code_formated').innerHTML = ''
+    Dom.setStyle(['update_Supplier_Products_Origin_Country_Code', 'delete_Supplier_Products_Origin_Country_Code'], 'display', 'none')
+    Dom.setStyle('set_Supplier_Products_Origin_Country_Code', 'display', '')
 
+    value = '';
 
- 
-   value='';
-     
     validate_scope_data['supplier']['origin']['value'] = value;
-   
+
     Dom.get('Supplier_Products_Origin_Country_Code').value = value
     ovalue = Dom.get('Supplier_Products_Origin_Country_Code').getAttribute('ovalue');
 
@@ -728,6 +808,29 @@ Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','')
         validate_scope_data['supplier']['origin']['changed'] = false;
     }
     validate_scope('supplier')
+
+}
+
+
+function delete_incoterm() {
+
+    Dom.get('Supplier_Default_Incoterm_formated').innerHTML = ''
+    Dom.setStyle(['update_Supplier_Default_Incoterm', 'delete_Supplier_Default_Incoterm'], 'display', 'none')
+    Dom.setStyle('set_Supplier_Default_Incoterm', 'display', '')
+
+    value = '';
+
+    validate_scope_data['po_settings']['incoterm']['value'] = value;
+
+    Dom.get('Supplier_Default_Incoterm').value = value
+    ovalue = Dom.get('Supplier_Default_Incoterm').getAttribute('ovalue');
+
+    if (ovalue != value) {
+        validate_scope_data['po_settings']['incoterm']['changed'] = true;
+    } else {
+        validate_scope_data['po_settings']['incoterm']['changed'] = false;
+    }
+    validate_scope('po_settings')
 
 }
 
@@ -779,9 +882,6 @@ function change_currency(oArgs) {
     Dom.setStyle(['update_Supplier_Default_Currency'], 'display', '')
     Dom.setStyle('set_Supplier_Default_Currency', 'display', 'none')
 
-
-
- 
     value = currency;
     validate_scope_data['product_settings']['currency']['value'] = value;
 
@@ -804,6 +904,33 @@ function change_currency(oArgs) {
 }
 
 
+function change_incoterm(oArgs) {
+    var incoterm = tables.table6.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+
+    Dom.get('Supplier_Default_Incoterm_formated').innerHTML = incoterm
+    Dom.setStyle(['update_Supplier_Default_Incoterm','delete_Supplier_Default_Incoterm'], 'display', '')
+    Dom.setStyle('set_Supplier_Default_Incoterm', 'display', 'none')
+
+    value = incoterm;
+    validate_scope_data['po_settings']['incoterm']['value'] = value;
+
+   
+    
+    Dom.get('Supplier_Default_Incoterm').value = value
+    ovalue = Dom.get('Supplier_Default_Incoterm').getAttribute('ovalue');
+    if (ovalue != value) {
+        validate_scope_data['po_settings']['incoterm']['changed'] = true;
+    } else {
+        validate_scope_data['po_settings']['incoterm']['changed'] = false;
+    }
+
+    validate_scope('po_settings')
+
+    dialog_incoterm_list.hide();
+
+}
+
+
 
 function show_dialog_currency_list(e) {
 
@@ -815,6 +942,18 @@ function show_dialog_currency_list(e) {
 
 }
 
+function show_dialog_incoterm_list(e) {
+
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_incoterm_list');
+    var pos = [region1.right + 5, region1.top - 120]
+    Dom.setXY('dialog_incoterm_list', pos);
+    dialog_incoterm_list.show()
+
+}
+
+
+
 function save_edit_supplier() {
     save_edit_general_bulk('supplier');
 }
@@ -822,6 +961,8 @@ function save_edit_supplier() {
 function save_edit_product_settings() {
     save_edit_general_bulk('product_settings');
 }
+
+
 
 
 function reset_edit_supplier(){
@@ -846,6 +987,30 @@ function reset_edit_product_settings(){
       }else{
        Dom.setStyle(['update_Supplier_Products_Origin_Country_Code','delete_Supplier_Products_Origin_Country_Code'],'display','')
       Dom.setStyle('set_Supplier_Products_Origin_Country_Code','display','none')
+      }
+}
+
+function save_edit_po_settings() {
+    save_edit_general_bulk('po_settings');
+}
+
+function reset_edit_po_settings(){
+ reset_edit_general('po_settings')
+  incoterm = Dom.get('Supplier_Default_Incoterm').getAttribute('ovalue')
+      incoterm_formated = Dom.get('Supplier_Default_Incoterm').getAttribute('ovalue_formated')
+      
+      Dom.get('Supplier_Default_Incoterm_formated').innerHTML=incoterm_formated
+      
+      if(incoterm==''){
+      
+      Dom.setStyle(['update_Supplier_Default_Incoterm','delete_Supplier_Default_Incoterm'],'display','none')
+      Dom.setStyle('set_Supplier_Default_Incoterm','display','')
+      
+      
+      
+      }else{
+       Dom.setStyle(['update_Supplier_Default_Incoterm','delete_Supplier_Default_Incoterm'],'display','')
+      Dom.setStyle('set_Supplier_Default_Incoterm','display','none')
       }
 }
 
@@ -1057,6 +1222,49 @@ validate_scope_data = {
         }
 
     },
+     'po_settings': {
+      
+        'incoterm': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname': 'Supplier Default Incoterm',
+            'name': 'Supplier_Default_Incoterm',
+            'ar': false,
+            'validation': false
+
+        },
+       
+        'port_import': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname':'Supplier Default Port of Import',
+            'name': 'Supplier_Default_Port_of_Import',
+            'validation': [{
+                 'regexp': "[a-z\\d]*",
+                'invalid_msg': '<?php echo _('Invalid name')?>'
+            }]
+        },
+         'port_export': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname':'Supplier Default Port of Export',
+            'name': 'Supplier_Default_Port_of_Export',
+            'validation': [{
+                 'regexp': "[a-z\\d]*",
+                'invalid_msg': '<?php echo _('Invalid name')?>'
+            }]
+        }
+
+    },
     'product_settings': {
         'origin': {
             'changed': false,
@@ -1133,6 +1341,12 @@ validate_scope_metadata = {
         'key_name': 'supplier_key',
         'key': Dom.get('supplier_key').value
     },
+    'po_settings': {
+        'type': 'edit',
+        'ar_file': 'ar_edit_suppliers.php',
+        'key_name': 'supplier_key',
+        'key': Dom.get('supplier_key').value
+    },
      'product_settings': {
         'type': 'edit',
         'ar_file': 'ar_edit_suppliers.php',
@@ -1146,7 +1360,7 @@ init_search('supplier_products_supplier');
 	
 	
 
-	var ids = ["products","details","company","categories"]; 
+	var ids = ["products","details","po_settings","categories"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 
 	 var supplier_code_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_code);
@@ -1206,6 +1420,19 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 	    supplier_dispatch_time_oAutoComp.minQueryLength = 0; 
 	    supplier_dispatch_time_oAutoComp.queryDelay = 0.1;	    
 
+var supplier_port_export_oACDS = new YAHOO.util.FunctionDataSource(validate_port_export);
+	    supplier_port_export_oACDS.queryMatchContains = true;
+	    var supplier_port_export_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Default_Port_of_Export","Supplier_Default_Port_of_Export_Container", supplier_port_export_oACDS);
+	    supplier_port_export_oAutoComp.minQueryLength = 0; 
+	    supplier_port_export_oAutoComp.queryDelay = 0.1;	    
+	    
+	    var supplier_port_import_oACDS = new YAHOO.util.FunctionDataSource(validate_port_import);
+	    supplier_port_import_oACDS.queryMatchContains = true;
+	    var supplier_port_import_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Default_Port_of_Import","Supplier_Default_Port_of_Import_Container", supplier_port_import_oACDS);
+	    supplier_port_import_oAutoComp.minQueryLength = 0; 
+	    supplier_port_import_oAutoComp.queryDelay = 0.1;	    
+
+
 
 		edit_address(Dom.get("main_address_key").value,'contact_')
  
@@ -1244,6 +1471,18 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     Event.addListener("set_Supplier_Default_Currency", "click", show_dialog_currency_list);
     Event.addListener("update_Supplier_Default_Currency", "click", show_dialog_currency_list);
 
+  dialog_incoterm_list = new YAHOO.widget.Dialog("dialog_incoterm_list", {
+       
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_incoterm_list.render();
+    
+    
+    Event.addListener("set_Supplier_Default_Incoterm", "click", show_dialog_incoterm_list);
+    Event.addListener("update_Supplier_Default_Incoterm", "click", show_dialog_incoterm_list);
 
 
  dialog_edit_supplier_product_state = new YAHOO.widget.Dialog("dialog_edit_supplier_product_state", {
@@ -1262,6 +1501,9 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
 
 	 Event.addListener('save_edit_product_settings', "click", save_edit_product_settings);
     Event.addListener('reset_edit_product_settings', "click", reset_edit_product_settings);
+    
+     Event.addListener('save_edit_po_settings', "click", save_edit_po_settings);
+    Event.addListener('reset_edit_po_settings', "click", reset_edit_po_settings);
 
 
  Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
@@ -1272,6 +1514,8 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
      Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
     Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
+     Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+    Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
     Event.addListener('clean_table_filter_show100', "click", show_filter, 100);
     Event.addListener('clean_table_filter_hide100', "click", hide_filter, 100);
     
@@ -1299,6 +1543,12 @@ var supplier_dispatch_time_oACDS = new YAHOO.util.FunctionDataSource(validate_su
     oACDS5.table_id = 5;
     var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
     oAutoComp5.minQueryLength = 0;
+    
+       var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS6.queryMatchContains = true;
+    oACDS6.table_id = 6;
+    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
+    oAutoComp6.minQueryLength = 0;
 
 
  var oACDS100 = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -1349,8 +1599,6 @@ YAHOO.util.Event.onContentReady("filtermenu1", function () {
     });
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
-
-
 });
 
 YAHOO.util.Event.onContentReady("filtermenu4", function() {
@@ -1360,9 +1608,46 @@ YAHOO.util.Event.onContentReady("filtermenu4", function() {
     });
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
-
-
 });
+
+
+  YAHOO.util.Event.onContentReady("rppmenu5", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu5", {
+        trigger: "rtext_rpp5"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu5", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu5", {
+        trigger: "filter_name5"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+  YAHOO.util.Event.onContentReady("rppmenu6", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu6", {
+        trigger: "rtext_rpp6"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("filtermenu6", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {
+        trigger: "filter_name6"
+
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+
 
     YAHOO.util.Event.onContentReady("rppmenu100", function() {
     var oMenu = new YAHOO.widget.ContextMenu("rppmenu100", {

@@ -20,7 +20,7 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='details'}selected{/if}" id="details"> <span> {t}Supplier Details{/t}</span></span></li>
-		<li style="display:none"> <span class="item {if $edit=='company'}selected{/if}" id="company"> <span> {t}Company Details{/t}</span></span></li>
+		<li> <span class="item {if $edit=='po_settings'}selected{/if}" id="po_settings"> <span> {t}Purchase Order Settings{/t}</span></span></li>
 		<li> <span class="item {if $edit=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
 		<li> <span class="item {if $edit=='categories'}selected{/if}" id="categories"> <span> {t}Categories{/t}</span></span></li>
 	</ul>
@@ -141,6 +141,61 @@
 			<div style="clear:both">
 			</div>
 		</div>
+		<div class="edit_block" style="{if $edit!='po_settings'}display:none{/if}" id="d_po_settings">
+			
+			
+			<table id="po_settings" class="edit" border="0" >
+				
+				<tr class="first">
+					<td class="label">{t}Incoterm{/t}:</td>
+					<td style="text-align:left"> 
+					<input type="hidden" id="Supplier_Default_Incoterm" value="{$supplier->get('Supplier Default Incoterm')}" ovalue="{$supplier->get('Supplier Default Incoterm')}" ovalue_formated="{$supplier->get('Supplier Default Incoterm')}" />
+					<div class="buttons small left">
+						<span style="float:left;margin-right:10px" id="Supplier_Default_Incoterm_formated">{$supplier->get('Supplier Default Incoterm')}</span> 
+						<button class="negative" style="{if $supplier->get('Supplier Default Incoterm')==''}display:none{/if}" id="delete_Supplier_Default_Incoterm" onclick="delete_incoterm()">{t}Remove{/t}</button> 
+
+						<button style="{if $supplier->get('Supplier Default Incoterm')==''}display:none{/if}" id="update_Supplier_Default_Incoterm">{t}Change Incoterm{/t}</button> <button style="{if $supplier->get('Supplier Default Incoterm')!=''}display:none{/if}" id="set_Supplier_Default_Incoterm">{t}Set Incoterm{/t}</button>
+					</div>
+					 </td>
+					<td class="message"><span id="Supplier_Default_Incoterm_msg" class="edit_td_alert" ></span></td>
+				</tr>
+				
+				<tr class="space10">
+					<td   class="label">Port of export:</td>
+					<td  class="input"> 
+					<div>
+						<input id="Supplier_Default_Port_of_Export" value="{$supplier->get('Supplier Default Port of Export')}" ovalue="{$supplier->get('Supplier Default Port of Export')}" valid="0"> 
+						<div id="Supplier_Default_Port_of_Export_Container">
+						</div>
+					</div>
+					</td>
+					<td class="message"><span id="Supplier_Default_Port_of_Export_msg" class="edit_td_alert"></span></td>
+				</tr>
+				
+				<tr >
+					<td   class="label">Port of import:</td>
+					<td  class="input"> 
+					<div>
+						<input id="Supplier_Default_Port_of_Import" value="{$supplier->get('Supplier Default Port of Import')}" ovalue="{$supplier->get('Supplier Default Port of Import')}" valid="0"> 
+						<div id="Supplier_Default_Port_of_Import_Container">
+						</div>
+					</div>
+					</td>
+					<td class="message"><span id="Supplier_Default_Port_of_Import_msg" class="edit_td_alert"></span></td>
+				</tr>
+				
+				
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons">
+						<button style="margin-right:10px;" id="save_edit_po_settings" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_po_settings" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+					<td></td>
+				</tr>
+			</table>
+			
+		</div>
 		<div class="edit_block" style="{if $edit!='products'}display:none{/if}" id="d_products">
 			
 			
@@ -169,7 +224,9 @@
 					<td style="text-align:left"> 
 					<input type="hidden" id="Supplier_Products_Origin_Country_Code" value="{$supplier->get('Supplier Products Origin Country Code')}" ovalue="{$supplier->get('Supplier Products Origin Country Code')}" ovalue_formated="{$supplier->get('Products Origin Country Code')}" />
 					<div class="buttons small left">
-						<span style="float:left;margin-right:10px" id="Supplier_Products_Origin_Country_Code_formated">{$supplier->get('Products Origin Country Code')}</span> <button class="negative" style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="delete_Supplier_Products_Origin_Country_Code" onclick="delete_origin_country_code()">{t}Remove{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="update_Supplier_Products_Origin_Country_Code">{t}Change Origin{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')!=''}display:none{/if}" id="set_Supplier_Products_Origin_Country_Code">{t}Set Origin{/t}</button> 
+						<span style="float:left;margin-right:10px" id="Supplier_Products_Origin_Country_Code_formated">{$supplier->get('Products Origin Country Code')}</span> 
+						    <button class="negative" style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="delete_Supplier_Products_Origin_Country_Code" onclick="delete_origin_country_code()">{t}Remove{/t}</button> 
+						    <button style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}" id="update_Supplier_Products_Origin_Country_Code">{t}Change Origin{/t}</button> <button style="{if $supplier->get('Supplier Products Origin Country Code')!=''}display:none{/if}" id="set_Supplier_Products_Origin_Country_Code">{t}Set Origin{/t}</button> 
 					</div>
 					<span id="Supplier_Products_Origin_Country_Code_msg" class="edit_td_alert" style="position:relative;left:260px"></span> </td>
 					<td></td>
@@ -371,6 +428,15 @@
 		<div class="data_table">
 			<span class="clean_table_title">{t}Currencies{/t}</span> {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5} 
 			<div id="table5" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog_incoterm_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="data_table">
+			<span class="clean_table_title">{t}Incoterms{/t}</span> {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6} 
+			<div id="table6" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>

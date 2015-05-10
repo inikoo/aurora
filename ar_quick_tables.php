@@ -65,6 +65,9 @@ case('country_list'):
 case('currency_list'):
 	currency_list();
 	break;
+case('incoterm_list'):
+	incoterm_list();
+	break;	
 case('postal_codes_list'):
 	postal_code_list();
 	break;
@@ -1578,6 +1581,157 @@ function currency_list() {
 			'flag'=>$country_flag,
 
 			'symbol'=>$row['Currency Symbol'],
+
+
+
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
+
+function incoterm_list() {
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else$order='code';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else$order_dir='';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else$f_field='wregion_code';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	$where=sprintf('where true ');
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Incoterm Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref=sprintf('  and  `Incoterm Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$sql="select count(*) as total from kbase.`Incoterm Dimension` $where $wheref  ";
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from kbase.`Incoterm Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('Incoterm','Incoterms',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp="("._('Showing all').")";
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any Incoterm with code")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('Incoterms with code like')." <b>$f_value</b>)";
+		break;
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg=_("There isn't any Incoterm with name")." <b>".$f_value."*</b> ";
+		elseif ($filtered>0)
+			$filter_msg=_('Showing')." $total ("._('Incoterms with name like')." <b>$f_value</b>)";
+		break;
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+
+	if ($order=='code')
+		$order='`Incoterm Code`';
+	elseif ($order=='name')
+		$order='`Incoterm Name`';
+	else
+		$order='`Incoterm Code`';
+
+
+
+
+
+	$adata=array();
+	$sql="select * from kbase.`Incoterm Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+
+        if($row['Incoterm Transport Type']=='Sea'){
+        		$transport_method=sprintf('<img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s">',_('Maritime and inland waterways'));
+        }else{
+        		$transport_method=sprintf('<img  style="height:12px" src="art/icons/transport_land.png" alt="land" title="%s"> <img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s"> <img  style="height:12px" src="art/icons/transport_air.png" alt="air" title="%s">',
+        		_('Land'),
+        		_('Maritime and inland waterway'),
+        		_('Air')
+        		);
+
+        }
+
+
+		$adata[]=array(
+
+			'name'=>$row['Incoterm Name'],
+			'code'=>$row['Incoterm Code'],
+			'transport_method'=>$transport_method
+
 
 
 

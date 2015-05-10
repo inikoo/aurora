@@ -24,7 +24,7 @@ if (isset($_REQUEST['id'])) {
 ) {
 
 
-$warehouse=new Warehouse(1);
+	$warehouse=new Warehouse(1);
 
 	$supplier=new Supplier('id',$_REQUEST['supplier_id']);
 	$editor=array(
@@ -39,6 +39,12 @@ $warehouse=new Warehouse(1);
 		'Purchase Order Supplier Name'=>$supplier->data['Supplier Name'],
 		'Purchase Order Supplier Code'=>$supplier->data['Supplier Code'],
 		'Purchase Order Currency Code'=>$supplier->data['Supplier Default Currency'],
+
+		'Purchase Order Incoterm'=>$supplier->data['Supplier Default Incoterm'],
+		'Purchase Order Port of Import'=>$supplier->data['Supplier Default Port of Import'],
+		'Purchase Order Port of Export'=>$supplier->data['Supplier Default Port of Export'],
+
+
 		'Purchase Order Warehouse Key'=>$warehouse->data['Warehouse Key'],
 		'Purchase Order Warehouse Code'=>$warehouse->data['Warehouse Code'],
 		'Purchase Order Warehouse Name'=>$warehouse->data['Warehouse Name'],
@@ -48,7 +54,7 @@ $warehouse=new Warehouse(1);
 		'Purchase Order Warehouse VAT Number'=>$warehouse->data['Warehouse VAT Number'],
 		'Purchase Order Warehouse Telephone'=>$warehouse->data['Warehouse Telephone'],
 		'Purchase Order Warehouse Email'=>$warehouse->data['Warehouse Email'],
-		
+
 		'editor'=>$editor
 	);
 
@@ -152,8 +158,15 @@ case('In Process'):
 	$smarty->assign('decimal_point',$myconf['decimal_point']);
 	$smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
-	$_SESSION['state']['porder']['products']['display']='ordered_products';
-	$smarty->assign('products_display_type',$_SESSION['state']['porder']['products']['display']);
+
+	if ($po->data['Purchase Order Number Items']==0) {
+		$products_display_type='all_products';
+	}else {
+		$products_display_type='ordered_products';
+	}
+
+	$_SESSION['state']['porder']['products']['display']=$products_display_type;
+	$smarty->assign('products_display_type',$products_display_type);
 
 
 	$smarty->assign('date',date("Y-m-d"));
@@ -183,9 +196,10 @@ case('In Process'):
 
 
 
-
+	$css_files[]='css/porder_in_process.css';
+$js_files[]='js/edit_common.js';
 	$js_files[]='js/porder_in_process.js';
-	$js_files[]='js/edit_common.js';
+	
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
 
@@ -225,12 +239,13 @@ case('In Process'):
 	$session_data=base64_encode(json_encode(array(
 				'label'=>array(
 					'Code'=>_('Code'),
+					'Name'=>_('Name'),
 					'Reference'=>_('Parts'),
 					'Description'=>_('Supplier Carton Description'),
 					'Qty'=>_('Cartons'),
 					'Net_Cost'=>_('Net Cost'),
 					'Unit'=>_('Unit'),
-
+					'Transport_type'=>_('Transport type'),
 					'Page'=>_('Page'),
 					'of'=>_('of')
 				),
@@ -240,6 +255,18 @@ case('In Process'):
 			)));
 	$smarty->assign('session_data',$session_data);
 
+
+	$tipo_filter6='code';
+	$filter_menu6=array(
+		'code'=>array('db_key'=>'code','menu_label'=>_('Incoterm Code'),'label'=>_('Code')),
+		'name'=>array('db_key'=>'name','menu_label'=>_('Incoterm Name'),'label'=>_('Name')),
+	);
+	$smarty->assign('filter_name6',$filter_menu6[$tipo_filter6]['label']);
+	$smarty->assign('filter_menu6',$filter_menu6);
+	$smarty->assign('filter5',$tipo_filter6);
+	$smarty->assign('filter_value6','');
+	$paginator_menu=array(10,25,50,100,500);
+	$smarty->assign('paginator_menu6',$paginator_menu);
 
 
 	$smarty->display('porder_in_process.tpl');
