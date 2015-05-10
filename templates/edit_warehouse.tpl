@@ -2,15 +2,17 @@
 <div id="bd">
 	{include file='locations_navigation.tpl'} 
 	<input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
+	<input type="hidden" id="referrer" value="{$referrer}" />
+
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Warehouse{/t}: <span class="warehouse_name">{$warehouse->get('Warehouse Name')}</span> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
-		<div class="buttons" style="float:right">
+		<div class="buttons small" style="position:relative;top:5px">
 			<button onclick="window.location='{$link_back}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button onclick="window.location='new_warehouse_area.php?warehouse_id={$warehouse->id}'"><img src="art/icons/add.png" alt=""> {t}Add Area{/t}</button> <button onclick="window.location='new_location.php?warehouse_id={$warehouse->id}&window=1'"><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button> 
 		</div>
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Editing Warehouse{/t}: <span class="id"><span class="warehouse_name">{$warehouse->get('Warehouse Name')}</span> (<span class="warehouse_code">{$warehouse->get('Warehouse Code')}</span>)</span></span> 
+			<span class="main_title no_buttons">{t}Editing Warehouse{/t}: <span class="id"><span class="warehouse_name">{$warehouse->get('Warehouse Name')}</span> (<span class="warehouse_code">{$warehouse->get('Warehouse Code')}</span>)</span></span> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -28,22 +30,21 @@
 	</ul>
 	<div class="tabbed_container">
 		<div id="description_block" class="edit_block" style="{if $edit!='description'}display:none{/if}">
-			<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
-			</div>
-			<table style="margin:0;width:100%" class="edit" border="0">
+			
+			<table id="edit_description" class="edit" border="0">
 				<tr class="title">
-					<td colspan="3"> {t}Warehouse Description{/t} <span style="color:red">to do</span></td>
+					<td colspan="3"> {t}Warehouse Description{/t}</td>
 				</tr>
 				<tr class="first">
-					<td style="width:150px" class="label">{t}Code{/t}:</td>
-					<td style="width:320px"> 
+					<td  class="label">{t}Code{/t}:</td>
+					<td  class="input"> 
 					<div>
-						<input type="text" id="warehouse_code" value="{$warehouse->get('Warehouse Code')}" ovalue="{$warehouse->get('Warehouse Code')}" valid="0"> 
+						<input class="short" type="text" id="warehouse_code" value="{$warehouse->get('Warehouse Code')}" ovalue="{$warehouse->get('Warehouse Code')}" valid="0"> 
 						<div id="warehouse_code_Container">
 						</div>
 					</div>
 					</td>
-					<td style="width:250px"> <span id="warehouse_code_msg"></span> </td>
+					<td class="message"> <span id="warehouse_code_msg" class="edit_td_alert"></span> </td>
 				</tr>
 				<tr>
 					<td class="label">{t}Name{/t}:</td>
@@ -54,76 +55,77 @@
 						</div>
 					</div>
 					</td>
-					<td> <span id="warehouse_name_msg"></span> </td>
+					<td class="message"> <span id="warehouse_name_msg" class="edit_td_alert"></span> </td>
 				</tr>
 				<tr class="space20">
 					<td class="label">{t}Company Name{/t}:</td>
 					<td> 
 					<div>
-						<input style="width:100%" id="Warehouse_Company_Name" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Company Name')}" ovalue="{$warehouse->get('Warehouse Company Name')}" />
+						<input id="Warehouse_Company_Name" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Company Name')}" ovalue="{$warehouse->get('Warehouse Company Name')}" />
 						<div id="Warehouse_Company_Name_Container">
 						</div>
 					</div>
 					</td>
-					<td id="Warehouse_Company_Name_msg" class="edit_td_alert"></td>
+					<td  class="message" ><span id="Warehouse_Company_Name_msg" class="edit_td_alert"></span></td>
 				</tr>
 				<tr>
-					<td style="width:200px" class="label">{t}VAT Number{/t}:</td>
-					<td style="width:370px"> 
+					<td class="label">{t}VAT Number{/t}:</td>
+					<td class="input"> 
 					<div>
-						<input style="width:100%" id="Warehouse_VAT_Number" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse VAT Number')}" ovalue="{$warehouse->get('Warehouse VAT Number')}" />
+						<input  id="Warehouse_VAT_Number" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse VAT Number')}" ovalue="{$warehouse->get('Warehouse VAT Number')}" />
 						<div id="Warehouse_VAT_Number_Container">
 						</div>
 					</div>
 					</td>
-					<td id="Warehouse_VAT_Number_msg" class="edit_td_alert"></td>
+					<td class="message" ><span id="Warehouse_VAT_Number_msg" class="edit_td_alert"></span></td>
 				</tr>
 				<tr>
 					<td class="label">{t}Company Number{/t}:</td>
-					<td> 
+					<td class="input"> 
 					<div>
-						<input style="width:100%" id="Warehouse_Company_Number" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Company Number')}" ovalue="{$warehouse->get('Warehouse Company Number')}" />
+						<input  id="Warehouse_Company_Number" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Company Number')}" ovalue="{$warehouse->get('Warehouse Company Number')}" />
 						<div id="Warehouse_Company_Number_Container">
 						</div>
 					</div>
 					</td>
-					<td id="Warehouse_Company_Number_msg" class="edit_td_alert"></td>
+					<td class="message"><span  id="Warehouse_Company_Number_msg" class="edit_td_alert"></span></td>
 				</tr>
 				
 				<tr>
 				<tr class="space20">
 					<td class="label">{t}Email{/t}:</td>
-					<td> 
+					<td class="input"> 
 					<div>
-						<input style="width:100%" id="email" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Email')}" ovalue="{$warehouse->get('Warehouse Email')}" />
+						<input  id="email" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Email')}" ovalue="{$warehouse->get('Warehouse Email')}" />
 						<div id="email_Container">
 						</div>
 					</div>
 					</td>
-					<td id="email_msg" class="edit_td_alert"></td>
+					<td class="message"><span  id="email_msg" class="edit_td_alert"></span></td>
 				</tr>
 				<tr>
 					<td class="label">{t}Telephone{/t}:</td>
-					<td> 
+										<td class="input"> 
 					<div>
 						<input style="width:100%" id="telephone" changed="0" type='text' maxlength="255" class='text' value="{$warehouse->get('Warehouse Telephone')}" ovalue="{$warehouse->get('Warehouse Telephone')}" />
 						<div id="telephone_Container">
 						</div>
 					</div>
 					</td>
-					<td id="telephone_msg" class="edit_td_alert"></td>
+					<td class="message"><span  id="telephone_msg" class="edit_td_alert"></span></td>
 				</tr>
 				
-				<tr>
+				<tr class="textarea_tr">
 					<td class="label">{t}Address{/t}:</td>
-					<td> 
-					<div style="height:120px">
-<textarea style="width:100%" id="address" changed="0" olength="{$warehouse->get('Warehouse Address')}" value="{$warehouse->get('Warehouse Address')}" ovalue="{$warehouse->get('Warehouse Address')}" ohash="{$warehouse->get('Product Description MD5 Hash')}" rows="6" cols="42">{$warehouse->get('Warehouse Address')}</textarea> 
+										<td class="input"> 
+					<div >
+<textarea  id="address" changed="0" olength="{$warehouse->get('Warehouse Address')}" value="{$warehouse->get('Warehouse Address')}" ovalue="{$warehouse->get('Warehouse Address')}" ohash="{$warehouse->get('Product Description MD5 Hash')}" rows="6" cols="42">{$warehouse->get('Warehouse Address')}</textarea> 
 						<div id="address_Container">
 						</div>
 					</div>
 					</td>
-					<td id="address_msg" class="edit_td_alert"></td>
+										<td class="message"><span  id="address_msg" class="edit_td_alert"></span></td>
+
 				</tr>
 				
 				<tr class="buttons">
@@ -139,22 +141,22 @@
 		
 		<div id="po_block" class="edit_block" style="{if $edit!='po'}display:none{/if}">
 			
-			<table style="margin:0;width:100%" class="edit" border="0">
+			<table id="po_settings" class="edit" border="0">
 				<tr class="title">
-					<td colspan="3"> {t}Purchase Order Settings{/t} <span style="color:red">to do</span></td>
+					<td colspan="3"> {t}Purchase Order Settings{/t} </td>
 				</tr>
 				
 				
-				<tr>
+				<tr class="first textarea_big_tr">
 					<td class="label">{t}Terms & Conditions{/t}:</td>
-					<td> 
-					<div style="height:120px">
-<textarea style="width:100%" id="terms_and_conditions" changed="0" olength="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" value="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" ovalue="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" ohash="{$warehouse->get('Product Description MD5 Hash')}" rows="6" cols="42">{$warehouse->get('Warehouse Default PO Terms and Conditions')}</textarea> 
-						<div id="address_Container">
+					<td class="input"> 
+					<div >
+<textarea id="terms_and_conditions" changed="0"  value="{$warehouse->get('Warehouse Default PO Terms and Conditions')}" ovalue="{$warehouse->get('Warehouse Default PO Terms and Conditions')}"  >{$warehouse->get('Warehouse Default PO Terms and Conditions')}</textarea> 
+						<div id="terms_and_conditions_Container">
 						</div>
 					</div>
 					</td>
-					<td id="address_msg" class="edit_td_alert"></td>
+					<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
 				</tr>
 				
 				<tr class="buttons">
@@ -214,39 +216,8 @@
 			</table>
 		</div>
 		<div id="areas_block" class="edit_block" style="{if $edit!='areas'}display:none{/if}">
-			<div class="buttons small">
-				<button id="add_area_here" class="state_details">Add Area</button> <button style="display:none" id="save_area" class="state_details">{t}Save{/t}</button> <button style="display:none" id="close_add_area" class="state_details">{t}Close Dialog{/t}</button> 
-			</div>
-			<div id="new_warehouse_area_messages" style="float:left;padding:5px;border:1px solid #ddd;width:400px;margin-bottom:15px;display:none">
-				<table class="edit">
-					<tr>
-						<td class="label">{t}Warehouse{/t}:</td>
-						<td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span> 
-						<input type="hidden" id="warehouse_key" ovalue="{$warehouse->id}" value="{$warehouse->id}"></td>
-					</tr>
-					<tr>
-						<td class="label">{t}Area Code{/t}:</td>
-						<td> 
-						<input id="area_code" ovalue="" type="text" />
-						</td>
-					</tr>
-					<tr>
-						<td class="label">{t}Area Name{/t}:</td>
-						<td> 
-						<input id="area_name" ovalue="" type="text" />
-						</td>
-					</tr>
-					<tr>
-						<td class="label">{t}Area Description{/t}:</td>
-						<td><textarea ovalue="" id="area_description"></textarea></td>
-					</tr>
-				</table>
-			</div>
-			<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
-				Messages 
-			</div>
-			<div style="clear:both">
-			</div>
+			
+			
 			<div id="the_table1" class="data_table" style="margin:0px 0px;clear:left;">
 				<span class="clean_table_title">{t}Warehouse Areas{/t}</span> 
 				<div class="table_top_bar space">

@@ -196,11 +196,12 @@ case('move_stock'):
 case('locations'):
 	list_locations();
 	break;
-
+case('edit_po_settings'):
 case('edit_warehouse'):
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string'),
 			'id'=>array('type'=>'key')
 		));
 
@@ -385,6 +386,7 @@ function edit_warehouse($data) {
 	global $editor;
 	$warehouse->editor=$editor;
 
+/*
 	$translator=array(
 		'warehouse_name'=>'Warehouse Name',
 		'warehouse_code'=>'Warehouse Code'
@@ -398,7 +400,7 @@ function edit_warehouse($data) {
 		}
 	}
 
-
+*/
 
 	$warehouse->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
 	if ($warehouse->updated) {
@@ -406,7 +408,7 @@ function edit_warehouse($data) {
 			$data['key']='warehouse_code';
 		if ($data['key']=='Warehouse Name')
 			$data['key']='warehouse_name';
-		$response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['key']);
+		$response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['okey']);
 
 	} else {
 		$response= array('state'=>400,'msg'=>$warehouse->msg,'key'=>$_REQUEST['key']);
