@@ -1,3 +1,6 @@
+var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
+
+
 var dialog_export = new Object;
 
 function validate_general(branch, items, query) {
@@ -926,7 +929,7 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                    //   alert(o.responseText);
+                   //   alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 

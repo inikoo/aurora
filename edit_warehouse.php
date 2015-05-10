@@ -21,25 +21,39 @@ $edit=true;
 $warehouse=new warehouse($warehouse_id);
 
 
+$block_view=$_SESSION['state']['warehouse']['edit'];
 
 if (isset($_REQUEST['referrer']) and $_REQUEST['referrer']=='inventory') {
 	$link_back='inventory.php?block_view=parts&warehouse_id='.$warehouse->id;
 	$smarty->assign('search_label',_('Parts'));
 	$smarty->assign('search_scope','parts');
 	$smarty->assign('referrer','inventory');
+	$block_view='description';
 
+}elseif (isset($_REQUEST['referrer']) and $_REQUEST['referrer']=='suppliers') {
+	$link_back='suppliers.php?id='.$warehouse->id;
+	$smarty->assign('search_label',_('Suppliers'));
+	$smarty->assign('search_scope','supplier_products');
+	$smarty->assign('referrer','suppliers');
+	if ($block_view!='po') {
+		$block_view='description';
+	}
 }else {
 	$link_back='warehouse.php?id='.$warehouse->id;
 	$smarty->assign('search_label',_('Locations'));
 	$smarty->assign('search_scope','locations');
 	$smarty->assign('referrer','warehouse');
-
+	if (!in_array($block_view,array('flags','areas'))) {
+		$block_view='locations';
+	}
 }
 $smarty->assign('link_back',$link_back);
 
 
 
-$smarty->assign('edit',$_SESSION['state']['warehouse']['edit']);
+$smarty->assign('edit',$block_view);
+
+
 $smarty->assign('shelf_type_view',$_SESSION['state']['shelf_types']['view']);
 
 $units_tipo=array(
@@ -63,6 +77,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
+	'css/edit_warehouse.css',
 	'theme.css.php'
 );
 

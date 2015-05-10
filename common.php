@@ -226,10 +226,9 @@ if ($user->can_view('staff'))
 if ($user->can_view('reports')) {
 	$nav_menu[] = array(_('Reports'), 'reports.php','reports');
 }
+
 if ($user->can_view('suppliers'))
 	$nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
-
-
 
 if ($user->can_view('warehouses')) {
 

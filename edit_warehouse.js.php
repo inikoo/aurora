@@ -228,8 +228,11 @@ el.innerHTML =location_type_name[oData];
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
  
-	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.table1.subscribe("cellMouseoutEvent", this.table1.onEventUnhighlightCell);
+	 
+     this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+
+
 	    this.table1.subscribe("cellClickEvent", onCellClick);
 
 
@@ -309,13 +312,13 @@ el.innerHTML =location_type_name[oData];
 function change_block(e) {
     
 
-		Dom.setStyle(['description_block','areas_block','locations_block','flags_block'],'display','none');
+		Dom.setStyle(['description_block','areas_block','locations_block','flags_block','po_block'],'display','none');
 
         Dom.setStyle(this.id + '_block','display','');
 
 
 
-        Dom.removeClass(['description','areas','locations','flags'], 'selected');
+        Dom.removeClass(['description','areas','locations','flags','po'], 'selected');
 
         Dom.addClass(this, 'selected');
 
@@ -343,6 +346,13 @@ function get_description_data() {
     return str;
 }
 
+function save_edit_po_settings(){
+   save_edit_general('po_settings')
+}
+
+function reset_po_settings(){
+   reset_edit_general('po_settings')
+}
 
 function save_description_data() {
     str = get_description_data();
@@ -494,13 +504,37 @@ function validate_warehouse_code(query) {
 }
 
 function validate_warehouse_name(query) {
-    //alert(query)
     validate_general('warehouse', 'warehouse_name', unescape(query));
 }
 
+function validate_warehouse_company_name(query) {
+    validate_general('warehouse', 'warehouse_company_name', unescape(query));
+}
 
+function validate_warehouse_company_number(query) {
+    validate_general('warehouse', 'warehouse_company_number', unescape(query));
+}
+function validate_warehouse_vat_number(query) {
+    validate_general('warehouse', 'warehouse_vat_number', unescape(query));
+}
 
+function validate_warehouse_vat_number(query) {
+    validate_general('warehouse', 'warehouse_vat_number', unescape(query));
+}
 
+function validate_warehouse_telephone(query) {
+    validate_general('warehouse', 'warehouse_telephone', unescape(query));
+}
+function validate_warehouse_email(query) {
+    validate_general('warehouse', 'warehouse_email', unescape(query));
+}
+function validate_warehouse_address(query) {
+    validate_general('warehouse', 'warehouse_address', unescape(query));
+}
+  
+function validate_terms_and_conditions(query) {
+    validate_general('po_settings', 'terms_and_conditions', unescape(query));
+} 
 
 function save_edit_warehouse() {
 
@@ -599,8 +633,18 @@ function post_reset_actions(branch) {
 
 function init() {
 
-    init_search('locations');
 
+    switch(Dom.get('referrer').value){
+        case 'warehouse':
+            init_search('locations');
+            break;
+        case 'suppliers':
+            init_search('supplier_products');
+            break;
+        case 'inventory':
+            init_search('parts');
+            break;    
+}
 
    Event.addListener('save_edit_location_flags', "click", save_location_flags);
     Event.addListener('reset_edit_location_flags', "click", reset_location_flags);
@@ -614,7 +658,7 @@ function init() {
     area_dialog.render();
 
 
-    var ids = ["description", "areas", "locations", "shelfs", "shelf_types", "location_types","flags"];
+    var ids = ["description", "areas", "locations", "shelfs", "shelf_types", "location_types","flags","po"];
 
 
 
@@ -669,6 +713,12 @@ function init() {
             'key_name': 'id',
             'key':Dom.get('warehouse_key').value
         },
+         'po_settings': {
+            'type': 'edit',
+            'ar_file': 'ar_edit_warehouse.php',
+            'key_name': 'id',
+            'key':Dom.get('warehouse_key').value
+        },
         'location_flags': {
             'type': 'edit',
             'ar_file': 'ar_edit_warehouse.php',
@@ -696,12 +746,11 @@ function init() {
                 'type': 'item',
                 'dbname': 'Warehouse Name',
                 'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': '<?php echo _('Invalid Warehouse Name')?>'
+                    'regexp': "[a-z\\d]+",
+                    'invalid_msg': '<?php echo _('Invalid name')?>'
                 }],
                 'name': 'warehouse_name'
-            }
-,
+            },
             'warehouse_code': {
                 'changed': false,
                 'validated': true,
@@ -710,17 +759,107 @@ function init() {
                 'type': 'item',
                 'dbname': 'Warehouse Code',
                 'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': '<?php echo _('Invalid Warehouse Code')?>'
+                    'regexp': "[a-z\\d]+",
+                    'invalid_msg': '<?php echo _('Invalid code')?>'
                 }],
                 'name': 'warehouse_code',
                 'ar': 'find',
                 'ar_request': 'ar_warehouse.php?tipo=is_warehouse_code&warehouse_code=' + Dom.get('warehouse_code').value + '&query='
+            },
+ 'warehouse_company_name':{
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse Company Name',
+                'validation': [{
+                    'regexp': "[a-z\\d]+",
+                    'invalid_msg': '<?php echo _('Invalid name')?>'
+                }],
+                'name': 'Warehouse_Company_Name'
+            },
+  'warehouse_company_number':{
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse Company Number',
+                'validation': [{
+                    'regexp': "[a-z\\d]+",
+                    'invalid_msg': '<?php echo _('Invalid registration number')?>'
+                }],
+                'name': 'Warehouse_Company_Number'
+            },
+'warehouse_vat_number':{
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse VAT Number',
+                'validation': [{
+                    'regexp': "[a-z\\d]+",
+                    'invalid_msg': '<?php echo _('Invalid tax number')?>'
+                }],
+                'name': 'Warehouse_VAT_Number'
+            },
+'warehouse_telephone':{
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse Telephone',
+                'validation': [{
+                'regexp': regex_valid_tel,
+                'invalid_msg': '<?php echo _('Invalid Telephone')?>'
+            }],
+                'name': 'telephone'
+            },
+'warehouse_email':{
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse Email',
+                'validation': [{
+                'regexp': regexp_valid_email,
+                'invalid_msg': '<?php echo _('Invalid Email')?>'
+            }],
+                'name': 'email'
+            },
+'warehouse_address':{
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse Address',
+                'validation': [{
+                    'regexp': "[a-z\\d]+",
+                'invalid_msg': '<?php echo _('Invalid Address')?>'
+            }],
+                'name': 'address'
             }
 
 
+
         },
-        
+        'po_settings':{
+        'terms_and_conditions':{
+                'changed': false,
+                'validated': true,
+                'required': false,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Warehouse Default PO Terms and Conditions',
+                'validation': false,
+                'name': 'terms_and_conditions'
+            }
+        },
          'location_flags': {
         <?php
         
@@ -763,7 +902,6 @@ function init() {
           }
           
     };
-
     var warehouse_code_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_code);
     warehouse_code_oACDS.queryMatchContains = true;
     var warehouse_code_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_code", "warehouse_code_Container", warehouse_code_oACDS);
@@ -776,6 +914,53 @@ function init() {
     var warehouse_name_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_name", "warehouse_name_Container", warehouse_name_oACDS);
     warehouse_name_oAutoComp.minQueryLength = 0;
     warehouse_name_oAutoComp.queryDelay = 0.1;
+  
+ 
+   var warehouse_company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_company_name);
+    warehouse_company_name_oACDS.queryMatchContains = true;
+    var warehouse_company_name_oAutoComp = new YAHOO.widget.AutoComplete("Warehouse_Company_Name", "Warehouse_Company_Name_Container", warehouse_company_name_oACDS);
+    warehouse_company_name_oAutoComp.minQueryLength = 0;
+    warehouse_company_name_oAutoComp.queryDelay = 0.1;
+  
+   var warehouse_company_number_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_company_number);
+    warehouse_company_number_oACDS.queryMatchContains = true;
+    var warehouse_company_number_oAutoComp = new YAHOO.widget.AutoComplete("Warehouse_Company_Number", "Warehouse_Company_Number_Container", warehouse_company_number_oACDS);
+    warehouse_company_number_oAutoComp.minQueryLength = 0;
+    warehouse_company_number_oAutoComp.queryDelay = 0.1;
+  
+     var warehouse_vat_number_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_vat_number);
+    warehouse_vat_number_oACDS.queryMatchContains = true;
+    var warehouse_vat_number_oAutoComp = new YAHOO.widget.AutoComplete("Warehouse_VAT_Number", "Warehouse_VAT_Number_Container", warehouse_vat_number_oACDS);
+    warehouse_vat_number_oAutoComp.minQueryLength = 0;
+    warehouse_vat_number_oAutoComp.queryDelay = 0.1;
+    
+       var warehouse_telephone_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_telephone);
+    warehouse_telephone_oACDS.queryMatchContains = true;
+    var warehouse_telephone_oAutoComp = new YAHOO.widget.AutoComplete("telephone", "telephone_Container", warehouse_telephone_oACDS);
+    warehouse_telephone_oAutoComp.minQueryLength = 0;
+    warehouse_telephone_oAutoComp.queryDelay = 0.1;
+    
+    
+      var warehouse_email_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_email);
+    warehouse_email_oACDS.queryMatchContains = true;
+    var warehouse_email_oAutoComp = new YAHOO.widget.AutoComplete("email", "email_Container", warehouse_email_oACDS);
+    warehouse_email_oAutoComp.minQueryLength = 0;
+    warehouse_email_oAutoComp.queryDelay = 0.1;
+    
+    
+      var warehouse_address_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_address);
+    warehouse_address_oACDS.queryMatchContains = true;
+    var warehouse_address_oAutoComp = new YAHOO.widget.AutoComplete("address", "address_Container", warehouse_address_oACDS);
+    warehouse_address_oAutoComp.minQueryLength = 0;
+    warehouse_address_oAutoComp.queryDelay = 0.1;
+    
+   var t_and_c_oACDS = new YAHOO.util.FunctionDataSource(validate_terms_and_conditions);
+    t_and_c_oACDS.queryMatchContains = true;
+    var t_and_c_oAutoComp = new YAHOO.widget.AutoComplete("terms_and_conditions", "terms_and_conditions_Container", t_and_c_oACDS);
+    t_and_c_oAutoComp.minQueryLength = 0;
+    t_and_c_oAutoComp.queryDelay = 0.1;
+ 
+  
   <?php
  foreach($flags as $flag){
         
