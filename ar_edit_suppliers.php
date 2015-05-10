@@ -78,8 +78,9 @@ case('edit_supplier_quick'):
 
 	edit_supplier_field($data['supplier_key'],$data['key'],$data['newvalue']);
 	break;
-case('edit_product_settings'):
 
+case('edit_po_settings'):
+case('edit_product_settings'):
 case('edit_supplier'):
 	$data=prepare_values($_REQUEST,array(
 			'supplier_key'=>array('type'=>'key'),
@@ -171,9 +172,9 @@ default:
 
 }
 
-function edit_supplier_field($supplier_key,$key,$value_data) {
+function edit_supplier_field($supplier_key,$key,$value_data,$okey='') {
 	global $editor;
-	$okey=$key;
+
 
 	$supplier=new supplier($supplier_key);
 
@@ -194,7 +195,7 @@ function edit_supplier_field($supplier_key,$key,$value_data) {
 		}
 	}else {
 
-	
+
 
 		$key_dic=array(
 			'name'=>'Supplier Company Name',
@@ -216,20 +217,19 @@ function edit_supplier_field($supplier_key,$key,$value_data) {
 			"ship_region"=>'Main Ship To Country Region',
 			"ship_country"=>'Main Ship To Country',
 			"dispatch_time"=>'Supplier Average Delivery Days',
-			
+
 
 		);
-		if (array_key_exists($key,$key_dic))
+		if (array_key_exists($key,$key_dic)) {
+			$okey=$key;
 			$key=$key_dic[$key];
+		}
 
 		$update_data=array($key=>stripslashes(urldecode($value_data)));
 		//print_r($update_data);
 		$supplier->update($update_data);
 	}
 
-	if ($okey=='Supplier Products Origin Country Code') {
-		$okey='origin';
-	}
 
 
 	if (!$supplier->error) {
@@ -249,6 +249,7 @@ function edit_supplier_field($supplier_key,$key,$value_data) {
 
 function edit_supplier($data) {
 
+	//print_r($data['values']);
 	$supplier=new Supplier($data['supplier_key']);
 	if (!$supplier->id) {
 		$response= array('state'=>400,'msg'=>'Supplier not found','key'=>$data['key']);
@@ -293,7 +294,9 @@ function edit_supplier($data) {
 
 	foreach ($values as $key=>$values_data) {
 
-		$responses[]=edit_supplier_field($supplier->id,$key,$values_data['value']);
+		//print "$key ".$values_data['value']."\n";
+
+		$responses[]=edit_supplier_field($supplier->id,$key,$values_data['value'],$values_data['okey']);
 	}
 
 
@@ -417,7 +420,7 @@ function edit_supplier_product($data) {
 			'dispatch_days'=>'Supplier Product Delivery Days',
 			'note_to_supplier'=>'Supplier Product Note to Supplier',
 			'agent_supplier'=>'Supplier Product Agent Supplier Name'
-			
+
 		);
 		if (array_key_exists($key,$key_dic))
 			$key=$key_dic[$key];
@@ -432,8 +435,8 @@ function edit_supplier_product($data) {
 
 		}else {
 			$supplier_product->update(array($key=>$data['newvalue']));
-			if($key=='Supplier Product Delivery Days'){
-			// TODO mark as set up so it not changed from parent (Supplier Edit)
+			if ($key=='Supplier Product Delivery Days') {
+				// TODO mark as set up so it not changed from parent (Supplier Edit)
 			}
 		}
 

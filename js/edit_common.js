@@ -1067,11 +1067,11 @@ function save_edit_general_bulk(branch) {
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
-    //alert(request + '?' + postData);
+   // alert(request + '?' + postData);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-          //    alert(o.responseText)
+          //  alert(o.responseText)
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;

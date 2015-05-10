@@ -118,8 +118,14 @@ div.inline { float:left; }
 			<div style="text-align: right">
 				{t}Currency{/t}:<b>{$po->get('Purchase Order Currency Code')}</b> 
 			</div>
-			<div style="text-align: right">
-				{t}Iconterm{/t}: <b>{$po->get('Purchase Order Iconterm')}</b> 
+			<div style="text-align: right;{if $po->get('Purchase Order Incoterm')==''}display:none{/if}">
+				{t}Incoterm{/t}: <b>{$po->get('Purchase Order Incoterm')}</b> 
+			</div>
+			<div style="text-align: right;{if $po->get('Purchase Order Port of Export')==''}display:none{/if}">
+				{t}Export Port{/t}: <b>{$po->get('Purchase Order Port of Export')}</b> 
+			</div>
+			<div style="text-align: right;{if $po->get('Purchase Order Port of Import')==''}display:none{/if}">
+				{t}Import Port{/t}: <b>{$po->get('Purchase Order Port of Import')}</b> 
 			</div>
 		
 			</td>

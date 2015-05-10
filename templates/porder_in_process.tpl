@@ -27,7 +27,7 @@
 	</div>
 	<div style="clear:both">
 	</div>
-	<div class="prodinfo" style="clear:both;margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
+	<div class="prodinfo" style="clear:both;margin-top:2px;font-size:95%;border:1px solid #ddd;padding:10px">
 		<table style="width:200px;" class="order_header" border="0">
 			<tr class="currency_tr">
 				<td>{t}Currency{/t}</td>
@@ -65,15 +65,29 @@
 			</table>
 		</div>
 		<table border="0">
-			<tr>
-				<td>{t}Purchase Order Id{/t}:</td>
-				<td class="aright">{$po->get('Purchase Order Key')}</td>
-			</tr>
-			<tr>
+		<tr>
 				<td>{t}Supplier{/t}:</td>
 				<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
+				<td></td>
 			</tr>
-			<tr>
+			<tbody id="incoterm_data">
+			<tr id="incoterm_tr">
+				<td>{t}Incoterm{/t}:</td>
+				<td  id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
+				<td class="aright" style="width:20px"><img id="edit_incoterm" onClick="show_edit_incoterm_dialog()" style="display:none;cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
+			</tr>
+			<tr id="export_port_tr">
+				<td>{t}Export Port{/t}:</td>
+				<td id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
+				<td></td>
+			</tr>
+			<tr id="import_port_tr">
+				<td>{t}Import Port{/t}:</td>
+				<td id="import_port"  class="aright">{$po->get('Purchase Order Port of Import')}</td>
+				<td></td>
+			</tr>
+			</tbody>
+			<tr style="display:none">
 				<td>{t}Items{/t}:</td>
 				<td class="aright" id="distinct_products">{$po->get('Number Items')}</td>
 			</tr>
@@ -90,7 +104,8 @@
 	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
 		<div class="elements_chooser">
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
 		</div>
 		<div class="table_top_bar space">
 		</div>
@@ -218,4 +233,70 @@
 		</div>
 	</div>
 </div>
+
+<div id="edit_incoterm_dialog" style="padding-top:20px;width:500px">
+	<div class="bd">
+		<table id="po_settings" class="edit" border="0" >
+				
+				<tr class="first">
+					<td class="label">{t}Incoterm{/t}:</td>
+					<td style="text-align:left"> 
+					<input type="hidden" id="Purchase_Order_Incoterm" value="{$po->get('Purchase Order Incoterm')}" ovalue="{$po->get('Purchase Order Incoterm')}" ovalue_formated="{$po->get('Purchase Order Incoterm')}" />
+					<div class="buttons small left">
+						<span style="float:left;margin-right:10px" id="Purchase_Order_Incoterm_formated">{$po->get('Purchase Order Incoterm')}</span> 
+						<button class="negative" style="{if $po->get('Purchase Order Incoterm')==''}display:none{/if}" id="delete_Purchase_Order_Incoterm" onclick="delete_incoterm()">{t}Remove{/t}</button> 
+
+						<button style="{if $po->get('Purchase Order Incoterm')==''}display:none{/if}" id="update_Purchase_Order_Incoterm">{t}Change Incoterm{/t}</button> 
+						<button style="{if $po->get('Purchase Order Incoterm')!=''}display:none{/if}" id="set_Purchase_Order_Incoterm">{t}Set Incoterm{/t}</button>
+					</div>
+					 </td>
+					<td class="message"><span id="Purchase_Order_Incoterm_msg" class="edit_td_alert" ></span></td>
+				</tr>
+				
+				<tr class="space10">
+					<td   class="label">Port of export:</td>
+					<td  class="input"> 
+					<div>
+						<input id="Purchase_Order_Port_of_Export" value="{$po->get('Purchase Order Port of Export')}" ovalue="{$po->get('Purchase Order Port of Export')}" valid="0"> 
+						<div id="Purchase_Order_Port_of_Export_Container">
+						</div>
+					</div>
+					</td>
+					<td class="message"><span id="Purchase_Order_Port_of_Export_msg" class="edit_td_alert"></span></td>
+				</tr>
+				
+				<tr >
+					<td   class="label">Port of import:</td>
+					<td  class="input"> 
+					<div>
+						<input id="Purchase_Order_Port_of_Import" value="{$po->get('Purchase Order Port of Import')}" ovalue="{$po->get('Purchase Order Port of Import')}" valid="0"> 
+						<div id="Purchase_Order_Port_of_Import_Container">
+						</div>
+					</div>
+					</td>
+					<td class="message"><span id="Purchase_Order_Port_of_Import_msg" class="edit_td_alert"></span></td>
+				</tr>
+				
+				
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons">
+						<button style="margin-right:10px;" id="save_edit_incoterm" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_incoterm" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+					<td></td>
+				</tr>
+			</table>
+	</div>
+</div>
+<div id="dialog_incoterm_list">
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="data_table">
+			<span class="clean_table_title">{t}Incoterms{/t}</span> {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6} 
+			<div id="table6" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+
 {include file='footer.tpl'} 
