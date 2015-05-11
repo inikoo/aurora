@@ -13,6 +13,7 @@
 */
 include_once 'common.php';
 include_once 'class.Supplier.php';
+include_once 'class.Warehouse.php';
 
 
 if ($user->data['User Type']!='Supplier' and !$user->can_view('suppliers')) {
@@ -46,6 +47,10 @@ if (!$supplier->id) {
 	header('Location: suppliers.php?msg=SNPF');
 	exit;
 }
+
+$warehouse=new Warehouse(1);
+$smarty->assign('warehouse',$warehouse);
+
 
 
 $show_details=$_SESSION['state']['supplier']['details'];

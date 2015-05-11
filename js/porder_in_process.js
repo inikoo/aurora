@@ -759,6 +759,17 @@ function hide_edit_incoterm_edit_button() {
     Dom.setStyle('edit_incoterm', 'display', 'none')
 }
 
+function show_order_details(){
+    Dom.setStyle('show_order_details', 'display', 'none')
+    Dom.setStyle('order_details_panel', 'display', '')
+
+}
+
+function dide_order_details(){
+ Dom.setStyle('show_order_details', 'display', '')
+    Dom.setStyle('order_details_panel', 'display', 'none')
+}
+
 function init() {
 
 
@@ -833,6 +844,10 @@ function init() {
     Event.addListener("ordered_products", "click", show_only_ordered_products);
     Event.addListener("all_products", "click", show_all_products);
 
+    Event.addListener("show_order_details", "click", show_order_details);
+    Event.addListener("hide_order_details", "click", hide_order_details);
+
+
 
 
 
@@ -846,8 +861,15 @@ function validate_port_import(query) {
     validate_general('incoterm', 'port_import', unescape(query));
 }
 
+function validate_tc(query) {
+    validate_general('terms_and_conditions', 'terms_and_conditions', unescape(query));
+}
+
 function save_edit_incoterm() {
     save_edit_general_bulk('incoterm');
+}
+function save_edit_tc() {
+    save_edit_general_bulk('terms_and_conditions');
 }
 
 function reset_edit_incoterm() {
@@ -868,6 +890,27 @@ function reset_edit_incoterm() {
         Dom.setStyle(['update_Purchase_Order_Incoterm', 'delete_Purchase_Order_Incoterm'], 'display', '')
         Dom.setStyle('set_Purchase_Order_Incoterm', 'display', 'none')
     }
+
+    edit_incoterm_dialog.hide();
+
+}
+
+
+function save_edit_terms_and_conditions() {
+    save_edit_general_bulk('terms_and_conditions');
+}
+
+function reset_edit_terms_and_conditions() {
+    reset_edit_general('terms_and_conditions');
+    Dom.setStyle('edit_tc', 'display', 'none')
+    Dom.setStyle('terms_and_conditions_tr', 'display', '')
+
+}
+
+function show_edit_tc() {
+   Dom.removeClass('reset_edit_terms_and_conditions','disabled')
+    Dom.setStyle('edit_tc', 'display', '')
+    Dom.setStyle('terms_and_conditions_tr', 'display', 'none')
 }
 
 function delete_incoterm() {
@@ -903,11 +946,15 @@ function show_dialog_incoterm_list(e) {
 }
 
 function post_bulk_save_actions(branch) {
+
+if(branch=='incoterm'){
     setTimeout(function() {
         edit_incoterm_dialog.hide()
     }, 400);
-
-
+}else if(branch=='terms_and_conditions'){
+     Dom.setStyle('edit_tc', 'display', 'none')
+    Dom.setStyle('terms_and_conditions_tr', 'display', '')
+}
 }
 
 function post_item_updated_actions(branch, r) {
@@ -929,7 +976,15 @@ function post_item_updated_actions(branch, r) {
 
         }
 
+    }else if (branch == 'terms_and_conditions') {
+      switch (r.key) {
+        case 'terms_and_conditions':
+            Dom.get('terms_and_conditions_formated').innerHTML = r.newvalue
+            break;
+     
+        default:
     }
+}
 }
 
 function change_incoterm(oArgs) {
@@ -1004,6 +1059,21 @@ function init_edit_po() {
                 }]
             }
 
+        },
+        'terms_and_conditions':{
+         'terms_and_conditions': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname':'Purchase Order Terms and Conditions',
+            'name': 'terms_and_conditions',
+            'validation': [{
+                 'regexp': "[a-z\\d]*",
+                'invalid_msg': ''
+            }]
+        }
         }
 
     };
@@ -1015,6 +1085,13 @@ function init_edit_po() {
             'ar_file': 'ar_edit_porders.php',
             'key_name': 'po_key',
             'key': Dom.get('po_key').value
+        },
+        'terms_and_conditions': {
+            'type': 'edit',
+            'ar_file': 'ar_edit_porders.php',
+            'key_name': 'po_key',
+            'key': Dom.get('po_key').value,
+            'dont_disable_reset_if_no_change':true
         }
     };
 
@@ -1054,10 +1131,29 @@ function init_edit_po() {
     supplier_port_import_oAutoComp.minQueryLength = 0;
     supplier_port_import_oAutoComp.queryDelay = 0.1;
 
+
+ var po_tc_oACDS = new YAHOO.util.FunctionDataSource(validate_tc);
+    po_tc_oACDS.queryMatchContains = true;
+    var po_tc_oAutoComp = new YAHOO.widget.AutoComplete("terms_and_conditions", "terms_and_conditions_Container", po_tc_oACDS);
+    po_tc_oAutoComp.minQueryLength = 0;
+    po_tc_oAutoComp.queryDelay = 0.1;
+
+
     Event.addListener('save_edit_incoterm', "click", save_edit_incoterm);
     Event.addListener('reset_edit_incoterm', "click", reset_edit_incoterm);
 
+   Event.addListener('save_edit_terms_and_conditions', "click", save_edit_terms_and_conditions);
+    Event.addListener('reset_edit_terms_and_conditions', "click", reset_edit_terms_and_conditions);
 
+
+ Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+    Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
+    
+     var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS6.queryMatchContains = true;
+    oACDS6.table_id = 6;
+    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
+    oAutoComp6.minQueryLength = 0;
 
 }
 

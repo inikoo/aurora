@@ -161,7 +161,7 @@
 				</tr>
 				
 				<tr class="space10">
-					<td   class="label">Port of export:</td>
+					<td   class="label">{t}Port of export{/t}:</td>
 					<td  class="input"> 
 					<div>
 						<input id="Supplier_Default_Port_of_Export" value="{$supplier->get('Supplier Default Port of Export')}" ovalue="{$supplier->get('Supplier Default Port of Export')}" valid="0"> 
@@ -173,7 +173,7 @@
 				</tr>
 				
 				<tr >
-					<td   class="label">Port of import:</td>
+					<td   class="label">{t}Port of import{/t}:</td>
 					<td  class="input"> 
 					<div>
 						<input id="Supplier_Default_Port_of_Import" value="{$supplier->get('Supplier Default Port of Import')}" ovalue="{$supplier->get('Supplier Default Port of Import')}" valid="0"> 
@@ -184,7 +184,37 @@
 					<td class="message"><span id="Supplier_Default_Port_of_Import_msg" class="edit_td_alert"></span></td>
 				</tr>
 				
+				<tr class="first textarea_big_tr">
+					<td class="label">{t}Supplier Terms & Conditions{/t}:</td>
+					<td class="input"> 
+					<div >
+                    <textarea id="terms_and_conditions" changed="0"  value="{$supplier->get('Supplier Default PO Terms and Conditions')}" ovalue="{$supplier->get('Supplier Default PO Terms and Conditions')}"  >{$supplier->get('Supplier Default PO Terms and Conditions')}</textarea> 
+						<div id="terms_and_conditions_Container">
+						</div>
+					</div>
+					</td>
+					<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
+				</tr>
+				<tr >
+					<td  class="label"><span id="show_warehouse_tc" style="cursor:pointer;color:#777;font-size:80%;margin-right:5px">{t}Show{/t}</span> {t}Append warehouse T&C{/t}:</td>
+					<td  class="input"> 
+					<input type="hidden" id="show_warehouse_default_tc" value="$supplier->get('Supplier Show Warehouse TC in PO')" ovalue="$supplier->get('Supplier Show Warehouse TC in PO')">
+					<img id="show_warehouse_default_tc_Yes" style="cursor:pointer;height:14px;{if $supplier->get('Supplier Show Warehouse TC in PO')=='No'}display:none{/if}" src="art/icons/checkbox_checked.png">
+					<img id="show_warehouse_default_tc_No" style="cursor:pointer;height:14px;{if $supplier->get('Supplier Show Warehouse TC in PO')=='Yes'}display:none{/if}" src="art/icons/checkbox_unchecked.png">
+					
+					</td>
+					<td class="message"><span id="show_warehouse_default_tc_msg" class="edit_td_alert"></span></td>
+				</tr>
+				<tr id="warehouse_tc" style="display:none">
+				<td class="label"><span id="hide_warehouse_tc" style="cursor:pointer;color:#777;font-size:80%;margin-right:5px">{t}Hide{/t}</span> {t}Warehouse T&C{/t}:</td>
+				<td>
+				<div style="padding:10px;border:1px solid #ccc;color:#777;font-size:80%">
+				    {$warehouse->get('Warehouse Default PO Terms and Conditions')}
+				</div>
+				</td>
 				
+				<td></td>
+				</tr>
 				<tr class="buttons">
 					<td colspan="2"> 
 					<div class="buttons">

@@ -49,9 +49,9 @@ case('edit_porder_quick'):
 
 	edit_porder_field($data['po_key'],$data['key'],$data['newvalue'],$data['okey']);
 	break;
-	
+case('edit_terms_and_conditions'):
 case('edit_incoterm'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'po_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array'),
 
@@ -258,8 +258,8 @@ function submit_purchase_order($data) {
 
 
 
-function edit_porder($data){
-//print_r($data['values']);
+function edit_porder($data) {
+	//print_r($data['values']);
 	$po=new Supplier($data['po_key']);
 	if (!$po->id) {
 		$response= array('state'=>400,'msg'=>'PO not found','key'=>$data['key']);
@@ -307,7 +307,7 @@ function edit_porder($data){
 
 function edit_porder_field($po_key,$key,$value_data,$okey='') {
 
-global $editor;
+	global $editor;
 
 
 	$po=new PurchaseOrder($po_key);
@@ -330,9 +330,9 @@ global $editor;
 	}else {
 
 
-$key_dic=array(
-		'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
-	);
+		$key_dic=array(
+			'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
+		);
 		if (array_key_exists($key,$key_dic)) {
 			$okey=$key;
 			$key=$key_dic[$key];
