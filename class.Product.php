@@ -2501,7 +2501,7 @@ class product extends DB_Table {
 			include_once 'class.CurrencyExchange.php';
 
 
-			$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency,date('Y-m-d',strtotime($datetime)));
+			$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency, ($datetime?  gmdate('Y-m-d',strtotime($datetime))   :'') );
 
 
 
