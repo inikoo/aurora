@@ -28,11 +28,11 @@ if (isset($_REQUEST['id'])) {
 
 include "external_libs/mpdf/mpdf.php";
 
-$mpdf=new mPDF('win-1252','A4','','',20,15,38,25,10,10);
+$mpdf=new mPDF('win-1252','A4','','',15,15,38,25,10,10);
 
 $mpdf->useOnlyCoreFonts = true;    // false is default
-$mpdf->SetTitle(_('Proforma Invoice').' '.$order->data['Order Public ID']);
-$mpdf->SetAuthor($store->data['Store Name']);
+$mpdf->SetTitle($po->data['Purchase Order Public ID']);
+$mpdf->SetAuthor($po->data['Purchase Order Main Buyer Name']);
 
 
 
@@ -65,6 +65,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	
     $data['Code']=$row['Supplier Product Code'];
     $data['Description']=$description;
+      $data['Inners']=$row['SPH Units Per Inner'];
     $data['Units']=$row['SPH Units Per Case'];
     $data['Price_Unit']=money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']);
     $data['Cartons']=$row['Purchase Order Quantity'];

@@ -132,7 +132,9 @@ function validate_port_import(query){
     validate_general('po_settings','port_import',unescape(query));
 }
 
-
+function validate_tc(query){
+    validate_general('po_settings','terms_and_conditions',unescape(query));
+}
 
 
 
@@ -566,7 +568,7 @@ var tableid=1; // Change if you have more the 1 table
 	    this.table5.filter={key:'code',value:''};
 	    
 	    
-	       var tableid=6; // Change if you have more the 1 table
+	       var tableid=6; 
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
                    {key:"code", label:"<?php echo _('Code')?>",width:25,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -930,6 +932,33 @@ function change_incoterm(oArgs) {
 
 }
 
+function change_show_warehouse_default_tc() {
+    if (this.id == 'show_warehouse_default_tc_Yes') {
+        value = 'No';
+        Dom.setStyle('show_warehouse_default_tc_Yes', 'display', 'none')
+        Dom.setStyle('show_warehouse_default_tc_No', 'display', '')
+
+    } else {
+        value = 'Yes';
+        Dom.setStyle('show_warehouse_default_tc_Yes', 'display', '')
+        Dom.setStyle('show_warehouse_default_tc_No', 'display', 'none')
+    }
+
+    validate_scope_data['po_settings']['incoterm']['value'] = value;
+
+
+
+    Dom.get('show_warehouse_default_tc').value = value
+    ovalue = Dom.get('show_warehouse_default_tc').getAttribute('ovalue');
+    if (ovalue != value) {
+        validate_scope_data['po_settings']['show_warehouse_default_tc']['changed'] = true;
+    } else {
+        validate_scope_data['po_settings']['show_warehouse_default_tc']['changed'] = false;
+    }
+
+    validate_scope('po_settings')
+}
+
 
 
 function show_dialog_currency_list(e) {
@@ -1115,6 +1144,18 @@ function post_bulk_save_actions(branch) {
 
 }
 
+function show_warehouse_tc(){
+Dom.setStyle('warehouse_tc','display','')
+Dom.setStyle('show_warehouse_tc','display','none')
+
+}
+
+function hide_warehouse_tc(){
+Dom.setStyle('warehouse_tc','display','none')
+Dom.setStyle('show_warehouse_tc','display','')
+
+}
+
 
 
 function init(){
@@ -1262,7 +1303,32 @@ validate_scope_data = {
                  'regexp': "[a-z\\d]*",
                 'invalid_msg': '<?php echo _('Invalid name')?>'
             }]
-        }
+        },
+              'terms_and_conditions': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname':'Supplier Default PO Terms and Conditions',
+            'name': 'terms_and_conditions',
+            'validation': [{
+                 'regexp': "[a-z\\d]*",
+                'invalid_msg': ''
+            }]
+        },
+          'show_warehouse_default_tc': {
+            'changed': false,
+            'validated': true,
+            'required': false,
+            'group': 1,
+            'type': 'item',
+            'dbname': 'Supplier Show Warehouse TC in PO',
+            'name': 'show_warehouse_default_tc',
+            'ar': false,
+            'validation': false
+
+        },
 
     },
     'product_settings': {
@@ -1432,6 +1498,12 @@ var supplier_port_export_oACDS = new YAHOO.util.FunctionDataSource(validate_port
 	    supplier_port_import_oAutoComp.minQueryLength = 0; 
 	    supplier_port_import_oAutoComp.queryDelay = 0.1;	    
 
+    
+	    var supplier_tc_oACDS = new YAHOO.util.FunctionDataSource(validate_tc);
+	    supplier_tc_oACDS.queryMatchContains = true;
+	    var supplier_tc_oAutoComp = new YAHOO.widget.AutoComplete("terms_and_conditions","terms_and_conditions_Container", supplier_tc_oACDS);
+	    supplier_tc_oAutoComp.minQueryLength = 0; 
+	    supplier_tc_oAutoComp.queryDelay = 0.1;	    
 
 
 		edit_address(Dom.get("main_address_key").value,'contact_')
@@ -1560,6 +1632,12 @@ var supplier_port_export_oACDS = new YAHOO.util.FunctionDataSource(validate_port
 
   
     Event.addListener(['supplier_products_name','supplier_products_cost','supplier_products_dimensions','supplier_products_po_data'], "click", change_supplier_products_view, {table_id:0});
+Event.addListener('show_warehouse_tc','click',show_warehouse_tc)
+
+Event.addListener('hide_warehouse_tc','click',hide_warehouse_tc)
+Event.addListener(['show_warehouse_default_tc_Yes','show_warehouse_default_tc_No'],'click',change_show_warehouse_default_tc)
+
+
 
 
 	

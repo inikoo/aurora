@@ -6,5 +6,10 @@ table.edit{width:890px}
 .edit td.input.very_short input{width:60px}
 .edit td.input.very_short span{margin-left:70px}
 
+
+.textarea_big_tr{height: 190px;}
+.textarea_big_tr textarea{height: 160px;width:500px}
+
+
 .edit.product_settings{border-bottom:1px solid #ccc}
 .edit.product_settings tr.buttons td {padding-bottom:10px;}

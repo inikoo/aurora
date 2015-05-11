@@ -100,20 +100,34 @@ div.inline { float:left; }
 			</td>
 		</tr>
 	</table>
-	<table width="100%" style="font-family: sans-serif;" cellpadding="0">
+	<table border=0 width="100%" style="font-family: sans-serif;" cellpadding="0">
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
 			<div style="text-align: right">
 				{t}Supplier{/t}:<b> {$po->get('Purchase Order Supplier Name')}</b> ({$po->get('Purchase Order Supplier Code')}) 
 			</div>
 			</td>
-			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> </td>
+			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> 
+			
+			</td>
 		</tr>
 	</table>
-	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
+	<table border=0 width="100%" style="font-family: sans-serif;" cellpadding="10">
 		<tr>
 			
-			<td width="10%">&nbsp;</td>
+			
+			<td width="45%" style="border: 0.1mm solid #888888;"> 
+			{if $po->get('Purchase Order Supplier Contact Name')!=''}<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Contact{/t}:</span> {$po->get('Purchase Order Supplier Contact Name')}<br>{/if}
+			{if $po->get('Purchase Order Supplier Email')!=''}<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Email{/t}:</span> {$po->get('Purchase Order Supplier Email')}<br>{/if}
+			{if $po->get('Purchase Order Supplier Telephone')!=''}<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Telephone{/t}:</span> {$po->get('Purchase Order Supplier Telephone')}<br>{/if}
+			{if $po->get('Purchase Order Supplier Address')!=''}<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Address{/t}:</span> 
+			<div>
+				{$po->get('Purchase Order Supplier Address')} 
+			</div>
+			{/if}
+			</td>
+			
+			
 			<td width="45%" style="text-align: right"> 
 			<div style="text-align: right">
 				{t}Currency{/t}:<b>{$po->get('Purchase Order Currency Code')}</b> 
@@ -137,10 +151,11 @@ div.inline { float:left; }
 			<tr>
 				<td style="width:8%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
-				<td style="width:8%;text-align:right">{t}U/Caton{/t}</td>
-				<td style="width:8%;text-align:right">{t}Price/U{/t}</td>
-				<td style="width:8%;text-align:right">{t}Cartons{/t}</td>
-				<td style="width:8%;text-align:right">{t}Amount{/t}</td>
+				<td style="width:6%;text-align:right">{t}Inner{/t}</td>
+				<td style="width:7%;text-align:right">{t}U/Caton{/t}</td>
+				<td style="width:7%;text-align:right">{t}Price/U{/t}</td>
+				<td style="width:7%;text-align:right">{t}Cartons{/t}</td>
+				<td style="width:7%;text-align:right">{t}Amount{/t}</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -148,10 +163,11 @@ div.inline { float:left; }
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:8%;text-align:left">{$transaction['Code']}</td>
 				<td style="text-align:left">{$transaction['Description']}</td>
-				<td style="width:8%;text-align:right">{$transaction['Units']}</td>
-				<td style="width:8%;text-align:right">{$transaction['Price_Unit']}</td>
-				<td style="width:8%;text-align:right"><b>{$transaction['Cartons']}</b></td>
-				<td style="text-align:right">{$transaction['Amount']}</td>
+				<td style="width:6%;text-align:right">{$transaction['Inners']}</td>
+				<td style="width:7%;text-align:right">{$transaction['Units']}</td>
+				<td style="width:7%;text-align:right">{$transaction['Price_Unit']}</td>
+				<td style="width:7%;text-align:right"><b>{$transaction['Cartons']}</b></td>
+				<td style="width:7%;text-align:right">{$transaction['Amount']}</td>
 			</tr>
 			{/foreach} 
 		</tbody>
@@ -159,11 +175,19 @@ div.inline { float:left; }
 
 			<tr class="total">
 			<td style="border:none" colspan="2" ></td>
-				<td colspan="3"><b>{t}Total{/t}</b></td>
+				<td colspan="4"><b>{t}Total{/t}</b></td>
 				<td>{$po->get('Total Amount')}</td>
 			</tr>
 		</tbody>
 	</table>
-	<br> <br> 
+	<br> <br>
+	
+	<div style="font-size: 9pt;{if $po->get('Purchase Order Terms and Conditions')==''}display:none{/if}">
+	<h3>{t}Terms & Conditions{/t}</h3>
+	        <p>
+	    {$po->get('Purchase Order Terms and Conditions')}
+	    <p>
+	</div>
+	 
 	</body>
 	</html>

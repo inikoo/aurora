@@ -38,6 +38,11 @@ if (isset($_REQUEST['id'])) {
 		'Purchase Order Supplier Key'=>$supplier->id,
 		'Purchase Order Supplier Name'=>$supplier->data['Supplier Name'],
 		'Purchase Order Supplier Code'=>$supplier->data['Supplier Code'],
+		'Purchase Order Supplier Contact Name'=>$supplier->data['Supplier Main Contact Name'],
+		'Purchase Order Supplier Email'=>$supplier->data['Supplier Main Plain Email'],
+		'Purchase Order Supplier Telephone'=>$supplier->data['Supplier Main XHTML Telephone'],
+		'Purchase Order Supplier Address'=>$supplier->data['Supplier Main XHTML Address'],
+
 		'Purchase Order Currency Code'=>$supplier->data['Supplier Default Currency'],
 
 		'Purchase Order Incoterm'=>$supplier->data['Supplier Default Incoterm'],
@@ -55,8 +60,17 @@ if (isset($_REQUEST['id'])) {
 		'Purchase Order Warehouse Telephone'=>$warehouse->data['Warehouse Telephone'],
 		'Purchase Order Warehouse Email'=>$warehouse->data['Warehouse Email'],
 
+		'Purchase Order Terms and Conditions'=>$supplier->data['Supplier Default PO Terms and Conditions'],
+
 		'editor'=>$editor
 	);
+
+	if ($supplier->data['Supplier Show Warehouse TC in PO']=='Yes') {
+
+		if ($data['Purchase Order Terms and Conditions']!='')$data['Purchase Order Terms and Conditions'].='<br><br>';
+		$data['Purchase Order Terms and Conditions'].=$warehouse->data['Warehouse Default PO Terms and Conditions'];
+	}
+
 
 	$po=new PurchaseOrder('new',$data);
 	if ($po->error)
@@ -197,9 +211,9 @@ case('In Process'):
 
 
 	$css_files[]='css/porder_in_process.css';
-$js_files[]='js/edit_common.js';
+	$js_files[]='js/edit_common.js';
 	$js_files[]='js/porder_in_process.js';
-	
+
 	$smarty->assign('css_files',$css_files);
 	$smarty->assign('js_files',$js_files);
 

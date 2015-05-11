@@ -18,7 +18,7 @@
 			<span class="main_title no_buttons">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
 		</div>
 		<div class="buttons small" style="position:relative;top:5px">
-		<button style="height:18px" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
+		<button style="height:18px;display:none" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
 			<button class="positive {if $po->get('Purchase Order Number Items')==0}disabled{/if}" id="submit_po">{t}Submit{/t}</button> 
 			<button class="negative" id="delete_po">{t}Delete{/t}</button> 
 		</div>
@@ -100,6 +100,50 @@
 		</table>
 		<div style="clear:both">
 		</div>
+		<img id="show_order_details" style="cursor:pointer;margin-top:10px;height:16px" src="art/icons/arrow_sans_lowerleft.png" /> 
+		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+				
+				<table  class="terms_and_conditions edit" border="0" >
+				
+			<tr id="terms_and_conditions_tr">
+					<td class="label">{t}Terms & Conditions{/t}:</td>
+					<td class="input"> 
+					<div id="terms_and_conditions_formated">
+                    {$po->get('Purchase Order Terms and Conditions')}
+					</div>
+					</td>
+					<td><img onClick="show_edit_tc()" style="cursor:pointer" src="art/icons/edit.gif"></td>
+				</tr>
+				<tbody id="edit_tc" style="display:none">
+				<tr class=" textarea_big_tr">
+					<td class="label">{t}Terms & Conditions{/t}:</td>
+					<td class="input"> 
+					<div >
+                    <textarea id="terms_and_conditions" changed="0"  value="{$po->get('Purchase Order Terms and Conditions')}" ovalue="{$po->get('Purchase Order Terms and Conditions')}"  >{$po->get('Purchase Order Terms and Conditions')}</textarea> 
+						<div id="terms_and_conditions_Container">
+						</div>
+					</div>
+					</td>
+					<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
+				</tr>
+	
+				<tr class="buttons">
+					<td colspan="2"> 
+					<div class="buttons">
+						<button style="margin-right:10px;" id="save_edit_terms_and_conditions" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_terms_and_conditions" class="negative">{t}Cancel{/t}</button> 
+					</div>
+					</td>
+					<td></td>
+				</tr>
+				<tbody>
+			</table>
+            
+				<div style="clear:both">
+				</div>
+				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			</div>
+			<div style="clear:both">
+			</div>
 	</div>
 	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
@@ -154,8 +198,23 @@
 	<div class="bd">
 		<div id="submit_dialog_msg">
 		</div>
+		
+		
+		
+		
 		<table class="edit" style="width:400px" border="0">
-			<tr class="title">
+			
+			<tr>
+			<td class="label">{t}Preview PDF{/t}</td>
+			<td>
+			<div class="buttons small left" style="position:relative;top:-2px">
+		<button style="height:18px" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
+			
+		</div>
+			</td>
+			</tr>
+			
+			<tr class="first title">
 				<td colspan="2">{t}Submit purchse order{/t}</td>
 			</tr>
 			<tr>
