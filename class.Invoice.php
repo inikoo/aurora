@@ -423,7 +423,16 @@ class Invoice extends DB_Table {
 
 			$chargeable_qty=$row['Order Quantity']-$row['No Shipped Due Out of Stock']-$row['No Shipped Due No Authorized']-$row['No Shipped Due Not Found']-$row['No Shipped Due Other'];
 			$gross=$chargeable_qty*$row['Product History Price'];
-			$discount=round($gross*$row['Fraction Discount'],2);
+			$discount_fraction=0;
+			$sql2=sprintf("select max(`Fraction Discount`) as fraction from `Order Transaction Deal Bridge` where `Order Transaction Fact Key`=%d",
+			$row['Order Transaction Fact Key']
+			);
+			$res2=mysql_query($sql2);
+			if($row2=mysql_fetch_assoc($res2)){
+			$discount_fraction=$row2['fraction'];
+			}
+			
+			$discount=round($gross*$discount_fraction,2);
 			$net=round($gross-$discount,2);
 			$tax=round($net*$row['Transaction Tax Rate'],2);
 

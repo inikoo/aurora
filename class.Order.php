@@ -2447,7 +2447,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,
 		sum(`Transaction Tax Rate`*(`Order Transaction Amount`)) as tax,
-		sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount,
+		sum(`Order Transaction Gross Amount`) as gross,
+		sum(`Order Transaction Total Discount Amount`) as discount,
 		sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as total_items_net,
 		sum(`Invoice Transaction Shipping Amount`) as shipping,
 		sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where
