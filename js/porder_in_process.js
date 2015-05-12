@@ -775,7 +775,7 @@ function show_order_details() {
 
 }
 
-function dide_order_details() {
+function hide_order_details() {
     Dom.setStyle('show_order_details', 'display', '')
     Dom.setStyle('order_details_panel', 'display', 'none')
 }
