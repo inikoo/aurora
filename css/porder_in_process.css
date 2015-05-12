@@ -17,3 +17,7 @@ table.edit.terms_and_conditions td.input{width:500px;text-align:left}
 .note_to_supplier img.edit,.note_to_supplier img.lock,   .add_note_to_supplier{margin-left:3px;height:12px;float:right;cursor:pointer}
 .note_to_supplier img.lock{height:12px;opacity:.6}
 .add_note_to_supplier{height:12px;cursor:pointer;opacity:.6}
+
+.part_info td.key,.part_info td.value{border-top:1px solid rgba(200,200,200,.5)}
+.part_info td.key{width:80px}
+.part_info td.value{text-align:right}
