@@ -3,7 +3,10 @@
 <input type="hidden" value="{$products_display_type}" id="products_display_type"> 
 <input type="hidden" value="{$po->id}" id="po_key"> 
 <input type="hidden" value="{$supplier->id}" id="supplier_key"> 
-<input type="hidden" value="{$number_buyers}" id="number_buyers"> 
+<input type="hidden" value="{$number_buyers}" id="number_buyers">
+<input type="hidden" id="history_table_id" value="3"> 
+<input type="hidden" id="subject" value="porder"> 
+<input type="hidden" id="subject_key" value="{$po->id}"> 
 <div id="time2_picker" class="time_picker_div">
 </div>
 <div id="bd">
@@ -18,16 +21,15 @@
 			<span class="main_title no_buttons">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span> <span class="subtitle">({t}In process{/t})</span></span> 
 		</div>
 		<div class="buttons small" style="position:relative;top:5px">
-		<button style="height:18px;display:none" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
-			<button class="positive {if $po->get('Purchase Order Number Items')==0}disabled{/if}" id="submit_po">{t}Submit{/t}</button> 
-			<button class="negative" id="delete_po">{t}Delete{/t}</button> 
+			<button style="height:18px;display:none" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> <button class="positive {if $po->get('Purchase Order Number Items')==0}disabled{/if}" id="submit_po">{t}Submit{/t}</button> <button class="negative" id="delete_po">{t}Delete{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
 	<div style="clear:both">
 	</div>
-	<div class="prodinfo" style="clear:both;margin-top:2px;font-size:95%;border:1px solid #ddd;padding:10px">
+	<div id="order_header">
+	    <div class="content">
 		<table style="width:200px;" class="order_header" border="0">
 			<tr class="currency_tr">
 				<td>{t}Currency{/t}</td>
@@ -65,27 +67,27 @@
 			</table>
 		</div>
 		<table border="0">
-		<tr>
+			<tr>
 				<td>{t}Supplier{/t}:</td>
 				<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
 				<td></td>
 			</tr>
 			<tbody id="incoterm_data">
-			<tr id="incoterm_tr">
-				<td>{t}Incoterm{/t}:</td>
-				<td  id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
-				<td class="aright" style="width:20px"><img id="edit_incoterm" onClick="show_edit_incoterm_dialog()" style="display:none;cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
-			</tr>
-			<tr id="export_port_tr">
-				<td>{t}Export Port{/t}:</td>
-				<td id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
-				<td></td>
-			</tr>
-			<tr id="import_port_tr">
-				<td>{t}Import Port{/t}:</td>
-				<td id="import_port"  class="aright">{$po->get('Purchase Order Port of Import')}</td>
-				<td></td>
-			</tr>
+				<tr id="incoterm_tr">
+					<td>{t}Incoterm{/t}:</td>
+					<td id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
+					<td class="aright" style="width:20px"><img id="edit_incoterm" onclick="show_edit_incoterm_dialog()" style="display:none;cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
+				</tr>
+				<tr id="export_port_tr">
+					<td>{t}Export Port{/t}:</td>
+					<td id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
+					<td></td>
+				</tr>
+				<tr id="import_port_tr">
+					<td>{t}Import Port{/t}:</td>
+					<td id="import_port" class="aright">{$po->get('Purchase Order Port of Import')}</td>
+					<td></td>
+				</tr>
 			</tbody>
 			<tr style="display:none">
 				<td>{t}Items{/t}:</td>
@@ -100,56 +102,97 @@
 		</table>
 		<div style="clear:both">
 		</div>
-		<img id="show_order_details" style="cursor:pointer;margin-top:10px;height:16px" src="art/icons/arrow_sans_lowerleft.png" /> 
-		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
+		</div>
+		
+		
+	
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
+		<li> <span class="item "  id="tandc"> <span> {t}Terms & Condition{/t}</span></span></li>
+		<li> <span class="item "  id="attachments" > <span> {t}Attachments{/t}</span></span></li>
+		<li> <span class="item "  id="notes" > <span> {t}History/Notes{/t}</span></span></li>
+
+		</ul>
+		
+		
+		<div  id="order_details_panel" style="display:none;clear:both;border-top:1px solid #ccc;padding:10px 10px 10px; 10px;;">
+			
+			<div id="block_tandc" class="block_details" style="display:none" >
+			<table class="terms_and_conditions edit" border="0">
 				
-				<table  class="terms_and_conditions edit" border="0" >
-				
-			<tr id="terms_and_conditions_tr">
+				<tr id="terms_and_conditions_tr" class="first">
 					<td class="label">{t}Terms & Conditions{/t}:</td>
 					<td class="input"> 
 					<div id="terms_and_conditions_formated">
-                    {$po->get('Purchase Order Terms and Conditions')}
+						{$po->get('Purchase Order Terms and Conditions')} 
 					</div>
 					</td>
-					<td><img onClick="show_edit_tc()" style="cursor:pointer" src="art/icons/edit.gif"></td>
+					<td><img onclick="show_edit_tc()" style="cursor:pointer" src="art/icons/edit.gif"></td>
 				</tr>
 				<tbody id="edit_tc" style="display:none">
-				<tr class=" textarea_big_tr">
-					<td class="label">{t}Terms & Conditions{/t}:</td>
-					<td class="input"> 
-					<div >
-                    <textarea id="terms_and_conditions" changed="0"  value="{$po->get('Purchase Order Terms and Conditions')}" ovalue="{$po->get('Purchase Order Terms and Conditions')}"  >{$po->get('Purchase Order Terms and Conditions')}</textarea> 
-						<div id="terms_and_conditions_Container">
+					<tr class=" textarea_big_tr">
+						<td class="label">{t}Terms & Conditions{/t}:</td>
+						<td class="input"> 
+						<div>
+							<textarea id="terms_and_conditions" changed="0" value="{$po->get('Purchase Order Terms and Conditions')}" ovalue="{$po->get('Purchase Order Terms and Conditions')}">{$po->get('Purchase Order Terms and Conditions')}</textarea> 
+							<div id="terms_and_conditions_Container">
+							</div>
 						</div>
-					</div>
-					</td>
-					<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
-				</tr>
-	
-				<tr class="buttons">
-					<td colspan="2"> 
-					<div class="buttons">
-						<button style="margin-right:10px;" id="save_edit_terms_and_conditions" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_terms_and_conditions" class="negative">{t}Cancel{/t}</button> 
-					</div>
-					</td>
-					<td></td>
-				</tr>
-				<tbody>
+						</td>
+						<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr class="buttons">
+						<td colspan="2"> 
+						<div class="buttons">
+							<button style="margin-right:10px;" id="save_edit_terms_and_conditions" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_terms_and_conditions" class="negative">{t}Cancel{/t}</button> 
+						</div>
+						</td>
+						<td></td>
+					</tr>
+				</tbody>
 			</table>
-            
-				<div style="clear:both">
-				</div>
-				<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+            </div>
+			<div id="block_attachments"  class="block_details" style="display:none">
+			<div class="buttons small"><button id="attach_bis"><img src="art/icons/add.png"> {t}Attachment{/t}</button></div>
+			
 			</div>
+            <div id="block_notes"  class="block_notes" style="display:none;margin-top:10px;margin-bottom:20px">
+            
+				<span id="table_title" class="clean_table_title" style="margin-right:10px">{t}History/Notes{/t}</span> 
+				
+				<div class="buttons small left">
+				    <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> 
+				<button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+				</div>
+				
+				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_po_history.Changes}selected{/if} label_part_history_Changes" id="elements_po_history_Changes" table_type="elements_Changes">{t}Changes History{/t} (<span id="elements_history_Changes_number">{$elements_po_history_number.Changes}</span>)</span> 
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Notes}selected{/if} label_part_history_Notes" id="elements_po_history_notes" table_type="elements_Notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number">{$elements_po_history_number.Notes}</span>)</span> 
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Attachments}selected{/if} label_part_history_Attachments" id="elements_po_history_Attachments" table_type="elements_Attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number">{$elements_po_history_number.Attachments}</span>)</span> 
+				</div>
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+				<div id="table3" class="data_table_container dtable btable">
+				</div>
+			
+            </div>
+
+
+			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+
 			<div style="clear:both">
 			</div>
+		  
+		</div>
+		
+		
+		<div style="clear:both">
+		</div>
 	</div>
 	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
 		<div class="elements_chooser">
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
 		</div>
 		<div class="table_top_bar space">
 		</div>
@@ -187,7 +230,7 @@
 			<tr>
 				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> 
 				<div class="buttons">
-					<button class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button>
+					<button class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -198,22 +241,15 @@
 	<div class="bd">
 		<div id="submit_dialog_msg">
 		</div>
-		
-		
-		
-		
 		<table class="edit" style="width:400px" border="0">
-			
 			<tr>
-			<td class="label">{t}Preview PDF{/t}</td>
-			<td>
-			<div class="buttons small left" style="position:relative;top:-2px">
-		<button style="height:18px" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
-			
-		</div>
-			</td>
+				<td class="label">{t}Preview PDF{/t}</td>
+				<td> 
+				<div class="buttons small left" style="position:relative;top:-2px">
+					<button style="height:18px" onclick="window.open('porder.pdf.php?id={$po->id}')"><img style="width:40px;height:12px;position:relative;top:-1px" src="art/pdf.gif" alt=""></button> 
+				</div>
+				</td>
 			</tr>
-			
 			<tr class="first title">
 				<td colspan="2">{t}Submit purchse order{/t}</td>
 			</tr>
@@ -292,60 +328,50 @@
 		</div>
 	</div>
 </div>
-
 <div id="edit_incoterm_dialog" style="padding-top:20px;width:500px">
 	<div class="bd">
-		<table id="po_settings" class="edit" border="0" >
-				
-				<tr class="first">
-					<td class="label">{t}Incoterm{/t}:</td>
-					<td style="text-align:left"> 
-					<input type="hidden" id="Purchase_Order_Incoterm" value="{$po->get('Purchase Order Incoterm')}" ovalue="{$po->get('Purchase Order Incoterm')}" ovalue_formated="{$po->get('Purchase Order Incoterm')}" />
-					<div class="buttons small left">
-						<span style="float:left;margin-right:10px" id="Purchase_Order_Incoterm_formated">{$po->get('Purchase Order Incoterm')}</span> 
-						<button class="negative" style="{if $po->get('Purchase Order Incoterm')==''}display:none{/if}" id="delete_Purchase_Order_Incoterm" onclick="delete_incoterm()">{t}Remove{/t}</button> 
-
-						<button style="{if $po->get('Purchase Order Incoterm')==''}display:none{/if}" id="update_Purchase_Order_Incoterm">{t}Change Incoterm{/t}</button> 
-						<button style="{if $po->get('Purchase Order Incoterm')!=''}display:none{/if}" id="set_Purchase_Order_Incoterm">{t}Set Incoterm{/t}</button>
+		<table id="po_settings" class="edit" border="0">
+			<tr class="first">
+				<td class="label">{t}Incoterm{/t}:</td>
+				<td style="text-align:left"> 
+				<input type="hidden" id="Purchase_Order_Incoterm" value="{$po->get('Purchase Order Incoterm')}" ovalue="{$po->get('Purchase Order Incoterm')}" ovalue_formated="{$po->get('Purchase Order Incoterm')}" />
+				<div class="buttons small left">
+					<span style="float:left;margin-right:10px" id="Purchase_Order_Incoterm_formated">{$po->get('Purchase Order Incoterm')}</span> <button class="negative" style="{if $po->get('Purchase Order Incoterm')==''}display:none{/if}" id="delete_Purchase_Order_Incoterm" onclick="delete_incoterm()">{t}Remove{/t}</button> <button style="{if $po->get('Purchase Order Incoterm')==''}display:none{/if}" id="update_Purchase_Order_Incoterm">{t}Change Incoterm{/t}</button> <button style="{if $po->get('Purchase Order Incoterm')!=''}display:none{/if}" id="set_Purchase_Order_Incoterm">{t}Set Incoterm{/t}</button> 
+				</div>
+				</td>
+				<td class="message"><span id="Purchase_Order_Incoterm_msg" class="edit_td_alert"></span></td>
+			</tr>
+			<tr class="space10">
+				<td class="label">Port of export:</td>
+				<td class="input"> 
+				<div>
+					<input id="Purchase_Order_Port_of_Export" value="{$po->get('Purchase Order Port of Export')}" ovalue="{$po->get('Purchase Order Port of Export')}" valid="0"> 
+					<div id="Purchase_Order_Port_of_Export_Container">
 					</div>
-					 </td>
-					<td class="message"><span id="Purchase_Order_Incoterm_msg" class="edit_td_alert" ></span></td>
-				</tr>
-				
-				<tr class="space10">
-					<td   class="label">Port of export:</td>
-					<td  class="input"> 
-					<div>
-						<input id="Purchase_Order_Port_of_Export" value="{$po->get('Purchase Order Port of Export')}" ovalue="{$po->get('Purchase Order Port of Export')}" valid="0"> 
-						<div id="Purchase_Order_Port_of_Export_Container">
-						</div>
+				</div>
+				</td>
+				<td class="message"><span id="Purchase_Order_Port_of_Export_msg" class="edit_td_alert"></span></td>
+			</tr>
+			<tr>
+				<td class="label">Port of import:</td>
+				<td class="input"> 
+				<div>
+					<input id="Purchase_Order_Port_of_Import" value="{$po->get('Purchase Order Port of Import')}" ovalue="{$po->get('Purchase Order Port of Import')}" valid="0"> 
+					<div id="Purchase_Order_Port_of_Import_Container">
 					</div>
-					</td>
-					<td class="message"><span id="Purchase_Order_Port_of_Export_msg" class="edit_td_alert"></span></td>
-				</tr>
-				
-				<tr >
-					<td   class="label">Port of import:</td>
-					<td  class="input"> 
-					<div>
-						<input id="Purchase_Order_Port_of_Import" value="{$po->get('Purchase Order Port of Import')}" ovalue="{$po->get('Purchase Order Port of Import')}" valid="0"> 
-						<div id="Purchase_Order_Port_of_Import_Container">
-						</div>
-					</div>
-					</td>
-					<td class="message"><span id="Purchase_Order_Port_of_Import_msg" class="edit_td_alert"></span></td>
-				</tr>
-				
-				
-				<tr class="buttons">
-					<td colspan="2"> 
-					<div class="buttons">
-						<button style="margin-right:10px;" id="save_edit_incoterm" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_incoterm" class="negative disabled">{t}Reset{/t}</button> 
-					</div>
-					</td>
-					<td></td>
-				</tr>
-			</table>
+				</div>
+				</td>
+				<td class="message"><span id="Purchase_Order_Port_of_Import_msg" class="edit_td_alert"></span></td>
+			</tr>
+			<tr class="buttons">
+				<td colspan="2"> 
+				<div class="buttons">
+					<button style="margin-right:10px;" id="save_edit_incoterm" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_incoterm" class="negative disabled">{t}Reset{/t}</button> 
+				</div>
+				</td>
+				<td></td>
+			</tr>
+		</table>
 	</div>
 </div>
 <div id="dialog_incoterm_list">
@@ -358,12 +384,12 @@
 	</div>
 </div>
 <div id="dialog_sticky_note_for_supplier" style="padding:20px 20px 0px 20px;width:340px">
-	<input type="hidden" id="sticky_note_for_supplier_potfk" value="">
+	<input type="hidden" id="sticky_note_for_supplier_potfk" value=""> 
 	<div id="sticky_note_for_supplier_msg">
 	</div>
 	<table>
 		<tr>
-			<td> <textarea style="width:330px;height:125px" id="sticky_note_for_supplier_input" ></textarea> </td>
+			<td> <textarea style="width:330px;height:125px" id="sticky_note_for_supplier_input"></textarea> </td>
 		</tr>
 		<tr>
 			<td> 
@@ -374,4 +400,6 @@
 		</tr>
 	</table>
 </div>
+{include file='notes_splinter.tpl'}
+
 {include file='footer.tpl'} 

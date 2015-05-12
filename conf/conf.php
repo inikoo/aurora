@@ -836,10 +836,22 @@ $default_state=array(
 			'dn_state_type'=>'all',
 			'elements'=>array()
 
-		)
+		),
+        'history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 
-
+	)
+	
 	),
 	'product_categories'=>array(
 

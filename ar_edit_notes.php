@@ -297,6 +297,9 @@ function get_parent_db_field($data) {
 	case 'supplier':
 		$db_field='Supplier';
 		break;
+	case 'porder':
+		$db_field='Purchase Order';
+		break;	
 	case 'supplier_product':
 		$db_field='Supplier Product';
 		break;
@@ -352,8 +355,12 @@ function get_parent_object($data) {
 		include_once 'class.SupplierProduct.php';
 		$subject=new SupplierProduct('pid',$data['parent_key']);
 		break;
+	case 'porder':
+		include_once 'class.PurchaseOrder.php';
+		$subject=new PurchaseOrder($data['parent_key']);
+		break;	
 	default:
-		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t)');
+		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t) 2');
 		echo json_encode($response);
 		exit;
 	}

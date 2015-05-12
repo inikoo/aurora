@@ -1,9 +1,13 @@
+
+#order_header{clear:both;margin-top:2px;font-size:95%;border:1px solid #ddd}
+#order_header .content{padding:10px}
+
 table.edit{width:400px}
 .edit td.label{width:150px}
 .edit td.input{width:300px;text-align:left}
 
 
-table.edit.terms_and_conditions{width:910px}
+table.edit.terms_and_conditions{width:910px;}
 table.edit.terms_and_conditions td.label{width:150px}
 table.edit.terms_and_conditions td.input{width:500px;text-align:left}
 
@@ -21,3 +25,10 @@ table.edit.terms_and_conditions td.input{width:500px;text-align:left}
 .part_info td.key,.part_info td.value{border-top:1px solid rgba(200,200,200,.5)}
 .part_info td.key{width:80px}
 .part_info td.value{text-align:right}
+
+
+.tabs span.item{border-bottom:1px solid #ccc;}
+.tabs span.selected{
+border-bottom:1px solid #fff;
+}
+div.block_details{min-height: 100px;}

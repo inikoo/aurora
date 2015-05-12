@@ -164,7 +164,7 @@ var myonCellClick = function(oArgs) {
 
 
 
-function close_dialog(tipo) {
+function close_dialog_bis(tipo) {
     switch (tipo) {
     case ('submit'):
         submit_dialog.hide();
@@ -249,7 +249,7 @@ var select_staff = function(o, e) {
         Dom.get('submitted_by').value = staff_id;
         Dom.get('submited_by_alias').innerHTML = staff_name;
 
-        close_dialog('staff');
+        close_dialog_bis('staff');
     }
 
 
@@ -589,6 +589,150 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+        var tableid = 3;
+        var tableDivEL = "table" + tableid;
+
+
+        var myRowFormatter = function(elTr, oRecord) {
+                if (oRecord.getData('type') == 'Orders') {
+                    Dom.addClass(elTr, 'store_history_orders');
+                } else if (oRecord.getData('type') == 'Notes') {
+                    Dom.addClass(elTr, 'store_history_notes');
+                } else if (oRecord.getData('type') == 'Changes') {
+                    Dom.addClass(elTr, 'store_history_changes');
+                }
+                return true;
+            };
+
+        this.prepare_note = function(elLiner, oRecord, oColumn, oData) {
+
+            if (oRecord.getData("strikethrough") == "Yes") {
+                Dom.setStyle(elLiner, 'text-decoration', 'line-through');
+                Dom.setStyle(elLiner, 'color', '#777');
+
+            }
+            elLiner.innerHTML = oData
+        };
+
+        var ColumnDefs = [{
+            key: "key",
+            label: "",
+            width: 20,
+            sortable: false,
+            isPrimaryKey: true,
+            hidden: true
+        }, {
+            key: "date",
+            label: labels.Date,
+            className: "aright",
+            width: 120,
+            sortable: true,
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "time",
+            label: labels.Time,
+            className: "aleft",
+            width: 70
+        }, {
+            key: "handle",
+            label: labels.Author,
+            className: "aleft",
+            width: 120,
+            sortable: true,
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "note",
+            formatter: this.prepare_note,
+            label: labels.Notes,
+            className: "aleft",
+            width: 420
+        }, {
+            key: "delete",
+            label: "",
+            width: 12,
+            sortable: false,
+          action:'dialog',object:'delete_note'
+        }, {
+            key: "edit",
+            label: "",
+            width: 12,
+            sortable: false,
+            action: 'edit',
+            object: 'supplier_product_history'
+        }
+
+        ];
+        request = "ar_history.php?tipo=purchase_order_history&parent=porder&parent_key=" + Dom.get('po_key').value + "&sf=0&tableid=" + tableid
+       
+        this.dataSource3 = new YAHOO.util.DataSource(request);
+        this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource3.connXhrMode = "queueRequests";
+        this.dataSource3.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rowsPerPage: "resultset.records_perpage",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+            },
+            fields: ["note", "date", "time", "handle", "delete", "can_delete", "delete_type", "key", "edit", "type", "strikethrough"]
+        };
+        this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource3, {
+            formatRow: myRowFormatter,
+            renderLoopSize: 5,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: state.porder.history.nr,
+                containers: 'paginator3',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                alwaysVisible: false,
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+            })
+
+            ,
+            sortedBy: {
+                key: state.porder.history.order,
+                dir: state.porder.history.order_dir
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table3.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+        this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+        this.table3.filter = {
+            key: state.porder.history.f_field,
+            value: state.porder.history.f_value
+        };
+        this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+        this.table3.subscribe("cellClickEvent", onCellClick);
+        this.table3.table_id = tableid;
+        this.table3.subscribe("renderEvent", myrenderEvent);
+
+
+
+
         var tableid = 6;
         var tableDivEL = "table" + tableid;
         var ColumnDefs = [{
@@ -781,6 +925,23 @@ function hide_order_details() {
 }
 
 
+function change_block() {
+
+ Dom.setStyle('order_details_panel', 'display', '')
+
+    ids = ['tandc', 'attachments','notes']
+    block_ids = ['block_tandc', 'block_attachments','block_notes'];
+
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+
+  
+
+}
+
+
 function show_sticky_note_for_supplier(o) {
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('dialog_sticky_note_for_supplier');
@@ -896,6 +1057,41 @@ function save_sticky_note_for_supplier() {
     });
 }
 
+function get_history_numbers(){
+
+
+
+    var ar_file = 'ar_porders.php';
+    var request = 'tipo=get_history_numbers&subject=porder&subject_key=' + Dom.get('po_key').value ;
+    
+ //   alert(ar_file+'?'+request)
+    
+    Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+  
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+           
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+           
+            if (r.state == 200) {
+
+              for (i in r.elements_numbers) {
+            if(Dom.get('elements_history_'+i+'_number') != undefined)
+              Dom.get('elements_history_'+i+'_number').innerHTML=r.elements_numbers[i]
+              }
+            }
+        },
+        failure: function(o) {
+        },
+        scope: this
+    }, request
+
+    );
+
+}
 
 
 function init() {
@@ -984,7 +1180,9 @@ function init() {
     });
     dialog_sticky_note_for_supplier.render();
 
-
+ 
+    Event.addListener(['tandc', 'attachments','notes'], "click", change_block);
+    Event.addListener("attach_bis", "click", show_dialog_attach);
 
 }
 

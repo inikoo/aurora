@@ -188,6 +188,29 @@ case('In Process'):
 
 
 
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$sql=sprintf("select count(*) as num , `Type` from  `Purchase Order History Bridge` where `Purchase Order Key`=%d group by `Type`",$po->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=$row['num'];
+}
+$smarty->assign('elements_po_history_number',$elements_number);
+$smarty->assign('elements_po_history',$_SESSION['state']['porder']['history']['elements']);
+
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['supplier_product']['history']['f_field'];
+$filter_value=$_SESSION['state']['supplier_product']['history']['f_value'];
+
+$smarty->assign('filter_value3',$filter_value);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
 
 
 
@@ -212,6 +235,7 @@ case('In Process'):
 
 	$css_files[]='css/porder_in_process.css';
 	$js_files[]='js/edit_common.js';
+	$js_files[]='js/notes.js';
 	$js_files[]='js/porder_in_process.js';
 
 	$smarty->assign('css_files',$css_files);
