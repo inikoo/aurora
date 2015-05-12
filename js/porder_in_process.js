@@ -759,16 +759,134 @@ function hide_edit_incoterm_edit_button() {
     Dom.setStyle('edit_incoterm', 'display', 'none')
 }
 
-function show_order_details(){
+function show_order_details() {
     Dom.setStyle('show_order_details', 'display', 'none')
     Dom.setStyle('order_details_panel', 'display', '')
 
 }
 
-function dide_order_details(){
- Dom.setStyle('show_order_details', 'display', '')
+function dide_order_details() {
+    Dom.setStyle('show_order_details', 'display', '')
     Dom.setStyle('order_details_panel', 'display', 'none')
 }
+
+
+function show_sticky_note_for_supplier(o) {
+    region1 = Dom.getRegion(o);
+    region2 = Dom.getRegion('dialog_sticky_note_for_supplier');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_sticky_note_for_supplier', pos);
+    dialog_sticky_note_for_supplier.show()
+
+    var potfk = o.getAttribute('potfk')
+
+    Dom.get('sticky_note_for_supplier_potfk').value = potfk;
+
+    if (Dom.get('note_' + potfk) != undefined) {
+        Dom.get('sticky_note_for_supplier_input').value = Dom.get('note_' + potfk).innerHTML
+
+    } else {
+        Dom.get('sticky_note_for_supplier_input').value = '';
+    }
+    Dom.get('sticky_note_for_supplier_input').focus();
+
+}
+
+function close_dialog_sticky_note_for_supplier() {
+    dialog_sticky_note_for_supplier.hide();
+    //Dom.get('sticky_note_for_supplier_input').value = Dom.get('sticky_note_for_supplier_content').innerHTML;
+}
+
+
+function change_note_lock(o, value) {
+    var potfk = o.getAttribute('potfk')
+    var request = 'ar_edit_porders.php?tipo=edit_sticky_note_for_supplier_lock&parent=potf&parent_key=' + potfk + '&value=' + value
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+
+            if (r.state == 200) {
+
+                if (r.newvalue == 'open') {
+                    Dom.setStyle(['note_locked_' + r.potfk], 'display', 'none')
+                    Dom.setStyle(['note_open_' + r.potfk, ], 'display', '')
+
+                    if (Dom.get('note_' + r.potfk).innerHTML == '') {
+                        Dom.setStyle('note_to_supplier_' + r.potfk, 'display', 'none')
+                        Dom.setStyle('add_note_to_supplier_' + r.potfk, 'display', '')
+                    }
+
+                } else {
+                    Dom.setStyle(['note_locked_' + r.potfk], 'display', '')
+                    Dom.setStyle(['note_open_' + r.potfk, ], 'display', 'none')
+                }
+
+
+
+
+                close_dialog_sticky_note_for_supplier();
+
+
+
+
+            } else {
+                alert(r.msg);
+            }
+        }
+    });
+
+}
+
+function save_sticky_note_for_supplier() {
+
+    var potfk = Dom.get('sticky_note_for_supplier_potfk').value
+    var request = 'ar_edit_porders.php?tipo=edit_sticky_note_for_supplier&parent=potf&parent_key=' + potfk + '&note=' + my_encodeURIComponent(Dom.get('sticky_note_for_supplier_input').value)
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+
+
+            if (r.state == 200) {
+
+                Dom.get('note_' + r.potfk).innerHTML = r.newvalue;
+
+                if (r.locked == 'Yes') {
+
+                    Dom.setStyle(['note_locked_' + r.potfk, 'note_to_supplier_' + r.potfk], 'display', '')
+                    Dom.setStyle(['note_open_' + r.potfk, 'add_note_to_supplier_' + r.potfk], 'display', 'none')
+                } else {
+
+                    Dom.setStyle(['note_locked_' + r.potfk], 'display', 'none')
+                    Dom.setStyle(['note_open_' + r.potfk, ], 'display', '')
+
+                    if (r.newvalue == '') {
+                        Dom.setStyle('note_to_supplier_' + r.potfk, 'display', 'none')
+                        Dom.setStyle('add_note_to_supplier_' + r.potfk, 'display', '')
+                    }
+
+                }
+
+
+
+
+                close_dialog_sticky_note_for_supplier();
+
+
+
+
+            } else Dom.get(tipo + '_msg').innerHTML = r.msg;
+
+        }
+    });
+}
+
+
 
 function init() {
 
@@ -848,6 +966,13 @@ function init() {
     Event.addListener("hide_order_details", "click", hide_order_details);
 
 
+    dialog_sticky_note_for_supplier = new YAHOO.widget.Dialog("dialog_sticky_note_for_supplier", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_sticky_note_for_supplier.render();
 
 
 
@@ -868,6 +993,7 @@ function validate_tc(query) {
 function save_edit_incoterm() {
     save_edit_general_bulk('incoterm');
 }
+
 function save_edit_tc() {
     save_edit_general_bulk('terms_and_conditions');
 }
@@ -908,7 +1034,7 @@ function reset_edit_terms_and_conditions() {
 }
 
 function show_edit_tc() {
-   Dom.removeClass('reset_edit_terms_and_conditions','disabled')
+    Dom.removeClass('reset_edit_terms_and_conditions', 'disabled')
     Dom.setStyle('edit_tc', 'display', '')
     Dom.setStyle('terms_and_conditions_tr', 'display', 'none')
 }
@@ -947,20 +1073,20 @@ function show_dialog_incoterm_list(e) {
 
 function post_bulk_save_actions(branch) {
 
-if(branch=='incoterm'){
-    setTimeout(function() {
-        edit_incoterm_dialog.hide()
-    }, 400);
-}else if(branch=='terms_and_conditions'){
-     Dom.setStyle('edit_tc', 'display', 'none')
-    Dom.setStyle('terms_and_conditions_tr', 'display', '')
-}
+    if (branch == 'incoterm') {
+        setTimeout(function() {
+            edit_incoterm_dialog.hide()
+        }, 400);
+    } else if (branch == 'terms_and_conditions') {
+        Dom.setStyle('edit_tc', 'display', 'none')
+        Dom.setStyle('terms_and_conditions_tr', 'display', '')
+    }
 }
 
 function post_item_updated_actions(branch, r) {
 
     if (branch == 'incoterm') {
-        
+
         switch (r.key) {
         case 'incoterm':
             Dom.get('incoterm').innerHTML = r.newvalue
@@ -976,15 +1102,15 @@ function post_item_updated_actions(branch, r) {
 
         }
 
-    }else if (branch == 'terms_and_conditions') {
-      switch (r.key) {
+    } else if (branch == 'terms_and_conditions') {
+        switch (r.key) {
         case 'terms_and_conditions':
             Dom.get('terms_and_conditions_formated').innerHTML = r.newvalue
             break;
-     
+
         default:
+        }
     }
-}
 }
 
 function change_incoterm(oArgs) {
@@ -1060,20 +1186,20 @@ function init_edit_po() {
             }
 
         },
-        'terms_and_conditions':{
-         'terms_and_conditions': {
-            'changed': false,
-            'validated': true,
-            'required': false,
-            'group': 1,
-            'type': 'item',
-            'dbname':'Purchase Order Terms and Conditions',
-            'name': 'terms_and_conditions',
-            'validation': [{
-                 'regexp': "[a-z\\d]*",
-                'invalid_msg': ''
-            }]
-        }
+        'terms_and_conditions': {
+            'terms_and_conditions': {
+                'changed': false,
+                'validated': true,
+                'required': false,
+                'group': 1,
+                'type': 'item',
+                'dbname': 'Purchase Order Terms and Conditions',
+                'name': 'terms_and_conditions',
+                'validation': [{
+                    'regexp': "[a-z\d]*",
+                    'invalid_msg': ''
+                }]
+            }
         }
 
     };
@@ -1091,7 +1217,7 @@ function init_edit_po() {
             'ar_file': 'ar_edit_porders.php',
             'key_name': 'po_key',
             'key': Dom.get('po_key').value,
-            'dont_disable_reset_if_no_change':true
+            'dont_disable_reset_if_no_change': true
         }
     };
 
@@ -1132,7 +1258,7 @@ function init_edit_po() {
     supplier_port_import_oAutoComp.queryDelay = 0.1;
 
 
- var po_tc_oACDS = new YAHOO.util.FunctionDataSource(validate_tc);
+    var po_tc_oACDS = new YAHOO.util.FunctionDataSource(validate_tc);
     po_tc_oACDS.queryMatchContains = true;
     var po_tc_oAutoComp = new YAHOO.widget.AutoComplete("terms_and_conditions", "terms_and_conditions_Container", po_tc_oACDS);
     po_tc_oAutoComp.minQueryLength = 0;
@@ -1142,14 +1268,14 @@ function init_edit_po() {
     Event.addListener('save_edit_incoterm', "click", save_edit_incoterm);
     Event.addListener('reset_edit_incoterm', "click", reset_edit_incoterm);
 
-   Event.addListener('save_edit_terms_and_conditions', "click", save_edit_terms_and_conditions);
+    Event.addListener('save_edit_terms_and_conditions', "click", save_edit_terms_and_conditions);
     Event.addListener('reset_edit_terms_and_conditions', "click", reset_edit_terms_and_conditions);
 
 
- Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+    Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
     Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
-    
-     var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+
+    var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS6.queryMatchContains = true;
     oACDS6.table_id = 6;
     var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);

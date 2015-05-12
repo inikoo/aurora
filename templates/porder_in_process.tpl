@@ -357,5 +357,21 @@
 		</div>
 	</div>
 </div>
-
+<div id="dialog_sticky_note_for_supplier" style="padding:20px 20px 0px 20px;width:340px">
+	<input type="hidden" id="sticky_note_for_supplier_potfk" value="">
+	<div id="sticky_note_for_supplier_msg">
+	</div>
+	<table>
+		<tr>
+			<td> <textarea style="width:330px;height:125px" id="sticky_note_for_supplier_input" ></textarea> </td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons">
+				<button class="positive" onclick="save_sticky_note_for_supplier()">{t}Save{/t}</button> <button class="negative" onclick="close_dialog_sticky_note_for_supplier()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
 {include file='footer.tpl'} 

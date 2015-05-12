@@ -51,6 +51,11 @@ table thead td { background-color: #EEEEEE;
     border-right: 0.1mm solid #000000;
 }
 
+.note{
+  font-style:italic;
+  color:#555
+}
+
 div.inline { float:left; }
 .clearBoth { clear:both; }
 {/literal}</style> 

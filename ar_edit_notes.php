@@ -128,17 +128,23 @@ function add_note($data) {
 	else
 		$data['note_type']='No';
 
-	//print_r($data['note_type']);
+
 
 	$subject->add_note($data['note'],$data['details'],false,$data['note_type']);
 
+	if ($db_field=='Product' or $db_field=='Supplier Product') {
+		$db_field_key=$db_field.' ID';
+	}else {
+		$db_field_key=$db_field.' Key';
+	}
 
 	$elements_numbers=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
-	$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s Key`=%d group by `Type`",
+	$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s`=%d group by `Type`",
 		$db_field,
-		$db_field,
+		$db_field_key,
 		$data['parent_key']
 	);
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Type']]=number($row['num']);
@@ -221,11 +227,17 @@ function delete_history($data) {
 		$msg='Record can not be deleted';
 	}
 
+	if ($db_field=='Product' or $db_field=='Supplier Product') {
+		$db_field_key=$db_field.' ID';
+	}else {
+		$db_field_key=$db_field.' Key';
+	}
+
 
 	$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
-	$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s Key`=%d group by `Type`",
+	$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s`=%d group by `Type`",
 		$db_field,
-		$db_field,
+		$db_field_key,
 		$data['parent_key']
 	);
 	$res=mysql_query($sql);
@@ -285,7 +297,7 @@ function get_parent_db_field($data) {
 	case 'supplier':
 		$db_field='Supplier';
 		break;
-	case 'supplierproduct':
+	case 'supplier_product':
 		$db_field='Supplier Product';
 		break;
 	default:
@@ -331,14 +343,14 @@ function get_parent_object($data) {
 	case 'order':
 		include_once 'class.Order.php';
 		$subject=new Order($data['parent_key']);
-		break;	
+		break;
 	case 'supplier':
 		include_once 'class.Supplier.php';
 		$subject=new Supplier($data['parent_key']);
 		break;
-	case 'supplierproduct':
+	case 'supplier_product':
 		include_once 'class.SupplierProduct.php';
-		$subject=new SupplierProduct($data['parent_key']);
+		$subject=new SupplierProduct('pid',$data['parent_key']);
 		break;
 	default:
 		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t)');
@@ -371,13 +383,13 @@ function add_attachment($data) {
 
 	foreach ($_FILES as $file_data) {
 
-		if ($file_data['size']==0) { 
-		$msg= _("This file seems that is empty, have a look and try again").'.'; 
-		$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
-		echo base64_encode(json_encode($response));
-		exit;
+		if ($file_data['size']==0) {
+			$msg= _("This file seems that is empty, have a look and try again").'.';
+			$response= array('state'=>400,'msg'=>$msg,'key'=>'attach');
+			echo base64_encode(json_encode($response));
+			exit;
 
-	}
+		}
 
 		if ($file_data['error']) {
 			$msg=$file_data['error'];
@@ -386,7 +398,7 @@ function add_attachment($data) {
 
 			}
 			$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
-		echo base64_encode(json_encode($response));
+			echo base64_encode(json_encode($response));
 			exit;
 		}
 
@@ -413,9 +425,16 @@ function add_attachment($data) {
 	if ($updated) {
 		$elements_numbers=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
 
-		$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s Key`=%d group by `Type`",
+		if ($db_field=='Product' or $db_field=='Supplier Product') {
+			$db_field_key=$db_field.' ID';
+		}else {
+			$db_field_key=$db_field.' Key';
+		}
+
+
+		$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s`=%d group by `Type`",
 			$db_field,
-			$db_field,
+			$db_field_key,
 			$data['parent_key']
 		);
 		$res=mysql_query($sql);
@@ -429,7 +448,7 @@ function add_attachment($data) {
 		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
 	}
 
-		echo base64_encode(json_encode($response));
+	echo base64_encode(json_encode($response));
 }
 
 

@@ -33,6 +33,26 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
+
+
+case('edit_sticky_note_for_supplier_lock'):
+	$data=prepare_values($_REQUEST,array(
+			'value'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+		));
+
+	edit_sticky_note_for_supplier_lock($data);
+	break;
+case('edit_sticky_note_for_supplier'):
+	$data=prepare_values($_REQUEST,array(
+			'note'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+		));
+
+	edit_sticky_note_for_supplier($data);
+	break;
 case('dn_transactions_to_stock'):
 	dn_transactions_to_stock();
 	break;
@@ -896,7 +916,7 @@ function po_transactions_to_process() {
 
 
 
-	$sql="select `SPH Currency`, `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Purchase Order Transaction Fact Key`,`Note to Supplier`,`Note to Supplier Locked`,`SPH Currency`, `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -913,12 +933,30 @@ function po_transactions_to_process() {
 		if ($unit_type=='ea') {
 			$unit_type='piece';
 		}
+
+		$description='<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>';
+
+
+
+		$description.='<div  style="'.(($row['Note to Supplier']!='' or  $row['Note to Supplier Locked']=='Yes' )?'':'display:none').'"  id="note_to_supplier_'.$row['Purchase Order Transaction Fact Key'].'" class="note_to_supplier">
+        <span  id="note_'.$row['Purchase Order Transaction Fact Key'].'" class="note">'.$row['Note to Supplier'].'</span>
+        <img onClick="show_sticky_note_for_supplier(this)" potfk="'.$row['Purchase Order Transaction Fact Key'].'" class="edit" src="art/icons/edit.gif">
+        <img onClick="change_note_lock(this,\'open\')" id="note_locked_'.$row['Purchase Order Transaction Fact Key'].'" potfk="'.$row['Purchase Order Transaction Fact Key'].'"  style="'.($row['Note to Supplier Locked']=='No'?'display:none':'').'" class="lock" src="art/icons/lock_bw.png">
+        <img onClick="change_note_lock(this,\'close\')" id="note_open_'.$row['Purchase Order Transaction Fact Key'].'" potfk="'.$row['Purchase Order Transaction Fact Key'].'"  style="'.($row['Note to Supplier Locked']=='Yes'?'display:none':'').'" class="lock" src="art/icons/lock_open_bw.png">
+
+        </div>';
+
+
+		$description.=' <img id="add_note_to_supplier_'.$row['Purchase Order Transaction Fact Key'].'"  style="'.(($row['Note to Supplier']!='' or  $row['Note to Supplier Locked']=='Yes' )?'display:none':'').'"  onClick="show_sticky_note_for_supplier(this)" potfk="'.$row['Purchase Order Transaction Fact Key'].'" class="add_note_to_supplier" src="art/icons/note_green.png">';
+
+
 		$adata[]=array(
 			'key'=>$row['spk'],
 			'pid'=>$row['Supplier Product ID'],
 
 			'code'=>sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product ID'],$row['Supplier Product Code']),
-			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>',
+			'description'=>$description,
+			'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],
 			'store_as'=>$row['Supplier Product XHTML Store As'],
 
@@ -1009,18 +1047,19 @@ function edit_new_porder() {
 
 		$data=array(
 
-			'date'=>date('Y-m-d H:i:s')
-			,'Supplier Product ID'=>$supplier_product->data['Supplier Product ID']
-			,'Supplier Product Key'=>$spk
-
-			,'amount'=>$gross
-			,'qty'=>$quantity
-			,'qty_type'=>$quantity_type
-			,'tax_code'=>$supplier_product->data['Supplier Product Tax Code']
-			,'Current Dispatching State'=>'In Process'
-			,'Current Payment State'=>'Waiting Payment'
-
+			'date'=>gmdate('Y-m-d H:i:s'),
+			'Supplier Product ID'=>$supplier_product->data['Supplier Product ID'],
+			'Supplier Product Key'=>$spk,
+			'amount'=>$gross,
+			'qty'=>$quantity,
+			'qty_type'=>$quantity_type,
+			'tax_code'=>$supplier_product->data['Supplier Product Tax Code'],
+			'Current Dispatching State'=>'In Process',
+			'Current Payment State'=>'Waiting Payment',
+			'Note to Supplier'=>$supplier_product->data['Supplier Product Note to Supplier']
 		);
+
+
 
 
 		$transaction_data=$order->add_order_transaction($data);
@@ -1143,7 +1182,7 @@ function edit_inputted_supplier_dn() {
 
 			$data=array(
 
-				'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s'),
+				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
 				'Supplier Delivery Note Received Quantity'=>$quantity
 			);
@@ -1158,7 +1197,7 @@ function edit_inputted_supplier_dn() {
 
 			$data=array(
 
-				'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s'),
+				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
 				'Supplier Delivery Note Counted'=>$transaction_data['counted']
 			);
@@ -1184,7 +1223,7 @@ function edit_inputted_supplier_dn() {
 	} else if ($_REQUEST['key']=='counted') {
 			$data=array(
 
-				'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s'),
+				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
 				'Supplier Delivery Note Counted'=>$_REQUEST['newvalue']
 			);
@@ -1205,7 +1244,7 @@ function edit_inputted_supplier_dn() {
 
 			$data=array(
 
-				'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s'),
+				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
 				'Supplier Delivery Note Damaged Quantity'=>$quantity
 			);
@@ -1220,7 +1259,7 @@ function edit_inputted_supplier_dn() {
 
 			$data=array(
 
-				'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s'),
+				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
 				'Supplier Delivery Note Counted'=>'Yes'
 			);
@@ -1260,7 +1299,7 @@ function input_supplier_delivery_note() {
 	$dn=new SupplierDeliveryNote($supplier_delivery_note_key);
 
 	$data=array(
-		'Supplier Delivery Note Input Date'=>date('Y-m-d H:i:s'),
+		'Supplier Delivery Note Input Date'=>gmdate('Y-m-d H:i:s'),
 		'Supplier Delivery Note Main Inputter Key'=>$user->data['User Parent Key'],
 	);
 
@@ -1811,7 +1850,7 @@ function receive_supplier_delivery_note() {
 	$supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
 	$supplier_dn->editor=$editor;
 	$data=array(
-		'Supplier Delivery Note Received Date'=>date('Y-m-d H:i:s'),
+		'Supplier Delivery Note Received Date'=>gmdate('Y-m-d H:i:s'),
 		'Supplier Delivery Note Main Receiver Key'=>$user->data['User Parent Key'],
 		'Supplier Delivery Note Received Location Key'=>1,
 
@@ -1885,7 +1924,7 @@ function set_supplier_delivery_note_as_checked() {
 	$supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
 
 	$data=array(
-		'Supplier Delivery Note Checked Date'=>date('Y-m-d H:i:s'),
+		'Supplier Delivery Note Checked Date'=>gmdate('Y-m-d H:i:s'),
 		'Supplier Delivery Note Main Checker Key'=>$user->data['User Parent Key'],
 	);
 
@@ -1916,5 +1955,76 @@ function set_supplier_delivery_note_as_checked() {
 		$response= array('state'=>400,'msg'=>$supplier_dn->msg);
 
 	}
+	echo json_encode($response);
+}
+
+
+function edit_sticky_note_for_supplier($data) {
+	global $editor;
+	$data['note']=trim($data['note']);
+	switch ($data['parent']) {
+	case 'potf':
+
+		$sql=sprintf("select `Note to Supplier Locked` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=%d ",
+			$data['parent_key']
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$locked=$row['Note to Supplier Locked'];
+		}else {
+			$response=array('state'=>400,'msg'=>'Transaction not found');
+			echo json_encode($response);
+			exit;
+		}
+
+
+		if ($data['note']=='') {
+			$sql = sprintf( "update `Purchase Order Transaction Fact` set  `Note to Supplier`=%s  where `Purchase Order Transaction Fact Key`=%d ",
+				prepare_mysql ( $data['note']),
+				$data['parent_key']
+			);
+			mysql_query($sql);
+
+		}else {
+
+			$sql = sprintf( "update `Purchase Order Transaction Fact` set  `Note to Supplier`=%s ,`Note to Supplier Locked`='Yes' where `Purchase Order Transaction Fact Key`=%d ",
+				prepare_mysql ( $data['note']),
+				$data['parent_key']
+			);
+			mysql_query($sql);
+			$locked='Yes';
+		}
+		break;
+	default:
+		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t)');
+		echo json_encode($response);
+		exit;
+	}
+
+	$response= array('state'=>200,'newvalue'=>$data['note'],'key'=>'sticky_note_for_supplier','potfk'=>$data['parent_key'],'locked'=>$locked);
+
+	echo json_encode($response);
+}
+
+
+function edit_sticky_note_for_supplier_lock($data) {
+	global $editor;
+	switch ($data['parent']) {
+	case 'potf':
+
+		$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Note to Supplier Locked`=%s where  `Purchase Order Transaction Fact Key`=%d ",
+			prepare_mysql (($data['value']=='close'?'Yes':'No')),
+			$data['parent_key']
+		);
+		mysql_query($sql);
+		break;
+	default:
+		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t)');
+		echo json_encode($response);
+		exit;
+	}
+
+	$response= array('state'=>200,'newvalue'=>$data['value'],'key'=>'sticky_note_for_supplier_lock','potfk'=>$data['parent_key']);
+
 	echo json_encode($response);
 }

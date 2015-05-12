@@ -570,6 +570,12 @@ class supplierproduct extends DB_Table {
 		case('Formated Cost'):
 
 			return money($this->data['Supplier Product Cost Per Case'],$this->data['Supplier Product Currency']);
+			break;
+		case("Sticky Note"):
+		case("Note to Supplier"):
+			return nl2br($this->data['Supplier Product '.$key]);
+			break;
+
 
 		}
 
@@ -888,20 +894,20 @@ class supplierproduct extends DB_Table {
 		switch ($field) {
 
 
-		case 'Product Supplier Unit Dimensions Display Units':
-		case 'Product Supplier Unit Dimensions Width Display':
-		case 'Product Supplier Unit Dimensions Depth Display':
-		case 'Product Supplier Unit Dimensions Length Display':
-		case 'Product Supplier Unit Dimensions Diameter Display':
-		case 'Product Supplier Package Dimensions Display Units':
-		case 'Product Supplier Package Dimensions Width Display':
-		case 'Product Supplier Package Dimensions Depth Display':
-		case 'Product Supplier Package Dimensions Length Display':
-		case 'Product Supplier Package Dimensions Diameter Display':
-		case 'Product Supplier Unit Weight Display':
-		case 'Product Supplier Unit Weight Display Units':
-		case 'Product Supplier Package Weight Display':
-		case 'Product Supplier Package Weight Display Units':
+		case 'Supplier Product Unit Dimensions Display Units':
+		case 'Supplier Product Unit Dimensions Width Display':
+		case 'Supplier Product Unit Dimensions Depth Display':
+		case 'Supplier Product Unit Dimensions Length Display':
+		case 'Supplier Product Unit Dimensions Diameter Display':
+		case 'Supplier Product Package Dimensions Display Units':
+		case 'Supplier Product Package Dimensions Width Display':
+		case 'Supplier Product Package Dimensions Depth Display':
+		case 'Supplier Product Package Dimensions Length Display':
+		case 'Supplier Product Package Dimensions Diameter Display':
+		case 'Supplier Product Unit Weight Display':
+		case 'Supplier Product Unit Weight Display Units':
+		case 'Supplier Product Package Weight Display':
+		case 'Supplier Product Package Weight Display Units':
 			if (preg_match('/Weight.*Display/',$field)) {
 				$this->update_weight_dimensions_data($field,$value,'Weight');
 			}elseif (preg_match('/Dimensions.*Display/',$field)) {
@@ -910,10 +916,13 @@ class supplierproduct extends DB_Table {
 			break;
 
 		case('Sticky Note'):
-			$this->update_field('Product Supplier '.$field,$value,'no_null');
+			$this->update_field('Supplier Product '.$field,$value,'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
 			break;
-
+		case('Note to Supplier'):
+			$this->update_field('Supplier Product '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
 		case('Supplier Product Tariff Code'):
 			$this->update_tariff_code($value);
 
@@ -970,22 +979,22 @@ class supplierproduct extends DB_Table {
 			}else {
 				$tag='Unit';
 			}
-			if ($field!='Product Supplier '.$tag.' '.$type.' Display Units') {
-				$value_in_standard_units=convert_units($value,$this->data['Product Supplier '.$tag.' '.$type.' Display Units'],($type=='Dimensions'?'m':'Kg'));
+			if ($field!='Supplier Product '.$tag.' '.$type.' Display Units') {
+				$value_in_standard_units=convert_units($value,$this->data['Supplier Product '.$tag.' '.$type.' Display Units'],($type=='Dimensions'?'m':'Kg'));
 
 				$this->update_field(preg_replace('/\sDisplay$/','',$field),$value_in_standard_units,'nohistory');
-			}elseif ($field=='Product Supplier '.$tag.' Dimensions Display Units') {
+			}elseif ($field=='Supplier Product '.$tag.' Dimensions Display Units') {
 
-				$width_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Width Display'],$value,'m');
-				$depth_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Depth Display'],$value,'m');
-				$length_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Length Display'],$value,'m');
-				$diameter_in_standard_units=convert_units($this->data['Product Supplier '.$tag.' Dimensions Diameter Display'],$value,'m');
+				$width_in_standard_units=convert_units($this->data['Supplier Product '.$tag.' Dimensions Width Display'],$value,'m');
+				$depth_in_standard_units=convert_units($this->data['Supplier Product '.$tag.' Dimensions Depth Display'],$value,'m');
+				$length_in_standard_units=convert_units($this->data['Supplier Product '.$tag.' Dimensions Length Display'],$value,'m');
+				$diameter_in_standard_units=convert_units($this->data['Supplier Product '.$tag.' Dimensions Diameter Display'],$value,'m');
 
 
-				$this->update_field('Product Supplier '.$tag.' Dimensions Width',$width_in_standard_units,'nohistory');
-				$this->update_field('Product Supplier '.$tag.' Dimensions Depth',$depth_in_standard_units,'nohistory');
-				$this->update_field('Product Supplier '.$tag.' Dimensions Length',$length_in_standard_units,'nohistory');
-				$this->update_field('Product Supplier '.$tag.' Dimensions Diameter',$diameter_in_standard_units,'nohistory');
+				$this->update_field('Supplier Product '.$tag.' Dimensions Width',$width_in_standard_units,'nohistory');
+				$this->update_field('Supplier Product '.$tag.' Dimensions Depth',$depth_in_standard_units,'nohistory');
+				$this->update_field('Supplier Product '.$tag.' Dimensions Length',$length_in_standard_units,'nohistory');
+				$this->update_field('Supplier Product '.$tag.' Dimensions Diameter',$diameter_in_standard_units,'nohistory');
 
 
 
@@ -998,17 +1007,17 @@ class supplierproduct extends DB_Table {
 				//print "x".$this->updated."< $type <";
 				if ($type=='Dimensions') {
 					include_once 'common_geometry_functions.php';
-					$volume=get_volume($this->data["Product Supplier $tag Dimensions Type"],$this->data["Product Supplier $tag Dimensions Width"],$this->data["Product Supplier $tag Dimensions Depth"],$this->data["Product Supplier $tag Dimensions Length"],$this->data["Product Supplier $tag Dimensions Diameter"]);
-					//print $this->data["Product Supplier $tag Dimensions Type"]."*** $volume $volume";
+					$volume=get_volume($this->data["Supplier Product $tag Dimensions Type"],$this->data["Supplier Product $tag Dimensions Width"],$this->data["Supplier Product $tag Dimensions Depth"],$this->data["Supplier Product $tag Dimensions Length"],$this->data["Supplier Product $tag Dimensions Diameter"]);
+					//print $this->data["Supplier Product $tag Dimensions Type"]."*** $volume $volume";
 					if (is_numeric($volume) and $volume>0) {
 
-						$this->update_field('Product Supplier '.$tag.' Dimensions Volume',$volume,'nohistory');
-						//print $this->data['Product Supplier '.$tag.' XHTML Dimensions']."xxx";
+						$this->update_field('Supplier Product '.$tag.' Dimensions Volume',$volume,'nohistory');
+						//print $this->data['Supplier Product '.$tag.' XHTML Dimensions']."xxx";
 					}
-					$this->update_field('Product Supplier '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
+					$this->update_field('Supplier Product '.$tag.' XHTML Dimensions',$this->get_xhtml_dimensions($tag),'nohistory');
 
 				}else {
-					$this->update_field('Product Supplier '.$tag.' Weight',convert_units($this->data['Product Supplier '.$tag.' Weight Display'],$this->data['Product Supplier '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
+					$this->update_field('Supplier Product '.$tag.' Weight',convert_units($this->data['Supplier Product '.$tag.' Weight Display'],$this->data['Supplier Product '.$tag.' '.$type.' Display Units'],'Kg'),'nohistory');
 				}
 
 
@@ -1022,21 +1031,21 @@ class supplierproduct extends DB_Table {
 
 	function get_xhtml_dimensions($tag,$locale='en_GB') {
 
-		switch ($this->data["Product Supplier $tag Dimensions Type"]) {
+		switch ($this->data["Supplier Product $tag Dimensions Type"]) {
 		case 'Rectangular':
-			$dimensions=number($this->data['Product Supplier '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product Supplier '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			$dimensions=number($this->data['Supplier Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Supplier Product '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Supplier Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Supplier Product '.$tag.' Dimensions Display Units'].')';
 			break;
 		case 'Cilinder':
-			$dimensions='L:'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Product Supplier '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			$dimensions='L:'.number($this->data['Supplier Product '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Supplier Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Supplier Product '.$tag.' Dimensions Display Units'].')';
 			break;
 		case 'Sphere':
-			$dimensions='&#8709;:'.number($this->data['Product Supplier '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			$dimensions='&#8709;:'.number($this->data['Supplier Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Supplier Product '.$tag.' Dimensions Display Units'].')';
 			break;
 		case 'String':
-			$dimensions='L:'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			$dimensions='L:'.number($this->data['Supplier Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Supplier Product '.$tag.' Dimensions Display Units'].')';
 			break;
 		case 'Sheet':
-			$dimensions=number($this->data['Product Supplier '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product Supplier '.$tag.' Dimensions Length Display']).' ('.$this->data['Product Supplier '.$tag.' Dimensions Display Units'].')';
+			$dimensions=number($this->data['Supplier Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Supplier Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Supplier Product '.$tag.' Dimensions Display Units'].')';
 			break;
 		default:
 			$dimensions='';
