@@ -813,8 +813,15 @@ function po_transactions_to_process() {
 		$sql_qty=sprintf(',
         IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product ID`=PD.`Supplier Product ID` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`,
         IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` POTF where POTF.`Supplier Product ID`=PD.`Supplier Product ID` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ,
-        PD.`Supplier Product ID`,PD.`Supplier Product Current Key` as spk
-        ',$purchase_order_key,$purchase_order_key);
+        PD.`Supplier Product ID`,PD.`Supplier Product Current Key` as spk'
+			,
+
+			$purchase_order_key,
+
+			$purchase_order_key,
+
+			$purchase_order_key
+		);
 
 
 
@@ -825,7 +832,7 @@ function po_transactions_to_process() {
                left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Key`)
                left join `Supplier Product Dimension` PD on (PHD.`Supplier Product ID`=PD.`Supplier Product ID`) ';
 		$where=sprintf(' where  `Purchase Order Key`=%d',$purchase_order_key);
-		$sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`,PD.`Supplier Product ID`,PHD.`SPH Key` as spk ';
+		$sql_qty=',      `Purchase Order Transaction Fact Key`,`Note to Supplier`,`Note to Supplier Locked`,`Purchase Order Quantity`,`Purchase Order Net Amount`,PD.`Supplier Product ID`,PHD.`SPH Key` as spk ,`Purchase Order Transaction Fact Key` ';
 
 
 
@@ -916,12 +923,15 @@ function po_transactions_to_process() {
 
 
 
-	$sql="select `Purchase Order Transaction Fact Key`,`Note to Supplier`,`Note to Supplier Locked`,`SPH Currency`, `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select
+	(select group_concat(SPPL.`Part SKU`) from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` P on (SPPL.`Part SKU`=P.`Part SKU`) where SPPD.`Supplier Product ID`=PD.`Supplier Product ID` and `Supplier Product Part Most Recent`='Yes' ) as parts,
+
+	   `SPH Currency`, `Supplier Product XHTML Store As`,`SPH Units Per Case`,`Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
 	$adata=array();
-	// print $sql;
+	//print $sql;
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		if ($row['Purchase Order Quantity']==0)
@@ -936,9 +946,9 @@ function po_transactions_to_process() {
 
 		$description='<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>';
 
+		if ($display!='all_products') {
 
-
-		$description.='<div  style="'.(($row['Note to Supplier']!='' or  $row['Note to Supplier Locked']=='Yes' )?'':'display:none').'"  id="note_to_supplier_'.$row['Purchase Order Transaction Fact Key'].'" class="note_to_supplier">
+			$description.='<div  style="'.(($row['Note to Supplier']!='' or  $row['Note to Supplier Locked']=='Yes' )?'':'display:none').'"  id="note_to_supplier_'.$row['Purchase Order Transaction Fact Key'].'" class="note_to_supplier">
         <span  id="note_'.$row['Purchase Order Transaction Fact Key'].'" class="note">'.$row['Note to Supplier'].'</span>
         <img onClick="show_sticky_note_for_supplier(this)" potfk="'.$row['Purchase Order Transaction Fact Key'].'" class="edit" src="art/icons/edit.gif">
         <img onClick="change_note_lock(this,\'open\')" id="note_locked_'.$row['Purchase Order Transaction Fact Key'].'" potfk="'.$row['Purchase Order Transaction Fact Key'].'"  style="'.($row['Note to Supplier Locked']=='No'?'display:none':'').'" class="lock" src="art/icons/lock_bw.png">
@@ -947,7 +957,34 @@ function po_transactions_to_process() {
         </div>';
 
 
-		$description.=' <img id="add_note_to_supplier_'.$row['Purchase Order Transaction Fact Key'].'"  style="'.(($row['Note to Supplier']!='' or  $row['Note to Supplier Locked']=='Yes' )?'display:none':'').'"  onClick="show_sticky_note_for_supplier(this)" potfk="'.$row['Purchase Order Transaction Fact Key'].'" class="add_note_to_supplier" src="art/icons/note_green.png">';
+			$description.=' <img id="add_note_to_supplier_'.$row['Purchase Order Transaction Fact Key'].'"  style="'.(($row['Note to Supplier']!='' or  $row['Note to Supplier Locked']=='Yes' )?'display:none':'').'"  onClick="show_sticky_note_for_supplier(this)" potfk="'.$row['Purchase Order Transaction Fact Key'].'" class="add_note_to_supplier" src="art/icons/note_green.png">';
+		}
+
+		$parts_info='';
+
+		if ($row['parts']!='') {
+			$parts_skus=preg_split('/,/',$row['parts']);
+			foreach ($parts_skus as $parts_sku) {
+				$part=new Part($parts_sku);
+
+
+				$parts_info.=sprintf('<div>
+				<a href=part.php?id=%d>%s</a>',$part->sku,$part->data['Part Reference']);
+				if ($part->data['Part Status']=='Not In Use') {
+					$parts_info.='<div><span class="warning">'._('No longer keeped in Warehouse').'</span></div>';
+				}else {
+
+					$parts_info.='<table class="part_info" >';
+
+					$parts_info.=sprintf('<tr><td class="key">%s:</td><td class="aright value">%s</td></tr>',_('Stock'),number($part->data['Part Current On Hand Stock'],0));
+					$parts_info.=sprintf('<tr><td class="key">%s:</td><td class="aright value">%s</td></tr>',_('Avaliable for'),$part->data['Part XHTML Available For Forecast']);
+
+				}
+				$parts_info.='</table>';
+				$parts_info.='</div>';
+
+			}
+		}
 
 
 		$adata[]=array(
@@ -957,9 +994,8 @@ function po_transactions_to_process() {
 			'code'=>sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product ID'],$row['Supplier Product Code']),
 			'description'=>$description,
 			'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].' @ '.money($row['SPH Case Cost']/$row['SPH Units Per Case'],$row['SPH Currency']).' '.$row['Supplier Product Unit Type'].'</span>',
-			'used_in'=>$row['Supplier Product XHTML Sold As'],
-			'store_as'=>$row['Supplier Product XHTML Store As'],
 
+			'parts_info'=>$parts_info,
 
 			'quantity'=>$row['Purchase Order Quantity'],
 			'quantity_static'=>number($row['Purchase Order Quantity']),

@@ -255,6 +255,7 @@ case('In Process'):
 					'Code'=>_('Code'),
 					'Name'=>_('Name'),
 					'Reference'=>_('Parts'),
+					'Parts_Info'=>_('Parts Info'),
 					'Description'=>_('Supplier Carton Description'),
 					'Qty'=>_('Cartons'),
 					'Net_Cost'=>_('Net Cost'),

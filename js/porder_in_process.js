@@ -347,8 +347,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         }, {
-            key: "store_as",
-            label: labels.Reference,
+            key: "parts_info",
+            label: labels.Parts_Info,
             width: 200,
             sortable: false,
             className: "aleft"
@@ -416,8 +416,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
         //,{key:"damaged", label:labels.Damaged,width:60,className:"aright"}
         //,{key:"usable", label:Unusable,width:55,className:"aright"}
         ];
-        request = "ar_edit_porders.php?tipo=po_transactions_to_process&tableid=" + tableid + '&id=' + Dom.get('po_key').value + '&supplier_key=' + Dom.get('supplier_key').value
-
+        request = "ar_edit_porders.php?tipo=po_transactions_to_process&sf=0&tableid=" + tableid + '&id=' + Dom.get('po_key').value + '&supplier_key=' + Dom.get('supplier_key').value
+       // alert(request)
         this.dataSource0 = new YAHOO.util.DataSource(request);
 
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -425,7 +425,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.dataSource0.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
-                rowsPerPage: "resultset.records_perpage",
+            
+               rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
                 sort_key: "resultset.sort_key",
@@ -433,9 +435,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 tableid: "resultset.tableid",
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
+            
+             
             },
 
-            fields: ["key", "pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "store_as"]
+            fields: ["key", "pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "parts_info"]
         };
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource0, {
@@ -465,9 +469,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
             dynamicData: true
 
         });
-        this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
+          this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table0.doBeforeLoadData = mydoBeforeLoadData;
+        this.table0.table_id = tableid;
+        this.table0.request = request;
+        this.table0.subscribe("renderEvent", myrenderEvent);
+        
+        
         this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
         this.table0.subscribe("cellClickEvent", myonCellClick);
