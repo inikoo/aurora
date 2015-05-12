@@ -52,6 +52,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/calendar.css',
 	'css/supplier_product.css',
 	'theme.css.php'
 );
@@ -66,6 +67,8 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+		'js/php.default.min.js',
+
 	'js/jquery.min.js',
 	'js/barcode.js',
 	'js/common.js',
@@ -81,7 +84,7 @@ $js_files=array(
 	'js/calendar_interval.js',
 	'js/reports_calendar.js',
 	'js/notes.js',
-	'supplier_product.js.php'
+	'js/supplier_product.js'
 );
 
 
@@ -422,9 +425,53 @@ mysql_free_result($result);
 
 
 
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Date'=>_('Date'),
+				'Locations'=>_('Locations'),
+				'Location'=>_('Location'),
+				'Qty'=>_('Qty'),
+				'Cost_Value'=>_('Cost Value'),
+				'C_Value_ED'=>_('C Value (ED)'),
+				'Com_Value'=>_('Com Value'),
+				'WebSales_State'=>_('Web/Sales State'),
+				'Sold'=>_('Sold'),
+				'In'=>_('In'),
+				'Out'=>_('Out'),
+
+				'Type'=>_('Type'),
+				'User'=>_('User'),
+				'Note'=>_('Note'),
+				'Change'=>_('Change'),
+				'Stock'=>_('Stock'),
+
+				'Number'=>_('Number'),
+				'Customer'=>_('Customer'),
+				'Status'=>_('Status'),
+				
+
+				'Time'=>_('Time'),
+				'Author'=>_('Author'),
+				'Notes'=>_('Notes'),
+				'Out_of_Stock'=>_('Out of Stock'),
+				'Sold'=>_('Sold'),
+				'Cost_Sales'=>_('Cost Sales'),
+
+				
+
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'supplier_product'=>$_SESSION['state']['supplier_product']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
+
+
+
+
 $smarty->display('supplier_product.tpl');
-
-
-
 
 ?>

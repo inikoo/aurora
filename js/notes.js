@@ -38,6 +38,7 @@ var onCellClick = function(oArgs) {
                 if (record.getData('strikethrough') == 'Yes') var action = 'unstrikethrough_';
                 else var action = 'strikethrough_';
                 request = ar_file + '?tipo=' + action + 'history&parent=' + Dom.get('subject').value + myBuildUrl(this, record)
+               // alert(request)
                 YAHOO.util.Connect.asyncRequest('GET', request, {
                     success: function(o) {
                         //         alert(o.responseText);
@@ -161,6 +162,7 @@ function save_delete_history_record_from_list() {
     var history_id = Dom.get('delete_from_list_history_key').value;
 
     request = 'ar_edit_notes.php?tipo=delete_history&parent=' + Dom.get('subject').value + '&parent_key=' + Dom.get('subject_key').value + '&key=' + history_id;
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('GET', request, {
 
         success: function(o) {
@@ -239,7 +241,7 @@ function save(tipo) {
     case ('edit_note'):
 
         request = 'ar_edit_notes.php?tipo=edit_note&parent=' + Dom.get('subject').value + "&parent_key=" + Dom.get('subject_key').value + '&note_key=' + Dom.get('edit_note_history_key').value + '&note=' + my_encodeURIComponent(Dom.get('edit_note_input').value) + '&date=' + Dom.get('edit_note_date').getAttribute('value') + '&record_index=' + Dom.get('record_index').value;
-        //      alert(request)
+         
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
                 //    alert(o.responseText)
@@ -311,10 +313,10 @@ function save(tipo) {
 
         var request = 'ar_edit_notes.php?tipo=edit_sticky_note&parent=' + Dom.get('subject').value + "&parent_key=" + Dom.get('subject_key').value + '&note=' + my_encodeURIComponent(Dom.get(tipo + "_input").value)
 
-        //alert(request)
+       
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                // alert(o.responseText)
+               
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
 

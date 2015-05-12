@@ -236,39 +236,42 @@ class PurchaseOrder extends DB_Table{
 			}else {
 
 
-				$sql=sprintf("select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product ID`=%d ",$this->id,$data ['Supplier Product ID']);
+				$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product ID`=%d ",$this->id,$data ['Supplier Product ID']);
 				$res=mysql_query($sql);
 				if ($row=mysql_fetch_array($res)) {
-					$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f, `Purchase Order Quantity Type`=%s,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f   where `Purchase Order Key`=%d and `Purchase Order Transaction Fact Key`=%d "
-						,$data ['qty']
-						,prepare_mysql ( $data ['qty_type'])
-						,prepare_mysql ( $data ['date'] )
-						, $data ['amount']
-						, $tax_amount
-						,$this->id
-						,$row['Purchase Order Transaction Fact Key']
+					$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f, `Purchase Order Quantity Type`=%s,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f   where  `Purchase Order Transaction Fact Key`=%d ",
+						$data ['qty'],
+						prepare_mysql ( $data ['qty_type']),
+						prepare_mysql ( $data ['date'] ),
+						$data ['amount'],
+						$tax_amount,
+						$row['Purchase Order Transaction Fact Key']
 					);
-					// print "$sql";
 					mysql_query($sql);
 
+					if ($row['Note to Supplier Locked']=='No' and $data['Note to Supplier']!='') {
+						$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Note to Supplier`=%s where  `Purchase Order Transaction Fact Key`=%d ",
+							prepare_mysql ( $data['Note to Supplier']),
+							$row['Purchase Order Transaction Fact Key']
+						);
+						mysql_query($sql);
+					}
+
 				}else {
-					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Product Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product ID`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`) values (%d,%s,%s,%s,%d,  %s    ,%d,%d, %.6f,%s,%.2f,%.2f)   "
-						, $data ['Supplier Product Key']
-						, prepare_mysql ( $data['tax_code'] )
-						, prepare_mysql ( $this->data ['Purchase Order Currency Code'] )
-						, prepare_mysql ( $data ['date'] )
-						, $data ['Supplier Product ID']
-
-						, prepare_mysql ( $data ['Current Dispatching State'] )
-
-						, $this->data['Purchase Order Supplier Key' ]
-						, $this->data ['Purchase Order Key']
-
-
-						, $data ['qty']
-						, prepare_mysql ( $data ['qty_type'] )
-						, $data ['amount']
-						, $tax_amount
+					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Product Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product ID`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`) values (%d,%s,%s,%s,%d,%s,%d,%d, %.6f,%s,%.2f,%.2f,%s)",
+						$data ['Supplier Product Key'],
+						prepare_mysql ( $data['tax_code'] ),
+						prepare_mysql ( $this->data ['Purchase Order Currency Code'] ),
+						prepare_mysql ( $data ['date'] ),
+						$data ['Supplier Product ID'],
+						prepare_mysql ( $data ['Current Dispatching State'] ),
+						$this->data['Purchase Order Supplier Key' ],
+						$this->data ['Purchase Order Key'],
+						$data ['qty'],
+						prepare_mysql ( $data ['qty_type'] ),
+						$data ['amount'],
+						$tax_amount,
+						prepare_mysql ( $data['Note to Supplier'])
 
 					);
 					// print "$sql";
@@ -283,13 +286,10 @@ class PurchaseOrder extends DB_Table{
 
 		}
 
-		//   if($this->data['Purchase Order Current Dispatch State']=='In Process' or $this->data['Purchase Order Current Dispatch State']=='Submitted'){
-		//     $supplier=new Supplier('id',$this->data['Purchase Order Supplier Key' ]);
-		//     $supplier->normalize_purchase_orders();
-		//   }
+
 		return array('to_charge'=>money($data ['amount'],$this->data['Purchase Order Currency Code']),'qty'=>$data ['qty']);
 
-		//  print "$sql\n";
+
 
 
 	}

@@ -1,4 +1,6 @@
-{include file='header.tpl'} 
+{include file='header.tpl'}
+		<input type="hidden" value="{$session_data}" id="session_data" />
+ 
 <input id="pid" value="{$supplier_product->pid}" type="hidden"> 
 <input type="hidden" id="from" value="{$from}" />
 <input type="hidden" id="to" value="{$to}" />
@@ -17,10 +19,17 @@
 		<div class="top_page_menu">
 			<div class="buttons  " style="float:left">
 				{if isset($prev_pid)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev_pid.title}" onclick="window.location='{$prev_pid.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
-				<span class="main_title"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
+				<span class="main_title no_buttons"><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </span> 
 			</div>
-			<div class="buttons">
-				{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'">{t}Edit Supplier Product{/t}</button> <button onclick="window.location='new_part.php?parent=supplier_product&parent_key={$supplier_product->pid}'">{t}Add Part{/t}</button> 
+							{if isset($next_pid) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next_pid.title}" onclick="window.location='{$next_pid.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
+			<div class="buttons small" style="position:relative;top:5px">
+							<button onclick="window.location='edit_supplier_product.php?pid={$supplier_product->pid}'"><img src="art/icons/database_edit.png" alt=""> {t}Edit{/t}</button>
+
+			<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> 
+							<button id="sticky_note_for_supplier_button"><img src="art/icons/note_green.png" alt=""> {t}Note to supplier{/t}</button> 
+
+				 <button onclick="window.location='new_part.php?parent=supplier_product&parent_key={$supplier_product->pid}'"><img src="art/icons/brick_add.png" alt=""> {t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -113,6 +122,8 @@
 					</tbody>
 					{/if}
 				</table>
+				
+				
 			</div>
 			<div style="width:280px;float:left;margin-left:20px">
 				<table class="show_info_product" style="{if $supplier_product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%">
@@ -128,6 +139,22 @@
 					</tr>
 					{/foreach} 
 				</table>
+				
+				<div id="sticky_note_div" class="sticky_note" style="margin-left:0px;margin-bottom:10px;{if $supplier_product->get('Supplier Product Sticky Note')==''}display:none{/if}">
+						<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+						<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+							{$supplier_product->get('Sticky Note')} 
+						</div>
+					</div>
+		 <div id="sticky_note_for_supplier_div" class="sticky_note green" style="margin-left:0px;{if $supplier_product->get('Supplier Product Note to Supplier')==''}display:none{/if}">
+		 
+						<img id="sticky_note_for_supplier_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+						<div id="sticky_note_for_supplier_content" style="padding:10px 15px 10px 15px;">
+							{$supplier_product->get('Note to Supplier')} 
+						</div>
+					</div>
+					<div style="clear:both">
+					</div>
 			</div>
 			<div style="clear:both">
 			</div>
@@ -136,6 +163,8 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Description{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='notes'}selected{/if}" id="notes"> <span> {t}History/Notes{/t}</span></span></li>
+				<li> <span class="item {if $block_view=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t}</span></span></li>
+
 		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='stock_transactions'}selected{/if}" id="stock_transactions"> <span> {t}Stock Transactions{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='stock_history'}selected{/if}" id="stock_history"> <span> {t}Stock History{/t}</span></span></li>
@@ -179,9 +208,17 @@
 		</div>
 		<div id="block_notes" style="{if $block_view!='notes'}display:none;{/if}">
 			<div style="padding:20px">
-				<span id="table_title" class="clean_table_title">{t}History/Notes{/t}</span> 
+				<span id="table_title" class="clean_table_title" style="margin-right:10px">{t}History/Notes{/t}</span> 
+				
+				<div class="buttons small left">
+				    <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> 
+				<button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+				</div>
+				
 				<div class="elements_chooser">
-					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_changes" id="elements_part_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_part_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_notes" id="elements_part_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_part_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_attachments" id="elements_part_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_part_history_number.Attachments}</span>)</span> 
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_part_history.Changes}selected{/if} label_part_history_Changes" id="elements_part_history_Changes" table_type="elements_Changes">{t}Changes History{/t} (<span id="elements_history_Changes_number">{$elements_part_history_number.Changes}</span>)</span> 
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Notes}selected{/if} label_part_history_Notes" id="elements_part_history_notes" table_type="elements_Notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number">{$elements_part_history_number.Notes}</span>)</span> 
+					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_part_history.Attachments}selected{/if} label_part_history_Attachments" id="elements_part_history_Attachments" table_type="elements_Attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number">{$elements_part_history_number.Attachments}</span>)</span> 
 				</div>
 				<div class="table_top_bar space">
 				</div>
@@ -403,4 +440,22 @@ function reloadSettings(file) {
 		</tbody>
 	</table>
 </div>
+<div id="dialog_sticky_note_for_supplier" style="padding:20px 20px 0px 20px;width:340px">
+	<div id="sticky_note_for_supplier_msg">
+	</div>
+	<table>
+		<tr>
+			<td> <textarea style="width:330px;height:125px" id="sticky_note_for_supplier_input" onkeyup="change(event,this,'sticky_note_for_supplier')">{$supplier_product->get('Note to Supplier')}</textarea> </td>
+		</tr>
+		<tr>
+			<td> 
+			<div class="buttons">
+				<button class="positive" onclick="save_sticky_note_for_supplier()">{t}Save{/t}</button> <button class="negative" onclick="close_dialog_sticky_note_for_supplier()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+{include file='notes_splinter.tpl'}
+
 {include file='footer.tpl'} 

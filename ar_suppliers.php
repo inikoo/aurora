@@ -2058,9 +2058,17 @@ function number_supplier_product_transactions_in_interval($data) {
 
 function get_history_numbers($data) {
 	$subject_key=$data['subject_key'];
+	$subject=$data['subject'];
 
 	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+	
+	if($subject=='supplier'){
 	$sql=sprintf("select count(*) as num , `Type` from  `Supplier History Bridge` where `Supplier Key`=%d group by `Type`",$subject_key);
+	}elseif($subject=='supplier_product'){
+		$sql=sprintf("select count(*) as num , `Type` from  `Supplier Product History Bridge` where `Supplier Product ID`=%d group by `Type`",$subject_key);
+
+	}
+	
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Type']]=$row['num'];

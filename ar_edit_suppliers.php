@@ -22,6 +22,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case('edit_sticky_note_for_supplier'):
+	$data=prepare_values($_REQUEST,array(
+			'note'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+		));
+
+	edit_sticky_note_for_supplier($data);
+	break;
+
 case 'edit_supplier_product_part':
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
@@ -246,6 +256,31 @@ function edit_supplier_field($supplier_key,$key,$value_data,$okey='') {
 
 }
 
+function edit_sticky_note_for_supplier($data) {
+	global $editor;
+
+	switch ($data['parent']) {
+	case 'supplier':
+		include_once 'class.Supplier.php';
+		$subject=new Supplier($data['parent_key']);
+		break;
+	case 'supplier_product':
+		include_once 'class.SupplierProduct.php';
+		$subject=new SupplierProduct('pid',$data['parent_key']);
+		break;
+	default:
+		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t)');
+		echo json_encode($response);
+		exit;
+	}
+
+
+	$subject->editor=$editor;
+	$subject->update_field_switcher('Note to Supplier',$data['note']);
+	$response= array('state'=>200,'newvalue'=>$subject->new_value,'key'=>'sticky_note_for_supplier');
+
+	echo json_encode($response);
+}
 
 function edit_supplier($data) {
 

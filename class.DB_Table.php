@@ -206,6 +206,7 @@ abstract class DB_Table {
 		else
 			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
+        //print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
@@ -562,7 +563,7 @@ abstract class DB_Table {
 			'Direct Object'=>'Note',
 			'Prepostion'=>'on',
 			'Indirect Object'=>$this->table_name,
-			'Indirect Object Key'=>($this->table_name=='Product'?$this->pid:$this->id)
+			'Indirect Object Key'=>(($this->table_name=='Product' or $this->table_name=='Supplier Product')  ?$this->pid:$this->id)
 		);
 
 		if ($author) {
@@ -575,7 +576,6 @@ abstract class DB_Table {
 
 		if ($date!='')
 			$history_data['Date']=$date;
-
 
 
 		$history_key=$this->add_subject_history($history_data,$force_save=true,$deleteable,$customer_history_type);
@@ -592,7 +592,7 @@ abstract class DB_Table {
 
 		$sql=sprintf("insert into `%s History Bridge` values (%d,%d,%s,'No',%s)",
 			$this->table_name,
-			($this->table_name=='Product'?$this->pid:$this->id),
+			(($this->table_name=='Product' or $this->table_name=='Supplier Product')?$this->pid:$this->id),
 			$history_key,
 			prepare_mysql($deleteable),
 			prepare_mysql($type)
@@ -623,7 +623,7 @@ abstract class DB_Table {
 				'Direct Object'=>'Attachment',
 				'Prepostion'=>'',
 				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>($this->table_name=='Product'?$this->pid:$this->id)
+				'Indirect Object Key'=>(($this->table_name=='Product'  or $this->table_name=='Supplier Product')?$this->pid:$this->id)
 			);
 			$history_key=$this->add_subject_history($history_data,true,'Yes','Attachments');
 
@@ -707,7 +707,7 @@ abstract class DB_Table {
 			$note_key,
 			prepare_mysql($this->table_name),
 
-			($this->table_name=='Product'?$this->pid:$this->id));
+			(($this->table_name=='Product'  or $this->table_name=='Supplier Product')?$this->pid:$this->id));
 
 
 		mysql_query($sql);
@@ -870,7 +870,7 @@ abstract class DB_Table {
 
 	function get_number_of_images() {
 
-		if ($this->table_name=='Product')
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
 		else
 			$subject_key=$this->id;
