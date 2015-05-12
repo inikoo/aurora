@@ -45,7 +45,7 @@ case('store_history'):
 case('account_history'):
 case('subject_history'):
 case('site_history'):
-
+case('purchase_order_history'):
 case('supplier_history'):
 	list_subject_history();
 	break;
@@ -89,7 +89,7 @@ function history_details() {
 function list_subject_history() {
 
 
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','customer','supplier','store','department','family','product','part','account','supplier_product','employee'))) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('porder','site','customer','supplier','store','department','family','product','part','account','supplier_product','employee'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -230,6 +230,9 @@ function list_subject_history() {
 	}elseif ($parent=='site') {
 		$where=sprintf(' where   B.`Site Key`=%d   ',$parent_key);
 		$subject='Site';
+	}elseif ($parent=='porder') {
+		$where=sprintf(' where   B.`Purchase Order Key`=%d   ',$parent_key);
+		$subject='Purchase Order';
 	}
 
 	elseif ($parent=='supplier') {

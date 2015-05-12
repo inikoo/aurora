@@ -11,6 +11,9 @@
  Version 2.0
 */
 require_once 'common.php';
+require_once 'ar_common.php';
+
+
 if (!isset($_REQUEST['tipo'])) {
 	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
@@ -18,9 +21,18 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
+
+
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case ('get_history_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+		));
+	get_history_numbers($data);
+	break;
 case('purchase_orders_with_product'):
 	list_purchase_orders_with_product();
 	break;
@@ -526,36 +538,36 @@ function list_delivery_notes() {
 
 
 	if (isset($_REQUEST['parent'])) {
-			$parent=$_REQUEST['parent'];
+		$parent=$_REQUEST['parent'];
 
-	}else{
+	}else {
 		exit();
 	}
 
 
-if (isset($_REQUEST['parent_key'])) {
-			$parent_key=$_REQUEST['parent_key'];
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
 
-	}else{
+	}else {
 		exit();
 	}
 
 
 
-	switch($parent){
+	switch ($parent) {
 	case 'none':
 		$conf=$_SESSION['state']['suppliers']['supplier_invoices'];
 		$conf_table='suppliers';
-break;
-case 'supplier':
+		break;
+	case 'supplier':
 		$conf=$_SESSION['state']['supplier']['supplier_invoices'];
-			$conf_table='supplier';
-break;
-default:
-	exit();
+		$conf_table='supplier';
+		break;
+	default:
+		exit();
 	}
-	
-if (isset( $_REQUEST['sf']))
+
+	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
 		$start_from=$conf['sf'];
@@ -585,8 +597,8 @@ if (isset( $_REQUEST['sf']))
 		$from=$_REQUEST['from'];
 	else
 		$from=$_SESSION['state'][$conf_table]['from'];
-		
-		
+
+
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
@@ -608,9 +620,9 @@ if (isset( $_REQUEST['sf']))
 	$_SESSION['state'][$conf_table]['supplier_invoices']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['supplier_invoices']['f_value']=$f_value;
 
-	
-	
-	
+
+
+
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
 		$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_table]['from'],$_SESSION['state'][$conf_table]['to']);
@@ -619,7 +631,7 @@ if (isset( $_REQUEST['sf']))
 		$_SESSION['state'][$conf_table]['to']=$date_interval['to'];
 	}
 
-$where=' where true';
+	$where=' where true';
 
 	$where.=$date_interval['mysql'];
 
@@ -628,25 +640,25 @@ $where=' where true';
 	if ($f_field=='max' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
 	elseif ($f_field=='min' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-		elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
-			$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-		elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-				$wheref.=" and  total<=".$f_value."    ";
-			else if ($f_field=='minvalue' and is_numeric($f_value) )
-					$wheref.=" and  total>=".$f_value."    ";
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
+	elseif (($f_field=='customer_name' or $f_field=='public_id') and $f_value!='')
+		$wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  total<=".$f_value."    ";
+	else if ($f_field=='minvalue' and is_numeric($f_value) )
+			$wheref.=" and  total>=".$f_value."    ";
 
 
 
 
 
 
-				$sql="select count(*) as total from `Supplier Delivery Note Dimension`   $where $wheref ";
+		$sql="select count(*) as total from `Supplier Delivery Note Dimension`   $where $wheref ";
 
-			$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total=$row['total'];
-		}
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
 	if ($where=='') {
 		$filtered=0;
 		$total_records=$total;
@@ -754,33 +766,33 @@ function list_invoices() {
 
 
 	if (isset($_REQUEST['parent'])) {
-			$parent=$_REQUEST['parent'];
+		$parent=$_REQUEST['parent'];
 
-	}else{
+	}else {
 		exit();
 	}
 
 
-if (isset($_REQUEST['parent_key'])) {
-			$parent_key=$_REQUEST['parent_key'];
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
 
-	}else{
+	}else {
 		exit();
 	}
 
 
 
-	switch($parent){
+	switch ($parent) {
 	case 'none':
 		$conf=$_SESSION['state']['suppliers']['supplier_invoices'];
 		$conf_table='suppliers';
-break;
-case 'supplier':
+		break;
+	case 'supplier':
 		$conf=$_SESSION['state']['supplier']['supplier_invoices'];
-			$conf_table='supplier';
-break;
-default:
-	exit();
+		$conf_table='supplier';
+		break;
+	default:
+		exit();
 	}
 
 	if (isset( $_REQUEST['sf']))
@@ -813,8 +825,8 @@ default:
 		$from=$_REQUEST['from'];
 	else
 		$from=$_SESSION['state'][$conf_table]['from'];
-		
-		
+
+
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
@@ -836,9 +848,9 @@ default:
 	$_SESSION['state'][$conf_table]['supplier_invoices']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['supplier_invoices']['f_value']=$f_value;
 
-	
-	
-	
+
+
+
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
 		$date_interval=prepare_mysql_dates($_SESSION['state'][$conf_table]['from'],$_SESSION['state'][$conf_table]['to']);
@@ -847,7 +859,7 @@ default:
 		$_SESSION['state'][$conf_table]['to']=$date_interval['to'];
 	}
 
-$where=' where true';
+	$where=' where true';
 
 	$where.=$date_interval['mysql'];
 
@@ -892,12 +904,12 @@ $where=' where true';
 
 
 
-	if($total_records<10)
+	if ($total_records<10)
 		$rtext_rpp='';
 
 	elseif ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-		
+
 	else
 		$rtext_rpp='('._("Showing all").')';
 
@@ -982,6 +994,24 @@ $where=' where true';
 			'filtered'=>$filtered
 		)
 	);
+	echo json_encode($response);
+}
+
+function get_history_numbers($data) {
+	$subject_key=$data['subject_key'];
+	$subject=$data['subject'];
+
+	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+
+	if ($subject=='porder') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Purchase Order History Bridge` where `Purchase Order Key`=%d group by `Type`",$subject_key);
+	}
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Type']]=$row['num'];
+	}
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 }
 ?>

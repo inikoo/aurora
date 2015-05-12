@@ -13,8 +13,8 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('part_in_supplier_product_historic'):
-list_part_in_supplier_product_historic();
-break;
+	list_part_in_supplier_product_historic();
+	break;
 case ('get_supplier_products_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
@@ -2061,14 +2061,14 @@ function get_history_numbers($data) {
 	$subject=$data['subject'];
 
 	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
-	
-	if($subject=='supplier'){
-	$sql=sprintf("select count(*) as num , `Type` from  `Supplier History Bridge` where `Supplier Key`=%d group by `Type`",$subject_key);
-	}elseif($subject=='supplier_product'){
+
+	if ($subject=='supplier') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Supplier History Bridge` where `Supplier Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='supplier_product') {
 		$sql=sprintf("select count(*) as num , `Type` from  `Supplier Product History Bridge` where `Supplier Product ID`=%d group by `Type`",$subject_key);
 
 	}
-	
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Type']]=$row['num'];
@@ -2095,11 +2095,11 @@ function get_supplier_products_numbers($data) {
 
 		$where=sprintf("where `Supplier Key`=%d",$parent_key);
 		break;
-		
+
 	case 'none':
 
 		$where='';
-		break;	
+		break;
 	default:
 		exit('uknown parent');
 	}
@@ -2214,7 +2214,7 @@ function list_part_in_supplier_product_historic() {
 
 
 	$sql="select count(*) as total from `Supplier Product Part List`  L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product ID`=PP.`Supplier Product ID`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`)  $where $wheref";
-//	  print $sql;
+	//   print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -2240,10 +2240,10 @@ function list_part_in_supplier_product_historic() {
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>10)
+	elseif ($total_records>10)
 		$rtext_rpp=' ('._('Showing all').')';
 	else
-		$rtext_rpp='';	
+		$rtext_rpp='';
 
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
