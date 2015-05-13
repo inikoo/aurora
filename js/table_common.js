@@ -42,7 +42,7 @@ var mydoBeforePaginatorChange = function(e) {
 var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
         
        if(oResponse.meta.RecordOffset == undefined){
-       alert("error in table")
+    //   alert("error in table")
        }
       
        
