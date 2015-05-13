@@ -643,7 +643,7 @@ class PurchaseOrder extends DB_Table{
 
 	}
 
-
+   
 
 }
 ?>

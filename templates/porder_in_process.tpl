@@ -107,8 +107,16 @@
 		
 	
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
-		<li> <span class="item "  id="tandc"> <span> {t}Terms & Condition{/t}</span></span></li>
-		<li> <span class="item "  id="attachments" > <span> {t}Attachments{/t}</span></span></li>
+		<li> 
+		    <span class="item "  id="tandc"> 
+		        <span> {t}Terms & Condition{/t}</span>
+		    </span>
+		</li>
+		<li> <span class="item "  id="attachments" > 
+		    <span id="attachments_label"> {t}Attachments{/t} {if $number_attachments!=0} ({$number_attachments}){/if}</span>
+		   
+		    </span>
+		</li>
 		<li> <span class="item "  id="notes" > <span> {t}History/Notes{/t}</span></span></li>
 
 		</ul>
@@ -153,6 +161,9 @@
             </div>
 			<div id="block_attachments"  class="block_details" style="display:none">
 			<div class="buttons small"><button id="attach_bis"><img src="art/icons/add.png"> {t}Attachment{/t}</button></div>
+			<div id="attachments_showcase">
+			{include file='attachments_showcase_splinter.tpl' attachments=$po->get_attachments_data()}
+			</div>
 			
 			</div>
             <div id="block_notes"  class="block_notes" style="display:none;margin-top:10px;margin-bottom:20px">

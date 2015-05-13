@@ -80,7 +80,7 @@ class Attachment extends DB_Table {
 			$raw_data['Attachment File Checksum']=$checksum;
 			$raw_data['Attachment File Size']=$filesize;
 
-			
+
 
 		}
 
@@ -159,14 +159,15 @@ class Attachment extends DB_Table {
 
 
 		$sql=sprintf("insert into `Attachment Dimension` %s %s",$keys,$values);
-		
+
 		// exit;
 		if (mysql_query($sql)) {
 			$this->id= mysql_insert_id();
 			$this->new=true;
 			$this->get_data('id',$this->id);
-			
-			mysql_query($sql);
+
+			$this->update_type();
+			$this->create_thumbnail();
 
 
 		} else {
@@ -203,15 +204,15 @@ class Attachment extends DB_Table {
 
 
 	function get_abstract($original_name='',$caption='',$reference=false) {
-	
-		if(!$reference){
-		$reference_type='id';
-		$reference_key=$this->id;
-		}else{
-		$reference_type='bid';
-		$reference_key=$reference;
+
+		if (!$reference) {
+			$reference_type='id';
+			$reference_key=$this->id;
+		}else {
+			$reference_type='bid';
+			$reference_key=$reference;
 		}
-	
+
 		$mime=$this->mime_type_icon($this->data['Attachment MIME Type']);
 		return sprintf('%s <a href="file.php?%s=%d">%s</a> (%s) %s'
 			,$mime
@@ -321,7 +322,88 @@ class Attachment extends DB_Table {
 		}
 	}
 
+	function update_type() {
+		$type='Other';
+		if (preg_match('/^image/',$this->data['Attachment MIME Type'])) {
+			$type='Image';
+		}elseif (preg_match('/excel/',$this->data['Attachment MIME Type'])) {
+			$type='Spreadsheet';
+		}elseif (preg_match('/msword/',$this->data['Attachment MIME Type'])) {
+			$type='Word';
+		}elseif (preg_match('/pdf/',$this->data['Attachment MIME Type'])) {
+			$type='PDF';
+		}elseif (preg_match('/(zip|rar)/',$this->data['Attachment MIME Type'])) {
+			$type='Compresed';
+		}elseif (preg_match('/(text)/',$this->data['Attachment MIME Type'])) {
+			$type='Text';
+		}
 
+		$sql=sprintf("update `Attachment Dimension` set `Attachment Type`=%s where `Attachment Key`=%d",
+			prepare_mysql($type),
+			$this->id
+		);
+		mysql_query($sql);
+		$this->data['Attachment Type']=$type;
+
+	}
+
+	function create_thumbnail() {
+		include_once 'class.Image.php';
+		if (preg_match('/application\/pdf/',$this->data['Attachment MIME Type'])) {
+			$tmp_file='server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
+			file_put_contents($tmp_file.'.pdf',$this->data['Attachment Data']);
+
+			$im = new imagick($tmp_file.'.pdf[0]');
+			$im->setImageFormat('jpg');
+			$im->thumbnailImage(500, 0);
+			$im->writeImage ($tmp_file.'.jpg');
+
+
+			$image_data=array(
+				'file'=>$tmp_file.'.jpg',
+				'source_path'=>'',
+				'name'=>'attachment_thumbnail',
+				'caption'=>''
+			);
+
+
+
+			$image=new Image('find',$image_data,'create');
+
+			if (!$image->error) {
+
+
+				$sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d",
+					prepare_mysql('Attachment Thumbnail'),
+					$this->id
+
+				);
+				mysql_query($sql);
+
+				$sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) values (%s,%d,%d,'Yes','')",
+					prepare_mysql('Attachment Thumbnail'),
+					$this->id,
+					$image->id
+				);
+				mysql_query($sql);
+
+				$sql=sprintf("update `Attachment Dimension` set `Attachment Thumbnail Image Key`=%d where `Attachment Key`=%d",
+					$image->id,
+					$this->id
+				);
+				mysql_query($sql);
+				$this->data['Attachment Thumbnail Image Key']=$image->id;
+			}else {
+
+
+			}
+
+			unlink($tmp_file.'.pdf');
+			unlink($tmp_file.'.jpg');
+
+		}
+
+	}
 
 
 }

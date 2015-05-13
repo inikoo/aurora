@@ -90,6 +90,7 @@ if (isset($_REQUEST['id'])) {
 }
 
 
+
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -115,9 +116,13 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/jquery.min.js',
 	'js/php.default.min.js',
 	'js/search.js',
 	'js/common.js',
+	'js/fz.shadow.js',
+	'js/fz.js',
+	'js/imgpop.js',
 	'js/table_common.js',
 );
 
@@ -126,13 +131,6 @@ $js_files=array(
 
 
 $po_id = $po->id;
-
-
-
-
-
-
-
 
 $smarty->assign('po',$po);
 $smarty->assign('supplier',$supplier);
@@ -196,6 +194,11 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('elements_po_history_number',$elements_number);
 $smarty->assign('elements_po_history',$_SESSION['state']['porder']['history']['elements']);
+
+
+$smarty->assign('number_attachments',$po->get_number_attachments_formated());
+
+
 
 $filter_menu=array(
 	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
