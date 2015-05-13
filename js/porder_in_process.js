@@ -417,7 +417,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         //,{key:"usable", label:Unusable,width:55,className:"aright"}
         ];
         request = "ar_edit_porders.php?tipo=po_transactions_to_process&sf=0&tableid=" + tableid + '&id=' + Dom.get('po_key').value + '&supplier_key=' + Dom.get('supplier_key').value
-       // alert(request)
+        // alert(request)
         this.dataSource0 = new YAHOO.util.DataSource(request);
 
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -425,8 +425,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.dataSource0.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
-            
-               rowsPerPage: "resultset.records_perpage",
+
+                rowsPerPage: "resultset.records_perpage",
                 RecordOffset: "resultset.records_offset",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
@@ -435,8 +435,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 tableid: "resultset.tableid",
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
-            
-             
+
+
             },
 
             fields: ["key", "pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "parts_info"]
@@ -469,15 +469,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
             dynamicData: true
 
         });
-          this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table0.doBeforeLoadData = mydoBeforeLoadData;
         this.table0.table_id = tableid;
         this.table0.request = request;
         this.table0.subscribe("renderEvent", myrenderEvent);
-        
-        
+
+
         this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
         this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
         this.table0.subscribe("cellClickEvent", myonCellClick);
@@ -655,7 +655,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             label: "",
             width: 12,
             sortable: false,
-          action:'dialog',object:'delete_note'
+            action: 'dialog',
+            object: 'delete_note'
         }, {
             key: "edit",
             label: "",
@@ -667,7 +668,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         ];
         request = "ar_history.php?tipo=purchase_order_history&parent=porder&parent_key=" + Dom.get('po_key').value + "&sf=0&tableid=" + tableid
-       
+
         this.dataSource3 = new YAHOO.util.DataSource(request);
         this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource3.connXhrMode = "queueRequests";
@@ -927,17 +928,17 @@ function hide_order_details() {
 
 function change_block() {
 
- Dom.setStyle('order_details_panel', 'display', '')
+    Dom.setStyle('order_details_panel', 'display', '')
 
-    ids = ['tandc', 'attachments','notes']
-    block_ids = ['block_tandc', 'block_attachments','block_notes'];
+    ids = ['tandc', 'attachments', 'notes']
+    block_ids = ['block_tandc', 'block_attachments', 'block_notes'];
 
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
 
-  
+
 
 }
 
@@ -1057,35 +1058,32 @@ function save_sticky_note_for_supplier() {
     });
 }
 
-function get_history_numbers(){
+function get_history_numbers() {
 
 
 
     var ar_file = 'ar_porders.php';
-    var request = 'tipo=get_history_numbers&subject=porder&subject_key=' + Dom.get('po_key').value ;
-    
- //   alert(ar_file+'?'+request)
-    
+    var request = 'tipo=get_history_numbers&subject=porder&subject_key=' + Dom.get('po_key').value;
+
+    //   alert(ar_file+'?'+request)
     Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
     Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
-  
+
 
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-           
+
             var r = YAHOO.lang.JSON.parse(o.responseText);
-           
+
             if (r.state == 200) {
 
-              for (i in r.elements_numbers) {
-            if(Dom.get('elements_history_'+i+'_number') != undefined)
-              Dom.get('elements_history_'+i+'_number').innerHTML=r.elements_numbers[i]
-              }
+                for (i in r.elements_numbers) {
+                    if (Dom.get('elements_history_' + i + '_number') != undefined) Dom.get('elements_history_' + i + '_number').innerHTML = r.elements_numbers[i]
+                }
             }
         },
-        failure: function(o) {
-        },
+        failure: function(o) {},
         scope: this
     }, request
 
@@ -1093,6 +1091,45 @@ function get_history_numbers(){
 
 }
 
+function show_dialog_attach_bis() {
+    region1 = Dom.getRegion('attach_bis');
+    region2 = Dom.getRegion('dialog_attach');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('dialog_attach', pos);
+    dialog_attach.show()
+
+
+}
+
+function post_add_attachment_actions(result) {
+
+
+    var ar_file = 'ar_porders.php';
+    var request = 'tipo=get_attachments_showcase&subject=porder&subject_key=' + Dom.get('po_key').value;
+
+
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+                Dom.get('attachments_showcase').innerHTML = r.attachments_showcase
+                Dom.get('attachments_label').innerHTML = r.attachments_label
+                $('.imgpop').fancyzoom({
+                    Speed: 250
+                });
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+
+    );
+
+
+}
 
 function init() {
 
@@ -1180,9 +1217,9 @@ function init() {
     });
     dialog_sticky_note_for_supplier.render();
 
- 
-    Event.addListener(['tandc', 'attachments','notes'], "click", change_block);
-    Event.addListener("attach_bis", "click", show_dialog_attach);
+
+    Event.addListener(['tandc', 'attachments', 'notes'], "click", change_block);
+    Event.addListener("attach_bis", "click", show_dialog_attach_bis);
 
 }
 

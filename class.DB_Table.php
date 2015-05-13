@@ -206,7 +206,7 @@ abstract class DB_Table {
 		else
 			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
 
-        //print $sql;
+		//print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$old_value=$row['value'];
@@ -263,10 +263,10 @@ abstract class DB_Table {
 				and $save_history
 			) {
 
-				
-					$old_value=htmlentities($old_value);
-					$value=htmlentities($value);
-			
+
+				$old_value=htmlentities($old_value);
+				$value=htmlentities($value);
+
 
 
 				$history_data=array(
@@ -292,12 +292,12 @@ abstract class DB_Table {
 				if (
 					in_array($this->table_name,array('Site','Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
 
-					if ($this->table_name=='Product' or $this->table_name=='Supplier Product'){
+					if ($this->table_name=='Product' or $this->table_name=='Supplier Product') {
 						$subject_key=$this->pid;
 
-					}else{
+					}else {
 						$subject_key=$this->id;
-					}	
+					}
 
 					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$subject_key,$history_key);
 					mysql_query($sql);
@@ -613,6 +613,21 @@ abstract class DB_Table {
 		$attach=new Attachment('find',$data,'create');
 
 
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
+			$subject_key=$this->pid;
+		else
+			$subject_key=$this->id;
+
+		if ($this->table_name=='Product Family') {
+			$subject='Family';
+		}elseif ($this->table_name=='Product Department') {
+			$subject='Department';
+		}else {
+
+			$subject=$this->table_name;
+		}
+
+
 
 		if ($attach->id) {
 
@@ -622,8 +637,8 @@ abstract class DB_Table {
 				'Action'=>'associated',
 				'Direct Object'=>'Attachment',
 				'Prepostion'=>'',
-				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>(($this->table_name=='Product'  or $this->table_name=='Supplier Product')?$this->pid:$this->id)
+				'Indirect Object'=>$subject,
+				'Indirect Object Key'=>$subject_key
 			);
 			$history_key=$this->add_subject_history($history_data,true,'Yes','Attachments');
 
@@ -635,7 +650,7 @@ abstract class DB_Table {
 				prepare_mysql($raw_data['Attachment Caption'],false)
 			);
 			mysql_query($sql);
-			//print $sql;
+
 
 			$attach_bridge_key=mysql_insert_id();
 			$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",
@@ -643,6 +658,19 @@ abstract class DB_Table {
 				$history_key
 			);
 			mysql_query($sql);
+
+			if ($this->table_name=='Purchase Order') {// Todo do this to all subjects
+
+				$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'%s',%d,%s,%s)",
+					$attach->id,
+					$this->table_name,
+					$subject_key,
+					prepare_mysql($raw_data['Attachment File Original Name']),
+					prepare_mysql($raw_data['Attachment Caption'],false)
+				);
+				mysql_query($sql);
+			}
+
 			$this->updated=true;
 			$this->new_value='';
 		}
@@ -692,6 +720,115 @@ abstract class DB_Table {
 		return array(1,$note,$details);
 
 	}
+	
+	
+	function get_number_attachments_formated(){
+	    $attachments=0;
+	
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
+			$subject_key=$this->pid;
+		else
+			$subject_key=$this->id;
+
+		if ($this->table_name=='Product Family') {
+			$subject='Family';
+		}elseif ($this->table_name=='Product Department') {
+			$subject='Department';
+		}else {
+
+			$subject=$this->table_name;
+		}
+
+
+		$sql=sprintf('select count(*) as num from `Attachment Bridge`where `Subject`=%s and `Subject Key`=%d',
+			prepare_mysql($subject),
+			$subject_key
+		);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+		    $attachments=number($row['num']);
+		}
+		
+		return $attachments;
+	
+	}
+
+	function get_attachments_data() {
+
+		include_once 'common_units_functions.php';
+
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
+			$subject_key=$this->pid;
+		else
+			$subject_key=$this->id;
+
+		if ($this->table_name=='Product Family') {
+			$subject='Family';
+		}elseif ($this->table_name=='Product Department') {
+			$subject='Department';
+		}else {
+
+			$subject=$this->table_name;
+		}
+
+
+		$sql=sprintf('select A.`Attachment Key`,`Attachment MIME Type`,`Attachment Type`,`Attachment Caption`,`Attachment Public`,`Attachment File Original Name`,`Attachment Thumbnail Image Key`,`Attachment File Size` from `Attachment Bridge` B left join `Attachment Dimension` A on  (A.`Attachment Key`=B.`Attachment Key`) where `Subject`=%s and `Subject Key`=%d',
+			prepare_mysql($subject),
+			$subject_key
+		);
+
+		$res=mysql_query($sql);
+		$attachment_data=array();
+		while ($row=mysql_fetch_assoc($res)) {
+
+			if ($row['Attachment Type']=='Image') {
+				$icon= '<img class="icon" src="art/icons/page_white_picture.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'" />';
+			}elseif ($row['Attachment Type']=='Image') {
+				$icon= '<img class="icon"  src="art/icons/page_white_excel.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+			}elseif ($row['Attachment Type']=='Word') {
+				$icon=  '<img class="icon" src="art/icons/page_white_word.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+			}elseif ($row['Attachment Type']=='PDF') {
+				$icon=  '<img class="icon" src="art/icons/page_white_acrobat.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+			}elseif ($row['Attachment Type']=='Compresed') {
+				$icon=  '<img class="icon" src="art/icons/page_white_compressed.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+			}elseif ($row['Attachment Type']=='Text') {
+				$icon=  '<img class="icon" src="art/icons/page_white_text.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+			}else {
+				$icon= '<img class="icon" src="art/icons/attach.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+
+			}
+
+			$name=$row['Attachment File Original Name'];
+			if (strlen($name)>20) {
+                
+				$exts = preg_split("/\./i", $name) ;
+				$n = count($exts)-1;
+				
+				$_exts = $exts[$n];
+                unset($exts[$n]);
+                $name=join(',',$exts);   
+                
+                
+				$name = substr($name, 0, 15) . " <b>&hellip;</b> ".$_exts;
+			}
+
+
+			$attachment_data[]=array(
+				'key'=>$row['Attachment Key'],
+				'type'=>$row['Attachment Type'],
+				'caption'=>$row['Attachment Caption'],
+				'public'=>$row['Attachment Public'],
+				'name'=>$name,
+				'full_name'=>$row['Attachment File Original Name'],
+				'size'=>formatSizeUnits($row['Attachment File Size']),
+				'thumbnail'=>$row['Attachment Thumbnail Image Key'],
+				'icon'=>$icon
+			);
+		}
+
+		return  $attachment_data;
+	}
 
 
 	function edit_note($note_key,$note,$details='',$change_date) {
@@ -730,7 +867,7 @@ abstract class DB_Table {
 		include_once 'common_units_functions.php';
 
 
-	if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
 		else
 			$subject_key=$this->id;

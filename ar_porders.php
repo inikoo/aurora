@@ -12,6 +12,7 @@
 */
 require_once 'common.php';
 require_once 'ar_common.php';
+require_once 'class.PurchaseOrder.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -26,6 +27,14 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('get_attachments_showcase'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+		));
+	get_attachments_showcase($data);
+	break;
 case ('get_history_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'subject_key'=>array('type'=>'key'),
@@ -998,6 +1007,7 @@ function list_invoices() {
 }
 
 function get_history_numbers($data) {
+
 	$subject_key=$data['subject_key'];
 	$subject=$data['subject'];
 
@@ -1014,4 +1024,27 @@ function get_history_numbers($data) {
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 }
+
+function get_attachments_showcase($data) {
+	global $smarty;
+
+	$subject_key=$data['subject_key'];
+	$subject=$data['subject'];
+
+	$po=new PurchaseOrder($data['subject_key']);
+	$smarty->assign('attachments',$po->get_attachments_data());
+	$attachments_showcase=$smarty->fetch('attachments_showcase_splinter.tpl');
+	$attachments_label=_('Attachments');
+	$number_attachments=$po->get_number_attachments_formated();
+	if ($number_attachments!=0) {
+		$attachments_label.=' ('.$number_attachments.')';
+	}
+
+	$response= array('state'=>200,'attachments_showcase'=>$attachments_showcase,'attachments_label'=>$attachments_label);
+	echo json_encode($response);
+}
+
+
+
+
 ?>

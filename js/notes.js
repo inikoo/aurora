@@ -221,7 +221,7 @@ function save_attachment() {
                 close_dialog('attach');
                 //Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
                 get_history_numbers()
-
+                post_add_attachment_actions(r)
 
             } else {
                 dialog_attach.show();
@@ -234,6 +234,9 @@ function save_attachment() {
 
 }
 
+function post_add_attachment_actions(r){
+
+}
 
 function save(tipo) {
 
