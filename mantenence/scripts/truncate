@@ -1,8 +1,0 @@
-TRUNCATE `Address Bridge`;TRUNCATE `Address Dimension`;TRUNCATE `Company Department Dimension`;TRUNCATE `Company Dimension`;TRUNCATE `Company Web Site Bridge`;TRUNCATE `Contact Dimension`;TRUNCATE `Contract Terms Dimension`;TRUNCATE `Customer Dimension`;TRUNCATE `Email Bridge`;TRUNCATE `Email Dimension`;TRUNCATE `Order Dimension`;TRUNCATE `Order Transaction Fact`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`;TRUNCATE `Ship To Dimension`;TRUNCATE `History Dimension`;;TRUNCATE `Invoice Dimension`;TRUNCATE `Delivery Note Dimension`;TRUNCATE `Inventory Transaction Fact`;TRUNCATE `Inventory Spanshot Fact`;TRUNCATE `Invoice Delivery Note Bridge`;
-TRUNCATE `Order Delivery Note Bridge`;
-TRUNCATE `Order Invoice Bridge`;
-TRUNCATE `Order No Product Transaction Fact`;
-TRUNCATE `Purchase Order Dimension`;
-TRUNCATE `Location Dimension`;
-TRUNCATE `Part Location Dimension`;truncate `Customer Ship To Bridge`;
-TRUNCATE `Contact Bridge`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`;

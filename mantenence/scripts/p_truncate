@@ -1,2 +1,0 @@
-truncate `Product Department Dimension`;truncate `Product Family Dimension`;truncate `Product Dimension`; truncate `Product Family Department Bridge`;truncate `Product Department Bridge`;truncate `Deal Dimension`;truncate `Part Dimension`;truncate `Supplier Dimension`;truncate `Product Part List` ;truncate `Supplier Product Part List`;truncate `Supplier Product Dimension`;TRUNCATE `Image Dimension`;
-TRUNCATE `Product Image Bridge`;
