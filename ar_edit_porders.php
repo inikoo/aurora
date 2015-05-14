@@ -279,10 +279,10 @@ function submit_purchase_order($data) {
 
 
 function edit_porder($data) {
-	//print_r($data['values']);
-	$po=new Supplier($data['po_key']);
+	
+	$po=new PurchaseOrder($data['po_key']);
 	if (!$po->id) {
-		$response= array('state'=>400,'msg'=>'PO not found','key'=>$data['key']);
+		$response= array('state'=>400,'msg'=>'PO not found');
 		echo json_encode($response);
 		exit;
 	}
