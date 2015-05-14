@@ -332,13 +332,13 @@ class SupplierDeliveryNote extends DB_Table {
 
 
 		$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product ID`,`Supplier Product Key`,
-				`Purchase Order Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,
+				`Purchase Order Transaction State`,`Supplier Key`,`Supplier Delivery Note Key`,
 				`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`,`Supplier Delivery Note State`) values
 				(%s,%d,%d,  %s    ,%d,%d, %.6f,%s,%s)   "
 			, prepare_mysql ( $data ['date'] )
 			, $data ['Supplier Product ID']
 			, $data ['Supplier Product Key']
-			, prepare_mysql ( 'Found in Delivery Note' )
+			, prepare_mysql ( 'In Warehouse' )
 			, $this->data['Supplier Delivery Note Supplier Key' ]
 			, $this->data['Supplier Delivery Note Key']
 
@@ -696,7 +696,7 @@ class SupplierDeliveryNote extends DB_Table {
 		//print $sql;
 		mysql_query($sql);
 
-		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Inputted',`Purchase Order Current Dispatching State`='Found in Delivery Note'  where `Supplier Delivery Note Key`=%d"
+		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Inputted',`Purchase Order Transaction State`='In Warehouse'  where `Supplier Delivery Note Key`=%d"
 			,prepare_mysql($data['Supplier Delivery Note Input Date'])
 			,$this->id
 		);

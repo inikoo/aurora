@@ -3931,24 +3931,20 @@ function get_supplier_products_new($date=false) {
 
 		foreach ($supplier_products as $supplier_product) {
 
-			//  $sql=sprintf("select `Purchase Order Current Dispatching State `,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Supplier Product Dimension` SPD on (`Supplier Product Current Key`=`Supplier Product ID`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`) where   SPD.`Supplier Product Code`=%s and SPD.`Supplier Key`=%d order by PO.`Purchase Order Last Updated Date` "
-			//   ,prepare_mysql($supplier_product['Supplier Product Code'])
-			//  ,$supplier_product['Supplier Key']
-
-			//  );
-			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Current Dispatching State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID`=%d "
+			
+			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Transaction State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID`=%d "
 				,$supplier_product['Supplier Product ID']
 			);
 
 			$res=mysql_query($sql);
-			//print "$sql\n\n";
+		//print "$sql\n\n";
 			while ($row=mysql_fetch_assoc($res)) {
 				$number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']);
 				//  print_r($supplier_product);
 				// print_r($part_list);
 				// print $number;
 				// print_r($row);
-				if ($row['Purchase Order Current Dispatching State']=='Cancelled' ) {
+				if ($row['Purchase Order Transaction State']=='Cancelled' ) {
 					if ($number<1)
 						continue;
 
@@ -3967,7 +3963,7 @@ function get_supplier_products_new($date=false) {
 
 					}
 				}
-				elseif ($row['Purchase Order Current Dispatching State']=='Submitted' ) {
+				elseif ($row['Purchase Order Transaction State']=='Submitted' ) {
 
 
 					if ($number<1)
@@ -3992,7 +3988,7 @@ function get_supplier_products_new($date=false) {
 
 
 				}
-				elseif ($row['Purchase Order Current Dispatch State']=='Matched With DN'  and   $row['Supplier Delivery Note State']!='Placed'  ) {
+				elseif ($row['Purchase Order State']=='Matched With DN'  and   $row['Supplier Delivery Note State']!='Placed'  ) {
 
 					if ($row['Supplier Delivery Note State']=='Inputted' ) {
 						$qty=$row['Supplier Delivery Note Quantity'];

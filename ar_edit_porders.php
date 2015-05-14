@@ -67,10 +67,12 @@ case('edit_porder_quick'):
 			'okey'=>array('type'=>'string')
 		));
 
-	edit_porder_field($data['po_key'],$data['key'],$data['newvalue'],$data['okey']);
+	$response=edit_porder_field($data['po_key'],$data['key'],$data['newvalue'],$data['okey']);
+	echo json_encode($response);
 	break;
 case('edit_terms_and_conditions'):
 case('edit_incoterm'):
+
 	$data=prepare_values($_REQUEST,array(
 			'po_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array'),
@@ -104,8 +106,6 @@ case('cancel'):
 	cancel_purchase_order($data);
 	break;
 case('submit'):
-
-
 	require_once 'class.Staff.php';
 	$data=prepare_values($_REQUEST,array(
 			'submit_method'=>array('type'=>'string'),
@@ -116,6 +116,25 @@ case('submit'):
 
 		));
 	submit_purchase_order($data);
+	break;
+case('mark_as_confirmed'):
+	require_once 'class.Staff.php';
+	$data=prepare_values($_REQUEST,array(
+			'agreed_date'=>array('type'=>'string'),
+			'id'=>array('type'=>'key')
+
+
+		));
+	mark_as_confirmed($data);
+	break;
+case('back_to_process'):
+	$data=prepare_values($_REQUEST,array(
+
+			'id'=>array('type'=>'key')
+
+
+		));
+	back_to_process($data);
 	break;
 case('receive_dn'):
 	require_once 'class.Staff.php';
@@ -237,37 +256,103 @@ function delete_supplier_delivery_note() {
 }
 
 
+function back_to_process($data) {
+    global $editor;
+
+	$po=new PurchaseOrder($data['id']);
+	$po->editor=$editor;
+
+	$po->back_to_process();
+
+	if (!$po->error) {
+		$response= array('state'=>200);
+
+	} else {
+		$response= array('state'=>400,'msg'=>$po->msg);
+
+	}
+	echo json_encode($response);
+
+}
+
+function mark_as_confirmed($data) {
+	global $user,$editor;
+
+
+	$date_data=prepare_mysql_datetime($data['agreed_date'],'date');
+	if (!$date_data['ok']) {
+		$response= array('state'=>400,'msg'=>$date_data['status']);
+		echo json_encode($response);
+
+		return;
+	}
+
+	$po=new PurchaseOrder($data['id']);
+	$po->editor=$editor;
+
+
+	$data=array(
+		'Purchase Order Confirmed Date'=>gmdate('Y-m-d H:i:s'),
+		'Purchase Order Agreed Receiving Date'=> gmdate("Y-m-d", strtotime($data['agreed_date']) ).gmdate(' H:i:s')
+	);
+
+
+	$po->mark_as_confirmed($data);
+	if (!$po->error) {
+		$response= array('state'=>200,
+			'po_state'=>$po->get('State'),
+			'confirmed_date'=>$po->get('Confirmed Date'),
+			'agreed_date'=>$po->get('Agreed Receiving Date'),
+			'estimated_delivery'=>$po->get_formated_estimated_delivery_date(),
+			'v_calpop_estimated_delivery'=>$po->get_estimated_delivery_date()
+
+		);
+
+	} else {
+		$response= array('state'=>400,'msg'=>$po->msg);
+
+	}
+	echo json_encode($response);
+}
+
 function submit_purchase_order($data) {
-	global $user;
+	global $user,$editor;
 
-
-	$purchase_order_key=$data['id'];
-
-	$po=new PurchaseOrder($purchase_order_key);
-
-
+	$po=new PurchaseOrder($data['id']);
+	$po->editor=$editor;
 	$date=gmdate('Y-m-d H:i:s');
 
-
 	$staff= new Staff($data['staff_key']);
-
 
 	$data=array(
 		'Purchase Order Submitted Date'=>$date,
 		'Purchase Order Main Buyer Key'=>$staff->id,
 		'Purchase Order Main Buyer Name'=>$staff->data['Staff Alias'],
-		'Purchase Order Main Source Type'=>$data['submit_method'],
-		'Purchase Order Estimated Receiving Date'=>''
+		'Purchase Order Main Source Type'=>$data['submit_method']
 	);
 
+	if ($po->data['Purchase Order Estimated Receiving Date']) {
+		$data['Purchase Order Estimated Receiving Date']=$po->data['Purchase Order Estimated Receiving Date'];
+	}else {
+
+		$supplier=new Supplier($po->data['Purchase Order Supplier Key']);
+		if ($supplier->data['Supplier Delivery Days'] and is_numeric($supplier->data['Supplier Delivery Days'])) {
+			$data['Purchase Order Estimated Receiving Date']=gmdate("Y-m-d H:i:s",strtotime('now +'.$supplier->data['Supplier Delivery Days'].' days'));
+		}
 
 
-
-
+	}
 
 	$po->submit($data);
 	if (!$po->error) {
-		$response= array('state'=>200);
+		$response= array(
+			'state'=>200
+
+
+		);
+
+
+
 
 	} else {
 		$response= array('state'=>400,'msg'=>$po->msg);
@@ -279,7 +364,7 @@ function submit_purchase_order($data) {
 
 
 function edit_porder($data) {
-	
+
 	$po=new PurchaseOrder($data['po_key']);
 	if (!$po->id) {
 		$response= array('state'=>400,'msg'=>'PO not found');
@@ -367,10 +452,15 @@ function edit_porder_field($po_key,$key,$value_data,$okey='') {
 
 	if (!$po->error) {
 
-		if ($po->updated)
-			$response= array('state'=>200,'newvalue'=>$po->new_value,'key'=>$okey,'action'=>'updated');
-		else
-			$response= array('state'=>200,'newvalue'=>$po->get($key),'key'=>$okey,'action'=>'no_change');
+
+
+
+		$response= array('state'=>200,'newvalue'=>$po->new_value,'key'=>$okey,'action'=>'updated');
+		if ($okey=='estimated_delivery') {
+			$response['estimated_delivery']=$po->get_estimated_delivery_date();
+		}
+
+
 
 	} else {
 		$response= array('state'=>400,'msg'=>$po->msg,'key'=>$okey);

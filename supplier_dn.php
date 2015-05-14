@@ -74,7 +74,7 @@ else if (isset($_REQUEST['new']) ) {
 						continue;
 				}
 
-				if ($po->data['Purchase Order Current Dispatch State']=='Submitted' or $po->data['Purchase Order Current Dispatch State']=='In Process' ) {
+				if ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Order State']=='In Process' ) {
 					$po_objects[$po->id]=$po;
 					$po_array[$po->id]=$po->id;
 				}

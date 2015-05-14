@@ -533,7 +533,6 @@ function init_notes() {
 
 
 
-
     dialog_note = new YAHOO.widget.Dialog("dialog_note", {
 
         visible: false,

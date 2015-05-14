@@ -30,7 +30,7 @@ class PurchaseOrder extends DB_Table{
 	function create_order($data) {
 
 		//print_r($data);
-
+		$this->editor=$data['editor'];
 
 		$data['Purchase Order Creation Date']=gmdate('Y-m-d H:i:s');
 		$data['Purchase Order Last Updated Date']=gmdate('Y-m-d H:i:s');
@@ -71,6 +71,13 @@ class PurchaseOrder extends DB_Table{
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id);
+			$history_data=array(
+				'History Abstract'=>_('Purchase order created'),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+			$this->add_subject_history($history_data);
+
 			$supplier->update_orders();
 		}else
 			exit(" error can no create purchse order ".mysql_error());
@@ -85,7 +92,7 @@ class PurchaseOrder extends DB_Table{
 			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->id=$this->data['Purchase Order Key'];
 			}
-		}elseif ($key=='public id' or $key=='public_id') {
+		}elseif ($key=='public id' ) {
 			$sql=sprintf("select * from `Purchase Order Dimension` where `Purchase Order Public ID`=%s",prepare_mysql($id));
 			$result=mysql_query($sql);
 			print "$sql\n";
@@ -104,56 +111,66 @@ class PurchaseOrder extends DB_Table{
 
 
 		switch ($key) {
+		case ('Main Source Type'):
+			switch ($this->data['Purchase Order Main Source Type']) {
+			case 'Post':
+				return _('post');
+				break;
 
-		case 'Estimated Receiving Date For Edition':
-			if ($this->data['Purchase Order Estimated Receiving Date']!='')
-				return strftime("%d-%m-%Y",strtotime($this->data['Purchase Order Estimated Receiving Date']));
-			else
-				return '';
+			case 'Internet':
+				return _('online');
+				break;
+			case 'Telephone':
+				return _('telephone');
+				break;
+			case 'Fax':
+				return _('Fax');
+				break;
+			case 'In Person':
+				return _('in Person');
+				break;
+			case 'Other':
+				return _('other');
+				break;
 
+
+			default:
+				return $this->data['Purchase Order Main Source Type'];
+				break;
+			}
 			break;
 
-		case ('Purchase Order Current Dispatch State'):
+		case ('State'):
 
 
 
-			switch ($key) {
+			switch ($this->data['Purchase Order State']) {
 			case 'In Process':
 				return _('In Process');
 				break;
-			case 'Partially Matched With DN':
-				return _('Partially Matched With DN');
-				break;
-			case 'Matched With DN':
-				return _('Matched With DN');
-				break;
+
 			case 'Submitted':
 				return _('Submitted');
 				break;
-			case 'Received':
-				return _('Received');
+			case 'Confirmed':
+				return _('Confirmed');
 				break;
 			case 'Checking':
 				return _('Checking');
 				break;
-			case 'Placing in the Warehouse':
-				return _('Placing in the Warehouse');
+			case 'In Warehouse':
+				return _('In Warehouse');
 				break;
 			case 'Done':
-				return _('Done');
+				return _('Consolidated');
 				break;
 			case 'Cancelled':
 				return _('Cancelled');
 				break;
-			case 'Unknown':
-				return _('Unknown');
-				break;
-
-
 
 
 			default:
-				return $this->data['Purchase Order Current Dispatch State'];
+				return $this->data['Purchase Order State'];
 				break;
 			}
 
@@ -202,10 +219,10 @@ class PurchaseOrder extends DB_Table{
 
 		if (preg_match('/Date$/',$key)) {
 			$date='Purchase Order '.$key;
-			if ($key=='Estimated Receiving Date')
-				return strftime("%e-%b-%Y",strtotime($this->data[$date]));
+			if ($key=='Estimated Receiving Date' or $key=='Agreed Receiving Date')
+				return strftime("%e-%b-%Y",strtotime($this->data[$date].' +0:00'));
 			else
-				return strftime("%e-%b-%Y %H:%M",strtotime($this->data[$date]));
+				return strftime("%e-%b-%Y %H:%M",strtotime($this->data[$date].' +0:00'));
 		}
 
 
@@ -228,7 +245,7 @@ class PurchaseOrder extends DB_Table{
 		$tax_amount=$tax_category->calculate_tax($data ['amount']);
 
 
-		if ($this->data['Purchase Order Current Dispatch State']=='In Process') {
+		if ($this->data['Purchase Order State']=='In Process') {
 
 			if ($data ['qty']==0) {
 				$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product ID`=%d ",$this->id,$data ['Supplier Product ID']);
@@ -258,7 +275,7 @@ class PurchaseOrder extends DB_Table{
 					}
 
 				}else {
-					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Product Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product ID`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`) values (%d,%s,%s,%s,%d,%s,%d,%d, %.6f,%s,%.2f,%.2f,%s)",
+					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Product Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Product ID`,`Purchase Order Transaction State`,`Supplier Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`) values (%d,%s,%s,%s,%d,%s,%d,%d, %.6f,%s,%.2f,%.2f,%s)",
 						$data ['Supplier Product Key'],
 						prepare_mysql ( $data['tax_code'] ),
 						prepare_mysql ( $this->data ['Purchase Order Currency Code'] ),
@@ -411,7 +428,7 @@ class PurchaseOrder extends DB_Table{
 
 	function delete() {
 
-		if ($this->data['Purchase Order Current Dispatch State']=='In Process') {
+		if ($this->data['Purchase Order State']=='In Process') {
 			$sql=sprintf("delete from `Purchase Order Dimension` where `Purchase Order Key`=%d",$this->id);
 			mysql_query($sql);
 			$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
@@ -422,6 +439,39 @@ class PurchaseOrder extends DB_Table{
 		}
 	}
 
+	function mark_as_confirmed($data) {
+
+		foreach ($data as $key=>$value) {
+			if (array_key_exists($key,$this->data)) {
+				$this->data[$key]=$value;
+			}
+
+		}
+
+		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Confirmed Date`=%s,`Purchase Order Agreed Receiving Date`=%s ,`Purchase Order Estimated Receiving Date`=%s,`Purchase Order State`='Confirmed' where `Purchase Order Key`=%d",
+			prepare_mysql($data['Purchase Order Confirmed Date']),
+			prepare_mysql($data['Purchase Order Agreed Receiving Date']),
+			prepare_mysql($data['Purchase Order Agreed Receiving Date']),
+			$this->id);
+
+
+		mysql_query($sql);
+
+		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s ,`Purchase Order Transaction State`='Confirmed'  where `Purchase Order Key`=%d",
+			prepare_mysql($data['Purchase Order Confirmed Date']),
+			$this->id);
+		mysql_query($sql);
+
+		$this->get_data('id',$this->id);
+		$this->update_affected_products();
+		
+			$history_data=array(
+				'History Abstract'=>_('Purchase order marked as confirmed'),
+				'History Details'=>''
+			);
+			$this->add_subject_history($history_data);
+
+	}
 
 	function submit($data) {
 
@@ -432,7 +482,7 @@ class PurchaseOrder extends DB_Table{
 
 		}
 
-		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Estimated Receiving Date`=%s,`Purchase Order Main Source Type`=%s,`Purchase Order Main Buyer Key`=%s,`Purchase Order Main Buyer Name`=%s,`Purchase Order Current Dispatch State`='Submitted'   where `Purchase Order Key`=%d"
+		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Estimated Receiving Date`=%s,`Purchase Order Main Source Type`=%s,`Purchase Order Main Buyer Key`=%s,`Purchase Order Main Buyer Name`=%s,`Purchase Order State`='Submitted'   where `Purchase Order Key`=%d"
 			,prepare_mysql($data['Purchase Order Submitted Date'])
 			,prepare_mysql($data['Purchase Order Estimated Receiving Date'])
 			,prepare_mysql($data['Purchase Order Main Source Type'])
@@ -443,13 +493,49 @@ class PurchaseOrder extends DB_Table{
 
 		mysql_query($sql);
 
-		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s ,`Purchase Order Current Dispatching State`='Submitted'  where `Purchase Order Key`=%d",prepare_mysql($data['Purchase Order Submitted Date']),$this->id);
+		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s ,`Purchase Order Transaction State`='Submitted'  where `Purchase Order Key`=%d",
+			prepare_mysql($data['Purchase Order Submitted Date']),
+			$this->id);
 		mysql_query($sql);
 
 
 		$this->update_affected_products();
+		
+		$history_data=array(
+				'History Abstract'=>_('Purchase order submitted'),
+				'History Details'=>''
+			);
+			$this->add_subject_history($history_data);
 
 	}
+
+	function back_to_process() {
+
+
+
+
+		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=NULL,`Purchase Order Confirmed Date`=NULL,`Purchase Order Main Source Type`=NULL ,`Purchase Order State`='In Process'   where `Purchase Order Key`=%d",
+
+			$this->id);
+
+
+		mysql_query($sql);
+
+		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=NOW() ,`Purchase Order Transaction State`='In Process'  where `Purchase Order Key`=%d",
+			$this->id);
+		mysql_query($sql);
+
+
+		$this->update_affected_products();
+		
+			$history_data=array(
+				'History Abstract'=>_('Purchase order send back to process'),
+				'History Details'=>''
+			);
+			$this->add_subject_history($history_data);
+
+	}
+
 
 	function update_affected_products() {
 		$sql=sprintf("select `Supplier Product ID`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
@@ -478,20 +564,20 @@ class PurchaseOrder extends DB_Table{
 		$in_delivery_note=0;
 		$items=0;
 		$deliver_note_keys=array();
-		$sql=sprintf("select `Supplier Delivery Note Key`,`Supplier Invoice Key`,`Purchase Order Current Dispatching State` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d   ",$this->id);
+		$sql=sprintf("select `Supplier Delivery Note Key`,`Supplier Invoice Key`,`Purchase Order Transaction State` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d   ",$this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-			if ($row['Supplier Delivery Note Key']!=0  and $row['Purchase Order Current Dispatching State']=='Found in Delivery Note') {
+			if ($row['Supplier Delivery Note Key']!=0  and $row['Purchase Order Transaction State']=='In Warehouse') {
 				$deliver_note_keys[$row['Supplier Delivery Note Key']]=1;
 			}
 			$items++;
-			if ($row['Purchase Order Current Dispatching State']=='Cancelled')
+			if ($row['Purchase Order Transaction State']=='Cancelled')
 				$cancelled++;
-			if ($row['Purchase Order Current Dispatching State']=='Submitted')
+			if ($row['Purchase Order Transaction State']=='Submitted')
 				$submitted++;
-			if ($row['Purchase Order Current Dispatching State']=='In Process')
+			if ($row['Purchase Order Transaction State']=='In Process')
 				$in_process++;
-			if ($row['Purchase Order Current Dispatching State']=='Found in Delivery Note')
+			if ($row['Purchase Order Transaction State']=='In Warehouse')
 				$in_delivery_note++;
 
 		}
@@ -560,7 +646,7 @@ class PurchaseOrder extends DB_Table{
 		//   print $status;
 		$this->update(
 			array(
-				'Purchase Order Current Dispatch State'=>$status,
+				'Purchase Order State'=>$status,
 				'Purchase Order Current XHTML Payment State'=>$xhtml_state
 			)
 
@@ -578,13 +664,13 @@ class PurchaseOrder extends DB_Table{
 
 		}
 
-		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Cancelled Date`=%s,`Purchase Order Cancel Note`=%s, `Purchase Order Current Dispatch State`='Cancelled'   where `Purchase Order Key`=%d"
+		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Cancelled Date`=%s,`Purchase Order Cancel Note`=%s, `Purchase Order State`='Cancelled'   where `Purchase Order Key`=%d"
 			,prepare_mysql($this->data['Purchase Order Cancelled Date'])
 			,prepare_mysql($this->data['Purchase Order Cancel Note'],false)
 			,$this->id);
 		mysql_query($sql);
 		//print $sql;
-		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Current Dispatching State`='Cancelled'  where `Purchase Order Key`=%d"
+		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Transaction State`='Cancelled'  where `Purchase Order Key`=%d"
 			,prepare_mysql($data['Purchase Order Cancelled Date'])
 			,$this->id
 		);
@@ -600,15 +686,15 @@ class PurchaseOrder extends DB_Table{
 	function update_estimated_receiving_date($date) {
 
 		$date_data=prepare_mysql_datetime($date,'date');
-
 		if ($date_data['ok']) {
 			$this->update_field('Purchase Order Estimated Receiving Date',$date_data['mysql_date']);
 			if ($this->updated) {
-				$this->new_value=strftime("%e-%b-%Y",strtotime($this->new_value));
+
 				$this->update_affected_products();
 			}
+			$this->new_value=$this->get('Estimated Receiving Date');
 		}else {
-			$error=true;
+			$this->error=true;
 			$this->msg=$date_data['status'];
 
 		}
@@ -643,7 +729,50 @@ class PurchaseOrder extends DB_Table{
 
 	}
 
-   
+	function get_estimated_delivery_date() {
+		if ($this->data['Purchase Order Estimated Receiving Date']) {
+			return strftime("%d-%m-%Y",strtotime($this->data['Purchase Order Estimated Receiving Date']));
+		}else {
+
+			if ($this->data['Purchase Order State']=='In Process') {
+				$supplier=new Supplier($this->data['Purchase Order Supplier Key']);
+				if ($supplier->data['Supplier Delivery Days'] and is_numeric($supplier->data['Supplier Delivery Days'])) {
+					return strftime("%d-%M-%Y",strtotime('now +'.$supplier->data['Supplier Delivery Days'].' days'));
+
+				}else {
+					return '';
+				}
+			}else {
+
+				return '';
+			}
+
+		}
+	}
+
+
+
+	function get_formated_estimated_delivery_date() {
+
+		if ($this->data['Purchase Order Estimated Receiving Date']) {
+			return $this->get('Estimated Receiving Date');
+		}else {
+
+			if ($this->data['Purchase Order State']=='In Process') {
+				$supplier=new Supplier($this->data['Purchase Order Supplier Key']);
+				if ($supplier->data['Supplier Delivery Days'] and is_numeric($supplier->data['Supplier Delivery Days'])) {
+					return '<span class="from_suplier_delivery_days">'.strftime("%d-%m-%Y",strtotime('now +'.$supplier->data['Supplier Delivery Days'].' days')).'</span>';
+
+				}else {
+					return _('Unknown');
+				}
+			}else {
+
+				return _('Unknownx');
+			}
+
+		}
+	}
 
 }
 ?>

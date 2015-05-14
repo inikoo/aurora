@@ -249,8 +249,9 @@ class supplier extends DB_Table {
 			}
 			break;
 		case 'Average Delivery Days':
+		case 'Delivery Days':
 			include_once 'common_natural_language.php';
-			return seconds_to_string(24*3600*$this->data['Supplier Average Delivery Days']);
+			return seconds_to_string(24*3600*$this->data['Supplier Delivery Days']);
 			break;
 		case 'Products Origin Country Code':
 			if ($this->data['Supplier Products Origin Country Code']) {
@@ -1652,7 +1653,7 @@ class supplier extends DB_Table {
 		return;
 
 		if (!is_array($po_keys)) {
-			$sql=sprintf("select `Purchase Order Key` from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order Current Dispatch State` in ('In Process','Submitted')  ",$this->id);
+			$sql=sprintf("select `Purchase Order Key` from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order State` in ('In Process','Submitted')  ",$this->id);
 			$res=mysql_query($sql);
 			$po_keys=array();
 			while ($row=mysql_fetch_array($res)) {
@@ -1737,7 +1738,7 @@ class supplier extends DB_Table {
 			$number_purchase_orders=$row['num'];
 		}
 
-		$sql=sprintf("select count(*) as num from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order Current Dispatch State` not in ('Done','Cancelled')",$this->id);
+		$sql=sprintf("select count(*) as num from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order State` not in ('Done','Cancelled')",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$number_open_purchase_orders=$row['num'];

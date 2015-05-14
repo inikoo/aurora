@@ -189,6 +189,10 @@ function close_dialog_bis(tipo) {
 
 
 function delete_order() {
+
+    Dom.setStyle('waiting_delete_order', 'display', '')
+    Dom.setStyle('delete_order', 'display', 'none')
+
     var request = 'ar_edit_porders.php?tipo=delete_po&id=' + Dom.get('po_key').value;
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -199,6 +203,8 @@ function delete_order() {
             if (r.state == 200) {
                 location.href = 'supplier.php?id=' + r.supplier_key;
             } else {
+                Dom.setStyle('waiting_delete_order', 'display', 'none')
+                Dom.setStyle('delete_order', 'display', '')
                 Dom.get('delete_dialog_msg').innerHTML = r.msg;
             }
         }
@@ -253,34 +259,33 @@ var select_staff = function(o, e) {
     }
 
 
-var submit_order_save = function(o) {
+function submit_order_save(o) {
 
-        var submit_date = Dom.get('v_calpop1').value;
-        //	var submit_time=Dom.get('v_time').value;
-        var estimated_date = ''
-        //	var date_type=Dom.get('date_type').value;
-        var submit_method = Dom.get('submit_method').value;
-        var staff_key = Dom.get('submitted_by').value;
+    var submit_date = Dom.get('v_calpop1').value;
+    //	var submit_time=Dom.get('v_time').value;
+    var estimated_date = ''
+    //	var date_type=Dom.get('date_type').value;
+    var submit_method = Dom.get('submit_method').value;
+    var staff_key = Dom.get('submitted_by').value;
 
 
-        Dom.setStyle('submit_order_wait', 'display', '')
-        Dom.setStyle('submit_order_button', 'display', 'none')
+    Dom.setStyle('submit_order_wait', 'display', '')
+    Dom.setStyle('submit_order_button', 'display', 'none')
 
-        var request = 'ar_edit_porders.php?tipo=submit&submit_method=' + escape(submit_method) + '&staff_key=' + escape(staff_key) + '&submit_date=' + escape(submit_date) + '&id=' + escape(Dom.get('po_key').value);
+    var request = 'ar_edit_porders.php?tipo=submit&submit_method=' + escape(submit_method) + '&staff_key=' + escape(staff_key) + '&submit_date=' + escape(submit_date) + '&id=' + escape(Dom.get('po_key').value);
 
-        YAHOO.util.Connect.asyncRequest('POST', request, {
+    YAHOO.util.Connect.asyncRequest('POST', request, {
 
-            success: function(o) {
-                //  alert(o.responseText)
-                var r = YAHOO.lang.JSON.parse(o.responseText);
-                if (r.state == 200) {
+        success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
 
-                    location.href = 'porder.php?id=' + Dom.get('po_key').value;
+                location.href = 'porder.php?id=' + Dom.get('po_key').value;
 
-                } else alert(r.msg);
-            }
-        });
-    }
+            } else alert(r.msg);
+        }
+    });
+}
 
 
 
@@ -312,13 +317,13 @@ var swap_show_all_products = function(o) {
 YAHOO.util.Event.addListener(window, "load", function() {
 
 
+    session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
+    labels = session_data.label;
+    state = session_data.state;
 
 
     tables = new function() {
 
-        session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
-        labels = session_data.label;
-        state = session_data.state;
 
 
         var tableid = 0;
@@ -926,21 +931,7 @@ function hide_order_details() {
 }
 
 
-function change_block() {
 
-    Dom.setStyle('order_details_panel', 'display', '')
-
-    ids = ['tandc', 'attachments', 'notes']
-    block_ids = ['block_tandc', 'block_attachments', 'block_notes'];
-
-    Dom.setStyle(block_ids, 'display', 'none');
-    Dom.setStyle('block_' + this.id, 'display', '');
-    Dom.removeClass(ids, 'selected');
-    Dom.addClass(this, 'selected');
-
-
-
-}
 
 
 function show_sticky_note_for_supplier(o) {
@@ -1058,80 +1049,8 @@ function save_sticky_note_for_supplier() {
     });
 }
 
-function get_history_numbers() {
 
-
-
-    var ar_file = 'ar_porders.php';
-    var request = 'tipo=get_history_numbers&subject=porder&subject_key=' + Dom.get('po_key').value;
-
-    //   alert(ar_file+'?'+request)
-    Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
-    Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
-    Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
-
-
-    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
-        success: function(o) {
-
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-            if (r.state == 200) {
-
-                for (i in r.elements_numbers) {
-                    if (Dom.get('elements_history_' + i + '_number') != undefined) Dom.get('elements_history_' + i + '_number').innerHTML = r.elements_numbers[i]
-                }
-            }
-        },
-        failure: function(o) {},
-        scope: this
-    }, request
-
-    );
-
-}
-
-function show_dialog_attach_bis() {
-    region1 = Dom.getRegion('attach_bis');
-    region2 = Dom.getRegion('dialog_attach');
-    var pos = [region1.right - region2.width, region1.bottom]
-    Dom.setXY('dialog_attach', pos);
-    dialog_attach.show()
-
-
-}
-
-function post_add_attachment_actions(result) {
-
-
-    var ar_file = 'ar_porders.php';
-    var request = 'tipo=get_attachments_showcase&subject=porder&subject_key=' + Dom.get('po_key').value;
-
-
-
-    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
-        success: function(o) {
-
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-            if (r.state == 200) {
-                Dom.get('attachments_showcase').innerHTML = r.attachments_showcase
-                Dom.get('attachments_label').innerHTML = r.attachments_label
-                $('.imgpop').fancyzoom({
-                    Speed: 250
-                });
-            }
-        },
-        failure: function(o) {},
-        scope: this
-    }, request
-
-    );
-
-
-}
-
-function init() {
+function init_in_process() {
 
 
     session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
@@ -1200,8 +1119,8 @@ function init() {
 
     YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
 
-    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
-    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+
     Event.addListener("ordered_products", "click", show_only_ordered_products);
     Event.addListener("all_products", "click", show_all_products);
 
@@ -1218,8 +1137,6 @@ function init() {
     dialog_sticky_note_for_supplier.render();
 
 
-    Event.addListener(['tandc', 'attachments', 'notes'], "click", change_block);
-    Event.addListener("attach_bis", "click", show_dialog_attach_bis);
 
 }
 
@@ -1520,17 +1437,16 @@ function init_edit_po() {
     Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
     Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
 
-    var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
-    oACDS6.queryMatchContains = true;
-    oACDS6.table_id = 6;
-    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
-    oAutoComp6.minQueryLength = 0;
+
+    Event.addListener('edit_incoterm', "click", show_edit_incoterm_dialog);
+
+
 
 }
 
 YAHOO.util.Event.onDOMReady(init_edit_po);
 
-YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onDOMReady(init_in_process);
 YAHOO.util.Event.onContentReady("filtermenu0", function() {
     var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
         trigger: "filter_name0"

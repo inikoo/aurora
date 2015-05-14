@@ -65,11 +65,14 @@ if (isset($_REQUEST['id'])) {
 		'editor'=>$editor
 	);
 
-	if ($supplier->data['Supplier Show Warehouse TC in PO']=='Yes') {
+    if ($supplier->data['Supplier Show Warehouse TC in PO']=='Yes') {
 
 		if ($data['Purchase Order Terms and Conditions']!='')$data['Purchase Order Terms and Conditions'].='<br><br>';
 		$data['Purchase Order Terms and Conditions'].=$warehouse->data['Warehouse Default PO Terms and Conditions'];
 	}
+
+
+	
 
 
 	$po=new PurchaseOrder('new',$data);
@@ -124,10 +127,10 @@ $js_files=array(
 	'js/fz.js',
 	'js/imgpop.js',
 	'js/table_common.js',
+	'js/edit_common.js',
+	'js/notes.js',
+	'js/porder.js',
 );
-
-
-
 
 
 $po_id = $po->id;
@@ -154,37 +157,18 @@ $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Supplier Product Code'),'label'=>_('Supplier Code')),
 );
 
-
+$smarty->assign('currency',$myconf['currency_symbol']);
+$smarty->assign('decimal_point',$myconf['decimal_point']);
+$smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('parent','suppliers');
-switch ($po->data['Purchase Order Current Dispatch State']) {
-case('In Process'):
 
-
-
-	$smarty->assign('currency',$myconf['currency_symbol']);
-	$smarty->assign('decimal_point',$myconf['decimal_point']);
-	$smarty->assign('thousand_sep',$myconf['thousand_sep']);
-
-
-	if ($po->data['Purchase Order Number Items']==0) {
-		$products_display_type='all_products';
-	}else {
-		$products_display_type='ordered_products';
-	}
-
-	$_SESSION['state']['porder']['products']['display']=$products_display_type;
-	$smarty->assign('products_display_type',$products_display_type);
-
-
-	$smarty->assign('date',date("Y-m-d"));
-	$smarty->assign('time',date("H:i"));
-
-
+$smarty->assign('date',date("Y-m-d"));
+$smarty->assign('time',date("H:i"));
 
 $elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
 $sql=sprintf("select count(*) as num , `Type` from  `Purchase Order History Bridge` where `Purchase Order Key`=%d group by `Type`",$po->id);
@@ -217,6 +201,28 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 
 
+if ($po->data['Purchase Order State']=='In Process') {
+
+
+
+	if ($po->data['Purchase Order Number Items']==0) {
+		$products_display_type='all_products';
+	}else {
+		$products_display_type='ordered_products';
+	}
+
+	$_SESSION['state']['porder']['products']['display']=$products_display_type;
+	$smarty->assign('products_display_type',$products_display_type);
+
+
+
+
+
+
+
+
+
+
 	$submit_method=array(
 		'Internet'=>array('fname'=>_('Internet')),
 		'Telephone'=>array('fname'=>_('Telephone')),
@@ -237,12 +243,9 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 
 	$css_files[]='css/porder_in_process.css';
-	$js_files[]='js/edit_common.js';
-	$js_files[]='js/notes.js';
+	
 	$js_files[]='js/porder_in_process.js';
 
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
 
 
 	$company_area=new CompanyArea('code','WAH');
@@ -277,25 +280,6 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 	$smarty->assign('filter2',$tipo_filter2);
 	$smarty->assign('filter_value2','');
 
-	$session_data=base64_encode(json_encode(array(
-				'label'=>array(
-					'Code'=>_('Code'),
-					'Name'=>_('Name'),
-					'Reference'=>_('Parts'),
-					'Parts_Info'=>_('Parts Info'),
-					'Description'=>_('Supplier Carton Description'),
-					'Qty'=>_('Cartons'),
-					'Net_Cost'=>_('Net Cost'),
-					'Unit'=>_('Unit'),
-					'Transport_type'=>_('Transport type'),
-					'Page'=>_('Page'),
-					'of'=>_('of')
-				),
-				'state'=>array(
-					'porder'=>$_SESSION['state']['porder']
-				)
-			)));
-	$smarty->assign('session_data',$session_data);
 
 
 	$tipo_filter6='code';
@@ -309,38 +293,61 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 	$smarty->assign('filter_value6','');
 	$paginator_menu=array(10,25,50,100,500);
 	$smarty->assign('paginator_menu6',$paginator_menu);
+	$template='porder_in_process.tpl';
+	
+	
+}
+elseif ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Order State']=='Confirmed') {
 
 
-	$smarty->display('porder_in_process.tpl');
-
-
-
-	break;
-case('Submitted'):
 	$_SESSION['state']['porder']['show_all']=false;
 
-	$js_files[]='porder_submitted.js.php';
-	$js_files[]='js/edit_common.js';
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
+	$js_files[]='js/porder_submitted.js';
+	
+
+
 	$_SESSION['state']['porder']['products']['display']='ordered_products';
 	$smarty->assign('products_display_type',$_SESSION['state']['porder']['products']['display']);
 
 
-	$smarty->display('porder_submitted.tpl');
 
+	$template='porder_submitted.tpl';
+}
+elseif ($po->data['Purchase Order State']=='Cancelled') {
 
-	break;
-	break;
-case('Cancelled'):
 	$js_files[]='porder_cancelled.js.php';
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
-	$smarty->display('porder_cancelled.tpl');
 
 
-	break;
+	$template='porder_cancelled.tpl';
+	
 }
 
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Code'=>_('Code'),
+				'Name'=>_('Name'),
+				'Reference'=>_('Parts'),
+				'Parts_Info'=>_('Parts Info'),
+				'Description'=>_('Supplier Carton Description'),
+				'Qty'=>_('Cartons'),
+				'Net_Cost'=>_('Net Cost'),
+				'Unit'=>_('Unit'),
+				'Transport_type'=>_('Transport type'),
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'porder'=>$_SESSION['state']['porder']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
+
+
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
+
+$smarty->display($template);
 
 ?>
