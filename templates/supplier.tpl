@@ -43,7 +43,7 @@
 					<table class="supplier_show_data">
 						{if $supplier->get('Supplier Main Contact Key')} 
 						<tr id="main_contact_name_tr" onmouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
-							<td id="main_contact_name" colspan="2" class="aright">{if $supplier->get('Supplier Main Contact Name')==''}<span class="add_missing_value">{t}add contact name{/t}</span>{/if}{$supplier->get('Supplier Main Contact Name')}</td>
+							<td id="main_contact_name" colspan="2" class="aright">{if $supplier->get('Supplier Main Contact Name')==''}<span class="\">{t}add contact name{/t}</span>{/if}{$supplier->get('Supplier Main Contact Name')}</td>
 							<td><img alt="{t}Name{/t}" title="{t}Name{/t}" src="art/icons/user_suit.png" /></td>
 							<td><img onmouseover="Dom.addClass('main_contact_name_tr','edit_over')" onmouseout="Dom.removeClass('main_contact_name_tr','edit_over')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
@@ -146,7 +146,29 @@
 							<td>{$supplier->get('Valid From')}</td>
 						</tr>
 						
+					        
+						
 					
+						
+						<tr style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}">
+						<td>{t}Products Origin{/t}</td>
+						<td>{$supplier->get('Supplier Products Origin')}</td>
+						</tr>
+						<tr >
+						<td>{t}Delivery time{/t}</td>
+						<td>{$supplier->get('Average Delivery Days')}</td>
+						</tr>
+					</table>
+					
+					<div id="categories" style="margin-top:10px">
+					<h2 style="font-size:100%;padding:0;font-weight:800">
+						{t}Categories{/t} 
+					</h2>
+					<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+					
+					
+						
+					        
 						
 						{foreach from=$categories_data item=item key=key} 
 						<tr>
@@ -155,15 +177,9 @@
 						</tr>
 						{/foreach} 
 						
-						<tr style="{if $supplier->get('Supplier Products Origin Country Code')==''}display:none{/if}">
-						<td>{t}Products Origin{/t}</td>
-						<td>{$supplier->get('Supplier Products Origin')}</td>
-						</tr>
-						<tr style="{if $supplier->get('Supplier Average Delivery Days')==0}display:none{/if}">
-						<td>{t}Delivery time{/t}</td>
-						<td>{$supplier->get('Average Delivery Days')}</td>
-						</tr>
+						
 					</table>
+					</div>
 				</div>
 			
 			</div>
@@ -198,10 +214,37 @@
 							<td>{$supplier->get('Supplier Main Location')}</td>
 						</tr>
 						<tr>
-							<td>{t}Email{/t}:</td>
-							<td>{$supplier->get('Supplier Main XHTML Email')}</td>
+							<td>{t}Product origin{/t}:</td>
+							<td>{$supplier->get('Products Origin')}</td>
 						</tr>
 					</table>
+					
+					<table class="show_info_product">
+						<tr>
+							<td>{t}Currency{/t}:</td>
+							<td>{$supplier->get('Supplier Default Currency')}</td>
+						</tr>
+						
+						<tr>
+							<td>{t}Estimated delivery time{/t}:</td>
+							<td>{$supplier->get('Delivery Days')}</td>
+						</tr>
+						<tr>
+							<td>{t}Incoterm{/t}:</td>
+							<td>{$supplier->get('Supplier Default Incoterm')}</td>
+						</tr>
+						<tr>
+							<td>{t}Port of export{/t}:</td>
+							<td>{$supplier->get('Supplier Default Port of Export')}</td>
+						</tr>
+                        <tr>
+							<td>{t}Port of import{/t}:</td>
+							<td>{$supplier->get('Supplier Default Port of Import')}</td>
+						</tr>
+						
+					</table>
+					
+					
 				</div>
 				<div style="width:300px;margin-left:10px;float:left">
 					<table class="show_info_product">

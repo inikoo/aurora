@@ -330,7 +330,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 
 	//print "** $tipo \n";exit;
 	if ($datetime=='')
-		return array('mysql_date'=>'','status'=>'empty','ok'=>false);
+		return array('mysql_date'=>'','status'=>_('Empty field'),'ok'=>false);
 	$time='';
 
 	if (preg_match('/datetime/',$tipo)) {
@@ -370,7 +370,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 		}
 
 		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
-			return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
+			return array('mysql_date'=>'','status'=>_('Invalid date'),'ok'=>false);
 		$date=$datetime;
 		$ts=date('U',strtotime($date));
 	}

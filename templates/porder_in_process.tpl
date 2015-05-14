@@ -14,7 +14,7 @@
 	<div id="cal1Container" style="position:absolute;left:610px;top:120px;display:none;z-index:3">
 	</div>
 	<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$po->get('Purchase Order Public ID')} ({$po->get('Purchase Order Current Dispatch State')})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$po->get('Purchase Order Public ID')} ({$po->get('State')})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
@@ -58,12 +58,20 @@
 				<td id="total_corporate_currency" class="total_corporate_currency aright ">{$po->get('Total Amount Corporate Currency')}</td>
 			</tr>
 		</table>
-		<div style="border:0px solid red;width:290px;float:right">
+		<div style="border:0px solid red;width:360px;float:right">
 			<table border="0" class="order_header" style="margin-right:30px;float:right">
 				<tr>
 					<td class="aright" style="padding-right:40px">{t}Created{/t}:</td>
 					<td>{$po->get('Creation Date')}</td>
 				</tr>
+				<tr>
+					<td class="aright" style="padding-right:40px"> 
+					<div id="estimated_delivery_Container" style="position:absolute;display:none; z-index:2">
+					</div>
+					<img style="cursor:pointer" id="edit_estimated_delivery" src="art/icons/edit.gif" alt="({t}edit{/t})"> {t}Estimated Delivery{/t}:</td>
+					<td class="aright" id="estimated_delivery">{$po->get_formated_estimated_delivery_date()}</td>
+				</tr>
+				
 			</table>
 		</div>
 		<table border="0">
@@ -76,7 +84,7 @@
 				<tr id="incoterm_tr">
 					<td>{t}Incoterm{/t}:</td>
 					<td id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
-					<td class="aright" style="width:20px"><img id="edit_incoterm" onclick="show_edit_incoterm_dialog()" style="display:none;cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
+					<td class="aright" style="width:20px"><img id="edit_incoterm" style="display:none;cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
 				</tr>
 				<tr id="export_port_tr">
 					<td>{t}Export Port{/t}:</td>
@@ -200,6 +208,7 @@
 		<div style="clear:both">
 		</div>
 	</div>
+	
 	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
 		<div class="elements_chooser">
@@ -232,7 +241,7 @@
 		</ul>
 	</div>
 </div>
-<div id="delete_dialog" class="nicebox">
+<div id="delete_dialog" style="padding:20px">
 	<div class="bd">
 		<div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">
 			{t}Note: this action can not be undone{/t}. 
@@ -241,7 +250,8 @@
 			<tr>
 				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> 
 				<div class="buttons">
-					<button class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button> 
+				    <div id="waiting_delete_order" style="display:none;text-align:right;padding-right:10px"><img src="art/loading.gif"> <span>{t}Processing request{/t}</span></div>
+					<button id="delete_order" class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -412,5 +422,6 @@
 	</table>
 </div>
 {include file='notes_splinter.tpl'}
+{include file='porder_common_splinter.tpl'}
 
 {include file='footer.tpl'} 

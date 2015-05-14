@@ -1,7 +1,4 @@
 
-#order_header{clear:both;margin-top:2px;font-size:95%;border:1px solid #ddd}
-#order_header .content{padding:10px}
-
 table.edit{width:400px}
 .edit td.label{width:150px}
 .edit td.input{width:300px;text-align:left}
@@ -27,17 +24,3 @@ table.edit.terms_and_conditions td.input{width:500px;text-align:left}
 .part_info td.value{text-align:right}
 
 
-.tabs span.item{border-bottom:1px solid #ccc;}
-.tabs span.selected{
-border-bottom:1px solid #fff;
-}
-div.block_details{min-height: 100px;}
-
-
-#attachments_showcase{margin-bottom:10px;width:800px;margin-left:10px}
-.attachment{float:left;margin-right:20px;margin-bottom:30px;}
-.attachment .thumbnail{height:190px;border:1px solid #ccc}
-.empty_thumbnail{height:190px;width:140px;border:1px solid #ccc}
-.attachment .caption{padding:5px 0px}
-.attachment .links{margin-top:5px}
-.attachment .filename {font-size:70%}

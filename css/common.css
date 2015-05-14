@@ -114,7 +114,7 @@ table.show_info_product tr.section{border-top:1px dashed #ddd}
 
 
 .resetfield {position:relative;right:22px;bottom:2px;cursor:pointer}
-.calpop {position:relative;right:18px;}
+.calpop {position:relative;right:22px;top:-1px}
 img.calpop {position:relative;bottom:2px;cursor:pointer  }
 img.calpop_to {position:relative;bottom:2px;cursor:pointer;right:36px;  }
 

@@ -241,14 +241,14 @@ function list_purchase_orders_with_product() {
 	$order='`Purchase Order Last Updated Date`';
 
 
-	$sql="select  POTF.`Purchase Order Net Amount`,`Purchase Order Quantity`,PO.`Purchase Order Last Updated Date`,`Purchase Order Currency Code`,`Purchase Order Current Dispatch State`,PO.`Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Total Amount`,`Purchase Order Number Items` from  $db_table   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select  POTF.`Purchase Order Net Amount`,`Purchase Order Quantity`,PO.`Purchase Order Last Updated Date`,`Purchase Order Currency Code`,`Purchase Order State`,PO.`Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Total Amount`,`Purchase Order Number Items` from  $db_table   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 	//  print $sql;
 	//  print $sql;
 	$result=mysql_query($sql);
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		$status=$row['Purchase Order Current Dispatch State'];
+		$status=$row['Purchase Order State'];
 
 		$data[]=array(
 			'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
@@ -497,14 +497,43 @@ function list_purchase_orders() {
 	$order='`Purchase Order Last Updated Date`';
 
 
-	$sql="select  PO.`Purchase Order Last Updated Date`,`Purchase Order Currency Code`,`Purchase Order Main Buyer Name`,PO.`Purchase Order Current Dispatch State`,PO.`Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Total Amount`,`Purchase Order Number Items` from  $db_table   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select  PO.`Purchase Order Last Updated Date`,`Purchase Order Currency Code`,`Purchase Order Main Buyer Name`,PO.`Purchase Order State`,PO.`Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Total Amount`,`Purchase Order Number Items` from  $db_table   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 	// print $sql;
 	//  print $sql;
 	$result=mysql_query($sql);
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		$status=$row['Purchase Order Current Dispatch State'];
+		$status=$row['Purchase Order State'];
+
+
+	switch ($row['Purchase Order State']) {
+			case 'In Process':
+				$status= _('In Process');
+				break;
+			case 'Submitted':
+				$status= _('Submitted');
+				break;
+			case 'Confirmed':
+				$status= _('Confirmed');
+				break;
+			case 'In Warehouse':
+				$status= _('In Warehouse');
+				break;
+			case 'Done':
+				$status= _('Consolidates');
+				break;
+			
+			case 'Cancelled':
+				$status= _('Cancelled');
+				break;
+		
+			default:
+				$status= $this->data['Purchase Order State'];
+				break;
+			}
+
+
 
 		$data[]=array(
 			/* 'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
@@ -516,7 +545,8 @@ function list_purchase_orders() {
 			'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
 			'customer'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 			'buyer_name'=>$row['Purchase Order Main Buyer Name'],
-			'state'=>number($row['Purchase Order Number Items']),
+			'items'=>number($row['Purchase Order Number Items']),
+			'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 			'status'=>$status
 		);
 	}
