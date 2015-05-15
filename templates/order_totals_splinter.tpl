@@ -53,10 +53,17 @@
 						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_tax" /> <span id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
-					<tr style="border-bottom:1px solid #777">
+					<tr style="{if $corporate_currency==$order->get('Order Currency')}border-bottom:1px solid #777{/if}">
 						<td class="aright">{t}Total{/t}</td>
 						<td id="order_total" width="100" class="aright" style="font-weight:800">{$order->get('Balance Total Amount')}</td>
 					</tr>
+					<tr>
+					<tr style="border-bottom:1px solid #777;{if $corporate_currency==$order->get('Order Currency')}display:none{/if}" class="exchange">
+					<td class="aright">{$corporate_currency}/{$order->get('Order Currency')} {(1/$order->get('Order Currency Exchange'))|string_format:"%.3f"}</td>
+					<td width="100" class="aright">{$order->get('Corporate Currency Balance Total Amount')}</td>
+				</tr>
+					
+					
 					<tr id="tr_order_total_paid" style="border-top:1px solid #777;">
 						<td class="aright"><img id="order_paid_info" style="height:14px;vertical-align:-1.5px" src="art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
 						<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
@@ -137,6 +144,12 @@
 						<td class="aright">{t}Total{/t}</td>
 						<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
 					</tr>
+					<tr>
+					    <tr style="{if $corporate_currency==$order->get('Order Currency')}display:none{/if}" class="exchange">
+					    <td class="aright">{$corporate_currency}/{$order->get('Order Currency')} {(1/$order->get('Order Currency Exchange'))|string_format:"%.3f"}</td>
+					    <td width="100" class="aright">{$order->get('Corporate Currency Invoiced Total Amount')}</td>
+				    </tr>
+					
 					{if $order->get('Order Invoiced Refund Net Amount')!=0} 
 					<tr style="border-top:1px solid #777;">
 						<td class="aright"><i>{t}Refunds (N){/t}</i></td>

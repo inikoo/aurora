@@ -59,7 +59,11 @@ $js_files=array(
 );
 
 
+
+
 $corporation=new Account();
+
+$smarty->assign('corporate_currency',$corporate_currency);
 
 if (isset($_REQUEST['new']) ) {
 	date_default_timezone_set('UTC');

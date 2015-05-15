@@ -1873,6 +1873,22 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		switch ($key) {
+		
+		
+		
+		
+		case('Corporate Currency Invoiced Total Amount'):
+		
+			global $corporate_currency;
+			$_key=preg_replace('/Corporate Currency /','',$key);
+			return money(($this->data['Order Invoiced Net Amount']+$this->data['Order Invoiced Tax Amount']) *$this->data['Order Currency Exchange'],$corporate_currency);
+			break;
+		case('Corporate Currency Balance Total Amount'):
+			global $corporate_currency;
+			$_key=preg_replace('/Corporate Currency /','',$key);
+			return money($this->data['Order '.$_key]*$this->data['Order Currency Exchange'],$corporate_currency);
+			break;
+		
 		case("Sticky Note"):
 			return nl2br($this->data['Order Sticky Note']);
 			break;

@@ -18,3 +18,5 @@
 
 .checkbox {cursor:pointer;margin-left:20px;margin-right:20px;width:14px;position:relative;top:-1px}
 .insurance_row{height:40px;padding:3px 2px 2px 2px;text-align:right;font-size:95%}
+
+tr.exchange td{color:#777;font-style: italic;}
