@@ -224,8 +224,11 @@ function take_values_from_dn() {
 
 function delete_purchase_order($data) {
 
-	$purchase_order_key=$data['id'];
-	$po=new PurchaseOrder($purchase_order_key);
+	global $editor;
+
+	$po=new PurchaseOrder($data['id']);
+	$po->editor=$editor;
+	
 	$supplier_key=$po->data['Purchase Order Supplier Key'];
 	$po->delete();
 	if (!$po->error) {
@@ -327,7 +330,7 @@ function submit_purchase_order($data) {
 	$data=array(
 		'Purchase Order Submitted Date'=>$date,
 		'Purchase Order Main Buyer Key'=>$staff->id,
-		'Purchase Order Main Buyer Name'=>$staff->data['Staff Alias'],
+		'Purchase Order Main Buyer Name'=>$staff->data['Staff Name'],
 		'Purchase Order Main Source Type'=>$data['submit_method']
 	);
 

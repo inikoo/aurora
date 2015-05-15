@@ -23,6 +23,7 @@ if (isset($_REQUEST['id'])) {
 	and $_REQUEST['supplier_id']>0
 ) {
 
+include_once 'class.Staff.php';
 
 	$warehouse=new Warehouse(1);
 
@@ -33,6 +34,9 @@ if (isset($_REQUEST['id'])) {
 		'Author Key'=>$user->data['User Parent Key'],
 		'User Key'=>$user->id
 	);
+	
+
+	$staff=new Staff($user->data['User Parent Key']);
 
 	$data=array(
 		'Purchase Order Supplier Key'=>$supplier->id,
@@ -61,18 +65,23 @@ if (isset($_REQUEST['id'])) {
 		'Purchase Order Warehouse Email'=>$warehouse->data['Warehouse Email'],
 
 		'Purchase Order Terms and Conditions'=>$supplier->data['Supplier Default PO Terms and Conditions'],
-
+		'Purchase Order Main Buyer Key'=>$staff->id,
+		'Purchase Order Main Buyer Name'=>$staff->data['Staff Name'],
 		'editor'=>$editor
 	);
 
-    if ($supplier->data['Supplier Show Warehouse TC in PO']=='Yes') {
+
+
+
+
+	if ($supplier->data['Supplier Show Warehouse TC in PO']=='Yes') {
 
 		if ($data['Purchase Order Terms and Conditions']!='')$data['Purchase Order Terms and Conditions'].='<br><br>';
 		$data['Purchase Order Terms and Conditions'].=$warehouse->data['Warehouse Default PO Terms and Conditions'];
 	}
 
 
-	
+
 
 
 	$po=new PurchaseOrder('new',$data);
@@ -243,7 +252,7 @@ if ($po->data['Purchase Order State']=='In Process') {
 
 
 	$css_files[]='css/porder_in_process.css';
-	
+
 	$js_files[]='js/porder_in_process.js';
 
 
@@ -294,8 +303,8 @@ if ($po->data['Purchase Order State']=='In Process') {
 	$paginator_menu=array(10,25,50,100,500);
 	$smarty->assign('paginator_menu6',$paginator_menu);
 	$template='porder_in_process.tpl';
-	
-	
+
+
 }
 elseif ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Order State']=='Confirmed') {
 
@@ -303,7 +312,7 @@ elseif ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Or
 	$_SESSION['state']['porder']['show_all']=false;
 
 	$js_files[]='js/porder_submitted.js';
-	
+
 
 
 	$_SESSION['state']['porder']['products']['display']='ordered_products';
@@ -319,7 +328,7 @@ elseif ($po->data['Purchase Order State']=='Cancelled') {
 
 
 	$template='porder_cancelled.tpl';
-	
+
 }
 
 

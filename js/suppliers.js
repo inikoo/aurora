@@ -618,7 +618,7 @@ Event.addListener(window, "load", function() {
 
 
 
-        var tableid = 2; // Change if you have more the 1 table
+        var tableid = 2; 
         var tableDivEL = "table" + tableid;
         var OrdersColumnDefs = [{
             key: "public_id",
@@ -629,7 +629,7 @@ Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }, {
+        },{
             key: "date",
             label: labels.Last_Updated,
             width: 145,
@@ -638,34 +638,7 @@ Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
-        }, {
-            key: "buyer_name",
-            label: labels.Buyer_Name,
-            width: 170,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
-            }
-        }, {
-            key: "customer",
-            label: labels.Total,
-            width: 110,
-            sortable: true,
-            className: "aright",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "state",
-            label: labels.Items,
-            width: 70,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
+        },{
             key: "status",
             label: labels.Status,
             width: 70,
@@ -674,7 +647,41 @@ Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
-        }];
+        }, {
+            key: "buyer_name",
+            label: labels.Buyer,
+            width: 170,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },
+         {
+            key: "items",
+            label: labels.Items,
+            width: 70,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        },
+         {
+            key: "total",
+            label: labels.Amount,
+            width: 110,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, 
+        
+        
+         
+        
+        ];
         request = "ar_porders.php?tipo=purchase_orders&sf=0&parent=none&parent_key=&tableid=" + tableid;
 
         this.dataSource2 = new YAHOO.util.DataSource(request);
@@ -694,7 +701,7 @@ Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["public_id", "state", "customer", "date", "last_date", "buyer_name", "status"]
+            fields: ["public_id", "state", "customer", "date", "last_date", "buyer_name", "status","total","items"]
         };
 
         this.table2 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs, this.dataSource2, {

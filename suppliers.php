@@ -259,7 +259,7 @@ $session_data=base64_encode(json_encode(array(
 				'W_Until_OO'=>_('w until OO'),
 				'Purchase_Order_ID'=>_('Purchase Order ID'),
 				'Last_Updated'=>_('Last Updated'),
-				'Buyer_Name'=>_('Buyer Name'),
+				'Buyer'=>_('Buyer'),
 				'Items'=>_('Items'),
 				'Status'=>_('Status'),
 

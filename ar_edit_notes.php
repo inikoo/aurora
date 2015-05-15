@@ -211,8 +211,8 @@ function delete_history($data) {
 	}
 
 	$sql=sprintf("delete from `%s History Bridge` where `History Key`=%d and `Deletable`='Yes'",$db_field,$history_key);
-
 	mysql_query($sql);
+
 	if (mysql_affected_rows()) {
 		$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$history_key);
 		mysql_query($sql);

@@ -198,7 +198,6 @@ function delete_order() {
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
-
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 location.href = 'supplier.php?id=' + r.supplier_key;
@@ -854,11 +853,11 @@ function show_other_staff() {
 }
 
 function select_staff_from_list(oArgs) {
-    var staff_alias = tables.table2.getRecord(oArgs.target).getData('code');
+    var staff_name = tables.table2.getRecord(oArgs.target).getData('name');
     var staff_key = tables.table2.getRecord(oArgs.target).getData('key');
 
     Dom.get('submitted_by').value = staff_key
-    Dom.get('submited_by_alias').innerHTML = staff_alias
+    Dom.get('submited_by_alias').innerHTML = staff_name
     staff_dialog.hide();
     dialog_other_staff.hide();
 
