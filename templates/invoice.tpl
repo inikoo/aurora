@@ -2,6 +2,8 @@
 <div id="bd" style="{*}{if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}background-image:url('art/stamp.paid.en.png');background-repeat:no-repeat;background-position:280px 50px{/if}{*}">
 	<input type="hidden" id="invoice_key" value="{$invoice->id}" />
 	<input type="hidden" id="invoice_type" value="{$invoice->get('Invoice Type')}" />
+		<input type="hidden" id="corporate_currency" value="{$corporate_currency}" />
+
 	
 	
 	<input type="hidden" value="{$invoice->get('Invoice Currency')}" id="currency_code" />
@@ -104,6 +106,12 @@
 					<td class="aright">{t}Total{/t}</td>
 					<td width="100" class="aright"><b>{$invoice->get('Total Amount')}</b></td>
 				</tr>
+				<tr style="{if $corporate_currency==$invoice->get('Invoice Currency')}display:none{/if}" class="exchange">
+					<td class="aright">{$corporate_currency}/{$invoice->get('Invoice Currency')} {(1/$invoice->get('Invoice Currency Exchange'))|string_format:"%.3f"}</td>
+					<td width="100" class="aright">{$invoice->get('Corporate Currency Total Amount')}</td>
+				</tr>
+				
+				
 				<tr id="tr_order_total_to_pay" style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}">
 						<td class="aright"> 
 						<div class="buttons small left">

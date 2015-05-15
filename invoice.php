@@ -50,6 +50,7 @@ $invoice->update_payment_state();
 */
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
+$smarty->assign('corporate_currency',$corporate_currency);
 
 if ($invoice->data['Invoice Type']=='Invoice') {
 	$smarty->assign('invoice_type_label',_('Invoice'));
@@ -92,7 +93,6 @@ $css_files=array(
 	'css/table.css',
 	'css/order.css',
 	'css/edit.css',
-
 	'theme.css.php'
 );
 $js_files=array(

@@ -425,13 +425,13 @@ class Invoice extends DB_Table {
 			$gross=$chargeable_qty*$row['Product History Price'];
 			$discount_fraction=0;
 			$sql2=sprintf("select max(`Fraction Discount`) as fraction from `Order Transaction Deal Bridge` where `Order Transaction Fact Key`=%d",
-			$row['Order Transaction Fact Key']
+				$row['Order Transaction Fact Key']
 			);
 			$res2=mysql_query($sql2);
-			if($row2=mysql_fetch_assoc($res2)){
-			$discount_fraction=$row2['fraction'];
+			if ($row2=mysql_fetch_assoc($res2)) {
+				$discount_fraction=$row2['fraction'];
 			}
-			
+
 			$discount=round($gross*$discount_fraction,2);
 			$net=round($gross-$discount,2);
 			$tax=round($net*$row['Transaction Tax Rate'],2);
@@ -1813,6 +1813,12 @@ class Invoice extends DB_Table {
 
 			return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
 			break;
+
+		case('Corporate Currency Total Amount'):
+			global $corporate_currency;
+			$_key=preg_replace('/Corporate Currency /','',$key);
+			return money($this->data['Invoice '.$_key]*$this->data['Invoice Currency Exchange'],$corporate_currency);
+			break;
 		case('Date'):
 			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Invoice Date'].' +0:00'));
 			break;
@@ -2392,13 +2398,13 @@ class Invoice extends DB_Table {
 
 		if ($category_key) {
 			$category=new Category($category_key);
-            $category->skip_update_sales=$skip_update_sales;
-            
-            
+			$category->skip_update_sales=$skip_update_sales;
+
+
 			if ($category->id) {
 				//print "HOLA";
 				$category->associate_subject($this->id);
-                $this->update_field_switcher('Invoice Category Key',$this->id,'no_history');
+				$this->update_field_switcher('Invoice Category Key',$this->id,'no_history');
 			}
 		}
 
