@@ -388,7 +388,7 @@ function list_purchase_orders() {
 
 		}
 
-		$date_interval=prepare_mysql_dates($_SESSION['state']['porders']['table']['from'],$_SESSION['state']['porders']['table']['to']);
+		$date_interval=prepare_mysql_dates($from,$to);
 	}else {
 
 		if ($parent=='none') {
@@ -529,7 +529,7 @@ function list_purchase_orders() {
 				break;
 		
 			default:
-				$status= $this->data['Purchase Order State'];
+				$status= $row['Purchase Order State'];
 				break;
 			}
 
@@ -543,7 +543,7 @@ function list_purchase_orders() {
 		   'status'=>$status*/
 			'public_id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
 			'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
-			'customer'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
+			'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 			'buyer_name'=>$row['Purchase Order Main Buyer Name'],
 			'items'=>number($row['Purchase Order Number Items']),
 			'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),

@@ -427,13 +427,61 @@ class PurchaseOrder extends DB_Table{
 
 
 	function delete() {
-
+		include_once 'class.Attachment.php';
 		if ($this->data['Purchase Order State']=='In Process') {
 			$sql=sprintf("delete from `Purchase Order Dimension` where `Purchase Order Key`=%d",$this->id);
 			mysql_query($sql);
 			$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
 			mysql_query($sql);
+
+
+			$sql=sprintf("select `History Key`,`Type` from `Purchase Order History Bridge` where `Purchase Order Key`=%d",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+
+				if ($row['Type']=='Attachments') {
+					$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Purchase Order History Attachment' and `Subject Key`=%d",
+						$row['History Key']
+					);
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_assoc($res2)) {
+						$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",$row2['Attachment Bridge Key']);
+						mysql_query($sql);
+						$attachment=new Attachment($row2['Attachment Key']);
+						$attachment->delete();
+					}
+				}
+
+				$sql=sprintf("delete from `Purchase Order History Bridge` where `History Key`=%d ",$row['History Key']);
+				mysql_query($sql);
+
+				$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row['History Key']);
+				mysql_query($sql);
+
+			}
+
+			$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Purchase Order' and `Subject Key`=%d",
+				$this->id
+			);
+			$res2=mysql_query($sql);
+			while ($row2=mysql_fetch_assoc($res2)) {
+				$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",$row2['Attachment Bridge Key']);
+				mysql_query($sql);
+				$attachment=new Attachment($row2['Attachment Key']);
+				$attachment->delete();
+			}
+
+			$supplier=new Supplier($this->data['Purchase Order Supplier Key']);
+			$supplier->editor=$this->editor;
+			$history_data=array(
+				'History Abstract'=>_('Purchase order in process deleted'),
+				'History Details'=>''
+			);
+			$supplier->add_subject_history($history_data);
+
+
 		}else {
+
 			$this->error=true;
 			$this->msg='Can not deleted submitted purchase orders';
 		}
@@ -464,12 +512,12 @@ class PurchaseOrder extends DB_Table{
 
 		$this->get_data('id',$this->id);
 		$this->update_affected_products();
-		
-			$history_data=array(
-				'History Abstract'=>_('Purchase order marked as confirmed'),
-				'History Details'=>''
-			);
-			$this->add_subject_history($history_data);
+
+		$history_data=array(
+			'History Abstract'=>_('Purchase order marked as confirmed'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
 
 	}
 
@@ -500,12 +548,12 @@ class PurchaseOrder extends DB_Table{
 
 
 		$this->update_affected_products();
-		
+
 		$history_data=array(
-				'History Abstract'=>_('Purchase order submitted'),
-				'History Details'=>''
-			);
-			$this->add_subject_history($history_data);
+			'History Abstract'=>_('Purchase order submitted'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
 
 	}
 
@@ -527,12 +575,12 @@ class PurchaseOrder extends DB_Table{
 
 
 		$this->update_affected_products();
-		
-			$history_data=array(
-				'History Abstract'=>_('Purchase order send back to process'),
-				'History Details'=>''
-			);
-			$this->add_subject_history($history_data);
+
+		$history_data=array(
+			'History Abstract'=>_('Purchase order send back to process'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
 
 	}
 

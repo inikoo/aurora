@@ -107,9 +107,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
 		var SuppliersColumnDefs = [
-					   {key:"public_id", label:"<?php echo _('Id')?>",  width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"status", label:"<?php echo _('Type')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   {key:"public_id", label:"<?php echo _('Id')?>",  width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"date", label:"<?php echo _('Date')?>", width:145,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"status", label:"<?php echo _('Type')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"buyer_name", label:"<?php echo _('Buyer')?>",width:170, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					   ,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ];
@@ -137,7 +139,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"status"
 			 ,"date"
 			 ,"items"
-			 ,"total"
+			 ,"total","buyer_name"
 
 	 ]};
 
