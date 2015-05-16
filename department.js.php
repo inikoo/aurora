@@ -174,14 +174,15 @@ request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('dep
 		resultsList: "resultset.data", 
 		metaFields: {
 		   
-		      rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
+		         rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
 		    
 		},
 		
