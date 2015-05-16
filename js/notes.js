@@ -210,10 +210,9 @@ function save_attachment() {
     //alert(request)
     var uploadHandler = {
         upload: function(o) {
-            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(base64_decode(o.responseText));
-
             if (r.state == 200) {
+              
                 table_id = Dom.get('history_table_id').value
                 var table = tables['table' + table_id];
                 var datasource = tables['dataSource' + table_id];
@@ -221,6 +220,7 @@ function save_attachment() {
                 close_dialog('attach');
                 //Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
                 get_history_numbers()
+              
                 post_add_attachment_actions(r)
 
             } else {

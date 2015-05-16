@@ -19,7 +19,6 @@ if (isset($_REQUEST['id'])) {
 	if (!$supplier_delivery_note->id)
 		exit("Error supplier deliver note can no be found");
 	$supplier=new Supplier('id',$supplier_delivery_note->data['Supplier Delivery Note Supplier Key']);
-	$_SESSION['state']['supplier_dn']['pos']=$supplier_delivery_note->data['Supplier Delivery Note POs'];
 
 
 }
@@ -74,7 +73,8 @@ else if (isset($_REQUEST['new']) ) {
 						continue;
 				}
 
-				if ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Order State']=='In Process' ) {
+
+				if ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Order State']=='In Process' or $po->data['Purchase Order State']=='Confirmed' ) {
 					$po_objects[$po->id]=$po;
 					$po_array[$po->id]=$po->id;
 				}
@@ -84,8 +84,12 @@ else if (isset($_REQUEST['new']) ) {
 
 
 		}
+		elseif (isset($_REQUEST['supplier_key']) and is_numeric($_REQUEST['supplier_key'])) {
+			$supplier_key=$_REQUEST['supplier_key'];
+		}else {
+			exit('no po or supplier key');
+		}
 
-		$_SESSION['state']['supplier_dn']['pos']=join(',',$po_keys);
 		$supplier=new Supplier($supplier_key);
 		if (!$supplier->id) {
 			exit("error supplier not found/supplier incorrect");
@@ -135,12 +139,16 @@ $css_files=array(
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	$yui_path.'button/assets/skins/sam/button.css',
+	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 	'css/common.css',
 	'css/button.css',
 	'css/container.css',
 	'css/table.css',
+	'css/porder.css',
+
 	'theme.css.php'
 );
+
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'json/json-min.js',
@@ -151,23 +159,24 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/jquery.min.js',
+	'js/php.default.min.js',
+	'js/fz.shadow.js',
+	'js/fz.js',
+	'js/imgpop.js',
+	'js/notes.js',
 	'js/search.js',
 	'js/common.js',
 	'js/table_common.js',
+	'js/edit_common.js',
+	'js/supplier_dn.js'
 );
-
 
 
 
 
 $supplier_delivery_note_id = $supplier_delivery_note->id;
 
-
-$_SESSION['state']['supplier_dn']['id']=$supplier_delivery_note->id;
-$_SESSION['state']['supplier_dn']['supplier_key']=$supplier->id;
-$_SESSION['state']['supplier']['id']=$supplier->id;
-//print_r($supplier_delivery_note->data);
-//print_r($supplier_delivery_note);
 $smarty->assign('supplier_dn',$supplier_delivery_note);
 $smarty->assign('supplier',$supplier);
 $smarty->assign('supplier_id',$supplier->id);
@@ -194,6 +203,59 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 //print $supplier_delivery_note->data['Supplier Delivery Note Current State'];
 
 $smarty->assign('parent','suppliers');
+
+
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$sql=sprintf("select count(*) as num , `Type` from  `Supplier Delivery Note History Bridge` where `Supplier Delivery Note Key`=%d group by `Type`",
+	$supplier_delivery_note->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=$row['num'];
+}
+$smarty->assign('elements_po_history_number',$elements_number);
+$smarty->assign('elements_po_history',$_SESSION['state']['supplier_dn']['history']['elements']);
+
+
+$smarty->assign('number_attachments',$supplier_delivery_note->get_number_attachments_formated());
+
+
+
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['supplier_dn']['history']['f_field'];
+$filter_value=$_SESSION['state']['supplier_dn']['history']['f_value'];
+
+$smarty->assign('filter_value3',$filter_value);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
+
+$pos_data=array();
+foreach ($supplier_delivery_note->get_purchase_orders_objects() as $po) {
+	$current_po_key=$po->id;
+
+	$pos_data[]=array(
+		'key'=>$po->id,
+		'number'=>$po->data['Purchase Order Public ID'],
+		'state'=>$po->data['Purchase Order State'],
+
+	);
+
+}
+$number_pos=count($pos_data);
+if ($number_pos!=1) {
+	$current_po_key='';
+}
+$smarty->assign('current_po_key',$current_po_key);
+$smarty->assign('number_pos',$number_pos);
+$smarty->assign('pos_data',$pos_data);
 
 
 
@@ -227,13 +289,13 @@ case('In Process'):
 
 
 
-	$js_files[]='js/edit_common.js';
-	$js_files[]='supplier_dn_in_process.js.php';
 
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
+	$js_files[]='js/supplier_dn_in_process.js';
 
-	$smarty->display('supplier_dn_in_process.tpl');
+
+
+	$template='supplier_dn_in_process.tpl';
+
 	break;
 case('Inputted'):
 
@@ -336,43 +398,35 @@ case('Inputted'):
 
 *****/
 
-	$js_files[]='js/edit_common.js';
 
 	$js_files[]='supplier_dn_inputted.js.php';
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
 
 
-	//$supplier_delivery_note->update_affected_products();
-	// exit;
-
-	$smarty->display('supplier_dn_inputted.tpl');
-
-
+	$template='supplier_dn_inputted.tpl';
 
 	break;
 case('Received'):
 
-	
 
-$pickers=$corporation->get_current_staff_with_position_code('PICK');
-$number_cols=5;
-$row=0;
-$pickers_data=array();
-$contador=0;
-foreach ($pickers as $picker) {
-	if (fmod($contador,$number_cols)==0 and $contador>0)
-		$row++;
-	$tmp=array();
-	foreach ($picker as $key=>$value) {
-		$tmp[preg_replace('/\s/','',$key)]=$value;
+
+	$pickers=$corporation->get_current_staff_with_position_code('PICK');
+	$number_cols=5;
+	$row=0;
+	$pickers_data=array();
+	$contador=0;
+	foreach ($pickers as $picker) {
+		if (fmod($contador,$number_cols)==0 and $contador>0)
+			$row++;
+		$tmp=array();
+		foreach ($picker as $key=>$value) {
+			$tmp[preg_replace('/\s/','',$key)]=$value;
+		}
+		$pickers_data[$row][]=$tmp;
+		$contador++;
 	}
-	$pickers_data[$row][]=$tmp;
-	$contador++;
-}
 
-$smarty->assign('staff',$pickers_data);
-$smarty->assign('number_staff',count($pickers_data));
+	$smarty->assign('staff',$pickers_data);
+	$smarty->assign('number_staff',count($pickers_data));
 
 
 
@@ -380,10 +434,11 @@ $smarty->assign('number_staff',count($pickers_data));
 
 
 	$js_files[]='supplier_dn_received.js.php';
-	$js_files[]='js/edit_common.js';
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
-	$smarty->display('supplier_dn_received.tpl');
+
+
+	$template='supplier_dn_received.tpl';
+
+
 	break;
 
 case('Checked'):
@@ -405,16 +460,13 @@ case('Checked'):
 	$smarty->assign('staff_cols',$num_cols);
 	$css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
 
-	$js_files[]='js/edit_common.js';
 
 
 
 	$js_files[]='supplier_dn_assing_locations.js.php';
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
 
-	$smarty->display('supplier_dn_assing_locations.tpl');
 
+	$template='supplier_dn_assing_locations.tpl';
 
 
 
@@ -422,14 +474,36 @@ case('Checked'):
 
 case('Cancelled'):
 	$js_files[]='supplier_dn_cancelled.js.php';
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
-	$smarty->display('supplier_dn_cancelled.tpl');
 
 
+	$template='supplier_dn_cancelled.tpl';
 	break;
 }
 
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Code'=>_('Code'),
+				'Name'=>_('Name'),
+				'Parts'=>_('Parts'),
+				'Parts_Info'=>_('Parts Info'),
+				'Description'=>_('Supplier Carton Description'),
+				'PO_Qty'=>_('Cartons PO'),
+				'DN_Qty'=>_('Cartons DN'),
+				'Unit'=>_('Unit'),
+				'Transport_type'=>_('Transport type'),
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'supplier_dn'=>$_SESSION['state']['supplier_dn']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
+
+$smarty->display($template);
 
 
 

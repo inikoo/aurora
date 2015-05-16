@@ -443,9 +443,7 @@ var highlightEditableCell = function(oArgs) {
             break;
         case 'close':
         case 'pick_it':
-
-
-
+        case 'match_po':
         case ('add_object'):
         case ('check_all_object'):
         case ('remove_object'):
@@ -478,6 +476,7 @@ var unhighlightEditableCell = function(oArgs) {
         case ('add_object'):
         case ('remove_object'):
         case ('edit_object'):
+        case 'match_po':
             this.unhighlightRow(target);
             break;
         default:

@@ -140,6 +140,12 @@ function submit_edit_estimated_delivery() {
     );
 }
 
+function hide_order_details() {
+    Dom.setStyle('show_order_details', 'display', '')
+    Dom.setStyle('order_details_panel', 'display', 'none')
+}
+
+
 function init() {
 
     Event.addListener(['tandc', 'attachments', 'notes'], "click", change_block);
@@ -174,6 +180,7 @@ function init() {
     var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);
     oAutoComp0.minQueryLength = 0;
 
+    Event.addListener("hide_order_details", "click", hide_order_details);
 
 }
 

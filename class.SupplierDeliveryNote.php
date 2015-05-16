@@ -19,10 +19,7 @@ class SupplierDeliveryNote extends DB_Table {
 				$this->find($arg2,$arg3);
 				return;
 			}
-
-
 		}
-
 
 		if (is_numeric($arg1)) {
 			$this->get_data('id',$arg1);
@@ -136,6 +133,13 @@ class SupplierDeliveryNote extends DB_Table {
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id);
+			$history_data=array(
+				'History Abstract'=>_('Supplier delivery note created'),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+			$this->add_subject_history($history_data);
+
 			$supplier->update_orders();
 
 		} else
@@ -265,12 +269,15 @@ class SupplierDeliveryNote extends DB_Table {
 
 
 	function add_order_transaction_update_potf($data) {
+	
+	
+	
 		$sql=sprintf("select `Purchase Order Key`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where (`Supplier Delivery Note Key`=%d or `Purchase Order Key` in (%s)) and `Purchase Order Transaction Fact Key`=%d ",
 			$this->id,
 			$this->data['Supplier Delivery Note POs'],
 			$data ['Purchase Order Transaction Fact Key']);
 		$res=mysql_query($sql);
-		//   print "$sql\n";
+		
 		if ($row=mysql_fetch_assoc($res)) {
 
 
@@ -279,7 +286,7 @@ class SupplierDeliveryNote extends DB_Table {
 
 
 
-				$sql = sprintf( "update`Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=%d, `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note State`=%s where `Purchase Order Transaction Fact Key`=%d "
+				$sql = sprintf( "update `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=%d, `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note State`=%s where `Purchase Order Transaction Fact Key`=%d "
 					, $this->data ['Supplier Delivery Note Key']
 					,$data ['qty']
 					,prepare_mysql ($data ['qty_type'])
@@ -287,10 +294,9 @@ class SupplierDeliveryNote extends DB_Table {
 					,prepare_mysql('Inputted')
 					,$row['Purchase Order Transaction Fact Key']
 				);
-				print "$sql\n\n\n";
+
 				mysql_query($sql);
-				$po=new PurchaseOrder($row['Purchase Order Key']);
-				$po->update_state();
+				
 
 			} else {
 
@@ -664,12 +670,80 @@ class SupplierDeliveryNote extends DB_Table {
 	function delete() {
 
 		if ($this->data['Supplier Delivery Note Current State']=='In Process') {
+
+
+
 			$sql=sprintf("delete from `Supplier Delivery Note Dimension` where `Supplier Delivery Note Key`=%d",$this->id);
 			mysql_query($sql);
 			$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Purchase Order Key` is NULL and `Supplier Invoice Key` IS NULL ",$this->id);
 			mysql_query($sql);
 			$sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=NULL ,`Supplier Delivery Note Quantity`=0 , `Supplier Delivery Note Quantity Type`=NULL,`Supplier Delivery Note Last Updated Date`=NULL  where `Supplier Delivery Note Key`=%d  ",$this->id);
 			mysql_query($sql);
+
+
+
+			$sql=sprintf("select `History Key`,`Type` from `Supplier Delivery Note History Bridge` where `Supplier Delivery Note Key`=%d",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+
+				if ($row['Type']=='Attachments') {
+					$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Supplier Delivery Note History Attachment' and `Subject Key`=%d",
+						$row['History Key']
+					);
+					$res2=mysql_query($sql);
+					while ($row2=mysql_fetch_assoc($res2)) {
+						$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",$row2['Attachment Bridge Key']);
+						mysql_query($sql);
+						$attachment=new Attachment($row2['Attachment Key']);
+						$attachment->delete();
+					}
+				}
+
+				$sql=sprintf("delete from `Supplier Delivery Note History Bridge` where `History Key`=%d ",$row['History Key']);
+				mysql_query($sql);
+
+				$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row['History Key']);
+				mysql_query($sql);
+
+			}
+
+			$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Supplier Delivery Note' and `Subject Key`=%d",
+				$this->id
+			);
+			$res2=mysql_query($sql);
+			while ($row2=mysql_fetch_assoc($res2)) {
+				$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",$row2['Attachment Bridge Key']);
+				mysql_query($sql);
+				$attachment=new Attachment($row2['Attachment Key']);
+				$attachment->delete();
+			}
+
+
+			foreach ($this->get_purchase_orders_objects() as $po) {
+				$po->editor=$this->editor;
+				$history_data=array(
+					'History Abstract'=>_('Supplier delivery note in process deleted'),
+					'History Details'=>''
+				);
+				$po->add_subject_history($history_data);
+			}
+
+			$sql=sprintf("delete from `Purchase Order SDN Bridge` where `Supplier Delivery Note Key`=%d",$this->id);
+			mysql_query($sql);
+
+
+			$supplier=new Supplier($this->data['Supplier Delivery Note Supplier Key']);
+			$supplier->editor=$this->editor;
+			$history_data=array(
+				'History Abstract'=>_('Supplier delivery note in process deleted'),
+				'History Details'=>''
+			);
+			$supplier->add_subject_history($history_data);
+
+
+
+
+
 
 
 		} else {
@@ -704,21 +778,10 @@ class SupplierDeliveryNote extends DB_Table {
 		//print $sql;
 
 		$this->update_affected_products();
-		$this->update_affected_purchase_orders();
 	}
 
 
-	function update_affected_purchase_orders() {
-		$sql=sprintf("select `Purchase Order Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$po=new PurchaseOrder($row['Purchase Order Key']);
-			$po->update_state();
-
-		}
-
-
-	}
+	
 
 
 
@@ -885,7 +948,12 @@ class SupplierDeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 		$this->update_affected_products();
-		//  $this->update_affected_purchase_orders();
+	
+
+	}
+
+	function get_pos_keys() {
+
 
 	}
 
@@ -895,12 +963,23 @@ class SupplierDeliveryNote extends DB_Table {
 			if (!is_numeric($po_key))
 				continue;
 			$po=new PurchaseOrder($po_key);
+			$po->editor=$this->editor;
 			if (!$po->id)
 				continue;
 			if ($this->data['Supplier Delivery Note Supplier Key']!=$po->data['Purchase Order Supplier Key'])
 				continue;
 			$po_keys[$po->id]=$po->id;
+			
+			$sql=sprintf('insert into `Purchase Order SDN Bridge` (`Purchase Order Key`,`Supplier Delivery Note Key`) values (%d,%d)',
+				$po->id,
+				$this->id
+			);
+			mysql_query($sql);
+			$po->mark_as_associated_with_sdn($this->id,$this->data['Supplier Delivery Note Public ID']);
 		}
+
+		
+
 		$pos=join(',',$po_keys);
 		$sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note POs`=%s where `Supplier Delivery Note Key`=%d "
 			,prepare_mysql($pos)
@@ -909,6 +988,39 @@ class SupplierDeliveryNote extends DB_Table {
 		mysql_query($sql);
 		$this->data['Supplier Delivery Note POs']=$pos;
 	}
+
+
+
+	function get_purchase_orders_keys() {
+
+		$pos_keys=array();
+		$sql=sprintf("select `Purchase Order Key` from `Purchase Order SDN Bridge` where `Supplier Delivery Note Key`=%d ",$this->id);
+		$res = mysql_query( $sql );
+		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+			if ($row['Purchase Order Key']) {
+				$pos_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+			}
+		}
+		return $pos_keys;
+
+	}
+
+	function get_number_purchase_orders() {
+
+		return count($this->get_purchase_orders_keys());
+	}
+
+
+	function get_purchase_orders_objects() {
+		$pos=array();
+		$pos_keys=$this->get_purchase_orders_keys();
+		foreach ($pos_keys as $pos_key) {
+			$pos[$pos_key]=new PurchaseOrder($pos_key);
+		}
+		return $pos;
+	}
+
+
 
 
 	function creating_take_values_from_pos() {

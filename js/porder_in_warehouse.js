@@ -30,7 +30,7 @@ function mark_as_confirmed_save() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-                Dom.setStyle(['confirmed_date_tr', 'agreed_date_tr', 'invoice_po', 'dn_po', 'sdns_info'], 'display', '')
+                Dom.setStyle(['confirmed_date_tr', 'agreed_date_tr', 'invoice_po', 'dn_po','sdns_info'], 'display', '')
                 Dom.setStyle(['submitted_date_tr', 'confirm'], 'display', 'none')
                 Dom.get('po_state').innerHTML = r.po_state
                 Dom.get('confirmed_date').innerHTML = r.confirmed_date
@@ -131,25 +131,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }, {
-            key: "parts_info",
-            label: labels.Parts_Info,
-            width: 200,
-            sortable: false,
-            className: "aleft"
-        }
-
-        , {
+        },
+         {
             key: "description",
             label: labels.Description,
             width: 300,
             sortable: false,
             className: "aleft"
-        }
-
-        , {
+        },
+             {
+              key: "sdn",
+            label: labels.SDN,
+            width: 100,
+            sortable: false,
+            className: "aleft"
+        },
+        {
             key: "quantity",
-            label: labels.Qty,
+            label: labels.PO_Qty,
             width: 40,
             sortable: false,
             className: "aright",
@@ -158,18 +157,67 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
 
         },
+        {
+            key: "sdn_quantity",
+            label: labels.SDN_Qty,
+            width: 50,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
 
+        },
+        
+		
+          {
+            key: "quantity_received",
+            label: labels.Qty_Received,
+            width: 50,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
 
+        },
+          {
+            key: "quantity_damaged",
+            label: labels.Qty_Damaged,
+            width: 50,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+
+        },
+          {
+            key: "quantity_to_stock",
+            label: labels.Qty_to_Stock,
+            width: 50,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+
+        },
         {
             key: "amount",
             label: labels.Net_Cost,
+            hidden:(state.porder.products_in_warehouse.view=='sdn'?true:false),
             width: 50,
             className: "aright"
         }
 
         ];
-        request = "ar_edit_porders.php?tipo=po_transactions_to_process&sf=0&tableid=" + tableid + '&id=' + Dom.get('po_key').value + '&supplier_key=' + Dom.get('supplier_key').value
-        // alert(request)
+        
+        
+        
+        
+        request = "ar_edit_porders.php?tipo=po_transactions_in_warehouse&sf=0&tableid=" + tableid + '&id=' + Dom.get('po_key').value + '&supplier_key=' + Dom.get('supplier_key').value
+     //  alert(request)
         this.dataSource0 = new YAHOO.util.DataSource(request);
 
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -191,7 +239,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: ["key", "pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "parts_info"]
+            fields: ["key", "pid", "code", "description", "quantity", "amount", "unit_type", "add", "remove", "parts_info","sdn","sdn_quantity","quantity_received","quantity_damaged","quantity_to_stock"]
         };
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource0, {
@@ -199,7 +247,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             renderLoopSize: 50,
             generateRequest: myRequestBuilder,
             paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: state.porder.products.nr,
+                rowsPerPage: state.porder.products_in_warehouse.nr,
 
                 containers: 'paginator0',
                 pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
@@ -215,8 +263,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             ,
             sortedBy: {
 
-                key: state.porder.products.order,
-                dir: state.porder.products.order_dir
+                key: state.porder.products_in_warehouse.order,
+                dir: state.porder.products_in_warehouse.order_dir
             },
             dynamicData: true
 
@@ -233,8 +281,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
         this.table0.filter = {
-            key: state.porder.products.f_field,
-            value: state.porder.products.f_value
+            key: state.porder.products_in_warehouse.f_field,
+            value: state.porder.products_in_warehouse.f_value
         };
 
 
@@ -399,32 +447,19 @@ function submit_date_manually() {
 
 function match_to_dn_save() {
     var number = Dom.get('dn_number').value;
-    var input_sdn = Dom.get('input_sdn').value;
     if (number == '') {
-        Dom.get('dn_dialog_msg').innerHTML = labels.SDN_number_required;
+        Dom.get('dn_dialog_msg').innerHTML = 'Supplier Delivery Note number is required';
         return;
     } else {
         Dom.get('dn_dialog_msg').innerHTML = '';
     }
 
+    
+    Dom.setStyle('wait_match_to_dn','display','');
+    
+    var dn_date = Dom.get('v_calpop1').value;
 
-    Dom.setStyle('wait_match_to_dn', 'display', '');
-    Dom.setStyle('match_to_dn_save', 'display', 'none');
-    var request = 'ar_edit_porders.php?tipo=create_sdn_from_po&number=' + encodeURIComponent(number) + '&input=' + escape(input_sdn) + '&po_key=' + escape(Dom.get('po_key').value);
-  
-    YAHOO.util.Connect.asyncRequest('POST', request, {
-
-        success: function(o) {
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-
-
-                location.href = r.redirect
-
-            } else alert(r.msg);
-        }
-    });
-
+    location.href = 'supplier_dn.php?new=1&po=' + Dom.get('po_key').value + '&number=' + encodeURIComponent(number) + '&date=' + dn_date;
 }
 
 
@@ -452,7 +487,7 @@ function show_agreed_delivery_date_dialog_calendar() {
 
 
 function show_confirm_dialog() {
-    region1 = Dom.getRegion('confirm');
+  region1 = Dom.getRegion('confirm');
     region2 = Dom.getRegion('confirm_dialog');
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('confirm_dialog', pos);
@@ -468,19 +503,6 @@ function show_dn_dialog() {
 
     dn_dialog.show()
     Dom.get('dn_number').focus()
-}
-
-function change_input_sdn() {
-    if (this.id == 'input_sdn_No') {
-        Dom.setStyle('input_sdn_No', 'display', 'none')
-        Dom.setStyle('input_sdn_Yes', 'display', '')
-        Dom.get('input_sdn').value = 'No';
-    } else {
-        Dom.setStyle('input_sdn_No', 'display', '')
-        Dom.setStyle('input_sdn_Yes', 'display', 'none')
-        Dom.get('input_sdn').value = 'Yes';
-    }
-
 }
 
 function init() {
@@ -520,7 +542,7 @@ function init() {
     staff_dialog.render();
 
     dn_dialog = new YAHOO.widget.Dialog("dn_dialog", {
-
+       
         visible: false,
         close: true,
         underlay: "none",
@@ -529,7 +551,7 @@ function init() {
     dn_dialog.render();
 
     confirm_dialog = new YAHOO.widget.Dialog("confirm_dialog", {
-
+       
         visible: false,
         close: true,
         underlay: "none",
@@ -577,8 +599,6 @@ function init() {
 
 
     Event.addListener("back_to_in_process", "click", back_to_in_process);
-
-    Event.addListener(['input_sdn_No', 'input_sdn_Yes'], "click", change_input_sdn);
 
 
 

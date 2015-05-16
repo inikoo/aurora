@@ -21,7 +21,8 @@
 			<span class="main_title no_buttons">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span></span> 
 		</div>
 		<div class="buttons small" style="position:relative;top:5px">
-			<button class="negative" id="cancel_po"><img src="art/icons/cancel.png"> {t}Cancel{/t}</button> <button id="back_to_in_process"><img id="back_to_in_process_icon" src="art/icons/application_ungo.png"> {t}Back to processing{/t}</button> <button style="{if $po->get('Purchase Order State')!='Submitted'}display:none{/if}" id="confirm"><img src="art/icons/tick.png"> {t}Confirmed by supplier{/t}</button> 
+			<button class="negative" id="cancel_po"><img src="art/icons/cancel.png"> {t}Cancel{/t}</button> 
+			 <button style="{if $po->get('Purchase Order State')!='Submitted'}display:none{/if}" id="confirm"><img src="art/icons/tick.png"> {t}Confirmed by supplier{/t}</button> 
 			<button style="display:none;{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}" id="invoice_po"><img id="invoice_po_icon" src="art/icons/money.png"> {t}Match to Invoice{/t}</button> 
 			
 		</div>
@@ -83,11 +84,11 @@
 					<tr>
 						<td colspan="2" class="aright"> {if $po->get('Purchase Order Main Source Type')=='Other'} {t}submitted by{/t} {$po->get('Purchase Order Main Buyer Name')|capitalize:true} {else if $po->get('Purchase Order Main Source Type')=='In Person'} {t}submitted in person by{/t} {$po->get('Purchase Order Main Buyer Name')|capitalize:true} {else} {t}submitted via{/t} {$po->get('Main Source Type')} {t}by{/t} {$po->get('Purchase Order Main Buyer Name')|capitalize:true} {/if} </td>
 					</tr>
-					<tr id="confirmed_date_tr" style="{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}">
+					<tr id="confirmed_date_tr" >
 						<td class="label">{t}Confirmed{/t}:</td>
 						<td class="aright" id="confirmed_date">{$po->get('Confirmed Date')}</td>
 					</tr>
-					<tr id="agreed_date_tr" style="{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}">
+					<tr id="agreed_date_tr">
 						<td class="label">{t}Agreed Delivery{/t}:</td>
 						<td class="aright" id="agreed_date">{$po->get('Agreed Receiving Date')}</td>
 					</tr>
@@ -108,7 +109,7 @@
 					</tr>
 				</table>
 				
-				<table id="sdns_info" border="0" class="related_objects" style="{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}">
+				<table id="sdns_info" border="0" class="related_objects" >
 					<tr class="title">
 						<td colspan="2">
 						
@@ -299,19 +300,16 @@
 			</tr>
 			<tr>
 				<td class="label">{t}Delivery note identical to PO{/t}</td>
-				<td>
-				<input type="hidden" value="Yes" id="input_sdn">
-				<img id="input_sdn_Yes" class="checkbox"  style="display:none" src="art/icons/checkbox_unchecked.png">
-				<img id="input_sdn_No" class="checkbox"  src="art/icons/checkbox_checked.png"></td>
+				<td><img style="height:16px" src="art/icons/checkbox_unchecked.png"></td>
 			</tr>
 			<tr class="buttons">
 				<td class="label "> <span class="error" id="dn_dialog_msg"> </span> </td>
 				<td> 
 				<div class="buttons left">
-					<div id="wait_match_to_dn" style="display:none;text-align:right;padding-right:10px">
+					<div id="waiting_match_to_dn" style="display:none;text-align:right;padding-right:10px">
 						<img src="art/loading.gif"> <span>{t}Processing request{/t}</span> 
 					</div>
-					<button id="match_to_dn_save" onclick="match_to_dn_save()">{t}Match to Delivery Note{/t}</button> </td>
+					<button onclick="match_to_dn_save()">{t}Match to Delivery Note{/t}</button> </td>
 					</buttons> 
 				</tr>
 			</table>

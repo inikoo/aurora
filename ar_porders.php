@@ -13,6 +13,8 @@
 require_once 'common.php';
 require_once 'ar_common.php';
 require_once 'class.PurchaseOrder.php';
+require_once 'class.SupplierDeliveryNote.php';
+require_once 'class.SupplierInvoice.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -1045,6 +1047,10 @@ function get_history_numbers($data) {
 
 	if ($subject=='porder') {
 		$sql=sprintf("select count(*) as num , `Type` from  `Purchase Order History Bridge` where `Purchase Order Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='supplier_dn') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Supplier Delivery Note History Bridge` where `Supplier Delivery Note Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='supplier_invoice') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Supplier Invoice History Bridge` where `Supplier Invoice Key`=%d group by `Type`",$subject_key);
 	}
 
 	$res=mysql_query($sql);
@@ -1061,11 +1067,20 @@ function get_attachments_showcase($data) {
 	$subject_key=$data['subject_key'];
 	$subject=$data['subject'];
 
-	$po=new PurchaseOrder($data['subject_key']);
-	$smarty->assign('attachments',$po->get_attachments_data());
+    if($subject=='porder'){
+        $object=new PurchaseOrder($data['subject_key']);
+    }elseif($subject=='supplier_dn'){
+        $object=new SupplierDeliveryNote($data['subject_key']);
+    }elseif($subject=='supplier_invoice'){
+        $object=new SupplierInvoice($data['subject_key']);
+    }else{
+        exit;
+    }
+	
+	$smarty->assign('attachments',$object->get_attachments_data());
 	$attachments_showcase=$smarty->fetch('attachments_showcase_splinter.tpl');
 	$attachments_label=_('Attachments');
-	$number_attachments=$po->get_number_attachments_formated();
+	$number_attachments=$object->get_number_attachments_formated();
 	if ($number_attachments!=0) {
 		$attachments_label.=' ('.$number_attachments.')';
 	}

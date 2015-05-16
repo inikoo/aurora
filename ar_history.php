@@ -46,6 +46,8 @@ case('account_history'):
 case('subject_history'):
 case('site_history'):
 case('purchase_order_history'):
+case('supplier_dn_history'):
+case('supplier_invoice_history'):
 case('supplier_history'):
 	list_subject_history();
 	break;
@@ -89,7 +91,7 @@ function history_details() {
 function list_subject_history() {
 
 
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('porder','site','customer','supplier','store','department','family','product','part','account','supplier_product','employee'))) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('porder','site','customer','supplier','store','department','family','product','part','account','supplier_product','employee','supplier_dn','suppier_invoice'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -233,6 +235,12 @@ function list_subject_history() {
 	}elseif ($parent=='porder') {
 		$where=sprintf(' where   B.`Purchase Order Key`=%d   ',$parent_key);
 		$subject='Purchase Order';
+	}elseif ($parent=='supplier_dn') {
+		$where=sprintf(' where   B.`Supplier Delivery Note Key`=%d   ',$parent_key);
+		$subject='Supplier Delivery Note';
+	}elseif ($parent=='supplier_invoice') {
+		$where=sprintf(' where   B.`Supplier Invoice Key`=%d   ',$parent_key);
+		$subject='Supplier Invoice';
 	}
 
 	elseif ($parent=='supplier') {
@@ -355,7 +363,7 @@ function list_subject_history() {
 	//    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
 	$sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `$subject History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
-
+//print $sql;
 
 	$result=mysql_query($sql);
 	$data=array();
