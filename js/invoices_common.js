@@ -111,7 +111,7 @@ function show_dialog_change_invoices_element_chooser() {
 
 
 function init_invoices(){
- 
+
   dialog_export['invoices'] = new YAHOO.widget.Dialog("dialog_export_invoices", {
         visible: false,
         close: true,
@@ -122,20 +122,21 @@ function init_invoices(){
 
     Event.addListener("export_invoices", "click", show_export_dialog, 'invoices');
     
-      
+    
+ 
 
     Event.addListener("export_csv_invoices", "click", export_table, {
         output: 'csv',
         table: 'invoices',
-        parent: 'category',
-        parent_key: Dom.get('category_key').value
+        parent: 'store',
+        parent_key: Dom.get('store_key').value
     });
 
     Event.addListener("export_xls_invoices", "click", export_table, {
         output: 'xls',
         table: 'invoices',
-        parent: 'category',
-        parent_key: Dom.get('category_key').value
+        parent: 'store',
+        parent_key: Dom.get('store_key').value
     });
 
 
@@ -144,6 +145,8 @@ function init_invoices(){
 
   Event.addListener(['elements_invoice_type_Invoice', 'elements_invoice_type_Refund'], "click", change_invoice_elements, 'type');
     Event.addListener(['elements_invoice_payment_Partially', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No'], "click", change_invoice_elements, 'payment');
+ 
+ 
  
     dialog_change_invoices_element_chooser = new YAHOO.widget.Dialog("dialog_change_invoices_element_chooser", {
         visible: false,

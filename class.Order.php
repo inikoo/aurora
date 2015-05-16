@@ -2125,37 +2125,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 
-		/*
-		$sql=sprintf("select `Invoice Key` from `Order Transaction Fact` where `Order Key`=%d group by `Invoice Key`",$this->id);
-		$res = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Invoice Key']) {
-				$invoices[$row['Invoice Key']]=$row['Invoice Key'];
-			}
-		}
-		$sql=sprintf("select `Refund Key` from `Order Transaction Fact` where `Order Key`=%d group by `Refund Key`",$this->id);
-		$res = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Refund Key']) {
-				$invoices[$row['Refund Key']]=$row['Refund Key'];
-			}
-		}
-
-		$sql=sprintf("select `Invoice Key` from `Order No Product Transaction Fact` where `Order Key`=%d group by `Invoice Key`",$this->id);
-		$res = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Invoice Key']) {
-				$invoices[$row['Invoice Key']]=$row['Invoice Key'];
-			}
-		}
-		$sql=sprintf("select `Refund Key` from `Order No Product Transaction Fact` where `Order Key`=%d group by `Refund Key`",$this->id);
-		$res = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Refund Key']) {
-				$invoices[$row['Refund Key']]=$row['Refund Key'];
-			}
-		}
-*/
+	
 
 		return $invoices;
 
