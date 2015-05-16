@@ -7,6 +7,9 @@
 <input type="hidden" id="history_table_id" value="3"> 
 <input type="hidden" id="subject" value="supplier_product"> 
 <input type="hidden" id="subject_key" value="{$supplier_product->pid}"> 
+
+
+
 <input type="hidden" id="calendar_id" value="sales" />
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
 </div>

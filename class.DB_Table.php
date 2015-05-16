@@ -659,7 +659,12 @@ abstract class DB_Table {
 			);
 			mysql_query($sql);
 
-			if ($this->table_name=='Purchase Order') {// Todo do this to all subjects
+			if (
+			in_array($this->table_name,array(
+			    'Purchase Order','Supplier Delivery Note','Supplier Invoice'
+			))
+			
+			) {
 
 				$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'%s',%d,%s,%s)",
 					$attach->id,

@@ -30,42 +30,65 @@
 	</div>
 	<div id="order_header">
 	    <div class="content">
-		<table style="width:200px;" class="order_header" border="0">
+	    
+	    <div class="totals column">
+		<table  border="0">
+		
+		<tbody id="incoterm_data">
+				<tr id="incoterm_tr">
+					<td>{t}Incoterm{/t}:</td>
+					<td id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
+					<td class="aright" style="width:20px"><img id="edit_incoterm" style="cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
+				</tr>
+				<tr id="export_port_tr">
+					<td>{t}Export Port{/t}:</td>
+					<td colspan=2 id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
+					
+				</tr>
+				<tr id="import_port_tr">
+					<td>{t}Import Port{/t}:</td>
+					<td colspan=2 id="import_port" class="aright">{$po->get('Purchase Order Port of Import')}</td>
+					
+				</tr>
+			</tbody>
+		
 			<tr class="currency_tr">
 				<td>{t}Currency{/t}</td>
-				<td class=" aright">{$po->get('Purchase Order Currency Code')}</td>
+				<td colspan=2 class=" aright">{$po->get('Purchase Order Currency Code')}</td>
 			</tr>
 			<tbody id="po_amounts" style="display:none">
 				<tr>
 					<td>{t}Goods{/t}:</td>
-					<td id="goods" class="aright">{$po->get('Items Net Amount')}</td>
+					<td colspan=2 id="goods" class="aright">{$po->get('Items Net Amount')}</td>
 				</tr>
 				<tr>
 					<td>{t}Shipping{/t}:</td>
-					<td class="aright" id="shipping">{$po->get('Shipping Net Amount')}</td>
+					<td colspan=2 class="aright" id="shipping">{$po->get('Shipping Net Amount')}</td>
 				</tr>
 				<tr>
 					<td>{t}Tax{/t}:</td>
-					<td id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
+					<td colspan=2  id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
 				</tr>
 			</tbody>
 			<tr>
 				<td>{t}Total{/t}</td>
-				<td id="total" class="total aright ">{$po->get('Total Amount')}</td>
+				<td colspan=2  id="total" class="total aright ">{$po->get('Total Amount')}</td>
 			</tr>
 			<tr style="{if $corporate_currency==$po->get('Purchase Order Currency Code')}display:none{/if}">
 				<td></td>
-				<td id="total_corporate_currency" class="total_corporate_currency aright ">{$po->get('Total Amount Corporate Currency')}</td>
+				<td colspan=2  id="total_corporate_currency" class="total_corporate_currency aright ">{$po->get('Total Amount Corporate Currency')}</td>
 			</tr>
 		</table>
-		<div style="border:0px solid red;width:360px;float:right">
-			<table border="0" class="order_header" style="margin-right:30px;float:right">
+		</div>
+		
+		<div class="dates column">
+			<table b >
 				<tr>
-					<td class="aright" style="padding-right:40px">{t}Created{/t}:</td>
-					<td>{$po->get('Creation Date')}</td>
+					<td class="label" >{t}Created{/t}:</td>
+					<td class="aright" >{$po->get('Creation Date')}</td>
 				</tr>
-				<tr>
-					<td class="aright" style="padding-right:40px"> 
+				<tr class="last">
+					<td class="label"> 
 					<div id="estimated_delivery_Container" style="position:absolute;display:none; z-index:2">
 					</div>
 					<img style="cursor:pointer" id="edit_estimated_delivery" src="art/icons/edit.gif" alt="({t}edit{/t})"> {t}Estimated Delivery{/t}:</td>
@@ -74,40 +97,18 @@
 				
 			</table>
 		</div>
+		<div class="supplier column" >
 		<table border="0">
-			<tr>
+			<tr class="last">
 				<td>{t}Supplier{/t}:</td>
 				<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
 				<td></td>
 			</tr>
-			<tbody id="incoterm_data">
-				<tr id="incoterm_tr">
-					<td>{t}Incoterm{/t}:</td>
-					<td id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
-					<td class="aright" style="width:20px"><img id="edit_incoterm" style="display:none;cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
-				</tr>
-				<tr id="export_port_tr">
-					<td>{t}Export Port{/t}:</td>
-					<td id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
-					<td></td>
-				</tr>
-				<tr id="import_port_tr">
-					<td>{t}Import Port{/t}:</td>
-					<td id="import_port" class="aright">{$po->get('Purchase Order Port of Import')}</td>
-					<td></td>
-				</tr>
-			</tbody>
-			<tr style="display:none">
-				<td>{t}Items{/t}:</td>
-				<td class="aright" id="distinct_products">{$po->get('Number Items')}</td>
-			</tr>
+			
+			
 		</table>
-		<table style="clear:both;border:none;display:none" class="notes">
-			<tr>
-				<td style="border:none">{t}Notes{/t}:</td>
-				<td style="border:none"><textarea id="v_note" rows="2" cols="60"></textarea></td>
-			</tr>
-		</table>
+		</div>
+		
 		<div style="clear:both">
 		</div>
 		</div>
@@ -421,7 +422,6 @@
 		</tr>
 	</table>
 </div>
-{include file='notes_splinter.tpl'}
-{include file='porder_common_splinter.tpl'}
+{include file='notes_splinter.tpl'} {include file='porder_common_splinter.tpl'}
 
 {include file='footer.tpl'} 

@@ -448,7 +448,19 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'display'=>'ordered_products'
-		)
+		),
+		'history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+		),
 	),
 	'supplier_invoice'=>array(
 		'id'=>'',
@@ -805,10 +817,19 @@ $default_state=array(
 			'f_field'=>'p.code',
 			'f_value'=>'',
 			'f_show'=>false,
-
-
-
 		),
+		'products_in_warehouse'=>array(
+		    'view'=>'sdn',
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'p.code',
+			'f_value'=>'',
+			'f_show'=>false,
+		),
+		
+		
 		'porder_invoices'=>array(
 			'order'=>'date',
 			'order_dir'=>'',

@@ -21,7 +21,7 @@ if ($user->data['User Type']!='Supplier' and !$user->can_view('suppliers')) {
 $modify=$user->can_edit('suppliers');
 
 if (isset($_REQUEST['edit']) and $_REQUEST['edit']) {
-	header('Location: edit_suplier.php?id='.$_REQUEST['edit']);
+	header('Location: edit_supplier.php?id='.$_REQUEST['edit']);
 	exit;
 }
 

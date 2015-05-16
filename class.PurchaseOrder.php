@@ -530,13 +530,14 @@ class PurchaseOrder extends DB_Table{
 
 		}
 
-		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Estimated Receiving Date`=%s,`Purchase Order Main Source Type`=%s,`Purchase Order Main Buyer Key`=%s,`Purchase Order Main Buyer Name`=%s,`Purchase Order State`='Submitted'   where `Purchase Order Key`=%d"
-			,prepare_mysql($data['Purchase Order Submitted Date'])
-			,prepare_mysql($data['Purchase Order Estimated Receiving Date'])
-			,prepare_mysql($data['Purchase Order Main Source Type'])
-			,prepare_mysql($data['Purchase Order Main Buyer Key'])
-			,prepare_mysql($data['Purchase Order Main Buyer Name'])
-			,$this->id);
+		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Estimated Receiving Date`=%s,`Purchase Order Main Source Type`=%s,`Purchase Order Main Buyer Key`=%s,`Purchase Order Main Buyer Name`=%s,`Purchase Order State`='Submitted' where `Purchase Order Key`=%d",
+			prepare_mysql($data['Purchase Order Submitted Date']),
+			prepare_mysql($data['Purchase Order Estimated Receiving Date']),
+			prepare_mysql($data['Purchase Order Main Source Type']),
+			prepare_mysql($data['Purchase Order Main Buyer Key']),
+			prepare_mysql($data['Purchase Order Main Buyer Name']),
+			$this->id
+			);
 
 
 		mysql_query($sql);
@@ -556,6 +557,22 @@ class PurchaseOrder extends DB_Table{
 		$this->add_subject_history($history_data);
 
 	}
+	
+	function mark_as_associated_with_sdn($sdn_key,$sdn_name){
+	
+		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order State`='In Warehouse' where `Purchase Order Key`=%d",
+			$this->id
+			);
+		mysql_query($sql);
+		
+		$history_data=array(
+			'History Abstract'=>sprintf(_('Purchase order associeted with delivery %s'),'<a href="supplier_dn.php?id='.$sdn_key.'">'.$sdn_name.'</a>'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
+	
+	}
+	
 
 	function back_to_process() {
 
@@ -604,7 +621,7 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
-	function update_state() {
+	function update_state_old() {
 
 		$cancelled=0;
 		$in_process=0;
@@ -809,7 +826,7 @@ class PurchaseOrder extends DB_Table{
 			if ($this->data['Purchase Order State']=='In Process') {
 				$supplier=new Supplier($this->data['Purchase Order Supplier Key']);
 				if ($supplier->data['Supplier Delivery Days'] and is_numeric($supplier->data['Supplier Delivery Days'])) {
-					return '<span class="from_suplier_delivery_days">'.strftime("%d-%m-%Y",strtotime('now +'.$supplier->data['Supplier Delivery Days'].' days')).'</span>';
+					return '<span class="from_supplier_delivery_days">'.strftime("%d-%m-%Y",strtotime('now +'.$supplier->data['Supplier Delivery Days'].' days')).'</span>';
 
 				}else {
 					return _('Unknown');
@@ -821,6 +838,41 @@ class PurchaseOrder extends DB_Table{
 
 		}
 	}
+
+	function get_sdn_keys() {
+
+		$sdns_keys=array();
+		$sql=sprintf("select `Supplier Delivery Note Key` from `Purchase Order SDN Bridge` where `Purchase Order Key`=%d ",
+			$this->id);
+		$res = mysql_query( $sql );
+		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+			if ($row['Supplier Delivery Note Key']) {
+				$sdns_keys[$row['Supplier Delivery Note Key']]=$row['Supplier Delivery Note Key'];
+			}
+		}
+		return $sdns_keys;
+
+	}
+
+	function get_number_sdn() {
+
+		return count($this->get_sdn_keys());
+	}
+
+
+	function get_sdn_objects() {
+	
+	    include_once('class.SupplierDeliveryNote.php');
+	    
+		$sdns=array();
+		$sdns_keys=$this->get_sdn_keys();
+		foreach ($sdns_keys as $sdns_key) {
+			$sdns[$sdns_key]=new SupplierDeliveryNote($sdns_key);
+		}
+		return $sdns;
+	}
+
+
 
 }
 ?>

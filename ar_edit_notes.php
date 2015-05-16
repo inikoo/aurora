@@ -299,7 +299,13 @@ function get_parent_db_field($data) {
 		break;
 	case 'porder':
 		$db_field='Purchase Order';
-		break;	
+		break;
+	case 'supplier_dn':
+		$db_field='Supplier Delivery Note';
+		break;
+	case 'supplier_invoice':
+		$db_field='Supplier Invoice';
+		break;
 	case 'supplier_product':
 		$db_field='Supplier Product';
 		break;
@@ -358,7 +364,15 @@ function get_parent_object($data) {
 	case 'porder':
 		include_once 'class.PurchaseOrder.php';
 		$subject=new PurchaseOrder($data['parent_key']);
-		break;	
+		break;
+	case 'supplier_dn':
+		include_once 'class.SupplierDeliveryNote.php';
+		$subject=new SupplierDeliveryNote($data['parent_key']);
+		break;
+	case 'supplier_invoice':
+		include_once 'class.SupplierInvoice.php';
+		$subject=new SupplierInvoice($data['parent_key']);
+		break;
 	default:
 		$response=array('state'=>400,'msg'=>'Non acceptable request wo (t) 2');
 		echo json_encode($response);

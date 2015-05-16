@@ -199,14 +199,37 @@ $filter_menu=array(
 	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
 	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
 );
-$tipo_filter=$_SESSION['state']['supplier_product']['history']['f_field'];
-$filter_value=$_SESSION['state']['supplier_product']['history']['f_value'];
+$tipo_filter=$_SESSION['state']['porder']['history']['f_field'];
+$filter_value=$_SESSION['state']['porder']['history']['f_value'];
 
 $smarty->assign('filter_value3',$filter_value);
 $smarty->assign('filter_menu3',$filter_menu);
 $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
+
+
+
+$sdns_data=array();
+foreach ($po->get_sdn_objects() as $sdn) {
+	$current_sdn_key=$sdn->id;
+
+	$sdns_data[]=array(
+		'key'=>$sdn->id,
+		'number'=>$sdn->data['Supplier Delivery Note Public ID'],
+		'state'=>$sdn->data['Supplier Delivery Note Current State'],
+
+	);
+
+}
+$number_dsns=count($sdns_data);
+if ($number_dsns!=1) {
+	$current_sdn_key='';
+}
+$smarty->assign('current_sdn_key',$current_sdn_key);
+$smarty->assign('number_dsns',$number_dsns);
+$smarty->assign('sdns_data',$sdns_data);
+
 
 
 
@@ -312,6 +335,7 @@ elseif ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Or
 	$_SESSION['state']['porder']['show_all']=false;
 
 	$js_files[]='js/porder_submitted.js';
+	$css_files[]='css/porder_submitted.css';
 
 
 
@@ -321,6 +345,22 @@ elseif ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Or
 
 
 	$template='porder_submitted.tpl';
+}elseif ($po->data['Purchase Order State']=='In Warehouse' ) {
+
+
+	$_SESSION['state']['porder']['show_all']=false;
+
+	$js_files[]='js/porder_in_warehouse.js';
+	$css_files[]='css/porder_in_warehouse.css';
+
+
+
+	$_SESSION['state']['porder']['products']['display']='ordered_products';
+	$smarty->assign('products_display_type',$_SESSION['state']['porder']['products']['display']);
+
+
+
+	$template='porder_in_warehouse.tpl';
 }
 elseif ($po->data['Purchase Order State']=='Cancelled') {
 
@@ -339,12 +379,19 @@ $session_data=base64_encode(json_encode(array(
 				'Reference'=>_('Parts'),
 				'Parts_Info'=>_('Parts Info'),
 				'Description'=>_('Supplier Carton Description'),
+				'SDN'=>_('Delivery (SDN)'),
 				'Qty'=>_('Cartons'),
+				'PO_Qty'=>_('PO Qty'),
+				'SDN_Qty'=>_('SDN Qty'),
+				'Qty_Received'=>_('Received'),
+				'Qty_Damaged'=>_('Damaged'),
+				'Qty_to_Stock'=>_('to Stock'),
 				'Net_Cost'=>_('Net Cost'),
 				'Unit'=>_('Unit'),
 				'Transport_type'=>_('Transport type'),
 				'Page'=>_('Page'),
-				'of'=>_('of')
+				'of'=>_('of'),
+				'SDN_number_required'=>_('Delivery note number required')
 			),
 			'state'=>array(
 				'porder'=>$_SESSION['state']['porder']

@@ -49,7 +49,9 @@ var myCellEdit = function(callback, newValue) {
                     else Dom.removeClass('submit_po', 'disabled')
 
                     for (x in r.data) {
-                        Dom.get(x).innerHTML = r.data[x];
+                        if (Dom.get(x) != undefined) {
+                            Dom.get(x).innerHTML = r.data[x];
+                        }
                     }
 
                     datatable.updateCell(record, 'amount', r.to_charge);
@@ -118,8 +120,9 @@ var myonCellClick = function(oArgs) {
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
                         for (x in r.data) {
-
-                            Dom.get(x).innerHTML = r.data[x];
+                            if (Dom.get(x) != undefined) {
+                                Dom.get(x).innerHTML = r.data[x];
+                            }
                         }
 
                         Dom.get('ordered_products_number').innerHTML = r.data.distinct_products
@@ -902,7 +905,7 @@ function show_edit_incoterm_dialog() {
     region1 = Dom.getRegion('edit_incoterm');
 
     region2 = Dom.getRegion('edit_incoterm_dialog');
-    var pos = [region1.left, region1.top]
+    var pos = [region1.left - region2.width, region1.top - 4]
 
     Dom.setXY('edit_incoterm_dialog', pos);
     edit_incoterm_dialog.show()
@@ -910,12 +913,12 @@ function show_edit_incoterm_dialog() {
 }
 
 
-function show_edit_incoterm_edit_button() {
-    Dom.setStyle('edit_incoterm', 'display', '')
+function highlight_edit_incoterm() {
+    Dom.addClass('incoterm_data', 'highlight_edit_area')
 }
 
-function hide_edit_incoterm_edit_button() {
-    Dom.setStyle('edit_incoterm', 'display', 'none')
+function unhighlight_edit_incoterm() {
+    Dom.removeClass('incoterm_data', 'highlight_edit_area')
 }
 
 function show_order_details() {
@@ -924,10 +927,6 @@ function show_order_details() {
 
 }
 
-function hide_order_details() {
-    Dom.setStyle('show_order_details', 'display', '')
-    Dom.setStyle('order_details_panel', 'display', 'none')
-}
 
 
 
@@ -1123,8 +1122,6 @@ function init_in_process() {
     Event.addListener("ordered_products", "click", show_only_ordered_products);
     Event.addListener("all_products", "click", show_all_products);
 
-    Event.addListener("show_order_details", "click", show_order_details);
-    Event.addListener("hide_order_details", "click", hide_order_details);
 
 
     dialog_sticky_note_for_supplier = new YAHOO.widget.Dialog("dialog_sticky_note_for_supplier", {
@@ -1382,8 +1379,8 @@ function init_edit_po() {
         }
     };
 
-    Event.addListener("incoterm_data", "mouseenter", show_edit_incoterm_edit_button);
-    Event.addListener("incoterm_data", "mouseleave", hide_edit_incoterm_edit_button);
+    Event.addListener("incoterm_data", "mouseenter", highlight_edit_incoterm);
+    Event.addListener("incoterm_data", "mouseleave", unhighlight_edit_incoterm);
 
     edit_incoterm_dialog = new YAHOO.widget.Dialog("edit_incoterm_dialog", {
         visible: false,
