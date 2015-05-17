@@ -168,7 +168,7 @@ function delete_supplier_dn() {
             if (r.state == 200) {
                 location.href = 'supplier.php?id=' + Dom.get('supplier_key').value;
             } else {
-                Dom.get('delete_dialog_msg').innerHTNML = r.msg;
+                Dom.get('delete_dialog_msg').innerHTML = r.msg;
             }
         }
     });
@@ -182,6 +182,9 @@ function delete_supplier_dn() {
 
 
 var input_order_save = function(o) {
+
+        Dom.get('save_inputted_dn_icon').src = 'art/loading.gif'
+
         var request = 'ar_edit_porders.php?tipo=input_dn&id=' + escape(Dom.get('supplier_delivery_note_key').value);
 
         YAHOO.util.Connect.asyncRequest('POST', request, {
@@ -202,7 +205,33 @@ var input_order_save = function(o) {
 
 
 
+function received_order_save(o) {
 
+    var received_date = Dom.get('v_calpop1').value;
+    var received_time = Dom.get('v_time').value;
+    var staff_key = Dom.get('received_by').value;
+    var date_type = Dom.get('date_type').value;
+    var location_key = Dom.get('location_key').value;
+
+
+    var request = 'ar_edit_porders.php?tipo=receive_dn&id=' + escape(Dom.get('supplier_delivery_note_key').value) + '&date_type=' + escape(date_type) + '&staff_key=' + escape(staff_key) + '&received_date=' + escape(received_date) + '&received_time=' + escape(received_time) + '&location_key=' + escape(location_key);
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+            //alert(o.responseText);
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+
+                location.href = 'supplier_dn.php?id=' + Dom.get('supplier_delivery_note_key').value;
+
+
+
+            } else alert(r.msg);
+        }
+    });
+};
 
 
 
@@ -374,6 +403,207 @@ YAHOO.util.Event.addListener(window, "load", function() {
             key: state.supplier_dn.products.f_field,
             value: state.supplier_dn.products.f_value
         };
+
+
+     var tableid = 1;
+        var tableDivEL = "table" + tableid;
+
+
+        var ColumnDefs = [{
+            key: "key",
+            label: "",
+            width: 100,
+            hidden: true
+        }, {
+            key: "code",
+            label: labels.Code,
+            width: 100,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+           
+           }, {
+            key: "used_for",
+            label: labels.Used_for,
+            width: 300,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            } 
+            
+        }
+
+        ];
+        
+        request="ar_quick_tables.php?tipo=location_list&warehouse_key="+Dom.get('warehouse_key').value+"&tableid=" + tableid + "&nr=20&sf=0"
+       // alert(request)
+        this.dataSource1 = new YAHOO.util.DataSource(request);
+        //alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+        this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource1.connXhrMode = "queueRequests";
+        this.dataSource1.table_id = tableid;
+
+        this.dataSource1.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                rowsPerPage: "resultset.records_perpage",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records" // Access to value in the server response
+            },
+
+
+            fields: ["code", 'used_for', 'key']
+        };
+
+        this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource1, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: 20,
+                containers: 'paginator2',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: "code",
+                dir: ""
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table1.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table1.subscribe("cellClickEvent", this.table1.onEventShowCellEditor);
+        this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
+        this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
+        this.table1.subscribe("rowClickEvent", select_location_from_list);
+        this.table1.table_id = tableid;
+        this.table1.subscribe("renderEvent", myrenderEvent);
+
+
+        this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table1.filter = {
+            key: 'code',
+            value: ''
+        };
+
+
+        var tableid = 2;
+        var tableDivEL = "table" + tableid;
+
+
+        var ColumnDefs = [{
+            key: "key",
+            label: "",
+            width: 100,
+            hidden: true
+        }, {
+            key: "code",
+            label: labels.Alias,
+            width: 100,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "name",
+            label: labels.Name,
+            width: 250,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }
+
+        ];
+        this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid=" + tableid + "&nr=20&sf=0");
+        //alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+        this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource2.connXhrMode = "queueRequests";
+        this.dataSource2.table_id = tableid;
+
+        this.dataSource2.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                rowsPerPage: "resultset.records_perpage",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records" // Access to value in the server response
+            },
+
+
+            fields: ["code", 'name', 'key']
+        };
+
+        this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource2, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: 20,
+                containers: 'paginator2',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: "code",
+                dir: ""
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table2.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+        this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+        this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+        this.table2.subscribe("rowClickEvent", select_staff_from_list);
+        this.table2.table_id = tableid;
+        this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+        this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table2.filter = {
+            key: 'code',
+            value: ''
+        };
+
+
 
 
 
@@ -597,6 +827,72 @@ function show_all_products() {
 }
 
 
+function show_mark_as_received() {
+    region1 = Dom.getRegion('mark_as_received');
+    region2 = Dom.getRegion('received_dialog');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('received_dialog', pos);
+    received_dialog.show()
+}
+
+function show_location_dialog() {
+
+    region1 = Dom.getRegion('get_location');
+    region2 = Dom.getRegion('received_dialog');
+    var pos = [region1.left - region2.width, region1.top]
+    Dom.setXY('location_dialog', pos);
+
+    location_dialog.show()
+
+}
+
+function show_staff_dialog() {
+
+    region1 = Dom.getRegion('get_receiver');
+    region2 = Dom.getRegion('received_dialog');
+    var pos = [region1.left - region2.width, region1.top]
+    Dom.setXY('staff_dialog', pos);
+
+    staff_dialog.show()
+
+}
+
+
+function select_staff_from_list(oArgs) {
+    var staff_name = tables.table2.getRecord(oArgs.target).getData('name');
+    var staff_key = tables.table2.getRecord(oArgs.target).getData('key');
+   select_staff(staff_key, staff_name)
+}
+
+function select_staff_from_button(o) {
+    var staff_key = o.getAttribute('staff_key')
+    var staff_name = o.innerHTML
+    select_staff(staff_key, staff_name)
+}
+
+function select_staff(staff_key, staff_name) {
+    Dom.get('received_by_alias').innerHTML = staff_name
+    Dom.get('received_by').value = staff_key
+    staff_dialog.hide()
+}
+
+function select_location_from_list(oArgs) {
+    var location_code = tables.table1.getRecord(oArgs.target).getData('code');
+    var location_key = tables.table1.getRecord(oArgs.target).getData('key');
+   select_location(location_key, location_code)
+}
+
+function select_location_from_button(o) {
+    var location_key = o.getAttribute('location_key')
+    var location_code = o.innerHTML
+    select_location(location_key, location_code)
+}
+
+function select_location(location_key, location_code) {
+    Dom.get('location_code').innerHTML = location_code
+    Dom.get('location_key').value = location_key
+    location_dialog.hide()
+}
 
 
 function init_in_process() {
@@ -630,6 +926,37 @@ function init_in_process() {
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+
+
+    received_dialog = new YAHOO.widget.Dialog("received_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    received_dialog.render();
+    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    staff_dialog.render();
+
+    location_dialog = new YAHOO.widget.Dialog("location_dialog", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    location_dialog.render();
+
+    Event.addListener("mark_as_received", "click", show_mark_as_received);
+
+    Event.addListener("get_receiver", "click", show_staff_dialog);
+    Event.addListener("get_location", "click", show_location_dialog);
+
+
 
 }
 

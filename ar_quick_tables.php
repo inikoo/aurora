@@ -44,6 +44,9 @@ case('part_list'):
 case('customer_list'):
 	customer_list();
 	break;
+case('location_list'):
+	location_list();
+	break;
 case('department_list'):
 	department_list();
 	break;
@@ -67,7 +70,7 @@ case('currency_list'):
 	break;
 case('incoterm_list'):
 	incoterm_list();
-	break;	
+	break;
 case('postal_codes_list'):
 	postal_code_list();
 	break;
@@ -617,9 +620,10 @@ function customer_list() {
 	$rtext=number($total_records)." ".ngettext('Customer','Customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif ($total_records>10)
 		$rtext_rpp="("._('Showing all').")";
-
+	else
+		$rtext_rpp="";
 
 	$filter_msg='';
 
@@ -662,6 +666,162 @@ function customer_list() {
 			'formated_id'=>sprintf("%05d",$row['Customer Key'])
 
 
+		);
+
+	}
+	mysql_free_result($res);
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$total,
+			'records_perpage'=>$number_results,
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
+		)
+	);
+
+	echo json_encode($response);
+}
+
+
+function location_list() {
+
+	global $user;
+
+	if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+	else $start_from=0;
+	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+	else $number_results=20;
+	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+	else $order='code';
+	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+	else $order_dir='';
+	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+	else $f_field='code';
+	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+	else$f_value='';
+	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+	else$tableid=0;
+
+	if (isset( $_REQUEST['warehouse_key']))$warehouse_key=$_REQUEST['warehouse_key'];
+	else$warehouse_key='';
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+
+	if (!in_array($warehouse_key,$user->warehouses)) {
+		$where=sprintf('where false ');
+	} else {
+		$where=sprintf('where `Location Warehouse Key`=%d',$warehouse_key);
+	}
+
+
+
+
+	$filter_msg='';
+	$wheref='';
+
+
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
+
+
+	$sql="select count(*) as total from `Location Dimension` $where $wheref  ";
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Location Dimension`  $where   ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('Location','Locations',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp="("._('Showing all').")";
+	else
+		$rtext_rpp='';
+
+	$filter_msg='';
+
+	switch ($f_field) {
+
+	case('code'):
+		if ($filtered>0  or  ($total==0 and $filtered>0))
+			$filter_msg=" ".$total." "._('with code like')." <b>$f_value</b>";
+		break;
+
+	}
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='code')
+		$order='`Location File As`';
+	elseif ($order=='key')
+		$order='`Location Key`';
+	elseif ($order=='used_for')
+		$order='`Location Mainly Used For`';
+	else
+		$order='`Location Key`';
+
+	$adata=array();
+	$sql="select  `Location Key`, `Location Mainly Used For`,`Location Code` from `Location Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res)) {
+		switch ($row['Location Mainly Used For']) {
+		case 'Picking':
+			$used_for=_('Picking');
+			break;
+		case 'Storing':
+			$used_for=_('Storing');
+			break;
+		case 'Loading':
+			$used_for=_('Loading');
+			break;
+		case 'Displaying':
+			$used_for=_('Displaying');
+			break;
+		default:
+			$used_for=$row['Location Mainly Used For'];
+		}
+		$adata[]=array(
+			'key'=>$row['Location Key'],
+			'code'=>$row['Location Code'],
+			'used_for'=>$used_for
 		);
 
 	}
@@ -1714,16 +1874,16 @@ function incoterm_list() {
 
 	while ($row=mysql_fetch_array($res)) {
 
-        if($row['Incoterm Transport Type']=='Sea'){
-        		$transport_method=sprintf('<img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s">',_('Maritime and inland waterways'));
-        }else{
-        		$transport_method=sprintf('<img  style="height:12px" src="art/icons/transport_land.png" alt="land" title="%s"> <img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s"> <img  style="height:12px" src="art/icons/transport_air.png" alt="air" title="%s">',
-        		_('Land'),
-        		_('Maritime and inland waterway'),
-        		_('Air')
-        		);
+		if ($row['Incoterm Transport Type']=='Sea') {
+			$transport_method=sprintf('<img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s">',_('Maritime and inland waterways'));
+		}else {
+			$transport_method=sprintf('<img  style="height:12px" src="art/icons/transport_land.png" alt="land" title="%s"> <img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s"> <img  style="height:12px" src="art/icons/transport_air.png" alt="air" title="%s">',
+				_('Land'),
+				_('Maritime and inland waterway'),
+				_('Air')
+			);
 
-        }
+		}
 
 
 		$adata[]=array(

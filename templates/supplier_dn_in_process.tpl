@@ -7,6 +7,8 @@
 <input type="hidden" id="history_table_id" value="3"> 
 <input type="hidden" id="subject" value="supplier_dn"> 
 <input type="hidden" id="subject_key" value="{$supplier_dn->id}"> 
+<input type="hidden" id="warehouse_key" value="{$warehouse->id}"> 
+
 <div id="time2_picker" class="time_picker_div">
 </div>
 <div id="bd">
@@ -19,7 +21,7 @@
 			<span class="main_title no_buttons">{t}Supplier Delivery Note{/t} <span class="id">{$supplier_dn->get('Supplier Delivery Note Public ID')}</span></span> 
 		</div>
 		<div class="buttons small" style="position:relative;top:5px">
-			<button class="negative" id="delete_dn">{t}Delete{/t}</button> <button id="save_inputted_dn">{t}Save Delivery Note{/t}</button> 
+			<button class="negative" id="delete_dn"><img id="delete_dn_icon" src="art/icons/cross.png"> {t}Delete{/t}</button> <button style="{if $supplier_dn->get('Supplier Delivery Note Current State')!='In Process'}display:none{/if}" id="save_inputted_dn"><img id="save_inputted_dn_icon" src="art/icons/tick.png"> {t}Authorise delivery{/t}</button> <button style="{if $supplier_dn->get('Supplier Delivery Note Current State')!='Inputted'}display:none{/if}" id="mark_as_received"><img id="mark_as_received_icon" src="art/icons/lorry.png"> {t}Mark as Received{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -54,7 +56,7 @@
 						<td></td>
 					</tr>
 				</table>
-				<table border="0" class="related_objects">
+				<table border="0" class="related_objects" style="{if $number_pos==0}display:none{/if}">
 					<tr class="title">
 						<td colspan="2">{if $number_pos==1}{t}Purchase Order{/t}{else}Purchase Orders{/if}:</td>
 					</tr>
@@ -144,9 +146,92 @@
 			<tr>
 				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> 
 				<div class="buttons">
-					<button class="negative" onclick="delete_supplier_dn()">{t}Delete Supplier Delivery Note{/t}</button> </td>
-				</tr>
-			</table>
+					<button class="negative" onclick="delete_supplier_dn()">{t}Delete Supplier Delivery Note{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div id="received_dialog" style="padding:10px 15px">
+	<div id="received_dialog_msg">
+	</div>
+	<div class="options" style="margin:0px 0;width:200px" id="received_method_container">
+	</div>
+	<table class="edit" style="width:100%">
+		<input type="hidden" id="date_type" value="now" />
+		<tr class="title">
+			<td colspan="2">{t}Receive delivery{/t}</td>
+		</tr>
+		<tr id="tr_manual_received_date" style="display:none">
+			<td class="aright" style="width:150px"><img class="edit_icon" src="art/icons/edit.gif" alt="{t}Edit{/t}" onclick="submit_date_manually()" /> {t}Received Date{/t}:</td>
+			<td style="width:150px;padding-left:5px">{t}Now{/t}</td>
+		</tr>
+		<tbody style="display:none" id="tbody_manual_received_date">
+			<tr>
+				<td class="aright">{t}Received Date{/t}:</td>
+				<td> 
+				<input id="v_calpop1" style="text-align:right;" class="text" name="submites_date" type="text" size="10" maxlength="10" value="" />
+				<img id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /> 
+				<div id="cal1Container" style="position:absolute;display:none; z-index:2">
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="aright">{t}Time{/t}:</td>
+				<td> 
+				<input id="v_time" style="text-align:right;" class="text" name="expected_date" type="text" size="5" maxlength="5" value="" />
+				<img id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt="" /> </td>
+			</tr>
+		</tbody>
+		<tr class="first">
+			<input type="hidden" id="received_by" value="{$user->get_staff_key()}" />
+			<td class="aright"><img class="edit_icon" src="art/icons/edit.gif" alt="{t}Edit{/t}" id="get_receiver" /> {t}Received By{/t}:</td>
+			<td style="width:150px;padding-left:5px"><span style="cursor:pointer" onclick="show_staff_dialog()" id="received_by_alias">{$user->get_staff_name()}</span></td>
+		</tr>
+		<input type="hidden" id="location_key" value="{$default_loading_location_key}" />
+		<tr>
+			<td class="aright"><img class="edit_icon" src="art/icons/edit.gif" alt="{t}Edit{/t}" id="get_location" /> {t}Receiving Location{/t}:</td>
+			<td style="width:150px;padding-left:5px"> <span style="cursor:pointer" onclick="show_location_dialog()"  id="location_code">{$default_loading_location_code}</span> </td>
+		</tr>
+		<tr class="buttons">
+			<td></td>
+			<td> 
+			<div class="buttons left">
+				<button onclick="received_order_save()" class="positive">{t}Save{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="staff_dialog">
+	<input type="hidden" id="staff_list_parent_dialog" value=""> 
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="buttons small left" style="margin:15px 0px">
+			{foreach from=$operators item=operator} <button class="quick_choose_button" staff_key="{$operator.Key}" onclick="select_staff_from_button(this)">{$operator.Name}</button> {/foreach} <button class="quick_choose_button" staff_key="0" onclick="select_staff_from_button(this)">{t}Unknown/Other{/t}</button> 
+		</div>
+		<div style="clear:both;margin-top:0px;height:5px">
+		</div>
+		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
+			<span class="clean_table_title">{t}Staff{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name='code' filter_value=''} 
+			<div id="table2" class="data_table_container dtable btable">
+			</div>
 		</div>
 	</div>
-	{include file='notes_splinter.tpl'} {include file='footer.tpl'} 
+</div>
+<div id="location_dialog">
+	<input type="hidden" id="location_list_parent_dialog" value=""> 
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="buttons small left" style="margin:15px 0px">
+			{foreach from=$loading_locations item=location} <button class="quick_choose_button" location_key="{$location.Key}" onclick="select_location_from_button(this)">{$location.Code}</button> {/foreach} 
+		</div>
+		<div style="clear:both;margin-top:0px;height:5px">
+		</div>
+		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
+			<span class="clean_table_title">{t}Locations{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name='code' filter_value=''} 
+			<div id="table1" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+{include file='notes_splinter.tpl'} {include file='footer.tpl'} 

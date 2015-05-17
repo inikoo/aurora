@@ -39,6 +39,10 @@ case('create_sdn_from_po'):
 			'po_key'=>array('type'=>'key'),
 			'number'=>array('type'=>'string'),
 			'input'=>array('type'=>'string'),
+			'receive'=>array('type'=>'string'),
+			'receiver_key'=>array('type'=>'numeric'),
+			'location_key'=>array('type'=>'key'),
+
 		));
 
 	create_sdn_from_po($data);
@@ -342,6 +346,7 @@ function create_sdn_from_po($data) {
 		'Supplier Delivery Note Supplier Key'=>$supplier->id,
 		'Supplier Delivery Note Public ID'=>$data['number'],
 		'Supplier Delivery Note Date'=>gmdate('Y-m-d H:i:s'),
+		'Supplier Delivery Note Warehouse Key'=>$po->data['Purchase Order Warehouse Key'],
 		'editor'=>$editor
 	);
 
@@ -357,9 +362,7 @@ function create_sdn_from_po($data) {
 			$po->id);
 
 		$res=mysql_query($sql);
-
 		while ($row=mysql_fetch_assoc($res)) {
-
 
 			$sql = sprintf( "update `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=%d, `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note State`=%s where `Purchase Order Transaction Fact Key`=%d ",
 				$supplier_delivery_note->id,
@@ -369,10 +372,8 @@ function create_sdn_from_po($data) {
 				prepare_mysql('Inputted'),
 				$row['Purchase Order Transaction Fact Key']
 			);
-
 			mysql_query($sql);
 		}
-
 
 		$_data=array(
 			'Supplier Delivery Note Input Date'=>gmdate('Y-m-d H:i:s'),
@@ -381,6 +382,16 @@ function create_sdn_from_po($data) {
 		$supplier_delivery_note->input($_data);
 	}else {
 		$redirect=sprintf('supplier_dn.php?id=%d',$supplier_delivery_note->id);
+	}
+
+	if ($data['receive']=='Yes') {
+
+		$data=array(
+			'Supplier Delivery Note Received Date'=>gmdate('Y-m-d H:i:s'),
+			'Supplier Delivery Note Main Receiver Key'=>$data['receiver_key'],
+			'Supplier Delivery Note Received Location Key'=>$data['location_key']
+		);
+		$supplier_delivery_note->mark_as_received($data);
 	}
 
 	$response= array('state'=>200,'redirect'=>$redirect);
@@ -723,6 +734,10 @@ function dn_transactions_to_process() {
 
 	}
 	else {
+
+
+
+
 		$table='  `Purchase Order Transaction Fact` OTF
                left join `Supplier Product History Dimension` PHD on (`SPH Key`=OTF.`Supplier Product Key`)
                left join `Supplier Product Dimension` PD on (PD.`Supplier Product ID`=OTF.`Supplier Product ID`)
@@ -731,7 +746,8 @@ function dn_transactions_to_process() {
 		if ($pos) {
 			$where=sprintf(' where  (`Purchase Order Key` in (%s) or `Supplier Delivery Note Key`=%d)',$pos,$supplier_dn_key);
 		}else {
-			$where=sprintf(' where   `Supplier Delivery Note Key`=%d',$pos,$supplier_dn_key);
+			$where=sprintf(' where   `Supplier Delivery Note Key`=%d',$supplier_dn_key);
+
 
 		}
 		$sql_qty=',  OTF.`Supplier Product Key`  , `Purchase Order Transaction Fact Key`,`Purchase Order Quantity` ,`Purchase Order Quantity Type` ,`Purchase Order Net Amount`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';

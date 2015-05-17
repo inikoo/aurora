@@ -43,7 +43,7 @@ var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
         
        if(oResponse.meta.RecordOffset == undefined){
             //todo: remove
-            alert("error in table, please contact Tomas")
+            //alert("error in table, please contact Tomas")
        }
       
        

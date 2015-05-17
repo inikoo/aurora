@@ -11,6 +11,7 @@ include_once 'common.php';
 include_once 'common_date_functions.php';
 
 include_once 'class.Supplier.php';
+include_once 'class.Warehouse.php';
 
 if ($user->data['User Type']!='Supplier' and !$user->can_view('suppliers')) {
 	$smarty->display('forbidden.tpl');
@@ -49,6 +50,8 @@ if (!$supplier->id) {
 	header('Location: suppliers.php?msg=SNPF');
 	exit;
 }
+
+
 
 
 $smarty->assign('search_label',_('Search'));

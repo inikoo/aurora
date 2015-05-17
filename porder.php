@@ -5,6 +5,7 @@ include_once 'class.Warehouse.php';
 include_once 'class.Supplier.php';
 include_once 'class.PurchaseOrder.php';
 include_once 'class.CompanyArea.php';
+include_once 'class.Staff.php';
 
 
 
@@ -142,7 +143,11 @@ $js_files=array(
 );
 
 
+
 $po_id = $po->id;
+$warehouse=new Warehouse($po->data['Purchase Order Warehouse Key']);
+$smarty->assign('warehouse',$warehouse);
+
 
 $smarty->assign('po',$po);
 $smarty->assign('supplier',$supplier);
@@ -342,6 +347,55 @@ elseif ($po->data['Purchase Order State']=='Submitted' or $po->data['Purchase Or
 	$_SESSION['state']['porder']['products']['display']='ordered_products';
 	$smarty->assign('products_display_type',$_SESSION['state']['porder']['products']['display']);
 
+	$company_area=new CompanyArea('code','WAH');
+	$operators=$company_area->get_current_staff_with_position_code('WAH.SK');
+
+	$operators_data=array();
+	foreach ($operators as $operator) {
+		$operators_data[]=array(
+			'Key'=>$operator['Staff Key'],
+			'Name'=>$operator['Staff Name']
+		);
+	}
+	$smarty->assign('operators',$operators_data);
+	$smarty->assign('number_operators',count($operators_data));
+
+
+	$default_loading_location_key=1;
+	$default_loading_location_code=_('Unknown');
+
+
+
+	$contador=0;
+	$number_cols=5;
+	$loading_locations=array();
+	$sql=sprintf("select `Location Key`,`Location Code` from `Location Dimension` where `Location Mainly Used For`='Loading'   ");
+	$res = mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		if ($contador==0) {
+			$default_loading_location_key=$row['Location Key'];
+			$default_loading_location_code=$row['Location Code'];
+		}
+
+		$loading_locations[]=array(
+			'Key'=>$row['Location Key'],
+			'Code'=>$row['Location Code'],
+			'mod'=>fmod($contador,$number_cols),
+			'number_cols'=>$number_cols
+		);
+		$contador++;
+		if ($contador>10)break;
+	}
+
+
+	$smarty->assign('default_loading_location_key',$default_loading_location_key);
+	$smarty->assign('default_loading_location_code',$default_loading_location_code);
+
+	$smarty->assign('loading_locations',$loading_locations);
+	$smarty->assign('number_loading_locations',count($loading_locations));
+
+
 
 
 	$template='porder_submitted.tpl';
@@ -383,7 +437,7 @@ $session_data=base64_encode(json_encode(array(
 				'Qty'=>_('Cartons'),
 				'PO_Qty'=>_('PO Qty'),
 				'SDN_Qty'=>_('SDN Qty'),
-				'Qty_Received'=>_('Received'),
+				'Qty_Checked'=>_('Checked'),
 				'Qty_Damaged'=>_('Damaged'),
 				'Qty_to_Stock'=>_('to Stock'),
 				'Net_Cost'=>_('Net Cost'),

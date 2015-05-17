@@ -172,7 +172,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
           {
             key: "quantity_received",
-            label: labels.Qty_Received,
+            label: labels.Qty_Checked,
             width: 50,
             sortable: false,
             className: "aright",

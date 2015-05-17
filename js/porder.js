@@ -98,7 +98,7 @@ function show_estimated_delivery_dialog() {
 }
 
 function show_estimated_delivery_dialog_calendar() {
- Dom.get('estimated_delivery_msg').innerHTML='';
+    Dom.get('estimated_delivery_msg').innerHTML = '';
     cal2.show()
     Dom.setStyle('estimated_delivery_Container', 'z-index', 10000)
     region1 = Dom.getRegion('v_calpop_estimated_delivery');
@@ -114,19 +114,19 @@ function submit_edit_estimated_delivery() {
 
     var ar_file = 'ar_edit_porders.php';
     request = 'tipo=edit_porder_quick&key=estimated_delivery&okey=estimated_delivery&newvalue=' + encodeURIComponent(date) + '&po_key=' + Dom.get('po_key').value;
-  // alert(ar_file+'?'+request)
+    // alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-         // alert(o.responseText);
+            // alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.get('estimated_delivery').innerHTML = r.newvalue;
                 edit_estimated_delivery_dialog.hide();
-                
-                Dom.get('v_calpop_estimated_delivery').value=r.estimated_delivery;
+
+                Dom.get('v_calpop_estimated_delivery').value = r.estimated_delivery;
                 //	callback(true, r.newvalue);
             } else {
-                Dom.get('estimated_delivery_msg').innerHTML=r.msg
+                Dom.get('estimated_delivery_msg').innerHTML = r.msg
                 //	callback();
             }
         },
@@ -172,9 +172,9 @@ function init() {
     edit_estimated_delivery_dialog.render();
     Event.addListener("edit_estimated_delivery", "click", show_estimated_delivery_dialog);
 
-       Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
-  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS0.queryMatchContains = true;
     oACDS0.table_id = 0;
     var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);

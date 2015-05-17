@@ -48,7 +48,7 @@ case('sites'):
 		));
 	$sites_keys=$user->websites;
 	if (count($sites_keys)==0)return;
-	$data['site_id']=join(',',$sites_keys);
+	$data['site_key']=join(',',$sites_keys);
 	$data['user']=$user;
 	search_site($data);
 	break;
@@ -56,9 +56,9 @@ case('sites'):
 case('site'):
 	$data=prepare_values($_REQUEST,array(
 			'q'=>array('type'=>'string'),
-			'site_id'=>array('type'=>'key')
+			'site_key'=>array('type'=>'key')
 		));
-	if (!in_array($data['site_id'],$user->websites)) {
+	if (!in_array($data['site_key'],$user->websites)) {
 		return;
 	}
 
@@ -72,8 +72,8 @@ case('products'):
 			'scope'=>array('type'=>'string')
 		));
 
-	if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
-		$data['store_id']=$_REQUEST['store_id'];
+	if ($data['scope']=='store' and isset($_REQUEST['store_key'])) {
+		$data['store_key']=$_REQUEST['store_key'];
 	}
 	$data['user']=$user;
 	search_products($data);
@@ -84,8 +84,8 @@ case('supplier_products'):
 			'scope'=>array('type'=>'string')
 		));
 
-	if ($data['scope']=='supplier' and isset($_REQUEST['supplier_id'])) {
-		$data['supplier_id']=$_REQUEST['supplier_id'];
+	if ($data['scope']=='supplier' and isset($_REQUEST['supplier_key'])) {
+		$data['supplier_key']=$_REQUEST['supplier_key'];
 	}
 	$data['user']=$user;
 	search_supplier_products($data);
@@ -122,9 +122,9 @@ case('orders_store'):
 			,'scope'=>array('type'=>'string')
 		));
 	$data['user']=$user;
-	$data['store_id']=0;
-	if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
-		$data['store_id']=$_REQUEST['store_id'];
+	$data['store_key']=0;
+	if ($data['scope']=='store' and isset($_REQUEST['store_key'])) {
+		$data['store_key']=$_REQUEST['store_key'];
 	}
 
 	search_orders($data);
@@ -141,9 +141,9 @@ case('customers'):
 			,'scope'=>array('type'=>'string')
 		));
 	$data['user']=$user;
-	$data['store_id']=0;
-	if ($data['scope']=='store' and isset($_REQUEST['store_id'])) {
-		$data['store_id']=$_REQUEST['store_id'];
+	$data['store_key']=0;
+	if ($data['scope']=='store' and isset($_REQUEST['store_key'])) {
+		$data['store_key']=$_REQUEST['store_key'];
 	}
 
 	search_customer($data);
@@ -161,7 +161,7 @@ case('departments'):
 case('search_field'):
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array'),
-			'store_id'=>array('type'=>'key'),
+			'store_key'=>array('type'=>'key'),
 			'scope'=>array('type'=>'string')
 		));
 	$data['user']=$user;
@@ -615,8 +615,8 @@ function search_orders($data) {
 
 	$candidates=array();
 
-	if ($data['scope']=='store' and $data['store_id']) {
-		$stores=$data['store_id'];
+	if ($data['scope']=='store' and $data['store_key']) {
+		$stores=$data['store_key'];
 
 	} else
 		$stores=join(',',$user->stores);
@@ -706,9 +706,9 @@ function search_customer($data) {
 	}
 
 	if ($data['scope']=='store') {
-		if (in_array($data['store_id'],$user->stores)) {
-			$stores=$data['store_id'];
-			$where_store=sprintf(' and `Customer Store Key`=%d',$data['store_id']);
+		if (in_array($data['store_key'],$user->stores)) {
+			$stores=$data['store_key'];
+			$where_store=sprintf(' and `Customer Store Key`=%d',$data['store_key']);
 		}else {
 			$where_store=' and false';
 		}
@@ -1131,8 +1131,8 @@ function search_products($data) {
 
 
 	if ($data['scope']=='store') {
-		if (in_array($data['store_id'],$user->stores))
-			$stores=$data['store_id'];
+		if (in_array($data['store_key'],$user->stores))
+			$stores=$data['store_key'];
 		else
 			$stores=0;
 
@@ -1728,8 +1728,8 @@ function search_field($data) {
 
 
 	if ($data['scope']=='store') {
-		if (in_array($data['store_id'],$user->stores))
-			$stores=$data['store_id'];
+		if (in_array($data['store_key'],$user->stores))
+			$stores=$data['store_key'];
 		else
 			$stores=0;
 
@@ -2101,14 +2101,14 @@ function search_supplier_products($data) {
 
 
 	if ($data['scope']=='supplier') {
-		$suppliers_where=sprintf(' `Supplier Key`=%d ',$data['supplier_id']);
+		$suppliers_where=sprintf(' `Supplier Key`=%d ',$data['supplier_key']);
 
-		if ($user->data['User Type']=='Supplier' and !in_array($data['supplier_id'],$user->suppliers)) {
+		if ($user->data['User Type']=='Supplier' and !in_array($data['supplier_key'],$user->suppliers)) {
 			$suppliers_where=' false ';
 		}
 
 
-		//if (in_array($data['supplier_id'],$user->suppliers))
+		//if (in_array($data['supplier_key'],$user->suppliers))
 		//       $suppliers=$data['suppleir_id'];
 		//   else
 		//      $suppliers=0;
@@ -2313,7 +2313,7 @@ function search_site($data) {
 	$found_family=false;
 	$candidates=array();
 	$sql=sprintf('select `Page Key`,`Page Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Code` like "%s%%" limit 100 ',
-		addslashes($data['site_id']),
+		addslashes($data['site_key']),
 		addslashes($q));
 
 	$res=mysql_query($sql);
@@ -2329,7 +2329,7 @@ function search_site($data) {
 
 
 	$sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key` in (%s) and `Page Parent Code` like "%s%%" limit 100 ',
-		addslashes($data['site_id']),
+		addslashes($data['site_key']),
 		addslashes($q));
 	//print $sql;
 	$res=mysql_query($sql);
@@ -2353,7 +2353,7 @@ function search_site($data) {
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
 
 		addslashes($q),
-		addslashes($data['site_id']),
+		addslashes($data['site_key']),
 		addslashes($q)
 	);
 	$res=mysql_query($sql);
@@ -2371,7 +2371,7 @@ function search_site($data) {
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Description`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Description`) AGAINST ("%s")  ',
 
 		addslashes($q),
-		addslashes($data['site_id']),
+		addslashes($data['site_key']),
 		addslashes($q)
 	);
 	$res=mysql_query($sql);
@@ -2389,7 +2389,7 @@ function search_site($data) {
 	$sql=sprintf('select `Page Key`, MATCH (`Page Store Source`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Source`) AGAINST ("%s")  ',
 
 		addslashes($q),
-		addslashes($data['site_id']),
+		addslashes($data['site_key']),
 		addslashes($q)
 	);
 	$res=mysql_query($sql);

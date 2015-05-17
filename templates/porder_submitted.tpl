@@ -7,6 +7,8 @@
 <input type="hidden" id="history_table_id" value="3"> 
 <input type="hidden" id="subject" value="porder"> 
 <input type="hidden" id="subject_key" value="{$po->id}"> 
+<input type="hidden" id="warehouse_key" value="{$warehouse->id}"> 
+
 <div id="time2_picker" class="time_picker_div">
 </div>
 <div id="bd">
@@ -21,9 +23,7 @@
 			<span class="main_title no_buttons">{t}Purchase Order{/t} <span class="id">{$po->get('Purchase Order Public ID')}</span></span> 
 		</div>
 		<div class="buttons small" style="position:relative;top:5px">
-			<button class="negative" id="cancel_po"><img src="art/icons/cancel.png"> {t}Cancel{/t}</button> <button id="back_to_in_process"><img id="back_to_in_process_icon" src="art/icons/application_ungo.png"> {t}Back to processing{/t}</button> <button style="{if $po->get('Purchase Order State')!='Submitted'}display:none{/if}" id="confirm"><img src="art/icons/tick.png"> {t}Confirmed by supplier{/t}</button> 
-			<button style="display:none;{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}" id="invoice_po"><img id="invoice_po_icon" src="art/icons/money.png"> {t}Match to Invoice{/t}</button> 
-			
+			<button class="negative" id="cancel_po"><img src="art/icons/cancel.png"> {t}Cancel{/t}</button> <button id="back_to_in_process"><img id="back_to_in_process_icon" src="art/icons/application_ungo.png"> {t}Back to processing{/t}</button> <button style="{if $po->get('Purchase Order State')!='Submitted'}display:none{/if}" id="confirm"><img src="art/icons/tick.png"> {t}Confirmed by supplier{/t}</button> <button style="display:none;{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}" id="invoice_po"><img id="invoice_po_icon" src="art/icons/money.png"> {t}Match to Invoice{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -92,7 +92,7 @@
 						<td class="aright" id="agreed_date">{$po->get('Agreed Receiving Date')}</td>
 					</tr>
 					<tr class="last">
-						<td  class="label"> 
+						<td class="label"> 
 						<div id="estimated_delivery_Container" style="position:absolute;display:none; z-index:2">
 						</div>
 						<img style="cursor:pointer" id="edit_estimated_delivery" src="art/icons/edit.gif" alt="({t}edit{/t})"> {t}Estimated Delivery{/t}:</td>
@@ -107,16 +107,13 @@
 						<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
 					</tr>
 				</table>
-				
 				<table id="sdns_info" border="0" class="related_objects" style="{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}">
 					<tr class="title">
-						<td colspan="2">
-						
+						<td colspan="2"> 
 						<div class="buttons small right">
-						<button style="{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}" id="dn_po"><img id="dn_po_icon" src="art/icons/lorry_go.png"> {t}Match to Delivery Note{/t}</button> 
+							<button style="{if $po->get('Purchase Order State')!='Confirmed'}display:none{/if}" id="dn_po"><img id="dn_po_icon" src="art/icons/lorry_go.png"> {t}Match to Delivery Note{/t}</button> 
 						</div>
-						{if $number_dsns==1}{t}Delivery Note{/t}{else}Deliveries{/if}:
-						</td>
+						{if $number_dsns==1}{t}Delivery Note{/t}{else}Deliveries{/if}: </td>
 					</tr>
 					{foreach from=$sdns_data item=sdn} 
 					<tr>
@@ -295,15 +292,31 @@
 				<td class="label">{t}Delivery note date{/t}:</td>
 				<td class="input"> 
 				<input id="v_calpop1" style="text-align:right;" class="text" name="submites_date" type="text" size="10" maxlength="10" value="" />
-				<img id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /> 
+				<img id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt="" /> </td>
 			</tr>
 			<tr>
 				<td class="label">{t}Delivery note identical to PO{/t}</td>
-				<td>
-				<input type="hidden" value="Yes" id="input_sdn">
-				<img id="input_sdn_Yes" class="checkbox"  style="display:none" src="art/icons/checkbox_unchecked.png">
-				<img id="input_sdn_No" class="checkbox"  src="art/icons/checkbox_checked.png"></td>
+				<td> 
+ 				<input type="hidden" value="Yes" id="input_sdn"> <img id="input_sdn_Yes" style="display:none" class="checkbox" src="art/icons/checkbox_unchecked.png"> <img id="input_sdn_No" class="checkbox"  src="art/icons/checkbox_checked.png"></td>
 			</tr>
+			<tr>
+				<td class="label">{t}Mark as received{/t}</td>
+				<td> 
+								<input type="hidden" value="No" id="mark_as_received"> <img id="mark_as_received_Yes" class="checkbox"  src="art/icons/checkbox_unchecked.png"> <img id="mark_as_received_No" style="display:none" class="checkbox" src="art/icons/checkbox_checked.png"> </td>
+
+			</tr>
+			<tbody id="receiving_fields" style="display:none">
+			<tr>
+				<input type="hidden" id="received_by" value="{$user->get_staff_key()}" />
+				<td class="label"><img class="edit_icon" src="art/icons/edit.gif" alt="{t}Edit{/t}" id="get_receiver" /> {t}Received by{/t}:</td>
+				<td><span style="cursor:pointer"  id="received_by_alias">{$user->get_staff_name()}</span></td>
+			</tr>
+			<tr>
+				<input type="hidden" id="location_key" value="{$default_loading_location_key}" />
+				<td class="label"><img class="edit_icon" src="art/icons/edit.gif" alt="{t}Edit{/t}" id="get_location" /> {t}Receiving location{/t}:</td>
+				<td> <span style="cursor:pointer"  id="location_code">{$default_loading_location_code}</span> </td>
+			</tr>
+			</tbody>
 			<tr class="buttons">
 				<td class="label "> <span class="error" id="dn_dialog_msg"> </span> </td>
 				<td> 
@@ -313,8 +326,40 @@
 					</div>
 					<button id="match_to_dn_save" onclick="match_to_dn_save()">{t}Match to Delivery Note{/t}</button> </td>
 					</buttons> 
-				</tr>
-			</table>
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div id="staff_dialog">
+	<input type="hidden" id="staff_list_parent_dialog" value=""> 
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="buttons small left" style="margin:15px 0px">
+			{foreach from=$operators item=operator} <button class="quick_choose_button" staff_key="{$operator.Key}" onclick="select_staff_from_button(this)">{$operator.Name}</button> {/foreach} <button class="quick_choose_button" staff_key="0" onclick="select_staff_from_button(this)">{t}Unknown/Other{/t}</button> 
+		</div>
+		<div style="clear:both;margin-top:0px;height:5px">
+		</div>
+		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
+			<span class="clean_table_title">{t}Staff{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name='code' filter_value=''} 
+			<div id="table2" class="data_table_container dtable btable">
+			</div>
 		</div>
 	</div>
-	{include file='notes_splinter.tpl'} {include file='porder_common_splinter.tpl'} {include file='footer.tpl'} 
+</div>
+<div id="location_dialog">
+	<input type="hidden" id="location_list_parent_dialog" value=""> 
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div class="buttons small left" style="margin:15px 0px">
+			{foreach from=$loading_locations item=location} <button class="quick_choose_button" location_key="{$location.Key}" onclick="select_location_from_button(this)">{$location.Code}</button> {/foreach} 
+		</div>
+		<div style="clear:both;margin-top:0px;height:5px">
+		</div>
+		<div id="the_table" class="data_table" style="clear:both;margin-top:10px">
+			<span class="clean_table_title">{t}Locations{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name='code' filter_value=''} 
+			<div id="table1" class="data_table_container dtable btable">
+			</div>
+		</div>
+	</div>
+</div>
+{include file='notes_splinter.tpl'} {include file='porder_common_splinter.tpl'} {include file='footer.tpl'} 
