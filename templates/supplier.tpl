@@ -193,6 +193,7 @@
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchase Orders{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='deliveries'}selected{/if}" id="deliveries"> <span> {t}Deliveries{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='invoices'}selected{/if}" id="invoices"> <span> {t}Invoices{/t}</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -427,9 +428,20 @@
 			<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
-		<div id="block_deliveries" style="{if $block_view!='purchases'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_deliveries" style="{if $block_view!='deliveries'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<span class="clean_table_title" style="margin-right:5px">{t}Deliveries{/t} </span> 
+			<div class="buttons small left">
+				<button onclick="new_sdn()"><img src="art/icons/add.png" alt=""> {t}New{/t}</button> 
+			</div>
+			<div class="table_top_bar space">
+			</div>
+			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+			<div id="table3" class="data_table_container dtable btable" style="font-size:90%">
+			</div>
 		</div>
-		<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="block_invoices" style="{if $block_view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		</div>
+		<div id="block_history" style="{if $block_view!='invoices'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title">{t}History/Notes{/t}</span> 
 			<div class="elements_chooser">
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_history_Changes_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 

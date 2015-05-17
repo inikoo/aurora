@@ -509,31 +509,31 @@ function list_purchase_orders() {
 		$status=$row['Purchase Order State'];
 
 
-	switch ($row['Purchase Order State']) {
-			case 'In Process':
-				$status= _('In Process');
-				break;
-			case 'Submitted':
-				$status= _('Submitted');
-				break;
-			case 'Confirmed':
-				$status= _('Confirmed');
-				break;
-			case 'In Warehouse':
-				$status= _('In Warehouse');
-				break;
-			case 'Done':
-				$status= _('Consolidates');
-				break;
-			
-			case 'Cancelled':
-				$status= _('Cancelled');
-				break;
-		
-			default:
-				$status= $row['Purchase Order State'];
-				break;
-			}
+		switch ($row['Purchase Order State']) {
+		case 'In Process':
+			$status= _('In Process');
+			break;
+		case 'Submitted':
+			$status= _('Submitted');
+			break;
+		case 'Confirmed':
+			$status= _('Confirmed');
+			break;
+		case 'In Warehouse':
+			$status= _('In Warehouse');
+			break;
+		case 'Done':
+			$status= _('Consolidates');
+			break;
+
+		case 'Cancelled':
+			$status= _('Cancelled');
+			break;
+
+		default:
+			$status= $row['Purchase Order State'];
+			break;
+		}
 
 
 
@@ -672,9 +672,19 @@ function list_delivery_notes() {
 		$_SESSION['state'][$conf_table]['to']=$date_interval['to'];
 	}
 
-	$where=' where true';
+	if ($parent=='none') {
+
+		$where=' where true';
+	}else {
+		$where=sprintf('where `Supplier Delivery Note Supplier Key`=%d',$parent_key);
+	}
+
 
 	$where.=$date_interval['mysql'];
+
+
+
+
 
 	$wheref='';
 
@@ -713,15 +723,16 @@ function list_delivery_notes() {
 		}
 
 	}
-	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('delivery','deliveries',$total_records);
 
 
 
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=_("Showing all orders");
-
+	elseif($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+    else
+        $rtext_rpp='';
 
 
 	$filter_msg='';
@@ -760,7 +771,14 @@ function list_delivery_notes() {
 	$_dir=$order_direction;
 	$order='`Supplier Delivery Note Last Updated Date`';
 
-	$sql="select  SDND.`Supplier Delivery Note Last Updated Date`,SDND.`Supplier Delivery Note Current State`,SDND.`Supplier Delivery Note Key`,SDND.`Supplier Delivery Note Public ID`,SDND.`Supplier Delivery Note Number Items`,POD.`Purchase Order Public ID`,POD.`Purchase Order Supplier Name`,POD.`Purchase Order Total Amount`,POD.`Purchase Order Currency Code` from  `Supplier Delivery Note Dimension` SDND left join `Purchase Order Transaction Fact` POTF on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`) left join `Purchase Order Dimension` POD on (POD.`Purchase Order Key`=POTF.`Purchase Order Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+	$sql="select 
+	
+		(select group_concat('<a href=\"porder.php?id=',PO.`Purchase Order Key`,'\">',PO.`Purchase Order Public ID`,'</a>') from  `Purchase Order Dimension` PO  left join `Purchase Order SDN Bridge` B on (PO.`Purchase Order Key`=B.`Purchase Order Key`)  where B.`Supplier Delivery Note Key`=SDND.`Supplier Delivery Note Key` ) as pos,
+	
+	 
+`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Number Items`,`Supplier Delivery Note Current State`,`Supplier Name`,`Supplier Key`
+	 from  `Supplier Delivery Note Dimension` SDND left join `Supplier Dimension` S on (S.`Supplier Key`=SDND.`Supplier Delivery Note Supplier Key`)
+	  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
 	// $sql="select  `Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Current State`,`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Number Items` from  `Supplier Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
@@ -773,12 +791,12 @@ function list_delivery_notes() {
 
 		$data[]=array(
 			'id'=>'<a href="supplier_dn.php?id='.$row['Supplier Delivery Note Key'].'">'.$row['Supplier Delivery Note Public ID']."</a>",
-			'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Supplier Delivery Note Last Updated Date'])),
+			'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Supplier Delivery Note Last Updated Date'].' +0:00')),
 			'items'=>number($row['Supplier Delivery Note Number Items']),
 			'status'=>$status,
-			'order_id'=>$row['Purchase Order Public ID'],
-			'supplier_name'=>$row['Purchase Order Supplier Name'],
-			'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
+			'pos'=>$row['pos'],
+			//'invoices'=>$row['invoices'],
+			'supplier_name'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Name'])
 		);
 	}
 
@@ -1067,16 +1085,16 @@ function get_attachments_showcase($data) {
 	$subject_key=$data['subject_key'];
 	$subject=$data['subject'];
 
-    if($subject=='porder'){
-        $object=new PurchaseOrder($data['subject_key']);
-    }elseif($subject=='supplier_dn'){
-        $object=new SupplierDeliveryNote($data['subject_key']);
-    }elseif($subject=='supplier_invoice'){
-        $object=new SupplierInvoice($data['subject_key']);
-    }else{
-        exit;
-    }
-	
+	if ($subject=='porder') {
+		$object=new PurchaseOrder($data['subject_key']);
+	}elseif ($subject=='supplier_dn') {
+		$object=new SupplierDeliveryNote($data['subject_key']);
+	}elseif ($subject=='supplier_invoice') {
+		$object=new SupplierInvoice($data['subject_key']);
+	}else {
+		exit;
+	}
+
 	$smarty->assign('attachments',$object->get_attachments_data());
 	$attachments_showcase=$smarty->fetch('attachments_showcase_splinter.tpl');
 	$attachments_label=_('Attachments');

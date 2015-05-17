@@ -107,9 +107,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
 		var SuppliersColumnDefs = [
-					   {key:"public_id", label:"<?php echo _('Id')?>",  width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   {key:"public_id", label:"<?php echo _('Id')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					   ,{key:"date", label:"<?php echo _('Date')?>", width:145,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"status", label:"<?php echo _('Type')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"status", label:"<?php echo _('Type')?>",width:90, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					   ,{key:"buyer_name", label:"<?php echo _('Buyer')?>",width:170, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -255,33 +255,42 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	var tableid=3; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
 		var SuppliersColumnDefs = [
-					   {key:"id", label:"<?php echo _('Id')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   ,{key:"status", label:"<?php echo _('Type')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					   //,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   {key:"id", label:"<?php echo _('Id')?>",  width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"date", label:"<?php echo _('Last Updated')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"status", label:"<?php echo _('Status')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"pos", label:"<?php echo _('Purcahse orders')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"invoies", label:"<?php echo _('Invoices')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				       ];
-		
-		this.dataSource3 = new YAHOO.util.DataSource("ar_porders.php?tipo=delivery_notes&sf=0&parent=supplier&parent_key="+supplier_key+"&tableid=3");
+				       
+		request="ar_porders.php?tipo=delivery_notes&sf=0&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&tableid="+tableid
+		//alert(request)
+		this.dataSource3 = new YAHOO.util.DataSource(request);
 	this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource3.connXhrMode = "queueRequests";
 		this.dataSource3.responseSchema = {
 		    resultsList: "resultset.data", 
 		metaFields: {
-		    rtext:"resultset.rtext",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
+		                  rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+
 		},
 		
 		fields: [
-			 "id"
-			 ,"status"
-			 ,"date"
-			 ,"items"
+			 "id",
+			 "status",
+			 "date",
+			 "items",
+			 "pos",
+			 "invoices"
 
 	 ]};
 
@@ -306,11 +315,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 						     }
 						     );
-	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table3.table_id=tableid;
-     this.table3.subscribe("renderEvent", myrenderEvent);
+	     this.table3.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+        this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table3.doBeforeLoadData = mydoBeforeLoadData;
+        this.table3.table_id = tableid;
+        this.table3.request = request;
+        this.table3.subscribe("renderEvent", myrenderEvent);
+	    
+	    
+	    
+	    
+	    
 	    
 	    
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['supplier']['supplier_dns']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['supplier_dns']['f_value']?>'};
@@ -810,13 +826,15 @@ ids=['elements_changes','elements_orders','elements_notes','elements_attachments
 
 
 function change_block() {
-    ids = ["details", "products", "purchase_orders", "purchases", "sales", "history","deliveries"];
-    block_ids = ["block_details", "block_products", "block_purchase_orders", "block_purchases", "block_sales", "block_history"];
+    ids = ["details", "products", "purchases", "sales", "history","deliveries","invoices"];
+    block_ids = ["block_details", "block_products", "block_deliveries", "block_purchases", "block_sales", "block_history","block_invoices"];
 
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
+
+	
 
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-block_view&value=' + this.id, {});
 }
@@ -1058,7 +1076,7 @@ dialog_image_upload.render();
 
 	        //   ids = ['product_general', 'product_sales', 'product_stock', 'product_forecast'];
 	        // YAHOO.util.Event.addListener(ids, "click", change_supplier_product_view)
-	        ids = ["details", "products", "purchase_orders", "purchases", "sales", "history"];
+    ids = ["details", "products", "purchases", "sales", "history","deliveries","invoices"];
 	        Event.addListener(ids, "click", change_block);
 
 

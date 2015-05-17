@@ -155,8 +155,6 @@ $smarty->assign('supplier_products_period',$_SESSION['state']['supplier']['suppl
 
 $tipo_filter=$_SESSION['state']['supplier']['porders']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-
-
 $smarty->assign('filter_value1',$_SESSION['state']['supplier']['porders']['f_value']);
 $filter_menu=array(
 	'public_id'=>array('db_key'=>'p.code','menu_label'=>_('Purchase order'),'label'=>'Id'),
@@ -171,15 +169,20 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 
 
 
+$tipo_filter=$_SESSION['state']['supplier']['supplier_dns']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['supplier']['supplier_dns']['f_value']);
+$filter_menu=array(
+	'public_id'=>array('db_key'=>'p.code','menu_label'=>_('Delivery number'),'label'=>'Id'),
+);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
 
 
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
 
-
-
-$smarty->assign('default_country_2alpha','GB');
 
 $tipo_filter100='code';
 $filter_menu100=array(
@@ -191,12 +194,6 @@ $smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
 $smarty->assign('filter_menu100',$filter_menu100);
 $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
-
-
-//$smarty->assign('show_purchase_history_chart',$_SESSION['state']['supplier']['purchase_history']['show_chart']);
-//$smarty->assign('purchase_history_chart_output',$_SESSION['state']['supplier']['purchase_history']['chart_output']);
-//$smarty->assign('purchase_history_type',$_SESSION['state']['supplier']['purchase_history']['type']);
-
 
 
 $smarty->assign('elements',$_SESSION['state']['supplier']['history']['elements']);
@@ -321,6 +318,13 @@ $smarty->assign('number_categories_data',$number_categories_data);
 $smarty->assign('sticky_note',$supplier->data['Supplier Sticky Note']);
 
 
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
+
+
+
+$smarty->assign('default_country_2alpha','GB');
 
 $smarty->display('supplier.tpl');
 
