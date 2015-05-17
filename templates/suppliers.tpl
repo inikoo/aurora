@@ -31,8 +31,9 @@
 			<li> <span class="item {if $block_view=='suppliers'}selected{/if}" id="suppliers"> <span> {t}Suppliers{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='sproducts'}selected{/if}" id="sproducts"> <span> {t}Supplier Products{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='porders'}selected{/if}" id="porders"> <span> {t}Purchase Orders{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='sinvoices'}selected{/if}" id="sinvoices"> <span> {t}Supplier Invoices{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='idn'}selected{/if}" id="idn"> <span> {t}Incoming Delivery Notes{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='idn'}selected{/if}" id="idn"> <span> {t}Deliveries{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='sinvoices'}selected{/if}" id="sinvoices"> <span> {t}Invoices{/t}</span></span></li>
+
 		</ul>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 		</div>
