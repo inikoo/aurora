@@ -104,6 +104,7 @@ function init_search(type) {
     case 'supplier_products_supplier':
         var search_scope = 'supplier';
         subject = 'supplier_products';
+      
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_supplier_products_supplier);
         break;
     default:
@@ -280,10 +281,9 @@ function search(query, subject, search_scope) {
 
     var ar_file = 'ar_search.php';
 
-
     var request = 'tipo=' + subject + '&q=' + query + '&scope=' + search_scope;
-    if (search_scope != '' && Dom.get(search_scope + '_id') != undefined) {
-        request = request + '&' + search_scope + '_id=' + Dom.get(search_scope + '_id').value;
+    if (search_scope != '' && Dom.get(search_scope + '_key') != undefined) {
+        request = request + '&' + search_scope + '_key=' + Dom.get(search_scope + '_key').value;
     }
    
    if(Dom.get('search_parent')!= undefined){

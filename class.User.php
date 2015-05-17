@@ -900,6 +900,16 @@ class User extends DB_Table {
 		return $staff_alias;
 	}
 	
+	function get_staff_name() {
+		$staff_name='';
+		$staff_key=$this->get_staff_key();
+		if ($staff_key) {
+			$staff=new Staff($staff_key);
+			$staff_name=$staff->data['Staff Name'];
+		}
+		return $staff_name;
+	}
+	
 	function get_customer_key() {
 		$customer_key=0;
 		if ($this->data['User Type']=='Customer') {

@@ -58,7 +58,6 @@ function show_dialog_attach_bis() {
 
 function post_add_attachment_actions(result) {
 
-
     var ar_file = 'ar_porders.php';
     var request = 'tipo=get_attachments_showcase&subject=supplier_dn&subject_key=' + Dom.get('supplier_delivery_note_key').value;
 
@@ -91,6 +90,9 @@ function hide_order_details() {
 }
 
 function init() {
+
+
+ init_search('supplier_products_supplier');
 
 
     Event.addListener(['attachments', 'notes'], "click", change_block);

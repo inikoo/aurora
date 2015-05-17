@@ -6,6 +6,7 @@ include_once 'class.Supplier.php';
 include_once 'class.PurchaseOrder.php';
 include_once 'class.SupplierDeliveryNote.php';
 include_once 'class.CompanyArea.php';
+include_once 'class.Warehouse.php';
 
 
 $corporation=new Account();
@@ -144,6 +145,7 @@ $css_files=array(
 	'css/button.css',
 	'css/container.css',
 	'css/table.css',
+	'css/edit.css',
 	'css/porder.css',
 
 	'theme.css.php'
@@ -173,6 +175,8 @@ $js_files=array(
 );
 
 
+$warehouse=new Warehouse($supplier_delivery_note->data['Supplier Delivery Note Warehouse Key']);
+$smarty->assign('warehouse',$warehouse);
 
 
 $supplier_delivery_note_id = $supplier_delivery_note->id;
@@ -259,10 +263,8 @@ $smarty->assign('pos_data',$pos_data);
 
 
 
-switch ($supplier_delivery_note->data['Supplier Delivery Note Current State']) {
-case('In Process'):
 
-
+if ($supplier_delivery_note->data['Supplier Delivery Note Current State']=='In Process' or $supplier_delivery_note->data['Supplier Delivery Note Current State']=='Inputted') {
 
 	$_SESSION['state']['supplier_dn']['products']['display']='ordered_products';
 	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
@@ -283,129 +285,72 @@ case('In Process'):
 	$smarty->assign('default_submit_method','Other');
 	$smarty->assign('submit_method',$submit_method);
 
-	//$smarty->assign('user_alias',$user->data['User Alias']);
-	//$smarty->assign('user_staff_key',$user->data['User Parent Key']);
-
-
-
-
-
-	$js_files[]='js/supplier_dn_in_process.js';
-
-
-
-	$template='supplier_dn_in_process.tpl';
-
-	break;
-case('Inputted'):
-
-	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
-
 
 
 
 	$company_area=new CompanyArea('code','WAH');
 	$operators=$company_area->get_current_staff_with_position_code('WAH.SK');
-	$number_cols=5;
-	$row=0;
-	$operators_data=array();
-	$contador=0;
-	foreach ($operators as $operator) {
-		if (fmod($contador,$number_cols)==0 and $contador>0) {
-			$row++;
-		}
-		$tmp=array();
-		foreach ($operator as $key=>$value) {
-			$tmp[preg_replace('/\s/','',$key)]=$value;
-		}
-		$operators_data[$row][]=$tmp;
-		$contador++;
-	}
 
+
+	$operators_data=array();
+	foreach ($operators as $operator) {
+		$operators_data[]=array(
+			'Key'=>$operator['Staff Key'],
+			'Name'=>$operator['Staff Name']
+		);
+	}
 	$smarty->assign('operators',$operators_data);
 	$smarty->assign('number_operators',count($operators_data));
 
 
 
 
-
 	$default_loading_location_key=1;
 	$default_loading_location_code=_('Unknown');
-	$sql=sprintf("select `Location Key` ,`Location Code`    from `Location Dimension` where `Location Mainly Used For`='Loading'  limit 1 ");
-	$res = mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		$default_loading_location_key=$row['Location Key'];
-		$default_loading_location_code=$row['Location Code'];
-	}
-
-	$smarty->assign('default_loading_location_key',$default_loading_location_key);
-	$smarty->assign('default_loading_location_code',$default_loading_location_code);
 
 
+	$contador=0;
 	$number_cols=5;
 	$loading_locations=array();
 	$sql=sprintf("select `Location Key`,`Location Code` from `Location Dimension` where `Location Mainly Used For`='Loading'   ");
 	$res = mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-
+		if ($contador==0) {
+			$default_loading_location_key=$row['Location Key'];
+			$default_loading_location_code=$row['Location Code'];
+		}
 
 		$loading_locations[]=array(
-			'key'=>$row['Location Key'],
-			'code'=>$row['Location Code'],
+			'Key'=>$row['Location Key'],
+			'Code'=>$row['Location Code'],
 			'mod'=>fmod($contador,$number_cols),
 			'number_cols'=>$number_cols
 		);
 		$contador++;
+		if ($contador>10)break;
 	}
 
 
-
+	$smarty->assign('default_loading_location_key',$default_loading_location_key);
+	$smarty->assign('default_loading_location_code',$default_loading_location_code);
 
 	$smarty->assign('loading_locations',$loading_locations);
 	$smarty->assign('number_loading_locations',count($loading_locations));
 
 
 
+	$css_files[]='css/supplier_dn_in_process.css';
+
+	$js_files[]='js/supplier_dn_in_process.js';
+	$template='supplier_dn_in_process.tpl';
 
 
 
-	/******
-	$loading_locations=array();
-
-	$number_cols=5;
-	$row=0;
-	$contador=0;
-
-	$sql=sprintf("select `Location Key`,`Location Code` from `Location Dimension` where `Location Mainly Used For`='Loading'   ");
-	$res = mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		if (fmod($contador,$number_cols)==0 and $contador>0) {
-			$row++;
-		}
-
-		$_loading_locations=array(
-			'key'=>$row['Location Key'],
-			'code'=>$row['Location Code'],
-		);
-
-		$contador++;
-
-	}
-	$smarty->assign('loading_locations',$loading_locations);
-
-*****/
+}
+elseif ($supplier_delivery_note->data['Supplier Delivery Note Current State']=='Received' ) {
 
 
-	$js_files[]='supplier_dn_inputted.js.php';
-
-
-	$template='supplier_dn_inputted.tpl';
-
-	break;
-case('Received'):
 
 
 
@@ -439,9 +384,9 @@ case('Received'):
 	$template='supplier_dn_received.tpl';
 
 
-	break;
+}
+elseif ($supplier_delivery_note->data['Supplier Delivery Note Current State']=='Checked' ) {
 
-case('Checked'):
 
 
 
@@ -470,14 +415,13 @@ case('Checked'):
 
 
 
-	break;
+}
+elseif ($supplier_delivery_note->data['Supplier Delivery Note Current State']=='Cancelled' ) {
 
-case('Cancelled'):
 	$js_files[]='supplier_dn_cancelled.js.php';
 
 
 	$template='supplier_dn_cancelled.tpl';
-	break;
 }
 
 $smarty->assign('css_files',$css_files);
@@ -494,6 +438,8 @@ $session_data=base64_encode(json_encode(array(
 				'DN_Qty'=>_('Cartons DN'),
 				'Unit'=>_('Unit'),
 				'Transport_type'=>_('Transport type'),
+				'Used_for'=>_('Used for'),
+				'Alias'=>_('Alias'),
 				'Page'=>_('Page'),
 				'of'=>_('of')
 			),

@@ -269,15 +269,23 @@ class SupplierDeliveryNote extends DB_Table {
 
 
 	function add_order_transaction_update_potf($data) {
-	
-	
-	
-		$sql=sprintf("select `Purchase Order Key`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where (`Supplier Delivery Note Key`=%d or `Purchase Order Key` in (%s)) and `Purchase Order Transaction Fact Key`=%d ",
-			$this->id,
-			$this->data['Supplier Delivery Note POs'],
-			$data ['Purchase Order Transaction Fact Key']);
+
+
+		if ($this->data['Supplier Delivery Note POs']=='') {
+			$sql=sprintf("select `Purchase Order Key`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d  and `Purchase Order Transaction Fact Key`=%d ",
+				$this->id,
+				$data ['Purchase Order Transaction Fact Key']);
+		}else {
+			$sql=sprintf("select `Purchase Order Key`,`Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where (`Supplier Delivery Note Key`=%d or `Purchase Order Key` in (%s)) and `Purchase Order Transaction Fact Key`=%d ",
+				$this->id,
+				$this->data['Supplier Delivery Note POs'],
+				$data ['Purchase Order Transaction Fact Key']);
+		}
+
+
+
 		$res=mysql_query($sql);
-		
+
 		if ($row=mysql_fetch_assoc($res)) {
 
 
@@ -296,7 +304,7 @@ class SupplierDeliveryNote extends DB_Table {
 				);
 
 				mysql_query($sql);
-				
+
 
 			} else {
 
@@ -777,11 +785,17 @@ class SupplierDeliveryNote extends DB_Table {
 		mysql_query($sql);
 		//print $sql;
 
+		$history_data=array(
+			'History Abstract'=>_('Delivery data inputted'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
+
 		$this->update_affected_products();
 	}
 
 
-	
+
 
 
 
@@ -831,6 +845,12 @@ class SupplierDeliveryNote extends DB_Table {
 		);
 		mysql_query($sql);
 		// print $sql;
+
+		$history_data=array(
+			'History Abstract'=>_('Delivery received'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
 
 		$this->update_store_products();
 
@@ -948,7 +968,7 @@ class SupplierDeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 		$this->update_affected_products();
-	
+
 
 	}
 
@@ -969,7 +989,7 @@ class SupplierDeliveryNote extends DB_Table {
 			if ($this->data['Supplier Delivery Note Supplier Key']!=$po->data['Purchase Order Supplier Key'])
 				continue;
 			$po_keys[$po->id]=$po->id;
-			
+
 			$sql=sprintf('insert into `Purchase Order SDN Bridge` (`Purchase Order Key`,`Supplier Delivery Note Key`) values (%d,%d)',
 				$po->id,
 				$this->id
@@ -978,7 +998,7 @@ class SupplierDeliveryNote extends DB_Table {
 			$po->mark_as_associated_with_sdn($this->id,$this->data['Supplier Delivery Note Public ID']);
 		}
 
-		
+
 
 		$pos=join(',',$po_keys);
 		$sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note POs`=%s where `Supplier Delivery Note Key`=%d "
