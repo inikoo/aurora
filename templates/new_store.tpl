@@ -59,7 +59,7 @@
 			<div class="styled-select">
 				<select id="locale_select" onchange="set_locate(this.value)">
 					{foreach from=$locales item=locale key=locale_key} 
-					<option style="min-width:200px;margin-bottom:5px;clear:left" class="radio {if $locale_key==$inikoo_account->get('Account Locale')} selected{/if}" id="radio_shelf_type_{$locale_key}" radio_value="{$locale_key}">{$locale.description}</option>
+					<option style="min-width:200px;margin-bottom:5px;clear:left" class="radio {if $locale_key==$inikoo_account->get('Account Locale')} selected{/if}" id="radio_shelf_type_{$locale_key}" value="{$locale_key}">{$locale.description}</option>
 					{/foreach} 
 				</select>
 			</div>

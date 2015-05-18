@@ -5103,7 +5103,6 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
 			'f_field'=>'public_id',
 			'f_value'=>'','f_show'=>false,
 

@@ -158,7 +158,7 @@ class Store extends DB_Table {
 
 	}
 
-	function load_acc_data(){
+	function load_acc_data() {
 		$sql=sprintf("select * from `Store Data Dimension` where `Store Key`=%d",$this->id);
 		$res =mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -196,7 +196,6 @@ class Store extends DB_Table {
 			if (array_key_exists($key,$data))
 				$data[$key]=_trim($value);
 		}
-
 
 		//    print_r($raw_data);
 
@@ -322,7 +321,7 @@ class Store extends DB_Table {
 
 			return number($this->data[$amount]);
 		}
-		
+
 		if (preg_match('/(Orders|Delivery Notes|Invoices) Acc$/',$key)) {
 
 			$amount='Store '.$key;
@@ -347,6 +346,16 @@ class Store extends DB_Table {
 		$this->update_product_data();
 
 		if ($this->data['Store Contacts']==0) {
+
+			//Todo: delte Dept Families and products
+			$sql=sprintf("select `Product Department Key` from `Product Department Dimension where `Product Department Store Key`=%d",$this->id);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$department=new Department($row[]);
+			}
+
+
+
 			$sql=sprintf("delete from `Store Dimension` where `Store Key`=%d",$this->id);
 			if (mysql_query($sql)) {
 				$this->deleted=true;
@@ -354,6 +363,11 @@ class Store extends DB_Table {
 				mysql_query($sql);
 				$sql=sprintf("delete from `Store Default Currency` where `Store Key`=%d ",$this->id);
 				mysql_query($sql);
+				$sql=sprintf("delete from `Store Data Dimension` where `Store Key`=%d ",$this->id);
+				mysql_query($sql);
+
+
+
 
 				$sql=sprintf("delete from `Invoice Category Dimension` where `Invoice Category Store Key`=%d ",$this->id);
 				mysql_query($sql);
@@ -362,10 +376,12 @@ class Store extends DB_Table {
 
 
 
+
+
 				$history_key=$this->add_history(array(
 						'Action'=>'deleted',
-						'History Abstract'=>_('Store Deleted').' ('.$this->data['Store Name'].')',
-						'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('deleted')
+						'History Abstract'=>_('Store deleted').' ('.$this->data['Store Name'].')',
+						'History Details'=>''
 					),true);
 
 				include_once 'class.Account.php';
@@ -642,7 +658,7 @@ class Store extends DB_Table {
 				'Product Department Name'=>_('Products without department'),
 				'Product Department Store Key'=>$this->id,
 				'Product Department Sales Type'=>'Not for Sale',
-				'editor'=>$editor
+				'editor'=>$this->editor
 			);
 
 			$dept_no_dept=new Department('find',$dept_data,'create');
@@ -658,7 +674,7 @@ class Store extends DB_Table {
 				'Product Family Special Characteristic'=>'None',
 				'Product Family Sales Type'=>'Not for Sale',
 				'Product Family Availability'=>'No Applicable',
-				'editor'=>$editor
+				'editor'=>$this->editor
 			);
 
 			$fam_no_fam=new Family('find',$fam_data,'create');
@@ -689,12 +705,13 @@ class Store extends DB_Table {
 			}
 
 
-			$history_key=$this->add_history(array(
+			$history_key=$this->add_subject_history(array(
 					'Action'=>'created',
-					'History Abstract'=>_('Store Created').' ('.$this->data['Store Name'].')',
-					'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('created')
+					'History Abstract'=>_('Store created').' ('.$this->data['Store Name'].')',
+					'History Details'=>''
 				),true);
 
+            
 			include_once 'class.Account.php';
 
 			$hq=new Account();
@@ -1118,7 +1135,7 @@ class Store extends DB_Table {
 
 	function get_formated_dispatch_time($interval) {
 
-		
+
 		$interval=addslashes($interval);
 
 		return number(($this->data["Store $interval Average Dispatch Time"]/3600));
@@ -1215,7 +1232,7 @@ class Store extends DB_Table {
 
 		$sql=sprintf("select sum(if(`Invoice Type`='Invoice',1,0))  as invoices, sum(if(`Invoice Type`='Refund',1,0))  as refunds,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d %s %s" ,
 			$this->id,
-						($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
+			($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1249,8 +1266,8 @@ class Store extends DB_Table {
 		);
 
 		mysql_query($sql);
-		
-		
+
+
 
 		$sql=sprintf("update `Store Default Currency` set
                      `Store DC $db_interval Acc Invoiced Discount Amount`=%.2f,

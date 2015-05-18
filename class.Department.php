@@ -235,6 +235,10 @@ class Department extends DB_Table {
 			mysql_query($sql);
 
 
+			$sql=sprintf("insert into `Product Department Default Currency`  (`Product Department Key`) values (%d)",$this->id);
+			mysql_query($sql);
+
+
 			$this->add_history(array(
 					'Action'=>'created'
 					,'History Abstract'=>_('Department created')
