@@ -39,6 +39,7 @@ function post_new_error_actions(branch, response) {
 }
 
 function set_locate(locale) {
+
     Dom.get('locale').value = locale
     validate_scope_data['store']['locale']['changed'] = true;
     validate_scope_data['store']['locale']['validated'] = true;

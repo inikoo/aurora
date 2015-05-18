@@ -320,17 +320,22 @@ function create_store($data) {
 
 	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
 	$data['values']['Store Tax Country Code']=$inikoo_account->data['Account Country Code'];
+	
 	$data['values']['Store Home Country Code 2 Alpha']=$country->data['Country 2 Alpha Code'];
+	
 	$data['values']['Store Home Country Name']=$country->data['Country Name'];
 	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
 
 	$sql=sprintf("select `Tax Category Code` from `Tax Category Dimension` where  `Tax Category Default`='Yes' and `Tax Category Country Code`=%s ",
-		prepare_mysql($country->data['Country Code']));
+		prepare_mysql($inikoo_account->data['Account Country Code']));
+		
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$data['values']['Store Tax Category Code']=$row['Tax Category Code'];
 	}
 	$data['values']['editor']=$editor;
+
+
 
 	$store=new Store('find',$data['values'],'create');
 
@@ -581,12 +586,12 @@ function edit_department($data) {
 	$department=new Department($data['id']);
 
 	$department->editor=$editor;
-	
+
 
 	$translator=array(
 		'name'=>'Product Department Name',
 		'code'=>'Product Department Code',
-'sales_type'=>'Product Department Sales Type'
+		'sales_type'=>'Product Department Sales Type'
 	);
 
 	if (array_key_exists($data['key'],$translator))
