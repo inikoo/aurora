@@ -377,6 +377,7 @@ class Page extends DB_Table {
 
 			$this->update_see_also();
 			$this->update_image_key();
+			
 
 		} else {
 			$this->error=true;
@@ -1307,7 +1308,7 @@ class Page extends DB_Table {
 			break;
 		case 'Product':
 			include_once 'class.Product.php';
-			$product=new Product('pid',$row['Page Parent Key']);
+			$product=new Product('pid',$this->data['Page Parent Key']);
 			if ($product->id and $product->data['Product Main Image Key']) {
 				$_page_image=new Image($product->data['Product Main Image Key']);
 				if ($_page_image->id) {
@@ -4002,7 +4003,7 @@ class Page extends DB_Table {
 			reuturn;
 		}
 
-		//print_r($buttons);
+
 
 		$old_page_buttons_to_delete=array();
 		$sql=sprintf("select `Page Product Button Key`,`Product ID` from  `Page Product Button Dimension`  where `Page Key`=%d",
@@ -4020,13 +4021,15 @@ class Page extends DB_Table {
 		//print_r($old_page_buttons_to_delete);
 
 		$number_buttons=0;
-		foreach ($buttons as $product_code) {
+		foreach ($buttons as $product_data) {
 
 
 
-			$product=new Product('code_store',$product_code,$this->data['Page Store Key']);
+
+			$product=new Product('pid',$product_data['Product ID']);
 			//print_r($product);
 			if ($product->id) {
+
 				$number_buttons++;
 				if (!in_array($product->pid,$old_page_buttons_to_delete)) {
 					$sql=sprintf("insert into `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) values  (%d,%d,%d)",
@@ -4036,6 +4039,7 @@ class Page extends DB_Table {
 					);
 					mysql_query($sql);
 					//print "$sql\n";
+
 					$page_product_key=mysql_insert_id();
 					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'Button',%s)",
 						$this->id,
@@ -4123,9 +4127,35 @@ class Page extends DB_Table {
 				$id=preg_replace('/^\'/','',$id);
 				$id=preg_replace('/\"$/','',$id);
 				$id=preg_replace('/\'$/','',$id);
-				$buttons[]=$id;
+				$product=new Product('code_store',$id,$this->data['Page Store Key']);
+				if ($product->id) {
+
+					$buttons[]=array(
+						'Product Currency'=>$product->data['Product Currency'],
+						'Product Name' =>$product->data['Product Name'],
+						'Product ID' => $product->data['Product ID'],
+						'Product Code' => $product->data['ProProduct Codduct'],
+						'Product Price' => $product->data['Product Price'],
+						'Product RRP' => $product->data['Product RRP'],
+						'Product Units Per Case' => $product->data['Product Units Per Case'],
+						'Product Unit Type' => $product->data['Product Unit Type'],
+						'Product Web State' => $product->data['Product Web State'],
+						'Product Special Characteristic' => $product->data['Product Special Characteristic']
+					);
+
+
+				}
+
+
 			}
 		}
+
+
+
+
+
+
+
 
 		return $buttons;
 	}
@@ -4767,6 +4797,9 @@ class Page extends DB_Table {
 	function get_primary_content() {
 		$content='';
 
+
+
+
 		return $content;
 
 	}
@@ -4808,10 +4841,10 @@ class Page extends DB_Table {
 
 	}
 
-	function get_families_data() {
+function get_families_data() {
 		$families=array();
 
-		$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Main Image`,`Product Family Name` from `Product Family Dimension` P  where `Product Family Main Department Key`=%d and  `Product Family Sales Type`='Public Sale' ",
+		$sql=sprintf("select `Page Key`,`Product Family Key`,`Product Family Code`,`Product Family Main Image`,`Product Family Name` from `Product Family Dimension` P left join `Page Store Dimension` PSD on (`Page Parent Key`=`Product Family Key` and `Page Store Section Type`='Family')  where `Product Family Main Department Key`=%d and  `Product Family Sales Type`='Public Sale' ",
 			$this->data['Page Parent Key']
 		);
 
@@ -4819,13 +4852,12 @@ class Page extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-
-
 			$family_data=array(
 				'code'=>$row['Product Family Code'],
 				'name'=>$row['Product Family Name'],
 				'id'=>$row['Product Family Key'],
 				'img'=>$row['Product Family Main Image'],
+				'page_id'=>$row['Page Key'],
 			);
 
 			if ($counter==0) {
@@ -4838,8 +4870,6 @@ class Page extends DB_Table {
 			$counter++;
 			$families[]=$family_data;
 		}
-
-
 		return $families;
 
 	}
@@ -4901,6 +4931,7 @@ class Page extends DB_Table {
 				'name'=>$product->data['Product Name'],
 				'id'=>$product->data['Product ID'],
 				'img'=>$product->data['Product Main Image'],
+				'normal_img'=>sprintf("image.php?id=%d",$product->data['Product Main Image Key']),
 				'images'=>$images,
 				'quantity'=>$quantity,
 				'price'=>$price,
@@ -4911,9 +4942,11 @@ class Page extends DB_Table {
 				'unit_weight'=>$product->get('Unit Weight'),
 				'package_weight'=>$product->get('Package Weight'),
 				'unit_dimensions'=>$product->get('Product Unit XHTML Dimensions'),
-				'ingrediens'=> $product->get('Product Unit XHTML Materials'),
+				'ingrediens'=> strip_tags($product->get('Product Unit XHTML Materials')),
 				'units'=> $product->get('Product Units Per Case'),
-				'origin'=> $product->get('Origin Country')
+				'origin'=> $product->get('Origin Country'),
+
+                'object'=>$product
 
 
 
@@ -4932,6 +4965,8 @@ class Page extends DB_Table {
 		$sql=sprintf("select PSD.`Page Key` ,`Product ID` from `Page Product Dimension` P  left join `Page Store Dimension` PSD on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')   where P.`Page Key`=%d  ",
 			$this->id
 		);
+
+
 
 		$counter=0;
 		$res=mysql_query($sql);

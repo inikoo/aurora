@@ -23,9 +23,7 @@
 						</ul>
 				</div>
 				
-				
-				
-				
+					
 			</div>
 			<div class="information">
 				<h1 style="padding-top:5px;margin:2px 0;font-size:190%">

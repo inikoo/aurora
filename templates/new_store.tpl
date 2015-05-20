@@ -55,7 +55,7 @@
 		<tr id="locale_tr">
 			<td class="label">{t}Locale{/t}:</td>
 			<td> 
-			<input type="hidden" value="{$inikoo_account->get('Account Locale')}" ovalue="{$inikoo_account->get('Account Locale')}" id="locale"> 
+			<input type="hidden" value="{$inikoo_account->get('Account Locale')}" ovalue="{$inikoo_account->get('Account Locale')}" id="store_locale"> 
 			<div class="styled-select">
 				<select id="locale_select" onchange="set_locate(this.value)">
 					{foreach from=$locales item=locale key=locale_key} 

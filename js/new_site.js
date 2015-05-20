@@ -24,7 +24,7 @@ function post_action(branch, response) {
 }
 
 function cancel_add_site() {
-    window.location = "edit_store.php?id="+Dom.get('stote_key').value
+    window.location = "edit_store.php?id=" + Dom.get('stote_key').value
 }
 
 
@@ -53,9 +53,11 @@ function change_locate(o) {
     Dom.removeClass(ids, 'selected');
     Dom.addClass(o, 'selected');
 
-    Dom.get('locale').value = o.getAttribute('radio_value')
+    Dom.get('site_locale').value = o.getAttribute('radio_value')
 
-
+ validate_scope_data['site']['locale']['changed'] = true;
+    validate_scope_data['site']['locale']['validated'] = true;
+    validate_scope('site')
 
 }
 
@@ -65,9 +67,9 @@ function select_country(oArgs) {
     Dom.get('Country').value = geo_constraints;
     dialog_country_list.hide();
     hide_filter(true, 2)
-    
-    validate_scope_data['site']['country']['changed']=true;
-        validate_scope_data['site']['country']['validated']=true;
+
+    validate_scope_data['site']['country']['changed'] = true;
+    validate_scope_data['site']['country']['validated'] = true;
 
     validate_scope('site')
 }
@@ -133,8 +135,8 @@ function init() {
                 }],
                 'ar': false
             },
-    
-         'url': {
+
+            'url': {
                 'changed': false,
                 'validated': false,
                 'required': true,
@@ -150,8 +152,8 @@ function init() {
                 'ar': 'find',
                 'ar_request': 'ar_sites.php?tipo=is_site_url&query='
             },
-    
-    
+
+
             'locale': {
                 'changed': true,
                 'validated': true,
@@ -159,7 +161,7 @@ function init() {
                 'dbname': 'Site Locale',
                 'group': 1,
                 'type': 'item',
-                'name': 'locale',
+                'name': 'site_locale',
 
                 'validation': false,
                 'ar': false

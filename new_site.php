@@ -83,7 +83,7 @@ $locales=array(
 	'es_ES'=>array('description'=>_('Spanish').', '._('Spain').' (€)'),
 	'pl_PL'=>array('description'=>_('Polish').', '._('Poland').' (zł)'),
 	'it_IT'=>array('description'=>_('Italian').', '._('Italy').' (€)'),
-	'pl_PT'=>array('description'=>_('Portuguese').', '._('Portugal').' (€)'),
+	'pt_PT'=>array('description'=>_('Portuguese').', '._('Portugal').' (€)'),
 );
 
 $smarty->assign('locales',$locales);
