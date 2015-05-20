@@ -59,7 +59,7 @@
 		<tr>
 			<td class="label">{t}Locale{/t}:</td>
 			<td> 
-			<input type="hidden" value="{$default_locale}" ovalue="{$default_locale}" id="locale"> 
+			<input type="hidden" value="{$default_locale}" ovalue="{$default_locale}" id="site_locale"> 
 			<div class="buttons small left" style="margin:5px 0" id="locale_container">
 				{foreach from=$locales item=locale key=locale_key} <button onclick="change_locate(this)" style="min-width:200px;margin-bottom:5px;clear:left" class="radio {if $locale_key==$default_locale} selected{/if}" id="radio_shelf_type_{$locale_key}" radio_value="{$locale_key}">{$locale.description}</button> {/foreach} 
 			</div>

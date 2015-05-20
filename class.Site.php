@@ -747,23 +747,15 @@ class Site extends DB_Table {
 
 		$page=new Page('find',$page_data,'create');
 		if ($page->new) {
-			/*
-			include_once 'class.Department.php';
-			$department=new Department($product->data['Product Family Main Department Key']);
-			if ($department->id) {
-				$parent_pages_keys=$department->get_pages_keys();
-				foreach ($parent_pages_keys as $parent_page_key) {
-					$page->add_found_in_link($parent_page_key);
-					break;
-				}
-			}
-			*/
+			
 			include_once 'class.Family.php';
 			$family=new Family($product->data['Product Family Key']);
 			if ($family->id) {
 				$parent_pages_keys=$family->get_pages_keys();
 				foreach ($parent_pages_keys as $parent_page_key) {
 					$page->add_found_in_link($parent_page_key);
+					
+					
 					break;
 				}
 			}

@@ -3703,6 +3703,10 @@ function create_site($data) {
 		$store_key=$data['parent_key'];
 		$store=new Store($store_key);
 		$store->editor=$editor;
+		
+		
+	
+		
 		$site=$store->create_site($data['values']);
 
 
@@ -4068,7 +4072,7 @@ function create_site($data) {
 			}
 
 			include 'splinters/new_fork.php';
-			list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'create_site_assets_pages','site_key'=>$site->id,'editor'=>$editor),$account_code);
+			list($fork_key,$msg)=new_fork('edit_pages',array('type'=>'create_site_assets_pages','site_key'=>$site->id,'editor'=>$editor),$account_code);
 
 
 			$response=array('state'=>200,'msg'=>$site->msg,'action'=>'created','object_key'=>$site->id,'fork_key'=>$fork_key);

@@ -1,10 +1,26 @@
-<div id="bd" style="padding:20px 15px;clear:both">
+<div id="family_body">
 
-	<div id="products" class="content">
+{if $family->data['Product Family Description']!=''}
+		<div class="description_block" >
+					<img id="main_image" class="image" src="{$family->get('Product Family Main Image')}"   /> 
+		
+		<div class="content" >
+		<h1>{$family->get('Product Family Code')}</h1>
+		<h2>{$family->get('Product Family Name')}</h2>
+		<div class="description">
+		{$family->get('Product Family Description')}
+		</div>
+		</div>
+		<div style="clear:both"></div>
+		</div>
+		
+		{/if}
+
+	<div id="products" class="content" style="clear:both">
 		
 		
-	
-		{$page->get_primary_content()}
+		
+		
 		
 	    {foreach from=$_products item=product} 
 		<div class="block four product_showcase {if $product.col==1}first{/if}" style="margin-bottom:20px;position:relative">

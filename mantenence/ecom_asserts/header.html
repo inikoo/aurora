@@ -1,6 +1,6 @@
 <html>
 <head>
-<style>
+	<style>
 #hd{ background-color:#fc8d1a;
 background-repeat:no-repeat; background-image:url('../art/headers/orange.jpg');
 height:100px;color:#fff;
@@ -17,27 +17,33 @@ font-family: 'Ubuntu',Helvetica,Arial,sans-serif;
 #hd .right_column div {float:right;margin-right:10px;color:#FFF}
 #search {float:right;margin-right:20px;margin-top:10px;color:#FFF}
 .telephones{font-size:14px;text-align: right;margin-left:5px}
-</style> 
+	</style> 
 </head>
 <body>
 <div id="hd">
-	<div class="left_column" >
+	<div class="left_column">
 		<a href="index.php"><img src="art/headers/logo_white.png" title="{t}Homepage{/t}" /></a> 
 	</div>
-	<div class="central_column" >
-	<div id="found_in">
+	<div class="central_column">
+		<div id="found_in">
 			{$_page.found_in} 
 		</div>
 		<h1 id="header_title">
 			{$_page.title} 
 		</h1>
-	</div>
-	<div class="right_column" >
-		{if $_site.telephone!=''}
-		<div>
-			{t}Call us{/t}: <div class="telephones">{$_site.telephone}</div>
+		<div id="top_menu">
+		    {$_page.top_menu} 
 		</div>
-		{/if}
+	</div>
+	<div class="right_column">
+		{if $_site.telephone!=''} 
+		<div>
+			{t}Call us{/t}: 
+			<div class="telephones">
+				{$_site.telephone}
+			</div>
+		</div>
+		{/if} 
 		<div id="search">
 			{$_page.search} 
 		</div>

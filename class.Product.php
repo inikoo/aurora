@@ -5933,8 +5933,22 @@ $data=array(
 		else {
 			$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
+			$sql = sprintf("delete from `Product Data Dimension` where `Product ID` = %d", $this->pid);
+			mysql_query($sql);
+			$sql = sprintf("delete from `Product ID Default Currency` where `Product ID` = %d", $this->pid);
+			mysql_query($sql);
+			
+			$sql = sprintf("delete from `Product Material Bridge` where `Product ID` = %d", $this->pid);
+			mysql_query($sql);
+			
+			
+			
 			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
+			
+			
+			
+			
 			$this->delete = true;
 			$this->msg = _("deleted");
 

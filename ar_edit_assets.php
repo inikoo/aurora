@@ -325,6 +325,7 @@ function create_store($data) {
 	
 	$data['values']['Store Home Country Name']=$country->data['Country Name'];
 	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
+	$data['values']['Store Timezone']=$inikoo_account->data['Account Timezone'];
 
 	$sql=sprintf("select `Tax Category Code` from `Tax Category Dimension` where  `Tax Category Default`='Yes' and `Tax Category Country Code`=%s ",
 		prepare_mysql($inikoo_account->data['Account Country Code']));

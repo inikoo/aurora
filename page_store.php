@@ -171,14 +171,24 @@ $_page=array(
 	'found_in'=>$page->display_found_in(),
 	'title'=>$page->display_title(),
 	'search'=>$page->display_search(),
+	'top_menu'=>$page->display_menu()
 );
 
 $smarty->assign('_page',$_page);
 $smarty->assign('_site',$_site);
 
+
+
 if ($page->data['Page Store Section Type']=='Family') {
+	$family=new Family($page->data['Page Parent Key']);
+	$smarty->assign('family',$family);
+
+
 	$smarty->assign('_products',$page->get_products_data());
 }elseif ($page->data['Page Store Section Type']=='Department') {
+	$department=new Department($page->data['Page Parent Key']);
+	$smarty->assign('department',$department);
+
 	$smarty->assign('_families',$page->get_families_data());
 }elseif ($page->data['Page Store Section Type']=='Product') {
 
