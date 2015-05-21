@@ -238,7 +238,7 @@
 <div id="block_websites" style="{if $block_view!='websites'}display:none;{/if}}clear:both;margin:10px 0 40px 0">
 	<div style="padding:0px">
 		<div class="buttons small left tabs">
-			<button class="indented item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> <button class="item {if $websites_block_view=='pages'}selected{/if}" id="pages" block_id="pages">{t}Pages{/t}</button> 
+			<button class="indented item {if $websites_block_view=='sites'}selected{/if}" id="sites" block_id="sites">{t}Web Sites{/t}</button> 
 		</div>
 		<div class="tabs_base">
 		</div>
@@ -260,33 +260,7 @@
 				<div id="table3" class="data_table_container dtable btable">
 				</div>
 			</div>
-			<div id="block_websites_pages" style="{if $websites_block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-				<span class="clean_table_title">{t}Pages{/t}</span> 
-				<div class="elements_chooser">
-					<img class="menu" id="page_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
-					<div id="page_section_chooser" style="{if $page_elements_type!='section'}display:none{/if}">
-						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.System}selected{/if} label_page_type" id="elements_System">{t}System{/t} (<span id="elements_System_number">{$elements_number.System}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Info}selected{/if} label_page_type" id="elements_Info">{t}Info{/t} (<span id="elements_Info_number">{$elements_number.Info}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Department}selected{/if} label_page_type" id="elements_Department">{t}Departments{/t} (<span id="elements_Department_number">{$elements_number.Department}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Family}selected{/if} label_page_type" id="elements_Family">{t}Families{/t} (<span id="elements_Family_number">{$elements_number.Family}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Product}selected{/if} label_page_type" id="elements_Product">{t}Products{/t} (<span id="elements_Product_number">{$elements_number.Product}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCategory}selected{/if} label_page_type" id="elements_FamilyCategory">{t}Family Categories{/t} (<span id="elements_FamilyCategory_number">{$elements_number.FamilyCategory}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductCategory}selected{/if} label_page_type" id="elements_ProductCategory">{t}Product Categories{/t} (<span id="elements_ProductCategory_number">{$elements_number.ProductCategory}</span>)</span> 
-					</div>
-				</div>
-				<div class="table_top_bar">
-				</div>
-				<div class="clusters">
-					<div class="buttons small left cluster">
-						<button class="table_option {if $pages_view=='general'}selected{/if}" id="page_general">{t}Overview{/t}</button> <button class="table_option {if $pages_view=='visitors'}selected{/if}" id="page_visitors">{t}Visits{/t}</button> <button class="table_option {if $pages_view=='products'}selected{/if}" id="page_products">{t}Products{/t}</button> 
-					</div>
-					<div id="page_period_options" class="buttons small left cluster" style="display:{if $pages_view!='visitors' }none{/if};">
-						<button class="table_option {if $page_period=='all'}selected{/if}" period="all" id="page_period_all">{t}All{/t}</button> <button class="table_option {if $page_period=='three_year'}selected{/if}" period="three_year" id="page_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $page_period=='year'}selected{/if}" period="year" id="page_period_year">{t}1Yr{/t}</button> <button class="table_option {if $page_period=='yeartoday'}selected{/if}" period="yeartoday" id="page_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $page_period=='six_month'}selected{/if}" period="six_month" id="page_period_six_month">{t}6M{/t}</button> <button class="table_option {if $page_period=='quarter'}selected{/if}" period="quarter" id="page_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $page_period=='month'}selected{/if}" period="month" id="page_period_month">{t}1M{/t}</button> <button class="table_option {if $page_period=='ten_day'}selected{/if}" period="ten_day" id="page_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $page_period=='week'}selected{/if}" period="week" id="page_period_week">{t}1W{/t}</button> <button class="table_option {if $page_period=='day'}selected{/if}" period="day" id="page_period_day">{t}1D{/t}</button> <button class="table_option {if $page_period=='hour'}selected{/if}" period="hour" id="page_period_hour">{t}1h{/t}</button> 
-					</div>
-					<div class="buttons small cluster group">
-						<button id="change_pages_table_type">&#x21b6 {if $pages_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
-					</div>
-					<div style="clear:both">
-					</div>
-				</div>
-				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
-				<div id="table4" class="data_table_container dtable btable" style="font-size:85%">
-				</div>
-			</div>
+			
 		</div>
 	</div>
 </div>
@@ -565,26 +539,7 @@
 		</ul>
 	</div>
 </div>
-<div id="rppmenu4" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu4 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},4)"> {$menu}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
-<div id="filtermenu4" class="yuimenu">
-	<div class="bd">
-		<ul class="first-of-type">
-			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu4 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',4)"> {$menu.menu_label}</a></li>
-			{/foreach} 
-		</ul>
-	</div>
-</div>
+
 <div id="dialog_choose_category" style="padding:20px 20px 10px 20px ">
 	<div class="buttons">
 		<a href="family_categories.php?store_id={$store->id}">{t}Family{/t}</a> <a href="product_categories.php?store_id={$store->id}">{t}Products{/t}</a> 
