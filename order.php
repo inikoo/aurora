@@ -592,7 +592,7 @@ $shipper_data=array();
 	case('In Process'):
 	case('Submitted by Customer'):
 	case('Waiting for Payment Confirmation'):
-
+$order->apply_payment_from_customer_account();
 
 		include 'order_in_process_splinter.php';
 		break;
@@ -600,8 +600,11 @@ $shipper_data=array();
 	case('Picking & Packing'):
 	case('Packed Done'):
 	case('Ready to Ship'):
+		$order->apply_payment_from_customer_account();
+
 		include 'order_in_warehouse_splinter.php';
 		break;
+		
 	case('Dispatched'):
 		include 'order_dispatched_splinter.php';
 		break;
