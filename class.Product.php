@@ -2178,7 +2178,9 @@ class product extends DB_Table {
 						$result=mysql_query($sql);
 						while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 							$order=new Order($row['Order Key']);
-							$order->update_estimated_weight();
+							if ($order->id) {
+								$order->update_estimated_weight();
+							}
 						}
 
 					}
@@ -4642,8 +4644,8 @@ class product extends DB_Table {
 	}
 
 	function get_formated_rrp($locale='') {
-	
-$data=array(
+
+		$data=array(
 			'Product Price'=>$this->data['Product RRP']/$this->data['Product Units Per Case'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
 			'Product Currency'=>$this->get('Product Currency'),
@@ -4653,7 +4655,7 @@ $data=array(
 			'locale'=>$locale);
 
 		return formated_price($data);
-/*
+		/*
 		$data=array(
 			'Product RRP'=>$this->data['Product RRP'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
@@ -4685,8 +4687,8 @@ $data=array(
 	}
 
 	function get_formated_price_per_unit($locale='') {
-	
-	$data=array(
+
+		$data=array(
 			'Product Price'=>$this->data['Product Price']/$this->data['Product Units Per Case'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
 			'Product Currency'=>$this->get('Product Currency'),
@@ -4696,8 +4698,8 @@ $data=array(
 			'locale'=>$locale);
 
 		return formated_price($data);
-	
-/*
+
+		/*
 		$data=array(
 			'Product Price'=>$this->data['Product Price'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
@@ -4710,7 +4712,7 @@ $data=array(
 
 		return formated_price_per_unit($data);
 		*/
-		
+
 	}
 
 	function update_units_per_case($units) {
@@ -4954,7 +4956,9 @@ $data=array(
 			$result=mysql_query($sql);
 			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$order=new Order($row['Order Key']);
-				$order->update_estimated_weight();
+				if ($order->id) {
+					$order->update_estimated_weight();
+				}
 			}
 
 		}
@@ -5937,18 +5941,18 @@ $data=array(
 			mysql_query($sql);
 			$sql = sprintf("delete from `Product ID Default Currency` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
-			
+
 			$sql = sprintf("delete from `Product Material Bridge` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
-			
-			
-			
+
+
+
 			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->pid);
 			mysql_query($sql);
-			
-			
-			
-			
+
+
+
+
 			$this->delete = true;
 			$this->msg = _("deleted");
 

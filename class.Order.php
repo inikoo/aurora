@@ -2538,7 +2538,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-	from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
+	from `Order Transaction Fact`    where  `Order Key`=" . $this->id;
 
 		$result = mysql_query( $sql );
 		//print "\n$sql\n";

@@ -296,6 +296,18 @@ class Family extends DB_Table {
 
 	}
 
+	function load_acc_data() {
+		if ($this->id) {
+			$sql=sprintf("select * from `Product Family Data Dimension` where `Product Family Key`=%d",$this->id);
+			$res =mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+
+			}
+		}
+	}
 
 
 	function update_department($key) {
@@ -1915,7 +1927,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	}
 
-	function get_deals_data(){
+	function get_deals_data() {
 		$deals=array();
 		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
 		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d ",$this->id,$this->id);
@@ -1927,7 +1939,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 				'Terms Type'=>$row['Deal Component Terms Type'],
 				'Status'=>$row['Deal Component Status'],
 				'Name'=>$row['Deal Name'],
-				'Description'=>$row['Deal Description']			
+				'Description'=>$row['Deal Description']
 			);
 		}
 		return $deals;
