@@ -212,6 +212,7 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 $smarty->assign('families_view',$_SESSION['state']['warehouse']['families']['view']);
 $smarty->assign('families_period',$_SESSION['state']['warehouse']['families']['period']);
+$smarty->assign('families_avg',$_SESSION['state']['warehouse']['families']['avg']);
 
 
 

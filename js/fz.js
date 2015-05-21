@@ -175,7 +175,7 @@ $.fn.fancyzoom = function(userOptions) {
             
            
    			//make action only on link that point to an image
-   			if( !/\.jpg|\.jpeg|\.png|\.gif|\.php/i.test(imgTargetSrc) ){
+   			if( !/\.jpg|\.jpeg|\.png|\.gif|image\.php/i.test(imgTargetSrc) ){
    		
 	   			return true;
    			}
