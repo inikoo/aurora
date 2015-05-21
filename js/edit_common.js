@@ -952,7 +952,7 @@ function save_edit_general(branch) {
 
                     } else {
 
-alert(o.responseText);
+//alert(o.responseText);
                         validate_scope_data[branch][r.key].changed = true;
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;

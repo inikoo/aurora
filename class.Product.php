@@ -3361,8 +3361,8 @@ class product extends DB_Table {
 			return;
 		}
 		if (!(strtolower($value)==strtolower($this->data['Product Name']) and $value!=$this->data['Product Name'])) {
-			$sql=sprintf("select * from `Product Dimension` where `Product Store Key`=%d and  ( `Product Name`=%s  COLLATE utf8_general_ci  ) "
-				,$this->data['Product Store Key']
+			$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and  ( `Product Name`=%s  COLLATE utf8_general_ci  ) "
+				,$this->data['Product Family Key']
 				,prepare_mysql($value)
 
 
@@ -4646,7 +4646,7 @@ class product extends DB_Table {
 	function get_formated_rrp($locale='') {
 
 		$data=array(
-			'Product Price'=>$this->data['Product RRP']/$this->data['Product Units Per Case'],
+			'Product Price'=>$this->data['Product RRP']*$this->data['Product Units Per Case'],
 			'Product Units Per Case'=>$this->data['Product Units Per Case'],
 			'Product Currency'=>$this->get('Product Currency'),
 			'Product Unit Type'=>$this->data['Product Unit Type'],

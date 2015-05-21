@@ -717,7 +717,7 @@ function edit_product() {
 		'link_properties'=>'Product Use Part Properties',
 		'link_pictures'=>'Product Use Part Pictures'
 	);
-
+$okey=$key;
 	if (array_key_exists($key,$translator))
 		$key=$translator[$key];
 	else
@@ -819,7 +819,7 @@ function edit_product() {
 
 		}
 	} else {
-		$response= array('state'=>400,'msg'=>$product->msg,'key'=>$key);
+		$response= array('state'=>400,'msg'=>$product->msg,'key'=>$okey);
 	}
 	echo json_encode($response);
 }
