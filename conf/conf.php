@@ -3942,7 +3942,7 @@ $default_state=array(
 	'store'=>array(
 		'block_view'=>'departments',
 		'deals_block_view'=>'campaigns',
-		'websites_block_view'=>'pages',
+		'websites_block_view'=>'websites',
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
@@ -3967,32 +3967,7 @@ $default_state=array(
 
 			)
 		),
-		'pages'=>array(
-			'table_type'=>'list',
-			'where'=>'where true',
-			'f_field'=>'code',
-			'f_value'=>'',
-			'f_show'=>false,
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'percentages'=>false,
-			'view'=>'general',
-			'period'=>'year',
-			'percentage'=>0,
-			'mode'=>'all',
-			'avg'=>'totals',
-			'elements_type'=>'section',
-			'elements'=>array(
-				'section'=>array('System'=>1, 'Info'=>1, 'Department'=>1, 'Family'=>1, 'Product'=>1, 'FamilyCategory'=>1, 'ProductCategory' =>1),
-				'flags'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1),
-				'state'=>array('Online'=>1,'Offline'=>1)
-
-			)
-
-
-		),
+	
 		'sites'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',

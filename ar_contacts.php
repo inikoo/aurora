@@ -1066,7 +1066,6 @@ function list_assets_dispatched_to_customer() {
 	
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['customer']['assets']['from'],$_SESSION['state']['customer']['assets']['to']);
 	} else {
 		$_SESSION['state']['customer']['assets']['from']=$date_interval['from'];
 		$_SESSION['state']['customer']['assets']['to']=$date_interval['to'];
