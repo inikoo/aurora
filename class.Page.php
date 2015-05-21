@@ -4961,7 +4961,7 @@ class Page extends DB_Table {
 
 	function get_products_data() {
 		$products=array();
-		$sql=sprintf("select PPD.`Product ID` from `Page Product Dimension` PPD  where  PPD.`Page Key`=%d  ",
+		$sql=sprintf("select PPD.`Product ID`,PSD.`Page Key` from `Page Product Dimension` PPD left join   `Page Store Dimension` PSD on (PSD.`Page Parent Key`=PPD.`Product ID` and `Page Store Section Type`='Product')      where  PPD.`Page Key`=%d  ",
 			$this->id
 		);
 
