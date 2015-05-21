@@ -4134,7 +4134,7 @@ class Page extends DB_Table {
 						'Product Currency'=>$product->data['Product Currency'],
 						'Product Name' =>$product->data['Product Name'],
 						'Product ID' => $product->data['Product ID'],
-						'Product Code' => $product->data['ProProduct Codduct'],
+						'Product Code' => $product->data['Product Code'],
 						'Product Price' => $product->data['Product Price'],
 						'Product RRP' => $product->data['Product RRP'],
 						'Product Units Per Case' => $product->data['Product Units Per Case'],
