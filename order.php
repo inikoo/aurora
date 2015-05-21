@@ -585,6 +585,8 @@ else {
 	if (isset($_REQUEST['modify']) and $_REQUEST['modify']==1 and $order_current_dispatch_state=='In Process by Customer')
 		$order_current_dispatch_state='In Process';
 
+
+$shipper_data=array();
 	switch ($order_current_dispatch_state) {
 
 	case('In Process'):
@@ -618,6 +620,7 @@ else {
 		break;
 	}
 }
+$smarty->assign( 'shipper_data', $shipper_data );
 
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);

@@ -33,7 +33,6 @@ while ($row=mysql_fetch_assoc($result)) {
 
 
 }
-$smarty->assign( 'shipper_data', $shipper_data );
 
 
 if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {

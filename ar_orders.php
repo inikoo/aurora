@@ -4266,7 +4266,7 @@ function number_delivery_notes_in_interval($data) {
 
 		if ($row['element']=='Replacement & Shortages' ) {
 			$_element='Replacements';
-		}if ($row['element']=='Replacement' ) {
+		}elseif ($row['element']=='Replacement' ) {
 			$_element='Replacements';
 		}else {
 			$_element=$row['element'];
