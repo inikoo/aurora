@@ -2149,6 +2149,7 @@ $default_state=array(
 		'families'=>array(
 			'view'=>'sales',
 			'period'=>'yeartoday',
+			'avg'=>'totals',
 			'percentages'=>false,
 
 			'order'=>'code',
