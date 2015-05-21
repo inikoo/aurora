@@ -3880,14 +3880,15 @@ class Page extends DB_Table {
 				}else {
 					$product=new Product('pid',$product_pid);
 
-					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'List',%s)",
+					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'List',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d",
 						$row['Page Product List Key'],
 						$this->data['Page Site Key'],
 						$this->id,
 
 						$product_pid,
 						$product->data['Product Family Key'],
-						prepare_mysql($this->data['Page State'])
+						prepare_mysql($this->data['Page State']),
+						$this->data['Page Site Key']
 
 					);
 					mysql_query($sql);
@@ -4038,13 +4039,14 @@ class Page extends DB_Table {
 					//print "$sql\n";
 
 					$page_product_key=mysql_insert_id();
-					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'Button',%s)",
+					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'Button',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d",
 						$this->id,
 						$this->data['Page Site Key'],
 						$product->pid,
 						$product->data['Product Family Key'],
 						$page_product_key,
-						prepare_mysql($this->data['Page State'])
+						prepare_mysql($this->data['Page State']),
+						$this->data['Page Site Key']
 					);
 					mysql_query($sql);
 
@@ -4959,10 +4961,9 @@ class Page extends DB_Table {
 
 	function get_products_data() {
 		$products=array();
-		$sql=sprintf("select PSD.`Page Key` ,`Product ID` from `Page Product Dimension` P  left join `Page Store Dimension` PSD on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')   where P.`Page Key`=%d  ",
+		$sql=sprintf("select PPD.`Product ID` from `Page Product Dimension` PPD  where  PPD.`Parent Page Key`=%d  ",
 			$this->id
 		);
-
 
 
 		$counter=0;
