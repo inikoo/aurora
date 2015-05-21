@@ -163,15 +163,10 @@
 								<td>{t}Sell price{/t}:</td>
 								<td class="price aright">{$product->get_formated_price()}</td>
 							</tr>
-							<tr>
-								<td></td>
-								<td class=" aright">{$product->get_formated_price_per_unit()}</td>
-							</tr>
-                            {if $product->get('Product Units Per Case')!=1}
+							
 							<tr>
 								<td colspan=2 class="aright">{$product->get_formated_discounts()}</td>
 							</tr>
-                            {/if}
 							<tr {if $product->get('Product RRP')==''}style="display:none"{/if} > 
 								<td>{t}RRP{/t}:</td>
 								<td class="aright">{$product->get_formated_rrp()}</td>

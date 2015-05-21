@@ -152,11 +152,12 @@ function get_order_formated_payment_state($data) {
 
 	switch ($data['Order Current Payment State']) {
 	case 'No Applicable':
-		$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+		///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+		$payment_state='';
 		break;
 	case 'Waiting Payment':
 
-		if ($data['Order Current Dispatch State']=='In Process by Customer') {
+		if ($data['Order Current Dispatch State']=='In Process by Customer' or $data['Order Current Dispatch State']=='Cancelled' ) {
 			$payment_state='';
 		}else {
 
@@ -175,11 +176,19 @@ function get_order_formated_payment_state($data) {
 			case 'Credit Card':
 				$payment_method=_('Credit Card');
 				break;
+			case 'Unknown':
+				$payment_method='';
+				break;	
 			default:
 				$payment_method=$data['Order Payment Method'];
 			}
 
-			$payment_state=_('Waiting Payment').',<br>'.$payment_method;
+            
+			$payment_state=_('Waiting Payment');
+            if($payment_method!=''){
+                $payment_state.=' ('.$payment_method.')';
+            }
+
 
 		}
 		break;
@@ -188,7 +197,7 @@ function get_order_formated_payment_state($data) {
 
 		break;
 	case 'Unknown':
-		$payment_state=_('Unknown');
+		$payment_state='';
 
 		break;
 	case 'Paid':
@@ -203,11 +212,14 @@ function get_order_formated_payment_state($data) {
 			$payment_state=_('Partially Paid');
 		}
 		break;
-
 	default:
 		$payment_state=$data['Order Current Payment State'];
 	}
-	return '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+	if($payment_state!=''){
+	    $payment_state='<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+	}
+	
+	return $payment_state;
 }
 
 function get_invoice_operations($row,$user,$parent='order',$parent_key='') {

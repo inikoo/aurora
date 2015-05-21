@@ -142,15 +142,23 @@ function formated_price($data) {
 
 		if ( is_array($data) and isset($data['price per unit text'])  ) {
 			$str=$data['price per unit text']." $price";
-		}elseif ( is_array($data) and isset($data['Product Unit Type'])  ) {
-			$str=$price.' '._('per').' '.strtolower($data['Product Unit Type']);
 		}
+		//elseif ( is_array($data) and isset($data['Product Unit Type'])  ) {
+		//	$str=$price.' '._('per').' '.strtolower($data['Product Unit Type']);
+		//}
 		else {
-			if ($data['Product Units Per Case']>1)
+			if ($data['Product Units Per Case']>1){
 				$str="$price/".$data['Product Units Per Case']." ($price_per_unit per unit)";
-			else
+			}else{
+				
+				
+				if ( is_array($data) and isset($data['Product Unit Type'])  ) {
+				$str=$price.' '._('per').' '.strtolower($data['Product Unit Type']);
+				}else{
+				
 				$str="$price per unit";
-
+				}
+            }
 		}
 
 
