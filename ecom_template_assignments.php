@@ -35,13 +35,19 @@ $_page=array(
 
 if ($page->data['Page Store Section Type']=='Family') {
 	$smarty->assign('_products',$page->get_products_data());
+	$family=new Family($page->data['Page Parent Key']);
+	$smarty->assign('family',$family);
 }elseif ($page->data['Page Store Section Type']=='Department') {
 	$smarty->assign('_families',$page->get_families_data());
+	$department=new Department($page->data['Page Parent Key']);
+	$smarty->assign('department',$department);
 }elseif ($page->data['Page Store Section Type']=='Product') {
 	$smarty->assign('product',$page->get_product_data());
 }elseif ($page->data['Page Store Section']=='Front Page Store') {
 	$smarty->assign('_departments',$page->get_departments_data());
 }
+
+
 
 
 
