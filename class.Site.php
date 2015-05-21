@@ -576,16 +576,7 @@ class Site extends DB_Table {
 	function add_family_page($family_key,$raw_data) {
 
 		$this->new_page=false;
-		/*
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d and `Page Site Key`=%d",
-			$family_key,
-			$this->id
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			return $row['Page Key'];
-		}
-*/
+		
 
 		$family=new Family($family_key);
 		if ($family->data['Product Family Store Key']!=$this->data['Site Store Key']) {

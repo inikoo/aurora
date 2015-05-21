@@ -41,13 +41,13 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$site_key=1;
+$site_key=7;
 
 
 $site = new Site($site_key);
 
 
-$sql=sprintf("select `Product Department Key` from  `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Sales Type`='Public Sale'",
+$sql=sprintf("select `Product Department Key` from  `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Sales Type`='Public Sale' ",
 	$site->data['Site Store Key']);
 
 $res=mysql_query($sql);
@@ -72,9 +72,10 @@ while ($row=mysql_fetch_assoc($res)) {
 	$site->add_department_page($row['Product Department Key'],$page_data);
 }
 
-$sql=sprintf("select `Product Family Key` from  `Product Family Dimension` where `Product Family Store Key`=%d  and `Product Family Sales Type`='Public Sale'",
+$sql=sprintf("select `Product Family Key` from  `Product Family Dimension` where `Product Family Store Key`=%d  and `Product Family Sales Type`='Public Sale' ",
 	$site->data['Site Store Key']);
 $res=mysql_query($sql);
+
 while ($row=mysql_fetch_assoc($res)) {
 
 	$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Family' and `Page Parent Key`=%d and `Page Site Key`=%d",

@@ -378,7 +378,7 @@ class Page extends DB_Table {
 
 			$this->update_see_also();
 			$this->update_image_key();
-			
+
 
 		} else {
 			$this->error=true;
@@ -3798,8 +3798,6 @@ class Page extends DB_Table {
 			$lists=$this->get_list_products_from_source();
 		}else {
 			$lists=array('default');
-
-
 		}
 
 		$site=new Site($this->data['Page Site Key']);
@@ -3816,7 +3814,7 @@ class Page extends DB_Table {
 				$valid_list_keys[]=$row['Page Product List Key'];
 
 			} else {
-				if ($this->data['Page Store Section']=='Family Catalogue') {
+				if ($this->data['Page Store Section Type']=='Family') {
 					$sql=sprintf("insert into `Page Product List Dimension` (`Page Key`,`Site Key`,`Page Product List Code`,`Page Product List Type`,`Page Product List Parent Key`) values  (%d,%d,%s,%s,%d)",
 						$this->id,
 						$this->data['Page Site Key'],
@@ -3993,15 +3991,15 @@ class Page extends DB_Table {
 
 		include_once 'class.Product.php';
 
-		if ($source=='Source') {
+
+
+
+		if ($this->data['Page Store Content Display Type']=='Source') {
 
 			$buttons=$this->get_button_products_from_source();
 		}
-		else if ($source=='Parent') {
-				$buttons=$this->get_button_products_from_parent();
-			}
 		else {
-			reuturn;
+			$buttons=$this->get_button_products_from_parent();
 		}
 
 
@@ -4018,8 +4016,6 @@ class Page extends DB_Table {
 
 			$old_page_buttons_to_delete[$row2['Page Product Button Key']]=$row2['Product ID'];
 		}
-		//print count($old_page_buttons_to_delete);
-		//print_r($old_page_buttons_to_delete);
 
 		$number_buttons=0;
 		foreach ($buttons as $product_data) {
@@ -4842,7 +4838,7 @@ class Page extends DB_Table {
 
 	}
 
-function get_families_data() {
+	function get_families_data() {
 		$families=array();
 
 		$sql=sprintf("select `Page Key`,`Product Family Key`,`Product Family Code`,`Product Family Main Image`,`Product Family Name` from `Product Family Dimension` P left join `Page Store Dimension` PSD on (`Page Parent Key`=`Product Family Key` and `Page Store Section Type`='Family')  where `Product Family Main Department Key`=%d and  `Product Family Sales Type`='Public Sale' ",
@@ -4947,7 +4943,7 @@ function get_families_data() {
 				'units'=> $product->get('Product Units Per Case'),
 				'origin'=> $product->get('Origin Country'),
 
-                'object'=>$product
+				'object'=>$product
 
 
 
