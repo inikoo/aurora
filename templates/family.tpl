@@ -13,6 +13,7 @@
 		<input type="hidden" id="subject_key" value="{$family->id}"> 
 		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
 		<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
+		<input type="hidden" id="store_key" value="{$store->id}" />
 
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">

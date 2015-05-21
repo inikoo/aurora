@@ -12,6 +12,7 @@
 <input type="hidden" id="barcode_data" value="{$product->get_barcode_data()}"> 
 <input type="hidden" id="barcode_type" value="{$product->get('Product Barcode Type')}"> 
 <input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
+		<input type="hidden" id="store_key" value="{$store->id}" />
 
 
 

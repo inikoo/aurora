@@ -56,6 +56,9 @@
 					</div>
 				</div>
 				<div style="width:200px;float:left;margin-left:0px;;padding-top:10px">
+				<div class="main_image">
+				    <img id="main_image" src="{$department->get('Product Department Main Image')}">
+</div>				
 					<table class="show_info_product">
 						<tr>
 							<td>{t}Families{/t}:</td>

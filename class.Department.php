@@ -286,6 +286,20 @@ class Department extends DB_Table {
 
 	}
 
+	function load_acc_data() {
+		if ($this->id) {
+			$sql=sprintf("select * from `Product Department Data Dimension` where `Product Department Key`=%d",$this->id);
+			$res =mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+
+			}
+		}
+	}
+
+
 	function update_sales_type($value) {
 		if (
 			$value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'

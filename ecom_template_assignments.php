@@ -18,15 +18,18 @@ $_site=array(
 	'company_number'=>$store->data['Store Company Number'],
 	'id'=>$site->id,
 	'store_id'=>$site->data['Site Store Key'],
-	'locale'=>$site->data['Site Locale']
+	'locale'=>$site->data['Site Locale'],
 );
+
+$menu=$page->display_menu();
 
 $_page=array(
 	'found_in'=>$page->display_found_in(),
 	'title'=>$page->display_title(),
 	'search'=>$page->display_search(),
 	'id'=>$page->id,
-	'menu'=>$page->display_menu()
+	'menu'=>$menu,
+	'top_menu'=>$menu
 );
 
 
