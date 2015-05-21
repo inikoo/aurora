@@ -1,4 +1,4 @@
-<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_orders.php{if isset($store_id) and {$store_id}}?store={$store_id}{/if}">{t}here{/t}</a>.</span> 
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_orders.php{if isset($store) }?store={$store->id}{/if}">{t}here{/t}</a>.</span> 
 <table class="search" border="0" style="{if $search_label==''}display:none{/if}">
 	<tr>
 		<td class="label">{$search_label}:</td>
