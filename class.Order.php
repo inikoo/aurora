@@ -8101,7 +8101,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 	function apply_payment_from_customer_account() {
 
 		$order_amount=$this->data['Order Balance Total Amount'];
-		$sql=sprintf("select `Amount` from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Completed' and  `Is Account Payment`='No' and `Order Key`=%d ",
+		$sql=sprintf("select sum(`Amount`) from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Completed' and  `Is Account Payment`='No' and `Order Key`=%d ",
 			$this->id
 
 		);
