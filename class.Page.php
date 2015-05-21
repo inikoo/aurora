@@ -4961,7 +4961,7 @@ class Page extends DB_Table {
 
 	function get_products_data() {
 		$products=array();
-		$sql=sprintf("select PPD.`Product ID` from `Page Product Dimension` PPD  where  PPD.`Parent Page Key`=%d  ",
+		$sql=sprintf("select PPD.`Product ID` from `Page Product Dimension` PPD  where  PPD.`Page Key`=%d  ",
 			$this->id
 		);
 
