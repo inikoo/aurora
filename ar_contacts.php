@@ -325,7 +325,7 @@ function list_customer_orders() {
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['customer']['orders']['from'],$_SESSION['state']['customer']['orders']['to']);
+		//$date_interval=prepare_mysql_dates($_SESSION['state']['customer']['from'],$_SESSION['state']['customer']['to']);
 	} else {
 		$_SESSION['state']['customer']['orders']['from']=$date_interval['from'];
 		$_SESSION['state']['customer']['orders']['to']=$date_interval['to'];
@@ -503,11 +503,12 @@ function list_customer_orders() {
 			$mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
 
 
+        $payment_state=_trim(get_order_formated_payment_state($row));
+
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'last_update'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Last Updated Date'].' UTC')) ,
-			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: common_order_functions.php
-				'payment_state'=>get_order_formated_payment_state($row),
+			'current_state'=>	get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']).($payment_state==''?'':', '.$payment_state),
 			'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
 			'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 
@@ -606,7 +607,7 @@ function list_customer_dns() {
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		exit("error in dates");
+	
 	} else {
 		$_SESSION['state']['customer']['dns']['from']=$date_interval['from'];
 		$_SESSION['state']['customer']['dns']['to']=$date_interval['to'];
@@ -842,7 +843,7 @@ function list_customer_invoices() {
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		exit("error in dates");
+	//	exit("error in dates");
 	} else {
 		$_SESSION['state']['customer']['invoices']['from']=$date_interval['from'];
 		$_SESSION['state']['customer']['invoices']['to']=$date_interval['to'];

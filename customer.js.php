@@ -426,15 +426,15 @@ Event.addListener(window, "load", function() {
 		   
 		    var ColumnDefs =  [
 				       {key:"public_id", label:"<?php echo _('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"last_update", label:"<?php echo _('Last Updated')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"current_state",label:"<?php echo _('Current State')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"last_update", label:"<?php echo _('Last Updated')?>", width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"current_state",label:"<?php echo _('Current State')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
                                         {key:"order_date", label:"<?php echo _('Order Date')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				      {key:"total_amount", label:"<?php echo _('Total')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
 					
 					 ];
 		request="ar_contacts.php?tipo=customer_orders&customer_key="+Dom.get('customer_key').value+"&sf=0&tid="+tableid
-		 
+		// alert(request)
 		   this.dataSource2  = new YAHOO.util.DataSource(request);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -575,7 +575,6 @@ this.table2.table_id=tableid;
 					
 					 ];
 request="ar_contacts.php?tipo=customer_dns&customer_key="+customer_key+"&sf=0&tid="+tableid
-
 		    this.dataSource4  = new YAHOO.util.DataSource(request);
 		    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
