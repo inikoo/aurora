@@ -14,6 +14,7 @@
 include_once 'class.DB_Table.php';
 include_once 'class.PageStoreSection.php';
 include_once 'class.Site.php';
+include_once 'class.Image.php';
 
 class Page extends DB_Table {
 
