@@ -67,7 +67,6 @@ if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('details','sal
 $smarty->assign('block_view',$block_view);
 
 
-$smarty->assign('pages_view',$_SESSION['state']['store']['pages']['view']);
 
 
 
@@ -246,10 +245,6 @@ $smarty->assign('departments_table_type',$_SESSION['state']['store']['department
 $smarty->assign('departments_table_type_label',$table_type_options[$_SESSION['state']['store']['departments']['table_type']]['label']);
 $smarty->assign('departments_table_type_menu',$table_type_options);
 
-$smarty->assign('pages_table_type',$_SESSION['state']['store']['pages']['table_type']);
-$smarty->assign('pages_table_type_label',$table_type_options[$_SESSION['state']['store']['pages']['table_type']]['label']);
-$smarty->assign('pages_table_type_menu',$table_type_options);
-
 
 $mode_options=array(
 	array('mode'=>'percentage','label'=>_('Percentages')),
@@ -304,18 +299,6 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
-
-$tipo_filter=($_SESSION['state']['store']['pages']['f_field']);
-$smarty->assign('filter4',$tipo_filter);
-$smarty->assign('filter_value4',$_SESSION['state']['store']['pages']['f_value']);
-$filter_menu=array(
-	'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
-	'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
-);
-$smarty->assign('filter_menu4',$filter_menu);
-$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu4',$paginator_menu);
 
 
 $plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
@@ -491,20 +474,6 @@ $smarty->assign('page_period',$_SESSION['state']['site']['pages']['period']);
 
 
 
-
-
-
-$elements_number=array('System'=>0, 'Info'=>0, 'Department'=>0, 'Family'=>0, 'Product'=>0, 'FamilyCategory'=>0, 'ProductCategory'=>0 );
-$sql=sprintf("select count(*) as num,`Page Store Section Type` from  `Page Store Dimension` where `Page Store Key`=%d group by `Page Store Section Type`",$store->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Page Store Section Type']]=number($row['num']);
-}
-
-$smarty->assign('elements_page_section_number',$elements_number);
-$smarty->assign('elements_page_section',$_SESSION['state']['store']['pages']['elements']['section']);
-
-$smarty->assign('page_elements_type',$_SESSION['state']['store']['pages']['elements_type']);
 
 
 
