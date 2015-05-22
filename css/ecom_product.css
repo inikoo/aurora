@@ -19,14 +19,13 @@ border-left:1px solid #aaa;border-right:1px solid #aaa;padding:10px 00px 10px 0p
 }
 
 
-
 .product{min-height:400px;}
 
 .product .information{float:left;width:445px;margin-left:15px;xborder:1px solid red}
 .side_bar{float:left;width:140px;margin-left:15px;xborder:1px solid red;text-align: right;margin-top:10px;}
-.highlight_box{border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9}
-.price{display:block;clear:both;color:green;font-size:20px;margin:10px 0 0 0 ;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;xborder:1px solid green}
-.ind_form_button_only{margin-top:0;xborder:1px solid red;padding-bottom:8px;text-align: right;float:right;;position:relative;top:-8px;}
+.highlight_box{border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;text-align:left}
+.price{display:block;clear:both;color:green;font-size:20px;margin:10px 0 0 0 ;font-family: 'Ubuntu',Helvetica,Arial,sans-serif;xborder:1px solid green;float:left}
+.ind_form_button_only{margin-top:0;xborder:1px solid red;padding-bottom:8px;text-align: right;float:left;;position:relative;top:-8px;}
 .code{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;font-weight: 800}
 .product_log_out_price{color:green;padding:30px 0px 20px 0px;font-size:150%}
 .product_log_out_price a{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;color:green;font-style: 800}

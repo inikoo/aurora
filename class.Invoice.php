@@ -112,6 +112,19 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Public ID']=sprintf($this->public_id_format_invoice,$public_id).$suffix;
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 	}
+	
+	function next_account_wide_public_id($suffix='') {
+		$sql=sprintf("UPDATE `Store Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) where `Account Key`=1");
+		mysql_query($sql);
+		$public_id=mysql_insert_id();
+
+        include_once('class.Account.php');
+        $account=new Account(1);
+
+		$this->data['Invoice Public ID']=sprintf($account->data['Account Invoice Public ID Format'],$public_id).$suffix;
+		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
+	}
+
 
 
 	function next_order_public_id($suffix='') {
@@ -194,23 +207,27 @@ class Invoice extends DB_Table {
 		$this->data ['Invoice Billing Postal Code']=$billing_to->data['Billing To Postal Code'];
 
 
-		if (array_key_exists('Invoice Public ID',$invoice_data) and $this->data['Invoice Public ID']!='') {
-			$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
+		if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
 
-
-		}else {
 			$store=new Store($this->data['Invoice Store Key']);
-			if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
+			if ($store->data['Store Refund Public ID Method']=='Invoice Public ID') {
 
-				$this->next_public_id($store->data['Store Refund Suffix']);
+				$this->next_public_id();
+
+			}elseif ($store->data['Store Refund Public ID Method']=='Account Wide Invoice Public ID') {
+
+				$this->next_account_wide_public_id();
 
 			}else {
 
-				$this->next_order_public_id($store->data['Store Refund Suffix']);
+				$this->next_order_public_id();
 			}
 
 
 
+
+		}else {
+			$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 		}
 
 
@@ -326,23 +343,27 @@ class Invoice extends DB_Table {
 
 
 
-		if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
+	
 
+
+
+		if (array_key_exists('Invoice Public ID',$invoice_data) and $this->data['Invoice Public ID']!='') {
+			$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
+
+
+		}else {
 			$store=new Store($this->data['Invoice Store Key']);
-			if ($store->data['Store Refund Public ID Method']=='Invoice Public ID') {
+			if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
 
-				$this->next_public_id();
+				$this->next_public_id($store->data['Store Refund Suffix']);
 
 			}else {
 
-				$this->next_order_public_id();
+				$this->next_order_public_id($store->data['Store Refund Suffix']);
 			}
 
 
 
-
-		}else {
-			$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 		}
 
 

@@ -23,14 +23,13 @@
 						</ul>
 				</div>
 				
-					
 			</div>
 			<div class="information">
 				<h1 style="padding-top:5px;margin:2px 0;font-size:190%">
 					{$product.name}
 				</h1>
 				<div class="highlight_box">
-					<div style="float:right;margin-right:4px">
+					<div style="float:left;margin-right:4px">
 						{t}Product code{/t}: <span class="code">{$product.code}</span> 
 					</div>
 					{$product.price}<br>

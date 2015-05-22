@@ -2026,7 +2026,7 @@ class Page extends DB_Table {
                              <table border=0 >
                              <tr>
                              <td>
-                             <input class='button_input' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
+                             <input class='button_input' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2'   value='%s' ovalue='%s'>
                              </td>
                              <td>
                              %s
