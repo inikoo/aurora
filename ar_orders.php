@@ -781,7 +781,9 @@ left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
 			'quantity'=>number($row['Invoice Quantity']),
 			'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code']),
 			'discount'=>$discount,
-			'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code'])
+			'net'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']),
+             'tax'=>money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']) ,  
+			'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']+$row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code'])
 		);
 	}
 
@@ -840,6 +842,9 @@ left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
 			'quantity'=>'',
 			'gross'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
 			'discount'=>'',
+				'net'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
+             'tax'=>money($row['Transaction Invoice Tax Amount'],$row['Currency Code']) ,  
+		
 			'to_charge'=>money($row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'],$row['Currency Code'])
 		);
 	}
