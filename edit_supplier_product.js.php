@@ -231,6 +231,11 @@ function validate_Supplier_Product_Units_Per_Case(query) {
 	validate_general('supplier_product_cost', 'Supplier_Product_Units_Per_Case', query);
 }
 
+function validate_Supplier_Product_Units_Per_Inner(query) {
+	validate_general('supplier_product_cost', 'Supplier_Product_Units_Per_Inner', query);
+}
+
+
 function validate_Supplier_Product_General_Description(query) {
 	validate_general('supplier_product_description', 'general_description', query);
 }
@@ -1138,7 +1143,18 @@ init_search('supplier_products_supplier');
 						'dbname': 'Supplier Product Units Per Case',
 
 			'name': 'Supplier_Product_Units_Per_Case',
-			'ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Cost')?>'}]
+			'ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Number')?>'}]
+    },
+      'Supplier_Product_Units_Per_Inner': {
+			'changed': false,
+			'validated': true,
+			'required': true,
+			'group': 1,
+			'type': 'item',
+						'dbname': 'Supplier Product Units Per Inner',
+
+			'name': 'Supplier_Product_Units_Per_Inner',
+			'ar':false,'validation':[{'numeric':'positive','invalid_msg':'<?php echo _('Invalid Number')?>'}]
     }
     ,'Supplier_Product_Cost_Per_Unit': {
 			'changed': false,
@@ -1916,6 +1932,12 @@ Event.addListener('save_edit_supplier_product_supplier', "click", save_edit_supp
   var supplier_product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_Supplier_Product_Units_Per_Case);
     supplier_product_code_oACDS.queryMatchContains = true;
     var supplier_product_code_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Product_Units_Per_Case", "Supplier_Product_Units_Per_Case_Container", supplier_product_code_oACDS);
+    supplier_product_code_oAutoComp.minQueryLength = 0;
+    supplier_product_code_oAutoComp.queryDelay = 0.1;
+    
+     var supplier_product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_Supplier_Product_Units_Per_Inner);
+    supplier_product_code_oACDS.queryMatchContains = true;
+    var supplier_product_code_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Product_Units_Per_Inner", "Supplier_Product_Units_Per_Inner_Container", supplier_product_code_oACDS);
     supplier_product_code_oAutoComp.minQueryLength = 0;
     supplier_product_code_oAutoComp.queryDelay = 0.1;
 

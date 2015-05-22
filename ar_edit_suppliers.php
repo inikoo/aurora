@@ -514,6 +514,7 @@ function edit_supplier_product_cost($data) {
 
 	$old_units=$supplier_product->data['Supplier Product Units Per Case'];
 	$old_cost=$supplier_product->data['Supplier Product Cost Per Case'];
+	$old_inners=$supplier_product->data['Supplier Product Units Per Inner'];
 
 	if (!$supplier_product->id) {
 		$response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
@@ -523,6 +524,20 @@ function edit_supplier_product_cost($data) {
 
 
 	$supplier_product->editor=$editor;
+	$response=array();
+
+	if (isset($values['Supplier Product Units Per Inner'])) {
+
+		$supplier_product->update(array('Supplier Product Units Per Inner'=>$values['Supplier Product Units Per Inner']['value']));
+		if ($old_inners!=$supplier_product->data['Supplier Product Units Per Inner']) {
+			$response[]=array(
+				'state'=>200,
+				'key'=>'Supplier_Product_Units_Per_Inner',
+				'newvalue'=>$supplier_product->data['Supplier Product Units Per Inner']
+			);
+		}
+
+	}
 
 
 	$_data=array(
@@ -550,7 +565,7 @@ function edit_supplier_product_cost($data) {
 
 	if (!$supplier_product->error) {
 
-		$response=array();
+
 
 
 		if ($old_cost!=$supplier_product->data['Supplier Product Cost Per Case']) {
