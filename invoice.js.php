@@ -26,11 +26,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var InvoiceColumnDefs = [
 				     {key:"code", label:"<?php echo _('Code')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"<?php echo _('Description')?>",width:360,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:45,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"gross",label:"<?php echo _('Gross')?>",hidden:(Dom.get('invoice_type').value=='Invoice'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"discount",label:"<?php echo _('Discounts')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"to_charge",label:"<?php echo _('Charge')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+//				     ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"gross",label:"<?php echo _('Gross')?>",hidden:(Dom.get('invoice_type').value=='Invoice'?false:true), width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"discount",label:"<?php echo _('Discounts')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"net",label:"<?php echo _('Net')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"tax",label:"<?php echo _('Tax')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				     ,{key:"to_charge",label:"<?php echo _('Total')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    
 					     ,{key:"refund_net",label:"<?php echo _('Refund Net')?>",hidden:(Dom.get('invoice_type').value!='Invoice'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 						     ,{key:"refund_tax",label:"<?php echo _('Refund Tax')?>",hidden:(Dom.get('invoice_type').value!='Invoice'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -50,7 +53,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code","refund_net","refund_tax","refund"
+			 ,"to_charge","gross","tariff_code","refund_net","refund_tax","refund",'net','tax'
 			 // "promotion_id",
 			 ]};
 	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
