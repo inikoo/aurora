@@ -152,6 +152,10 @@ class Order extends DB_Table {
 
 		}else {
 
+
+
+
+
 			if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
 
 				$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
@@ -159,7 +163,7 @@ class Order extends DB_Table {
 				mysql_query($sql);
 				$invoice_public_id=sprintf($store->data['Store Invoice Public ID Format'],mysql_insert_id());
 
-			}else {
+			}elseif ($store->data['Store Next Invoice Public ID Method']=='Order ID') {
 
 				$sql=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
 					,$this->data['Order Store Key']);
@@ -167,6 +171,15 @@ class Order extends DB_Table {
 				$invoice_public_id=mysql_insert_id();
 				$invoice_public_id=sprintf($store->data['Store Order Public ID Format'],mysql_insert_id());
 
+
+			}else {
+
+				$sqla=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) where `Account Key`=1");
+				mysql_query($sqla);
+				$public_id=mysql_insert_id();
+				include_once 'class.Account.php';
+				$account=new Account(1);
+				$invoice_public_id=sprintf($account->data['Account Invoice Public ID Format'],$public_id);
 
 			}
 
@@ -655,7 +668,7 @@ class Order extends DB_Table {
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
 
-	//	$sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
+		// $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
 
 
 		$sql=sprintf("update `Order Dimension` set `Order Send to Warehouse Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
@@ -665,7 +678,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 
-	//	$sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
+		// $sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
 
 		mysql_query($sql);
 
@@ -1199,7 +1212,7 @@ class Order extends DB_Table {
 		$store=new Store($this->data['Order Store Key']);
 		if ($store->data['Store Next Invoice Public ID Method']=='Order ID') {
 			$invoice_public_id=$this->data['Order Public ID'];
-		}else {
+		}elseif ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
 
 			$sqla=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
 				,$this->data['Order Store Key']);
@@ -1208,6 +1221,15 @@ class Order extends DB_Table {
 
 			$invoice_public_id=sprintf($store->data['Store Invoice Public ID Format'],$public_id);
 
+		}else {
+
+			$sqla=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) where `Account Key`=1");
+			mysql_query($sqla);
+			$public_id=mysql_insert_id();
+
+			include_once 'class.Account.php';
+			$account=new Account(1);
+			$invoice_public_id=sprintf($account->data['Account Invoice Public ID Format'],$public_id);
 		}
 
 
@@ -1873,12 +1895,12 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		switch ($key) {
-		
-		
-		
-		
+
+
+
+
 		case('Corporate Currency Invoiced Total Amount'):
-		
+
 			global $corporate_currency;
 			$_key=preg_replace('/Corporate Currency /','',$key);
 			return money(($this->data['Order Invoiced Net Amount']+$this->data['Order Invoiced Tax Amount']) *$this->data['Order Currency Exchange'],$corporate_currency);
@@ -1888,7 +1910,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$_key=preg_replace('/Corporate Currency /','',$key);
 			return money($this->data['Order '.$_key]*$this->data['Order Currency Exchange'],$corporate_currency);
 			break;
-		
+
 		case("Sticky Note"):
 			return nl2br($this->data['Order Sticky Note']);
 			break;
@@ -2125,7 +2147,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		}
 
-	
+
 
 		return $invoices;
 
