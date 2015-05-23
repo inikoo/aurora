@@ -78,7 +78,7 @@
 						</tr>
 						{/foreach} 
 						<tr id="main_telephone_tr" onmouseover="Dom.setStyle('quick_edit_main_telephone','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_telephone','visibility','hidden')">
-							<td id="main_telephone" colspan="2" class="aright" style="{if $supplier->get('Supplier Main XHTML Mobile') and $supplier->get('Supplier Preferred Contact Number')=='Telephone'}font-weight:800{/if}">{if $supplier->get('Supplier Main XHTML Telephone')=='' and $supplier->get('Supplier Main XHTML Email')==''}<span class="add_missing_value">{t}add telephone{/t}</span>{/if} {$supplier->get('Supplier Main XHTML Telephone')}</td>
+							<td id="main_telephone" colspan="2" class="aright" >{if $supplier->get('Supplier Main XHTML Telephone')=='' }<span class="add_missing_value">{t}add telephone{/t}</span>{/if} {$supplier->get('Supplier Main XHTML Telephone')}</td>
 							<td><img alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png" /></td>
 							<td id="telephone_label{$supplier->get('Supplier Main Telephone Key')}" style="color:#777;font-size:80%">{$supplier->get_principal_telecom_comment('Telephone')} <img onmouseover="Dom.addClass('main_telephone_tr','edit_over')" onmouseout="Dom.removeClass('main_telephone_tr','edit_over')" id="quick_edit_main_telephone" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
