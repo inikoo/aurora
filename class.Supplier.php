@@ -251,7 +251,7 @@ class supplier extends DB_Table {
 		case 'Average Delivery Days':
 		case 'Delivery Days':
 			include_once 'common_natural_language.php';
-			return seconds_to_string(24*3600*$this->data['Supplier Delivery Days']);
+			return seconds_to_string(24*3600*$this->data['Supplier Average Delivery Days']);
 			break;
 		case 'Products Origin Country Code':
 			if ($this->data['Supplier Products Origin Country Code']) {

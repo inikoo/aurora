@@ -28,11 +28,11 @@
 							<td> <span id="{$calendar_id}_clear_interval" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span> 
 							<input id="{$calendar_id}_in" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_little_edian}" />
 							</td>
-							<td> <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="{$calendar_id}_submit_interval" alt="{t}Go{/t}" /> </td>
+							<td> <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png"  id="{$calendar_id}_submit_interval" alt="{t}Go{/t}" /> </td>
 						</tr>
 						<tr>
 							<td> 
-							<input style="left:0px;margin-top:5px" class="calpop" id="{$calendar_id}_out" size="11" maxlength="10" type="text" class="text" size="8" name="to" value="{$to_little_edian}" />
+							<input style="left:0px;margin-top:5px" class="calpop text" id="{$calendar_id}_out" size="11" maxlength="10" type="text"  name="to" value="{$to_little_edian}" />
 							</td>
 							<td></td>
 						</tr>
@@ -52,7 +52,7 @@
 							<td> <span id="{$calendar_id}_clear_interval_date" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span> 
 							<input id="{$calendar_id}_pick_date" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_little_edian}" />
 							</td>
-							<td> <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="{$calendar_id}_submit_choose_day" alt="{t}Go{/t}" /> </td>
+							<td> <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png"  id="{$calendar_id}_submit_choose_day" alt="{t}Go{/t}" /> </td>
 						</tr>
 					</table>
 			</div>

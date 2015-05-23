@@ -478,7 +478,21 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>''
-		)
+		),
+		 'history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+
+
+	)
 	),
 
 
@@ -490,7 +504,21 @@ $default_state=array(
 			'f_value'=>'',
 			'sf'=>0,
 			'nr'=>500,
-		)
+		),
+		 'history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+
+
+	)
 
 	),
 	'order'=>array(
@@ -541,6 +569,20 @@ $default_state=array(
 
 
 		),
+		 'history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'f_field'=>'notes',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
+
+
+	)
 
 	),
 
@@ -5022,6 +5064,7 @@ $default_state=array(
 			'view'=>'general',
 			'percentage'=>0,
 			'period'=>'year',
+			'avg'=>'totals',
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,

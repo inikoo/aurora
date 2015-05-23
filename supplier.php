@@ -70,6 +70,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/quick_edit.css',
+	'css/calendar.css',
 	'css/supplier.css',
 	'theme.css.php'
 
@@ -150,6 +151,7 @@ $smarty->assign('display',$_SESSION['state']['supplier']['display']);
 
 $smarty->assign('supplier_products_view',$_SESSION['state']['supplier']['supplier_products']['view']);
 $smarty->assign('supplier_products_period',$_SESSION['state']['supplier']['supplier_products']['period']);
+$smarty->assign('supplier_products_avg',$_SESSION['state']['supplier']['supplier_products']['avg']);
 //print_r($_SESSION['state']['supplier']['supplier_products']);
 
 //$smarty->assign('supplier_products_avg',$_SESSION['state']['supplier']['supplier_products']['avg']);
