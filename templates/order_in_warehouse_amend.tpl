@@ -1,21 +1,30 @@
 {include file='header.tpl'} 
+<input type="hidden" id="session_data" value="{$session_data}"  />
+<input type="hidden" id="order_shipping_method" value="{$order->get('Order Shipping Method')}"  />
+<input type="hidden" id="store_id" value="{$store->id}"  />
+<input type="hidden" id="store_key" value="{$store->id}"  />
+<input type="hidden" id="order_key" value="{$order->id}"  />
+<input type="hidden" id="dispatch_state" value="{$order->get('Order Current Dispatch State')}"  />
+<input type="hidden" id="customer_key" value="{$order->get('Order Customer Key')}"  />
+<input type="hidden" id="referral" value="{$referral}"  />
+<input type="hidden" id="products_display_type" value="{$block_view}"  />
+<input type="hidden" id="lookup_family" value="{$lookup_family}"  />
+
+<input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}" />
+<input type="hidden" id="items_table_index" value="0" />
+<input type="hidden" id="currency_code" value="{$order->get('Order Currency')}" />
+<input type="hidden" id="decimal_point" value="{$decimal_point}"  />
+<input type="hidden" id="thousands_sep" value="{$thousands_sep}"  />
+<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
+<input type="hidden" id="session_data" value="{$session_data}"  />
+<input type="hidden" id="subject" value="order" />
+<input type="hidden" id="subject_key" value="{$order->id}" />
+<input type="hidden" id="history_table_id" value="3"> 
 <div id="bd" class="no_padding">
 	<div style="padding:0px 20px">
 		{include file='assets_navigation.tpl'} 
-		<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
-		<input type="hidden" value="{$store->id}" id="store_id" />
-		<input type="hidden" value="{$store->id}" id="store_key" />
-		<input type="hidden" value="{$order->id}" id="order_key" />
-		<input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state" />
-		<input type="hidden" value="{$order->get('Order Customer Key')}" id="customer_key" />
-		<input type="hidden" value="{$referral}" id="referral" />
-		<input type="hidden" value="{$products_display_type}" id="products_display_type" />
-		<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
-		<input type="hidden" value="{$decimal_point}" id="decimal_point" />
-		<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
-		<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
-		<input type="hidden" value="customer" id="subject" />
-		<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
+		
+		
 		<div class="branch ">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')}</span> 
 		</div>
@@ -35,12 +44,13 @@
 		<div style="clear:both">
 		</div>
 		<div id="control_panel">
+		<div class="content">
 			<div id="addresses">
 				<h2 style="padding:0">
-					<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+					<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> <span id="customer_name">{$order->get('Order Customer Name')}</span> <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 				</h2>
-				<h3>
-					{$customer->get('Customer Main Contact Name')} 
+				<h3 id="customer_contact_name">
+					{$order->get('Order Customer Contact Name')} 
 				</h3>
 				<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
 					<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
@@ -101,14 +111,17 @@
 			</div>
 			<div style="clear:both">
 			</div>
+			</div>
+			{include file='order_more_info_spliner.tpl'} 
+			
 		</div>
 	</div>
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Items')}</span>)</span></span></li>
+	<ul class="tabs" id="items_chooser" >
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span></span></li>
+		<li> <span class="item {if $block_view=='items'}selected{/if}" id="items"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$order->get('Number Items')}</span>)</span></span></li>
 	</ul>
 	<div class="tabs_base">
 	</div>
@@ -229,4 +242,4 @@
 		</tr>
 	</table>
 </div>
-{include file='add_payment_splinter.tpl' subject='order'} {include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl' subject='order'} {include file='order_not_dispatched_dialogs_splinter.tpl'}  {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

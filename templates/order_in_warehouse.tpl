@@ -1,22 +1,28 @@
 {include file='header.tpl'} 
 <div id="bd">
 	{include file='assets_navigation.tpl'}
-	<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
-	<input type="hidden" value="{$store->id}" id="store_id" />
-	<input type="hidden" value="{$store->id}" id="store_key" />
-	<input type="hidden" value="{$order->id}" id="order_key" />
-	<input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state" />
-	<input type="hidden" value="{$order->get('Order Customer Key')}" id="customer_key" />
-	<input type="hidden" value="{$referral}" id="referral" />
-	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
-	<input type="hidden" value="{$current_delivery_note_key}" id="current_delivery_note_key" />
-	<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
-	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
-	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
-	<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
-	<input type="hidden" value="customer" id="subject" />
-	<input type="hidden" value="{$store->get('Store Home Country Code 2 Alpha')}" id="default_country_2alpha" />
+	<input type="hidden" id="session_data" value="{$session_data}"  />
+
+	<input type="hidden" id="order_shipping_method" value="{$order->get('Order Shipping Method')}"  />
+	<input type="hidden" id="store_id" value="{$store->id}"  />
+	<input type="hidden" id="store_key" value="{$store->id}"  />
+	<input type="hidden" id="order_key" value="{$order->id}"  />
+	<input type="hidden" id="dispatch_state"  value="{$order->get('Order Current Dispatch State')}" />
+	<input type="hidden" id="customer_key" value="{$order->get('Order Customer Key')}"  />
+	<input type="hidden" id="referral" value="{$referral}"  />
+	<input type="hidden" id="products_display_type" value="{$products_display_type}"  />
+	<input type="hidden" id="current_delivery_note_key" value="{$current_delivery_note_key}" />
+	<input type="hidden" id="currency_code" value="{$order->get('Order Currency')}" />
+	<input type="hidden" id="decimal_point" value="{$decimal_point}"  />
+	<input type="hidden" id="thousands_sep" value="{$thousands_sep}"  />
+	<input type="hidden" id="subject_key" value="{$order->id}"  />
+	<input type="hidden" id="subject" value="order"  />
+	<input type="hidden" id="history_table_id" value="3"> 
+
+	<input type="hidden" id="default_country_2alpha" value="{$store->get('Store Home Country Code 2 Alpha')}"  />
 	<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> <iframe id="invoice_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="dn_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> <iframe id="order_pick_aid_pdf_printout" width="0" height="0" style="position:absolute;top:-100px"></iframe> 
+
+
 	<div class="branch ">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')} ({$order->get_formated_dispatch_state()})</span> 
 	</div>
@@ -39,10 +45,14 @@
 	<div style="clear:both">
 	</div>
 	<div id="control_panel">
+	<div class="content">
 		<div id="addresses">
 			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px">  <span id="customer_name">{$order->get('Order Customer Name')}</span> <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
+			<h3 id="customer_contact_name">
+					{$order->get('Order Customer Contact Name')} 
+				</h3>
 			<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
 				<div id="title_billing_address" style="border-bottom:1px solid #ccc;margin-bottom:5px">
 					{t}Billing to{/t}: 
@@ -121,7 +131,7 @@
 				{/foreach} 
 			</table>
 			<table border="0" class="info_block with_title">
-				{if $number_invoices>0 or $order->get('Order Current Dispatch State')=='Packed Done' } 
+				{if $number_invoices>0 or ( $order->get('Order Current Dispatch State')=='Packed Done' or  $order->get('Order Current Dispatch State')=='Ready to Ship')} 
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan="2">{t}Invoices{/t}:</td>
 				</tr>
@@ -136,9 +146,9 @@
 				<tr>
 					<td colspan="2" class="right" style="text-align:right" id="operations_container{$invoice.key}">{$invoice.operations}</td>
 				</tr>
-				{/foreach} 
-				<tr style="{if !($order->get('Order Current Dispatch State')=='Packed Done' and $order->get_number_invoices()==0)}display:none{/if}">
-					<td colspan="2" class="right" style="text-align:right"> 
+				{/foreach}
+				<tr style="{if  $order->get_number_invoices()>0}display:none{/if}">
+					<td colspan="2" class="right" style="text-align:right">
 					<div class="buttons small right">
 						<button id="create_invoice"><img id="create_invoice_img" src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
 					</div>
@@ -146,7 +156,7 @@
 				</tr>
 				{/if} 
 				
-				
+			
 				
 				
 			</table>
@@ -160,18 +170,8 @@
 		</div>
 		<div style="clear:both">
 		</div>
-		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
-		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-			<div class="buttons small right">
-				<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="{if $order->get('Order Invoiced')=='Yes'}display:none{/if}" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
-			</div>
-			{include file='order_details_splinter.tpl'} 
-			<div style="clear:both">
-			</div>
-			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
 		</div>
-		<div style="clear:both">
-		</div>
+		{include file='order_more_info_spliner.tpl'} 
 	</div>
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
@@ -212,4 +212,4 @@
 		</ul>
 	</div>
 </div>
-{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='add_payment_splinter.tpl' subject='order'} {include file='assign_picker_packer_splinter.tpl'} {include file='footer.tpl'} 
+{include file='order_not_dispatched_dialogs_splinter.tpl'} {include file='add_payment_splinter.tpl' subject='order'} {include file='assign_picker_packer_splinter.tpl'}  {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

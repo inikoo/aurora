@@ -141,7 +141,7 @@ $js_files=array(
 	'js/edit_contact_telecom.js',
 	'edit_contact_name.js.php',
 	'edit_contact_email.js.php',
-	'js/notes.js',
+	'js/notes.js?20150526',
 	'js/add_credit_note.js'
 );
 

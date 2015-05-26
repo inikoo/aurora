@@ -33,7 +33,6 @@
 				{$invoice->get('Invoice Tax Number')} 
 			</div>
 			<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444">
-				<b>{$invoice->get('Invoice Main Contact Name')}</b><br />
 				{$invoice->get('Invoice XHTML Address')} 
 			</div>
 			<div style="clear:both">

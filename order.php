@@ -51,11 +51,17 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/jquery.min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
-	'js/edit_order_details.js',
-	'js/order_notes_common.js'
+	'js/edit_common.js',
+	'js/notes.js?20150526',
+	'js/edit_order_details.js?20150526',
+	'js/order.js'
+	//'js/order_notes_common.js',
+
 );
 
 
@@ -558,7 +564,7 @@ else {
 	foreach ($order->get_invoices_objects() as $invoice) {
 		$current_invoice_key=$invoice->id;
 
-		
+
 		$invoices_data[]=array(
 			'key'=>$invoice->id,
 			'operations'=>$invoice->get_operations($user,'order',$order->id),
@@ -586,13 +592,61 @@ else {
 		$order_current_dispatch_state='In Process';
 
 
-$shipper_data=array();
+	$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+	$sql=sprintf("select count(*) as num , `Type` from  `Order History Bridge` where `Order Key`=%d group by `Type`",$order->id);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[$row['Type']]=$row['num'];
+	}
+	$smarty->assign('elements_order_history_number',$elements_number);
+	$smarty->assign('elements_order_history',$_SESSION['state']['order']['history']['elements']);
+
+
+
+
+
+	$filter_menu=array(
+		'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+		'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+		'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+		'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+	);
+	$tipo_filter=$_SESSION['state']['order']['history']['f_field'];
+	$filter_value=$_SESSION['state']['order']['history']['f_value'];
+
+	$smarty->assign('filter_value3',$filter_value);
+	$smarty->assign('filter_menu3',$filter_menu);
+	$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+	$paginator_menu=array(10,25,50,100,500);
+	$smarty->assign('paginator_menu3',$paginator_menu);
+
+
+
+
+	$smarty->assign('elements_customer_data',$_SESSION['state']['order']['customer_history']['elements']);
+	$filter_menu=array(
+		'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with notes *<i>x</i>*'),'label'=>_('Notes')),
+		'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+		'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+		'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+	);
+	$tipo_filter=$_SESSION['state']['order']['customer_history']['f_field'];
+	$filter_value=$_SESSION['state']['order']['customer_history']['f_value'];
+	$smarty->assign('filter_value2',$filter_value);
+	$smarty->assign('filter_menu2',$filter_menu);
+	$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+	$paginator_menu=array(10,25,50,100,500);
+	$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+
+	$shipper_data=array();
 	switch ($order_current_dispatch_state) {
 
 	case('In Process'):
 	case('Submitted by Customer'):
 	case('Waiting for Payment Confirmation'):
-$order->apply_payment_from_customer_account();
+		$order->apply_payment_from_customer_account();
 
 		include 'order_in_process_splinter.php';
 		break;
@@ -604,7 +658,7 @@ $order->apply_payment_from_customer_account();
 
 		include 'order_in_warehouse_splinter.php';
 		break;
-		
+
 	case('Dispatched'):
 		include 'order_dispatched_splinter.php';
 		break;
@@ -635,6 +689,40 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Code'=>_('Code'),
+				'Name'=>_('Name'),
+				'Qty'=>_('Qty'),
+				'Gross'=>_('Gross'),
+				'Net'=>_('Net'),
+				'Tax'=>_('Tax'),
+				'Amount'=>_('Amount'),
+				'Discounts'=>_('Discounts'),
+				'Description'=>_('Description'),
+				'Created'=>_('Created'),
+				'Updated'=>_('Updated'),
+				'Date'=>_('Date'),
+				'Time'=>_('Time'),
+				'Author'=>_('Author'),
+				'Notes'=>_('Notes'),
+				'Ordered'=>_('Ordered'),
+				'Dispatched'=>_('Dispatched'),
+				'Page'=>_('Page'),
+				'of'=>_('of'),
+			),
+			'state'=>array(
+				'order_in_process_by_customer'=>$_SESSION['state']['order_in_process_by_customer'],
+				'order_cancelled'=>$_SESSION['state']['order_cancelled'],
+				'order'=>$_SESSION['state']['order'],
+
+			)
+		)));
+$smarty->assign('session_data',$session_data);
+
+$smarty->assign('sticky_note',$order->data['Order Sticky Note']);
+
 
 $smarty->display($template);
 

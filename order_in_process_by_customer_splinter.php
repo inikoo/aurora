@@ -21,7 +21,7 @@ $js_files[]='js/add_payment.js';
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 $smarty->assign('store_id',$store->id);
-$js_files[]='order_in_process_by_customer.js.php';
+$js_files[]='js/order_in_process_by_customer.js';
 $template='order_in_process_by_customer.tpl';
 
 

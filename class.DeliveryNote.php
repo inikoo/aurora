@@ -1675,7 +1675,7 @@ class DeliveryNote extends DB_Table {
 		$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $key=>$order) {
 
-
+            $order->editor=$this->editor;
 
 			if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
 				$order->update_post_dispatch_state();

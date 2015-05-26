@@ -30,7 +30,7 @@
 				<button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
 				
 				<button id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> 
-				<button id="make_order" class="disabled"><img src="art/icons/database_go.png" alt="">QO Data</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
+				<button style="display:none" id="make_order" class="disabled"><img src="art/icons/database_go.png" alt="">QO Data</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>

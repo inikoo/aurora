@@ -3,7 +3,7 @@
 <input type="hidden" value="{$products_display_type}" id="products_display_type"> 
 <input type="hidden" value="{$po->id}" id="po_key"> 
 <input type="hidden" value="{$supplier->id}" id="supplier_key"> 
-<input type="hidden" value="{$number_buyers}" id="number_buyers">
+<input type="hidden" value="{$number_buyers}" id="number_buyers"> 
 <input type="hidden" id="history_table_id" value="3"> 
 <input type="hidden" id="subject" value="porder"> 
 <input type="hidden" id="subject_key" value="{$po->id}"> 
@@ -29,188 +29,149 @@
 	<div style="clear:both">
 	</div>
 	<div id="order_header">
-	    <div class="content">
-	    
-	    <div class="totals column">
-		<table  border="0">
-		
-		<tbody id="incoterm_data">
-				<tr id="incoterm_tr">
-					<td>{t}Incoterm{/t}:</td>
-					<td id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
-					<td class="aright" style="width:20px"><img id="edit_incoterm" style="cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
-				</tr>
-				<tr id="export_port_tr">
-					<td>{t}Export Port{/t}:</td>
-					<td colspan=2 id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
-					
-				</tr>
-				<tr id="import_port_tr">
-					<td>{t}Import Port{/t}:</td>
-					<td colspan=2 id="import_port" class="aright">{$po->get('Purchase Order Port of Import')}</td>
-					
-				</tr>
-			</tbody>
-		
-			<tr class="currency_tr">
-				<td>{t}Currency{/t}</td>
-				<td colspan=2 class=" aright">{$po->get('Purchase Order Currency Code')}</td>
-			</tr>
-			<tbody id="po_amounts" style="display:none">
-				<tr>
-					<td>{t}Goods{/t}:</td>
-					<td colspan=2 id="goods" class="aright">{$po->get('Items Net Amount')}</td>
-				</tr>
-				<tr>
-					<td>{t}Shipping{/t}:</td>
-					<td colspan=2 class="aright" id="shipping">{$po->get('Shipping Net Amount')}</td>
-				</tr>
-				<tr>
-					<td>{t}Tax{/t}:</td>
-					<td colspan=2  id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
-				</tr>
-			</tbody>
-			<tr>
-				<td>{t}Total{/t}</td>
-				<td colspan=2  id="total" class="total aright ">{$po->get('Total Amount')}</td>
-			</tr>
-			<tr style="{if $corporate_currency==$po->get('Purchase Order Currency Code')}display:none{/if}">
-				<td></td>
-				<td colspan=2  id="total_corporate_currency" class="total_corporate_currency aright ">{$po->get('Total Amount Corporate Currency')}</td>
-			</tr>
-		</table>
-		</div>
-		
-		<div class="dates column">
-			<table b >
-				<tr>
-					<td class="label" >{t}Created{/t}:</td>
-					<td class="aright" >{$po->get('Creation Date')}</td>
-				</tr>
-				<tr class="last">
-					<td class="label"> 
-					<div id="estimated_delivery_Container" style="position:absolute;display:none; z-index:2">
-					</div>
-					<img style="cursor:pointer" id="edit_estimated_delivery" src="art/icons/edit.gif" alt="({t}edit{/t})"> {t}Estimated Delivery{/t}:</td>
-					<td class="aright" id="estimated_delivery">{$po->get_formated_estimated_delivery_date()}</td>
-				</tr>
-				
-			</table>
-		</div>
-		<div class="supplier column" >
-		<table border="0">
-			<tr class="last">
-				<td>{t}Supplier{/t}:</td>
-				<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
-				<td></td>
-			</tr>
-			
-			
-		</table>
-		</div>
-		
-		<div style="clear:both">
-		</div>
-		</div>
-		
-		
-	
-		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
-		<li> 
-		    <span class="item "  id="tandc"> 
-		        <span> {t}Terms & Condition{/t}</span>
-		    </span>
-		</li>
-		<li> <span class="item "  id="attachments" > 
-		    <span id="attachments_label"> {t}Attachments{/t} {if $number_attachments!=0} ({$number_attachments}){/if}</span>
-		   
-		    </span>
-		</li>
-		<li> <span class="item "  id="notes" > <span> {t}History/Notes{/t}</span></span></li>
-
-		</ul>
-		
-		
-		<div  id="order_details_panel" style="display:none;clear:both;border-top:1px solid #ccc;padding:10px 10px 10px; 10px;;">
-			
-			<div id="block_tandc" class="block_details" style="display:none" >
-			<table class="terms_and_conditions edit" border="0">
-				
-				<tr id="terms_and_conditions_tr" class="first">
-					<td class="label">{t}Terms & Conditions{/t}:</td>
-					<td class="input"> 
-					<div id="terms_and_conditions_formated">
-						{$po->get('Purchase Order Terms and Conditions')} 
-					</div>
-					</td>
-					<td><img onclick="show_edit_tc()" style="cursor:pointer" src="art/icons/edit.gif"></td>
-				</tr>
-				<tbody id="edit_tc" style="display:none">
-					<tr class=" textarea_big_tr">
-						<td class="label">{t}Terms & Conditions{/t}:</td>
-						<td class="input"> 
-						<div>
-							<textarea id="terms_and_conditions" changed="0" value="{$po->get('Purchase Order Terms and Conditions')}" ovalue="{$po->get('Purchase Order Terms and Conditions')}">{$po->get('Purchase Order Terms and Conditions')}</textarea> 
-							<div id="terms_and_conditions_Container">
-							</div>
-						</div>
-						</td>
-						<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
+		<div class="content">
+			<div class="totals column">
+				<table border="0">
+					<tbody id="incoterm_data">
+						<tr id="incoterm_tr">
+							<td>{t}Incoterm{/t}:</td>
+							<td id="incoterm" class="aright">{$po->get('Purchase Order Incoterm')}</td>
+							<td class="aright" style="width:20px"><img id="edit_incoterm" style="cursor:pointer;height:15px" src="art/icons/edit.gif"></td>
+						</tr>
+						<tr id="export_port_tr">
+							<td>{t}Export Port{/t}:</td>
+							<td colspan="2" id="export_port" class="aright">{$po->get('Purchase Order Port of Export')}</td>
+						</tr>
+						<tr id="import_port_tr">
+							<td>{t}Import Port{/t}:</td>
+							<td colspan="2" id="import_port" class="aright">{$po->get('Purchase Order Port of Import')}</td>
+						</tr>
+					</tbody>
+					<tr class="currency_tr">
+						<td>{t}Currency{/t}</td>
+						<td colspan="2" class=" aright">{$po->get('Purchase Order Currency Code')}</td>
 					</tr>
-					<tr class="buttons">
-						<td colspan="2"> 
-						<div class="buttons">
-							<button style="margin-right:10px;" id="save_edit_terms_and_conditions" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_terms_and_conditions" class="negative">{t}Cancel{/t}</button> 
+					<tbody id="po_amounts" style="display:none">
+						<tr>
+							<td>{t}Goods{/t}:</td>
+							<td colspan="2" id="goods" class="aright">{$po->get('Items Net Amount')}</td>
+						</tr>
+						<tr>
+							<td>{t}Shipping{/t}:</td>
+							<td colspan="2" class="aright" id="shipping">{$po->get('Shipping Net Amount')}</td>
+						</tr>
+						<tr>
+							<td>{t}Tax{/t}:</td>
+							<td colspan="2" id="vat" class="aright">{$po->get('Total Tax Amount')}</td>
+						</tr>
+					</tbody>
+					<tr>
+						<td>{t}Total{/t}</td>
+						<td colspan="2" id="total" class="total aright ">{$po->get('Total Amount')}</td>
+					</tr>
+					<tr style="{if $corporate_currency==$po->get('Purchase Order Currency Code')}display:none{/if}">
+						<td></td>
+						<td colspan="2" id="total_corporate_currency" class="total_corporate_currency aright ">{$po->get('Total Amount Corporate Currency')}</td>
+					</tr>
+				</table>
+			</div>
+			<div class="dates column">
+				<table>
+					<tr>
+						<td class="label">{t}Created{/t}:</td>
+						<td class="aright">{$po->get('Creation Date')}</td>
+					</tr>
+					<tr class="last">
+						<td class="label"> 
+						<div id="estimated_delivery_Container" style="position:absolute;display:none; z-index:2">
 						</div>
-						</td>
+						<img style="cursor:pointer" id="edit_estimated_delivery" src="art/icons/edit.gif" alt="({t}edit{/t})"> {t}Estimated Delivery{/t}:</td>
+						<td class="aright" id="estimated_delivery">{$po->get_formated_estimated_delivery_date()}</td>
+					</tr>
+				</table>
+			</div>
+			<div class="supplier column">
+				<table border="0">
+					<tr class="last">
+						<td>{t}Supplier{/t}:</td>
+						<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
 						<td></td>
 					</tr>
-				</tbody>
-			</table>
-            </div>
-			<div id="block_attachments"  class="block_details" style="display:none">
-			<div class="buttons small"><button id="attach_bis"><img src="art/icons/add.png"> {t}Attachment{/t}</button></div>
-			<div id="attachments_showcase">
-			{include file='attachments_showcase_splinter.tpl' attachments=$po->get_attachments_data()}
+				</table>
 			</div>
-			
+			<div style="clear:both">
 			</div>
-            <div id="block_notes"  class="block_notes" style="display:none;margin-top:10px;margin-bottom:20px">
-            
-				<span id="table_title" class="clean_table_title" style="margin-right:10px">{t}History/Notes{/t}</span> 
-				
-				<div class="buttons small left">
-				    <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> 
-				<button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+		</div>
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
+			<li> <span class="item " id="tandc"> <span> {t}Terms & Condition{/t}</span> </span> </li>
+			<li> <span class="item " id="attachments"> <span id="attachments_label"> {t}Attachments{/t} {if $number_attachments!=0} ({$number_attachments}){/if}</span> </span> </li>
+			<li> <span class="item " id="notes"> <span> {t}History/Notes{/t}</span></span></li>
+		</ul>
+		<div id="order_details_panel" style="display:none;clear:both;border-top:1px solid #ccc;padding:10px 10px 10px; 10px;;">
+			<div id="block_tandc" class="block_details" style="display:none">
+				<table class="terms_and_conditions edit" border="0">
+					<tr id="terms_and_conditions_tr" class="first">
+						<td class="label">{t}Terms & Conditions{/t}:</td>
+						<td class="input"> 
+						<div id="terms_and_conditions_formated">
+							{$po->get('Purchase Order Terms and Conditions')} 
+						</div>
+						</td>
+						<td><img onclick="show_edit_tc()" style="cursor:pointer" src="art/icons/edit.gif"></td>
+					</tr>
+					<tbody id="edit_tc" style="display:none">
+						<tr class=" textarea_big_tr">
+							<td class="label">{t}Terms & Conditions{/t}:</td>
+							<td class="input"> 
+							<div>
+								<textarea id="terms_and_conditions" changed="0" value="{$po->get('Purchase Order Terms and Conditions')}" ovalue="{$po->get('Purchase Order Terms and Conditions')}">{$po->get('Purchase Order Terms and Conditions')}</textarea> 
+								<div id="terms_and_conditions_Container">
+								</div>
+							</div>
+							</td>
+							<td id="terms_and_conditions_msg" class="edit_td_alert"></td>
+						</tr>
+						<tr class="buttons">
+							<td colspan="2"> 
+							<div class="buttons">
+								<button style="margin-right:10px;" id="save_edit_terms_and_conditions" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px;" id="reset_edit_terms_and_conditions" class="negative">{t}Cancel{/t}</button> 
+							</div>
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="block_attachments" class="block_details" style="display:none">
+				<div class="buttons small">
+					<button id="attach_bis"><img src="art/icons/add.png"> {t}Attachment{/t}</button>
 				</div>
-				
+				<div id="attachments_showcase">
+					{include file='attachments_showcase_splinter.tpl' attachments=$po->get_attachments_data()} 
+				</div>
+			</div>
+			<div id="block_notes" class="block_notes" style="display:none;margin-top:10px;margin-bottom:20px">
+				<span id="table_title" class="clean_table_title" style="margin-right:10px">{t}History/Notes{/t}</span> 
+				<div class="buttons small left">
+					<button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+				</div>
 				<div class="elements_chooser">
-					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_po_history.Changes}selected{/if} label_part_history_Changes" id="elements_po_history_Changes" table_type="elements_Changes">{t}Changes History{/t} (<span id="elements_history_Changes_number">{$elements_po_history_number.Changes}</span>)</span> 
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Notes}selected{/if} label_part_history_Notes" id="elements_po_history_notes" table_type="elements_Notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number">{$elements_po_history_number.Notes}</span>)</span> 
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Attachments}selected{/if} label_part_history_Attachments" id="elements_po_history_Attachments" table_type="elements_Attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number">{$elements_po_history_number.Attachments}</span>)</span> 
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_po_history.Changes}selected{/if} label_part_history_Changes" id="elements_po_history_Changes" table_type="elements_Changes">{t}Changes History{/t} (<span id="elements_history_Changes_number">{$elements_po_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Notes}selected{/if} label_part_history_Notes" id="elements_po_history_notes" table_type="elements_Notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number">{$elements_po_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Attachments}selected{/if} label_part_history_Attachments" id="elements_po_history_Attachments" table_type="elements_Attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number">{$elements_po_history_number.Attachments}</span>)</span> 
 				</div>
 				<div class="table_top_bar space">
 				</div>
 				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
 				<div id="table3" class="data_table_container dtable btable">
 				</div>
-			
-            </div>
-
-
+			</div>
 			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
-
 			<div style="clear:both">
 			</div>
-		  
 		</div>
-		
-		
 		<div style="clear:both">
 		</div>
 	</div>
-	
-	<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
+	<div id="items" class="data_table" style="margin:20px 0px;clear:both">
 		<span class="clean_table_title">{t}Supplier products to order{/t}</span> 
 		<div class="elements_chooser">
 			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$po->get('Number Items')}</span>)</span> 
@@ -251,7 +212,9 @@
 			<tr>
 				<td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0"> 
 				<div class="buttons">
-				    <div id="waiting_delete_order" style="display:none;text-align:right;padding-right:10px"><img src="art/loading.gif"> <span>{t}Processing request{/t}</span></div>
+					<div id="waiting_delete_order" style="display:none;text-align:right;padding-right:10px">
+						<img src="art/loading.gif"> <span>{t}Processing request{/t}</span>
+					</div>
 					<button id="delete_order" class="negative" onclick="delete_order()">{t}Delete Purchase Order{/t}</button> 
 				</div>
 				</td>
@@ -422,6 +385,4 @@
 		</tr>
 	</table>
 </div>
-{include file='notes_splinter.tpl'} {include file='porder_common_splinter.tpl'}
-
-{include file='footer.tpl'} 
+{include file='notes_splinter.tpl'} {include file='porder_common_splinter.tpl'} {include file='footer.tpl'} 

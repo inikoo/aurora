@@ -257,13 +257,8 @@ class Order extends DB_Table {
 				$this->data['Order Tax Name']=$tax_cat->data['Tax Category Name'];
 				$this->data['Order Tax Operations']='';
 				$this->data['Order Tax Selection Type']='set';
-
-
-
 			}
 		}
-
-
 
 		$this->set_data_from_customer($data['Customer Key']);
 
@@ -276,24 +271,17 @@ class Order extends DB_Table {
 		}
 
 
-
-
 		if (isset($data['Order Apply Auto Customer Account Payment'])) {
 			$this->data ['Order Apply Auto Customer Account Payment'] =$data['Order Apply Auto Customer Account Payment'];
 		}else {
 			$this->data ['Order Apply Auto Customer Account Payment']='Yes';
-
 		}
-
-
 
 		if (isset($data['Order Payment Method'])) {
 			$this->data ['Order Payment Method'] =$data['Order Payment Method'];
 		}else {
 			$this->data ['Order Payment Method'] ='Unknown';
-
 		}
-
 
 		$this->data ['Order Current Payment State'] = 'Waiting Payment';
 
@@ -313,14 +301,10 @@ class Order extends DB_Table {
 		else
 			$this->data ['Order Original Data MIME Type']='none';
 
-
-
-
 		if (isset($data['Order Original Metadata']))
 			$this->data ['Order Original Metadata']=$data['Order Original Metadata'];
 		else
 			$this->data ['Order Original Metadata']='';
-
 
 		if (isset($data['Order Original Data Source']))
 			$this->data ['Order Original Data Source']=$data['Order Original Data Source'];
@@ -418,9 +402,16 @@ class Order extends DB_Table {
 			$this->id,
 			$this->data['Order Customer Key']
 		);
-		//print $sql;
-		//exit;
+
 		mysql_query($sql);
+
+
+		$history_data=array(
+			'History Abstract'=>_('Order created'),
+			'History Details'=>'',
+			'Action'=>'created'
+		);
+		$this->add_subject_history($history_data);
 
 	}
 
@@ -575,6 +566,16 @@ class Order extends DB_Table {
 
 		mysql_query($sql);
 		$this->update_payment_state();
+		
+		
+		
+		$history_data=array(
+			'History Abstract'=>_('Order meved from basket to customer services process tray'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
+
+		
 
 	}
 
@@ -609,6 +610,15 @@ class Order extends DB_Table {
 
 		mysql_query($sql);
 		$this->update_payment_state();
+		
+		
+			
+		$history_data=array(
+			'History Abstract'=>_('Order submited from basket'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
+		
 	}
 
 	function send_to_warehouse($date=false,$extra_data=false) {
@@ -684,6 +694,12 @@ class Order extends DB_Table {
 
 		$this->update_delivery_notes();
 		$this->update_full_search();
+
+		$history_data=array(
+			'History Abstract'=>_('Order send to warehouse'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
 
 		return $dn;
 	}
@@ -921,6 +937,14 @@ class Order extends DB_Table {
 
 			$this->update_deals_usage();
 			$this->cancelled=true;
+			
+			
+				$history_data=array(
+			'History Abstract'=>_('Order cancelled'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
+			
 
 		}
 
@@ -1103,6 +1127,12 @@ class Order extends DB_Table {
 			$customer->editor=$this->editor;
 			$customer->add_history_order_activate($this);//<--- Not done yet
 			$this->suspended=true;
+			
+				$history_data=array(
+			'History Abstract'=>_('Order activated'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
 
 		}
 
@@ -1175,6 +1205,11 @@ class Order extends DB_Table {
 			$store=new Store($this->data['Order Store Key']);
 			$store->update_orders();
 			$this->suspended=true;
+				$history_data=array(
+			'History Abstract'=>_('Order suspended'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
 
 		}
 
@@ -1374,6 +1409,8 @@ class Order extends DB_Table {
 
 		$gross_discounts=0;
 
+		$delta_qty=$quantity;
+
 
 		if ($historic) {
 
@@ -1488,7 +1525,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$old_bonus_quantity=$row['Order Bonus Quantity'];
 				$old_net_amount=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
 
-
+				$delta_qty-=$old_quantity;
 
 				if (!$quantity_set) {
 					$quantity=$old_quantity;
@@ -1501,7 +1538,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 				//   print "\n**** $old_quantity $old_bonus_quantity   ;  ($quantity_set,$bonus_quantity_set) ; QTY    $quantity ==     $total_quantity\n";
-
+$product=new Product('id',$data['Product Key']);
 				if ($total_quantity==0) {
 
 					$this->delete_transaction($row['Order Transaction Fact Key']);
@@ -1514,7 +1551,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-					$product=new Product('id',$data['Product Key']);
+					
 					$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 					$gross=$quantity*$product->data['Product History Price'];
 
@@ -1665,11 +1702,29 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 			$this->update_field('Order Last Updated Date',gmdate('Y-m-d H:i:s'),'no_history');
 
-			if (
-				in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process'))
-			) {
+			if (in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process'))) {
 				$this->update_field('Order Date',gmdate('Y-m-d H:i:s'),'no_history');
 
+
+			}else {
+
+				if ($delta_qty>0) {
+					$history_abstract=sprintf(_('%1$s %2$s added'),$delta_qty,sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->data['Product Code']));
+				}elseif ($delta_qty<0) {
+				
+				if($quantity==0){
+									$history_abstract=sprintf(_('%s %s removed, none in the order anymore'),-$delta_qty,sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->data['Product Code']));
+
+				}else{
+				
+					$history_abstract=sprintf(_('%s %s removed'),-$delta_qty,sprintf('<a href="product.php?pid=%d">%s</a>',$product->pid,$product->data['Product Code']));
+}
+				}
+				$history_data=array(
+					'History Abstract'=>$history_abstract,
+					'History Details'=>''
+				);
+				$this->add_subject_history($history_data);
 
 			}
 
@@ -3275,6 +3330,14 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->update_full_search();
 		$customer=new Customer($this->data['Order Customer Key']);
 		$customer->update_orders();
+		
+		$history_data=array(
+			'History Abstract'=>_('Order dispatched'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
+
+		
 
 	}
 	function set_order_as_completed($date) {
@@ -6614,21 +6677,29 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-		$sql=sprintf("update `Order Dimension` set `Order Billing To Key To Bill`=%d,  `Order Billing To Country Code`=%s, `Order Billing To Country 2 Alpha Code`=%s,`Order XHTML Billing Tos`=%s,`Order Billing To Keys`=%s  ,`Order Billing To World Region Code`=%s,`Order Billing To Town`=%s,`Order Billing To Postal Code`=%s   where `Order Key`=%d"
-			,$billing_to->id
-			,prepare_mysql($billing_to->data['Billing To Country Code'])
-			,prepare_mysql($billing_to->data['Billing To Country 2 Alpha Code'])
-			,prepare_mysql($billing_to->data['Billing To XHTML Address'])
-			,prepare_mysql($billing_to->id)
-			,prepare_mysql($billing_to->get('World Region Code'))
-			,prepare_mysql($billing_to->data['Billing To Town'])
-			,prepare_mysql($billing_to->data['Billing To Postal Code'])
+		$sql=sprintf("update `Order Dimension` set `Order Billing To Key To Bill`=%d,  `Order Billing To Country Code`=%s, `Order Billing To Country 2 Alpha Code`=%s,`Order XHTML Billing Tos`=%s,`Order Billing To Keys`=%s  ,`Order Billing To World Region Code`=%s,`Order Billing To Town`=%s,`Order Billing To Postal Code`=%s   where `Order Key`=%d",
+			$billing_to->id,
+			prepare_mysql($billing_to->data['Billing To Country Code']),
+			prepare_mysql($billing_to->data['Billing To Country 2 Alpha Code']),
+			prepare_mysql($billing_to->data['Billing To XHTML Address']),
+			prepare_mysql($billing_to->id),
+			prepare_mysql($billing_to->get('World Region Code')),
+			prepare_mysql($billing_to->data['Billing To Town']),
+			prepare_mysql($billing_to->data['Billing To Postal Code']),
 
-			,$this->id
+			$this->id
 
 		);
 		mysql_query($sql);
-		//print $sql;
+
+		$this->get_data('id',$this->id);
+
+		$sql=sprintf("update `Order Tansaction Fact` set `Billing To Key`=%d where `Order Key`=%d",
+			$billing_to->id,
+			$this->id
+		);
+		mysql_query($sql);
+
 		if (mysql_affected_rows()>0) {
 			$this->get_data('id',$this->id);
 			$this->updated=true;
@@ -7362,7 +7433,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 
-	function set_as_invoiced() {
+	function set_as_invoiced($invoice) {
 
 
 		$sql=sprintf("update `Order Dimension` set `Order Invoiced`='Yes'   where `Order Key`=%d ",
@@ -7376,6 +7447,14 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		$customer=new Customer($this->data['Order Customer Key']);
 
 		$customer->update_orders();
+		
+		
+		$invoice_link=sprintf('<a href="invoice.php?id=%d">%s</a>',$invoice->id,$invoice->data['Invoice Public ID']);
+		$history_data=array(
+			'History Abstract'=>sprintf(_('Order invoiced (%s)'),$invoice_link),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
 
 
 	}

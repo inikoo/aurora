@@ -582,7 +582,20 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 
-	)
+	),
+	'customer_history'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>10,
+			'where'=>'where true',
+			'f_field'=>'notes',
+			'f_value'=>'','f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'details'=>0,
+			'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1,'WebLog'=>0)
+		),
 
 	),
 

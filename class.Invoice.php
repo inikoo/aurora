@@ -112,14 +112,14 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Public ID']=sprintf($this->public_id_format_invoice,$public_id).$suffix;
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 	}
-	
+
 	function next_account_wide_public_id($suffix='') {
 		$sql=sprintf("UPDATE `Store Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) where `Account Key`=1");
 		mysql_query($sql);
 		$public_id=mysql_insert_id();
 
-        include_once('class.Account.php');
-        $account=new Account(1);
+		include_once 'class.Account.php';
+		$account=new Account(1);
 
 		$this->data['Invoice Public ID']=sprintf($account->data['Account Invoice Public ID Format'],$public_id).$suffix;
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
@@ -343,7 +343,7 @@ class Invoice extends DB_Table {
 
 
 
-	
+
 
 
 
@@ -935,6 +935,43 @@ class Invoice extends DB_Table {
 
 
 	}
+
+	function update_billing_to($billing_to_key) {
+
+		$billing_to=new Billing_To($billing_to_key);
+
+		$this->data ['Invoice Billing To Key'] =$billing_to->id;
+		$this->data ['Invoice XHTML Address'] =$billing_to->data['Billing To XHTML Address'];
+		$this->data ['Invoice Billing Country 2 Alpha Code'] = ($billing_to->data['Billing To Country 2 Alpha Code']==''?'XX':$billing_to->data['Billing To Country 2 Alpha Code']);
+
+		$this->data ['Invoice Billing Country Code']=($billing_to->data['Billing To Country Code']==''?'UNK':$billing_to->data['Billing To Country Code']);
+		$this->data ['Invoice Billing World Region Code']=$billing_to->get('World Region Code');
+		$this->data ['Invoice Billing Town']=$billing_to->data['Billing To Town'];
+		$this->data ['Invoice Billing Postal Code']=$billing_to->data['Billing To Postal Code'];
+
+
+		$sql=sprintf("update `Invoice Dimension` set  `Invoice Billing To Key`=%d ,`Invoice XHTML Address`=%s,`Invoice Billing Country 2 Alpha Code`=%s,`Invoice Billing Country Code`=%s,`Invoice Billing World Region Code`=%s,`Invoice Billing Town`=%s,`Invoice Billing Postal Code`=%s  where `Invoice Key`=%d ",
+			$this->data ['Invoice Billing To Key'],
+			prepare_mysql($this->data ['Invoice XHTML Address']),
+			prepare_mysql($this->data ['Invoice Billing Country 2 Alpha Code']),
+			prepare_mysql($this->data ['Invoice Billing Country Code']),
+			prepare_mysql($this->data ['Invoice Billing World Region Code']),
+			prepare_mysql($this->data ['Invoice Billing Town']),
+			prepare_mysql($this->data ['Invoice Billing Postal Code']),
+			$this->id
+		);
+		mysql_query($sql);
+		
+		
+		
+			$sql=sprintf("update `Order Tansaction Fact` set `Billing To Key`=%d where `Invoice Key`=%d",
+			$billing_to->id,
+			$this->id
+		);
+		mysql_query($sql);
+
+	}
+
 
 	function update_tax() {
 
@@ -1575,7 +1612,9 @@ class Invoice extends DB_Table {
 
                          `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,
                          `Invoice Currency Exchange`,
-                         `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
+                         `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,
+                         
+                         `Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
                          `Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,
 
 
@@ -1602,7 +1641,7 @@ class Invoice extends DB_Table {
                          %s,
                          %s,%s,%s,
                          %f,
-                         %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
+                         %s,%s,%s,%s,%s,%s,%s,%s,%s,
                          %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,
                          %s,%s, %s, %s,%s,%s,%s,
                          %.2f,
@@ -1637,7 +1676,6 @@ class Invoice extends DB_Table {
 			, prepare_mysql ( $this->data ['Invoice Main Source Type'] )
 			, prepare_mysql ( $this->data ['Invoice Customer Key'] ),
 			prepare_mysql ( $this->data ['Invoice Customer Name'] ,false),
-			prepare_mysql ( $this->data ['Invoice XHTML Ship Tos'] ),
 
 
 			$this->data ['Invoice Items Gross Amount'],

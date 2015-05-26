@@ -1,11 +1,15 @@
 {include file='header.tpl'} 
 <div id="bd">
+<input type="hidden" id="session_data" value="{$session_data}"  />
 	<input type="hidden" id="order_key" value="{$order->id}" />
-	<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
-	<input type="hidden" value="{$decimal_point}" id="decimal_point" />
-	<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
-	<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
-	<input type="hidden" value="customer" id="subject" />
+	<input type="hidden" id="currency_code" value="{$order->get('Order Currency')}"  />
+	<input type="hidden" id="decimal_point" value="{$decimal_point}"  />
+	<input type="hidden" id="thousands_sep" value="{$thousands_sep}"  />
+	<input type="hidden" id="subject_key" value="{$order->id}"  />
+	<input type="hidden" id="subject"  value="order" />
+	<input type="hidden" id="history_table_id" value="3"> 
+	<input type="hidden" id="customer_key" value="{$order->get('Order Customer Key')}"  />
+
 	<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> {include file='orders_navigation.tpl'} 
 	<div class="branch ">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')}</span> 
@@ -26,14 +30,15 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="control_panel">
+	<div id="control_panel" style="margin-bottom:20px">
+	<div class="content">
 		<div id="addresses">
 			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> <span id="customer_name">{$order->get('Order Customer Name')}</span> <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
-			<h3>
-				{$customer->get('Customer Main Contact Name')} 
-			</h3>
+			<h3 id="customer_contact_name">
+					{$order->get('Order Customer Contact Name')} 
+				</h3>
 			<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
 				<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
 				<div style="margin-top:5px" id="billing_address">
@@ -147,16 +152,8 @@
 		</div>
 		<div style="clear:both">
 		</div>
-		<img id="show_order_details" style="cursor:pointer" src="art/icons/arrow_sans_lowerleft.png" /> 
-		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-			<div class="buttons small right" style="float:right;width:350px">
-				<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 
-			</div>
-			{include file='order_details_splinter.tpl'} 
-			<div style="clear:both">
-			</div>
-			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
 		</div>
+		{include file='order_more_info_spliner.tpl'} 
 	</div>
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
@@ -337,4 +334,4 @@
 		</div>
 	</div>
 </div>
-{include file='add_payment_splinter.tpl' subject='order'} {include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl' subject='order'}  {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

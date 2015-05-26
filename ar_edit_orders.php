@@ -850,14 +850,14 @@ function undo_cancel_order($data) {
 
 function send_to_warehouse($data) {
 
-	global $user,$account_code;
+	global $user,$account_code,$editor;
 
 	$order_key=$data['order_key'];
 	$note=$data['note'];
 
 	include_once 'class.PartLocation.php';
 	$order=new Order($order_key);
-
+	$order->editor=$editor;
 	$sql=sprintf("select count(*) as num  from `Order Transaction Fact`   where `Order Key`=%d    ",$order->id);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -1304,7 +1304,7 @@ function is_order_exist() {
 
 function update_order_transaction() {
 
-	global $smarty;
+	global $smarty,$editor;
 
 	$order_key=$_REQUEST['id'];
 
@@ -1324,6 +1324,7 @@ function update_order_transaction() {
 
 
 	$order=new Order($order_key);
+	$order->editor=$editor;
 
 	if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
 		$dispatching_state='Ready to Pick';
@@ -3784,10 +3785,11 @@ function packing_aid_sheet() {
 
 
 function create_invoice_order($data) {
-	global $user,$account_code;
+	global $user,$account_code,$editor;
 
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
+	$order->editor=$editor;
 	$invoice=$order->create_invoice();
 	//$invoice->categorize(); done now in german
 	$response=array(
@@ -3817,10 +3819,11 @@ function create_invoice_order($data) {
 	foreach ($invoice->get_orders_objects() as $key=>$order) {
 		$sql = sprintf( "insert into `Order Invoice Bridge` values (%d,%d)", $key, $invoice->id );
 		mysql_query( $sql );
+		$order->editor=$editor;
 		$invoice->update_xhtml_orders();
 		$order->update_xhtml_invoices();
 		$order->update_totals();
-		$order->set_as_invoiced();
+		$order->set_as_invoiced($invoice);
 		$order->update_customer_history();
 	}
 
@@ -4975,9 +4978,14 @@ function update_order_special_intructions($data) {
 function update_order($data) {
 	$order=new Order($data['order_key']);
 
-
+	$okey=$data['key'];
 	$key_dic=array(
 		'Customer_Fiscal_Name'=>'Order Customer Fiscal Name',
+		'Customer_Name'=>'Order Customer Name',
+		'Customer_Contact_Name'=>'Order Customer Contact Name',
+		'Customer_Telephone'=>'Order Telephone',
+		'Customer_Email'=>'Order Email',
+
 	);
 
 	if (array_key_exists($data['key'],$key_dic))
@@ -4990,11 +4998,12 @@ function update_order($data) {
 
 	$response= array(
 		'state'=>200,
-		'value'=>$order->new_value
+		'value'=>$order->new_value,
+		'okey'=>$okey
 
 	);
 
-	if ($key=='Order Customer Fiscal Name') {
+	if ($key=='Order Customer Fiscal Name' or $key=='Order Telephone' or  $key=='Order Email' or  $key=='Order Customer Contact Name') {
 
 		include_once 'class.Billing_To.php';
 
@@ -5002,16 +5011,70 @@ function update_order($data) {
 
 		$billing_address=$current_billing_address->data;
 		$billing_address['Billing To Telephone']=$order->data['Order Telephone'];
-		//$billing_address['Billing To Contact Name']=$order->data['Order Telephone'];
 		$billing_address['Billing To Company Name']=$order->data['Order Customer Fiscal Name'];
+		$billing_address['Billing To Contact Name']=$order->data['Order Customer Contact Name'];
 		$billing_address['Billing To Email']=$order->data['Order Email'];
 
 		$billing_to= new Billing_To('find create',$billing_address);
 		$order->update_billing_to($billing_to->id);
-		$response['billing_to']=$order->get('Order XHTML Billing Tos');
+		foreach ($order->get_invoices_objects() as $invoice) {
+			if ($invoice->id) {
+				$invoice->update_billing_to($billing_to->id);
+				$invoice->update(array(
+						'Invoice Billing Country 2 Alpha Code'=>$billing_to->data['Billing To Country 2 Alpha Code'],
+
+					));
+			}
+		}
+
+
 	}
 
+	if ($key=='Order Telephone' or $key=='Order Email'  or  $key=='Order Customer Contact Name'  or  $key=='Order Customer Name' ) {
 
+		include_once 'class.Ship_To.php';
+
+		$current_delivery_address= new Ship_To($order->data['Order Ship To Key To Deliver']);
+
+		$delivery_address=$current_delivery_address->data;
+		$delivery_address['Ship To Telephone']=$order->data['Order Telephone'];
+		$delivery_address['Ship To Email']=$order->data['Order Email'];
+		$delivery_address['Ship To Company Name']=$order->data['Order Customer Name'];
+		$delivery_address['Ship To Contact Name']=$order->data['Order Customer Contact Name'];
+
+		$ship_to= new Ship_To('find create',$delivery_address);
+		$order->update_ship_to($ship_to->id);
+
+
+		foreach ($order->get_invoices_objects() as $invoice) {
+			if ($invoice->id) {
+				$invoice->update(array(
+						'Invoice Customer Name'=>$order->data['Order Customer Name'],
+						'Invoice Customer Contact Name'=>$order->data['Order Customer Contact Name'],
+
+					));
+			}
+		}
+
+
+
+		foreach ($order->get_delivery_notes_objects() as $dn) {
+			if ($dn->id) {
+				$dn->update_ship_to($ship_to->id);
+				$dn->update(array(
+						'Delivery Note Customer Name'=>$order->data['Order Customer Name'],
+						'Delivery Note Customer Contact Name'=>$order->data['Order Customer Contact Name'],
+						'Delivery Note Telephone'=>$order->data['Order Telephone'],
+						'Delivery Note Email'=>$order->data['Order Email'],
+
+					));
+			}
+		}
+
+	}
+
+	$response['billing_to']=$order->get('Order XHTML Billing Tos');
+	$response['ship_to']=$order->get('Order XHTML Ship Tos');
 
 	echo json_encode($response);
 }
@@ -5321,9 +5384,10 @@ function set_as_dispatched_order($data) {
 
 function set_as_dispatched_dn($data) {
 
-	global $user;
+	global $user,$editor;
 
 	$dn=new DeliveryNote($data['dn_key']);
+	$dn->editor=$editor;
 	if (!$dn->id) {
 		$response= array('state'=>400,'msg'=>'dn not found');
 		echo json_encode($response);

@@ -58,7 +58,7 @@ case('create_allowance'):
 			'values'=>array('type'=>'json array')
 		));
 	create_deal_allowance($data);
-	break;	
+	break;
 case('create_campaign'):
 	$data=prepare_values($_REQUEST, array(
 			'parent_key'=>array('type'=>'key'),
@@ -502,28 +502,28 @@ function update_deal_metadata($data) {
 			'Allowances'=>$data['allowances'])
 	);
 	if (!$deal_metadata->error) {
-	
-	
+
+
 		switch ($deal_metadata->data['Deal Component Allowance Target']) {
-		    case 'Family':
-		        $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d  ",
-		        $deal_metadata->data['Deal Component Allowance Target Key']
-		        );
-		        $res=mysql_query($sql);
-		        while($row=mysql_fetch_assoc($res)){
-		        	$page=new Page($row['Page Key']);
-		        	$page->refresh_cache();
-		        }
-		        
-		        
-		        break;
-		    default:
-		        
-		        break;
+		case 'Family':
+			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d  ",
+				$deal_metadata->data['Deal Component Allowance Target Key']
+			);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$page=new Page($row['Page Key']);
+				$page->refresh_cache();
+			}
+
+
+			break;
+		default:
+
+			break;
 		}
 
-	
-	
+
+
 		$response= array('state'=>200,
 			'updated'=>$deal_metadata->updated,
 			'deal_metadata_key'=>$deal_metadata->id,
@@ -1001,7 +1001,7 @@ function list_deals_for_edition() {
 
 	$sql="select DM.`Deal Component XHTML Allowance Description Label`,DM.`Deal Component XHTML Terms Description Label`,`Deal Term Allowances Label`,`Deal Code`,`Deal Number Active Components`,`Deal Component Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Component Trigger`,`Deal Component Key`,DM.`Deal Component Name`,D.`Deal Name`
  	from `Deal Component Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Component Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
-//	print $sql;
+	// print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
 	$adata=array();
@@ -1099,21 +1099,21 @@ function list_deals_for_edition() {
 
 		);
 
-//		if ($row['Deal Number Active Components']==1) {
+		//  if ($row['Deal Number Active Components']==1) {
 
-			$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+		$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
 
-				$row['Deal Key'],
-				$row['Deal Key'],
-				_('Edit')
+			$row['Deal Key'],
+			$row['Deal Key'],
+			_('Edit')
 
-			);
+		);
 
-	//	}
-	
-	if ($row['Deal Number Active Components']>1) {
+		// }
+
+		if ($row['Deal Number Active Components']>1) {
 			$name.=sprintf('<img src="art/icons/bullet_error.png"  title="%s" />',_('Editing this will affect other allowances'));
-	}
+		}
 
 		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span> <img style='cursor:pointer' onClick='deal_show_edit_state(this,".$deal_metadata->id.",\"".$deal_metadata->data['Deal Component Status']."\")'  src='art/icons/edit.gif'>";
 		$status.= '<div style="margin-top:10px;margin-left:0px;display:none" id="suspend_deal_button'.$deal_metadata->id.'"  class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative" style="margin-left:0"> '._("Suspend").'</button></div>';
@@ -1232,21 +1232,21 @@ function update_deal_metadata_status($data) {
 
 
 		switch ($deal_metadata->data['Deal Component Allowance Target']) {
-		    case 'Family':
-		        $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d  ",
-		        $deal_metadata->data['Deal Component Allowance Target Key']
-		        );
-		        $res=mysql_query($sql);
-		        while($row=mysql_fetch_assoc($res)){
-		        	$page=new Page($row['Page Key']);
-		        	$page->refresh_cache();
-		        }
-		        
-		        
-		        break;
-		    default:
-		        
-		        break;
+		case 'Family':
+			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and `Page Parent Key`=%d  ",
+				$deal_metadata->data['Deal Component Allowance Target Key']
+			);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$page=new Page($row['Page Key']);
+				$page->refresh_cache();
+			}
+
+
+			break;
+		default:
+
+			break;
 		}
 
 
@@ -2138,18 +2138,18 @@ function create_allowance($data) {
 	//setlocale(LC_ALL,$store->data['Store Locale'].'.UTF-8');
 	bindtextdomain("inikoo", "./locales");
 	textdomain("inikoo");
-	
-	
+
+
 	if ($deal->id) {
 
-		
+
 
 		$deal_data=$data['values'];
 		$deal_data['Deal Store Key']=$store->id;
 
-		
 
-		
+
+
 
 		if ($deal_data['Deal Component Allowance Type']=='Clone') {
 
@@ -2369,11 +2369,11 @@ function get_vocher_code($store_key, $count=0) {
 }
 
 function add_voucher_to_order($data) {
-	global $smarty;
+	global $smarty,$editor;
 	include_once 'class.Voucher.php';
 
 	$order=new Order($data['order_key']);
-
+	$order->editor=$editor;
 	$data['voucher']=trim($data['voucher']);
 
 	if ($data['voucher']=='') {
@@ -2445,12 +2445,17 @@ function add_voucher_to_order($data) {
 	$order->update_totals();
 	$order->update_discounts_no_items();
 	$order->update_totals();
-	
+
 	$order->update_number_items();
 	$order->update_number_products();
 
 	$order->apply_payment_from_customer_account();
-
+	$voucher_link=sprintf('<a href="deal.php?id=%d">%s</a>',$deal->id,$voucher->data['Voucher Code']);
+	$history_data=array(
+		'History Abstract'=>sprintf(_('Voucher %s added to order'),$voucher_link),
+		'History Details'=>'',
+	);
+	$order->add_subject_history($history_data);
 
 
 	$new_disconted_products=$order->get_discounted_products();
@@ -2590,10 +2595,10 @@ function remove_voucher_from_order($data) {
 	$voucher->update_usage();
 	$order->update_discounts_items();
 
-		$order->update_totals();
+	$order->update_totals();
 
 	$order->update_discounts_no_items();
-		$order->update_totals();
+	$order->update_totals();
 
 	$order->update_number_items();
 	$order->update_number_products();

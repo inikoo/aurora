@@ -8,58 +8,11 @@ var edit_delivery_address;
 
 
 
-function showdetails(o) {
-
-
-
-    var history_id = o.getAttribute('hid');
-    var details = o.getAttribute('d');
-    tr = Dom.getAncestorByTagName(o, 'tr');
-    row_index = tr.rowIndex + 1;
-    var table = Dom.getAncestorByTagName(o, 'table');
-    //alert(o);
-    if (details == 'no') {
-        row_class = tr.getAttribute('class');
-
-        var request = "ar_history.php?tipo=history_details&id=" + history_id;
-        //alert(request)	
-        YAHOO.util.Connect.asyncRequest('POST', request, {
-            success: function(o) {
-                var r = YAHOO.lang.JSON.parse(o.responseText);
-                if (r.state == 200) {
-                    var x = table.insertRow(row_index);
-                    x.setAttribute('class', row_class);
-                    x.setAttribute('id', 'chd' + history_id);
-
-                    var c1 = x.insertCell(0);
-                    var c2 = x.insertCell(1);
-                    var c3 = x.insertCell(2);
-                    var c4 = x.insertCell(3);
-                    x.setAttribute('style', 'padding:10px 0 ;border-top:none')
-                    c1.innerHTML = "";
-                    c2.innerHTML = "";
-                    c3.setAttribute('style', 'padding:10px;');
-                    c4.innerHTML = "";
-
-                    c3.setAttribute('colspan', 3);
-                    c3.innerHTML = r.details;
-                    Dom.get('ch' + history_id).src = 'art/icons/showed.png';
-                    Dom.get('ch' + history_id).setAttribute('d', 'yes');
-
-
-                }
-
-            }
-        });
-    } else {
-        Dom.get('ch' + history_id).src = 'art/icons/closed.png';
-        Dom.get('ch' + history_id).setAttribute('d', 'no');
-        table.deleteRow(row_index);
-
-    }
-
-
+function exit_modify_order() {
+    window.location = 'order.php?id=' + Dom.get('order_key').value + '&referral=' + Dom.get('referral').value;
 }
+
+
 
 
 
@@ -538,7 +491,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-      var tableid = 3;
+        var tableid = 3;
         var tableDivEL = "table" + tableid;
 
 
@@ -617,7 +570,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         ];
         request = "ar_history.php?tipo=order_history&parent=order&parent_key=" + Dom.get('order_key').value + "&sf=0&tableid=" + tableid
-        
+
         this.dataSource3 = new YAHOO.util.DataSource(request);
         this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource3.connXhrMode = "queueRequests";
@@ -687,11 +640,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+
 function init() {
 
-
-
     init_search('orders_store');
+
 
 
     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
@@ -717,22 +670,20 @@ function init() {
 
 
 
-    // YAHOO.util.Event.addListener("done", "click", create_delivery_note);
-    YAHOO.util.Event.addListener("done", "click", open_send_to_warehouse_dialog);
+    Event.addListener("exit_modify_order", "click", exit_modify_order);
 
-
-
-    myTooltip = new YAHOO.widget.Tooltip("order_paid_info_Tooltip", {
-        context: "order_paid_info",
-
-        showDelay: 500
-    });
 
 
 }
 
 
+
+
 YAHOO.util.Event.onDOMReady(init);
+
+
+
+
 
 YAHOO.util.Event.onContentReady("rppmenu0", function() {
     var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {

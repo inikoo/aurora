@@ -1,11 +1,19 @@
 {include file='header.tpl'} 
+<input type="hidden" id="session_data" value="{$session_data}"  />
+
 <input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
-<input type="hidden" value="{$order->get('Order Currency')}" id="currency_code" />
-<input type="hidden" value="{$decimal_point}" id="decimal_point" />
-<input type="hidden" value="{$thousands_sep}" id="thousands_sep" />
-<input type="hidden" value="{$order->get('Order Customer Key')}" id="subject_key" />
-<input type="hidden" value="customer" id="subject" />
-<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}"> 
+<input type="hidden" id="currency_code" value="{$order->get('Order Currency')}"  />
+<input type="hidden" id="decimal_point" value="{$decimal_point}" />
+<input type="hidden" id="thousands_sep" value="{$thousands_sep}"  />
+
+<input type="hidden" id="to_pay_label_amount" value="{$order->get('Order To Pay Amount')}">
+	<input type="hidden" id="subject_key" value="{$order->id}"  />
+	<input type="hidden" id="subject"  value="order" />
+	<input type="hidden" id="history_table_id" value="3"> 
+	<input type="hidden" id="customer_key" value="{$order->get('Order Customer Key')}"  />
+
+
+ 
 <div id="bd" style="background-image:url('art/stamp.cancel.en.png');background-repeat:no-repeat;background-position:300px 50px">
 	{include file='orders_navigation.tpl'} 
 	<input type="hidden" id="order_key" value="{$order->id}" />
@@ -26,16 +34,32 @@
 		</div>
 	</div>
 	<div id="control_panel">
+	<div class="content">
 		<div id="addresses">
 			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('order customer name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px">  <span id="customer_name">{$order->get('Order Customer Name')}</span> <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
 			</h2>
-			<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Contact Address{/t}:</span> <b>{$customer->get('Customer Main Contact Name')}</b><br />
-				{$customer->get('Customer Main XHTML Address')} 
+			<h3 id="customer_contact_name">
+					{$order->get('Order Customer Contact Name')} 
+				</h3>
+			<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
+				<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
+				<div style="margin-top:5px" id="billing_address">
+					{$order->get('Order XHTML Billing Tos')} 
+				</div>
+				
 			</div>
-			<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Shipping Address{/t}:</span> {$order->get('Order XHTML Ship Tos')} 
+			<div style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
+				<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+					{t}Delivery Address{/t}: 
+				</div>
+				<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+					<b>{t}For collection{/t}</b> 
+				</div>
+				<div class="address_box" id="delivery_address">
+					{$order->get('Order XHTML Ship Tos')} 
+				</div>
+				
 			</div>
 			<div style="clear:both">
 			</div>
@@ -127,38 +151,20 @@
 		</div>
 		<div style="clear:both">
 		</div>
-		<img id="show_order_details" style="cursor:pointer;margin-top:10px" src="art/icons/arrow_sans_lowerleft.png" /> 
-		<div id="order_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
-			<div class="buttons small right" style="float:right;width:350px">
-				<button style="margin-top:5px;margin-bottom:10px;clear:both" id="undo_cancel" onclick="undo_cancel()"><img id="undo_cancel_img" style="width:12px" src="art/icons/arrow_rotate_anticlockwise.png"> {t}Undo Cancel{/t}</button> 
-			</div>
-			{include file='order_details_splinter.tpl'} 
-			<div style="clear:both">
-			</div>
-			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
 		</div>
-		<div style="clear:both">
-		</div>
+		{include file='order_more_info_spliner.tpl'} 
 	</div>
 	<div id="payments_list">
 		{include file='order_payments_splinter.tpl'} 
 	</div>
 	<div style="margin-top:20px">
 		<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span> 
-		<div class="table_top_bar">
+		<div class="table_top_bar space">
 		</div>
-		<div class="clusters">
-			<div id="table_view_menu1">
-				<div class="buttons small left cluster">
-					<button class="table_option {if $items_view=='basket'}selected{/if}" id="items_basket">{t}Basket{/t}</button> <button class="table_option {if $items_view=='times'}selected{/if}" id="items_times">{t}Order times{/t}</button> 
-				</div>
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
+		
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 		<div id="table0" class="data_table_container dtable btable" style="font-size:80%">
 		</div>
 	</div>
 </div>
-{include file='add_payment_splinter.tpl' subject='order'} {include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl' subject='order'}  {include file='notes_splinter.tpl'}  {include file='footer.tpl'} 

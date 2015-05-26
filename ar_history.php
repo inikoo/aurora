@@ -40,7 +40,9 @@ case('history_details'):
 	history_details();
 	break;
 	break;
+case('order_customer_history'):
 case('customer_history'):
+
 case('store_history'):
 case('account_history'):
 case('subject_history'):
@@ -49,6 +51,9 @@ case('purchase_order_history'):
 case('supplier_dn_history'):
 case('supplier_invoice_history'):
 case('supplier_history'):
+case('order_history'):
+case('dn_history'):
+case('invoice_history'):
 	list_subject_history();
 	break;
 case('part_categories'):
@@ -91,7 +96,7 @@ function history_details() {
 function list_subject_history() {
 
 
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('porder','site','customer','supplier','store','department','family','product','part','account','supplier_product','employee','supplier_dn','suppier_invoice'))) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('porder','site','customer','supplier','store','department','family','product','part','account','supplier_product','employee','supplier_dn','suppier_invoice','order','dn','invoice','order_customer'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -101,7 +106,13 @@ function list_subject_history() {
 	} else
 		return;
 
-	$conf=$_SESSION['state'][$parent]['history'];
+	if ($parent=='order_customer') {
+		$conf=$_SESSION['state']['order']['customer_history'];
+
+	}else {
+
+		$conf=$_SESSION['state'][$parent]['history'];
+	}
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -133,10 +144,7 @@ function list_subject_history() {
 	else
 		$f_value=$conf['f_value'];
 
-	//  if (isset( $_REQUEST['where']))
-	//     $where=$_REQUEST['where'];
-	// else
-	//     $where=$conf['where'];
+
 
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
@@ -146,7 +154,6 @@ function list_subject_history() {
 		$to=$_REQUEST['to'];
 	else
 		$to=$conf['to'];
-	//ids=['elements_changes','elements_orders','elements_notes'];
 
 	$elements=$conf['elements'];
 	if (isset( $_REQUEST['elements_changes'])) {
@@ -179,6 +186,28 @@ function list_subject_history() {
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
+
+if ($parent=='order_customer') {
+$_SESSION['state']['order']['customer_history']['elements']=$elements;
+	$_SESSION['state']['order']['customer_history']['order']=$order;
+	$_SESSION['state']['order']['customer_history']['order_dir']=$order_direction;
+	$_SESSION['state']['order']['customer_history']['nr']=$number_results;
+	$_SESSION['state']['order']['customer_history']['sf']=$start_from;
+	$_SESSION['state']['order']['customer_history']['f_field']=$f_field;
+	$_SESSION['state']['order']['customer_history']['f_value']=$f_value;
+	$_SESSION['state']['order']['customer_history']['elements']=$elements;
+
+
+	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+	if ($date_interval['error']) {
+		$date_interval=prepare_mysql_dates($_SESSION['state']['order']['customer_history']['from'],$_SESSION['state']['order']['customer_history']['to']);
+	} else {
+		$_SESSION['state']['order']['customer_history']['from']=$date_interval['from'];
+		$_SESSION['state']['order']['customer_history']['to']=$date_interval['to'];
+	}
+
+}else{
+
 	$_SESSION['state'][$parent]['history']['elements']=$elements;
 	$_SESSION['state'][$parent]['history']['order']=$order;
 	$_SESSION['state'][$parent]['history']['order_dir']=$order_direction;
@@ -197,12 +226,12 @@ function list_subject_history() {
 		$_SESSION['state'][$parent]['history']['to']=$date_interval['to'];
 	}
 
-
+}
 
 
 	//  $where.=' and `Deep`=1 ';
 
-	if ($parent=='customer') {
+	if ($parent=='customer' or $parent=='order_customer') {
 		$where=sprintf(' where   B.`Customer Key`=%d   ',$parent_key);
 		$subject='Customer';
 	}elseif ($parent=='store') {
@@ -241,6 +270,15 @@ function list_subject_history() {
 	}elseif ($parent=='supplier_invoice') {
 		$where=sprintf(' where   B.`Supplier Invoice Key`=%d   ',$parent_key);
 		$subject='Supplier Invoice';
+	}elseif ($parent=='order') {
+		$where=sprintf(' where   B.`Order Key`=%d   ',$parent_key);
+		$subject='Order';
+	}elseif ($parent=='dn') {
+		$where=sprintf(' where   B.`Delivery Note Key`=%d   ',$parent_key);
+		$subject='Delivery Note';
+	}elseif ($parent=='invoice') {
+		$where=sprintf(' where   B.`Invoice Key`=%d   ',$parent_key);
+		$subject='Invoice';
 	}
 
 	elseif ($parent=='supplier') {
@@ -251,19 +289,19 @@ function list_subject_history() {
 
 	$where.=$date_interval['mysql'];
 	$_elements='';
-	
-	if(is_array($elements)){
-	foreach ($elements as $_key=>$_value) {
-		if ($_value)
-			$_elements.=','.prepare_mysql($_key);
+
+	if (is_array($elements)) {
+		foreach ($elements as $_key=>$_value) {
+			if ($_value)
+				$_elements.=','.prepare_mysql($_key);
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} else {
+			$where.=' and Type in ('.$_elements.')' ;
+		}
 	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-		$where.=' and Type in ('.$_elements.')' ;
-	}
-}
 
 	$wheref='';
 
@@ -309,13 +347,13 @@ function list_subject_history() {
 
 	$rtext=number($total_records)." ".ngettext('record','records',$total_records);
 
-	if ($total==0)
-		$rtext_rpp='';
-	elseif ($total_records>$number_results)
-		$rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
-	else
-		$rtext_rpp='('._('Showing all').')';
 
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp='('._('Showing all').')';
+	else
+		$rtext_rpp='';
 
 	//print "$f_value $filtered  $total_records t: $total";
 	$filter_msg='';
@@ -363,7 +401,7 @@ function list_subject_history() {
 	//    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
 	$sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `$subject History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
-//print $sql;
+	//print $sql;
 
 	$result=mysql_query($sql);
 	$data=array();

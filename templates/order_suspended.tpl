@@ -1,6 +1,13 @@
-{include file='header.tpl'} 
-<div id="bd" style="background-image:url('art/stamp.suspended.en.png');background-repeat:no-repeat;background-position:300px 50px">
+{include file='header.tpl'}
+<input type="hidden" id="session_data" value="{$session_data}"  />
+ 
 	<input type="hidden" id="order_key" value="{$order->id}" />
+	<input type="hidden" id="subject_key" value="{$order->id}"  />
+	<input type="hidden" id="subject"  value="order" />
+	<input type="hidden" id="history_table_id" value="3"> 
+	<input type="hidden" id="customer_key" value="{$order->get('Order Customer Key')}"  />
+
+<div id="bd" style="background-image:url('art/stamp.suspended.en.png');background-repeat:no-repeat;background-position:300px 50px">
 	{include file='orders_navigation.tpl'} 
 	<div class="branch ">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $referral=='spo'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if} <a href="store_pending_orders.php?id={$store->id}">{t}Pending Orders{/t} ({$store->get('Store Code')})</a> {else if $referral=='po'} {if $user->get_number_stores()>1}<a href="pending_orders.php">&#8704; {t}Pending Orders{/t}</a> {/if} {else}{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> {/if} &rarr; {$order->get('Order Public ID')}</span> 
@@ -22,16 +29,32 @@
 		</div>
 	</div>
 	<div id="control_panel">
+		<div class="content">
 		<div id="addresses">
 			<h2 style="padding:0">
-				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> {$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
+				<img src="art/icons/id.png" style="width:20px;position:relative;bottom:2px"> <span id="customer_name">{$order->get('Order Customer Name')}</span> <a class="id" href="customer.php?id={$order->get('order customer key')}">{$customer->get_formated_id()}</a> 
 			</h2>
-			<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Contact Address{/t}:</span> <b>{$customer->get('Customer Main Contact Name')}</b><br />
-				{$customer->get('Customer Main XHTML Address')} 
+			<h3 id="customer_contact_name">
+					{$order->get('Order Customer Contact Name')} 
+				</h3>
+			<div style="float:left;margin:5px 20px 0 0;color:#444;font-size:90%;width:140px">
+				<span style="font-weight:500;color:#000">{t}Billing Address{/t}</span>: 
+				<div style="margin-top:5px" id="billing_address">
+					{$order->get('Order XHTML Billing Tos')} 
+				</div>
+				
 			</div>
-			<div style="float:left;;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span style="font-weight:500;color:#000;display:block;margin-bottom:2px">{t}Shipping Address{/t}:</span> {$order->get('Order XHTML Ship Tos')} 
+			<div style="float:left;margin:5px 0 0 0px;color:#444;font-size:90%;width:140px">
+				<div id="title_delivery_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if};margin-bottom:5px">
+					{t}Delivery Address{/t}: 
+				</div>
+				<div id="title_for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if};margin-bottom:5px">
+					<b>{t}For collection{/t}</b> 
+				</div>
+				<div class="address_box" id="delivery_address">
+					{$order->get('Order XHTML Ship Tos')} 
+				</div>
+				
 			</div>
 			<div style="clear:both">
 			</div>
@@ -63,21 +86,15 @@
 		</div>
 		<div style="clear:both">
 		</div>
+		</div>
+		{include file='order_more_info_spliner.tpl'} 
 	</div>
 	{include file='order_payments_splinter.tpl'} 
 	<div style="margin-top:20px">
 		<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span> 
-		<div class="table_top_bar">
+		<div class="table_top_bar space">
 		</div>
-		<div class="clusters">
-			<div id="table_view_menu1">
-				<div class="buttons small left cluster">
-					<button class="table_option {if $items_view=='basket'}selected{/if}" id="items_basket">{t}Basket{/t}</button> <button class="table_option {if $items_view=='times'}selected{/if}" id="items_times">{t}Order times{/t}</button> 
-				</div>
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
+		
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 		<div id="table0" class="data_table_container dtable btable" style="font-size:80%">
 		</div>
@@ -111,4 +128,5 @@
 		</tr>
 	</table>
 </div>
+ {include file='notes_splinter.tpl'}
 {include file='footer.tpl'} 
