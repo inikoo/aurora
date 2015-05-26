@@ -128,7 +128,6 @@ $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 $store=new Store($order->data['Order Store Key']);
 
-$order->apply_payment_from_customer_account();
 
 
 if (false) {
