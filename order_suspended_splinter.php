@@ -15,7 +15,7 @@ $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 $smarty->assign('store_id',$store->id);
 
-$js_files[]='order_suspended.js.php';
+$js_files[]='js/order_suspended.js';
 $template='order_suspended.tpl';
 
 $tipo_filter=$_SESSION['state']['order_cancelled']['items']['f_field'];

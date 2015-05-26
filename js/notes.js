@@ -4,7 +4,8 @@ var dialog_attach;
 var dialog_delete_history_record_from_list;
 
 
-var onCellClick = function(oArgs) {
+var onNotesCellClick = function(oArgs) {
+
         var target = oArgs.target,
             column = this.getColumn(target),
             record = this.getRecord(target);
@@ -29,8 +30,10 @@ var onCellClick = function(oArgs) {
             break;
         case 'dialog':
         case 'dialog_delete':
+        
             if (record.getData('can_delete')) {
-                show_cell_dialog(this, oArgs);
+                
+                show_notes_cell_dialog(this, oArgs);
             } else {
 
 
@@ -217,7 +220,7 @@ function save_attachment() {
                 var table = tables['table' + table_id];
                 var datasource = tables['dataSource' + table_id];
                 datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                close_dialog('attach');
+                close_notes_dialog('attach');
                 //Dom.get('elements_attachments_number').innerHTML = r.elements_numbers.Attachments;
                 get_history_numbers()
               
@@ -238,13 +241,13 @@ function post_add_attachment_actions(r){
 
 }
 
-function save(tipo) {
+function save_notes(tipo) {
 
     switch (tipo) {
     case ('edit_note'):
 
         request = 'ar_edit_notes.php?tipo=edit_note&parent=' + Dom.get('subject').value + "&parent_key=" + Dom.get('subject_key').value + '&note_key=' + Dom.get('edit_note_history_key').value + '&note=' + my_encodeURIComponent(Dom.get('edit_note_input').value) + '&date=' + Dom.get('edit_note_date').getAttribute('value') + '&record_index=' + Dom.get('record_index').value;
-         
+       
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
                 //    alert(o.responseText)
@@ -259,7 +262,7 @@ function save(tipo) {
                     data['note'] = r.newvalue;
                     table.updateRow(r.record_index, data);
 
-                    close_dialog('edit_note');;
+                    close_notes_dialog('edit_note');;
 
                 } else {
                     Dom.get('edit_note_msg').innerHTML = r.msg;
@@ -290,11 +293,11 @@ function save(tipo) {
         // alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-
+                //alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
-                    close_dialog(tipo)
+                    close_notes_dialog(tipo)
                     var table = tables['table' + Dom.get('history_table_id').value];
                     var datasource = tables['dataSource' + Dom.get('history_table_id').value];
                     var request = '';
@@ -328,7 +331,7 @@ function save(tipo) {
 
                     Dom.get('sticky_note_content').innerHTML = r.newvalue;
 
-                    close_dialog(r.key);
+                    close_notes_dialog(r.key);
 
                     if (r.newvalue == '') {
                         Dom.setStyle(['sticky_note_div', 'sticky_note_bis_tr'], 'display', 'none');
@@ -367,11 +370,11 @@ function save(tipo) {
 
 };
 
-function change(e, o, tipo) {
+function change_notes(e, o, tipo) {
     switch (tipo) {
     case ('note'):
         if (o.value != '') {
-            enable_save(tipo);
+            enable_save_notes(tipo);
 /*
 	    if(window.event)
 		key = window.event.keyCode; //IE
@@ -382,14 +385,14 @@ function change(e, o, tipo) {
 		save(tipo);
 */
 
-        } else disable_save(tipo);
+        } else disable_save_notes(tipo);
         break;
 
     }
 };
 
 
-function enable_save(tipo) {
+function enable_save_notes(tipo) {
     switch (tipo) {
     case ('note'):
         Dom.removeClass(tipo + '_save', 'disabled')
@@ -398,7 +401,7 @@ function enable_save(tipo) {
     }
 };
 
-function disable_save(tipo) {
+function disable_save_notes(tipo) {
     switch (tipo) {
     case ('note'):
         Dom.addClass(tipo + '_save', 'disabled')
@@ -408,7 +411,7 @@ function disable_save(tipo) {
 };
 
 
-function close_dialog(tipo) {
+function close_notes_dialog(tipo) {
 
     switch (tipo) {
         //   case('long_note'):
@@ -492,12 +495,13 @@ function show_sticky_note() {
 }
 
 
-function show_cell_dialog(datatable, oArgs) {
+function show_notes_cell_dialog(datatable, oArgs) {
 
     var target = oArgs.target;
     var column = datatable.getColumn(target);
     var record = datatable.getRecord(target);
     var recordIndex = datatable.getRecordIndex(record);
+   
     switch (column.object) {
     case 'delete_note':
 

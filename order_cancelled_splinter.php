@@ -18,7 +18,7 @@ $js_files[]='js/add_payment.js';
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 $smarty->assign('store_id',$store->id);
-$js_files[]='order_cancelled.js.php';
+$js_files[]='js/order_cancelled.js';
 $template='order_cancelled.tpl';
 
 

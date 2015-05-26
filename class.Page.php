@@ -1923,10 +1923,6 @@ class Page extends DB_Table {
 
 		$rrp=$this->get_button_rrp($product);
 
-
-
-
-
 		$form=sprintf('<div  class="ind_form">
                       <div class="product_description" >
                       <span class="code">%s</span>
@@ -1943,9 +1939,6 @@ class Page extends DB_Table {
 			$rrp,
 			$message
 		);
-
-
-
 
 		return $form;
 

@@ -10,12 +10,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td> <textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea> </td>
+			<td> <textarea style="width:200px;height:100px" id="note_input" onkeyup="change_notes(event,this,'note')"></textarea> </td>
 		</tr>
 		<tr>
 			<td> 
 			<div class="buttons">
-				<button onclick="save('note')" id="note_save" class="positive disabled">{t}Save{/t}</button> <button onclick="close_dialog('note')" class="negative">{t}Cancel{/t}</button> 
+				<button onclick="save_notes('note')" id="note_save" class="positive disabled">{t}Save{/t}</button> <button onclick="close_notes_dialog('note')" class="negative">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -40,7 +40,7 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<button class="positive" onclick="save('edit_note')" id="edit_note_save">{t}Save{/t}</button> <button class="negative" onclick="close_dialog('edit_note')">{t}Cancel{/t}</button> 
+				<button class="positive" onclick="save_notes('edit_note')" id="edit_note_save">{t}Save{/t}</button> <button class="negative" onclick="close_notes_dialog('edit_note')">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -56,7 +56,7 @@
 		<tr>
 			<td> 
 			<div class="buttons">
-				<button class="positive" onclick="save('sticky_note')">{t}Save{/t}</button> <button class="negative" onclick="close_dialog('sticky_note')">{t}Cancel{/t}</button> 
+				<button class="positive" onclick="save_notes('sticky_note')">{t}Save{/t}</button> <button class="negative" onclick="close_notes_dialog('sticky_note')">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -84,7 +84,7 @@
 			<tr>
 				<td colspan="2"> 
 				<div class="buttons">
-					<button id="save_attach_button" class="positive disabled" >{t}Upload{/t}</button> <button onclick="close_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
+					<button id="save_attach_button" class="positive disabled" >{t}Upload{/t}</button> <button onclick="close_notes_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
 				</div>
 				</td>
 			</tr>

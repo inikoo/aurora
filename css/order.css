@@ -1,4 +1,7 @@
-#control_panel{border:1px solid #ccc;text-align:left;padding:10px}
+#hide_order_details {cursor:pointer;position:relative;top:5px}
+
+
+#control_panel{border:1px solid #ccc;text-align:left;padding:10p 10px 0px 10px}
 #control_panel #addresses{width:300px;float:left}
 #control_panel #totals{width:270px;float:right}
 #control_panel #dates{width:300px;float:right;font-size:90%;;margin-right:20px}
@@ -6,7 +9,8 @@
 #control_panel #pp_data{width:320px;float:right;font-size:90%;}
 
 
-
+#control_panel{clear:both;margin-top:2px;font-size:95%;border:1px solid #ddd}
+#control_panel .content{padding:10px}
 
 #control_panel table.info_block {border-top:1px solid #333;border-bottom:1px solid #333;padding-right:0px;width:100%}
 
@@ -20,3 +24,22 @@
 .insurance_row{height:40px;padding:3px 2px 2px 2px;text-align:right;font-size:95%}
 
 tr.exchange td{color:#777;font-style: italic;}
+
+
+
+.tabs span.item{border-bottom:1px solid #ccc;}
+.tabs span.selected{
+border-bottom:1px solid #fff;
+}
+
+#order_details_panel{clear:both;border-top:1px solid #ccc;padding:10px 10px 10px; 10px}
+
+
+
+#items_chooser{clear:both;margin-top:20px;margin-right:40px}
+#items_chooser li{float:right}
+
+.details_block{min-height: 100px;padding:10px}
+
+.order_data{width:450px;float:left}
+.order_operations{width:400px;float:left}

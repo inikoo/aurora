@@ -32,6 +32,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case ('get_history_numbers'):
+$data=prepare_values($_REQUEST,array(
+			'subject_key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+
+		));
+	get_history_numbers($data);
+	break;
 case ('get_pending_orders_in_basket_data'):
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'numeric'),
@@ -782,28 +790,17 @@ left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
 			'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code']),
 			'discount'=>$discount,
 			'net'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']),
-             'tax'=>money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']) ,  
+			'tax'=>money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']) ,
 			'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']+$row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code'])
 		);
 	}
 
 
 	$sql="select * from `Order No Product Transaction Fact` $where2  ";
-	//print $sql;
-	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-	//   print $sql;
 	$result=mysql_query($sql);
 	$total_gross=0;
 	$total_discount=0;
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		//   $total_charged+=$row['charge'];
-		//      $total_discounts+=$ndiscount;
-		//      $total_picks+=$row['dispatched'];
-		//$total_discount+=$row['Invoice Transaction Total Discount Amount'];
-		//$total_gross+=$row['Invoice Transaction Gross Amount'];
-		//$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
-
-
 		switch ($row['Transaction Type']) {
 		case('Credit'):
 			$code=_('Credit');
@@ -842,9 +839,9 @@ left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
 			'quantity'=>'',
 			'gross'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
 			'discount'=>'',
-				'net'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
-             'tax'=>money($row['Transaction Invoice Tax Amount'],$row['Currency Code']) ,  
-		
+			'net'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
+			'tax'=>money($row['Transaction Invoice Tax Amount'],$row['Currency Code']) ,
+
 			'to_charge'=>money($row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'],$row['Currency Code'])
 		);
 	}
@@ -2240,7 +2237,7 @@ function list_transactions_dispatched() {
 		$start_from=$conf['sf'];
 
 	if (isset( $_REQUEST['nr'])) {
-		$number_results=$_REQUEST['nr']-1;
+		$number_results=$_REQUEST['nr'];
 
 	} else
 		$number_results=$conf['nr'];
@@ -2451,7 +2448,7 @@ function list_transactions_dispatched() {
 			'rtext'=>$rtext,
 			'rtext_rpp'=>$rtext_rpp,
 			'total_records'=>$total_records,
-			'records_offset'=>$start_from+1,
+			'records_offset'=>$start_from,
 			'records_perpage'=>$number_results,
 		)
 	);
@@ -2845,7 +2842,7 @@ function list_transactions_in_order() {
 	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif ($total_records>0)
+	elseif ($total_records>50)
 		$rtext_rpp=' ('._('Showing all').')';
 	else
 		$rtext_rpp='';
@@ -2894,19 +2891,13 @@ function list_transactions_in_order() {
 	$adata=array();
 	$sql="select *,
 		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
-
-
 	 from `Order Transaction Fact` OTF
 left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
  left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
 	 $where  order by $order $order_direction limit $start_from,$number_results ";
-	//print $sql;
-	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-	$result=mysql_query($sql);
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		//   $total_charged+=$row['charge'];
-		//      $total_discounts+=$ndiscount;
-		//      $total_picks+=$row['dispatched'];
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 
 		$quantity=number($row['Order Quantity']);
@@ -2938,6 +2929,7 @@ left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
 			$description=$row['Product History XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info;
 		}
 
+		$tax=round($row['Order Transaction Amount']*$row['Transaction Tax Rate'],2);
 
 		$adata[]=array(
 
@@ -2946,16 +2938,77 @@ left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
 			'tariff_code'=>$row['Product Tariff Code'],
 			'quantity'=>$quantity,
 			'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
-			'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
-			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+			'discount'=>($row['Order Transaction Total Discount Amount']!=0?money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']):''),
+			'net'=>money($row['Order Transaction Amount'],$row['Order Currency Code']),
+			'tax'=>money($tax,$row['Order Currency Code']),
+			'total'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']+$tax,$row['Order Currency Code']),
+
 			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
-			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00'))
+			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00')),
+			'class'=>''
 
 		);
 	}
 
 
+$counter=0;
 
+	$sql=sprintf("select * from `Order No Product Transaction Fact` $where");
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+
+		switch ($row['Transaction Type']) {
+		case('Credit'):
+			$code=_('Credit');
+			break;
+		case('Refund'):
+			$code=_('Refund');
+			break;
+		case('Shipping'):
+			$code=_('Shipping');
+			break;
+		case('Charges'):
+			$code=_('Charges');
+			break;
+		case('Adjust'):
+			$code=_('Adjust');
+			break;
+		case('Other'):
+			$code=_('Other');
+			break;
+		case('Deal'):
+			$code=_('Deal');
+			break;
+		case('Insurance'):
+			$code=_('Insurance');
+			break;
+		default:
+			$code=$row['Transaction Type'];
+
+
+		}
+
+		$adata[]=array(
+            
+			'code'=>$code,
+			'description'=>$row['Transaction Description'],
+			'tariff_code'=>'',
+			'quantity'=>'',
+			'gross'=>money($row['Transaction Gross Amount'],$row['Currency Code']),
+			'discount'=>($row['Transaction Total Discount Amount']!=0?money($row['Transaction Total Discount Amount'],$row['Currency Code']):''),
+			'net'=>money($row['Transaction Net Amount'],$row['Currency Code']),
+			'tax'=>money($row['Transaction Tax Amount'],$row['Currency Code']),
+			'total'=>money($row['Transaction Net Amount']-$row['Transaction Tax Amount'],$row['Currency Code']),
+
+			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
+			'last_updated'=>'',
+			'class'=>($counter==0?'first':'')
+
+		);
+		$counter++;
+
+	}
 
 
 	$response=array('resultset'=>
@@ -5220,5 +5273,29 @@ sum(`Order Balance Total Amount`) packed_sum_total_balance ,
 	$response= array('state'=>200,'data'=>$pending_orders_data);
 	echo json_encode($response);
 }
+
+function get_history_numbers($data) {
+
+	$subject_key=$data['subject_key'];
+	$subject=$data['subject'];
+
+	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+
+	if ($subject=='order') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Order History Bridge` where `Order Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='dn') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Delivery Note History Bridge` where `Delivery Note Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='invoice') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Invoice History Bridge` where `Invoice Key`=%d group by `Type`",$subject_key);
+	}
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Type']]=$row['num'];
+	}
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+}
+
 
 ?>

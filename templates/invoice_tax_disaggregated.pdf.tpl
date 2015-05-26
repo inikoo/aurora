@@ -187,7 +187,7 @@ div.inline { float:left; }
 		</tbody>
 		{if $number_transactions_out_of_stock>0 or false} 
 		<tr class="title">
-			<td colspan="5">{t}Ordered products not dispatched{/t}</td>
+			<td colspan="6">{t}Ordered products not dispatched{/t}</td>
 		</tr>
 		
 		
@@ -196,7 +196,7 @@ div.inline { float:left; }
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
 				<td class="description"  style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
-				<td colspan="2" style="width:16%;text-align:right"><span>{t}Out of Stock{/t}</span> {$transaction['Quantity']}</td>
+				<td colspan="3" style="width:16%;text-align:right"><span>{t}Out of Stock{/t}</span> {$transaction['Quantity']}</td>
 				
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
 			</tr>

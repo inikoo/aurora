@@ -1001,7 +1001,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 			$invoice->update_xhtml_orders();
 			$order->update_xhtml_invoices();
 			$order->update_no_normal_totals();
-			$order->set_as_invoiced();
+			$order->set_as_invoiced($invoice);
 			$order->update_customer_history();
 		}
 		$invoice->update_xhtml_sale_representatives();
@@ -1345,7 +1345,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				$invoice->update_xhtml_orders();
 				$order->update_xhtml_invoices();
 				$order->update_no_normal_totals();
-				$order->set_as_invoiced();
+				$order->set_as_invoiced($invoice);
 				$order->update_customer_history();
 			}
 			$invoice->update_xhtml_sale_representatives();

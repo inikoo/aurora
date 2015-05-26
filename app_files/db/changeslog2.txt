@@ -140,9 +140,59 @@ ALTER TABLE `Store Data Dimension` ADD `Store Last Month Acc 1YB Refunds` MEDIUM
 
 
 
+CREATE TABLE IF NOT EXISTS `Order History Bridge` (
+  `Order Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `Order History Bridge`
+  ADD PRIMARY KEY (`Order Key`,`History Key`),
+  ADD KEY `Order Key` (`Order Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Type` (`Type`);
+  
+  CREATE TABLE IF NOT EXISTS `Delivery Note History Bridge` (
+  `Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `Delivery Note History Bridge`
+  ADD PRIMARY KEY (`Delivery Note Key`,`History Key`),
+  ADD KEY `Delivery Note Key` (`Delivery Note Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Type` (`Type`);
 
 
 
+CREATE TABLE IF NOT EXISTS `Invoice History Bridge` (
+  `Invoice Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `Invoice History Bridge`
+  ADD PRIMARY KEY (`Invoice Key`,`History Key`),
+  ADD KEY `Invoice Key` (`Invoice Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Type` (`Type`);
+  
+  ALTER TABLE `Attachment Bridge` CHANGE `Subject` `Subject` ENUM('Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+ALTER TABLE `Invoice Dimension` DROP `Invoice XHTML Ship Tos`;
 
  
 

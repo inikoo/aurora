@@ -84,7 +84,7 @@ class Billing_To extends DB_Table {
 
 		$sql=sprintf("select * from `Billing To Dimension` where true  ");
 		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+			$sql.=sprintf(' and `%s`=%s COLLATE utf8_bin',$field,prepare_mysql($data[$field],false));
 		}
 		//print $sql;
 

@@ -58,6 +58,7 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 .inikoo .yui-dt th{border-bottom:1px solid SteelBlue}
 
+
 .inikoo .yui-dt th,.inikoo .yui-dt th a{font-weight:normal;text-decoration:none;color:#000;vertical-align:bottom}
 
 .inikoo .yui-dt th{margin:0;padding:0}
@@ -94,6 +95,8 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 
 
 .inikoo .yui-dt-data tr{border-top:1px solid #ccf}
+.inikoo .yui-dt-data tr.first{border-top:1px solid steelblue}
+
 .inikoo tr.yui-dt-even{background-color:#f2f2ff;}
 .inikoo tr.yui-dt-odd{background-color:#FFF;}
 
@@ -185,11 +188,8 @@ div.wider{height:1.8em}
     *filter: alpha(opacity=25);  /* Set opacity in IE */
 }
 
-.inikoo .xwith_total tr.yui-dt-last td.yui-dt-asc{border-top:1px solid steelblue;border-bottom:none;background:#fff}
-
-.inikoo .xwith_total tr.yui-dt-last td.yui-dt-desc {border-top:1px solid steelblue;border-bottom:none;background:#fff}
-.xinikoo .with_total tbody.yui-td-data tr.yui-dt-last  {border-top:4px solid steelblue;border-bottom:none;background:#fff}
 .inikoo .with_total  .yui-dt-data  tr.yui-dt-last  {border-top:1px solid steelblue;border-bottom:none;background:#fff}
+
 
 
 .table_top_bar{clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999}

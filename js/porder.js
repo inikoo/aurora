@@ -10,8 +10,6 @@ function change_block() {
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
 
-
-
 }
 
 function get_history_numbers() {
