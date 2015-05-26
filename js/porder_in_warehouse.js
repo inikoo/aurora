@@ -207,7 +207,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             key: "amount",
             label: labels.Net_Cost,
             hidden:(state.porder.products_in_warehouse.view=='sdn'?true:false),
-            width: 50,
+            width: 100,
             className: "aright"
         }
 

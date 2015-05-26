@@ -163,7 +163,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         {
             key: "amount",
             label: labels.Net_Cost,
-            width: 50,
+            width: 100,
             className: "aright"
         }
 

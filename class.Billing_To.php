@@ -214,13 +214,13 @@ class Billing_To extends DB_Table {
 
 		if ($this->data['Billing To Contact Name']!='') {
 			if ($tipo=='xhtml') {
-				$address.='<span style="text-decoration:underline">'._trim($this->data['Billing To Contact Name']).'</span>'.$separator;
+				$address.='<span style="text-decoration:underline">'.htmlspecialchars(_trim($this->data['Billing To Contact Name'])).'</span>'.$separator;
 			}else {
 				$address.=_trim($this->data['Billing To Contact Name']).$separator;
 			}
 		}
 		if ($this->data['Billing To Company Name']!='')
-			$address.=_trim($this->data['Billing To Company Name']).$separator;
+			$address.=htmlspecialchars(_trim($this->data['Billing To Company Name'])).$separator;
 
 
 		if ($address!='') {
@@ -229,13 +229,13 @@ class Billing_To extends DB_Table {
 
 
 		if ($this->data['Billing To Line 1']!='')
-			$address.=_trim($this->data['Billing To Line 1']).$separator;
+			$address.=htmlspecialchars(_trim($this->data['Billing To Line 1'])).$separator;
 		if ($this->data['Billing To Line 2']!='')
-			$address.=_trim($this->data['Billing To Line 2']).$separator;
+			$address.=htmlspecialchars(_trim($this->data['Billing To Line 2'])).$separator;
 
 		if ($this->data['Billing To Line 3']!='')
-			$address.=_trim($this->data['Billing To Line 3']).$separator;
-		$town_address=_trim($this->data['Billing To Town']);
+			$address.=htmlspecialchars(_trim($this->data['Billing To Line 3'])).$separator;
+		$town_address=htmlspecialchars(_trim($this->data['Billing To Town']));
 		if ($town_address!='')
 			$address.=$town_address.$separator;
 
