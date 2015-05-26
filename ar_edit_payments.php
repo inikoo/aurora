@@ -969,7 +969,7 @@ function refund_payment($data) {
 		}
 
 
-
+        $order->apply_payment_from_customer_account();
 		$response=array('state'=>200,
 			'result'=>'updated',
 			'order_shipping_method'=>$order->data['Order Shipping Method'],
