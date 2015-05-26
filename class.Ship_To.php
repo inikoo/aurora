@@ -231,15 +231,15 @@ class Ship_To extends DB_Table {
 
 
 		if ($this->data['Ship To Line 1']!='')
-			$address.=_trim($this->data['Ship To Line 1']).$separator;
+			$address.=htmlspecialchars(_trim($this->data['Ship To Line 1'])).$separator;
 		if ($this->data['Ship To Line 2']!='')
-			$address.=_trim($this->data['Ship To Line 2']).$separator;
+			$address.=htmlspecialchars(_trim($this->data['Ship To Line 2'])).$separator;
 
 		if ($this->data['Ship To Line 3']!='')
-			$address.=_trim($this->data['Ship To Line 3']).$separator;
+			$address.=htmlspecialchars(_trim($this->data['Ship To Line 3'])).$separator;
 		$town_address=_trim($this->data['Ship To Town']);
 		if ($town_address!='')
-			$address.=$town_address.$separator;
+			$address.=htmlspecialchars($town_address).$separator;
 
 		if ($this->data['Ship To Line 4']!='')
 			$address.=_trim($this->data['Ship To Line 3']).$separator;

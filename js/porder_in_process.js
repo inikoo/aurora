@@ -414,7 +414,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         {
             key: "amount",
             label: labels.Net_Cost,
-            width: 50,
+            width: 100,
             className: "aright"
         }
         // ,{key:"qty_edit", label:labels.Qty,width:50,className:"aright",hidden:true}
