@@ -318,6 +318,7 @@ class Family extends DB_Table {
 			return;
 		}
 
+		$old_department=new Department($this->data['Product Family Main Department Key']);
 		$old_department_label=sprintf("%s, %s",$this->data['Product Family Main Department Code'],$this->data['Product Family Main Department Name']);
 
 		//$old_family=new Department($this->data['Product Family Key']);
@@ -346,7 +347,9 @@ class Family extends DB_Table {
 
 		//$old_family->update_product_data();
 		$new_department->update_product_data();
-
+		$new_department->update_families();
+		$old_department->update_product_data();
+		$old_department->update_families();
 		$this->data['Product Family Key']=$key;
 		$this->new_value=$key;
 		$this->new_data=array('code'=>$new_department->data['Product Department Code'] ,'name'=>$new_department->data['Product Department Name'],'key'=>$new_department->id );

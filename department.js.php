@@ -909,7 +909,6 @@ Dom.setStyle(['info_'+period,'info2_'+period],'display','')
 
 
 function change_family_elements(){
-
 ids=['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'];
 
 
@@ -1214,6 +1213,7 @@ function init() {
 
 
     Event.addListener(['elements_family_discontinued', 'elements_family_discontinuing', 'elements_family_normal', 'elements_family_inprocess', 'elements_family_nosale'], "click", change_family_elements);
+   
     Event.addListener(['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'], "click", change_elements);
 
 
