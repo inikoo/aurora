@@ -127,7 +127,7 @@
 	</div>
 	<div style="padding:0px 20px">
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='items'}display:none{/if}" id="items_block">
-			<span id="table_title_items" class="clean_table_title" ">{t}Items{/t}</span> 
+			<span id="table_title_items" class="clean_table_title" >{t}Items{/t}</span> 
 			<div class="table_top_bar space">
 			</div>
 			<div id="list_options0" style="display:none">
@@ -163,24 +163,7 @@
 			</div>
 			<div class="table_top_bar space">
 			</div>
-			<div id="list_options1" style="display:none">
-				<table style="float:left;margin:0 0 5px 0px ;padding:0" class="options">
-					<tr>
-						<td class="{if $products_view=='general'}selected{/if}" id="general">{t}General{/t}</td>
-						<td class="{if $products_view=='stock'}selected{/if}" id="stock">{t}Discounts{/t}</td>
-						<td class="{if $products_view=='sales'}selected{/if}" id="sales">{t}Properties{/t}</td>
-					</tr>
-				</table>
-				<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}" class="options_mini">
-					<tr>
-						<td class="{if $products_period=='all'}selected{/if}" period="all" id="period_all">{t}All{/t}</td>
-						<td class="{if $products_period=='year'}selected{/if}" period="year" id="period_year">{t}1Yr{/t}</td>
-						<td class="{if $products_period=='quarter'}selected{/if}" period="quarter" id="period_quarter">{t}1Qtr{/t}</td>
-						<td class="{if $products_period=='month'}selected{/if}" period="month" id="period_month">{t}1M{/t}</td>
-						<td class="{if $products_period=='week'}selected{/if}" period="week" id="period_week">{t}1W{/t}</td>
-					</tr>
-				</table>
-			</div>
+			
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 			<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
 			</div>
