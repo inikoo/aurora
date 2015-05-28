@@ -277,8 +277,8 @@ request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').valu
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:500}
-                      ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'store_history'}
-                      ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'store_history'}
+                      ,{key:"delete", label:"",width:12,sortable:false,action:'dialog',object:'delete_note'}
+                      ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'part_history'}
 
 					   ];
 		request="ar_history.php?tipo=store_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid
@@ -333,7 +333,7 @@ request="ar_orders.php?tipo=dn&parent=part&parent_key="+Dom.get('part_sku').valu
 		    this.table3.filter={key:'<?php echo$_SESSION['state']['part']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['history']['f_value']?>'};
 	        this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	        this.table3.subscribe("cellClickEvent", onCellClick);            
+	        this.table3.subscribe("cellClickEvent", onNotesCellClick);            
 			this.table3.table_id=tableid;
      		this.table3.subscribe("renderEvent", myrenderEvent);
      		

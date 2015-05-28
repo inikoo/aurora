@@ -367,6 +367,7 @@ function get_history_numbers() {
 }
 
 function hide_order_details() {
+
     ids = ['details', 'notes', 'customer_data']
 
     Dom.removeClass(ids, 'selected');

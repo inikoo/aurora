@@ -314,7 +314,6 @@ var onCellClick = function(oArgs) {
             column = this.getColumn(target),
             record = this.getRecord(target);
 
-
         var recordIndex = this.getRecordIndex(record);
         //var  datatable = this.getDataTable();
         switch (column.action) {

@@ -169,7 +169,7 @@ function save_delete_history_record_from_list() {
     YAHOO.util.Connect.asyncRequest('GET', request, {
 
         success: function(o) {
-            //alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200 && r.action == 'deleted') {
@@ -250,7 +250,7 @@ function save_notes(tipo) {
        
         YAHOO.util.Connect.asyncRequest('GET', request, {
             success: function(o) {
-                //    alert(o.responseText)
+                  
                 var r = YAHOO.lang.JSON.parse(o.responseText);
 
                 if (r.state == 200) {
@@ -293,7 +293,7 @@ function save_notes(tipo) {
         // alert(request);
         YAHOO.util.Connect.asyncRequest('POST', request, {
             success: function(o) {
-                //alert(o.responseText)
+               // alert(o.responseText)
                 var r = YAHOO.lang.JSON.parse(o.responseText);
                 if (r.state == 200) {
 
