@@ -334,4 +334,26 @@
 		</div>
 	</div>
 </div>
+<div id="dialog_set_tax_number" style="padding:10px;width:400px">
+	<input type="hidden" id="invalid_tax_number_label" value="{t}Invalid tax number{/t}"> 
+	<table style="margin:10px" border="0">
+		<tr>
+			<td>{t}Tax number{/t}:</td>
+			<td style="width:220px"> 
+			<div>
+				<input style="width:100%" type="text" id="Order_Tax_Number" value="{$order->get('Order Tax Number')}" ovalue="{$customer->get('Order Tax Number')}" valid="0"> 
+				<div id="Order_Tax_Number_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<span id="Order_Tax_Number_msg" class="edit_td_alert"></span> <button class="positive" onclick="save_quick_edit_tax_number()">{t}Save{/t}</button> <button class="negative" onclick="close_quick_edit_tax_number()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
 {include file='add_payment_splinter.tpl' subject='order'}  {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

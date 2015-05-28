@@ -1559,11 +1559,7 @@ function edit_new_porder() {
 		$order->update_item_totals_from_order_transactions();
 		$order->update_totals_from_order_transactions();
 
-		//$order->update_charges();
-		//$order->get_original_totals();
-		// $order->update_totals();
-		//$order->update_totals_from_order_transactions();
-
+	
 
 
 

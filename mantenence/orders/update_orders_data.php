@@ -32,33 +32,13 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
+$inikoo_account=new Account(1);
 
-
-
-
-
-
-$sql="select `Order Key` from `Order Dimension` order by `Order Key` desc";
-
+$sql="select `Order Key` from `Order Dimension` where  `Order Current Dispatch State` in  ('In Process by Customer','In Process')  order by `Order Key` desc";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$order=new Order($row['Order Key']);
-	//$order->update_no_normal_totals();
-	//$order->update_payment_state();
-
-	$order->update_number_items();
-/*
-	if ($order->data['Order Original Data MIME Type']=='application/vnd.ms-excel' and $order->data['Order Current Dispatch State']=='Dispatched') {
-		$order->update_field_switcher('Order Current Payment State','Paid','no_history');
-		$order->update_field_switcher('Order Current XHTML Payment State','Paid','no_history');
-
-
-	}
-
-
-	$store=new Store($order->data['Order Store Key']);
-	$order->update_field_switcher('Order Show in Warehouse Orders',$store->data['Store Show in Warehouse Orders'],'no_history');
-*/
+	$order->update_totals();
 	print $order->data['Order Date']." ".$order->data['Order Public ID']."  \r";
 }
 

@@ -68,7 +68,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$order->update_insurance();
 
 	$order->update_discounts_items();
-	$order->update_item_totals_from_order_transactions();
+	$order->update_totals();
 
 
 
@@ -81,10 +81,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$order->update_deals_usage();
 
-	$order->update_no_normal_totals();
-	//print "xxx\n";
-	$order->update_item_totals_from_order_transactions();
-	$order->update_totals_from_order_transactions();
+	$order->update_totals();
+
 	$order->update_number_items();
 	$counter++;
 	//print $order->id." ".percentage($counter,$total)."  \r";

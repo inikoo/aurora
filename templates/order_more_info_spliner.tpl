@@ -1,5 +1,5 @@
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
-	<li> <span class="item " id="details"> <span> {t}Details{/t}</span></span></li>
+	<li> <span class="item " id="details"> <span> {t}Details/Operations{/t}</span></span></li>
 	<li> <span class="item " id="notes"> <span> {t}History/Notes{/t}</span></span></li>
 	<li> <span class="item " id="customer_data"> <span> {t}Customer Data{/t}</span></span></li>
 </ul>
@@ -128,7 +128,8 @@
 
 {/if}
 		    
-		    
+		   				<button style="margin-top:10px;clear:both"  id="recalculate_totals"><img id="recalculate_totals_img" src="art/icons/arrow_rotate_clockwise.png" alt=""> {t}Recalculate Totals{/t}</button> 
+ 
 				
 			</div>
 		</div>

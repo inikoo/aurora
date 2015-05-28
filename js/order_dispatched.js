@@ -8,6 +8,21 @@ function show_dispatched_post_transactions() {
 
 }
 
+
+function show_set_tax_number_dialog_from_details() {
+    region1 = Dom.getRegion('update_order_tax_number');
+    region2 = Dom.getRegion('dialog_set_tax_number');
+    var pos = [region1.right - region2.width, region1.top]
+    Dom.setXY('dialog_set_tax_number', pos);
+
+    if (Dom.get('tax_number') != undefined) tax_number = Dom.get('tax_number').innerHTML
+
+
+    dialog_set_tax_number.show();
+
+}
+
+
 function create_invoice() {
 
     Dom.get('create_invoice_img').src = 'art/loading.gif'
@@ -597,6 +612,13 @@ function hide_order_details() {
     Dom.setStyle('show_order_details', 'display', '')
 }
 
+function close_quick_edit_tax_number() {
+    dialog_set_tax_number.hide();
+}
+
+function save_quick_edit_tax_number() {
+    save_edit_general_bulk('order');
+}
 
 function init() {
     init_search('orders_store');
@@ -606,6 +628,53 @@ function init() {
     YAHOO.util.Event.addListener('show_order_details', "click", show_order_details)
 
 
+
+
+    validate_scope_data = {
+        'order': {
+            'tax_number': {
+                'changed': false,
+                'validated': true,
+                'required': false,
+                'group': 1,
+                'type': 'item',
+                'name': 'Order_Tax_Number',
+                'validation': [{
+                    'regexp': "[a-z0-9]+",
+                    'invalid_msg': Dom.get('invalid_tax_number_label').value
+                }]
+            }
+
+        }
+    };
+
+
+
+    validate_scope_metadata = {
+        'order': {
+            'type': 'edit',
+            'ar_file': 'ar_edit_orders.php',
+            'key_name': 'order_key',
+            'key': Dom.get('order_key').value
+        }
+    };
+
+
+    var customer_tax_number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
+    customer_tax_number_oACDS.queryMatchContains = true;
+    var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Order_Tax_Number", "Order_Tax_Number_Container", customer_tax_number_oACDS);
+    customer_tax_number_oAutoComp.minQueryLength = 0;
+    customer_tax_number_oAutoComp.queryDelay = 0.1;
+
+
+    dialog_set_tax_number = new YAHOO.widget.Dialog("dialog_set_tax_number", {
+        visible: true,
+        close: true,
+        underlay: "none",
+        draggable: false
+
+    });
+    dialog_set_tax_number.render();
 
 }
 
