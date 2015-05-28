@@ -1192,15 +1192,21 @@ var myonCellClick = function(oArgs) {
 
                         if (Dom.get('products_display_type').value == 'products') {
 
-                            var table = tables['table0'];
-                            var datasource = tables['dataSource0'];
+                        var table = tables['table0'];
+                        var datasource = tables['dataSource0'];
+                         var request = '';
+                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
-                        } else {
-                            var table = tables['table1'];
-                            var datasource = tables['dataSource1'];
+                    } 
+                    else {
+                        var table = tables['table1'];
+                        var datasource = tables['dataSource1'];
+                         var request = '';
+                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
-                        }
+                    }
+
 
                         var request = '';
                         datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
@@ -1355,15 +1361,20 @@ var CellEdit = function(callback, newValue) {
 
 
                     }
+                    
                     if (Dom.get('products_display_type').value == 'products') {
 
-                        var table = tables['table1'];
-                        var datasource = tables['dataSource1'];
+                        var table = tables['table0'];
+                        var datasource = tables['dataSource0'];
+                         var request = '';
+                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
                     } 
                     else {
-                        var table = tables['table0'];
-                        var datasource = tables['dataSource0'];
+                        var table = tables['table1'];
+                        var datasource = tables['dataSource1'];
+                         var request = '';
+                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
                     }
@@ -1371,9 +1382,7 @@ var CellEdit = function(callback, newValue) {
 
      
 
-                        var request = '';
-                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
+                       
 
 
 
