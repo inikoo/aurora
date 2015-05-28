@@ -127,14 +127,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		       rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
+		       rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
 		},
 		
 		fields: [
@@ -218,16 +219,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		 rowsPerPage:"resultset.records_perpage",
-		    RecordOffset : "resultset.records_offset", 
-		       rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		    
+		     rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
 		  
 		},
 		
@@ -307,14 +307,15 @@ this.table1.table_id=tableid;
 	    this.dataSource2.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: { 
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
+		        rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
 		},
 		
 		fields: [
@@ -398,14 +399,15 @@ this.table1.table_id=tableid;
 	    this.dataSource3.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
+		      rowsPerPage: "resultset.records_perpage",
+                RecordOffset: "resultset.records_offset",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
 		},
 		
 		fields: [

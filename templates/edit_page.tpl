@@ -204,7 +204,7 @@
 				<button style="{if $content_view=='content'}margin-left:30px{/if}" id="show_page_includes_block" class="indented {if $content_view=='includes'}selected{/if}"><img src="art/icons/html.png" alt="" /> {t}Includes{/t}</button> 
 				<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> 
 				<button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
-				<button style="{if !($page->get('Page Store Section')=='Family Catalogue' or $page->get('Page Store Section')=='Product Description') }display:none{/if}"  id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
+				<button style="{if !($page->get('Page Store Section')=='Department Catalogue' or $page->get('Page Store Section')=='Family Catalogue' or $page->get('Page Store Section')=='Product Description') }display:none{/if}"  id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
 				<button style="{if !($page->get('Page Store Section')=='Family Catalogue') }display:none{/if}"   id="show_page_products_block" class="{if $content_view=='products'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 			</div>
 			<div class="tabs_base">
@@ -379,7 +379,7 @@
 					</div>
 				</div>
 			</div>
-			<div style="{if $content_view!='content' or !($page->get('Page Store Section')=='Family Catalogue' or $page->get('Page Store Section')=='Product Description')  }display:none{/if};min-height:400px" id="page_content_block">
+			<div style="{if $content_view!='content' or !($page->get('Page Store Section')=='Department Catalogue' or $page->get('Page Store Section')=='Family Catalogue' or $page->get('Page Store Section')=='Product Description')  }display:none{/if};min-height:400px" id="page_content_block">
 			
 			
 			
@@ -395,9 +395,13 @@
 					</tr>
 					<tr class="space10" id="content_display_type_template_showcase" style="{if $page->get('Page Store Content Display Type')!='Template'}display:none;{/if}">
 						<td class="label">{t}Template{/t}:
-						
 						{if $page->get('Page Store Section')=='Family Catalogue'}
 							<input id="content_template_filename" value="family_buttons" type="hidden"></td>
+							<td  id="content_template_filename_options"> 
+							<img class="selected"  src="art/page_layout_product_thumbnails.png" /> 
+							</td>
+							{else if $page->get('Page Store Section')=='Department Catalogue'}
+	<input id="content_template_filename" value="department" type="hidden"></td>
 							<td  id="content_template_filename_options"> 
 							<img class="selected"  src="art/page_layout_product_thumbnails.png" /> 
 							</td>

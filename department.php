@@ -28,6 +28,11 @@ if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ) {
 $department=new Department($department_id);
 $department->load_acc_data();
 
+$department->update_product_data();
+$department->update_families();
+
+
+
 //$department->update_sales_averages();
 if (!$department->id) {
 	header('Location: stores.php?e=department_not_found');
@@ -380,7 +385,7 @@ $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['department']['sales_s
 
 //$smarty->assign('family_sales_elements',$_SESSION['state']['department']['family_sales']['elements']);
 //$smarty->assign('product_sales_elements',$_SESSION['state']['department']['product_sales']['elements']);
-$smarty->assign('family_elements',$_SESSION['state']['department']['families']['elements']);
+$smarty->assign('elements_family',$_SESSION['state']['department']['families']['elements']);
 $smarty->assign('product_elements',$_SESSION['state']['department']['products']['elements']);
 
 
