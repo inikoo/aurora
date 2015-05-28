@@ -503,12 +503,12 @@ function list_customer_orders() {
 			$mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
 
 
-        $payment_state=_trim(get_order_formated_payment_state($row));
+		$payment_state=_trim(get_order_formated_payment_state($row));
 
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
 			'last_update'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Order Last Updated Date'].' UTC')) ,
-			'current_state'=>	get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']).($payment_state==''?'':', '.$payment_state),
+			'current_state'=> get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']).($payment_state==''?'':', '.$payment_state),
 			'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
 			'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 
@@ -607,7 +607,7 @@ function list_customer_dns() {
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-	
+
 	} else {
 		$_SESSION['state']['customer']['dns']['from']=$date_interval['from'];
 		$_SESSION['state']['customer']['dns']['to']=$date_interval['to'];
@@ -843,7 +843,7 @@ function list_customer_invoices() {
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-	//	exit("error in dates");
+		// exit("error in dates");
 	} else {
 		$_SESSION['state']['customer']['invoices']['from']=$date_interval['from'];
 		$_SESSION['state']['customer']['invoices']['to']=$date_interval['to'];
@@ -953,23 +953,23 @@ function list_customer_invoices() {
 		if ($row['Invoice Paid']=='Yes')
 			$state=_('Paid');
 		elseif ($row['Invoice Paid']=='Partially')
-						$state=_('Partially Paid');
+			$state=_('Partially Paid');
 
 		else
 			$state=_('No Paid');
-			
-			if ($row['Invoice Type']=='Invoice')
-				$type=_('Invoice');
-			elseif ($row['Invoice Type']=='CreditNote')
-				$type=_('Credit Note');	
-			else
-				$type=_('Refund');
+
+		if ($row['Invoice Type']=='Invoice')
+			$type=_('Invoice');
+		elseif ($row['Invoice Type']=='CreditNote')
+			$type=_('Credit Note');
+		else
+			$type=_('Refund');
 
 		$adata[]=array(
 			'public_id'=>sprintf("<a href='invoice.php?id=%d&ref=c'>%s</a>",$row['Invoice Key'],$row['Invoice Public ID']),
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Invoice Date'].' UTC')) ,
 			'current_state'=>$state,
-				'type'=>$type,
+			'type'=>$type,
 			'total'=>money($row['Invoice Total Amount'],$row['Invoice Currency']),
 			'to_pay'=>money($row['Invoice Outstanding Total Amount'],$row['Invoice Currency'])
 
@@ -1002,10 +1002,10 @@ function list_assets_dispatched_to_customer() {
 
 
 	if (isset( $_REQUEST['customer_key'])) {
-		$customer_id=$_REQUEST['customer_key'];
-		$_SESSION['state']['customer']['id']=$customer_id;
-	} else
-		$customer_id=$_SESSION['state']['customer']['id'];
+		$customer_key=$_REQUEST['customer_key'];
+	} else{
+	    exit;
+	}
 
 
 
@@ -1042,6 +1042,7 @@ function list_assets_dispatched_to_customer() {
 		$from=$_REQUEST['from'];
 	else
 		$from=$conf['from'];
+
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
@@ -1061,9 +1062,17 @@ function list_assets_dispatched_to_customer() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['customer']['id']=$customer_id;
-	$_SESSION['state']['customer']['assets']=array('type'=>$type,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
-	
+
+	$_SESSION['state']['customer']['assets']['type']=$type;
+	$_SESSION['state']['customer']['assets']['order']=$order;
+	$_SESSION['state']['customer']['assets']['order_dir']=$order_direction;
+	$_SESSION['state']['customer']['assets']['nr']=$number_results;
+	$_SESSION['state']['customer']['assets']['sf']=$start_from;
+	$_SESSION['state']['customer']['assets']['f_field']=$f_field;
+	$_SESSION['state']['customer']['assets']['f_value']=$f_value;
+
+
+
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
 	} else {
@@ -1098,7 +1107,7 @@ function list_assets_dispatched_to_customer() {
 
 
 
-	$where=sprintf("    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d  ",$customer_id);
+	$where=sprintf("    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d  ",$customer_key);
 
 	//print "$f_field $f_value  " ;
 
@@ -1220,7 +1229,7 @@ function list_assets_dispatched_to_customer() {
 	}
 
 	$adata=array();
-	$sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,OTF.`Product Code`,`Product Family Code`,OTF.`Product Family Key`,OTF.`Product Department Key`,D.`Product Department Code` ,`Product Family Name` , `Product XHTML Short Description` ,`Product Department Name` from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product ID`=OTF.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=OTF.`Product Department Key`)   $where " ,$customer_id);
+	$sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,OTF.`Product Code`,`Product Family Code`,OTF.`Product Family Key`,OTF.`Product Department Key`,D.`Product Department Code` ,`Product Family Name` , `Product XHTML Short Description` ,`Product Department Name` from `Order Transaction Fact` OTF left join `Product Dimension` PD on (PD.`Product ID`=OTF.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=OTF.`Product Department Key`)   $where " ,$customer_key);
 	$sql.=" $wheref ";
 	$sql.=sprintf("  group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$group_by);
 	//  print $sql;
