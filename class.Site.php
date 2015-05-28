@@ -385,14 +385,25 @@ class Site extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+
+		case('Site Menu CSS'):
+		case('Site Menu Javascript'):
+		case('Site Search CSS'):
+		case('Site Search Javascript'):
+			if ($this->data['Site SSL']=='Yes') {
+				$site_protocol='https';
+			}else {
+				$site_protocol='http';
+			}
+			$this->update_field($field,$value,'diff');
+			$template_response=@file_get_contents($site_protocol.'://'.$this->data['Site URL']."/maintenance/write_templates.php?parent=site_elements&parent_key=".$this->id."&sk=x");
+
+			break;
 		case('Site Head Include'):
 		case('Site Body Include'):
 		case('Site Menu HTML'):
-		case('Site Menu CSS'):
-		case('Site Menu Javascript'):
 		case('Site Search HTML'):
-		case('Site Search CSS'):
-		case('Site Search Javascript'):
+
 		case('Site Forgot Password Email HTML Body'):
 		case('Site Forgot Password Email Plain Body'):
 		case('Site Forgot Password Email Subject'):
@@ -576,7 +587,7 @@ class Site extends DB_Table {
 	function add_family_page($family_key,$raw_data) {
 
 		$this->new_page=false;
-		
+
 
 		$family=new Family($family_key);
 		if ($family->data['Product Family Store Key']!=$this->data['Site Store Key']) {
@@ -738,15 +749,15 @@ class Site extends DB_Table {
 
 		$page=new Page('find',$page_data,'create');
 		if ($page->new) {
-			
+
 			include_once 'class.Family.php';
 			$family=new Family($product->data['Product Family Key']);
 			if ($family->id) {
 				$parent_pages_keys=$family->get_pages_keys();
 				foreach ($parent_pages_keys as $parent_page_key) {
 					$page->add_found_in_link($parent_page_key);
-					
-					
+
+
 					break;
 				}
 			}
@@ -1585,7 +1596,7 @@ class Site extends DB_Table {
 
 			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d  ",$this->id,$row['Image Key']);
 			mysql_query($sql);
-			
+
 
 
 			$image=new Image($row['Image Key']);
