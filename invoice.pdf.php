@@ -376,9 +376,16 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('tax_data',$tax_data);
 
 
-//$html=$smarty->fetch('invoice.pdf.tpl');
 
-$html=$smarty->fetch('invoice_tax_disaggregated.pdf.tpl');
+if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
+	$html=$smarty->fetch('invoice_tax_disaggregated.pdf.tpl');
+
+}else {
+	$html=$smarty->fetch('invoice.pdf.tpl');
+
+}
+
+
 
 
 

@@ -803,11 +803,10 @@ function create_order($data) {
 
 	$order->update_shipping();
 	$order->update_charges();
-	$order->update_item_totals_from_order_transactions();
-
-	$order->update_no_normal_totals();
-	$order->update_totals_from_order_transactions();
-
+	
+	$order->update_totals();
+	
+	
 
 	//print_r($discounts_map);
 
@@ -1000,7 +999,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 			mysql_query( $sql );
 			$invoice->update_xhtml_orders();
 			$order->update_xhtml_invoices();
-			$order->update_no_normal_totals();
+			$order->update_totals();
 			$order->set_as_invoiced($invoice);
 			$order->update_customer_history();
 		}
@@ -1077,7 +1076,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 		$order->get_data('id',$order->id);
 
 		$order->update_xhtml_invoices();
-		$order->update_no_normal_totals();
+		$order->update_totals();
 		$order->set_order_as_completed($date_inv);
 		return;
 	}
@@ -1344,7 +1343,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				mysql_query( $sql );
 				$invoice->update_xhtml_orders();
 				$order->update_xhtml_invoices();
-				$order->update_no_normal_totals();
+				$order->update_totals();
 				$order->set_as_invoiced($invoice);
 				$order->update_customer_history();
 			}
@@ -1429,7 +1428,7 @@ function send_order($data,$data_dn_transactions,$just_pick=false) {
 				));
 
 			$order->update_xhtml_invoices();
-			$order->update_no_normal_totals();
+			$order->update_totals();
 
 
 		}
