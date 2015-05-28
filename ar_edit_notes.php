@@ -134,6 +134,10 @@ function add_note($data) {
 
 	if ($db_field=='Product' or $db_field=='Supplier Product') {
 		$db_field_key=$db_field.' ID';
+	}else if($db_field=='Part' ) {
+		$db_field_key=$db_field.' SKU';
+	}else if($db_field=='Product Family' or $db_field=='Product Department'){
+		$db_field_key=preg_replace('/Product /','',$db_field).' Key';
 	}else {
 		$db_field_key=$db_field.' Key';
 	}
@@ -144,7 +148,6 @@ function add_note($data) {
 		$db_field_key,
 		$data['parent_key']
 	);
-
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_numbers[$row['Type']]=number($row['num']);
@@ -229,6 +232,10 @@ function delete_history($data) {
 
 	if ($db_field=='Product' or $db_field=='Supplier Product') {
 		$db_field_key=$db_field.' ID';
+	}else if($db_field=='Part' ) {
+		$db_field_key=$db_field.' SKU';
+	}else if($db_field=='Product Family' or $db_field=='Product Department'){
+		$db_field_key=preg_replace('/Product /','',$db_field).' Key';
 	}else {
 		$db_field_key=$db_field.' Key';
 	}
@@ -275,6 +282,8 @@ function unstrikethrough_history($data) {
 
 
 function get_parent_db_field($data) {
+
+
 	switch ($data['parent']) {
 	case 'customer':
 		$db_field='Customer';
@@ -283,10 +292,10 @@ function get_parent_db_field($data) {
 		$db_field='Store';
 		break;
 	case 'department':
-		$db_field='Department';
+		$db_field='Product Department';
 		break;
 	case 'family':
-		$db_field='Family';
+		$db_field='Product Family';
 		break;
 	case 'product':
 		$db_field='Product';
@@ -467,12 +476,15 @@ function add_attachment($data) {
 	if ($updated) {
 		$elements_numbers=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
 
-		if ($db_field=='Product' or $db_field=='Supplier Product') {
-			$db_field_key=$db_field.' ID';
-		}else {
-			$db_field_key=$db_field.' Key';
-		}
-
+	if ($db_field=='Product' or $db_field=='Supplier Product') {
+		$db_field_key=$db_field.' ID';
+	}else if($db_field=='Part' ) {
+		$db_field_key=$db_field.' SKU';
+	}else if($db_field=='Product Family' or $db_field=='Product Department'){
+		$db_field_key=preg_replace('/Product /','',$db_field).' Key';
+	}else {
+		$db_field_key=$db_field.' Key';
+	}
 
 		$sql=sprintf("select count(*) as num , `Type` from  `%s History Bridge` where `%s`=%d group by `Type`",
 			$db_field,

@@ -37,7 +37,14 @@ if (count($user->stores)==0) return;
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case ('get_history_numbers'):
+	$data=prepare_values($_REQUEST,array(
+			'subject'=>array('type'=>'string'),
+			'subject_key'=>array('type'=>'key')
 
+		));
+	get_history_numbers($data);
+	break;
 case ('products_availability_timeline'):
 
 	list_products_availability_timeline();
@@ -7645,5 +7652,27 @@ function list_products_availability_timeline() {
 	echo json_encode($response);
 }
 
+function get_history_numbers($data) {
+
+	$subject_key=$data['subject_key'];
+	$subject=$data['subject'];
+
+	$elements_numbers=array('WebLog'=>0,'Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+
+	if ($subject=='family') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Product Family History Bridge` where `Family Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='department') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Product Department History Bridge` where `Department Key`=%d group by `Type`",$subject_key);
+	}elseif ($subject=='product') {
+		$sql=sprintf("select count(*) as num , `Type` from  `Product History Bridge` where `Product ID`=%d group by `Type`",$subject_key);
+	}
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_numbers[$row['Type']]=$row['num'];
+	}
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+}
 
 ?>

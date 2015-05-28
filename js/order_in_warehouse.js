@@ -619,11 +619,6 @@ function show_order_details() {
 
 }
 
-function hide_order_details() {
-    Dom.setStyle('order_details_panel', 'display', 'none')
-    Dom.setStyle('show_order_details', 'display', '')
-}
-
 
 
 function init() {
@@ -736,9 +731,6 @@ function init() {
         showDelay: 500
     });
 
-
-    Event.addListener("show_order_details", "click", show_order_details);
-    Event.addListener("hide_order_details", "click", hide_order_details);
 
 
 /*

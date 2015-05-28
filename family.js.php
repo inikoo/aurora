@@ -504,7 +504,7 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 		    this.table5.filter={key:'<?php echo$_SESSION['state']['family']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['history']['f_value']?>'};
 	        this.table5.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table5.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	        this.table5.subscribe("cellClickEvent", onCellClick);            
+	        this.table5.subscribe("cellClickEvent", onNotesCellClick);            
 			this.table5.table_id=tableid;
      		this.table5.subscribe("renderEvent", myrenderEvent);
      		

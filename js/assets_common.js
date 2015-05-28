@@ -1,3 +1,36 @@
+
+
+function get_history_numbers() {
+
+    var ar_file = 'ar_assets.php';
+    var request = 'tipo=get_history_numbers&subject='+Dom.get('subject').value+'&subject_key=' + Dom.get('subject_key').value;
+
+    //   alert(ar_file+'?'+request)
+    Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+
+                for (i in r.elements_numbers) {
+                    if (Dom.get('elements_history_' + i + '_number') != undefined) Dom.get('elements_history_' + i + '_number').innerHTML = r.elements_numbers[i]
+                }
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+
+    );
+
+}
+
 function change_product_view(e, data) {
     tipo = this.id;
 

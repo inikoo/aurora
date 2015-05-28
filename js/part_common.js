@@ -1,3 +1,38 @@
+function get_history_numbers() {
+
+    var ar_file = 'ar_parts.php';
+    var request = 'tipo=get_history_numbers&subject=part&subject_key=' + Dom.get('part_sku').value;
+
+    //  alert(ar_file+'?'+request)
+    Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Notes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Attachments_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+    Dom.get('elements_history_Products_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
+
+
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+
+                for (i in r.elements_numbers) {
+                    if (Dom.get('elements_history_' + i + '_number') != undefined) Dom.get('elements_history_' + i + '_number').innerHTML = r.elements_numbers[i]
+                }
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+
+    );
+
+}
+
+
+
 function get_part_transaction_numbers(from, to) {
 
 
@@ -13,7 +48,6 @@ function get_part_transaction_numbers(from, to) {
     Dom.get('transactions_type_elements_NoDispatched_numbers').innerHTML = '<img src="art/loading.gif" style="height:11px">';
 
     //alert(ar_file+'?'+request)
-
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 
@@ -35,9 +69,10 @@ function get_part_transaction_numbers(from, to) {
 
 
 var already_clicked_transactions_type_elements_click = false
+
 function change_transactions_type_elements() {
-el=this;
-var elements_type='';
+    el = this;
+    var elements_type = '';
     if (already_clicked_transactions_type_elements_click) {
         already_clicked_transactions_type_elements_click = false; // reset
         clearTimeout(alreadyclickedTimeout); // prevent this from happening
@@ -52,7 +87,7 @@ var elements_type='';
     return false;
 }
 
-function change_transactions_type_elements_click(el,elements_type) {
+function change_transactions_type_elements_click(el, elements_type) {
 
     var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
 
@@ -89,21 +124,21 @@ function change_transactions_type_elements_click(el,elements_type) {
         }
     }
 
- //  alert(request)
+    //  alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 }
 
-function change_transactions_type_elements_dblclick(el,elements_type) {
+function change_transactions_type_elements_dblclick(el, elements_type) {
 
     var ids = Array("transactions_type_elements_OIP", "transactions_type_elements_In", "transactions_type_elements_Out", "transactions_type_elements_Audit", "transactions_type_elements_Move", "transactions_type_elements_NoDispatched");
 
 
-    
-         Dom.removeClass(ids, 'selected')
 
-     Dom.addClass(el, 'selected')
+    Dom.removeClass(ids, 'selected')
+
+    Dom.addClass(el, 'selected')
 
     table_id = Dom.get('transactions_table_id').value;
     var table = tables['table' + table_id];
@@ -133,4 +168,4 @@ function init_part() {
 
 }
 
- YAHOO.util.Event.onDOMReady(init_part);
+YAHOO.util.Event.onDOMReady(init_part);

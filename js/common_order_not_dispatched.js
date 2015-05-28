@@ -1208,8 +1208,7 @@ var myonCellClick = function(oArgs) {
                     }
 
 
-                        var request = '';
-                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                     
 
                         var table = tables['table' + Dom.get('history_table_id').value];
                     var datasource = tables['dataSource' + Dom.get('history_table_id').value];

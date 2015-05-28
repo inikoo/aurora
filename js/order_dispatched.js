@@ -607,10 +607,7 @@ function show_order_details() {
 
 }
 
-function hide_order_details() {
-    Dom.setStyle('order_details_panel', 'display', 'none')
-    Dom.setStyle('show_order_details', 'display', '')
-}
+
 
 function close_quick_edit_tax_number() {
     dialog_set_tax_number.hide();
@@ -624,9 +621,7 @@ function init() {
     init_search('orders_store');
     get_dn_invoices_info()
     Event.addListener("create_invoice", "click", create_invoice);
-    YAHOO.util.Event.addListener('hide_order_details', "click", hide_order_details)
-    YAHOO.util.Event.addListener('show_order_details', "click", show_order_details)
-
+ 
 
 
 
@@ -668,7 +663,7 @@ function init() {
 
 
     dialog_set_tax_number = new YAHOO.widget.Dialog("dialog_set_tax_number", {
-        visible: true,
+        visible: false,
         close: true,
         underlay: "none",
         draggable: false
