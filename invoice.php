@@ -49,7 +49,7 @@ $invoice->update_payment_state();
 //print_r($invoice->data);
 */
 
-//$invoice->update_totals();
+$invoice->update_totals();
 
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');

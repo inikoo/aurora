@@ -335,8 +335,6 @@ function change_elements_dblclick(el, elements_type) {
 
 function get_history_numbers() {
 
-
-
     var ar_file = 'ar_orders.php';
     var request = 'tipo=get_history_numbers&subject=order&subject_key=' + Dom.get('order_key').value;
 

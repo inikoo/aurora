@@ -1242,7 +1242,7 @@ class Invoice extends DB_Table {
 					if (array_key_exists($row['Tax Category Code'],$tax_sum_by_code))
 						$tax_sum_by_code[$row['Tax Category Code']]['net']+=$net;
 					else
-						$tax_sum_by_code[$row['Tax Category Code']]=array('net'=>$net,'rate'=>$tax_category->data['Tax Category Rate']);
+						$tax_sum_by_code[$row['Tax Category Code']]=array('net'=>$net,'rate'=>$row['Tax Category Rate']);
 				}
 
 

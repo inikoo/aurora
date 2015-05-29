@@ -9,7 +9,6 @@
 			<div class="wraptocenter">
 			<img src="{$department.img}"> 
 			</div>
-			<h2>{$department.code}</h2>
 			<h3>{$department.name}</h3>
 		</div>
 		</a>
