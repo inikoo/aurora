@@ -368,14 +368,16 @@ abstract class DB_Table {
 			$data[$key]=$value;
 		}
 
-
+;
 		if (array_key_exists('User Key',$raw_data)) {
 			$data['User Key']=$raw_data['User Key'];
 		}else {
 			$data['User Key']=$editor_data['User Key'];
 		}
+		
+		
 
-		if ($data['Subject']=='' or  !$data['Subject Key']) {
+		if (($data['Subject']=='' or  !$data['Subject Key']) and $data['Subject']!='System') {
 			include_once 'class.User.php';
 			$user=new User($data['User Key']);
 			if ($user->id) {
@@ -390,7 +392,6 @@ abstract class DB_Table {
 			}
 
 		}
-
 		if (!isset($data['Date']) or $data['Date']=='')
 			$data['Date']=$editor_data['Date'];
 
@@ -427,7 +428,6 @@ abstract class DB_Table {
 		if ($data['Author Name']=='') {
 
 
-
 			if ($data['Subject']=='Customer' ) {
 				include_once 'class.Customer.php';
 				$customer=new Customer($data['Subject Key']);
@@ -443,6 +443,9 @@ abstract class DB_Table {
 
 				$supplier=new Supplier($data['Subject Key']);
 				$data['Author Name']=$staff->data['Supplier Name'];
+			}elseif ($data['Subject']=='System' ) {
+				
+				$data['Author Name']=_('System');
 			}
 
 
@@ -514,7 +517,6 @@ abstract class DB_Table {
 			,prepare_mysql($data['Metadata'])
 		);
 
-		// print "$sql\n";
 		// print_r($raw_data);
 		//dsdfdffd();
 		mysql_query($sql);

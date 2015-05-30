@@ -804,6 +804,7 @@ function cancel_order($data) {
 	else
 		$note='';
 
+
 	$order->cancel($note,false,true);
 	if ($order->cancelled) {
 		$response=array(
