@@ -711,7 +711,7 @@ class Store extends DB_Table {
 					'History Details'=>''
 				),true);
 
-            
+
 			include_once 'class.Account.php';
 
 			$hq=new Account();
@@ -1864,6 +1864,37 @@ class Store extends DB_Table {
 
 
 		return $payment_accounts_data;
+
+	}
+
+
+	function cancel_old_orders_in_basket() {
+		include_once 'common_natural_language.php';
+
+		if (!$this->data['Cancel Orders In Basket Older Than']) {
+			return;
+		}
+
+		$date=gmdate('Y-m-d H:i:s',strtotime(sprintf("now -%d seconds +0:00",$this->data['Cancel Orders In Basket Older Than'])));
+
+		$sql=sprintf("select `Order Key` from `Order Dimension` where  `Order Current Dispatch State`='In Process By Customer' and `Order Store Key`=%d and `Order Last Updated Date`<%s",
+			$this->id,
+			prepare_mysql($date)
+		);
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$order=new Order($row['Order Key']);
+			$order->editor=$this->editor;
+			$note=sprintf(_('Order cancelled because has been untouched in the basket for more than %s'),seconds_to_string($this->data['Cancel Orders In Basket Older Than']));
+
+
+			$order->cancel($note,false,true);
+
+			//print $order->data['Order Date']." ".$order->data['Order Last Updated Date']." ".$order->data['Order Public ID']."  \n";
+          // exit;
+		}
+
+
 
 	}
 

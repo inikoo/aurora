@@ -4938,84 +4938,16 @@ class Customer extends DB_Table {
 		mysql_query($sql);
 
 	}
-	function add_history_order_cancelled($order) {
+	function add_history_order_cancelled($history_key) {
 
 
-		date_default_timezone_set(TIMEZONE) ;
-		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Cancelled Date']." +00:00" ) );
-		$tz_date_created=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
-
-		date_default_timezone_set('GMT') ;
-
-		if (!isset($_SESSION ['lang']))
-			$lang=0;
-		else
-			$lang=$_SESSION ['lang'];
-
-		switch ($lang) {
-		default :
-			$note = sprintf( 'Order <a href="order.php?id=%d">%s</a> (Cancelled)',$order->data ['Order Key'], $order->data ['Order Public ID'] );
-			if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-				$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> cancel %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s',
-					$this->editor['Author Key'],
-					$this->editor['Author Alias'] ,
-					$this->get ( 'Customer Name' ),
-					$this->id,
-					$this->get('Formated ID'),
-					$order->data ['Order Key'],
-					$order->data ['Order Public ID'],
-					$tz_date
-				);
-			} else {
-				$details = sprintf( 'Someone cancel  %s (<a href="customer.php?id=%d">%s</a>)  order <a href="order.php?id=%d">%s</a>  on %s',
-
-					$this->get ( 'Customer Name' ),
-					$this->id,$this->get('Formated ID'),
-					$order->data ['Order Key'],
-					$order->data ['Order Public ID'],
-					$tz_date
-				);
-
-			}
-			if ($order->data ['Order Cancel Note']!='')
-				$details.='<div> Note: '.$order->data ['Order Cancel Note'].'</div>';
+		
 
 
-		}
-		$history_data=array(
-			'Date'=>$order->data ['Order Cancelled Date'],
-			'Subject'=>'Customer',
-			'Subject Key'=>$this->id,
-			'Direct Object'=>'Order',
-			'Direct Object Key'=>$order->data ['Order Key'],
-			'History Details'=>$details,
-			'History Abstract'=>$note,
-			'Metadata'=>'Cancelled'
-
-		);
-
-		$sql=sprintf("update `History Dimension` set `Deep`=2 where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d ",
-			$this->id,
-			$order->id
-		);
-		mysql_query($sql);
-		$history_key=$order->add_history($history_data);
 		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
 		mysql_query($sql);
 
 
-
-		switch ($lang) {
-		default :
-			$note_created = sprintf( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
-
-		}
-		$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
-			prepare_mysql($note_created),
-			$this->id,
-			$order->id
-		);
-		mysql_query($sql);
 
 	}
 

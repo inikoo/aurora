@@ -922,10 +922,77 @@ class Order extends DB_Table {
 				mysql_query( $sql );
 			}
 
+
+
+			if (!isset($_SESSION ['lang']))
+				$lang=0;
+			else
+				$lang=$_SESSION ['lang'];
+
+			switch ($lang) {
+			default :
+				$note = sprintf( 'Order <a href="order.php?id=%d">%s</a> (Cancelled)',$this->data ['Order Key'], $this->data ['Order Public ID'] );
+				if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+					$details = sprintf( _('%s cancel (%s) order %s'),
+
+						sprintf('<a href="staff.php?id=%d">%s</a>',$this->editor['Author Key'],$this->editor['Author Alias']),
+
+						sprintf('<a href="customer.php?id=%d">%s</a>',$this->data['Order Customer Key'],$this->data['Order Customer Name']),
+						sprintf('<a href="order.php?id=%d">%s</a>',$this->data ['Order Key'],$this->data ['Order Public ID'])
+					);
+				} elseif ($this->editor['Author Alias']=='System Cron'  and !$this->editor['Author Key']) {
+					$details = sprintf( _('A cron job cancel (%s) order %s'),
+						sprintf('<a href="customer.php?id=%d">%s</a>',$this->data['Order Customer Key'],$this->data['Order Customer Name']),
+						sprintf('<a href="order.php?id=%d">%s</a>',$this->data ['Order Key'],$this->data ['Order Public ID'])
+					);
+
+				}else {
+					$details = sprintf( _('Someone cancel (%s) order %s'),
+						sprintf('<a href="customer.php?id=%d">%s</a>',$this->data['Order Customer Key'],$this->data['Order Customer Name']),
+						sprintf('<a href="order.php?id=%d">%s</a>',$this->data ['Order Key'],$this->data ['Order Public ID'])
+					);
+				}
+
+
+				if ($this->data ['Order Cancel Note']!='')
+					$details.='<div> Note: '.$this->data ['Order Cancel Note'].'</div>';
+
+
+			}
+
+			if ($this->editor['Author Alias']=='System Cron'  and !$this->editor['Author Key']) {
+				$subject='System';
+				$subject_key=0;
+			}else {
+				$subject='Staff';
+				$subject_key=$this->editor['Author Key'];
+
+			}
+
+			$history_data=array(
+				'Date'=>$this->data ['Order Cancelled Date'],
+				'Subject'=>$subject,
+				'Subject Key'=>$subject_key,
+				'Direct Object'=>'Order',
+				'Direct Object Key'=>$this->data ['Order Key'],
+				'History Details'=>$details,
+				'History Abstract'=>$note,
+				'Metadata'=>'Cancelled'
+
+			);
+
+
+
+
+			$history_key=$this->add_subject_history($history_data);
+
+
+
 			$customer=new Customer($this->data['Order Customer Key']);
 			$customer->editor=$this->editor;
-			$customer->add_history_order_cancelled($this);
+			$customer->add_history_order_cancelled($history_key);
 			$customer->update_orders();
+
 			$customer->update(
 				array(
 					'Customer Account Balance'=>round($customer->data['Customer Account Balance']+$current_amount_in_customer_account_payments,2)
@@ -939,11 +1006,7 @@ class Order extends DB_Table {
 			$this->cancelled=true;
 
 
-			$history_data=array(
-				'History Abstract'=>_('Order cancelled'),
-				'History Details'=>'',
-			);
-			$this->add_subject_history($history_data);
+
 
 
 		}

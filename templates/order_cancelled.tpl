@@ -128,11 +128,7 @@
 			{include file='order_sticky_note_splinter.tpl'} 
 		</div>
 		<div id="dates">
-			{if $order->get_notes()} 
-			<div class="notes">
-				{ $order->get_notes()} 
-			</div>
-			{/if} 
+			
 			<table border="0" class="info_block">
 				<tr>
 					<td>{t}Order Date{/t}:</td>
@@ -140,12 +136,12 @@
 				</tr>
 				<tr>
 					<td>{t}Cancel Date{/t}:</td>
-					<td class="aright">{$order->get('Cancel Date')}</td>
+					<td class="aright">{$order->get('Cancelled Date')}</td>
 				</tr>
 			</table>
 			{if {$order->get('Order Cancel Note')}!=''} 
 			<div style="text-align:right;color:#b51616;margin-right:30px;zborder:1px solid black;clear:both">
-				{t}Order Cancelled{/t}: {$order->get('Order Cancel Note')} 
+				{t}Notes{/t}: {$order->get('Order Cancel Note')} 
 			</div>
 			{/if} 
 		</div>
