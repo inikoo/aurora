@@ -1684,13 +1684,21 @@ function transactions_to_process() {
 
 		}
 
-		$sql_qty=sprintf(', P.`Product Current Key` as `Product Key`,0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
+		$sql_qty=sprintf(', P.`Product Current Key` as `Product Key`,
+		
+		(select `Quantity` from `Order Transaction Out of Stock in Basket Bridge` OO where OO.`Product ID`=P.`Product ID` and `Order Key`=%d limit 1) as `Out of Stock Quantity`,
+		0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
+			$order_id,
 			$order_object->data['Order Currency'],
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
-			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
-			$where=sprintf(' where `Order Quantity`>0  and `Order Key`=%d',$order_id);
-			$sql_qty=',OTF.`Product Key`,`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) 
+			left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) 
+			 left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
+
+			 ';
+			$where=sprintf(' where   OTF.`Order Key`=%d',$order_id);
+			$sql_qty=',  OO.`Quantity` as `Out of Stock Quantity`   ,OTF.`Product Key`,`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,OTF.`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1710,7 +1718,7 @@ function transactions_to_process() {
 	$sql="select count(*) as total from $table   $where $wheref   ";
 
 	// print_r($conf);exit;
-	//  print $sql;
+	 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -1800,12 +1808,14 @@ function transactions_to_process() {
 
 	$sql="select `Product Number of Parts`,`Product Part Metadata`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
-	// print $sql;
+	//print $sql;
 	$res = mysql_query($sql);
 
 	$adata=array();
 
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$class='';
 
 		if (is_numeric($row['Product Availability']))
 			$stock=number($row['Product Availability']);
@@ -1940,12 +1950,24 @@ function transactions_to_process() {
 		}else {
 			$part_info='';
 		}
+
+		$description=$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info;
+
+		if ($row['Current Dispatching State']=='Out of Stock in Basket') {
+		$customer_ordered=sprintf(_('customer want %s outers'),'<b>'.number($row['Out of Stock Quantity']).'</b>');
+			$description.='<br> <span class="attention"><img src="art/icons/error.png"> '._('Set as out of stock').'</span>, '.$customer_ordered;
+			//$quantity=number($row['Out of Stock Quantity']);
+
+			$class='out_of_stock';
+
+		}
+
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
 			'pkey'=>$row['Product Key'],
-			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
+			'otf_key'=>$row['Order Transaction Fact Key'],
 			'code'=>$part_info.$code,
-			'description'=>$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info,
+			'description'=>$description,
 			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea').' '._('Stock').': <b>'.$stock.'</b>',
 			'family'=>$row['Product Family Name'],
 			'dept'=>$row['Product Main Department Name'],
@@ -1953,24 +1975,20 @@ function transactions_to_process() {
 			'parts'=>$row['Product XHTML Parts'],
 			'supplied'=>$row['Product XHTML Supplied By'],
 			'gmroi'=>$row['Product GMROI'],
-			//    'stock_value'=>money($row['Product Stock Value']),
 			'stock'=>$stock,
 			'quantity'=>$qty,
 			'ordered_quantity'=>$row['Order Quantity'],
-			//'quantity_formated'=>$quantity,
 			'state'=>$type,
 			'web'=>$web_state,
 			'picked'=>$row['Picked Quantity'],
-			//    'image'=>$row['Product Main Image'],
 			'type'=>'item',
 			'add'=>'+',
 			'remove'=>$remove,
-			//'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
 			'tax'=>percentage($row['Transaction Tax Rate'],1),
 			'dispatching_status'=>$dispatching_status,
-			'discount_percentage'=>($row['Order Transaction Total Discount Amount']>0?percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],$fixed=0,$error_txt='NA',$psign=''):'')
-
+			'discount_percentage'=>($row['Order Transaction Total Discount Amount']>0?percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],$fixed=0,$error_txt='NA',$psign=''):''),
+			'class'=>$class
 
 
 
@@ -5884,16 +5902,16 @@ function edit_order($data) {
 		$order->update($data_to_update);
 		if (!$order->error) {
 			if ($order->updated) {
-			
-			    if($value['okey']=='tax_number'){
-			        foreach($order->get_invoices_objects() as $invoice){
-			            $invoice->editor=$editor;
-			            $invoice->update(array('Invoice Tax Number'=>$value['value']));
-			        }
-			    
-			    }
-			
-			
+
+				if ($value['okey']=='tax_number') {
+					foreach ($order->get_invoices_objects() as $invoice) {
+						$invoice->editor=$editor;
+						$invoice->update(array('Invoice Tax Number'=>$value['value']));
+					}
+
+				}
+
+
 				$responses[]= array(
 					'state'=>200,
 					'key'=>$value['okey'],
@@ -6263,6 +6281,7 @@ function recalculate_totals($data) {
 	case 'order':
 		$order=new Order($data['subject_key']);
 		$order->update_totals();
+		$order->update_payment_state();
 		$updated_data=array(
 			'order_items_gross'=>$order->get('Items Gross Amount'),
 			'order_items_discount'=>$order->get('Items Discount Amount'),
