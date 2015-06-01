@@ -1493,6 +1493,8 @@ function create_campaign($data) {
 
 function create_deal($data) {
 
+
+
 	global $smarty;
 
 	include_once 'class.Store.php';
@@ -1635,8 +1637,8 @@ function create_deal($data) {
 			$terms_label=_('Buy').' '.$deal_data['if_order_more'];
 
 
-			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
-			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
+			//$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
+			//$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
 
 			break;
@@ -1647,8 +1649,8 @@ function create_deal($data) {
 			$terms_label=_('For every').' '.number($deal_data['for_every_ordered']).' '._('you buy');
 			$terms_label=sprintf(_('buy %1$s'),number($deal_data['for_every_ordered']));
 
-			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
-			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
+			//$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
+			//$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
 			break;
 
@@ -1658,8 +1660,8 @@ function create_deal($data) {
 			$terms='for every '.$deal_data['for_every_ordered'];
 			$terms_label=sprintf(_('For every %1$s you buy'),number($deal_data['for_every_ordered']));
 
-			$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
-			$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
+			//$deal_data['Deal Component Allowance Target']=$deal_data['Deal Trigger'];
+			//$deal_data['Deal Component Allowance Target Key']=$deal_data['Deal Trigger Key'];
 
 			break;
 
@@ -2000,6 +2002,8 @@ function create_deal($data) {
 					$product->data['Product Code']
 				);
 				break;
+			
+				
 			case 'Shipping':
 				$deal_data['Deal Component Allowance Target XHTML Label']='';
 				break;
@@ -2013,6 +2017,9 @@ function create_deal($data) {
 			default:
 				exit('Unknown target: >'.$deal_data['Deal Component Allowance Target'].'<');
 			}
+
+
+
 
 			switch ($deal_data['Deal Component Allowance Type']) {
 			case 'Department Percentage Off':

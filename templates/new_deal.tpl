@@ -221,7 +221,7 @@
 					<option value="Customer Family Quantity Ordered">{t}Order n or more{/t} ({t}Family{/t})</option>
 					<option value="Customer Product Quantity Ordered">{t}Order n or more{/t} ({t}Product{/t})</option>
 				</select>
-				<select id="customer_terms_select" onchange="terms_changed(this.value)"  style="{if $trigger!='Order'}display:none{/if}">
+				<select id="order_terms_select" onchange="terms_changed(this.value)"  style="{if $trigger!='Order'}display:none{/if}">
 					<option value="Voucher">{t}Voucher{/t}</option>
 					<option value="Amount">{t}Amount{/t}</option>
 					<option value="Order Number">{t}Nth Order{/t}</option>

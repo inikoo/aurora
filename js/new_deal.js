@@ -779,11 +779,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 });
 
 function trigger_changed(value) {
+
+
     Dom.setStyle(['trigger_department_options', 'trigger_family_options', 'trigger_product_options', 'trigger_customer_options', 'trigger_customer_category_options', 'trigger_customer_list_options'], 'display', 'none')
-    Dom.setStyle(['department_terms_select', 'family_terms_select', 'product_terms_select', 'customer_terms_select'], 'display', 'none')
+    Dom.setStyle(['department_terms_select', 'family_terms_select', 'product_terms_select', 'customer_terms_select','order_terms_select'], 'display', 'none')
 
     Dom.setStyle(['voucher_tr'], 'display', '')
-
     switch (value) {
     case 'Department':
         show_dialog_departments_list('trigger');
@@ -802,19 +803,30 @@ function trigger_changed(value) {
         terms_changed('Family Quantity Ordered')
         break;
     case 'Customer':
+    
+            Dom.setStyle(['customer_terms_select'], 'display', '')
+
+    
+
         show_dialog_customers_list();
         terms_changed('Voucher')
         break;
     case 'Customer Category':
+                Dom.setStyle(['customer_terms_select'], 'display', '')
+
         show_dialog_customer_categories_list();
         terms_changed('Voucher')
         break;
     case 'Customer List':
+                Dom.setStyle(['customer_terms_select'], 'display', '')
+
         show_dialog_customer_lists_list();
         terms_changed('Voucher')
         break;
 
     case 'Order':
+                Dom.setStyle(['order_terms_select'], 'display', '')
+
         break;
     }
 }

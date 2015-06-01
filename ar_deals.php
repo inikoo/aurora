@@ -1827,6 +1827,10 @@ function list_deal_components() {
 			$allowance.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
 		}
 
+        if( $row['Deal Component Allowance Target XHTML Label']!='' and $row['Deal Component Trigger']=='Customer'  ){
+$allowance.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
+        }
+
 
 		$adata[]=array(
 			'name'=>$row['Deal Component Name'],
