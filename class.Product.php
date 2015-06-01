@@ -5344,8 +5344,11 @@ class product extends DB_Table {
 			$new_date_formated=gmdate('Y-m-d H:i:s');
 			$new_date=gmdate('U');
 
-			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%s,%s,%s) ",
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
 				$this->pid,
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key'],
+				$this->data['Product Family Key'],
 				$user_key,
 				prepare_mysql($new_date_formated),
 				prepare_mysql($web_availability),
@@ -5353,7 +5356,6 @@ class product extends DB_Table {
 
 			);
 			mysql_query($sql);
-
 
 			if ($last_record_key) {
 				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
@@ -5399,6 +5401,32 @@ class product extends DB_Table {
 
 			}
 
+			if ($web_availability=='No' ) {
+
+				$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and `Product ID`=%d ",
+					$this->pid
+				);
+				$res=mysql_query($sql);
+				
+				while ($row=mysql_fetch_array($res)) {
+					$order=new Order($row['Order Key']);
+					$order->remove_out_of_stocks_from_basket($this->pid);
+				}
+
+			}
+			else{
+			
+			$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
+					$this->pid
+				);
+				$res=mysql_query($sql);
+				
+				while ($row=mysql_fetch_array($res)) {
+					$order=new Order($row['Order Key']);
+					$order->restore_back_to_stock_to_basket($this->pid);
+				}
+			
+			}
 
 
 		}

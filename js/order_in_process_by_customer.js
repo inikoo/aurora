@@ -15,6 +15,9 @@ Event.addListener(window, "load", function() {
                 if (oRecord.getData('class') == 'first') {
 
                     Dom.addClass(elTr, 'first');
+                }else if (oRecord.getData('class') == 'out_of_stock') {
+
+                    Dom.addClass(elTr, 'out_of_stock');
                 }
                 return true;
             };

@@ -33,7 +33,7 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case ('get_history_numbers'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'subject_key'=>array('type'=>'key'),
 			'subject'=>array('type'=>'string'),
 
@@ -2807,7 +2807,7 @@ function list_transactions_in_order() {
 
 
 
-	$where=sprintf(' where `Order Key`=%d',$parent_key);
+	$where=sprintf(' where OTF.`Order Key`=%d',$parent_key);
 
 
 
@@ -2889,15 +2889,19 @@ function list_transactions_in_order() {
 	$total_picks=0;
 
 	$adata=array();
-	$sql="select *,
+	$sql="select OTF.`Product ID`,OTF.`Product Code`,`Order Quantity`,`Order Bonus Quantity`,`Product Availability`,`Product History XHTML Short Description`,`Order Transaction Amount`,`Transaction Tax Rate`,`Product Tariff Code`,
+	`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,`Order Date`,`Order Last Updated Date`,`Current Dispatching State`,OO.`Quantity` as `Out of Stock Quantity`,
 		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
 	 from `Order Transaction Fact` OTF
 left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
  left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
+ left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 	 $where  order by $order $order_direction limit $start_from,$number_results ";
+
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
-
+		$class='';
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 
 		$quantity=number($row['Order Quantity']);
@@ -2929,6 +2933,15 @@ left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
 			$description=$row['Product History XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info;
 		}
 
+
+		if ($row['Current Dispatching State']=='Out of Stock in Basket') {
+			$description.='<br> <span class="attention"><img src="art/icons/error.png"> '._('Product out of stock, removed from basket').'</span>';
+			$quantity=number($row['Out of Stock Quantity']);
+
+			$class='out_of_stock';
+
+		}
+
 		$tax=round($row['Order Transaction Amount']*$row['Transaction Tax Rate'],2);
 
 		$adata[]=array(
@@ -2945,15 +2958,15 @@ left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
 
 			'created'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Date'].' +0:00')),
 			'last_updated'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['Order Last Updated Date'].' +0:00')),
-			'class'=>''
+			'class'=>$class
 
 		);
 	}
 
 
-$counter=0;
+	$counter=0;
 
-	$sql=sprintf("select * from `Order No Product Transaction Fact` $where");
+	$sql=sprintf("select * from `Order No Product Transaction Fact` OTF  $where");
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
@@ -2990,7 +3003,7 @@ $counter=0;
 		}
 
 		$adata[]=array(
-            
+
 			'code'=>$code,
 			'description'=>$row['Transaction Description'],
 			'tariff_code'=>'',

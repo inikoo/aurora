@@ -59,7 +59,7 @@
 
  $tipo_filter=$_SESSION['state']['order']['products']['f_field'];
  $smarty->assign('filter1',$tipo_filter);
- $smarty->assign('filter_value1',$_SESSION['state']['order']['products']['f_value']);
+ $smarty->assign('filter_value1','');
  $filter_menu=array(
  	'code'=>array('db_key'=>'code','menu_label'=>_('Code starting with <i>x</i>'),'label'=>_('Code')),
  	'family'=>array('db_key'=>'family','menu_label'=>_('Family starting with <i>x</i>'),'label'=>_('Family')),

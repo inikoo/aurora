@@ -43,3 +43,8 @@ border-bottom:1px solid #fff;
 
 .order_data{width:450px;float:left}
 .order_operations{width:400px;float:left}
+
+.attention img{height:12px}
+.attention {color:red}
+
+tr.out_of_stock td{background:#fbd7d7}

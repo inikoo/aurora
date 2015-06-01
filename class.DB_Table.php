@@ -517,8 +517,7 @@ abstract class DB_Table {
 			,prepare_mysql($data['Metadata'])
 		);
 
-		// print_r($raw_data);
-		//dsdfdffd();
+		
 		mysql_query($sql);
 
 		$history_key=mysql_insert_id();

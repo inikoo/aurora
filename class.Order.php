@@ -1621,7 +1621,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d ",
+					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f,`Current Dispatching State`=%s  where `Order Transaction Fact Key`=%d ",
 						$estimated_weight ,
 						$quantity,
 						$bonus_quantity,
@@ -1629,6 +1629,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 						$gross,
 						$gross_discounts,
 						$gross-$gross_discounts,
+						prepare_mysql ( $data ['Current Dispatching State'] ),
 						$row['Order Transaction Fact Key']
 
 					);
@@ -9128,6 +9129,150 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		return $to_refund_amount;
 
 	}
+
+
+
+
+	function remove_out_of_stocks_from_basket($product_pid) {
+
+
+
+
+		$sql=sprintf("select `Order Transaction Fact Key`,`Order Quantity`,`Product Key`,`Product ID`,`Order Transaction Amount` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and  `Product ID`=%d and `Order Key`=%d ",
+			$product_pid,
+			$this->id
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+		
+		
+		$sql=sprintf('insert into `Order Transaction Out of Stock in Basket Bridge` (`Order Transaction Fact Key`,`Date`,`Store Key`,`Order Key`,`Product Key`,`Product ID`,`Quantity`,`Amount`) values (%d,%s,%d,%d,%d,%d,%f,%.2f)',
+				$row['Order Transaction Fact Key'],
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$this->data['Order Store Key'],
+				$this->id,
+				$row['Product Key'],
+				$row['Product ID'],
+				$row['Order Quantity'],
+				$row['Order Transaction Amount']
+			);
+
+			mysql_query($sql);
+		
+		
+		
+			$sql=sprintf('update `Order Transaction Fact` set `Current Dispatching State`=%s,`Order Quantity`=0,`Order Bonus Quantity`=0 ,`Order Transaction Gross Amount`=0 ,`Order Transaction Total Discount Amount`=0,`Order Transaction Amount`=0 where `Order Transaction Fact Key`=%d   ',
+				prepare_mysql('Out of Stock in Basket'),
+				$row['Order Transaction Fact Key']
+			);
+			mysql_query($sql);
+
+			
+		}
+
+
+		$dn_key=0;
+		$this->update_number_items();
+		$this->update_number_products();
+		$this->update_insurance();
+
+		$this->update_discounts_items();
+		$this->update_totals();
+
+
+
+		$this->update_shipping($dn_key,false);
+		$this->update_charges($dn_key,false);
+		$this->update_discounts_no_items($dn_key);
+
+
+		$this->update_deal_bridge();
+
+		$this->update_deals_usage();
+
+		$this->update_totals();
+
+		$this->update_number_items();
+		$this->update_number_products();
+
+		$this->apply_payment_from_customer_account();
+
+
+
+
+	}
+
+
+	function restore_back_to_stock_to_basket($product_pid) {
+
+		if ($this->data['Order Current Dispatch State']!='In Process by Customer') {
+			return;
+		}
+
+
+		$sql=sprintf("select `Order Transaction Fact Key`,`Quantity` from `Order Transaction Out of Stock in Basket Bridge` where  `Product ID`=%d and `Order Key`=%d ",
+			$product_pid,
+			$this->id
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+		
+		$product=new Product('pid',$product_pid);
+		
+		$gross=$row['Quantity']*$product->data['Product Price'];
+		
+			$sql=sprintf('update `Order Transaction Fact` set `Current Dispatching State`=%s,`Order Quantity`=%d,`No Shipped Due Out of Stock`=0,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d   ',
+				prepare_mysql('In Process by Customer'),
+				$row['Quantity'],
+				$gross,
+				0,
+				$gross,
+				$row['Order Transaction Fact Key']
+			);
+
+			mysql_query($sql);
+
+			$sql=sprintf('delete from `Order Transaction Out of Stock in Basket Bridge` where `Order Transaction Fact Key`=%d',
+				$row['Order Transaction Fact Key']
+			);
+			mysql_query($sql);
+		}
+
+
+		$dn_key=0;
+		$this->update_number_items();
+		$this->update_number_products();
+		$this->update_insurance();
+
+		$this->update_discounts_items();
+		$this->update_totals();
+
+
+
+		$this->update_shipping($dn_key,false);
+		$this->update_charges($dn_key,false);
+		$this->update_discounts_no_items($dn_key);
+
+
+		$this->update_deal_bridge();
+
+		$this->update_deals_usage();
+
+		$this->update_totals();
+
+		$this->update_number_items();
+		$this->update_number_products();
+
+		$this->apply_payment_from_customer_account();
+
+
+
+
+	}
+
+
 
 
 }
