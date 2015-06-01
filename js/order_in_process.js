@@ -78,6 +78,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 el.innerHTML = oRecord.getData("quantity");
             };
 
+        var myRowFormatter = function(elTr, oRecord) {
+                if (oRecord.getData('class') == 'first') {
+
+                    Dom.addClass(elTr, 'first');
+                } else if (oRecord.getData('class') == 'out_of_stock') {
+
+                    Dom.addClass(elTr, 'out_of_stock');
+                }
+                return true;
+            };
 
         var InvoiceColumnDefs = [{
             key: "pid",
@@ -167,6 +177,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }];
 
         request = "ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display=items&order_key=" + Dom.get('order_key').value + "&store_key=" + Dom.get('store_key').value;
+       // alert(request)
         this.dataSource0 = new YAHOO.util.DataSource(request);
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource0.connXhrMode = "queueRequests";
@@ -182,9 +193,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
             },
-            fields: ["code", "pkey", "description", 'ordered_quantity', "quantity", "discount", "to_charge", "gross", "tariff_code", "stock", "add", "remove", "pid", 'dispatching_status', 'otf_key', 'discount_percentage', 'tax']
+            fields: ["code", "pkey", "description", 'ordered_quantity', "quantity", "discount", "to_charge", "gross", "tariff_code", "stock", "add", "remove", "pid", 'dispatching_status', 'otf_key', 'discount_percentage', 'tax','class']
         };
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs, this.dataSource0, {
+            formatRow: myRowFormatter,
             renderLoopSize: 50,
             generateRequest: myRequestBuilder,
             paginator: new YAHOO.widget.Paginator({
@@ -315,6 +327,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }];
 
         request = "ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display=products&order_key=" + Dom.get('order_key').value + "&store_key=" + Dom.get('store_key').value + '&tableid=' + tableid + '&lookup_family=' + Dom.get('lookup_family').value
+        //alert(request)
         this.dataSource1 = new YAHOO.util.DataSource(request);
         this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource1.connXhrMode = "queueRequests";
@@ -330,13 +343,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
             },
-            fields: ["code", "pkey", "description", "quantity", "discount", "to_charge", "gross", "tariff_code", "stock", "add", "remove", "pid", 'dispatching_status', 'otf_key', 'discount_percentage', 'tax']
+            fields: ["code", "pkey", "description", "quantity", "discount", "to_charge", "gross", "tariff_code", "stock", "add", "remove", "pid", 'dispatching_status', 'otf_key', 'discount_percentage', 'tax','class']
         };
 
         this.table1 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs, this.dataSource1, {
+         formatRow: myRowFormatter,
             renderLoopSize: 50,
             generateRequest: myRequestBuilder,
             paginator: new YAHOO.widget.Paginator({
+             formatRow: myRowFormatter,
                 rowsPerPage: state.order.products.nr,
                 containers: 'paginator1',
                 pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
@@ -538,7 +553,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-      var tableid = 3;
+        var tableid = 3;
         var tableDivEL = "table" + tableid;
 
 
@@ -617,7 +632,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         ];
         request = "ar_history.php?tipo=order_history&parent=order&parent_key=" + Dom.get('order_key').value + "&sf=0&tableid=" + tableid
-        
+
         this.dataSource3 = new YAHOO.util.DataSource(request);
         this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource3.connXhrMode = "queueRequests";
