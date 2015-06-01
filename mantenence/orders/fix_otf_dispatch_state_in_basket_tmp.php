@@ -40,8 +40,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$sql=sprintf("update `Order Transaction Fact` set `Current Dispatching State`='In Process by Customer' where `Current Dispatching State`='In Process' and `Order Key`=%d   ",
 	$row['Order Key']
 	);
-	print "$sql\n";
-    //mysql_query($sql);
+	//print "$sql\n";
+    mysql_query($sql);
 
 }
 

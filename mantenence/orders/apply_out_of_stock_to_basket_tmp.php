@@ -36,7 +36,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 $inikoo_account=new Account(1);
-
+//'For Sale','Out of Stock','Discontinued','Offline'
 $sql="select `Order Key` from `Order Dimension` where  `Order Current Dispatch State` in  ('In Process by Customer')  order by `Order Key` ";
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)   ) {
@@ -49,7 +49,17 @@ while ($row=mysql_fetch_assoc($res)   ) {
         $order->remove_out_of_stocks_from_basket($row2['Product ID']);
         print $order->data['Order Public ID'].' '.$row2['Product Code']."\n";
 	}
+	
+/*
 
+	$sql=sprintf("select OTF.`Product ID` ,OTF.`Product Code`from `Order Transaction Fact` OTF left join `Product Dimension` P  on (P.`Product ID`=OTF.`Product ID`) where `Order Key`=%d and `Product Web State`='For Sale'  ",$order->id);
+	$res2=mysql_query($sql);
+//	print $sql;
+	while ($row2=mysql_fetch_assoc($res2)   ) {
+        $order->restore_back_to_stock_to_basket($row2['Product ID']);
+        print $order->data['Order Public ID'].' '.$row2['Product Code']."\n";
+	}
+	*/
 
 }
 
