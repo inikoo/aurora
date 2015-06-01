@@ -76,8 +76,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
 
-
-        this.dataSource0 = new YAHOO.util.DataSource("ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid);
+request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
+        this.dataSource0 = new YAHOO.util.DataSource();
 
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource0.connXhrMode = "queueRequests";

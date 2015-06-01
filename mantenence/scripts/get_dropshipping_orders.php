@@ -11,6 +11,7 @@ include_once '../../class.Store.php';
 include_once '../../class.Country.php';
 include_once '../../class.PartLocation.php';
 include_once '../../class.Staff.php';
+include_once '../../class.Account.php';
 
 
 include_once 'dropshipping_map_order_functions.php';
@@ -65,6 +66,10 @@ include_once '../../set_locales.php';
 require_once '../../conf/conf.php';
 require '../../locale.php';
 $_SESSION['locale_info'] = localeconv();
+
+
+$inikoo_account=new Account(1);
+
 
 
 $_SESSION['lang']=1;
