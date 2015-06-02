@@ -95,7 +95,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 }
 */
 $sql= "SELECT * FROM livedb_upg.`sales_flat_order` where entity_id=13986	";
-$sql= "            ";
+$sql= "SELECT * FROM livedb_upg.`sales_flat_order`  ";
 //$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where increment_id='AW17841 '";
 $res=mysql_query($sql,$con_drop);
 
@@ -359,9 +359,9 @@ while ($row=mysql_fetch_assoc($res)) {
 		$data['Order Type']='Order';
 
 		//print_r($data_dn_transactions);
-		//print_r($data);
+		print_r($row);
 
-		print $data['order id']." ".$row['entity_id']."  \n";
+		print $data['order id']."   \n";
 
 		create_order($data);
 
