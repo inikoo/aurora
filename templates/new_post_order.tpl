@@ -10,6 +10,10 @@
 	<input type="hidden" value="{$order->get('Order Customer Key')}" id="customer_key" />
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
+		<input type="hidden" id="error_no_reason" value="{t}Please indicate a reason of the refund{/t}" />
+
+	
+	
 	<div class="branch ">
 		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({t}Post Dispatch Operations{/t})</span> 
 	</div>
@@ -235,7 +239,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="aleft" style="padding-right:30px">{t}Reason{/t}: </td>
+					<td class="aleft" style="padding-right:30px" id="reason_label">{t}Reason{/t}: </td>
 				</tr>
 				<tr>
 					<td style="padding-bottom:15px;padding-right:25px"> 
@@ -331,21 +335,10 @@
 			<td></td>
 			<td width="100" class="aright "><b  id="refund_total">{$order_post_transactions_in_process.Refund.Formated_Amount}</b></td>
 		</tr>
-		{*}
-		<tr>
-			<td colspan="4">{t}Action{/t}:</td>
-		</tr>
-		<tr>
-			<td colspan="4"> 
-			<input type="hidden" id="refund_action" value />
-			<div class="buttons left small" id="change_refund_action_buttons">
-				<button class="action_button" onclick="change_refund_action('credit',this)">{t}Credit{/t}</button> <button class="action_button" onclick="change_refund_action('refund',this)">{t}Refund{/t}</button> 
-			</div>
-			</td>
-		</tr>
-		{*}
+		
 		<tr class="buttons">
-			<td colspan="4"> 
+		<td colspan=2 id="full_refund_msg" class="error"></td>
+			<td colspan="2"> 
 			<div class="buttons">
 				<span id="waiting_save_full_refund" style="display:none;float:right"><img src="art/loading.gif"> {t}Processing request{/t}</span>
 				<button id="save_full_refund" class="positive disabled" onclick="save_full_refund()">{t}Proceed{/t}</button> <button id="cancel_full_refund" class="negative" onclick="cancel_full_refund()">{t}Cancel{/t}</button> 

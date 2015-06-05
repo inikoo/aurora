@@ -240,10 +240,22 @@ class Invoice extends DB_Table {
 			$corporation_currency_code='GBP';
 		}
 		if ($this->data ['Invoice Currency']!=$corporation_currency_code) {
-			$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,$this->data['Invoice Date']);
-			$exchange= $currency_exchange->get_exchange();
-			$this->data ['Invoice Currency Exchange']=$exchange;
+
+			
+				$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,
+					gmdate('Y-m-d', strtotime($this->data['Invoice Date'].' +0:00' ))
+				);
+				
+				
+		
+ $this->data ['Invoice Currency Exchange']=$currency_exchange->get_exchange();
+
+
 		}
+
+
+
+	
 
 
 		$this->create_header();
@@ -377,18 +389,19 @@ class Invoice extends DB_Table {
 		}
 		if ($this->data ['Invoice Currency']!=$corporation_currency_code) {
 
-			//take off this and only use curret exchenge whan get rid off excel
-			$date_difference=date('U')-strtotime($this->data['Invoice Date'].' +0:00');
-			if ($date_difference>3600) {
-				$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,$this->data['Invoice Date']);
+			
+				$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,
+					gmdate('Y-m-d', strtotime($this->data['Invoice Date'].' +0:00' ))
+				);
 				$exchange= $currency_exchange->get_exchange();
-			}else {
-				$exchange=currency_conversion($this->data ['Invoice Currency'],$corporation_currency_code,'now');
-			}
+		
+
+
 
 		}
 
 
+		$this->data ['Invoice Currency Exchange']=$exchange;
 
 		$this->create_header();
 
@@ -805,7 +818,7 @@ class Invoice extends DB_Table {
 		$adjust_tax=0;
 		$adjust_net=0;
 
- 
+
 
 
 		$sql = sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Outstanding Net Balance`,`Invoice Transaction Outstanding Tax Balance`,`Invoice Transaction Outstanding Refund Net Balance`,`Invoice Transaction Outstanding Refund Tax Balance`,`Invoice Transaction Net Refund Amount`,`Invoice Transaction Tax Refund Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Invoice Transaction Charges Amount`,`Invoice Transaction Charges Tax Amount`,`Invoice Transaction Shipping Amount`,`Invoice Transaction Shipping Tax Amount`,`Order Transaction Fact Key`,`Invoice Transaction Shipping Tax Amount`,`Invoice Transaction Charges Tax Amount`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as item_net ,`Invoice Transaction Item Tax Amount`
@@ -945,7 +958,7 @@ class Invoice extends DB_Table {
 		$sql=sprintf(' select IFNULL(sum(IFNULL(`Tax Amount`,0)),0) as tax from `Invoice Tax Bridge` where `Invoice Key`=%d',$this->id);
 		$res = mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		
+
 			$tax=$row['tax'];
 		}
 
@@ -1201,12 +1214,12 @@ class Invoice extends DB_Table {
 		$tax_sum_by_code=array();
 
 		$sql=sprintf("select IFNULL(`Transaction Tax Code`,'UNK') as tax_code,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as net_amount , `Transaction Tax Rate` from `Order Transaction Fact`  where `Invoice Key`=%d  group by `Transaction Tax Code`",$this->id);
-		
+
 		$res = mysql_query($sql);
-		
-		
+
+
 		while ($row=mysql_fetch_assoc($res)) {
-			
+
 
 			$tax_sum_by_code[$row['tax_code']]=array('net'=>$row['net_amount'],'rate'=>$row['Transaction Tax Rate']);
 		}
@@ -3085,7 +3098,7 @@ class Invoice extends DB_Table {
 	function add_tax_item($code='UNK',$amount=0,$is_base='Yes') {
 
 
-        $amount=round($amount,2);
+		$amount=round($amount,2);
 		$sql=sprintf("update `Invoice Tax Dimension` set `%s`=%.2f where `Invoice Key`=%d",addslashes($code),$amount,$this->id );
 		mysql_query($sql);
 		// print "$sql\n";
