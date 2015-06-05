@@ -175,9 +175,7 @@ case('po_transactions_in_warehouse'):
 case('dn_transactions_to_process'):
 	dn_transactions_to_process();
 	break;
-case('dn_transactions_to_count'):
-	dn_transactions_to_count();
-	break;
+
 case('edit_new_porder'):
 	edit_new_porder();
 	break;
@@ -194,7 +192,14 @@ case('edit_new_supplier_dn'):
 	edit_new_supplier_dn($data);
 	break;
 case('edit_inputted_supplier_dn'):
-	edit_inputted_supplier_dn();
+	$data=prepare_values($_REQUEST,array(
+			'key'=>array('type'=>'string'),
+			'newvalue'=>array('type'=>'string'),
+			'potf_key'=>array('type'=>'key'),
+			'supplier_dn_key'=>array('type'=>'key'),
+			'sp_key'=>array('type'=>'key'),
+		));
+	edit_inputted_supplier_dn($data);
 	break;
 default:
 	$response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -1647,20 +1652,19 @@ function edit_new_supplier_dn($data) {
 
 }
 
-function edit_inputted_supplier_dn() {
+function edit_inputted_supplier_dn($data) {
 
-	$supplier_delivery_note_key=$_REQUEST['supplier_deliver_note_key'];
-	$purchase_order_transaction_fact_key=$_REQUEST['id'];
-	$order=new SupplierDeliveryNote($supplier_delivery_note_key);
+    global $editor;
 
-	//$product=new SupplierProduct('key',$supplier_product_key);
-
+	$supplier_dn_key=$data['supplier_dn_key'];
+	$potf_key=$data['potf_key'];
+	$supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
 
 
 
 	if ($_REQUEST['key']=='quantity' or $_REQUEST['key']=='received_quantity') {
 
-		$quantity=$_REQUEST['newvalue'];
+		$quantity=$data['newvalue'];
 
 		if (is_numeric($quantity) and $quantity>=0) {
 
@@ -1668,30 +1672,30 @@ function edit_inputted_supplier_dn() {
 			$data=array(
 
 				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
+				'Purchase Order Transaction Fact Key'=>$potf_key,
 				'Supplier Delivery Note Received Quantity'=>$quantity
 			);
 
 			//print_r( $data);
-			$transaction_data=$order->update_delivered_transaction($data);
+			$transaction_data=$supplier_dn->update_delivered_transaction($data);
 			$transaction_data['counted']='Yes';
 			$updated_data=array(
-				'distinct_products'=>$order->get('Number Items')
+				'distinct_products'=>$supplier_dn->get('Number Items')
 			);
 
 
 			$data=array(
 
 				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
+				'Purchase Order Transaction Fact Key'=>$potf_key,
 				'Supplier Delivery Note Counted'=>$transaction_data['counted']
 			);
 
-			$order->update_transaction_counted($data);
+			$supplier_dn->update_transaction_counted($data);
 
 
-			if ($order->error) {
-				$response= array('state'=>400,'msg'=>$order->msg);
+			if ($supplier_dn->error) {
+				$response= array('state'=>400,'msg'=>$supplier_dn->msg);
 
 			} else {
 				$response= array('state'=>200,'damaged_quantity'=>$transaction_data['damaged_qty'],'quantity'=>$transaction_data['qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
@@ -1709,11 +1713,11 @@ function edit_inputted_supplier_dn() {
 			$data=array(
 
 				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
+				'Purchase Order Transaction Fact Key'=>$potf_key,
 				'Supplier Delivery Note Counted'=>$_REQUEST['newvalue']
 			);
 
-			$transaction_data=$order->update_transaction_counted($data);
+			$transaction_data=$supplier_dn->update_transaction_counted($data);
 
 			$updated_data=array();
 			// print_r($transaction_data);
@@ -1730,30 +1734,30 @@ function edit_inputted_supplier_dn() {
 			$data=array(
 
 				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
+				'Purchase Order Transaction Fact Key'=>$potf_key,
 				'Supplier Delivery Note Damaged Quantity'=>$quantity
 			);
 
 			//print_r( $data);
-			$transaction_data=$order->update_damaged_transaction($data);
+			$transaction_data=$supplier_dn->update_damaged_transaction($data);
 			$transaction_data['counted']='Yes';
 			$updated_data=array(
-				'distinct_products'=>$order->get('Number Items')
+				'distinct_products'=>$supplier_dn->get('Number Items')
 			);
 
 
 			$data=array(
 
 				'Supplier Delivery Note Last Updated Date'=>gmdate('Y-m-d H:i:s'),
-				'Purchase Order Transaction Fact Key'=>$purchase_order_transaction_fact_key,
+				'Purchase Order Transaction Fact Key'=>$potf_key,
 				'Supplier Delivery Note Counted'=>'Yes'
 			);
 
-			$order->update_transaction_counted($data);
+			$supplier_dn->update_transaction_counted($data);
 
 
-			if ($order->error) {
-				$response= array('state'=>400,'msg'=>$order->msg);
+			if ($supplier_dn->error) {
+				$response= array('state'=>400,'msg'=>$supplier_dn->msg);
 
 			} else {
 				$response= array('state'=>200,'quantity'=>$transaction_data['qty'],'damaged_quantity'=>$transaction_data['damaged_qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
@@ -2008,7 +2012,7 @@ function dn_transactions_to_count() {
 
 
 
-	$sql="select  `Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Supplier Product Key`, `Supplier Product XHTML Sold As` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -2037,6 +2041,7 @@ function dn_transactions_to_count() {
 
 		$adata[]=array(
 			'id'=>$row['Purchase Order Transaction Fact Key'],
+			'sp_key'=>$row['Supplier Product Key'],
 			'code'=>$row['Supplier Product Code'],
 			'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span>',
 			'used_in'=>$row['Supplier Product XHTML Sold As'],

@@ -194,5 +194,14 @@ ALTER TABLE `Invoice History Bridge`
 
 ALTER TABLE `Invoice Dimension` DROP `Invoice XHTML Ship Tos`;
 
+
+//============================from: 31/05/2015 12:00
+
+
+ALTER TABLE `Order Transaction Fact` DROP `Current Manufacturing Quantity`,  DROP `Current On Shelf Quantity`,  DROP `Current On Box Quantity`;
+
+| mysql-bin.000001 |      120 | dw,costadw   |                  |                   |
+mysql-bin.000001 |  2111498 | dw,cost
+
  
 

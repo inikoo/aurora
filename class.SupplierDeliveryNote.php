@@ -331,6 +331,7 @@ class SupplierDeliveryNote extends DB_Table {
 			}
 
 		}
+		$this->update_item_totals_from_order_transactions();
 	}
 
 
@@ -366,7 +367,7 @@ class SupplierDeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 
-
+$this->update_item_totals_from_order_transactions();
 	}
 
 
@@ -477,8 +478,9 @@ class SupplierDeliveryNote extends DB_Table {
 
 		);
 		$damaged_data=$this->update_damaged_transaction($data);
-
+$this->update_item_totals_from_order_transactions();
 		$this->update_affected_products();
+		
 		return array('qty'=>$data ['Supplier Delivery Note Received Quantity'],'damaged_qty'=>$damaged_data['damaged_qty']);
 
 	}
