@@ -568,9 +568,17 @@ function save_cancel() {
 
 function open_cancel_dialog() {
 
+   region1 = Dom.getRegion('cancel');
+    region2 = Dom.getRegion('dialog_cancel');
+    var pos = [region1.left - region2.width, region1.top]
+    Dom.setXY('dialog_cancel', pos);
+
+
 
     Dom.get("cancel_input").value = '';
     Dom.addClass('cancel_save', 'disabled')
+
+
 
     dialog_cancel.show();
     Dom.get('cancel_input').focus();
@@ -630,6 +638,8 @@ function init() {
         'table_id': 0,
         'parent': 'order_in_process_by_customer'
     })
+
+Event.addListener('cancel', "click", open_cancel_dialog)
 
 
 
