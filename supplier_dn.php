@@ -146,7 +146,7 @@ $css_files=array(
 	'css/container.css',
 	'css/table.css',
 	'css/edit.css',
-	'css/porder.css',
+	'css/supplier_dn.css',
 
 	'theme.css.php'
 );
@@ -267,7 +267,6 @@ $smarty->assign('pos_data',$pos_data);
 if ($supplier_delivery_note->data['Supplier Delivery Note Current State']=='In Process' or $supplier_delivery_note->data['Supplier Delivery Note Current State']=='Inputted') {
 
 	$_SESSION['state']['supplier_dn']['products']['display']='ordered_products';
-	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
 
 
 
@@ -378,7 +377,7 @@ elseif ($supplier_delivery_note->data['Supplier Delivery Note Current State']=='
 
 
 
-	$js_files[]='supplier_dn_received.js.php';
+	$js_files[]='js/supplier_dn_received.js';
 
 
 	$template='supplier_dn_received.tpl';
@@ -434,12 +433,19 @@ $session_data=base64_encode(json_encode(array(
 				'Parts'=>_('Parts'),
 				'Parts_Info'=>_('Parts Info'),
 				'Description'=>_('Supplier Carton Description'),
-				'PO_Qty'=>_('Cartons PO'),
-				'DN_Qty'=>_('Cartons DN'),
+				'PO_Qty'=>_('Qty PO'),
+				'DN_Qty'=>_('Qty DN'),
+				'Rcvd_Qty'=>_('Rcvd Qty'),
+								'Ckd'=>_('Checked'),
+								'Dmgd_Qty'=>_('Damaged'),
+
+				
 				'Unit'=>_('Unit'),
 				'Transport_type'=>_('Transport type'),
 				'Used_for'=>_('Used for'),
 				'Alias'=>_('Alias'),
+				
+				
 				'Page'=>_('Page'),
 				'of'=>_('of')
 			),
@@ -448,6 +454,7 @@ $session_data=base64_encode(json_encode(array(
 			)
 		)));
 $smarty->assign('session_data',$session_data);
+	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
 
 $smarty->display($template);
 

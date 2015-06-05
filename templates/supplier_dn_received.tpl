@@ -1,78 +1,129 @@
 {include file='header.tpl'}
 <input id="dn_key" value="{$supplier_dn->id}" type="hidden" />
+<input type="hidden" value="{$session_data}" id="session_data" />
 
-<div id="time2_picker" class="time_picker_div"></div>
-<div id="bd" >
-
-
+<input type="hidden" id="history_table_id" value="3"> 
+<input type="hidden" id="subject" value="supplier_dn"> 
+<input type="hidden" id="subject_key" value="{$supplier_dn->id}"> 
+<input type="hidden" id="warehouse_key" value="{$warehouse->id}"> 
 <input id="supplier_deliver_note_key" value="{$supplier_dn->id}" type="hidden"/>
 
-<div class="order_actions" >
-    <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
-      <span class="state_details" id="edit_dn" style="margin-left:20px">{t}Edit Delivery Note{/t}</span>
 
-      <span class="state_details" id="make_dn_as_checked" style="margin-left:20px">{t}Mark Delivery Note as Checked{/t}</span>
-
-
- <DIV style="display:none">
-  <span class="state_details" id="set_damages_top" style="margin-left:20px">{t}Set Damages{/t}</span>
-  <span class="state_details" id="set_skus_top" style="margin-left:20px">{t}Set SKUs{/t}</span>
-  <span class="state_details" id="set_locations_top" style="margin-left:20px">{t}Set Locations{/t}</span>
-</DIV>
-
-</div>
+<div id="time2_picker" class="time_picker_div"></div>
+<div id="bd" class="no_padding">
+<div style="padding:0px 20px">
+	{include file='suppliers_navigation.tpl'} 
 
 
-<div class="prodinfo" style="margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
-    <div style="border:0px solid red;width:290px;float:right">
-    <table  border=0  class="order_header"  style="margin-right:30px;float:right">
-      <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
-      <tr><td class="aright" style="padding-right:40px">{t}Inputted{/t}:</td><td>{$supplier_dn->get('Input Date')}</td></tr>
-      <tr><td class="aright" style="padding-right:40px">{t}Received{/t}:</td><td>{$supplier_dn->get('Received Date')}</td></tr>
-
-    </table>
-    </div>
-    
-    
-    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')} ({$supplier_dn->get('Supplier Delivery Note Current State')})</h1>
-    <table border=0 >
-      <tr><td>{t}Supplier Delivery Note Key{/t}:</td><td class="aright">{$supplier_dn->get('Supplier Delivery Note Key')}</td></tr>
-      <tr><td>{t}Supplier{/t}:</td><td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td></tr>
-      <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$supplier_dn->get('Number Items')}</td></tr>
-    </table>
-
-  
-    <table style="clear:both;border:none;display:none" class="notes">
-      
-      <tr><td style="border:none">{t}Notes{/t}:</td><td style="border:none"><textarea id="v_note" rows="2" cols="60" ></textarea></td></tr>
-    </table>
-    
-  <div style="clear:both"></div>
-  
-</div>
-
-
- <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-	<tr>
-	  <td  class="selected" id="counting" >{t}Check Delivery{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td  id="set_skus"  >{t}Assing SKUs{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td  id="set_locations"  >{t}Assing Locations{/t}</td>
-	</tr>
-      </table>
-
-
-<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
-	<span class="clean_table_title">{t}Supplier Products{/t}</span> 
-			<div id="table_type">
-	  <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
-	  <span id="set_damages_bis" style="float:right;color:brown" class="table_type state_details">{t}Set Damaged{/t}</span>
-	  <span id="set_received" style="display:none;float:right;color:brown" class="table_type state_details">{t}Set Received{/t}</span>
+<div class="branch">
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_dn->get('Supplier Delivery Note Public ID')} ({$supplier_dn->get('Supplier Delivery Note Current State')})</span> 
 	</div>
-		<div class="elements_chooser">
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Supplier Products{/t} (<span id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span> 
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$supplier_dn->get('Number Items')}</span>)</span> 
+	<div class="top_page_menu" style="border:none">
+		<div class="buttons" style="float:left">
+			<span class="main_title no_buttons">{t}Supplier Delivery Note{/t} <span class="id">{$supplier_dn->get('Supplier Delivery Note Public ID')}</span></span> 
 		</div>
-		
+		<div class="buttons small" style="position:relative;top:5px">
+			<button style="{if $supplier_dn->get('Supplier Delivery Note Current State')!='In Process'}display:none{/if}" id="save_inputted_dn"><img id="save_inputted_dn_icon" src="art/icons/tick.png"> {t}Authorise delivery{/t}</button> 
+			<button style="{if $supplier_dn->get('Supplier Delivery Note Current State')!='Inputted'}display:none{/if}" id="mark_as_received"><img id="mark_as_received_icon" src="art/icons/lorry.png"> {t}Mark as Received{/t}</button> 
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+
+
+
+
+<div id="order_header">
+		<div class="content">
+			<div class="totals column">
+				<table>
+					<tr>
+						<td>{t}PO Items{/t}</td>
+						<td id="ordered_products_number" class="total aright ">{$supplier_dn->get('Number Items')}</td>
+					</tr>
+					<tr>
+						<td>{t}Items without PO{/t}</td>
+						<td id="products_without_po_number" class=" aright ">{$supplier_dn->get('Number Items Without PO')}</td>
+					</tr>
+				</table>
+			</div>
+			<div class="dates column">
+				<table border="0">
+					<tr class="last">
+						<td class="label">{t}Created{/t}:</td>
+						<td class="aright">{$supplier_dn->get('Creation Date')}</td>
+					</tr>
+				</table>
+			</div>
+			<div class="supplier column">
+				<table border="0">
+					<tr class="last">
+						<td>{t}Supplier{/t}:</td>
+						<td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td>
+						<td></td>
+					</tr>
+				</table>
+				<table border="0" class="related_objects" style="{if $number_pos==0}display:none{/if}">
+					<tr class="title">
+						<td colspan="2">{if $number_pos==1}{t}Purchase Order{/t}{else}Purchase Orders{/if}:</td>
+					</tr>
+					{foreach from=$pos_data item=po} 
+					<tr>
+						<td> <a href="porder.php?id={$po.key}">{$po.number}</a> <a target='_blank' href="porder.pdf.php?id={$po.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('po',{$po.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
+						<td class="right" style="text-align:right"> {$po.state} </td>
+					</tr>
+					{/foreach} 
+				</table>
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
+			<li> <span class="item " id="attachments"> <span id="attachments_label"> {t}Attachments{/t} {if $number_attachments!=0} ({$number_attachments}){/if}</span> </span> </li>
+			<li> <span class="item " id="notes"> <span> {t}History/Notes{/t}</span></span></li>
+		</ul>
+		<div id="order_details_panel" style="display:none;clear:both;border-top:1px solid #ccc;padding:10px 10px 10px; 10px;;">
+			<div id="block_attachments" class="block_details" style="display:none">
+				<div class="buttons small">
+					<button id="attach_bis"><img src="art/icons/add.png"> {t}Attachment{/t}</button> 
+				</div>
+				<div id="attachments_showcase">
+					{include file='attachments_showcase_splinter.tpl' attachments=$supplier_dn->get_attachments_data()} 
+				</div>
+			</div>
+			<div id="block_notes" class="block_notes" style="display:none;margin-top:10px;margin-bottom:20px">
+				<span id="table_title" class="clean_table_title" style="margin-right:10px">{t}History/Notes{/t}</span> 
+				<div class="buttons small left">
+					<button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+				</div>
+				<div class="elements_chooser">
+					<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_po_history.Changes}selected{/if} label_part_history_Changes" id="elements_po_history_Changes" table_type="elements_Changes">{t}Changes History{/t} (<span id="elements_history_Changes_number">{$elements_po_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Notes}selected{/if} label_part_history_Notes" id="elements_po_history_notes" table_type="elements_Notes">{t}Staff Notes{/t} (<span id="elements_history_Notes_number">{$elements_po_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_po_history.Attachments}selected{/if} label_part_history_Attachments" id="elements_po_history_Attachments" table_type="elements_Attachments">{t}Attachments{/t} (<span id="elements_history_Attachments_number">{$elements_po_history_number.Attachments}</span>)</span> 
+				</div>
+				<div class="table_top_bar space">
+				</div>
+				{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3} 
+				<div id="table3" class="data_table_container dtable btable">
+				</div>
+			</div>
+			<img id="hide_order_details" style="cursor:pointer;position:relative;top:5px" src="art/icons/arrow_sans_topleft.png" /> 
+			<div style="clear:both">
+			</div>
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+	</div>
+<ul class="tabs" id="items_chooser" >
+		<li style="display:none"> <span class="item {if $products_display_type=='all_products'}selected{/if}" id="all_products"> <span> {t}Products{/t} (<span style="display:inline;padding:0px" id="all_products_number">{$supplier->get_formated_number_products_to_buy()}</span>)</span></span></li>
+		<li> <span class="item {if $products_display_type=='ordered_products'}selected{/if}" id="ordered_products"> <span> {t}Order Items{/t} (<span style="display:inline;padding:0px" id="ordered_products_number">{$supplier_dn->get('Number Items')}</span>)</span></span></li>
+	</ul>
+	<div class="tabs_base">
+	</div>
+
+<div id="the_table" class="data_table" style="margin:20px 0px;clear:both;padding:0px 20px">
+	<span class="clean_table_title">{t}Supplier Products{/t}</span> 
+			
+			<div class="buttons"></div>
 		<div class="table_top_bar space">
 		</div>
 		
