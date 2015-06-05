@@ -6,6 +6,8 @@
 error_reporting(E_ALL);
 
 include_once '../../conf/dns.php';
+include_once '../../class.Account.php';
+
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';
@@ -20,7 +22,7 @@ include_once '../../class.Staff.php';
 include_once '../../class.DeliveryNote.php';
 include_once '../../class.Email.php';
 include_once '../../class.CurrencyExchange.php';
-include_once 'common_read_orders_functions.php';
+
 
 
 $encrypt=false;
@@ -71,6 +73,7 @@ $_SESSION['locale_info'] = localeconv();
 
 $_SESSION['lang']=1;
 
+$inikoo_account=new Account(1);
 
 
 $change=false;
