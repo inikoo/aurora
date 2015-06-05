@@ -534,6 +534,72 @@ class Order extends DB_Table {
 
 
 
+		$sql=sprintf("select `Order Key`,`Order Public ID`,`Order Current Dispatch State` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State` in ('In Process by Customer','Waiting for Payment Confirmation') ",
+			$this->data['Order Customer Key']
+
+		);
+		$orders_data='';
+		$res=mysql_query($sql);
+		include_once 'common_order_functions.php';
+		while ($row=mysql_fetch_assoc($res)) {
+			$orders_data.=', '.sprintf('%s (%s)',
+				sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']),
+				get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key'])
+			);
+
+		}
+		$orders_data=preg_replace('/^, /','',$orders_data);
+		
+		if($orders_data!=''){
+		$this->error=true;
+			$this->msg=_('There is already a order in the basket').' '.$orders_data;
+			return;
+		}
+		
+
+		$date=gmdate("Y-m-d H:i:s");
+
+		if (!($this->data['Order Current Dispatch State']=='In Process')) {
+			$this->error=true;
+			$this->msg='Order is not in process'.$this->id.' '.$this->data['Order Current Dispatch State'];
+			return;
+
+		}
+
+
+		$this->data['Order Current Dispatch State']='In Process by Customer';
+		$this->data['Order Current XHTML Dispatch State']=_('In basket');
+
+
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Last Updated Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  where `Order Key`=%d"
+			,prepare_mysql($date)
+			,prepare_mysql($date)
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+
+			,$this->id
+		);
+		mysql_query($sql);
+		
+		
+		$sql=sprintf("update `Order Transaction Fact` set `Current Dispatching State`='In Process by Customer' where  `Current Dispatching State`='In Process by Customer' and `Order Key`=%d",
+		$this->id
+		);
+		mysql_query($sql);
+	
+
+		$history_data=array(
+			'History Abstract'=>_('Order moved to customer basket'),
+			'History Details'=>'',
+		);
+		$this->add_subject_history($history_data);
+
+
+
+
+
 	}
 
 
@@ -570,7 +636,7 @@ class Order extends DB_Table {
 
 
 		$history_data=array(
-			'History Abstract'=>_('Order meved from basket to customer services process tray'),
+			'History Abstract'=>_('Order moved from basket to customer services process tray'),
 			'History Details'=>'',
 		);
 		$this->add_subject_history($history_data);
@@ -3415,7 +3481,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->data['Order Balance Tax Amount']=round($this->data['Order Balance Net Amount']*$this->data['Order Tax Rate'],2);
 
 
-
+//print ($this->data['Order Balance Net Amount']*$this->data['Order Tax Rate']);
 
 		$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
 
@@ -9145,9 +9211,9 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		
-		
-		$sql=sprintf('insert into `Order Transaction Out of Stock in Basket Bridge` (`Order Transaction Fact Key`,`Date`,`Store Key`,`Order Key`,`Product Key`,`Product ID`,`Quantity`,`Amount`) values (%d,%s,%d,%d,%d,%d,%f,%.2f)',
+
+
+			$sql=sprintf('insert into `Order Transaction Out of Stock in Basket Bridge` (`Order Transaction Fact Key`,`Date`,`Store Key`,`Order Key`,`Product Key`,`Product ID`,`Quantity`,`Amount`) values (%d,%s,%d,%d,%d,%d,%f,%.2f)',
 				$row['Order Transaction Fact Key'],
 				prepare_mysql(gmdate('Y-m-d H:i:s')),
 				$this->data['Order Store Key'],
@@ -9159,16 +9225,16 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			);
 
 			mysql_query($sql);
-		
-		
-		
+
+
+
 			$sql=sprintf('update `Order Transaction Fact` set `Current Dispatching State`=%s,`Order Quantity`=0,`Order Bonus Quantity`=0 ,`Order Transaction Gross Amount`=0 ,`Order Transaction Total Discount Amount`=0,`Order Transaction Amount`=0 where `Order Transaction Fact Key`=%d   ',
 				prepare_mysql('Out of Stock in Basket'),
 				$row['Order Transaction Fact Key']
 			);
 			mysql_query($sql);
 
-			
+
 		}
 
 
@@ -9218,11 +9284,11 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-		
-		$product=new Product('pid',$product_pid);
-		
-		$gross=$row['Quantity']*$product->data['Product Price'];
-		
+
+			$product=new Product('pid',$product_pid);
+
+			$gross=$row['Quantity']*$product->data['Product Price'];
+
 			$sql=sprintf('update `Order Transaction Fact` set `Current Dispatching State`=%s,`Order Quantity`=%d,`No Shipped Due Out of Stock`=0,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d   ',
 				prepare_mysql('In Process by Customer'),
 				$row['Quantity'],

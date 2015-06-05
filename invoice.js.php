@@ -26,7 +26,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var InvoiceColumnDefs = [
 				     {key:"code", label:"<?php echo _('Code')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"<?php echo _('Description')?>",width:360,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-//				     ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"gross",label:"<?php echo _('Gross')?>",hidden:(Dom.get('invoice_type').value=='Invoice'?false:true), width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"discount",label:"<?php echo _('Discounts')?>", hidden:(Dom.get('invoice_type').value=='Invoice'?false:true),width:60,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -262,6 +261,34 @@ function close_dialog(tipo) {
     }
 };
 
+function recalculate_totals() {
+
+    Dom.get('recalculate_totals_img').src = 'art/loading.gif';
+
+    var ar_file = 'ar_edit_orders.php';
+    var request = 'tipo=recalculate_totals&subject=invoice&subject_key=' + Dom.get('invoice_key').value;
+
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+                location.href='invoice.php?id='+  Dom.get('invoice_key').value
+            
+            }
+        },
+        failure: function(o) {},
+        scope: this
+    }, request
+
+    );
+
+
+}
+
+
+
 function init(){
  init_search('orders_store');
  YAHOO.util.Event.addListener(['pay_by_creditcard','pay_by_bank_transfer','pay_by_paypal','pay_by_cash','pay_by_cheque','pay_by_other'], "click", select_type_of_payment);
@@ -283,6 +310,7 @@ function init(){
 
  Event.addListener("show_invoice_details", "click", show_invoice_details);
     Event.addListener("hide_invoice_details", "click", hide_invoice_details);
+    Event.addListener("recalculate_totals", "click", recalculate_totals);
 
 
 }

@@ -50,6 +50,7 @@ $invoice->update_payment_state();
 */
 
 //$invoice->update_totals();
+//$invoice->update_payment_state();
 
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
