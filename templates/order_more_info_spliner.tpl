@@ -97,15 +97,27 @@
 		</div>
 		
 		<div class="order_operations" >
+		
+		<div id="operations_msg" style="display:none"></div>
+		
 		    <div class="buttons small right">
 
 
 		    {if $order->get('Order Current Dispatch State')=='In Process by Customer'  }
+		    		    <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+
 {else if  $order->get('Order Current Dispatch State')=='Waiting for Payment Confirmation' }
 		    
-		    
-{else if  $order->get('Order Current Dispatch State')=='In Process'  or  $order->get('Order Current Dispatch State')=='Submitted by Customer' }
-					<button style="margin-bottom:10px;clear:both;{if {$order->get('Order Number Products')}==0    or $order->get('Order Current Dispatch State')!='In Process'}display:none{/if} " id="send_to_basket"><img id="send_to_warehouse_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> <button style="margin-bottom:10px;clear:both;{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> <button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button> <button style="margin-top:5px;margin-bottom:10px;clear:both" id="cancel" class="negative">{t}Cancel order{/t}</button> 
+{else if  $order->get('Order Current Dispatch State')=='In Process'   }		    
+			<button id="send_to_basket"><img id="send_to_basket_img" src="art/icons/basket_back.png" alt=""> {t}Send to basket{/t}</button> 
+					<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button>
+				     <button  id="cancel" class="negative">{t}Cancel order{/t}</button> 
+					<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> 
+	    
+{else if    $order->get('Order Current Dispatch State')=='Submitted by Customer' }
+					<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='Yes'}display:none{/if}" onclick="update_auto_account_payments('Yes')">{t}Add account credits{/t}</button>
+				     <button  id="cancel" class="negative">{t}Cancel order{/t}</button> 
+					<button style="{if $order->get('Order Apply Auto Customer Account Payment')=='No'}display:none{/if}" onclick="update_auto_account_payments('No')">{t}Don't add account credits{/t}</button> 
 
 {else if  $order->get('Order Current Dispatch State')=='In Warehouse'  }
 
@@ -128,7 +140,7 @@
 
 {/if}
 		    
-		   				<button style="margin-top:10px;clear:both"  id="recalculate_totals"><img id="recalculate_totals_img" src="art/icons/arrow_rotate_clockwise.png" alt=""> {t}Recalculate Totals{/t}</button> 
+		   				<button style=""  id="recalculate_totals"><img id="recalculate_totals_img" src="art/icons/arrow_rotate_clockwise.png" alt=""> {t}Recalculate Totals{/t}</button> 
  
 				
 			</div>

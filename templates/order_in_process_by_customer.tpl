@@ -18,7 +18,7 @@
 		</div>
 		{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
 		<div class="buttons small" style=";position:relative;top:5px">
-			<button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> <button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+			<button onclick="window.location='order.php?id={$order->id}&modify=1'"> {t}Modify Order{/t}</button> <button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>

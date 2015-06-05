@@ -7,6 +7,33 @@ YAHOO.namespace("invoice");
 var edit_delivery_address;
 
 
+function send_to_basket(){
+                    Dom.setStyle('operations_msg','display','none')
+
+                    Dom.get('operations_msg').innerHTML=''
+Dom.get('send_to_basket_img').src='art/loading.gif'
+
+request='ar_edit_orders.php?tipo=send_to_basket&order_key='+Dom.get('order_key').value;
+//alert(request)
+  YAHOO.util.Connect.asyncRequest('POST', request, {
+            success: function(o) {
+           //  alert(o.responseText)
+                var r = YAHOO.lang.JSON.parse(o.responseText);
+                if (r.state == 200) {
+                   
+    location.href ='order.php?id='+r.order_key
+
+                }else if(r.state == 400){
+                Dom.get('send_to_basket_img').src='art/icons/basket_back.png'
+                                    Dom.setStyle('operations_msg','display','')
+
+                    Dom.get('operations_msg').innerHTML=r.msg
+                }
+
+            }
+        });
+
+}
 
 function showdetails(o) {
 
@@ -742,6 +769,10 @@ function init() {
 
         showDelay: 500
     });
+
+
+    Event.addListener('send_to_basket', "click", send_to_basket, 0);
+
 
 
 }
