@@ -457,16 +457,16 @@ function delete_old_data($delete_record=false) {
 				$refund_metadata_store_code=preg_replace("/$refund_order_data_id/",'',$refund_metadata);
 				switch ($refund_metadata_store_code) {
 				case 'U':
-					$sql=sprintf("update orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
+					//$sql=sprintf("update orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
 					break;
 				case 'F':
-					$sql=sprintf("update fr_orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
+					//$sql=sprintf("update fr_orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
 					break;
 				case 'D':
-					$sql=sprintf("update de_orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
+					//$sql=sprintf("update de_orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
 					break;
 				case 'E':
-					$sql=sprintf("update ci_orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
+					//$sql=sprintf("update ci_orders_data.orders set last_transcribed=null where id=%d",$refund_order_data_id);
 					break;
 
 				}
