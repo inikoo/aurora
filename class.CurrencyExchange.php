@@ -27,8 +27,11 @@ class CurrencyExchange {
 
 		if (!$this->exchange) $this->get_data_exchange_from_kbase();
 
+
 		if (!$this->exchange) {
 			if ($this->date==gmdate('Y-m-d')) {
+
+
 				$this->get_current_exchange();
 
 			}else {
@@ -50,6 +53,9 @@ class CurrencyExchange {
 
 
     function get_exchange(){
+    
+   
+    
         return $this->exchange;
     }
 
@@ -95,7 +101,7 @@ class CurrencyExchange {
 			$this->exchange=false;
 		}
 
-		return $this->exchange;
+
 
 
 	}
@@ -172,7 +178,6 @@ class CurrencyExchange {
 	
 	function get_current_exchange_from_openexchangerates() {
 		//https://openexchangerates.org
-
 
 
 		$api_keys=array(

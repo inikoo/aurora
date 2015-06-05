@@ -500,6 +500,16 @@ function recalcuate_refund_total() {
 
 function save_full_refund() {
 
+if(Dom.hasClass('save_full_refund','disabled')){
+    Dom.get('full_refund_msg').innerHTML=Dom.get('error_no_reason').value;
+    Dom.setStyle('reason_label','color','red')
+    return;
+}else{
+    Dom.get('full_refund_msg').innerHTML='';
+    Dom.setStyle('reason_label','color','black')
+
+}
+
     Dom.setStyle('waiting_save_full_refund', 'display', '')
     Dom.setStyle(['save_full_refund', 'cancel_full_refund'], 'display', 'none')
 
@@ -526,7 +536,8 @@ function save_full_refund() {
 
 
     var request = 'ar_edit_orders.php?tipo=refund_order&values=' + jsonificated_values + "&order_key=" + Dom.get('order_key').value
-    // alert(request);
+    //alert(request);
+    //return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //  alert(o.responseText)
@@ -1064,6 +1075,9 @@ function change_refund_reason(value, o) {
     Dom.setStyle('hide_other_items_options', 'display', '')
 
     validate_full_refund()
+    
+     Dom.get('full_refund_msg').innerHTML='';
+    Dom.setStyle('reason_label','color','black')
 
 }
 

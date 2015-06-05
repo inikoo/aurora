@@ -3982,8 +3982,6 @@ function refund_order($data) {
 	$date=gmdate("Y-m-d H:i:s");
 	$order=new Order($data['order_key']);
 
-
-
 	$refund=$order->create_refund(array(
 			'Invoice Metadata'=>'',
 			'Invoice Date'=>$date
@@ -4133,6 +4131,7 @@ function refund_order($data) {
 
 		);
 
+
 		$refund->add_refund_transaction($refund_transaction_data);
 
 
@@ -4165,10 +4164,17 @@ function refund_order($data) {
 			}else {
 				$tax_amount=0;
 			}
+			
+				if ($data['values']['refund_net']=='Yes') {
+				$net_amount=$row['Transaction Invoice Net Amount'];
+			}else {
+				$net_amount=0;
+			}
+			
 
 			$refund_transaction_data=array(
 				'Order Key'=>$order->id,
-				'Transaction Refund Net Amount'=>-1.0*$row['Transaction Invoice Net Amount'],
+				'Transaction Refund Net Amount'=>-1.0*$net_amount,
 				'Transaction Refund Tax Amount'=>-1.0*$tax_amount,
 				'Order No Product Transaction Fact Key'=>$row['Order No Product Transaction Fact Key']
 			);
@@ -4177,6 +4183,43 @@ function refund_order($data) {
 		}
 
 	}
+	
+	
+	if ($data['values']['refund_charges']=='Yes' ) {
+
+
+		$sql=sprintf("select `Order No Product Transaction Fact Key`,`Transaction Invoice Net Amount`,`Transaction Invoice Tax Amount` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges' ",
+			$order->id
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			if ($data['values']['refund_tax']=='Yes') {
+				$tax_amount=$row['Transaction Invoice Tax Amount'];
+			}else {
+				$tax_amount=0;
+			}
+			
+				if ($data['values']['refund_net']=='Yes') {
+				$net_amount=$row['Transaction Invoice Net Amount'];
+			}else {
+				$net_amount=0;
+			}
+			
+
+			$refund_transaction_data=array(
+				'Order Key'=>$order->id,
+				'Transaction Refund Net Amount'=>-1.0*$net_amount,
+				'Transaction Refund Tax Amount'=>-1.0*$tax_amount,
+				'Order No Product Transaction Fact Key'=>$row['Order No Product Transaction Fact Key']
+			);
+
+			$refund->add_refund_no_product_transaction($refund_transaction_data);
+		}
+
+	}
+	
 
 	$order->update_totals();
 	$order->update_payment_state();
