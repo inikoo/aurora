@@ -171,6 +171,8 @@
 		<div id="invoice_details_panel" style="display:none;border-top:1px solid #ccc;padding-top:10px;margin-top:10px">
 			<div class="buttons small right" style="float:right;width:350px">
 				<button class="negative" id="delete" onclick="show_delete_invoice()">{t}Delete{/t}</button> 
+		   				<button style=""  id="recalculate_totals"><img id="recalculate_totals_img" src="art/icons/arrow_rotate_clockwise.png" alt=""> {t}Recalculate Totals{/t}</button> 
+
 			</div>
 			<div style="width:450px">
 				<table border="0" class="info_block">

@@ -23,6 +23,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case 'send_to_basket':
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+		));
+	send_to_basket($data);
+	break;
 case 'recalculate_totals':
 	$data=prepare_values($_REQUEST,array(
 			'subject'=>array('type'=>'string'),
@@ -788,6 +795,33 @@ function delete_invoice($data) {
 		echo json_encode($response);
 
 	}
+
+}
+
+
+function send_to_basket($data) {
+	global $editor,$user;
+	$order_key=$data['order_key'];
+
+	$order=new Order($order_key);
+	$order->editor=$editor;
+
+	$order->send_to_basket();
+
+	if (!$order->error) {
+		$response=array(
+			'state'=>200,
+			'order_key'=>$order->id,
+
+
+		);
+		echo json_encode($response);
+	} else {
+		$response=array('state'=>400,'msg'=>$order->msg);
+		echo json_encode($response);
+
+	}
+
 
 }
 
@@ -1685,15 +1719,15 @@ function transactions_to_process() {
 		}
 
 		$sql_qty=sprintf(', P.`Product Current Key` as `Product Key`,
-		
+
 		(select `Quantity` from `Order Transaction Out of Stock in Basket Bridge` OO where OO.`Product ID`=P.`Product ID` and `Order Key`=%d limit 1) as `Out of Stock Quantity`,
 		0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
 			$order_id,
 			$order_object->data['Order Currency'],
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
-			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) 
-			left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) 
+			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)
+			left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)
 			 left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 
 			 ';
@@ -1718,7 +1752,7 @@ function transactions_to_process() {
 	$sql="select count(*) as total from $table   $where $wheref   ";
 
 	// print_r($conf);exit;
-	 
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -1954,7 +1988,7 @@ function transactions_to_process() {
 		$description=$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info;
 
 		if ($row['Current Dispatching State']=='Out of Stock in Basket') {
-		$customer_ordered=sprintf(_('customer want %s outers'),'<b>'.number($row['Out of Stock Quantity']).'</b>');
+			$customer_ordered=sprintf(_('customer want %s outers'),'<b>'.number($row['Out of Stock Quantity']).'</b>');
 			$description.='<br> <span class="attention"><img src="art/icons/error.png"> '._('Set as out of stock').'</span>, '.$customer_ordered;
 			//$quantity=number($row['Out of Stock Quantity']);
 
@@ -6278,6 +6312,18 @@ function categorize_invoice($data) {
 function recalculate_totals($data) {
 
 	switch ($data['subject']) {
+	case 'invoice':
+
+		$invoice=new Invoice($data['subject_key']);
+		$invoice->update_totals();
+		$invoice->update_payment_state();
+		$response= array(
+			'state'=>200);
+
+		echo json_encode($response);
+		break;
+
+		break;
 	case 'order':
 		$order=new Order($data['subject_key']);
 		$order->update_totals();

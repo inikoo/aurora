@@ -805,7 +805,7 @@ class Invoice extends DB_Table {
 		$adjust_tax=0;
 		$adjust_net=0;
 
-
+ 
 
 
 		$sql = sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Outstanding Net Balance`,`Invoice Transaction Outstanding Tax Balance`,`Invoice Transaction Outstanding Refund Net Balance`,`Invoice Transaction Outstanding Refund Tax Balance`,`Invoice Transaction Net Refund Amount`,`Invoice Transaction Tax Refund Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Invoice Transaction Charges Amount`,`Invoice Transaction Charges Tax Amount`,`Invoice Transaction Shipping Amount`,`Invoice Transaction Shipping Tax Amount`,`Order Transaction Fact Key`,`Invoice Transaction Shipping Tax Amount`,`Invoice Transaction Charges Tax Amount`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as item_net ,`Invoice Transaction Item Tax Amount`
@@ -889,6 +889,9 @@ class Invoice extends DB_Table {
 
 		$this->data['Invoice Total Net Amount']=$this->data['Invoice Deal Credit Net Amount']+$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount']+$this->data['Invoice Insurance Net Amount'];
 
+
+
+
 		$this->data['Invoice Outstanding Net Balance']=$items_net_outstanding_balance+$items_refund_net_outstanding_balance;
 		$this->data['Invoice Outstanding Tax Balance']=$items_tax_outstanding_balance+$items_refund_tax_outstanding_balance;
 
@@ -942,6 +945,7 @@ class Invoice extends DB_Table {
 		$sql=sprintf(' select IFNULL(sum(IFNULL(`Tax Amount`,0)),0) as tax from `Invoice Tax Bridge` where `Invoice Key`=%d',$this->id);
 		$res = mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
+		
 			$tax=$row['tax'];
 		}
 
@@ -3081,6 +3085,7 @@ class Invoice extends DB_Table {
 	function add_tax_item($code='UNK',$amount=0,$is_base='Yes') {
 
 
+        $amount=round($amount,2);
 		$sql=sprintf("update `Invoice Tax Dimension` set `%s`=%.2f where `Invoice Key`=%d",addslashes($code),$amount,$this->id );
 		mysql_query($sql);
 		// print "$sql\n";
