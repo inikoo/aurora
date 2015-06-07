@@ -198,10 +198,7 @@
 			<div style="padding:0 20px;min-height:400px">
 				<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding-top:10px">
 
-					<div class="description" style="width:500px;float:left;margin-right:20px">
-						{$product->get('Product Description')}
-					</div>
-
+					
 					<div style="width:500px;float:left;">
 						<table class="show_info_product">
 							<tr >
@@ -263,6 +260,18 @@
 
 					</table>
 				</div>
+
+
+<span class="clean_table_title" style="clear:both">{t}Public Description (To be shown in the website){/t}</span> 
+			<div class="table_top_bar space">
+			</div>
+			<div>
+			{if $product->get('Product Description')==''}
+			<span style="font-style:italic;color:#777">{t}This product don't have public description{/t}
+			{else}
+				{$product->get('Product Description')} 
+			{/if}
+			</div>
 
 
 			</div>

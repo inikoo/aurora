@@ -199,9 +199,12 @@ ALTER TABLE `Invoice Dimension` DROP `Invoice XHTML Ship Tos`;
 
 
 ALTER TABLE `Order Transaction Fact` DROP `Current Manufacturing Quantity`,  DROP `Current On Shelf Quantity`,  DROP `Current On Box Quantity`;
+//=============================
 
-| mysql-bin.000001 |      120 | dw,costadw   |                  |                   |
-mysql-bin.000001 |  2111498 | dw,cost
 
- 
+ALTER TABLE `Page Store Dimension` DROP INDEX `Page Store Source`;
+ALTER TABLE `Page Store Dimension` DROP INDEX `Page Store Title`;
+ALTER TABLE `Page Store Dimension` DROP INDEX `Page Store Resume`;
+
+
 

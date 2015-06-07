@@ -20,47 +20,47 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons" style="float:right">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_department.php?id={$department->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Department{/t}</button> 
+						{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
+
+			<div class="buttons small" style="position:relative;top:5px">
+				<button onclick="window.location='edit_department.php?id={$department->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Department{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title"><img src="art/icons/department.png" style="height:18px;position:relative;bottom:2px" /> {$department->get('Product Department Name')} ({$department->get('Product Department Code')}) </span> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} 
+				<span class="main_title no_buttons"><img src="art/icons/department.png" style="height:18px;position:relative;bottom:2px" /> {$department->get('Product Department Name')} ({$department->get('Product Department Code')}) </span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='categories'}selected{/if}" style="display:none" id="categories"> <span> {t}Categories{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Families{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='web'}selected{/if}" id="web"> <span> {t}Web Pages{/t}</span></span></li>
-	</ul>
-	<div class="tabs_base">
-	</div>
-	<div style="padding:0 20px">
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 20px 0">
-			<div id="overview_top" style="xborder:1px solid red;padding-bottom:20px">
-				<div style="float:right">
-					<div class="buttons " style="float:right;">
-						<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
-					</div>
-					<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
-						<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
-						<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-							{$sticky_note} 
-						</div>
-					</div>
+	<div id="overview_top" style="padding:10px 20px">
+		<div style="float:right">
+			<div class="buttons small" style="float:right;">
+				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
+			</div>
+			<div id="sticky_note_div" class="sticky_note" style="clear:both;margin-top:10px;margin-right:5px">
+				<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+				<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+					{$sticky_note} 
 				</div>
-				<div style="width:200px;float:left;margin-left:0px;;padding-top:10px">
-				<div class="main_image">
-				    <img id="main_image" src="{$department->get('Product Department Main Image')}">
-</div>				
-					<table class="show_info_product">
-						<tr>
+			</div>
+		</div>
+		<div id="photo_container" style="margin-top:0px;float:left">
+			<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+				<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+					<img id="main_image" src="{$department->get('Product Department Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
+				</div>
+			</div>
+			<div style="width:160px;margin:auto;padding-top:5px;{if $department->get_number_of_images()<=1}display:none{/if}">
+				<ul class="gallery clearfix">
+					{foreach from=$department->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} 
+					<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]"><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" alt="{$image.name}" /></a> {/if} {/foreach} 
+					</ul>
+				</div>
+			</div>
+			<div style="width:350px;float:left">
+				<table class="show_info_product">
+				<tr>
 							<td>{t}Families{/t}:</td>
 							<td class="number"> 
 							<div>
@@ -76,38 +76,63 @@
 							</div>
 							</td>
 						</tr>
-					</table>
-				</div>
-				<div style="float:left;font-size:80%;text-align:center;padding:0px;padding-top:10px">
-					{*} 
-					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-						{t}Products{/t} 
-						<div id="number_products" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-							{$department->get('For Sale Products')} 
-						</div>
-					</div>
-					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-						{t}Families{/t} 
-						<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-							{$department->get('Families')} 
-						</div>
-					</div>
-					{*} 
-					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+				</table>
+				<table border=0 >
+					<tr>
+						<td colspan=2 class="aright">{$department->get_formated_discounts()}</td>
+					</tr>
+				</table>
+				
+					<div style="margin-left:10px;border:1px solid #777;float:left;width:150px;padding:5px 0px;text-align:center">
 						{t}Sales (1y){/t} 
 						<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
 							{$department->get('1 Year Acc Invoiced Amount')} <br />
 							{$department->get_sales_delta('1 Year')} 
 						</div>
 					</div>
-				</div>
+				
 				<div style="clear:both;">
 				</div>
+				
+				
 			</div>
-			<div style="clear:both;margin-top:20px;xborder:1px solid red;">
-				<span class="clean_table_title">{t}History/Notes{/t}</span> 
+			<div style="clear:both;">
+			</div>
+		</div>
+	
+	
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Public Description{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='notes'}selected{/if}" id="notes"> <span> {t}History/Notes{/t}</span></span></li>
+
+		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='categories'}selected{/if}" style="display:none" id="categories"> <span> {t}Categories{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Families{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='web'}selected{/if}" id="web"> <span> {t}Web Pages{/t}</span></span></li>
+	</ul>
+	<div class="tabs_base">
+	</div>
+	<div style="padding:0 20px">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:30px 0 20px 0">
+			
+				
+			{if $department->get('Product Department Description')==''}
+			<span style="font-style:italic;color:#777">{t}This department don't have public description{/t}</span>
+			{else}
+				{$department->get('Product Department Description')} 
+			{/if}
+					
+					
+			
+			
+			
+		</div>
+		<div id="block_notes" style="{if $block_view!='notes'}display:none;{/if}clear:both;margin:20px 0 20px 0">
+		<span class="clean_table_title">{t}History/Notes{/t}</span> 
 				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="store_history_transaction_chooser">
+					<div  class="elements_chooser" id="store_history_transaction_chooser">
 						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_department_history.Changes}selected{/if} label_department_history_changes" id="elements_department_history_changes" table_type="elements_changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_department_history_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_department_history.Notes}selected{/if} label_department_history_notes" id="elements_department_history_notes" table_type="elements_notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_department_history_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_department_history.Attachments}selected{/if} label_department_history_attachments" id="elements_department_history_attachments" table_type="elements_attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_department_history_number.Attachments}</span>)</span> 
 					</div>
 				</div>
@@ -116,9 +141,10 @@
 				{include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7 } 
 				<div id="table7" class="data_table_container dtable btable">
 				</div>
-			</div>
-		</div>
-		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:5px 0 40px 0">
+
+</div>
+		
+		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 				<div id="calendar_container" style="padding:0 20px;padding-bottom:0px;margin-top:0px;border:1px solid white">
 			<div id="period_label_container" style="{if $period==''}display:none{/if}">
 				<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span>
@@ -243,7 +269,7 @@
 
 			</div>
 		</div>
-		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_families" style="{if $block_view!='families'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span id="table_title" class="clean_table_title">{t}Families{/t} 
 	<img id="export_families" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
 			</span> 
@@ -282,7 +308,7 @@
 			<div id="table0" style="{if $families_table_type=='thumbnails'}display:none;{/if}font-size:85%" class="data_table_container dtable btable with_total">
 			</div>
 		</div>
-		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<div class="data_table" style="margin:0px;clear:both">
 				<span class="clean_table_title">{t}Products{/t} 
 	            <img id="export_products" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
@@ -341,7 +367,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		
 	
 		<span class="clean_table_title">Offers</span> 
@@ -357,7 +383,7 @@
 
 
 		</div>
-		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 			<span class="clean_table_title">{t}Pages{/t}</span> 
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>

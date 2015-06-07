@@ -360,6 +360,11 @@ button.selected, .buttons a.selected{
 
 
 .buttons button.disabled,.buttons a.disabled{color:#ccc;cursor:not-allowed}
+
+.buttons button.disabled.negative,.buttons a.disabled.negative{cursor:default}
+
+
+
 .buttons button.waiting,.buttons a.waiting{color:#ccc;cursor:wait}
 
 button.disabled:hover, .buttons a.disabled:hover,button.waiting:hover, .buttons a.waiting:hover{

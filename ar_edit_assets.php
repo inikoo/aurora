@@ -234,6 +234,8 @@ case('edit_product_properties'):
 	break;
 
 case('edit_department'):
+case('edit_department_general_description'):
+
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
@@ -320,16 +322,16 @@ function create_store($data) {
 
 	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
 	$data['values']['Store Tax Country Code']=$inikoo_account->data['Account Country Code'];
-	
+
 	$data['values']['Store Home Country Code 2 Alpha']=$country->data['Country 2 Alpha Code'];
-	
+
 	$data['values']['Store Home Country Name']=$country->data['Country Name'];
 	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
 	$data['values']['Store Timezone']=$inikoo_account->data['Account Timezone'];
 
 	$sql=sprintf("select `Tax Category Code` from `Tax Category Dimension` where  `Tax Category Default`='Yes' and `Tax Category Country Code`=%s ",
 		prepare_mysql($inikoo_account->data['Account Country Code']));
-		
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$data['values']['Store Tax Category Code']=$row['Tax Category Code'];
@@ -717,7 +719,7 @@ function edit_product() {
 		'link_properties'=>'Product Use Part Properties',
 		'link_pictures'=>'Product Use Part Pictures'
 	);
-$okey=$key;
+	$okey=$key;
 	if (array_key_exists($key,$translator))
 		$key=$translator[$key];
 	else
@@ -1621,7 +1623,28 @@ function list_products_for_edition() {
 }
 function list_families_for_edition() {
 
-	$conf=$_SESSION['state']['department']['families'];
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		exit('no parent');
+	}
+
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit('no parent key');
+	}
+
+	switch ($parent) {
+	case 'department':
+		$_conf='department';
+		break;
+	default:
+		exit('parent not valid');
+
+	}
+
+	$conf=$_SESSION['state'][$_conf]['families'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1641,10 +1664,7 @@ function list_families_for_edition() {
 	else
 		$order_dir=$conf['order_dir'];
 
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -1657,46 +1677,13 @@ function list_families_for_edition() {
 		$f_value=$conf['f_value'];
 
 
-	/*
-	if (isset( $_REQUEST['percentages'])) {
-		$percentages=$_REQUEST['percentages'];
-		$_SESSION['state']['families']['percentages']=$percentages;
-	} else
-		$percentages=$_SESSION['state']['families']['percentages'];
 
-
-
-	if (isset( $_REQUEST['period'])) {
-		$period=$_REQUEST['period'];
-		$_SESSION['state']['families']['period']=$period;
-	} else
-		$period=$_SESSION['state']['families']['period'];
-
-	if (isset( $_REQUEST['avg'])) {
-		$avg=$_REQUEST['avg'];
-		$_SESSION['state']['families']['avg']=$avg;
-	} else
-		$avg=$_SESSION['state']['families']['avg'];
-
-*/
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['parent'])) {
-		switch ($_REQUEST['parent']) {
-		case('store'):
-			$where=sprintf(' where `Product Family Store Key`=%d',$_SESSION['state']['store']['id']);
-			break;
-		case('department'):
-			$where=sprintf('  where `Product Family Main Department Key`=%d',$_SESSION['state']['department']['id']);
-			break;
-		case('none'):
-			$where=sprintf(' where true ');
-			break;
-		}
-	}
+
 
 
 
@@ -1708,16 +1695,27 @@ function list_families_for_edition() {
 
 
 
-	$_SESSION['state']['department']['families']['order']=$order;
-	$_SESSION['state']['department']['families']['order_dir']=$order_dir;
-	$_SESSION['state']['department']['families']['nr']=$number_results;
-	$_SESSION['state']['department']['families']['sf']=$start_from;
-	$_SESSION['state']['department']['families']['where']=$where;
-	$_SESSION['state']['department']['families']['f_field']=$f_field;
-	$_SESSION['state']['department']['families']['f_value']=$f_value;
+	$_SESSION['state'][$_conf]['families']['order']=$order;
+	$_SESSION['state'][$_conf]['families']['order_dir']=$order_dir;
+	$_SESSION['state'][$_conf]['families']['nr']=$number_results;
+	$_SESSION['state'][$_conf]['families']['sf']=$start_from;
+	$_SESSION['state'][$_conf]['families']['f_field']=$f_field;
+	$_SESSION['state'][$_conf]['families']['f_value']=$f_value;
 
 
-	//  $where.=" and `Product Department Key`=".$id;
+	switch ($parent) {
+	case('store'):
+		$where=sprintf(' where `Product Family Store Key`=%d',$parent_key);
+		break;
+	case 'department':
+		$where=sprintf('  where `Product Family Main Department Key`=%d',$parent_key);
+break;
+	default:
+		exit();
+
+	}
+
+
 
 
 

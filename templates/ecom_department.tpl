@@ -4,12 +4,10 @@
 		<div class="description_block">
 			<img id="main_image" class="image" src="{$department->get('Product Department Main Image')}" /> 
 			<div class="content">
+				
 				<h1>
-					{$department->get('Product Department Code')}
-				</h1>
-				<h2>
 					{$department->get('Product Department Name')}
-				</h2>
+				</h1>
 				<div class="description">
 					{$department->get('Product Department Description')} 
 				</div>

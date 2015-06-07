@@ -4292,6 +4292,7 @@ $default_state=array(
 	'department'=>array(
 		'block_view'=>'families',
 		'sales_sub_block_tipo'=>'plot_department_sales',
+		'edit_details_subtab'=>'code',
 
 		'view'=>'general',
 		'period'=>'all',

@@ -31,7 +31,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-	// 'css/images.css',
+	'css/calendar.css',
 	'css/d3_calendar.css',
 	'theme.css.php'
 );

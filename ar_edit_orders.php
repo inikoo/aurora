@@ -3982,6 +3982,9 @@ function refund_order($data) {
 	$date=gmdate("Y-m-d H:i:s");
 	$order=new Order($data['order_key']);
 
+    
+
+
 	$refund=$order->create_refund(array(
 			'Invoice Metadata'=>'',
 			'Invoice Date'=>$date
