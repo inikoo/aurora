@@ -24,8 +24,8 @@ var dialog_change_families_display;
 var dialog_change_products_display;
 
 function change_block(){
-ids=['details','families','products','categories','deals','web','sales'];
-block_ids=['block_details','block_families','block_products','block_categories','block_deals','block_web','block_sales'];
+ids=['details','families','products','categories','deals','web','sales','notes'];
+block_ids=['block_details','block_families','block_products','block_categories','block_deals','block_web','block_sales','block_notes'];
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
@@ -153,7 +153,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    ,{key:"sales", label:"<?php echo _('Sales')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"delta_sales", label:"<?php echo '1y&Delta; '._('Sales')?>", width:80,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
 				    ,{key:"profit", label:"<?php echo _('Profit')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"outofstock", label:"<?php echo _('Out of Stk')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -721,9 +720,9 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
+				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
+				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:500}
                       ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'store_history'}
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'store_history'}
 
@@ -1218,7 +1217,7 @@ function init() {
 
 
 
-    Event.addListener(['details', 'families', 'products', 'categories', 'deals', 'web', 'sales'], "click", change_block);
+    Event.addListener(['details', 'families', 'products', 'categories', 'deals', 'web', 'sales','notes'], "click", change_block);
 
 	
     init_search('products_store');

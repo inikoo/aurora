@@ -92,7 +92,7 @@
 		</div>
 		
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-			<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Public Description{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='notes'}selected{/if}" id="notes"> <span> {t}History/Notes{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='categories'}selected{/if}" id="categories"> <span> {t}Categories{/t}</span></span></li>
@@ -203,12 +203,21 @@
 	</div>
 </div>
 		
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<span class="clean_table_title">{t}Description{/t}</span> 
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:30px 0 40px 0">
+			<span class="clean_table_title">{t}Public Description (To be shown in the website){/t}</span> 
 			<div class="table_top_bar space">
 			</div>
 			<div>
+			
+				
+				
+				{if $family->get('Product Family Description')==''}
+			<span style="font-style:italic;color:#777">{t}This family don't have public description{/t}
+			{else}
 				{$family->get('Product Family Description')} 
+			{/if}
+				
+				
 			</div>
 		</div>
 		

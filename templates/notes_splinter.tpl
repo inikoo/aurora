@@ -35,7 +35,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"> <textarea style="width:200px;height:100px" id="edit_note_input" onkeyup="change(event,this,'edit_note')"></textarea> </td>
+			<td colspan="2"> <textarea style="width:200px;height:100px" id="edit_note_input" onkeyup="change_notes(event,this,'edit_note')"></textarea> </td>
 		</tr>
 		<tr>
 			<td colspan="2"> 
@@ -51,7 +51,7 @@
 	</div>
 	<table>
 		<tr>
-			<td> <textarea style="width:330px;height:125px" id="sticky_note_input" onkeyup="change(event,this,'sticky_note')">{$sticky_note}</textarea> </td>
+			<td> <textarea style="width:330px;height:125px" id="sticky_note_input" onkeyup="change_notes(event,this,'sticky_note')">{$sticky_note}</textarea> </td>
 		</tr>
 		<tr>
 			<td> 

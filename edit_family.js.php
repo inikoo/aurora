@@ -192,24 +192,20 @@ function change_block(e){
    
 }
 
-function change_details_sublock(e){
-   
-   ids=['details_subtab_department','details_subtab_code','details_subtab_info','details_subtab_discounts','details_subtab_pictures']
-   
-      block_ids=['d_details_subtab_department','d_details_subtab_code','d_details_subtab_info','d_details_subtab_discounts','d_details_subtab_pictures']
+function change_details_sublock(e) {
 
-   sub_block=Dom.get(this).getAttribute('block_id')
-  
-     Dom.setStyle(block_ids,'display','none');
-    
- 	 Dom.get('d_details_subtab_'+sub_block).style.display='';
-	 Dom.removeClass(ids,'selected');
-	 Dom.addClass(this, 'selected');
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-edit_details_subtab&value='+sub_block ,{});
-	 
-	 
-    
+    ids = ['details_subtab_department', 'details_subtab_code', 'details_subtab_info', 'details_subtab_discounts', 'details_subtab_pictures', 'details_subtab_type']
 
+    block_ids = ['d_details_subtab_department', 'd_details_subtab_code', 'd_details_subtab_info', 'd_details_subtab_discounts', 'd_details_subtab_pictures', 'd_details_subtab_type']
+
+    sub_block = Dom.get(this).getAttribute('block_id')
+
+    Dom.setStyle(block_ids, 'display', 'none');
+
+    Dom.get('d_details_subtab_' + sub_block).style.display = '';
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=family-edit_details_subtab&value=' + sub_block, {});
 
 }
 
@@ -1487,6 +1483,10 @@ dialog_department_list.show()
 }
 
 
+function change_sales_type(value,o){
+
+}
+
 function init(){
 
 
@@ -1515,6 +1515,7 @@ Event.addListener("show_delete_family_dialog", "click", show_dialog_delete_famil
 
     ,'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
     ,'family_general_description':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
+    ,'family_sales_type':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('family_key').value}
  
 };
 
@@ -1556,6 +1557,9 @@ Event.addListener("show_delete_family_dialog", "click", show_dialog_delete_famil
 			'validation': false
 		}
 	}  
+	 ,'family_sales_type':{
+	'sales_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Sales_Type','ar':false,'validation':false}
+    }
 
 
 };
@@ -1569,7 +1573,7 @@ Event.addListener("show_delete_family_dialog", "click", show_dialog_delete_famil
     
 
    
-   ids=['details_subtab_department','details_subtab_code','details_subtab_info','details_subtab_discounts','details_subtab_pictures']
+   ids=['details_subtab_department','details_subtab_code','details_subtab_info','details_subtab_discounts','details_subtab_pictures','details_subtab_type']
     YAHOO.util.Event.addListener(ids, "click", change_details_sublock);
     
     // YAHOO.util.Event.addListener('add_product', "click", show_add_product_dialog);

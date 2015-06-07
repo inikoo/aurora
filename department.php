@@ -28,9 +28,6 @@ if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ) {
 $department=new Department($department_id);
 $department->load_acc_data();
 
-$department->update_product_data();
-$department->update_families();
-
 
 
 //$department->update_sales_averages();
@@ -95,6 +92,7 @@ $css_files=array(
 	'css/button.css',
 	'css/table.css',
 	'css/d3_calendar.css',
+	'css/calendar.css',
 	'css/department.css',
 	'theme.css.php'
 );

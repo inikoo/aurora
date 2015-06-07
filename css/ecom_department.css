@@ -33,6 +33,6 @@ h2 {font-family: "Ubuntu",Helvetica,Arial,sans-serif;font-size:110%;margin-top:1
 .description_block{margin-bottom:20px;background:#fff;padding:10px 20px;border:1px solid #eee}
 .description_block .image{vertical-align:middle;float:left;max-height:180px;max-width:300px;border:1px solid #ccc;padding:15px}
 .description_block .content{margin-left:50px;float:left;max-width:500px;width:100%}
-.description_block .content h1{float:right;font-size:140%;font-weight:800}
+.description_block .content h1{font-size:140%;font-weight:800;padding:5px 0px 10px 0px}
 .description_block .content h2{font-size:120%;padding:5px 0px 10px 0px}
 

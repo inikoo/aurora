@@ -11,7 +11,7 @@
 		<input type="hidden" id="scope_key" value="{$family->id}"> 
 		<input type="hidden" id="products_table_id" value="0"> 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}" >{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> &rarr; <a href="family.php?id={$family->id}" title="{$family->get('Product Family Name')}">{$family->get('Product Family Code')}</a> ({t}Editing{/t})</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> &rarr; <a href="family.php?id={$family->id}" title="{$family->get('Product Family Name')}">{$family->get('Product Family Code')}</a> ({t}Editing{/t})</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
@@ -34,7 +34,7 @@
 	<div class="tabbed_container no_padding">
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='type'}selected{/if}" id="details_subtab_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
+				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='type'}selected{/if}" id="details_subtab_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Public Description{/t}</button> <button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -92,7 +92,7 @@
 				<div class="data_table" sxtyle="margin:25px 10px;">
 					<span class="clean_table_title" style="margin-right:5px">{t}Deals{/t}</span> 
 					<div class="buttons small left">
-						<button id="add_deal" onClick="location.href='new_deal.php?parent=family&parent_key={$family->id}'"> <img src="art/icons/add.png"> {t}New{/t}</button> 
+						<button id="add_deal" onclick="location.href='new_deal.php?parent=family&parent_key={$family->id}'"> <img src="art/icons/add.png"> {t}New{/t}</button> 
 					</div>
 					<div class="table_top_bar space">
 					</div>
@@ -102,8 +102,7 @@
 				</div>
 			</div>
 			<div id="d_details_subtab_department" style="{if $edit_details_subtab!='department' }display:none{/if};padding:20px">
-					<input type="hidden" id="Family_Department_Key" value="{$family->get('Product Family Main Department Key')}" ovalue="{$family->get('Product Family Main Department Key')}" oformatedvalue="{$family->get('Product Family Main Department Code')}" oformatedvalue_bis="{$family->get('Product Family Main Department Name')}">
-
+				<input type="hidden" id="Family_Department_Key" value="{$family->get('Product Family Main Department Key')}" ovalue="{$family->get('Product Family Main Department Key')}" oformatedvalue="{$family->get('Product Family Main Department Code')}" oformatedvalue_bis="{$family->get('Product Family Main Department Name')}"> 
 				<table style="clear:both;width:800px" class="edit" border="0">
 					<tr class="title">
 						<td colspan="5">{t}Department{/t}</td>
@@ -113,23 +112,20 @@
 						<td style="text-align:left"> <span id="current_department_code">{$family->get('Product Family Main Department Code')}</span>, <span id="current_department_name">{$family->get('Product Family Main Department Name')}</span> <img id="edit_family_department" style="margin-left:5px;cursor:pointer" src="art/icons/edit.gif" alt="{t}Edit{/t}" title="{t}Edit{/t}" /s> </td>
 						<td style="width:200px" id="Family_Department_Key_msg" class="edit_td_alert"></td>
 					</tr>
-					
 					<tr class="buttons">
-							<td></td>
-							<td > 
-							<div class="buttons" style="float:left">
-								<button class="positive disabled" id="save_edit_family_department">{t}Save{/t}</button> 
-								<button class="negative disabled" id="reset_edit_family_department">{t}Reset{/t}</button> 
-							</div>
-							</td>
-						</tr>
-					
+						<td></td>
+						<td> 
+						<div class="buttons" style="float:left">
+							<button class="positive disabled" id="save_edit_family_department">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_family_department">{t}Reset{/t}</button> 
+						</div>
+						</td>
+					</tr>
 				</table>
 			</div>
 			<div id="d_details_subtab_info" style="{if $edit_details_subtab!='info' }display:none{/if}">
 				<table class="edit" style="width:890px;padding:20px;margin-left:20px;margin-top:10px">
 					<tr class="title space10">
-						<td>{t}Family Description{/t} <span id="Family_Description_msg"></span></td>
+						<td>{t}Public Description (To be shown in the website){/t} <span id="Family_Description_msg"></span></td>
 						<td> 
 						<div class="buttons small">
 							<button style="margin-right:10px" id="save_edit_family_general_description" class="positive disabled">{t}Save{/t}</button> <button style="margin-right:10px" id="reset_edit_family_general_description" class="negative disabled">{t}Reset{/t}</button> 
@@ -140,33 +136,32 @@
 					</tr>
 				</table>
 				<form onsubmit="return false;" style="position:relative;left:-3px">
-<textarea id="Family_Description" ovalue="{$family->get('Product Family Description')|escape}" rows="20" cols="75">{$family->get('Product Family Description')|escape}</textarea> 
+					<textarea id="Family_Description" ovalue="{$family->get('Product Family Description')|escape}" rows="20" cols="75">{$family->get('Product Family Description')|escape}</textarea> 
 				</form>
 			</div>
-			<div id="d_details_subtab_type" style="{if $edit_details_subtab!='type' }display:none{/if}">
-			<table class="edit" style="width:100%">
-						<tr class="title">
-							<td colspan="3">{t}Sales Type{/t}</td>
-						</tr>
-						<tr class="first">
-							<td style="width:180px" class="label">{t}Family Type{/t}:</td>
-							<td style="width:600px" class="buttons left small"> 
-							<input type="hidden" id="Family_Sales_Type" value="{$sales_type}" ovalue="{$sales_type}" tag="{$sales_type}|replace:' ':'_'"> 
-							<div class="buttons" id="sales_type_options">
-								<button id="family_sales_type_Public_Sale" class="item {if $sales_type=='Public Sale'}selected{/if}" onclick="change_sales_type('Public Sale', this)" tag="Public_Sale" >{t}Public Sale{/t}</button> 
-								<button id="family_sales_type_Private_Sale" class="item {if $sales_type=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale',this)" tag="Private_Sale">{t}Private Sale{/t}</button> 
-								<button id="family_sales_type_Not_for_Sale_Sa" class="item {if $sales_type=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', this)" tag="Not_For_Sale">{t}Not For Sale{/t}</button> 
-							</div>
-							</td>
-						</tr>
-						<tr class="buttons">
-							<td colspan="2"> 
-							<div class="buttons" style="float:right">
-								<button class="positive disabled" id="save_edit_family_sales_type">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_family_sales_type">{t}Reset{/t}</button> 
-							</div>
-							</td>
-						</tr>
-					</table>
+			<div id="d_details_subtab_type" style="{if $edit_details_subtab!='type' }display:none{/if};padding:20px">
+				<table class="edit" style="width:100%;padding:20px" border="0">
+					<tr class="title">
+						<td colspan="3">{t}Sales Type{/t}</td>
+					</tr>
+					<tr class="first">
+						<td style="width:180px" class="label">{t}Family Type{/t}:</td>
+						<td style="width:600px" class="buttons left small"> 
+						<input type="hidden" id="Family_Sales_Type" value="{$sales_type}" ovalue="{$sales_type}" tag="{$sales_type}|replace:' ':'_'"> 
+						<div class="buttons" id="sales_type_options">
+							<button id="family_sales_type_Public_Sale" class="item {if $family->get('Product Family Sales Type')=='Public Sale'}selected{/if}" onclick="change_sales_type('Public Sale', this)" tag="Public_Sale">{t}Public Sale{/t}</button> <button id="family_sales_type_Private_Sale" class="item {if $family->get('Product Family Sales Type')=='Private Sale'}selected{/if}" onclick="change_sales_type('Private Sale',this)" tag="Private_Sale">{t}Private Sale{/t}</button> <button id="family_sales_type_Not_for_Sale_Sa" class="item {if $family->get('Product Family Sales Type')=='Not for Sale'}selected{/if}" onclick="change_sales_type('Not For Sale', this)" tag="Not_For_Sale">{t}Not For Sale{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr class="buttons">
+						<td></td>
+						<td> 
+						<div class="buttons left">
+							<button class="negative disabled" id="reset_edit_family_sales_type">{t}Reset{/t}</button> <button class="positive disabled" id="save_edit_family_sales_type">{t}Save{/t}</button> 
+						</div>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div id="d_web" class="edit_block" style="margin:0;padding:0 0px;{if $edit!='web'}display:none{/if};">
