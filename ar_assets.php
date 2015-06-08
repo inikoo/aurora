@@ -7848,7 +7848,7 @@ function list_favorite_products() {
 	elseif ($order=='customers')
 		$order='count(distinct F.`Customer Key`)';
 	elseif ($order=='last_favorited')
-		$order='`Date Created``';
+		$order='last_favorited';
 	else
 		$order='`Product Code File As`';
 
