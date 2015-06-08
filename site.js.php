@@ -9,8 +9,8 @@ include_once('common.php');
 
 
  function change_block() {
-    ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries', 'changelog', 'email_reminders', 'products'];
-    block_ids = ['block_products', 'block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries', 'block_changelog', 'block_email_reminders'];
+    ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries', 'changelog', 'email_reminders', 'products','favorites'];
+    block_ids = ['block_products', 'block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries', 'block_changelog', 'block_email_reminders','block_favorites'];
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
@@ -27,7 +27,18 @@ include_once('common.php');
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-view&value=' + this.id, {});
 }
 
+ function change_favorites_block(){
+     ids = ['favorites_products', 'favorites_customers'];
+     block_ids = ['block_favorites_products', 'block_favorites_customers'];
+     Dom.setStyle(block_ids, 'display', 'none');
+     Dom.setStyle('block_' + this.id, 'display', '');
+    
+     Dom.removeClass(ids, 'selected');
+     Dom.addClass(this, 'selected');
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-favorites_block&value=' + this.getAttribute('block_id'), {});
+
  
+ }
   
     function change_email_reminders_block() {
    ids = ['email_reminders_requests', 'email_reminders_customers','email_reminders_products'];
@@ -1206,6 +1217,157 @@ request="ar_sites.php?tipo=requests&parent=site&tableid="+tableid+"&parent_key="
 	    this.table11.filter={key:'<?php echo$_SESSION['state']['site']['requests']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['requests']['f_value']?>'};
 
 
+var tableid=12; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"customers", label:"<?php echo _('Customers')?>", width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+					,{key:"last_favorited", label:"<?php echo _('Last Favorited')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}		    
+
+				    
+				     ];
+
+request="ar_assets.php?tipo=favorite_products&parent=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value+'&to='+Dom.get('to').value+'&from='+Dom.get('from').value
+	this.dataSource12 = new YAHOO.util.DataSource(request);
+	    this.dataSource12.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource12.connXhrMode = "queueRequests";
+	    this.dataSource12.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'code','name','customers','last_favorited'
+						 ]};
+	    
+	    this.table12 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource12, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['favorites_products']['nr']?>,
+									      containers : 'paginator12', 
+
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info12'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+
+									 key: "<?php echo$_SESSION['state']['site']['favorites_products']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['favorites_products']['order_dir']?>"
+
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table12.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table12.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table12.doBeforePaginatorChange = mydoBeforePaginatorChange;
+ this.table12.request=request;
+  this.table12.table_id=tableid;
+     this.table12.subscribe("renderEvent", myrenderEvent);
+
+	    
+
+	    this.table12.filter={key:'<?php echo$_SESSION['state']['site']['favorites_products']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['favorites_products']['f_value']?>'};
+
+
+
+
+
+ var tableid=14; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+
+				    {key:"name", label:"<?php echo _('Customer')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"products", label:"<?php echo _('Products')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+					,{key:"last_favorited", label:"<?php echo _('Last Favorited')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}		    
+
+				    
+				     ];
+
+request="ar_contacts.php?tipo=customers_how_favorite_a_product&parent=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value+'&to='+Dom.get('to').value+'&from='+Dom.get('from').value
+	//alert(request)
+	this.dataSource14 = new YAHOO.util.DataSource(request);
+	    this.dataSource14.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource14.connXhrMode = "queueRequests";
+	    this.dataSource14.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'name','products','last_favorited'
+						 ]};
+	    
+	    this.table14 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource14, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['favorites_customers']['nr']?>,
+									      containers : 'paginator14', 
+
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info14'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+
+									 key: "<?php echo$_SESSION['state']['site']['favorites_customers']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['favorites_customers']['order_dir']?>"
+
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table14.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table14.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table14.doBeforePaginatorChange = mydoBeforePaginatorChange;
+ this.table14.request=request;
+  this.table14.table_id=tableid;
+     this.table14.subscribe("renderEvent", myrenderEvent);
+
+	    
+
+	    this.table14.filter={key:'<?php echo$_SESSION['state']['site']['favorites_customers']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['favorites_customers']['f_value']?>'};
+
+
 
 
 
@@ -1958,10 +2120,15 @@ function get_requests_numbers(from, to) {
 
 
      init_search('site');
-     ids = ['details', 'pages', 'hits', 'visitors', 'reports', 'search_queries', 'changelog', 'email_reminders', 'products'];
+     ids = ['details', 'pages', 'hits', 'visitors', 'reports', 'search_queries', 'changelog', 'email_reminders', 'products','favorites'];
      Event.addListener(ids, "click", change_block);
+     
      ids = ['search_queries_queries', 'search_queries_history'];
      Event.addListener(ids, "click", change_search_queries_block);
+     
+     ids = ['favorites_products', 'favorites_customers'];
+     Event.addListener(ids, "click", change_favorites_block);
+     
 
      ids = ['email_reminders_requests', 'email_reminders_customers', 'email_reminders_products'];
      Event.addListener(ids, "click", change_email_reminders_block);
@@ -2013,6 +2180,15 @@ ids = ['page_state_elements_Online', 'page_state_elements_Offline'];
      
      YAHOO.util.Event.addListener('clean_table_filter_show11', "click", show_filter, 11);
      YAHOO.util.Event.addListener('clean_table_filter_hide11', "click", hide_filter, 11);
+
+     YAHOO.util.Event.addListener('clean_table_filter_show12', "click", show_filter, 12);
+     YAHOO.util.Event.addListener('clean_table_filter_hide12', "click", hide_filter, 12);
+
+
+     YAHOO.util.Event.addListener('clean_table_filter_show14', "click", show_filter, 14);
+     YAHOO.util.Event.addListener('clean_table_filter_hide14', "click", hide_filter, 14);
+
+
      
      var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
      oACDS.queryMatchContains = true;
@@ -2089,6 +2265,20 @@ ids = ['page_state_elements_Online', 'page_state_elements_Offline'];
      oACDS11.table_id = 11;
      var oAutoComp11 = new YAHOO.widget.AutoComplete("f_input11", "f_container11", oACDS11);
      oAutoComp11.minQueryLength = 0;
+
+  var oACDS12 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS12.queryMatchContains = true;
+     oACDS12.table_id = 12;
+     var oAutoComp12 = new YAHOO.widget.AutoComplete("f_input12", "f_container12", oACDS12);
+     oAutoComp12.minQueryLength = 0;
+
+
+
+  var oACDS14 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS14.queryMatchContains = true;
+     oACDS14.table_id = 14;
+     var oAutoComp14 = new YAHOO.widget.AutoComplete("f_input14", "f_container14", oACDS14);
+     oAutoComp14.minQueryLength = 0;
 
 
 
@@ -2316,6 +2506,39 @@ YAHOO.util.Event.onContentReady("rppmenu4", function() {
  YAHOO.util.Event.onContentReady("filtermenu11", function() {
      var oMenu = new YAHOO.widget.ContextMenu("filtermenu11", {
          trigger: "filter_name11"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+ 
+   YAHOO.util.Event.onContentReady("rppmenu12", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu12", {
+         trigger: "rtext_rpp12"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu12", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu12", {
+         trigger: "filter_name12"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ 
+ 
+ 
+   YAHOO.util.Event.onContentReady("rppmenu14", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu14", {
+         trigger: "rtext_rpp14"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+ YAHOO.util.Event.onContentReady("filtermenu14", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu14", {
+         trigger: "filter_name14"
      });
      oMenu.render();
      oMenu.subscribe("show", oMenu.focus);

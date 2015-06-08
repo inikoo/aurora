@@ -20,6 +20,12 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case 'customers_how_favorite_a_product':
+
+
+	list_customers_how_favorite_a_product();
+
+	break;
 
 case ('get_address_data'):
 
@@ -1003,8 +1009,8 @@ function list_assets_dispatched_to_customer() {
 
 	if (isset( $_REQUEST['customer_key'])) {
 		$customer_key=$_REQUEST['customer_key'];
-	} else{
-	    exit;
+	} else {
+		exit;
 	}
 
 
@@ -6091,5 +6097,272 @@ function get_address_data($data) {
 	echo json_encode($response);
 
 }
+
+
+
+function list_customers_how_favorite_a_product() {
+
+	if (isset($_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		exit();
+	}
+	
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit();
+	}
+	
+	switch ($parent) {
+	    case 'site':
+	        $_conf='site';
+	        break;
+	        case 'store':
+	        $_conf='store';
+	        break; 
+	    default:
+	        exit();
+	        break;
+	}
+	
+		$conf=$_SESSION['state'][$_conf]['favorites_customers'];
+
+
+	
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	$_SESSION['state'][$_conf]['favorites_customers']['order']=$order;
+	$_SESSION['state'][$_conf]['favorites_customers']['order_dir']=$order_direction;
+	$_SESSION['state'][$_conf]['favorites_customers']['nr']=$number_results;
+	$_SESSION['state'][$_conf]['favorites_customers']['sf']=$start_from;
+	$_SESSION['state'][$_conf]['favorites_customers']['f_field']=$f_field;
+	$_SESSION['state'][$_conf]['favorites_customers']['f_value']=$f_value;
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+	$table=' `Customer Favorite Product Bridge` F left join `Customer Dimension` CD on (F.`Customer Key`=CD.`Customer Key`)          ';
+
+
+    switch ($parent) {
+        case 'site':
+            $where=sprintf(' where `Site Key`=%d',$parent_key);
+            break;
+           case 'store':
+            $where=sprintf(' where `Store Key`=%d',$parent_key);
+            break; 
+        default:
+            exit();
+            break;
+    }
+
+
+	$wheref="";
+
+
+	if ($f_field=='name'  and $f_value!='')
+		$wheref.=" and `Customer Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='country' and  $f_value!='') {
+		if ($f_value=='UNK') {
+			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+			$find_data=' '._('a unknown country');
+		} else {
+
+			$f_value=Address::parse_country($f_value);
+			if ($f_value!='UNK') {
+				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+				$country=new Country('code',$f_value);
+				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+			}
+
+		}
+	}
+
+	$sql="select count(distinct F.`Customer Key`) as total from  $table  $where $wheref";
+	//   print $mode.' '.$sql;
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(distinct F.`Customer Key`) as total from  $table  $where      ";
+
+		$res = mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+	else {
+		$rtext_rpp='';
+	}
+
+
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+			break;
+
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+			break;
+
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+			break;
+
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('last_less'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if ($order=='name')
+		$order='`Customer File As`';
+	elseif ($order=='products')
+		$order='count(distinct `Product ID`)';
+	elseif ($order=='last_favorited')
+		$order='`Date Created``';
+	else
+		$order='`Customer File As`';
+
+
+	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`, count(distinct `Product ID`) as products ,max(F.`Date Created`) as last_favorited from    $table   $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
+
+
+	$data=array();
+	//print $sql;
+	$res = mysql_query($sql);
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		$data[]=array(
+			'name'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>',$row['customer_id'],$row['Customer Name']),
+			'products'=>number($row['products']),
+			'last_favorited'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['last_favorited'].' +0:00')),
+			
+
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
 
 ?>

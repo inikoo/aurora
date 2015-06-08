@@ -2350,7 +2350,7 @@ function search_site($data) {
 
 	//`Page Store Title`,`Page Store Description`,`Page Store Source`)
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Search Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Title`) AGAINST ("%s")  ',
 
 		addslashes($q),
 		addslashes($data['site_key']),
@@ -2368,7 +2368,7 @@ function search_site($data) {
 
 	}
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Description`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Description`) AGAINST ("%s")  ',
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Resume`) AGAINST ("%s") AS score  from `Page Store Search Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Resume`) AGAINST ("%s")  ',
 
 		addslashes($q),
 		addslashes($data['site_key']),
@@ -2386,12 +2386,13 @@ function search_site($data) {
 	}
 
 
-	$sql=sprintf('select `Page Key`, MATCH (`Page Store Source`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Source`) AGAINST ("%s")  ',
+	$sql=sprintf('select `Page Key`, MATCH (`Page Store Content`) AGAINST ("%s") AS score  from `Page Store Search Dimension`   where `Page Site Key` in (%s) and MATCH (`Page Store Content`) AGAINST ("%s")  ',
 
 		addslashes($q),
 		addslashes($data['site_key']),
 		addslashes($q)
 	);
+	
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if (isset($candidates[$row['Page Key']])) {

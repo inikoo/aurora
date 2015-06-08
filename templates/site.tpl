@@ -40,6 +40,8 @@
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Pageviews{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='search_queries'}selected{/if}" id="search_queries"> <span> {t}Search Queries{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='favorites'}selected{/if}" id="favorites"> <span> {t}Favourites{/t}</span></span></li>
+
 		<li> <span class="item {if $block_view=='email_reminders'}selected{/if}" id="email_reminders"> <span> {t}Reminders{/t}</span></span></li>
 		<li style="display:none"> <span class="item {if $block_view=='reports'}selected{/if}" id="reports"> <span> {t}Reports{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='changelog'}selected{/if}" id="changelog"> <span> {t}Changelog{/t}</span></span></li>
@@ -432,6 +434,38 @@
 		<div id="table4" class="data_table_container dtable btable history">
 		</div>
 	</div>
+	
+	
+	<div id="block_favorites" style="{if $block_view!='favorites'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0">
+		<div style="padding:0px">
+			<div class="buttons small left tabs">
+				<button class="indented item {if $favorites_block_view=='products'}selected{/if}" id="favorites_products" block_id="products">{t}Products{/t}</button> 
+				<button class=" item {if $favorites_block_view=='customers'}selected{/if}" id="favorites_customers" block_id="customers">{t}Customers{/t}</button> 
+			</div>
+			<div class="tabs_base">
+			</div>
+			<div style="padding:0 20px">
+				<div id="block_favorites_products" style="{if $favorites_block_view!='products'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+					<span class="clean_table_title">{t}Products{/t}</span> 
+					<div class="table_top_bar space">
+					</div>
+					{include file='table_splinter.tpl' table_id=12 filter_name=$filter_name12 filter_value=$filter_value12 no_filter=0 } 
+					<div id="table12" class="data_table_container dtable btable" style="font-size:85%">
+					</div>
+				</div>
+				<div id="block_favorites_customers" style="{if $favorites_block_view!='customers'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+					<span class="clean_table_title">{t}Customers{/t}</span> 
+					<div class="table_top_bar space">
+					</div>
+					{include file='table_splinter.tpl' table_id=14 filter_name=$filter_name14 filter_value=$filter_value14 no_filter=0 } 
+					<div id="table14" class="data_table_container dtable btable" style="font-size:85%">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
 </div>
 <div id="change_pages_table_type_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">
@@ -692,6 +726,49 @@
 			<li style="text-align:left;margin-left:11px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
 			{foreach from=$filter_menu11 item=menu } 
 			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',11)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu12" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:12px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu12 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},12)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu12" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:12px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu12 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',12)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
+<div id="rppmenu14" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:14px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu14 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},14)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu14" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:14px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu14 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',14)"> {$menu.menu_label}</a></li>
 			{/foreach} 
 		</ul>
 	</div>

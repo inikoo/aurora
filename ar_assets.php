@@ -37,6 +37,10 @@ if (count($user->stores)==0) return;
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case 'favorite_products':
+
+list_favorite_products();
+break;
 case ('get_history_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'subject'=>array('type'=>'string'),
@@ -439,7 +443,7 @@ function list_departments() {
 	$_SESSION['state'][$conf_table]['departments']['avg']=$avg;
 
 
-	include_once('splinters/departments_prepare_list.php');
+	include_once 'splinters/departments_prepare_list.php';
 
 
 	$sql="select count(*) as total from $table $where $wheref";
@@ -5486,10 +5490,6 @@ function list_customers_who_order_product() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -5505,7 +5505,16 @@ function list_customers_who_order_product() {
 	else
 		$tableid=0;
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['product']['custumers']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'tag'=>$tag,'mode'=>$mode);
+
+	$_SESSION['state']['product']['customers']['order']=$order;
+	$_SESSION['state']['product']['customers']['order_dir']=$order_direction;
+	$_SESSION['state']['product']['customers']['nr']=$number_results;
+	$_SESSION['state']['product']['customers']['sf']=$start_from;
+	$_SESSION['state']['product']['customers']['f_field']=$f_field;
+	$_SESSION['state']['product']['customers']['f_value']=$f_value;
+	$_SESSION['state']['product']['customers']['tag']=$tag;
+	$_SESSION['state']['product']['customers']['mode']=$mode;
+
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
@@ -5513,13 +5522,13 @@ function list_customers_who_order_product() {
 	$table=' `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)          ';
 
 	if ($mode=='code') {
-		$where=$where.sprintf(" and OTF.`Product Code`=%s ",prepare_mysql($tag));
+		$where=sprintf(" where OTF.`Product Code`=%s ",prepare_mysql($tag));
 
 	}
 	elseif ($mode=='pid')
-		$where=$where.sprintf(" and OTF.`Product ID`=%d ",$tag);
+		$where=printf(" where OTF.`Product ID`=%d ",$tag);
 	elseif ($mode=='key')
-		$where=$where.sprintf(" and OTF.`Product Key`=%d ",$tag);
+		$where=sprintf(" where  OTF.`Product Key`=%d ",$tag);
 
 
 	$wheref="";
@@ -5571,8 +5580,11 @@ function list_customers_who_order_product() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=_("Showing all customers");
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+	else {
+		$rtext_rpp='';
+	}
 
 
 
@@ -7674,5 +7686,214 @@ function get_history_numbers($data) {
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 }
+
+
+function list_favorite_products() {
+
+	if (isset($_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		exit();
+	}
+	
+	if (isset($_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		exit();
+	}
+	
+	switch ($parent) {
+	    case 'site':
+	        $_conf='site';
+	        break;
+	        case 'store':
+	        $_conf='store';
+	        break; 
+	    default:
+	        exit();
+	        break;
+	}
+	
+		$conf=$_SESSION['state'][$_conf]['favorites_products'];
+
+
+	
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	$_SESSION['state'][$_conf]['favorites_products']['order']=$order;
+	$_SESSION['state'][$_conf]['favorites_products']['order_dir']=$order_direction;
+	$_SESSION['state'][$_conf]['favorites_products']['nr']=$number_results;
+	$_SESSION['state'][$_conf]['favorites_products']['sf']=$start_from;
+	$_SESSION['state'][$_conf]['favorites_products']['f_field']=$f_field;
+	$_SESSION['state'][$_conf]['favorites_products']['f_value']=$f_value;
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+	$table=' `Customer Favorite Product Bridge` F left join `Product Dimension` P on (F.`Product ID`=P.`Product ID`)';
+
+
+    switch ($parent) {
+        case 'site':
+            $where=sprintf(' where `Site Key`=%d',$parent_key);
+            break;
+           case 'store':
+            $where=sprintf(' where `Store Key`=%d',$parent_key);
+            break; 
+        default:
+            exit();
+            break;
+    }
+
+
+	$wheref="";
+
+
+	if ($f_field=='code'  and $f_value!='')
+		$wheref.=" and `Product Code` like '".addslashes($f_value)."%'";
+	
+	$sql="select count(distinct F.`Product ID`) as total from  $table  $where $wheref";
+	//   print $mode.' '.$sql;
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(distinct F.`Product ID`) as total from  $table  $where      ";
+
+		$res = mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($res);
+	}
+
+
+	$rtext=number($total_records)." ".ngettext('product','products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	elseif ($total_records>10)
+		$rtext_rpp=' ('._("Showing all").')';
+	else {
+		$rtext_rpp='';
+	}
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product code like")." <b>$f_value</b> ";
+			break;
+	
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('product','products',$total)." "._('with code like')." <b>*".$f_value."*</b>";
+			break;
+		
+		}
+	}
+	else
+		$filter_msg='';
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if ($order=='code')
+		$order='`Product Code File As`';
+	elseif ($order=='name')
+		$order='`Product Name`';	
+	elseif ($order=='customers')
+		$order='count(distinct F.`Product ID`)';
+	elseif ($order=='last_favorited')
+		$order='`Date Created``';
+	else
+		$order='`Product Code File As`';
+
+
+	$sql="select   F.`Product ID` ,`Product Code`,`Product Name`, count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as last_favorited from    $table   $where $wheref  group by F.`Product ID`    order by $order $order_direction  limit $start_from,$number_results ";
+
+
+	$data=array();
+	$res = mysql_query($sql);
+
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		$data[]=array(
+			'code'=>sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']),
+			'name'=>$row['Product Name'],
+
+			'customers'=>number($row['customers']),
+			'last_favorited'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['last_favorited'].' +0:00')),
+			
+
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
 
 ?>

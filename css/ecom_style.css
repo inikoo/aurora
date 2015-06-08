@@ -5,7 +5,7 @@ a:hover{text-decoration: underline;}
 #hd{margin-top:24px}
 
 
-span.link{color:#EEE;cursor:pointer;margin-left:15px;font-weight:800}
+span.link{color:#EEE;cursor:pointer;margin-left:15px;font-weight:800;font-size:95%}
 span.link:hover{text-decoration:underline;color:#FFF;}
 #show_actions_dialog,.dummy_img{cursor:pointer;margin-left:10px;height:22px;vertical-align:-6px;}
 #top_bar{
