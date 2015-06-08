@@ -6319,7 +6319,7 @@ function list_customers_how_favorite_a_product() {
 	elseif ($order=='products')
 		$order='count(distinct `Product ID`)';
 	elseif ($order=='last_favorited')
-		$order='`Date Created``';
+		$order='last_favorited';
 	else
 		$order='`Customer File As`';
 
