@@ -3389,6 +3389,7 @@ $default_state=array(
 		'email_reminders_block'=>'requests',
 		'hits_block'=>'requests',
 		'pages_block'=>'pages',
+		'favorites_block'=>'products',
 		'period'=>'1y',
 		'from'=>'',
 		'to'=>'',
@@ -3514,6 +3515,28 @@ $default_state=array(
 
 		),
 
+'favorites_products'=>array(
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'overview'
+
+		),
+		'favorites_customers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'overview'
+
+		),
 
 		'email_reminders'=>array(
 			'f_field'=>'subject_name',

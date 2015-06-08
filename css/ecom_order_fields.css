@@ -1,10 +1,11 @@
-.order_button{height:28px;cursor:pointer;vertical-align:bottom;margin-left:1px}
-
-.xordered_qty{background-color: #c68d8d;color:white;border:2px solid #843535}
+.order_button{height:28px;cursor:pointer;position:relative;top:2px}
 
 
-.button_feedback{position:relative;bottom:4px;left:-4px}
-.button_feedback.waiting {height:16px;}
+
+.button_feedback{height:16px;position:relative;bottom:2px;}
+.feedback{bottom:6px;left:-4px}
+
+
 .button_input{height:20px;width:40px;text-align:left;padding-left:2px;}
 
 .list_feedback{height:18px;position:relative;bottom:7px}
@@ -12,14 +13,19 @@
 
 #top_bar_back_to_shop{display:none}
 
-.fxaded{color:#ccc;}
 
 .button_feedback.accepted {opacity:.6;-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)"}
-.button_feedback.empty {opacity:0;-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"}
+.button_feedback.empty {xopacity:0;-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"}
 
-.order_but{width:180px !important}
+.order_but{text-align:left;}
 
 .logged_out_price{color:green;}
 .logged_out_price a{color:green;font-weight: 800}
 
  .rrp{display:block}
+ 
+ .favorite{;cursor:pointer}
+ 
+.product_description{}
+
+.order_but{margin-top:15px}
