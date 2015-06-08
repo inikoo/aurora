@@ -6334,7 +6334,7 @@ function list_customers_how_favorite_a_product() {
 
 
 		$data[]=array(
-			'name'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>',$row['customer_id'],$row['Customer Name']),
+			'name'=>sprintf('<a href="customer.php?id=%d">%s</a>',$row['customer_id'],$row['Customer Name']),
 			'products'=>number($row['products']),
 			'last_favorited'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['last_favorited'].' +0:00')),
 			

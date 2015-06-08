@@ -7846,7 +7846,7 @@ function list_favorite_products() {
 	elseif ($order=='name')
 		$order='`Product Name`';	
 	elseif ($order=='customers')
-		$order='count(distinct F.`Product ID`)';
+		$order='count(distinct F.`Customer Key`)';
 	elseif ($order=='last_favorited')
 		$order='`Date Created``';
 	else

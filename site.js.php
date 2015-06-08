@@ -1222,10 +1222,10 @@ var tableid=12; // Change if you have more the 1 table
 	    var OrdersColumnDefs = [ 
 				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"customers", label:"<?php echo _('Customers')?>", width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"customers", label:"<?php echo _('Customers')?>", width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-					,{key:"last_favorited", label:"<?php echo _('Last Favorited')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}		    
+					,{key:"last_favorited", label:"<?php echo _('Last Favorited')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}		    
 
 				    
 				     ];
@@ -1299,9 +1299,9 @@ request="ar_assets.php?tipo=favorite_products&parent=site&tableid="+tableid+"&pa
 	    var OrdersColumnDefs = [ 
 
 				    {key:"name", label:"<?php echo _('Customer')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"products", label:"<?php echo _('Products')?>", width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"products", label:"<?php echo _('Products')?>", width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-					,{key:"last_favorited", label:"<?php echo _('Last Favorited')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}		    
+					,{key:"last_favorited", label:"<?php echo _('Last Favorited')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}		    
 
 				    
 				     ];
