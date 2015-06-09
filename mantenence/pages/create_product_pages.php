@@ -41,7 +41,13 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$site_key=1;
+
+
+$sql=sprintf("select `Site Key` from `Site Dimension` ");
+$_res=mysql_query($sql);
+while($__row=mysql_fetch_assoc($_res)){
+
+$site_key=$__row['Site Key'];
 
 
 $site = new Site($site_key);
@@ -104,7 +110,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 
-$sql=sprintf("select `Product ID` from  `Product Dimension` where `Product Store Key`=%d  and `Product Main Type`='Sale'  ",
+$sql=sprintf("select `Product ID` from  `Product Dimension` where `Product Store Key`=%d  and  `Product Main Type`='Sale'  ",
 	$site->data['Site Store Key']);
 $res=mysql_query($sql);
 
@@ -123,7 +129,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 
-
+}
 
 
 ?>
