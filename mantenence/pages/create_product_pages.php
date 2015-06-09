@@ -41,7 +41,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$site_key=7;
+$site_key=1;
 
 
 $site = new Site($site_key);
@@ -101,6 +101,25 @@ while ($row=mysql_fetch_assoc($res)) {
 	$family_page=new Page($family_page_key);
 	$family_page->update_button_products('Parent');
 	$family_page->update_list_products();
+}
+
+
+$sql=sprintf("select `Product ID` from  `Product Dimension` where `Product Store Key`=%d  and `Product Main Type`='Sale'  ",
+	$site->data['Site Store Key']);
+$res=mysql_query($sql);
+
+while ($row=mysql_fetch_assoc($res)) {
+
+
+	$page_data=array(
+		'Page Store Content Display Type'=>'Template',
+		'Page Store Content Template Filename'=>'product',
+		'Page State'=>'Online'
+
+	);
+	$product_page_key=$site->add_product_page($row['Product ID'],$page_data);
+
+
 }
 
 
