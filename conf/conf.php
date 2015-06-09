@@ -2706,6 +2706,7 @@ $default_state=array(
 		'show_history'=>false,
 		'view'=>'history',
 		'order_view'=>'orders',
+		'products_block_view'=>'products_overview',
 		'from'=>'',
 		'to'=>'',
 		'assets'=>array(
@@ -2721,6 +2722,17 @@ $default_state=array(
 			'type'=>'Family'
 
 		),
+			'favorites_products'=>array(
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50
+
+		),
+		
 		'orders'=>array(
 			'order'=>'last_update',
 			'order_dir'=>'desc',
@@ -4687,6 +4699,7 @@ $default_state=array(
 		), ),
 	'product'=>array(
 		'block_view'=>'details',
+		'customers_block_view'=>'customers_who_order',
 		'sales_sub_block_tipo'=>'plot_product_sales',
 		'period'=>'all',
 		'from'=>'',
@@ -4742,6 +4755,18 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>''
 		),
+		'favorites_customers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'overview'
+
+		),
+		
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'desc',

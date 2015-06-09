@@ -58,6 +58,18 @@ $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 
 
+
+
+
+
+if (isset($_REQUEST['products_block_view']) and in_array($_REQUEST['products_block_view'],array('overview','families','products_favorited')) ) {
+	$_SESSION['state']['customer']['products_block_view']=$_REQUEST['products_block_view'];
+	$_SESSION['state']['customer']['view']='products';
+
+}
+
+
+
 if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|dns|invoices|details)$/',$_REQUEST['view']) ) {
 
 	if($_REQUEST['view']=='dns' or $_REQUEST['view']=='invoices' or $_REQUEST['view']=='orders'){
@@ -81,6 +93,7 @@ if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|dns|invo
 
 $smarty->assign('view',$view);
 $smarty->assign('orders_block_view',$order_view);
+$smarty->assign('products_block_view',$_SESSION['state']['customer']['products_block_view']);
 
 $_SESSION['state']['customer']['view']=$view;
 $_SESSION['state']['customer']['order_view']=$order_view;
@@ -482,6 +495,24 @@ $smarty->assign('filter_menu5',$filter_menu);
 $smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
+
+
+
+
+
+$tipo_filter=$_SESSION['state']['customer']['favorites_products']['f_field'];
+$smarty->assign('filter11',$tipo_filter);
+$smarty->assign('filter_value11',$_SESSION['state']['customer']['favorites_products']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code'),'label'=>_('Code')),
+
+);
+$smarty->assign('filter_menu11',$filter_menu);
+$smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
+
 
 
 
