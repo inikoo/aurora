@@ -6353,7 +6353,7 @@ function list_customers_how_favorite_a_product() {
 		$data[]=array(
 			'name'=>sprintf('<a href="customer.php?id=%d&view=history">%s</a>',$row['Customer Key'],$row['Customer Name']),
 			'location'=>$row['Customer Main Location'],
-						'products'=>sprintf('<a href="customer.php?id=%d&products_block_view=products_favorited">%s</a>',$row['Customer Key'],number($row['products'])),
+			'products'=>sprintf('<a href="customer.php?id=%d&products_block_view=products_favorited">%s</a>',$row['Customer Key'],number($row['products'])),
 			'date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['date'].' +0:00')),
 
 		);
