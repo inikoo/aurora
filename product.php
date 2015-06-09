@@ -62,7 +62,7 @@ $js_files=array(
 	'js/search.js',
 	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
-	
+
 	'js/product.js'
 
 );
@@ -252,12 +252,27 @@ $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
 
+if (isset($_REQUEST['customers_block_view']) and in_array($_REQUEST['customers_block_view'],array('custmers_who_order','custmers_who_favorited')) ) {
+	$_SESSION['state']['product']['customers_block_view']=$_REQUEST['customers_block_view'];
+	$_SESSION['state']['product']['block_view']='customers';
+
+}
+
 
 if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('details','sales','products','customers','orders','timeline','web','pictures')) ) {
 	$_SESSION['state']['product']['block_view']=$_REQUEST['block_view'];
 }
+
+
+
+
 $block_view=$_SESSION['state']['product']['block_view'];
 $smarty->assign('block_view',$block_view);
+
+
+$customers_block_view=$_SESSION['state']['product']['customers_block_view'];
+$smarty->assign('customers_block_view',$customers_block_view);
+
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
@@ -481,6 +496,21 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu10',$paginator_menu);
 
 
+
+$tipo_filter=$_SESSION['state']['product']['favorites_customers']['f_field'];
+$smarty->assign('filter11',$tipo_filter);
+$smarty->assign('filter_value11',$_SESSION['state']['product']['favorites_customers']['f_value']);
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Customers with name like *<i>x</i>*'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu11',$filter_menu);
+
+$smarty->assign('filter_name11',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
+
+
 $link='product.php';
 include_once 'product_navigation_common.php';
 
@@ -596,6 +626,9 @@ $session_data=base64_encode(json_encode(array(
 				'Users'=>_('Users'),
 				'Pages'=>_('Pages'),
 				'Products'=>_('Products'),
+				'Location'=>_('Location'),
+				'Date_Favourited'=>_('Date Favourited'),
+
 				'OoS'=>_('OoS'),
 				'Pages_w_Prods'=>_('Pages w Prods'),
 				'Pages_w_OoS'=>_('Pages w OoS'),
@@ -609,6 +642,12 @@ $session_data=base64_encode(json_encode(array(
 				'Sales_Type'=>_('Sales Type'),
 				'Surplus'=>_('Surplus'),
 				'Department'=>_('Department'),
+				'Charged'=>_('Charged'),
+				'No_Disp'=>_('No Dispatched'),
+				'To_Disp'=>_('To Disp'),
+				'Disp'=>_('Dispatched'),
+
+
 
 				'Page'=>_('Page'),
 				'of'=>_('of')

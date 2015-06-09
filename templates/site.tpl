@@ -2,11 +2,9 @@
 <div id="bd" class="no_padding">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
 	<input type="hidden" id="site_key" value="{$site->id}" />
-		<input type="hidden" id="store_key" value="{$site->get('Site Store Key')}" />
-
+	<input type="hidden" id="store_key" value="{$site->get('Site Store Key')}" />
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="block_view" value="{$block_view}" />
-	
 	<input type="hidden" id="from" value="{$from}" />
 	<input type="hidden" id="to" value="{$to}" />
 	<input type="hidden" id="subject" value="page"> 
@@ -446,7 +444,7 @@
 			</div>
 			<div style="padding:0 20px">
 				<div id="block_favorites_products" style="{if $favorites_block_view!='products'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-					<span class="clean_table_title">{t}Products{/t}</span> 
+					<span class="clean_table_title">{t}Products favourited{/t}</span> 
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=12 filter_name=$filter_name12 filter_value=$filter_value12 no_filter=0 } 
@@ -454,7 +452,7 @@
 					</div>
 				</div>
 				<div id="block_favorites_customers" style="{if $favorites_block_view!='customers'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
-					<span class="clean_table_title">{t}Customers{/t}</span> 
+					<span class="clean_table_title">{t}Customers who favourited products{/t}</span> 
 					<div class="table_top_bar space">
 					</div>
 					{include file='table_splinter.tpl' table_id=14 filter_name=$filter_name14 filter_value=$filter_value14 no_filter=0 } 

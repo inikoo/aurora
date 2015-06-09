@@ -17,6 +17,15 @@ function change_block() {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-block_view&value=' + this.id, {});
 }
 
+function change_customers_sub_block() {
+    Dom.removeClass(['customers_who_order', 'customers_who_favorited'], 'selected');
+    Dom.addClass(this, 'selected');
+    Dom.setStyle(['block_customers_who_order', 'block_customers_who_favorited'], 'display', 'none');
+    Dom.setStyle('block_' + this.getAttribute('block_id'), 'display', '');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=product-customers_block_view&value=' + this.getAttribute('block_id'), {});
+}
+
+
 function change_sales_sub_block(o) {
     Dom.removeClass(['plot_product_sales', 'product_sales_timeseries', 'product_sales_calendar'], 'selected');
     Dom.addClass(o, 'selected');
@@ -201,7 +210,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
         ColumnDefs = [{
             key: "customer",
             label: labels.Customer,
-            width: 320,
+            width: 280,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        },{
+            key: "location",
+            label: labels.Location,
+            width: 160,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -227,7 +245,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "to_dispatch",
-            label: labels.To_Disp,
+            label: labels.To_Disp,hidden:true,
             width: 65,
             sortable: true,
             className: "aright",
@@ -237,7 +255,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "nodispatched",
             label: labels.No_Disp,
-            width: 65,
+            width: 90,
             sortable: true,
             className: "aright",
             sortOptions: {
@@ -254,8 +272,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
 
-
-        this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=customers_who_order_product&product_pid=" + Dom.get('product_pid').value + "&tableid=" + tableid);
+        request="ar_assets.php?tipo=customers_who_order_product&product_pid=" + Dom.get('product_pid').value + "&tableid=" + tableid
+       // alert(request)
+        this.dataSource1 = new YAHOO.util.DataSource(request);
         this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource1.connXhrMode = "queueRequests";
         this.dataSource1.responseSchema = {
@@ -272,7 +291,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: ["customer", "dispatched", "nodispatched", "charged", "to_dispatch", "orders"]
+            fields: ["customer", "dispatched", "nodispatched", "charged", "to_dispatch", "orders","to_dispatch","location"]
         };
 
 
@@ -984,6 +1003,94 @@ YAHOO.util.Event.addListener(window, "load", function() {
         };
 
 
+    tableid = 11;
+        tableDivEL = "table" + tableid;
+
+        ColumnDefs = [{
+            key: "name",
+            label: labels.Customer,
+            width: 320,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        },{
+            key: "location",
+            label: labels.Location,
+            width: 160,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "date",
+            label: labels.Date_Favourited,
+            width: 180,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }];
+
+      request="ar_contacts.php?tipo=customers_how_favorite_a_product&sf=0&parent=product&tableid="+tableid+"&parent_key="+Dom.get('product_pid').value
+
+       
+        this.dataSource11 = new YAHOO.util.DataSource(request);
+        this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource11.connXhrMode = "queueRequests";
+        this.dataSource11.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rowsPerPage: "resultset.records_perpage",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+
+            },
+
+            fields: ["name", "location", "date"]
+        };
+
+
+
+        this.table11 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource11, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: state.product.favorites_customers.nr,
+                containers: 'paginator11',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                alwaysVisible: false,
+                template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info11'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+            }),
+            sortedBy: {
+                key: state.product.favorites_customers.order,
+                dir: state.product.favorites_customers.order_dir
+            },
+            dynamicData: true
+
+        });
+        this.table11.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table11.doBeforeSortColumn = mydoBeforeSortColumn;
+        this.table11.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+        this.table11.filter = {
+            key: state.product.favorites_customers.f_field,
+            value: state.product.favorites_customers.f_value
+        };
+
+
 
 
 
@@ -1155,6 +1262,10 @@ function init() {
 
 
     Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web', 'history', 'pictures', 'availability', 'deals'], "click", change_block);
+
+    Event.addListener(['customers_who_order', 'customers_who_favorited'], "click", change_customers_sub_block);
+
+
 
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);

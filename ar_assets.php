@@ -5526,9 +5526,12 @@ function list_customers_who_order_product() {
 
 	}
 	elseif ($mode=='pid')
-		$where=printf(" where OTF.`Product ID`=%d ",$tag);
+		$where=sprintf(" where OTF.`Product ID`=%d ",$tag);
 	elseif ($mode=='key')
 		$where=sprintf(" where  OTF.`Product Key`=%d ",$tag);
+
+
+$where.=' and OTF.`Customer Key`>0';
 
 
 	$wheref="";
@@ -5672,7 +5675,7 @@ function list_customers_who_order_product() {
 		$order='`Customer Name`';
 
 
-	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from    $table   $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
+	$sql="select   CD.`Customer Key` ,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from    $table   $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
 
 
 	$data=array();
@@ -5680,9 +5683,16 @@ function list_customers_who_order_product() {
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
+if($row['Customer Name']==''){
+$name=sprintf('<a href="customer.php?id=%d">%05d</a>',$row['Customer Key'],$row['Customer Key']);
+}else{
+$name=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Customer Key'],$row['Customer Name']);
+}
 
 		$data[]=array(
-			'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
+			'customer'=>$name,
+			'location'=>$row['Customer Main Location'],
+
 			'charged'=>money($row['charged']),
 			'orders'=>number($row['orders']),
 			'dispatched'=>number($row['dispatched']),
@@ -7709,6 +7719,9 @@ function list_favorite_products() {
 	        case 'store':
 	        $_conf='store';
 	        break; 
+	           case 'customer':
+	        $_conf='customer';
+	        break; 
 	    default:
 	        exit();
 	        break;
@@ -7770,10 +7783,21 @@ function list_favorite_products() {
     switch ($parent) {
         case 'site':
             $where=sprintf(' where `Site Key`=%d',$parent_key);
+            $group=' group by F.`Product ID`  ';
+            $fields=' count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as date';
             break;
            case 'store':
             $where=sprintf(' where `Store Key`=%d',$parent_key);
+                        $group=' group by F.`Product ID`  ';
+            $fields=' count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as date';
+
             break; 
+             case 'customer':
+            $where=sprintf(' where `Customer Key`=%d',$parent_key);
+                        $group='';
+            $fields=' 1 customers ,F.`Date Created` as date';
+
+            break;  
         default:
             exit();
             break;
@@ -7847,13 +7871,13 @@ function list_favorite_products() {
 		$order='`Product Name`';	
 	elseif ($order=='customers')
 		$order='count(distinct F.`Customer Key`)';
-	elseif ($order=='last_favorited')
-		$order='last_favorited';
+	elseif ($order=='date')
+		$order='date';
 	else
 		$order='`Product Code File As`';
 
 
-	$sql="select   F.`Product ID` ,`Product Code`,`Product Name`, count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as last_favorited from    $table   $where $wheref  group by F.`Product ID`    order by $order $order_direction  limit $start_from,$number_results ";
+	$sql="select   F.`Product ID` ,`Product Code`,`Product Name`, $fields from    $table   $where $wheref  $group  order by $order $order_direction  limit $start_from,$number_results ";
 
 
 	$data=array();
@@ -7863,11 +7887,11 @@ function list_favorite_products() {
 
 
 		$data[]=array(
-			'code'=>sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']),
+			'code'=>sprintf('<a href="product.php?pid=%d&block_view=details">%s</a>',$row['Product ID'],$row['Product Code']),
 			'name'=>$row['Product Name'],
 
-			'customers'=>number($row['customers']),
-			'last_favorited'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['last_favorited'].' +0:00')),
+			'customers'=>sprintf('<a href="product.php?id=%d&customers_block_view=customers_who_favorited">%s</a>',$row['Product ID'],number($row['customers'])),
+			'date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['date'].' +0:00')),
 			
 
 		);

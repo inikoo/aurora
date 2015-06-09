@@ -290,7 +290,7 @@
 					{if $customer_type} 
 					<li> <span class="item {if $view=='login_stat'}selected{/if}" id="login_stat"> <span> {t}Login Status{/t}</span></span></li>
 					{/if} 
-					<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"><span> {t}Products Ordered{/t}</span></span></li>
+					<li> <span class="item {if $view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 					<li> <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>
 					<li> <span class="item {if $view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span></li>
 
@@ -413,7 +413,23 @@
 					<div id="table3" class="data_table_container dtable btable">
 					</div>
 				</div>
-				<div id="block_products" class="data_block" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+				<div id="block_products" class="data_block" style="{if $view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0px">
+				
+				
+				
+				<div class="buttons small left tabs">
+						<button class="indented item {if $products_block_view=='products_overview'}selected{/if}" id="products_overview" block_id="products_overview">{t}Overview{/t}</button> 
+
+		<button class="item {if $products_block_view=='families'}selected{/if}" id="families" block_id="families">{t}Families ordered{/t}</button> 
+		<button class=" item {if $products_block_view=='products_favorited'}selected{/if}" id="products_favorited" block_id="products_favorited">{t}Products favourited{/t}</button> 
+	</div>
+	<div class="tabs_base">
+	</div>
+				
+				
+	<div id="block_products_overview" style="{if $products_block_view!='products_overview'}display:none;{/if}clear:both;margin:10px 0px 40px 0px;padding:10px 20px">			
+				
+				
 					<div style="float:left" id="plot1">
 						<strong>You need to upgrade your Flash Player</strong> 
 					</div>
@@ -443,9 +459,30 @@
 
 		so.write("plot2");
 		// ]]>
-	</script> <span class="clean_table_title" style="clear:both">{t}Product Families Ordered{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+	</script>
+	
+	</div>
+		<div id="block_families" style="{if $products_block_view!='families'}display:none;{/if}clear:both;margin:10px 0px 40px 0px;padding:10px 20px">			
+
+	
+	 <span class="clean_table_title" style="clear:both">{t}Product Families Ordered{/t}</span> 
+	 <div class="table_top_bar space">
+	</div>
+	 {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+	
 	<div id="table1" class="data_table_container dtable btable">
 	</div>
+	</div>
+	<div id="block_products_favorited" style="{if $products_block_view!='products_favorited'}display:none;{/if}clear:both;margin:10px 0px 40px 0px;padding:10px 20px">
+	<span class="clean_table_title">{t}Products favourited{/t}</span> 
+					<div class="table_top_bar space">
+					</div>
+					{include file='table_splinter.tpl' table_id=11 filter_name=$filter_name11 filter_value=$filter_value11 no_filter=0 } 
+					<div id="table11" class="data_table_container dtable btable" style="font-size:85%">
+					</div>
+	</div>
+	
+	
 </div>
 <div id="block_orders" class="data_block" style="{if $view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0;padding:0 0px">
 

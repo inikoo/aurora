@@ -6105,31 +6105,34 @@ function list_customers_how_favorite_a_product() {
 	if (isset($_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
 	}else {
-		exit();
+		exit('no p');
 	}
-	
+
 	if (isset($_REQUEST['parent_key'])) {
 		$parent_key=$_REQUEST['parent_key'];
 	}else {
-		exit();
+		exit('no pk');
 	}
-	
+
 	switch ($parent) {
-	    case 'site':
-	        $_conf='site';
-	        break;
-	        case 'store':
-	        $_conf='store';
-	        break; 
-	    default:
-	        exit();
-	        break;
+	case 'site':
+		$_conf='site';
+		break;
+	case 'store':
+		$_conf='store';
+		break;
+	case 'product':
+		$_conf='product';
+		break;
+	default:
+		exit('unk parent');
+		break;
 	}
-	
-		$conf=$_SESSION['state'][$_conf]['favorites_customers'];
+
+	$conf=$_SESSION['state'][$_conf]['favorites_customers'];
 
 
-	
+
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -6179,17 +6182,28 @@ function list_customers_how_favorite_a_product() {
 	$table=' `Customer Favorite Product Bridge` F left join `Customer Dimension` CD on (F.`Customer Key`=CD.`Customer Key`)          ';
 
 
-    switch ($parent) {
-        case 'site':
-            $where=sprintf(' where `Site Key`=%d',$parent_key);
-            break;
-           case 'store':
-            $where=sprintf(' where `Store Key`=%d',$parent_key);
-            break; 
-        default:
-            exit();
-            break;
-    }
+	switch ($parent) {
+	case 'site':
+		$where=sprintf(' where `Site Key`=%d',$parent_key);
+		$group='  group by CD.`Customer Key`';
+		$fields='count(distinct `Product ID`) as products ,max(F.`Date Created`) as date ';
+		break;
+	case 'store':
+		$where=sprintf(' where `Store Key`=%d',$parent_key);
+		$group='  group by CD.`Customer Key`';
+		$fields='count(distinct `Product ID`) as products ,max(F.`Date Created`) as date ';
+
+		break;
+	case 'product':
+		$where=sprintf(' where `Product ID`=%d',$parent_key);
+		$fields='1 as products ,F.`Date Created` as date ';
+
+		$group='';
+		break;
+	default:
+		exit();
+		break;
+	}
 
 
 	$wheref="";
@@ -6316,15 +6330,18 @@ function list_customers_how_favorite_a_product() {
 
 	if ($order=='name')
 		$order='`Customer File As`';
+	elseif ($order=='location')
+		$order='`Customer Main Location`';
 	elseif ($order=='products')
 		$order='count(distinct `Product ID`)';
-	elseif ($order=='last_favorited')
-		$order='last_favorited';
+	elseif ($order=='date')
+		$order='date';
+
 	else
 		$order='`Customer File As`';
 
 
-	$sql="select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`, count(distinct `Product ID`) as products ,max(F.`Date Created`) as last_favorited from    $table   $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results ";
+	$sql="select   CD.`Customer Key` ,`Customer Name`,`Customer Main Location`, $fields  from    $table   $where $wheref $group    order by $order $order_direction  limit $start_from,$number_results ";
 
 
 	$data=array();
@@ -6334,10 +6351,10 @@ function list_customers_how_favorite_a_product() {
 
 
 		$data[]=array(
-			'name'=>sprintf('<a href="customer.php?id=%d">%s</a>',$row['customer_id'],$row['Customer Name']),
+			'name'=>sprintf('<a href="customer.php?id=%d">%s</a>',$row['Customer Key'],$row['Customer Name']),
+			'location'=>$row['Customer Main Location'],
 			'products'=>number($row['products']),
-			'last_favorited'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['last_favorited'].' +0:00')),
-			
+			'date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['date'].' +0:00')),
 
 		);
 	}

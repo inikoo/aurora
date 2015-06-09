@@ -873,6 +873,81 @@ var tableid=10; // Change if you have more the 1 table
 	    
 
 	
+	var tableid=11; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var productsColumnDefs = [
+	    
+
+                                        {key:"code", label:"<?php echo _('Code')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"name", label:"<?php echo _('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+									,{key:"date", label:"<?php echo _('Date')?>",  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				 
+				 ];
+	    //?tipo=products&tid=0"
+	    
+request="ar_assets.php?tipo=favorite_products&parent=customer&tableid="+tableid+"&parent_key="+Dom.get('customer_key').value
+
+	   //alert(request);
+	    this.dataSource11 = new YAHOO.util.DataSource(request);
+	    this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource11.connXhrMode = "queueRequests";
+	    this.dataSource11.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		      rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: ["name","code","date"]};
+		
+
+	  this.table11 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
+								   this.dataSource11
+								 , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 //,initialLoad:false
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo $_SESSION['state']['customer']['favorites_products']['nr']?>,containers : 'paginator11', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info11'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['customer']['favorites_products']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['customer']['favorites_products']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+		this.table11.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table11.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table11.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table11.request=request;
+  		this.table11.table_id=tableid;
+     	this.table11.subscribe("renderEvent", myrenderEvent);
+		
+	  
+	    this.table11.filter={key:'<?php echo $_SESSION['state']['customer']['favorites_products']['f_field']?>',value:'<?php echo $_SESSION['state']['customer']['favorites_products']['f_value']?>'};
+
+	
+	
 		};
     });
 
@@ -1416,6 +1491,26 @@ tag=this.getAttribute('block_id')
 }
 
 
+function change_products_view(){
+
+tag=this.getAttribute('block_id')
+
+    ids = ['families','products_favorited','products_overview'];
+    block_ids = ['block_families','block_products_favorites','block_products_overview'];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + tag, 'display', '');
+
+
+//alert('block_' + tag)
+    Dom.removeClass(ids, 'selected');
+
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=customer-products_block_view&value=' + tag, {});
+
+}
+
+
+
 
 var oMenu;
 
@@ -1708,6 +1803,7 @@ Event.addListener(['orders','history','products','details', 'login_stat','deals'
 Event.addListener(['orders_block_orders','orders_block_dns','orders_block_invoices'], "click",change_orders_view);
 
 
+Event.addListener(['families','products_favorited','products_overview'], "click",change_products_view);
 
 
  Event.addListener('clean_table_filter_show0', "click",show_filter,0);
