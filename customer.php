@@ -62,7 +62,7 @@ $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 
 
 
-if (isset($_REQUEST['products_block_view']) and in_array($_REQUEST['products_block_view'],array('overview','families','products_favorited')) ) {
+if (isset($_REQUEST['products_block_view']) and in_array($_REQUEST['products_block_view'],array('products_overview','families','products_favorited')) ) {
 	$_SESSION['state']['customer']['products_block_view']=$_REQUEST['products_block_view'];
 	$_SESSION['state']['customer']['view']='products';
 
