@@ -1252,7 +1252,7 @@ function terms_changed(value) {
 
         Dom.setStyle('voucher_options', 'display', '');
         Dom.setStyle('amount_options', 'display', '');
-        Dom.setStyle('voucher_allowances_select', 'display', '');
+        Dom.setStyle('amount_allowances_select', 'display', '');
 
         Dom.get('amount').focus();
         allowances_changed('Percentage Off');
@@ -1312,7 +1312,7 @@ function terms_changed(value) {
 }
 
 function allowances_changed(value) {
-    Dom.setStyle(['percentage_off_tr', 'get_same_free_tr', 'target_bis_department_options', 'target_bis_family_options', 'target_bis_product_options', 'default_free_product_from_family_options', 'clone_deal_options'], 'display', 'none')
+    Dom.setStyle(['amount_off_tr', 'percentage_off_tr', 'get_same_free_tr', 'target_bis_department_options', 'target_bis_family_options', 'target_bis_product_options', 'default_free_product_from_family_options', 'clone_deal_options'], 'display', 'none')
 
     validate_scope_data.deal.percentage_off.required = false;
     validate_scope_data.deal.get_same_free.required = false;

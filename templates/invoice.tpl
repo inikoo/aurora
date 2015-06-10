@@ -54,6 +54,15 @@
 					<td class="aright">{t}Items Net{/t}</td>
 					<td width="100" class="aright">{$invoice->get('Items Net Amount')}</td>
 				</tr>
+				
+					{if $invoice->get('Invoice Net Amount Off')!=0 } 
+				<tr>
+					<td class="aright">{t}Amount Off{/t}</td>
+					<td width="100" class="aright">{$invoice->get('Net Amount Off')}</td>
+				</tr>
+				{/if} 
+				 
+				
 				{if $invoice->get('Invoice Refund Net Amount')!=0 } 
 				<tr>
 					<td class="aright">{t}Credits{/t}</td>

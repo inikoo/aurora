@@ -24,7 +24,7 @@
 
                     <tr {if $order->get('Order Deal Amount Off')==0 }style="display:none"{/if} id="tr_order_amount_off" > 
 						<td class="aright">{t}Ammount Off{/t}</td>
-						<td width="100" class="aright"><span id="order_items_discount">{$order->get('Deal Amount Off')}</span></td>
+						<td width="100" class="aright"><span id="order_amount_off">{$order->get('Deal Amount Off')}</span></td>
 					</tr>
 					{*}
 					<tr id="tr_order_credits" {if $order->
@@ -102,6 +102,11 @@
 						<td class="aright">{t}Items{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Items Amount')}</td>
 					</tr>
+					  <tr {if $order->get('Order Deal Amount Off')==0 }style="display:none"{/if} id="tr_order_amount_off" > 
+						<td class="aright">{t}Ammount Off{/t}</td>
+						<td width="100" class="aright"><span id="order_items_discount">{$order->get('Deal Amount Off')}</span></td>
+					</tr>
+					
 					<tr>
 						<td class="aright">{t}Shipping{/t}</td>
 						<td width="100" class="aright">{$order->get('Invoiced Shipping Amount')}</td>

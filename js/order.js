@@ -120,7 +120,7 @@ function recalculate_totals() {
 
     var ar_file = 'ar_edit_orders.php';
     var request = 'tipo=recalculate_totals&subject=order&subject_key=' + Dom.get('order_key').value;
-
+//alert(request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
 

@@ -2002,8 +2002,8 @@ function create_deal($data) {
 					$product->data['Product Code']
 				);
 				break;
-			
-				
+
+
 			case 'Shipping':
 				$deal_data['Deal Component Allowance Target XHTML Label']='';
 				break;
@@ -2526,6 +2526,7 @@ function add_voucher_to_order($data) {
 		'order_charges'=>$order->get('Charges Net Amount'),
 		'order_credits'=>$order->get('Net Credited Amount'),
 		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_amount_off'=>$order->get('Deal Amount Off'),
 		'order_total'=>$order->get('Total Amount'),
 		'order_total_paid'=>$order->get('Payments Amount'),
 		'order_total_to_pay'=>$order->get('To Pay Amount'),
@@ -2545,6 +2546,9 @@ function add_voucher_to_order($data) {
 	}
 
 	$smarty->assign('order', $order);
+	$smarty->assign('modify_voucher', true);
+
+
 	$payments_list=$smarty->fetch('order_payments_splinter.tpl');
 	$vouchers_list=$smarty->fetch('order_vouchers_splinter.tpl');
 
@@ -2571,7 +2575,8 @@ function add_voucher_to_order($data) {
 		'voucher_code'=>$voucher->data['Voucher Code'],
 		'deal_code'=>$deal->data['Deal Code'],
 		'deal_name'=>$deal->data['Deal Name'],
-		'deal_description'=>$deal->data['Deal Description']
+		'deal_description'=>$deal->data['Deal Description'],
+		'amount_off'=>$order->data['Order Deal Amount Off']
 
 	);
 
@@ -2678,6 +2683,7 @@ function remove_voucher_from_order($data) {
 		'order_total_to_pay'=>$order->get('To Pay Amount'),
 		'order_insurance'=>$order->get('Insurance Net Amount'),
 		'ordered_products_number'=>$order->get('Number Products'),
+		'order_amount_off'=>$order->get('Deal Amount Off')
 
 
 	);
@@ -2692,6 +2698,8 @@ function remove_voucher_from_order($data) {
 	}
 
 	$smarty->assign('order', $order);
+	$smarty->assign('modify_voucher', true);
+
 	$payments_list=$smarty->fetch('order_payments_splinter.tpl');
 	$vouchers_list=$smarty->fetch('order_vouchers_splinter.tpl');
 
@@ -2720,6 +2728,8 @@ function remove_voucher_from_order($data) {
 		'deal_name'=>$deal->data['Deal Name'],
 		'deal_description'=>$deal->data['Deal Description'],
 		'voucher_key'=>$voucher->id, 'order_key'=>$order->id,
+				'amount_off'=>floatval($order->data['Order Deal Amount Off'])
+
 
 	);
 

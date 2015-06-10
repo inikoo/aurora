@@ -407,6 +407,12 @@
 					<option value="Free Charges">{t}Free Charges{/t}</option>
 					<option value="Clone">{t}Mirror other deal allowances{/t}</option>
 				</select>
+				
+				
+				
+				
+				
+				
 				<select id="amount_allowances_select" onchange="allowances_changed(this.value)" style="display:none">
 					<option value="Percentage Off">{t}Percentage off{/t}</option>
 					<option value="Amount Off">{t}Amount off{/t}</option>

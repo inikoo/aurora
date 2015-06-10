@@ -200,6 +200,13 @@ div.inline { float:left; }
 				<td colspan="2">{t}Items Net{/t}</td>
 				<td>{$invoice->get('Items Net Amount')}</td>
 			</tr>
+			{if $invoice->get('Invoice Net Amount Off')!=0 } 
+			<tr>
+				<td colspan="2">{t}Amount Off{/t}</td>
+				<td>{$invoice->get('Net Amount Off')}</td>
+			</tr>
+			{/if}
+			
 			{if $invoice->get('Invoice Refund Net Amount')!=0 } 
 			<tr>
 				<td colspan="2">{t}Refunds{/t}</td>

@@ -196,6 +196,14 @@ class Invoice extends DB_Table {
 			$billing_to=$customer->get_billing_to($this->data ['Invoice Date']);
 		}
 
+		if (array_key_exists('Invoice Net Amount Off',$invoice_data)) {
+			$this->data ['Invoice Net Amount Off']=$invoice_data['Invoice Net Amount Off'];
+		}else {
+			$this->data ['Invoice Net Amount Off'] =0;
+		}
+
+
+
 
 		$this->data ['Invoice Billing To Key'] =$billing_to->id;
 		$this->data ['Invoice XHTML Address'] =$billing_to->data['Billing To XHTML Address'];
@@ -241,21 +249,21 @@ class Invoice extends DB_Table {
 		}
 		if ($this->data ['Invoice Currency']!=$corporation_currency_code) {
 
-			
-				$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,
-					gmdate('Y-m-d', strtotime($this->data['Invoice Date'].' +0:00' ))
-				);
-				
-				
-		
- $this->data ['Invoice Currency Exchange']=$currency_exchange->get_exchange();
+
+			$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,
+				gmdate('Y-m-d', strtotime($this->data['Invoice Date'].' +0:00' ))
+			);
+
+
+
+			$this->data ['Invoice Currency Exchange']=$currency_exchange->get_exchange();
 
 
 		}
 
 
 
-	
+
 
 
 		$this->create_header();
@@ -313,6 +321,15 @@ class Invoice extends DB_Table {
 		}else {
 			$this->data ['Invoice Processed By Keys'] =array($this->editor['User Key']);
 		}
+
+		if (array_key_exists('Invoice Net Amount Off',$invoice_data)) {
+			$this->data ['Invoice Net Amount Off']=$invoice_data['Invoice Net Amount Off'];
+		}else {
+			$this->data ['Invoice Net Amount Off'] =0;
+		}
+
+
+
 
 		if (array_key_exists('Invoice Charged By Keys',$invoice_data)) {
 			$this->data ['Invoice Charged By Keys']=$invoice_data['Invoice Charged By Keys'];
@@ -389,12 +406,12 @@ class Invoice extends DB_Table {
 		}
 		if ($this->data ['Invoice Currency']!=$corporation_currency_code) {
 
-			
-				$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,
-					gmdate('Y-m-d', strtotime($this->data['Invoice Date'].' +0:00' ))
-				);
-				$exchange= $currency_exchange->get_exchange();
-		
+
+			$currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,
+				gmdate('Y-m-d', strtotime($this->data['Invoice Date'].' +0:00' ))
+			);
+			$exchange= $currency_exchange->get_exchange();
+
 
 
 
@@ -900,13 +917,18 @@ class Invoice extends DB_Table {
 
 
 
-		$this->data['Invoice Total Net Amount']=$this->data['Invoice Deal Credit Net Amount']+$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount']+$this->data['Invoice Insurance Net Amount'];
+		$this->data['Invoice Total Net Amount']=$this->data['Invoice Deal Credit Net Amount']+$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount']+$this->data['Invoice Insurance Net Amount']-$this->data['Invoice Net Amount Off'];
 
 
 
 
 		$this->data['Invoice Outstanding Net Balance']=$items_net_outstanding_balance+$items_refund_net_outstanding_balance;
+
+
+
 		$this->data['Invoice Outstanding Tax Balance']=$items_tax_outstanding_balance+$items_refund_tax_outstanding_balance;
+
+
 
 		$this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
 		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
@@ -963,6 +985,8 @@ class Invoice extends DB_Table {
 		}
 
 		$this->data['Invoice Total Tax Amount']=$tax;
+
+
 		$this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
 		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
 
@@ -1082,9 +1106,14 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Items Discount Amount']=$items_discounts;
 
 
+		$tax_rate=0;
 
-		$this->data['Invoice Total Net Amount']=$this->data['Invoice Deal Credit Net Amount']+$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount']+$this->data['Invoice Insurance Net Amount'];
-		$this->data['Invoice Total Tax Amount']=round($this->data['Invoice Deal Credit Tax Amount']+$this->data['Invoice Refund Tax Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount']+$this->data['Invoice Insurance Tax Amount']+$this->data['Invoice Total Tax Adjust Amount'],2);
+		$tax_category=new TaxCategory($this->data['Invoice Tax Code']);
+		$tax_rate=$tax_category->data['Tax Category Rate'];
+
+
+		$this->data['Invoice Total Net Amount']=$this->data['Invoice Deal Credit Net Amount']+$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount']+$this->data['Invoice Insurance Net Amount']-$this->data['Invoice Net Amount Off'];
+		$this->data['Invoice Total Tax Amount']=round($this->data['Invoice Deal Credit Tax Amount']+$this->data['Invoice Refund Tax Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount']+$this->data['Invoice Insurance Tax Amount']+$this->data['Invoice Total Tax Adjust Amount']-( round( $this->data['Invoice Net Amount Off']*$tax_rate,2) ) ,2);
 
 		$this->data['Invoice Outstanding Net Balance']=$items_net_outstanding_balance+$items_refund_net_outstanding_balance;
 		$this->data['Invoice Outstanding Tax Balance']=$items_tax_outstanding_balance+$items_refund_tax_outstanding_balance;
@@ -1271,6 +1300,13 @@ class Invoice extends DB_Table {
 
 
 
+		if ($this->data['Invoice Net Amount Off']) {
+			if (array_key_exists($this->data['Invoice Tax Code'],$tax_sum_by_code))
+				$tax_sum_by_code[$this->data['Invoice Tax Code']]['net']-=$this->data['Invoice Net Amount Off'];
+			else
+				$tax_sum_by_code[$this->data['Invoice Tax Code']]=array('net'=>(-1*$this->data['Invoice Net Amount Off']),'rate'=>$this->data['Invoice Tax Code']);
+
+		}
 
 
 		foreach ($tax_sum_by_code as $tax_code=>$data ) {
@@ -1370,6 +1406,16 @@ class Invoice extends DB_Table {
 		}
 
 
+	if ($this->data['Invoice Net Amount Off']) {
+	
+	$tax_category=new TaxCategory($this->data['Invoice Tax Code']);
+	
+			if (array_key_exists($this->data['Invoice Tax Code'],$tax_sum_by_code))
+				$tax_sum_by_code[$this->data['Invoice Tax Code']]-=round($this->data['Invoice Net Amount Off']*$tax_category->data['Tax Category Rate'],2);
+			else
+				$tax_sum_by_code[$this->data['Invoice Tax Code']]=round(-1*$this->data['Invoice Net Amount Off']*$tax_category->data['Tax Category Rate'],2);
+
+		}
 
 
 
@@ -1472,7 +1518,7 @@ class Invoice extends DB_Table {
 
 
 
-		//print_r($tax_sum_by_code);
+		
 		// exit;
 		foreach ($tax_sum_by_code as $tax_code=>$amount ) {
 
@@ -1598,6 +1644,8 @@ class Invoice extends DB_Table {
 
 		$this->data['Invoice Total Net Amount']=round($items_refund_net+$shipping_net+$charges_net+$insurance_net+$credit_net,2);
 		$this->data['Invoice Total Tax Amount']=round($items_refund_tax+$shipping_tax+$charges_tax+$insurance_tax+$credit_tax,2);
+
+
 		$this->data['Invoice Outstanding Net Balance']=$items_refund_net_outstanding_balance;
 		$this->data['Invoice Outstanding Tax Balance']=$items_refund_tax_outstanding_balance;
 
@@ -1760,6 +1808,7 @@ class Invoice extends DB_Table {
 
 		$this->data['Invoice Total Net Amount']=round($items_refund_net+$shipping_net+$charges_net+$insurance_net+$credit_net,2);
 		$this->data['Invoice Total Tax Amount']=round($items_refund_tax+$shipping_tax+$charges_tax+$insurance_tax+$credit_tax,2);
+
 		$this->data['Invoice Outstanding Net Balance']=$items_refund_net_outstanding_balance;
 		$this->data['Invoice Outstanding Tax Balance']=$items_refund_tax_outstanding_balance;
 
@@ -2116,7 +2165,9 @@ class Invoice extends DB_Table {
                          `Invoice Delivery Town`,
                          `Invoice Delivery Postal Code`,
 
-                         `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Type`,`Invoice Outstanding Total Amount`) values
+                         `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Type`,`Invoice Outstanding Total Amount`,
+                         `Invoice Net Amount Off`
+                         ) values
                          (
                           %s,%s,%s,%s,%s,
                          %s,
@@ -2132,7 +2183,7 @@ class Invoice extends DB_Table {
 
                          %s, %s, %s, %s,%s,
 
-                         %s,%s,%s,%s,%f)"
+                         %s,%s,%s,%s,%f,%.2f)"
 
 			, prepare_mysql ( $this->data ['Invoice Tax Number'] )
 			, prepare_mysql ( $this->data ['Invoice Tax Number Valid'] )
@@ -2196,6 +2247,8 @@ class Invoice extends DB_Table {
 			, prepare_mysql ( $this->data ['Invoice Tax Code'] )
 			, prepare_mysql ($this->data ['Invoice Type'])
 			, $this->data ['Invoice Total Amount']
+			, $this->data['Invoice Net Amount Off']
+
 		);
 
 
@@ -2352,6 +2405,10 @@ class Invoice extends DB_Table {
 
 
 			return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
+			break;
+		case ('Net Amount Off'):
+			return money(-1*$this->data['Invoice '.$key],$this->data['Invoice Currency']);
+
 			break;
 
 		case('Corporate Currency Total Amount'):
