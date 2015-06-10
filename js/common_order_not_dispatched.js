@@ -975,7 +975,9 @@ function update_order_data(r) {
         Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
     }
 
+if(Dom.get('payments_list')!=undefined)
     Dom.get('payments_list').innerHTML = r.payments_list;
+if(Dom.get('to_pay_label_amount')!=undefined)
 
     Dom.get('to_pay_label_amount').value = r.order_total_to_pay;
 
@@ -1934,7 +1936,7 @@ function remove_voucher(voucher_key) {
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
 
-              alert(o.responseText)
+             // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == '200') {
