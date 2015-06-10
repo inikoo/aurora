@@ -142,7 +142,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$description.=' <br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
 	}
 
-	if ($print_tariff_code)
+	if ($print_tariff_code and $row['Product Tariff Code']!='')
 		$description.='<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
 
 	$row['Product XHTML Short Description']=$description;
@@ -154,6 +154,31 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 $transactions_no_products=array();
+
+
+if($invoice->data['Invoice Net Amount Off']){
+
+	$tax_category=new TaxCategory($invoice->data['Invoice Tax Code']);
+
+    $net=-1*$invoice->data['Invoice Net Amount Off'];
+    $tax=$net*$tax_category->data['Tax Category Rate'];
+    $total=$net+$tax;
+
+
+
+
+    $row['Product Code']=_('Amount Off');
+	$row['Product XHTML Short Description']='';
+	$row['Net']=money($net,$row['Currency Code']);
+	$row['Tax']=money($tax,$row['Currency Code']);
+	$row['Amount']=money($total,$row['Currency Code']);
+
+	$row['Discount']='';
+	$transactions_no_products[]=$row;
+
+}
+
+
 
 $sql=sprintf("select * from `Order No Product Transaction Fact` where `Invoice Key`=%d",$invoice->id);
 $result=mysql_query($sql);
@@ -221,7 +246,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'],$row['Invoice Currency Code']);
 	}
 
-	if ($print_tariff_code)
+	if ($print_tariff_code and $row['Product Tariff Code']!='')
 		$row['Product XHTML Short Description']=$row['Product History XHTML Short Description'].'<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
 
 	$transactions[]=$row;
@@ -245,6 +270,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 
 
+
+
+
+
 $transactions_out_of_stock=array();
 $sql=sprintf("select `Product History XHTML Short Description`,(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as qty,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O
  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`)
@@ -265,6 +294,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$transactions_out_of_stock[]=$row;
 
 }
+
+
+
+
 
 $smarty->assign('number_transactions_out_of_stock',count($transactions_out_of_stock));
 
@@ -321,6 +354,11 @@ if ($invoice->data['Invoice Type']=='CreditNote') {
 
 	}
 }
+
+
+
+
+
 
 $smarty->assign('transactions',$transactions);
 

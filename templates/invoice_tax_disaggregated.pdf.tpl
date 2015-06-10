@@ -161,7 +161,7 @@ div.inline { float:left; }
 	<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
 		<thead>
 			<tr>
-				<td style="width:8%;text-align:left">{t}Code{/t}</td>
+				<td style="width:12%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
 				<td style="width:8%;text-align:right">{t}Quantity{/t}</td>
 				<td style="width:10%;text-align:right">{t}Net{/t}</td>
@@ -215,6 +215,11 @@ div.inline { float:left; }
 
 			</tr>
 			{/foreach} 
+			
+			
+			
+			
+			
 		</tbody>
 		
 		
@@ -238,6 +243,12 @@ div.inline { float:left; }
 				<td colspan="2">{t}Items Net{/t}</td>
 				<td>{$invoice->get('Items Net Amount')}</td>
 			</tr>
+				{if $invoice->get('Invoice Net Amount Off')!=0 } 
+			<tr>
+				<td colspan="2">{t}Amount Off{/t}</td>
+				<td>{$invoice->get('Net Amount Off')}</td>
+			</tr>
+			{/if}
 			{if $invoice->get('Invoice Refund Net Amount')!=0 } 
 			<tr>
 				<td colspan="2">{t}Refunds{/t}</td>

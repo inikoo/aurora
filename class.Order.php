@@ -549,13 +549,13 @@ class Order extends DB_Table {
 
 		}
 		$orders_data=preg_replace('/^, /','',$orders_data);
-		
-		if($orders_data!=''){
-		$this->error=true;
+
+		if ($orders_data!='') {
+			$this->error=true;
 			$this->msg=_('There is already a order in the basket').' '.$orders_data;
 			return;
 		}
-		
+
 
 		$date=gmdate("Y-m-d H:i:s");
 
@@ -582,13 +582,13 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		
-		
+
+
 		$sql=sprintf("update `Order Transaction Fact` set `Current Dispatching State`='In Process by Customer' where  `Current Dispatching State`='In Process by Customer' and `Order Key`=%d",
-		$this->id
+			$this->id
 		);
 		mysql_query($sql);
-	
+
 
 		$history_data=array(
 			'History Abstract'=>_('Order moved to customer basket'),
@@ -1415,7 +1415,8 @@ class Order extends DB_Table {
 			'Invoice Tax Number Valid'=>$this->data['Order Tax Number Valid'],
 			'Invoice Tax Number Validation Date'=>$this->data['Order Tax Number Validation Date'],
 			'Invoice Tax Number Associated Name'=>$this->data['Order Tax Number Associated Name'],
-			'Invoice Tax Number Associated Address'=>$this->data['Order Tax Number Associated Address']
+			'Invoice Tax Number Associated Address'=>$this->data['Order Tax Number Associated Address'],
+			'Invoice Net Amount Off'=>$this->data['Order Deal Amount Off']
 
 
 		);
@@ -3474,14 +3475,14 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-
+		$this->data['Order Invoiced Net Amount']-=$this->data['Order Deal Amount Off'];
 
 
 
 		$this->data['Order Balance Tax Amount']=round($this->data['Order Balance Net Amount']*$this->data['Order Tax Rate'],2);
 
 
-//print ($this->data['Order Balance Net Amount']*$this->data['Order Tax Rate']);
+		//print ($this->data['Order Balance Net Amount']*$this->data['Order Tax Rate']);
 
 		$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
 
@@ -3994,6 +3995,11 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 
 
+		$this->data['Order Invoiced Net Amount']=$this->data['Order Invoiced Net Amount']-$this->data['Order Deal Amount Off'];
+		$this->data['Order Invoiced Tax Amount']=$this->data['Order Invoiced Tax Amount']-round($this->data['Order Deal Amount Off']*$this->data['Order Tax Rate'],2);
+
+
+
 		$this->data['Order Invoiced Refund Notes']=preg_replace('/<br\/>/','',$this->data['Order Invoiced Refund Notes']);
 
 
@@ -4194,7 +4200,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		//print $this->data ['Order Items Net Amount'].' '.$this->data ['Order Shipping Net Amount'];
 
-		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount'];
+		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount']- $this->data ['Order Deal Amount Off'];
 
 		//TODO we need to do a Order Tax Bridge and put the tax compnents there and add them up to do this (similar to the stuff in invoice)
 		$tax=round($this->data ['Order Total Net Amount']*$this->data['Order Tax Rate'],2);
@@ -4308,8 +4314,16 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		//print $this->data ['Order Items Net Amount'].' '.$this->data ['Order Shipping Net Amount'];
 
-		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount'];
-		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount']+  $this->data ['Order Insurance Tax Amount'];
+		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount']- $this->data ['Order Deal Amount Off'];
+
+		$tax_rate=0;
+
+		$tax_category=new TaxCategory($this->data['Order Tax Code']);
+		$tax_rate=$tax_category->data['Tax Category Rate'];
+
+
+
+		$this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount']+  $this->data ['Order Insurance Tax Amount'] -round( $tax_rate* $this->data ['Order Deal Amount Off'],2) ;
 
 		$this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
 
@@ -8696,6 +8710,12 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 	function get_payment_objects($status='',$load_payment_account=false,$load_payment_service_provider=false) {
+
+		include_once 'class.Payment.php';
+		include_once 'class.Payment_Account.php';
+		include_once 'class.Payment_Service_Provider.php';
+
+
 
 		$payments=array();
 

@@ -6379,6 +6379,7 @@ function recalculate_totals($data) {
 			'order_items_discount'=>$order->get('Items Discount Amount'),
 			'order_items_net'=>$order->get('Items Net Amount'),
 			'order_net'=>$order->get('Total Net Amount'),
+			'order_amount_off'=>$order->get('Deal Amount Off'),
 			'order_tax'=>$order->get('Total Tax Amount'),
 			'order_charges'=>$order->get('Charges Net Amount'),
 			'order_insurance'=>$order->get('Insurance Net Amount'),
@@ -6407,7 +6408,7 @@ function recalculate_totals($data) {
 			'dispatch_state'=>$order->data['Order Current Dispatch State']
 		);
 
-
+//print_r($response);
 		echo json_encode($response);
 		break;
 	default:

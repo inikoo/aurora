@@ -979,6 +979,14 @@ function update_order_data(r) {
 
     Dom.get('to_pay_label_amount').value = r.order_total_to_pay;
 
+
+    if (r.amount_off == 0) {
+        Dom.setStyle('tr_order_amount_off', 'display', 'none')
+    } else {
+        Dom.setStyle('tr_order_amount_off', 'display', '')
+
+    }
+
     if (r.order_total_to_pay != 0) {
         if (Dom.get('tr_order_total_to_pay') != undefined) {
             Dom.setStyle('tr_order_total_to_pay', 'display', '')
@@ -1192,28 +1200,27 @@ var myonCellClick = function(oArgs) {
 
                         if (Dom.get('products_display_type').value == 'products') {
 
-                        var table = tables['table0'];
-                        var datasource = tables['dataSource0'];
-                         var request = '';
-                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                            var table = tables['table0'];
+                            var datasource = tables['dataSource0'];
+                            var request = '';
+                            datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
-                    } 
-                    else {
-                        var table = tables['table1'];
-                        var datasource = tables['dataSource1'];
-                         var request = '';
-                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
-
-                    }
+                        } else {
+                            var table = tables['table1'];
+                            var datasource = tables['dataSource1'];
+                            var request = '';
+                            datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
-                     
+                        }
+
+
+
 
                         var table = tables['table' + Dom.get('history_table_id').value];
-                    var datasource = tables['dataSource' + Dom.get('history_table_id').value];
-                    var request = '';
-                    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                        var datasource = tables['dataSource' + Dom.get('history_table_id').value];
+                        var request = '';
+                        datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
 
@@ -1360,28 +1367,27 @@ var CellEdit = function(callback, newValue) {
 
 
                     }
-                    
+
                     if (Dom.get('products_display_type').value == 'products') {
 
                         var table = tables['table0'];
                         var datasource = tables['dataSource0'];
-                         var request = '';
+                        var request = '';
                         datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
-                    } 
-                    else {
+                    } else {
                         var table = tables['table1'];
                         var datasource = tables['dataSource1'];
-                         var request = '';
+                        var request = '';
                         datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 
                     }
 
 
-     
 
-                       
+
+
 
 
 
@@ -1987,7 +1993,7 @@ function save_add_voucher() {
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
 
-            //  alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == '200') {
