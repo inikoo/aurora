@@ -1957,6 +1957,9 @@ function remove_voucher(voucher_key) {
                 }
 
                 var datatable = tables['table1'];
+                
+                if(datatable!=undefined){
+                
                 var records = datatable.getRecordSet();
 
                 for (var i = 0; i < records.getLength(); i++) {
@@ -1968,6 +1971,7 @@ function remove_voucher(voucher_key) {
                         datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
                         datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
                     }
+                }
                 }
 
             } else {
