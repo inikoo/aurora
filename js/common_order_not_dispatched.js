@@ -2022,6 +2022,7 @@ function save_add_voucher() {
                 }
 
                 var datatable = tables['table1'];
+                   if(datatable!=undefined){
                 var records = datatable.getRecordSet();
 
                 for (var i = 0; i < records.getLength(); i++) {
@@ -2034,7 +2035,7 @@ function save_add_voucher() {
                         datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
                     }
                 }
-
+}
 
             } else {
 
