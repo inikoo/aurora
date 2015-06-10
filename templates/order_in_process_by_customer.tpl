@@ -81,7 +81,7 @@
 					{include file='order_deals_splinter.tpl'} 
 				</div>
 				<div id="vouchers_div">
-					{include file='order_vouchers_splinter.tpl' modify_voucher=false} 
+					{include file='order_vouchers_splinter.tpl' modify_voucher=true} 
 				</div>
 			</div>
 			<div style="clear:both"></div>
@@ -138,4 +138,4 @@
 		</tr>
 	</table>
 </div>
-{include file='add_payment_splinter.tpl' subject='order'} {include file='notes_splinter.tpl'} {include file='footer.tpl'} 
+{include file='add_payment_splinter.tpl' subject='order'} {include file='order_not_dispatched_dialogs_splinter.tpl'}{include file='notes_splinter.tpl'} {include file='footer.tpl'} 

@@ -26,7 +26,6 @@
  $css_files[]='css/edit.css';
  $css_files[]='css/edit_address.css';
 
-
  $template='order_in_process.tpl';
 
  $products_display_type='ordered_products';
