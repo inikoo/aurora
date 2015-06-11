@@ -32,33 +32,16 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=33857 order by  `Product ID` ";
-$sql="select `Product ID` from `Product Dimension` order by  `Product ID` desc";
-
+$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  "
+);
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-$product=new Product('pid',$row['Product ID']);
-print $product->data['Product ID'].' '.$product->data['Product Code']."\n";
+	$product=new Product('pid',$row['Product ID']);
+	print $product->data['Product ID'].' '.$product->data['Product Code']."\n";
+
+	$product->update_sales_correlatations('Same Family');
 
 
-$product->update_days();
-//$product->update_parts();
-//$product->update_availability();
-//$product->update_sales_averages();
-/*
-$sql=sprintf("update `Product Dimension` set `Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
-,prepare_mysql($product->get('Short Description'))
-			,prepare_mysql($product->get('XHTML Short Description'))
-			,$product->pid
-		);
-		//print "$sql\n";
-		mysql_query($sql);
-		
-//$product->update_part_ratio();
-//$product->update_weight_from_parts();
-//$product->update_cost();
-*/
-print $product->pid."\r";
 }
 
 
