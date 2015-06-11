@@ -38,6 +38,35 @@ global $myconf;
 
 print "Start ".date("r")."\n";
 
+
+
+$sql="select count(*) as total from `Product Family Dimension`  where  `Product Family Stealth`='No' ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+$lap_time0=date('U');
+$sql="select `Product Family Key` from `Product Family Dimension`  where  `Product Family Stealth`='No' order by `Product Family Code` desc ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$family=new Family($row['Product Family Key']);
+	$family->update_sales_correlations();
+   
+	$contador++;
+
+	$lap_time1=date('U');
+	
+	print 'Sales Corr Time  '.$family->data['Product Family Code'].' '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+ unset($family);
+}
+print "End ".date("r")."\n";
+
+
+
+
+
 $sql="select count(*) as total from `Product Family Dimension`  ";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -59,28 +88,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 // 	print 'Sim Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 }
 
-
-
-$sql="select count(*) as total from `Product Family Dimension`  ";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-$lap_time0=date('U');
-$sql="select `Product Family Key` from `Product Family Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$family=new Family($row['Product Family Key']);
-	$family->update_correlated_sales_families();
-    unset($family);
-	$contador++;
-
-	$lap_time1=date('U');
-//	print 'Sales Corr Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
-}
-print "End ".date("r")."\n";
 
 
 ?>
