@@ -5407,25 +5407,25 @@ class product extends DB_Table {
 					$this->pid
 				);
 				$res=mysql_query($sql);
-				
+
 				while ($row=mysql_fetch_array($res)) {
 					$order=new Order($row['Order Key']);
 					$order->remove_out_of_stocks_from_basket($this->pid);
 				}
 
 			}
-			else{
-			
-			$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
+			else {
+
+				$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
 					$this->pid
 				);
 				$res=mysql_query($sql);
-				
+
 				while ($row=mysql_fetch_array($res)) {
 					$order=new Order($row['Order Key']);
 					$order->restore_back_to_stock_to_basket($this->pid);
 				}
-			
+
 			}
 
 
@@ -6209,6 +6209,167 @@ class product extends DB_Table {
 
 
 	}
+
+
+
+	function update_sales_correlatations($type='All') {
+
+		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$this->pid);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']<5) {
+				return;
+			}
+			$a_samples=$row['num'];
+			$a_lenght=sqrt($a_samples);
+		}
+
+
+
+		switch ($type) {
+		case 'Same Family':
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
+				$this->data['Product Store Key'],
+				$this->data['Product Family Key']
+			);
+			break;
+		case 'Exclude Same Family':
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`!=%d order by `Product Total Acc Customers` desc  ",
+				$this->data['Product Store Key'],
+				$this->data['Product Family Key']
+			);
+			break;	
+		case 'Same Department':
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Main Department Key`=%d order by `Product Total Acc Customers` desc  ",
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key']
+			);
+			break;
+		default:
+
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers`   ",
+				$this->data['Product Store Key']
+			);
+
+		}
+
+		$res2=mysql_query($sql);
+		while ($row2=mysql_fetch_assoc($res2)) {
+			if ($row2['Product ID']==$this->pid) continue;
+
+			$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$row2['Product ID']);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				if ($row['num']<5) {
+					continue;
+				}
+
+				$b_samples=$row['num'];
+				$b_lenght=sqrt($b_samples);
+			}
+
+
+			$sql=sprintf("select `Customer Key`, ((select if(count(*)>0,1,0) from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=OTF.`Customer Key`)) corr from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
+				$row2['Product ID'],
+				$this->pid
+			);
+			//print "$sql\n";
+			$dot_product=0;
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$dot_product+=$row['corr'];
+			}
+			if ($dot_product) {
+
+
+
+				$normalization_factor=$a_lenght * $b_lenght;
+				$correlation=$dot_product/ $normalization_factor;
+				$normalization_factor=ceil($normalization_factor);
+				//print $row2['Product ID'].' '.$row2['Product Code'].' '.$correlation." $normalization_factor   \n";
+
+				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ",$this->pid);
+				$res4=mysql_query($sql);
+				if ($row4=mysql_fetch_assoc($res4)) {
+					if ($row4['num']<6) {
+						$sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+							$this->pid,
+							$row2['Product ID'],
+							$correlation,
+							$normalization_factor,
+							$correlation,
+							$normalization_factor
+						);
+
+
+						mysql_query($sql);
+					}else {
+						if ($row4['corr']<$correlation) {
+							$sql=sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ",$this->pid);
+							mysql_query($sql);
+							$sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+								$this->pid,
+								$row2['Product ID'],
+								$correlation,
+								$normalization_factor,
+								$correlation,
+								$normalization_factor
+							);
+							mysql_query($sql);
+						}
+
+					}
+
+				}
+
+
+
+				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ",$row2['Product ID']);
+				$res4=mysql_query($sql);
+				if ($row4=mysql_fetch_assoc($res4)) {
+					if ($row4['num']<6) {
+						$sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+
+							$row2['Product ID'],
+							$this->pid,
+							$correlation,
+							$normalization_factor,
+							$correlation,
+							$normalization_factor
+						);
+
+
+						mysql_query($sql);
+					}else {
+						if ($row4['corr']<$correlation) {
+							$sql=sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ",$row2['Product ID']);
+							mysql_query($sql);
+							$sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+
+								$row2['Product ID'],
+								$this->pid,
+								$correlation,
+								$normalization_factor,
+								$correlation,
+								$normalization_factor
+							);
+							mysql_query($sql);
+						}
+
+					}
+
+				}
+
+
+			}
+
+
+
+		}
+
+	}
+
+	
 
 }
 ?>

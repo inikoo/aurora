@@ -98,7 +98,6 @@ $product= new product($mode,$tag);
 
 
 
-
 $smarty->assign('parent','products');
 
 
