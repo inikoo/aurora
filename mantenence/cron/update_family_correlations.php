@@ -47,7 +47,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $contador=0;
 $lap_time0=date('U');
-$sql="select `Product Family Key` from `Product Family Dimension`  where  `Product Family Stealth`='No' order by `Product Family Code` desc ";
+$sql="select `Product Family Key` from `Product Family Dimension`  where  `Product Family Stealth`='No'  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
