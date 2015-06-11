@@ -1623,7 +1623,142 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 
 
-	function update_correlated_sales_families() {
+function update_sales_correlations($type='All') {
+
+		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product Family Key`=%d and `Order Transaction Type`='Order' ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']<5) {
+				return;
+			}
+			$a_samples=$row['num'];
+			$a_lenght=sqrt($a_samples);
+		}
+
+
+
+		$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where  `Product Family Store Key`=%d and  `Product Family Stealth`='No'",
+				$this->data['Product Family Store Key']
+		);
+	
+
+		$res2=mysql_query($sql);
+		while ($row2=mysql_fetch_assoc($res2)) {
+			if ($row2['Product Family Key']==$this->id) continue;
+
+			$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product Family Key`=%d and `Order Transaction Type`='Order' ",$row2['Product Family Key']);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				if ($row['num']<5) {
+					continue;
+				}
+
+				$b_samples=$row['num'];
+				$b_lenght=sqrt($b_samples);
+			}
+
+
+			$sql=sprintf("select `Customer Key`, ((select if(count(*)>0,1,0) from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product Family Key`=%d and OTF2.`Customer Key`=OTF.`Customer Key`)) corr from `Order Transaction Fact` OTF  where `Product Family Key`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
+				$row2['Product Family Key'],
+				$this->id
+			);
+			//print "$sql\n";
+			$dot_product=0;
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$dot_product+=$row['corr'];
+			}
+			if ($dot_product) {
+
+
+
+				$normalization_factor=$a_lenght * $b_lenght;
+				$correlation=$dot_product/ $normalization_factor;
+				$normalization_factor=ceil($normalization_factor);
+				//print $row2['Product Family Key'].' '.$row2['Product Code'].' '.$correlation." $normalization_factor   \n";
+
+				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Family Sales Correlation` where `Family A Key`=%d    ",$this->id);
+				$res4=mysql_query($sql);
+				if ($row4=mysql_fetch_assoc($res4)) {
+					if ($row4['num']<11) {
+						$sql=sprintf("insert into  `Product Family Sales Correlation` (`Family A Key`,`Family B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+							$this->id,
+							$row2['Product Family Key'],
+							$correlation,
+							$normalization_factor,
+							$correlation,
+							$normalization_factor
+						);
+
+
+						mysql_query($sql);
+					}else {
+						if ($row4['corr']<$correlation) {
+							$sql=sprintf("delete from `Product Family Sales Correlation` where `Family A Key`=%d  order by `Correlation` limit 1  ",$this->id);
+							mysql_query($sql);
+							$sql=sprintf("insert into  `Product Family Sales Correlation` (`Family A Key`,`Family B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+								$this->id,
+								$row2['Product Family Key'],
+								$correlation,
+								$normalization_factor,
+								$correlation,
+								$normalization_factor
+							);
+							mysql_query($sql);
+						}
+
+					}
+
+				}
+
+
+
+				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Family Sales Correlation` where `Family A Key`=%d    ",$row2['Product Family Key']);
+				$res4=mysql_query($sql);
+				if ($row4=mysql_fetch_assoc($res4)) {
+					if ($row4['num']<6) {
+						$sql=sprintf("insert into  `Product Family Sales Correlation` (`Family A Key`,`Family B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+
+							$row2['Product Family Key'],
+							$this->id,
+							$correlation,
+							$normalization_factor,
+							$correlation,
+							$normalization_factor
+						);
+
+
+						mysql_query($sql);
+					}else {
+						if ($row4['corr']<$correlation) {
+							$sql=sprintf("delete from `Product Family Sales Correlation` where `Family A Key`=%d  order by `Correlation` limit 1  ",$row2['Product Family Key']);
+							mysql_query($sql);
+							$sql=sprintf("insert into  `Product Family Sales Correlation` (`Family A Key`,`Family B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+
+								$row2['Product Family Key'],
+								$this->id,
+								$correlation,
+								$normalization_factor,
+								$correlation,
+								$normalization_factor
+							);
+							mysql_query($sql);
+						}
+
+					}
+
+				}
+
+
+			}
+
+
+
+		}
+
+	}
+
+	function update_correlated_sales_families_old() {
 		$orders=0;
 
 		$sql=sprintf("select count(DISTINCT `Order Key`) as num from  `Order Transaction Fact`  where `Product Family Key`=%d  and `Order Quantity`>0 and `Order Transaction Type`='Order'",
