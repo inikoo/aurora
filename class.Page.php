@@ -1345,6 +1345,13 @@ class Page extends DB_Table {
 		if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
 			return;
 
+
+        if(!isset($this->data['Number See Also Links'])){
+            print_r($this);
+            exit;
+        
+        }
+
 		$max_links=$this->data['Number See Also Links'];
 
 
@@ -1361,11 +1368,6 @@ class Page extends DB_Table {
 		case 'Department Catalogue':
 			break;
 		case 'Family Catalogue':
-
-
-			//New PAGE
-
-
 
 
 			$sql=sprintf("select UNIX_TIMESTAMP(`Page Store Creation Date`) as creation_date,`Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`='Online' order by `Page Store Creation Date` desc limit 3 ",
@@ -1466,11 +1468,74 @@ class Page extends DB_Table {
 
 
 			break;
+
+		case 'Product Description':
+$max_links=5;
+			$product=new Product('pid',$this->data['Page Parent Key']);
+			$sql=sprintf("select * from `Product Sales Correlation` where `Product A ID`=%d order by `Correlation` desc",
+				$this->data['Page Parent Key']);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				if (!array_key_exists($row['Product B ID'], $see_also)) {
+					$_product=new Product('pid',$row['Product B ID']);
+					
+					
+					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
+
+						$page_keys=$_product->get_pages_keys();
+						$see_also_page_key=array_pop($page_keys);
+						$see_also_page=new Page($see_also_page_key);
+						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+							$number_links=count($see_also);
+							if ($number_links>=$max_links)
+								break;
+						}
+					}
+				}
+			}
+			
+			
+			
+		$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
+				
+				$product->data['Product Family Key']
+			);
+			
+		
+			$res=mysql_query($sql);
+           
+			while ($row=mysql_fetch_assoc($res)) {
+			
+			if ($row['Product ID']==$product->pid) continue;
+			
+			
+			
+				if (!array_key_exists($row['Product ID'], $see_also)) {
+					$_product=new Product('pid',$row['Product ID']);
+					
+					
+					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
+
+						$page_keys=$_product->get_pages_keys();
+						$see_also_page_key=array_pop($page_keys);
+						$see_also_page=new Page($see_also_page_key);
+						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+							$see_also[$see_also_page_key]=array('type'=>'Same Familey','value'=>0.001);
+							$number_links=count($see_also);
+							if ($number_links>=$max_links)
+								break;
+						}
+					}
+				}
+			}
+
+
+			break;
 		default:
 
 			break;
 		}
-
 
 
 		$sql=sprintf("delete from `Page Store See Also Bridge`where `Page Store Key`=%d ",

@@ -7890,7 +7890,7 @@ function list_favorite_products() {
 			'code'=>sprintf('<a href="product.php?pid=%d&block_view=details">%s</a>',$row['Product ID'],$row['Product Code']),
 			'name'=>$row['Product Name'],
 
-			'customers'=>sprintf('<a href="product.php?id=%d&customers_block_view=customers_who_favorited">%s</a>',$row['Product ID'],number($row['customers'])),
+			'customers'=>sprintf('<a href="product.php?pid=%d&customers_block_view=customers_who_favorited">%s</a>',$row['Product ID'],number($row['customers'])),
 			'date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['date'].' +0:00')),
 			
 
