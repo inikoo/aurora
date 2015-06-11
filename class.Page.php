@@ -1370,6 +1370,45 @@ class Page extends DB_Table {
 		case 'Family Catalogue':
 
 
+
+
+			$family=new Family($this->data['Page Parent Key']);
+
+			$sql=sprintf("select * from `Product Family Sales Correlation` where `Family A Key`=%d order by `Correlation` desc ",
+				$this->data['Page Parent Key']);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+				//    print_r($row);
+//if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>=$correlation_upper_limit) 
+
+
+			
+					$family=new Family($row['Family B Key']);
+					if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
+
+						$page_keys=$family->get_pages_keys();
+
+						$see_also_page_key=array_pop($page_keys);
+						if ($see_also_page_key) {
+
+							$see_also_page=new Page($see_also_page_key);
+							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'  and $see_also_page->data['Page Store Image Key']  ) {
+								$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+								$number_links=count($see_also);
+								//print "$number_links>=$max_links\n";
+								if ($number_links>=$max_sales_links  )
+									break;
+							}
+						}
+					}
+				
+
+
+			}
+
+
+
 			$sql=sprintf("select UNIX_TIMESTAMP(`Page Store Creation Date`) as creation_date,`Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`='Online' order by `Page Store Creation Date` desc limit 3 ",
 				$this->data['Page Site Key'],
 				$this->id
@@ -1394,41 +1433,6 @@ class Page extends DB_Table {
 
 
 
-			$family=new Family($this->data['Page Parent Key']);
-
-			$sql=sprintf("select * from `Product Family Sales Correlation` where `Family A Key`=%d order by `Correlation` desc limit 200",
-				$this->data['Page Parent Key']);
-			$res=mysql_query($sql);
-
-			while ($row=mysql_fetch_assoc($res)) {
-				//    print_r($row);
-
-				if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>=$correlation_upper_limit) {
-					$family=new Family($row['Family B Key']);
-					if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
-
-						$page_keys=$family->get_pages_keys();
-
-						$see_also_page_key=array_pop($page_keys);
-						if ($see_also_page_key) {
-
-							$see_also_page=new Page($see_also_page_key);
-							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
-								$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
-								$number_links=count($see_also);
-								//print "$number_links>=$max_links\n";
-								if ($number_links>=$max_sales_links  )
-									break;
-							}
-						}
-					}
-				}
-
-
-			}
-
-
-
 
 
 
@@ -1447,7 +1451,7 @@ class Page extends DB_Table {
 							$page_keys=$family->get_pages_keys();
 							$see_also_page_key=array_pop($page_keys);
 							$see_also_page=new Page($see_also_page_key);
-							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No' and $see_also_page->data['Page Store Image Key']   ) {
 								$see_also[$see_also_page_key]=array('type'=>'Semantic','value'=>$row['Weight']);
 								$number_links=count($see_also);
 								if ($number_links>=$max_links)
@@ -1485,7 +1489,7 @@ $max_links=5;
 						$page_keys=$_product->get_pages_keys();
 						$see_also_page_key=array_pop($page_keys);
 						$see_also_page=new Page($see_also_page_key);
-						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'     ) {
 							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
 							$number_links=count($see_also);
 							if ($number_links>=$max_links)
