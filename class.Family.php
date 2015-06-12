@@ -1623,7 +1623,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 
 
-function update_sales_correlations($type='All') {
+	function update_sales_correlations($type='All') {
 
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product Family Key`=%d and `Order Transaction Type`='Order' ",$this->id);
 		$res=mysql_query($sql);
@@ -1638,9 +1638,9 @@ function update_sales_correlations($type='All') {
 
 
 		$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where  `Product Family Store Key`=%d and  `Product Family Stealth`='No'",
-				$this->data['Product Family Store Key']
+			$this->data['Product Family Store Key']
 		);
-	
+
 
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
@@ -1658,15 +1658,25 @@ function update_sales_correlations($type='All') {
 			}
 
 
-			$sql=sprintf("select `Customer Key`, ((select if(count(*)>0,1,0) from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product Family Key`=%d and OTF2.`Customer Key`=OTF.`Customer Key`)) corr from `Order Transaction Fact` OTF  where `Product Family Key`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
-				$row2['Product Family Key'],
+			$sql=sprintf("select `Customer Key` from `Order Transaction Fact` OTF  where `Product Family Key`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
+
 				$this->id
 			);
-			//print "$sql\n";
+           
 			$dot_product=0;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
-				$dot_product+=$row['corr'];
+
+				$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product Family Key`=%d and OTF2.`Customer Key`=%d",
+					$row2['Product Family Key'],
+					$row['Customer Key']
+				);
+				 //  print "$sql\n";
+				$_res=mysql_query($sql);
+				if ($_row=mysql_fetch_assoc($_res)) {
+
+					$dot_product+=1;
+				}
 			}
 			if ($dot_product) {
 

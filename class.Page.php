@@ -1346,11 +1346,11 @@ class Page extends DB_Table {
 			return;
 
 
-        if(!isset($this->data['Number See Also Links'])){
-            print_r($this);
-            exit;
-        
-        }
+		if (!isset($this->data['Number See Also Links'])) {
+			print_r($this);
+			exit;
+
+		}
 
 		$max_links=$this->data['Number See Also Links'];
 
@@ -1380,29 +1380,29 @@ class Page extends DB_Table {
 
 			while ($row=mysql_fetch_assoc($res)) {
 				//    print_r($row);
-//if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>=$correlation_upper_limit) 
+				//if ($row['Samples']>$min_sales_correlation_samples and $row['Correlation']>=$correlation_upper_limit)
 
 
-			
-					$family=new Family($row['Family B Key']);
-					if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
 
-						$page_keys=$family->get_pages_keys();
+				$family=new Family($row['Family B Key']);
+				if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
 
-						$see_also_page_key=array_pop($page_keys);
-						if ($see_also_page_key) {
+					$page_keys=$family->get_pages_keys();
 
-							$see_also_page=new Page($see_also_page_key);
-							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'  and $see_also_page->data['Page Store Image Key']  ) {
-								$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
-								$number_links=count($see_also);
-								//print "$number_links>=$max_links\n";
-								if ($number_links>=$max_sales_links  )
-									break;
-							}
+					$see_also_page_key=array_pop($page_keys);
+					if ($see_also_page_key) {
+
+						$see_also_page=new Page($see_also_page_key);
+						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'  and $see_also_page->data['Page Store Image Key']  ) {
+							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+							$number_links=count($see_also);
+							//print "$number_links>=$max_links\n";
+							if ($number_links>=$max_sales_links  )
+								break;
 						}
 					}
-				
+				}
+
 
 
 			}
@@ -1474,7 +1474,7 @@ class Page extends DB_Table {
 			break;
 
 		case 'Product Description':
-$max_links=5;
+			$max_links=5;
 			$product=new Product('pid',$this->data['Page Parent Key']);
 			$sql=sprintf("select * from `Product Sales Correlation` where `Product A ID`=%d order by `Correlation` desc",
 				$this->data['Page Parent Key']);
@@ -1482,8 +1482,8 @@ $max_links=5;
 			while ($row=mysql_fetch_assoc($res)) {
 				if (!array_key_exists($row['Product B ID'], $see_also)) {
 					$_product=new Product('pid',$row['Product B ID']);
-					
-					
+
+
 					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
 
 						$page_keys=$_product->get_pages_keys();
@@ -1498,27 +1498,27 @@ $max_links=5;
 					}
 				}
 			}
-			
-			
-			
-		$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
-				
+
+
+
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
+
 				$product->data['Product Family Key']
 			);
-			
-		
+
+
 			$res=mysql_query($sql);
-           
+
 			while ($row=mysql_fetch_assoc($res)) {
-			
-			if ($row['Product ID']==$product->pid) continue;
-			
-			
-			
+
+				if ($row['Product ID']==$product->pid) continue;
+
+
+
 				if (!array_key_exists($row['Product ID'], $see_also)) {
 					$_product=new Product('pid',$row['Product ID']);
-					
-					
+
+
 					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
 
 						$page_keys=$_product->get_pages_keys();
