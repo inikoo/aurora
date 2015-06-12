@@ -47,7 +47,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $contador=0;
 $lap_time0=date('U');
-$sql="select `Product Family Key` from `Product Family Dimension`  where  `Product Family Stealth`='No'  limit 1 ";
+$sql="select `Product Family Key` from `Product Family Dimension`  where  `Product Family Stealth`='No'  order by `Product Family Name` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -63,7 +63,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 print "End ".date("r")."\n";
 
-exit;
+
 
 
 
