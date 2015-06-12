@@ -6269,7 +6269,7 @@ class product extends DB_Table {
 			}
 
 
-			$sql=sprintf("select `Customer Key`, ((select if(count(*)>0,1,0) from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=OTF.`Customer Key`)) corr from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
+			$sql=sprintf("select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
 				$row2['Product ID'],
 				$this->pid
 			);
@@ -6277,7 +6277,20 @@ class product extends DB_Table {
 			$dot_product=0;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
-				$dot_product+=$row['corr'];
+				
+				
+				$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=%d",
+					$row2['Product ID'],
+					$row['Customer Key']
+				);
+				 //  print "$sql\n";
+				$_res=mysql_query($sql);
+				if ($_row=mysql_fetch_assoc($_res)) {
+
+					$dot_product+=1;
+				}
+				
+				
 			}
 			if ($dot_product) {
 
