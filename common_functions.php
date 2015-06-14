@@ -644,7 +644,7 @@ function weight($w,$unit='Kg',$number_decimals=3,$simplify=false,$zero_fill=fals
 		}elseif ($w>1000) {
 			$w=number($w,0);
 		}
-		return $w.=$unit;
+		return $w.$unit;
 	}else {
 		if ($zero_fill) {
 			return number($w,$number_decimals,true).$unit;

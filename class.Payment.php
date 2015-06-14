@@ -199,6 +199,10 @@ class Payment extends DB_Table {
 		$keys=preg_replace('/^,/','',$keys);
 
 		$sql="insert into `Payment Dimension` ($keys) values ($values)";
+		
+		
+	
+		
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->data['Address Key']= $this->id;

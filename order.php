@@ -684,7 +684,7 @@ $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);
 
 
-//$order->update_payment_state();
+
 
 $smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );

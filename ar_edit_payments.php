@@ -719,6 +719,9 @@ function credit_payment($data) {
 
 	$credit_amount=round($data['credit_amount'],2);
 
+
+
+
 	$payment=new Payment($data['payment_key']);
 	$payment->load_payment_account();
 	$payment->load_payment_service_provider();
@@ -734,9 +737,7 @@ function credit_payment($data) {
 
 	$store=new Store($payment->data['Payment Store Key']);
 
-
 	$payment_account=new Payment_Account($store->get_payment_account_key());
-
 
 
 	$payment_data=array(
@@ -757,7 +758,7 @@ function credit_payment($data) {
 		'Payment Created Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Last Updated Date'=>gmdate('Y-m-d H:i:s'),
 		'Payment Transaction Status'=>'Completed',
-		'Payment Transaction ID'=>'xx',
+		'Payment Transaction ID'=>'',
 		'Payment Method'=>'Account',
 		'Payment Related Payment Key'=>$payment->id,
 		'Payment Related Payment Transaction ID'=>'',
@@ -767,10 +768,8 @@ function credit_payment($data) {
 	);
 
 	$refund_payment=new Payment('create',$payment_data);
-
 	$customer=new Customer($payment->data['Payment Customer Key']);
 	$customer->update_field_switcher('Customer Account Balance',$customer->data['Customer Account Balance']-$credit_amount,'no_history');
-
 
 	$refund_payment->load_payment_account();
 
@@ -787,8 +786,12 @@ function credit_payment($data) {
 			$refund_payment->data['Payment Amount']
 		);
 		mysql_query($sql);
+		
+	
+		
+		
+		$order->update_totals();
 		$order->update_payment_state();
-
 
 		$updated_data=array(
 			'order_items_gross'=>$order->get('Items Gross Amount'),
@@ -813,7 +816,6 @@ function credit_payment($data) {
 				'status'=>$payment->get('Payment Transaction Status')
 			);
 		}
-
 
 
 		$response=array('state'=>200,

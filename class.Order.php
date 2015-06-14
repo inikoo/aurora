@@ -8857,7 +8857,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		$payments_info='';
 		$number_payments=0;
 		$sql=sprintf("select * from `Payment Dimension` P left join `Payment Service Provider Dimension` PSPD on (P.`Payment Service Provider Key`=PSPD.`Payment Service Provider Key`) where `Payment Order Key`=%d and `Payment Transaction Status`='Completed'",$this->id);
-		//print $sql;
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			//print_r($row);
@@ -8879,6 +8879,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			$payments_info.='</div>';
 
 		}
+		// print $payments_amount.' '.$this->data['Order Balance Total Amount'].' XXXm';
 
 
 		$sql=sprintf("select * from `Payment Dimension` P left join `Payment Service Provider Dimension` PSPD on (P.`Payment Service Provider Key`=PSPD.`Payment Service Provider Key`) where `Payment Order Key`=%d and `Payment Transaction Status`='Pending' and P.`Payment Method`='Account'",$this->id);
@@ -8909,7 +8910,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		$this->data['Order Balance Total Amount']=round($this->data['Order Balance Total Amount'],2);
 
-		//print $payments_amount.' '.$this->data['Order Balance Total Amount'];
+		//  print $payments_amount.' '.$this->data['Order Balance Total Amount'].' XXXm';
 
 
 
@@ -8978,8 +8979,10 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 	function apply_payment_from_customer_account() {
 
+
+
 		$order_amount=$this->data['Order Balance Total Amount'];
-		$sql=sprintf("select sum(`Amount`) as amount  from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Completed' and  `Is Account Payment`='No' and `Order Key`=%d ",
+		$sql=sprintf("select sum(`Amount`) as amount  from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Completed'  and `Order Key`=%d ",
 			$this->id
 
 		);
@@ -8991,10 +8994,57 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		}
 
+
+
 		$order_amount=round($order_amount-$current_amount_completed_payments,2);
+
 		if ($order_amount<=0) {
+
+			$current_amount_in_customer_account_payments=0;
+			$sql=sprintf("select P.`Payment Key`,`Amount` from `Order Payment Bridge` B left join `Payment Dimension` P on (P.`Payment Key`=B.`Payment Key`)   where  `Payment Transaction Status`='Pending' and  `Is Account Payment`='Yes' and `Order Key`=%d ",
+				$this->id
+
+			);
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$_payment_key=$row['Payment Key'];
+				$current_amount_in_customer_account_payments=$row['Amount'];
+
+			}else {
+
+
+				return;
+			}
+
+			$_balance=$order_amount+$current_amount_in_customer_account_payments;
+
+
+			$payment=new Payment($_payment_key);
+			$customer = new Customer($payment->data['Payment Customer Key']);
+			$customer->update_field_switcher('Customer Account Balance',round($customer->data['Customer Account Balance']+$payment->data['Payment Amount'],2));
+
+			$sql=sprintf("delete from `Payment Dimension` where `Payment Key`=%d",$payment->id);
+			mysql_query($sql);
+			$sql=sprintf("delete from `Order Payment Bridge` where `Payment Key`=%d",$payment->id);
+			mysql_query($sql);
+
+			$this->update_totals();
+			$this->update_payment_state();
+
+
+
+
+
+
+
+
 			return;
 		}
+
+
+
 
 		if ($this->data['Order Apply Auto Customer Account Payment']=='Yes') {
 
@@ -9067,7 +9117,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 					);
 
-					//print_r($data_to_update);
+					// print_r($data_to_update);
 
 					$payment->update($data_to_update);
 
@@ -9097,7 +9147,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 					$payment=new Payment('create',$payment_data);
 
-					//print_r($payment);
+					// print_r($payment);
 					//exit;
 				}
 

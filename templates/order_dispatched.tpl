@@ -99,7 +99,7 @@
 					<td> <a href="dn.php?id={$dn.key}">{$dn.number}</a> <a target='_blank' href="dn.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('dn',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
 					<td class="right" style="text-align:right"> {$dn.state} </td>
 				</tr>
-				<tr style="{if $dn.dispatch_state=='Dispatched'}display:none{/if}">
+				<tr >
 					<td colspan="2" class="aright" style="text-align:right"> {$dn.data} </td>
 				</tr>
 				<tr>

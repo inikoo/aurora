@@ -1,7 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
-	<div id="print">
-		{include file='top_search_splinter.tpl'} 
+<input type="hidden" id="session_data" value="{$session_data}" />
+
 		<input type="hidden" id="method" value="{$warehouse->get('Warehouse Picking Aid Type')}"> 
 		<input type="hidden" id="modify_stock" value="{$modify_stock}" />
 		<input type="hidden" id="stock" value="" />
@@ -9,7 +9,14 @@
 		<input type="hidden" id="staff_list_parent_dialog" value="assign_packer" />
 		<input value="{$delivery_note->id}" id="assign_packer_dn_key" type="hidden" />
 		<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
-				<input value="{$order_key}" id="order_key" type="hidden" />
+		<input value="{$order_key}" id="order_key" type="hidden" />
+		<input id="is_invoiced" value="{$delivery_note->get('Delivery Note Invoiced')}"  type="hidden" />
+			
+
+
+	<div id="print">
+		{include file='top_search_splinter.tpl'} 
+		
 
 		<div id="left_nav" class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr;{if $user->get('User Type')!='Warehouse'} {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr;{/if} <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pick Aid{/t})</span> 
@@ -18,9 +25,9 @@
 			<div style="float:left">
 				<span class="main_title no_buttons">{t}Pick Aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 			</div>
-			<div class="buttons" style="float:right">
-				<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="pick_all" onclick="pick_all({$delivery_note->id},{$user->get_staff_key()},'pick_aid')" style="height:24px;{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="pick_all_img_{$delivery_note->id}" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> <button id="pick_it" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' or {$user->get('User Type')!='Warehouse'}  }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> <button id="assign_packer" onclick="assign_packer(this,{$delivery_note->id})" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_packer_img_{$delivery_note->id}" src="art/icons/user_red.png" alt="" /> {t}Assign Packer{/t}</button> {if !$delivery_note->get('Delivery Note Assigned Picker Key')} <button id="assign_picker" onclick="assign_picker(this,{$delivery_note->id})" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_picker_img_{$delivery_note->id}" src="art/icons/user.png" alt="" /> {t}Assign Picker{/t}</button> {/if} <button id="change_picker" onclick="assign_picker(this,{$delivery_note->id})" style="height:24px;{if !($delivery_note->get('Delivery Note Fraction Picked')<1 and $user->can_edit('assign_pp') and $delivery_note->get('Delivery Note Assigned Picker Key')) }display:none{/if}"><img id="assign_picker_img_{$delivery_note->id}" src="art/icons/user.png" alt="" /> {t}Change Picker{/t}</button> <button id="start_packing" onclick="start_packing({$delivery_note->id},{$user->get_staff_key()})" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or    $user->get('User Type')!='Warehouse' }display:none{/if}"><img id="start_packing_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> 
-				<button id="pack_it" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Picked' or $user->get('User Type')!='Warehouse' }display:none{/if}"><img id="pack_it_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> 
+			<div class="buttons small" style="position:relative;top:5px">
+				<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 }display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="pick_all" onclick="pick_all({$delivery_note->id},{$user->get_staff_key()},'pick_aid')" style="{if ($delivery_note->get('Delivery Note Fraction Picked')==1 or $delivery_note->get('Delivery Note State')=='Ready to be Picked')}display:none{/if}"><img id="pick_all_img_{$delivery_note->id}" src="art/icons/basket_put.png" alt="" /> {t}Set all as Picked{/t}</button> <button id="pick_it" style="{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' or {$user->get('User Type')!='Warehouse'}  }display:none{/if}"><img id="start_picking_img" src="art/icons/accept.png" alt="" /> {t}Start Picking{/t}</button> <button id="assign_packer" onclick="assign_packer(this,{$delivery_note->id})" style="{if $delivery_note->get('Delivery Note State')!='Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_packer_img_{$delivery_note->id}" src="art/icons/user_red.png" alt="" /> {t}Assign Packer{/t}</button> {if !$delivery_note->get('Delivery Note Assigned Picker Key')} <button id="assign_picker" onclick="assign_picker(this,{$delivery_note->id})" style="{if $delivery_note->get('Delivery Note State')!='Ready to be Picked' or !$user->can_edit('assign_pp')}display:none{/if}"><img id="assign_picker_img_{$delivery_note->id}" src="art/icons/user.png" alt="" /> {t}Assign Picker{/t}</button> {/if} <button id="change_picker" onclick="assign_picker(this,{$delivery_note->id})" style="{if !($delivery_note->get('Delivery Note Fraction Picked')<1 and $user->can_edit('assign_pp') and $delivery_note->get('Delivery Note Assigned Picker Key')) }display:none{/if}"><img id="assign_picker_img_{$delivery_note->id}" src="art/icons/user.png" alt="" /> {t}Change Picker{/t}</button> <button id="start_packing" onclick="start_packing({$delivery_note->id},{$user->get_staff_key()})" style="{if $delivery_note->get('Delivery Note State')!='Picked' or    $user->get('User Type')!='Warehouse' }display:none{/if}"><img id="start_packing_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> 
+				<button id="pack_it" style="{if $delivery_note->get('Delivery Note State')!='Picked' or $user->get('User Type')!='Warehouse' }display:none{/if}"><img id="pack_it_img_{$delivery_note->id}" src="art/icons/briefcase.png" alt="" /> {t}Start Packing{/t}</button> 
 				
 				
 			</div>
@@ -43,7 +50,7 @@
 				
 	</div>
 	
-	<div id="control_panel" style="clear:both;margin-top:3px">
+	<div id="control_panel" style="clear:both;margin-top:3px;padding:20px">
 		<div id="addresses">
 			<h2 style="padding:0">
 				{$delivery_note->get('Delivery Note Customer Name')} (<a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a>) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
@@ -69,7 +76,7 @@
 		</div>
 		<div id="totals" style="width:310px">
 		
-									<div id="dn_state" style="border:1px solid #ccc;text-align:right"><span id="dn_xhtml_state" style="padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span> 
+									<div id="dn_state" style="border:1px solid #ccc;text-align:right;padding:5px"><span id="dn_xhtml_state" style="padding:4px 12px">{$delivery_note->get('Delivery Note XHTML State')}</span> 
 </div>
 		
 			<table border="0" style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">

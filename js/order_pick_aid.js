@@ -1,8 +1,3 @@
-<?php
-include_once('common.php');
-
-?>
-
 YAHOO.namespace("invoice");
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
@@ -23,7 +18,6 @@ var myonCellClick = function(oArgs) {
         datatable = this;
         var records = this.getRecordSet();
         //alert(records.getLength())
-
         //return;
         //alert(datatable)
         var recordIndex = this.getRecordIndex(record);
@@ -53,8 +47,7 @@ var myonCellClick = function(oArgs) {
 
 
             if (Dom.get('todo_units').value < 0) {
-               // alert("caca")
-
+                // alert("caca")
             } else {
 
                 x = x - 120;
@@ -105,10 +98,10 @@ var myonCellClick = function(oArgs) {
 
             var picker_key = Dom.get('assigned_picker').getAttribute('key');
 
-			if(picker_key==''){
-				alert('assign picker')
-				return;
-			}
+            if (picker_key == '') {
+                alert('assign picker')
+                return;
+            }
 
 
             var ar_file = 'ar_edit_orders.php';
@@ -138,23 +131,23 @@ var myonCellClick = function(oArgs) {
                                 datatable.updateCell(record, 'done', '&#x2713;');
 
                             }
-							
+
                             if ((r.picked - r.packed) > 0) {
                                 datatable.updateCell(record, 'remove', '-');
 
                             } else {
                                 datatable.updateCell(record, 'remove', '<span style="color:#ccc">-</span>');
                             }
-                           Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
+                            Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
                             Dom.get('number_transactions').innerHTML = r.number_transactions;
                             Dom.get('percentage_picked').innerHTML = r.percentage_picked;
-							Dom.get('dn_xhtml_state').innerHTML=r.dn_xhtml_state
-							Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
-							Dom.get('finish_picking_date').innerHTML = r.finish_picking_date;
+                            Dom.get('dn_xhtml_state').innerHTML = r.dn_xhtml_state
+                            Dom.get('dn_formated_state').innerHTML = r.dn_formated_state
+                            Dom.get('finish_picking_date').innerHTML = r.finish_picking_date;
 
                             if (r.number_picked_transactions >= r.number_transactions) {
                                 Dom.setStyle(['pick_all', 'update_locations'], 'display', 'none');
-                                
+
                             } else {
                                 Dom.setStyle(['pick_all', 'update_locations'], 'display', '');
                             }
@@ -170,7 +163,7 @@ var myonCellClick = function(oArgs) {
                     }
                 },
                 failure: function(o) {
-                  //  alert(o.statusText);
+                    //  alert(o.statusText);
                     // callback();
                 },
                 scope: this
@@ -220,45 +213,45 @@ var CellEdit = function(callback, newValue) {
 
                     if (r.result == 'updated') {
 
-                       
-                            datatable.updateCell(record, 'picked', r.picked);
-                            if (r.formated_todo == 0) r.formated_todo = '';
-                            datatable.updateCell(record, 'formated_todo', r.formated_todo);
-                            datatable.updateCell(record, 'todo', r.todo);
+
+                        datatable.updateCell(record, 'picked', r.picked);
+                        if (r.formated_todo == 0) r.formated_todo = '';
+                        datatable.updateCell(record, 'formated_todo', r.formated_todo);
+                        datatable.updateCell(record, 'todo', r.todo);
 
 
-                            if (r.todo) {
-                                datatable.updateCell(record, 'add', '+');
-                                datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#x2713;</span>');
-                            } else {
-                                datatable.updateCell(record, 'add', '<span style="color:#ccc">+</span>');
-                                datatable.updateCell(record, 'check_mark', '&#x2713;');
+                        if (r.todo) {
+                            datatable.updateCell(record, 'add', '+');
+                            datatable.updateCell(record, 'check_mark', '<span style="color:#ccc">&#x2713;</span>');
+                        } else {
+                            datatable.updateCell(record, 'add', '<span style="color:#ccc">+</span>');
+                            datatable.updateCell(record, 'check_mark', '&#x2713;');
 
-                            }
-							
-                            if ((r.picked - r.packed) > 0) {
-                                datatable.updateCell(record, 'remove', '-');
+                        }
 
-                            } else {
-                                datatable.updateCell(record, 'remove', '<span style="color:#ccc">-</span>');
-                            }
-                           Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
-                            Dom.get('number_transactions').innerHTML = r.number_transactions;
-                            Dom.get('percentage_picked').innerHTML = r.percentage_picked;
-							Dom.get('dn_xhtml_state').innerHTML=r.dn_xhtml_state
-							Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
-							Dom.get('finish_picking_date').innerHTML = r.finish_picking_date;
+                        if ((r.picked - r.packed) > 0) {
+                            datatable.updateCell(record, 'remove', '-');
 
-                            if (r.number_picked_transactions >= r.number_transactions) {
-                                Dom.setStyle(['pick_all', 'update_locations'], 'display', 'none');
-                                
-                            } else {
-                                Dom.setStyle(['pick_all', 'update_locations'], 'display', '');
-                            }
+                        } else {
+                            datatable.updateCell(record, 'remove', '<span style="color:#ccc">-</span>');
+                        }
+                        Dom.get('number_picked_transactions').innerHTML = r.number_picked_transactions;
+                        Dom.get('number_transactions').innerHTML = r.number_transactions;
+                        Dom.get('percentage_picked').innerHTML = r.percentage_picked;
+                        Dom.get('dn_xhtml_state').innerHTML = r.dn_xhtml_state
+                        Dom.get('dn_formated_state').innerHTML = r.dn_formated_state
+                        Dom.get('finish_picking_date').innerHTML = r.finish_picking_date;
+
+                        if (r.number_picked_transactions >= r.number_transactions) {
+                            Dom.setStyle(['pick_all', 'update_locations'], 'display', 'none');
+
+                        } else {
+                            Dom.setStyle(['pick_all', 'update_locations'], 'display', '');
+                        }
 
 
 
-                        
+
 
 
                     }
@@ -281,190 +274,362 @@ var CellEdit = function(callback, newValue) {
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
+
+
+    session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
+    labels = session_data.label;
+    state = session_data.state;
+
+
     tables = new function() {
 
 
-		
-		
-		var tableid=0; 
-	    var tableDivEL="table"+tableid;
+
+
+        var tableid = 0;
+        var tableDivEL = "table" + tableid;
 
 
 
-	    var ColumnDefs = [
-	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     			//,{key:"sku", label:"<?php echo _('Part')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						     	,{key:"reference",label:"<?php echo _('Reference')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-								//,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-								
-								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-								,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?240:390),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-							//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-							// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  				,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-								,{key:"done",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false}
-								
-								,{key:"picked",label:"<?php echo _('Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:40,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
-								
-								,{key:"check_mark",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
-								,{key:"add",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'add_object',object:'pick_aid'}
-								,{key:"remove",label:"",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:3,sortable:false,action:'remove_object',object:'pick_aid'}
-								,{key:"formated_todo",label:"<?php echo _('Pending')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-								,{key:"notes",label:"<?php echo _('Not Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-								,{key:"out_of_stock",label:"", width:1,hidden:true}
-								,{key:"not_found",label:"", width:1,hidden:true}
-								,{key:"no_picked_other",label:"", width:1,hidden:true}
-							//  ,{key:"no_authorized",label:"", width:1,hidden:true}
-								,{key:"packed",label:"", width:1,hidden:true}
-							//  ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-				   ];
-		request="ar_edit_orders.php?tipo=picking_aid_sheet&tableid="+tableid+"&dn_key="+Dom.get('dn_key').value+'&sf=0'
-		//alert(request)
-	    this.dataSource0 = new YAHOO.util.DataSource(request);
-	   
-	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource0.connXhrMode = "queueRequests";
-	    
-	    
-	       this.dataSource0.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		     rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
-		
-		fields: [
-			 "sku"
-			 ,"used_in"
-			 ,"description","done"
-			 ,"location","picking_notes","packed","picking_notes","reference"
-			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other","check_mark"
-			
-			 ]};
-	    
-	  
-	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource0
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo $_SESSION['state']['picking_aid']['items']['nr']?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}"
-									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['picking_aid']['items']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['picking_aid']['items']['order_dir']?>"
-								     },
-								     dynamicData : true
-
-								  }
-								   
-								 );
-	
-	
-		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		this.table0.request=request;
-  		this.table0.table_id=tableid;
-     	this.table0.subscribe("renderEvent", myrenderEvent);
-
- this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.table0.subscribe("cellClickEvent", myonCellClick);
-	
-		this.table0.filter={key:'<?php echo$_SESSION['state']['picking_aid']['items']['f_field']?>',value:'<?php echo$_SESSION['state']['picking_aid']['items']['f_value']?>'};
+        var ColumnDefs = [{
+            key: "itf_key",
+            label: "",
+            width: 20,
+            sortable: false,
+            isPrimaryKey: true,
+            hidden: true
+        }, {
+            key: "reference",
+            label: labels.Reference,
+            width: 90,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }
 
 
-var tableid=2; 
-	    var tableDivEL="table"+tableid;
+        , {
+            key: "quantity",
+            label: labels.Qty,
+            hidden: (Dom.get('method').value != 'Inikoo' ? false : true),
+            width: 70,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "description",
+            label: labels.Description,
+            width: (Dom.get('is_invoiced').value == 'No' ? 240 : 390),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "location",
+            label: labels.Location,
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 180,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "done",
+            label: "",
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 3,
+            sortable: false
+        }
 
-	   
-	    var ColumnDefs = [
-			 {key:"key", label:"",width:100,hidden:true}
-                    ,{key:"code", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                   ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						
-			];
-		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
-//alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
-	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource2.connXhrMode = "queueRequests";
-	    	    this.dataSource2.table_id=tableid;
+        , {
+            key: "picked",
+            label: labels.Picked,
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 40,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            },
+            editor: new YAHOO.widget.TextboxCellEditor({
+                asyncSubmitter: CellEdit
+            }),
+            object: 'pick_aid'
+        }
+          , {
+            key: "picked_bis",
+            label: labels.Picked,
+          hidden: (Dom.get('is_invoiced').value == 'Yes' ? false : true),
+            width: 40,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+           
+        }
 
-	    this.dataSource2.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
-		
-		
-		fields: [
-			 "code",'name','key'
-			 ]};
+        , {
+            key: "check_mark",
+            label: "",
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 3,
+            sortable: false,
+            action: 'check_all_object',
+            object: 'pick_aid'
+        }, {
+            key: "add",
+            label: "",
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 3,
+            sortable: false,
+            action: 'add_object',
+            object: 'pick_aid'
+        }, {
+            key: "remove",
+            label: "",
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 3,
+            sortable: false,
+            action: 'remove_object',
+            object: 'pick_aid'
+        }, {
+            key: "formated_todo",
+            label: labels.Pending,
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 70,
+            sortable: false,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            },
+            action: 'edit_object',
+            object: 'pending_transactions'
+        }, {
+            key: "notes",
+            label: labels.Notes,
+            hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
+            width: 100,
+            sortable: false,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            },
+            action: 'edit_object',
+            object: 'pending_transactions'
+        },  {
+            key: "notes_bis",
+            label: labels.Notes,
+            hidden: (Dom.get('is_invoiced').value == 'Yes' ? false : true),
+            width: 100,
+            sortable: false,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+           
+        }, {
+            key: "out_of_stock",
+            label: "",
+            width: 1,
+            hidden: true
+        }, {
+            key: "not_found",
+            label: "",
+            width: 1,
+            hidden: true
+        }, {
+            key: "no_picked_other",
+            label: "",
+            width: 1,
+            hidden: true
+        }, {
+            key: "packed",
+            label: "",
+            width: 1,
+            hidden: true
+        }
 
-	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource2
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:20,containers : 'paginator2', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
-									  })
-								     
-								     ,sortedBy : {
-									 key: "code",
-									 dir: ""
-								     },
-								     dynamicData : true
+        ];
+        request = "ar_edit_orders.php?tipo=picking_aid_sheet&tableid=" + tableid + "&dn_key=" + Dom.get('dn_key').value + '&sf=0'
+        //alert(request)
+        this.dataSource0 = new YAHOO.util.DataSource(request);
 
-								  }
-								   
-								 );
-	    
-	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
-	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
-
- this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
-       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
-      this.table2.subscribe("rowClickEvent", select_staff_from_list);
-        this.table2.table_id=tableid;
-           this.table2.subscribe("renderEvent", myrenderEvent);
+        this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource0.connXhrMode = "queueRequests";
 
 
-	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'code',value:''};	    
+        this.dataSource0.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rowsPerPage: "resultset.records_perpage",
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records"
+            },
 
-    
+            fields: ["sku", "used_in", "description", "done", "location", "picking_notes", "packed", "picking_notes", "reference", "quantity", "picked", "add", "remove", "itf_key", "todo", "notes", "required", 'out_of_stock', 'not_found', 'formated_todo', "no_picked_other", "check_mark",
+            "picked_bis","notes_bis"
+
+            ]
+        };
+
+
+        this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource0, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: state.picking_aid.items.nr,
+                containers: 'paginator0',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: state.picking_aid.items.items,
+                dir: state.picking_aid.items.items_dir
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+
+        this.table0.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+        this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table0.request = request;
+        this.table0.table_id = tableid;
+        this.table0.subscribe("renderEvent", myrenderEvent);
+
+        this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+        this.table0.subscribe("cellClickEvent", myonCellClick);
+
+
+
+        this.table0.filter = {
+            key: state.picking_aid.items.f_field,
+            value: state.picking_aid.items.f_value
+        };
+
+        var tableid = 2;
+        var tableDivEL = "table" + tableid;
+
+
+        var ColumnDefs = [{
+            key: "key",
+            label: "",
+            width: 100,
+            hidden: true
+        }, {
+            key: "code",
+            label: labels.Alias,
+            width: 100,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "name",
+            label: labels.Name,
+            width: 250,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }
+
+        ];
+        this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid=" + tableid + "&nr=20&sf=0");
+        //alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+        this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+        this.dataSource2.connXhrMode = "queueRequests";
+        this.dataSource2.table_id = tableid;
+
+        this.dataSource2.responseSchema = {
+            resultsList: "resultset.data",
+            metaFields: {
+                rtext: "resultset.rtext",
+                rtext_rpp: "resultset.rtext_rpp",
+                rowsPerPage: "resultset.records_perpage",
+                sort_key: "resultset.sort_key",
+                sort_dir: "resultset.sort_dir",
+                tableid: "resultset.tableid",
+                filter_msg: "resultset.filter_msg",
+                totalRecords: "resultset.total_records" // Access to value in the server response
+            },
+
+
+            fields: ["code", 'name', 'key']
+        };
+
+        this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource2, {
+            renderLoopSize: 50,
+            generateRequest: myRequestBuilder,
+            paginator: new YAHOO.widget.Paginator({
+                rowsPerPage: 20,
+                containers: 'paginator2',
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+                previousPageLinkLabel: "<",
+                nextPageLinkLabel: ">",
+                firstPageLinkLabel: "<<",
+                lastPageLinkLabel: ">>",
+                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
+                alwaysVisible: false,
+                template: "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+            })
+
+            ,
+            sortedBy: {
+                key: "code",
+                dir: ""
+            },
+            dynamicData: true
+
+        }
+
+        );
+
+        this.table2.handleDataReturnPayload = myhandleDataReturnPayload;
+        this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+        //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+        this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+        this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+        this.table2.subscribe("rowClickEvent", select_staff_from_list);
+        this.table2.table_id = tableid;
+        this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+        this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table2.filter = {
+            key: 'code',
+            value: ''
+        };
+
+
     };
-  });
+});
 
 function add_no_dispatchable(tipo) {
 
@@ -525,11 +690,10 @@ function save_no_dispatchable() {
     var request = 'tipo=update_no_dispatched&dn_key=' + Dom.get('dn_key').value + '&itf_key=' + Dom.get('todo_itf_key').value + '&out_of_stock=' + out_of_stock + '&not_found=' + not_found + '&no_picked_other=' + no_picked_other;
 
 
-  //  alert(ar_file+'?'+request)
+    //  alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-          //  alert(o.responseText);
-
+            //  alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -603,7 +767,7 @@ function pack_it_save() {
             if (r.state == 200) {
 
                 if (r.action = 'updated') {
-                    location.href = 'order_pack_aid.php?id=' + dn_key;
+                    location.href = 'order_pack_aid.php?id=' + dn_key+'&order_key='+Dom.get('order_key').value;
                 }
                 close_dialog('assign_packer_dialog');
 
@@ -667,13 +831,13 @@ function fill_edit_deal_form(deal_key) {
 
 
 
-function close_no_dispatchable_dialog(){
-no_dispatchable_editor_dialog.hide()
+function close_no_dispatchable_dialog() {
+    no_dispatchable_editor_dialog.hide()
 }
 
 
 function pick_it() {
-	
+
     region1 = Dom.getRegion('pick_it');
     region2 = Dom.getRegion('assign_picker_dialog');
     var pos = [region1.right - region2.width, region1.bottom]
@@ -681,7 +845,7 @@ function pick_it() {
 
     Dom.get('Assign_Picker_Staff_Name').focus();
     Dom.get('assign_picker_dn_key').value = Dom.get('dn_key').value;
-	
+
     assign_picker_dialog.show();
 }
 
@@ -697,17 +861,8 @@ function init() {
     });
     no_dispatchable_editor_dialog.render();
 
-
-
- //   Event.addListener('pick_all', "click", set_pending_as_picked);
-   Event.addListener('pack_it', "click", pack_it);
+    Event.addListener('pack_it', "click", pack_it);
     Event.addListener('pick_it', "click", pick_it);
-
-
-
-   
-
-
 
     assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {
         visible: false,
@@ -716,7 +871,7 @@ function init() {
         draggable: false
     });
     assign_picker_dialog.render();
-	Dom.get('assign_picker_dialog_type').value='start_picking';
+    Dom.get('assign_picker_dialog_type').value = 'start_picking';
 
 
     dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {
@@ -752,10 +907,9 @@ function init() {
         draggable: false
     });
     //pick_it_dialog.render();
-    
-    
-    
-    
+
+
+
     assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {
         context: ["pack_it", "tr", "tl"],
         visible: false,
@@ -764,9 +918,9 @@ function init() {
         draggable: false
     });
     assign_packer_dialog.render();
-    Dom.get('assign_packer_dialog_type').value='start_packing';
+    Dom.get('assign_packer_dialog_type').value = 'start_packing';
 
-    
+
     pack_assigned_dialog = new YAHOO.widget.Dialog("pack_assigned_dialog", {
         context: ["pack_it", "tr", "tl"],
         visible: false,
@@ -791,9 +945,9 @@ function init() {
         draggable: false
     });
     dialog_other_staff.render();
-    
-    
-      Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+
+
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
 
@@ -815,6 +969,7 @@ function init() {
     oAutoComp2.minQueryLength = 0;
 
 
+
 }
 
 YAHOO.util.Event.onDOMReady(init);
@@ -826,7 +981,7 @@ YAHOO.util.Event.onContentReady("rppmenu0", function() {
     });
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
-  
+
 });
 
 YAHOO.util.Event.onContentReady("filtermenu0", function() {
@@ -855,8 +1010,3 @@ YAHOO.util.Event.onContentReady("filtermenu2", function() {
     oMenu.subscribe("show", oMenu.focus);
 
 });
-
-
-
-
-
