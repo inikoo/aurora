@@ -2,7 +2,7 @@
 <div id="bd" class="no_padding">
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
-		<input type="hidden" value="{$session_data}" id="session_data" />
+		<input type="hidden" id="session_data" value="{$session_data}" />
 		<input type="hidden" id="link_extra_argument" value="&id={$store->id}" />
 		<input type="hidden" id="from" value="{$from}" />
 		<input type="hidden" id="to" value="{$to}" />

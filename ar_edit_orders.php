@@ -3557,10 +3557,13 @@ function picking_aid_sheet() {
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
 			'picked'=>$row['Picked'],
+						'picked_bis'=>number($row['Picked']),
+
 			'packed'=>$row['Packed'],
 			'todo'=>$todo,
 			'formated_todo'=>$formated_todo,
 			'notes'=>$notes,
+			'notes_bis'=>$notes,
 			'picking_notes'=>$picking_notes,
 			'required'=>($row['Required']+$row['Given']),
 
@@ -3804,6 +3807,8 @@ function packing_aid_sheet() {
 			'remove'=>(($row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
 			'picked'=>$row['Picked'],
 			'packed'=>$row['Packed'],
+					'packed_bis'=>number($row['Packed']),
+	
 			'todo'=>$todo,
 			'formated_todo'=>$formated_todo,
 			'notes'=>$notes,

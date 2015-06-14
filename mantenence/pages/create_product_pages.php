@@ -110,7 +110,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 
-$sql=sprintf("select `Product ID` from  `Product Dimension` where `Product Store Key`=%d  and  `Product Main Type`='Sale'  ",
+$sql=sprintf("select `Product ID` from  `Product Dimension` where `Product Store Key`=%d  and  `Product Record Type`='Normal'  and  `Product Web State`  in ('For Sale', 'Out of Stock')  ",
 	$site->data['Site Store Key']);
 $res=mysql_query($sql);
 

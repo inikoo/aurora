@@ -466,8 +466,14 @@ class DeliveryNote extends DB_Table {
 			if ($this->data['Delivery Note Weight Source']=='Given')
 				return weight($this->data['Delivery Note Weight']);
 
-			else
-				return "&#8494;" .weight($this->data['Delivery Note Estimated Weight'],'',0);
+			else{
+			    if($this->data['Delivery Note Estimated Weight']<1){
+			    $weight=weight($this->data['Delivery Note Estimated Weight'],'Kg',3);
+			    }else{
+			    $weight=weight($this->data['Delivery Note Estimated Weight'],'Kg',0);
+			    }       
+				return "&#8494;" .$weight;
+			}
 			break;
 
 		case('Weight For Edit'):

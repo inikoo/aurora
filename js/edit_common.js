@@ -448,9 +448,7 @@ var highlightEditableCell = function(oArgs) {
         case ('remove_object'):
         case ('edit_object'):
         case ('edit_pending'):
-
         case ('dialog'):
-
         case ('dialog_delete'):
             this.highlightRow(target);
             break;
@@ -467,15 +465,16 @@ var unhighlightEditableCell = function(oArgs) {
         //alert(column.action)
         switch (column.action) {
 
-        case ('dialog_delete'):
-        case 'delete':
+           case 'close':
         case 'pick_it':
-        case 'close':
-        case 'dialog':
+        case 'match_po':
         case ('add_object'):
+        case ('check_all_object'):
         case ('remove_object'):
         case ('edit_object'):
-        case 'match_po':
+        case ('edit_pending'):
+        case ('dialog'):
+        case ('dialog_delete'):
             this.unhighlightRow(target);
             break;
         default:

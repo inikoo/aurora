@@ -32,9 +32,9 @@ if ( isset( $_REQUEST['refresh'] )) {
 }
 
 if ( isset( $_REQUEST['order_key'] ) ) {
-$order_key=$_REQUEST['order_key'];
-}else{
-$order_key=false;
+	$order_key=$_REQUEST['order_key'];
+}else {
+	$order_key=false;
 }
 $smarty->assign('order_key',$order_key);
 
@@ -63,7 +63,6 @@ $smarty->assign( 'number_transactions', $number_transactions );
 $smarty->assign( 'number_picked_transactions', $number_picked_transactions );
 
 
-
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -84,17 +83,18 @@ $js_files=array(
 	$yui_path.'paginator/paginator-min.js',
 	$yui_path.'datasource/datasource-min.js',
 	$yui_path.'autocomplete/autocomplete-min.js',
-	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'datatable/datatable-debug.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	'js/php.default.min.js',
 	'js/common.js',
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/common_assign_picker_packer.js',
-	'order_pick_aid.js.php',
-	'edit_stock.js.php'
+	'edit_stock.js.php',
+	'js/order_pick_aid.js',
 );
 
 
@@ -182,6 +182,32 @@ $smarty->assign('number_pickers',count($pickers_data));
 
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
+
+$session_data=base64_encode(json_encode(array(
+			'label'=>array(
+				'Price'=>_('Price'),
+				'Reference'=>_('Reference'),
+				'Description'=>_('Description'),
+				'Packed'=>_('Packed'),
+				'Location'=>_('Location'),
+				'Picked'=>_('Picked'),
+				'Alias'=>_('Alias'),
+				'Name'=>_('Name'),
+				'Pending'=>_('Pending'),
+				'Not_Picked'=>_('Not Picked'),
+				'Notes'=>_('Notes'),
+
+
+				'Page'=>_('Page'),
+				'of'=>_('of')
+			),
+			'state'=>array(
+				'picking_aid'=>$_SESSION['state']['picking_aid']
+			)
+		)));
+$smarty->assign('session_data',$session_data);
+
+
 $smarty->display( $template );
 
 ?>

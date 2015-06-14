@@ -1,11 +1,17 @@
 {include file='header.tpl'} 
 <div id="bd">
 	{include file='top_search_splinter.tpl'} 
-	<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
-	<input value="{$warehouse->id}" id="warehouse_key" type="hidden" />
-	<input value="{$user->can_edit('assign_pp')}" id="can_assign_pp" type="hidden" />
-	<input value="{t}Invalid number{/t}" id="label_invalid_number" type="hidden" />
-	<input value="{$order_key}" id="order_key" type="hidden" />
+			<input type="hidden" id="session_data" value="{$session_data}" />
+	<input id="dn_key"  value="{$delivery_note->id}" type="hidden" />
+	<input id="warehouse_key" value="{$warehouse->id}"  type="hidden" />
+	<input id="can_assign_pp" value="{$user->can_edit('assign_pp')}"  type="hidden" />
+	<input id="label_invalid_number"value="{t}Invalid number{/t}"  type="hidden" />
+	<input id="order_key" value="{$order_key}"  type="hidden" />
+	<input id="is_invoiced" value="{$delivery_note->get('Delivery Note Invoiced')}"  type="hidden" />
+
+	
+	
+	
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr;{if $user->get('User Type')!='Warehouse'} {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr;{/if} <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pack Aid{/t})</span> 
 	</div>
@@ -13,8 +19,12 @@
 		<div style="float:left">
 			<span class="main_title no_buttons"> {t}Pack aid{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> <span id="dn_formated_state" class="subtitle">{$delivery_note->get_formated_state()}</span></span> 
 		</div>
-		<div class="buttons" style="float:right">
-			<button id="show_edit_dn_data" onclick="show_dialog_set_dn_data()"><img src="art/icons/basket_edit.png" alt="" /> {t}Set Parcels Data{/t}</button> <span id="pack_all_container" style="{if $user->get('User Type')=='Warehouse'}display:none{/if}"><button id="pack_all" onclick="pack_all({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Packed')==1}display:none{/if}"><img id="pack_all_img_{$delivery_note->id}" src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button></span> <span style="{if  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp') or $user->get('User Type')=='Warehouse' }display:none{/if}"><button id="approve_packing" onclick="approve_packing({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'}display:none{/if}"><img id="approve_packing_img_{$delivery_note->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> </span> 
+		<div class="buttons small" style="position:relative;top:5px">
+			<button id="show_edit_dn_data" onclick="show_dialog_set_dn_data()"><img src="art/icons/basket_edit.png" alt="" /> {t}Set Parcels Data{/t}</button> 
+			
+			<button id="pack_all" onclick="pack_all({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="{if $delivery_note->get('Delivery Note Fraction Packed')==1 or  $user->get('User Type')=='Warehouse'}display:none{/if}"><img id="pack_all_img_{$delivery_note->id}" src="art/icons/accept.png" alt="" /> {t}Set all as Packed{/t}</button>
+			
+			 <button id="approve_packing" onclick="approve_packing({$delivery_note->id},{$user->get('User Parent Key')},'pack_aid')" style="height:24px;{if $delivery_note->get('Delivery Note State')!='Packed'  or  $warehouse->get('Warehouse Approve PP Locked')=='No' or !$user->can_edit('assign_pp') or $user->get('User Type')=='Warehouse' }display:none{/if}"><img id="approve_packing_img_{$delivery_note->id}" src="art/icons/flag_green.png" alt="" /> {t}Approve Picking/Packing{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>

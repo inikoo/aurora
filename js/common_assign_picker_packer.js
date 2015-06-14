@@ -58,13 +58,13 @@ function close_dialog(dialog_name) {
 }
 
 
-function select_unknown_staff(o){
+function select_unknown_staff(o) {
 
     dialog_other_staff.hide();
- var staff_key =0;
+    var staff_key = 0;
     var staff_alias = o.innerHTML;
 
- switch (Dom.get('staff_list_parent_dialog').value) {
+    switch (Dom.get('staff_list_parent_dialog').value) {
     case 'assign_picker':
 
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'), 'selected');
@@ -72,19 +72,19 @@ function select_unknown_staff(o){
         Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
-        Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+        Dom.setStyle('Assign_Picker_Staff_Name_tr', 'display', '')
         Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
 
-                
-                
-break;
+
+
+        break;
     case 'assign_packer':
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
         Dom.addClass(o, 'selected');
         Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
-        Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
+        Dom.setStyle('Assign_Packer_Staff_Name_tr', 'display', '')
         Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
 
 
@@ -101,8 +101,8 @@ function select_staff(o) {
     var staff_alias = o.innerHTML;
 
     scope = o.getAttribute('scope')
-    
-   // alert(scope)
+
+    // alert(scope)
     if (scope == 'picker') {
 
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'), 'selected');
@@ -110,38 +110,35 @@ function select_staff(o) {
         Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
-       // Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
-        
-        if(Dom.get('Assign_Picker_Staff_Name_label')!= undefined)
-        Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
+        // Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
+        if (Dom.get('Assign_Picker_Staff_Name_label') != undefined) Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
 
-                assign_picker_save()
-                
+        assign_picker_save()
 
-    }else if (scope == 'packer') {
+
+    } else if (scope == 'packer') {
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
         Dom.addClass(o, 'selected');
-      
-      
-      Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
+
+
+        Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
-        Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
-        if( Dom.get('Assign_Packer_Staff_Name_label')!=undefined)
-        Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
-          assign_packer_save()
+        Dom.setStyle('Assign_Packer_Staff_Name_tr', 'display', '')
+        if (Dom.get('Assign_Packer_Staff_Name_label') != undefined) Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
+        assign_packer_save()
 
-    }else if (scope == 'pick_it') {
+    } else if (scope == 'pick_it') {
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'pick_it_buttons'), 'selected');
         Dom.addClass(o, 'selected');
         Dom.get('pick_it_Staff_Name').value = staff_alias;
         Dom.get('pick_it_staff_key').value = staff_key;
         Dom.get('pick_it_pin').focus();
-        Dom.setStyle('pick_it_Staff_Name_tr','display', '')
+        Dom.setStyle('pick_it_Staff_Name_tr', 'display', '')
         Dom.get('pick_it_Staff_Name_label').innerHTML = staff_alias;
 
-                Dom.removeClass('pick_it_save','disabled')
-                
+        Dom.removeClass('pick_it_save', 'disabled')
+
 
     } else if (scope == 'pack_it') {
         Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'), 'selected');
@@ -149,7 +146,7 @@ function select_staff(o) {
         Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
-        Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
+        Dom.setStyle('Assign_Packer_Staff_Name_tr', 'display', '')
         Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
 
 
@@ -190,16 +187,15 @@ function select_staff_pick_it(o) {
 }
 
 
-function pick_it_fast(o,staff_key, dn_key) {
+function pick_it_fast(o, staff_key, dn_key) {
     var request = 'ar_edit_orders.php?tipo=assign_picker&dn_key=' + escape(dn_key) + '&staff_key=' + escape(staff_key) + '&pin=';
-   // alert(request)
-             if( Dom.get('pick_it_fast_img_'+dn_key) != undefined)
-     Dom.get('pick_it_fast_img_'+dn_key).src='art/loading.gif';
-  
+    // alert(request)
+    if (Dom.get('pick_it_fast_img_' + dn_key) != undefined) Dom.get('pick_it_fast_img_' + dn_key).src = 'art/loading.gif';
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-           // alert(o.responseText)
-           var r = YAHOO.lang.JSON.parse(o.responseText);
+            // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 start_picking(r.dn_key, r.staff_key)
             } else {
@@ -212,17 +208,23 @@ function pick_it_fast(o,staff_key, dn_key) {
 
 function start_picking(dn_key, staff_key) {
     var request = 'ar_edit_orders.php?tipo=start_picking&dn_key=' + escape(dn_key) + '&pin=&staff_key=' + escape(staff_key);
-           if( Dom.get('start_picking_img_'+dn_key) != undefined)
+    if (Dom.get('start_picking_img_' + dn_key) != undefined)
 
-      Dom.get('start_picking_img_'+dn_key).src='art/loading.gif';
+    Dom.get('start_picking_img_' + dn_key).src = 'art/loading.gif';
 
-    
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-       //alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                location.href = 'order_pick_aid.php?id=' + r.dn_key;
+                if (Dom.get('order_key') != undefined) {
+                        order_key = Dom.get('order_key').value
+                    } else {
+                        order_key = '';
+                    }
+
+                    location.href = 'order_pick_aid.php?id=' + r.dn_key + '&order_key=' + order_key;
             } else {
                 Dom.get('pick_it_msg').innerHTML = r.msg
             }
@@ -231,22 +233,21 @@ function start_picking(dn_key, staff_key) {
 
 }
 
-function pack_it_fast(o,staff_key, dn_key) {
+function pack_it_fast(o, staff_key, dn_key) {
     var request = 'ar_edit_orders.php?tipo=assign_packer&dn_key=' + escape(dn_key) + '&staff_key=' + escape(staff_key) + '&pin=';
-     
-     if( Dom.get('pack_it_fast_img_'+dn_key) != undefined)
-     Dom.get('pack_it_fast_img_'+dn_key).src='art/loading.gif';
 
-   YAHOO.util.Connect.asyncRequest('POST', request, {
+    if (Dom.get('pack_it_fast_img_' + dn_key) != undefined) Dom.get('pack_it_fast_img_' + dn_key).src = 'art/loading.gif';
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-           // alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-               start_packing(r.dn_key, r.staff_key)
+                start_packing(r.dn_key, r.staff_key)
             } else {
-            alert(r.msg)
+                alert(r.msg)
                 //Dom.get('pack_it_msg').innerHTML = r.msg
-           }
+            }
         }
     });
 
@@ -254,19 +255,18 @@ function pack_it_fast(o,staff_key, dn_key) {
 
 function start_packing(dn_key, staff_key) {
     var request = 'ar_edit_orders.php?tipo=start_packing&dn_key=' + escape(dn_key) + '&pin=&staff_key=' + escape(staff_key);
-  
-  
-  if( Dom.get('start_packing_img_'+dn_key) != undefined)
-     Dom.get('start_packing_img_'+dn_key).src='art/loading.gif';
-  
+
+
+    if (Dom.get('start_packing_img_' + dn_key) != undefined) Dom.get('start_packing_img_' + dn_key).src = 'art/loading.gif';
+
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-           //alert(o.responseText)
-           var r = YAHOO.lang.JSON.parse(o.responseText);
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 location.href = 'order_pack_aid.php?id=' + r.dn_key;
             } else {
-                 alert(r.msg)
+                alert(r.msg)
                 //Dom.get('pack_it_msg').innerHTML = r.msg
             }
         }
@@ -284,7 +284,7 @@ function assign_picker_save() {
     var dn_key = Dom.get('assign_picker_dn_key').value;
 
     var request = 'ar_edit_orders.php?tipo=' + Dom.get('assign_picker_dialog_type').value + '&dn_key=' + escape(dn_key) + '&staff_key=' + escape(staff_key) + '&pin=' + escape(sup_pwd);
-//alert(request)
+    //alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
@@ -292,8 +292,15 @@ function assign_picker_save() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-			 if (!Dom.get('operations' + r.dn_key)) {
-                    location.href = 'order_pick_aid.php?id=' + r.dn_key;
+                if (!Dom.get('operations' + r.dn_key)) {
+
+                    if (Dom.get('order_key') != undefined) {
+                        order_key = Dom.get('order_key').value
+                    } else {
+                        order_key = '';
+                    }
+
+                    location.href = 'order_pick_aid.php?id=' + r.dn_key + '&order_key=' + order_key;
                 }
 
                 if (r.action = 'updated' && Dom.get('operations' + r.dn_key)) {
@@ -306,7 +313,7 @@ function assign_picker_save() {
                 }
                 close_dialog('assign_picker_dialog');
 
-               
+
 
 
             } else {
@@ -334,7 +341,13 @@ function pick_it_save() {
             if (r.state == 200) {
 
                 if (r.action = 'updated') {
-                    location.href = 'order_pick_aid.php?id=' + dn_key;
+                    if (Dom.get('order_key') != undefined) {
+                        order_key = Dom.get('order_key').value
+                    } else {
+                        order_key = '';
+                    }
+
+                    location.href = 'order_pick_aid.php?id=' + dn_key + '&order_key=' + order_key;
                 }
                 close_dialog('pick_it_dialog');
 
@@ -348,7 +361,7 @@ function pick_it_save() {
 }
 
 function assign_picker(o, dn_key) {
-    Dom.setStyle('assign_picker_dialog', 'display','');
+    Dom.setStyle('assign_picker_dialog', 'display', '');
 
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('assign_picker_dialog');
@@ -364,9 +377,8 @@ function assign_picker(o, dn_key) {
 
 function pick_it(o, dn_key) {
 
-//alert("xx")
-
-    Dom.setStyle('assign_picker_dialog', 'display','');
+    //alert("xx")
+    Dom.setStyle('assign_picker_dialog', 'display', '');
 
     var staff_alias = '';
     var staff_key = '';
@@ -433,13 +445,13 @@ function assign_packer_save() {
                 close_dialog('assign_packer_dialog');
 
                 if (!Dom.get('operations' + dn_key)) {
-                
-                var extra_argument='';
-                if(Dom.get('order_key')!=undefined){
-                	extra_argument='&order_key='+Dom.get('order_key').value
-                }
-                
-                    location.href = 'order_pack_aid.php?id=' + dn_key+extra_argument;
+
+                    var extra_argument = '';
+                    if (Dom.get('order_key') != undefined) {
+                        extra_argument = '&order_key=' + Dom.get('order_key').value
+                    }
+
+                    location.href = 'order_pack_aid.php?id=' + dn_key + extra_argument;
                 }
 
             } else {
@@ -481,72 +493,69 @@ function pack_it_save() {
 
 
 
-function approve_packing(dn_key,staff_key, referrer) {
-   
-    if (Dom.get('approve_packing_img_' + dn_key) != undefined)
-    Dom.get('approve_packing_img_' + dn_key).src = 'art/loading.gif';
+function approve_packing(dn_key, staff_key, referrer) {
+
+    if (Dom.get('approve_packing_img_' + dn_key) != undefined) Dom.get('approve_packing_img_' + dn_key).src = 'art/loading.gif';
 
     ar_file = 'ar_edit_orders.php';
     request = ar_file + '?tipo=approve_packing&dn_key=' + dn_key;
-//alert(request)
-
-YAHOO.util.Connect.asyncRequest('GET', request, {
+    //alert(request)
+    YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                if (referrer == 'warehouse_orders') {
-                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
-                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
-                } else if (referrer == 'dn') {
-                    window.location = 'dn.php?id=' + r.dn_key;
-                }else if (referrer == 'pack_aid') {
-					Dom.setStyle('approve_packing','display','none')
-					Dom.get('dn_formated_state').innerHTML=r.dn_formated_state
-                }
-
-
-            }
-        },
-        failure: function(o) {
-            alert(o.statusText);
-        },
-        scope: this
-    });
-}
-
-
-
-function pack_all(dn_key,staff_key,referrer) {
-
-  if( Dom.get('pack_all_img_'+dn_key) != undefined)
-		Dom.get('pack_all_img_'+dn_key).src = 'art/loading.gif';
-
-
-    ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=set_packing_aid_sheet_pending_as_packed&dn_key=' + dn_key +'&warehouse_key='+Dom.get('warehouse_key').value+'&staff_key='+staff_key;
-    YAHOO.util.Connect.asyncRequest('GET', request, {
-        success: function(o) {
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-            if (r.state == 200) {
-            
                 if (referrer == 'warehouse_orders') {
                     Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
                     Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
                 } else if (referrer == 'dn') {
                     window.location = 'dn.php?id=' + r.dn_key;
                 } else if (referrer == 'pack_aid') {
-                                var extra_argument='';
-
-                
-                 if(Dom.get('order_key')!=undefined){
-                	extra_argument='&order_key='+Dom.get('order_key').value
+                    Dom.setStyle('approve_packing', 'display', 'none')
+                    Dom.get('dn_formated_state').innerHTML = r.dn_formated_state
                 }
-                
-                
-                	window.location = 'order_pack_aid.php?id=' + r.dn_key+extra_argument;
-                }            
+
+
+            }
+        },
+        failure: function(o) {
+            alert(o.statusText);
+        },
+        scope: this
+    });
+}
+
+
+
+function pack_all(dn_key, staff_key, referrer) {
+
+    if (Dom.get('pack_all_img_' + dn_key) != undefined) Dom.get('pack_all_img_' + dn_key).src = 'art/loading.gif';
+
+
+    ar_file = 'ar_edit_orders.php';
+    request = ar_file + '?tipo=set_packing_aid_sheet_pending_as_packed&dn_key=' + dn_key + '&warehouse_key=' + Dom.get('warehouse_key').value + '&staff_key=' + staff_key;
+    YAHOO.util.Connect.asyncRequest('GET', request, {
+        success: function(o) {
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+
+                if (referrer == 'warehouse_orders') {
+                    Dom.get('operations_container' + r.dn_key).innerHTML = r.operations;
+                    Dom.get('dn_state' + r.dn_key).innerHTML = r.dn_state;
+                } else if (referrer == 'dn') {
+                    window.location = 'dn.php?id=' + r.dn_key;
+                } else if (referrer == 'pack_aid') {
+                    var extra_argument = '';
+
+
+                    if (Dom.get('order_key') != undefined) {
+                        extra_argument = '&order_key=' + Dom.get('order_key').value
+                    }
+
+
+                    window.location = 'order_pack_aid.php?id=' + r.dn_key + extra_argument;
+                }
             }
 
         },
@@ -559,26 +568,31 @@ function pack_all(dn_key,staff_key,referrer) {
 
 
 
-function pick_all(dn_key,staff_key,referrer) {
+function pick_all(dn_key, staff_key, referrer) {
 
 
-    if( Dom.get('pick_all_img_'+dn_key) != undefined)
-		Dom.get('pick_all_img_'+dn_key).src = 'art/loading.gif';
+    if (Dom.get('pick_all_img_' + dn_key) != undefined) Dom.get('pick_all_img_' + dn_key).src = 'art/loading.gif';
 
     ar_file = 'ar_edit_orders.php';
-    request = ar_file + '?tipo=set_picking_aid_sheet_pending_as_picked&dn_key=' + dn_key+'&staff_key='+staff_key;
-   // alert(ar_file+request);return
+    request = ar_file + '?tipo=set_picking_aid_sheet_pending_as_picked&dn_key=' + dn_key + '&staff_key=' + staff_key;
+    // alert(ar_file+request);return
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
             //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
-			if (referrer == 'pick_aid') {
-                	window.location = 'order_pick_aid.php?id=' + r.dn_key;
-            }         
+                if (referrer == 'pick_aid') {
+                   if (Dom.get('order_key') != undefined) {
+                        order_key = Dom.get('order_key').value
+                    } else {
+                        order_key = '';
+                    }
 
-               
+                    location.href = 'order_pick_aid.php?id=' + r.dn_key + '&order_key=' + order_key;
+                }
+
+
 
             }
 
@@ -600,13 +614,13 @@ function pick_all(dn_key,staff_key,referrer) {
 
 
 function assign_packer(o, dn_key) {
-  Dom.setStyle('assign_packer_dialog','display','')
+    Dom.setStyle('assign_packer_dialog', 'display', '')
 
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('assign_packer_dialog');
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('assign_packer_dialog', pos);
-    
+
     Dom.get('Assign_Packer_Staff_Name').focus();
     Dom.get('assign_packer_dn_key').value = dn_key;
     Dom.get('staff_list_parent_dialog').value = 'assign_packer';
@@ -614,7 +628,7 @@ function assign_packer(o, dn_key) {
 }
 
 function pack_it(o, dn_key) {
-Dom.setStyle('pack_it_dialog','display','')
+    Dom.setStyle('pack_it_dialog', 'display', '')
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('pack_it_dialog');
     var pos = [region1.right - region2.width, region1.bottom]
@@ -644,7 +658,6 @@ Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
     //Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
     //Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons '),'selected');
     //Dom.addClass(o,'selected');
-
     region1 = Dom.getRegion(o);
     region2 = Dom.getRegion('dialog_other_staff');
 
@@ -671,23 +684,21 @@ Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
 function select_staff_from_list(oArgs) {
 
     //alert(tables.table2)
-    
     //alert(Dom.get('staff_list_parent_dialog').value);
     var staff_alias = tables.table2.getRecord(oArgs.target).getData('code');
     var staff_key = tables.table2.getRecord(oArgs.target).getData('key');
     //alert(staff_alias + ':' + staff_key )
-    
-      
 
-    
+
+
     switch (Dom.get('staff_list_parent_dialog').value) {
     case 'pick_it':
         Dom.get('pick_it_Staff_Name').value = staff_alias;
         Dom.get('pick_it_staff_key').value = staff_key;
 
         Dom.setStyle('pick_it_pin_tr', 'display', '');
-        
-        
+
+
         Dom.get("pick_it_pin").innerHTML = staff_alias;
         Dom.get('pick_it_pin').focus();
         break;
@@ -699,11 +710,11 @@ function select_staff_from_list(oArgs) {
         Dom.get("pack_it_Staff_Name_label").innerHTML = staff_alias;
 
         Dom.setStyle('pack_it_pin_tr', 'display', '');
-        Dom.removeClass('pack_it_save','disabled')
-        
-        
-      //  Dom.get("pack_it_pin_alias").innerHTML = staff_alias;
-      //  Dom.get('pack_it_sup_password').focus();
+        Dom.removeClass('pack_it_save', 'disabled')
+
+
+        //  Dom.get("pack_it_pin_alias").innerHTML = staff_alias;
+        //  Dom.get('pack_it_sup_password').focus();
         break;
     case 'assign_picker':
         Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'), 'selected');
@@ -711,25 +722,24 @@ function select_staff_from_list(oArgs) {
         Dom.get('Assign_Picker_Staff_Name').value = staff_alias;
         Dom.get('assign_picker_staff_key').value = staff_key;
         Dom.get('assign_picker_sup_password').focus();
-                Dom.setStyle('Assign_Picker_Staff_Name_tr','display', '')
-       // Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
-
+        Dom.setStyle('Assign_Picker_Staff_Name_tr', 'display', '')
+        // Dom.get('Assign_Picker_Staff_Name_label').innerHTML = staff_alias;
         break;
     case 'assign_packer':
-  
+
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'), 'selected');
         Dom.addClass('packer_show_other_staff', 'selected')
 
         Dom.get('Assign_Packer_Staff_Name').value = staff_alias;
         Dom.get('assign_packer_staff_key').value = staff_key;
         Dom.get('assign_packer_sup_password').focus();
-                Dom.setStyle('Assign_Packer_Staff_Name_tr','display', '')
-                    
+        Dom.setStyle('Assign_Packer_Staff_Name_tr', 'display', '')
 
-       // Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
-      //  alert("x2")
-        Dom.removeClass('pack_it_save','disabled')
-//  alert("x")
+
+        // Dom.get('Assign_Packer_Staff_Name_label').innerHTML = staff_alias;
+        //  alert("x2")
+        Dom.removeClass('pack_it_save', 'disabled')
+        //  alert("x")
         break;
 
     }
