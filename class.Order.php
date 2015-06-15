@@ -8958,6 +8958,113 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		//  print "$sql\n";
 
 	}
+	
+		function update_payment_state_debug() {
+		$payments_amount=0;
+		$payments_info='';
+		$number_payments=0;
+		$sql=sprintf("select * from `Payment Dimension` P left join `Payment Service Provider Dimension` PSPD on (P.`Payment Service Provider Key`=PSPD.`Payment Service Provider Key`) where `Payment Order Key`=%d and `Payment Transaction Status`='Completed'",$this->id);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			//print_r($row);
+			$number_payments++;
+			$payments_amount+=$row['Payment Amount'];
+
+			$payments_info.=sprintf('<div>%s (%s)',
+
+				$row['Payment Service Provider Name'],
+				money($row['Payment Amount'],$row['Payment Currency Code'])
+
+			);
+			if ($row['Payment Transaction ID']!='')
+				$payments_info.=sprintf(', %s: %s',
+					_('Reference'),
+					$row['Payment Transaction ID']
+
+				);
+			$payments_info.='</div>';
+
+		}
+		// print $payments_amount.' '.$this->data['Order Balance Total Amount'].' XXXm';
+
+
+		$sql=sprintf("select * from `Payment Dimension` P left join `Payment Service Provider Dimension` PSPD on (P.`Payment Service Provider Key`=PSPD.`Payment Service Provider Key`) where `Payment Order Key`=%d and `Payment Transaction Status`='Pending' and P.`Payment Method`='Account'",$this->id);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$number_payments++;
+			$payments_amount+=$row['Payment Amount'];
+
+			$payments_info.=sprintf('<div>%s (%s)',
+
+				$row['Payment Service Provider Name'],
+				money($row['Payment Amount'],$row['Payment Currency Code'])
+
+			);
+			if ($row['Payment Transaction ID']!='')
+				$payments_info.=sprintf(', %s: %s',
+					_('Reference'),
+					$row['Payment Transaction ID']
+
+				);
+			$payments_info.='</div>';
+
+		}
+
+
+		$payments_amount=round($payments_amount,2);
+
+		$this->data['Order Balance Total Amount']=round($this->data['Order Balance Total Amount'],2);
+
+		  print $payments_amount.' '.$this->data['Order Balance Total Amount'].' XXXm';
+
+
+
+		if ($payments_amount==$this->data['Order Balance Total Amount']) {
+			$payment_state='Paid';
+		}elseif ($payments_amount<$this->data['Order Balance Total Amount']) {
+			$payment_state='Partially Paid';
+
+		}elseif ($payments_amount>$this->data['Order Balance Total Amount']) {
+			$payment_state='Paid';
+
+		}
+
+
+		if (!$number_payments) {
+			$payment_state='Waiting Payment';
+
+			$payments_info=_('Waiting payment');
+
+		}
+
+		$this->data['Order Current Payment State']=$payment_state;
+		$this->data['Order Current XHTML Payment State']=$payments_info;
+
+		$this->data['Order Payments Amount']=$payments_amount;
+
+
+		$this->data['Order To Pay Amount']=round($this->data['Order Balance Total Amount']-$payments_amount,2);
+
+
+		$sql=sprintf("update `Order Dimension` set `Order Current Payment State`=%s ,`Order Current XHTML Payment State`=%s , `Order Payments Amount`=%.2f ,`Order To Pay Amount`=%.2f where `Order Key`=%d  "
+			,prepare_mysql($this->data['Order Current Payment State'])
+			,prepare_mysql($this->data['Order Current XHTML Payment State'])
+			,$this->data['Order Payments Amount']
+			,$this->data['Order To Pay Amount']
+			,$this->id);
+		mysql_query($sql);
+
+		$sql = sprintf( "update `Order Transaction Fact` set `Current Payment State`=%s where `Order Key`=%d ",
+			prepare_mysql($this->data['Order Current Payment State']),
+			$this->id );
+		mysql_query( $sql );
+
+
+		//  print "$sql\n";
+
+	}
 
 	function get_pending_payment_amount_from_account_balance() {
 		$pending_amount=0;

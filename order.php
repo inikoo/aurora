@@ -127,8 +127,10 @@ $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 $store=new Store($order->data['Order Store Key']);
-
-//$order->update_totals();
+if($order->id==1854390){
+ $order->update_totals();
+ $order->update_payment_state_debug();
+}
 
 if (false) {
 
@@ -710,6 +712,7 @@ $session_data=base64_encode(json_encode(array(
 				'Notes'=>_('Notes'),
 				'Ordered'=>_('Ordered'),
 				'Dispatched'=>_('Dispatched'),
+				'Operations'=>_('Operations'),
 				'Page'=>_('Page'),
 				'of'=>_('of'),
 			),
