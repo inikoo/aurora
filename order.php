@@ -128,8 +128,7 @@ $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 $store=new Store($order->data['Order Store Key']);
 if($order->id==1854390){
- $order->update_totals();
- $order->update_payment_state_debug();
+ $order->update_no_normal_totals_per_item_method_debug();
 }
 
 if (false) {
