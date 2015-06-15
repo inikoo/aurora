@@ -4318,7 +4318,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$_refund_tax=round($row['Invoice Transaction Tax Refund Items'],2);
 			$_refund_net=round($row['Invoice Transaction Net Refund Items'],2);
 
-
+print "$chargeable_amount\t\t  $chargeable_amount \t\t $ordered $no_dispatched\n";
 
 			$tax+=round($_refund_tax+($chargeable_amount*$row['Transaction Tax Rate']),2);
 			$net+=round($chargeable_amount+$_refund_net,2);
