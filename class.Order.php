@@ -1893,7 +1893,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 			$this->update_deal_bridge();
 
-			$this->update_deals_usage();
+			//$this->update_deals_usage();now forked
 
 			$this->update_totals();
 

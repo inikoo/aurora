@@ -1345,7 +1345,7 @@ function is_order_exist() {
 
 function update_order_transaction() {
 
-	global $smarty,$editor;
+	global $smarty,$editor,$user,$account_code;
 
 	$order_key=$_REQUEST['id'];
 
@@ -1518,6 +1518,12 @@ function update_order_transaction() {
 	);
 
 	echo json_encode($response);
+
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'update_otf','order_key'=>$order->id),$account_code);
+
+
+
 }
 
 function edit_new_post_order($data) {
@@ -3557,7 +3563,7 @@ function picking_aid_sheet() {
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
 			'picked'=>$row['Picked'],
-						'picked_bis'=>number($row['Picked']),
+			'picked_bis'=>number($row['Picked']),
 
 			'packed'=>$row['Packed'],
 			'todo'=>$todo,
@@ -3807,8 +3813,8 @@ function packing_aid_sheet() {
 			'remove'=>(($row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
 			'picked'=>$row['Picked'],
 			'packed'=>$row['Packed'],
-					'packed_bis'=>number($row['Packed']),
-	
+			'packed_bis'=>number($row['Packed']),
+
 			'todo'=>$todo,
 			'formated_todo'=>$formated_todo,
 			'notes'=>$notes,
@@ -3987,7 +3993,7 @@ function refund_order($data) {
 	$date=gmdate("Y-m-d H:i:s");
 	$order=new Order($data['order_key']);
 
-    
+
 
 
 	$refund=$order->create_refund(array(
@@ -4172,13 +4178,13 @@ function refund_order($data) {
 			}else {
 				$tax_amount=0;
 			}
-			
-				if ($data['values']['refund_net']=='Yes') {
+
+			if ($data['values']['refund_net']=='Yes') {
 				$net_amount=$row['Transaction Invoice Net Amount'];
 			}else {
 				$net_amount=0;
 			}
-			
+
 
 			$refund_transaction_data=array(
 				'Order Key'=>$order->id,
@@ -4191,8 +4197,8 @@ function refund_order($data) {
 		}
 
 	}
-	
-	
+
+
 	if ($data['values']['refund_charges']=='Yes' ) {
 
 
@@ -4208,13 +4214,13 @@ function refund_order($data) {
 			}else {
 				$tax_amount=0;
 			}
-			
-				if ($data['values']['refund_net']=='Yes') {
+
+			if ($data['values']['refund_net']=='Yes') {
 				$net_amount=$row['Transaction Invoice Net Amount'];
 			}else {
 				$net_amount=0;
 			}
-			
+
 
 			$refund_transaction_data=array(
 				'Order Key'=>$order->id,
@@ -4227,7 +4233,7 @@ function refund_order($data) {
 		}
 
 	}
-	
+
 
 	$order->update_totals();
 	$order->update_payment_state();
@@ -6413,7 +6419,7 @@ function recalculate_totals($data) {
 			'dispatch_state'=>$order->data['Order Current Dispatch State']
 		);
 
-//print_r($response);
+		//print_r($response);
 		echo json_encode($response);
 		break;
 	default:
