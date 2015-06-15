@@ -4282,7 +4282,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			print_r($row);
+			//print_r($row);
 
 			$ordered=$row['Order Quantity'];
 			$no_dispatched=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
@@ -4327,7 +4327,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 
 
-		print "$net ";
+		print "aa $net ";
 
 
 
@@ -4404,7 +4404,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-
+print "net $net ";
 
 		//print_r($this->data);
 		$oustanding_invoiced_refund_net=0;
@@ -4414,7 +4414,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		$result = mysql_query( $sql );
 		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-print_r($row);
+//print_r($row);
 			$this->data['Order Invoiced Refund Net Amount']+=$row['Transaction Invoice Net Amount'];
 			$this->data['Order Invoiced Refund Tax Amount']+=$row['Transaction Invoice Tax Amount'];
 			$oustanding_invoiced_refund_net+=$row['Transaction Outstanding Net Amount Balance'];
@@ -4485,7 +4485,7 @@ print_r($row);
 		}else {
 			$this->data['Order with Out of Stock']='No';
 		}
-
+print "xx ".$this->data['Order Invoiced Net Amount'];
 
 		$this->data['Order Invoiced Net Amount']=$this->data['Order Invoiced Net Amount']-$this->data['Order Deal Amount Off'];
 		$this->data['Order Invoiced Tax Amount']=$this->data['Order Invoiced Tax Amount']-round($this->data['Order Deal Amount Off']*$this->data['Order Tax Rate'],2);
