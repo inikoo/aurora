@@ -540,7 +540,7 @@ class Site extends DB_Table {
 			'Page Description'=>'',
 			'Page Title'=>$department->data['Product Department Name'].', '.$this->data['Site Name'],
 			'Page Short Title'=>$department->data['Product Department Name'],
-			'Page Store Title'=>$department->data['Product Department Name'].', '.$this->data['Site Name'],
+			'Page Store Title'=>$department->data['Product Department Name'],
 
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
@@ -621,7 +621,7 @@ class Site extends DB_Table {
 			'Page Description'=>'',
 			'Page Title'=>$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$this->data['Site Name'],
 			'Page Short Title'=>$family->data['Product Family Name'],
-			'Page Store Title'=>$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$this->data['Site Name'],
+			'Page Store Title'=>$family->data['Product Family Name'],
 			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
@@ -720,7 +720,7 @@ class Site extends DB_Table {
 			'Page Description'=>'',
 			'Page Title'=>$product->data['Product Code'].', '.$product->data['Product Name'].', '.$this->data['Site Name'],
 			'Page Short Title'=>$product->data['Product Name'],
-			'Page Store Title'=>$product->data['Product Code'].', '.$product->data['Product Name'].', '.$this->data['Site Name'],
+			'Page Store Title'=>$product->data['Product Name'],
 			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],

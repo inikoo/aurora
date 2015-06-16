@@ -673,10 +673,7 @@ class Page extends DB_Table {
 		case('Page Title'):
 
 			$this->update_field('Page Title',$value,$options);
-			if ($this->data['Page Type']=='Store') {
-				$this->update_field('Page Store Title',$value,$options);
-
-			}
+			
 
 
 			break;

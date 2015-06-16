@@ -47,23 +47,29 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$title=$product->data['Product Code'].', '.$product->data['Product Name'].', '.$site->data['Site Name'];
 		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
 			$page->update_field_switcher('Page Title',$title);
+						$page->update_field_switcher('Page Store Title',$product->data['Product Name']);
+
 		}
 		break;
 	case 'Family Catalogue':
 		$family=new Family($page->data['Page Parent Key']);
 		$title=$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$site->data['Site Name'];
-	//	print $title;
+		// print $title;
 		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
 			//print 'xx'.$title;
 			$page->update_field_switcher('Page Title',$title);
+			$page->update_field_switcher('Page Store Title',$family->data['Product Family Name']);
+
 		}
-break;
+		break;
 	case 'Department Catalogue':
 		$department=new Department($page->data['Page Parent Key']);
 		$title=$department->data['Product Department Name'].', '.$site->data['Site Name'];
-		
+
 		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
 			$page->update_field_switcher('Page Title',$title);
+			$page->update_field_switcher('Page Store Title',$department->data['Product Department Name']);
+
 		}
 
 		break;
