@@ -32,8 +32,8 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select * from `Page Store Dimension` where `Page Key`=469";
-$sql="select * from `Page Store Dimension` ";
+$sql="select * from `Page Store Dimension` where `Page Key`=6079";
+$sql="select * from `Page Store Dimension` order by `Page Key` desc";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$page=new Page($row['Page Key']);
@@ -56,7 +56,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$title=$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$site->data['Site Name'];
 		// print $title;
 		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
-			//print 'xx'.$title;
+			
 			$page->update_field_switcher('Page Title',$title);
 			$page->update_field_switcher('Page Store Title',$family->data['Product Family Name']);
 

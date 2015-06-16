@@ -738,6 +738,7 @@ class Page extends DB_Table {
 		case('Page Content Height'):
 		case('Page Head Include'):
 		case('Page Body Include'):
+		case('Page Store Title'):
 
 			$this->update_field($field,$value,$options);
 			break;
