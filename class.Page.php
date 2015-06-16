@@ -400,10 +400,10 @@ class Page extends DB_Table {
 				$this->id,
 				$this->data['Page Site Key'],
 				prepare_mysql($this->data['Page URL']),
-				prepare_mysql($this->data['Page Store Title'],false),
+				prepare_mysql($this->data['Page Title'],false),
 				prepare_mysql($this->data['Page Store Description'],false),
 				prepare_mysql($this->get_plain_content(),false),
-				prepare_mysql($this->data['Page Store Title'],false),
+				prepare_mysql($this->data['Page Title'],false),
 				prepare_mysql($this->data['Page Store Description'],false),
 				prepare_mysql($this->get_plain_content(),false)
 			);
