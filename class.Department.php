@@ -290,16 +290,16 @@ class Department extends DB_Table {
 		if ($this->id) {
 			$sql=sprintf("select * from `Product Department Data Dimension` where `Product Department Key`=%d",$this->id);
 			$res =mysql_query($sql);
-			
-			
+
+
 			if ($row=mysql_fetch_assoc($res)) {
 				foreach ($row as $key=>$value) {
 					$this->data[$key]=$value;
 				}
 
 			}
-			
-			
+
+
 		}
 	}
 
@@ -348,6 +348,12 @@ class Department extends DB_Table {
 		case('Product Department Name'):
 			$this->update_name($value);
 			break;
+
+		case('Product Department Description'):
+			$this->update_description($value,$options);
+			break;
+
+
 		case('Product Department Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
@@ -366,6 +372,20 @@ class Department extends DB_Table {
 
 		}
 
+
+	}
+
+	function update_description($value,$options) {
+
+		$this->update_field('Product Department Description',$value,$options);
+
+		foreach ($this->get_pages_keys() as $page_key  ) {
+			$page=new Page($page_key);
+
+			if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+				$page->update_store_search();
+			}
+		}
 
 	}
 
@@ -470,6 +490,8 @@ class Department extends DB_Table {
 			,prepare_mysql($name)
 			,$this->id
 		);
+		
+		
 		if (mysql_query($sql)) {
 			$this->msg=_('Department name updated');
 			$this->updated=true;
@@ -497,6 +519,14 @@ class Department extends DB_Table {
 				));
 
 
+			foreach ($this->get_pages_keys() as $page_key  ) {
+				$page=new Page($page_key);
+               
+				if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+					$page->update(array('Page Store Title'=>$this->data['Product Department Name']));
+					$page->update_store_search();
+				}
+			}
 
 		} else {
 			$this->msg="Error: Department name could not be updated";
@@ -598,7 +628,7 @@ class Department extends DB_Table {
 		if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/',$key)) {
 
 			$amount='Product Department '.$key;
-			
+
 
 			return money($this->data[$amount]);
 		}
@@ -1487,7 +1517,7 @@ class Department extends DB_Table {
 		mysql_query($sql);
 
 	}
-	
+
 	function get_formated_discounts() {
 		$formated_discounts='';
 		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Department' and `Subject Key`=%d ",$this->id,$this->id);

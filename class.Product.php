@@ -3410,6 +3410,22 @@ class product extends DB_Table {
 					));
 
 				$this->update_full_search();
+				
+				
+				foreach ($this->get_pages_keys() as $page_key  ) {
+			$page=new Page($page_key);
+			$site=new Site($page->data['Page Site Key']);
+			$title=$this->data['Product Code'].', '.$this->data['Product Name'].', '.$site->data['Site Name'];
+			if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+				$page->update(
+				array('Page Store Title'=>$title)
+				);
+				$page->update_store_search();
+			}
+		}
+		
+				
+				
 
 			}
 		} else {
@@ -3520,11 +3536,11 @@ class product extends DB_Table {
 				$this->new_value=$description;
 				$editor_data=$this->get_editor_data();
 				if ($old_description=='') {
-					$abstract=_('Product Description Created');
-					$details=_('Product Description Created');
+					$abstract=_('Product description created');
+					$details='';
 				} else {
-					$abstract=_('Product Description Changed');
-					$details=_('Product Description Changed');
+					$abstract=_('Product description changed');
+					$details='';
 				}
 
 
@@ -3541,7 +3557,13 @@ class product extends DB_Table {
 						,'History Details'=>$details
 					));
 
+				foreach ($this->get_pages_keys() as $page_key  ) {
+					$page=new Page($page_key);
 
+					if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+						$page->update_store_search();
+					}
+				}
 
 
 			} else {
@@ -6238,7 +6260,7 @@ class product extends DB_Table {
 				$this->data['Product Store Key'],
 				$this->data['Product Family Key']
 			);
-			break;	
+			break;
 		case 'Same Department':
 			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Main Department Key`=%d order by `Product Total Acc Customers` desc  ",
 				$this->data['Product Store Key'],
@@ -6277,20 +6299,20 @@ class product extends DB_Table {
 			$dot_product=0;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
-				
-				
+
+
 				$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=%d",
 					$row2['Product ID'],
 					$row['Customer Key']
 				);
-				 //  print "$sql\n";
+				//  print "$sql\n";
 				$_res=mysql_query($sql);
 				if ($_row=mysql_fetch_assoc($_res)) {
 
 					$dot_product+=1;
 				}
-				
-				
+
+
 			}
 			if ($dot_product) {
 
@@ -6382,7 +6404,7 @@ class product extends DB_Table {
 
 	}
 
-	
+
 
 }
 ?>

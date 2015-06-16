@@ -537,10 +537,10 @@ class Site extends DB_Table {
 			'Page Store Last Structural Change Date'=>gmdate('Y-m-d H:i:s'),
 			'Page Locale'=>$this->data['Site Locale'],
 			'Page Source Template'=>'',
-			'Page Description'=>$department->data['Product Department Name'],
-			'Page Title'=>$department->data['Product Department Name'],
+			'Page Description'=>'',
+			'Page Title'=>$department->data['Product Department Name'].', '.$this->data['Site Name'],
 			'Page Short Title'=>$department->data['Product Department Name'],
-			'Page Store Title'=>$department->data['Product Department Name'],
+			'Page Store Title'=>$department->data['Product Department Name'].', '.$this->data['Site Name'],
 
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
@@ -618,10 +618,10 @@ class Site extends DB_Table {
 
 			'Page Store Content Display Type'=>'Source',
 			'Page Store Content Template Filename'=>'',
-			'Page Description'=>$family->data['Product Family Name'],
-			'Page Title'=>$family->data['Product Family Name'],
+			'Page Description'=>'',
+			'Page Title'=>$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$this->data['Site Name'],
 			'Page Short Title'=>$family->data['Product Family Name'],
-			'Page Store Title'=>$family->data['Product Family Name'],
+			'Page Store Title'=>$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$this->data['Site Name'],
 			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
@@ -717,10 +717,10 @@ class Site extends DB_Table {
 
 			'Page Store Content Display Type'=>'Source',
 			'Page Store Content Template Filename'=>'',
-			'Page Description'=>$product->data['Product Name'],
-			'Page Title'=>$product->data['Product Name'],
+			'Page Description'=>'',
+			'Page Title'=>$product->data['Product Code'].', '.$product->data['Product Name'].', '.$this->data['Site Name'],
 			'Page Short Title'=>$product->data['Product Name'],
-			'Page Store Title'=>$product->data['Product Name'],
+			'Page Store Title'=>$product->data['Product Code'].', '.$product->data['Product Name'].', '.$this->data['Site Name'],
 			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],

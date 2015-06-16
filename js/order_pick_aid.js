@@ -413,7 +413,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             object: 'pending_transactions'
         }, {
             key: "notes",
-            label: labels.Notes,
+            label: labels.Operations,
             hidden: (Dom.get('is_invoiced').value == 'No' ? false : true),
             width: 100,
             sortable: false,
