@@ -125,7 +125,7 @@ $plot_interval_menu=array(
 		         array("value"=>12,'label'=>_('3 years'))),
 'm'=>array(
 		         array("value"=>100,'label'=>_('All')),
-		         array("value"=>18,'label'=>_('1½ years')),
+		         array("value"=>18,'label'=>_('18 months')),
 		         array("value"=>12,'label'=>_('1 year'))
 		         ),
 'w'=>array(
