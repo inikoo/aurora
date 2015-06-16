@@ -1754,9 +1754,10 @@ class Site extends DB_Table {
 
 		$sitemap->page('products');
 
-		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d and (`Page Store Section`='Product Description' or `Page Store Section`='Family Catalogue') ",
+		$sql=sprintf("select `Page Store Last Update Date`,`Page URL` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d and (`Page Store Section`='Product Description' or `Page Store Section`='Family Catalogue' or `Page Store Section`='Department Catalogue') ",
 			$this->id
 		);
+		//print "$sql\n";
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$updated=$row['Page Store Last Update Date'];

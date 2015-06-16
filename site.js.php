@@ -1461,9 +1461,9 @@ function update_sitemap(){
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
-Dom.setStyle("update_sitemap_wait",'display','none')
-        Dom.setStyle("update_sitemap",'display','')
-             Dom.get('sitemap_last_update').innerHTML=r.sitemap_last_update;
+                Dom.setStyle("update_sitemap_wait",'display','none')
+                Dom.setStyle("update_sitemap",'display','')
+                Dom.get('sitemap_last_update').innerHTML=r.sitemap_last_update;
              
         Dom.setStyle("sitemap_link",'display','')
 
