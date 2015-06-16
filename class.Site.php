@@ -1741,8 +1741,7 @@ class Site extends DB_Table {
 		include_once 'class.Sitemap.php';
 		$sitemap=new Sitemap($this->id);
 		$sitemap->page('info');
-
-		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`  not in  ('Product Description','Family Catalogue','Login','Registration')    ",
+		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`   in  ('Front Page Store','Information','Login Help')    ",
 			$this->id
 		);
 		//print $sql;
