@@ -63,7 +63,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "description",
             label: "Description",
-            width: 330,
+            width: 300,
             sortable: false,
             className: "aleft",
             sortOptions: {
@@ -90,14 +90,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "add",
+            hidden:true,
             label: "",
-            hidden: (Dom.get('dispatch_state').value == 'In Process' ? false : true),
             width: 5,
             sortable: false
         }, {
             key: "remove",
+             hidden:true,
             label: "",
-            hidden: (Dom.get('dispatch_state').value == 'In Process' ? false : true),
             width: 5,
             sortable: false
         }, {
@@ -112,16 +112,30 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "dispatching_status",
             label: "Status",
-            hidden: (Dom.get('dispatch_state').value != 'In Process' ? false : true),
+            hidden: true,
             width: 120,
             sortable: false,
             className: "aright"
+        },
+         {
+            key: "notes",
+            label: labels.Operations,
+            width: 100,
+            sortable: false,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            },
+            action: 'edit_object',
+            object: 'pending_transactions'
         }
 
         ];
 
         //alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
         request = "ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key=" + Dom.get('order_key').value + '&store_key=' + Dom.get('store_key').value;
+        request = "ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display=items&order_key=" + Dom.get('order_key').value + "&store_key=" + Dom.get('store_key').value;
+
         //  alert(request)
         this.dataSource0 = new YAHOO.util.DataSource(request);
         //alert("ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key="+Dom.get('order_key').value)

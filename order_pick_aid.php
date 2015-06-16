@@ -196,6 +196,7 @@ $session_data=base64_encode(json_encode(array(
 				'Pending'=>_('Pending'),
 				'Not_Picked'=>_('Not Picked'),
 				'Notes'=>_('Notes'),
+				'Operations'=>_('Operations'),
 
 
 				'Page'=>_('Page'),

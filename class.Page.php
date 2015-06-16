@@ -395,14 +395,21 @@ class Page extends DB_Table {
 		if ($this->data['Page Type']=='Store') {
 
 
-			$sql=sprintf("update `Page Store Search Dimension` set `Page Store Title`=%s,`Page Store Resume`=%s,`Page Store Content`=%s where `Page Key`=%d",
+
+			$sql=sprintf("insert into `Page Store Search Dimension` values (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ",
+				$this->id,
+				$this->data['Page Site Key'],
+				prepare_mysql($this->data['Page URL']),
 				prepare_mysql($this->data['Page Store Title'],false),
 				prepare_mysql($this->data['Page Store Description'],false),
 				prepare_mysql($this->get_plain_content(),false),
-
-				$this->id
+				prepare_mysql($this->data['Page Store Title'],false),
+				prepare_mysql($this->data['Page Store Description'],false),
+				prepare_mysql($this->get_plain_content(),false)
 			);
 			mysql_query($sql);
+
+
 		}
 
 	}
@@ -663,7 +670,15 @@ class Page extends DB_Table {
 			break;
 		case('page_title'):
 		case('title'):
+		case('Page Title'):
+
 			$this->update_field('Page Title',$value,$options);
+			if ($this->data['Page Type']=='Store') {
+				$this->update_field('Page Store Title',$value,$options);
+
+			}
+
+
 			break;
 
 		case('footer_type'):
@@ -770,6 +785,7 @@ class Page extends DB_Table {
 			}
 		}
 		$this->update_field('Page Store Content Display Type',$value,$options);
+		$this->update_store_search();
 	}
 
 
@@ -4784,7 +4800,40 @@ class Page extends DB_Table {
 			if ($this->data['Page Store Content Display Type']=='Source') {
 				return $this->data['Page Store Source'];
 			}else {
-				return '';
+				$content='';
+				switch ($this->data['Page Store Section']) {
+				case 'Product Description':
+					$product=new Product('pid',$this->data['Page Parent Key']);
+
+					$content.=$product->data['Product Name'];
+
+					$content.=' '.$product->data['Product Description'];
+					$content.=' '.$product->data['Product Unit XHTML Materials'];
+					$content=trim($content);
+
+					break;
+				case 'Family Catalogue':
+					$family=new Family($this->data['Page Parent Key']);
+
+					$content.=$family->data['Product Family Name'];
+
+					$content.=' '.$family->data['Product Family Description'];
+					$content=trim($content);
+
+					break;
+
+				case 'Department Catalogue':
+					$department=new Department($this->data['Page Parent Key']);
+
+					$content.=$department->data['Product Department Name'];
+
+					$content.=' '.$department->data['Product Department Description'];
+					$content=trim($content);
+
+					break;
+				}
+
+				return $content;
 			}
 
 		}else {

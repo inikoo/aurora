@@ -487,8 +487,8 @@ class Family extends DB_Table {
 	}
 
 	function update_field_switcher($field,$value,$options='') {
-
 		switch ($field) {
+		
 		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
@@ -510,6 +510,8 @@ class Family extends DB_Table {
 			$this->update_sales_type($value);
 			break;
 		case('description'):
+		case('Product Family Description'):
+
 			$this->update_description($value);
 			break;
 		default:
@@ -529,24 +531,9 @@ class Family extends DB_Table {
 
 		$old_description=$this->data['Product Family Description'];
 		$this->update_field('Product Family Description',$description,'nohistory');
-
 		if ($this->updated) {
-			//set_include_path(get_include_path() . PATH_SEPARATOR . 'external_libs/PEAR');
-			//include_once 'Text/Diff.php';
-			//include_once 'Text/Diff/Renderer/inline.php';
 
-			//$lines1=preg_split('/\n/',$old_description);
-			//$lines2=preg_split('/\n/',$this->data['Product Family Description']);
-
-
-			//$diff = new Text_Diff('native', array($lines1,$lines2));
-			//$renderer = new Text_Diff_Renderer_inline();
-
-			//$rendered_difference= preg_replace('/\<del\>/','<span class="diff_del">',$renderer->render($diff));
-			//$rendered_difference= preg_replace('/\<\/del\>/','</span>',$rendered_difference);
-			//$rendered_difference= preg_replace('/\<ins\>/','<span class="diff_ins">',$rendered_difference);
-			//$rendered_difference= preg_replace('/\<\/ins\>/','</span>',$rendered_difference);
-
+			// TODO: highlight the changes with previos description, similar to git maybe
 
 
 			$history_data=array(
@@ -561,9 +548,14 @@ class Family extends DB_Table {
 
 		}
 
+		foreach ($this->get_pages_keys() as $page_key  ) {
+			$page=new Page($page_key);
+			
+			if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+				$page->update_store_search();
+			}
+		}
 
-
-		//todo maje nice highlited diff history
 
 	}
 
@@ -1662,7 +1654,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 				$this->id
 			);
-           
+
 			$dot_product=0;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
@@ -1671,7 +1663,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 					$row2['Product Family Key'],
 					$row['Customer Key']
 				);
-				 //  print "$sql\n";
+				//  print "$sql\n";
 				$_res=mysql_query($sql);
 				if ($_row=mysql_fetch_assoc($_res)) {
 

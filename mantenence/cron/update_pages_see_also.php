@@ -32,15 +32,45 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+$sql="select * from `Page Store Dimension` where `Page Key`=469";
 $sql="select * from `Page Store Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$page=new Page($row['Page Key']);
-	
+	$site=new Site($page->data['Page Site Key']);
 	$page->update_see_also();
-	
-	//print $page->id."\n";
 
+
+	switch ($page->data['Page Store Section']) {
+	case 'Product Description':
+		$product=new Product('pid',$page->data['Page Parent Key']);
+		$title=$product->data['Product Code'].', '.$product->data['Product Name'].', '.$site->data['Site Name'];
+		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+			$page->update_field_switcher('Page Title',$title);
+		}
+		break;
+	case 'Family Catalogue':
+		$family=new Family($page->data['Page Parent Key']);
+		$title=$family->data['Product Family Code'].', '.$family->data['Product Family Name'].', '.$site->data['Site Name'];
+	//	print $title;
+		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+			//print 'xx'.$title;
+			$page->update_field_switcher('Page Title',$title);
+		}
+break;
+	case 'Department Catalogue':
+		$department=new Department($page->data['Page Parent Key']);
+		$title=$department->data['Product Department Name'].', '.$site->data['Site Name'];
+		
+		if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+			$page->update_field_switcher('Page Title',$title);
+		}
+
+		break;
+	}
+
+
+	$page->update_store_search();
 
 }
 
