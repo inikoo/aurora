@@ -4680,6 +4680,8 @@ class Page extends DB_Table {
 
 
 		);
+		print "$sql\n";
+		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Page Store '.$db_interval.' Acc Requests']=$row['num_requests'];
