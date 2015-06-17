@@ -468,7 +468,11 @@ class part extends DB_Table {
 
 		switch ($this->data["Part $tag Dimensions Type"]) {
 		case 'Rectangular':
+		    if(!$this->data['Part '.$tag.' Dimensions Width Display'] or  !$this->data['Part '.$tag.' Dimensions Depth Display']  or  !$this->data['Part '.$tag.' Dimensions Length Display']){
+		    $dimensions='';
+		    }else{
 			$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'Cilinder':
 			$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';

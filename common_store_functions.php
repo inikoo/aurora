@@ -25,13 +25,40 @@ function formated_rrp($data,$options=false) {
 		return ($prefix?'PVP: ':'')."$rrp ".($show_units?" und":'');
 	}
 	elseif ($locale=="fr_FR") {
-		return ($prefix?'PVC: ':'')."$rrp  ".($show_units?"/unité PVC":'');
+		return ($prefix?'PVC: ':'')."$rrp ".($show_units?"/unité PVC":'');
+	}elseif ($locale=="it_IT") {
+		return ($prefix?'Prezzo Suggerito: ':'')."$rrp ".($show_units?"per unità":'');
 	}
 	else {
-		if (!isset($data['Product Unit Type'])) {
-			$data['Product Unit Type']=_('per unit');
+
+
+		switch ($data['Product Unit Type']) {
+
+			//'Piece','Grams','Liters','Meters','Other'
+		case 'Piece':
+			$unit_type=_('piece');
+			break;
+		case 'Grams':
+			$unit_type=_('gram');
+			break;
+		case 'Liters':
+			$unit_type=_('liter');
+			break;
+		case 'Other':
+			$unit_type=_('unit');
+			break;
+
+		default:
+			$unit_type=strtolower($data['Product Unit Type']);
+
 		}
-		return ($prefix?_("RRP").': ':'')."$rrp ".($show_units?strtolower($data['Product Unit Type']):'');
+		if ($show_units) {
+			$_rrp_units=sprintf(_('%1$s per %2$s'),$rrp,$unit_type);
+		}else {
+			$_rrp_units=$rrp;
+		}
+
+		return ($prefix?_("RRP").': ':'').$_rrp_units;
 	}
 }
 
@@ -137,6 +164,25 @@ function formated_price($data) {
 				return $str;
 			else
 				return $label.' '.$str;
+	}elseif ($locale=='it_IT') {
+
+		if ( is_array($data) and isset($data['price per unit text'])  ) {
+			$str=$data['price per unit text']." $price";
+		} else {
+			if ($data['Product Units Per Case']>1)
+				$str="$price/".$data['Product Units Per Case']." ($price_per_unit per unità)";
+			else
+				$str="$price per unità";
+
+		}
+		if ($data=='from')
+			return 'Prezzo da '.$str;
+		elseif ($label=='price')
+			return 'Prezzo: '.$str;
+		else if ($label=='')
+				return $str;
+			else
+				return $label.' '.$str;
 	}
 	else {
 
@@ -144,26 +190,54 @@ function formated_price($data) {
 			$str=$data['price per unit text']." $price";
 		}
 		//elseif ( is_array($data) and isset($data['Product Unit Type'])  ) {
-		//	$str=$price.' '._('per').' '.strtolower($data['Product Unit Type']);
+		// $str=$price.' '._('per').' '.strtolower($data['Product Unit Type']);
 		//}
 		else {
-			if ($data['Product Units Per Case']>1){
-				$str="$price/".$data['Product Units Per Case']." ($price_per_unit per unit)";
-			}else{
-				
-				
+
+			switch ($data['Product Unit Type']) {
+
+				//'Piece','Grams','Liters','Meters','Other'
+			case 'Piece':
+				$unit_type=_('piece');
+				break;
+			case 'Grams':
+				$unit_type=_('gram');
+				break;
+			case 'Liters':
+				$unit_type=_('liter');
+				break;
+			case 'Other':
+				$unit_type=_('unit');
+				break;
+
+			default:
+				$unit_type=strtolower($data['Product Unit Type']);
+
+			}
+
+
+			if ($data['Product Units Per Case']>1) {
+				$str="$price/".$data['Product Units Per Case'].' ('.sprintf(_('%1$s per %2$s'),$price_per_unit,$unit_type).')';
+
+			}else {
+
+
 				if ( is_array($data) and isset($data['Product Unit Type'])  ) {
-				$str=$price.' '._('per').' '.strtolower($data['Product Unit Type']);
-				}else{
-				
-				$str="$price per unit";
+
+
+
+
+					$str=sprintf(_('%1$s per %2$s'),$price,$unit_type);
+				}else {
+
+					$str="$price per unit";
 				}
-            }
+			}
 		}
 
 
 		if ($data=='from')
-			return 'Price from '.$str;
+			return sprintf(_('Price from %s'),$str);
 		elseif ($label=='price')
 			return _('Price').': '.$str;
 		elseif ($label=='')

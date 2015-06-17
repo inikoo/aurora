@@ -457,11 +457,15 @@ class product extends DB_Table {
 				$tag='Unit';
 			$weight=$this->data['Product '.$tag.' Weight Display'];
 
-			if ($weight!='' and  is_numeric($weight)) {
+			if ($weight and  is_numeric($weight)) {
 				$number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
-				$weight= number($weight,$number_digits).$this->data['Product '.$tag.' Weight Display Units'];
+				return number($weight,$number_digits).$this->data['Product '.$tag.' Weight Display Units'];
+			}else {
+				return '';
 			}
-			return $weight;
+
+
+
 			break;
 		case 'Next Supplier Shipment':
 			if ($this->data['Product Next Supplier Shipment']=='') {
@@ -1969,9 +1973,13 @@ class product extends DB_Table {
 
 
 		default:
+
+
+
 			$base_data=$this->base_data();
 			if (array_key_exists($field,$base_data)) {
 				if ($value!=$this->data[$field]) {
+
 					$this->update_field($field,$value,$options);
 				}
 			}
@@ -3410,22 +3418,22 @@ class product extends DB_Table {
 					));
 
 				$this->update_full_search();
-				
-				
+
+
 				foreach ($this->get_pages_keys() as $page_key  ) {
-			$page=new Page($page_key);
-			$site=new Site($page->data['Page Site Key']);
-			$title=$this->data['Product Code'].', '.$this->data['Product Name'].', '.$site->data['Site Name'];
-			if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
-				$page->update(
-				array('Page Store Title'=>$title)
-				);
-				$page->update_store_search();
-			}
-		}
-		
-				
-				
+					$page=new Page($page_key);
+					$site=new Site($page->data['Page Site Key']);
+					$title=$this->data['Product Code'].', '.$this->data['Product Name'].', '.$site->data['Site Name'];
+					if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
+						$page->update(
+							array('Page Store Title'=>$title)
+						);
+						$page->update_store_search();
+					}
+				}
+
+
+
 
 			}
 		} else {
