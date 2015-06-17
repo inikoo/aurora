@@ -23,7 +23,9 @@
 					<div style="float:left;margin-right:4px">
 						{t}Product code{/t}: <span class="code">{$product.code}</span> 
 					</div>
-					{$product.price}<br> {$product.button_only} 
+					{$product.price}
+					
+					{$product.button_only} 
 				</div>
 				<h3>
 					{$product.rrp} 
@@ -36,14 +38,15 @@
 			</div>
 			<div class="side_bar">
 				<table id="specs" border="0">
-					{*} {if $product.package_weight!=''}
-					<tr>
-						<td class="icon"><img src="art/icons/weight_package.png" alt='' title="{t}Package gross weight{/t}"></td>
-						<td>{$product.package_weight}</td>
-					</tr>
-					{/if} {*} {if $product.unit_weight!='' or $product.unit_dimensions!=''} 
+				
+				
 					<tr class="title">
-						<td colspan="2">{t}Unit{/t} ({$product.units}/{t}Outer{/t}): {/if} {if $product.unit_weight!=''}
+						
+					<td colspan="2">{if $product.units==1}{t}1 unit per outer{/t}{else}{t}Unit{/t} ({$product.units}/{t}Outer{/t}){/if}{if $product.unit_weight or $product.unit_dimensions}:{/if} 
+
+						</tr>
+						
+						 {if $product.unit_weight!=''}
 						<tr>
 							<td class="icon"></td>
 							<td>{$product.unit_weight} <img style="position:relative;top:4px" src="art/icons/weight.png" alt='' title="{t}Net weight{/t}"></td>
@@ -53,14 +56,17 @@
 							<td class="icon"></td>
 							<td>{$product.unit_dimensions}</td>
 						</tr>
-						{/if} {if $product.ingrediens!=''}
+						{/if}
+						
+						 {if $product.ingrediens!=''}
 						<tr class="title">
 							<td colspan="2">{t}Materials/Ingredients{/t}:</td>
 						</tr>
 						<tr>
 							<td colspan="2" style="font-size:90%">{$product.ingrediens}</td>
 						</tr>
-						{/if} {if $product.origin!=''}
+						{/if}
+						 {if $product.origin!=''}
 						<tr class="title">
 							<td colspan="2">{t}Origin{/t}:</td>
 						</tr>
