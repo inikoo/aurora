@@ -468,23 +468,39 @@ class part extends DB_Table {
 
 		switch ($this->data["Part $tag Dimensions Type"]) {
 		case 'Rectangular':
-		    if(!$this->data['Part '.$tag.' Dimensions Width Display'] or  !$this->data['Part '.$tag.' Dimensions Depth Display']  or  !$this->data['Part '.$tag.' Dimensions Length Display']){
-		    $dimensions='';
-		    }else{
-			$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			if (!$this->data['Part '.$tag.' Dimensions Width Display'] or  !$this->data['Part '.$tag.' Dimensions Depth Display']  or  !$this->data['Part '.$tag.' Dimensions Length Display']) {
+				$dimensions='';
+			}else {
+				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
 			}
 			break;
 		case 'Cilinder':
-			$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			if ( !$this->data['Part '.$tag.' Dimensions Length Display']  or  !$this->data['Part '.$tag.' Dimensions Diameter Display']) {
+				$dimensions='';
+			}else {
+				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'Sphere':
-			$dimensions='&#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			if (   !$this->data['Part '.$tag.' Dimensions Diameter Display']) {
+				$dimensions='';
+			}else {
+				$dimensions='&#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'String':
-			$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			if (   !$this->data['Part '.$tag.' Dimensions Length Display']) {
+				$dimensions='';
+			}else {
+				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'Sheet':
-			$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			if ( !$this->data['Part '.$tag.' Dimensions Width Display']  or  !$this->data['Part '.$tag.' Dimensions Length Display']) {
+				$dimensions='';
+			}else {
+				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		default:
 			$dimensions='';
@@ -1269,7 +1285,7 @@ class part extends DB_Table {
 		case('SKU'):
 			return sprintf('SKU%5d',$this->sku);
 			break;
-		
+
 		case('Picking Location Key'):
 
 			return $this->get_picking_location_key();
@@ -1383,7 +1399,7 @@ class part extends DB_Table {
 			$value=$row['value'];
 		}
 
-		
+
 
 
 
@@ -1746,7 +1762,7 @@ class part extends DB_Table {
 
 	}
 
-function get_supplier_products_new($date=false) {
+	function get_supplier_products_new($date=false) {
 		//exit("xxxx");
 		if ($date) {
 			return $this->get_supplier_products_historic($date);
@@ -1763,8 +1779,8 @@ function get_supplier_products_new($date=false) {
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	
-		
+
+
 			$supplier_products[]=array(
 				'Supplier Key'=>$row['Supplier Key'],
 				'Supplier Product ID'=>$row['Supplier Product ID'],
@@ -1793,16 +1809,16 @@ function get_supplier_products_new($date=false) {
 							left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)
 							where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes' order by `Supplier Key`;",
 			$this->data['Part SKU']);
-			
-			
+
+
 		$sxql=sprintf("
 
                      select `Supplier Product Valid To`,`Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`,SPPD.`Supplier Product Part Key`,`Supplier Product Part In Use`,`Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code`
                      from `Supplier Product Part List` SPPL
                      left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
                      left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-                     ",$this->data['Part SKU']);	
-			
+                     ",$this->data['Part SKU']);
+
 		$result=mysql_query($sql);
 		//print "$sql\n";
 		$supplier=array();
@@ -1857,8 +1873,8 @@ function get_supplier_products_new($date=false) {
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	
-		
+
+
 			$supplier_products[$row['Supplier Product ID']]=array(
 				'Supplier Key'=>$row['Supplier Key'],
 				'Supplier Product ID'=>$row['Supplier Product ID'],
@@ -3030,11 +3046,11 @@ function get_supplier_products_new($date=false) {
 	}
 
 
-	function update_cost_from_supplier_products(){
+	function update_cost_from_supplier_products() {
 		$cost=$this->get_cost_from_supplier_products();
 		$sql=sprintf("update `Part Dimension` set `Part Cost`=%.4f where `Part SKU`=%d",
-		$cost,
-		$this->sku
+			$cost,
+			$this->sku
 		);
 		mysql_query($sql);
 	}
@@ -3935,13 +3951,13 @@ function get_supplier_products_new($date=false) {
 
 		foreach ($supplier_products as $supplier_product) {
 
-			
+
 			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Transaction State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID`=%d "
 				,$supplier_product['Supplier Product ID']
 			);
 
 			$res=mysql_query($sql);
-		//print "$sql\n\n";
+			//print "$sql\n\n";
 			while ($row=mysql_fetch_assoc($res)) {
 				$number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']);
 				//  print_r($supplier_product);
