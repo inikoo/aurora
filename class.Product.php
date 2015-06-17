@@ -2207,27 +2207,50 @@ class product extends DB_Table {
 
 	function get_xhtml_dimensions($tag,$locale='en_GB') {
 
+	
+
 		switch ($this->data["Product $tag Dimensions Type"]) {
 		case 'Rectangular':
-			$dimensions=number($this->data['Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			if (!$this->data['Product '.$tag.' Dimensions Width Display'] or  !$this->data['Product '.$tag.' Dimensions Depth Display']  or  !$this->data['Product '.$tag.' Dimensions Length Display']) {
+				$dimensions='';
+			}else {
+				$dimensions=number($this->data['Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'Cilinder':
-			$dimensions='L:'.number($this->data['Product '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			if ( !$this->data['Product '.$tag.' Dimensions Length Display']  or  !$this->data['Product '.$tag.' Dimensions Diameter Display']) {
+				$dimensions='';
+			}else {
+				$dimensions='L:'.number($this->data['Product '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'Sphere':
-			$dimensions='&#8709;:'.number($this->data['Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			if (   !$this->data['Product '.$tag.' Dimensions Diameter Display']) {
+				$dimensions='';
+			}else {
+				$dimensions='&#8709;:'.number($this->data['Product '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'String':
-			$dimensions='L:'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			if (   !$this->data['Product '.$tag.' Dimensions Length Display']) {
+				$dimensions='';
+			}else {
+				$dimensions='L:'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		case 'Sheet':
-			$dimensions=number($this->data['Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			if ( !$this->data['Product '.$tag.' Dimensions Width Display']  or  !$this->data['Product '.$tag.' Dimensions Length Display']) {
+				$dimensions='';
+			}else {
+				$dimensions=number($this->data['Product '.$tag.' Dimensions Width Display']).'x'.number($this->data['Product '.$tag.' Dimensions Length Display']).' ('.$this->data['Product '.$tag.' Dimensions Display Units'].')';
+			}
 			break;
 		default:
 			$dimensions='';
 		}
 
 		return $dimensions;
+
 
 	}
 
