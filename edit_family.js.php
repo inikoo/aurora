@@ -855,6 +855,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 request="ar_edit_assets.php?tipo=edit_products&sf=0&parent=family&parent_key="+Dom.get('family_key').value
+//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

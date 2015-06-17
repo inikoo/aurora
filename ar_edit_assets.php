@@ -778,9 +778,6 @@ function edit_product() {
 
 
 
-
-
-
 			);
 			$response['xhtml_part_links']=$product->get_xhtml_part_links('Product Use Part Properties');
 			$response['Product_Package_XHTML_Dimensions']=$product->data['Product Package XHTML Dimensions'];
@@ -1369,11 +1366,15 @@ function list_products_for_edition() {
 	else
 		$order='`Product Code`';
 
-	$sql="select *  from `Product Dimension` P left join `Product Data Dimension` D on (D.`Product ID`=P.`Product ID`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
+	$sql="select `Product Code`,`Product Unit Type`,`Product Availability`,`Product Units Per Case`,`Product Special Characteristic`,`Product XHTML Short Description`,`Product Name`,`Product Cost`,`Product Web State`,`Product Web Configuration`,`Product Record Type`,`Product Sales Type`,`Product Price`,`Product RRP`,P.`Product ID`,`Product Total Acc Quantity Ordered`,`Product Total Acc Quantity Invoiced`,`Product Total Acc Quantity Delivered`,`Product Currency`,`Product Stage`  from `Product Dimension` P left join `Product Data Dimension` D on (D.`Product ID`=P.`Product ID`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+
+
+	
 	$res = mysql_query($sql);
 	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	
+	
 		if ($row['Product Total Acc Quantity Ordered']==0 and  $row['Product Total Acc Quantity Invoiced']==0 and  $row['Product Total Acc Quantity Delivered']==0  ) {
 			$delete='<img src="art/icons/delete.png" /> <span>'._('Delete').'<span>';
 			$delete_type='delete';
@@ -1553,6 +1554,7 @@ function list_products_for_edition() {
 			$row['Product ID'],
 			$row['Product ID']
 		);
+
 
 
 		$adata[]=array(
