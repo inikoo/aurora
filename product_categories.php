@@ -159,11 +159,8 @@ $tipo_filter=$_SESSION['state']['product_categories']['no_assigned_products']['f
 $smarty->assign('filter3',$tipo_filter);
 $smarty->assign('filter_value3',$_SESSION['state']['product_categories']['no_assigned_products']['f_value']);
 $filter_menu=array(
-	'sku'=>array('db_key'=>'sku','menu_label'=>_("SKU"),'label'=>_("SKU")),
-
-	'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in <i>x</i>'),'label'=>_('Used in')),
-	'supplied_by'=>array('db_key'=>'supplied_by','menu_label'=>_('Supplied by <i>x</i>'),'label'=>_('Supplied by')),
-	'description'=>array('db_key'=>'description','menu_label'=>_('Product Description like <i>x</i>'),'label'=>_('Description')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
 
 );
 $smarty->assign('filter_menu3',$filter_menu);

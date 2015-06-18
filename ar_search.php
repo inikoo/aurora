@@ -1332,13 +1332,13 @@ function search_parts($data) {
 
 	if (is_numeric($q)  or preg_match('/^sku:\?\d+/i',$q)  ) {
 		$_q=preg_replace('/[^\d]/','',$q);
-		$sql=sprintf('select `Part XHTML Currently Used In`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part SKU`=%d ',$_q);
+		$sql=sprintf('select `Part Reference`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part SKU`=%d ',$_q);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 
 			$candidates[$row['Part SKU']]=210;
-			$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+			$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('%s',$row['Part Reference']),'description'=>strip_tags($row['Part Unit Description']).($row['Part Status']!='In Use'?' <span class="error">'._('Not in use').'</span> ':'')  );
 
 		}
 	}
@@ -1347,25 +1347,14 @@ function search_parts($data) {
 
 
 
-	$sql=sprintf('select `Part XHTML Currently Used In`,`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Reference` like "%s%%" ',$q);
-	//print $sql;
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($q==$row['Part Reference']) {
-			$candidates[$row['Part SKU']]=200;
-		}else {
-			$candidates[$row['Part SKU']]=175;
-		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part Reference']));
 
-	}
 
 
 
 
 	//print_r($candidates);
 
-
+	/*
 	$sql=sprintf('select `Part Currently Used In`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 30',addslashes($q));
 
 	$res=mysql_query($sql);
@@ -1385,9 +1374,12 @@ function search_parts($data) {
 				$candidates[$row['Part SKU']]=50;
 
 		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('%s',$row['Part Reference']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description']));
 
 	}
+*/
+
+	/*
 
 	//print_r($candidates);
 	$sql=sprintf('select `Part Status`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part Reference`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
@@ -1407,39 +1399,12 @@ function search_parts($data) {
 				$candidates[$row['Part SKU']]=150;
 
 		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('%s',$row['Part Reference']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description']));
 
 	}
 
+*/
 
-
-
-	$sql=sprintf('select `Category Key` ,`Category Code`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Code` like "%s%%" limit 20',addslashes($q));
-
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-
-		if (strtolower($q)==strtolower($row['Category Code'])) {
-			if (array_key_exists('C'.$row['Category Key'],$candidates))
-				$candidates['C'.$row['Category Key']]+=110;
-			else
-				$candidates['C'.$row['Category Key']]=110;
-
-		}else {
-			if (array_key_exists('C'.$row['Category Key'],$candidates))
-				$candidates['C'.$row['Category Key']]+=90;
-			else
-				$candidates['C'.$row['Category Key']]=90;
-
-		}
-
-		$part_data['C'.$row['Category Key']]=array('link'=>'part_category.php?block_view=subjects&id=',
-			'sku'=>$row['Category Key'],
-			'fsku'=>_('Category'),
-			'description'=>$row['Category Label']
-		);
-
-	}
 
 
 
@@ -1449,16 +1414,99 @@ function search_parts($data) {
 	$qs=preg_split('/\s+|\,/',$q);
 	if (count($qs>1)) {
 		foreach ($qs as $q) {
-			$sql=sprintf('select `Part XHTML Currently Used In`,`Part Status`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 30',addslashes($q));
 
+
+			$sql=sprintf('select `Part Status`,`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Reference` like "%s%%" ',$q);
+			//print $sql;
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_array($res)) {
+				if ($q==$row['Part Reference']) {
+					if (array_key_exists($row['Part SKU'],$candidates)) {
+						$candidates[$row['Part SKU']]+=200;
+					}else {
+						$candidates[$row['Part SKU']]=200;
+					}
+
+				}else {
+					if (array_key_exists($row['Part SKU'],$candidates)) {
+						$candidates[$row['Part SKU']]+=175;
+					}else {
+						$candidates[$row['Part SKU']]=175;
+					}
+				}
+				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('%s',$row['Part Reference']),'description'=>strip_tags($row['Part Unit Description']).($row['Part Status']!='In Use'?' <span class="error">'._('Not in use').'</span> ':'')  );
+
+			}
+
+			$sql=sprintf('select `Category Key` ,`Category Code`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Code` like "%s%%" limit 20',addslashes($q));
+
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_array($res)) {
+
+				if (strtolower($q)==strtolower($row['Category Code'])) {
+					if (array_key_exists('C'.$row['Category Key'],$candidates))
+						$candidates['C'.$row['Category Key']]+=310;
+					else
+						$candidates['C'.$row['Category Key']]=310;
+
+				}else {
+					if (array_key_exists('C'.$row['Category Key'],$candidates))
+						$candidates['C'.$row['Category Key']]+=100;
+					else
+						$candidates['C'.$row['Category Key']]=100;
+
+				}
+
+				$part_data['C'.$row['Category Key']]=array('link'=>'part_category.php?block_view=subjects&id=',
+					'sku'=>$row['Category Key'],
+					'fsku'=>$row['Category Code'],
+					'description'=>$row['Category Label'].' <span class="is_category" style="font-weight:800;font-style:italic;color:steelblue">'._('Category').'</span>',
+				);
+
+				// print $row['Category Key'].$row['Category Code']."  *** \n";
+
+
+			}
+
+
+
+			$sql=sprintf('select `Category Key` ,`Category Code`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Label`  REGEXP \'[[:<:]]%s[[:>:]]\' limit 50',addslashes($q));
+
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_array($res)) {
+
+			
+					if (array_key_exists('C'.$row['Category Key'],$candidates))
+						$candidates['C'.$row['Category Key']]+=110;
+					else
+						$candidates['C'.$row['Category Key']]=110;
+
+			
+
+				$part_data['C'.$row['Category Key']]=array('link'=>'part_category.php?block_view=subjects&id=',
+					'sku'=>$row['Category Key'],
+					'fsku'=>$row['Category Code'],
+					'description'=>$row['Category Label'].' <span class="is_category" style="font-weight:800;font-style:italic;color:steelblue">'._('Category').'</span>',
+				);
+
+				//print $row['Category Key'].$row['Category Label']."\n";
+
+
+			}
+
+
+
+
+			$sql=sprintf('select `Part Reference`,`Part XHTML Currently Used In`,`Part Status`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Unit Description`  REGEXP \'[[:<:]]%s[[:>:]]\' limit 300',addslashes($q));
+//print "$sql\n";
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 
 				if ($row['Part Status']=='In Use') {
 					if (array_key_exists($row['Part SKU'],$candidates))
-						$candidates[$row['Part SKU']]+=90;
+						$candidates[$row['Part SKU']]+=100;
 					else
-						$candidates[$row['Part SKU']]=90;
+						$candidates[$row['Part SKU']]=100;
 				}else {
 					if (array_key_exists($row['Part SKU'],$candidates))
 						$candidates[$row['Part SKU']]+=40;
@@ -1466,8 +1514,8 @@ function search_parts($data) {
 						$candidates[$row['Part SKU']]=40;
 				}
 
-				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
-
+				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('%s',$row['Part Reference']),'description'=>strip_tags($row['Part Unit Description']).($row['Part Status']!='In Use'?' <span class="error">'._('Not in use').'</span> ':'')  );
+//print $candidates[$row['Part SKU']].'  ** '.$row['Part Unit Description']."  ".$row['Part Status']." ---- \n";
 			}
 
 		}
@@ -1487,7 +1535,7 @@ function search_parts($data) {
 		return;
 	}
 
-
+	//print_r($candidates);
 	$counter=0;
 	$customer_keys='';
 
@@ -1505,7 +1553,6 @@ function search_parts($data) {
 
 		$counter++;
 	}
-
 
 
 	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'part.php?sku=');
@@ -2114,7 +2161,7 @@ function search_supplier_products($data) {
 		//      $suppliers=0;
 
 	} else {
-//		$suppliers=join(',',$user->suppliers);
+		//  $suppliers=join(',',$user->suppliers);
 		$suppliers_where=' true ';
 		if ($user->data['User Type']=='Supplier' ) {
 
@@ -2392,7 +2439,7 @@ function search_site($data) {
 		addslashes($data['site_key']),
 		addslashes($q)
 	);
-	
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 		if (isset($candidates[$row['Page Key']])) {

@@ -513,7 +513,7 @@ function get_record_data($data) {
 
 	$result.='</table>';
 
-	
+
 	$response=array('state'=>200,'result'=>$result,'index'=>$index);
 	echo json_encode($response);
 	exit;
@@ -2250,6 +2250,8 @@ function list_subject_imported_records() {
 		case 'Cancelled':
 			$status=_('Cancelled');
 			break;
+		default:
+			$status=$data['Imported Records State'];
 		}
 
 

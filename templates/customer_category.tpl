@@ -3,6 +3,7 @@
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<input type="hidden" value="{$session_data}" id="session_data" />
+		<input type="hidden" id="store_key" value="{$store->id}" />
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
 		<input type="hidden" id="customers_view" value="{$customers_view}" />

@@ -194,7 +194,7 @@ function update_category_history_elements() {
 
 function init() {
 
-    init_search('products');
+     init_search('products_store');
 
 
 }

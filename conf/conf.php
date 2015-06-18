@@ -410,12 +410,18 @@ $default_state=array(
 			'elements'=>array('Finish'=>0,'Waiting'=>1,'Active'=>1,'Suspended'=>1)
 
 		),
-		'edit_table'=>array(
+		'edit_customers'=>array(
 			'order'=>'name',
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
-
+			'orders_type'=>'all_contacts',
+'elements_type'=>'activity',
+			'elements'=>array(
+				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
+				'location'=>array('Domestic'=>true,'Export'=>true)
+			),
 
 			'where'=>'',
 			'f_field'=>'customer name',

@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
-	<input type="hidden" id="store_id" value="{$store->id}" />
+	<input type="hidden" id="store_key" value="{$store->id}" />
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">

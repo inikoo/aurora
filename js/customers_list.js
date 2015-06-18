@@ -522,6 +522,8 @@ function new_deal() {
 
 
 function init() {
+init_search('customers_store');
+
 
     dialog_export['customers'] = new YAHOO.widget.Dialog("dialog_export_customers", {
         visible: false,

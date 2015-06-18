@@ -3,6 +3,7 @@
 	<div>
 		{include file='assets_navigation.tpl'} 
 		<input type='hidden' id="family_key" value="{$family->id}"> 
+		<input type='hidden' id="store_key" value="{$store->id}"> 
 		<input type='hidden' id="number_sites" value="{$store->get('Store Websites')}"> 
 		<input type='hidden' id="site_key" value="{$store->get_site_key()}"> 
 		<input type="hidden" id="subject" value="family"> 
