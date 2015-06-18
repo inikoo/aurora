@@ -239,7 +239,7 @@ function change_history_elements(e, table_id) {
      Event.addListener(ids, "click", change_block);
 
 
-     init_search('products');
+    init_search('products_store');
 
 
      var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);

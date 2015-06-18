@@ -193,7 +193,7 @@ function update_category_history_elements() {
 
 function init() {
 
-    init_search('parts');
+    init_search('products_store');
 
 
 }

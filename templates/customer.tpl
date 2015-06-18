@@ -2,6 +2,7 @@
 <div id="bd" class="no_padding">
 	<div style="padding:0px 20px;">
 		<input type="hidden" id="customer_key" value="{$customer->id}"> 
+		<input type="hidden" id="store_key" value="{$store->id}"> 
 		<input type="hidden" id="subject" value="customer"> 
 		<input type="hidden" id="subject_key" value="{$customer->id}"> 
 		<input type="hidden" id="history_table_id" value="0"> {include file='contacts_navigation.tpl'} 

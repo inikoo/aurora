@@ -1,13 +1,14 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='locations_navigation.tpl'} 
-	<input type="hidden" value="{$category_key}" id="category_key" />
-	<input type="hidden" value="{$category->get('Category Root Key')}" id="root_category_key" />
-	<input type="hidden" value="{$category->get('Category Branch Type')}" id="branch_type" />
-	<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
-	<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
-	<input type="hidden" value="{$category_key}" id="parent_key" />
-	<input type="hidden" value="category" id="parent" />
+	{include file='locations_navigation.tpl'}
+	<input type="hidden" id="store_key"  value="{$store->id}" />
+	<input type="hidden" id="category_key" value="{$category_key}"  />
+	<input type="hidden" id="root_category_key" value="{$category->get('Category Root Key')}"  />
+	<input type="hidden" id="branch_type" value="{$category->get('Category Branch Type')}"  />
+	<input type="hidden" id="msg_invalid_category_code" value="{t}Invalid Category Code{/t}"  />
+	<input type="hidden" id="msg_invalid_category_label" value="{t}Invalid Category Label{/t}"  />
+	<input type="hidden" id="parent_key" value="{$category_key}"  />
+	<input type="hidden" id="parent" value="category"  />
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="family_categories.php?id=0&store_id={$category->get('Category Store Key')}">{t}Family's Categories{/t}</a> &rarr; <span id="branch_tree">{$category->get('Category XHTML Branch Tree')}</span> ({t}Editing{/t})</span> 
 	</div>

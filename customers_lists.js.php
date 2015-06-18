@@ -55,7 +55,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 
 				 ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&store_id="+Dom.get('store_id').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&store_id="+Dom.get('store_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -131,8 +131,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			,{key:"imported", label:"<?php echo _('Imported Customers')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				 ];
 
-	    request="ar_import.php?tipo=list_subject_imported_records&subject=customers&parent=store&parent_key="+Dom.get('store_id').value+'&tableid='+tableid
-	   //alert(request)
+	    request="ar_import.php?tipo=list_subject_imported_records&subject=customers&parent=store&parent_key="+Dom.get('store_key').value+'&tableid='+tableid
+	  // alert(request)
 	    
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;

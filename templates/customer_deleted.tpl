@@ -1,5 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
+<input type="hidden" id="store_key" value="{$store->id}">
+
 <div id="content" >
 {include file='contacts_navigation.tpl'}
 		<div class="branch">

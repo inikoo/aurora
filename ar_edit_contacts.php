@@ -2984,7 +2984,6 @@ function list_customers() {
 
 	$conf=$_SESSION['state'][$conf_table]['edit_customers'];
 
-
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else

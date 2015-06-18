@@ -273,7 +273,6 @@ function go_to_result() {
 
 
 function search(query, subject, search_scope) {
-
 	if(query==''){
 	clear_search(false, subject)
 		return;
@@ -290,12 +289,12 @@ function search(query, subject, search_scope) {
            request = request + '&parent='+Dom.get('search_parent').value+'&parent_key='+Dom.get('search_parent_key').value
 
    }
-       
+   
     Dom.get(subject + '_clean_search').src = 'art/loading.gif'
-    //alert('ar_search.php?'+request);return;
+   
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
-            //alert(o.responseText)
+            
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 //   alert(subject+'_search_results')
@@ -341,12 +340,9 @@ function search(query, subject, search_scope) {
 
                 var link = r.link;
 
-
                 if (r.results > 0) {
 
                     for (result_key in r.data) {
-
-
 
                         oTR = oTbl.insertRow(-1);
                         if (result_number == 0) Dom.addClass(oTR, 'selected');

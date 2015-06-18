@@ -510,6 +510,9 @@ function change_product_category_elements(e, data) {
 
 function init() {
 
+    init_search('products_store');
+
+
     dialog_export['products'] = new YAHOO.widget.Dialog("dialog_export_products", {
         visible: false,
         close: true,
@@ -553,7 +556,6 @@ function init() {
     ids = ['subcategories', 'subjects', 'overview', 'history', 'sales', 'no_assigned'];
     Event.addListener(ids, "click", change_block);
 
-    init_search('products');
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;

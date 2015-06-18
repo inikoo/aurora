@@ -1,4 +1,4 @@
-<input type='hidden' id="store_id" value="{$store_key}"> <span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_products.php{if $store_key}?store={$store_key}{/if}">{t}here{/t}</a>.</span> 
+<span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_products.php{if $store_key}?store={$store_key}{/if}">{t}here{/t}</a>.</span> 
 <table class="search" border="0" style="{if $search_label==''}display:none{/if}">
 	<tr>
 		<td class="label">{$search_label}:</td>

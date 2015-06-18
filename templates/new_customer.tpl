@@ -1,5 +1,6 @@
 {include file='header.tpl'} 
 <input type="hidden" id="default_country" value="{$store->get('Store Home Country Code 2 Alpha')}">
+<input type="hidden" id="store_key" value="{$store->id}">
 
 <div id="bd" style="padding:0 20px">
 	{include file='contacts_navigation.tpl'} 
