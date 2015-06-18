@@ -224,7 +224,14 @@ class part extends DB_Table {
 		$this->update_field('Part Available for Products Configuration',$value,$options);
 		$new_value=$this->new_value;
 		$updated=$this->updated;
-		$this->update_availability_for_products();
+		
+		if(preg_match('/dont_update_pages/',$options)){
+		    $update_products=false;
+		}else{
+		    $update_products=true;
+		}
+		
+		$this->update_availability_for_products($update_products);
 		$this->new_value=$new_value;
 		$this->updated=$updated;
 
@@ -232,7 +239,7 @@ class part extends DB_Table {
 
 
 
-	function update_availability_for_products() {
+	function update_availability_for_products($update_pages=true) {
 
 		switch ($this->data['Part Available for Products Configuration']) {
 		case 'Yes':
@@ -300,7 +307,7 @@ class part extends DB_Table {
 			$products=$this->get_current_products_objects();
 			foreach ($products as $product) {
 				$product->editor=$this->editor;
-				$product->update_web_state();
+				$product->update_web_state($update_pages);
 
 			}
 
@@ -2436,9 +2443,7 @@ class part extends DB_Table {
 
 			if ($product->pid and $product_part_list['Parts Per Product']>0) {
 				$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
-				//$_price=$product->get_historic_price($datetime)/$product_part_list['Parts Per Product'];
-				// print "**** ".$product->data['Product Name']." $price  $_price\n";
-
+               
 				if ($price>0) {
 					$sum_commercial_value+=$price;
 					$count_commercial_value_samples++;

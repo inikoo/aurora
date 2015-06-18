@@ -3122,8 +3122,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 	function update_totals() {
 
-		global $inikoo_account;
+		include_once 'class.Account.php';
 
+		$inikoo_account=new Account();
 
 		if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
 			$this->update_item_totals_from_order_transactions();
@@ -8958,8 +8959,8 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		//  print "$sql\n";
 
 	}
-	
-	
+
+
 
 	function get_pending_payment_amount_from_account_balance() {
 		$pending_amount=0;
@@ -8981,6 +8982,8 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 	function apply_payment_from_customer_account() {
 
+		include_once 'class.Payment_Account.php';
+		include_once 'class.Payment.php';
 
 
 		$order_amount=$this->data['Order Balance Total Amount'];

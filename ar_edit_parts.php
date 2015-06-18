@@ -183,6 +183,8 @@ function edit_part($data) {
 
 
 function part_process_edit($part,$data) {
+	global $account_code;
+
 
 	$key_dic=array(
 		'available_for_products_configuration'=>'Part Available for Products Configuration'
@@ -200,7 +202,7 @@ function part_process_edit($part,$data) {
 		$part->update_custom_fields($key, $the_new_value);
 	} else {
 		//print "$key $the_new_value";
-		$part->update(array($key=>$the_new_value));
+		$part->update(array($key=>$the_new_value),'dont_update_pages');
 	}
 
 	if (!$part->error) {
@@ -209,6 +211,10 @@ function part_process_edit($part,$data) {
 			include_once 'product_common_functions.php';
 			$products=$part->get_current_products();
 			$response['product_data']=get_product_web_state_labels($products);
+			include 'splinters/new_fork.php';
+			list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'update_product_web_state_in_page','part_sku'=>$part->sku),$account_code);
+
+
 		}
 	} else {
 		$response= array('state'=>400,'msg'=>$part->msg,'key'=>$data['okey']);
