@@ -36,6 +36,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
+	
 		<div id="block_info" style="margin-top:10px;width:930px;">
 			<div style="float:right;width:105px;">
 				<div class="buttons small">
@@ -128,8 +129,10 @@
 				<button  style="{if !$show_products_web_state}display:none{/if}" id="hide_products_web_state">{t}Hide products web state{/t}</button>
 				</div>
 			</div>
+			
 			{if $part->get('Part Status')=='In Use'} 
 			<div style="width:280px;float:left;margin-left:15px">
+			
 				<table class="show_info_product" style="width:270px" border=0>
 					<tr>
 						<td>{t}Stock{/t}: <span>({$part->get_unit($part->get('Part Current On Hand Stock'))})</span></td>
@@ -138,41 +141,47 @@
 					<tr>
 						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"> <b id="current_stock">{$part->get('Part Current Stock')}</b> <b>-[<span id="current_stock_picked" title="{t}Stock picked{/t}">{$part->get('Part Current Stock Picked')}</span>]</b> -(<span id="current_stock_in_process" title="{t}Waiting to be picked{/t}">{$part->get('Part Current Stock In Process')}</span>) &rarr; <span id="current_stock_available">{$part->get('Current Stock Available')}</span></td>
 					</tr>
+					
 					<tbody style="font-size:80%">
+					
 						<tr>
 							<td>{t}Value at Cost{/t}:</td>
 							<td class="aright" id="value_at_cost">{$part->get_current_formated_value_at_cost()}</td>
 						</tr>
 						<tr>
 							<td>{t}Value at Current Cost{/t}:</td>
-							<td class="aright" id="value_at_current_cost">{$part->get_current_formated_value_at_current_cost()}</td>
+						<td class="aright" id="value_at_current_cost">{$part->get_current_formated_value_at_current_cost()}</td>
 						</tr>
 						<tr>
 							<td>{t}Commercial Value{/t}:</td>
 							<td class="aright" id="commercial_value">{$part->get_current_formated_commercial_value()}</td>
 						</tr>
+						
 					</tbody>
+					
 					<tr>
 						<td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td>
 						<td class="stock aright" id="available_for_forecast">{$part->get('Part XHTML Available For Forecast')}</td>
 					</tr>
+					
 					<tbody style="font-size:90%">
 					<tr id="next_set_shipment_tr" >
-						<td ><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span> <img id="show_dialog_set_up_shipment_date_bis" style="cursor:pointer;{if $part->get('Part Next Supplier Shipment')==''}display:none{/if}" src="art/icons/edit.gif"  />
+						<td ><span style="float:left;margin-right:5px">{t}Next shipment{/t}: </span> <img id="show_dialog_set_up_shipment_date_bis" style="cursor:pointer;{if $part->get('Part Next Supplier Shipment')==''}display:none{/if}" src="art/icons/edit.gif"  /></td>
 						
 						<td class="aright">
 							<span id="next_set_shipment" style="{if $part->get('Part Next Supplier Shipment')==''}display:none{/if}">{$part->get('Next Supplier Shipment')}</span>
 							<div id="next_set_shipment_setup" class="buttons small" style="position:relative;bottom:1px;{if $part->get('Part Next Supplier Shipment')!=''}display:none{/if}"><button id="show_dialog_set_up_shipment_date">{t}Setup{/t}</button></div>
 							
 							</td>
-						</td>
+						
 						</tr>
-						<tr>
+					<tr>
 						<td colspan="2" class="aright">{$part->get('Part XHTML Next Supplier Shipment')}</td>
 					</tr>
-					
+					</tbody>
 					
 				</table>
+				
 				{t}Locations{/t}: 
 				<table border="0" id="part_locations" class="show_info_product" style="width:270px;margin-top:0px">
 					{foreach from=$part->get_locations(true) item=location_data name=foo } 
@@ -196,6 +205,7 @@
 					</tr>
 				</table>
 			</div>
+		
 			{else} 
 			<div style="width:280px;float:left;margin-left:15px">
 				<table class="show_info_product " style="margin:0;padding:5px 10px;width:100%;">
@@ -211,7 +221,9 @@
 			{/if} 
 			<div style="clear:both">
 			</div>
+			
 		</div>
+		
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li><span class="item {if $view=='description'}selected{/if}" id="description"> <span> {t}Description{/t}</span></span></li>

@@ -1315,11 +1315,22 @@ function is_postal_code($postalcode) {
 
 
 function search_parts($data) {
+
+
+
+
+
+
 	$the_results=array();
 
 	$max_results=30;
 	$user=$data['user'];
 	$q=$data['q'];
+	
+	
+	
+	
+	
 	// $q=_trim($_REQUEST['q']);
 
 	if ($q=='') {

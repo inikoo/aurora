@@ -739,7 +739,7 @@ function get_part_sales_data(from, to) {
 
 function set_web_configuration(value) {
     var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&pid=' + Dom.get('product_pid').value + '&newvalue=' + value
-    // alert(request);
+   // alert(request);
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
@@ -939,6 +939,8 @@ function change_available_for_products(e, available_for_products_configuration) 
     var request = 'tipo=edit_part&sku=' + Dom.get('part_sku').value + '&okey=available_for_products_configuration&key=available_for_products_configuration&newvalue=' + available_for_products_configuration;
 
     Dom.setStyle('product_availability_wait', 'display', '')
+    
+  //  alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
              // alert(o.responseText);

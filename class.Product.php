@@ -2533,9 +2533,7 @@ class product extends DB_Table {
 		if ($price!=0 and $this->data['Product Currency']!=$corporate_currency) {
 			include_once 'class.CurrencyExchange.php';
 
-
 			$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency, ($datetime?  gmdate('Y-m-d',strtotime($datetime))   :'') );
-
 
 
 			$price=$price*$currency_exchange->get_exchange();
@@ -5340,7 +5338,7 @@ class product extends DB_Table {
 	}
 
 
-	function update_web_state() {
+	function update_web_state($update_pages=true) {
 
 		$old_web_state=$this->data['Product Web State'];
 
@@ -5435,6 +5433,8 @@ class product extends DB_Table {
 			mysql_query($sql);
 
 
+            if($update_pages){
+
 			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
 				$this->pid);
 			$res=mysql_query($sql);
@@ -5479,6 +5479,8 @@ class product extends DB_Table {
 					$order->restore_back_to_stock_to_basket($this->pid);
 				}
 
+			}
+			
 			}
 
 

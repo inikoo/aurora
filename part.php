@@ -65,6 +65,8 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+		'css/calendar.css',
+
 	'css/part_locations.css',
 	'css/edit.css',
 	'theme.css.php'
@@ -127,6 +129,7 @@ if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
 
 
 }
+
 
 $subject_id=$part->id;
 
