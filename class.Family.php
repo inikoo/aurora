@@ -488,7 +488,7 @@ class Family extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 		switch ($field) {
-		
+
 		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note',$value);
 			break;
@@ -550,7 +550,7 @@ class Family extends DB_Table {
 
 		foreach ($this->get_pages_keys() as $page_key  ) {
 			$page=new Page($page_key);
-			
+
 			if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
 				$page->update_store_search();
 			}
@@ -559,7 +559,23 @@ class Family extends DB_Table {
 
 	}
 
+	function update_web_state() {
+		$web_state='Empty';
+		$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale', 'Out of Stock')  ",
+		$this->id
+		);
+		
+		$res = mysql_query($sql);
+		while ($row = mysql_fetch_assoc($res)) {
+			if ($row['num']>0) {
+				$web_state='With Products For Sale';
 
+			}
+		}
+
+        $this->update_field_switcher('Product Family Web Products',$web_state,'no_history');
+
+	}
 
 	function update_sales_type($value) {
 		if (
@@ -590,10 +606,7 @@ class Family extends DB_Table {
 	}
 
 
-	/*
-        Function: delete
-        Funcion que permite eliminar registros en la tabla Product Family Dimension,Product Family Department Bridge, cuidando la integridad referencial con los productos.
-    */
+
 
 	function delete() {
 		$this->deleted=false;
@@ -629,8 +642,8 @@ class Family extends DB_Table {
 			$store = new Store($this->data['Product Family Store Key']);
 			$department_keys=$this->get_department_keys();
 			$sql = sprintf("select * from `Product Dimension` where `Product Family Key` = %d", $this->id);
-			$result = mysql_query($sql);
-			while ($row = mysql_fetch_assoc($result)) {
+			$res = mysql_query($sql);
+			while ($row = mysql_fetch_assoc($res)) {
 				$product = new Product($row['Product ID']);
 				$product->update('Product Family Key', $store->data['Store No Products Family Key']);
 

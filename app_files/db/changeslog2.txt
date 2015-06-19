@@ -207,4 +207,13 @@ ALTER TABLE `Page Store Dimension` DROP INDEX `Page Store Title`;
 ALTER TABLE `Page Store Dimension` DROP INDEX `Page Store Resume`;
 
 
+ALTER TABLE `Order Transaction Fact` DROP INDEX `Refund Metadata`;
+ALTER TABLE `Order Transaction Fact` DROP INDEX `Metadata`;
+ALTER TABLE `Order Transaction Fact` ADD INDEX (`Product Family Key`, `Customer Key`);
+
+ALTER TABLE `Product Dimension`
+  DROP `Product XHTML Package Dimensions`,
+  DROP `Product XHTML Unit Dimensions`;
+
+
 
