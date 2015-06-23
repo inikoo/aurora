@@ -114,6 +114,9 @@ function change_customer_data_elements_dblclick(el, elements_type) {
 }
 
 
+
+
+
 function recalculate_totals() {
 
     Dom.get('recalculate_totals_img').src = 'art/loading.gif';
