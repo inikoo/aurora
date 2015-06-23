@@ -529,108 +529,10 @@ function change_items_view(e, data) {
 
 }
 
-function save_cancel() {
-
-
-    if (Dom.hasClass('cancel_save', 'disabled')) {
-        return;
-    }
-    Dom.setStyle('cancel_buttons', 'display', 'none')
-    Dom.setStyle('cancel_wait', 'display', '')
-    var value = encodeURIComponent(Dom.get("cancel_input").value);
-    var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=cancel&note=' + value + '&order_key=' + Dom.get('order_key').value;
-    //alert('R:'+request);
-    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
-        success: function(o) {
-            //alert(o.responseText);
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.state == 200) {
-
-                window.location.reload();
-            } else {
-                alert(r.msg)
-                Dom.setStyle('cancel_buttons', 'display', '')
-                Dom.setStyle('cancel_wait', 'display', 'none')
-            }
-        },
-        failure: function(o) {
-            alert(o.statusText);
-
-        },
-        scope: this
-    }, request
-
-    );
-
-
-}
-
-function open_cancel_dialog() {
-
-   region1 = Dom.getRegion('cancel');
-    region2 = Dom.getRegion('dialog_cancel');
-    var pos = [region1.left - region2.width, region1.top]
-    Dom.setXY('dialog_cancel', pos);
-
-
-
-    Dom.get("cancel_input").value = '';
-    Dom.addClass('cancel_save', 'disabled')
-
-
-
-    dialog_cancel.show();
-    Dom.get('cancel_input').focus();
-}
-
-function cancel_note_changed() {
-
-    if (Dom.get('cancel_input').value != '') {
-        enable_save_cancel();
-
-        if (window.event) key = window.event.keyCode; //IE
-        else key = e.which; //firefox     
-        if (key == 13) save_cancel();
-
-
-    } else {
-        disable_save_cancel();
-    }
-
-};
-
-function enable_save_cancel() {
-
-
-    Dom.removeClass('cancel_save', 'disabled')
-
-
-};
-
-function disable_save_cancel() {
-
-    Dom.addClass('cancel_save', 'disabled')
-
-};
-
-
-function close_dialog_cancel() {
-    dialog_cancel.hide();
-};
-
 
 function init() {
 
     init_search('orders_store');
-    dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {
-        context: ["cancel", "tr", "tl"],
-        visible: false,
-        close: true,
-        underlay: "none",
-        draggable: false
-    });
-    dialog_cancel.render();
 
     ids = ['items_basket', 'items_times'];
 
@@ -638,10 +540,6 @@ function init() {
         'table_id': 0,
         'parent': 'order_in_process_by_customer'
     })
-
-Event.addListener('cancel', "click", open_cancel_dialog)
-
-
 
 }
 
