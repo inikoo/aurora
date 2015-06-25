@@ -113,7 +113,8 @@ $js_files=array(
 	'js/asset_elements.js',
 	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
-	'js/store.js',
+	'js/store.js'
+	
 );
 
 
