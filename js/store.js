@@ -1247,7 +1247,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
         ];
-        request = "ar_sites.php?tipo=sites&sf=0&parent=store&tableid=" + tableid + "&parent_key=" + Dom.get('store_id').value
+        request = "ar_sites.php?tipo=sites&sf=0&parent=store&tableid=" + tableid + "&parent_key=" + Dom.get('store_key').value
         this.dataSource3 = new YAHOO.util.DataSource(request);
         this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource3.connXhrMode = "queueRequests";
@@ -2132,7 +2132,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         ];
         //?tipo=products&tid=0"
-        request = 'ar_deals.php?tipo=campaigns&parent=store&sf=0&parent_key=' + Dom.get('store_id').value + '&tableid=' + tableid + '&referrer=store'
+        request = 'ar_deals.php?tipo=campaigns&parent=store&sf=0&parent_key=' + Dom.get('store_key').value + '&tableid=' + tableid + '&referrer=store'
         //  alert(request)
         this.dataSource11 = new YAHOO.util.DataSource(request);
         this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;
