@@ -2207,7 +2207,7 @@ class product extends DB_Table {
 
 	function get_xhtml_dimensions($tag,$locale='en_GB') {
 
-	
+
 
 		switch ($this->data["Product $tag Dimensions Type"]) {
 		case 'Rectangular':
@@ -5433,54 +5433,54 @@ class product extends DB_Table {
 			mysql_query($sql);
 
 
-            if($update_pages){
+			if ($update_pages) {
 
-			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
-				$this->pid);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$page=new Page($row['Page Key']);
-
-				$site=new Site($page->data['Page Site Key']);
-				if ($site->data['Site SSL']=='Yes') {
-					$site_protocol='https';
-				}else {
-					$site_protocol='http';
-				}
-
-				$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
-
-
-
-			}
-
-			if ($web_availability=='No' ) {
-
-				$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and `Product ID`=%d ",
-					$this->pid
-				);
+				$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
+					$this->pid);
 				$res=mysql_query($sql);
+				while ($row=mysql_fetch_assoc($res)) {
+					$page=new Page($row['Page Key']);
 
-				while ($row=mysql_fetch_array($res)) {
-					$order=new Order($row['Order Key']);
-					$order->remove_out_of_stocks_from_basket($this->pid);
+					$site=new Site($page->data['Page Site Key']);
+					if ($site->data['Site SSL']=='Yes') {
+						$site_protocol='https';
+					}else {
+						$site_protocol='http';
+					}
+
+					$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+
+
+
 				}
 
-			}
-			else {
+				if ($web_availability=='No' ) {
 
-				$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
-					$this->pid
-				);
-				$res=mysql_query($sql);
+					$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and `Product ID`=%d ",
+						$this->pid
+					);
+					$res=mysql_query($sql);
 
-				while ($row=mysql_fetch_array($res)) {
-					$order=new Order($row['Order Key']);
-					$order->restore_back_to_stock_to_basket($this->pid);
+					while ($row=mysql_fetch_array($res)) {
+						$order=new Order($row['Order Key']);
+						$order->remove_out_of_stocks_from_basket($this->pid);
+					}
+
+				}
+				else {
+
+					$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
+						$this->pid
+					);
+					$res=mysql_query($sql);
+
+					while ($row=mysql_fetch_array($res)) {
+						$order=new Order($row['Order Key']);
+						$order->restore_back_to_stock_to_basket($this->pid);
+					}
+
 				}
 
-			}
-			
 			}
 
 
@@ -5514,6 +5514,9 @@ class product extends DB_Table {
 			}
 
 		}
+
+
+		$this->update_pages_state();
 
 
 	}
@@ -6435,6 +6438,56 @@ class product extends DB_Table {
 
 		}
 
+	}
+
+	function update_pages_state() {
+
+		if ($this->data['Product Availability Type']=='Discontinued' or $this->data['Product Sales Type']!='Public Sale' or $this->data['Product Record Type']=='Historic'  ) {
+			$_state='Offline';
+		}else {
+			$_state='Online';
+		}
+
+
+
+		foreach ($this->get_pages_keys() as $page_key) {
+
+
+			$page=new Page($page_key);
+			$page->update(array('Page State'=>$_state),'no_history');
+		}
+
+
+	}
+
+	function get_deals_data() {
+		$deals=array();
+		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d ",$this->data['Product Family Key']);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deals[]=array(
+				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
+				'Terms Label'=>$row['Deal Component XHTML Terms Description Label'],
+				'Terms Type'=>$row['Deal Component Terms Type'],
+				'Status'=>$row['Deal Component Status'],
+				'Name'=>$row['Deal Name'],
+				'Description'=>$row['Deal Description']
+			);
+		}
+
+		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Product' and `Deal Component Allowance Target Key`=%d ",$this->pid);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deals[]=array(
+				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
+				'Terms Label'=>$row['Deal Component XHTML Terms Description Label'],
+				'Terms Type'=>$row['Deal Component Terms Type'],
+				'Status'=>$row['Deal Component Status'],
+				'Name'=>$row['Deal Name'],
+				'Description'=>$row['Deal Description']
+			);
+		}
+		return $deals;
 	}
 
 
