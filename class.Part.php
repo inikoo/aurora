@@ -186,6 +186,8 @@ class part extends DB_Table {
 
 			}
 
+			$this->update_stock();
+
 			$this->data['Part Valid To']=gmdate("Y-m-d H:i:s");
 			$sql=sprintf("update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d",prepare_mysql($this->data['Part Valid To']),$this->sku);
 			mysql_query($sql);
@@ -224,13 +226,13 @@ class part extends DB_Table {
 		$this->update_field('Part Available for Products Configuration',$value,$options);
 		$new_value=$this->new_value;
 		$updated=$this->updated;
-		
-		if(preg_match('/dont_update_pages/',$options)){
-		    $update_products=false;
-		}else{
-		    $update_products=true;
+
+		if (preg_match('/dont_update_pages/',$options)) {
+			$update_products=false;
+		}else {
+			$update_products=true;
 		}
-		
+
 		$this->update_availability_for_products($update_products);
 		$this->new_value=$new_value;
 		$this->updated=$updated;
@@ -247,7 +249,7 @@ class part extends DB_Table {
 			$this->update_field('Part Available for Products',$this->data['Part Available for Products Configuration']);
 			break;
 		case 'Automatic':
-			if ($this->data['Part Current Stock']>0) {
+			if ($this->data['Part Current Stock']>0 and $this->data['Part Status']=='In Use') {
 				$this->update_field('Part Available for Products','Yes');
 			}else {
 				$this->update_field('Part Available for Products','No');
@@ -1400,9 +1402,10 @@ class part extends DB_Table {
 			       from `Inventory Transaction Fact` where `Part SKU`=%d ",
 			$this->sku
 		);
+		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$stock=$row['stock'];
+			$stock=round($row['stock'],5);
 			$value=$row['value'];
 		}
 
@@ -2443,7 +2446,7 @@ class part extends DB_Table {
 
 			if ($product->pid and $product_part_list['Parts Per Product']>0) {
 				$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
-               
+
 				if ($price>0) {
 					$sum_commercial_value+=$price;
 					$count_commercial_value_samples++;
