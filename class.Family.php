@@ -562,9 +562,9 @@ class Family extends DB_Table {
 	function update_web_state() {
 		$web_state='Empty';
 		$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale', 'Out of Stock')  ",
-		$this->id
+			$this->id
 		);
-		
+
 		$res = mysql_query($sql);
 		while ($row = mysql_fetch_assoc($res)) {
 			if ($row['num']>0) {
@@ -573,7 +573,21 @@ class Family extends DB_Table {
 			}
 		}
 
-        $this->update_field_switcher('Product Family Web Products',$web_state,'no_history');
+		include_once 'class.Page.php';
+		foreach ($this->get_pages_keys() as $page_key) {
+
+			if ($web_state=='With Products For Sale') {
+				$_state='Online';
+			}else {
+				$_state='Offline';
+			}
+
+			$page=new Page($page_key);
+			$page->update(array('Page State'=>$_state),'no_history');
+		}
+
+
+		$this->update_field_switcher('Product Family Web Products',$web_state,'no_history');
 
 	}
 
@@ -583,7 +597,7 @@ class Family extends DB_Table {
 		) {
 			$sales_state=$value;
 
-			$sql=sprintf("update `Product Family Dimension` set `Product Family Sales Type`=%s  where  `Product Family Key`=%d "
+			$sql=sprintf("update `Product Family Dimension` set `Product Family Sales Type`=%s where `Product Family Key`=%d "
 				,prepare_mysql($sales_state)
 				,$this->id
 			);

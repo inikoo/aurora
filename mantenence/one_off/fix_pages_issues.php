@@ -32,6 +32,46 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+
+$sql="select * from `Product Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$product=new Product('pid',$row['Product ID']);
+
+	if ($product->data['Product Availability Type']=='Discontinued' or $product->data['Product Sales Type']!='Public Sale' or $product->data['Product Record Type']=='Historic'  ) {
+		$_state='Offline';
+	}else {
+		$_state='Online';
+	}
+
+
+
+	foreach ($product->get_pages_keys() as $page_key) {
+
+
+		$page=new Page($page_key);
+		$page->update(array('Page State'=>$_state),'no_history');
+	}
+
+
+
+
+}
+
+$sql="select * from `Product Family Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$family=new Family($row['Product Family Key']);
+
+	$family->update_web_state();
+
+}
+
+
+
+
 $sql="select * from `Page Store Dimension`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -70,14 +110,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 		$page->update(array(
 				'Page Store Title'=>$product->data['Product Name']
-			));
+			),'no_history');
 
 	}
-
-
-
-
 }
+
+
+
+
 
 
 ?>
