@@ -6270,7 +6270,7 @@ class product extends DB_Table {
 
 
 
-	function update_sales_correlatations($type='All') {
+	function update_sales_correlatations($type='All',$limit='100') {
 
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$this->pid);
 		$res=mysql_query($sql);
@@ -6296,20 +6296,44 @@ class product extends DB_Table {
 				$this->data['Product Store Key'],
 				$this->data['Product Family Key']
 			);
+			
+					$sql_count=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`!=%d order by `Product Total Acc Customers` desc  ",
+				$this->data['Product Store Key'],
+				$this->data['Product Family Key']
+			);
 			break;
 		case 'Same Department':
 			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Main Department Key`=%d order by `Product Total Acc Customers` desc  ",
 				$this->data['Product Store Key'],
 				$this->data['Product Main Department Key']
 			);
+			
+				$sql_count=sprintf("select count(*) as num from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)   where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Main Department Key`=%d  ",
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key']
+			);
+			
 			break;
 		default:
 
-			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers`   ",
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers`  limit %s ",
+				$this->data['Product Store Key'],
+				$limit
+			);
+            
+            $sql_count=sprintf("select count(*) as num  from `Product Dimension`  P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0   ",
 				$this->data['Product Store Key']
 			);
-
+            
 		}
+/*
+        $num_products=0;
+        $res2=mysql_query($sql);
+		if ($row2=mysql_fetch_assoc($res2)) {
+		    $num_products=$row['num'];
+		}
+
+*/
 
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
@@ -6327,11 +6351,12 @@ class product extends DB_Table {
 			}
 
 
+
 			$sql=sprintf("select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
 				$row2['Product ID'],
 				$this->pid
 			);
-			//print "$sql\n";
+		//	print "Products $num_products x $b_samples \n";
 			$dot_product=0;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
