@@ -46,6 +46,12 @@ function customers_awhere($awhere) {
 		'order_time_units_since_last_order_qty'=>false,
 		'order_time_units_since_last_order_units'=>false,
 		'pending_orders'=>'',
+		'pending_orders_days_no_change'=>false,
+		'pending_orders_days_no_change_type'=>'more_than',
+
+
+
+
 		'pending_order_payment_method'=>array()
 	);
 
@@ -87,9 +93,24 @@ function customers_awhere($awhere) {
 		if ($tmp!='') {
 			$where_orders.=" and `Order Payment Method` in ($tmp)";
 		}
+
+		$where_data['pending_orders_days_no_change'] = floatval($where_data['pending_orders_days_no_change']);
+		if (is_numeric($where_data['pending_orders_days_no_change']) and $where_data['pending_orders_days_no_change']>0) {
+			if ($where_data['pending_orders_days_no_change_type']=='less_than') {
+				$_basket_date=gmdate('Y-m-d H:i:s',strtotime("now -".$where_data['pending_orders_days_no_change']." days"));
+
+				$where_orders.=sprintf(" and `Order Date`>%s",prepare_mysql($_basket_date));
+
+			}else{
+			$_basket_date=gmdate('Y-m-d H:i:s',strtotime("now -".$where_data['pending_orders_days_no_change']." days"));
+
+				$where_orders.=sprintf(" and `Order Date`<%s",prepare_mysql($_basket_date));
+
+			}
+		}
 	}
 
-
+	
 
 	$where_categories='';
 	if ($where_data['categories']!='') {

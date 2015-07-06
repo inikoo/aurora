@@ -225,7 +225,17 @@
 				
 				</td>
 			</tr>
-			<tr id="payment_method_tr" style="display:none">
+			
+			<tr id="basket_days_no_change_tr" style="display:none">
+				<td>{t}days in without change{/t}:</td>
+				<td> 
+									<input id="basket_days_no_change_type" type="hidden"  value="more_than" />
+
+						<input id="basket_days_no_change" type="text" class="text" size="10" maxlength="10" name="after" value="" />
+				</td>
+			</tr>
+			
+			<tr id="basket_payment_method_tr" style="display:none">
 				<td>{t}order pay method{/t}:</td>
 				<td> 
 				<div id="pending_order_payment_method" default_cat="" class="buttons small left">
