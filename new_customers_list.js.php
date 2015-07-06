@@ -142,11 +142,12 @@ include_once('common.php');
    function change_customer_with_pending_orders(value) {
 
        if (value) {
-           Dom.setStyle(['payment_method_tr', 'customer_without_pending_orders'], 'display', '')
+           Dom.setStyle(['basket_payment_method_tr', 'customer_without_pending_orders','basket_days_no_change_tr'], 'display', '')
            Dom.setStyle(['customer_with_pending_orders'], 'display', 'none')
            Dom.get('pending_orders').value = 'Yes';
+           Dom.get('basket_days_no_change').focus()
        } else {
-           Dom.setStyle(['payment_method_tr', 'customer_without_pending_orders'], 'display', 'none')
+           Dom.setStyle(['basket_payment_method_tr', 'customer_without_pending_orders','basket_days_no_change_tr'], 'display', 'none')
            Dom.setStyle(['customer_with_pending_orders'], 'display', '')
            o = Dom.get('payment_method_all')
            Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', o.parentNode), 'selected');
@@ -716,7 +717,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records"
 		},
-		
 		
 		fields: [
 			 'id',
@@ -1444,6 +1444,7 @@ pending_order_payment_method_array =new Array();
         invoice_option: invoice_condition_option_array,
         order_option: order_condition_option_array,
 
+
         //not_customers_which:not_customers_which_array,
         geo_constraints: Dom.get('geo_constraints').value,
         categories: Dom.get('customer_categories').value,
@@ -1481,6 +1482,8 @@ pending_order_payment_method_array =new Array();
         order_time_units_since_last_order_qty: order_time_units_since_last_order_qty,
         order_time_units_since_last_order_units: order_time_units_since_last_order_units,
         pending_orders:Dom.get('pending_orders').value,
+        pending_orders_days_no_change:Dom.get('basket_days_no_change').value,
+pending_orders_days_no_change_type:Dom.get('basket_days_no_change_type').value,
         pending_order_payment_method:pending_order_payment_method_array,
     }
     return YAHOO.lang.JSON.stringify(data);
@@ -1501,7 +1504,6 @@ function submit_search(e) {
     Dom.setStyle('the_table', 'display', 'none');
     Dom.setStyle('searching', 'display', '');
     Dom.setStyle('save_dialog', 'visibility', 'visible');
- //   alert(request)
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
 }
