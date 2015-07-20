@@ -611,8 +611,8 @@ class part extends DB_Table {
 		include_once 'class.Material.php';
 
 
-
-
+        //if($value==$this->data['Part Unit Materials'])
+         //   return;
 
 		$materials=array();
 
@@ -622,6 +622,7 @@ class part extends DB_Table {
 
 		foreach ($_materials as $material) {
 			$material=_trim($material);
+			$material=preg_replace('/\s*\.$/','',$material);
 			$ratio=0;
 			if (preg_match('/\s*\(.+\s*\%\s*\)$/',$material,$match)) {
 				$_percentage=$match[0];
@@ -706,7 +707,6 @@ class part extends DB_Table {
 
 
 	function update_fields_used_in_products($field,$value,$options='') {
-
 
 		if (preg_match('/Weight.*Display/',$field)) {
 			$this->update_weight_dimensions_data($field,$value,'Weight');
