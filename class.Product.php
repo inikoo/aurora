@@ -2042,6 +2042,11 @@ class product extends DB_Table {
 	function update_materials($value) {
 		include_once 'class.Material.php';
 
+		//if ($value==$this->data['Product Unit Materials'])
+		//	return;
+
+
+
 		$materials=array();
 
 		$_materials=preg_split('/\s*,\s*/',$value);
@@ -2050,6 +2055,8 @@ class product extends DB_Table {
 
 		foreach ($_materials as $material) {
 			$material=_trim($material);
+			$material=preg_replace('/\s*\.$/','',$material);
+
 			$ratio=0;
 			if (preg_match('/\s*\(.+\s*\%\s*\)$/',$material,$match)) {
 				$_percentage=$match[0];
@@ -2092,7 +2099,7 @@ class product extends DB_Table {
 
 		$sql=sprintf("delete from `Product Material Bridge` where `Product ID`=%d ",$this->pid);
 		mysql_query($sql);
-		print_r($materials);
+		//print_r($materials);
 		foreach ($materials as $key=>$_value) {
 			$material_data=array('Material Name'=>$_value['name'],'editor'=>$this->editor);
 
@@ -2105,6 +2112,7 @@ class product extends DB_Table {
 					$material->id,
 					prepare_mysql($_value['ratio'])
 				);
+				//print "$sql\n";
 				mysql_query($sql);
 
 
@@ -2113,7 +2121,7 @@ class product extends DB_Table {
 
 		}
 		list($materials,$xhtml_materials)=$this->get_materials();
-		print_r($materials);
+		//print_r($materials);
 		$this->update_field('Product Unit Materials',$materials);
 		$this->update_field('Product Unit XHTML Materials',$xhtml_materials,'nohistory');
 
@@ -6272,8 +6280,8 @@ class product extends DB_Table {
 
 
 	function update_sales_correlatations($type='All',$limit='100') {
-	
-	$max_correaltions=20;
+
+		$max_correaltions=20;
 
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$this->pid);
 		$res=mysql_query($sql);
@@ -6298,17 +6306,17 @@ class product extends DB_Table {
 				$this->data['Product Store Key'],
 				$this->data['Product Family Key']
 			);
-			
-			
+
+
 			break;
 		case 'Same Department':
-			
+
 			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
 				$this->data['Product Store Key'],
 				$limit
 			);
-			
-			
+
+
 			break;
 		default:
 
@@ -6316,11 +6324,11 @@ class product extends DB_Table {
 				$this->data['Product Store Key'],
 				$limit
 			);
-            
-           
-            
+
+
+
 		}
-/*
+		/*
         $num_products=0;
         $res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2)) {
@@ -6348,7 +6356,7 @@ class product extends DB_Table {
 			$sql=sprintf("select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
 				$this->pid
 			);
-		//	print "Products $num_products x $b_samples \n";
+			// print "Products $num_products x $b_samples \n";
 			$dot_product=0;
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
@@ -6364,8 +6372,8 @@ class product extends DB_Table {
 
 					$dot_product+=1;
 					//print "order Match 1\n";
-				}else{
-				    //print "order Match 0\n";
+				}else {
+					//print "order Match 0\n";
 				}
 
 
@@ -6505,7 +6513,7 @@ class product extends DB_Table {
 				'Terms Type'=>$row['Deal Component Terms Type'],
 				'Status'=>$row['Deal Component Status'],
 				'Name'=>$row['Deal Name'],
-								'Label'=>$row['Deal Label'],
+				'Label'=>$row['Deal Label'],
 				'Description'=>$row['Deal Description']
 			);
 		}

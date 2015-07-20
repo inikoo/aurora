@@ -240,3 +240,16 @@ ALTER TABLE `Deal Component Dimension` ADD `Deal Component Allowance XHTML Descr
 
 ALTER TABLE `Deal Component Dimension` ADD `Deal Component Allowance Plain Description` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Deal Component Allowance Description`; 
 php fix_deal_component.php 
+
+//
+
+TRUNCATE `Product Material Bridge`;
+TRUNCATE `Part Material Bridge`;
+TRUNCATE `Material Dimension`;
+
+ALTER TABLE `Part Material Bridge` CHANGE `Part Material Key` `Part Material Key` INT UNSIGNED NOT NULL AUTO_INCREMENT; 
+ALTER TABLE `Product Material Bridge` CHANGE `Product Material Key` `Product Material Key` INT UNSIGNED NOT NULL AUTO_INCREMENT; 
+ALTER TABLE `Part Material Bridge` ADD UNIQUE (`Part SKU`, `Material Key`);
+ALTER TABLE `Product Material Bridge` ADD UNIQUE (`Product ID`, `Material Key`);
+
+
