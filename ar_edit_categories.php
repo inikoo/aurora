@@ -32,13 +32,13 @@ case('parts_assigned_to_category'):
 	break;
 case('parts_no_assigned_to_category'):
 	list_parts_no_assigned_to_category();
-	break;	
+	break;
 case('families_assigned_to_category'):
 	list_families_assigned_to_category();
 	break;
 case('families_no_assigned_to_category'):
 	list_families_no_assigned_to_category();
-	break;		
+	break;
 case('suppliers_no_assigned_to_category'):
 	list_suppliers_no_assigned_to_category();
 	break;
@@ -133,27 +133,27 @@ case('edit_subcategory'):
 	edit_categories($data);
 	break;
 
-	case('edit_category_description'):
+case('edit_category_description'):
 
 case('edit_categories'):
 	$data=prepare_values($_REQUEST,array(
-	'id'=>array('type'=>'key'),
-	'newvalue' =>array('type'=>'string'),
-	'key' =>array('type'=>'string_value'),
-	'okey' =>array('type'=>'string_value','optional'=>true),
-	
-	)
-	
+			'id'=>array('type'=>'key'),
+			'newvalue' =>array('type'=>'string'),
+			'key' =>array('type'=>'string_value'),
+			'okey' =>array('type'=>'string_value','optional'=>true),
+
+		)
+
 	);
-	
-	if(!array_key_exists('okey',$data)){
+
+	if (!array_key_exists('okey',$data)) {
 		$data['okey']=$data['key'];
 	}
-	
+
 	edit_categories($data);
 	break;
-	
-	
+
+
 case('edit_category'):
 
 
@@ -242,6 +242,12 @@ function add_category($raw_data) {
 	);
 
 	$parent_category=new Category($raw_data['parent_key']);
+
+	$data['Category Show Subject User Interface']=$parent_category->data['Category Show Subject User Interface'];
+	$data['Category Show Public New Subject']=$parent_category->data['Category Show Public New Subject'];
+	$data['Category Show Public Edit']=$parent_category->data['Category Show Public Edit'];
+
+
 	$parent_category->editor=$editor;
 	$category=$parent_category->create_children($data);
 
@@ -284,7 +290,7 @@ function list_edit_categories($tipo) {
 		$conf_branch='product_categories';
 		$subcategory_link='edit_product_category.php';
 		$subject='Product';
-		break;		
+		break;
 	case('edit_customer_category_list'):
 		$conf_branch='customer_categories';
 		$subcategory_link='edit_customer_category.php';
@@ -294,7 +300,7 @@ function list_edit_categories($tipo) {
 		$conf_branch='family_categories';
 		$subcategory_link='edit_family_category.php';
 		$subject='Family';
-		break;				
+		break;
 	default:
 		exit("no valid tipo $tipo");
 	}
@@ -459,7 +465,7 @@ function list_edit_categories($tipo) {
 	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._('Showing all').')';
 	else
 		$rtext_rpp='';
@@ -572,24 +578,24 @@ function edit_categories($data) {
 		,'Category Show Public New Subject'=>'Category Show Public New Subject'
 		,'Category Show Subject User Interface'=>'Category Show Subject User Interface'
 		,'Category Show Public Edit'=>'Category Show Public Edit'
-		
+
 	);
-	
-	if(!isset($data['okey'])){
-	$data['okey']=$data['key'];
+
+	if (!isset($data['okey'])) {
+		$data['okey']=$data['key'];
 	}
 
-	if(array_key_exists($data['key'],$translate_keys)){
+	if (array_key_exists($data['key'],$translate_keys)) {
 		$_key=$translate_keys[$data['key']];
-	}else{
-	$_key=$data['key'];
+	}else {
+		$_key=$data['key'];
 	}
 
 	//if($data['key']=='name'){$data['key']='Category Code';}
 	$category->update(array($_key=>$data['newvalue']));//print($data['key']);
-	
-	
-	
+
+
+
 	if ($category->updated) {
 		$response=array('state'=>200,'action'=>'updated','key'=>$data['okey'],'newvalue'=>$category->new_value,'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
 	} else {
@@ -1040,7 +1046,7 @@ function list_parts_no_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1110,7 +1116,7 @@ function list_parts_no_assigned_to_category() {
 	$adata=array();
 	$result=mysql_query($sql);
 
-	
+
 	$checkbox_checked_format='<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
 	$checkbox_unchecked_format='<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
 
@@ -1250,8 +1256,8 @@ function list_families_no_assigned_to_category() {
 		$number_results=25;
 
 
-$category=new Category($parent_key);
-$store_key=$category->data['Category Store Key'];
+	$category=new Category($parent_key);
+	$store_key=$category->data['Category Store Key'];
 
 	$where=sprintf("where `Product Family Store Key`=%d and (select count(*) from `Category Bridge` where `Subject`='Family'and `Category Key`=%d  and `Subject Key`=`Product Family Key`)=0 ",
 		$store_key,
@@ -1300,7 +1306,7 @@ $store_key=$category->data['Category Store Key'];
 	$rtext=number($total_records)." ".ngettext('family','families',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1313,7 +1319,7 @@ $store_key=$category->data['Category Store Key'];
 		case('name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with name ")." <b>".$f_value."*</b> ";
 			break;
-			}
+		}
 	}
 	elseif ($filtered>0) {
 
@@ -1342,14 +1348,14 @@ $store_key=$category->data['Category Store Key'];
 	if ($order=='code')
 		$order='`Product Family Code`';
 	elseif ($order=='name')
-	$order='`Product Family Name`';
-else
-	$order='`Product Family Key`';
+		$order='`Product Family Name`';
+	else
+		$order='`Product Family Key`';
 
 	$sql="select `Product Family Key`,`Product Family Code`,`Product Family Name` from `Product Family Dimension` left join `Category Bridge` B on (`Product Family Key`=B.`Subject Key` and `Subject`='Family') left join `Category Dimension` C on (C.`Category Key`=B.`Category Head Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-//print $sql;
+	//print $sql;
 	$adata=array();
 	$result=mysql_query($sql);
 
@@ -1375,9 +1381,9 @@ else
 		);
 
 		$adata[]=array(
-		
-			
-			
+
+
+
 			'checkbox'=>'',
 			'checkbox_checked'=>$checkbox_checked,
 			'checkbox_unchecked'=>$checkbox_unchecked,
@@ -1389,8 +1395,8 @@ else
 			'name'=>$data['Product Family Name'],
 			'move'=>$move,
 			'move_here'=>$move_here
-			
-			
+
+
 		);
 	}
 
@@ -1545,7 +1551,7 @@ function list_parts_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('part','parts',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1805,7 +1811,7 @@ function list_families_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('family','families',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -1818,7 +1824,7 @@ function list_families_assigned_to_category() {
 		case('name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with name ")." <b>".$f_value."*</b> ";
 			break;
-			}
+		}
 	}
 	elseif ($filtered>0) {
 
@@ -1847,14 +1853,14 @@ function list_families_assigned_to_category() {
 	if ($order=='code')
 		$order='`Product Family Code`';
 	elseif ($order=='name')
-	$order='`Product Family Name`';
-else
-	$order='`Product Family Key`';
+		$order='`Product Family Name`';
+	else
+		$order='`Product Family Key`';
 
 	$sql="select `Category Plain Branch Tree`,`Product Family Key`,`Product Family Code`,`Product Family Name` from `Product Family Dimension` left join `Category Bridge` B on (`Product Family Key`=B.`Subject Key` and `Subject`='Family') left join `Category Dimension` C on (C.`Category Key`=B.`Category Head Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-//print $sql;
+	//print $sql;
 	$adata=array();
 	$result=mysql_query($sql);
 
@@ -1886,7 +1892,7 @@ else
 
 			'code'=>sprintf('<a href="family.php?id=%d">%s</a>',$data['Product Family Key'],$data['Product Family Code']),
 			'name'=>$data['Product Family Name'],
-			
+
 
 			'move'=>$move,
 			'delete'=>$delete,
@@ -2021,10 +2027,10 @@ function list_category_heads() {
 	$rtext=number($total_records)." ".ngettext('category','categories',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	elseif($total_records>0)
+	elseif ($total_records>0)
 		$rtext_rpp=' ('._('Showing all').')';
-else
-$rtext_rpp='';
+	else
+		$rtext_rpp='';
 
 
 	if ($total==0 and $filtered>0) {
@@ -2247,7 +2253,7 @@ function list_suppliers_no_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2481,7 +2487,7 @@ function list_suppliers_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('supplier','suppliers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -2760,7 +2766,7 @@ function list_customers_no_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
@@ -3139,7 +3145,7 @@ function list_customers_assigned_to_category() {
 	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-	elseif($total_records)
+	elseif ($total_records)
 		$rtext_rpp=' ('._("Showing all").')';
 	else
 		$rtext_rpp='';
