@@ -716,7 +716,7 @@ function save_new_category() {
     var ar_file = 'ar_edit_categories.php';
     var request = 'tipo=new_category&subject=' + subject + '&label=' + label + '&code=' + code + '&parent_key=' + parent_key + '&other=' + Dom.get('new_category_other').value;
 
-    //alert(request);
+   
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             //alert(o.responseText)
