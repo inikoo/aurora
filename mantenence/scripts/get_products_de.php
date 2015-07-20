@@ -99,7 +99,7 @@ if ($reread_deals) {
 
 
 
-
+/*
 $campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Goldprämie','Deal Campaign Store Key'=>$store_key);
 $gold_camp=new DealCampaign('find create',$campaign_data);
 $campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Mengenrabatt','Deal Campaign Store Key'=>$store_key);
@@ -122,7 +122,7 @@ $gold_deal_data=array(
 $deal_gold=$gold_camp->add_deal($gold_deal_data);
 
 
-
+*/
 
 
 $current_promotion='';
@@ -620,7 +620,7 @@ foreach ($__cols as $cols) {
 		$product->update_web_state();
 
 
-		if (count($deals)>0) {
+		if (count($deals)>0 and false) {
 
 			foreach ($deals as $_deal_key=>$deal_data) {
 

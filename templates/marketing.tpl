@@ -1,9 +1,14 @@
 {include file='header.tpl'} 
-<div id="bd" style="padding:0px">
-	<div style="padding:0 20px">
+	<input type="hidden" id="session_data" value="{$session_data}" />
 		<input type="hidden" value="{$store->id}" id="store_key" />
 		<input type="hidden" id="subject" value="store"> 
-		<input type="hidden" id="subject_key" value="{$store->id}"> {include file='marketing_navigation.tpl'} 
+		<input type="hidden" id="subject_key" value="{$store->id}">
+		
+<div id="bd" style="padding:0px">
+	<div style="padding:0 20px">
+			
+
+		 {include file='marketing_navigation.tpl'} 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} {$store->get('Store Code')} {t}Marketing{/t}</span> 
 		</div>
@@ -48,13 +53,19 @@
 					<div id="block_campaigns" style="{if $deals_block_view!='campaigns'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 						<div id="the_table" class="data_table" style="margin-top:20px;clear:both;">
 							<span class="clean_table_title"  style="margin-right:5px">Campaigns</span> 
+							<div class="elements_chooser">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $campaign_elements.Waiting}selected{/if} " id="campaign_elements_Waiting" table_type="Waiting">{t}Waiting{/t} (<span id="campaign_elements_Waiting_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $campaign_elements.Suspended}selected{/if} " id="campaign_elements_Suspended" table_type="Suspended">{t}Suspended{/t} (<span id="campaign_elements_Suspended_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $campaign_elements.Finish}selected{/if} " id="campaign_elements_Finish" table_type="Finish">{t}Finished{/t} (<span id="campaign_elements_Finish_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $campaign_elements.Active}selected{/if} " id="campaign_elements_Active" table_type="Active">{t}Active{/t} (<span id="campaign_elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
 							<div class="buttons small left">
 						<button id="new_campaign" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
 					</div>
 				<div class="table_top_bar space">
 				</div>
 						</div>
-						{include file='table_splinter.tpl' table_id=11 filter_name=$filter_name11 filter_value=$filter_value11 no_filter=true } 
+						{include file='table_splinter.tpl' table_id=11 filter_name=$filter_name11 filter_value=$filter_value11 } 
 						<div id="table11" class="data_table_container dtable btable" style="font-size:85%">
 						</div>
 					</div>
@@ -63,7 +74,25 @@
 					<div id="block_offers" style="{if $deals_block_view!='offers'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 						<span class="clean_table_title">Offers</span> 
 						<div class="elements_chooser">
-							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_elements.Product}selected{/if} " id="offer_elements_Product" table_type="Product">{t}Product{/t} (<span id="offer_elements_Product_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_elements.Family}selected{/if} " id="offer_elements_Family" table_type="Family">{t}Family{/t} (<span id="offer_elements_Family_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_elements.Department}selected{/if} " id="offer_elements_Department" table_type="Department">{t}Department{/t} (<span id="offer_elements_Department_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_elements.Order}selected{/if} " id="offer_elements_Order" table_type="Order">{t}Order{/t} (<span id="offer_elements_Order_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						<img class="menu" id="offer_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" />
+						<div id="offer_trigger_chooser" style="{if $elements_offer_elements_type!='trigger'}display:none{/if}">
+
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_trigger_elements.Product}selected{/if} " id="offer_trigger_elements_Product" table_type="Product">{t}Product{/t} (<span id="offer_trigger_elements_Product_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_trigger_elements.Family}selected{/if} " id="offer_trigger_elements_Family" table_type="Family">{t}Family{/t} (<span id="offer_trigger_elements_Family_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_trigger_elements.Department}selected{/if} " id="offer_trigger_elements_Department" table_type="Department">{t}Department{/t} (<span id="offer_trigger_elements_Department_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_trigger_elements.Order}selected{/if} " id="offer_trigger_elements_Order" table_type="Order">{t}Order{/t} (<span id="offer_trigger_elements_Order_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+						</div>
+						
+						
+						
+												<div id="offer_status_chooser" style="{if $elements_offer_status_elements_type!='status'}display:none{/if}">
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_status_elements.Waiting}selected{/if} " id="offer_status_elements_Waiting" table_type="Waiting">{t}Waiting{/t} (<span id="offer_status_elements_Waiting_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $offer_status_elements.Suspended}selected{/if} " id="offer_status_elements_Suspended" table_type="Suspended">{t}Suspended{/t} (<span id="offer_status_elements_Suspended_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_status_elements.Finish}selected{/if} " id="offer_status_elements_Finish" table_type="Finish">{t}Finished{/t} (<span id="offer_status_elements_Finish_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $offer_status_elements.Active}selected{/if} " id="offer_status_elements_Active" table_type="Active">{t}Active{/t} (<span id="offer_status_elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+
+</div>
+						
 						</div>
 						<div class="table_top_bar space">
 						</div>
@@ -98,6 +127,7 @@
 			</h2>
 		</div>
 	</div>
+	<div style="clear:both">&nbsp;</div>
 </div>
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">

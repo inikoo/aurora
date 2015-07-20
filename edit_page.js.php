@@ -103,7 +103,7 @@ function save_see_also_type(value) {
 
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-
+alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == 200) {
@@ -221,7 +221,7 @@ function change_number_auto_see_also(e,operation){
 	//alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                         //  alert(o.responseText);
+	                         // alert(o.responseText);
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
 			                    update_page_preview_snapshot();

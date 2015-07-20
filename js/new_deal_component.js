@@ -415,7 +415,7 @@ function trigger_changed(value) {
         show_dialog_products_list('trigger');
         Dom.setStyle(['trigger_product_options', 'product_terms_select'], 'display', '')
 
-        terms_changed('Family Quantity Ordered')
+        terms_changed('Product Quantity Ordered')
         break;
     case 'Customer':
         show_dialog_customers_list();

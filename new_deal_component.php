@@ -252,9 +252,8 @@ $smarty->assign('title', _('New Allowance'));
 $smarty->assign('css_files', $css_files);
 $smarty->assign('js_files', $js_files);
 
-$tipo_filter100='code';
+$tipo_filter100='name';
 $filter_menu100=array(
-	'code'=>array('db_key'=>'code', 'menu_label'=>_('Campaign Code'), 'label'=>_('Code')),
 	'name'=>array('db_key'=>'name', 'menu_label'=>_('Campaign Name'), 'label'=>_('Name')),
 );
 $smarty->assign('filter_name100', $filter_menu100[$tipo_filter100]['label']);
@@ -303,7 +302,7 @@ $smarty->assign('paginator_menu103', $paginator_menu);
 $tipo_filter104='name';
 $filter_menu104=array(
 	'id'=>array('db_key'=>'id', 'menu_label'=>_('Customer ID'), 'label'=>_('ID')),
-	'name'=>array('db_key'=>'name', 'menu_label'=>_('Customer Name'), 'label'=>_('Name')),
+	'name'=>array('db_key'=>'name', 'menu_label'=>_('Customer name'), 'label'=>_('Name')),
 );
 $smarty->assign('filter_name104', $filter_menu104[$tipo_filter104]['label']);
 $smarty->assign('filter_menu104', $filter_menu104);
@@ -312,10 +311,9 @@ $smarty->assign('filter_value104', '');
 $paginator_menu=array(10, 25, 50, 100, 500);
 $smarty->assign('paginator_menu104', $paginator_menu);
 
-$tipo_filter105='code';
+$tipo_filter105='name';
 $filter_menu105=array(
-	'code'=>array('db_key'=>'code', 'menu_label'=>_('Offer Code'), 'label'=>_('Code')),
-	'name'=>array('db_key'=>'name', 'menu_label'=>_('Offer Name'), 'label'=>_('Name')),
+	'name'=>array('db_key'=>'name', 'menu_label'=>_('Offer name'), 'label'=>_('Name')),
 );
 $smarty->assign('filter_name105', $filter_menu105[$tipo_filter105]['label']);
 $smarty->assign('filter_menu105', $filter_menu105);

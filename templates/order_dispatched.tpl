@@ -92,33 +92,37 @@
 			</table>
 			<table border="0" class="info_block with_title">
 				<tr style="border-bottom:1px solid #333;">
-					<td colspan="2">{t}Delivery Note{/t}:</td>
+					<td colspan="3">{t}Delivery Note{/t}:</td>
 				</tr>
 				{foreach from=$dns_data item=dn} 
 				<tr>
-					<td> <a href="dn.php?id={$dn.key}">{$dn.number}</a> <a target='_blank' href="dn.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('dn',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
+				
+					<td colspan=2> <a href="dn.php?id={$dn.key}">{$dn.number}</a> <a target='_blank' href="dn.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('dn',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
 					<td class="right" style="text-align:right"> {$dn.state} </td>
 				</tr>
 				<tr >
-					<td colspan="2" class="aright" style="text-align:right"> {$dn.data} </td>
+				<td class="more_dn_opertions" >
+				<img style="{if $dn.dispatch_state!='Dispatched'}display:none{/if}" src="art/icons/arrow_sans_lowerleft.png"  id="more_dn_opertions_{$dn.key}" onClick="show_more_dn_operations({$dn.key})">
+				</td>
+					<td colspan=2 class="aright" style="text-align:right"> {$dn.data} </td>
 				</tr>
-				<tr>
-					<td colspan="2" class="aright" style="text-align:right" id="operations_container{$dn.key}">{$dn.operations}</td>
+				<tr id="dn_operations_tr_{$dn.key}" style="{if $dn.dispatch_state=='Dispatched'}display:none{/if}">
+					<td colspan="3" class="aright" style="text-align:right" id="operations_container{$dn.key}">{$dn.operations}</td>
 				</tr>
 				<tr style="{if $dn.dispatch_state=='Dispatched'}display:none{/if}">
 					<td colspan="2"> 
 					<table style="width:100%;margin:0px;">
 						<tr>
 							<td style="border:1px solid #eee;width:50%;text-align:center" id="pick_aid_container{$dn.key}"><a href="order_pick_aid.php?id={$dn.key}">{t}Picking Aid{/t}</a> <a target='_blank' href="order_pick_aid.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('order_pick_aid',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"> </td>
-							<td style="border:1px solid #eee;width:50%;;text-align:center" class="aright" style="text-align:right" id="pack_aid_container{$dn.key}"><a href="order_pack_aid.php?id={$dn.key}">{t}Pack Aid{/t}</a></td>
-							</td>
+							<td style="border:1px solid #eee;width:50%;;text-align:center" class="aright"  id="pack_aid_container{$dn.key}"><a href="order_pack_aid.php?id={$dn.key}">{t}Pack Aid{/t}</a></td>
+							
 						</tr>
 					</table>
 					</td>
 				</tr>
 				{/foreach} 
 			</table>
-			<table border="0" class="info_block with_title">
+			<table border="1" class="info_block with_title">
 				<tr style="border-bottom:1px solid #333;">
 					<td colspan="2">{t}Invoices{/t}:</td>
 				</tr>

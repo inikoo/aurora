@@ -12,6 +12,7 @@
 
 if (!isset($inikoo_account))exit;
 
+$js_files[]='js/order_dn.js';
 
 $js_files[]='js/add_payment.js';
 $js_files[]='js/common_order_not_dispatched.js?141007';

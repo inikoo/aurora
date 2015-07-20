@@ -42,6 +42,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
             hidden: true
         }, 
         {
+            key: "go",
+            label: "",
+            width: 10,
+            sortable: false
+        },
+        {
             key: "state",
             label: "",
             width: 10,
@@ -49,8 +55,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
         },
 
         {
-            key: "code",
-            label: labels.Code,
+            key: "name",
+            label: labels.Name,
             width: 110,
             sortable: true,
             className: "aleft",
@@ -61,18 +67,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
         {
             key: "term_allowances_label",
             label: labels.Description,
-            width: 340,
+            width: 300,
             sortable: true,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
             },
+             {
+            key: "duration",
+            label: labels.Duration,
+            width: 150,
+            sortable: true,
+            className: "aright",
             
+            } , 
            {
             key: "edit_status",
             label: "",
-            width: 150,
+            width: 100,
             sortable: true,
             className: "aleft",
             
@@ -80,8 +93,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             
         ];
 
-        request = "ar_edit_deals.php?tipo=deals&parent=campaign&parent_key=" + Dom.get('campaign_key').value + '$sf=0&tableid=' + tableid;
-     //   alert(request)
+        request = "ar_edit_deals.php?tipo=deals&parent=campaign&parent_key=" + Dom.get('campaign_key').value + '&sf=0&tableid=' + tableid;
         this.dataSource2 = new YAHOO.util.DataSource(request);
         this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource2.connXhrMode = "queueRequests";
@@ -99,7 +111,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: [ "key", "state", "code", "term_allowances_label","edit_status"]
+            fields: [ "key", "state", "code", "term_allowances_label","edit_status","name","go","duration"]
         };
 
 
@@ -212,10 +224,7 @@ function handleSelect(type, args, obj) {
 }
 
 
-function validate_campaign_code(query) {
 
-    validate_general('campaign_description', 'code', unescape(query));
-}
 
 function validate_campaign_name(query) {
 
@@ -455,7 +464,7 @@ function init() {
             'description': {
                 'changed': false,
                 'validated': true,
-                'required': true,
+                'required': false,
                 'group': 1,
                 'type': 'item',
                 'name': 'campaign_description',
@@ -467,28 +476,15 @@ function init() {
                 }]
             },
             'name': {
+                'ar': 'find',
+                'ar_request': 'ar_deals.php?tipo=is_campaign_name_in_store&store_key=' + Dom.get('store_key').value + '&query=',
                 'changed': false,
                 'validated': true,
-                'required': false,
+                'required': true,
                 'group': 1,
                 'type': 'item',
                 'name': 'campaign_name',
                 'dbname': 'Deal Campaign Name',
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': labels.Invalid_name
-                }]
-            },
-            'code': {
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=is_campaign_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
-                'changed': false,
-                'validated': true,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'campaign_code',
-                'dbname': 'Deal Campaign Code',
                 'validation': false
             }
         }
@@ -511,12 +507,7 @@ function init() {
     };
 
 
-    var campaign_code_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_code);
-    campaign_code_oACDS.queryMatchContains = true;
-    var campaign_code_oAutoComp = new YAHOO.widget.AutoComplete("campaign_code", "campaign_code_Container", campaign_code_oACDS);
-    campaign_code_oAutoComp.minQueryLength = 0;
-    campaign_code_oAutoComp.queryDelay = 0.1;
-
+  
     var campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_name);
     campaign_name_oACDS.queryMatchContains = true;
     var campaign_name_oAutoComp = new YAHOO.widget.AutoComplete("campaign_name", "campaign_name_Container", campaign_name_oACDS);

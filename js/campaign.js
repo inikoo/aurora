@@ -243,7 +243,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         tableid = 2;
         tableDivEL = "table" + tableid;
-        var ColumnDefs = [{
+       var ColumnDefs = [{
             key: "key",
             label: "",
             width: 20,
@@ -258,27 +258,48 @@ YAHOO.util.Event.addListener(window, "load", function() {
         },
 
         {
-            key: "code",
-            label: labels.Code,
-            width: 110,
+            key: "name",
+            label: labels.Name,
+            width: 190,
             sortable: true,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }, {
+        },
+         {
             key: "description",
             label: labels.Description,
-            width: 350,
             sortable: true,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
+        },
+         {
+            key: "from",
+            label: labels.From,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
         }, {
+            key: "to",
+            label: labels.To,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }
+
+        , {
             key: "orders",
             label: labels.Orders,
-            width: 90,
+            width: 80,
             sortable: true,
             className: "aright",
             sortOptions: {
@@ -287,7 +308,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "customers",
             label: labels.Customers,
-            width: 90,
+            width: 80,
             sortable: true,
             className: "aright",
             sortOptions: {
@@ -296,6 +317,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "duration",
             label: labels.Duration,
+            hidden:true,
             width: 150,
             sortable: true,
             className: "aleft",
@@ -305,6 +327,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }];
 
         request = "ar_deals.php?tipo=deals&parent=campaign&parent_key=" + Dom.get('subject_key').value + '&tableid=' + tableid;
+        //alert(request)
         this.dataSource2 = new YAHOO.util.DataSource(request);
         this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource2.connXhrMode = "queueRequests";
@@ -322,7 +345,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: ["name", "key", "allowance", "duration", "orders", "code", "customers", "target", "terms", "code", "description", "state"]
+            fields: ["name", "key", "allowance", "duration", "orders", "code", "customers", "target", "terms", "code", "description", "state","name","from","to"]
         };
 
 
@@ -355,23 +378,30 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         );
 
+      
         this.table2.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table2.request = request;
         this.table2.table_id = tableid;
-        this.table2.subscribe("renderEvent", myrenderEvent);
+        this.table2.subscribe("renderEvent", offers_myrenderEvent);
+
         this.table2.getDataSource().sendRequest(null, {
             success: function(request, response, payload) {
                 if (response.results.length == 0) {
-                    //   get_part_elements_numbers()
+                      get_offers_elements_numbers()
+
                 } else {
-                    // this.onDataReturnInitializeTable(request, response, payload);
+                    this.onDataReturnInitializeTable(request, response, payload);
                 }
             },
             scope: this.table2,
             argument: this.table2.getState()
         });
+
+        
+        
+        
         this.table2.filter = {
             key: state.offers.f_field,
             value: state.offers.f_value
@@ -462,7 +492,7 @@ function init() {
 
 
 
-    init_search('products_store');
+    init_search('marketing_store');
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -495,6 +525,13 @@ function init() {
     YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
     YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+    
+    
+     ids = ['offer_status_elements_Waiting', 'offer_status_elements_Active', 'offer_status_elements_Suspended', 'offer_status_elements_Finish']
+    Event.addListener(ids, "click", change_elements_offer, {
+        table_id: 2,
+        elements_type:'status'
+    });
 
 }
 

@@ -79,7 +79,8 @@
 				<td>{t}wish to receive{/t}: <span style="cursor:pointer" id="show_dont_wish_to_receive">&#8623;</span></td>
 				<td> 
 				<div id="allow_options" default_cat="" class="buttons small left">
-					{foreach from=$allow_options item=cat3 key=cat_key name=foo3} <button class="catbox{if $cat3.selected} selected{/if}" style="{if $cat_key=='all'}margin-left:20px{/if}" onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_" cat="{$cat_key}">{$cat3.name}</button> {/foreach} 
+					{foreach from=$allow_options item=cat3 key=cat_key name=foo3} 
+					<button class="catbox{if $cat3.selected} selected{/if}" style="{if $cat_key=='all'}margin-left:20px{/if}" onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_" cat="{$cat_key}">{$cat3.name}</button> {/foreach} 
 				</div>
 				</td>
 			</tr>

@@ -116,8 +116,7 @@ function validate_product_special_characteristic(query){
  validate_general('product_description','special_characteristic',unescape(query));
 }
 function validate_product_description(query){
-
- validate_general('product_description','description',unescape(query));
+ validate_general('product_general_description','Product_Description',unescape(query));
 }
 
 
@@ -396,7 +395,7 @@ function reset_edit_product_health_and_safety() {
 }
 
 function save_edit_product_general_description() {
-GeneralDescriptionEditor.saveHTML();
+//GeneralDescriptionEditor.saveHTML();
 	save_edit_general('product_general_description');
 }
 
@@ -405,7 +404,7 @@ GeneralDescriptionEditor.saveHTML();
 function reset_edit_product_general_description() {
 	reset_edit_general('product_general_description')
 	
-    GeneralDescriptionEditor.setEditorHTML(Dom.get('Product_Description').value);
+  //  GeneralDescriptionEditor.setEditorHTML(Dom.get('Product_Description').value);
 }
 
 function reset_edit_family(){
@@ -2144,7 +2143,6 @@ validate_scope_metadata={
 	product_name_oAutoComp.minQueryLength = 0; 
 	product_name_oAutoComp.queryDelay = 0.1;
 
-
 	var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_price);
 	product_name_oACDS.queryMatchContains = true;
 	var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Price","Product_Price_Container", product_name_oACDS);
@@ -2286,7 +2284,7 @@ validate_scope_metadata={
     Event.addListener("edit_family", "click", show_dialog_family_list);
     
        Event.addListener("filter_name1", "click",change_part_list_filter);
-
+/*
  
        var myConfig = {
        
@@ -2376,18 +2374,6 @@ validate_scope_metadata={
 
 
 
-
-
-
-
-
-
-
-
-
-//=========================
-
-
     HealthAndSafetyEditor = new YAHOO.widget.Editor('Product_Health_And_Safety', myConfig);
     HealthAndSafetyEditor.on('toolbarLoaded', function() {
          this.on('editorKeyUp',  health_and_safety_editor_changed, this, true);
@@ -2398,7 +2384,7 @@ validate_scope_metadata={
     yuiImgUploader(HealthAndSafetyEditor, 'product_health_and_safety', 'ar_upload_file_from_editor.php','image');
     HealthAndSafetyEditor.render();
         YAHOO.util.Event.on('show_product_health_and_safety_editor', 'click', show_product_health_and_safety_editor);
-
+*/
     
        ids = ['elements_InUse', 'elements_NotInUse'];
     Event.addListener(ids, "click", change_parts_elements_use, 1);

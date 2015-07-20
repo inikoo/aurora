@@ -1724,7 +1724,7 @@ function transactions_to_process() {
 
 		}
 
-		$sql_qty=sprintf(', P.`Product Current Key` as `Product Key`,
+		$sql_qty=sprintf(', `Product XHTML Short Description` as short_desc , P.`Product Current Key` as `Product Key`,
 
 		(select `Quantity` from `Order Transaction Out of Stock in Basket Bridge` OO where OO.`Product ID`=P.`Product ID` and `Order Key`=%d limit 1) as `Out of Stock Quantity`,
 		0 as `Order Bonus Quantity`, 0 as `Picked Quantity`,"%s"  as `Order Currency Code`  ,"" as `Transaction Tax Code`,"" as `Transaction Tax Rate`,(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
@@ -1732,13 +1732,14 @@ function transactions_to_process() {
 			$order_object->data['Order Currency'],
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
-			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)
+			$table='  `Order Transaction Fact` OTF  
+			left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)
 			left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)
 			 left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
 
 			 ';
 			$where=sprintf(' where   OTF.`Order Key`=%d',$order_id);
-			$sql_qty=',  OO.`Quantity` as `Out of Stock Quantity`   ,OTF.`Product Key`,`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,OTF.`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$sql_qty=',`Product History XHTML Short Description` as short_desc ,  OO.`Quantity` as `Out of Stock Quantity`   ,OTF.`Product Key`,`Order Bonus Quantity`,`Picked Quantity`,`Order Currency Code`,`Transaction Tax Code`,`Transaction Tax Rate`,`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,OTF.`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1848,7 +1849,7 @@ function transactions_to_process() {
 
 	$sql="select `Product Number of Parts`,`Product Part Metadata`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
-	//print $sql;
+	
 	$res = mysql_query($sql);
 
 	$adata=array();
@@ -1991,7 +1992,7 @@ function transactions_to_process() {
 			$part_info='';
 		}
 
-		$description=$row['Product XHTML Short Description'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info;
+		$description=$row['short_desc'].', '._('stock').': <b>['.$stock.'</b>]'.$deal_info;
 
 		if ($row['Current Dispatching State']=='Out of Stock in Basket') {
 			$customer_ordered=sprintf(_('customer want %s outers'),'<b>'.number($row['Out of Stock Quantity']).'</b>');

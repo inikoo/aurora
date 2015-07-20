@@ -40,6 +40,8 @@ if (!($user->can_view('stores') and in_array($store_key,$user->stores)   ) ) {
 	exit;
 }
 
+
+
 $modify=$user->can_edit('stores');
 $smarty->assign('modify',$modify);
 
@@ -90,6 +92,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/search.js',
+	'js/deals_common.js',
 	'js/campaign.js'
 
 );
@@ -105,7 +108,7 @@ $smarty->assign('js_files',$js_files);
 
 //$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Marketing'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_scope','marketing');
 
 
 $tipo_filter=$_SESSION['state']['campaign']['orders']['f_field'];
@@ -152,6 +155,15 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
+
+$smarty->assign('elements_offer_elements_type',$_SESSION['state']['campaign']['offers']['elements_type']);
+
+$smarty->assign('offer_elements_trigger',$_SESSION['state']['campaign']['offers']['elements']['trigger']);
+$smarty->assign('offer_status_elements',$_SESSION['state']['campaign']['offers']['elements']['status']);
+
+
+
+
 $session_data=base64_encode(json_encode(array(
 			'label'=>array(
 
@@ -171,6 +183,8 @@ $session_data=base64_encode(json_encode(array(
 				'Name'=>_('Name'),
 				'Location'=>_('Location'),
 				'Duration'=>_('Duration'),
+				'From'=>_('From'),
+				'To'=>_('To'),
 				'Page'=>_('Page'),
 				'of'=>_('of')
 			),

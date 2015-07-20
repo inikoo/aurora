@@ -14,11 +14,13 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; {if $page->get('Page Store Section')=='Department Catalogue'} (<a href="edit_department.php?edit_tab=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_department.png" alt="" /> {else if $page->get('Page Store Section')=='Family Catalogue'} (<a href="edit_family.php?edit_tab=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_family.png" alt="" /> {else if $page->get('Page Store Section')=='Product Description'} (<a href="edit_product.php?edit_tab=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_product.png" alt="" /> {else} <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" />{/if} {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> <button id="show_upload_page_content_bis" style="{if $page->get('Page Store Content Display Type')=='Template'}display:none{/if}"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> <button id="refresh_cache" onclick="refresh_cache()"> <img id="refresh_cache_icon" src="art/icons/page_world.png" alt="" /> {t}Refresh Cache{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
+			<div class="buttons small" style="position:relative;top:5px">
+				<button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> <button id="show_upload_page_content_bis" style="{if $page->get('Page Store Content Display Type')=='Template'}display:none{/if}"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> <button id="refresh_cache" onclick="refresh_cache()"> <img id="refresh_cache_icon" src="art/icons/page_world.png" alt="" /> {t}Refresh Cache{/t}</button> 
 			</div>
 			<div class="buttons left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"> <span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:80%;color:#777" id="title_url">{$page->get('Page URL')}</span> </span> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons"> <span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:80%;color:#777" id="title_url">{$page->get('Page URL')}</span> </span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -614,8 +616,14 @@
 		</tr>
 	</table>
 </div>
+{*}
 <iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
-</iframe> {include file='footer.tpl'} 
+{*}
+</iframe> 
+
+
+
+{include file='footer.tpl'} 

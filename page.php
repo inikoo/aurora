@@ -58,6 +58,11 @@ if (!$page->id) {
 }
 
 
+if(!in_array($page->data['Page Site Key'],$user->websites)){
+    $smarty->display('forbidden.tpl');
+	exit;
+}
+
 $page->load_data();
 $site=new Site($page->data['Page Site Key']);
 $smarty->assign('site',$site);

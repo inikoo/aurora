@@ -64,6 +64,7 @@ $count=0;
 $store=new Store('code','PL');
 $store_key=$store->id;
 
+/*
 $campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Gold Reward','Deal Campaign Store Key'=>$store_key);
 $gold_camp=new DealCampaign('find create',$campaign_data);
 $campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Volume Discount','Deal Campaign Store Key'=>$store_key);
@@ -102,6 +103,7 @@ $fam_promo=$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 $fam_products_no_family=new Family('code','PND_UK',$store_key);
 $fam_products_no_family_key=$fam_products_no_family->id;
+*/
 $current_promotion='';
 
 
@@ -599,7 +601,7 @@ foreach ($__cols as $cols) {
 			$_product->set_as_historic();
 		}
 		$product->update_web_state();
-		if (count($deals)>0) {
+		if (count($deals)>0 and false) {
 
 			foreach ($deals as $_deal_key=>$deal_data) {
 

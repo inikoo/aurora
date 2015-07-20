@@ -34,8 +34,8 @@ case 'campaign':
 	$smarty->assign('target_key', '');
 
 	$smarty->assign('parent', 'marketing');
-	$smarty->assign('search_label', _('Offers'));
-	$smarty->assign('search_scope', 'products');
+	$smarty->assign('search_label', _('Marketing'));
+	$smarty->assign('search_scope', 'marketing');
 	$smarty->assign('link_back', 'campaign.php?id='.$campaign->id);
 
 
@@ -241,9 +241,8 @@ $smarty->assign('title', _('New Offer'));
 $smarty->assign('css_files', $css_files);
 $smarty->assign('js_files', $js_files);
 
-$tipo_filter100='code';
+$tipo_filter100='name';
 $filter_menu100=array(
-	'code'=>array('db_key'=>'code', 'menu_label'=>_('Campaign Code'), 'label'=>_('Code')),
 	'name'=>array('db_key'=>'name', 'menu_label'=>_('Campaign Name'), 'label'=>_('Name')),
 );
 $smarty->assign('filter_name100', $filter_menu100[$tipo_filter100]['label']);
@@ -301,9 +300,8 @@ $smarty->assign('filter_value104', '');
 $paginator_menu=array(10, 25, 50, 100, 500);
 $smarty->assign('paginator_menu104', $paginator_menu);
 
-$tipo_filter105='code';
+$tipo_filter105='name';
 $filter_menu105=array(
-	'code'=>array('db_key'=>'code', 'menu_label'=>_('Offer Code'), 'label'=>_('Code')),
 	'name'=>array('db_key'=>'name', 'menu_label'=>_('Offer Name'), 'label'=>_('Name')),
 );
 $smarty->assign('filter_name105', $filter_menu105[$tipo_filter105]['label']);
@@ -360,7 +358,21 @@ $smarty->assign('session_data', $session_data);
 $smarty->assign('post_create_action', $_SESSION['state']['deal']['post_create_action']);
 $smarty->assign('currency_symbol', currency_symbol($store->data['Store Currency Code']));
 
-
+if (isset($campaign)) {
+	$sql=sprintf("select `Deal Key`,`Deal Name`  from `Deal Dimension` where `Deal Store Key`=%d and `Deal Name`=%s  ",
+		$campaign->data['Deal Campaign Store Key'],
+		prepare_mysql($campaign->data['Deal Campaign Name'])
+	);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$name='';
+	}else {
+		$name=$campaign->data['Deal Campaign Name'];
+	}
+}else {
+	$name='';
+}
+$smarty->assign('name', $name);
 
 
 $smarty->display('new_deal.tpl');

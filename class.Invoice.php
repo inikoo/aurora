@@ -454,7 +454,9 @@ class Invoice extends DB_Table {
 
 
 		$tax_category=$this->data['Invoice Tax Code'];
-		$sql=sprintf('select OTF.`Order Transaction Fact Key`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) where OTF.`Order Key`=%d and ISNULL(OTF.`Invoice Key`)  ',
+		$sql=sprintf('select OTF.`Order Transaction Fact Key`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` 
+		from `Order Transaction Fact` OTF left join 
+		`Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) where OTF.`Order Key`=%d and ISNULL(OTF.`Invoice Key`)  ',
 			$order_key
 		);
 		$res=mysql_query($sql);
@@ -3473,7 +3475,7 @@ class Invoice extends DB_Table {
 		$sql=sprintf("delete from `Order Transaction Fact`  where    `Invoice Key`=%d  and (`Order Key`=0 or `Order Key` is NULL) ",$this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("update  `Order Transaction Fact` set `Invoice Date`=NULL , `Invoice Key`=NULL ,`Consolidated`='No'  where  `Invoice Key`=%d",$this->id);
+		$sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=NULL , `Invoice Key`=NULL ,`Consolidated`='No'  where  `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
 
 
@@ -3490,7 +3492,7 @@ class Invoice extends DB_Table {
 		foreach ($dns as $dn) {
 
 			$dn->update_xhtml_invoices();
-
+            $dn->update(array('Delivery Note Invoiced'=>'No'));
 
 		}
 

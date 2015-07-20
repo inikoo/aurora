@@ -86,6 +86,7 @@ $css_files=array(
 	'css/button.css',
 	'css/container.css',
 	'css/table.css',
+	'css/edit.css',
 	'theme.css.php',
 	'css/deal.css'
 
@@ -105,6 +106,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/search.js',
+	'js/deals_common.js',
 	'js/deal.js',
 
 );
@@ -164,6 +166,9 @@ if ($deal->get('Deal Terms Type')=='Order Interval') {
 }
 
 
+
+$smarty->assign('deal_component_status_elements',$_SESSION['state']['deal']['components']['elements']);
+
 $smarty->assign('parent','marketing');
 $smarty->assign('title',$deal->data['Deal Name']);
 $smarty->assign('css_files',$css_files);
@@ -207,7 +212,7 @@ $tipo_filter=$_SESSION['state']['deal']['components']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['deal']['components']['f_value']);
 $filter_menu=array(
-	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+	'allowances'=>array('db_key'=>'name','menu_label'=>_('Allowances'),'label'=>_('Allowances')),
 
 );
 $smarty->assign('filter_menu2',$filter_menu);
@@ -243,13 +248,17 @@ $session_data=base64_encode(json_encode(array(
 				'Id'=>_('Id'),
 				'Location'=>_('Location'),
 				'Orders'=>_('Orders'),
+				'Customers'=>_('Customers'),
+'Allowance'=>_('Allowance'),
 				'Name'=>_('Name'),
 				'Terms'=>_('Terms'),
-				'Allowance'=>_('Allowance'),
+				'Description'=>_('Allowance Label'),
 				'Interval'=>_('Interval'),
 				'Offer'=>_('Offer'),
 				'Total'=>_('Total'),
 				'State'=>_('State'),
+				'From'=>_('From'),
+				'To'=>_('To'),
 
 				'Page'=>_('Page'),
 				'of'=>_('of')

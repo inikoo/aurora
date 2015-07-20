@@ -109,7 +109,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 		$page->update(array(
-				'Page Store Title'=>$product->data['Product Name']
+				'Page Store Title'=>$product->data['Product Name'],
+				'Page Parent Code'=>$product->data['Product Code'],
 			),'no_history');
 
 	}

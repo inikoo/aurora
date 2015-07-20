@@ -29,6 +29,8 @@ if ( !$dn->id ) {
 if ( isset( $_REQUEST['order_key'] )  and $_REQUEST['order_key']) {
 	$order_key=$_REQUEST['order_key'];
 }else {
+    $order_key-
+
 	$order_key=false;
 }
 $smarty->assign('order_key',$order_key);

@@ -51,19 +51,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
         var productsColumnDefs = [
 
         {
-            key: "key",
+            key: "deal_component_key",
             label: "",
             width: 20,
             sortable: false,
             isPrimaryKey: true,
             hidden: true
         }, {
-            key: "state",
+            key: "status",
             label: "",
             width: 10,
             sortable: false
         },
-
+/*
         {
             key: "name",
             label: labels.Name,
@@ -74,9 +74,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         },
-
+*/
         {
-            key: "allowance",
+            key: "allowances",
             label: labels.Allowance,
             width: 150,
             sortable: true,
@@ -87,17 +87,31 @@ YAHOO.util.Event.addListener(window, "load", function() {
         },
 
         {
-            key: "duration",
-            label: labels.Interval,
+            key: "label",
+            label: labels.Label,
             width: 150,
             sortable: true,
-            className: "aleft",
+            className: "aright",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
+            },
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            },
+            editor: new YAHOO.widget.TextboxCellEditor({
+                asyncSubmitter: CellEdit
+            }),
+            object: 'deal_component_field'
         }, {
             key: "edit_status",
-            label: "",
+            label: labels.Status,
+            width: 150,
+            className: "aright",
+            sortable: false
+        }, {
+            key: "edit_dates",
+            className: "aright",
+            label: labels.Finish,
             width: 150,
             sortable: false
         }
@@ -105,7 +119,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         ];
 
         request = "ar_edit_deals.php?tipo=deal_components&parent=deal&parent_key=" + Dom.get('deal_key').value + '&tableid=' + tableid
-        //alert(request)
+        // alert(request)
         this.dataSource2 = new YAHOO.util.DataSource(request);
         this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource2.connXhrMode = "queueRequests";
@@ -122,7 +136,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["name", "key", "allowance", "duration", "orders", "code", "customers", "target", "terms", "edit_status", "state"]
+            fields: ["name", "deal_component_key", "allowances", "duration", "orders", "code", "customers", "target", "terms", "edit_status", "status", "edit_dates", "label"]
         };
 
 
@@ -132,7 +146,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             //,initialLoad:false
             ,
             paginator: new YAHOO.widget.Paginator({
-                rowsPerPage: state.deal.components.nr,
+                rowsPerPage: state.deal.edit_components.nr,
                 containers: 'paginator2',
                 pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
                 previousPageLinkLabel: "<",
@@ -148,14 +162,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             ,
             sortedBy: {
-                key: state.deal.components.order,
-                dir: state.deal.components.order_dir
+                key: state.deal.edit_components.order,
+                dir: state.deal.edit_components.order_dir
             },
             dynamicData: true
 
         }
 
         );
+
+
 
         this.table2.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
@@ -166,9 +182,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.table2.getDataSource().sendRequest(null, {
             success: function(request, response, payload) {
                 if (response.results.length == 0) {
-                    //   get_part_elements_numbers()
+                    get_deal_component_elements_numbers()
                 } else {
-                    // this.onDataReturnInitializeTable(request, response, payload);
+                    this.onDataReturnInitializeTable(request, response, payload);
                 }
             },
             scope: this.table2,
@@ -176,9 +192,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
         });
 
 
+        this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+        this.table2.subscribe("cellClickEvent", onCellClick);
+
+
         this.table2.filter = {
-            key: state.deal.components.f_field,
-            value: state.deal.components.f_value
+            key: state.deal.edit_components.f_field,
+            value: state.deal.edit_components.f_value
         };
 
 
@@ -191,10 +212,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-function validate_deal_code(query) {
+function validate_deal_terms_label(query) {
 
-
-    validate_general('deal_description', 'code', unescape(query));
+    validate_general('deal_description', 'terms_label', unescape(query));
 }
 
 function validate_deal_name(query) {
@@ -271,7 +291,7 @@ function start_now() {
 
 function change_to_date() {
     Dom.removeClass("to_permanent", "selected")
-    Dom.setStyle(['change_to_date'], 'display', 'none');
+    Dom.setStyle(['change_to_date', 'permanent_tag'], 'display', 'none');
 
     Dom.setStyle(['v_calpop2', 'calpop2'], 'display', '');
     validate_scope_data.deal_dates.deal_to.required = true;
@@ -322,38 +342,8 @@ function finish_now() {
 
 }
 
-function change_status(value) {
-
-    Dom.removeClass(['deal_status_Active', 'deal_status_Suspended'], 'selected')
-    Dom.addClass(['deal_status_' + value], 'selected')
-
-    if (value != Dom.get('deal_status').getAttribute('ovalue')) {
-        validate_scope_data.deal_status.deal_status.changed = true;
-
-    } else {
-        validate_scope_data.deal_status.deal_status.changed = false;
 
 
-    }
-    Dom.get('deal_status').value = value
-
-    validate_scope('deal_status')
-
-}
-
-function save_edit_status() {
-    save_edit_general('deal_status')
-}
-
-function reset_edit_status() {
-    reset_edit_general('deal_status')
-
-
-    Dom.removeClass(['deal_status_Active', 'deal_status_Suspended'], 'selected')
-    alert(Dom.get('deal_status').value)
-    Dom.addClass(['deal_status_' + Dom.get('deal_status').value], 'selected')
-
-}
 
 function save_edit_dates() {
     save_edit_general('deal_dates')
@@ -373,35 +363,96 @@ function reset_edit_description() {
 
 function post_save_actions(r) {
 
-    if (r.key == 'deal_status') {
-        if (r.newvalue == 'Active') {
-            Dom.setStyle('deal_dates', 'display', '')
-        } else {
-            Dom.setStyle('deal_dates', 'display', 'none')
+    if (r.key == 'name') {
+        Dom.get('title_name_code_bis').innerHTML = r.newvalue
+        Dom.get('title_name_code').innerHTML = r.newvalue
 
+    } else if (r.key == 'deal_to') {
+
+        if (r.deal_status == 'Finish') {
+            location.reload()
         }
-    } else if (r.key == 'code') {
-        Dom.get('title_deal_code_bis').innerHTML = r.newvalue
-        Dom.get('title_deal_code').innerHTML = r.newvalue
 
     }
 }
 
+function delete_deal() {
+    var request = 'ar_edit_deals.php?tipo=delete_deal&deal_key=' + Dom.get('deal_key').value
 
-function edit_component_state(deal_component_key, state) {
-    var request = 'ar_edit_deals.php?tipo=update_deal_metadata_status&value=' + state + '&deal_metadata_key=' + deal_component_key
+    Dom.get('deal_delete_wait').src = 'art/loading.gif';
+
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+
+            //alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                location.href = "campaign.php?id=" + r.campaign_key
+
+
+            } else {
+                Dom.get('deal_delete_wait').src = 'art/icons/cross.png';
+                Dom.get('deal_delete_msg').innerHTML = r.msg
+            }
+
+        }
+    });
+
+}
+
+function edit_component_status(deal_component_key, status) {
+    var request = 'ar_edit_deals.php?tipo=update_deal_component_status&value=' + status + '&deal_component_key=' + deal_component_key
+
+    Dom.get('component_status_edit_wait_' + deal_component_key).src = 'art/loading.gif'
 
     // alert(request)  
     YAHOO.util.Connect.asyncRequest('POST', request, {
 
         success: function(o) {
 
-           //  alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.status == 200) {
+
+                Dom.get('component_status_edit_' + r.key).innerHTML = r.button_edit_status
+                Dom.get('component_status_' + r.key).innerHTML = r.status_icon
+
+            } else {
+
+            }
+
+        }
+    });
+}
+
+function edit_component_finish(deal_component_key) {
+    var request = 'ar_edit_deals.php?tipo=update_deal_component_finish&deal_component_key=' + deal_component_key + '&deal_key=' + Dom.get('deal_key').value
+    //alert(request) 
+    Dom.get('component_finish_edit_wait_' + deal_component_key).src = 'art/loading.gif'
+
+    // alert(request)  
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
             if (r.state == 200) {
 
-				Dom.get('component_state_edit_'+r.key).innerHTML=r.button_edit_status
-				Dom.get('component_state_'+r.key).innerHTML=r.status_icon
+                if (r.deal_status == 'Finish') {
+                    location.reload();
+
+                } else {
+
+                    Dom.get('component_status_edit_' + r.deal_component_key).innerHTML = ''
+                    Dom.get('component_status_' + r.deal_component_key).innerHTML = r.deal_component_status_icon
+                    Dom.get('component_finish_edit_' + r.deal_component_key).innerHTML = ''
+                    get_deal_component_elements_numbers()
+                }
+
+
 
             } else {
 
@@ -412,9 +463,54 @@ function edit_component_state(deal_component_key, state) {
 }
 
 
+function edit_status(state) {
+    var request = 'ar_edit_deals.php?tipo=update_deal_status&value=' + state + '&deal_key=' + Dom.get('deal_key').value
+
+    Dom.get('deal_status_' + state + '_wait').src = "art/loading.gif"
+
+    // alert(request)  
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            Dom.get('deal_status_Active_wait').src = "art/icons/tick.png"
+            Dom.get('deal_status_Suspended_wait').src = "art/icons/stop.png"
+            if (r.state == 200) {
+
+
+
+
+
+                if (r.new_value == 'Suspended') {
+                    Dom.setStyle('deal_status_Suspended', 'display', 'none')
+                    Dom.setStyle(['deal_status_Active', 'suspended_tag'], 'display', '')
+
+                } else if (r.new_value == 'Finish') {
+                    Dom.setStyle(['deal_status_Suspended', 'suspended_tag'], 'display', 'none')
+                    Dom.setStyle('deal_status_Active', 'display', 'none')
+
+
+                } else {
+                    Dom.setStyle('deal_status_Suspended', 'display', '')
+                    Dom.setStyle(['deal_status_Active', 'suspended_tag'], 'display', 'none')
+                }
+
+                //	Dom.get('component_state_edit_'+r.key).innerHTML=r.button_edit_status
+                //	Dom.get('component_state_'+r.key).innerHTML=r.status_icon
+            } else {
+
+            }
+
+        }
+    });
+}
+
+
+
 
 function new_deal_component() {
-    location.href = "new_deal_component.php?deal_key=" + Dom.get('deal_key').value+'&referer=edit_deal';;
+    location.href = "new_deal_component.php?deal_key=" + Dom.get('deal_key').value + '&referer=edit_deal';;
 }
 
 
@@ -426,59 +522,47 @@ function init() {
             'description': {
                 'changed': false,
                 'validated': true,
-                'required': true,
+                'required': false,
                 'group': 1,
                 'type': 'item',
                 'name': 'deal_description',
                 'dbname': 'Deal Description',
 
-                'ar': false,
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': Dom.get('label_invalid_description').value
-                }]
+                'ar': false
             },
-            'name': {
-                'changed': false,
-                'validated': true,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'deal_name',
-                'dbname': 'Deal Name',
-
-                'validation': [{
-                    'regexp': "[a-z\d]+",
-                    'invalid_msg': Dom.get('label_invalid_name').value
-                }]
-            },
-            'code': {
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=code_in_other_deal&deal_key=' + Dom.get('deal_key').value + '&store_key=' + Dom.get('store_key').value + '&query=',
-                'changed': false,
-                'validated': true,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'deal_code',
-                'dbname': 'Deal Code',
-
-                'validation': false
-            }
-        },
-        'deal_status': {
-            'deal_status': {
+            'terms_label': {
                 'changed': false,
                 'validated': true,
                 'required': true,
                 'group': 1,
                 'type': 'item',
-                'name': 'deal_status',
-                'dbname': 'Deal Status',
+                'name': 'deal_terms_label',
+                'dbname': 'Deal XHTML Terms Description Label',
+
                 'ar': false,
+                'validation': [{
+                    'regexp': "[a-z\d]+",
+                    'invalid_msg': Dom.get('label_invalid_label').value
+                }]
+            },
+            'name': {
+                'changed': false,
+                'validated': true,
+                'required': true,
+                'group': 1,
+                'type': 'item',
+                'name': 'deal_name',
+                'dbname': 'Deal Name',
+                'ar': 'find',
+                'ar_request': 'ar_deals.php?tipo=name_in_other_deal&deal_key=' + Dom.get('deal_key').value + '&store_key=' + Dom.get('store_key').value + '&query=',
+
                 'validation': false
-            }
+
+            },
+
         },
+
+
         'deal_dates': {
 
             'deal_from': {
@@ -510,6 +594,8 @@ function init() {
                 }]
             },
         }
+
+
     };
     validate_scope_metadata = {
         'deal_description': {
@@ -518,12 +604,7 @@ function init() {
             'key_name': 'deal_key',
             'key': Dom.get('deal_key').value
         },
-        'deal_status': {
-            'type': 'edit',
-            'ar_file': 'ar_edit_deals.php',
-            'key_name': 'deal_key',
-            'key': Dom.get('deal_key').value
-        },
+
         'deal_dates': {
             'type': 'edit',
             'ar_file': 'ar_edit_deals.php',
@@ -532,11 +613,6 @@ function init() {
         }
 
     };
-    var deal_code_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_code);
-    deal_code_oACDS.queryMatchContains = true;
-    var deal_code_oAutoComp = new YAHOO.widget.AutoComplete("deal_code", "deal_code_Container", deal_code_oACDS);
-    deal_code_oAutoComp.minQueryLength = 0;
-    deal_code_oAutoComp.queryDelay = 0.1;
 
     var deal_name_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_name);
     deal_name_oACDS.queryMatchContains = true;
@@ -550,10 +626,15 @@ function init() {
     deal_description_oAutoComp.minQueryLength = 0;
     deal_description_oAutoComp.queryDelay = 0.1;
 
+    var deal_terms_label_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_terms_label);
+    deal_terms_label_oACDS.queryMatchContains = true;
+    var deal_terms_label_oAutoComp = new YAHOO.widget.AutoComplete("deal_terms_label", "deal_terms_label_Container", deal_terms_label_oACDS);
+    deal_terms_label_oAutoComp.minQueryLength = 0;
+    deal_terms_label_oAutoComp.queryDelay = 0.1;
 
 
 
-    init_search('products_store');
+    init_search('marketing_store');
 
     var ids = ["description", "state", "allowances"];
     Event.addListener(ids, "click", change_block);
@@ -593,8 +674,6 @@ function init() {
     YAHOO.util.Event.addListener('finish_now', "click", finish_now)
 
 
-    YAHOO.util.Event.addListener('save_edit_deal_status', "click", save_edit_status)
-    YAHOO.util.Event.addListener('reset_edit_deal_status', "click", reset_edit_status)
 
     YAHOO.util.Event.addListener('save_edit_deal_dates', "click", save_edit_dates)
 
@@ -602,6 +681,13 @@ function init() {
 
     YAHOO.util.Event.addListener('save_edit_deal_description', "click", save_edit_description)
     YAHOO.util.Event.addListener('reset_edit_deal_description', "click", reset_edit_description)
+    get_deal_component_elements_numbers()
+
+    ids = ['deal_component_status_elements_Waiting', 'deal_component_status_elements_Active', 'deal_component_status_elements_Suspended', 'deal_component_status_elements_Finish']
+    Event.addListener(ids, "click", change_elements_deal_component, {
+        table_id: 2
+    });
+
 
 }
 

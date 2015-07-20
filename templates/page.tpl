@@ -15,8 +15,9 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; {if $page->get('Page Store Section')=='Department Catalogue'} (<a href="department.php?block_view=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_department.png" alt="" /> {else if $page->get('Page Store Section')=='Family Catalogue'} (<a href="family.php?block_view=web&id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_family.png" alt="" /> {else if $page->get('Page Store Section')=='Product Description'} (<a href="product.php?block_view=web&pid={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>) <img style="vertical-align:-1px;" src="art/icons/layout_bw_product.png" alt="" /> {else} <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" />{/if} {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons" style="float:right">
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
+			<div class="buttons small" style="position:relative;top:5px">
 				{if $modify} <button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} 
 				<button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
 				<a style="display:none" href="page.zip.php?id={$page->id}">{t}Export{/t}</a> 
@@ -24,7 +25,7 @@
 				<button style="{if $page->get('Page State')!='Offline'}display:none{/if}" id="set_online"><img id="edit_flag_icon" src="art/icons/world.png" alt="" title="{t}Set online{/t}"> <span>{t}Set Online{/t}</span></button> 
 			</div>
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"><img src="art/icons/page_bw.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span> </span> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons"><img src="art/icons/page_bw.png" style="height:18px;position:relative;bottom:2px" /> <span class="id">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777">{$page->get('Page URL')}</span> </span> 
 			</div>
 			<div style="clear:both">
 			</div>

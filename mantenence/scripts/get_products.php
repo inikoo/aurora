@@ -113,7 +113,7 @@ TRUNCATE `Order Transaction Deal Bridge`;
 
 */
 
-
+/*
 
 $campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Gold Reward','Deal Campaign Store Key'=>$store_key);
 $gold_camp=$store->add_campaign($campaign_data);
@@ -147,7 +147,7 @@ $_deal_component_data=array(
 
 $_component=$deal_gold->add_component($_deal_component_data);
 $_component->update_status('Active');
-
+*/
 $fam_promo=$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 $fam_products_no_family=new Family('code','PND_UK',$store_key);
@@ -670,8 +670,8 @@ foreach ($__cols as $cols) {
 
 			$product->update_web_state();
 
-
-			if (count($deals)>0) {
+			/*
+			if (count($deals)>0 and false) {
 
 				foreach ($deals as $_deal_key=>$deal_data) {
 
@@ -769,7 +769,7 @@ foreach ($__cols as $cols) {
 
 
 			}
-
+			*/
 			$deals=array();
 
 		}else {

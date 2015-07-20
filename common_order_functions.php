@@ -223,7 +223,13 @@ function get_order_formated_payment_state($data) {
 }
 
 function get_invoice_operations($row,$user,$parent='order',$parent_key='') {
-	$operations='<div  id="operations'.$row['Invoice Key'].'">';
+	$operations='<div  id="operati_ons'.$row['Invoice Key'].'">';
+
+
+	$operations.='
+		<button id="delete'.$row['Invoice Key'].'" onclick="show_delete_invoice_dialog('.$row['Invoice Key'].')"><img  src="art/icons/delete.png"> '._('Delete').'</button>
+
+	';
 
 	$operations.='</div>';
 
@@ -241,7 +247,6 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 	//$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
 	$operations='<div  id="operations'.$row['Delivery Note Key'].'">';
-
 
 
 	if ($row['Delivery Note State']=='Ready to be Picked') {
@@ -402,7 +407,7 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 		if ($user->can_edit('orders')) {
 
 		
-			$operations.=' <button '.($row['Delivery Note Invoiced']=='No' and  $row['Delivery Note Type']=='Order' ?' class="disabled" title="'._('Order not invoiced'):'') .'" onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'}" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
+			$operations.=' <button '.($row['Delivery Note Invoiced']=='No' and  $row['Delivery Note Type']=='Order' ?' class="disabled" title="'._('Order not invoiced').'"':'') .' onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
 
 			$operations.='</div>';
 		}else {
@@ -412,10 +417,17 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 
 
-	}elseif ($row['Delivery Note State']=='Approved') {
+	}
+	elseif ($row['Delivery Note State']=='Approved') {
 		$operations.='<div class="buttons small '.$class.'">
 		<button  onClick="set_as_dispatched('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>
 		</div>";
+	}
+	elseif ($row['Delivery Note State']=='Dispatched') {
+		$operations.='<div class="buttons small '.$class.'">
+		<button id="undo_dispatch_'.$row['Delivery Note Key'].'" onclick="undo_dispatch('.$row['Delivery Note Key'].')"><img id="undo_dispatch_icon_'.$row['Delivery Note Key'].'" src="art/icons/arrow_rotate_anticlockwise.png"> '._('Undo dispatch').'</button>
+
+		</div>';
 	}
 	else {
 		$operations.='';

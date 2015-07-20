@@ -8,14 +8,17 @@
 	<input type="hidden" id="campaign_valid_to" value="{$campaign->get('Deal Campaign Valid To')}" />
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a id="title_deal_code_bis" href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Code')}</a> ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a id="title_deal_code_bis" href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Name')}</a> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Edit Campaign{/t}: <span id="title_deal_code" class="id">{$campaign->get('Deal Campaign Code')}</span></span> 
+			<span class="main_title no_buttons">{t}Edit Campaign{/t}: <span id="title_deal_code" class="id">{$campaign->get('Deal Campaign Name')}</span></span> 
 		</div>
-		<div class="buttons">
-			<button onclick="window.location='campaign.php?id={$campaign->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" style="{if $campaign->get_number_deals()>0}display:none{/if}" id="delete_campaign"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> 
+		<div class="buttons small" style="position:relative;top:5px">
+			<button onclick="window.location='campaign.php?id={$campaign->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+			<button class="negative" style="{if $campaign->get_number_deals()>0}display:none{/if}" id="delete_campaign"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> 
+			<button class="negative" style="{if $campaign->get('Deal Campaign Status')!='Active'}display:none{/if}" id="suspend_campaign"><img id="suspend_campaign_img" src="art/icons/time_delete.png" alt="" /> {t}Suspend{/t}</button> 
+			<button class="positive" style="{if $campaign->get('Deal Campaign Status')!='Suspended'}display:none{/if}" id="activate_campaign"><img id="activate_campaign_img" src="art/icons/time_go.png" alt="" /> {t}Activate{/t}</button>
 		</div>
 		<div style="clear:both">
 		</div>
@@ -101,35 +104,24 @@
 			<tr class="title">
 				<td colspan="3">{t}Campaign Description{/t}</td>
 			</tr>
-			<tr class="space10">
-				<td class="label" style="150px">{t}Code{/t}:</td>
-				<td style="text-align:left;width:370px"> 
-				<input style="text-align:left;width:370px" id="campaign_code" value="{$campaign->get('Deal Campaign Code')}" ovalue="{$campaign->get('Deal Campaign Code')}"> 
-				<div id="campaign_code_Container">
-				</div>
-				</td>
-				<td style="width:350px"> 
-				<div id="campaign_code_msg" class="edit_td_alert">
-				</div>
-				</td>
-			</tr>
+			
 			<tr>
-				<td class="label">{t}Name{/t}:</td>
-				<td> 
-				<input style="text-align:left;width:370px" id="campaign_name" value="{$campaign->get('Deal Campaign Name')}" ovalue="{$campaign->get('Deal Campaign Name')}"> 
+				<td class="label" >{t}Name{/t}:</td>
+				<td class="input"> 
+				<input style="width:300px" id="campaign_name" value="{$campaign->get('Deal Campaign Name')}" ovalue="{$campaign->get('Deal Campaign Name')}"> 
 				<div id="campaign_name_Container">
 				</div>
 				</td>
-				<td> 
-				<div id="campaign_name_msg" class="edit_td_alert">
-				</div>
+				<td class="message"> 
+				<span id="campaign_name_msg" class="edit_td_alert">
+				</span>
 				</td>
 			</tr>
 			<tr>
 				<td class="label">{t}Description{/t}:</td>
 				<td style="height:100px"> 
 				<div>
-					<textarea style="text-align:left;width:370px;height:100px" id="campaign_description" ovalue="{$campaign->get('Deal Campaign Description')}">{$campaign->get('Deal Campaign Description')}</textarea>
+					<textarea id="campaign_description" ovalue="{$campaign->get('Deal Campaign Description')}">{$campaign->get('Deal Campaign Description')}</textarea>
 					<div id="campaign_description_Container">
 					</div>
 				</div>

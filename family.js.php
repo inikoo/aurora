@@ -514,19 +514,21 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 	    var productsColumnDefs = [
 	    
 	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+	    				      ,{key:"state", label:"", width:20,sortable:true} 
 
-                                        ,{key:"code", label:"<?php echo _('Code')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                        ,{key:"name", label:"<?php echo _('Name')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                //     ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"duration", label:"<?php echo _('Duration')?>",  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"from", label:"<?php echo _('From')?>",  width:75,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"to", label:"<?php echo _('To')?>",  width:75,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				 
 				 ];
 	    //?tipo=products&tid=0"
 	    
 	    request="ar_deals.php?tipo=deals&parent=family&parent_key="+Dom.get('family_key').value+'&tableid=10&referrer=family'
-	   // alert(request);
+	   //alert(request);
 	    this.dataSource10 = new YAHOO.util.DataSource(request);
 	    this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource10.connXhrMode = "queueRequests";
@@ -543,7 +545,7 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 		    totalRecords: "resultset.total_records"
 		},
 		
-		fields: ["name","key","description","duration","orders","code","customers"]};
+		fields: ["name","key","description","from","to","orders","customers","state"]};
 		
 
 	  this.table10 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,

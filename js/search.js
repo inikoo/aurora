@@ -84,6 +84,7 @@ function init_search(type) {
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_marketing);
         break;
     case 'marketing_store':
+   
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_marketing_in_store);
         search_scope = 'store';
         subject = 'marketing';
@@ -118,7 +119,6 @@ function init_search(type) {
     store_name_oACDS.queryMatchContains = true;
 
 
-
     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(subject + "_search", subject + "_search_Container", store_name_oACDS);
 
     store_name_oAutoComp.minQueryLength = 0;
@@ -146,7 +146,7 @@ function init_search(type) {
 
     Dom.setStyle(subject + "_search_results", 'display', 'none');
 
-
+ 
 
 }
 

@@ -110,11 +110,13 @@
 						</td>
 					</tr>
 					<tr>
+					<td>
+					<textarea id="Department_Description" ovalue="{$department->get('Product Department Description')|escape}" rows="20" cols="75" style="width:870px" >{$department->get('Product Department Description')|escape}</textarea> 
+<div id="Department_Description_Container">
+							</div>
+					</td>
 					</tr>
 				</table>
-				<form onsubmit="return false;" style="position:relative;left:-3px">
-					<textarea id="Department_Description" ovalue="{$department->get('Product Department Description')|escape}" rows="20" cols="75">{$department->get('Product Department Description')|escape}</textarea> 
-				</form>
 			</div>
 			<div id="d_details_subtab_pictures"  style="{if $edit_details_subtab!='pictures'}display:none{/if};padding:20px">
 			{include file='edit_images_splinter.tpl' parent=$department} 

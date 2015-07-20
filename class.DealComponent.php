@@ -41,9 +41,7 @@ class DealComponent extends DB_Table {
 		if ($tipo=='id') {
 			$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Key`=%d",$tag);
 		}
-		//    elseif($tipo=='code')
-		//  $sql=sprintf("select * from `Deal Component Dimension` where `Deal Code`=%s",prepare_mysql($tag));
-		// print $sql;
+		
 		$result=mysql_query($sql);
 
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
@@ -129,17 +127,13 @@ class DealComponent extends DB_Table {
 		if ($data['Deal Component Allowance Target Key']=='')
 			$data['Deal Component Allowance Target Key']=0;
 
-		if ($data['Deal Component Allowance']=='' and $data['Deal Component Allowance Lock']=='No') {
-			$data['Deal Component Allowance']=DealComponent::parse_allowance_metadata($data['Deal Component Allowance Type'],$data['Deal Component Allowance Description']);
-		}
-		if ($data['Deal Component Terms']=='' and $data['Deal Component Terms Lock']=='No')
-			$data['Deal Component Terms']=DealComponent::parse_term_metadata($data['Deal Component Terms Type'],$data['Deal Component Terms Description']);
+
 
 		$keys='(';
 		$values='values(';
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
-			if ( $key=='Deal Component XHTML Terms Description Label' or $key=='Deal Component XHTML Name Label' or  $key=='Deal Component Replace' or $key=='Deal Component Allowance Target XHTML Label' or $key=='Deal Component Trigger XHTML Label')
+			if (   $key=='Deal Component Replace' or $key=='Deal Component Allowance Target XHTML Label' or $key=='Deal Component Allowance XHTML Description' or $key=='Deal Component Allowance Plain Description' )
 				$values.=prepare_mysql($value,false).",";
 			else
 				$values.=prepare_mysql($value).",";
@@ -151,6 +145,7 @@ class DealComponent extends DB_Table {
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id);
+			$this->update_allowance_description();
 			$this->new=true;
 		} else {
 			print "Error can not create deal component\n $sql\n";
@@ -174,276 +169,9 @@ class DealComponent extends DB_Table {
 		return false;
 	}
 
-	public static function parse_allowance_metadata($allowance_type,$allowance_description) {
-		$conditions=preg_split('/\s+AND\s+/',$allowance_type);
-		$metadata='';
-
-		foreach ($conditions as $condition) {
-
-			$metadata.=';'.DealComponent::parse_individual_allowance_metadata($condition,$allowance_description);
-		}
-		$metadata=preg_replace('/^;/','',$metadata);
-		// print "** $allowance_type,$allowance_description ->$metadata  \n";
-		return $metadata;
-	}
-
-
-	public static function parse_individual_allowance_metadata($allowance_type,$allowance_description) {
-		// print "$allowance_type,$allowance_description\n";
-		switch ($allowance_type) {
-		case('Percentage Off'):
-			if (preg_match('/\d+((\.|\,)\d+)?\%/i',$allowance_description,$match)) {
-				$number=preg_replace('/\,/','.',$match[0]);
-				$number=preg_replace('/\%/','',$number);
-				return 0.01* (float) $number;
-			}
-			if (preg_match('/^(|.*\s+)free(\s+.*|)$/i',$allowance_description,$match)) {
-				return 1;
-			}
-			break;
-		case('Get Same Free'):
-		case('Get Free'):
-			$allowance_description=translate_written_number($allowance_description);
-			$number=1;
-			if (preg_match('/get \d+/i',$allowance_description,$match)) {
-				//            print "** $allowance_description \n";
-
-				$number=_trim(preg_replace('/[^\d]/','',$match[0]));
-			}
-			return $number;
-			break;
-		}
-	}
-
-	public static function parse_term_metadata($term_description_type,$term_description) {
-
-		$conditions=preg_split('/\s+AND\s+/',$term_description_type);
-		$metadata='';
-		foreach ($conditions as $condition) {
-			$metadata.=';'.DealComponent::parse_individual_term_metadata($condition,$term_description);
-		}
-		$metadata=_trim(preg_replace('/^;/','',$metadata));
-		// print "------- $metadata\n";
-
-		return $metadata;
-	}
-
-	public static function parse_individual_term_metadata($term_description_type,$term_description) {
-		//print "$term_description_type  => $term_description\n";
-		switch ($term_description_type) {
-		case('Family Quantity Ordered'):
-		case('Product Quantity Ordered'):
-		case('Department Quantity Ordered'):
-		case('Family For Every Quantity Ordered'):
-		case('Product For Every Quantity Ordered'):
-		case('Department For Every Quantity Ordered'):
-
-			//print("$term_description\n");
-			$term_description=translate_written_number($term_description);
 
 
 
-			if (preg_match('/^\d+$/i',$term_description,$match))
-				return $term_description;
-			if (preg_match('/order \d+( or more)?/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);
-			if (preg_match('/buy \d+/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);
-			if (preg_match('/foreach \d+/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);
-			if (preg_match('/for every \d+/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);
-			if (preg_match('/\d+ oder mehr/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);
-
-			break;
-		case('Order Interval'):
-			if (preg_match('/order (within|since|every) \d+ days?/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]).' day';
-			if (preg_match('/order (within|since|every) \d+ (calendar )?months?/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]).' month';
-			if (preg_match('/order (within|since|every) \d+ weeks?/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]).' week';
-			if (preg_match('/\d+ days?/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]).' day';
-
-
-			break;
-		case('Order Number'):
-			if (preg_match('/(first|1st) (order|one)|order (for|the)? (first|1st) time/i',$term_description,$match))
-				return 1;
-			if (preg_match('/(second|2nd) (order|one)|order (for|the)? (second|2nd) time/i',$term_description,$match))
-				return 2;
-			if (preg_match('/(third|3nd) (order|one)|order (for|the)? (third|3nd) time/i',$term_description,$match))
-				return 3;
-			if (preg_match('/order (number|no|\#)?\s*\d+/i',$term_description,$match))
-				return preg_replace('/[^\d]/','',$match[0]);
-
-			break;
-		case('Order Items Net Amount'):
-		case('Order Total Net Amount'):
-		case('Order Items Gross Amount'):
-			if (preg_match('/(less than|upto|up to)\s*(\$|\£|\€)?\d+/i',$term_description))
-				$conditional='<';
-			if (preg_match('/(more than|over)\s*(\$|\£|\€)?\d+/i',$term_description))
-				$conditional='>';
-			if (preg_match('/(equal|exactly)\s*(\$|\£|\€)?\d+/i',$term_description))
-				$conditional='>';
-			list($currency,$amount)=parse_money($term_description);
-			return _trim("$conditional $currency $amount");
-			break;
-		case('Shipping Country'):
-			$regex='/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i';
-			if ( preg_match('/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i',$term_description,$match)) {
-				$country=_trim(preg_replace('/orders? (shipped |send |to be send |d(ie)spached )?to /i','',$match[0]));
-				//$country=_trim(preg_replace('/and order/i','',$country));
-
-				$country=_trim(preg_replace('/(and|\+|y|with) (value|customer|order).*/i','',$country));
-
-				$country_code=Address::parse_country($country);
-				return $country_code;
-			}
-
-			break;
-		}
-	}
-
-	function allowance_input_form() {
-		$input_allowance=array();
-		$allowances=preg_split('/\s+AND\s+/',$this->data['Deal Component Allowance Type']);
-		$metadata=preg_split('/\s+|\s+/',$this->data['Deal Component Allowance']);
-		foreach ($allowances as $key=>$allowance) {
-			$input_allowance[]=$this->allowance_individual_input_form($allowance,$metadata[$key]);
-		}
-		return $input_allowance;
-	}
-
-
-	function get_thin_allowance_description($allowance=false,$metadata=false) {
-		if (!$allowance)
-			$allowance=$this->data['Deal Component Allowance Type'];
-		if (!$metadata)
-			$metadata=$this->data['Deal Component Allowance'];
-
-		$label='';
-		$value='';
-
-		switch ($allowance) {
-		case('Percentage Off'):
-			$label=_('Discount');
-			$value=percentage($metadata,1);
-			break;
-
-		}
-
-		return array($label,$value);
-	}
-
-
-	function allowance_individual_input_form($allowance,$metadata) {
-
-
-		$input_allowance=array();
-		$input_allowance['Value Class']='';
-
-		list($input_allowance['Label'],$input_allowance['Value'])=$this->get_thin_allowance_description($allowance,$metadata);
-
-
-		if ($this->data['Deal Component Allowance Lock']=='Yes') {
-			$allowance_lock_img='<img  style="position:relative;bottom:2px;height:12.9px"   src="art/icons/lock.png" alt="Locked"/>';
-			$allowance_lock=true;
-			$input_allowance['Value Class'].=' locked';
-		}else {
-			$allowance_lock_img='';
-			$allowance_lock=false;
-		}
-		$input_allowance['Lock Label']=$allowance_lock_img;
-		$input_allowance['Lock Value']=$allowance_lock;
-		return $input_allowance;
-	}
-
-	function terms_input_form() {
-		$input_terms=array();
-		$terms=preg_split('/\s+AND\s+/',$this->data['Deal Component Terms Type']);
-		$metadata=preg_split("/\;/",$this->data['Deal Component Terms']);
-
-		//      print $this->data['Deal Component Terms Type']." ->  ". $this->data['Deal Component Terms']."\n";
-
-		//print_r($metadata);
-		//print "-------c ----\n";
-		foreach ($terms as $key=>$terms) {
-			$input_terms[]=$this->terms_individual_input_form($terms,$metadata[$key]);
-		}
-		return $input_terms;
-	}
-
-
-
-	function get_thin_terms_description($terms=false,$metadata=false) {
-		if (!$terms)
-			$terms=$this->data['Deal Component Terms Type'];
-		if (!$metadata)
-			$metadata=$this->data['Deal Component Terms'];
-
-		$label='';
-		$value='';
-
-		switch ($terms) {
-		case('Order Interval'):
-			$label=_('If').' '._('order within');
-			$value=$metadata;
-			break;
-		case('Family Quantity Ordered'):
-			$label=_('If').' '._('order more than');
-			$value=number($metadata);
-			break;
-		case('Shipping Country'):
-			$label=_('If').' '._('Shipping Destination');
-
-			$country=new Country ('code',$metadata);
-			$value=$country->data['Country Name'];
-			$input_terms['Value Class']='country';
-			break;
-		case('Order Items Net Amount'):
-			$conditional='';
-			if (preg_match('/^(\>|<|=|>=|<=)\s/',$metadata,$match)) {
-				$conditional=_trim($match[0]);
-				$metadata=preg_replace("/^$conditional/",'',$metadata);
-			}
-
-			$label=_trim($terms.' '.$conditional);
-			$value=$metadata;
-			break;
-
-
-		}
-
-		return array($label,$value);
-	}
-
-	function terms_individual_input_form($terms,$metadata) {
-
-		$input_terms=array();
-		$input_terms['Value Class']='';
-
-		list($input_terms['Label'],$input_terms['Value'])=$this->get_thin_terms_description($terms,$metadata);
-
-		//print "** $terms -> $metadata **\n";
-
-
-		if ($this->data['Deal Component Terms Lock']=='Yes') {
-			$terms_lock_img='<img style="position:relative;bottom:2px;height:12.9px"  src="art/icons/lock.png" alt="Locked"/>';
-			$terms_lock=true;
-			$input_terms['Value Class'].=' locked';
-		}else {
-			$terms_lock_img='';
-			$terms_lock=false;
-		}
-		$input_terms['Lock Label']=$terms_lock_img;
-		$input_terms['Lock Value']=$terms_lock;
-
-		return $input_terms;
-	}
 
 
 	function get_xhtml_status() {
@@ -470,6 +198,9 @@ class DealComponent extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+		case 'Deal Component Expiration Date':
+			$this->update_expitation_date($value,$options);
+			break;
 		case('term'):
 			$this->update_term($value);
 			break;
@@ -487,174 +218,82 @@ class DealComponent extends DB_Table {
 
 
 
-	function parse_term_description($thin_description) {
 
+	function update_expitation_date($value,$options) {
 
-		switch ($this->data['Deal Component Terms Type']) {
-		case('Department Quantity Ordered'):
-		case('Family Quantity Ordered'):
-		case('Product Quantity Ordered'):
-			if (!is_numeric($thin_description)) {
-				$msg=_('Term should be numeric');
-				$error=true;
-				return array($thin_description,$error,$msg);
-
-			}elseif ($thin_description<=0) {
-				$msg=_('Term should be more than zero');
-				$error=true;
-				return array($thin_description,$error,$msg);
-
-			}
-
-			$term_description="order ".number($thin_description)." or more";
-			return array($term_description,false,'');
-		case('Department For Every Quantity Ordered'):
-		case('Family For Every Quantity Ordered'):
-		case('Product For Every Quantity Ordered'):
-			if (!is_numeric($thin_description)) {
-				$msg=_('Term should be numeric');
-				$error=true;
-				return array($thin_description,$error,$msg);
-
-			}elseif ($thin_description<=0) {
-				$msg=_('Term should be more than zero');
-				$error=true;
-				return array($thin_description,$error,$msg);
-
-			}
-
-			$term_description="for every ".number($thin_description);
-			return array($term_description,false,'');
-		default:
-			$term_description=$thin_description;
-			return array($term_description,false,'');
-
-
-		}
-
-
-
-
-
-	}
-
-
-	function update_term($thin_description) {
-		$this->updated=false;
-
-
-		list($term_description,$error,$msg)=$this->parse_term_description($thin_description);
-		if ($error) {
+		if ($this->data['Deal Component Status']=='Finish') {
 			$this->error=true;
-			$this->msg=$msg;
-			return;
-		}
-
-		$term_metadata=$this->parse_term_metadata(
-			$this->data['Deal Component Terms Type'],
-			$term_description
-		);
-
-
-		if ($term_metadata!=$this->data['Deal Component Terms']) {
-
-			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Terms Description`=%s ,`Deal Component Terms`=%s where `Deal Component Key`=%d"
-				,prepare_mysql($term_description)
-				,prepare_mysql($term_metadata)
-				,$this->id
-			);
-
-			mysql_query($sql);
-			$this->data['Deal Component Terms Description']=$term_description;
-			$this->data['Deal Component Terms']=$term_metadata;
-
+			$this->msg='Deal component already finished';
+		}else {
+			$this->update_field('Deal Component Expiration Date',$value,$options);
 			$this->updated=true;
-			list($label,$new_thin_description)=$this->get_thin_terms_description();
-			$this->new_value=$new_thin_description;
+
 
 		}
 
-
-	}
-
-	function parse_allowance_description($thin_description) {
-
-		switch ($this->data['Deal Component Allowance Type']) {
-		case('Percentage Off'):
-
-
-			$thin_description=preg_replace('/\s*%$/','',$thin_description);
-
-			if (!is_numeric($thin_description)) {
-				$msg=_('Value should be a percentage');
-				$error=true;
-				return array($thin_description,$error,$msg);
-
-			}
-			$thin_description=abs($thin_description);
-
-			if ($thin_description>100) {
-				$msg=_('Discount can not be more than 100%');
-				$msg=_('Value should be a percentage');
-				$error=true;
-				return array($thin_description,$error,$msg);
-			}
-
-			$allowance_description=number($thin_description)."% off";
-			return array($allowance_description,false,'');
-		default:
-			$allowance_description=$thin_description;
-			return array($allowance_description,false,'');
-
-		}
-
-
-	}
-
-	function update_allowance($thin_description) {
-		$this->updated=false;
-
-
-		list($allowance_description,$error,$msg)=$this->parse_allowance_description($thin_description);
-		if ($error) {
-			$this->error=true;
-			$this->msg=$msg;
-			return;
-		}
-
-
-		$allowance_metadata=$this->parse_allowance_metadata(
-			$this->data['Deal Component Allowance Type']
-			,$allowance_description
+		$sql=sprintf('select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Status`!="Finish" and `Deal Component Mirror Key`=%d',
+			$this->id
 		);
-
-
-
-		if ($allowance_metadata!=$this->data['Deal Component Allowance']) {
-
-			$sql=sprintf("insert into `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
-				,prepare_mysql($allowance_description)
-				,prepare_mysql($allowance_metadata)
-				,$this->id
-			);
-			mysql_query($sql);
-
-
-			$sql=sprintf("update `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
-				,prepare_mysql($allowance_description)
-				,prepare_mysql($allowance_metadata)
-				,$this->id
-			);
-			mysql_query($sql);
-			$this->updated=true;
-			$this->data['Deal Component Allowance Description']=$allowance_description;
-			$this->data['Deal Component Allowance']=$allowance_metadata;
-			list($label,$new_thin_description)=$this->get_thin_allowance_description();
-			$this->new_value=$new_thin_description;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deal_compoment=new DealComponent($row['Deal Component Key']);
+			$deal_compoment->update(array('Deal Component Expiration Date'=>$value));
+			$deal_compoment->update_status_from_dates();
 		}
 
 
+		$this->update_status_from_dates();
+
+
 	}
+
+
+
+	function update_allowance_description() {
+
+		$allowance=$this->data['Deal Component Allowance Description'];
+		$allowance_plain=$this->data['Deal Component Allowance Description'];
+		if ($this->data['Deal Component Allowance Target XHTML Label']!=''
+
+			and !($this->data['Deal Component Allowance Type']=='Get Free' and in_array($this->data['Deal Component Allowance Target'],array('Product','Family')))
+
+			and !in_array($this->data['Deal Component Terms Type'],
+				array(
+					'Department Quantity Ordered',
+					'Department For Every Quantity Ordered',
+					'Department For Every Quantity Any Product Ordered',
+					'Family Quantity Ordered',
+					'Family For Every Quantity Ordered',
+					'Family For Every Quantity Any Product Ordered',
+					'Product Quantity Ordered',
+					'Product For Every Quantity Ordered'
+
+				))) {
+			$allowance.=' ('.$this->data['Deal Component Allowance Target XHTML Label'].')';
+			$allowance_plain.=' '.$this->data['Deal Component Allowance Target XHTML Label'];
+
+		}
+
+		if ( $this->data['Deal Component Allowance Target XHTML Label']!='' and $this->data['Deal Component Trigger']=='Customer'  ) {
+			$allowance.=' ('.$this->data['Deal Component Allowance Target XHTML Label'].')';
+			$allowance_plain.=' '.$this->data['Deal Component Allowance Target XHTML Label'];
+		}
+
+		$this->data['Deal Component Allowance XHTML Description']=$allowance;
+
+		$this->data['Deal Component Allowance Plain Description']=strip_tags($allowance_plain);
+
+		$sql=sprintf("update `Deal Component Dimension` set `Deal Component Allowance XHTML Description`=%s, `Deal Component Allowance Plain Description`=%s where `Deal Component Key`=%d",
+			prepare_mysql($this->data['Deal Component Allowance XHTML Description']),
+			prepare_mysql($this->data['Deal Component Allowance Plain Description']),
+			$this->id
+
+		);
+		mysql_query($sql);
+
+	}
+
+
 
 	function update_status($value) {
 
@@ -668,6 +307,28 @@ class DealComponent extends DB_Table {
 			$this->data['Deal Component Status']=$value;
 		}else {
 			$this->update_status_from_dates($force=true);
+		}
+
+		$sql=sprintf("select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Mirror Key`=%d",
+			$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$mirror_component=new DealComponent($row['Deal Component Key']);
+			$mirror_component->editor=$this->editor;
+
+
+			if ($value=='Suspended') {
+				$sql=sprintf("update `Deal Component Dimension` set `Deal Component Status`=%s where `Deal Component Key`=%d"
+					,prepare_mysql($value)
+					,$mirror_component->id
+				);
+				mysql_query($sql);
+				$mirror_component->data['Deal Component Status']=$value;
+			}else {
+				$mirror_component->update_status_from_dates($force=true);
+			}
+
+
 		}
 
 
@@ -698,130 +359,7 @@ class DealComponent extends DB_Table {
 
 	}
 
-	function update_terms_allowances($data,$options='') {
 
-		$updated=false;
-		$allowance_changed=false;
-		$term_changed=false;
-
-		list($allowance_description,$error,$msg)=$this->parse_allowance_description($data['Allowances']);
-
-		if ($error) {
-			$this->error=true;
-			$this->msg=$msg;
-			return;
-		}
-		list($term_description,$error,$msg)=$this->parse_term_description($data['Terms']);
-
-		if ($error) {
-			$this->error=true;
-			$this->msg=$msg;
-			return;
-		}
-
-		$allowance_metadata=$this->parse_allowance_metadata($this->data['Deal Component Allowance Type'],$allowance_description);
-		if ($allowance_metadata!=$this->data['Deal Component Allowance']) {
-			$allowance_changed=true;
-		}
-
-		$term_metadata=$this->parse_term_metadata($this->data['Deal Component Terms Type'],$term_description);
-
-
-		if ($term_metadata!=$this->data['Deal Component Terms']) {
-			$term_changed=true;
-		}
-
-
-
-/*
-print "** $allowance_changed $term_changed **\n";
-
-print "** T: $term_description -> $term_metadata **\n";
-print "** A: $allowance_description -> $allowance_metadata **\n";
-print $this->data['Deal Component Public'];
-return;
-*/
-
-		if ($allowance_changed or $term_changed) {
-
-			if ($this->data['Deal Component Public']=='No') {
-
-				$sql=sprintf("update `Deal Component Dimension` set `Deal Component Terms Description`=%s ,`Deal Component Terms`=%s where `Deal Component Key`=%d"
-					,prepare_mysql($term_description)
-					,prepare_mysql($term_metadata)
-					,$this->id
-				);
-
-				mysql_query($sql);
-
-				$sql=sprintf("update `Deal Component Dimension` set `Deal Component Allowance Description`=%s ,`Deal Component Allowance`=%s where `Deal Component Key`=%d"
-					,prepare_mysql($allowance_description)
-					,prepare_mysql($allowance_metadata)
-					,$this->id
-				);
-				mysql_query($sql);
-				$this->updated=true;
-				$this->data['Deal Component Allowance Description']=$allowance_description;
-				$this->data['Deal Component Allowance']=$allowance_metadata;
-				$this->data['Deal Component Terms Description']=$term_description;
-				$this->data['Deal Component Terms']=$term_metadata;
-
-
-
-			}else {
-
-
-				$old_metadata=new DealComponent($this->id);
-				$deal_metadata_data=$this->data;
-				$old_metadata->update_field_switcher('Deal Component Record Type','Historic');
-				$old_metadata->update_field_switcher('Deal Component Status','Finish');
-
-
-				
-				$old_metadata->update_field_switcher('Deal Component Expiration Date',gmdate('Y-m-d H:i:s'));
-
-				if ($this->data['Deal Component Status']!='Active') {
-					$deal_metadata_data['Deal Component Public']='No';
-				}
-
-				$deal_metadata_data['Deal Component Total Acc Used Orders']=0;
-				$deal_metadata_data['Deal Component Total Acc Used Customers']=0;
-				unset($deal_metadata_data['Deal Component Key']);
-				$deal_metadata_data['Deal Component Begin Date']=gmdate('Y-m-d H:i:s');
-				$deal_metadata_data['Deal Component Allowance Description']=$allowance_description;
-				$deal_metadata_data['Deal Component Allowance']=$allowance_metadata;
-				
-				$deal_metadata_data['Deal Component Terms Description']=$term_description;
-				$deal_metadata_data['Deal Component Terms']=$term_metadata;
-
-
-				$deal_metadata_data['Deal Component XHTML Allowance Description Label']=$allowance_description;
-
-
-				$this->create($deal_metadata_data);
-
-				$deal=new Deal($this->data['Deal Component Deal Key']);
-				$deal->update_field_switcher('Deal Description',$this->get('Description'));
-
-				$deal->update_term_allowances();
-
-
-			}
-
-
-
-		}else {
-			return;
-
-		}
-
-
-
-
-
-
-
-	}
 
 	function update_target_bridge() {
 

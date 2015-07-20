@@ -2094,33 +2094,25 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	}
 
-	function get_deals_data() {
-		$deals=array();
-		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
-		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d ",$this->id,$this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$deals[]=array(
-				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
-				'Terms Label'=>$row['Deal Component XHTML Terms Description Label'],
-				'Terms Type'=>$row['Deal Component Terms Type'],
-				'Status'=>$row['Deal Component Status'],
-				'Name'=>$row['Deal Name'],
-				'Description'=>$row['Deal Description']
-			);
-		}
-		return $deals;
-	}
 
 
 	function get_formated_discounts() {
 		$formated_discounts='';
-		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Family' and `Subject Key`=%d ",$this->id,$this->id);
+		
+		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal XHTML Terms Description Label`,`Deal Component XHTML Allowance Description Label` from  `Deal Component Dimension` DC left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Department' and `Deal Component Allowance Target Key`=%d  and `Deal Component Status`='Active' ",$this->data['Product Family Main Department Key']);
+		
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$formated_discounts.=', <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <b>'.$row['Deal Component Allowance Description'].'</b></span>';
+			$formated_discounts.='<br> <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <span style="font-style:italic;color:#777">'.$row['Deal XHTML Terms Description Label'].' &#8658; '.$row['Deal Component XHTML Allowance Description Label'].'</span></span>';
 		}
-		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
+		
+		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal XHTML Terms Description Label`,`Deal Component XHTML Allowance Description Label` from  `Deal Component Dimension` DC left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d  and `Deal Component Status`='Active' ",$this->id);
+		
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$formated_discounts.='<br> <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <span style="font-style:italic;color:#777">'.$row['Deal XHTML Terms Description Label'].' &#8658; '.$row['Deal Component XHTML Allowance Description Label'].'</span></span>';
+		}
+		$formated_discounts=preg_replace('/^\<br\> /','',$formated_discounts);
 		return $formated_discounts;
 	}
 

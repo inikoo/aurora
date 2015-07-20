@@ -1,22 +1,31 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
-	<input type="hidden" value="{$session_data}" id="session_data" />
-	<input type="hidden" value="{$deal->id}" id="deal_key" />
-	<input type="hidden" value="{$deal->get('Deal Voucher Key')}" id="voucher_key" />
+	<input id="session_data" type="hidden" value="{$session_data}"  />
+	<input id="deal_key" type="hidden" value="{$deal->id}"  />
+	<input id="voucher_key" type="hidden" value="{$deal->get('Deal Voucher Key')}"  />
+	
+	<input id="subject" type="hidden" value="deal"  />
+	<input id="subject_key" type="hidden" value="{$deal->id}"  />
+
 	
 	<input type="hidden" value="{$store->id}" id="store_key" />
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			{if $referrer=='store'} <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if} <a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$deal->get('Deal Code')}</span> {else}
-			 <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Code')}</a> &rarr; {$deal->get('Deal Code')}</span>
+			{if $referrer=='store'} <span><a href="index.php"><img  class="home" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if} <a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$deal->get('Deal Name')}</span> {else}
+			 <span><a href="index.php"><img  class="home" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} </a> &rarr; <img   src="art/icons/campaign.png" title="{t}Campaign{/t}"> <a href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Name')}</a> &rarr; {$deal->get('Deal Name')}</span>
 			  {/if} 
 		</div>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 			<div class="buttons" style="float:left">
-				<span class="main_title"><img  id="title_icon" src="art/icons/discount.png" title="{t}Offer{/t}">  {$deal->get('Deal Name')} <span class="id">{$deal->get('Deal Code')}</span></span> 
+				<span class="main_title no_buttons"><img  id="title_icon" src="art/icons/discount.png" title="{t}Offer{/t}">  {$deal->get('Deal Name')} </span>
+							<span id="suspended_tag" style="color:#ba0000;font-size:90%;font-style:italic;{if  $deal->get('Deal Status')!='Suspended'}display:none{/if}">({t}Suspended{/t})</span> 
+			<span id="finished_tag" style="color:#777;font-size:90%;font-style:italic;{if  $deal->get('Deal Status')!='Finish'}display:none{/if}">({t}Finished{/t})</span> 
+			<span  style="font-style:italic;{if  $deal->get('Deal Mirror Key')==0}display:none{/if}">({t}Mirror of{/t}: {$deal->get_mirrow_formated_link()})</span> 
+
+				</span> 
 			</div>
-			<div class="buttons">
+			<div class="buttons small" style="position:relative;top:5px">
 				{if $modify} <button onclick="window.location='edit_deal.php?id={$deal->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>{/if} 
 			</div>
 			<div style="clear:both">
@@ -26,7 +35,7 @@
 	<div style="padding:0px">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
-			<li {if !$deal->is_voucher()}display:none{/if}> <span class="item {if $block_view=='vouchers'}selected{/if}" id="vouchers"> <span> {t}Applied Vouchers{/t}</span></span></li>
+			<li style="{if !$deal->is_voucher()}display:none{/if}"> <span class="item {if $block_view=='vouchers'}selected{/if}" id="vouchers"> <span> {t}Applied Vouchers{/t}</span></span></li>
 
 			<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers"> <span> {t}Customers{/t}</span></span></li>
@@ -69,9 +78,9 @@
 			</div>		
 		
 			<div class="left_block" >
-			<h2>
-				{$deal->get('Deal Name')} 
-			</h2>
+			<div id="show_dialog_edit_badge">
+				{$deal->get_badge()} 
+			</div>
 			<p  style="{if {$deal->get('Deal Description')}==''}display:none{/if}">
 				{$deal->get('Deal Description')} 
 			</p>
@@ -81,14 +90,21 @@
 				
 				<table border="0" class="show_info_product">
 				<tr>
-						
-						<td colspan="2" class="aright"><span title="{$deal->get('Deal Term Allowances')|strip_tags}">{$deal->get('Deal Term Allowances Label')}</span></td>
+						<td style="width:150px">{t}Status{/t}:</td>
+						<td class="aright">{$deal->get_formated_status()}</td>
 					</tr>
 					<tr>
 						<td style="width:150px">{t}Validity{/t}:</td>
 						<td class="aright">{$deal->get('Duration')}</td>
 					</tr>
-					
+					<tr>
+						<td style="width:150px">{t}Terms{/t}:</td>
+						<td class="aright">{$deal->get_formated_terms()}</td>
+					</tr>
+					<tr>
+						<td style="width:150px">{t}Terms label{/t}:</td>
+						<td class="aright">{$deal->get('Deal XHTML Terms Description Label')}</td>
+					</tr>
 				</table>
 				
 			</div>
@@ -97,9 +113,18 @@
 			
 			<div style="clear:both;padding-top:20px">
 			<span class="clean_table_title" style="margin-right:5px">{t}Allowances{/t}</span>
-		<div class="buttons small left">
+		<div class="buttons small left" style="{if  $deal->get('Deal Status')=='Finish' or  $deal->data['Deal Mirror Key']>0 }display:none{/if}" >
 				<button id="new_deal_component" onclick="new_deal_component()" class="positive"><img src="art/icons/add.png"> {t}New{/t}</button> 
 			</div> 
+			<div class="elements_chooser">
+													<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $deal_component_status_elements.Waiting}selected{/if} " id="deal_component_status_elements_Waiting" table_type="Waiting">{t}Waiting{/t} (<span id="deal_component_status_elements_Waiting_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $deal_component_status_elements.Suspended}selected{/if} " id="deal_component_status_elements_Suspended" table_type="Suspended">{t}Suspended{/t} (<span id="deal_component_status_elements_Suspended_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $deal_component_status_elements.Finish}selected{/if} " id="deal_component_status_elements_Finish" table_type="Finish">{t}Finished{/t} (<span id="deal_component_status_elements_Finish_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+							<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $deal_component_status_elements.Active}selected{/if} " id="deal_component_status_elements_Active" table_type="Active">{t}Active{/t} (<span id="deal_component_status_elements_Active_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+
+						
+						</div>
+			
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
@@ -258,4 +283,45 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_edit_deal_badge" style="padding:20px 10px 20px 10px;width:500px">
+	<table class="edit" border="0" style="width:500px">
+		
+	
+		<tr>
+			<td class="label">{t}Title{/t}:</td>
+			<td style="width:200px"> 
+			<input style="width:100%" id="badge_name" onKeyup="badge_changed()"  value="{$deal->get('Deal Label')}" />
+			</td>
+			<td rowspan=3>
+			<div class="offer"><div class="name" id="badge_name_display_bis">{$deal->get('Deal Label')}</div><div id="badge_allowances_display_bis" class="allowances">{$deal->get_allowances_label()}</div> <div id="badge_terms_display_bis" class="terms">{$deal->get('Deal XHTML Terms Description Label')}</div></div>
+			</td>
+		</tr>
+		
+		<tr>
+			<td class="label">{t}Terms{/t}:</td>
+			<td> 
+			<input style="width:100%" id="badge_terms"  onKeyup="badge_changed()"  value="{$deal->get('Deal XHTML Terms Description Label')}" />
+			</td>
+		</tr>
+		
+		<tr style="{if $deal->get_number_no_finished_components()>1}display:none{/if}">
+			<td class="label">{t}Allowances{/t}:</td>
+			<td> 
+			<input style="width:100%" id="badge_allowances" onKeyup="badge_changed()" value="{$deal->get_allowances_label()}" />
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons small">
+				<button onClick="save_badge()" id="save_badge" class="positive">{t}Save{/t}</button> <button onClick="cancel_badge()" id="cancel_badge" class="negative">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		
+	</table>
+</div>
+
+
 {if $deal->get('Deal Remainder Email Campaign Key')} {include file='build_email_dialogs.tpl' email_campaign=$deal->remainder_email_campaign} {/if} {include file='footer.tpl'} 

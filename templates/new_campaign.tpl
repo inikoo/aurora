@@ -20,6 +20,7 @@
 		</div>
 	</div>
 	<table id="new_campaign" class="edit"  border="0">
+		{*}
 		<tr>
 			<td class="label" style="width:120px">{t}Code{/t}:</td>
 			<td class="input"> 
@@ -34,8 +35,9 @@
 				</div>
 			</td>
 		</tr>
+		{*}
 		<tr>
-			<td class="label">{t}Name{/t}:</td>
+			<td class="label"><span class="required">*</span> {t}Name{/t}:</td>
 			<td class="input"> 
 				<div>
 					<input  id="campaign_name" value="" ovalue=""> 
@@ -49,7 +51,7 @@
 			</td>
 		</tr>
 		<tr id="campaign_description_tr">
-			<td class="label">{t}Description{/t}:</td>
+			<td class="label">{t}Description{/t}:<br><small>{t}Internal use{/t}</small></td>
 			<td class="input"> 
 				<div>
 					<textarea id="campaign_description" value="" ovalue=""></textarea> 
@@ -63,7 +65,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="label">{t}Start{/t}:</td>
+			<td class="label"><span class="required">*</span> {t}Start{/t}:</td>
 			<td style="text-align:left;width:400px"> 
 				<div class="buttons small left">
 					<input id="v_calpop1" style="text-align:right;float:left" class="text" type="text" size="10" maxlength="10" value="" ovalue="" />
@@ -78,7 +80,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="label">{t}Until{/t}:</td>
+			<td class="label"><span class="required">*</span> {t}Until{/t}:</td>
 			<td style="text-align:left;width:400px"> 
 				<div class="buttons small left">
 					<input id="v_calpop2" style="text-align:right;float:left" class="text" type="text" size="10" maxlength="10" value="" ovalue="" />

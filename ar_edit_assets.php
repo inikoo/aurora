@@ -239,6 +239,7 @@ case('edit_department_general_description'):
 	$data=prepare_values($_REQUEST,array(
 			'newvalue'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
+			'okey'=>array('type'=>'string'),
 			'id'=>array('type'=>'key'),
 		));
 	edit_department($data);
@@ -584,6 +585,7 @@ function edit_store($data) {
 }
 function edit_department($data) {
 
+
 	global $editor;
 
 	$department=new Department($data['id']);
@@ -605,11 +607,16 @@ function edit_department($data) {
 	$department->update(array($key=>stripslashes(urldecode($data['newvalue']))));
 
 
+//if($data['key']=='Product Department Description'){
+//$data['key']='Department_Description';
+//}
+
+
 	if ($department->updated) {
-		$response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$data['key']);
+		$response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$data['okey']);
 
 	} else {
-		$response= array('state'=>400,'msg'=>$department->msg,'key'=>$data['key']);
+		$response= array('state'=>400,'msg'=>$department->msg,'key'=>$data['okey']);
 	}
 	echo json_encode($response);
 

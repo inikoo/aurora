@@ -657,7 +657,7 @@ function refresh_cache_page($data) {
 		echo json_encode($response);
 		return;
 	}
-	
+
 	$template_response=$page->refresh_cache();
 	$response= array('state'=>200,'template_response'=>$template_response);
 	echo json_encode($response);
@@ -1491,6 +1491,21 @@ function add_see_also_page($data) {
 		$see_also_key);
 
 	mysql_query($sql);
+	
+	$quantity=0;
+	$sql=sprintf("select count(*) as num from  `Page Store See Also Bridge` where `Page Store Key`=%d ",
+		$page_key
+	);
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+		$quantity=$row['num'];
+	}
+$page=new Page($page_key);
+	$page->update_field_switcher('Number See Also Links',$quantity,'no_history');
+
+	 
+	
 	$response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
 	echo json_encode($response);
 
@@ -1505,6 +1520,19 @@ function delete_see_also_page($data) {
 		$page_key,
 		$see_also_key);
 	mysql_query($sql);
+	$quantity=0;
+	$sql=sprintf("select count(*) as num from  `Page Store See Also Bridge` where `Page Store Key`=%d ",
+		$page_key
+	);
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+		$quantity=$row['num'];
+	}
+$page=new Page($page_key);
+	$page->update_field_switcher('Number See Also Links',$quantity,'no_history');
+
+
 	$response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
 	echo json_encode($response);
 
@@ -3703,10 +3731,10 @@ function create_site($data) {
 		$store_key=$data['parent_key'];
 		$store=new Store($store_key);
 		$store->editor=$editor;
-		
-		
-	
-		
+
+
+
+
 		$site=$store->create_site($data['values']);
 
 

@@ -122,8 +122,7 @@
 					<table style="width:100%;margin:0px;">
 						<tr>
 							<td style="border:1px solid #eee;width:50%;text-align:center" id="pick_aid_container{$dn.key}"><a href="order_pick_aid.php?id={$dn.key}&order_key={$order->id}">{t}Picking Aid{/t}</a> <span id="print_picking_aid" style="{if !($dn.dispatch_state=='Picker & Packer Assigned' or $dn.dispatch_state=='Packer Assigned' or $dn.dispatch_state=='Ready to be Picked' or $dn.dispatch_state=='Picker Assigned' )   }display:none{/if}"><a target='_blank' href="order_pick_aid.pdf.php?id={$dn.key}"> <img style="height:10px;vertical-align:0px" src="art/pdf.gif"></a> <img onclick="print_pdf('order_pick_aid',{$dn.key})" style="cursor:pointer;margin-left:2px;height:10px;vertical-align:0px" src="art/icons/printer.png"></span> </td>
-							<td style="border:1px solid #eee;width:50%;;text-align:center" class="aright" style="text-align:right" id="pack_aid_container{$dn.key}"><a href="order_pack_aid.php?id={$dn.key}&order_key={$order->id}">{t}Pack Aid{/t}</a></td>
-							</td>
+							<td style="border:1px solid #eee;width:50%;;text-align:center" class="aright"  id="pack_aid_container{$dn.key}"><a href="order_pack_aid.php?id={$dn.key}&order_key={$order->id}">{t}Pack Aid{/t}</a></td>
 						</tr>
 					</table>
 					</td>

@@ -262,11 +262,11 @@ $default_state=array(
 
 		'offers'=>array(
 
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array('Finish'=>0,'Waiting'=>1,'Active'=>1,'Suspended'=>1)
@@ -400,11 +400,11 @@ $default_state=array(
 		),
 		'offers'=>array(
 
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array('Finish'=>0,'Waiting'=>1,'Active'=>1,'Suspended'=>1)
@@ -416,7 +416,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 			'orders_type'=>'all_contacts',
-'elements_type'=>'activity',
+			'elements_type'=>'activity',
 			'elements'=>array(
 				'activity'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
 				'level_type'=>array('Normal'=>true,'VIP'=>true,'Partner'=>true,'Staff'=>true),
@@ -485,7 +485,7 @@ $default_state=array(
 			'from'=>'',
 			'to'=>''
 		),
-		 'history'=>array(
+		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -498,7 +498,7 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 
-	)
+		)
 	),
 
 
@@ -511,7 +511,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>500,
 		),
-		 'history'=>array(
+		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -524,7 +524,7 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 
-	)
+		)
 
 	),
 	'order'=>array(
@@ -575,7 +575,7 @@ $default_state=array(
 
 
 		),
-		 'history'=>array(
+		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -588,8 +588,8 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 
-	),
-	'customer_history'=>array(
+		),
+		'customer_history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -880,7 +880,7 @@ $default_state=array(
 			'f_show'=>false,
 		),
 		'products_in_warehouse'=>array(
-		    'view'=>'sdn',
+			'view'=>'sdn',
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -889,8 +889,8 @@ $default_state=array(
 			'f_value'=>'',
 			'f_show'=>false,
 		),
-		
-		
+
+
 		'porder_invoices'=>array(
 			'order'=>'date',
 			'order_dir'=>'',
@@ -919,7 +919,7 @@ $default_state=array(
 			'elements'=>array()
 
 		),
-        'history'=>array(
+		'history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -932,8 +932,8 @@ $default_state=array(
 			'elements'=>array('Notes'=>1,'Changes'=>1,'Attachments'=>1)
 
 
-	)
-	
+		)
+
 	),
 	'product_categories'=>array(
 
@@ -2036,6 +2036,7 @@ $default_state=array(
 			'nr'=>25,
 			'view'=>'general'
 		),
+
 		'campaigns'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
@@ -2045,18 +2046,22 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array()
+			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
 		),
+
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+			'elements_type'=>'status',
+			'elements'=>array(
+				'trigger'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1),
+				'status'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+			)
 		)
 	),
 	'campaign'=>array(
@@ -2087,23 +2092,32 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
-			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+			'elements_type'=>'status',
+			'elements'=>array(
+				'trigger'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1),
+				'status'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+			)
+
 		),
 
 		'edit_offers'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
-			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
-		),
+			'elements_type'=>'status',
+			'elements'=>array(
+				'trigger'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1),
+				'status'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+			)
+		)
 	),
 
 
@@ -2150,24 +2164,30 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
+			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+
 		),
 		'components'=>array(
-			'f_field'=>'name',
+			'f_field'=>'allowances',
 			'f_value'=>'',
 			'f_show'=>false,
-			'order'=>'name',
+			'order'=>'allowances',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
+			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+
 		),
 		'edit_components'=>array(
-			'f_field'=>'name',
+			'f_field'=>'allowances',
 			'f_value'=>'',
 			'f_show'=>false,
-			'order'=>'name',
+			'order'=>'allowances',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
+			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+
 		),
 	),
 
@@ -2728,7 +2748,7 @@ $default_state=array(
 			'type'=>'Family'
 
 		),
-			'favorites_products'=>array(
+		'favorites_products'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -2738,7 +2758,7 @@ $default_state=array(
 			'nr'=>50
 
 		),
-		
+
 		'orders'=>array(
 			'order'=>'last_update',
 			'order_dir'=>'desc',
@@ -2779,11 +2799,11 @@ $default_state=array(
 
 		),
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
@@ -2846,7 +2866,7 @@ $default_state=array(
 			'elements_type'=>'state',
 			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
 		),
-		
+
 		'suppliers'=>array(
 			'period'=>'year',
 			'percentage'=>0,
@@ -3533,7 +3553,7 @@ $default_state=array(
 
 		),
 
-'favorites_products'=>array(
+		'favorites_products'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -4021,14 +4041,14 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array()
+			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
 		),
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
@@ -4064,7 +4084,7 @@ $default_state=array(
 
 			)
 		),
-	
+
 		'sites'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
@@ -4294,25 +4314,34 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array()
+			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
 		),
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
-			'elements'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1)
+			'elements_type'=>'status',
+			'elements'=>array(
+				'trigger'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1),
+				'status'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+			)
 		),
 		'edit_offers'=>array(
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'','f_show'=>false,
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>100,
+			'elements_type'=>'status',
+			'elements'=>array(
+				'trigger'=>array('Order'=>1,'Department'=>1,'Family'=>1,'Product'=>1),
+				'status'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
+			)
 		),
 		'payments'=>array(
 
@@ -4488,11 +4517,11 @@ $default_state=array(
 
 		),
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false),
 		'edit_offers'=>array(
@@ -4661,11 +4690,11 @@ $default_state=array(
 
 		),
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false),
 		'edit_offers'=>array(
@@ -4772,7 +4801,7 @@ $default_state=array(
 			'view'=>'overview'
 
 		),
-		
+
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'desc',
@@ -4843,11 +4872,11 @@ $default_state=array(
 
 		),
 		'offers'=>array(
-			'order'=>'code',
+			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'f_field'=>'code',
+			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false),
 		'edit_offers'=>array(
@@ -5148,14 +5177,14 @@ $default_state=array(
 		),
 		'edit_supplier_products'=>array(
 			'view'=>'name',
-			
+
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>15,
 			'f_field'=>'sup_code',
 			'f_value'=>'','f_show'=>false,
-			
+
 			'elements_type'=>'state',
 			'elements'=>array('state'=>array('Available'=>1,'NoAvailable'=>1,'Discontinued'=>0))
 

@@ -7,8 +7,8 @@
 	{/if}
 	
 	<tr id="deal_{$deal.key}">
-		<td><a href="deal.php?id={$deal.key}">{$deal.code}</a></td>
-		<td>{$deal.name}</td>
+		<td><a href="deal.php?id={$deal.key}">{$deal.name}</a></td>
+		<td>{$deal.terms_allowances}</td>
 	</tr>
 	{/foreach} 
 </table>

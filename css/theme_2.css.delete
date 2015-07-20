@@ -1,20 +1,16 @@
-.buttons a, .buttons button{
+ .buttons button{
     background-color:#f5f5f5;
     border:1px solid #dedede;
     border-top:1px solid #eee;
     border-left:1px solid #eee;    
     color:#565656;
 }
-button:hover, .buttons a:hover{
+button:hover{
     background-color:#dff4ff;
     border:1px solid #c2e1ef;
     color:#336699;
 }
-.buttons a:active{   
-    background-color:#6299c5;
-    border:1px solid #6299c5;
-    color:#fff;
-}
+
 button.positive, .buttons a.positive{
     color:#529214;
 }
@@ -60,21 +56,25 @@ button.disabled:hover, .buttons a.disabled:hover{
     border-top:1px solid #eee;
     border-left:1px solid #eee;   
     color:#ccc
-}#hd{background:#245e86 url("art/themes/cobalt.jpg") bottom left repeat-x;color:#fff;}
+}
+
+#hd{background:#a3b972 url("art/themes/green.jpg") bottom left repeat-x;color:#fff;}
 button.header, .buttons a.header{
-    color:#FFF;
-    background-color:#4170b2;
-    border:1px solid #4170b2;
+    color:#f5e7cc;
+    background-color:#668f46;
+    border:1px solid #668f46;
 }
 button.header.selected, .buttons a.header.selected{
-    background-color:#154890;
-    border:1px solid #154890;
-    color:#fbde42;
+     color:#FFF;
+    background-color:#486f29;
+    border:1px solid #486f29;
+   
 }
 
 .buttons a.header:hover, button.header:hover{
-    background-color:#4b88de;
-    border:1px solid #4b88de;
-    color:#faeb9c;
+     color:#7b713c;
+    background-color:#9ecd79;
+    border:1px solid #9ecd79;
+   
 }
-html{background-color:#fff;background-image:url('art/bg/flowers.jpg');background-repeat:no-repeat;}
+
