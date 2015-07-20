@@ -32,14 +32,14 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product Total Acc Invoices`    "
+$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product Total Acc Invoices`  desc limit 1 "
 );
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$product=new Product('pid',$row['Product ID']);
 	print $product->data['Product ID'].' '.$product->data['Product Code']."\n";
 
-	//$product->update_sales_correlatations('Same Department','250');
+	$product->update_sales_correlatations('Same Department','250');
 	//	$product->update_sales_correlatations('Same Family');
 
 	foreach($product->get_pages_keys() as $page_key){

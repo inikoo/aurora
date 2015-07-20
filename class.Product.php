@@ -6285,7 +6285,6 @@ class product extends DB_Table {
 		}
 
 
-
 		switch ($type) {
 		case 'Same Family':
 			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
@@ -6328,7 +6327,6 @@ class product extends DB_Table {
 		}
 
 */
-
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
 			if ($row2['Product ID']==$this->pid) continue;
