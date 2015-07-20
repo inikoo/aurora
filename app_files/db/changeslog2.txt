@@ -210,6 +210,7 @@ ALTER TABLE `Page Store Dimension` DROP INDEX `Page Store Resume`;
 ALTER TABLE `Order Transaction Fact` DROP INDEX `Refund Metadata`;
 ALTER TABLE `Order Transaction Fact` DROP INDEX `Metadata`;
 ALTER TABLE `Order Transaction Fact` ADD INDEX (`Product Family Key`, `Customer Key`);
+ALTER TABLE `Order Transaction Fact` ADD INDEX (`Product ID`, `Customer Key`);
 
 ALTER TABLE `Product Dimension`
   DROP `Product XHTML Package Dimensions`,
@@ -218,10 +219,10 @@ ALTER TABLE `Product Dimension`
   ALTER TABLE `Product Family Dimension` ADD `Product Family Web Products` ENUM('With Products For Sale','Empty') NOT NULL DEFAULT 'With Products For Sale' AFTER `Product Family Availability`, ADD INDEX (`Product Family Web Products`);
 
 ALTER TABLE `Deal Dimension`   ADD `Deal Terms Description` VARCHAR(255) NOT NULL  AFTER `Deal Terms Type`,  ADD `Deal XHTML Terms Description Label` TEXT NOT NULL  AFTER `Deal Terms Description`,  ADD `Deal Terms` VARCHAR(256) NOT NULL  AFTER `Deal XHTML Terms Description Label`;
-TABLE `Deal Campaign Dimension` DROP `Deal Campaign Code`;
+ALTER TABLE `Deal Campaign Dimension` DROP `Deal Campaign Code`;
 ALTER TABLE `Deal Campaign Dimension` CHANGE `Deal Campaign Name` `Deal Campaign Name` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL; 
 
-ALTER TABLE `dw`.`Deal Campaign Dimension` ADD UNIQUE (`Deal Campaign Store Key`, `Deal Campaign Name`(50)); 
+ALTER TABLE `Deal Campaign Dimension` ADD UNIQUE (`Deal Campaign Store Key`, `Deal Campaign Name`(50));***
 ALTER TABLE `Deal Dimension` DROP `Deal Code`;
 ALTER TABLE `Deal Dimension` CHANGE `Deal Terms Description` `Deal Terms Description` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `Deal XHTML Terms Description Label` `Deal XHTML Terms Description Label` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `Deal Terms` `Deal Terms` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL; 
 ALTER TABLE `Deal Dimension` ADD `Deal Label` VARCHAR(255) NULL DEFAULT NULL AFTER `Deal Name`; 
