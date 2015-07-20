@@ -745,7 +745,7 @@ class part extends DB_Table {
 			foreach ($product_ids as $product_id) {
 
 				$product=new Product('pid',$product_id);
-
+               
 				if ($product->data['Product Use Part Units Properties']=='Yes' ) {
 					$product->update_materials($value,'Unit');
 				}

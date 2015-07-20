@@ -2092,7 +2092,7 @@ class product extends DB_Table {
 
 		$sql=sprintf("delete from `Product Material Bridge` where `Product ID`=%d ",$this->pid);
 		mysql_query($sql);
-		//print_r($materials);
+		print_r($materials);
 		foreach ($materials as $key=>$_value) {
 			$material_data=array('Material Name'=>$_value['name'],'editor'=>$this->editor);
 
@@ -2113,6 +2113,7 @@ class product extends DB_Table {
 
 		}
 		list($materials,$xhtml_materials)=$this->get_materials();
+		print_r($materials);
 		$this->update_field('Product Unit Materials',$materials);
 		$this->update_field('Product Unit XHTML Materials',$xhtml_materials,'nohistory');
 

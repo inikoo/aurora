@@ -1642,7 +1642,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 
 
-	function update_sales_correlations($type='All') {
+	function update_sales_correlations($type='All',$limit=100) {
 
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product Family Key`=%d and `Order Transaction Type`='Order' ",$this->id);
 		$res=mysql_query($sql);
