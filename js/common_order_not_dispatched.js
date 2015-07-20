@@ -1690,9 +1690,11 @@ function update_auto_account_payments(value) {
 function approve_dispatching(dn_key, staff_key, referrer, referrer_key) {
 
 
-    if (Dom.get('approve_dispatching_img_' + dn_key) != undefined) Dom.get('approve_dispatching_img_' + dn_key).src = 'art/loading.gif';
-
-
+    if (Dom.get('approve_dispatching_img_' + dn_key) != undefined) 
+    Dom.get('approve_dispatching_img_' + dn_key).src = 'art/loading.gif';
+    
+    
+  
 
     ar_file = 'ar_edit_orders.php';
     request = ar_file + '?tipo=approve_dispatching_dn&dn_key=' + dn_key + '&staff_key=' + staff_key + '';

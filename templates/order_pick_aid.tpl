@@ -13,7 +13,6 @@
 		<input id="is_invoiced" value="{$delivery_note->get('Delivery Note Invoiced')}"  type="hidden" />
 			
 
-
 	<div id="print">
 		{include file='top_search_splinter.tpl'} 
 		

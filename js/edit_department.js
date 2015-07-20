@@ -729,16 +729,16 @@ function general_description_editor_changed() {
  
  function validate_department_description(query){
 
- validate_general('department_description','description',unescape(query));
+ validate_general('department_general_description','Department_Description',unescape(query));
 }
 function reset_edit_department_general_description() {
 	reset_edit_general('department_general_description')
 	
-    GeneralDescriptionEditor.setEditorHTML(Dom.get('Department_Description').value);
+    //GeneralDescriptionEditor.setEditorHTML(Dom.get('Department_Description').value);
 }
 
 function save_edit_department_general_description() {
-GeneralDescriptionEditor.saveHTML();
+//GeneralDescriptionEditor.saveHTML();
 	save_edit_general('department_general_description');
 }
 
@@ -967,7 +967,7 @@ function init() {
     Event.addListener('reset_edit_department_general_description', "click", reset_edit_department_general_description);
 
  
- 
+ /*
  var myConfig = {
        
          height: '300px',
@@ -1058,6 +1058,7 @@ function init() {
     yuiImgUploader(GeneralDescriptionEditor, 'Department_Description', 'ar_upload_file_from_editor.php','image');
    
    GeneralDescriptionEditor.render();
+ */
  
 }
 

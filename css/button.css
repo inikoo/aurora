@@ -237,7 +237,7 @@
 
 
 
-.buttons a, .buttons button{
+.buttons button{
     display:block;
     float:right;
     margin:0 7px 0 0;
@@ -257,7 +257,7 @@
      text-decoration:none;
 }
 
-.buttons.small a, .buttons.small button{
+ .buttons.small button{
 font-size:80%;
  font-weight:normal;
  padding:0px 3px 0px 3px; /* Links */
@@ -272,11 +272,11 @@ width:14px
 
 
 
-.buttons.left a, .buttons.left button{
+ .buttons.left button{
  float:left;
 }
 
-buttons.left a.first, .buttons.left button.first{
+ .buttons.left button.first{
  margin-left:0px;
 }
 
@@ -294,7 +294,7 @@ buttons.left a.first, .buttons.left button.first{
 *:first-child+html button[type]{
     padding:4px 10px 3px 7px; /* IE7 */
 }
-.buttons button img, .buttons a img{
+.buttons button img{
     margin:0 1px -3px 0 !important;
     padding:0;
     border:none;
@@ -302,72 +302,55 @@ buttons.left a.first, .buttons.left button.first{
     height:14px;
     vertical-align:top;
 }
-.buttons button img.selected, .buttons a img.selected{
+.buttons button img.selected{
     margin-right:-5px !important;
     margin-left:5px !important;
 
 }
 
-button:hover, .buttons a:hover{
+button:hover{
     background-color:#dff4ff;
     border:1px solid #c2e1ef;
     color:#336699;
      text-decoration:none;
 }
-.buttons a:active{
-   
-    background-color:#6299c5;
-    border:1px solid #6299c5;
-    color:#fff;
-}
-button.positive, .buttons a.positive{
+
+button.positive{
     color:#529214;
 }
-.buttons a.positive:hover, button.positive:hover{
+ button.positive:hover{
     background-color:#E6EFC2;
     border:1px solid #C6D880;
     color:#529214;
 }
-.buttons a.positive:active{
-    background-color:#529214;
-    border:1px solid #529214;
-    color:#fff;
-}.buttons a.negative, button.negative{
-    color:#d12f19;
-}
-.buttons a.negative:hover, button.negative:hover{
+
+
+ button.negative:hover{
     background:#fbe3e4;
     border:1px solid #fbc2c4;
     color:#d12f19;
 }
-.buttons a.negative:active{
-    background-color:#d12f19;
-    border:1px solid #d12f19;
-    color:#fff;
-}
 
-button.selected, .buttons a.selected{
+
+button.selected{
     border:1px solid #6299c5;
      background-color:#dff4ff;
 }
-.buttons a.selected:hover, button.selected:hover{
+ button.selected:hover{
   border:1px solid #6299c5;
    background-color:#dff4ff;
 }
-.buttons a.selected:active{
-   border:1px solid #6299c5;
-}
 
 
-.buttons button.disabled,.buttons a.disabled{color:#ccc;cursor:not-allowed}
+.buttons button.disabled{color:#ccc;cursor:not-allowed}
 
-.buttons button.disabled.negative,.buttons a.disabled.negative{cursor:default}
+.buttons button.disabled.negative{cursor:default}
 
 
 
-.buttons button.waiting,.buttons a.waiting{color:#ccc;cursor:wait}
+.buttons button.waiting{color:#ccc;cursor:wait}
 
-button.disabled:hover, .buttons a.disabled:hover,button.waiting:hover, .buttons a.waiting:hover{
+button.disabled:hover,button.waiting:hover{
      background-color:#f5f5f5;
     border:1px solid #dedede;
     border-top:1px solid #eee;
@@ -376,7 +359,7 @@ button.disabled:hover, .buttons a.disabled:hover,button.waiting:hover, .buttons 
   
   color:#ccc
 }
-button.disabled img,.buttons a.disabled img,button.waiting img,.buttons a.waiting img{opacity:0.6;}
+button.disabled img,button.waiting img{opacity:0.6;}
 
 
 .buttons.group {

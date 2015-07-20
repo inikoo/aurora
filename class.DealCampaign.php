@@ -38,8 +38,8 @@ class DealCampaign extends DB_Table {
 		if ($tipo=='id') {
 			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Key`=%d",$tag);
 		}
-		elseif ($tipo=='code_store') {
-			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Code`=%s and `Deal Campaign Store Key`=%d",
+		elseif ($tipo=='name_store') {
+			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Name`=%s and `Deal Campaign Store Key`=%d",
 				prepare_mysql($tag),
 				$tag2
 			);
@@ -85,8 +85,8 @@ class DealCampaign extends DB_Table {
 				$data[$key]=$value;
 		}
 
-		$sql=sprintf("select `Deal Campaign Key` from `Deal Campaign Dimension` where  `Deal Campaign Code`=%s and `Deal Campaign Store Key`=%d ",
-			prepare_mysql($data['Deal Campaign Code']),
+		$sql=sprintf("select `Deal Campaign Key` from `Deal Campaign Dimension` where  `Deal Campaign Name`=%s and `Deal Campaign Store Key`=%d ",
+			prepare_mysql($data['Deal Campaign Name']),
 			$data['Deal Campaign Store Key']
 		);
 
@@ -140,6 +140,7 @@ class DealCampaign extends DB_Table {
 
 			$store=new Store('id',$this->data['Deal Campaign Store Key']);
 			$store->update_campaings_data();
+			$this->update_status_from_dates();
 
 		} else {
 			print "Error can not create campaign  $sql\n";
@@ -233,7 +234,15 @@ class DealCampaign extends DB_Table {
 		$data['Deal Campaign Key']=$this->id;
 		$data['Deal Store Key']=$this->data['Deal Campaign Store Key'];
 
-		$data['Deal Begin Date']=$this->data['Deal Campaign Valid From'];
+
+        if(strtotime($this->data['Deal Campaign Valid From'])>strtotime('now')){
+        		$data['Deal Begin Date']=$this->data['Deal Campaign Valid From'];
+
+        }else{
+        		$data['Deal Begin Date']=gmdate('Y-m-d H:i:s');
+
+        }
+
 		$data['Deal Expiration Date']=$this->data['Deal Campaign Valid To'];
 		$data['Deal Status']=$this->data['Deal Campaign Status'];
 

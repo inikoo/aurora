@@ -11,11 +11,11 @@
 <div id="bd">
 	{include file='marketing_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Code')}</a> &rarr; {$deal->get('Deal Code')}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.png" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="campaign.php?id={$campaign->id}">{$campaign->get('Deal Campaign Name')}</a> &rarr; <a href="deal.php?id={$deal->id}">{$deal->get('Deal Name')}</a></span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<span class="main_title">{t}New Allowance{/t} @ {t}Deal{/t} <span class="id">{$deal->get('Deal Code')}</span></span> 
+			<span class="main_title">{t}New Allowance{/t} @ {t}Deal{/t} <span class="id">{$deal->get('Deal Name')}</span></span> 
 		</div>
 		<div class="buttons">
 			<button class="negative" onclick="window.location='{$link_back}'">{t}Cancel{/t}</button> 

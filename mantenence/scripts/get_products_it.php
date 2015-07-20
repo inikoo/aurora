@@ -61,6 +61,7 @@ $count=0;
 $store=new Store("code","IT");
 $store_key=$store->id;
 
+/*
 $campaign_data=array('Deal Campaign Code'=>'GR','Deal Campaign Name'=>'Gold Reward','Deal Campaign Store Key'=>$store_key);
 $gold_camp=new DealCampaign('find create',$campaign_data);
 $campaign_data=array('Deal Campaign Code'=>'Vol','Deal Campaign Name'=>'Volume Discount','Deal Campaign Store Key'=>$store_key);
@@ -93,7 +94,7 @@ $_deal_component_data=array(
 
 $deal_component=$deal_gold->add_component($_deal_component_data);
 $deal_component->update_status('Active');
-
+*/
 
 $fam_promo=$fam_promo=new Family('code','Promo_IT',$store_key);
 $fam_promo_key=$fam_promo->id;
@@ -564,7 +565,7 @@ if (count($cols)<6) {
 		}
 		$product->update_web_state();
 
-		if (count($deals)>0) {
+		if (count($deals)>0 and false) {
 
 			foreach ($deals as $_deal_key=>$deal_data) {
 

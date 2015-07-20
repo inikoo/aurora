@@ -40,7 +40,6 @@ var checked_subjects = [];
 var unchecked_subjects = [];
 var subjects_check_start_type = 'unchecked';
 
-var GeneralDescriptionEditor;
 
 var dialog_new_product;
 
@@ -115,7 +114,7 @@ function validate_special_char(query){
 }
 function validate_family_description(query){
 
- validate_general('family_description','description',unescape(query));
+ validate_general('family_general_description','Family_Description',unescape(query));
 }
 
 function reset_edit_family(){
@@ -125,7 +124,6 @@ function reset_edit_family(){
 function reset_edit_family_general_description() {
 	reset_edit_general('family_general_description')
 	
-    GeneralDescriptionEditor.setEditorHTML(Dom.get('Family_Description').value);
 }
 
 
@@ -140,7 +138,6 @@ function reset_edit_department() {
 }
 
 function save_edit_family_general_description() {
-GeneralDescriptionEditor.saveHTML();
 	save_edit_general('family_general_description');
 }
 
@@ -1658,96 +1655,6 @@ Event.addListener("new_product", "click", show_dialog_new_product);
 
 Event.addListener("close_dialog_new_product", "click", dialog_new_product.hide,dialog_new_product , true);
 
-
-   var myConfig = {
-       
-         height: '300px',
-        width: '935px',
-        animate: true,
-        dompath: true,
-        focusAtStart: true,
-         autoHeight: true
-    };
-
-
-   
- var state = 'off';
-    GeneralDescriptionEditor = new YAHOO.widget.Editor('Family_Description', myConfig);
-    
-    GeneralDescriptionEditor.on('toolbarLoaded', function() {
-    
-     var codeConfig = {
-            type: 'push', label: 'Edit HTML Code', value: 'editcode'
-        };
-        this.toolbar.addButtonToGroup(codeConfig, 'insertitem');
-        
-         this.toolbar.on('editcodeClick', function() {
-        
-
-        
-            var ta = this.get('element'),iframe = this.get('iframe').get('element');
-
-            if (state == 'on') {
-                state = 'off';
-                this.toolbar.set('disabled', false);
-                          this.setEditorHTML(ta.value);
-                if (!this.browser.ie) {
-                    this._setDesignMode('on');
-                }
-
-                Dom.removeClass(iframe, 'editor-hidden');
-                Dom.addClass(ta, 'editor-hidden');
-                this.show();
-                this._focusWindow();
-            } else {
-                state = 'on';
-                
-                this.cleanHTML();
-               
-                Dom.addClass(iframe, 'editor-hidden');
-                Dom.removeClass(ta, 'editor-hidden');
-                this.toolbar.set('disabled', true);
-                this.toolbar.getButtonByValue('editcode').set('disabled', false);
-                this.toolbar.selectButton('editcode');
-                this.dompath.innerHTML = 'Editing HTML Code';
-                this.hide();
-            
-            }
-            return false;
-        }, this, true);
-
-        this.on('cleanHTML', function(ev) {
-            this.get('element').value = ev.html;
-        }, this, true);
-        
-        
-         this.on('afterRender', function() {
-            var wrapper = this.get('editor_wrapper');
-            wrapper.appendChild(this.get('element'));
-            this.setStyle('width', '100%');
-            this.setStyle('height', '100%');
-            this.setStyle('visibility', '');
-            this.setStyle('top', '');
-            this.setStyle('left', '');
-            this.setStyle('position', '');
-
-            this.addClass('editor-hidden');
-        }, this, true);
-    
-    this.on('cleanHTML', function(ev) {
-            this.get('element').value = ev.html;
-        }, this, true);
-        
-        
-         this.on('editorKeyUp', general_description_editor_changed, this, true);
-                this.on('editorDoubleClick', general_description_editor_changed, this, true);
-                this.on('editorMouseDown', general_description_editor_changed, this, true);
-                this.on('buttonClick', general_description_editor_changed, this, true);
-    }, GeneralDescriptionEditor, true);
-   
-    yuiImgUploader(GeneralDescriptionEditor, 'Family_Description', 'ar_upload_file_from_editor.php','image');
-   
-   GeneralDescriptionEditor.render();
 
 
 }

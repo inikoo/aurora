@@ -26,12 +26,15 @@
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <span id="department_branch"><a href="department.php?id={$product->get('Product Main Department Key')}" title="{$product->get('Product Main Department Name')}">{$product->get('Product Main Department Code')}</a></span> &rarr; <span id="family_branch"><a href="family.php?id={$product->get('Product Family Key')}" title="{$product->get('Product Family Name')}">{$product->get('Product Family Code')}</a></span> &rarr; <a href="product.php?pid=$product->pid" title="{$product->get('Product Name')}}">{$product->get('Product Code')}</a> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
-		<div class="buttons" style="float:left">
-			{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title"><span class="id" id="product_code_title">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, <span id="product_name_title">{$product->get('Product Name')}</span> </span> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
+
+		<div class="buttons small right" style="position:relative;top:5px">
+			<button style="margin-left:0px" onclick="window.location='product.php?id={$product->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px" onclick="delete_product()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 		</div>
-		<div class="buttons">
-			{if isset($next)}<img class="next" onmouseover="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/{if $next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='product.php?id={$product->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button style="margin-left:0px" onclick="delete_product()"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
+		<div class="buttons" >
+			{if isset($prev)}<img class="previous" onmouseover="this.src='art/{if $prev.to_end}prev_to_end.png{else}previous_button.gif{/if}'" onmouseout="this.src='art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/{if $prev.to_end}start_bookmark.png{else}previous_button.png{/if}" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons"><span class="id" id="product_code_title">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, <span id="product_name_title">{$product->get('Product Name')}</span> </span> 
 		</div>
+		
 		<div style="clear:both">
 		</div>
 	</div>
@@ -98,7 +101,7 @@
 		</div>
 		<div class="edit_block" style="{if $edit!='description' }display:none{/if};" id="d_description">
 			<div class="buttons small left tabs">
-				<button class="item indented {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button> <button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name, Codes{/t}</button> <button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price, Discounts{/t}</button> <button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $edit_description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> <button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
+				<button class="item indented {if $edit_description_block=='family'}selected{/if}" id="description_block_family" block_id="family">{t}Family{/t}</button> <button class="item {if $edit_description_block=='type'}selected{/if}" id="description_block_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_description_block=='description'}selected{/if}" id="description_block_description" block_id="description">{t}Name, Codes{/t}</button> <button class="item {if $edit_description_block=='info'}selected{/if}" id="description_block_info" block_id="info">{t}Description{/t}</button> <button class="item {if $edit_description_block=='price'}selected{/if}" id="description_block_price" block_id="price">{t}Price{/t}</button> <button class="item {if $edit_description_block=='properties'}selected{/if}" id="description_block_properties" block_id="properties">{t}Properties{/t}</button> <button class="item {if $edit_description_block=='health_and_safety'}selected{/if}" id="description_block_health_and_safety" block_id="health_and_safety">{t}Health & Safety{/t}</button> <button class="item {if $edit_description_block=='pictures'}selected{/if}" id="description_block_pictures" block_id="pictures">{t}Pictures{/t}</button> <button style="display:none" class="item {if $edit_description_block=='weight_dimension'}selected{/if}" id="description_block_weight_dimension" block_id="weight_dimension">{t}Weight/Dimensions{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -666,7 +669,7 @@
 						</td>
 					</tr>
 				</table>
-				<div id="d_description_block_info" style="{if $edit_description_block!='info' }display:none{/if};">
+				<div id="d_description_block_info" style="{if $edit_description_block!='info' }display:none{/if};height:370px">
 					<table class="edit" style="width:890px;padding:20px;margin-left:20px;margin-top:20px">
 						<tr class="title space10">
 							<td>{t}Product Description{/t} <span id="Product_Description_msg"></span></td>
@@ -677,11 +680,15 @@
 							</td>
 						</tr>
 						<tr>
+						<td>
+						<textarea id="Product_Description" ovalue="{$product->get('Product Description')|escape}" rows="20" cols="75" style="width:870px" ovalue="{$product->get('Product Description')|escape}" >{$product->get('Product Description')|escape}</textarea> 
+<div id="Product_Description_Container">
+							</div>
+						</td>
 						</tr>
+						
 					</table>
-					<form onsubmit="return false;" style="position:relative;left:-3px">
-<textarea id="Product_Description" ovalue="{$product->get('Product Description')|escape}" rows="20" cols="75">{$product->get('Product Description')|escape}</textarea> 
-					</form>
+					
 				</div>
 			</div>
 		</div>

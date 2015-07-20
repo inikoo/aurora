@@ -6271,6 +6271,8 @@ class product extends DB_Table {
 
 
 	function update_sales_correlatations($type='All',$limit='100') {
+	
+	$max_correaltions=20;
 
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$this->pid);
 		$res=mysql_query($sql);
@@ -6297,33 +6299,25 @@ class product extends DB_Table {
 				$this->data['Product Family Key']
 			);
 			
-					$sql_count=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`!=%d order by `Product Total Acc Customers` desc  ",
-				$this->data['Product Store Key'],
-				$this->data['Product Family Key']
-			);
+			
 			break;
 		case 'Same Department':
-			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Main Department Key`=%d order by `Product Total Acc Customers` desc  ",
+			
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
 				$this->data['Product Store Key'],
-				$this->data['Product Main Department Key']
+				$limit
 			);
 			
-				$sql_count=sprintf("select count(*) as num from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)   where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Main Department Key`=%d  ",
-				$this->data['Product Store Key'],
-				$this->data['Product Main Department Key']
-			);
 			
 			break;
 		default:
 
-			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers`  limit %s ",
+			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
 				$this->data['Product Store Key'],
 				$limit
 			);
             
-            $sql_count=sprintf("select count(*) as num  from `Product Dimension`  P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0   ",
-				$this->data['Product Store Key']
-			);
+           
             
 		}
 /*
@@ -6353,7 +6347,6 @@ class product extends DB_Table {
 
 
 			$sql=sprintf("select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
-				$row2['Product ID'],
 				$this->pid
 			);
 		//	print "Products $num_products x $b_samples \n";
@@ -6371,6 +6364,9 @@ class product extends DB_Table {
 				if ($_row=mysql_fetch_assoc($_res)) {
 
 					$dot_product+=1;
+					//print "order Match 1\n";
+				}else{
+				    //print "order Match 0\n";
 				}
 
 
@@ -6387,7 +6383,7 @@ class product extends DB_Table {
 				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ",$this->pid);
 				$res4=mysql_query($sql);
 				if ($row4=mysql_fetch_assoc($res4)) {
-					if ($row4['num']<6) {
+					if ($row4['num']<$max_correaltions) {
 						$sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 							$this->pid,
 							$row2['Product ID'],
@@ -6423,7 +6419,7 @@ class product extends DB_Table {
 				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ",$row2['Product ID']);
 				$res4=mysql_query($sql);
 				if ($row4=mysql_fetch_assoc($res4)) {
-					if ($row4['num']<6) {
+					if ($row4['num']<$max_correaltions) {
 						$sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 
 							$row2['Product ID'],
@@ -6487,28 +6483,30 @@ class product extends DB_Table {
 
 	function get_deals_data() {
 		$deals=array();
-		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d ",$this->data['Product Family Key']);
+		$sql=sprintf("select `Deal Label`,`Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d ",$this->data['Product Family Key']);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$deals[]=array(
 				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
-				'Terms Label'=>$row['Deal Component XHTML Terms Description Label'],
+				'Terms Label'=>$row['Deal XHTML Terms Description Label'],
 				'Terms Type'=>$row['Deal Component Terms Type'],
 				'Status'=>$row['Deal Component Status'],
 				'Name'=>$row['Deal Name'],
+				'Label'=>$row['Deal Label'],
 				'Description'=>$row['Deal Description']
 			);
 		}
 
-		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal Component XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Product' and `Deal Component Allowance Target Key`=%d ",$this->pid);
+		$sql=sprintf("select `Deal Label`,`Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Product' and `Deal Component Allowance Target Key`=%d ",$this->pid);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$deals[]=array(
 				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
-				'Terms Label'=>$row['Deal Component XHTML Terms Description Label'],
+				'Terms Label'=>$row['Deal XHTML Terms Description Label'],
 				'Terms Type'=>$row['Deal Component Terms Type'],
 				'Status'=>$row['Deal Component Status'],
 				'Name'=>$row['Deal Name'],
+								'Label'=>$row['Deal Label'],
 				'Description'=>$row['Deal Description']
 			);
 		}

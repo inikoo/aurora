@@ -2280,11 +2280,11 @@ function deal_list() {
 	if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
 	else $number_results=20;
 	if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
-	else$order='code';
+	else$order='name';
 	if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
 	else$order_dir='';
 	if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
-	else$f_field='code';
+	else$f_field='name';
 	if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
 	else$f_value='';
 	if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
@@ -2314,12 +2314,10 @@ function deal_list() {
 
 
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
-	elseif ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Deal Code` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Deal Name` regexp '[[:<:]]".addslashes($f_value)."' ";
+	
 
-
-	$sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension` $where $wheref  ";
+	$sql="select count(*) as total from `Deal Dimension` $where $wheref  ";
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -2330,7 +2328,7 @@ function deal_list() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension`  $where   ";
+		$sql="select count(*) as total from `Deal Dimension`  $where   ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -2379,19 +2377,37 @@ function deal_list() {
 
 
 	$adata=array();
-	$sql="select  `Deal Code`,`Deal Key`,`Deal Name`,`Deal Description` from `Deal Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Deal Term Allowances`,`Deal Status`,`Deal Key`,`Deal Name`,`Deal Description` from `Deal Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
 
 	while ($row=mysql_fetch_array($res)) {
 
+	switch ($row['Deal Status']) {
+		case 'Waiting':
+			$status=sprintf('<img src="art/icons/bullet_orange.png" alt="%s" title="%s">',_('Waiting'),_('Offer waiting'));
+			break;
+		case 'Active':
+			$status=sprintf('<img src="art/icons/bullet_green.png" alt="%s" title="%s">',_('Active'),_('Offer active'));
+			break;
+		case 'Suspended':
+			$status=sprintf('<img src="art/icons/bullet_red.png" alt="%s" title="%s">',_('Suspended'),_('Offer suspended'));
+			break;
+		case 'Finish':
+			$status=sprintf('<img src="art/icons/bullet_grey.png" alt="%s" title="%s">',_('Finished'),_('Offer finished'));
+			break;
+		default:
+			$status=$row['Deal Status'];
+		}
+
+
 		$adata[]=array(
-			'code'=>$row['Deal Code'],
-			'name'=>$row['Deal Name'],
-			'description'=>$row['Deal Description'],
+			'name'=>sprintf('<span title="%s">%s</span>',$row['Deal Description'],$row['Deal Name'])  ,
+			'description'=>$row['Deal Term Allowances'],
 			'id'=>$row['Deal Key'],
-			'key'=>$row['Deal Key']
+			'key'=>$row['Deal Key'],
+			'status'=>$status
 			//  'code'=>$row['Product Department Code'],
 
 
@@ -2459,7 +2475,7 @@ function campaign_list() {
 	}
 
 
-
+$where.=" and `Deal Campaign Status` in ('Active','Waiting') ";
 
 	$filter_msg='';
 	$wheref='';
@@ -2490,12 +2506,13 @@ function campaign_list() {
 	}
 
 
-	$rtext=number($total_records)." ".ngettext('Campaign','Campaigns',$total_records);
+	$rtext=number($total_records)." ".ngettext('campaign','campaigns',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
+	elseif($total_records<20)
 		$rtext_rpp="("._('Showing all').")";
-
+    else
+        $rtext_rpp='';
 
 	$filter_msg='';
 
@@ -2529,7 +2546,7 @@ function campaign_list() {
 
 
 	$adata=array();
-	$sql="select  `Deal Campaign Key`,`Deal Campaign Code`,`Deal Campaign Name` from `Deal Campaign Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+	$sql="select  `Deal Campaign Key`,`Deal Campaign Name` from `Deal Campaign Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
 	$res=mysql_query($sql);
@@ -2538,7 +2555,6 @@ function campaign_list() {
 
 		$adata[]=array(
 			'name'=>$row['Deal Campaign Name'],
-			'code'=>$row['Deal Campaign Code'],
 			'id'=>$row['Deal Campaign Key'],
 			'key'=>$row['Deal Campaign Key']
 		);

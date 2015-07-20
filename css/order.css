@@ -51,3 +51,6 @@ tr.out_of_stock td{background:#fbd7d7}
 
 .order_operations .buttons button{clear:both;margin-bottom:10px;}
 #operations_msg {padding:20px 10px;border:1px solid #ccc;margin-right:6px;width:300px;float:right;margin-bottom:20px}
+
+.more_dn_opertions{width:20px}
+.more_dn_opertions img{cursor:pointer;opacity:.5}

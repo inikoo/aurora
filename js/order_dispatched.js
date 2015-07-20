@@ -2,6 +2,13 @@ var Dom = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 YAHOO.namespace("invoice");
 
+function show_more_dn_operations(dn_key){
+Dom.setStyle('more_dn_opertions_'+dn_key,'display','none');
+Dom.setStyle('dn_operations_tr_'+dn_key,'display','');
+
+}
+
+
 function show_dispatched_post_transactions() {
     Dom.setStyle('dispatched_post_transactions', 'display', '');
     Dom.setStyle('msg_dispatched_post_transactions', 'display', 'none');

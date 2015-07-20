@@ -39,8 +39,8 @@ class Deal extends DB_Table {
 
 		if ($tipo=='id')
 			$sql=sprintf("select * from `Deal Dimension` where `Deal Key`=%d",$tag);
-		elseif ($tipo=='code')
-			$sql=sprintf("select * from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($tag));
+		elseif ($tipo=='name')
+			$sql=sprintf("select * from `Deal Dimension` where `Deal Name`=%s",prepare_mysql($tag));
 
 
 		$result=mysql_query($sql);
@@ -98,8 +98,8 @@ class Deal extends DB_Table {
 
 
 
-		$sql=sprintf("select `Deal Key` from `Deal Dimension` where  `Deal Code`=%s and `Deal Store Key`=%d ",
-			prepare_mysql($data['Deal Code']),
+		$sql=sprintf("select `Deal Key` from `Deal Dimension` where  `Deal Name`=%s and `Deal Store Key`=%d ",
+			prepare_mysql($data['Deal Name']),
 			$data['Deal Store Key']
 		);
 
@@ -131,6 +131,8 @@ class Deal extends DB_Table {
 
 		$keys='';
 		$values='';
+		
+		$data['Deal Label']=$data['Deal Name'];
 
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
@@ -187,7 +189,7 @@ class Deal extends DB_Table {
 		case 'Duration':
 			$duration='';
 			if ($this->data['Deal Expiration Date']=='' and $this->data['Deal Begin Date']=='') {
-				$duration=_('Permanent');
+				$duration=_('permanent');
 			}else {
 
 				if ($this->data['Deal Begin Date']!='') {
@@ -199,7 +201,7 @@ class Deal extends DB_Table {
 					$duration.=strftime("%x", strtotime($this->data['Deal Expiration Date']." +00:00"));
 
 				}else {
-					$duration.=_('Present');
+					$duration.=_('permanent');
 				}
 
 			}
@@ -236,49 +238,37 @@ class Deal extends DB_Table {
 	}
 
 	function get_formated_terms() {
-		$terms='';
-		$sql=sprintf("select `Deal Component Allowance Target`,`Deal Component Allowance Type`,`Deal Component XHTML Terms Description Label`,`Deal Component Terms Description`,`Deal Component Terms Type`,`Deal Component Allowance Target XHTML Label`  from `Deal Component Dimension` where `Deal Component Deal Key`=%d group by `Deal Component Terms Description`",
-			$this->id
-		);
-		$res=mysql_query($sql);
+		$terms=$this->data['Deal Terms Description'];
 
-		$count=0;
-		while ($row=mysql_fetch_assoc($res)) {
-			$count++;
-			if ($count==1) {
-				$terms.=$row['Deal Component Terms Description'];
+		if (in_array($this->data['Deal Terms Type'],
+				array(
+					'Department Quantity Ordered',
+					'Department For Every Quantity Ordered',
+					'Department For Every Quantity Any Product Ordered',
+					'Family Quantity Ordered',
+					'Family For Every Quantity Ordered',
+					'Family For Every Quantity Any Product Ordered',
+					'Product Quantity Ordered',
+					'Product For Every Quantity Ordered'
+				))) {
 
 
-				if ($row['Deal Component XHTML Terms Description Label']!=''
-
-
-					and in_array($row['Deal Component Terms Type'],
-						array(
-							'Department Quantity Ordered',
-							'Department For Every Quantity Ordered',
-							'Department For Every Quantity Any Product Ordered',
-							'Family Quantity Ordered',
-							'Family For Every Quantity Ordered',
-							'Family For Every Quantity Any Product Ordered',
-							'Product Quantity Ordered',
-							'Product For Every Quantity Ordered'
-						))) {
-					$terms.=' ('.$row['Deal Component Allowance Target XHTML Label'].')';
-				}
-			}else {
-				$terms.=', ...';
-				break;
-			}
+			$terms.=' '.$this->data['Deal Trigger XHTML Label'];
 
 
 		}
 
+
+
+
+
+	
 		return $terms;
 	}
 
 	function get_terms() {
 		$terms='';
-		$sql=sprintf("select `Deal Component Allowance Target`,`Deal Component Allowance Type`,`Deal Component XHTML Terms Description Label`,`Deal Component Terms Description`,`Deal Component Terms Type`,`Deal Component Allowance Target XHTML Label`  from `Deal Component Dimension` where `Deal Component Deal Key`=%d group by `Deal Component Terms Description`",
+		$sql=sprintf("select `Deal Component Allowance Target`,`Deal Component Allowance Type`,`Deal Component Terms Description`,`Deal Component Terms Type`,`Deal Component Allowance Target XHTML Label`  from `Deal Component Dimension` where `Deal Component Deal Key`=%d group by `Deal Component Terms Description`",
 			$this->id
 		);
 		$res=mysql_query($sql);
@@ -446,13 +436,13 @@ class Deal extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$total_orders=$row['num'];
 		}
-	
+
 		return percentage($this->data['Deal Total Acc Used Orders'],$total_orders);
-	
+
 	}
 
 	function get_percentage_applied_vouchers() {
-	$total_orders=0;
+		$total_orders=0;
 		$dates=prepare_mysql_dates($this->data['Deal Begin Date'], $this->data['Deal Expiration Date'], '`Order Date`');
 		$sql=sprintf("select  count(*) as num  from `Order Dimension` where true   %s",$dates['mysql']);
 		//print $sql;
@@ -461,7 +451,7 @@ class Deal extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$total_orders=$row['num'];
 		}
-	
+
 		return percentage($this->get_applied_vouchers(),$total_orders);
 
 	}
@@ -554,6 +544,7 @@ class Deal extends DB_Table {
 		while ($row=mysql_fetch_assoc($res)) {
 			$deal_compoment=new DealComponent($row['Deal Component Key']);
 			$deal_compoment->update(array('Deal Component Expiration Date'=>$value));
+			$deal_compoment->update_status_from_dates();
 		}
 
 
@@ -562,31 +553,45 @@ class Deal extends DB_Table {
 
 	}
 
+
+
+
 	function add_component($data) {
 
 		$data['Deal Component Deal Key']=$this->id;
 		$data['Deal Component Store Key']=$this->data['Deal Store Key'];
 		$data['Deal Component Campaign Key']=$this->data['Deal Campaign Key'];
-		$data['Deal Component Begin Date']=$this->data['Deal Begin Date'];
-		$data['Deal Component Expiration Date']=$this->data['Deal Expiration Date'];
-		$data['Deal Component Status']=$this->data['Deal Status'];
+		
 
 
 
-		$hereditary_fields=array('Status','Name','Trigger','Trigger Key','Trigger XHTML Label','Terms Type');
+		$hereditary_fields=array('Expiration Date','Begin Date','Status','Name','Trigger','Trigger Key','Terms Type','Terms Description','XHTML Terms Description Label','Terms','Allowance Target Type');
 		foreach ($hereditary_fields as $hereditary_field) {
 			if (!array_key_exists('Deal Component '.$hereditary_field,$data)) {
-				$data['Deal Component '.$hereditary_field]=
-					$this->data['Deal '.$hereditary_field];
+				$data['Deal Component '.$hereditary_field]=$this->data['Deal '.$hereditary_field];
 			}
 		}
+
+
 
 		$old_components=$this->get_components();
 
 		$deal_component=new DealComponent('find create',$data);
-		$deal_component->update_status($this->data['Deal Status']);
+		//$deal_component->update_status($this->data['Deal Status']);
 		$this->update_number_components();
 		$deal_component->update_target_bridge();
+		
+		
+		$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Mirror Key`=%d",
+		$this->id
+		);
+		$res=mysql_query($sql);
+	
+		while ($row=mysql_fetch_assoc($res)) {
+			$deal=new Deal($row['Deal Key']);
+			$data['Deal Component Mirror Key']=$deal_component->id;
+			$deal->add_component($data);
+		}
 
 		return $deal_component;
 
@@ -668,6 +673,16 @@ class Deal extends DB_Table {
 		}
 		return $deal_component_keys;
 	}
+	
+	function get_number_no_finished_components() {
+		$number_no_finished_components=0;
+		$sql=sprintf("select count(*) as num from `Deal Component Dimension` where `Deal Component Deal Key`=%d and  `Deal Component Status`!='Finish'",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$number_no_finished_components=$row['num'];
+		}
+		return $number_no_finished_components;
+	}
 
 	function get_xhtml_status() {
 		switch ($this->data['Deal Status']) {
@@ -721,6 +736,13 @@ class Deal extends DB_Table {
 
 		if ($this->data['Deal Expiration Date']!='' and  strtotime($this->data['Deal Expiration Date'].' +0:00')<=strtotime('now +0:00')) {
 			$this->update_field_switcher('Deal Status','Finish','no_history');
+
+			if ($this->data['Deal Voucher Key']) {
+				$voucher=Voucher($this->data['Deal Voucher Key']);
+				$voucher->update_field_switcher('Voucher Status','Finish','no_history');
+
+			}
+
 			return;
 		}
 
@@ -749,6 +771,21 @@ class Deal extends DB_Table {
 
 	}
 
+	function get_mirrow_formated_link() {
+		$link='';
+
+		if ($this->data['Deal Mirror Key']) {
+			$deal=new Deal($this->data['Deal Mirror Key']);
+			$link=sprintf('<a href="deal.php?id=%d">%s</a>',
+				$deal->id,
+				$deal->data['Deal Name']
+			);
+		}
+
+
+		return $link;
+	}
+
 	function get_from_date() {
 		if ($this->data['Deal Begin Date']=='') {
 			return '';
@@ -773,6 +810,97 @@ class Deal extends DB_Table {
 		}else {
 			return false;
 		}
+	}
+
+	function get_allowances_label() {
+
+		$component_keys=$this->get_deal_component_keys();
+		$component=new DealComponent(array_pop($component_keys));
+
+
+		$allowance_label=$component->data['Deal Component XHTML Allowance Description Label'];
+
+		if ($this->data['Deal Number Active Components']>1) {
+			$allowance_label='';
+		}
+
+		return $allowance_label;
+
+	}
+
+	function get_badge() {
+		$badge='';
+		if ( $this->data['Deal Number Active Components']>0) {
+
+
+			$term_label=$this->data['Deal XHTML Terms Description Label'];
+
+			$component_keys=$this->get_deal_component_keys();
+			$component=new DealComponent(array_pop($component_keys));
+
+
+			$allowance_label=$component->data['Deal Component XHTML Allowance Description Label'];
+			$component_key=$component->id;
+			if ($this->data['Deal Number Active Components']>1) {
+				$allowance_label='';
+				$component_key=0;
+			}
+
+
+			$badge=sprintf('<div id="badge_display_%d" component_key=%d class="offer"><div id="badge_name_display_%d" class="name">%s</div><div id="badge_allowances_display_%d" class="allowances">%s</div> <div id="badge_terms_display_%d" class="terms">%s</div></div>',
+				$this->id,
+				$component_key,
+				$this->id,
+				$this->data['Deal Label'],
+				$this->id,
+				$allowance_label,
+				$this->id,
+				$term_label
+
+			);
+		}
+		return $badge;
+	}
+
+	function delete() {
+
+		$this->update_usage();
+
+		if ($this->data['Deal Total Acc Applied Orders']>0 ) {
+			$this->msg=_('Can not delete the offer, because it has been applied to an order');
+			$this->error=true;
+			return;
+		}
+
+		$master_mirror=false;
+		$sql=sprintf("select `Deal Key`,`Deal Name` from `Deal Dimension` where `Deal Mirror Key`=%d and `Deal Status`!='Finish'  ",$this->id);
+		$res=mysql_query($sql);
+		while ($res=mysql_fetch_assoc($res)) {
+			$master_mirror=true;
+			$msg=sprintf(', <a href="deal.php?id=%d">%s</a>',$row['Deal Key'],$row['Deal Name']);
+
+		}
+		if ($master_mirror) {
+			$msg=preg_replace('/^, /','',$msg);
+			$this->msg=_('Can not delete the offer, because it is used for mirroing the following offers').': '.$msg;
+			$this->error=true;
+		}
+
+		$sql=sprintf("delete from `Voucher Dimension` where `Voucher Key`=%d ",$this->data['Deal Voucher Key']);
+		$res=mysql_query($sql);
+
+		$sql=sprintf("delete from `Deal Component Dimension` where `Deal Component Deal Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+
+		$sql=sprintf("delete from `Deal Dimension` where `Deal Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+
+		$campaign=new DealCampaign($this->data['Deal Campaign Key']);
+		$campaign->editor=$this->editor;
+
+		$campaign->get_number_deals();
+
+
 	}
 
 

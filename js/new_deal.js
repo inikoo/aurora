@@ -13,9 +13,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         this.remove_links = function(elLiner, oRecord, oColumn, oData) {
             elLiner.innerHTML = '';
-            if(oData!= undefined){
-            elLiner.innerHTML = oData.replace(/<.*?>/g, '');
-}
+            if (oData != undefined) {
+                elLiner.innerHTML = oData.replace(/<.*?>/g, '');
+            }
         };
 
         YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
@@ -28,16 +28,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
             key: "key",
             label: "",
             hidden: true
-        }, {
-            key: "code",
-            formatter: "remove_links",
-            label: labels.Code,
-            width: 30,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
         }, {
             key: "name",
             formatter: "remove_links",
@@ -67,7 +57,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
             },
-            fields: ["name", 'code', 'key']
+            fields: ["name", 'key']
         };
 
 
@@ -89,7 +79,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             ,
             sortedBy: {
-                key: 'key',
+                key: 'name',
                 dir: 'desc'
             },
             dynamicData: true
@@ -110,7 +100,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table100.filter = {
-            key: 'code',
+            key: 'name',
             value: ''
         };
 
@@ -482,10 +472,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
             label: "",
             hidden: true
         }, {
-            key: "code",
-            formatter: "remove_links",
-            label: labels.Code,
-            width: 50,
+            key: "status",
+            label: '',
+            width: 10,
             sortable: true,
             className: "aleft",
             sortOptions: {
@@ -493,15 +482,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "name",
-            formatter: "remove_links",
             label: labels.Name,
-            width: 180,
+            width: 150,
             sortable: true,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }];
+        }, {
+            key: "description",
+            formatter: "remove_links",
+            label: labels.TermsAllowances,
+            width: 250,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }
+
+
+        ];
         request = "ar_quick_tables.php?tipo=deal_list&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
 
         this.dataSource105 = new YAHOO.util.DataSource(request);
@@ -521,7 +522,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
             },
-            fields: ["name", 'code', 'key']
+            fields: ["name", 'key', 'description', 'status']
         };
 
 
@@ -543,7 +544,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             ,
             sortedBy: {
-                key: 'code',
+                key: 'name',
                 dir: ''
             },
             dynamicData: true
@@ -562,7 +563,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         this.table105.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table105.filter = {
-            key: 'code',
+            key: 'name',
             value: ''
         };
 
@@ -604,7 +605,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
         request = "ar_quick_tables.php?tipo=category_list&subject=Customer&branch_type=Head&store_key=" + Dom.get('store_key').value + "&tableid=" + tableid + "&nr=20&sf=0";
-       
+
         this.dataSource106 = new YAHOO.util.DataSource(request);
         this.dataSource106.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource106.connXhrMode = "queueRequests";
@@ -782,7 +783,7 @@ function trigger_changed(value) {
 
 
     Dom.setStyle(['trigger_department_options', 'trigger_family_options', 'trigger_product_options', 'trigger_customer_options', 'trigger_customer_category_options', 'trigger_customer_list_options'], 'display', 'none')
-    Dom.setStyle(['department_terms_select', 'family_terms_select', 'product_terms_select', 'customer_terms_select','order_terms_select'], 'display', 'none')
+    Dom.setStyle(['department_terms_select', 'family_terms_select', 'product_terms_select', 'customer_terms_select', 'order_terms_select'], 'display', 'none')
 
     Dom.setStyle(['voucher_tr'], 'display', '')
     switch (value) {
@@ -800,32 +801,32 @@ function trigger_changed(value) {
         show_dialog_products_list('trigger');
         Dom.setStyle(['trigger_product_options', 'product_terms_select'], 'display', '')
 
-        terms_changed('Family Quantity Ordered')
+        terms_changed('Product Quantity Ordered')
         break;
     case 'Customer':
-    
-            Dom.setStyle(['customer_terms_select'], 'display', '')
 
-    
+        Dom.setStyle(['customer_terms_select'], 'display', '')
+
+
 
         show_dialog_customers_list();
         terms_changed('Voucher')
         break;
     case 'Customer Category':
-                Dom.setStyle(['customer_terms_select'], 'display', '')
+        Dom.setStyle(['customer_terms_select'], 'display', '')
 
         show_dialog_customer_categories_list();
         terms_changed('Voucher')
         break;
     case 'Customer List':
-                Dom.setStyle(['customer_terms_select'], 'display', '')
+        Dom.setStyle(['customer_terms_select'], 'display', '')
 
         show_dialog_customer_lists_list();
         terms_changed('Voucher')
         break;
 
     case 'Order':
-                Dom.setStyle(['order_terms_select'], 'display', '')
+        Dom.setStyle(['order_terms_select'], 'display', '')
 
         break;
     }
@@ -957,7 +958,7 @@ function select_campaign_from_list(oArgs) {
     Dom.removeClass(['select_campaign', 'new_campaign'], 'selected');
     Dom.get('campaign_key').value = record.getData('key');
 
-    Dom.get('campaign_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+    Dom.get('campaign_formated').innerHTML = record.getData('name');
     Dom.get('select_campaign').innerHTML = Dom.get('select_campaign').getAttribute('alt_label');
 
     dialog_campaigns_list.hide();
@@ -977,6 +978,8 @@ function select_department_from_list(oArgs) {
 
     record = tables.table101.getRecord(oArgs.target);
     if (asset_select_scope == 'trigger') {
+        Dom.get('target').value = 'Department';
+        Dom.get('target_key').value = record.getData('key');
         Dom.get('trigger').value = 'Department';
         Dom.get('trigger_key').value = record.getData('key');
         Dom.get('department_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
@@ -1001,6 +1004,8 @@ function select_family_from_list(oArgs) {
     //alert(asset_select_scope)
     record = tables.table102.getRecord(oArgs.target);
     if (asset_select_scope == 'trigger') {
+        Dom.get('target').value = 'Family';
+        Dom.get('target_key').value = record.getData('key');
         Dom.get('trigger').value = 'Family';
         Dom.get('trigger_key').value = record.getData('key');
         Dom.get('family_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
@@ -1042,6 +1047,8 @@ function select_product_from_list(oArgs) {
 
     record = tables.table103.getRecord(oArgs.target);
     if (asset_select_scope == 'trigger') {
+        Dom.get('target').value = 'Product';
+        Dom.get('target_key').value = record.getData('key');
         Dom.get('trigger').value = 'Product';
         Dom.get('trigger_key').value = record.getData('key');
         Dom.get('product_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
@@ -1103,7 +1110,7 @@ function select_deal_from_list(oArgs) {
     record = tables.table105.getRecord(oArgs.target);
     Dom.get('target').value = 'Deal';
     Dom.get('target_key').value = record.getData('key');
-    Dom.get('clone_deal_formated').innerHTML = record.getData('code') + " (" + record.getData('name') + ") ";
+    Dom.get('clone_deal_formated').innerHTML = record.getData('name');
     dialog_deals_list.hide();
 }
 
@@ -1116,8 +1123,6 @@ function new_campaign() {
     Dom.get('campaign_formated').innerHTML = '';
 
     validate_scope_data.deal.campaign_key.required = false;
-    validate_scope_data.deal.campaign_code.required = true;
-    validate_scope_data.deal.campaign_name.required = true;
     validate_scope_data.deal.campaign_name.required = true;
     validate_scope_data.deal.from.required = true;
     validate_scope_data.deal.to.required = true;
@@ -1191,7 +1196,7 @@ function terms_changed(value) {
         allowances_changed('Percentage Off');
         break;
     case 'Department For Every Quantity Any Product Ordered':
-    
+
         Dom.setStyle('for_every_ordered_tr', 'display', '');
         Dom.setStyle('for_every_any_product_allowances_select', 'display', '');
         allowances_changed('Get Cheapest Free');
@@ -1480,7 +1485,7 @@ function start_now() {
         if (day < 10) day = '0' + day;
         var date = day + "-" + month + "-" + year;
         Dom.get("v_calpop1").value = date
-	
+
         validate_general('deal', 'from', date);
     }
 }
@@ -1506,9 +1511,6 @@ function permanent_campaign() {
 }
 
 
-function validate_campaign_code(query) {
-    validate_general('deal', 'campaign_code', query);
-}
 
 function validate_campaign_name(query) {
 
@@ -1579,7 +1581,8 @@ function post_new_create_actions(branch, response) {
         Dom.get('new_deal_msg').innerHTML = response.message
         Dom.get('deal_code').value = '';
         validate_general('deal', 'code', '');
-
+        Dom.setStyle('waiting', 'display', 'none')
+        Dom.setStyle('form_buttons', 'display', '')
     }
 }
 
@@ -1603,21 +1606,7 @@ function init() {
     validate_scope_data = {
 
         'deal': {
-            'code': {
-                'changed': false,
-                'validated': false,
-                'required': true,
-                'dbname': 'Deal Code',
-                'group': 1,
-                'type': 'item',
-                'name': 'deal_code',
-                'validation': [{
-                    'regexp': "[a-z\\d]+",
-                    'invalid_msg': labels.Invalid_code
-                }],
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=is_deal_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
-            },
+
             'name': {
                 'changed': false,
                 'validated': false,
@@ -1628,10 +1617,12 @@ function init() {
                 'name': 'deal_name',
 
                 'validation': [{
-                    'regexp': "[a-z\\d]+",
+                    'regexp': "[a-z\d]+",
                     'invalid_msg': labels.Invalid_name
                 }],
-                'ar': false
+                'ar': 'find',
+                'ar_request': 'ar_deals.php?tipo=is_deal_name_in_store&store_key=' + Dom.get('store_key').value + '&query=',
+
             },
             'description': {
                 'changed': false,
@@ -1643,7 +1634,7 @@ function init() {
                 'name': 'deal_description',
 
                 'validation': [{
-                    'regexp': "[a-z\\d]+",
+                    'regexp': "[a-z\d]+",
                     'invalid_msg': labels.Invalid_description
                 }],
                 'ar': false
@@ -1711,7 +1702,7 @@ function init() {
                 'name': 'voucher_code',
 
                 'validation': [{
-                    'regexp': "[a-z\\d]+",
+                    'regexp': "[a-z\d]+",
                     'invalid_msg': labels.Invalid_code
                 }],
                 'ar': 'find',
@@ -1876,17 +1867,6 @@ function init() {
                     'invalid_msg': ''
                 }]
             },
-            'campaign_code': {
-                'changed': false,
-                'validated': false,
-                'required': false,
-                'group': 1,
-                'type': 'item',
-                'name': 'campaign_code',
-                'ar': 'find',
-                'ar_request': 'ar_deals.php?tipo=is_campaign_code_in_store&store_key=' + Dom.get('store_key').value + '&query=',
-                'dbname': 'Deal Campaign Code'
-            },
             'campaign_name': {
                 'changed': false,
                 'validated': false,
@@ -1894,12 +1874,9 @@ function init() {
                 'group': 1,
                 'type': 'item',
                 'name': 'campaign_name',
-                'ar': false,
-                'dbname': 'Deal Campaign Name',
-                'validation': [{
-                    'regexp': "[a-z\\d]+",
-                    'invalid_msg': labels.Invalid_name
-                }]
+                'ar': 'find',
+                'ar_request': 'ar_deals.php?tipo=is_campaign_name_in_store&store_key=' + Dom.get('store_key').value + '&query=',
+                'dbname': 'Deal Campaign Name'
             },
             'campaign_description': {
                 'changed': false,
@@ -1911,7 +1888,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Description',
                 'validation': [{
-                    'regexp': "[a-z\\d]+",
+                    'regexp': "[a-z\d]+",
                     'invalid_msg': labels.Invalid_description
                 }]
             },
@@ -1925,7 +1902,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Valid From',
                 'validation': [{
-                    'regexp': "\\d{2}-\\d{2}-\\d{4}",
+                    'regexp': "\d{2}-\d{2}-\d{4}",
                     'invalid_msg': labels.Invalid_date
                 }]
             },
@@ -1939,7 +1916,7 @@ function init() {
                 'ar': false,
                 'dbname': 'Deal Campaign Valid To',
                 'validation': [{
-                    'regexp': "\\d{2}-\\d{2}-\\d{4}",
+                    'regexp': "\d{2}-\d{2}-\d{4}",
                     'invalid_msg': labels.Invalid_date
                 }]
             }
@@ -1979,7 +1956,6 @@ function init() {
         terms_changed('Voucher');
         break;
     }
-
     switch (Dom.get('scope_subject').value) {
     case 'Campaign':
         init_search('marketing_store');
@@ -2043,9 +2019,8 @@ function init() {
         draggable: false
     });
     dialog_departments_list.render();
-   // Event.addListener("target_update_department", "click", show_dialog_departments_list, 'target');
+    // Event.addListener("target_update_department", "click", show_dialog_departments_list, 'target');
     //Event.addListener("target_bis_update_department", "click", show_dialog_departments_list, 'target');
-
     dialog_families_list = new YAHOO.widget.Dialog("dialog_families_list", {
         visible: false,
         close: true,
@@ -2054,10 +2029,9 @@ function init() {
     });
 
     dialog_families_list.render();
-   // Event.addListener("update_family", "click", show_dialog_families_list, "trigger");
-   // Event.addListener("target_update_family", "click", show_dialog_families_list, "target");
-   // Event.addListener("target_bis_update_family", "click", show_dialog_families_list, "target");
-
+    // Event.addListener("update_family", "click", show_dialog_families_list, "trigger");
+    // Event.addListener("target_update_family", "click", show_dialog_families_list, "target");
+    // Event.addListener("target_bis_update_family", "click", show_dialog_families_list, "target");
     dialog_products_list = new YAHOO.widget.Dialog("dialog_products_list", {
         visible: false,
         close: true,
@@ -2068,7 +2042,6 @@ function init() {
     //Event.addListener("update_product", "click", show_dialog_products_list, "trigger");
     //Event.addListener("target_update_product", "click", show_dialog_products_list, "target");
     //Event.addListener("target_bis_update_product", "click", show_dialog_products_list, "target");
-
     dialog_customers_list = new YAHOO.widget.Dialog("dialog_customers_list", {
         visible: false,
         close: true,
@@ -2114,12 +2087,6 @@ function init() {
     Event.addListener(['voucher_code_random', 'voucher_code_custome'], "click", select_voucher_code_type);
     Event.addListener(['voucher_type_public', 'voucher_type_private'], "click", select_voucher_type);
     Event.addListener(['amount_type_total', 'amount_type_net', 'amount_type_items'], "click", select_amount_type);
-
-    var campaign_code_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_code);
-    campaign_code_oACDS.queryMatchContains = true;
-    var campaign_code_oAutoComp = new YAHOO.widget.AutoComplete("campaign_code", "campaign_code_Container", campaign_code_oACDS);
-    campaign_code_oAutoComp.minQueryLength = 0;
-    campaign_code_oAutoComp.queryDelay = 0.1;
 
     var campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_name);
     campaign_name_oACDS.queryMatchContains = true;
@@ -2212,15 +2179,15 @@ function init() {
     Event.addListener('clean_table_filter_hide101', "click", hide_filter, 101);
     Event.addListener('clean_table_filter_show102', "click", show_filter, 102);
     Event.addListener('clean_table_filter_hide102', "click", hide_filter, 102);
-    
+
     Event.addListener('clean_table_filter_show103', "click", show_filter, 103);
     Event.addListener('clean_table_filter_hide103', "click", hide_filter, 103);
-    
+
     Event.addListener('clean_table_filter_show104', "click", show_filter, 104);
     Event.addListener('clean_table_filter_hide104', "click", hide_filter, 104);
     Event.addListener('clean_table_filter_show105', "click", show_filter, 105);
     Event.addListener('clean_table_filter_hide105', "click", hide_filter, 105);
-    
+
     Event.addListener('clean_table_filter_show106', "click", show_filter, 106);
     Event.addListener('clean_table_filter_hide106', "click", hide_filter, 106);
     Event.addListener('clean_table_filter_show107', "click", show_filter, 107);
@@ -2275,6 +2242,13 @@ function init() {
     oAutoComp107.minQueryLength = 0;
 
     YAHOO.util.Event.addListener(['go_to_new', 'create_other_deal'], "click", after_actions_changed);
+
+    if (Dom.get('name').value != '') {
+
+        validate_general('deal', 'name', Dom.get('name').value);
+
+
+    }
 
 
 }

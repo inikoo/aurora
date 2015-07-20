@@ -7,7 +7,7 @@ include_once '../../class.Family.php';
 include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Part.php';
-include_once '../../class.PartLocation.php';
+include_once '../../class.Site.php';
 
 include_once '../../class.SupplierProduct.php';
 error_reporting(E_ALL);
@@ -32,22 +32,32 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  and P.`Product ID`=1669 order by `Product Total Acc Invoices`    "
-);
+$sql="select count(*) as total from `Page Dimension` where `Page Type`='Store' ";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+$lap_time0=date('U');
+
+$sql="select * from `Page Dimension` where `Page Type`='Store'";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	print $product->data['Product ID'].' '.$product->data['Product Code']."\n";
+	$page=new Page($row['Page Key']);
+	
+	
+	$page->update_up_today_requests();
+	$page->update_interval_requests();
+    $page->update_last_period_requests();
+	
 
-	//$product->update_sales_correlatations('Same Department','250');
-	//	$product->update_sales_correlatations('Same Family');
+	$contador++;
 
-	foreach($product->get_pages_keys() as $page_key){
-	    $page=new Page($page_key);
-	    $page->update_see_also();
-	}
+	$lap_time1=date('U');
+	
+	print ' Time  '.$page->data['Page URL'].' '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
-   
+
 }
 
 

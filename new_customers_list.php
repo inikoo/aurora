@@ -183,7 +183,7 @@ $allow_options=array(
 	'newsletter'=>array('name'=>_('Newsletter'),'selected'=>false ),
 	'marketing_email'=>array('name'=>_('Marketing Email'),'selected'=>false ),
 	'marketing_post'=>array('name'=>_('Marketing Post'),'selected'=>false ),
-	'all'=>array('name'=>'No restrictions','selected'=>true),
+	'all'=>array('name'=>_('No restrictions'),'selected'=>true),
 );
 $smarty->assign('allow_options',$allow_options);
 

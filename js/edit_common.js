@@ -192,6 +192,7 @@ function CellEdit(callback, newValue) {
     else if (column.object == 'new_porder') ar_file = 'ar_edit_porders.php';
     else if (column.object == 'family_page_properties' || column.object == 'page_product_list' || column.object == 'store_page_properties' || column.object == 'department_page_properties' || column.object == 'site_page_properties') ar_file = 'ar_edit_sites.php';
     else if (column.object == 'widget') ar_file = 'ar_edit_dashboard.php';
+    else if (column.object == 'deal_field'  || column.object == 'deal_component_field') ar_file = 'ar_edit_deals.php';
 
 
     else if (column.object == 'ind_staff' || column.object == 'ind_positions' || column.object == 'ind_department') ar_file = 'ar_edit_staff.php';
@@ -201,7 +202,7 @@ function CellEdit(callback, newValue) {
 
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
-    // alert(ar_file+'?'+request);
+   //  alert(ar_file+'?'+request);
     //return;
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
@@ -465,7 +466,7 @@ var unhighlightEditableCell = function(oArgs) {
         //alert(column.action)
         switch (column.action) {
 
-           case 'close':
+        case 'close':
         case 'pick_it':
         case 'match_po':
         case ('add_object'):
@@ -867,7 +868,6 @@ var save_edit_general_tokens = [];
 
 function save_edit_general(branch) {
 
-
     if (Dom.hasClass('save_edit_' + branch, 'disabled')) {
 
         if (Dom.get("edit_" + branch + "_invalid_msg") != undefined) {
@@ -928,7 +928,7 @@ function save_edit_general(branch) {
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
-                    //  alert(o.responseText);
+                    //alert(o.responseText);
                     var r = YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state == 200) {
 
@@ -937,7 +937,7 @@ function save_edit_general(branch) {
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue', r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
                         //  alert(validate_scope_data[branch][r.key].name+'_msg')
-                        Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img src="art/icons/accept.png"/>';
+                        Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img src="art/icons/accept.png"  alt="ok">';
                         var myAnim = new YAHOO.util.Anim(validate_scope_data[branch][r.key].name + '_msg', {
                             opacity: {
                                 from: 1,
@@ -950,7 +950,7 @@ function save_edit_general(branch) {
 
                     } else {
 
-//alert(o.responseText);
+                        //alert(o.responseText);
                         validate_scope_data[branch][r.key].changed = true;
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -1174,11 +1174,18 @@ function save_new_general(branch) {
     jsonificated_values = YAHOO.lang.JSON.stringify(values);
 
 
+
+    Dom.setStyle('waiting', 'display', '')
+    Dom.setStyle('form_buttons', 'display', 'none')
+
+
+
+
     var request = scope_edit_ar_file + '?tipo=' + operation + '_' + branch + '&parent=' + parent + '&parent_key=' + parent_key + '&values=' + jsonificated_values;
     //alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-      //        alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.msg != undefined) {

@@ -15,11 +15,12 @@
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}" title="{$store->get('Store Name')}">{$store->get('Store Code')}</a> &rarr; <a id="department_branch_link" href="department.php?id={$department->id}" title="{$department->get('Product Department Name')}">{$department->get('Product Department Code')}</a> &rarr; <a href="family.php?id={$family->id}" title="{$family->get('Product Family Name')}">{$family->get('Product Family Code')}</a> ({t}Editing{/t})</span> 
 		</div>
 		<div class="top_page_menu">
-			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button id="show_delete_family_dialog" style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
+					{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+		<div class="buttons small" style="position:relative;top:5px">
+				<button style="margin-left:0px" onclick="window.location='family.php?id={$family->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button id="show_delete_family_dialog" style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}"><img src="art/icons/delete.png" alt="" /> {t}Delete{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title">{t}Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title no_buttons">{t}Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -35,7 +36,7 @@
 	<div class="tabbed_container no_padding">
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
 			<div class="buttons small left tabs">
-				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='type'}selected{/if}" id="details_subtab_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Public Description{/t}</button> <button class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
+				<button class="item indented {if $edit_details_subtab=='department'}selected{/if}" id="details_subtab_department" block_id="department">{t}Department{/t}</button> <button class="item {if $edit_details_subtab=='type'}selected{/if}" id="details_subtab_type" block_id="type">{t}Sales Type{/t}</button> <button class="item {if $edit_details_subtab=='code'}selected{/if}" id="details_subtab_code" block_id="code">{t}Name, Code{/t}</button> <button class="item {if $edit_details_subtab=='info'}selected{/if}" id="details_subtab_info" block_id="info">{t}Public Description{/t}</button> <button style="display:none" class="item {if $edit_details_subtab=='discounts'}selected{/if}" id="details_subtab_discounts" block_id="discounts">{t}Discounts{/t}</button> <button class="item {if $edit_details_subtab=='pictures'}selected{/if}" id="details_subtab_pictures" block_id="pictures">{t}Pictures{/t}</button> 
 			</div>
 			<div class="tabs_base">
 			</div>
@@ -123,7 +124,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="d_details_subtab_info" style="{if $edit_details_subtab!='info' }display:none{/if}">
+			<div id="d_details_subtab_info" style="{if $edit_details_subtab!='info' }display:none{/if};height:370px">
 				<table class="edit" style="width:890px;padding:20px;margin-left:20px;margin-top:10px">
 					<tr class="title space10">
 						<td>{t}Public Description (To be shown in the website){/t} <span id="Family_Description_msg"></span></td>
@@ -134,11 +135,13 @@
 						</td>
 					</tr>
 					<tr>
+					<td>
+								<textarea id="Family_Description" ovalue="{$family->get('Product Family Description')|escape}" rows="20" cols="75" style="width:870px" >{$family->get('Product Family Description')|escape}</textarea> 
+<div id="Family_Description_Container">
+							</div>
+					</td>
 					</tr>
 				</table>
-				<form onsubmit="return false;" style="position:relative;left:-3px">
-					<textarea id="Family_Description" ovalue="{$family->get('Product Family Description')|escape}" rows="20" cols="75">{$family->get('Product Family Description')|escape}</textarea> 
-				</form>
 			</div>
 			<div id="d_details_subtab_type" style="{if $edit_details_subtab!='type' }display:none{/if};padding:20px">
 				<table class="edit" style="width:100%;padding:20px" border="0">

@@ -26,7 +26,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
         var tableid = 0;
         var tableDivEL = "table" + tableid;
-       var ColumnDefs = [{
+        var ColumnDefs = [{
             key: "order",
             label: labels.Number,
             width: 70,
@@ -35,8 +35,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        },
-         {
+        }, {
             key: "date",
             label: labels.Date,
             sortable: true,
@@ -45,7 +44,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-         } , {
+        }, {
             key: "customer_name",
             label: labels.Customer,
             width: 220,
@@ -54,8 +53,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        },
-        {
+        }, {
             key: "dispatch_state",
             label: labels.State,
             width: 120,
@@ -64,8 +62,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }  ,
-         {
+        }, {
             key: "total_amount",
             label: labels.Total,
             sortable: true,
@@ -76,26 +73,32 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }];
 
-request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
-        this.dataSource0 = new YAHOO.util.DataSource();
+        request = "ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
+
+
+        this.dataSource0 = new YAHOO.util.DataSource(request);
 
         this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource0.connXhrMode = "queueRequests";
         this.dataSource0.responseSchema = {
             resultsList: "resultset.data",
             metaFields: {
+                rowsPerPage: "resultset.records_perpage",
                 rtext: "resultset.rtext",
                 rtext_rpp: "resultset.rtext_rpp",
-                rowsPerPage: "resultset.records_perpage",
                 sort_key: "resultset.sort_key",
                 sort_dir: "resultset.sort_dir",
                 tableid: "resultset.tableid",
                 filter_msg: "resultset.filter_msg",
                 totalRecords: "resultset.total_records"
+
             },
 
-            fields: ["id", "order", "customer_name", "date", "total_amount","dispatch_state"]
+            fields: ["total_amount", "dispatch_state", "customer_name", "date", "order", "orders", "location", "id"]
         };
+
+
+
 
         this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource0, {
             //draggableColumns:true,
@@ -109,7 +112,6 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
                 nextPageLinkLabel: ">",
                 firstPageLinkLabel: "<<",
                 lastPageLinkLabel: ">>",
-                rowsPerPageOptions: [10, 25, 50, 100, 250, 500],
                 alwaysVisible: false,
                 template: "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
             })
@@ -174,8 +176,10 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
         }];
+        request = "ar_deals.php?tipo=customers&sf=0&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
 
-        this.dataSource1 = new YAHOO.util.DataSource("ar_deals.php?tipo=customers&sf=0&parent=deal&parent_key=" + Dom.get('deal_key').value + "&tableid=" + tableid);
+
+        this.dataSource1 = new YAHOO.util.DataSource(request);
 
         this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource1.connXhrMode = "queueRequests";
@@ -245,40 +249,63 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
         var productsColumnDefs = [
 
         {
-            key: "key",
+            key: "deal_component_key",
             label: "",
             width: 20,
             sortable: false,
             isPrimaryKey: true,
             hidden: true
         }, {
-            key: "name",
-            label: labels.Name,
-            width: 150,
+            key: "status",
+            label: '',
+            width: 10,
             sortable: true,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         }, {
-            key: "terms",
-            label: labels.Terms,
-            width: 150,
+            key: "allowances",
+            label: labels.Allowance,
+            width: 200,
             sortable: true,
-            className: "aright",
+            className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }
-
-        , {
-            key: "allowance",
-            label: labels.Allowance,
+        }, {
+            key: "label",
+            label: labels.Label,
             width: 150,
             sortable: true,
             className: "aright",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            },
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            },
+            editor: new YAHOO.widget.TextboxCellEditor({
+                asyncSubmitter: CellEdit
+            }),
+            object: 'deal_component_field'
+        }, {
+            key: "from",
+            label: labels.From,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "to",
+            label: labels.To,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
         }
 
@@ -289,7 +316,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortable: true,
             className: "aright",
             sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
         }, {
             key: "customers",
@@ -298,16 +325,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortable: true,
             className: "aright",
             sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
-            }
-        }, {
-            key: "duration",
-            label: labels.Interval,
-            width: 150,
-            sortable: true,
-            className: "aleft",
-            sortOptions: {
-                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
         }];
 
@@ -329,7 +347,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["name", "key", "allowance", "duration", "orders", "code", "customers", "target", "terms"]
+            fields: ["name", "deal_component_key", "allowances", "duration", "orders", "code", "customers", "target", "terms", "from", "to", "label", "status"]
         };
 
 
@@ -373,14 +391,18 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
         this.table2.getDataSource().sendRequest(null, {
             success: function(request, response, payload) {
                 if (response.results.length == 0) {
-                    //   get_part_elements_numbers()
+                    get_deal_component_elements_numbers()
                 } else {
-                    // this.onDataReturnInitializeTable(request, response, payload);
+                    this.onDataReturnInitializeTable(request, response, payload);
                 }
             },
             scope: this.table2,
             argument: this.table2.getState()
         });
+
+        this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
+        this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+        this.table2.subscribe("cellClickEvent", onCellClick);
 
 
         this.table2.filter = {
@@ -394,7 +416,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
 
         var tableid = 3;
         var tableDivEL = "table" + tableid;
-       var ColumnDefs = [{
+        var ColumnDefs = [{
             key: "order",
             label: labels.Number,
             width: 70,
@@ -403,8 +425,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        },
-         {
+        }, {
             key: "date",
             label: labels.Date,
             sortable: true,
@@ -413,7 +434,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-         } , {
+        }, {
             key: "customer_name",
             label: labels.Customer,
             width: 220,
@@ -422,8 +443,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        },
-        {
+        }, {
             key: "dispatch_state",
             label: labels.State,
             width: 120,
@@ -432,8 +452,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        }  ,
-         {
+        }, {
             key: "total_amount",
             label: labels.Total,
             sortable: true,
@@ -442,8 +461,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
-        } ,
-         {
+        }, {
             key: "deal_used",
             label: labels.Offer,
             sortable: true,
@@ -454,8 +472,8 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
             }
         }];
 
-		request="ar_deals.php?tipo=orders_with_voucher&sf=0&voucher_key="+Dom.get('voucher_key').value+"&parent=deal&deal_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
-	//	alert(request)
+        request = "ar_deals.php?tipo=orders_with_voucher&sf=0&voucher_key=" + Dom.get('voucher_key').value + "&parent=deal&deal_key=" + Dom.get('deal_key').value + "&tableid=" + tableid
+        //	alert(request)
         this.dataSource3 = new YAHOO.util.DataSource(request);
         this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource3.connXhrMode = "queueRequests";
@@ -472,7 +490,7 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["id", "order", "customer_name", "date", "total_amount","dispatch_state","deal_used"]
+            fields: ["id", "order", "customer_name", "date", "total_amount", "dispatch_state", "deal_used"]
         };
 
         this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource3, {
@@ -516,8 +534,57 @@ request="ar_deals.php?tipo=orders&sf=0&parent=deal&parent_key=" + Dom.get('deal_
     };
 });
 
+function badge_changed() {
+    Dom.get('badge_name_display_bis').innerHTML = Dom.get('badge_name').value
+    Dom.get('badge_allowances_display_bis').innerHTML = Dom.get('badge_allowances').value
+    Dom.get('badge_terms_display_bis').innerHTML = Dom.get('badge_terms').value
+
+}
+
+function cancel_badge() {
+    Dom.get('badge_name').value = Dom.get('badge_name_display_' + Dom.get('deal_key').value).innerHTML
+    Dom.get('badge_allowances').value = Dom.get('badge_allowances_display_' + Dom.get('deal_key').value).innerHTML
+    Dom.get('badge_terms').value = Dom.get('badge_terms_display_' + Dom.get('deal_key').value).innerHTML
+    Dom.get('badge_name_display_bis').innerHTML = Dom.get('badge_name').value
+    Dom.get('badge_allowances_display_bis').innerHTML = Dom.get('badge_allowances').value
+    Dom.get('badge_terms_display_bis').innerHTML = Dom.get('badge_terms').value
+    dialog_edit_deal_badge.hide()
+
+}
+
+function save_badge() {
+
+    var data = new Object;
+    data = {
+        'label': Dom.get('badge_name').value,
+        'allowances': Dom.get('badge_allowances').value,
+        'terms': Dom.get('badge_terms').value,
+        'deal_component_key': Dom.get('badge_display_' + Dom.get('deal_key').value).getAttribute('component_key'),
+        'deal_key': Dom.get('deal_key').value
+    }
+    var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data));
+
+    var request = 'ar_edit_deals.php?tipo=update_badge&values=' + json_value
+
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            if (r.state == 200) {
+                Dom.get('badge_name_display_' + r.deal_key).innerHTML = r.label
+                Dom.get('badge_allowances_display_' + r.deal_key).innerHTML = r.allowances
+                Dom.get('badge_terms_display_' + r.deal_key).innerHTML = r.terms
+
+                dialog_edit_deal_badge.hide()
+            } else {
+                alert('error')
+            }
+        }
+    });
 
 
+}
 
 function update_objects_table() {
 
@@ -599,15 +666,24 @@ function cancel_new_email_campaign() {
 
 function show_dialog_new_email_campaign() {
 
-
     region1 = Dom.getRegion(this);
     region2 = Dom.getRegion('dialog_new_email_campaign');
     var pos = [region1.right - region1.width, region1.bottom]
     Dom.setXY('dialog_new_email_campaign', pos);
-
-
     dialog_new_email_campaign.show()
 }
+
+function show_dialog_edit_badge() {
+
+    region1 = Dom.getRegion(this);
+    region2 = Dom.getRegion('dialog_edit_deal_badge');
+    var pos = [region1.right - region1.width, region1.top]
+    Dom.setXY('dialog_edit_deal_badge', pos);
+    dialog_edit_deal_badge.show()
+}
+
+
+
 
 
 function new_deal_component() {
@@ -629,13 +705,23 @@ function init() {
         draggable: false
     });
     dialog_new_email_campaign.render();
-
     Event.addListener('show_create_email_remainder', "click", show_dialog_new_email_campaign);
 
     Event.addListener("save_new_email_campaign", "click", save_new_email_campaign);
     Event.addListener("cancel_new_email_campaign", "click", cancel_new_email_campaign);
 
     Event.addListener(["select_text_email", "select_html_from_template_email", "select_html_email"], "click", change_new_email_campaign_type);
+
+
+    dialog_edit_deal_badge = new YAHOO.widget.Dialog("dialog_edit_deal_badge", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_edit_deal_badge.render();
+
+    Event.addListener('show_dialog_edit_badge', "dblclick", show_dialog_edit_badge);
 
 
     init_search('products_store');
@@ -652,13 +738,13 @@ function init() {
     oACDS1.table_id = 1;
     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
     oAutoComp1.minQueryLength = 0;
-    
+
     var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS2.queryMatchContains = true;
     oACDS2.table_id = 2;
     var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
     oAutoComp2.minQueryLength = 0;
-    
+
     var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS3.queryMatchContains = true;
     oACDS3.table_id = 3;
@@ -667,6 +753,10 @@ function init() {
 
 
     Event.addListener(['details', 'customers', 'orders', 'timeline', 'sales', 'web_site'], "click", change_block);
+    ids = ['deal_component_status_elements_Waiting', 'deal_component_status_elements_Active', 'deal_component_status_elements_Suspended', 'deal_component_status_elements_Finish']
+    Event.addListener(ids, "click", change_elements_deal_component, {
+        table_id: 2
+    });
 
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
@@ -675,9 +765,10 @@ function init() {
     YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
     YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
     YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
-   YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
     YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
 
+    get_deal_component_elements_numbers()
 }
 
 YAHOO.util.Event.onDOMReady(init);

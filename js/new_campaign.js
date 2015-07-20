@@ -110,6 +110,7 @@ function init() {
 
     validate_scope_data = {
         'campaign': {
+        /*
             'code': {
                 'changed': false,
                 'validated': false,
@@ -123,6 +124,7 @@ function init() {
             }
 
             ,
+            */
             'name': {
                 'changed': false,
                 'validated': false,
@@ -132,10 +134,8 @@ function init() {
                 'name': 'campaign_name',
                 'ar': false,
                 'dbname': 'Deal Campaign Name',
-                'validation': [{
-                    'regexp': "[a-z\\d]+",
-                    'invalid_msg': 'Invalid name'
-                }]
+                 'ar': 'find',
+                'ar_request': 'ar_deals.php?tipo=is_campaign_name_in_store&store_key=' + Dom.get('store_key').value + '&query=',
             },
             'description': {
                 'changed': false,
@@ -197,13 +197,13 @@ function init() {
 
     };
 
-
+/*
     var campaign_code_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_code);
     campaign_code_oACDS.queryMatchContains = true;
     var campaign_code_oAutoComp = new YAHOO.widget.AutoComplete("campaign_code", "campaign_code_Container", campaign_code_oACDS);
     campaign_code_oAutoComp.minQueryLength = 0;
     campaign_code_oAutoComp.queryDelay = 0.1;
-
+*/
     var campaign_name_oACDS = new YAHOO.util.FunctionDataSource(validate_campaign_name);
     campaign_name_oACDS.queryMatchContains = true;
     var campaign_name_oAutoComp = new YAHOO.widget.AutoComplete("campaign_name", "campaign_name_Container", campaign_name_oACDS);

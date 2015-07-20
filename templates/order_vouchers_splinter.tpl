@@ -9,7 +9,7 @@
 	
 	<tr id="voucher_{$voucher.key}">
 		<td>{$voucher.code}</td>
-		<td><b><a href="deal.php?id={$voucher.deal_key}">{$voucher.deal_code}</a></b> {$voucher.deal_name}</td>
+		<td><b><a href="deal.php?id={$voucher.deal_key}">{$voucher.deal_name}</a></b></td>
 		<td><img style="cursor:pointer;height:10px;position:relative;top:2px" onclick="remove_voucher({$voucher.key})" src="art/icons/cross_bw.png"></td>
 	</tr>
 	{/foreach} 

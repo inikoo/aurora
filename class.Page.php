@@ -1105,7 +1105,10 @@ class Page extends DB_Table {
 			$see_also_page=new Page($row['Page Store See Also Key']);
 			if ($see_also_page->id) {
 
-
+                if($this->data['Page Store See Also Type']=='Manual'){
+                $formated_correlation_type=_('Manual');
+					$formated_correlation_value='';
+                }else{
 
 				switch ($row['Correlation Type']) {
 				case 'Manual':
@@ -1128,6 +1131,7 @@ class Page extends DB_Table {
 					$formated_correlation_type=$row['Correlation Type'];
 					$formated_correlation_value=number($row['Correlation Value']);
 					break;
+				}
 				}
 				//if ($site_url)
 				//$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
@@ -1422,6 +1426,7 @@ class Page extends DB_Table {
 			}
 
 
+           
 
 			$sql=sprintf("select UNIX_TIMESTAMP(`Page Store Creation Date`) as creation_date,`Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`='Online' order by `Page Store Creation Date` desc limit 3 ",
 				$this->data['Page Site Key'],
@@ -1488,17 +1493,17 @@ class Page extends DB_Table {
 			break;
 
 		case 'Product Description':
-			$max_links=5;
+			
 			$product=new Product('pid',$this->data['Page Parent Key']);
 			$sql=sprintf("select * from `Product Sales Correlation` where `Product A ID`=%d order by `Correlation` desc",
 				$this->data['Page Parent Key']);
 			$res=mysql_query($sql);
+			//print $sql;
 			while ($row=mysql_fetch_assoc($res)) {
 				if (!array_key_exists($row['Product B ID'], $see_also)) {
 					$_product=new Product('pid',$row['Product B ID']);
 
-
-					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
+					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key'] ) {
 
 						$page_keys=$_product->get_pages_keys();
 						$see_also_page_key=array_pop($page_keys);
@@ -1513,6 +1518,11 @@ class Page extends DB_Table {
 				}
 			}
 
+           
+
+           if ($number_links>=$max_links){
+            break;
+           }
 
 
 			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
@@ -1560,6 +1570,8 @@ class Page extends DB_Table {
 			$this->id);
 		mysql_query($sql);
 		$count=0;
+		
+		
 		foreach ($see_also  as $see_also_page_key=>$see_also_data) {
 
 			if ($count>=$max_links)
@@ -1572,6 +1584,7 @@ class Page extends DB_Table {
 				$see_also_data['value']
 			);
 			mysql_query($sql);
+			$count++;
 			//print "$sql\n";
 		}
 
@@ -1649,7 +1662,8 @@ class Page extends DB_Table {
 			$formated_store_section=_('Search');
 			break;
 		case 'Product Description':
-			$formated_store_section=_('Product Description');
+			$formated_store_section=_('Product details').' <a href="product.php?pid='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+
 			break;
 		case 'Information':
 			$formated_store_section=_('Information');
@@ -5128,6 +5142,12 @@ class Page extends DB_Table {
 			$deals=$family->get_deals_data();
 
 			break;
+			
+		case 'Product Description':
+		$product=new Product('pid',$this->data['Page Parent Key']);
+			$deals=$product->get_deals_data();
+			break;	
+			
 		default:
 			$deals=array();
 		}

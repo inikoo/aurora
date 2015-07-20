@@ -509,7 +509,8 @@ td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;pad
 .branch {clear:left;font-style:italic; color:#666;font-size:90%;width:540px;padding-top:5px}
 .branch span{cursor:pointer}
 .branch span.selected{font-weight:800;color:#555}
-
+.branch img{height:11px;vertical-align:-2px;}
+.branch img.home{height:12px;vertical-align:-2px;}
 
 .product_info_sales_options{cursor:pointer}
 

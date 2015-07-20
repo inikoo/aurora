@@ -32,22 +32,24 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  and P.`Product ID`=1669 order by `Product Total Acc Invoices`    "
-);
+$sql="select  `Deal Key` from `Deal Dimension` ";
+
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	print $product->data['Product ID'].' '.$product->data['Product Code']."\n";
 
-	//$product->update_sales_correlatations('Same Department','250');
-	//	$product->update_sales_correlatations('Same Family');
+	$sql=sprintf("select * from `Deal Component Dimension` where `Deal Component Deal Key`=%d ",$row['Deal Key']);
+	$result2=mysql_query($sql);
+	if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
-	foreach($product->get_pages_keys() as $page_key){
-	    $page=new Page($page_key);
-	    $page->update_see_also();
+		$sql=sprintf("update `Deal Dimension` set `Deal Terms Description`=%s ,`Deal XHTML Terms Description Label`=%s,`Deal Terms`=%s where `Deal Key`=%d",
+			prepare_mysql($row2['Deal Component Terms Description']),
+			prepare_mysql($row2['Deal Component XHTML Terms Description Label']),
+			prepare_mysql($row2['Deal Component Terms']),
+			$row['Deal Key']
+		);
+        mysql_query($sql);
 	}
 
-   
 }
 
 

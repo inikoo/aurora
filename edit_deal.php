@@ -87,13 +87,15 @@ $js_files=array(
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/search.js',
+	'js/deals_common.js',
+
 	'js/edit_deal.js',
 
 );
 
 
 $smarty->assign('parent','marketing');
-$smarty->assign('title', _('Edit Offer').': '.$deal->data['Deal Code']);
+$smarty->assign('title', _('Edit Offer').': '.$deal->data['Deal Name']);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -101,8 +103,8 @@ $smarty->assign('js_files',$js_files);
 ;
 
 //$smarty->assign('general_options_list',$general_options_list);
-$smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_label',_('Marketing'));
+$smarty->assign('search_scope','marketing');
 
 
 $paginator_menu=array(10,25,50,100,500);
@@ -114,7 +116,7 @@ $tipo_filter=$_SESSION['state']['deal']['edit_components']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['deal']['edit_components']['f_value']);
 $filter_menu=array(
-	'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+	'allowances'=>array('db_key'=>'allowances','menu_label'=>_('Allowances'),'label'=>_('Allowances')),
 
 );
 $smarty->assign('filter_menu2',$filter_menu);
@@ -125,6 +127,10 @@ $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 
 $smarty->assign('paginator_menu2',$paginator_menu);
+
+
+$smarty->assign('deal_component_status_elements',$_SESSION['state']['deal']['edit_components']['elements']);
+
 
 $session_data=base64_encode(json_encode(array(
 			'label'=>array(
@@ -137,8 +143,10 @@ $session_data=base64_encode(json_encode(array(
 				'Name'=>_('Name'),
 				'Terms'=>_('Terms'),
 				'Allowance'=>_('Allowance'),
-				'Interval'=>_('Interval'),
+				'Finish'=>_('Finish'),
+				'Status'=>_('Status'),
 
+				'Label'=>_('Alloance Label'),
 
 				'Page'=>_('Page'),
 				'of'=>_('of')
