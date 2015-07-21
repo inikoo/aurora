@@ -1644,6 +1644,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	function update_sales_correlations($type='All',$limit=100) {
 
+		$max_correaltions=50;
+
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product Family Key`=%d and `Order Transaction Type`='Order' ",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1654,13 +1656,24 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			$a_lenght=sqrt($a_samples);
 		}
 
+		switch ($type) {
 
+		case 'Same Department':
+			$sql=sprintf("select F.`Product Family Key` from `Product Family Dimension` F  left join `Product Family Data Dimension` D on (F.`Product Family Key`=D.`Product Family Key`) where  `Product Family Main Department Key`=%d and  `Product Family Stealth`='No' and `Product Family 1 Year Acc Customers`>0  order by `Product Family 1 Year Acc Customers` desc  limit %s ",
+				$this->data['Product Family Main Department Key'],
+				$limit
+			);
+			
+			break;
 
-		$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where  `Product Family Store Key`=%d and  `Product Family Stealth`='No'",
-			$this->data['Product Family Store Key']
-		);
+		default:
 
+			$sql=sprintf("select F.`Product Family Key` from `Product Family Dimension` F  left join `Product Family Data Dimension` D on (F.`Product Family Key`=D.`Product Family Key`) where  `Product Family Store Key`=%d and  `Product Family Stealth`='No' and `Product Family 1 Year Acc Customers`>0  order by `Product Family 1 Year Acc Customers` desc  limit %s ",
+				$this->data['Product Family Store Key'],
+				$limit
+			);
 
+		}
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
 			if ($row2['Product Family Key']==$this->id) continue;
@@ -1709,7 +1722,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Family Sales Correlation` where `Family A Key`=%d    ",$this->id);
 				$res4=mysql_query($sql);
 				if ($row4=mysql_fetch_assoc($res4)) {
-					if ($row4['num']<11) {
+					if ($row4['num']<$max_correaltions) {
 						$sql=sprintf("insert into  `Product Family Sales Correlation` (`Family A Key`,`Family B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 							$this->id,
 							$row2['Product Family Key'],
@@ -1745,7 +1758,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 				$sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Family Sales Correlation` where `Family A Key`=%d    ",$row2['Product Family Key']);
 				$res4=mysql_query($sql);
 				if ($row4=mysql_fetch_assoc($res4)) {
-					if ($row4['num']<6) {
+					if ($row4['num']<$max_correaltions) {
 						$sql=sprintf("insert into  `Product Family Sales Correlation` (`Family A Key`,`Family B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 
 							$row2['Product Family Key'],
@@ -2098,16 +2111,16 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	function get_formated_discounts() {
 		$formated_discounts='';
-		
+
 		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal XHTML Terms Description Label`,`Deal Component XHTML Allowance Description Label` from  `Deal Component Dimension` DC left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Department' and `Deal Component Allowance Target Key`=%d  and `Deal Component Status`='Active' ",$this->data['Product Family Main Department Key']);
-		
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$formated_discounts.='<br> <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <span style="font-style:italic;color:#777">'.$row['Deal XHTML Terms Description Label'].' &#8658; '.$row['Deal Component XHTML Allowance Description Label'].'</span></span>';
 		}
-		
+
 		$sql=sprintf("select `Deal Description`,`Deal Name`,D.`Deal Key`,`Deal XHTML Terms Description Label`,`Deal Component XHTML Allowance Description Label` from  `Deal Component Dimension` DC left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d  and `Deal Component Status`='Active' ",$this->id);
-		
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$formated_discounts.='<br> <span title="'.$row['Deal Description'].'"><a href="deal.php?id='.$row['Deal Key'].'">'.$row['Deal Name']. '</a> <span style="font-style:italic;color:#777">'.$row['Deal XHTML Terms Description Label'].' &#8658; '.$row['Deal Component XHTML Allowance Description Label'].'</span></span>';

@@ -6281,7 +6281,7 @@ class product extends DB_Table {
 
 	function update_sales_correlatations($type='All',$limit='100') {
 
-		$max_correaltions=20;
+		$max_correaltions=50;
 
 		$sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$this->pid);
 		$res=mysql_query($sql);
