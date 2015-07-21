@@ -39,7 +39,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$product=new Product('pid',$row['Product ID']);
 	print $product->data['Product ID'].' '.$product->data['Product Code']."\n";
 
-	$product->update_sales_correlatations('Same Department','250');
+	$product->update_sales_correlatations('All','10000');
 	//	$product->update_sales_correlatations('Same Family');
 
 	foreach($product->get_pages_keys() as $page_key){
