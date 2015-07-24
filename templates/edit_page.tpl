@@ -616,12 +616,12 @@
 		</tr>
 	</table>
 </div>
-{*}
+
 <iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
-{*}
+
 </iframe> 
 
 
