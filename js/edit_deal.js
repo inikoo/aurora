@@ -687,6 +687,17 @@ function init() {
     Event.addListener(ids, "click", change_elements_deal_component, {
         table_id: 2
     });
+    
+    
+    
+        YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+  var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+
 
 
 }

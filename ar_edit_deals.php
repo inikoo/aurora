@@ -309,12 +309,12 @@ function list_deal_components_for_edition() {
 
 
 
-
-	// print "$parent $where";
+	
 	$filter_msg='';
 	$wheref='';
-	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and ( `Deal Component Description` like '".addslashes($f_value)."%' or `Deal Component Allowance Description` like '".addslashes($f_value)."%'  )   ";
+	if ($f_field=='allowances' and $f_value!='')
+		$wheref.=" and  `Deal Component Allowance Plain Description` regexp '[[:<:]]".addslashes($f_value)."' ";
+
 
 
 
@@ -327,7 +327,7 @@ function list_deal_components_for_edition() {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total_without_filters from `Deal Dimension` $where ";
+		$sql="select count(*) as total_without_filters from `Deal Component Dimension` $where ";
 
 
 		$res=mysql_query($sql);
@@ -356,26 +356,24 @@ function list_deal_components_for_edition() {
 
 
 
-
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 
-		case('description'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with description like ")." <b>".$f_value."*</b> ";
+		case('allowances'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any offer with allowances like ")." <b>".$f_value."*</b> ";
 			break;
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
 
-		case('description'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b>";
+		case('allowances'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('offer with allowances like')." <b>".$f_value."*</b>";
 			break;
 		}
 	}
 	else
 		$filter_msg='';
-
 	$_dir=$order_direction;
 	$_order=$order;
 
