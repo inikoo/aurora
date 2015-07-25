@@ -35,7 +35,8 @@
 			<div class="buttons small" style="position:relative;top:5px">
 				{*} <button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> {*} 
 				<button id="exit_modify_order">{t}Exit Modify Order{/t}</button> <button style="display:none" id="cancel" class="negative">{t}Cancel Order{/t}</button> 
-							<button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> 
+				<button id="import_transactions" >{t}Import{/t}</button> 
+				<button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> 
 
 			</div>
 			<div style="clear:both">
@@ -127,7 +128,8 @@
 	</div>
 	<div style="padding:0px 20px">
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='items'}display:none{/if}" id="items_block">
-			<span id="table_title_items" class="clean_table_title" >{t}Items{/t}</span> 
+			<span id="table_title_items" class="clean_table_title" >{t}Items{/t}</span>
+			<div id="import_msg_div" style="float:right;display:none" ><img id="import_msg_ok" src='art/icons/accept.png'> <span id="import_msg"></span></div> 
 			<div class="table_top_bar space">
 			</div>
 			<div id="list_options0" style="display:none">
@@ -161,6 +163,7 @@
 					<span id="clear_lookup_family" onclick="clear_lookup_family()" style="cursor:pointer;float:right;margin-right:5px;color:#777;font-style:italic;font-size:80%;{if $lookup_family==''}display:none{/if}">{t}Clear{/t}</span> <button id="show_all_products" onclick="show_all_products()" style="margin-right:50px">{t}Display all products{/t}</button> 
 				</div>
 			</div>
+			<div id="import_msg_div_bis" style="float:right;display:none" ><img id="import_msg_ok_bis" src='art/icons/accept.png'> <span id="import_msg_bis"></span></div>
 			<div class="table_top_bar space">
 			</div>
 			
@@ -209,20 +212,5 @@
 			{/foreach} 
 		</ul>
 	</div>
-</div>
-<div id="dialog_import_transactions_mals_e" style="border:1px solid #ccc;text-align:left;padding:10px">
-	<div id="import_transactions_mals_e_msg">
-	</div>
-	<table style="margin:10px" border="0">
-		<tr>
-			<td style="padding-top:10px">{t}Copy and paste the Emals-e email here{/t}:</td>
-		</tr>
-		<tr>
-			<td style="padding-top:10px"> <textarea style="width:100%" id="transactions_mals_e"></textarea> </td>
-		</tr>
-		<tr>
-			<td style="padding-top:10px"> <button style="cursor:pointer" id="save_import_transactions_mals_e">{t}Import{/t}</button> </td>
-		</tr>
-	</table>
 </div>
 {include file='add_payment_splinter.tpl' subject='order'} {include file='order_not_dispatched_dialogs_splinter.tpl'}  {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

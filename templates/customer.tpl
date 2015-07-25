@@ -298,7 +298,7 @@
 
 
 				</ul>
-				<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+				<div class="tabs_base">
 				</div>
 				<div id="block_details" class="data_block" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 					<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">

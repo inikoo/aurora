@@ -15,7 +15,7 @@ function add_insurance(o) {
 
     var ar_file = 'ar_edit_orders.php';
     var request = 'tipo=add_insurance&insurance_key=' + insurance_key + '&order_key=' + Dom.get('order_key').value;
-    //alert(ar_file+'?'+request)  
+    //alert(ar_file+'?'+request)
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             // alert(o.responseText);
@@ -502,7 +502,7 @@ function create_delivery_note_from_list(o, order_key) {
         return;
 
     }
-    // Dom.addClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
+    // Dom.addClass(['cancel', 'done', 'import_transactions'], 'disabled');
     // Dom.setStyle('sending_to_warehouse_waiting', 'display', '')
     // Dom.setStyle('sending_to_warehouse_msg', 'display', 'none')
     //
@@ -552,7 +552,7 @@ function create_delivery_note() {
 
     var request = 'tipo=send_to_warehouse&order_key=' + Dom.get('order_key').value + '&note=' + note;
 
-    Dom.addClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
+    Dom.addClass(['cancel', 'done', 'import_transactions'], 'disabled');
 
     Dom.setStyle('sending_to_warehouse_waiting', 'display', '')
     Dom.setStyle('sending_to_warehouse_msg', 'display', 'none')
@@ -576,7 +576,7 @@ function create_delivery_note() {
             } else {
                 Dom.get('send_to_warehouse_img').src = 'art/icons/cart_go.png'
 
-                Dom.removeClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
+                Dom.removeClass(['cancel', 'done', 'import_transactions'], 'disabled');
                 if (r.number_items == 0) {
                     Dom.addClass(['done'], 'disabled');
 
@@ -826,7 +826,7 @@ function open_cancel_dialog() {
 
 
 function open_send_to_warehouse_dialog() {
-    Dom.addClass(['cancel', 'done', 'import_transactions_mals_e'], 'disabled');
+    Dom.addClass(['cancel', 'done', 'import_transactions'], 'disabled');
 
     region1 = Dom.getRegion('done');
     region2 = Dom.getRegion('dialog_send_to_warehouse');
@@ -878,7 +878,7 @@ function change_items_block() {
 
     Dom.get('products_display_type').value = this.id;
 
-
+    hide_import_msg()
 
 
 }
@@ -903,37 +903,81 @@ function hide_edit_button(e, data) {
 
 }
 
-function show_dialog_import_transactions_mals_e() {
-    Dom.get('transactions_mals_e').value = '';
+function show_dialog_import_transactions() {
+    Dom.get('transactions_to_import').value = '';
 
-    region1 = Dom.getRegion('import_transactions_mals_e');
-    region2 = Dom.getRegion('dialog_import_transactions_mals_e');
+    region1 = Dom.getRegion('import_transactions');
+    region2 = Dom.getRegion('dialog_import_transactions');
     var pos = [region1.right - region2.width, region1.bottom]
-    Dom.setXY('dialog_import_transactions_mals_e', pos);
+    Dom.setXY('dialog_import_transactions', pos);
 
-    dialog_import_transactions_mals_e.show();
+    dialog_import_transactions.show();
+    hide_import_msg()
+
+}
+
+function change_block_import() {
+
+    ids = ['import_csv', 'import_upload_file'];
+    block_ids = ['block_import_csv', 'block_import_upload_file', ];
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
 
 
 }
 
-function save_import_transactions_mals_e() {
+
+function save_import_transactions_from_csv() {
 
     var values = new Object();
-    values['data'] = Dom.get('transactions_mals_e').value;
-
+    values['data'] = Dom.get('transactions_to_import').value;
+    values['data'] = Dom.get('transactions_to_import').value;
     jsonificated_values = my_encodeURIComponent(YAHOO.lang.JSON.stringify(values));
 
 
     var ar_file = 'ar_edit_orders.php';
-    var request = 'tipo=import_transactions_mals_e&order_key=' + Dom.get('order_key').value + '&values=' + jsonificated_values;
+    var request = 'tipo=import_transactions_from_csv&order_key=' + Dom.get('order_key').value + '&values=' + jsonificated_values;
     //alert('R:'+request);
-    //alert(request);
+    //  alert(ar_file + '?' + request);
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             //alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
-                window.location.reload();
+
+                update_order_data(r)
+
+
+                var table = tables['table0'];
+                var datasource = tables['dataSource0'];
+                var request = '';
+                datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+                var table = tables['table1'];
+                var datasource = tables['dataSource1'];
+                var request = '';
+                datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+                Dom.get('transactions_to_import').value = '';
+
+
+
+                dialog_import_transactions.hide();
+
+                Dom.setStyle(['import_msg_div', 'import_msg_div_bis'], 'display', '')
+                Dom.get('import_msg_bis').innerHTML = r.data.import_msg;
+
+                if (r.data.total_transactions_updated > 0) {
+                    Dom.setStyle(['import_msg_ok', 'import_msg_ok_bis'], 'display', '')
+                } else {
+                    Dom.setStyle(['import_msg_ok', 'import_msg_ok_bis'], 'display', 'none')
+                }
+
+
             }
         },
         failure: function(o) {
@@ -945,6 +989,80 @@ function save_import_transactions_mals_e() {
     );
 
 }
+
+
+function hide_import_msg() {
+
+    if (Dom.get('import_msg_div') != undefined) {
+
+        Dom.setStyle(['import_msg_div', 'import_msg_div_bis'], 'display', 'none')
+        Dom.get('import_msg').innerHTML = '';
+        Dom.get('import_msg_bis').innerHTML = '';
+    }
+
+}
+
+function upload_transactions_file(e) {
+
+
+    if (Dom.get('upload_transactions_input').value == '') {
+
+        return;
+    }
+
+
+
+    YAHOO.util.Connect.setForm('testForm', true);
+    var request = 'ar_edit_orders.php?tipo=upload_transactions_input&order_key=' + Dom.get('order_key').value;
+
+    var uploadHandler = {
+        upload: function(o) {
+            // alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+
+            Dom.get('upload_transactions_input').value = ''
+
+            if (r.state == 200) {
+                update_order_data(r)
+
+
+                var table = tables['table0'];
+                var datasource = tables['dataSource0'];
+                var request = '';
+                datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+
+                var table = tables['table1'];
+                var datasource = tables['dataSource1'];
+                var request = '';
+                datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+                dialog_import_transactions.hide();
+
+
+
+                Dom.setStyle(['import_msg_div', 'import_msg_div_bis'], 'display', '')
+                Dom.get('import_msg_bis').innerHTML = r.data.import_msg;
+
+                if (r.data.total_transactions_updated > 0) {
+                    Dom.setStyle(['import_msg_ok', 'import_msg_ok_bis'], 'display', '')
+                } else {
+                    Dom.setStyle(['import_msg_ok', 'import_msg_ok_bis'], 'display', 'none')
+                }
+
+            } else {
+
+            }
+
+
+        }
+    };
+
+    YAHOO.util.Connect.asyncRequest('POST', request, uploadHandler);
+
+
+
+};
+
 
 
 function update_order_data(r) {
@@ -975,9 +1093,8 @@ function update_order_data(r) {
         Dom.get('order_deal_bonus').innerHTML = r.order_deal_bonus
     }
 
-if(Dom.get('payments_list')!=undefined)
-    Dom.get('payments_list').innerHTML = r.payments_list;
-if(Dom.get('to_pay_label_amount')!=undefined)
+    if (Dom.get('payments_list') != undefined) Dom.get('payments_list').innerHTML = r.payments_list;
+    if (Dom.get('to_pay_label_amount') != undefined)
 
     Dom.get('to_pay_label_amount').value = r.order_total_to_pay;
 
@@ -1110,6 +1227,7 @@ function update_recargo_de_equivalencia(value) {
 var myonCellClick = function(oArgs) {
 
 
+        hide_import_msg()
         var target = oArgs.target,
             column = this.getColumn(target),
             record = this.getRecord(target);
@@ -1199,7 +1317,6 @@ var myonCellClick = function(oArgs) {
                         }
 
 
-
                         if (Dom.get('products_display_type').value == 'products') {
 
                             var table = tables['table0'];
@@ -1264,7 +1381,7 @@ function change(e, o, tipo) {
             enable_save(tipo);
 
             //  if (window.event) key = window.event.keyCode; //IE
-            //  else key = e.which; //firefox     
+            //  else key = e.which; //firefox
             //  if (key == 13) save(tipo);
         } else disable_save(tipo);
         break;
@@ -1315,7 +1432,7 @@ function close_dialog(tipo) {
 
 var CellEdit = function(callback, newValue) {
 
-
+        hide_import_msg()
 
         var record = this.getRecord(),
             column = this.getColumn(),
@@ -1690,11 +1807,10 @@ function update_auto_account_payments(value) {
 function approve_dispatching(dn_key, staff_key, referrer, referrer_key) {
 
 
-    if (Dom.get('approve_dispatching_img_' + dn_key) != undefined) 
-    Dom.get('approve_dispatching_img_' + dn_key).src = 'art/loading.gif';
-    
-    
-  
+    if (Dom.get('approve_dispatching_img_' + dn_key) != undefined) Dom.get('approve_dispatching_img_' + dn_key).src = 'art/loading.gif';
+
+
+
 
     ar_file = 'ar_edit_orders.php';
     request = ar_file + '?tipo=approve_dispatching_dn&dn_key=' + dn_key + '&staff_key=' + staff_key + '';
@@ -1736,7 +1852,7 @@ function look_family_submit_on_enter(e) {
 
     var key;
     if (window.event) Key = window.event.keyCode; //IE
-    else Key = e.which; //firefox     
+    else Key = e.which; //firefox
     if (Key == 13) {
         lookup_family()
 
@@ -1938,7 +2054,7 @@ function remove_voucher(voucher_key) {
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
 
-             // alert(o.responseText)
+            // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
 
             if (r.state == '200') {
@@ -1959,21 +2075,21 @@ function remove_voucher(voucher_key) {
                 }
 
                 var datatable = tables['table1'];
-                
-                if(datatable!=undefined){
-                
-                var records = datatable.getRecordSet();
 
-                for (var i = 0; i < records.getLength(); i++) {
-                    var rec = records.getRecord(i);
-                    if (r.discount_data[rec.getData('pid')] != undefined) {
-                        datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
-                        datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+                if (datatable != undefined) {
 
-                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
-                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                    var records = datatable.getRecordSet();
+
+                    for (var i = 0; i < records.getLength(); i++) {
+                        var rec = records.getRecord(i);
+                        if (r.discount_data[rec.getData('pid')] != undefined) {
+                            datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                            datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+
+                            datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                            datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                        }
                     }
-                }
                 }
 
             } else {
@@ -2024,20 +2140,20 @@ function save_add_voucher() {
                 }
 
                 var datatable = tables['table1'];
-                   if(datatable!=undefined){
-                var records = datatable.getRecordSet();
+                if (datatable != undefined) {
+                    var records = datatable.getRecordSet();
 
-                for (var i = 0; i < records.getLength(); i++) {
-                    var rec = records.getRecord(i);
-                    if (r.discount_data[rec.getData('pid')] != undefined) {
-                        datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
-                        datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
+                    for (var i = 0; i < records.getLength(); i++) {
+                        var rec = records.getRecord(i);
+                        if (r.discount_data[rec.getData('pid')] != undefined) {
+                            datatable.updateCell(rec, 'quantity', r.discount_data[rec.getData('pid')].quantity);
+                            datatable.updateCell(rec, 'ordered_quantity', r.discount_data[rec.getData('pid')].ordered_quantity);
 
-                        datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
-                        datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                            datatable.updateCell(rec, 'to_charge', r.discount_data[rec.getData('pid')].to_charge);
+                            datatable.updateCell(rec, 'description', r.discount_data[rec.getData('pid')].description);
+                        }
                     }
                 }
-}
 
             } else {
 
@@ -2054,6 +2170,7 @@ function save_add_voucher() {
 
     });
 }
+
 
 
 function init_common_order_not_dispatched() {
@@ -2086,6 +2203,11 @@ function init_common_order_not_dispatched() {
 
     Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
     Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
+    ids = ['import_csv', 'import_upload_file'];
+    Event.addListener(ids, "click", change_block_import);
+
+    Event.on('upload_transactions_file', 'click', upload_transactions_file);
+
 
 
     dialog_add_voucher = new YAHOO.widget.Dialog("dialog_add_voucher", {
@@ -2211,16 +2333,16 @@ function init_common_order_not_dispatched() {
     Event.addListener("change_discount_save", "click", save_change_discount);
     Event.addListener("change_discount_cancel", "click", cancel_change_discount);
 
-    dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {
+    dialog_import_transactions = new YAHOO.widget.Dialog("dialog_import_transactions", {
         visible: false,
         close: true,
         underlay: "none",
         draggable: false
     });
-    dialog_import_transactions_mals_e.render();
-    Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e, true);
+    dialog_import_transactions.render();
+    Event.addListener("import_transactions", "click", show_dialog_import_transactions, true);
 
-    Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e, true);
+    Event.addListener("save_import_transactions_from_csv", "click", save_import_transactions_from_csv, true);
 
     dialog_add_credit = new YAHOO.widget.Dialog("dialog_add_credit", {
         context: ["add_credit", "tr", "tr"],

@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2012 PHPExcel
+ * Copyright (c) 2006 - 2014 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,26 +20,33 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel_Writer
- * @copyright  Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.8, 2012-10-12
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version	1.8.0, 2014-03-02
  */
 
 
 /**
- * PHPExcel_Writer_IWriter
+ * PHPExcel_Writer_Exception
  *
  * @category   PHPExcel
  * @package    PHPExcel_Writer
- * @copyright  Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-interface PHPExcel_Writer_IWriter
-{
+class PHPExcel_Writer_Exception extends PHPExcel_Exception {
 	/**
-	 * Save PHPExcel to file
+	 * Error handler callback
 	 *
-	 * @param 	string 		$pFilename
-	 * @throws 	Exception
+	 * @param mixed $code
+	 * @param mixed $string
+	 * @param mixed $file
+	 * @param mixed $line
+	 * @param mixed $context
 	 */
-	public function save($pFilename = null);
+	public static function errorHandlerCallback($code, $string, $file, $line, $context) {
+		$e = new self($string, $code);
+		$e->line = $line;
+		$e->file = $file;
+		throw $e;
+	}
 }

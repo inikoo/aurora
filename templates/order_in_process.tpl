@@ -32,7 +32,9 @@
 			</div>
 			{if $order_next.id}<img class="next" onmouseover="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.gif{/if}'" onmouseout="this.src='art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}'" title="{$order_next.title}" onclick="window.location='{$order_next.link}'" src="art/{if $order_next.to_end}prev_to_end.png{else}next_button.png{/if}" alt="{t}Next{/t}" />{/if} 
 			<div class="buttons small" style="position:relative;top:5px">
-				<button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> <button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if} onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> <button style="{if $order->has_products_without_parts()}display:none{/if}" class="{if {$order->get('Order Number Products')}==0}disabled{/if}" id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> <button title="{t}Some products in the order don't have parts associated{/t}" style="{if !$order->has_products_without_parts()}display:none{/if}" class="disabled" id="done_error_order_with_products_without_parts"><img id="send_to_warehouse_img" src="art/icons/exclamation.png" alt=""> {t}Send to Warehouse{/t}</button> 
+				<button onclick="window.open('proforma.pdf.php?id={$order->id}')"><img style="width:40px;height:12px;vertical-align:1px" src="art/pdf.gif" alt=""> {t}Proforma{/t}</button> <button id="sticky_note_button"><img src="art/icons/note_pink.png" alt=""> {t}Note{/t}</button> <button style="display:none;height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+				<button id="import_transactions" >{t}Import{/t}</button> 
+				<button {if $order->get('Order Current Dispatch State')!='In Process by Customer'}style="display:none"{/if} onclick="window.location='order.php?id={$order->id}'" >{t}Exit Modify Order{/t}</button> <button style="{if $order->has_products_without_parts()}display:none{/if}" class="{if {$order->get('Order Number Products')}==0}disabled{/if}" id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> <button title="{t}Some products in the order don't have parts associated{/t}" style="{if !$order->has_products_without_parts()}display:none{/if}" class="disabled" id="done_error_order_with_products_without_parts"><img id="send_to_warehouse_img" src="art/icons/exclamation.png" alt=""> {t}Send to Warehouse{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -150,6 +152,7 @@
 	<div style="padding:0px 20px">
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='items'}display:none{/if}" id="items_block">
 			<span id="table_title_items" class="clean_table_title">{t}Items{/t}</span> 
+			<div id="import_msg_div" style="float:right;display:none" ><img id="import_msg_ok" src='art/icons/accept.png'> <span id="import_msg"></span></div>
 			<div class="table_top_bar space">
 			</div>
 			<div id="list_options0" style="display:none">
@@ -175,7 +178,9 @@
 			</div>
 		</div>
 		<div class="data_table" style="clear:both;margin-top:15px;{if $block_view!='products'}display:none{/if}" id="products_block">
-			<span id="table_title_products" class="clean_table_title">{t}Products{/t}</span> 
+			<span id="table_title_products" class="clean_table_title">{t}Products{/t}</span>
+			<div id="import_msg_div_bis" style="float:right;display:none" ><img id="import_msg_ok_bis" src='art/icons/accept.png'> <span id="import_msg_bis"></span></div>
+ 
 			<div id="products_lookups">
 				<div class="buttons small">
 					<button id="lookup_family" onclick="lookup_family()">{t}Lookup Family{/t}</button> 
@@ -260,27 +265,5 @@
 		</ul>
 	</div>
 </div>
-<div id="dialog_import_transactions_mals_e" style="border:1px solid #ccc;text-align:left;padding:10px">
-	<div id="import_transactions_mals_e_msg">
-	</div>
-	<table style="margin:10px" border="1">
-		<tr>
-			<td> 
-			<div class="buttons small left">
-				<button class="selected">CSV</button><button>TSV</button> 
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-top:10px;width:300px;"> <textarea style="width:100%;height:200px" id="transactions_mals_e"></textarea> </td>
-		</tr>
-		<tr>
-			<td style="padding-top:10px"> 
-			<div class="buttons">
-				<button id="save_import_transactions_mals_e">{t}Import{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
+
 {include file='add_payment_splinter.tpl' subject='order'} {include file='order_not_dispatched_dialogs_splinter.tpl'}  {include file='notes_splinter.tpl'} {include file='footer.tpl'} 

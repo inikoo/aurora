@@ -24,7 +24,16 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case 'upload_transactions_input':
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+		));
+	upload_transactions_input($data);
+	break;
 case 'send_to_basket':
+
+
+
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 		));
@@ -321,13 +330,13 @@ case('approve_packing'):
 		));
 	approve_packing($data);
 	break;
-case('import_transactions_mals_e'):
+case('import_transactions_from_csv'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
 
 		));
-	import_transactions_mals_e($data);
+	import_transactions_from_csv($data);
 	break;
 case('set_picking_aid_sheet_pending_as_picked'):
 	$data=prepare_values($_REQUEST,array(
@@ -1732,7 +1741,7 @@ function transactions_to_process() {
 			$order_object->data['Order Currency'],
 			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='items') {
-			$table='  `Order Transaction Fact` OTF  
+			$table='  `Order Transaction Fact` OTF
 			left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)
 			left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)
 			 left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
@@ -1849,7 +1858,7 @@ function transactions_to_process() {
 
 	$sql="select `Product Number of Parts`,`Product Part Metadata`,`Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
-	
+
 	$res = mysql_query($sql);
 
 	$adata=array();
@@ -6429,6 +6438,281 @@ function recalculate_totals($data) {
 	}
 
 }
+
+function upload_transactions_input($data) {
+	include_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
+
+
+	if (isset($_FILES['testFile']['tmp_name']) and $_FILES['testFile']['tmp_name']) {
+		$file_name=$_FILES['testFile']['tmp_name'];
+
+
+		//$objPHPExcel = PHPExcel_IOFactory::load('server_files/tmp/tmp.csv');
+
+		//$file_name='server_files/tmp/tmp.csv';
+
+		$valid = false;
+		$types = array('Excel2007', 'Excel5','CSV');
+		foreach ($types as $type) {
+			$reader = PHPExcel_IOFactory::createReader($type);
+			if ($reader->canRead($file_name)) {
+				$valid = true;
+				break;
+			}
+		}
+
+		if ($valid) {
+
+
+			$objPHPExcel = PHPExcel_IOFactory::load($file_name);
+			$transactions_data = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+			// print_r($transactions_data);
+			import_transaction($data['order_key'],$transactions_data);
+
+		} else {
+			$msg=_("Sorry, I can't read data");
+			$response= array('state'=>400,'msg'=>$msg);
+			echo json_encode($response);
+			return;
+
+
+		}
+
+
+
+		//$inputFileType = 'EXCEL5';
+		//$inputFileName = $file_name;
+		//$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+		//$objPHPExcel = $objReader->load($inputFileName);
+		//$transactions_data = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+
+
+
+
+
+		// import_transaction($data['order_key'],$transactions_data);
+
+	} else {
+
+		$poidsMax = ini_get('upload_max_filesize');
+		$msg=_("Your file is too big, maximum allowed size here is").": $poidsMax";
+		$response= array('state'=>400,'msg'=>$msg);
+		echo json_encode($response);
+		return;
+	}
+}
+
+function import_transactions_from_csv($data) {
+
+
+
+	include_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
+
+
+	$tmpfname = tempnam('server_files/tmp/', "import_transactions");
+
+	$handle = fopen($tmpfname, "w");
+	fwrite($handle, $data['values']['data']);
+	fclose($handle);
+
+
+
+
+	$inputFileType = 'CSV';
+	$inputFileName = $tmpfname;
+	$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+	$objPHPExcel = $objReader->load($inputFileName);
+	$transactions_data = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+	unlink($tmpfname);
+	import_transaction($data['order_key'],$transactions_data);
+
+
+}
+
+function import_transaction($order_key,$transactions_data) {
+	global $smarty,$editor,$user,$account_code;
+
+	$order=new Order($order_key);
+
+	$transactions_updated=0;
+	$transactions_added=0;
+
+	foreach ($transactions_data as $transaction_data) {
+		//print_r( $transaction_data);
+
+		$transaction_found=false;
+
+		if (count( $transaction_data)<2) {
+			continue;
+		}
+
+		$code=array_shift($transaction_data);
+		$qty=array_shift($transaction_data);
+
+		if ($code=='' or !is_numeric($qty) or $qty<=0 ) {
+			continue;
+		}
+
+		$qty=ceil($qty);
+		//print "$code $qty\n";
+
+
+
+		$order->editor=$editor;
+
+		if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed','Packed Done','Packing')) ) {
+			$dispatching_state='Ready to Pick';
+		}else {
+
+			$dispatching_state='In Process';
+		}
+
+		$payment_state='Waiting Payment';
+
+
+		$sql=sprintf('select `Product Current Key`,`Product ID` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s and `Product Main Type` in ("Sale","Private")     ',
+			$order->data['Order Store Key'],
+			prepare_mysql($code)
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+
+			$sql=sprintf('select `Order Quantity`  from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ',
+				$order->id,
+				$row['Product Current Key']
+			);
+			$res2=mysql_query($sql);
+			if ($row2=mysql_fetch_assoc($res2)) {
+				$transaction_found=true;;
+				if ($row2['Order Quantity']>=$qty) {
+					continue;
+				}
+			}
+
+
+
+			$_data=array(
+				'date'=>gmdate('Y-m-d H:i:s'),
+				'Product Key'=>$row['Product Current Key'],
+				'Metadata'=>'',
+				'qty'=>$qty,
+				'Current Dispatching State'=>$dispatching_state,
+				'Current Payment State'=>$payment_state
+			);
+
+			$order->skip_update_after_individual_transaction=false;
+
+			$transaction_data=$order->add_order_transaction($_data);
+
+			if ($transaction_data['updated']) {
+				if ($transaction_found) {
+					$transactions_updated++;
+				}else {
+					$transactions_added++;
+
+				}
+			}
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+	}
+
+$total_transactions_updated=$transactions_updated+$transactions_added;
+	if ($total_transactions_updated==0) {
+
+		$import_msg=_('No transactions were affected');
+	}else {
+
+		if ($transactions_updated) {
+		
+			$import_msg=sprintf(ngettext('%s transaction updated', '%s transactions updated', $transactions_updated),'<b>'.$transactions_updated.'</b>');
+		}
+		if ($transactions_added) {
+			$import_msg=sprintf(ngettext('%s transaction created', '%s transactions created', $transactions_added),'<b>'.$transactions_added.'</b>');
+		}
+		
+	}
+
+
+	$updated_data=array(
+		'import_msg'=>$import_msg,
+		'total_transactions_updated'=>(float) $total_transactions_updated,
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'ordered_products_number'=>$order->get('Number Products'),
+		'order_total_paid'=>$order->get('Payments Amount'),
+		'order_total_to_pay'=>$order->get('To Pay Amount')
+	);
+
+
+
+	$payments_data=array();
+	foreach ($order->get_payment_objects('',true,true) as $payment) {
+		$payments_data[$payment->id]=array(
+			'date'=>$payment->get('Created Date'),
+			'amount'=>$payment->get('Amount'),
+			'status'=>$payment->get('Payment Transaction Status')
+		);
+	}
+
+
+	$order_has_deal_with_bonus=$order->has_deal_with_bonus();
+
+	if ($order_has_deal_with_bonus) {
+		$smarty->assign('order',$order);
+		$order_deal_bonus=$smarty->fetch('order_deal_bonus_splinter.tpl');
+	}else {
+		$order_deal_bonus='';
+
+	}
+
+	$smarty->assign('order',$order);
+	$payments_list=$smarty->fetch('order_payments_splinter.tpl');
+
+	$response= array(
+		'state'=>200,
+		'data'=>$updated_data,
+		'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
+		'amount_off'=>($order->data['Order Deal Amount Off']!=0?true:false),
+		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false),
+		'tax_info'=>$order->get_formated_tax_info_with_operations(),
+		'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+		'payments_data'=>$payments_data,
+		'order_total_paid'=>$order->data['Order Payments Amount'],
+		'order_total_to_pay'=>$order->data['Order To Pay Amount'],
+		'order_has_deal_with_bonus'=>$order_has_deal_with_bonus,
+		'order_deal_bonus'=>$order_deal_bonus,
+		'payments_list'=>$payments_list
+	);
+
+	echo json_encode($response);
+
+	include 'splinters/new_fork.php';
+	list($fork_key,$msg)=new_fork('housekeeping',array('type'=>'update_otf','order_key'=>$order->id),$account_code);
+
+
+}
+
 
 
 ?>
