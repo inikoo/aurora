@@ -4,6 +4,7 @@ var session_data, labels, state;
 
 
 function change_block() {
+ 
     ids = ['details', 'deals', 'orders', 'customers'];
     block_ids = ['block_details', 'block_deals', 'block_orders', 'block_customers'];
     Dom.setStyle(block_ids, 'display', 'none');

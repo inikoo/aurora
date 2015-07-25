@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo Ecom\n"
 "POT-Creation-Date: 2015-06-16 14:26-0000\n"
-"PO-Revision-Date: 2015-07-06 15:20-0000\n"
+"PO-Revision-Date: 2015-07-22 22:41+0800\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: pt_PT\n"
@@ -673,7 +673,7 @@ msgstr "Data Desconexão "
 #: users_staff.php:58 users_staff.php:70 users_supplier.php:53
 #: users_supplier.php:71 warehouse_user.php:51
 msgid "Users"
-msgstr ""
+msgstr "Usuarios "
 
 #: admin_user.php:61 smarty.php:164 smarty.php:173 warehouse_user.php:62
 msgid "Administrative User"
@@ -1606,20 +1606,20 @@ msgstr "que saldo "
 #: ar_reports.php:6817 ar_reports.php:7076 ar_reports.php:7102
 msgid "delivery note"
 msgid_plural "delivery notes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nota de entrega "
+msgstr[1] "Notas de entrega "
 
 #: ar_assets.php:5876
 msgid "No delivery notes"
-msgstr ""
+msgstr "não há notas de entrega "
 
 #: ar_assets.php:5897
 msgid "There isn't any delivery note like"
-msgstr ""
+msgstr "não há nenhuma nota de entrega como "
 
 #: ar_assets.php:5905
 msgid "delivery notes with"
-msgstr ""
+msgstr "notas de entrega con "
 
 #: ar_assets.php:6225
 msgid "There isn't any department with code like "
@@ -1918,12 +1918,12 @@ msgstr ""
 #: ar_contacts.php:659
 msgid "Delivery note"
 msgid_plural "Delivery notes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nota de entrega"
+msgstr[1] "Notas de entrega "
 
 #: ar_contacts.php:671
 msgid "There isn't any delivery note with this number"
-msgstr ""
+msgstr "Não há nenhuma nota de entrega com este número  "
 
 #: ar_contacts.php:679
 msgid "delivery notes with number like"
@@ -1932,11 +1932,10 @@ msgstr "Notas de entrega com números como "
 #: ar_contacts.php:894 ar_contacts.php:968 ar_orders.php:2054
 #: class.Invoice.php:3287 invoice.pdf.php:71 invoice.pdf.php:94 invoice.php:60
 #: invoice.php:63
-#, fuzzy
 msgid "Invoice"
 msgid_plural "Invoice"
 msgstr[0] "Fatura "
-msgstr[1] "Fatura "
+msgstr[1] "Faturas"
 
 #: ar_contacts.php:906
 msgid "There isn't any invoice with this number"
@@ -4900,8 +4899,8 @@ msgstr ""
 #: ar_reports.php:2604
 msgid "invoice"
 msgid_plural "invoices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "fatura"
+msgstr[1] "faturas"
 
 #: ar_history.php:90
 msgid "Can not get history details"
@@ -5451,23 +5450,23 @@ msgstr ""
 
 #: ar_orders.php:1642 ar_reports.php:6803 ar_reports.php:7088
 msgid "No delivery note with ID"
-msgstr ""
+msgstr "não há nota de entrega com ID "
 
 #: ar_orders.php:1644 ar_reports.php:6805 ar_reports.php:7090
 msgid "delivery notes starting with"
-msgstr ""
+msgstr "Nota de entrega començanco com "
 
 #: ar_orders.php:1648 ar_reports.php:6809 ar_reports.php:7094
 msgid "No delivery note with with customer"
-msgstr ""
+msgstr "não há nota de entrega com cliente"
 
 #: ar_orders.php:1650 ar_reports.php:6811 ar_reports.php:7096
 msgid "delivery notes with customer"
-msgstr ""
+msgstr "Nota de entrega com cliente "
 
 #: ar_orders.php:1654 ar_reports.php:6815 ar_reports.php:7100
 msgid "No delivery note from"
-msgstr ""
+msgstr "Não há nota de cliente com"
 
 #: ar_orders.php:1656 ar_reports.php:6817 ar_reports.php:7102
 #: class.Address.php:4914 class.Company.php:1335 class.Company.php:1389
@@ -5869,7 +5868,7 @@ msgstr ""
 #: smarty.php:26813 smarty.php:27866 smarty.php:29744 supplier.js.php:263
 #: supplier.js.php:527 supplier_category.js.php:432
 msgid "Invoices"
-msgstr ""
+msgstr "Faturas"
 
 #: ar_plot.php:679 ar_plot.php:1190 ar_plot.php:1259 class.TimeSeries.php:2803
 msgid "change (last month)"
@@ -6523,7 +6522,7 @@ msgstr "Com número como "
 
 #: ar_reports.php:2608
 msgid "Showing all invoices"
-msgstr ""
+msgstr "Mostrando tudas las faturas "
 
 #: ar_reports.php:2711 ar_reports.php:3339
 msgid "No FX Data"
@@ -6943,14 +6942,14 @@ msgstr ""
 #: smarty.php:15338 smarty.php:16076 smarty.php:16079 smarty.php:16781
 #: smarty.php:16784 smarty.php:17237 smarty.php:17240 smarty.php:18770
 msgid "Marketing"
-msgstr ""
+msgstr "Marketing "
 
 #: campaign.php:115 customers.php:195 deal.php:184 deal.php:221 orders.php:132
 #: orders_export_common.php:27 orders_server.php:94 pending_orders.php:87
 #: product.php:385 report_out_of_stock.php:122 smarty.php:14129
 #: smarty.php:14654 smarty.php:30542 store_pending_orders.php:106
 msgid "Order Number"
-msgstr ""
+msgstr "Número de Encomenda "
 
 #: campaign.php:115 campaign.php:162 campaign.php:169 customers.js.php:14
 #: deal.php:184 deal.php:221 deal.php:240 edit_campaign.php:131
@@ -6963,7 +6962,7 @@ msgstr ""
 #: smarty.php:5627 smarty.php:5645 smarty.php:15194 smarty.php:15539
 #: smarty.php:15725 smarty.php:18626 smarty.php:25064 supplier_product.php:449
 msgid "Number"
-msgstr ""
+msgstr "Número "
 
 #: campaign.php:116 campaign.php:128 customer_categories.php:127
 #: customer_category.php:152 customer_category.php:279
@@ -6988,7 +6987,7 @@ msgstr ""
 #: smarty.php:26255 splinter_dispatch_time.js.php:23
 #: splinter_pending_orders.js.php:23
 msgid "Customer Name"
-msgstr ""
+msgstr "Nome do cliente "
 
 #: campaign.php:129 customer_categories.php:129 customer_category.php:154
 #: customer_category.php:281 customer_category.php:303 customers.php:174
@@ -6997,7 +6996,7 @@ msgstr ""
 #: new_customers_list.php:204 product.php:376 report_customers.php:77
 #: send_post.php:83
 msgid "Customer Country"
-msgstr ""
+msgstr "Pais do cliente "
 
 #: campaign.php:158 customer_category.php:379 customers.js.php:66
 #: customers_list.php:148 customers_send_post.js.php:22
@@ -7008,7 +7007,7 @@ msgstr ""
 #: report_geo_sales_country.js.php:22 report_geo_sales_wregion.js.php:110
 #: send_post.js.php:47 smarty.php:2897 smarty.php:2927 smarty.php:26258
 msgid "Last Order"
-msgstr ""
+msgstr "ultima encomenda "
 
 #: campaign.php:159 customers_lists.js.php:126 deal.php:252
 #: department.js.php:256 department.js.php:276 department.js.php:277
@@ -10373,7 +10372,7 @@ msgstr ""
 #: smarty.php:22160 smarty.php:23789 smarty.php:26564 smarty.php:28439
 #: smarty.php:30284 smarty.php:30317
 msgid "Inventory"
-msgstr ""
+msgstr "Inventário"
 
 #: common.php:285 common.php:290 edit_page.php:112 edit_page_splinter.php:107
 #: edit_site.php:110 page.php:72 page_deleted.php:55 site.php:64 site.php:152
@@ -10559,7 +10558,7 @@ msgstr ""
 #: common_order_functions.php:94 smarty.php:19016 smarty.php:19073
 #: smarty.php:19406 smarty.php:25787
 msgid "Create Invoice"
-msgstr ""
+msgstr "Criar Fatura "
 
 #: common_order_functions.php:96 common_order_functions.php:405
 #: smarty.php:4205
@@ -10865,7 +10864,7 @@ msgstr ""
 #: smarty.php:26267 supplier.js.php:260 supplier_product.php:451
 #: suppliers.php:264
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 #: customer.js.php:644
 msgid "To pay"
@@ -11332,7 +11331,7 @@ msgstr "Morada de entrega "
 #: smarty.php:14735 smarty.php:20054 smarty.php:20558 smarty.php:20720
 #: smarty.php:23987
 msgid "Payments"
-msgstr ""
+msgstr "Pagamentos"
 
 #: customer_category.php:389 customers.js.php:76 customers_list.php:158
 #: customers_send_post.js.php:35 dn_list.js.php:37 invoices_list.js.php:35
@@ -11517,7 +11516,7 @@ msgstr "Data da ultima encomenda"
 
 #: customers_export_common.php:59
 msgid "Contact Address (Postal Label)"
-msgstr ""
+msgstr "Morada do contato "
 
 #: customers_export_common.php:62 customers_export_common.php:74
 #: customers_export_common.php:80 dn_export_common.php:40
@@ -12255,7 +12254,7 @@ msgstr ""
 
 #: edit_customers.js.php:67 report_customers.js.php:40
 msgid "Main Address"
-msgstr ""
+msgstr "Morada principal "
 
 #: edit_customers.php:122 smarty.php:3113
 msgid "Edit Customers"
@@ -12345,7 +12344,7 @@ msgstr "Edição de estado"
 
 #: edit_family.js.php:830 smarty.php:23219
 msgid "Web Status"
-msgstr ""
+msgstr "Estado Web "
 
 #: edit_family.js.php:844 upload_assets.js.php:109
 msgid "Unit Type"
@@ -12561,7 +12560,7 @@ msgstr ""
 
 #: edit_page.js.php:813
 msgid "Web/Sale Status"
-msgstr ""
+msgstr "Web/Venda Estado"
 
 #: edit_page.js.php:815
 msgid "Force online"
@@ -13222,7 +13221,7 @@ msgstr ""
 
 #: edit_warehouse.js.php:843
 msgid "Invalid Address"
-msgstr ""
+msgstr "Morada Inválida "
 
 #: edit_warehouse.php:60 smarty.php:17612
 msgid "Pallet Rack"
@@ -13608,7 +13607,7 @@ msgstr ""
 
 #: inventory.php:113 stock_history_parts.php:112
 msgid "Inventory (Parts)"
-msgstr ""
+msgstr "Inventário (partes)"
 
 #: inventory.php:135 inventory.php:145 part.php:430 part.php:440
 #: supplier_product.php:268 supplier_product.php:278
@@ -13708,11 +13707,11 @@ msgstr ""
 
 #: invoice_category.php:303
 msgid "Invoice Category"
-msgstr ""
+msgstr "Categoria de fatura"
 
 #: invoices_list.php:78 smarty.php:20858 smarty.php:24122
 msgid "Invoice List"
-msgstr ""
+msgstr "Lista de fatura"
 
 #: locale.php:7 new_site.php:80 new_store.php:63
 msgid "English"
@@ -14108,7 +14107,7 @@ msgstr ""
 
 #: new_delivery_notes_list.php:98
 msgid "Collection"
-msgstr ""
+msgstr "coleção"
 
 #: new_delivery_notes_list.php:107 smarty.php:19055 smarty.php:19925
 #: smarty.php:25754
@@ -14122,7 +14121,7 @@ msgstr ""
 
 #: new_delivery_notes_list.php:116 new_invoices_list.php:115
 msgid "Invoices Lists"
-msgstr ""
+msgstr "Faturas Listas "
 
 #: new_delivery_notes_list.php:246 new_invoices_list.php:245 smarty.php:18755
 msgid "Go back"
@@ -14397,7 +14396,7 @@ msgstr ""
 #: orders.js.php:237 payment.js.php:1097 smarty.php:92 smarty.php:14207
 #: smarty.php:14321 smarty.php:14738 smarty.php:20060 smarty.php:23990
 msgid "Method"
-msgstr ""
+msgstr "Metódo "
 
 #: orders.php:132 part.php:246
 msgid "Order Number starting with  <i>x</i>"
@@ -17757,7 +17756,7 @@ msgstr ""
 
 #: smarty.php:2783 smarty.php:3254
 msgid "Activity Status"
-msgstr ""
+msgstr "Estado da actividade"
 
 #: smarty.php:2801 smarty.php:13259 smarty.php:14600 smarty.php:21941
 #: smarty.php:23798 smarty.php:28448
@@ -18251,7 +18250,7 @@ msgstr ""
 
 #: smarty.php:4163 smarty.php:14153 smarty.php:14678
 msgid "Delivery address"
-msgstr ""
+msgstr "Morada de entrega"
 
 #: smarty.php:4202 smarty.php:19991
 msgid "Approve Picking/Packing"
@@ -20654,11 +20653,11 @@ msgstr ""
 
 #: smarty.php:10409
 msgid "Next invoice number"
-msgstr ""
+msgstr "Proximo numero de faturas "
 
 #: smarty.php:10412
 msgid "Invoice Details"
-msgstr ""
+msgstr "Detalhes de Fatura "
 
 #: smarty.php:10415
 msgid "Store VAT Number"
@@ -21468,7 +21467,7 @@ msgstr "Sair "
 
 #: smarty.php:13367
 msgid "Help File"
-msgstr ""
+msgstr "Ajuda arquivo"
 
 #: smarty.php:13370
 msgid "Edit Organization"
@@ -21714,7 +21713,7 @@ msgstr ""
 #: smarty.php:14123 smarty.php:14648 smarty.php:28610 smarty.php:28634
 #: smarty.php:29312 smarty.php:29336
 msgid "Invoice Date"
-msgstr ""
+msgstr "Data de fatura"
 
 #: smarty.php:14132 smarty.php:14657 smarty.php:23924
 msgid "Payment State"
@@ -21809,7 +21808,7 @@ msgstr ""
 
 #: smarty.php:14483
 msgid "Invoice list"
-msgstr ""
+msgstr "Lista de Fatura"
 
 #: smarty.php:14528
 msgid "Invoices Sales"
@@ -24070,7 +24069,7 @@ msgstr ""
 
 #: smarty.php:24482
 msgid "Help Line"
-msgstr ""
+msgstr "Ajuda Linha"
 
 #: smarty.php:24485
 msgid "Line open"

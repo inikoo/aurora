@@ -458,3 +458,51 @@
 		</tr>
 	</table>
 </div>
+
+
+<div id="dialog_import_transactions" style="border:1px solid #ccc;text-align:left;padding:10px">
+	<div id="import_transactions_msg">
+	</div>
+	
+	
+	
+	<ul class="tabs" id="chooser_ul">
+			<li> <span class="item selected" id="import_csv"><span> {t}CVS{/t}</span></span></li>
+			<li> <span class="item " id="import_upload_file"><span> {t}Upload file{/t}</span></span></li>
+			</ul>
+	<div class="tabs_base">
+		</div>
+	<table style="margin:10px" border="0">
+		<tr>
+		<tbody id="block_import_csv">
+		<tr>
+			<td style="padding-top:10px;width:300px;"> <textarea style="width:100%;height:200px" id="transactions_to_import"></textarea> </td>
+		</tr>
+		<tr>
+			<td style="padding-top:10px"> 
+			<div class="buttons small">
+				<button id="save_import_transactions_from_csv">{t}Import{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tbody>
+		<tbody id="block_import_upload_file" style="display:none">
+		<tr>
+			<td style="padding-top:10px;width:300px;">
+			<form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
+			<input id="upload_transactions_input" style="border:1px solid #ddd;" type="file" name="testFile" />
+		</form>
+		</td>
+		</tr>
+		<tr>
+			<td style="padding-top:10px">  
+		<div class="buttons small">
+			<button id="upload_transactions_file" >{t}Upload{/t}</button> 
+		</div>
+			 </td>
+		</tr>
+		</tbody>
+		
+		
+	</table>
+</div>

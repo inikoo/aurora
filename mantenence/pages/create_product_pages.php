@@ -78,7 +78,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	$site->add_department_page($row['Product Department Key'],$page_data);
 }
 
-$sql=sprintf("select `Product Family Key` from  `Product Family Dimension` where `Product Family Store Key`=%d  and `Product Family Sales Type`='Public Sale' ",
+$sql=sprintf("select `Product Family Key` from  `Product Family Dimension` where `Product Family Store Key`=%d  and `Product Family Sales Type`='Public Sale' and `Product Family Web Products`='With Products For Sale'  ",
 	$site->data['Site Store Key']);
 $res=mysql_query($sql);
 
