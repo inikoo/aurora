@@ -114,7 +114,7 @@ if ( in_array($invoice->data['Invoice Delivery Country Code'],get_countries_EC_F
 
 
 $transactions=array();
-$sql=sprintf("select `Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+$sql=sprintf("select `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
  from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join
   `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d order by `Product Code`", $invoice->id);
 //print $sql;exit;
@@ -131,9 +131,21 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 	$discount=($row['Invoice Transaction Total Discount Amount']==0?'':percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount'],0));
 
+	$units=$row['Product Units Per Case'];
+	$name=$row['Product History Name'];
+	$price=$row['Product History Price'];
+	$currency=$row['Product Currency'];
 
+	$desc='';
+	if ($units>1) {
+		$desc=number($units).'x ';
+	}
+	$desc.=' '.$name;
+	if ($price>0) {
+		$desc.=' ('.money_locale($price,$_locale,$currency).')';
+	}
 
-	$description=$row['Product History XHTML Short Description'];
+	$description=$desc;
 
 	if ($discount!='')
 		$description.=' '._('Discount').':'.$discount;
@@ -156,18 +168,18 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 $transactions_no_products=array();
 
 
-if($invoice->data['Invoice Net Amount Off']){
+if ($invoice->data['Invoice Net Amount Off']) {
 
 	$tax_category=new TaxCategory($invoice->data['Invoice Tax Code']);
 
-    $net=-1*$invoice->data['Invoice Net Amount Off'];
-    $tax=$net*$tax_category->data['Tax Category Rate'];
-    $total=$net+$tax;
+	$net=-1*$invoice->data['Invoice Net Amount Off'];
+	$tax=$net*$tax_category->data['Tax Category Rate'];
+	$total=$net+$tax;
 
 
 
 
-    $row['Product Code']=_('Amount Off');
+	$row['Product Code']=_('Amount Off');
 	$row['Product XHTML Short Description']='';
 	$row['Net']=money($net,$row['Currency Code']);
 	$row['Tax']=money($tax,$row['Currency Code']);
