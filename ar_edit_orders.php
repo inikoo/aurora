@@ -30,6 +30,14 @@ case 'upload_transactions_input':
 		));
 	upload_transactions_input($data);
 	break;
+case('import_transactions_from_csv'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array')
+
+		));
+	import_transactions_from_csv($data);
+	break;	
 case 'send_to_basket':
 
 
@@ -330,14 +338,7 @@ case('approve_packing'):
 		));
 	approve_packing($data);
 	break;
-case('import_transactions_from_csv'):
-	$data=prepare_values($_REQUEST,array(
-			'order_key'=>array('type'=>'key'),
-			'values'=>array('type'=>'json array')
 
-		));
-	import_transactions_from_csv($data);
-	break;
 case('set_picking_aid_sheet_pending_as_picked'):
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
@@ -6629,20 +6630,20 @@ function import_transaction($order_key,$transactions_data) {
 
 	}
 
-$total_transactions_updated=$transactions_updated+$transactions_added;
+	$total_transactions_updated=$transactions_updated+$transactions_added;
 	if ($total_transactions_updated==0) {
 
 		$import_msg=_('No transactions were affected');
 	}else {
 
 		if ($transactions_updated) {
-		
+
 			$import_msg=sprintf(ngettext('%s transaction updated', '%s transactions updated', $transactions_updated),'<b>'.$transactions_updated.'</b>');
 		}
 		if ($transactions_added) {
 			$import_msg=sprintf(ngettext('%s transaction created', '%s transactions created', $transactions_added),'<b>'.$transactions_added.'</b>');
 		}
-		
+
 	}
 
 
