@@ -878,13 +878,13 @@ function list_transactions_in_refund() {
 	$total_picks=0;
 
 	$data=array();
-	$sql="select `Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Invoice Transaction Tax Refund Items`,`Invoice Transaction Net Refund Items`,`Refund Quantity`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,P.`Product ID`,O.`Product Code` from 
+	$sql="select `Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Invoice Transaction Tax Refund Items`,`Invoice Transaction Net Refund Items`,`Refund Quantity`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,P.`Product ID`,O.`Product Code` from
 	`Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
 	$result=mysql_query($sql);
 
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
-		
+
 		global $_locale;
 
 		$units=$row['Product Units Per Case'];
@@ -902,8 +902,8 @@ function list_transactions_in_refund() {
 		}
 
 
-		
-		
+
+
 		$data[]=array(
 			'code'=>$code,
 			'description'=>$description,
@@ -2352,24 +2352,24 @@ function list_transactions_dispatched() {
 		}
 
 
-		
-		
+
+
 		global $_locale;
 		$units=$row['Product Units Per Case'];
-	$name=$row['Product History Name'];
-	$price=$row['Product History Price'];
-	$currency=$row['Product Currency'];
+		$name=$row['Product History Name'];
+		$price=$row['Product History Price'];
+		$currency=$row['Product Currency'];
 
-	$description='';
-	if ($units>1) {
-		$description=number($units).'x ';
-	}
-	$description.=' '.$name;
-	if ($price>0) {
-		$description.=' ('.money_locale($price,$_locale,$currency).')';
-	}
-		
-		
+		$description='';
+		if ($units>1) {
+			$description=number($units).'x ';
+		}
+		$description.=' '.$name;
+		if ($price>0) {
+			$description.=' ('.money_locale($price,$_locale,$currency).')';
+		}
+
+
 		if ($row['Deal Info']!='') {
 			$description.='<br/> <span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
@@ -2643,24 +2643,24 @@ function list_post_transactions() {
 		$operation=$row['Operation'];
 
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		
-		global $_locale;
-		
-		$units=$row['Product Units Per Case'];
-	$name=$row['Product History Name'];
-	$price=$row['Product History Price'];
-	$currency=$row['Product Currency'];
 
-	$description='';
-	if ($units>1) {
-		$description=number($units).'x ';
-	}
-	$description.=' '.$name;
-	if ($price>0) {
-		$description.=' ('.money_locale($price,$_locale,$currency).')';
-	}
-		
-		
+		global $_locale;
+
+		$units=$row['Product Units Per Case'];
+		$name=$row['Product History Name'];
+		$price=$row['Product History Price'];
+		$currency=$row['Product Currency'];
+
+		$description='';
+		if ($units>1) {
+			$description=number($units).'x ';
+		}
+		$description.=' '.$name;
+		if ($price>0) {
+			$description.=' ('.money_locale($price,$_locale,$currency).')';
+		}
+
+
 		$data[]=array(
 
 			'code'=>$code
@@ -2901,21 +2901,21 @@ left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
 
 
 
-global $_locale;
-		
-		$units=$row['Product Units Per Case'];
-	$name=$row['Product History Name'];
-	$price=$row['Product History Price'];
-	$currency=$row['Product Currency'];
+		global $_locale;
 
-	$description='';
-	if ($units>1) {
-		$description=number($units).'x ';
-	}
-	$description.=' '.$name;
-	if ($price>0) {
-		$description.=' ('.money_locale($price,$_locale,$currency).')';
-	}
+		$units=$row['Product Units Per Case'];
+		$name=$row['Product History Name'];
+		$price=$row['Product History Price'];
+		$currency=$row['Product Currency'];
+
+		$description='';
+		if ($units>1) {
+			$description=number($units).'x ';
+		}
+		$description.=' '.$name;
+		if ($price>0) {
+			$description.=' ('.money_locale($price,$_locale,$currency).')';
+		}
 
 		if ($parent=='order_cancelled' or $parent=='order_suspended') {
 			$description.=$deal_info;
