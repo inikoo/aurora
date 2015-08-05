@@ -2043,7 +2043,7 @@ class product extends DB_Table {
 		include_once 'class.Material.php';
 
 		//if ($value==$this->data['Product Unit Materials'])
-		//	return;
+		// return;
 
 
 
@@ -3858,6 +3858,10 @@ class product extends DB_Table {
 		return  $this->get_current_part_skus();
 	}
 
+
+
+
+
 	function get_current_part_skus() {
 
 		$skus=array();
@@ -4400,6 +4404,25 @@ class product extends DB_Table {
 
 	}
 
+
+	function update_links_to_part_data() {
+
+
+
+		if (count($this->get_current_part_skus())>1   ) {
+			$this->update(
+				array(
+					'Product Use Part Tariff Data'=>'No',
+					'Product Use Part Properties'=>'No',
+					'Product Use Part Units Properties'=>'No',
+					'Product Use Part H and S'=>'No',
+					'Product Use Part Pictures'=>'No',
+				),
+				'no_history'
+			);
+		}
+
+	}
 
 	function update_parts() {
 		$parts='';
