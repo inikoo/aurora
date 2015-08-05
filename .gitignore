@@ -21,3 +21,5 @@ mantenence/scripts/paso_shipping.php
 mantenence/scripts/create_part.php
 
 mantenence/scripts/read_products_pt.php
+
+phpinfo.php

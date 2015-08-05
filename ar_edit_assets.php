@@ -2874,6 +2874,8 @@ function edit_part_list($data) {
 	//$this->set_part_list_as_current($product_part_key);
 
 
+$product->update_links_to_part_data();
+
 
 	if ($product->new_id) {
 		$response= array('state'=>200,'new'=>true,'newvalue'=>$product->pid);

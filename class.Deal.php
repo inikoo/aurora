@@ -582,13 +582,14 @@ class Deal extends DB_Table {
 		$deal_component->update_target_bridge();
 		
 		
-		$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Mirror Key`=%d",
+		$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Mirror Key`=%d  and `Deal Status`!='Finish' ",
 		$this->id
 		);
 		$res=mysql_query($sql);
 	
 		while ($row=mysql_fetch_assoc($res)) {
 			$deal=new Deal($row['Deal Key']);
+			$data['Deal Component Status']=$deal_component->data['Deal Component Status'];
 			$data['Deal Component Mirror Key']=$deal_component->id;
 			$deal->add_component($data);
 		}
