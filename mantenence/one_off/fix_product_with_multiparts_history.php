@@ -36,6 +36,193 @@ $options='no_history';
 
 
 
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Package XHTML Dimensions changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit XHTML Dimensions changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit Weight Display changed (0)' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit Weight changed (0)' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit Dimensions Diameter Display changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit Dimensions Length Display changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit Dimensions Depth Display changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Unit Dimensions Width Display changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Package Weight Display changed (0)' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Package Weight changed (0)' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit XHTML Dimensions changed (0x0x0 (cm))' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Weight Display Units changed (g)' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Package XHTML Dimensions changed ()' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'History Abstract'='Product Package Weight Display Units changed (g)' ");
+$result2=mysql_query($sql);
+while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
+	mysql_query($sql);
+	//print "$sql\n";
+
+	$sql=sprintf("delete from `Product History Bridge` where `History Key`=%d",$row2['History Key']);
+	//print "$sql\n";
+	mysql_query($sql);
+
+}
+
+
+
+
 $sql=sprintf("select `Product ID`  from `Product History Bridge` group by `Product ID`");
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -43,7 +230,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-	if (!$product->id) {
+	if (!$product->pid) {
 
 		$sql=sprintf("select `History Key` from `Product History Bridge` where `Product ID`=%d ",$row['Product ID']);
 		$result2=mysql_query($sql);
@@ -53,7 +240,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			//print "$sql\n";
 		}
 		$sql=sprintf("delete from `Product History Bridge` where `Product ID`=%d",$row['Product ID']);
-		print "xx $sql\n";
+		//print "xx $sql\n";
 		mysql_query($sql);
 
 	}
