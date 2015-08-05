@@ -10,7 +10,7 @@ require_once 'conf/key.php';
 require_once 'common_functions.php';
 require_once 'common_detect_agent.php';
 
-require_once "class.Session.php";
+//require_once "class.Session.php";
 require_once "aes.php";
 require_once "class.Account.php";
 
@@ -56,9 +56,16 @@ $inikoo_account=new Account();
 date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
 define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 
-$max_session_time=$myconf['max_session_time'];
-$max_session_time_in_milliseconds=1000*$max_session_time;
-$session = new Session($max_session_time);
+//$max_session_time=$myconf['max_session_time'];
+//$max_session_time_in_milliseconds=1000*$max_session_time;
+
+//$session = new Session($max_session_time);
+session_save_path('server_files/tmp');
+ini_set('session.gc_maxlifetime', 57600); // 16 hours
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 100);
+session_start();
+
 //print date("%c",1349421365);
 
 //print_r($session);
@@ -155,7 +162,7 @@ include_once 'set_state.php';
 $smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
 $smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
 $smarty->assign('currency_symbol',$_SESSION['locale_info']['currency_symbol']);
-$smarty->assign('max_session_time_in_milliseconds',$max_session_time_in_milliseconds);
+//$smarty->assign('max_session_time_in_milliseconds',$max_session_time_in_milliseconds);
 
 
 $smarty->assign('user',$user);
