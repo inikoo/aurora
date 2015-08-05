@@ -309,7 +309,7 @@ function list_deal_components_for_edition() {
 
 
 
-	
+
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='allowances' and $f_value!='')
@@ -1695,11 +1695,18 @@ function create_deal($data) {
 				$deal_data['Deal Component Allowance Type']='Percentage Off';
 				$allowances=$deal_data['percentage_off'].'% off';
 				$allowances_label=$deal_data['percentage_off']._('% off');
+
+				$deal_data['Deal Component Allowance']=$deal_data['percentage_off']/100;;
+
+
+
 				break;
 
 			case 'Percentage Off':
 				$allowances=$deal_data['percentage_off'].'% off';
 				$allowances_label=$deal_data['percentage_off']._('% off');
+				$deal_data['Deal Component Allowance']=$deal_data['percentage_off']/100;;
+
 				break;
 			case 'Get Same Free':
 				$allowances=$deal_data['get_same_free'].' free';

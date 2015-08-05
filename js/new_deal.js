@@ -1521,9 +1521,7 @@ function validate_campaign_description(query) {
     validate_general('deal', 'campaign_description', query);
 }
 
-function validate_deal_code(query) {
-    validate_general('deal', 'code', query);
-}
+
 
 function validate_deal_name(query) {
 
@@ -1579,8 +1577,8 @@ function post_new_create_actions(branch, response) {
         window.location = "deal.php?id=" + response.deal_key
     } else {
         Dom.get('new_deal_msg').innerHTML = response.message
-        Dom.get('deal_code').value = '';
-        validate_general('deal', 'code', '');
+        Dom.get('deal_name').value = '';
+        validate_general('deal', 'name', '');
         Dom.setStyle('waiting', 'display', 'none')
         Dom.setStyle('form_buttons', 'display', '')
     }
@@ -2100,11 +2098,7 @@ function init() {
     campaign_description_oAutoComp.minQueryLength = 0;
     campaign_description_oAutoComp.queryDelay = 0.1;
 
-    var deal_code_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_code);
-    deal_code_oACDS.queryMatchContains = true;
-    var deal_code_oAutoComp = new YAHOO.widget.AutoComplete("deal_code", "deal_code_Container", deal_code_oACDS);
-    deal_code_oAutoComp.minQueryLength = 0;
-    deal_code_oAutoComp.queryDelay = 0.1;
+  
 
     var deal_name_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_name);
     deal_name_oACDS.queryMatchContains = true;
