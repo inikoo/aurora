@@ -36,7 +36,7 @@ $options='no_history';
 
 
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package XHTML Dimensions changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package XHTML Dimensions changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -50,7 +50,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 }
 
 
-$sql=sprintf("select `History Key` from `History Dimension` where  `History Abstract` like 'Product Unit XHTML Dimensions changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where  `History Abstract` like 'Product Unit XHTML Dimensions changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -63,7 +63,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Weight Display changed (0)%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Weight Display changed (0)%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -76,7 +76,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where  `History Abstract` like 'Product Unit Weight changed (0)%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where  `History Abstract` like 'Product Unit Weight changed (0)%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -89,7 +89,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Dimensions Diameter Display changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Dimensions Diameter Display changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -102,7 +102,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where  `History Abstract` like 'Product Unit Dimensions Length Display changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where  `History Abstract` like 'Product Unit Dimensions Length Display changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -115,7 +115,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Dimensions Depth Display changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Dimensions Depth Display changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -128,7 +128,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Dimensions Width Display changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Dimensions Width Display changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -142,7 +142,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 }
 
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package Weight Display changed (0)%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package Weight Display changed (0)%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -155,7 +155,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package Weight changed (0)%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package Weight changed (0)%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -168,7 +168,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit XHTML Dimensions changed (0x0x0 (cm))%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit XHTML Dimensions changed (0x0x0 (cm))%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -181,7 +181,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Weight Display Units changed (g)%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Unit Weight Display Units changed (g)%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -194,7 +194,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package XHTML Dimensions changed ()%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package XHTML Dimensions changed ()%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
@@ -207,7 +207,7 @@ while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 }
 
-$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package Weight Display Units changed (g)%' ");
+$sql=sprintf("select `History Key` from `History Dimension` where `History Abstract` like 'Product Package Weight Display Units changed (g)%%' ");
 $result2=mysql_query($sql);
 while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 	$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$row2['History Key']);
