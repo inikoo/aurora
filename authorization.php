@@ -70,9 +70,16 @@ require_once "class.Session.php";
 include_once 'class.User.php';
 require_once 'conf/conf.php';
 
-$max_session_time=$myconf['max_session_time'];
-$max_session_time_in_milliseconds=1000*$max_session_time;
-$session = new Session($max_session_time,1,100);
+//$max_session_time=$myconf['max_session_time'];
+//$max_session_time_in_milliseconds=1000*$max_session_time;
+//$session = new Session($max_session_time,1,100);
+
+session_save_path('server_files/tmp');
+ini_set('session.gc_maxlifetime', 57600); // 16 hours
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 100);
+session_start();
+session_start();
 
 $auth=new Auth(IKEY,SKEY);
 $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
