@@ -44,6 +44,42 @@ $start_time=date('U');
 print date('r')." Start\n";
 
 
+$sql="select count(*) as total from `Product Dimension`";
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$total=$row['total'];
+}
+$contador=0;
+
+
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=1860";
+$sql="select `Product ID` from `Product Dimension` ";
+
+$lap_time0=date('U');
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('pid',$row['Product ID']);
+	$product->load_acc_data();
+	$product->update_availability();
+	$product->update_up_today_sales();
+	$product->update_interval_sales();
+	$product->update_last_period_sales();
+	$product->update_parts();
+	unset($product);
+	$contador++;
+	$lap_time1=date('U');
+	print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+}
+$lap_time1=date('U');
+print date('r')." Product\n";
+
+print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
+
+
+
+
+
 
 
 $sql="select count(*) as total from `Product Family Dimension`  ";
@@ -73,38 +109,6 @@ print date('r')." Fam\n";
 print 'Fam Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
-
-$sql="select count(*) as total from `Product Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$total=$row['total'];
-}
-$contador=0;
-
-
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=1860";
-$sql="select `Product ID` from `Product Dimension` ";
-
-$lap_time0=date('U');
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	$product->load_acc_data();
-	$product->update_availability();
-	$product->update_up_today_sales();
-	$product->update_interval_sales();
-	$product->update_last_period_sales();
-	$product->update_parts();
-	unset($product);
-	$contador++;
-	$lap_time1=date('U');
-	//print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
-
-}
-$lap_time1=date('U');
-print date('r')." Product\n";
-
-print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
 
 
 
