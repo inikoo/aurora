@@ -359,9 +359,9 @@ while ($row=mysql_fetch_assoc($res)) {
 		$data['Order Type']='Order';
 
 		//print_r($data_dn_transactions);
-		print_r($row);
+//		print_r($row);
 
-		print $data['order id']."   \n";
+//		print $data['order id']."   \n";
 
 		create_order($data);
 
