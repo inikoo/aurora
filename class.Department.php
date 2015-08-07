@@ -490,8 +490,8 @@ class Department extends DB_Table {
 			,prepare_mysql($name)
 			,$this->id
 		);
-		
-		
+
+
 		if (mysql_query($sql)) {
 			$this->msg=_('Department name updated');
 			$this->updated=true;
@@ -521,7 +521,7 @@ class Department extends DB_Table {
 
 			foreach ($this->get_pages_keys() as $page_key  ) {
 				$page=new Page($page_key);
-               
+
 				if ($page->data['Page Type']=='Store' and $page->data['Page Store Content Display Type']=='Template') {
 					$page->update(array('Page Store Title'=>$this->data['Product Department Name']));
 					$page->update_store_search();
@@ -1122,23 +1122,43 @@ class Department extends DB_Table {
 
 	function update_customers() {
 		$number_active_customers=0;
+		$number_active_customers_more_than_75=0;
 		$number_active_customers_more_than_50=0;
+		$number_active_customers_more_than_25=0;
 
-		$sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
+		$sql=sprintf(" select
+		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
+		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0
+		  group by  OTF.`Customer Key`",$this->id);
 		// print "$sql\n";
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {
 			$number_active_customers++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.75 )
+				$number_active_customers_more_than_75++;
 			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
 				$number_active_customers_more_than_50++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
+				$number_active_customers_more_than_25++;		
+				
 		}
 
 		$this->data['Product Department Active Customers']=$number_active_customers;
+		$this->data['Product Department Active Customers More 0.75 Share']=$number_active_customers_more_than_75;
 		$this->data['Product Department Active Customers More 0.5 Share']=$number_active_customers_more_than_50;
+		$this->data['Product Department Active Customers More 0.25 Share']=$number_active_customers_more_than_25;
 
-		$sql=sprintf("update `Product Department Dimension` set `Product Department Active Customers`=%d ,`Product Department Active Customers More 0.5 Share`=%d where `Product Department Key`=%d  ",
+		$sql=sprintf("update `Product Department Dimension` set `Product Department Active Customers`=%d ,
+		`Product Department Active Customers More 0.75 Share`=%d,
+				`Product Department Active Customers More 0.5 Share`=%d,
+		`Product Department Active Customers More 0.25 Share`=%d
+
+		where `Product Department Key`=%d  ",
 			$this->data['Product Department Active Customers'],
+			$this->data['Product Department Active Customers More 0.75 Share'],
 			$this->data['Product Department Active Customers More 0.5 Share'],
+			$this->data['Product Department Active Customers More 0.25 Share'],
 			$this->id
 		);
 		// print "$sql\n";
