@@ -44,7 +44,7 @@ $start_time=date('U');
 print date('r')." Start\n";
 
 
-$sql="select count(*) as total from `Product Dimension` where `Product Sales Type`='For Sale' ";
+$sql="select count(*) as total from `Product Dimension` where `Product Sales Type`='Public Sale' ";
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$total=$row['total'];
@@ -52,7 +52,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $contador=0;
 
 
-$sql="select `Product ID` from `Product Dimension` ";
+$sql="select `Product ID` from `Product Dimension` where `Product Sales Type`='Public Sale'";
 
 $lap_time0=date('U');
 $result=mysql_query($sql);
