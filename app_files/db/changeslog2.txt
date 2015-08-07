@@ -252,4 +252,8 @@ ALTER TABLE `Product Material Bridge` CHANGE `Product Material Key` `Product Mat
 ALTER TABLE `Part Material Bridge` ADD UNIQUE (`Part SKU`, `Material Key`);
 ALTER TABLE `Product Material Bridge` ADD UNIQUE (`Product ID`, `Material Key`);
 
+ALTER TABLE `Product Department Dimension` ADD `Product Department Active Customers More 0.25 Share` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Department Active Customers More 0.5 Share`; 
+ALTER TABLE `Product Department Dimension` ADD `Product Department Active Customers More 0.75 Share` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Department Active Customers`; 
+
+
 

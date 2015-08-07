@@ -41,7 +41,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." Start\n";
+print date('r')." Start Dept\n";
 
 
 
@@ -71,20 +71,20 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$department->update_customers();
 	$department->update_product_data();
 	$department->update_families();
-    unset($department);
+	unset($department);
 
 	$contador++;
-	
-	
-	$lap_time1=date('U');
-	print 'D Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.2f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
-	
+
+	$lap_time1=date('U');
+	//print 'D Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.2f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+
+
 }
 $lap_time1=date('U');
-print date('r')." Dept\n";
 
-	print 'D Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.2f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+print 'D Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.2f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+print date('r')." End Dept\n";
 
 
 
