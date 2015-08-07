@@ -39,7 +39,7 @@ global $myconf;
 
 //$sql="select * from `Supplier Product Dimension` where `Supplier Product ID`=963";
 
-$start_time=date('U');
+$start_time=date('r').' start Fam\n' ;
 
 
 

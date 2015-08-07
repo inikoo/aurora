@@ -61,7 +61,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$contador++;
 }
 //$lap_time1=date('U');
-/print date('r')." End Store\n";
+print date('r')." End Store\n";
 
 
 
