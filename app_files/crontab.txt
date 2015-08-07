@@ -1,0 +1,17 @@
+#!/bin/sh
+date >> /tmp/out.store_departments_aw.log
+cd /home/inikoo/aw/mantenence/cron
+php update_stores_sales.php >> /tmp/out.store_departments_aw.log
+php update_departments_sales.php >> /tmp/out.store_departments_aw.log
+
+#!/bin/sh
+date >> /tmp/out.family_aw.log
+cd /home/inikoo/aw/mantenence/cron
+php update_family_sales.php >> /tmp/out.family_aw.log
+
+*/30 * * * * inikoo sh -c "php -q /home/inikoo/scripts/check_slave.php"
+0  *  * * * inikoo bash /home/inikoo/update_store_department_sales.aw.sh
+0  0  * * * inikoo bash /home/inikoo/update_family_sales.aw.sh
+0  *  * * * inikoo bash /home/inikoo/update_store_department_sales.awr.sh
+0  0  * * * inikoo bash /home/inikoo/update_family_sales.awr.sh
+0  *  * * * inikoo bash /home/inikoo/read_drop.sh

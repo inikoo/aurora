@@ -1140,8 +1140,8 @@ class Department extends DB_Table {
 			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
 				$number_active_customers_more_than_50++;
 			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
-				$number_active_customers_more_than_25++;		
-				
+				$number_active_customers_more_than_25++;
+
 		}
 
 		$this->data['Product Department Active Customers']=$number_active_customers;

@@ -40,7 +40,7 @@ global $myconf;
 
 $start_time=date('U');
 
-//print date('r')." Start\n";
+print date('r')." Start Store\n";
 
 
 
@@ -61,7 +61,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$contador++;
 }
 //$lap_time1=date('U');
-//print date('r')." Store\n";
+/print date('r')." End Store\n";
 
 
 
