@@ -57,6 +57,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$store->update_interval_sales();
 	$store->update_last_period_sales();
 	$store->update_orders();
+	
+	$store->update_customers_data();
+	
+	
 	unset($store);
 	$contador++;
 }

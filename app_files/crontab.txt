@@ -40,11 +40,15 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; php update_for_sale_products_sales.php >> /tmp/out.product_sales.awr"
 0 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_supplier_product_sales.php >> /tmp/out.prod_sup_sales.aw"
 0 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; php update_supplier_product_sales.php >> /tmp/out.prod_sup_sales.awr"
+0 0    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/cron;php update_customers_data.php >> /tmp/out.customers_data.aw"
+0 0    * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/cron;php update_customers_data.php >> /tmp/out.customers_data.awr"
+
+
+
 0,30  * * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts ; php update_sales_overview.php;"
 0,30  *  * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/currency_exchange;php fix_exchange_value.php; cd /home/inikoo/aw/mantenence/scripts; php update_sales_overview.php;"
 #30 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_pages_last_period.php;php update_pages.php;update_sites.php;"
 0 0    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_deals_status_from_dates.php;php update_orders_in_basket_deals.php"
-3 3    * * 6  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_customers_data.php >> /tmp/out.customers_data"
 #0 20 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php get_sites_timeseries.php"
 55 11,23 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_order_snapshot.php"
 58 9,11,17,23 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_stock_history.php"
