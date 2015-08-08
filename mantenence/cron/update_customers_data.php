@@ -38,6 +38,8 @@ include_once '../../set_locales.php';
 require_once '../../conf/conf.php';
 require '../../locale.php';
 
+print date('r')." Start Cust\n";
+
 
 $sql="select count(*) as total from `Customer Dimension`  ";
 $result=mysql_query($sql);
@@ -63,28 +65,22 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	//$address=new Address($customer->data['Customer Billing Address Key']);
+	
 	//$address->update_parents();
 	// $customer->update_orders();
-	//$customer->update_activity();
-	//$customer->update_is_new();
-	//$customer->update_rankings();
+	
+	$customer->update_activity();
+	$customer->update_is_new();
+	$customer->update_rankings();
 	$lap_time1=date('U');
-	print 'Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
+	//print 'Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
 
 
 }
 
-//exit;
+print date('r')." End Cust\n";
 
-$sql="select * from `Store Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$store=new Store($row['Store Key']);
-	$store->update_interval_sales();
-	$store->update_customers_data();
-
-}
 
 
 ?>
