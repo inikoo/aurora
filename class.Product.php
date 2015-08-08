@@ -2732,7 +2732,7 @@ class product extends DB_Table {
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			
+
 			$this->data['Product $db_interval Acc Invoiced Amount']=$row['sales'];
 			$this->data['Product $db_interval Acc Quantity Delivered']=$row['outers_out'];
 			$this->data['Product ID DC $db_interval Acc Invoiced Amount']=$row['dc_sales'];
@@ -2775,20 +2775,20 @@ class product extends DB_Table {
 
 
 
-	$sql=sprintf("select 
+			$sql=sprintf("select
 		sum(`Outers Out`) as outers_out,
 		sum(`Sales`) as sales,
 		sum(`Sales DC`) as dc_sales
 
 		 from `Order Spanshot Fact`  USE INDEX (`Date`)   where   `Product ID`=%d and `Date`>=%s %s ",
-			$this->pid,
-			prepare_mysql($from_date_1yb),
+				$this->pid,
+				prepare_mysql($from_date_1yb),
 				($to_1yb?sprintf('and `Date`<%s',prepare_mysql($to_1yb)):'')
 
-		);
+			);
 
 
-			
+
 
 
 
@@ -4556,13 +4556,18 @@ class product extends DB_Table {
 		$number_of_parts=0;
 
 
+
+
 		$sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
 
 		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
 			$mysql_where.=', '.$row['Part SKU'];
 			$number_of_parts++;
+			
+			if (count($product->get_current_part_skus())==1   ) {
+			
 			$part_fields=array(
 				'Part Tariff Code',
 				'Part Duty Rate',
@@ -4592,13 +4597,15 @@ class product extends DB_Table {
 				'Part Origin Country Code'
 			);
 
-			$part=new Part($row['Part SKU']);
-			foreach ($part_fields as $field) {
-				$part->update_fields_used_in_products($field,$part->data[$field]);
-			}
 
-			foreach ($part->get_images_slidesshow() as $image_data) {
-				$this->add_image($image_data['id']);
+				$part=new Part($row['Part SKU']);
+				foreach ($part_fields as $field) {
+					$part->update_fields_used_in_products($field,$part->data[$field]);
+				}
+
+				foreach ($part->get_images_slidesshow() as $image_data) {
+					$this->add_image($image_data['id']);
+				}
 			}
 
 		}
