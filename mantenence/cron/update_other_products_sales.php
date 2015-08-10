@@ -41,7 +41,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." No sale Start\n";
+print date('r');
 
 
 $sql="select count(*) as total from `Product Dimension` where `Product Sales Type`!='Public Sale' ";
@@ -71,10 +71,8 @@ while ($row=mysql_fetch_array($result)   ) {
 
 }
 $lap_time1=date('U');
-print date('r')."No sale Product\n";
 
-print 'P no sale Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-
+print ' -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 

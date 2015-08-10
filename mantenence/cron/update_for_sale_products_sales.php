@@ -41,7 +41,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." Start\n";
+print date('r');
 
 
 $sql="select count(*) as total from `Product Dimension` where `Product Sales Type`='Public Sale' ";
@@ -63,21 +63,15 @@ while ($row=mysql_fetch_array($result)   ) {
 	$product->update_up_today_sales();
 	$product->update_interval_sales();
 	$product->update_last_period_sales();
-	//$product->update_parts();
+	
+	
 	unset($product);
 	$contador++;
 	$lap_time1=date('U');
 	//print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
 }
-$lap_time1=date('U');
-print date('r')." Product\n";
-
-print 'P Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-
-
-
-
+print ' -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 
