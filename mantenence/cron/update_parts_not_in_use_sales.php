@@ -40,10 +40,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." Start Part not in Use\n";
-
-
-
+print date('r');
 
 
 $sql="select count(*) as total from `Part Dimension`  where `Part Status`='Not In Use'";
@@ -69,14 +66,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$lap_time1=date('U');
 	//print 'Part Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
 
-
-
-
 }
-$lap_time1=date('U');
+print ' -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
-print 'Part not in use Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-print date('r')." End not In use Part\n";
 
 
 

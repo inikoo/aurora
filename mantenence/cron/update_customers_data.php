@@ -38,7 +38,7 @@ include_once '../../set_locales.php';
 require_once '../../conf/conf.php';
 require '../../locale.php';
 
-print date('r')." Start Cust\n";
+print date('r');
 
 
 $sql="select count(*) as total from `Customer Dimension`  ";
@@ -54,21 +54,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$customer=new Customer($row['Customer Key']);
 	$contador++;
-	//$customer->update_location_type();
-	//$customer->update_web_data();
-
-	$store=new Store($customer->data['Customer Store Key']);
-
+			
+	$customer->update_web_data();
 	$customer->update_orders();
-
-	//  $customer->update_field_switcher('Customer Currency Code',$store->data['Store Currency Code'],'no_history');
-
-
-	//$address=new Address($customer->data['Customer Billing Address Key']);
-	
-	//$address->update_parents();
-	// $customer->update_orders();
-	
 	$customer->update_activity();
 	$customer->update_is_new();
 	$customer->update_rankings();
@@ -79,7 +67,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 }
 
-print date('r')." End Cust\n";
+print ' -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 

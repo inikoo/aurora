@@ -41,7 +41,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." sup producs Start\n";
+print date('r');
 
 
 
@@ -80,9 +80,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $lap_time1=date('U');
 
-print 'Supplier Prod'.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-
-print date('r')." end Supplier Prod\n";
+print ' -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 

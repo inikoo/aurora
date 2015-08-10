@@ -59,15 +59,19 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
 
+
+
 	$part->update_up_today_sales();
 
 	$part->update_interval_sales();
 	$part->update_last_period_sales();
 
-	//$part->update_available_forecast();
+	////$part->update_available_forecast();
 	$part->update_used_in();
 	$part->update_main_state();
 	$part->update_stock_state();
+
+	
 	$contador++;
 	$lap_time1=date('U');
 	//print 'Part Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
@@ -78,8 +82,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $lap_time1=date('U');
 
-print 'Part in use Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-print date('r')." End In use Part\n";
+print 'End '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
+
 
 
 

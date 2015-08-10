@@ -41,9 +41,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." Start Dept\n";
-
-
+print date('r');
 
 
 $sql="select count(*) as total from `Product Department Dimension`  ";
@@ -81,10 +79,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 }
-$lap_time1=date('U');
-
-print 'D Time '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.2f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \r";
-print date('r')." End Dept\n";
+print ' -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 
