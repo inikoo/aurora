@@ -910,7 +910,7 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 				$image=new Image('find',$image_data,'create');
 				$caption='';
 				if ($image->id) {
-					$sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,'Yes',%s)",
+					$sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,'Yes',%s) on duplicate key update `Is Principal`='Yes'  ",
 						prepare_mysql($parent_data['subject']),
 						$parent_data['subject_key'],
 						$image->id,
