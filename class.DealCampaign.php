@@ -44,7 +44,7 @@ class DealCampaign extends DB_Table {
 				$tag2
 			);
 		}else {
-			print "get_data tipo not found >".$tipo.'<';
+			$sql=sprintf("select * from `Deal Campaign Dimension` where false");
 		}
 
 
