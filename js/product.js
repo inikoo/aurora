@@ -327,7 +327,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
         };
 
 
-
         tableid = 2;
         tableDivEL = "table" + tableid;
 
@@ -875,6 +874,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             value: state.product.availability.f_value
         };
 
+
         tableid = 10;
         tableDivEL = "table" + tableid;
         var productsColumnDefs = [
@@ -887,8 +887,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             isPrimaryKey: true,
             hidden: true
         }, {
-            key: "code",
-            label: labels.Code,
+            key: "name",
+            label: labels.Name,
             width: 110,
             sortable: true,
             className: "aleft",
@@ -935,6 +935,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
         ];
+        
+       
 
         request = "ar_deals.php?tipo=deals&parent=product&sf=0&parent_key=" + Dom.get('product_pid').value + '&tableid=10&referrer=product'
         this.dataSource10 = new YAHOO.util.DataSource(request);
@@ -953,9 +955,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ["name", "key", "description", "duration", "orders", "code", "customers"]
+            fields: ["name", "key", "description", "duration", "orders", "customers"]
         };
-
 
         this.table10 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs, this.dataSource10, {
             renderLoopSize: 50,
@@ -980,7 +981,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }
 
         );
-
         this.table10.handleDataReturnPayload = myhandleDataReturnPayload;
         this.table10.doBeforeSortColumn = mydoBeforeSortColumn;
         this.table10.doBeforePaginatorChange = mydoBeforePaginatorChange;
