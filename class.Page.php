@@ -4120,7 +4120,10 @@ class Page extends DB_Table {
 
 				$number_buttons++;
 				if (!in_array($product->pid,$old_page_buttons_to_delete)) {
-					$sql=sprintf("insert into `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) values  (%d,%d,%d)",
+					$sql=sprintf("insert into `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) values  (%d,%d,%d) on duplicate key update `Site Key`=%d, `Page Key`=%d ,`Product ID`=%d  ",
+						$this->data['Page Site Key'],
+						$this->id,
+						$product->pid,
 						$this->data['Page Site Key'],
 						$this->id,
 						$product->pid
