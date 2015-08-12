@@ -114,7 +114,7 @@ $js_files=array(
 	'js/d3.v3.min.js',
 	'js/d3_calendar_asset_sales.js',
 	'js/store.js'
-	
+
 );
 
 
@@ -248,7 +248,7 @@ $smarty->assign('departments_table_type_menu',$table_type_options);
 
 
 $mode_options=array(
-	array('mode'=>'percentage','label'=>_('Percentages')),
+	array('mode'=>'percentages','label'=>_('Percentages')),
 	array('mode'=>'value','label'=>_('Sales Amount')),
 
 );
@@ -263,6 +263,37 @@ if ($_SESSION['state']['store']['departments']['percentages']) {
 $smarty->assign('display_departments_mode',$display_mode);
 $smarty->assign('display_departments_mode_label',$display_mode_label);
 $smarty->assign('departments_mode_options_menu',$mode_options);
+
+
+if ($_SESSION['state']['store']['departments']['stock_percentages']=='vertical') {
+	$display_departments_stock_mode='vertical';
+	$display_departments_stock_mode_label=_('Percentages').'  &#8597';
+}if ($_SESSION['state']['store']['departments']['stock_percentages']=='horizontal') {
+	$display_departments_stock_mode='horizontal';
+	$display_departments_stock_mode_label=_('Percentages').'  &#8596; ';
+}else {
+	$display_departments_stock_mode='value';
+	$display_departments_stock_mode_label=_('Quantity');
+}
+
+
+
+$mode_options=array(
+	array('mode'=>'value','label'=>_('Quantity')),
+
+	array('mode'=>'vertical','label'=>_('Percentages').'  &#8597'),
+	array('mode'=>'horizontal','label'=>_('Percentages').'  &#8596'),
+
+
+);
+$smarty->assign('departments_stock_mode_options_menu',$mode_options);
+
+$smarty->assign('display_departments_stock_mode',$display_departments_stock_mode);
+
+$smarty->assign('display_departments_stock_mode_label',$display_departments_stock_mode_label);
+
+
+
 
 if ($_SESSION['state']['store']['families']['percentages']) {
 	$display_mode='percentages';
@@ -543,7 +574,24 @@ $session_data=base64_encode(json_encode(array(
 				'Sales_Type'=>_('Sales Type'),
 				'Surplus'=>_('Surplus'),
 				'Department'=>_('Department'),
-
+				'OutofStock'=>_('Out of Stock'),
+				'Sales1q'=>_('Sales 1Q'),
+				'Active'=>_('Active'),
+				'Active_75'=>_('A75%'),
+				'Active_50'=>_('A50%'),
+				'Active_25'=>_('A25%'),
+				'Losing'=>_('Losing'),
+				'Losing_75'=>_('Lg75%'),
+				'Losing_50'=>_('Lg50%'),
+				'Losing_25'=>_('Lg25%'),
+				'Lost'=>_('Lost'),
+				'Lost_75'=>_('L75%'),
+				'Lost_50'=>_('L50%'),
+				'Lost_25'=>_('L25%'),
+				'Public'=>_('Public'),
+				'Private'=>_('Private'),
+				'Historic'=>_('Historic'),
+				'NotforSale'=>_('Not for Sale'),
 				'Page'=>_('Page'),
 				'of'=>_('of')
 			),

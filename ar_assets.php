@@ -39,8 +39,8 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case 'favorite_products':
 
-list_favorite_products();
-break;
+	list_favorite_products();
+	break;
 case ('get_history_numbers'):
 	$data=prepare_values($_REQUEST,array(
 			'subject'=>array('type'=>'string'),
@@ -414,6 +414,10 @@ function list_departments() {
 	} else
 		$percentages=$conf['percentages'];
 
+	if (isset( $_REQUEST['stock_percentages'])) {
+		$stock_percentages=$_REQUEST['stock_percentages'];
+	} else
+		$stock_percentages=$conf['stock_percentages'];
 
 
 	if (isset( $_REQUEST['period'])) {
@@ -441,6 +445,7 @@ function list_departments() {
 	$_SESSION['state'][$conf_table]['departments']['percentages']=$percentages;
 	$_SESSION['state'][$conf_table]['departments']['period']=$period;
 	$_SESSION['state'][$conf_table]['departments']['avg']=$avg;
+	$_SESSION['state'][$conf_table]['departments']['stock_percentages']=$stock_percentages;
 
 
 	include_once 'splinters/departments_prepare_list.php';
@@ -517,8 +522,7 @@ function list_departments() {
 	//$order='`Product Department Code`';
 	if ($_order=='families')
 		$order='`Product Department Families`';
-	elseif ($_order=='todo')
-		$order='`Product Department In Process Products`';
+
 	elseif ($_order=='aws_p') {
 		$order='`Product Department Total Acc Avg Week Sales Per Product`';
 
@@ -553,36 +557,131 @@ function list_departments() {
 		$order='`Product Department Code`';
 	elseif ($_order=='active')
 		$order='`Product Department For Public Sale Products`';
-	elseif ($_order=='outofstock')
-		$order='`Product Department Out Of Stock Products`';
-	elseif ($_order=='stock_error')
-		$order='`Product Department Unknown Stock Products`';
-	elseif ($_order=='surplus')
-		$order='`Product Department Surplus Availability Products`';
-	elseif ($_order=='optimal')
-		$order='`Product Department Optimal Availability Products`';
-	elseif ($_order=='low')
-		$order='`Product Department Low Availability Products`';
-	elseif ($_order=='critical')
-		$order='`Product Department Critical Availability Products`';
-	elseif ($_order=='discontinued')
-		$order='`Product Department Discontinued Products`';
-	elseif ($order=='from') {
+	elseif ($_order=='outofstock') {
+
+		if ($stock_percentages=='horizontal')
+			$order='`Product Department Out Of Stock Products`/`Product Department For Public Sale Products`';
+		else
+			$order='`Product Department Out Of Stock Products`';
+
+	}
+	elseif ($_order=='stock_error') {
+		if ($stock_percentages=='horizontal')
+			$order='`Product Department Unknown Stock Products`/`Product Department For Public Sale Products`';
+		else
+			$order='`Product Department Unknown Stock Products`';
+	}elseif ($_order=='surplus') {
+		if ($stock_percentages=='horizontal')
+			$order='`Product Department Surplus Availability Products`/`Product Department For Public Sale Products`';
+		else
+			$order='`Product Department Surplus Availability Products`';
+	}elseif ($_order=='optimal') {
+		if ($stock_percentages=='horizontal')
+			$order='`Product Department Optimal Availability Products`/`Product Department For Public Sale Products`';
+		else
+			$order='`Product Department Optimal Availability Products`';
+	}elseif ($_order=='low') {
+		if ($stock_percentages=='horizontal')
+			$order='`Product Department Low Availability Products`/`Product Department For Public Sale Products`';
+		else
+			$order='`Product Department Low Availability Products`';
+	}elseif ($_order=='critical') {
+		if ($stock_percentages=='horizontal')
+			$order='`Product Department Critical Availability Products`/`Product Department For Public Sale Products`';
+		else
+			$order='`Product Department Critical Availability Products`';
+	}elseif ($order=='from') {
 		$order='`Product Department Valid From`';
 	}elseif ($order=='to') {
 		$order='`Product Department Valid To`';
 	}elseif ($order=='last_update') {
 		$order='`Product Department Last Updated`';
+	}elseif ($order=='products_for_sale') {
+		$order='`Product Department For Public Sale Products`';
+	}elseif ($order=='percentage_out_of_stock') {
+		$order='`Product Department Out Of Stock Products`/`Product Department For Public Sale Products`';
+	}elseif ($order=='sales_1q') {
+		$order='`Product Department 1 Quarter Acc Invoiced Amount`';
+	}elseif ($order=='delta_sales_1q') {
+		$order='(`Product Department 1 Quarter Acc Invoiced Amount`-`Product Department 1 Quarter Acc 1YB Invoiced Amount`)/`Product Department 1 Quarter Acc 1YB Invoiced Amount`';
+	}elseif ($order=='customers_active') {
+		$order='`Product Department Active Customers`';
+	}elseif ($order=='customers_active_75') {
+		$order='`Product Department Active Customers More 0.75 Share`';
+	}elseif ($order=='customers_active_50') {
+		$order='`Product Department Active Customers More 0.5 Share`';
+	}elseif ($order=='customers_active_25') {
+		$order='`Product Department Active Customers More 0.25 Share`';
+	}
+
+	elseif ($order=='customers_losing') {
+		$order='`Product Department Losing Customers`';
+	}elseif ($order=='customers_losing_75') {
+		$order='`Product Department Losing Customers More 0.75 Share`';
+	}elseif ($order=='customers_losing_50') {
+		$order='`Product Department Losing Customers More 0.5 Share`';
+	}elseif ($order=='customers_losing_25') {
+		$order='`Product Department Losing Customers More 0.25 Share`';
+	}
+
+	elseif ($order=='customers_lost') {
+		$order='`Product Department Lost Customers`';
+	}elseif ($order=='customers_lost_75') {
+		$order='`Product Department Lost Customers More 0.75 Share`';
+	}elseif ($order=='customers_lost_50') {
+		$order='`Product Department Lost Customers More 0.5 Share`';
+	}elseif ($order=='customers_lost_25') {
+		$order='`Product Department Lost Customers More 0.25 Share`';
+	}elseif ($_order=='todo') {
+		$order='`Product Department In Process Products`';
+	}elseif ($_order=='discontinued') {
+		$order='`Product Department Discontinued Products`';
+	}elseif ($_order=='discontinued') {
+		$order='`Product Department Discontinued Products`';
+	}elseif ($_order=='not_for_sale') {
+		$order='`Product Department Not For Sale Products`';
+	}elseif ($_order=='public_sale') {
+		$order='`Product Department For Public Sale Products`';
+	}elseif ($_order=='private_sale') {
+		$order='`Product Department For Private Sale Products`';
+	}elseif ($_order=='historic') {
+		$order='`Product Department Historic Products`';
+	}elseif ($_order=='store') {
+		$order='`Product Department Store Code`';
 	}
 
 
 
 
+
+
+
+
+	/*
+
+		$customers_active=number($row['Product Department Active Customers']);
+			$customers_active_75=number($row['Product Department Active Customers More 0.75 Share']);
+			$customers_active_50=number($row['Product Department Active Customers More 0.5 Share']);
+			$customers_active_25=number($row['Product Department Active Customers More 0.25 Share']);
+
+			$customers_losing=number($row['Product Department Losing Customers']);
+			$customers_losing_75=number($row['Product Department Losing Customers More 0.75 Share']);
+			$customers_losing_50=number($row['Product Department Losing Customers More 0.5 Share']);
+			$customers_losing_25=number($row['Product Department Losing Customers More 0.25 Share']);
+
+
+			$customers_lost=number($row['Product Department Lost Customers']);
+			$customers_lost_75=number($row['Product Department Lost Customers More 0.75 Share']);
+			$customers_lost_50=number($row['Product Department Lost Customers More 0.5 Share']);
+			$customers_lost_25=number($row['Product Department Lost Customers More 0.25 Share']);
+
+
+*/
+
 	$sum_families=0;
-	$sum_active=0;
+	$sum_products_for_sale=0;
 	$sum_discontinued=0;
 
-	$sum_todo=0;
 	$sum_outofstock=0;
 	$sum_stock_error=0;
 	$sum_stock_value=0;
@@ -591,23 +690,46 @@ function list_departments() {
 	$sum_low=0;
 	$sum_critical=0;
 
+	$sum_sales_1q=0;
+	$sum_sales_1q_1yb=0;
 
 
+	$sum_todo=0;
+	$sum_discontinued=0;
+	$sum_public_sale=0;
+	$sum_private_sale=0;
+	$sum_historic=0;
+	$sum_not_for_sale=0;
 
+	$sql="select
 
-
-	$sql="select sum(`Product Department Out Of Stock Products`) outofstock,sum(`Product Department Unknown Stock Products`)stock_error,
+	        sum(`Product Department 1 Quarter Acc Invoiced Amount`) sum_sales_1q,
+	          sum(`Product Department 1 Quarter Acc 1YB Invoiced Amount`) sum_sales_1q_1yb,
+	     sum(`Product Department Out Of Stock Products`) outofstock,sum(`Product Department Unknown Stock Products`)stock_error,
          sum(`Product Department Stock Value`)stock_value,sum(`Product Department Surplus Availability Products`)surplus,sum(`Product Department Optimal Availability Products`) optimal,
-         sum(`Product Department Low Availability Products`) low,sum(`Product Department Critical Availability Products`) critical,
-         sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families
+         sum(`Product Department Low Availability Products`) low,
+
+         sum(`Product Department Critical Availability Products`) critical,
+         sum(`Product Department Unknown Stock Products`) stock_error,
+         sum(`Product Department In Process Products`) as todo,
+         sum(`Product Department For Public Sale Products`) as sum_active,
+         sum(`Product Department For Private Sale Products`) as sum_private,
+         sum(`Product Department Discontinued Products`) as sum_discontinued,
+                  sum(`Product Department Historic Products`) as sum_historic,
+                  sum(`Product Department Not For Sale Products`) as sum_not_for_sale,
+
+         sum(`Product Department Families`) as sum_families
          from $table $where $wheref ";
 	$result=mysql_query($sql);
 	//print $sql;
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
 		$sum_families=$row['sum_families'];
 		$sum_active=$row['sum_active'];
 		$sum_discontinued=$row['sum_discontinued'];
-		$sum_todo=$row['todo'];
+
 		$sum_outofstock=$row['outofstock'];
 		$sum_stock_error=$row['stock_error'];
 		$sum_stock_value=$row['stock_value'];
@@ -615,6 +737,18 @@ function list_departments() {
 		$sum_optimal=$row['optimal'];
 		$sum_low=$row['low'];
 		$sum_critical=$row['critical'];
+		$sum_stock_error=$row['stock_error'];
+		$sum_sales_1q=$row['sum_sales_1q'];
+		$sum_sales_1q_1yb=$row['sum_sales_1q_1yb'];
+
+
+		$sum_todo=$row['todo'];
+		$sum_discontinued=$row['sum_discontinued'];
+		$sum_public_sale=$row['sum_active'];
+		$sum_private_sale=$row['sum_private'];
+		$sum_historic=$row['sum_historic'];
+		$sum_not_for_sale=$row['sum_not_for_sale'];
+
 	}
 
 
@@ -624,12 +758,21 @@ function list_departments() {
 
 	$sum_total_sales=0;
 	$sum_month_sales=0;
-	$sql="select  max(`Product Department $period_tag Acc Days Available`) as 'Product Department $period_tag Acc Days Available',max(`Product Department $period_tag Acc Days On Sale`) as 'Product Department $period_tag Acc Days On Sale', sum(if(`Product Department $period_tag Acc Profit`<0,`Product Department $period_tag Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department $period_tag Acc Profit`>=0,`Product Department $period_tag Acc Profit`,0)) as total_profit_plus,sum(`Product Department $period_tag Acc Invoiced Amount`) as sum_total_sales
+
+	if ($period_tag=='Total' or $period_tag=='3 Year') {
+		$where_1yb= ", 0 as sum_total_sales_1yb";
+	}else {
+		$where_1yb= ",sum(`Product Department $period_tag Acc 1YB Invoiced Amount`) as sum_total_sales_1yb";
+
+	}
+
+	$sql="select  `Product Department 1 Quarter Acc Invoiced Amount`,`Product Department 1 Quarter Acc 1YB Invoiced Amount`,max(`Product Department $period_tag Acc Days Available`) as 'Product Department $period_tag Acc Days Available',max(`Product Department $period_tag Acc Days On Sale`) as 'Product Department $period_tag Acc Days On Sale', sum(if(`Product Department $period_tag Acc Profit`<0,`Product Department $period_tag Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department $period_tag Acc Profit`>=0,`Product Department $period_tag Acc Profit`,0)) as total_profit_plus,sum(`Product Department $period_tag Acc Invoiced Amount`) as sum_total_sales   $where_1yb
 	from $table $where $wheref  ";
+
+
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
 
 
 		$sum_total_profit_plus=$row['total_profit_plus'];
@@ -663,6 +806,8 @@ function list_departments() {
 				$factor=0;
 		}
 		$sum_total_sales=$row['sum_total_sales']*$factor;
+		$delta_total_sales=delta($row['sum_total_sales'],$row['sum_total_sales_1yb']);
+
 		$sum_total_profit=$sum_total_profit*$factor;
 		$_sum_total_sales=$row['sum_total_sales'];
 
@@ -676,7 +821,7 @@ function list_departments() {
 
 	$res = mysql_query($sql);
 	$adata=array();
-	//  print "$sql";
+	// print "$sql";
 	global $myconf;
 	$currency_code=$corporate_currency;
 	$sum_active=0;
@@ -705,18 +850,12 @@ function list_departments() {
 
 
 		if ($percentages) {
-			$families=percentage($row['Product Department Families'],$sum_families);
+			//$families=percentage($row['Product Department Families'],$sum_families);
 
 			$todo=percentage($row['Product Department In Process Products'],$sum_todo);
-			$active=percentage($row['Product Department For Public Sale Products'],$sum_active);
+			//$products_for_sale=percentage($row['Product Department For Public Sale Products'],$sum_active);
+
 			$discontinued=percentage($row['Product Department Discontinued Products'],$sum_discontinued);
-			$outofstock=percentage($row['Product Department Out Of Stock Products'],$sum_outofstock);
-			$stock_error=percentage($row['Product Department Unknown Stock Products'],$sum_stock_error);
-			$stock_value=money($row['Product Department Stock Value'],$sum_stock_value);
-			$surplus=percentage($row['Product Department Surplus Availability Products'],$sum_surplus);
-			$optimal=percentage($row['Product Department Optimal Availability Products'],$sum_optimal);
-			$low=percentage($row['Product Department Low Availability Products'],$sum_low);
-			$critical=percentage($row['Product Department Critical Availability Products'],$sum_critical);
 
 
 			$delta_sales='';
@@ -729,6 +868,7 @@ function list_departments() {
 			else
 				$tprofit=percentage($row['Product Department '.$period_tag.' Acc Profit'],$sum_total_profit_minus,2);
 
+			$stock_value=money($row['Product Department Stock Value'],$sum_stock_value);
 
 
 
@@ -766,46 +906,108 @@ function list_departments() {
 
 			$tsall=$row['Product Department '.$period_tag.' Acc Invoiced Amount']*$factor;
 			$tprofit=$row['Product Department '.$period_tag.' Acc Profit']*$factor;
-			$delta_sales='';
-			//print ($row['Product Department Total Acc Days On Sale']/30/12)."\n";
+
+
+			$stock_value=money($row['Product Department Stock Value']);
+
+
+			$tsall=money($tsall,$row['Product Department Currency Code']);
+			$tprofit=money($tprofit,$row['Product Department Currency Code']);
 
 
 
+			$customers_active=number($row['Product Department Active Customers']);
+			$customers_active_75=number($row['Product Department Active Customers More 0.75 Share']);
+			$customers_active_50=number($row['Product Department Active Customers More 0.5 Share']);
+			$customers_active_25=number($row['Product Department Active Customers More 0.25 Share']);
+
+			$customers_losing=number($row['Product Department Losing Customers']);
+			$customers_losing_75=number($row['Product Department Losing Customers More 0.75 Share']);
+			$customers_losing_50=number($row['Product Department Losing Customers More 0.5 Share']);
+			$customers_losing_25=number($row['Product Department Losing Customers More 0.25 Share']);
 
 
-
-
-
+			$customers_lost=number($row['Product Department Lost Customers']);
+			$customers_lost_75=number($row['Product Department Lost Customers More 0.75 Share']);
+			$customers_lost_50=number($row['Product Department Lost Customers More 0.5 Share']);
+			$customers_lost_25=number($row['Product Department Lost Customers More 0.25 Share']);
 
 
 		}
 
-
-		$sum_active+=$row['Product Department For Public Sale Products'];
-		if (!$percentages) {
-			$tsall=money($tsall,$row['Product Department Currency Code']);
-			$tprofit=money($tprofit,$row['Product Department Currency Code']);
-			$families=number($row['Product Department Families']);
-			$todo=number($row['Product Department In Process Products']);
-			$active=number($row['Product Department For Public Sale Products']);
-			$discontinued=number($row['Product Department Discontinued Products']);
-			$outofstock=number($row['Product Department Out Of Stock Products']);
+		switch ($stock_percentages) {
+		case 'horizontal':
+			$outofstock=percentage($row['Product Department Out Of Stock Products'],$row['Product Department For Public Sale Products']);
+			$stock_error=percentage($row['Product Department Unknown Stock Products'],$row['Product Department For Public Sale Products']);
+			$surplus=percentage($row['Product Department Surplus Availability Products'],$row['Product Department For Public Sale Products']);
+			$optimal=percentage($row['Product Department Optimal Availability Products'],$row['Product Department For Public Sale Products']);
+			$low=percentage($row['Product Department Low Availability Products'],$row['Product Department For Public Sale Products']);
+			$critical=percentage($row['Product Department Critical Availability Products'],$row['Product Department For Public Sale Products']);
+			break;
+		case 'vertical':
+			$outofstock=percentage($row['Product Department Out Of Stock Products'],$sum_outofstock);
+			$stock_error=percentage($row['Product Department Unknown Stock Products'],$sum_stock_error);
+			$surplus=percentage($row['Product Department Surplus Availability Products'],$sum_surplus);
+			$optimal=percentage($row['Product Department Optimal Availability Products'],$sum_optimal);
+			$low=percentage($row['Product Department Low Availability Products'],$sum_low);
+			$critical=percentage($row['Product Department Critical Availability Products'],$sum_critical);
+			break;
+		default:
 			$stock_error=number($row['Product Department Unknown Stock Products']);
-			$stock_value=money($row['Product Department Stock Value']);
 			$surplus=number($row['Product Department Surplus Availability Products']);
 			$optimal=number($row['Product Department Optimal Availability Products']);
 			$low=number($row['Product Department Low Availability Products']);
 			$critical=number($row['Product Department Critical Availability Products']);
+			$outofstock=number($row['Product Department Out Of Stock Products']);
 
 		}
+
+
+
+		$products_for_sale=number($row['Product Department For Public Sale Products']);
+
+
+		$families=number($row['Product Department Families']);
+
+		if ($period_tag=='Total' or $period_tag=='3 Year') {
+			$delta_sales=_('NA');
+		}else {
+			$delta_sales=delta($row['Product Department '.$period_tag.' Acc Invoiced Amount'],$row['Product Department '.$period_tag.' Acc 1YB Invoiced Amount']);
+		}
+
+
+
+		$percentage_out_of_stock=percentage($row['Product Department Out Of Stock Products'],$row['Product Department For Public Sale Products']);
+
+		$sales_1q=money($row['Product Department 1 Quarter Acc Invoiced Amount'],$row['Product Department Currency Code']);
+		$sales_1q_1yb=delta($row['Product Department 1 Quarter Acc Invoiced Amount'],$row['Product Department 1 Quarter Acc 1YB Invoiced Amount']);
+
+		$sum_products_for_sale+=$row['Product Department For Public Sale Products'];
+
+		$todo=number($row['Product Department In Process Products']);
+		$discontinued=number($row['Product Department Discontinued Products']);
+		$not_for_sale=number($row['Product Department Not For Sale Products']);
+		$public_sale=number($row['Product Department For Public Sale Products']);
+		$private_sale=number($row['Product Department For Private Sale Products']);
+		$historic=number($row['Product Department Historic Products']);
+
+
+
 		$adata[]=array(
 			'code'=>$code,
 			'name'=>$name,
 			'store'=>$store,
 			'families'=>$families,
-			'active'=>$active,
+			'products_for_sale'=>$products_for_sale,
+			'percentage_out_of_stock'=>$percentage_out_of_stock,
+			'sales_1q'=>$sales_1q,
+			'delta_sales_1q'=>$sales_1q_1yb,
 			'todo'=>$todo,
 			'discontinued'=>$discontinued,
+			'not_for_sale'=>$not_for_sale,
+			'public_sale'=>$public_sale,
+			'private_sale'=>$private_sale,
+			'historic'=>$historic,
 			'outofstock'=>$outofstock,
 			'stock_error'=>$stock_error,
 			'stock_value'=>$stock_value,
@@ -825,9 +1027,24 @@ function list_departments() {
 				($row['Product Department Type']=='Historic')
 				?strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Valid To']." +00:00")):''),
 			'last_update'=>($row['Product Department Last Updated']==''?'':strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($row['Product Department Last Updated']." +00:00"))),
+			'customers_active'=>$customers_active,
+			'customers_active_75'=>$customers_active_75,
+			'customers_active_50'=>$customers_active_50,
+			'customers_active_25'=>$customers_active_25,
 
+			'customers_losing'=>$customers_losing,
+			'customers_losing_75'=>$customers_losing_75,
+			'customers_losing_50'=>$customers_losing_50,
+			'customers_losing_25'=>$customers_losing_25,
+
+			'customers_lost'=>$customers_lost,
+			'customers_lost_75'=>$customers_lost_75,
+			'customers_lost_50'=>$customers_lost_50,
+			'customers_lost_25'=>$customers_lost_25
 
 		);
+
+
 
 
 	}
@@ -869,23 +1086,59 @@ function list_departments() {
 			$outofstock=number($sum_outofstock);
 			$stockerror=number($sum_stock_error);
 
-			$surplus=number($sum_surplus);
-			$optimal=number($sum_optimal);
-			$low=number($sum_low);
-			$critical=number($sum_critical);
-			$active=number($sum_active);
+			$products_for_sale=number($sum_products_for_sale);
+
+
+
+
 			$discontinued=number($sum_discontinued);
 
 		}
 
+
+		switch ($stock_percentages) {
+		case 'horizontal':
+			$outofstock=percentage($sum_outofstock,$sum_products_for_sale);
+			$stock_error=percentage($sum_stock_error,$sum_products_for_sale);
+			$surplus=percentage($sum_surplus,$sum_products_for_sale);
+			$optimal=percentage($sum_optimal,$sum_products_for_sale);
+			$low=percentage($sum_low,$sum_products_for_sale);
+			$critical=percentage($sum_critical,$sum_products_for_sale);
+			break;
+		case 'vertical':
+			$outofstock=percentage(1,1);
+			$stock_error=percentage(1,1);
+			$surplus=percentage(1,1);
+			$optimal=percentage(1,1);
+			$low=percentage(1,1);
+			$critical=percentage(1,1);
+			break;
+		default:
+			$surplus=number($sum_surplus);
+			$optimal=number($sum_optimal);
+			$low=number($sum_low);
+			$critical=number($sum_critical);
+			$outofstock=number($sum_outofstock);
+			$stockerror=number($sum_stock_error);
+		}
+
+
+
+		$percentage_out_of_stock=percentage($row['Product Department Out Of Stock Products'],$row['Product Department For Public Sale Products']);
+
+
+	
 		$adata[]=array(
 
 			'code'=>_('Total'),
 			'families'=>$tfamilies,
-			'active'=>number($sum_active),
+			'products_for_sale'=>$products_for_sale,
+			'percentage_out_of_stock'=>percentage($sum_outofstock,$sum_products_for_sale),
+			'sales_1q'=>money($sum_sales_1q,$currency_code),
+			'delta_sales_1q'=>delta($sum_sales_1q,$sum_sales_1q_1yb),
 			'sales'=>$tsall,
+			'delta_sales'=>$delta_total_sales,
 			'profit'=>$tprofit,
-			'discontinued'=>number($sum_discontinued),
 			'sales_type'=>'',
 			'outofstock'=>$outofstock,
 			'stock_error'=>$stock_error,
@@ -895,10 +1148,15 @@ function list_departments() {
 			'low'=>$low,
 			'critical'=>$critical,
 			'sales_type'=>$sales_type,
-			'active'=>$active,
 			'discontinued'=>$discontinued,
-			'item_type'=>'total'
+			'item_type'=>'total',
 
+
+			'discontinued'=>number($sum_discontinued),
+			'public_sale'=>number($sum_public_sale),
+			'private_sale'=>number($sum_private_sale),
+			'historic'=>number($sum_historic),
+			'not_for_sale'=>number($sum_not_for_sale),
 
 
 		);
@@ -5531,7 +5789,7 @@ function list_customers_who_order_product() {
 		$where=sprintf(" where  OTF.`Product Key`=%d ",$tag);
 
 
-$where.=' and OTF.`Customer Key`>0';
+	$where.=' and OTF.`Customer Key`>0';
 
 
 	$wheref="";
@@ -5683,11 +5941,11 @@ $where.=' and OTF.`Customer Key`>0';
 	$res = mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-if($row['Customer Name']==''){
-$name=sprintf('<a href="customer.php?id=%d">%05d</a>',$row['Customer Key'],$row['Customer Key']);
-}else{
-$name=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Customer Key'],$row['Customer Name']);
-}
+		if ($row['Customer Name']=='') {
+			$name=sprintf('<a href="customer.php?id=%d">%05d</a>',$row['Customer Key'],$row['Customer Key']);
+		}else {
+			$name=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Customer Key'],$row['Customer Name']);
+		}
 
 		$data[]=array(
 			'customer'=>$name,
@@ -7705,32 +7963,32 @@ function list_favorite_products() {
 	}else {
 		exit();
 	}
-	
+
 	if (isset($_REQUEST['parent_key'])) {
 		$parent_key=$_REQUEST['parent_key'];
 	}else {
 		exit();
 	}
-	
+
 	switch ($parent) {
-	    case 'site':
-	        $_conf='site';
-	        break;
-	        case 'store':
-	        $_conf='store';
-	        break; 
-	           case 'customer':
-	        $_conf='customer';
-	        break; 
-	    default:
-	        exit();
-	        break;
+	case 'site':
+		$_conf='site';
+		break;
+	case 'store':
+		$_conf='store';
+		break;
+	case 'customer':
+		$_conf='customer';
+		break;
+	default:
+		exit();
+		break;
 	}
-	
-		$conf=$_SESSION['state'][$_conf]['favorites_products'];
+
+	$conf=$_SESSION['state'][$_conf]['favorites_products'];
 
 
-	
+
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -7780,28 +8038,28 @@ function list_favorite_products() {
 	$table=' `Customer Favorite Product Bridge` F left join `Product Dimension` P on (F.`Product ID`=P.`Product ID`)';
 
 
-    switch ($parent) {
-        case 'site':
-            $where=sprintf(' where `Site Key`=%d',$parent_key);
-            $group=' group by F.`Product ID`  ';
-            $fields=' count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as date';
-            break;
-           case 'store':
-            $where=sprintf(' where `Store Key`=%d',$parent_key);
-                        $group=' group by F.`Product ID`  ';
-            $fields=' count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as date';
+	switch ($parent) {
+	case 'site':
+		$where=sprintf(' where `Site Key`=%d',$parent_key);
+		$group=' group by F.`Product ID`  ';
+		$fields=' count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as date';
+		break;
+	case 'store':
+		$where=sprintf(' where `Store Key`=%d',$parent_key);
+		$group=' group by F.`Product ID`  ';
+		$fields=' count(distinct F.`Customer Key`) as customers ,max(F.`Date Created`) as date';
 
-            break; 
-             case 'customer':
-            $where=sprintf(' where `Customer Key`=%d',$parent_key);
-                        $group='';
-            $fields=' 1 customers ,F.`Date Created` as date';
+		break;
+	case 'customer':
+		$where=sprintf(' where `Customer Key`=%d',$parent_key);
+		$group='';
+		$fields=' 1 customers ,F.`Date Created` as date';
 
-            break;  
-        default:
-            exit();
-            break;
-    }
+		break;
+	default:
+		exit();
+		break;
+	}
 
 
 	$wheref="";
@@ -7809,7 +8067,7 @@ function list_favorite_products() {
 
 	if ($f_field=='code'  and $f_value!='')
 		$wheref.=" and `Product Code` like '".addslashes($f_value)."%'";
-	
+
 	$sql="select count(distinct F.`Product ID`) as total from  $table  $where $wheref";
 	//   print $mode.' '.$sql;
 	$res = mysql_query($sql);
@@ -7846,7 +8104,7 @@ function list_favorite_products() {
 		case('code'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product code like")." <b>$f_value</b> ";
 			break;
-	
+
 
 		}
 	}
@@ -7855,7 +8113,7 @@ function list_favorite_products() {
 		case('code'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('product','products',$total)." "._('with code like')." <b>*".$f_value."*</b>";
 			break;
-		
+
 		}
 	}
 	else
@@ -7868,7 +8126,7 @@ function list_favorite_products() {
 	if ($order=='code')
 		$order='`Product Code File As`';
 	elseif ($order=='name')
-		$order='`Product Name`';	
+		$order='`Product Name`';
 	elseif ($order=='customers')
 		$order='count(distinct F.`Customer Key`)';
 	elseif ($order=='date')
@@ -7892,7 +8150,7 @@ function list_favorite_products() {
 
 			'customers'=>sprintf('<a href="product.php?pid=%d&customers_block_view=customers_who_favorited">%s</a>',$row['Product ID'],number($row['customers'])),
 			'date'=>strftime("%a %e %b %Y %H:%M %Z",strtotime($row['date'].' +0:00')),
-			
+
 
 		);
 	}

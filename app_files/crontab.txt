@@ -11,40 +11,33 @@ php update_family_sales.php >> /tmp/out.family_aw.log
 
 */30 * * * * inikoo sh -c "php -q /home/inikoo/scripts/check_slave.php"
 0  *  * * * inikoo bash /home/inikoo/update_store_department_sales.aw.sh
-0  0  * * * inikoo bash /home/inikoo/update_family_sales.aw.sh
 0  *  * * * inikoo bash /home/inikoo/update_store_department_sales.awr.sh
-0  0  * * * inikoo bash /home/inikoo/update_family_sales.awr.sh
+0  */4  * * * inikoo bash /home/inikoo/update_family_sales.aw.sh
+0  */4  * * * inikoo bash /home/inikoo/update_family_sales.awr.sh
 0  *  * * * inikoo bash /home/inikoo/read_drop.sh
-22 5 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_other_products_sales.php >> /tmp/out.product_sales_other.aw"
-22 5 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_other_products_sales.php >> /tmp/out.product_sales_other.awr"
-
-22 5 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_parts_not_in_use_sales.php >> /tmp/out.part_not_in_use_sales.aw"
-22 5 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; update_parts_not_in_use_sales.php >> /tmp/out.part_not_in_use_sales.awr"
-
-22 5 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron; update_parts_sales.php >> /tmp/out.part_sales.aw"
-22 5 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_parts_sales.php >> /tmp/out.part_sales.awr"
-
-22 5 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_supplier_sales.php >> /tmp/out.supplier_sales.aw"
-22 5 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_supplier_sales.php >> /tmp/out.supplier_sales.awr"
-
-22 5 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_part_categories_sales.php >> /tmp/out.part_cats_sales.aw"
-22 5 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_part_categories_sales.php >> /tmp/out.part_cats_sales.awr"
+0 0  * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_other_products_sales.php >> /tmp/out.product_sales_other.aw"
+0 0  * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_other_products_sales.php >> /tmp/out.product_sales_other.awr"
+0 0  * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_parts_not_in_use_sales.php >> /tmp/out.part_not_in_use_sales.aw"
+0 0  * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; php update_parts_not_in_use_sales.php >> /tmp/out.part_not_in_use_sales.awr"
+0 0  * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron; php update_parts_sales.php >> /tmp/out.part_sales.aw"
+0 0  * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_parts_sales.php >> /tmp/out.part_sales.awr"
+45 * * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_supplier_sales.php >> /tmp/out.supplier_sales.aw"
+45 * * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_supplier_sales.php >> /tmp/out.supplier_sales.awr"
+45 * * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_part_categories_sales.php >> /tmp/out.part_cats_sales.aw"
+45 * * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php update_part_categories_sales.php >> /tmp/out.part_cats_sales.awr"
+0 4    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/cron;php update_customers_data.php >> /tmp/out.customers_data.aw"
+0 4    * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/cron;php update_customers_data.php >> /tmp/out.customers_data.awr"
 
 
 
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-#*/30 * * * *  inikoo sh -c "php -q /home/inikoo/scripts/check_slave.php"
+*/30 * * * *  inikoo sh -c "php -q /home/inikoo/scripts/check_slave.php"
 0 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_for_sale_products_sales.php >> /tmp/out.product_sales.aw"
 0 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; php update_for_sale_products_sales.php >> /tmp/out.product_sales.awr"
 0 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php update_supplier_product_sales.php >> /tmp/out.prod_sup_sales.aw"
 0 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; php update_supplier_product_sales.php >> /tmp/out.prod_sup_sales.awr"
-0 0    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/cron;php update_customers_data.php >> /tmp/out.customers_data.aw"
-0 0    * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/cron;php update_customers_data.php >> /tmp/out.customers_data.awr"
-
-
-
 0,30  * * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts ; php update_sales_overview.php;"
 0,30  *  * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/currency_exchange;php fix_exchange_value.php; cd /home/inikoo/aw/mantenence/scripts; php update_sales_overview.php;"
 #30 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_pages_last_period.php;php update_pages.php;update_sites.php;"

@@ -59,6 +59,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$department=new Department($row['Product Department Key']);
 
 
+
+
 	$department->update_up_today_sales();
 	$department->update_interval_sales();
 	$department->update_last_period_sales();

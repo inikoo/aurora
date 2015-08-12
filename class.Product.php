@@ -4565,37 +4565,37 @@ class product extends DB_Table {
 			$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
 			$mysql_where.=', '.$row['Part SKU'];
 			$number_of_parts++;
-			
+
 			if (count($product->get_current_part_skus())==1   ) {
-			
-			$part_fields=array(
-				'Part Tariff Code',
-				'Part Duty Rate',
-				'Part UN Number',
-				'Part UN Class',
-				'Part Health And Safety',
-				'Part Packing Group',
-				'Part Proper Shipping Name',
-				'Part Hazard Indentification Number',
-				'Part Unit Dimensions Type',
-				'Part Unit Dimensions Display Units',
-				'Part Unit Dimensions Width Display',
-				'Part Unit Dimensions Depth Display',
-				'Part Unit Dimensions Length Display',
-				'Part Unit Dimensions Diameter Display',
-				'Part Package Dimensions Type',
-				'Part Package Dimensions Display Units',
-				'Part Package Dimensions Width Display',
-				'Part Package Dimensions Depth Display',
-				'Part Package Dimensions Length Display',
-				'Part Package Dimensions Diameter Display',
-				'Part Unit Weight Display',
-				'Part Unit Weight Display Units',
-				'Part Package Weight Display',
-				'Part Package Weight Display Units',
-				'Part Unit Materials',
-				'Part Origin Country Code'
-			);
+
+				$part_fields=array(
+					'Part Tariff Code',
+					'Part Duty Rate',
+					'Part UN Number',
+					'Part UN Class',
+					'Part Health And Safety',
+					'Part Packing Group',
+					'Part Proper Shipping Name',
+					'Part Hazard Indentification Number',
+					'Part Unit Dimensions Type',
+					'Part Unit Dimensions Display Units',
+					'Part Unit Dimensions Width Display',
+					'Part Unit Dimensions Depth Display',
+					'Part Unit Dimensions Length Display',
+					'Part Unit Dimensions Diameter Display',
+					'Part Package Dimensions Type',
+					'Part Package Dimensions Display Units',
+					'Part Package Dimensions Width Display',
+					'Part Package Dimensions Depth Display',
+					'Part Package Dimensions Length Display',
+					'Part Package Dimensions Diameter Display',
+					'Part Unit Weight Display',
+					'Part Unit Weight Display Units',
+					'Part Package Weight Display',
+					'Part Package Weight Display Units',
+					'Part Unit Materials',
+					'Part Origin Country Code'
+				);
 
 
 				$part=new Part($row['Part SKU']);
@@ -4840,6 +4840,7 @@ class product extends DB_Table {
 		$this->data['Product Availability State']=$tipo;
 		$this->data['Product Available Days Forecast']=$days_available;
 
+		print $this->data['Product Code']." $tipo $days_available\n";
 
 		// if( mysql_affected_rows()){
 		//$family=new Family($this->data['Product Family Key']);

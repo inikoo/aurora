@@ -9,6 +9,9 @@ include_once '../../class.Supplier.php';
 include_once '../../class.Part.php';
 include_once '../../class.Store.php';
 include_once '../../class.Category.php';
+include_once '../../class.SupplierProduct.php';
+
+
 
 error_reporting(E_ALL);
 
