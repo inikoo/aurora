@@ -11,8 +11,8 @@
 // used for the charts
 
 
-require_once '../common.php';
-require_once '../ar_common.php';
+require_once 'common.php';
+require_once 'ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
 
