@@ -37,14 +37,14 @@ php update_family_sales.php >> /tmp/out.family_aw.log
 55 11,23 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php update_order_snapshot.php"
 58 9,11,17,23 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_stock_history.php"
 58 9,11,17,23 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php update_stock_history.php"
-SELECT Concat('OPTIMIZE NO_WRITE_TO_BINLOG TABLE ',TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES   WHERE table_schema='kbase';
 
 
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 */30 * * * *  inikoo sh -c "php -q /home/inikoo/scripts/check_slave.php"
-0,30  * * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts ; php update_sales_overview.php;"
+*/15  * * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts ; php update_sales_overview.php;"
+*/15  *  * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/currency_exchange;php fix_exchange_value.php; cd /home/inikoo/awr/mantenence/scripts; php update_sales_overview.php;"
 0,30  *  * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/currency_exchange;php fix_exchange_value.php; cd /home/inikoo/aw/mantenence/scripts; php update_sales_overview.php;"
 #30 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_pages_last_period.php;php update_pages.php;update_sites.php;"
 0 0,2    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php update_deals_status_from_dates.php;php update_orders_in_basket_deals.php"
@@ -53,10 +53,16 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 18 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php gold_reward_remainder.php"
 0 12 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php send_email_site_reminder.php"
 0 *    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php get_currency_exchange.php"
-0,30  *  * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/currency_exchange;php fix_exchange_value.php; cd /home/inikoo/awr/mantenence/scripts; php update_sales_overview.php;"
 #30 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php update_pages_last_period.php;php update_pages.php;update_sites.php;"
 0 0  * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php update_deals_status_from_dates.php;php update_orders_in_basket_deals.php"
 #0 20 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php get_sites_timeseries.php"
 #30 14,17,20 * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts; php fix_pages_add_images_tags.php"
+
+
+//
+
+
+SELECT Concat('OPTIMIZE NO_WRITE_TO_BINLOG TABLE ',TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES   WHERE table_schema='kbase';
+
 
 
