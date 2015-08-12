@@ -7,6 +7,10 @@
  Copyright (c) 2012, Inikoo
  Version 2.0
 */
+
+// used for the charts
+
+
 require_once '../common.php';
 require_once '../ar_common.php';
 

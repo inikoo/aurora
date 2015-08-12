@@ -89,7 +89,7 @@ svg.selectAll(".month")
     .attr("d", monthPath);
 
 
-request="csv/assets.csv.php?tipo=asset_sales&parent="+Dom.get('subject').value+'&parent_key='+Dom.get('subject_key').value+"&from=&to="
+request="assets.csv.php?tipo=asset_sales&parent="+Dom.get('subject').value+'&parent_key='+Dom.get('subject_key').value+"&from=&to="
 
 d3.csv(request, function(error, csv) {
   var data = d3.nest()

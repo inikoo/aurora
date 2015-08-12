@@ -7499,7 +7499,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		$this->get_data('id',$this->id);
 
-		$sql=sprintf("update `Order Tansaction Fact` set `Billing To Key`=%d where `Order Key`=%d",
+		$sql=sprintf("update `Order Transaction Fact` set `Billing To Key`=%d where `Order Key`=%d",
 			$billing_to->id,
 			$this->id
 		);

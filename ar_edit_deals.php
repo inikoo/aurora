@@ -166,9 +166,9 @@ case('update_deal_component_finish'):
 case('edit_campaigns'):
 	list_campaigns_for_edition();
 	break;
-case('edit_deals'):
-	list_deals_for_edition();
-	break;
+//case('edit_deals'):
+//	list_deals_for_edition();
+//	break;
 case('deals'):
 	list_deals();
 	break;
