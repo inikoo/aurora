@@ -1663,7 +1663,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 				$this->data['Product Family Main Department Key'],
 				$limit
 			);
-			
+
 			break;
 
 		default:
@@ -2226,6 +2226,44 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		);
 		mysql_query($sql);
 
+	}
+
+	function get_deals_data() {
+
+		$deals=array();
+
+		$sql=sprintf("select `Deal Label`,`Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Department' and `Deal Component Allowance Target Key`=%d  and `Deal Component Status`='Active'  and `Deal Voucher Key` is NULL and `Deal Trigger` not in ('Customer','Customer Category','Customer List')  " ,$this->data['Product Family Main Department Key']);
+
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deals[]=array(
+				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
+				'Terms Label'=>$row['Deal XHTML Terms Description Label'],
+				'Terms Type'=>$row['Deal Component Terms Type'],
+				'Status'=>$row['Deal Component Status'],
+				'Name'=>$row['Deal Name'],
+				'Label'=>$row['Deal Label'],
+				'Description'=>$row['Deal Description']
+			);
+		}
+
+
+		$sql=sprintf("select `Deal Label`,`Deal Description`,`Deal Name`,`Deal Component Status`,`Deal Component XHTML Allowance Description Label`,`Deal Component Terms Type`,`Deal XHTML Terms Description Label` from `Deal Component Dimension` DC  left join `Deal Dimension` D on (D.`Deal Key`=DC.`Deal Component Deal Key`) where `Deal Component Allowance Target`='Family' and `Deal Component Allowance Target Key`=%d  and `Deal Component Status`='Active'  and `Deal Voucher Key` is NULL and `Deal Voucher Key` is NULL and `Deal Trigger` not in ('Customer','Customer Category','Customer List')  " ,$this->id);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$deals[]=array(
+				'Allowance Label'=>$row['Deal Component XHTML Allowance Description Label'],
+				'Terms Label'=>$row['Deal XHTML Terms Description Label'],
+				'Terms Type'=>$row['Deal Component Terms Type'],
+				'Status'=>$row['Deal Component Status'],
+				'Name'=>$row['Deal Name'],
+				'Label'=>$row['Deal Label'],
+				'Description'=>$row['Deal Description']
+			);
+		}
+		return $deals;
 	}
 
 }

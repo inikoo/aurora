@@ -1073,6 +1073,8 @@ request="ar_edit_assets.php?tipo=edit_products&sf=0&parent=family&parent_key="+D
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'code',value:''};
 		
+		/*
+		
 		
     var tableid=4; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -1141,7 +1143,7 @@ request="ar_edit_assets.php?tipo=edit_products&sf=0&parent=family&parent_key="+D
 		    
 	    this.table4.filter={key:'<?php echo $_SESSION['state']['family']['edit_offers']['f_field']?>',value:'<?php echo $_SESSION['state']['family']['edit_offers']['f_value']?>'};
 
-
+*/
 	     var tableid=5; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
