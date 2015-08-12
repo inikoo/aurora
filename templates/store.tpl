@@ -275,7 +275,12 @@
 		<div class="clusters">
 			<div id="table_view_menu0" style="{if $departments_table_type=='thumbnails'}display:none{/if}">
 				<div class="buttons small left cluster">
-					<button class="table_option {if $department_view=='general'}selected{/if}" id="department_general">{t}Overview{/t}</button> <button class="table_option {if $department_view=='timeline'}selected{/if}" id="department_timeline">{t}Timeline{/t}</button> <button class="table_option {if $department_view=='stock'}selected{/if}" id="department_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
+					<button class="table_option {if $department_view=='general'}selected{/if}" id="department_general">{t}Overview{/t}</button> 
+					<button class="table_option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
+					<button class="table_option {if $department_view=='stock'}selected{/if}" id="department_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> 
+					<button class="table_option {if $department_view=='products'}selected{/if}" id="department_products" {if !$view_stock}style="display:none" {/if}>{t}Products{/t}</button> 
+					<button class="table_option {if $department_view=='customers'}selected{/if}" id="department_customers" {if !$view_stock}style="display:none" {/if}>{t}Customers{/t}</button> 
+					<button style="display:none" class="table_option {if $department_view=='timeline'}selected{/if}" id="department_timeline">{t}Timeline{/t}</button> 
 				</div>
 				<div id="department_period_options" class="buttons small left cluster" style="display:{if $department_view!='sales' }none{else}block{/if};">
 					<button class="table_option {if $department_period=='all'}selected{/if}" period="all" id="department_period_all">{t}All{/t}</button> <button class="table_option {if $department_period=='three_year'}selected{/if}" period="three_year" id="department_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $department_period=='year'}selected{/if}" period="year" id="department_period_year">{t}1Yr{/t}</button> <button class="table_option {if $department_period=='yeartoday'}selected{/if}" period="yeartoday" id="department_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $department_period=='six_month'}selected{/if}" period="six_month" id="department_period_six_month">{t}6M{/t}</button> <button class="table_option {if $department_period=='quarter'}selected{/if}" period="quarter" id="department_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $department_period=='month'}selected{/if}" period="month" id="department_period_month">{t}1M{/t}</button> <button class="table_option {if $department_period=='ten_day'}selected{/if}" period="ten_day" id="department_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $department_period=='week'}selected{/if}" period="week" id="department_period_week">{t}1W{/t}</button> 
@@ -285,7 +290,9 @@
 				</div>
 			</div>
 			<div class="buttons small cluster group">
-				<button id="change_departments_display_mode" style="{if $departments_table_type=='thumbnails' or  $department_view=='sales'}display:none{/if}">&#x21b6 {$display_departments_mode_label}</button> <button id="change_departments_table_type">&#x21b6 {if $departments_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
+				<button id="change_departments_display_mode"  class="selected" style="{if   $department_view!='sales'}display:none{/if}"> &#x2AF6; {$display_departments_mode_label}</button> 
+				<button id="change_departments_stock_display_mode" class="selected" style="{if   $department_view!='stock'}display:none{/if}"> &#x2AF6; {$display_departments_stock_mode_label}</button> 
+				<button id="change_departments_view_mode" style="{if   $department_view!='general'}display:none{/if}" id="change_departments_table_type">&#x21b6 {if $departments_table_type=='list'}{t}Thumbnails{/t}{else}{t}List{/t}{/if}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -461,14 +468,36 @@
 		{foreach from=$departments_mode_options_menu item=menu } 
 		<tr>
 			<td> 
-				<div class="buttons">
-					<button style="float:none;margin:0px auto;min-width:120px" onclick="change_display_mode('departments','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
+				<div class="buttons small">
+					<button id="departments_display_menu_{$menu.mode}" style="float:none;margin:0px auto;min-width:120px" class="{if $menu.mode==$display_departments_mode}selected{/if}" onclick="change_display_mode('departments','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
 				</div>
 			</td>
 		</tr>
 		{/foreach} 
 	</table>
 </div>
+
+
+<div id="change_departments_stock_display_menu" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr class="title">
+			<td>{t}Display Mode Options{/t}:</td>
+		</tr>
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		{foreach from=$departments_stock_mode_options_menu item=menu } 
+		<tr>
+			<td> 
+				<div class="buttons small">
+					<button id="departments_stock_display_menu_{$menu.mode}" style="float:none;margin:0px auto;min-width:120px" class="{if $menu.mode==$display_departments_mode}selected{/if}" onclick="change_display_mode('departments_stock','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
+				</div>
+			</td>
+		</tr>
+		{/foreach} 
+	</table>
+</div>
+
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">

@@ -4133,6 +4133,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>50,
 			'percentages'=>false,
+			'stock_percentages'=>'value',
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,

@@ -1,9 +1,7 @@
-
-
 function get_history_numbers() {
 
     var ar_file = 'ar_assets.php';
-    var request = 'tipo=get_history_numbers&subject='+Dom.get('subject').value+'&subject_key=' + Dom.get('subject_key').value;
+    var request = 'tipo=get_history_numbers&subject=' + Dom.get('subject').value + '&subject_key=' + Dom.get('subject_key').value;
 
     //   alert(ar_file+'?'+request)
     Dom.get('elements_history_Changes_number').innerHTML = '<img src="art/loading.gif" style="height:11px">';
@@ -261,6 +259,8 @@ function change_department_view(e, data) {
     else if (tipo == 'department_sales') tipo = 'sales';
     else if (tipo == 'department_stock') tipo = 'stock';
     else if (tipo == 'department_timeline') tipo = 'timeline';
+    else if (tipo == 'department_products') tipo = 'products';
+    else if (tipo == 'department_customers') tipo = 'customers';
 
 
 
@@ -270,8 +270,6 @@ function change_department_view(e, data) {
     table.hideColumn('awp_p');
     table.hideColumn('aws_p');
     table.hideColumn('active');
-    table.hideColumn('todo');
-    table.hideColumn('discontinued');
 
     table.hideColumn('families');
     table.hideColumn('sales');
@@ -288,6 +286,37 @@ function change_department_view(e, data) {
     table.hideColumn('last_update');
     table.hideColumn('to');
 
+    table.hideColumn('to');
+    table.hideColumn('products_for_sale');
+    table.hideColumn('percentage_out_of_stock');
+    table.hideColumn('sales_1q');
+    table.hideColumn('delta_sales_1q');
+
+    table.hideColumn('customers_active');
+    table.hideColumn('customers_active_75');
+    table.hideColumn('customers_active_50');
+    table.hideColumn('customers_active_25');
+
+    table.hideColumn('customers_losing');
+    table.hideColumn('customers_losing_75');
+    table.hideColumn('customers_losing_50');
+    table.hideColumn('customers_losing_25');
+
+    table.hideColumn('customers_lost');
+    table.hideColumn('customers_lost_75');
+    table.hideColumn('customers_lost_50');
+    table.hideColumn('customers_lost_25');
+
+    table.hideColumn('todo');
+    table.hideColumn('discontinued');
+    table.hideColumn('public_sale');
+    table.hideColumn('private_sale');
+    table.hideColumn('historic');
+    table.hideColumn('not_for_sale');
+
+
+
+    Dom.setStyle(['change_departments_view_mode', 'change_departments_display_mode', 'change_departments_stock_display_mode', 'department_period_options', 'department_avg_options'], 'display', 'none')
 
     Dom.setStyle(['change_departments_display_mode', 'department_period_options', 'department_avg_options'], 'display', 'none')
 
@@ -298,24 +327,32 @@ function change_department_view(e, data) {
         //table.showColumn('aws_p');
         table.showColumn('sales');
         table.showColumn('delta_sales');
-        table.showColumn('profit');
+        // table.showColumn('profit');
         Dom.setStyle(['change_departments_display_mode', 'department_period_options', 'department_avg_options'], 'display', '')
 
     } else if (tipo == 'general') {
+
+        Dom.setStyle(['change_departments_view_mode'], 'display', '')
+
+
         table.showColumn('name');
 
-        Dom.get('department_period_options').style.display = 'none';
-        Dom.get('department_avg_options').style.display = 'none';
-        table.showColumn('active');
-        table.showColumn('todo');
         table.showColumn('families');
-        table.showColumn('discontinued');
+        table.showColumn('products_for_sale');
+        table.showColumn('percentage_out_of_stock');
+        table.showColumn('sales_1q');
+        table.showColumn('delta_sales_1q');
+
+
 
     } else if (tipo == 'stock') {
         table.showColumn('name');
 
-        Dom.get('department_period_options').style.display = 'none';
-        Dom.get('department_avg_options').style.display = 'none';
+
+        Dom.setStyle(['change_departments_stock_display_mode'], 'display', '')
+
+
+
 
         table.showColumn('surplus');
         table.showColumn('optimal');
@@ -325,14 +362,37 @@ function change_department_view(e, data) {
         table.showColumn('outofstock');
     } else if (tipo == 'timeline') {
 
-        Dom.get('department_period_options').style.display = 'none';
-        Dom.get('department_avg_options').style.display = 'none';
+
         table.showColumn('from');
         table.showColumn('last_update');
         table.showColumn('to');
 
-    }
+    } else if (tipo == 'customers') {
 
+        table.showColumn('customers_active');
+        table.showColumn('customers_active_75');
+        table.showColumn('customers_active_50');
+        table.showColumn('customers_active_25');
+
+        table.showColumn('customers_losing');
+        table.showColumn('customers_losing_75');
+        table.showColumn('customers_losing_50');
+        table.showColumn('customers_losing_25');
+
+        table.showColumn('customers_lost');
+        table.showColumn('customers_lost_75');
+        table.showColumn('customers_lost_50');
+        table.showColumn('customers_lost_25');
+
+    } else if (tipo == 'products') {
+        table.showColumn('name');
+        table.showColumn('discontinued');
+        table.showColumn('public_sale');
+        table.showColumn('private_sale');
+        table.showColumn('historic');
+        table.showColumn('not_for_sale');
+
+    }
     Dom.removeClass(Dom.getElementsByClassName('table_option', 'button', this.parentNode), 'selected')
     Dom.addClass(this, "selected");
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=' + data.parent + '-departments-view&value=' + escape(tipo), {

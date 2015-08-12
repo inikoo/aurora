@@ -35,7 +35,7 @@ class Department extends DB_Table {
 			'Product Department In Process Products',
 			'Product Department Not For Sale Products',
 			'Product Department Discontinued Products',
-			'Product Department Unknown Sales State Products',
+			'Product Department Historic Products',
 			'Product Department Surplus Availability Products',
 			'Product Department Optimal Availability Products',
 			'Product Department Low Availability Products',
@@ -658,7 +658,7 @@ class Department extends DB_Table {
 
 
 		case('Total Products'):
-			return $this->data['Product Department For Public Sale Products']+$this->data['Product Department For Private Sale Products']+$this->data['Product Department In Process Products']+$this->data['Product Department Not For Sale Products']+$this->data['Product Department Discontinued Products']+$this->data['Product Department Unknown Sales State Products'];
+			return $this->data['Product Department For Public Sale Products']+$this->data['Product Department For Private Sale Products']+$this->data['Product Department In Process Products']+$this->data['Product Department Not For Sale Products']+$this->data['Product Department Discontinued Products']+$this->data['Product Department Historic Products'];
 			break;
 
 			//   case('weeks'):
@@ -776,7 +776,6 @@ class Department extends DB_Table {
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
 
 
-
 		setlocale(LC_ALL, 'en_GB');
 
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
@@ -795,17 +794,20 @@ class Department extends DB_Table {
 		$this->data["Product Department DC $db_interval Acc Profit"]=0;
 
 		$sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
-                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Department Key`=%d and `Invoice Date`>=%s %s" ,
+                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Department Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
 		);
 
 		$result=mysql_query($sql);
 
-		//print $sql."\n\n";
+
 		if ($row=mysql_fetch_assoc($result)) {
+
+
+
 			$this->data["Product Department $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
 			$this->data["Product Department $db_interval Acc Invoiced Amount"]=$row["net"];
 			$this->data["Product Department $db_interval Acc Invoices"]=$row["invoices"];
@@ -1050,7 +1052,7 @@ class Department extends DB_Table {
 
 
 	function update_product_data() {
-		$sql=sprintf("select sum(if(`Product Stage`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Availability Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Main Department Key`=%d",$this->id);
+
 
 		$availability='No Applicable';
 		$sales_type='No Applicable';
@@ -1059,7 +1061,8 @@ class Department extends DB_Table {
 		$private_sale=0;
 		$discontinued=0;
 		$not_for_sale=0;
-		$sale_unknown=0;
+
+		$historic=0;
 		$availability_optimal=0;
 		$availability_low=0;
 		$availability_critical=0;
@@ -1067,8 +1070,28 @@ class Department extends DB_Table {
 		$availability_unknown=0;
 		$availability_surplus=0;
 
+		$sql=sprintf("select
+		sum(if(`Product Stage`='In process',1,0)) as in_process,
+
+		 		 sum(if(`Product Main Type`='Historic',1,0)) as historic,
+
+		 sum(if(`Product Main Type`='Discontinued',1,0)) as discontinued,
+		 sum(if(`Product Main Type`='NoSale',1,0)) as not_for_sale,
+		 sum(if(`Product Main Type`='Sale',1,0)) as public_sale,
+		 sum(if(`Product Main Type`='Private',1,0)) as private_sale
+
+
+
+
+		from
+		`Product Dimension` where `Product Main Department Key`=%d  ",$this->id);
+
+
+
 
 		$result=mysql_query($sql);
+
+		//print "$sql\n";
 		if ($row=mysql_fetch_assoc($result)) {
 
 			$in_process=$row['in_process'];
@@ -1076,28 +1099,50 @@ class Department extends DB_Table {
 			$private_sale=$row['private_sale'];
 			$discontinued=$row['discontinued'];
 			$not_for_sale=$row['not_for_sale'];
-			$sale_unknown=$row['sale_unknown'];
+			$historic=$row['historic'];
+
+		}
+
+		$sql=sprintf("select
+
+
+
+
+		sum(if(`Product Availability State`='Error',1,0)) as availability_unknown,
+		sum(if(`Product Availability State`='Normal',1,0)) as availability_optimal,
+		sum(if(`Product Availability State`='Low',1,0)) as availability_low,
+		sum(if(`Product Availability State`='Excess',1,0)) as availability_surplus,sum(if(`Product Availability State`='VeryLow',1,0)) as availability_critical,sum(if(`Product Availability State`='OutofStock',1,0)) as availability_outofstock
+
+		from
+		`Product Dimension` where `Product Main Department Key`=%d and `Product Main Type`='Sale' ",$this->id);
+
+
+
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+
+			//print_r($row);
 			$availability_optimal=$row['availability_optimal'];
 			$availability_low=$row['availability_low'];
 			$availability_critical=$row['availability_critical'];
 			$availability_outofstock=$row['availability_outofstock'];
 			$availability_unknown=$row['availability_unknown'];
 			$availability_surplus=$row['availability_surplus'];
-
-
-
-
-
 		}
 
-		$sql=sprintf("update `Product Department Dimension` set `Product Department In Process Products`=%d,`Product Department For Public Sale Products`=%d ,`Product Department For Private Sale Products`=%d,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d  where `Product Department Key`=%d  ",
+
+
+
+
+		$sql=sprintf("update `Product Department Dimension` set `Product Department In Process Products`=%d,`Product Department For Public Sale Products`=%d ,`Product Department For Private Sale Products`=%d,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Historic Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d  where `Product Department Key`=%d  ",
 			$in_process,
 			$public_sale,
 			$private_sale,
 
 			$discontinued,
 			$not_for_sale,
-			$sale_unknown,
+			$historic,
 
 			$availability_optimal,
 			$availability_low,
@@ -1113,7 +1158,6 @@ class Department extends DB_Table {
 		);
 
 		mysql_query($sql);
-		// print "$sql\n";
 
 
 
@@ -1125,11 +1169,19 @@ class Department extends DB_Table {
 		$number_active_customers_more_than_75=0;
 		$number_active_customers_more_than_50=0;
 		$number_active_customers_more_than_25=0;
+		$number_losing_customers=0;
+		$number_losing_customers_more_than_75=0;
+		$number_losing_customers_more_than_50=0;
+		$number_losing_customers_more_than_25=0;
+		$number_lost_customers=0;
+		$number_lost_customers_more_than_75=0;
+		$number_lost_customers_more_than_50=0;
+		$number_lost_customers_more_than_25=0;
 
 		$sql=sprintf(" select
 		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
 		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
-		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('Active') and `Invoice Transaction Gross Amount`>0
 		  group by  OTF.`Customer Key`",$this->id);
 		// print "$sql\n";
 		$result=mysql_query($sql);
@@ -1139,7 +1191,7 @@ class Department extends DB_Table {
 				$number_active_customers_more_than_75++;
 			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
 				$number_active_customers_more_than_50++;
-			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25)
 				$number_active_customers_more_than_25++;
 
 		}
@@ -1149,19 +1201,88 @@ class Department extends DB_Table {
 		$this->data['Product Department Active Customers More 0.5 Share']=$number_active_customers_more_than_50;
 		$this->data['Product Department Active Customers More 0.25 Share']=$number_active_customers_more_than_25;
 
-		$sql=sprintf("update `Product Department Dimension` set `Product Department Active Customers`=%d ,
+
+		$sql=sprintf(" select
+		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
+		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('Losing') and `Invoice Transaction Gross Amount`>0
+		  group by  OTF.`Customer Key`",$this->id);
+		// print "$sql\n";
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$number_losing_customers++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.75 )
+				$number_losing_customers_more_than_75++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+				$number_losing_customers_more_than_50++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
+				$number_losing_customers_more_than_25++;
+
+		}
+
+		$this->data['Product Department Losing Customers']=$number_losing_customers;
+		$this->data['Product Department Losing Customers More 0.75 Share']=$number_losing_customers_more_than_75;
+		$this->data['Product Department Losing Customers More 0.5 Share']=$number_losing_customers_more_than_50;
+		$this->data['Product Department Losing Customers More 0.25 Share']=$number_losing_customers_more_than_25;
+
+
+		$sql=sprintf(" select
+		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
+		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('Active') and `Invoice Transaction Gross Amount`>0
+		  group by  OTF.`Customer Key`",$this->id);
+		// print "$sql\n";
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$number_lost_customers++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.75 )
+				$number_lost_customers_more_than_75++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+				$number_lost_customers_more_than_50++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
+				$number_lost_customers_more_than_25++;
+
+		}
+
+		$this->data['Product Department Lost Customers']=$number_lost_customers;
+		$this->data['Product Department Lost Customers More 0.75 Share']=$number_lost_customers_more_than_75;
+		$this->data['Product Department Lost Customers More 0.5 Share']=$number_lost_customers_more_than_50;
+		$this->data['Product Department Lost Customers More 0.25 Share']=$number_lost_customers_more_than_25;
+
+
+
+		$sql=sprintf("update `Product Department Dimension` set 
+		`Product Department Active Customers`=%d ,
 		`Product Department Active Customers More 0.75 Share`=%d,
-				`Product Department Active Customers More 0.5 Share`=%d,
-		`Product Department Active Customers More 0.25 Share`=%d
+		`Product Department Active Customers More 0.5 Share`=%d,
+		`Product Department Active Customers More 0.25 Share`=%d,
+		
+		`Product Department Losing Customers`=%d ,
+		`Product Department Losing Customers More 0.75 Share`=%d,
+		`Product Department Losing Customers More 0.5 Share`=%d,
+		`Product Department Losing Customers More 0.25 Share`=%d,
+		
+		`Product Department Lost Customers`=%d ,
+		`Product Department Lost Customers More 0.75 Share`=%d,
+		`Product Department Lost Customers More 0.5 Share`=%d,
+		`Product Department Lost Customers More 0.25 Share`=%d
 
 		where `Product Department Key`=%d  ",
 			$this->data['Product Department Active Customers'],
 			$this->data['Product Department Active Customers More 0.75 Share'],
 			$this->data['Product Department Active Customers More 0.5 Share'],
 			$this->data['Product Department Active Customers More 0.25 Share'],
+			$this->data['Product Department Losing Customers'],
+			$this->data['Product Department Losing Customers More 0.75 Share'],
+			$this->data['Product Department Losing Customers More 0.5 Share'],
+			$this->data['Product Department Losing Customers More 0.25 Share'],
+			$this->data['Product Department Lost Customers'],
+			$this->data['Product Department Lost Customers More 0.75 Share'],
+			$this->data['Product Department Lost Customers More 0.5 Share'],
+			$this->data['Product Department Lost Customers More 0.25 Share'],
 			$this->id
 		);
-		// print "$sql\n";
+	//	 print "$sql\n";
 		mysql_query($sql);
 
 	}
