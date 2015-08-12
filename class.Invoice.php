@@ -1197,7 +1197,7 @@ class Invoice extends DB_Table {
 
 
 
-		$sql=sprintf("update `Order Tansaction Fact` set `Billing To Key`=%d where `Invoice Key`=%d",
+		$sql=sprintf("update `Order Transaction Fact` set `Billing To Key`=%d where `Invoice Key`=%d",
 			$billing_to->id,
 			$this->id
 		);
