@@ -1243,7 +1243,7 @@ function new_address($_data) {
 					$parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
 				}
 				$parent_label=preg_replace('/^,/','',$parent_label);
-				$warning.=ngettext(count($address_parents),'Customer','Customers').' '.$parent_label;
+				$warning.=ngettext('Customer','Customers',count($address_parents)).' '.$parent_label;
 				break;
 			case 'Company':
 				$parent_label='';
@@ -1252,7 +1252,7 @@ function new_address($_data) {
 					$parent_label.=sprintf(', <a href="company.php?id=%d">%s</a>',$parent->id,$parent->data['Company Name']);
 				}
 				$parent_label=preg_replace('/^,/','',$parent_label);
-				$warning.=ngettext(count($address_parents),'Company','Companies').' '.$parent_label;
+				$warning.=ngettext('Company','Companies',count($address_parents)).' '.$parent_label;
 				break;
 			case('Contact'):
 
@@ -1267,7 +1267,7 @@ function new_address($_data) {
 					$warning='';
 				else {
 					$parent_label=preg_replace('/^,/','',$parent_label);
-					$warning.=ngettext(count($address_parents),'Contact','Contacts').' '.$parent_label;
+					$warning.=ngettext('Contact','Contacts',count($address_parents)).' '.$parent_label;
 				}
 				break;
 
@@ -1724,7 +1724,7 @@ function edit_address($data) {
 					$parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
 				}
 				$parent_label=preg_replace('/^,/','',$parent_label);
-				$warning.=ngettext(count($address_parents),'Customer','Customers').' '.$parent_label;
+				$warning.=ngettext('Customer','Customers',count($address_parents)).' '.$parent_label;
 				break;
 			case 'Supplier':
 				$parent_label='';
@@ -1733,7 +1733,7 @@ function edit_address($data) {
 					$parent_label.=sprintf(', <a href="supplier.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
 				}
 				$parent_label=preg_replace('/^,/','',$parent_label);
-				$warning.=ngettext(count($address_parents),'Supplier','Suppliers').' '.$parent_label;
+				$warning.=ngettext('Supplier','Suppliers',count($address_parents)).' '.$parent_label;
 				break;
 			case 'Company':
 				$parent_label='';
@@ -1742,7 +1742,7 @@ function edit_address($data) {
 					$parent_label.=sprintf(', <a href="company.php?id=%d">%s</a>',$parent->id,$parent->data['Company Name']);
 				}
 				$parent_label=preg_replace('/^,/','',$parent_label);
-				$warning.=ngettext(count($address_parents),'Company','Companies').' '.$parent_label;
+				$warning.=ngettext('Company','Companies',count($address_parents)).' '.$parent_label;
 				break;
 			case('Contact'):
 
@@ -1757,7 +1757,7 @@ function edit_address($data) {
 					$warning='';
 				else {
 					$parent_label=preg_replace('/^,/','',$parent_label);
-					$warning.=ngettext(count($address_parents),'Contact','Contacts').' '.$parent_label;
+					$warning.=ngettext('Contact','Contacts',count($address_parents)).' '.$parent_label;
 				}
 				break;
 
