@@ -654,30 +654,6 @@ function list_departments() {
 
 
 
-
-
-
-	/*
-
-		$customers_active=number($row['Product Department Active Customers']);
-			$customers_active_75=number($row['Product Department Active Customers More 0.75 Share']);
-			$customers_active_50=number($row['Product Department Active Customers More 0.5 Share']);
-			$customers_active_25=number($row['Product Department Active Customers More 0.25 Share']);
-
-			$customers_losing=number($row['Product Department Losing Customers']);
-			$customers_losing_75=number($row['Product Department Losing Customers More 0.75 Share']);
-			$customers_losing_50=number($row['Product Department Losing Customers More 0.5 Share']);
-			$customers_losing_25=number($row['Product Department Losing Customers More 0.25 Share']);
-
-
-			$customers_lost=number($row['Product Department Lost Customers']);
-			$customers_lost_75=number($row['Product Department Lost Customers More 0.75 Share']);
-			$customers_lost_50=number($row['Product Department Lost Customers More 0.5 Share']);
-			$customers_lost_25=number($row['Product Department Lost Customers More 0.25 Share']);
-
-
-*/
-
 	$sum_families=0;
 	$sum_products_for_sale=0;
 	$sum_discontinued=0;
@@ -1127,7 +1103,7 @@ function list_departments() {
 		$percentage_out_of_stock=percentage($row['Product Department Out Of Stock Products'],$row['Product Department For Public Sale Products']);
 
 
-	
+
 		$adata[]=array(
 
 			'code'=>_('Total'),

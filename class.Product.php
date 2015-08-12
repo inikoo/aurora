@@ -4566,7 +4566,7 @@ class product extends DB_Table {
 			$mysql_where.=', '.$row['Part SKU'];
 			$number_of_parts++;
 
-			if (count($product->get_current_part_skus())==1   ) {
+			if (count($this->get_current_part_skus())==1   ) {
 
 				$part_fields=array(
 					'Part Tariff Code',
@@ -4840,7 +4840,7 @@ class product extends DB_Table {
 		$this->data['Product Availability State']=$tipo;
 		$this->data['Product Available Days Forecast']=$days_available;
 
-		print $this->data['Product Code']." $tipo $days_available\n";
+		//print $this->data['Product Code']." $tipo $days_available\n";
 
 		// if( mysql_affected_rows()){
 		//$family=new Family($this->data['Product Family Key']);

@@ -407,7 +407,7 @@
 	</div>
 	</div>
 	
-	<div id="block_customers_who_favorited" style="{if $customers_block_view!='customers_who_favorited'}display:none;{/if}clear:both;margin:10px 0px 40px 0px;padding:20px">
+	<div id="block_customers_who_favorited" style="{if $customers_block_view!='customers_who_favorited'}display:none;{/if}clear:both;margin:10px 0px 40px 0px;padding:10px 20px">
 	<span id="table_title" class="clean_table_title">{t}Customers who favourited this product{/t}</span> 
 	<div class="table_top_bar space">
 	</div>

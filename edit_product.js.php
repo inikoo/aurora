@@ -527,11 +527,11 @@ Dom.setStyle(['add_part','save_edit_part','reset_edit_part'],'display','none')
     }
     json_value = YAHOO.lang.JSON.stringify(part_list);
     var request = 'ar_edit_assets.php?tipo=edit_part_list&key=' + key + '&newvalue=' + json_value + '&pid=' + Dom.get('product_pid').value;
-    //alert(request);
+    alert(request);
     
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-           // alert(o.responseText);
+           alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
