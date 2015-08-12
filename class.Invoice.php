@@ -1694,7 +1694,7 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
 		$this->data['Invoice Outstanding Total Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
 
-		$sql=sprintf("update  `Invoice Dimension` set `Invoice Total Tax Amount`=%.2f,`Invoice Total Amount`=%.2f,`Invoice Outstanding Total Amount`=%.2f,     where `Invoice Key`=%d",
+		$sql=sprintf("update  `Invoice Dimension` set `Invoice Total Tax Amount`=%.2f,`Invoice Total Amount`=%.2f,`Invoice Outstanding Total Amount`=%.2f    where `Invoice Key`=%d",
 			$this->data['Invoice Total Tax Amount'],
 			$this->data['Invoice Total Amount'],
 			$this->data['Invoice Outstanding Total Amount'],
