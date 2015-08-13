@@ -693,7 +693,7 @@ function search_orders($data) {
 
 function search_customer($data) {
 
-	global $inikoo_account;
+	global $inikoo_account,$account_code,$memcache_ip;
 
 	$max_results=10;
 	$user=$data['user'];
@@ -721,68 +721,92 @@ function search_customer($data) {
 
 		$stores=join(',',$user->stores);
 	}
+	$memcache_fingerprint=$account_code.'SEARCH_CUST'.$stores.md5($q);
 
-	$candidates=array();
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
 
-	if (is_numeric($q)) {
-		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Key`=%d",
+
+	if (strlen($q)<=2) {
+		$memcache_time=295200;
+	}if (strlen($q)<=3) {
+		$memcache_time=86400;
+	}if (strlen($q)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data) {
+
+
+		$candidates=array();
+
+		if (is_numeric($q)) {
+			$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Key`=%d",
+				$q);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res)) {
+				$candidates[$row['Customer Key']]=2000;
+			}
+		}
+		$q_just_numbers=preg_replace('/[^\d]/','',$q);
+		if (strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6) {
+
+			$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%s%%'",
+				$q_just_numbers
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res)) {
+				$candidates[$row['Customer Key']]=100;
+			}
+			$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%s%%'",
+				$q_just_numbers
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res)) {
+				$candidates[$row['Customer Key']]=100;
+			}
+		}
+		if (strlen($q_just_numbers)>6) {
+
+			$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%%%s%%'",
+				$q_just_numbers
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res)) {
+				$candidates[$row['Customer Key']]=100;
+			}
+			$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%%%s%%'",
+				$q_just_numbers
+			);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_array($res)) {
+				$candidates[$row['Customer Key']]=100;
+			}
+		}
+
+		$sql=sprintf("select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where true $where_store and `Customer Tax Number` like '%s%%' limit 10 ",
 			$q);
 		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$candidates[$row['Customer Key']]=2000;
-		}
-	}
-	$q_just_numbers=preg_replace('/[^\d]/','',$q);
-	if (strlen($q_just_numbers)>4 and strlen($q_just_numbers)<=6) {
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Customer Tax Number']==$q)
+				$candidates[$row['Customer Key']]=30;
+			else {
 
-		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%s%%'",
-			$q_just_numbers
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$candidates[$row['Customer Key']]=100;
+				$len_name=strlen($row['Customer Tax Number']);
+				$len_q=strlen($q);
+				$factor=$len_q/$len_name;
+				$candidates[$row['Customer Key']]=20*$factor;
+			}
 		}
-		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%s%%'",
-			$q_just_numbers
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$candidates[$row['Customer Key']]=100;
-		}
-	}
-	if (strlen($q_just_numbers)>6) {
 
-		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%%%s%%'",
-			$q_just_numbers
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$candidates[$row['Customer Key']]=100;
-		}
-		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%%%s%%'",
-			$q_just_numbers
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$candidates[$row['Customer Key']]=100;
-		}
-	}
-
-	$sql=sprintf("select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where true $where_store and `Customer Tax Number` like '%s%%' limit 10 ",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Customer Tax Number']==$q)
-			$candidates[$row['Customer Key']]=30;
-		else {
-
-			$len_name=strlen($row['Customer Tax Number']);
-			$len_q=strlen($q);
-			$factor=$len_q/$len_name;
-			$candidates[$row['Customer Key']]=20*$factor;
-		}
-	}
-
+		/*
 	$sql=sprintf("select `Customer Key`,`Customer Main Town` from `Customer Dimension` where true $where_store and `Customer Main Town` like '%s%%' limit 10 ",
 		$q);
 	$res=mysql_query($sql);
@@ -796,149 +820,156 @@ function search_customer($data) {
 			$candidates[$row['Customer Key']]=20*$factor;
 		}
 	}
+	*/
 
-	$sql=sprintf("select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Email`  like '%s%%' limit 100 ",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Email']==$q) {
-			$candidates[$row['Subject Key']]=120;
-		} else {
-
-			$len_name=strlen($row['Email']);
-			$len_q=strlen($q);
-			$factor=$len_q/$len_name;
-			$candidates[$row['Subject Key']]=100*$factor;
-		}
-	}
-
-	$q_postal_code=preg_replace('/[^a-z^A-Z^\d]/','',$q);
-	if ($q_postal_code!='') {
-		$sql=sprintf("select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150",
-			addslashes($q_postal_code)
-		);
+		$sql=sprintf("select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Email`  like '%s%%' limit 100 ",
+			$q);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-			if ($row['Customer Main Plain Postal Code']==$q_postal_code) {
-				$candidates[$row['Customer Key']]=50;
+			if ($row['Email']==$q) {
+				$candidates[$row['Subject Key']]=120;
 			} else {
-				$len_name=strlen($row['Customer Main Plain Postal Code']);
-				$len_q=strlen($q_postal_code);
+
+				$len_name=strlen($row['Email']);
+				$len_q=strlen($q);
 				$factor=$len_q/$len_name;
-				$candidates[$row['Customer Key']]=20*$factor;
+				$candidates[$row['Subject Key']]=100*$factor;
 			}
 		}
-	}
 
-	$sql=sprintf("select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Contact Name` like '%s%%' limit 20",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Contact Name']==$q) {
-			$candidates[$row['Subject Key']]=120;
-		} else {
-			$len_name=$row['Contact Name'];
-			$len_q=strlen($q);
-			$factor=$len_name/$len_q;
-			$candidates[$row['Subject Key']]=100*$factor;
-		}
-	}
-
-	$sql=sprintf("select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and  `Contact Surname`  like '%s%%'  limit 20",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Contact Surname']==$q) {
-			$candidates[$row['Subject Key']]=120;
-		} else {
-			$len_name=$row['Contact Surname'];
-			$len_q=strlen($q);
-			$factor=$len_name/$len_q;
-			$candidates[$row['Subject Key']]=100*$factor;
-		}
-	}
-
-	$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name` like '%s%%' limit 50",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Customer Name']==$q)
-			$candidates[$row['Customer Key']]=55;
-		else {
-
-			$len_name=strlen($row['Customer Name']);
-			$len_q=strlen($q);
-			$factor=$len_q/$len_name;
-			$candidates[$row['Customer Key']]=50*$factor;
-		}
-	}
-
-	$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name`  REGEXP '[[:<:]]%s' limit 100 ",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Customer Name']==$q)
-			$candidates[$row['Customer Key']]=55;
-		else {
-
-			$len_name=strlen($row['Customer Name']);
-			$len_q=strlen($q);
-			$factor=$len_q/$len_name;
-			$candidates[$row['Customer Key']]=50*$factor;
-		}
-	}
-
-	arsort($candidates);
-	$total_candidates=count($candidates);
-
-	if ($total_candidates==0) {
-		$response=array('state'=>200,'results'=>0,'data'=>'');
-		echo json_encode($response);
-		return;
-	}
-
-	$counter=0;
-	$customer_keys='';
-	$results=array();
-
-	foreach ($candidates as $key=>$val) {
-		$counter++;
-		$customer_keys.=','.$key;
-		$results[$key]='';
-		if ($counter>$max_results) {
-			break;
-		}
-	}
-	$customer_keys=preg_replace('/^,/','',$customer_keys);
-
-	$sql=sprintf("select `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` left join `Store Dimension` on (`Customer Store Key`=`Store Key`) where `Customer Key` in (%s)",
-		$customer_keys);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-
-		$name=$row['Customer Name'];
-		if ($row['Customer Tax Number']!='') {
-			$name.='<br/>'.$row['Customer Tax Number'];
-		}
-		if ($row['Customer Type']=='Company') {
-			$name.= '<br/>'.$row['Customer Main Contact Name'];
+		$q_postal_code=preg_replace('/[^a-z^A-Z^\d]/','',$q);
+		if ($q_postal_code!='') {
+			$sql=sprintf("select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150",
+				addslashes($q_postal_code)
+			);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_array($res)) {
+				if ($row['Customer Main Plain Postal Code']==$q_postal_code) {
+					$candidates[$row['Customer Key']]=50;
+				} else {
+					$len_name=strlen($row['Customer Main Plain Postal Code']);
+					$len_q=strlen($q_postal_code);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Customer Key']]=20*$factor;
+				}
+			}
 		}
 
-		$address=$row['Customer Main Plain Email'];
-		if ($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
-		$address.='<br/>'.$row['Customer Main Location'];
-		if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
-		$address=preg_replace('/^\<br\/\>/','',$address);
-		$results[$row['Customer Key']]=array('store'=>$row['Store Code'],'key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
+		$sql=sprintf("select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Contact Name` like '%s%%' limit 20",
+			$q);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Contact Name']==$q) {
+				$candidates[$row['Subject Key']]=120;
+			} else {
+				$len_name=$row['Contact Name'];
+				$len_q=strlen($q);
+				$factor=$len_name/$len_q;
+				$candidates[$row['Subject Key']]=100*$factor;
+			}
+		}
+
+		$sql=sprintf("select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and  `Contact Surname`  like '%s%%'  limit 20",
+			$q);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Contact Surname']==$q) {
+				$candidates[$row['Subject Key']]=120;
+			} else {
+				$len_name=$row['Contact Surname'];
+				$len_q=strlen($q);
+				$factor=$len_name/$len_q;
+				$candidates[$row['Subject Key']]=100*$factor;
+			}
+		}
+
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name` like '%s%%' limit 50",
+			$q);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Customer Name']==$q)
+				$candidates[$row['Customer Key']]=55;
+			else {
+
+				$len_name=strlen($row['Customer Name']);
+				$len_q=strlen($q);
+				$factor=$len_q/$len_name;
+				$candidates[$row['Customer Key']]=50*$factor;
+			}
+		}
+
+		$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name`  REGEXP '[[:<:]]%s' limit 100 ",
+			$q);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Customer Name']==$q)
+				$candidates[$row['Customer Key']]=55;
+			else {
+
+				$len_name=strlen($row['Customer Name']);
+				$len_q=strlen($q);
+				$factor=$len_q/$len_name;
+				$candidates[$row['Customer Key']]=50*$factor;
+			}
+		}
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200,'results'=>0,'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$customer_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$customer_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$customer_keys=preg_replace('/^,/','',$customer_keys);
+
+		$sql=sprintf("select `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` left join `Store Dimension` on (`Customer Store Key`=`Store Key`) where `Customer Key` in (%s)",
+			$customer_keys);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+
+			$name=$row['Customer Name'];
+			if ($row['Customer Tax Number']!='') {
+				$name.='<br/>'.$row['Customer Tax Number'];
+			}
+			if ($row['Customer Type']=='Company') {
+				$name.= '<br/>'.$row['Customer Main Contact Name'];
+			}
+
+			$address=$row['Customer Main Plain Email'];
+			if ($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
+			$address.='<br/>'.$row['Customer Main Location'];
+			if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
+			$address=preg_replace('/^\<br\/\>/','',$address);
+			$results[$row['Customer Key']]=array('store'=>$row['Store Code'],'key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
+		}
+		$results_data=array('n'=>count($results),'d'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
 	}
 
-	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'customer.php?id=','q'=>$q);
+	$response=array('state'=>200,'results'=>$results_data['n'],'data'=>$results_data['d'],'link'=>'customer.php?id=','q'=>$q);
 	echo json_encode($response);
 
 }
-
-
-
 
 
 
@@ -1326,11 +1357,11 @@ function search_parts($data) {
 	$max_results=30;
 	$user=$data['user'];
 	$q=$data['q'];
-	
-	
-	
-	
-	
+
+
+
+
+
 	// $q=_trim($_REQUEST['q']);
 
 	if ($q=='') {
@@ -1486,13 +1517,13 @@ function search_parts($data) {
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 
-			
-					if (array_key_exists('C'.$row['Category Key'],$candidates))
-						$candidates['C'.$row['Category Key']]+=110;
-					else
-						$candidates['C'.$row['Category Key']]=110;
 
-			
+				if (array_key_exists('C'.$row['Category Key'],$candidates))
+					$candidates['C'.$row['Category Key']]+=110;
+				else
+					$candidates['C'.$row['Category Key']]=110;
+
+
 
 				$part_data['C'.$row['Category Key']]=array('link'=>'part_category.php?block_view=subjects&id=',
 					'sku'=>$row['Category Key'],
@@ -1509,7 +1540,7 @@ function search_parts($data) {
 
 
 			$sql=sprintf('select `Part Reference`,`Part XHTML Currently Used In`,`Part Status`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Unit Description`  REGEXP \'[[:<:]]%s[[:>:]]\' limit 300',addslashes($q));
-//print "$sql\n";
+			//print "$sql\n";
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
 
@@ -1526,7 +1557,7 @@ function search_parts($data) {
 				}
 
 				$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('%s',$row['Part Reference']),'description'=>strip_tags($row['Part Unit Description']).($row['Part Status']!='In Use'?' <span class="error">'._('Not in use').'</span> ':'')  );
-//print $candidates[$row['Part SKU']].'  ** '.$row['Part Unit Description']."  ".$row['Part Status']." ---- \n";
+				//print $candidates[$row['Part SKU']].'  ** '.$row['Part Unit Description']."  ".$row['Part Status']." ---- \n";
 			}
 
 		}
