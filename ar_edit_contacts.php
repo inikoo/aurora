@@ -106,7 +106,7 @@ case('delete_customer'):
 	break;
 
 case('delete_customer_list'):
-		$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'subject_key'=>array('type'=>'key'),
 			'table_id'=>array('type'=>'numeric','optional'=>true),
 			'recordIndex'=>array('type'=>'numeric','optional'=>true)
@@ -3855,14 +3855,14 @@ function delete_customer_list($data) {
 			mysql_query($sql);
 			$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['subject_key']);
 			mysql_query($sql);
-			
-			
+
+
 			$response=array('state'=>200,
-			'action'=>'deleted',
-			'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
-			'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
-		);
-			
+				'action'=>'deleted',
+				'table_id'=>(isset($data['table_id'])?$data['table_id']:''),
+				'recordIndex'=>(isset($data['recordIndex'])?$data['recordIndex']:''),
+			);
+
 			echo json_encode($response);
 			return;
 
@@ -3980,18 +3980,22 @@ function new_customers_list($data) {
 	$list_name=$data['list_name'];
 	$store_id=$data['store_id'];
 
+
 	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d ",
 		prepare_mysql($list_name),
 		$store_id
 	);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		$response=array('resultset'=>
-			array(
-				'state'=>400,
-				'msg'=>_('Another list has the same name')
-			)
+
+
+
+		$response=array(
+			'state'=>400,
+			'msg'=>_('Another list has the same name')
+
 		);
+
 		echo json_encode($response);
 		return;
 	}
@@ -4010,28 +4014,20 @@ function new_customers_list($data) {
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-		if ($row['total']==0) {
-			$response=array('resultset'=>
-				array(
-					'state'=>400,
-					'msg'=>_('No customer match this criteria')
-				)
+		if ($row['total']==0 and $data['list_type']=='Static') {
+
+			$response=array(
+				'state'=>400,
+				'msg'=>_('No customer match this criteria, can not create static list')
+
 			);
+
+
 			echo json_encode($response);
 			return;
 
 		}
 		$list_total_items=$row['total'];
-
-	}else {
-		$response=array('resultset'=>
-			array(
-				'state'=>400,
-				'msg'=>_('No customer match this criteria')
-			)
-		);
-		echo json_encode($response);
-		return;
 
 	}
 
@@ -4290,7 +4286,7 @@ function check_customer_tax_number($data) {
 
 	include_once 'common_tax_number_functions.php';
 
-//print_r($customer->data);
+	//print_r($customer->data);
 	$tax_number_data=check_tax_number($customer->data['Customer Tax Number'],$customer->data['Customer Billing Address 2 Alpha Country Code']);
 
 

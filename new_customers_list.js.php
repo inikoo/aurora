@@ -47,12 +47,15 @@ include_once('common.php');
        Dom.setStyle('saving_the_list', 'display', '')
        YAHOO.util.Connect.asyncRequest('POST', request, {
            success: function(o) {
-               //  alert(o.responseText);
                var r = YAHOO.lang.JSON.parse(o.responseText);
                if (r.state == 200) {
                    location.href = 'customers_list.php?id=' + r.customer_list_key;
 
-               } else Dom.get('save_list_msg').innerHTML = r.msg;
+               } else {
+               Dom.get('save_list_msg').innerHTML = r.msg;
+               Dom.setStyle(['save_buttons', 'save_dialog'], 'display', '')
+       Dom.setStyle('saving_the_list', 'display', 'none')
+               }
            }
        });
 
