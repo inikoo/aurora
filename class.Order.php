@@ -4471,7 +4471,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$this->data['Order Charges Tax Amount']=$total_charges_tax;
 
 
-			$sql=sprintf("update `Order Dimension` set `Order Charges Net Amount`=%s ,`Order Charges Tax Amount`=%.2f where `Order Key`=%d"
+			$sql=sprintf("update `Order Dimension` set `Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f where `Order Key`=%d"
 				,$this->data['Order Charges Net Amount']
 				,$this->data['Order Charges Tax Amount']
 				,$this->id
