@@ -1738,6 +1738,12 @@ class Site extends DB_Table {
 
 	function update_sitemap() {
 
+if ($this->data['Site SSL']=='Yes') {
+				$site_protocol='https';
+			}else {
+				$site_protocol='http';
+			}
+
 		include_once 'class.Sitemap.php';
 		$sitemap=new Sitemap($this->id);
 		$sitemap->page('info');
@@ -1748,7 +1754,7 @@ class Site extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$updated=$row['Page Store Last Update Date'];
-			$sitemap->url('http://'.$row['Page URL'], $updated, 'monthly');
+			$sitemap->url($site_protocol.'://'.$row['Page URL'], $updated, 'monthly');
 		}
 
 		$sitemap->page('products');
@@ -1761,7 +1767,7 @@ class Site extends DB_Table {
 		while ($row=mysql_fetch_assoc($res)) {
 			$updated=$row['Page Store Last Update Date'];
 			//print_r($row);
-			$sitemap->url('http://'.$row['Page URL'], $updated, 'weekly');
+			$sitemap->url($site_protocol.'://'.$row['Page URL'], $updated, 'weekly');
 		}
 
 		$sitemap->close();
