@@ -5834,11 +5834,11 @@ class Customer extends DB_Table {
 			$sql=sprintf("select * from `History Dimension` where `History Key`=%d ",$history_key);
 			$res2=mysql_query($sql);
 			if ($row2=mysql_fetch_assoc($res2)) {
-				$sql=sprintf("update `Subject Key`=%d from `History Dimension` where `History Key`=%d and `Subject`='Customer' ",$this->id,$history_key);
+				$sql=sprintf("update `History Dimension` set `Subject Key`=%d   where `History Key`=%d and `Subject`='Customer' ",$this->id,$history_key);
 				mysql_query($sql);
-				$sql=sprintf("update `Direct Object Key`=%d from `History Dimension` where `History Key`=%d and `Direct Object`='Customer' ",$this->id,$history_key);
+				$sql=sprintf("update `History Dimension` set `Direct Object Key`=%d   where `History Key`=%d and `Direct Object`='Customer' ",$this->id,$history_key);
 				mysql_query($sql);
-				$sql=sprintf("update `Indirect Object Key`=%d from `History Dimension` where `History Key`=%d and `Indirect Object`='Customer' ",$this->id,$history_key);
+				$sql=sprintf("update `History Dimension` set `Indirect Object Key`=%d  where `History Key`=%d and `Indirect Object`='Customer' ",$this->id,$history_key);
 				mysql_query($sql);
 			}
 		}

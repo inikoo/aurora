@@ -59,7 +59,10 @@
 					</tr>
 					<tr>
 					<tr style="border-bottom:1px solid #777;{if $corporate_currency==$order->get('Order Currency')}display:none{/if}" class="exchange">
-					<td class="aright">{$corporate_currency}/{$order->get('Order Currency')} {(1/$order->get('Order Currency Exchange'))|string_format:"%.3f"}</td>
+
+					    <td class="aright">{$corporate_currency}/{$order->get('Order Currency')} {if $order->get('Order Currency Exchange')!=0}{(1/$order->get('Order Currency Exchange'))|string_format:"%.3f"}{else}ND!{/if}</td>
+
+
 					<td width="100" class="aright">{$order->get('Corporate Currency Balance Total Amount')}</td>
 				</tr>
 					
