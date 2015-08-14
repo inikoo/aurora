@@ -1273,52 +1273,52 @@ function list_sites() {
 	}
 
 
-	if ($order=='name'){
+	if ($order=='name') {
 		$order='`Site Name`';
-	}elseif ($order=='url'){
+	}elseif ($order=='url') {
 		$order='`Site URL`';
-	}elseif ($order=='users'){
+	}elseif ($order=='users') {
 		$order='`Site Total Acc Users`';
-	}elseif ($order=='code'){
+	}elseif ($order=='code') {
 		$order='`Site Code`';
 
-	}elseif ($order=='pages'){
+	}elseif ($order=='pages') {
 		$order='`Site Number Pages`';
-	}elseif ($order=='products'){
+	}elseif ($order=='products') {
 		$order='`Site Number Products`';
-    }elseif ($order=='visitors'){
+	}elseif ($order=='visitors') {
 		$order='`Site Total Acc Visitors`';
-    }elseif ($order=='requests'){
+	}elseif ($order=='requests') {
 		$order='`Site Total Acc Requests`';
-    }elseif ($order=='sessions'){
+	}elseif ($order=='sessions') {
 		$order='`Site Total Acc Sessions`';
-    }elseif ($order=='pages_products'){
+	}elseif ($order=='pages_products') {
 		$order='`Site Number Pages with Products`';
-    }elseif ($order=='pages_out_of_stock'){
+	}elseif ($order=='pages_out_of_stock') {
 		$order='`Site Number Pages with Out of Stock Products`';
-    }elseif ($order=='pages_out_of_stock_percentage'){
+	}elseif ($order=='pages_out_of_stock_percentage') {
 		$order='`Site Number Pages with Out of Stock Products`/`Site Number Pages with Products`';
-    }elseif ($order=='email_reminders_customers'){
+	}elseif ($order=='email_reminders_customers') {
 		$order='`Site Number Back in Stock Reminder Customers`';
-    }elseif ($order=='email_reminders_products'){
+	}elseif ($order=='email_reminders_products') {
 		$order='`Site Number Back in Stock Reminder Products`';
-    }elseif ($order=='email_reminders_waiting'){
+	}elseif ($order=='email_reminders_waiting') {
 		$order='`Site Number Back in Stock Reminder Waiting`';
-    }elseif ($order=='email_reminders_ready'){
+	}elseif ($order=='email_reminders_ready') {
 		$order='`Site Number Back in Stock Reminder Ready`';
-    }elseif ($order=='email_reminders_sent'){
+	}elseif ($order=='email_reminders_sent') {
 		$order='`Site Number Back in Stock Reminder Sent`';
-    }elseif ($order=='email_reminders_cancelled'){
+	}elseif ($order=='email_reminders_cancelled') {
 		$order='`Site Number Back in Stock Reminder Cancelled`';
-    }elseif ($order=='out_of_stock'){
+	}elseif ($order=='out_of_stock') {
 		$order='`Site Number Out of Stock Products`';
-    }elseif ($order=='out_of_stock_percentage'){
+	}elseif ($order=='out_of_stock_percentage') {
 		$order='`Site Number Out of Stock Products`/`Site Number Products`';
-    }
-    else {
-	
+	}
+	else {
+
 		$order='`Site Code`';
-		
+
 	}
 
 	$sql="select `Site Number Back in Stock Reminder Customers`,`Site Number Back in Stock Reminder Products`,`Site Number Back in Stock Reminder Waiting`,`Site Number Back in Stock Reminder Ready`,`Site Number Back in Stock Reminder Sent`,`Site Number Back in Stock Reminder Cancelled`,`Site Number Products`,`Site Number Out of Stock Products`,`Site Number Pages with Out of Stock Products`,`Site Number Pages with Products`,`Site Number Pages`,`Site Total Acc Requests`,`Site Total Acc Sessions`,`Site Total Acc Visitors`,`Site Total Acc Users`,`Site Code`,`Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -2262,6 +2262,11 @@ function list_users_requesting() {
 
 function list_requests() {
 
+	if ($_REQUEST['skip']) {
+		return;
+	}
+
+
 	global $user;
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -2601,6 +2606,11 @@ function list_queries() {
 
 	global $user;
 
+	if ($_REQUEST['skip']) {
+		return;
+	}
+
+
 
 	if (isset( $_REQUEST['parent_key']))
 		$parent_key=$_REQUEST['parent_key'];
@@ -2799,6 +2809,11 @@ function list_queries() {
 function list_query_history() {
 
 	global $user;
+
+
+	if ($_REQUEST['skip']) {
+		return;
+	}
 
 
 	if (isset( $_REQUEST['parent_key']))

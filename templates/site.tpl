@@ -12,6 +12,12 @@
 	<input type="hidden" id="calendar_id" value="sales" />
 	
 	
+	<input type="hidden" id="block_view" value="{$block_view}" />
+	<input type="hidden" id="search_queries_block_view" value="{$search_queries_block_view}" />
+	<input type="hidden" id="hits_block_view" value="{$hits_block_view}" />
+
+	
+	
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
