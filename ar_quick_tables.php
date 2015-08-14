@@ -2863,7 +2863,7 @@ function active_staff_list() {
 
 
 	if ($order=='name')
-		$order='``Staff Name`';
+		$order='`Staff Name`';
 	else
 		$order='`Staff Alias`';
 
