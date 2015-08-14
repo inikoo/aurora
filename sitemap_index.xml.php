@@ -33,14 +33,24 @@ $sql=sprintf("select `Sitemap Key` ,`Sitemap Date` from `Sitemap Dimension` wher
 	$site->id
 );
 
+
+if ($site->data['Site SSL']=='Yes') {
+	$site_protocol='https';
+}else {
+	$site_protocol='http';
+}
+
+
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$xml .= '  <sitemap>' . "\n";
-	$xml .= '    <loc>http://' . $site->data['Site URL'].'/sitemap'.$row['Sitemap Key'].'.xml</loc>' . "\n";
+	$xml .= '    <loc>'.$site_protocol.'://'. $site->data['Site URL'].'/sitemap'.$row['Sitemap Key'].'.xml</loc>' . "\n";
 	$xml .= '    <lastmod>' . date('Y-m-d', strtotime($row['Sitemap Date'])) . '</lastmod>' . "\n";
 	$xml .= '  </sitemap>' . "\n";
 
 }
+
+
 
 $xml .= '</sitemapindex>' . "\n";
 
