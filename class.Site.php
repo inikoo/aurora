@@ -1747,7 +1747,7 @@ if ($this->data['Site SSL']=='Yes') {
 		include_once 'class.Sitemap.php';
 		$sitemap=new Sitemap($this->id);
 		$sitemap->page('info');
-		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`   in  ('Front Page Store','Information','Login Help')    ",
+		$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d  and `Page Store Section`   in  ('Front Page Store','Information','Login Help') and `Page State`='Online'   ",
 			$this->id
 		);
 		//print $sql;
@@ -1759,7 +1759,7 @@ if ($this->data['Site SSL']=='Yes') {
 
 		$sitemap->page('products');
 
-		$sql=sprintf("select `Page Store Last Update Date`,`Page URL` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d and (`Page Store Section`='Product Description' or `Page Store Section`='Family Catalogue' or `Page Store Section`='Department Catalogue') ",
+		$sql=sprintf("select `Page Store Last Update Date`,`Page URL` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`=%d and (`Page Store Section`='Product Description' or `Page Store Section`='Family Catalogue' or `Page Store Section`='Department Catalogue') and `Page State`='Online' ",
 			$this->id
 		);
 		//print "$sql\n";
