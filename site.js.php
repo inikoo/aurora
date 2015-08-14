@@ -9,12 +9,53 @@ include_once('common.php');
 
 
  function change_block() {
+ 
+ 
+ if(this.id=='search_queries'){
+ 
+  if(Dom.get('search_queries_block_view').value=='queries'){
+         table_id = 2;
+
+    }else{
+     table_id = 3;
+    }
+    
+    var table = tables['table' + table_id];
+    if(table.skip){
+    var datasource = tables['dataSource' + table_id];
+    var request = '&skip=0';
+      table.skip=0;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+   
+    }
+ }
+ else if(this.id=='hits'){
+ 
+ if(Dom.get('hits_block_view').value=='requests'){
+table_id = 11;
+    var table = tables['table' + table_id];
+    if(table.skip){
+    var datasource = tables['dataSource' + table_id];
+    var request = '&skip=0';
+      table.skip=0;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+   
+    }
+    }
+    
+ 
+ }
+ 
+ 
     ids = ['details', 'pages', 'hits', 'visitors', 'reports', , 'search_queries', 'changelog', 'email_reminders', 'products','favorites'];
     block_ids = ['block_products', 'block_details', 'block_pages', 'block_hits', 'block_visitors', 'block_reports', 'block_search_queries', 'block_changelog', 'block_email_reminders','block_favorites'];
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
     Dom.addClass(this, 'selected');
+    
+   
+    
 
     if (this.id == 'hits') {
         Dom.setStyle('calendar_container', 'display', '')
@@ -52,15 +93,81 @@ include_once('common.php');
      YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-email_reminders_block&value=' + this.getAttribute('block_id'), {});
  }  
 
+
+
+
+
+ function change_hits_block() {
+ 
+ 
+
+   if(this.getAttribute('block_id')=='requests'){
+table_id = 11;
+    var table = tables['table' + table_id];
+   
+    if(table.skip){
+    var datasource = tables['dataSource' + table_id];
+    var request = '&skip=0';
+      table.skip=0;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+  
+    }
+    }
+    
+    
+ 
+ 
+     ids = ['hits_requests', 'hits_requests_plot'];
+     block_ids = ['block_hits_requests', 'block_hits_requests_plot'];
+     Dom.setStyle(block_ids, 'display', 'none');
+     Dom.setStyle('block_' + this.id, 'display', '');
+    
+    
+  
+  
+   
+    
+     Dom.removeClass(ids, 'selected');
+     Dom.addClass(this, 'selected');
+
+     Dom.get('hits_block_view').value=this.getAttribute('block_id')
+     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-hits_block&value=' + this.getAttribute('block_id'), {});
+ }
+
  function change_search_queries_block() {
+ 
+   if(this.getAttribute('block_id')=='queries'){
+         table_id = 2;
+
+    }else{
+     table_id = 3;
+    }
+    
+    var table = tables['table' + table_id];
+    if(table.skip){
+    var datasource = tables['dataSource' + table_id];
+    var request = '&skip=0';
+      table.skip=0;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+   
+    }
+    
+ 
+ 
      ids = ['search_queries_queries', 'search_queries_history'];
      block_ids = ['block_search_queries_queries', 'block_search_queries_history'];
      Dom.setStyle(block_ids, 'display', 'none');
      Dom.setStyle('block_' + this.id, 'display', '');
     
+    
+  
+  
+   
+    
      Dom.removeClass(ids, 'selected');
      Dom.addClass(this, 'selected');
 
+     Dom.get('search_queries_block_view').value=this.getAttribute('block_id')
      YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=site-search_queries_block&value=' + this.getAttribute('block_id'), {});
  }
 
@@ -484,7 +591,13 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 					    
 				    
 				     ];
-		request="ar_sites.php?tipo=queries&sf=0&tableid=2&parent_key="+Dom.get('site_key').value
+				  if(Dom.get('block_view').value=='search_queries' && Dom.get('search_queries_block_view').value=='queries'){
+		skip=0
+		}else{
+		skip=1
+		}		   
+				     
+		request="ar_sites.php?tipo=queries&sf=0&tableid=2&parent_key="+Dom.get('site_key').value+'&skip='+skip
 		//alert(request)
 	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -534,6 +647,8 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
  		this.table2.request=request;
  		this.table2.table_id=tableid;
+ 		 		this.table2.skip=skip;
+
      	this.table2.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -548,7 +663,14 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 				,{key:"customer", label:"<?php echo _('Customer')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"handle", label:"<?php echo _('Handle')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ];
-		request="ar_sites.php?tipo=query_history&sf=0&tableid="+tableid+"&parent_key="+Dom.get('site_key').value
+				     
+		if(Dom.get('block_view').value=='search_queries' && Dom.get('search_queries_block_view').value=='history'){
+		skip=0
+		}else{
+		skip=1
+		}		     
+				     
+		request="ar_sites.php?tipo=query_history&sf=0&tableid="+tableid+"&parent_key="+Dom.get('site_key').value+'&skip='+skip
 		//alert(request)
 	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -569,6 +691,7 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 		fields: [
 			 'customer','handle','date','query'
 						 ]};
+	   
 	    
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource3, {
@@ -593,11 +716,17 @@ request="ar_sites.php?tipo=users_in_site&sf=0&tableid=1&parent_key="+Dom.get('si
 
 						     }
 						     );
+						     
+						     
+						     
+						     
 	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
  		this.table3.request=request;
   		this.table3.table_id=tableid;
+  		 this.table3.skip=skip;
+
      	this.table3.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -1155,8 +1284,16 @@ var tableid=10; // Change if you have more the 1 table
 				    
 				    
 				     ];
+				     
+				     
+				      if(Dom.get('block_view').value=='hits' && Dom.get('hits_block_view').value=='requests'){
+		skip=0
+		}else{
+		skip=1
+		}		 
+				     
 
-request="ar_sites.php?tipo=requests&parent=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value+'&to='+Dom.get('to').value+'&from='+Dom.get('from').value
+request="ar_sites.php?tipo=requests&parent=site&tableid="+tableid+"&parent_key="+Dom.get('site_key').value+'&to='+Dom.get('to').value+'&from='+Dom.get('from').value+'&skip='+skip
 	//alert(request)
 	this.dataSource11 = new YAHOO.util.DataSource(request);
 	    this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -1210,6 +1347,8 @@ request="ar_sites.php?tipo=requests&parent=site&tableid="+tableid+"&parent_key="
 	    this.table11.doBeforePaginatorChange = mydoBeforePaginatorChange;
  this.table11.request=request;
   this.table11.table_id=tableid;
+      this.table11.skip=skip;
+
      this.table11.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -1284,6 +1423,7 @@ request="ar_assets.php?tipo=favorite_products&parent=site&tableid="+tableid+"&pa
 	    this.table12.doBeforePaginatorChange = mydoBeforePaginatorChange;
  this.table12.request=request;
   this.table12.table_id=tableid;
+
      this.table12.subscribe("renderEvent", myrenderEvent);
 
 	    
@@ -2132,6 +2272,9 @@ function get_requests_numbers(from, to) {
 
      ids = ['email_reminders_requests', 'email_reminders_customers', 'email_reminders_products'];
      Event.addListener(ids, "click", change_email_reminders_block);
+
+ ids = ['hits_requests', 'hits_requests_plot'];
+     Event.addListener(ids, "click", change_hits_block);
 
 
      Event.addListener(['page_general', 'page_visitors', 'page_products'], "click", change_pages_view);
