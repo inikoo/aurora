@@ -283,3 +283,11 @@ ALTER TABLE `Product Family Dimension` ADD `Product Family Active Customers More
 ALTER TABLE `Product Family Dimension` ADD `Product Family Active Customers More 0.75 Share` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Family Unknown Stock Products`; 
 ALTER TABLE `Product Family Dimension` ADD `Product Family Active Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Family Unknown Stock Products`; 
 
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Record Type` `Product Family Record Type` ENUM('Normal','Discontinued','NoSale','Private') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Normal'; 
+
+update `Product Family Dimension` set `Product Family Record Type`='NoSale';
+
+
+
+
+
