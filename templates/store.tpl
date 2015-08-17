@@ -15,6 +15,9 @@
 		<input type="hidden" id="products_table_id" value="2"> 
 		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
 		<input type="hidden" id="sales_max_sample_domain" value="{$sales_max_sample_domain}"> 
+		
+
+		
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="stores.php"> &#8704; {t}Stores{/t}</a> &rarr; {$store->get('Store Name')}</span> 
 		</div>
@@ -292,7 +295,7 @@
 			<div class="buttons small cluster group">
 				<button id="change_departments_display_mode"  class="selected" style="{if   $department_view!='sales'}display:none{/if}"> &#x2AF6; {$display_departments_mode_label}</button> 
 				<button id="change_departments_stock_display_mode" class="selected" style="{if   $department_view!='stock'}display:none{/if}"> &#x2AF6; {$display_departments_stock_mode_label}</button> 
-				<button id="change_departments_view_mode" style="{if   $department_view!='general'}display:none{/if}" id="change_departments_table_type">&#x21b6 {if $departments_table_type=='list'}{t}Thumbnails{/t}{else}{t}List{/t}{/if}</button> 
+				<button id="change_departments_table_type" class="selected" style="{if   $department_view!='general'}display:none{/if}" >&#x21b6 {if $departments_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -310,16 +313,30 @@
 	<img id="export_families" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"> 
 		</span> 
 		<div class="elements_chooser">
-			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.NoSale}selected{/if} label_family_products_nosale" id="elements_family_nosale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_NoSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinued}selected{/if} label_family_products_discontinued" id="elements_family_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinuing}selected{/if} label_family_products_discontinued" id="elements_family_discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_Discontinuing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.Normal}selected{/if} label_family_products_normal" id="elements_family_normal" table_type="normal">{t}For Sale{/t} (<span id="elements_family_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.InProcess}selected{/if} label_family_products_inprocess" id="elements_family_inprocess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_InProcess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.NoSale}selected{/if} label_family_products_nosale" id="elements_family_nosale" table_type="nosale">{t}No Sale{/t} (<span id="elements_family_NoSale_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinued}selected{/if} label_family_products_discontinued" id="elements_family_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_family_Discontinued_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			{*}<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_family.Discontinuing}selected{/if} label_family_products_discontinued" id="elements_family_discontinuing" table_type="discontinuing">{t}Discontinuing{/t} (<span id="elements_family_Discontinuing_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span>{*} 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.Private}selected{/if} label_family_products_private" id="elements_family_private" table_type="private">{t}Private Sale{/t} (<span id="elements_family_Private_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.Normal}selected{/if} label_family_products_normal" id="elements_family_normal" table_type="normal">{t}Public Sale{/t} (<span id="elements_family_Normal_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> 
+			{*}<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_family.InProcess}selected{/if} label_family_products_inprocess" id="elements_family_inprocess" table_type="inprocess">{t}In Process{/t} (<span id="elements_family_InProcess_number"><img src="art/loading.gif" style="height:12.9px" /></span>)</span> {*}
 		</div>
 		<div class="table_top_bar">
 		</div>
 		<input type="hidden" id="families_view" value="{$family_view}"> 
 		<div class="clusters">
 			<div id="table_view_menu1" style="{if $families_table_type=='thumbnails'}display:none{/if}">
-				<div class="buttons small left cluster">
-					<button class="table_option {if $family_view=='general'}selected{/if}" id="family_general">{t}Overview{/t}</button> <button class="table_option {if $family_view=='timeline'}selected{/if}" id="family_timeline">{t}Timeline{/t}</button> <button class="table_option {if $family_view=='stock'}selected{/if}" id="family_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $family_view=='sales'}selected{/if}" id="family_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
+				
+
+<div class="buttons small left cluster">
+					<button class="table_option {if $family_view=='general'}selected{/if}" id="family_general">{t}Overview{/t}</button> 
+					<button class="table_option {if $family_view=='sales'}selected{/if}" id="family_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> 
+					<button class="table_option {if $family_view=='stock'}selected{/if}" id="family_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> 
+					<button class="table_option {if $family_view=='products'}selected{/if}" id="family_products" {if !$view_stock}style="display:none" {/if}>{t}Products{/t}</button> 
+					<button class="table_option {if $family_view=='customers'}selected{/if}" id="family_customers" {if !$view_stock}style="display:none" {/if}>{t}Customers{/t}</button> 
+					<button style="display:none" class="table_option {if $family_view=='timeline'}selected{/if}" id="family_timeline">{t}Timeline{/t}</button> 
 				</div>
+
+
 				<div id="family_period_options" class="buttons small left cluster" style="display:{if $family_view!='sales' }none{else}block{/if};">
 					<button class="table_option {if $family_period=='all'}selected{/if}" period="all" id="family_period_all">{t}All{/t}</button> <button class="table_option {if $family_period=='three_year'}selected{/if}" period="three_year" id="family_period_three_year">{t}3Y{/t}</button> <button class="table_option {if $family_period=='year'}selected{/if}" period="year" id="family_period_year">{t}1Yr{/t}</button> <button class="table_option {if $family_period=='yeartoday'}selected{/if}" period="yeartoday" id="family_period_yeartoday">{t}YTD{/t}</button> <button class="table_option {if $family_period=='six_month'}selected{/if}" period="six_month" id="family_period_six_month">{t}6M{/t}</button> <button class="table_option {if $family_period=='quarter'}selected{/if}" period="quarter" id="family_period_quarter">{t}1Qtr{/t}</button> <button class="table_option {if $family_period=='month'}selected{/if}" period="month" id="family_period_month">{t}1M{/t}</button> <button class="table_option {if $family_period=='ten_day'}selected{/if}" period="ten_day" id="family_period_ten_day">{t}10D{/t}</button> <button class="table_option {if $family_period=='week'}selected{/if}" period="week" id="family_period_week">{t}1W{/t}</button> 
 				</div>
@@ -328,7 +345,10 @@
 				</div>
 			</div>
 			<div class="buttons small cluster group">
-				<button id="change_families_display_mode" style="{if $families_table_type=='thumbnails' or $family_view!='sales'}display:none{/if}">&#x21b6 {$display_families_mode_label}</button> <button id="change_families_table_type">&#x21b6 {if $families_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
+				<button id="change_families_display_mode" style="{if $families_table_type=='thumbnails' or $family_view!='sales'}display:none{/if}">&#x21b6 {$display_families_mode_label}</button> 
+								<button id="change_families_stock_display_mode" class="selected" style="{if   $department_view!='stock'}display:none{/if}"> &#x2AF6; {$display_families_stock_mode_label}</button> 
+
+				<button id="change_families_table_type" style="{if  $family_view!='general'}display:none{/if}"  class="selected">&#x21b6 {if $families_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -430,8 +450,8 @@
 		{foreach from=$families_mode_options_menu item=menu } 
 		<tr>
 			<td> 
-				<div class="buttons">
-					<button style="float:none;margin:0px auto;min-width:120px" onclick="change_display_mode('families','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
+				<div class="buttons small">
+					<button id="families_display_menu_{$menu.mode}" class="{if $display_families_mode==$menu.mode}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_display_mode('families','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
 				</div>
 			</td>
 		</tr>
@@ -497,6 +517,29 @@
 		{/foreach} 
 	</table>
 </div>
+
+
+<div id="change_families_stock_display_menu" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr class="title">
+			<td>{t}Display Mode Options{/t}:</td>
+		</tr>
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		{foreach from=$families_stock_mode_options_menu item=menu } 
+		<tr>
+			<td> 
+				<div class="buttons small">
+					<button id="families_stock_display_menu_{$menu.mode}" style="float:none;margin:0px auto;min-width:120px" class="{if $menu.mode==$display_families_mode}selected{/if}" onclick="change_display_mode('families_stock','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
+				</div>
+			</td>
+		</tr>
+		{/foreach} 
+	</table>
+</div>
+
+
 
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
@@ -586,7 +629,7 @@
 		<tr>
 			<td> 
 				<div class="buttons small">
-					<button style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('products','{$menu.mode}','{$menu.label}',2)"> {$menu.label}</button> 
+					<button id="products_table_type_option_{$menu.mode}" style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('products','{$menu.mode}','{$menu.label}',2)"> {$menu.label}</button> 
 				</div>
 			</td>
 		</tr>
@@ -605,7 +648,7 @@
 		<tr>
 			<td> 
 				<div class="buttons small">
-					<button style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('families','{$menu.mode}','{$menu.label}',1)"> {$menu.label}</button> 
+					<button id="families_table_type_option_{$menu.mode}" style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('families','{$menu.mode}','{$menu.label}',1)"> {$menu.label}</button> 
 				</div>
 			</td>
 		</tr>
@@ -624,7 +667,7 @@
 		<tr>
 			<td> 
 				<div class="buttons small">
-					<button style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('departments','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
+					<button id="departments_table_type_option_{$menu.mode}" class="{if $menu.mode==$departments_table_type}selected{/if}" style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('departments','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
 				</div>
 			</td>
 		</tr>

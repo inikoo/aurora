@@ -1,24 +1,9 @@
-<?php
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
-include_once('common.php');
 
-$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
-$title='';
-
-foreach( $store_period_title as $key=>$value){
-$title.=sprintf(',%s:"%s"',$key,$value);
-}
-$title=preg_replace('/^,/','',$title);
-
-?>
 var link='department.php';
 
-var info_period_title={<?php echo $title ?>};
 var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
 
-var current_store_period='<?php echo$_SESSION['state']['store']['departments']['period']?>';
 
 var dialog_change_families_display;
 var dialog_change_products_display;
@@ -66,7 +51,7 @@ function change_display_mode(parent,name,label){
 
 function change_elements(){
 
-ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
+ids=['elements_discontinued','elements_ separator ','sale','elements_private','elements_sale','elements_historic'];
 
 
 if(Dom.hasClass(this,'selected')){
@@ -137,34 +122,374 @@ function hide_details(){
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
+session_data = YAHOO.lang.JSON.parse(base64_decode(Dom.get('session_data').value));
+    labels = session_data.label;
+    state = session_data.state;
+
+
     tables = new function() {
-
-
+ 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-	    var OrdersColumnDefs = [ 
-				    {key:"code", label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>",width:280, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 ,{key:"codename", label:"<?php echo _('Code/Name')?>",width:200, sortable:true,className:"aleft",className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	     var ColumnDefs = [{
+            key: "code",
+            label: labels.Code,
+            width: 70,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }
+        
+        , {
+            key: "name",
+            label: labels.Name,
+            hidden: (state.department.families.view == 'customers' || state.department.families.view == 'timeline' ? true : false),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "products_for_sale",
+            label: labels.Products,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "percentage_out_of_stock",
+            label: labels.OutofStock,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "sales_1q",
+            label: labels.Sales1q,
+            width: 80,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "delta_sales_1q",
+            label: '1y&Delta;',
+            width: 80,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "sales",
+            label: labels.Sales,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'sales' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "delta_sales",
+            label: '1y&Delta; ' + labels.Sales,
+            width: 80,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'sales' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "profit",
+            label: labels.Profit,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            //hidden: (state.department.families.view == 'sales' ? false : true),
+            hidden:true,
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "surplus",
+            label: labels.Surplus,
+            width: 60,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "optimal",
+            label: labels.OK,
+            width: 60,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "low",
+            label: labels.Low,
+            width: 60,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "critical",
+            label: labels.Critical,
+            width: 60,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "outofstock",
+            label: labels.OutofStock,
+            width: 70,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "stock_error",
+            label: labels.Unknown,
+            width: 60,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "last_update",
+            label: labels.Last_Update,
+            width: 180,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'timeline' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "from",
+            label: labels.Since,
+            width: 190,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'timeline' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "to",
+            label: labels.Until,
+            width: 180,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'timeline' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "public_sale",
+            label: labels.Public,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "private_sale",
+            label: labels.Private,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "discontinued",
+            label: labels.Discontinued,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "historic",
+            label: labels.Historic,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "not_for_sale",
+            label: labels.NotforSale,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active",
+            label: labels.Active,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active_75",
+            label: labels.Active_75,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active_50",
+            label: labels.Active_50,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active_25",
+            label: labels.Active_25,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing",
+            label: labels.Losing,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing_75",
+            label: labels.Losing_75,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing_50",
+            label: labels.Losing_50,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing_25",
+            label: labels.Losing_25,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost",
+            label: labels.Lost,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost_75",
+            label: labels.Lost_75,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost_50",
+            label: labels.Lost_50,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost_25",
+            label: labels.Lost_25,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }
 
-				  ,{key:"active", label:"<?php echo _('Products')?>",  width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"discontinued", label:"<?php echo _('Discontinued')?>",  width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"todo", label:"<?php echo _('To do')?>",  width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    
-				    ,{key:"sales", label:"<?php echo _('Sales')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"delta_sales", label:"<?php echo '1y&Delta; '._('Sales')?>", width:80,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"profit", label:"<?php echo _('Profit')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"outofstock", label:"<?php echo _('Out of Stk')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_error", label:"<?php echo _('Stk Error')?>", width:80,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-		,{key:"last_update", label:"<?php echo _('Last Update')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-   				    ,{key:"from", label:"<?php echo _('Since')?>", width:190,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"to", label:"<?php echo _('Until')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['families']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-   
 
-				     ];
+
+        ];
+        
+         
 request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('department_key').value;
-//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    //alert("ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('department_key').value)
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -185,21 +510,28 @@ request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('dep
 		    
 		},
 		
-		fields: [
-			 "code","last_update","from","to",
-			 "name",
-			 'active',"stock_error","stock_value","outofstock","sales","profit","todo","discontinued","notforsale","codename","delta_sales"
-			 ]};
+		 fields: ['id', "code", "name", "delta_sales", "from", "last_update", "to", 'active', "stock_error", "stock_value", "outofstock", "sales", "profit", "surplus", "optimal", "low", "critical", "store", "department",
+             'todo', 'discontinued','public_sale','private_sale','historic','not_for_sale',
+
+
+            "products_for_sale","percentage_out_of_stock","sales_1q","delta_sales_1q",
+              'customers_active', 'customers_active_75', 'customers_active_50', 'customers_active_25',
+            'customers_losing', 'customers_losing_75', 'customers_losing_50', 'customers_losing_25',
+            'customers_lost', 'customers_lost_75', 'customers_lost_50', 'customers_lost_25'
+            ]
+			 };
 	    
-	   
+	 
 	    
-	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo $_SESSION['state']['department']['families']['nr']+1?>,containers : 'paginator0', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									                       rowsPerPage: (state.department.families.nr + 1),
+
+									       containers : 'paginator0', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -208,21 +540,25 @@ request="ar_assets.php?tipo=families&parent=department&parent_key="+Dom.get('dep
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['families']['order']?>",
-									  dir: "<?php echo$_SESSION['state']['department']['families']['order_dir']?>"
+									  key: state.department.families.order,
+                                      dir: state.department.families.order_dir
 								     }
 							   ,dynamicData : true
 
 						     }
 						     );
+						   
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
        this.table0.doBeforeLoadData=mydoBeforeLoadData;
-   this.table0.filter={key:'<?php echo$_SESSION['state']['department']['families']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['families']['f_value']?>'};
 
 	    
-	    this.table0.view='<?php echo$_SESSION['state']['department']['families']['view']?>';
+ this.table0.filter = {
+            key: state.department.families.f_field,
+            value: state.department.families.f_value
+        };
+
 
 		this.table0.table_id=tableid;
 this.table0.request=request;
@@ -246,67 +582,262 @@ this.table0.request=request;
 
 
 
-
 	    var tableid=1;
 	    var tableDivEL="table"+tableid;
-	    var ColumnDefs = [ 
-			  //    {key:"code", label:"<?php echo _('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"name", label:"<?php echo _('Name')?>",width:400,<?php echo($_SESSION['state']['department']['products']['view']!='general'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"smallname", label:"<?php echo _('Name')?>",width:150,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"state", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['department']['products']['view']!='general')?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"web", label:"<?php echo _('Web')?>",width:100,<?php echo(($_SESSION['state']['department']['products']['view']!='general')?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      
-			    //  ,{key:"sold", label:"<?php echo _('Sold')?>",width:100,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"sales", label:"<?php echo _('Sales')?>",width:100,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			    //  ,{key:"profit", label:"<?php echo _('Profit')?>",width:100,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			    //  ,{key:"margin", label:"<?php echo _('Margin')?>",width:100,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			    //  ,{key:"stock", label:"<?php echo _('Available')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['department']['products']['view']=='stock' or $_SESSION['state']['department']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			    //  ,{key:"parts", label:"<?php echo _('Parts')?>",width:200,<?php echo($_SESSION['state']['department']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"supplied", label:"<?php echo _('Supplied by')?>",width:200,<?php echo($_SESSION['state']['department']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:100,sortable:true,className:"aright",<?php echo(($_SESSION['state']['department']['products']['view']=='parts' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-			    //  ,{key:"family", label:"<?php echo _('Family')?>",width:120,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"dept", label:"<?php echo _('Main Department')?>",width:300,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			    //  ,{key:"expcode", label:"<?php echo _('TC(UK)')?>",width:200,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      
-			      
-			      
-			      			 		{key:"code", label:"<?php echo _('Code')?> ", width:100,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>",width:390,<?php echo(($_SESSION['state']['department']['products']['view']=='general' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-								 ,{key:"smallname", label:"<?php echo _('Name')?>",width:320, sortable:true,className:"aleft",className:"aleft",<?php echo($_SESSION['state']['department']['products']['view']=='general'?'hidden:true,':'')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   // ,{key:"formated_record_type", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['department']['products']['view']=='general' or $_SESSION['state']['department']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //	,{key:"state", label:"<?php echo _('State')?>",width:100,<?php echo(($_SESSION['state']['department']['products']['view']=='general' or $_SESSION['state']['department']['products']['view']=='stock')?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"web", label:"<?php echo _('Web/Sales State')?>",width:190,<?php echo(($_SESSION['state']['department']['products']['view']=='general' or $_SESSION['state']['department']['products']['view']=='stock' )?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   
-				   ,{key:"sold", label:"<?php echo _('Sold')?>",width:90,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:90,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"delta_sales", label:"<?php echo '1y&Delta; '._('Sales')?>", width:80,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+	     ColumnDefs = [{
+            key: "code",
+            label: labels.Code,
+            width: 100,
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "name",
+            label: labels.Name,
+            width: 400,
+            hidden: (state.department.products.view == 'general' ? false : true),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "smallname",
+            label: labels.Name,
+            width: 340,
+            sortable: true,
+            className: "aleft",
+            className: "aleft",
+            hidden: (state.department.products.view == 'general' || state.department.products.view == 'timeline' || state.department.products.view == 'properties' ? true : false),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "price",
+            label: labels.Price,
+            width: 100,
+            hidden: (state.department.products.view == 'general' ? false : true),
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "web",
+            label: labels.WebSales_State,
+            width: 150,
+            hidden: (state.department.products.view == 'general' || state.department.products.view == 'stock' ? false : true),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "sold",
+            label: labels.Sold,
+            width: 90,
+            hidden: (state.department.products.view == 'sales' ? false : true),
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "sales",
+            label: labels.Sales,
+            width: 90,
+            hidden: (state.department.products.view == 'sales' ? false : true),
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "delta_sales",
+            label: '1y&Delta; ' + labels.Sales,
+            width: 80,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'sales' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "profit",
+            label: labels.Profit,
+            width: 90,
+            hidden: (state.department.products.view == 'sales' ? false : true),
+            sortable: true,
+            className: "aright",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "stock",
+            label: labels.Available,
+            width: 65,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'general' || state.department.products.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "stock_state",
+            label: labels.State,
+            width: 70,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "stock_forecast",
+            label: labels.Forecast,
+            width: 70,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'stock' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "parts",
+            label: labels.Parts,
+            width: 130,
+            hidden: (state.department.products.view == 'parts' ? false : true),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "supplied",
+            label: labels.Supplied_by,
+            width: 130,
+            hidden: (state.department.products.view == 'parts' ? false : true),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "gmroi",
+            label: labels.GMROI,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'parts' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "expcode",
+            label: labels.Tariff_Code,
+            width: 160,
+            hidden: (state.department.products.view == 'cats' ? false : true),
+            sortable: true,
+            className: "aleft",
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_ASC
+            }
+        }, {
+            key: "last_update",
+            label: labels.Last_Update,
+            width: 180,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'timeline' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "from",
+            label: labels.Since,
+            width: 190,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'timeline' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "to",
+            label: labels.Until,
+            width: 180,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'timeline' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "package_type",
+            label: labels.Pkg_Type,
+            width: 70,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'properties' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "package_weight",
+            label: labels.Pkg_Weight,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'properties' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "package_dimension",
+            label: labels.Pkg_Dim,
+            width: 120,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'properties' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "package_volume",
+            label: labels.Pkg_Vol,
+            width: 110,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'properties' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "unit_weight",
+            label: labels.Unit_Weight,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'properties' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "unit_dimension",
+            label: labels.Unit_Dim,
+            width: 120,
+            sortable: true,
+            className: "aright",
+            hidden: (state.department.products.view == 'properties' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }
 
-				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"margin", label:"<?php echo _('Margin')?>",width:90,<?php echo($_SESSION['state']['department']['products']['view']=='sales'?'':'hidden:true,')?> sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				   
-				   
-				   ,{key:"stock", label:"<?php echo _('Available')?>", width:65,sortable:true,className:"aright",<?php echo(($_SESSION['state']['department']['products']['view']=='stock' or $_SESSION['state']['department']['products']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_state", label:"<?php echo _('Stock State')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['department']['products']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_forecast", label:"<?php echo _('Forecast')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['department']['products']['view']=='stock' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				   
-				   ,{key:"parts", label:"<?php echo _('Parts')?>",width:130,<?php echo($_SESSION['state']['department']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"supplied", label:"<?php echo _('Supplied by')?>",width:130,<?php echo($_SESSION['state']['department']['products']['view']!='parts'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:100,sortable:true,className:"aright",<?php echo(($_SESSION['state']['department']['products']['view']=='parts' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			       ,{key:"last_update", label:"<?php echo _('Last Update')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-   				    ,{key:"from", label:"<?php echo _('Since')?>", width:190,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"to", label:"<?php echo _('Until')?>", width:180,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='timeline'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"package_type", label:"<?php echo _('Pkg Type')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"package_weight", label:"<?php echo _('Pkg Weight')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"package_dimension", label:"<?php echo _('Pkg Dim')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"package_volume", label:"<?php echo _('Pkg Vol')?>", width:110,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"unit_weight", label:"<?php echo _('Unit Weight')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"unit_dimension", label:"<?php echo _('Unit Dim')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['department']['products']['view']=='properties'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-			   
-			   ];
+        ];
 
 request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Dom.get('department_key').value+'&sf=0';
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
@@ -338,8 +869,9 @@ request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Do
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['department']['products']['nr']+1?>,containers : 'paginator1', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									                       rowsPerPage: (state.department.products.nr + 1),
+									      containers : 'paginator1', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -348,8 +880,8 @@ request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Do
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['products']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['department']['products']['order_dir']?>"
+									  key: state.department.products.order,
+                                      dir: state.department.products.order_dir
 								     }
 							   ,dynamicData : true
 
@@ -359,7 +891,13 @@ request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Do
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['department']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['products']['f_value']?>'};
+
+
+   this.table1.filter = {
+            key: state.department.products.f_field,
+            value: state.department.products.f_value
+        };
+
 this.table1.table_id=tableid;
 this.table1.request=request;
 
@@ -387,10 +925,10 @@ this.table1.request=request;
 		    var tableDivEL="table"+tableid;
 
   var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
-				      ,{key:"invoices", label:"<?php echo _('Invoices')?>", width:100,sortable:false,className:"aright"}
-				      ,{key:"customers", label:"<?php echo _('Customers')?>", width:100,sortable:false,className:"aright"}
-				      ,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:false,className:"aright"}
+				      {key:"date", label:labels.Date, width:200,sortable:false,className:"aright"}
+				      ,{key:"invoices", label:labels.Invoices, width:100,sortable:false,className:"aright"}
+				      ,{key:"customers", label:labels.Customers, width:100,sortable:false,className:"aright"}
+				      ,{key:"sales", label:labels.Sales, width:100,sortable:false,className:"aright"}
 				      
 				
 
@@ -431,8 +969,10 @@ this.table1.request=request;
 							// formatRow: myRowFormatter,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['department']['sales_history']['nr']?>,containers : 'paginator2', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									                             rowsPerPage: state.department.sales_history.nr ,
+
+									       containers : 'paginator2', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -441,8 +981,8 @@ this.table1.request=request;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['sales_history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['department']['sales_history']['order_dir']?>"
+									  key: state.department.sales_history.order,
+                                      dir: state.department.sales_history.order_dir
 								     }
 							   ,dynamicData : true  
 
@@ -455,22 +995,24 @@ this.table1.request=request;
  		this.table2.table_id=tableid;
    		this.table2.subscribe("renderEvent", myrenderEvent);
 
-		this.table2.filter={key:'<?php echo$_SESSION['state']['department']['sales_history']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['sales_history']['f_value']?>'};
 
 
 
-	    
+	       this.table2.filter = {
+            key: state.department.sales_history.f_field,
+            value: state.department.sales_history.f_value
+        };
 
 
 
  var tableid=4; 
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"type", label:"<?php echo _('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"code", label:labels.Code, width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"type", label:labels.Type, width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"title", label:"<?php echo _('Title')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"title", label:labels.Title, width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"url", label:labels.URL, width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 						    
 				    
@@ -503,8 +1045,11 @@ this.table1.request=request;
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 								        
-									      rowsPerPage:<?php echo$_SESSION['state']['department']['pages']['nr']?>,containers : 'paginator4', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      									                             rowsPerPage: state.department.pages.nr ,
+
+									      
+									      containers : 'paginator4', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -513,8 +1058,8 @@ this.table1.request=request;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['pages']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['department']['pages']['order_dir']?>"
+									  key: state.department.pages.order,
+                                      dir: state.department.pages.order_dir
 								     }
 							   ,dynamicData : true
 
@@ -529,10 +1074,12 @@ this.table1.request=request;
 
 		
 	    
-	    this.table4.filter={key:'<?php echo$_SESSION['state']['department']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['pages']['f_value']?>'};
-		
+	
 
-
+	    this.table4.filter = {
+            key: state.department.pages.f_field,
+            value: state.department.pages.f_value
+        };
 
 
 
@@ -543,12 +1090,12 @@ this.table1.request=request;
 
 
 	    var ColumnDefs = [ 
-				    {key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>",width:370, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   				   ,{key:"state", label:"<?php echo _('State')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   ,{key:"sold", label:"<?php echo _('Sold')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    {key:"code", label:labels.Code, width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:labels.Name,width:370, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   				   ,{key:"state", label:labels.State,width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"sold", label:labels.Sold,width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:labels.Sales,width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:labels.Profit,width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
 request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&parent=department&sf=0"+'&parent_key='+Dom.get('department_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
@@ -585,8 +1132,10 @@ request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&pa
 							// formatRow: myRowFormatter,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['department']['family_sales']['nr']?>,containers : 'paginator5', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									       			rowsPerPage: state.department.family_sales.nr ,
+
+									       containers : 'paginator5', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -595,8 +1144,8 @@ request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&pa
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['family_sales']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['department']['family_sales']['order_dir']?>"
+									  key: state.department.family_sales.order,
+                                      dir: state.department.family_sales.order_dir
 								     }
 							   ,dynamicData : true  
 
@@ -609,9 +1158,11 @@ request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&pa
   this.table5.table_id=tableid;
      this.table5.subscribe("renderEvent", myrenderEvent);
 
-		this.table5.filter={key:'<?php echo$_SESSION['state']['department']['family_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['family_sales']['f_value']?>'};
 
-	    
+	    this.table5.filter = {
+            key: state.department.family_sales.f_field,
+            value: state.department.family_sales.f_value
+        };
 
 
 
@@ -620,12 +1171,12 @@ request="ar_assets.php?tipo=SUSPENDED_family_sales_report&tableid="+tableid+"&pa
 
 
 	    var ColumnDefs = [ 
-				    {key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>",width:370, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   				   ,{key:"state", label:"<?php echo _('State')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   ,{key:"sold", label:"<?php echo _('Sold')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    {key:"code", label:labels.Code, width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:labels.Name,width:370, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   				   ,{key:"state", label:labels.State,width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"sold", label:labels.Sold,width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:labels.Sales,width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:labels.Profit,width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   
 							       ];
 request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&parent=department&sf=0"+'&parent_key='+Dom.get('department_key').value+'&from='+Dom.get('from').value+'&to='+Dom.get('to').value;
@@ -662,8 +1213,11 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 							// formatRow: myRowFormatter,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['department']['product_sales']['nr']?>,containers : 'paginator6', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									       									       			rowsPerPage: state.department.product_sales.nr ,
+
+									       
+									       containers : 'paginator6', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -672,8 +1226,8 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['product_sales']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['department']['product_sales']['order_dir']?>"
+									  key: state.department.product_sales.order,
+                                      dir: state.department.product_sales.order_dir
 								     }
 							   ,dynamicData : true  
 
@@ -686,10 +1240,12 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
   this.table6.table_id=tableid;
      this.table6.subscribe("renderEvent", myrenderEvent);
 
-		this.table6.filter={key:'<?php echo$_SESSION['state']['department']['product_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['product_sales']['f_value']?>'};
 
 	    
-
+ this.table6.filter = {
+            key: state.department.product_sales.f_field,
+            value: state.department.product_sales.f_value
+        };
 
 		    var tableid=7; 
 		    var tableDivEL="table"+tableid;  
@@ -719,10 +1275,10 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
         		    
 		    var ColumnDefs = [
 				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:70}
-				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:500}
+				      ,{key:"date", label:labels.Date,className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"time", label:labels.Time,className:"aleft",width:70}
+				      ,{key:"handle", label:labels.Author,className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"note", formatter:this.prepare_note,label:labels.Notes,className:"aleft",width:500}
                       ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'store_history'}
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'store_history'}
 
@@ -751,8 +1307,13 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 								 formatRow: myRowFormatter,
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['department']['history']['nr']?>,containers : 'paginator7', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      									       									       			rowsPerPage: state.department.history.nr ,
+
+									      
+									      containers : 'paginator7', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
+ 									      
+ 									      alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -764,8 +1325,10 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['department']['history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['department']['history']['order_dir']?>"
+									 
+									  key: state.department.history.order,
+                                      dir: state.department.history.order_dir
+									 
 								     },
 								     dynamicData : true
 
@@ -775,7 +1338,12 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 	    	this.table7.handleDataReturnPayload =myhandleDataReturnPayload;
 	        this.table7.doBeforeSortColumn = mydoBeforeSortColumn;
 	        this.table7.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		    this.table7.filter={key:'<?php echo$_SESSION['state']['department']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['history']['f_value']?>'};
+
+
+ this.table7.filter = {
+            key: state.department.history.f_field,
+            value: state.department.history.f_value
+        };
 
 	        this.table7.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table7.subscribe("cellMouseoutEvent", unhighlightEditableCell);
@@ -791,11 +1359,10 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 	    
 	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
-                                        ,{key:"code", label:"<?php echo _('Code')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"duration", label:"<?php echo _('Duration')?>",  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"description", label:labels.Description, width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"orders", label:labels.Orders,  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"customers", label:labels.Customers,  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"duration", label:labels.Duration,  width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				 
 				 ];
@@ -828,8 +1395,11 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo $_SESSION['state']['department']['offers']['nr']?>,containers : 'paginator10', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      rowsPerPage: state.department.offers.nr ,
+
+									      
+									      containers : 'paginator10', 
+                pageReportTemplate: '(' + labels.Page + ' {currentPage} ' + labels.of + ' {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
@@ -840,10 +1410,13 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 
 									  })
 								     
-								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['department']['offers']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['department']['offers']['order_dir']?>"
-								     },
+								     , sortedBy: {
+                key: state.department.offers.order,
+                dir: state.department.offers.order_dir
+            },
+								     
+								     
+								     
 								     dynamicData : true
 
 								  }
@@ -870,9 +1443,11 @@ request="ar_assets.php?tipo=SUSPENDED_product_sales_report&tableid="+tableid+"&p
 		    argument: this.table10.getState()
 		});
 	  
-	    this.table10.filter={key:'<?php echo $_SESSION['state']['department']['offers']['f_field']?>',value:'<?php echo $_SESSION['state']['department']['offers']['f_value']?>'};
 	    
-
+ this.table10.filter = {
+            key: state.department.offers.f_field,
+            value: state.department.offers.f_value
+        };
      		
 
 	};
@@ -1090,11 +1665,11 @@ from=r.from;
     var datasource = tables['dataSource' + table_id];
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
 
-    Dom.get('rtext2').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> <?php echo _("Processing Request") ?>'
+    Dom.get('rtext2').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> '+Dom.get('wait_label').value
     Dom.get('rtext_rpp2').innerHTML = '';
-    Dom.get('rtext5').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext5').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> '+Dom.get('wait_label').value
     Dom.get('rtext_rpp5').innerHTML = '';
-    Dom.get('rtext6').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/>  <?php echo _("Processing Request") ?>'
+    Dom.get('rtext6').innerHTML = '<img src="art/loading.gif" style="height:12.9px"/> '+Dom.get('wait_label').value
     Dom.get('rtext_rpp6').innerHTML = '';
 
 

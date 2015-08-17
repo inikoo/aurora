@@ -1738,11 +1738,11 @@ class Site extends DB_Table {
 
 	function update_sitemap() {
 
-if ($this->data['Site SSL']=='Yes') {
-				$site_protocol='https';
-			}else {
-				$site_protocol='http';
-			}
+		if ($this->data['Site SSL']=='Yes') {
+			$site_protocol='https';
+		}else {
+			$site_protocol='http';
+		}
 
 		include_once 'class.Sitemap.php';
 		$sitemap=new Sitemap($this->id);

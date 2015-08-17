@@ -693,11 +693,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
             },
 
-            fields: ['id', 'name', 'code', 'aws_p', 'awp_p', 'sales_type', 'delta_sales', 'from', 'last_update', 'to', 'families', 'products_for_sale', 'percentage_out_of_stock', 'sales_1q', 'delta_sales_1q', 'sales', 'stock_error', 'stock_value', 'outofstock', 'profit', 'surplus', 'optimal', 'low', 'critical'
-            , 'todo', 'discontinued','public_sale','private_sale','historic','not_for_sale'
-            , 'customers_active', 'customers_active_75', 'customers_active_50', 'customers_active_25'
-           , 'customers_losing', 'customers_losing_75', 'customers_losing_50', 'customers_losing_25'
-           , 'customers_lost', 'customers_lost_75', 'customers_lost_50', 'customers_lost_25'
+            fields: ['id', 'name', 'code', 'aws_p', 'awp_p', 'sales_type', 'delta_sales', 'from', 'last_update', 'to', 'families', 'products_for_sale', 'percentage_out_of_stock', 'sales_1q', 'delta_sales_1q', 'sales',
+             'stock_error', 'stock_value', 'outofstock', 'profit', 'surplus', 'optimal', 'low', 'critical',
+             'todo', 'discontinued','public_sale','private_sale','historic','not_for_sale',
+             'customers_active', 'customers_active_75', 'customers_active_50', 'customers_active_25',
+           'customers_losing', 'customers_losing_75', 'customers_losing_50', 'customers_losing_25',
+            'customers_lost', 'customers_lost_75', 'customers_lost_50', 'customers_lost_25'
             ]
         };
 
@@ -771,7 +772,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "department",
             label: labels.Department,
-            hidden: (state.store.families.view == 'timeline' ? true : false),
+            hidden: (state.store.families.view == 'general' ? false : true),
             width: 80,
             sortable: true,
             className: "aleft",
@@ -781,17 +782,46 @@ YAHOO.util.Event.addListener(window, "load", function() {
         }, {
             key: "name",
             label: labels.Name,
-            hidden: (state.store.families.view == 'stock' || state.store.families.view == 'timeline' ? true : false),
-            width: 280,
+            hidden: (state.store.families.view == 'customers' || state.store.families.view == 'timeline' ? true : false),
             sortable: true,
             className: "aleft",
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_ASC
             }
         }, {
-            key: "active",
+            key: "products_for_sale",
             label: labels.Products,
             width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "percentage_out_of_stock",
+            label: labels.OutofStock,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "sales_1q",
+            label: labels.Sales1q,
+            width: 80,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'general' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        }, {
+            key: "delta_sales_1q",
+            label: '1y&Delta;',
+            width: 80,
             sortable: true,
             className: "aright",
             hidden: (state.store.families.view == 'general' ? false : true),
@@ -804,7 +834,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
             width: 90,
             sortable: true,
             className: "aright",
-            hidden: (state.store.families.view == 'stock' || state.store.families.view == 'timeline' ? false : true),
+            hidden: (state.store.families.view == 'sales' ? false : true),
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
@@ -824,7 +854,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             width: 90,
             sortable: true,
             className: "aright",
-            hidden: (state.store.families.view == 'stock' || state.store.families.view == 'timeline' ? false : true),
+            //hidden: (state.store.families.view == 'sales' ? false : true),
+            hidden:true,
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
@@ -870,8 +901,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
             }
         }, {
             key: "outofstock",
-            label: labels.Gone,
-            width: 60,
+            label: labels.OutofStock,
+            width: 70,
             sortable: true,
             className: "aright",
             hidden: (state.store.families.view == 'stock' ? false : true),
@@ -918,6 +949,176 @@ YAHOO.util.Event.addListener(window, "load", function() {
             sortOptions: {
                 defaultDir: YAHOO.widget.DataTable.CLASS_DESC
             }
+        },{
+            key: "public_sale",
+            label: labels.Public,
+            width: 100,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "private_sale",
+            label: labels.Private,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "discontinued",
+            label: labels.Discontinued,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "historic",
+            label: labels.Historic,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "not_for_sale",
+            label: labels.NotforSale,
+            width: 90,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'products' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active",
+            label: labels.Active,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active_75",
+            label: labels.Active_75,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active_50",
+            label: labels.Active_50,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_active_25",
+            label: labels.Active_25,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing",
+            label: labels.Losing,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing_75",
+            label: labels.Losing_75,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing_50",
+            label: labels.Losing_50,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_losing_25",
+            label: labels.Losing_25,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost",
+            label: labels.Lost,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost_75",
+            label: labels.Lost_75,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost_50",
+            label: labels.Lost_50,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
+        },{
+            key: "customers_lost_25",
+            label: labels.Lost_25,
+            width: 50,
+            sortable: true,
+            className: "aright",
+            hidden: (state.store.families.view == 'customers' ? false : true),
+            sortOptions: {
+                defaultDir: YAHOO.widget.DataTable.CLASS_DESC
+            }
         }
 
 
@@ -925,7 +1126,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         ];
 
         request = "ar_assets.php?tipo=families&sf=0&parent=store&parent_key=" + Dom.get('store_key').value + "&tableid=" + tableid;
-        //  alert(request)
+         // alert(request)
         this.dataSource1 = new YAHOO.util.DataSource(request);
         this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
         this.dataSource1.connXhrMode = "queueRequests";
@@ -942,7 +1143,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
                 totalRecords: "resultset.total_records"
             },
 
-            fields: ['id', "code", "name", "delta_sales", "from", "last_update", "to", 'active', "stock_error", "stock_value", "outofstock", "sales", "profit", "surplus", "optimal", "low", "critical", "store", "department"]
+            fields: ['id', "code", "name", "delta_sales", "from", "last_update", "to", 'active', "stock_error", "stock_value", "outofstock", "sales", "profit", "surplus", "optimal", "low", "critical", "store", "department",
+             'todo', 'discontinued','public_sale','private_sale','historic','not_for_sale',
+
+
+            "products_for_sale","percentage_out_of_stock","sales_1q","delta_sales_1q",
+              'customers_active', 'customers_active_75', 'customers_active_50', 'customers_active_25',
+            'customers_losing', 'customers_losing_75', 'customers_losing_50', 'customers_losing_25',
+            'customers_lost', 'customers_lost_75', 'customers_lost_50', 'customers_lost_25'
+            ]
         };
 
         this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs, this.dataSource1, {
@@ -2410,48 +2619,7 @@ function change_sales_sub_block(o) {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=store-sales_sub_block_tipo&value=' + o.id, {});
 }
 
-function change_family_elements() {
 
-    ids = ['elements_family_discontinued', 'elements_family_discontinuing', 'elements_family_normal', 'elements_family_inprocess', 'elements_family_nosale'];
-
-
-    if (Dom.hasClass(this, 'selected')) {
-
-        var number_selected_elements = 0;
-        for (i in ids) {
-            if (Dom.hasClass(ids[i], 'selected')) {
-                number_selected_elements++;
-            }
-        }
-
-        if (number_selected_elements > 1) {
-            Dom.removeClass(this, 'selected')
-
-        }
-
-    } else {
-        Dom.addClass(this, 'selected')
-
-    }
-
-    table_id = 1;
-    var table = tables['table' + table_id];
-    var datasource = tables['dataSource' + table_id];
-    var request = '';
-    for (i in ids) {
-        if (Dom.hasClass(ids[i], 'selected')) {
-            request = request + '&' + ids[i] + '=1'
-        } else {
-            request = request + '&' + ids[i] + '=0'
-
-        }
-    }
-
-    // alert(request)
-    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
-
-
-}
 
 
 function change_display_mode(parent, name, label) {
@@ -2468,6 +2636,10 @@ function change_display_mode(parent, name, label) {
     if (parent == 'departments_stock') {
         var request = '&stock_percentages=' + name;
     }
+    
+     if (parent == 'families_stock') {
+        var request = '&stock_percentages=' + name;
+    }
 
     Dom.get('change_' + parent + '_display_mode').innerHTML = ' &#x2AF6; ' + label;
 
@@ -2482,6 +2654,10 @@ function change_display_mode(parent, name, label) {
         var table = tables['table1'];
         var datasource = tables.dataSource1;
         dialog_change_families_display.hide();
+          Dom.removeClass(['families_display_menu_percentages', 'families_display_menu_value'], 'selected')
+        Dom.addClass(['families_display_menu_' + name], 'selected')
+
+        
 
     } else if (parent == 'departments') {
         var table = tables['table0'];
@@ -2501,6 +2677,15 @@ function change_display_mode(parent, name, label) {
         Dom.addClass(['departments_stock_display_menu_' + name], 'selected')
 
 
+    } else if (parent == 'families_stock') {
+        var table = tables['table1'];
+        var datasource = tables.dataSource1;
+        dialog_change_families_stock_display.hide();
+
+        Dom.removeClass(['families_stock_display_menu_horizontal', , 'families_stock_display_menu_vertical','families_stock_display_menu_value'], 'selected')
+        Dom.addClass(['families_stock_display_menu_' + name], 'selected')
+
+
     } else {
         return;
     }
@@ -2510,15 +2695,20 @@ function change_display_mode(parent, name, label) {
 }
 
 function change_table_type(parent, tipo, label, table_id) {
-
     Dom.get('change_' + parent + '_table_type').innerHTML = '&#x21b6 ' + label;
 
-    if (tipo == 'list') {
+Dom.removeClass([parent+'_table_type_option_list'],'selected')
+   Dom.addClass([parent+'_table_type_option_thumbnails'],'selected')
+ if (tipo == 'list') {
         if (Dom.get('change_' + parent + '_display_mode') != undefined && Dom.get(parent + '_view').value == 'sales') {
             Dom.setStyle('change_' + parent + '_display_mode', 'display', '')
         }
         Dom.setStyle('thumbnails' + table_id, 'display', 'none')
         Dom.setStyle(['table' + table_id, 'list_options' + table_id, 'table_view_menu' + table_id], 'display', '')
+        
+        Dom.addClass([parent+'_table_type_option_list'],'selected')
+   Dom.removeClass([parent+'_table_type_option_thumbnails'],'selected')
+        
     } else {
 
         if (Dom.get('change_' + parent + '_display_mode') != undefined) Dom.setStyle('change_' + parent + '_display_mode', 'display', 'none')
@@ -2526,6 +2716,9 @@ function change_table_type(parent, tipo, label, table_id) {
 
         Dom.setStyle('thumbnails' + table_id, 'display', '')
         Dom.setStyle(['table' + table_id, 'list_options' + table_id, 'table_view_menu' + table_id], 'display', 'none')
+
+ Dom.removeClass([parent+'_table_type_option_list'],'selected')
+   Dom.addClass([parent+'_table_type_option_thumbnails'],'selected')
 
     }
 
@@ -2643,6 +2836,14 @@ function show_dialog_change_departments_stock_display() {
     var pos = [region1.right - region2.width, region1.bottom]
     Dom.setXY('change_departments_stock_display_menu', pos);
     dialog_change_departments_stock_display.show();
+}
+
+function show_dialog_change_families_stock_display() {
+    region1 = Dom.getRegion('change_families_stock_display_mode');
+    region2 = Dom.getRegion('change_families_stock_display_menu');
+    var pos = [region1.right - region2.width, region1.bottom]
+    Dom.setXY('change_families_stock_display_menu', pos);
+    dialog_change_families_stock_display.show();
 }
 
 
@@ -2880,6 +3081,14 @@ function init() {
     YAHOO.util.Event.addListener("change_departments_stock_display_mode", "click", show_dialog_change_departments_stock_display);
 
 
+  dialog_change_families_stock_display = new YAHOO.widget.Dialog("change_families_stock_display_menu", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_families_stock_display.render();
+    YAHOO.util.Event.addListener("change_families_stock_display_mode", "click", show_dialog_change_families_stock_display);
 
 
 
@@ -2928,7 +3137,7 @@ function init() {
 
     Event.addListener(['elements_discontinued', 'elements_nosale', 'elements_private', 'elements_sale', 'elements_historic'], "click", change_elements);
 
-    Event.addListener(['elements_family_discontinued', 'elements_family_discontinuing', 'elements_family_normal', 'elements_family_inprocess', 'elements_family_nosale'], "click", change_family_elements);
+    Event.addListener(['elements_family_discontinued', 'elements_family_private', 'elements_family_normal', 'elements_family_nosale'], "click", change_family_elements,{table_id:1});
 
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
@@ -2983,7 +3192,7 @@ function init() {
     });
 
 
-    ids = ['family_general', 'family_sales', 'family_stock', 'family_timeline'];
+    ids = ['family_general', 'family_sales', 'family_stock', 'family_timeline', 'family_products', 'family_customers'];
     YAHOO.util.Event.addListener(ids, "click", change_family_view, {
         'table_id': 1,
         'parent': 'store'

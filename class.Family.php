@@ -1137,7 +1137,265 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 	}
 
+function update_customers_data() {
+		$number_active_customers=0;
+		$number_active_customers_more_than_75=0;
+		$number_active_customers_more_than_50=0;
+		$number_active_customers_more_than_25=0;
+		$number_losing_customers=0;
+		$number_losing_customers_more_than_75=0;
+		$number_losing_customers_more_than_50=0;
+		$number_losing_customers_more_than_25=0;
+		$number_lost_customers=0;
+		$number_lost_customers_more_than_75=0;
+		$number_lost_customers_more_than_50=0;
+		$number_lost_customers_more_than_25=0;
+
+		$sql=sprintf(" select
+		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
+		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Family Key`=%d and `Customer Type by Activity` in ('Active') and `Invoice Transaction Gross Amount`>0
+		  group by  OTF.`Customer Key`",$this->id);
+		// print "$sql\n";
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$number_active_customers++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.75 )
+				$number_active_customers_more_than_75++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+				$number_active_customers_more_than_50++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25)
+				$number_active_customers_more_than_25++;
+
+		}
+
+		$this->data['Product Family Active Customers']=$number_active_customers;
+		$this->data['Product Family Active Customers More 0.75 Share']=$number_active_customers_more_than_75;
+		$this->data['Product Family Active Customers More 0.5 Share']=$number_active_customers_more_than_50;
+		$this->data['Product Family Active Customers More 0.25 Share']=$number_active_customers_more_than_25;
+
+
+		$sql=sprintf(" select
+		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
+		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Family Key`=%d and `Customer Type by Activity` in ('Losing') and `Invoice Transaction Gross Amount`>0
+		  group by  OTF.`Customer Key`",$this->id);
+		// print "$sql\n";
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$number_losing_customers++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.75 )
+				$number_losing_customers_more_than_75++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+				$number_losing_customers_more_than_50++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
+				$number_losing_customers_more_than_25++;
+
+		}
+
+		$this->data['Product Family Losing Customers']=$number_losing_customers;
+		$this->data['Product Family Losing Customers More 0.75 Share']=$number_losing_customers_more_than_75;
+		$this->data['Product Family Losing Customers More 0.5 Share']=$number_losing_customers_more_than_50;
+		$this->data['Product Family Losing Customers More 0.25 Share']=$number_losing_customers_more_than_25;
+
+
+		$sql=sprintf(" select
+		(select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  ,
+		 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
+		 OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Family Key`=%d and `Customer Type by Activity` in ('Active') and `Invoice Transaction Gross Amount`>0
+		  group by  OTF.`Customer Key`",$this->id);
+		// print "$sql\n";
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($result)) {
+			$number_lost_customers++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.75 )
+				$number_lost_customers_more_than_75++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+				$number_lost_customers_more_than_50++;
+			if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.25 )
+				$number_lost_customers_more_than_25++;
+
+		}
+
+		$this->data['Product Family Lost Customers']=$number_lost_customers;
+		$this->data['Product Family Lost Customers More 0.75 Share']=$number_lost_customers_more_than_75;
+		$this->data['Product Family Lost Customers More 0.5 Share']=$number_lost_customers_more_than_50;
+		$this->data['Product Family Lost Customers More 0.25 Share']=$number_lost_customers_more_than_25;
+
+
+
+		$sql=sprintf("update `Product Family Dimension` set 
+		`Product Family Active Customers`=%d ,
+		`Product Family Active Customers More 0.75 Share`=%d,
+		`Product Family Active Customers More 0.5 Share`=%d,
+		`Product Family Active Customers More 0.25 Share`=%d,
+		
+		`Product Family Losing Customers`=%d ,
+		`Product Family Losing Customers More 0.75 Share`=%d,
+		`Product Family Losing Customers More 0.5 Share`=%d,
+		`Product Family Losing Customers More 0.25 Share`=%d,
+		
+		`Product Family Lost Customers`=%d ,
+		`Product Family Lost Customers More 0.75 Share`=%d,
+		`Product Family Lost Customers More 0.5 Share`=%d,
+		`Product Family Lost Customers More 0.25 Share`=%d
+
+		where `Product Family Key`=%d  ",
+			$this->data['Product Family Active Customers'],
+			$this->data['Product Family Active Customers More 0.75 Share'],
+			$this->data['Product Family Active Customers More 0.5 Share'],
+			$this->data['Product Family Active Customers More 0.25 Share'],
+			$this->data['Product Family Losing Customers'],
+			$this->data['Product Family Losing Customers More 0.75 Share'],
+			$this->data['Product Family Losing Customers More 0.5 Share'],
+			$this->data['Product Family Losing Customers More 0.25 Share'],
+			$this->data['Product Family Lost Customers'],
+			$this->data['Product Family Lost Customers More 0.75 Share'],
+			$this->data['Product Family Lost Customers More 0.5 Share'],
+			$this->data['Product Family Lost Customers More 0.25 Share'],
+			$this->id
+		);
+	//	 print "$sql\n";
+		mysql_query($sql);
+
+	}
+	
+	
 	function update_product_data() {
+
+
+		$availability='No Applicable';
+		$sales_type='No Applicable';
+		$in_process=0;
+		$public_sale=0;
+		$private_sale=0;
+		$discontinued=0;
+		$not_for_sale=0;
+
+		$historic=0;
+		$availability_optimal=0;
+		$availability_low=0;
+		$availability_critical=0;
+		$availability_outofstock=0;
+		$availability_unknown=0;
+		$availability_surplus=0;
+
+		$sql=sprintf("select
+		sum(if(`Product Stage`='In process',1,0)) as in_process,
+
+		 		 sum(if(`Product Main Type`='Historic',1,0)) as historic,
+
+		 sum(if(`Product Main Type`='Discontinued',1,0)) as discontinued,
+		 sum(if(`Product Main Type`='NoSale',1,0)) as not_for_sale,
+		 sum(if(`Product Main Type`='Sale',1,0)) as public_sale,
+		 sum(if(`Product Main Type`='Private',1,0)) as private_sale
+
+
+
+
+		from
+		`Product Dimension` where `Product Family Key`=%d  ",$this->id);
+
+
+
+
+		$result=mysql_query($sql);
+
+		//print "$sql\n";
+		if ($row=mysql_fetch_assoc($result)) {
+//print_r($row);
+			$in_process=$row['in_process'];
+			$public_sale=$row['public_sale'];
+			$private_sale=$row['private_sale'];
+			$discontinued=$row['discontinued'];
+			$not_for_sale=$row['not_for_sale'];
+			$historic=$row['historic'];
+
+		}
+
+		$sql=sprintf("select
+
+
+
+
+		sum(if(`Product Availability State`='Error',1,0)) as availability_unknown,
+		sum(if(`Product Availability State`='Normal',1,0)) as availability_optimal,
+		sum(if(`Product Availability State`='Low',1,0)) as availability_low,
+		sum(if(`Product Availability State`='Excess',1,0)) as availability_surplus,sum(if(`Product Availability State`='VeryLow',1,0)) as availability_critical,sum(if(`Product Availability State`='OutofStock',1,0)) as availability_outofstock
+
+		from
+		`Product Dimension` where `Product Family Key`=%d and `Product Main Type`='Sale' ",$this->id);
+
+
+
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+
+			//print_r($row);
+			$availability_optimal=$row['availability_optimal'];
+			$availability_low=$row['availability_low'];
+			$availability_critical=$row['availability_critical'];
+			$availability_outofstock=$row['availability_outofstock'];
+			$availability_unknown=$row['availability_unknown'];
+			$availability_surplus=$row['availability_surplus'];
+		}
+
+
+
+		if ($public_sale>0 ) {
+			$record_type='Normal';
+
+		
+
+		}
+		elseif ($private_sale>0 ) {
+			$record_type='Private';
+
+		}
+		elseif ($discontinued>0) {
+			$record_type='Discontinued';
+
+		}
+		else  {
+			
+			$record_type='Nosale';
+		}
+
+
+
+		$sql=sprintf("update `Product Family Dimension` set `Product Family Record Type`=%s,`Product Family In Process Products`=%d,`Product Family For Public Sale Products`=%d ,`Product Family For Private Sale Products`=%d,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Historic Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d  where `Product Family Key`=%d  ",
+			prepare_mysql($record_type),
+			$in_process,
+			$public_sale,
+			$private_sale,
+
+			$discontinued,
+			$not_for_sale,
+			$historic,
+
+			$availability_optimal,
+			$availability_low,
+			$availability_critical,
+
+			$availability_outofstock,
+			$availability_unknown,
+			$availability_surplus,
+
+			// prepare_mysql($sales_type),
+			// prepare_mysql($availability),
+			$this->id
+		);
+
+		mysql_query($sql);
+//print "$sql\n\n";
+
+
+		$this->get_data('id',$this->id);
+	}
+
+
+	function update_product_data_old() {
 
 
 		$sql=sprintf("select  sum(if(`Product Availability Type`='Discontinued'  and `Product Availability`>0   ,1,0)) as to_be_discontinued ,
@@ -1238,7 +1496,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 		}
 		elseif ($private_sale>0 ) {
-			$record_type='Nosale';
+			$record_type='Private';
 
 		}
 		elseif ($discontinued>0) {

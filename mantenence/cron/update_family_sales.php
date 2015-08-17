@@ -55,9 +55,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$family=new Family($row['Product Family Key']);
 	$family->update_product_data();
-	$family->update_up_today_sales();
-	$family->update_interval_sales();
-	$family->update_last_period_sales();
+	//$family->update_up_today_sales();
+	//$family->update_interval_sales();
+	//$family->update_last_period_sales();
+	$family->update_customers_data();
 	unset($family);
 	$contador++;
 	$lap_time1=date('U');

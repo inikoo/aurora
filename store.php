@@ -83,6 +83,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'css/calendar.css',
 	'css/d3_calendar.css',
 
 	'theme.css.php'
@@ -248,8 +249,8 @@ $smarty->assign('departments_table_type_menu',$table_type_options);
 
 
 $mode_options=array(
-	array('mode'=>'percentages','label'=>_('Percentages')),
 	array('mode'=>'value','label'=>_('Sales Amount')),
+	array('mode'=>'percentages','label'=>_('Percentages')),
 
 );
 
@@ -268,7 +269,7 @@ $smarty->assign('departments_mode_options_menu',$mode_options);
 if ($_SESSION['state']['store']['departments']['stock_percentages']=='vertical') {
 	$display_departments_stock_mode='vertical';
 	$display_departments_stock_mode_label=_('Percentages').'  &#8597';
-}if ($_SESSION['state']['store']['departments']['stock_percentages']=='horizontal') {
+}elseif ($_SESSION['state']['store']['departments']['stock_percentages']=='horizontal') {
 	$display_departments_stock_mode='horizontal';
 	$display_departments_stock_mode_label=_('Percentages').'  &#8596; ';
 }else {
@@ -280,24 +281,46 @@ if ($_SESSION['state']['store']['departments']['stock_percentages']=='vertical')
 
 $mode_options=array(
 	array('mode'=>'value','label'=>_('Quantity')),
-
 	array('mode'=>'vertical','label'=>_('Percentages').'  &#8597'),
 	array('mode'=>'horizontal','label'=>_('Percentages').'  &#8596'),
-
-
 );
 $smarty->assign('departments_stock_mode_options_menu',$mode_options);
-
 $smarty->assign('display_departments_stock_mode',$display_departments_stock_mode);
-
 $smarty->assign('display_departments_stock_mode_label',$display_departments_stock_mode_label);
 
+if ($_SESSION['state']['store']['families']['stock_percentages']=='vertical') {
+	$display_families_stock_mode='vertical';
+	$display_families_stock_mode_label=_('Percentages').'  &#8597';
+}elseif ($_SESSION['state']['store']['families']['stock_percentages']=='horizontal') {
+	$display_families_stock_mode='horizontal';
+	$display_families_stock_mode_label=_('Percentages').'  &#8596; ';
+}else {
+	$display_families_stock_mode='value';
+	$display_families_stock_mode_label=_('Quantity');
+}
 
+
+
+$mode_options=array(
+	array('mode'=>'value','label'=>_('Quantity')),
+	array('mode'=>'vertical','label'=>_('Percentages').' &#8597'),
+	array('mode'=>'horizontal','label'=>_('Percentages').' &#8596'),
+);
+$smarty->assign('families_stock_mode_options_menu',$mode_options);
+$smarty->assign('display_families_stock_mode',$display_families_stock_mode);
+$smarty->assign('display_families_stock_mode_label',$display_families_stock_mode_label);
+
+
+$mode_options=array(
+	array('mode'=>'value','label'=>_('Sales Amount')),
+	array('mode'=>'percentages','label'=>_('Percentages').' &#8597'),
+
+);
 
 
 if ($_SESSION['state']['store']['families']['percentages']) {
 	$display_mode='percentages';
-	$display_mode_label=_('Percentages');
+	$display_mode_label=_('Percentages').'  &#8597';
 }else {
 	$display_mode='value';
 	$display_mode_label=_('Sales Amount');

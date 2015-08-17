@@ -40,7 +40,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." Start Part in Use\n";
+print date('r');
 
 
 
@@ -82,7 +82,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 $lap_time1=date('U');
 
-print 'End '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
+print '-> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 

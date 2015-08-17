@@ -41,7 +41,7 @@ global $myconf;
 
 $start_time=date('U');
 
-print date('r')." Supplier Start\n";
+print date('r');
 
 
 
@@ -79,8 +79,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 $lap_time1=date('U');
-print 'Supplier '.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-print date('r')." Supplier End \n";
+print 'S -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 $sql="select count(*) as total from `Category Dimension` where `Category Subject`='Supplier'";
@@ -110,8 +109,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 }
 $lap_time1=date('U');
-print 'Supplier cat'.percentage($contador,$total,3)."  time  ".sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h \n";
-print date('r')." Supplier Cat End\n";
+print 'C -> '.$contador.'  time '.sprintf("%.2f",($lap_time1-$lap_time0))." lap  ".sprintf("%.2f",($lap_time1-$lap_time0)/$contador).",  ".date('r')." \n";
 
 
 
