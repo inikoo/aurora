@@ -44,16 +44,19 @@ default:
 
 
 $_elements='';
+$number_elements=0;
 foreach ($elements as $_key=>$_value) {
-	if ($_value)
+	if ($_value){
 		$_elements.=','.prepare_mysql($_key);
+		$number_elements++;
+		}
 }
 $_elements=preg_replace('/^\,/','',$_elements);
 if ($_elements=='') {
 	$where.=' and false' ;
-} else {
+} elseif($number_elements<4) {
 	$where.=' and `Product Family Record Type` in ('.$_elements.')' ;
-}
+} 
 
 
 

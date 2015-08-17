@@ -1,3 +1,93 @@
+
+
+
+var already_clicked_family_elements_click = false
+function change_family_elements(e, data) {
+    var el = this
+
+    if (already_clicked_family_elements_click) {
+        already_clicked_family_elements_click = false; // reset
+        clearTimeout(alreadyclickedTimeout); // prevent this from happening
+        change_family_elements_dblclick(el, data)
+    } else {
+        already_clicked_family_elements_click = true;
+        alreadyclickedTimeout = setTimeout(function() {
+            already_clicked_family_elements_click = false; // reset when it happens
+            change_family_elements_click(el, data)
+        }, 300); // <-- dblclick tolerance here
+    }
+    return false;
+}
+
+function change_family_elements_click(el, data) {
+    table_id =data.table_id;
+
+       ids = ['elements_family_private', 'elements_family_discontinued', 'elements_family_normal', 'elements_family_nosale'];
+
+    if (Dom.hasClass(el, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(el, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(el, 'selected')
+
+    }
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_family_elements_dblclick(el, data) {
+    table_id =data.table_id;
+
+      ids = ['elements_family_private', 'elements_family_discontinued', 'elements_family_normal', 'elements_family_nosale'];
+
+    Dom.removeClass(ids, 'selected')
+    Dom.addClass(el, 'selected')
+
+
+
+
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+        var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+
+
+
+
+
 function show_dialog_change_products_element_chooser() {
     region1 = Dom.getRegion('product_element_chooser_menu_button');
     region2 = Dom.getRegion('dialog_change_products_element_chooser');
@@ -104,7 +194,7 @@ function get_families_elements_numbers() {
     var ar_file = 'ar_assets.php';
     var request = 'tipo=get_families_elements_numbers&parent=' + Dom.get('subject').value + '&parent_key=' + Dom.get('subject_key').value
   // alert(request)
-    Dom.get(['elements_family_NoSale_number', 'elements_family_Discontinued_number', 'elements_family_Discontinuing_number', 'elements_family_Normal_number', 'elements_family_InProcess_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
+    Dom.get(['elements_family_NoSale_number', 'elements_family_Discontinued_number', 'elements_family_Private_number', 'elements_family_Normal_number']).innerHTML = '<img src="art/loading.gif" style="height:12.9px" />';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
     //  alert(o.responseText)
@@ -113,7 +203,7 @@ function get_families_elements_numbers() {
                 for (i in r.elements_numbers) {
                 
       //          alert('elements_family_' + i +  '_number')
-                
+                if( Dom.get('elements_family_' + i +  '_number')!=undefined)
                         Dom.get('elements_family_' + i +  '_number').innerHTML = r.elements_numbers[i]
                 }
             }

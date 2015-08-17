@@ -1137,7 +1137,7 @@ $default_state=array(
 			'mode'=>'all',
 			'avg'=>'totals',
 			'restrictions'=>'',
-			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0,'NoSale'=>0)
+			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Private'=>1,'NoSale'=>0)
 
 
 		),
@@ -3838,6 +3838,8 @@ $default_state=array(
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
+									'stock_percentages'=>'value',
+
 			'mode'=>'all',
 			'avg'=>'totals',
 
@@ -3864,10 +3866,12 @@ $default_state=array(
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
+									'stock_percentages'=>'value',
+
 			'mode'=>'all',
 			'avg'=>'totals',
 			'restrictions'=>'',
-			'elements'=>array('NoSale'=>0,'Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
+			'elements'=>array('NoSale'=>0,'Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0,'Private'=>1),
 
 
 
@@ -4059,7 +4063,7 @@ $default_state=array(
 	'store'=>array(
 		'block_view'=>'departments',
 		'deals_block_view'=>'campaigns',
-		'websites_block_view'=>'websites',
+		'websites_block_view'=>'sites',
 		'sales_sub_block_tipo'=>'plot_store_sales',
 		'show_history'=>false,
 		'period'=>'all',
@@ -4167,13 +4171,15 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>25,
 			'percentages'=>false,
+						'stock_percentages'=>'value',
+
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
 			'mode'=>'all',
 			'avg'=>'totals',
 			'restrictions'=>'',
-			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0,'NoSale'=>0)
+			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Private'=>1,'NoSale'=>0)
 
 
 		),
@@ -4318,7 +4324,7 @@ $default_state=array(
 			'elements'=>array('Suspended'=>0,'Active'=>1,'Finish'=>0,'Waiting'=>0)
 		),
 		'offers'=>array(
-			'order'=>'name',
+			'order'=>'description',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
@@ -4427,6 +4433,8 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>100,
 			'percentages'=>false,
+									'stock_percentages'=>'value',
+
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
@@ -4691,7 +4699,7 @@ $default_state=array(
 
 		),
 		'offers'=>array(
-			'order'=>'name',
+			'order'=>'description',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,

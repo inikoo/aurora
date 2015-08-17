@@ -168,13 +168,17 @@ function change_product_view(e, data) {
 
 
 function change_family_view(e, data) {
-
     var table = tables['table' + data.table_id];
     var tipo = this.id;
     if (tipo == 'family_general') tipo = 'general';
     else if (tipo == 'family_sales') tipo = 'sales';
     else if (tipo == 'family_stock') tipo = 'stock';
     else if (tipo == 'family_timeline') tipo = 'timeline';
+    else if (tipo == 'family_products') tipo = 'products';
+    else if (tipo == 'family_customers') tipo = 'customers';
+
+
+
 
     table.hideColumn('department');
 
@@ -194,13 +198,46 @@ function change_family_view(e, data) {
     table.hideColumn('last_update');
     table.hideColumn('to');
 
-    Dom.setStyle(['change_families_display_mode', 'family_period_options', 'family_avg_options'], 'display', 'none')
+    table.hideColumn('products_for_sale');
+    table.hideColumn('percentage_out_of_stock');
+    table.hideColumn('sales_1q');
+    table.hideColumn('delta_sales_1q');
+
+    table.hideColumn('customers_active');
+    table.hideColumn('customers_active_75');
+    table.hideColumn('customers_active_50');
+    table.hideColumn('customers_active_25');
+
+    table.hideColumn('customers_losing');
+    table.hideColumn('customers_losing_75');
+    table.hideColumn('customers_losing_50');
+    table.hideColumn('customers_losing_25');
+
+    table.hideColumn('customers_lost');
+    table.hideColumn('customers_lost_75');
+    table.hideColumn('customers_lost_50');
+    table.hideColumn('customers_lost_25');
+
+    table.hideColumn('todo');
+
+    table.hideColumn('discontinued');
+
+    table.hideColumn('public_sale');
+
+    table.hideColumn('private_sale');
+    table.hideColumn('historic');
+    table.hideColumn('not_for_sale');
+
+    table.hideColumn('critical');
+
+
+    Dom.setStyle(['change_families_table_type', 'change_families_display_mode', 'family_period_options', 'family_avg_options','change_families_stock_display_mode'], 'display', 'none')
 
 
     if (tipo == 'sales') {
         table.showColumn('department');
 
-        table.showColumn('profit');
+       // table.showColumn('profit');
         table.showColumn('sales');
         table.showColumn('name');
         table.showColumn('delta_sales');
@@ -210,12 +247,16 @@ function change_family_view(e, data) {
 
     } else if (tipo == 'general') {
         table.showColumn('department');
-
         table.showColumn('name');
-        table.showColumn('active');
+        table.showColumn('products_for_sale');
+        table.showColumn('percentage_out_of_stock');
+        table.showColumn('sales_1q');
+        table.showColumn('delta_sales_1q');
 
-        Dom.get('family_period_options').style.display = 'none';
-        Dom.get('family_avg_options').style.display = 'none';
+        Dom.setStyle(['change_families_table_type'], 'display', '')
+
+
+
     } else if (tipo == 'stock') {
         table.showColumn('department');
 
@@ -225,11 +266,10 @@ function change_family_view(e, data) {
         table.showColumn('optimal');
         table.showColumn('low');
         table.showColumn('critcal');
+        Dom.setStyle(['change_families_stock_display_mode'], 'display', '')
 
-        Dom.get('family_' + 'period_options').style.display = 'none';
 
 
-        Dom.get('family_' + 'avg_options').style.display = 'none';
     } else if (tipo == 'timeline') {
 
         Dom.get('family_period_options').style.display = 'none';
@@ -237,6 +277,33 @@ function change_family_view(e, data) {
         table.showColumn('from');
         table.showColumn('last_update');
         table.showColumn('to');
+
+    } else if (tipo == 'customers') {
+
+        table.showColumn('customers_active');
+        table.showColumn('customers_active_75');
+        table.showColumn('customers_active_50');
+        table.showColumn('customers_active_25');
+
+        table.showColumn('customers_losing');
+        table.showColumn('customers_losing_75');
+        table.showColumn('customers_losing_50');
+        table.showColumn('customers_losing_25');
+
+        table.showColumn('customers_lost');
+        table.showColumn('customers_lost_75');
+        table.showColumn('customers_lost_50');
+        table.showColumn('customers_lost_25');
+
+    } else if (tipo == 'products') {
+
+
+        table.showColumn('name');
+        table.showColumn('discontinued');
+        table.showColumn('public_sale');
+        table.showColumn('private_sale');
+        table.showColumn('historic');
+        table.showColumn('not_for_sale');
 
     }
 
@@ -318,7 +385,7 @@ function change_department_view(e, data) {
 
     Dom.setStyle(['change_departments_view_mode', 'change_departments_display_mode', 'change_departments_stock_display_mode', 'department_period_options', 'department_avg_options'], 'display', 'none')
 
-    Dom.setStyle(['change_departments_display_mode', 'department_period_options', 'department_avg_options'], 'display', 'none')
+    Dom.setStyle(['change_departments_table_type', 'change_departments_display_mode', 'department_period_options', 'department_avg_options'], 'display', 'none')
 
     if (tipo == 'sales') {
         table.showColumn('name');
@@ -332,7 +399,7 @@ function change_department_view(e, data) {
 
     } else if (tipo == 'general') {
 
-        Dom.setStyle(['change_departments_view_mode'], 'display', '')
+        Dom.setStyle(['change_departments_view_mode', 'change_departments_table_type'], 'display', '')
 
 
         table.showColumn('name');

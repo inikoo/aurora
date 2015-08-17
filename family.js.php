@@ -516,7 +516,7 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 	    				      ,{key:"state", label:"", width:20,sortable:true} 
 
-                                        ,{key:"name", label:"<?php echo _('Name')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                        ,{key:"description", label:"<?php echo _('Name')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                 //     ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"orders", label:"<?php echo _('Orders')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"customers", label:"<?php echo _('Customers')?>",  width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -545,7 +545,7 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 		    totalRecords: "resultset.total_records"
 		},
 		
-		fields: ["name","key","description","from","to","orders","customers","state"]};
+		fields: ["description","key","description","from","to","orders","customers","state"]};
 		
 
 	  this.table10 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
