@@ -1,9 +1,9 @@
 <div id="footer" >
-	<div class="links">
+	<div class="links" style="display:none">
 		<a href="terms_use.php">{t}Terms of use{/t}</a> <a style="margin-left:10px;" href="report_issue.php?t=bug">{t}Report a problem{/t}</a> <a style="margin-left:10px;" href="report_issue.php?t=feature">{t}Request a feature{/t}</a> 
 	</div>
 	<div class='adv'>
-		<img src="art/inikoo_logo_mini.png" > <a href="http://www.inikoo.com">{t}Inikoo{/t}</a> <a href="http://www.inikoo.com/changelog.php/v={$inikoo_version}">v{$inikoo_version}</a>
+		<img src="art/inikoo_logo_mini.png" > <a href="inikoo.php">{t}Inikoo{/t}</a> <a href="inikoo.php?v={$inikoo_version}">{$inikoo_version}</a>
 	</div>
 	<div style="clear:both"></div>
 </div>
