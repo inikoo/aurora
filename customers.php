@@ -126,7 +126,7 @@ $css_files=array(
 	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-	'theme.css.php'
+	//'theme.css.php'
 
 );
 
@@ -143,7 +143,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	
+
 	'js/customers_common.js',
 	'js/export_common.js',
 	'customers.js.php?store_key='.$store->id
@@ -255,11 +255,44 @@ $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
-
-
-
 include 'customers_export_common.php';
 
+
+
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if( $user->get_number_stores()>1){
+$branch[]=array('label'=>_('Customers'),'icon'=>'dot-circle-o','url'=>'customers_server.php');
+}
+
+$left_buttons=array();
+$left_buttons[]=array('icon'=>'arrow-left','title'=>'','url'=>'');
+$left_buttons[]=array('icon'=>'arrow-right','title'=>'','url'=>'');
+
+$right_buttons=array();
+$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store=',$store->id);
+$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'url'=>'edit_customers.php?store=',$store->id);
+$right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_customer");
+
+$_content=array(
+	'branch'=>$branch
+	,
+	
+	'section_links'=>array(
+		array('label'=>_('Statistics'),'icon'=>'line-chart','url'=>'customers_stats.php?store='.$store->id),
+		array('label'=>_('Categories'),'icon'=>'cubes','url'=>'customer_categories.php?id=0&store_id='.$store->id),
+		array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id),
+		array('label'=>_('Pending orders'),'icon'=>'clock-o','url'=>'store_pending_orders.php?id='.$store->id),
+	),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_('Customers').' '.$store->get('Store Code'),
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+	
+);
+
+
+$smarty->assign('_content',$_content);
 
 $smarty->display('customers.tpl');
 ?>

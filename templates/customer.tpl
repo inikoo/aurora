@@ -1,11 +1,17 @@
 {include file='header.tpl'} 
 <div id="bd" class="no_padding">
+<div id="top_containter">
+		 {include file='contacts_navigation.tpl'} 
+		<div class="branch">
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
+		</div>
+		</div>
 	<div style="padding:0px 20px;">
 		<input type="hidden" id="customer_key" value="{$customer->id}"> 
 		<input type="hidden" id="store_key" value="{$store->id}"> 
 		<input type="hidden" id="subject" value="customer"> 
 		<input type="hidden" id="subject_key" value="{$customer->id}"> 
-		<input type="hidden" id="history_table_id" value="0"> {include file='contacts_navigation.tpl'} 
+		<input type="hidden" id="history_table_id" value="0">
 		
 		<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
 		<input type="hidden" id="currency_code" value="{$store->get('Store Currency Code')}"> 
@@ -14,9 +20,7 @@
 		<input type="hidden" id="thousands_sep" value="{$thousands_sep}"> 
 
 		
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
-		</div>
+		
 		<div id="top_page_menu" class="top_page_menu">
 			<div class="buttons" style="float:left">
 				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if}

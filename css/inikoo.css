@@ -1,0 +1,71 @@
+@import url("font-awesome.min.css");
+
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Ubuntu Light'), local('Ubuntu-Light'), url(../fonts/ubuntu300.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(../fonts/ubuntu700.woff2) format('woff2');
+}
+
+html{background-color:#fcfcfc;}
+
+body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
+
+
+#navigation{background:#f7f7f7;color:#333;padding-left:6px;padding-right:0px;text-align:left;height:22px;line-height:22px;border-bottom:1px solid #ccc}
+#navigation a{color:#333}
+
+
+#section_links{font-family: "Ubuntu","Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;;}
+.branch {font-style:italic; ;font-size:90%;}
+.branch span{cursor:pointer}
+.branch span.selected{font-weight:800;}
+
+
+
+#search_form{float:right;border-left:1px solid #aaa;margin-left:4px}
+#search{height:25px;border:none;padding-left:5px;width:280px}
+#search::-webkit-input-placeholder {
+   color: #aaa;font-style:italic;
+}
+
+#search:-moz-placeholder { /* Firefox 18- */
+   color: #aaa;font-style:italic;
+}
+
+#search::-moz-placeholder {  /* Firefox 19+ */
+   color: #aaa;font-style:italic;
+}
+
+#search:-ms-input-placeholder {  
+   color: #aaa;font-style:italic;
+}
+
+
+
+#header{text-align:left;padding:0px ;background:#fefefe;height:26px;line-height:26px;margin-bottom:10px;border-bottom:1px solid #ccc;}
+#header h1{float:left;padding-left: 10px;font-size:18px;font-family: "Ubuntu","Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;;font-weight: 700;}
+
+.square_button{height:26px;width:26px;font-size:16px;;text-align:center;line-height:26px;;color:#444;cursor:pointer}
+.square_button:hover{color:#000;background: #FFF;}
+.square_button.left{float:left;border-right:1px solid #ccc}
+
+.square_button.right{float:right;border-left:1px solid #ccc}
+.square_button.right.border{border-right: 1px solid #aaa}
+
+.text_button{text-align:center;cursor:pointer;padding:0px 25px;background-color: #fefefe;color:#333}
+.text_button .fa{font-size:80%;color:#999}
+
+.text_button:hover{background-color: #edf3f8;color:#000;text-decoration: }
+.text_button:hover > .fa{color:#666;}
+.text_button.right{float:right;border-left:1px solid #ccc}
+
+
+#bd{background:#fff;min-height:800px;padding:0 20px 40px 20px;height:auto !important;height:800px;border-bottom:1px solid #ccc}
+

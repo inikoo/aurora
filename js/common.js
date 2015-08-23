@@ -1,6 +1,55 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 
+function inIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+
+
+if(!inIframe()){
+   location.href=window.location.href.replace('.php','.app.php')
+}else{
+
+
+
+      window.top.history.pushState(null,'',window.location.href.replace('.php','.app.php'))
+}
+
+
+$(document).ready(function() {
+  // Handler for .ready() called.
+ 
+ $('#menu li',window.parent.document).removeClass('selected')
+  $('#'+$('#parent_menu_id').val(),window.parent.document).addClass('selected')
+  
+  window.parent.document.title = 'xx'
+  
+});
+
+
+
+function change_inikoo_content(url) {
+
+    var $iframe = $('#inikoo_content',window.parent.document);
+    if ($iframe.length) {
+        
+  
+        $iframe.attr('src', url);
+
+    }
+
+    window.history.pushState(null,'caca',url.replace('.php','.app.php'))
+    
+
+}
+
+
+
+
 
 
 var Dom   = YAHOO.util.Dom;

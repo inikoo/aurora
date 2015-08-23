@@ -289,5 +289,5 @@ update `Product Family Dimension` set `Product Family Record Type`='NoSale';
 
 
 
-
+INSERT INTO `dw`.`Payment Service Provider Dimension` (`Payment Service Provider Key`, `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`, `Service Provider Last Used Date`) VALUES (NULL, 'BTree', 'Braintree', 'EPS', NULL); 
 
