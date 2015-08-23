@@ -13,7 +13,7 @@
 */
 
 include_once 'common.php';
-include_once('common_date_functions.php');
+include_once 'common_date_functions.php';
 include_once 'class.Location.php';
 
 include_once 'class.Part.php';
@@ -65,7 +65,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-		'css/calendar.css',
+	'css/calendar.css',
 
 	'css/part_locations.css',
 	'css/edit.css',
@@ -91,7 +91,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'edit_stock.js.php',
-'js/fz.shadow.js',
+	'js/fz.shadow.js',
 	'js/fz.js',
 	'js/imgpop.js',
 	'js/localize_calendar.js',
@@ -459,7 +459,7 @@ case 'month':
 	break;
 case 'year':
 	$sales_history_timeline_group_label=_('Yearly');
-	break;	
+	break;
 default:
 	$sales_history_timeline_group_label=$sales_history_timeline_group;
 }

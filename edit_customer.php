@@ -109,7 +109,8 @@ $js_files=array(
 	$yui_path.'editor/editor-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
-	'js/common.js',
+	'js/jquery.min.js',
+'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 

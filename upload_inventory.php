@@ -370,7 +370,8 @@ $js_files=array(
 		$yui_path.'datasource/datasource-beta.js',
 		$yui_path.'datatable/datatable-beta.js',
 		$yui_path.'json/json-min.js',
-		'js/common.js',
+		'js/jquery.min.js',
+'js/common.js',
 		'js/table_common.js'
 		,'js/upload_assets.js'
 		);

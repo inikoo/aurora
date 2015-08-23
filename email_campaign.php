@@ -87,7 +87,8 @@ $js_files=array(
 
               
               
-              'js/common.js',
+              'js/jquery.min.js',
+'js/common.js',
               'js/table_common.js',
               'js/search.js',
               //'email_campaign.js.php'

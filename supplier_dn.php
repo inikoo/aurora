@@ -436,16 +436,16 @@ $session_data=base64_encode(json_encode(array(
 				'PO_Qty'=>_('Qty PO'),
 				'DN_Qty'=>_('Qty DN'),
 				'Rcvd_Qty'=>_('Rcvd Qty'),
-								'Ckd'=>_('Checked'),
-								'Dmgd_Qty'=>_('Damaged'),
+				'Ckd'=>_('Checked'),
+				'Dmgd_Qty'=>_('Damaged'),
 
-				
+
 				'Unit'=>_('Unit'),
 				'Transport_type'=>_('Transport type'),
 				'Used_for'=>_('Used for'),
 				'Alias'=>_('Alias'),
-				
-				
+
+
 				'Page'=>_('Page'),
 				'of'=>_('of')
 			),
@@ -454,7 +454,7 @@ $session_data=base64_encode(json_encode(array(
 			)
 		)));
 $smarty->assign('session_data',$session_data);
-	$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
+$smarty->assign('products_display_type',$_SESSION['state']['supplier_dn']['products']['display']);
 
 $smarty->display($template);
 
