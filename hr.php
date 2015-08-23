@@ -31,7 +31,8 @@ $js_files=array(
               $yui_path.'datatable/datatable-min.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
-              'js/common.js','js/search.js',
+              'js/jquery.min.js',
+'js/common.js','js/search.js',
               'js/table_common.js','js/edit_common.js',
               'hr.js.php'
           );

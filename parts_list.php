@@ -56,7 +56,8 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
-	'js/common.js',
+	'js/jquery.min.js',
+'js/common.js',
 	'js/export_common.js',
 
 	'js/table_common.js',

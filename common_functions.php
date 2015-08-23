@@ -3838,7 +3838,8 @@ function not_found($title='',$parent='') {
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/php.default.min.js',
-		'js/common.js',
+		'js/jquery.min.js',
+'js/common.js',
 
 
 	);

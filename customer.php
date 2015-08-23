@@ -136,7 +136,8 @@ $js_files=array(
 	// $yui_path.'uploader/uploader-min.js',
 
 	'external_libs/ampie/ampie/swfobject.js',
-	'js/common.js',
+	'js/jquery.min.js',
+'js/common.js',
 	'js/php.default.min.js',
 	'js/table_common.js',
 	'js/search.js',

@@ -139,6 +139,7 @@ $js_files=array(
 	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+	'js/jquery.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
@@ -261,8 +262,8 @@ include 'customers_export_common.php';
 
 
 $branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
-if( $user->get_number_stores()>1){
-$branch[]=array('label'=>_('Customers'),'icon'=>'dot-circle-o','url'=>'customers_server.php');
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'dot-circle-o','url'=>'customers_server.php');
 }
 
 $left_buttons=array();
@@ -277,7 +278,7 @@ $right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_cust
 $_content=array(
 	'branch'=>$branch
 	,
-	
+
 	'section_links'=>array(
 		array('label'=>_('Statistics'),'icon'=>'line-chart','url'=>'customers_stats.php?store='.$store->id),
 		array('label'=>_('Categories'),'icon'=>'cubes','url'=>'customer_categories.php?id=0&store_id='.$store->id),
@@ -288,7 +289,7 @@ $_content=array(
 	'right_buttons'=>$right_buttons,
 	'title'=>_('Customers').' '.$store->get('Store Code'),
 	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
-	
+
 );
 
 

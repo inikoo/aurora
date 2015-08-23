@@ -30,7 +30,8 @@ $js_files=array(
 	$yui_path.'utilities/utilities.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
-	'js/common.js',
+	'js/jquery.min.js',
+'js/common.js',
 );
 
 

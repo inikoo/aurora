@@ -24,7 +24,7 @@ if (isset($_REQUEST['id'])) {
 	and $_REQUEST['supplier_id']>0
 ) {
 
-include_once 'class.Staff.php';
+	include_once 'class.Staff.php';
 
 	$warehouse=new Warehouse(1);
 
@@ -35,7 +35,7 @@ include_once 'class.Staff.php';
 		'Author Key'=>$user->data['User Parent Key'],
 		'User Key'=>$user->id
 	);
-	
+
 
 	$staff=new Staff($user->data['User Parent Key']);
 
