@@ -1,2 +1,5 @@
 RewriteEngine On
-RewriteRule ^images/(\d+) public_image.php?id=$1
+#RewriteRule ^images/(\d+) public_image.php?id=$1
+
+RewriteCond %{REQUEST_URI} \.app\.php
+RewriteRule ^(.*)\.app\.(.*)$ app.php?u=$1.php?%{QUERY_STRING} 
