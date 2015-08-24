@@ -1,7 +1,7 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 
-function inIframe () {
+function inIframe() {
     try {
         return window.self !== window.top;
     } catch (e) {
@@ -10,40 +10,49 @@ function inIframe () {
 }
 
 
-if(!inIframe()){
-   location.href=window.location.href.replace('.php','.app.php')
-}else{
+if (!inIframe()) {
 
 
+    if (location.pathname == '/') {
+        location.href = 'app.php?u=index.php'
+    } else {
 
-      window.top.history.pushState(null,'',window.location.href.replace('.php','.app.php'))
+        location.href = window.location.href.replace('.php', '.app.php')
+    }
+} else {
+
+    if (parent.document.getElementById(window.name) != undefined && parent.document.getElementById(window.name).id == 'inikoo_content') {
+
+        window.top.history.replaceState({
+            url: window.location.href
+        }, '', window.location.href.replace('.php', '.app.php'))
+
+    }
 }
 
 
 $(document).ready(function() {
-  // Handler for .ready() called.
- 
- $('#menu li',window.parent.document).removeClass('selected')
-  $('#'+$('#parent_menu_id').val(),window.parent.document).addClass('selected')
-  
-  window.parent.document.title = 'xx'
-  
+    // Handler for .ready() called.
+    $('#menu li', window.parent.document).removeClass('selected')
+    $('#' + $('#parent_menu_id').val(), window.parent.document).addClass('selected')
+
+    window.parent.document.title = document.title
+
 });
 
 
 
 function change_inikoo_content(url) {
 
-    var $iframe = $('#inikoo_content',window.parent.document);
+    var $iframe = $('#inikoo_content', window.parent.document);
     if ($iframe.length) {
-        
-  
+
+
         $iframe.attr('src', url);
 
     }
+    window.history.replaceState(null, null, url.replace('.php', '.app.php'))
 
-    window.history.pushState(null,'caca',url.replace('.php','.app.php'))
-    
 
 }
 

@@ -37,7 +37,7 @@
 			</div>
 		</div>
 		<div id="app_main">
-			<iframe id="inikoo_content" src="{$app_view_url}" style="padding:0px;border:none;width:100%;height:100%"></iframe> 
+			<iframe id="inikoo_content" name="inikoo_content"  src="{$app_view_url}" style="padding:0px;border:none;width:100%;height:100%"></iframe> 
 		</div>
 	</section>
 	<aside id="notifications">
