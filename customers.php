@@ -266,9 +266,33 @@ if ( $user->get_number_stores()>1) {
 	$branch[]=array('label'=>_('Customers'),'icon'=>'dot-circle-o','url'=>'customers_server.php');
 }
 
+
 $left_buttons=array();
-$left_buttons[]=array('icon'=>'arrow-left','title'=>'','url'=>'');
-$left_buttons[]=array('icon'=>'arrow-right','title'=>'','url'=>'');
+if ($user->stores>1) {
+
+	
+	
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+	
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	    $prev_title=_('Customers').' '.$row['Store Code'];
+	}else{$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	    $next_title=_('Customers').' '.$row['Store Code'];
+	}else{$next_title='';}
+	
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers.php?store='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers per store'),'url'=>'customers_server.php');
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers.php?store='.$next_key);
+}
+
 
 $right_buttons=array();
 $right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store=',$store->id);
@@ -280,10 +304,10 @@ $_content=array(
 	,
 
 	'section_links'=>array(
-		array('label'=>_('Statistics'),'icon'=>'line-chart','url'=>'customers_stats.php?store='.$store->id),
-		array('label'=>_('Categories'),'icon'=>'cubes','url'=>'customer_categories.php?id=0&store_id='.$store->id),
-		array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id),
-		array('label'=>_('Pending orders'),'icon'=>'clock-o','url'=>'store_pending_orders.php?id='.$store->id),
+		array('label'=>_('Statistics'),'icon'=>'line-chart','title'=>'','url'=>'customers_stats.php?store='.$store->id),
+		array('label'=>_('Categories'),'icon'=>'cubes','title'=>'','url'=>'customer_categories.php?id=0&store_id='.$store->id),
+		array('label'=>_('Lists'),'icon'=>'list','title'=>'','url'=>'customers_lists.php?store='.$store->id),
+		array('label'=>_('Pending orders'),'icon'=>'clock-o','title'=>'','url'=>'store_pending_orders.php?id='.$store->id),
 	),
 	'left_buttons'=>$left_buttons,
 	'right_buttons'=>$right_buttons,
@@ -293,7 +317,7 @@ $_content=array(
 );
 
 
-$smarty->assign('_content',$_content);
+$smarty->assign('content',$_content);
 
 $smarty->display('customers.tpl');
 ?>

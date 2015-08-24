@@ -2,6 +2,26 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 
+function get_prev_next($pivot,$array) {
+	$prev_key=current($array);
+	$next_key=false;
+	while (current($array) !== $pivot && key($array) !== null) {
+		$prev_key=current($array);
+		next($array);
+	}
+	$current_key=current($array);
+	if ($prev_key==$current_key) {
+		$next_key=next($array);
+		$prev_key=end($array);
+	}else {
+		$next_key=next($array);
+		if (!$next_key) {
+			$next_key=reset($array);
+		}
+
+	}
+	return array($prev_key,$next_key);
+}
 
 if (!function_exists('money_format')) {
 	function money_format($format, $number) {
@@ -604,17 +624,17 @@ function currency_symbol($currency) {
 	case('CHF'):
 		return 'CHF';
 		break;
-    case('INR'):
+	case('INR'):
 		return '₹';
 		break;
-	 case('IDR'):
+	case('IDR'):
 		return 'Rp';
-		break;	
-	 case('CNY'):
+		break;
+	case('CNY'):
 		return '¥';
-		break;		
-		
-		
+		break;
+
+
 	default:
 		return '¤';
 	}
@@ -3839,7 +3859,7 @@ function not_found($title='',$parent='') {
 		$yui_path.'menu/menu-min.js',
 		'js/php.default.min.js',
 		'js/jquery.min.js',
-'js/common.js',
+		'js/common.js',
 
 
 	);
