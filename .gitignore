@@ -23,3 +23,7 @@ mantenence/scripts/create_part.php
 mantenence/scripts/read_products_pt.php
 
 phpinfo.php
+
+*.scssc
+
+*.map
