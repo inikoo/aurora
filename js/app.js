@@ -3,8 +3,8 @@ $(document).ready(function() {
 
 
         change_inikoo_content(this.href)
-        
-        
+
+
 
         event.preventDefault();
 
@@ -16,13 +16,11 @@ function change_inikoo_content(url) {
 
     var $iframe = $('#inikoo_content');
     if ($iframe.length) {
-        
-   
+
+
         $iframe.attr('src', url);
 
     }
 
-    window.history.pushState(null,'caca',url.replace('.php','.app.php'))
-    
-
+    window.history.replaceState(null, 'caca', url.replace('.php', '.app.php'));
 }
