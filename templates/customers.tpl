@@ -7,11 +7,7 @@
 <div id="bd" class="no_padding">
 
         {include file='navigation.tpl' _content=$content} 	
-	   
-		
-		
-		
-		
+
 		<div  style="padding:0 20px;display:none">
 		<div class="top_page_menu">
 			<div class="buttons small">
@@ -39,14 +35,6 @@
 	</div>
 	<div style="padding:0 20px">
 		<div style="padding:15px 0 30px 0;{if !($block_view=='dashboard') }display:none{/if}" id="dashboard_block">
-					<div class="buttons left small" style="margin-bottom:10px">
-										<button onclick="window.location='customers_stats.php?store={$store->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
-
-				<button  onclick="window.location='customer_store_configuration.php?store={$store->id}'"><img  src="art/icons/cog.png" alt=""> {t}Setup{/t}</button> 
-				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} 
-				<button onclick="window.location='store_pending_orders.php?id={$store->id}'"><img src="art/icons/application_view_list.png" alt=""> {t}Pending Orders{/t}</button>
-				<button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store_id={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
-			</div>
 					
 					
 			<div id="overview_all_contacts" style="clear:both;margin:35px 0 10px 0">

@@ -11,21 +11,9 @@
 <input type="hidden" id="PackedDone" value="{$elements.PackedDone}" />
 
 <div id="bd" class="no_padding">
-	<div style="padding:0 20px">
-		{include file='contacts_navigation.tpl'} 
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="pending_orders.php" id="branch_type_orders" ">&#8704; {t}Pending Orders{/t}</a> &rarr; {/if}  {t}Pending Orders{/t} ({$store->get('Store Code')})</span> 
-		</div>
-		<div class="top_page_menu">
-			<div class="buttons">
-			</div>
-			<div class="buttons" style="float:left">
-				<span class="main_title no_buttons">{t}Pending Orders{/t} <span class="id">{$store->get('Store Code')}</span> </span> 
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
-	</div>
+
+{include file='navigation.tpl' _content=$content} 	
+
 	<div style="padding:0px;display:none">
 		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>

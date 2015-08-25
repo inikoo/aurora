@@ -1,9 +1,4 @@
-{include file='header.tpl'} 
-<div id="bd">
-	{include file='contacts_navigation.tpl'} 
-	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer.php?id={$customer->id}">{$id}</a> ({t}Editing{/t})</span> 
-	</div>
+{include file='header.tpl'}
 	<input type="hidden" value="{$customer->id}" id="customer_key" />
 	{*}<input type="hidden" value="{$registered_email}" id="registered_email" />{*}
 	<input type="hidden" value="{$store_key}" id="store_key" />
@@ -17,27 +12,14 @@
 			<input type="hidden" id="main_address_key" value="{$customer->get('Customer Main Address Key')}"> 
 <input type="hidden" id="subject" value="customer"> 
 		<input type="hidden" id="subject_key" value="{$customer->id}">
-		<input type="hidden" id="default_country_2alpha" value="{$default_country_2alpha}" />
-	<div class="top_page_menu">
-	
-		
-		<div class="buttons">
-				 {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
+		<input type="hidden" id="default_country_2alpha" value="{$default_country_2alpha}" /> 
+<div id="bd" class="no_padding">
 
-		<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
-		 <button id="convert_to_person" {if $customer_type!='Company' }style="display:none" {/if}>{t}Convert to Person{/t}</button> <button id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</button>
-		<button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes'}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' }style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button>
-		
-		</div>
-		<div class="buttons left">
-{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if}
-		<span class="main_title">
-		<span style="color:SteelBlue">{$id}</span> <span id="title_name">{$customer->get('Customer Name')}</span> 
-	</span>
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
+{include file='navigation.tpl' _content=$content} 	
+
+
+
+	
 	
 	<div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">
 		{$recent_merges} 
@@ -416,6 +398,14 @@
 			{include file='edit_delivery_address_splinter.tpl' parent='customer' order_key=0} 
 		</div>
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if};" id="d_details">
+			
+			<div class="buttons small">
+
+		 <button id="convert_to_person" {if $customer_type!='Company' }style="display:none" {/if}>{t}Convert to Person{/t}</button> <button id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</button>
+		
+		</div>
+			
+			
 			<table class="edit" border="0" style="clear:both;width:100%">
 				<tr class="title">
 					<td colspan=2>
@@ -682,7 +672,7 @@
 		</div>
 		
 	</div>
-	<div class="buttons small">
+	<div class="buttons small" style="margin-right:20px">
 	<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 </div>
 <div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">

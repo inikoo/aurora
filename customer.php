@@ -52,6 +52,7 @@ if (!in_array($customer->data['Customer Store Key'],$user->stores)) {
 	exit;
 }
 
+$referer='customers';
 
 
 $_SESSION['state']['customer']['id']=$customer_id;
@@ -72,21 +73,21 @@ if (isset($_REQUEST['products_block_view']) and in_array($_REQUEST['products_blo
 
 if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|dns|invoices|details)$/',$_REQUEST['view']) ) {
 
-	if($_REQUEST['view']=='dns' or $_REQUEST['view']=='invoices' or $_REQUEST['view']=='orders'){
+	if ($_REQUEST['view']=='dns' or $_REQUEST['view']=='invoices' or $_REQUEST['view']=='orders') {
 		$order_view=$_REQUEST['view'];
 		$view='orders';
-	}else{
-	$order_view=$_SESSION['state']['customer']['order_view'];
+	}else {
+		$order_view=$_SESSION['state']['customer']['order_view'];
 		$view=$_REQUEST['view'];
-		
+
 	}
-	
-	
-	
+
+
+
 } else {
 	$view=$_SESSION['state']['customer']['view'];
 	$order_view=$_SESSION['state']['customer']['order_view'];
-	
+
 }
 
 
@@ -120,7 +121,6 @@ $css_files=array(
 	'css/upload.css',
 	'css/edit.css',
 
-	'theme.css.php'
 );
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
@@ -137,7 +137,7 @@ $js_files=array(
 
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/php.default.min.js',
 	'js/table_common.js',
 	'js/search.js',
@@ -638,19 +638,201 @@ $smarty->assign('number_categories_data',$number_categories_data);
 $smarty->assign('sticky_note',$customer->data['Customer Sticky Note']);
 
 
-	$tax_categories=array();
-	$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes' and `Tax Category Country Code`=%s ",
+$tax_categories=array();
+$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes' and `Tax Category Country Code`=%s ",
 	prepare_mysql($store->data['Store Tax Country Code'])
-	);
+);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($store->data['Store Tax Category Code']==$row['Tax Category Code']?true:false));
+}
+$smarty->assign('tax_categories',$tax_categories);
+
+$smarty->assign('zero_money',money(0,$customer->data['Customer Currency Code']));
+
+//--------------- Content spa
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+
+
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
 	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($store->data['Store Tax Category Code']==$row['Tax Category Code']?true:false));
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$next_title='';}
+
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_lists.php?store='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_lists.php?store='.$next_key);
+}
+
+
+$right_buttons=array();
+
+$right_buttons[]=array('icon'=>'plus','title'=>_('New list'),'url'=>"new_customers_list.php?store=".$store->id);
+
+$_content=array(
+	'branch'=>$branch
+	,
+
+	'section_links'=>array(
+	),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_("Customer's Lists").' '.$store->get('Store Code'),
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+
+
+$left_buttons=array();
+$right_buttons=array();
+if ($referer=='list') {
+	$branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id);
+
+	$sql=sprintf("select count(*) num from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d",$store->id);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res) and $row['num']>1 ) {
+
+
+		$sql=sprintf("select `List Name`,`List Key`  from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d
+	                and `List Name` < %s OR (`List Name` = %s AND `List Key` < %d)  order by `List Name` desc , `List Key` desc limit 1",
+			$store->id,
+			prepare_mysql($list->data['List Name']),
+			prepare_mysql($list->data['List Name']),
+			$list->id
+		);
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$prev_key=$row['List Key'];
+			$prev_title=_("Customer's Lists").' '.$row['List Name'];
+			$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_list.php?id='.$prev_key);
+
+		}
+
+		$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Lists").' '.$store->data['Store Code'],'url'=>'customers_lists.php?store='.$store->id);
+
+		$sql=sprintf("select `List Name`,`List Key`  from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d
+	                and `List Name` > %s OR (`List Name` = %s AND `List Key` > %d)  order by `List Name`  , `List Key`  limit 1",
+			$store->id,
+			prepare_mysql($list->data['List Name']),
+			prepare_mysql($list->data['List Name']),
+			$list->id
+		);
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$next_key=$row['List Key'];
+			$next_title=_("Customer's Lists").' '.$row['List Name'];
+			$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_list.php?id='.$next_key.'&p='.$list->id);
+
+		}
+
+
+
+
+
+
 	}
-	$smarty->assign('tax_categories',$tax_categories);
+	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customers_list.php?id='.$list->id);
 
-	$smarty->assign('zero_money',money(0,$customer->data['Customer Currency Code']));
+}else {
+	$prev_key=0;
+	$next_key=0;
+	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d
+	                and `Customer Name` < %s OR (`Customer Name` = %s AND `Customer Key` < %d)  order by `Customer Name` desc , `Customer Key` desc limit 1",
+		$store->id,
+		prepare_mysql($customer->data['Customer Name']),
+		prepare_mysql($customer->data['Customer Name']),
+		$customer->id
+	);
 
 
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_key=$row['object_key'];
+		$prev_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+	}
+
+
+	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d
+	                and `Customer Name` > %s OR (`Customer Name` = %s AND `Customer Key` > %d)  order by `Customer Name`  , `Customer Key`  limit 1",
+		$store->id,
+		prepare_mysql($customer->data['Customer Name']),
+		prepare_mysql($customer->data['Customer Name']),
+		$customer->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_key=$row['object_key'];
+		$next_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+	}
+	if ($prev_key) {
+		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer.php?id='.$prev_key);
+
+	}
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customers").' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+	if ($next_key) {
+		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer.php?id='.$next_key);
+
+	}
+
+	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customer.php?id='.$customer->id);
+	$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
+	$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+	$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
+	$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
+
+}
+
+
+
+
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_("Customer").' <span class="id">'.$customer->get('Customer Name').' ('.$customer->get_formated_id().')</span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
 
 $smarty->display('customer.tpl');
 

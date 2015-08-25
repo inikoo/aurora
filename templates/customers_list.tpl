@@ -1,7 +1,4 @@
 {include file='header.tpl'} 
-<div id="bd" class="no_padding">
-	<div style="padding:0 20px">
-		{include file='contacts_navigation.tpl'} 
 		<input type="hidden" value="{$session_data}" id="session_data" />
 		<input type="hidden" id="store_key" value="{$store->id}" />
 		<input type="hidden" id="customer_list_key" value="{$list->id}" />
@@ -9,20 +6,13 @@
 		<input type="hidden" id="parent_key" value="{$list->id}" />
 				<input type="hidden" id="block_view" value="{$block_view}" />
 
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; {$list->get('List Name')}</span> 
-		</div>
-		<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Customers List{/t}: <span class="id">{$list->get('List Name')}</span> <small>({$list->get('Formated Type')})</small></span> 
-			</div>
-			<div class="buttons">
-				{if $modify}<button onclick="window.location='edit_customers.php?list_key={$list->id}'"><img src="art/icons/table_edit.png" alt="" /> {t}Edit Customers in List{/t}</button>{/if} <button onclick="print_labels()"><img src="art/icons/printer.png" alt="" /> {t}Print{/t}</button> 
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
-	</div>
+
+<div id="bd" class="no_padding">
+
+{include file='navigation.tpl' _content=$content} 	
+
+
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='customers'}selected{/if}" id="customers"> <span> {t}Customers{/t}</span></span> </li>
 		<li> <span class="item {if $block_view=='deals'}selected{/if}" id="deals"> <span> {t}Offers{/t}</span></span> </li>

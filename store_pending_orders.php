@@ -65,7 +65,6 @@ $css_files=array(
 	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-	'theme.css.php'
 
 );
 
@@ -79,7 +78,7 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
@@ -125,6 +124,61 @@ if (isset($_REQUEST['show']) and  array_key_exists($_REQUEST['show'],$_SESSION['
 $smarty->assign('elements',$_SESSION['state']['customers']['pending_orders']['elements']);
 
 $smarty->assign('block_view','pending_orders');
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+	$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+
+
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_('Customers').' '.$row['Store Code'];
+	}else {$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_('Customers').' '.$row['Store Code'];
+	}else {$next_title='';}
+
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'store_pending_orders.php?store='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'store_pending_orders.php?id='.$next_key);
+}
+
+
+$right_buttons=array();
+$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store=',$store->id);
+$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'url'=>'edit_customers.php?store=',$store->id);
+$right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_customer");
+$sections=get_sections('customers',$store->id);
+$_content=array(
+	'branch'=>$branch
+	,
+	'sections_class'=>'only_icons',
+	'sections'=>$sections,
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_('Pending orders').' <span class="id">'.$store->get('Store Code').'</span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
+
+
+
 $smarty->display('store_pending_orders.tpl');
 
 ?>

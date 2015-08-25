@@ -95,7 +95,6 @@ $css_files=array(
 	'css/container.css',
 	'css/table.css',
 	'css/edit_address.css',
-	'theme.css.php'
 );
 
 $js_files=array(
@@ -110,7 +109,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 
@@ -643,23 +642,208 @@ $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
 
 
-	$shipper_data=array();
+$shipper_data=array();
 
-		$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
-			$shipper_data[$row['Shipper Key']]=array(
-				'shipper_key'=>$row['Shipper Key'],
-				'code'=>$row['Shipper Code'],
-				'name'=>$row['Shipper Name'],
-				'selected'=>0
-			);
+$sql=sprintf("select `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` where `Shipper Active`='Yes' order by `Shipper Name` ");
+$result=mysql_query($sql);
+while ($row=mysql_fetch_assoc($result)) {
+	$shipper_data[$row['Shipper Key']]=array(
+		'shipper_key'=>$row['Shipper Key'],
+		'code'=>$row['Shipper Code'],
+		'name'=>$row['Shipper Name'],
+		'selected'=>0
+	);
 
+
+}
+$smarty->assign( 'shipper_data', $shipper_data );
+
+
+$referer='';
+
+//--------------- Content spa
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+
+
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$next_title='';}
+
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_lists.php?store='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_lists.php?store='.$next_key);
+}
+
+
+$right_buttons=array();
+
+$right_buttons[]=array('icon'=>'plus','title'=>_('New list'),'url'=>"new_customers_list.php?store=".$store->id);
+
+$_content=array(
+	'branch'=>$branch
+	,
+
+	'section_links'=>array(
+	),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_("Customer's Lists").' '.$store->get('Store Code'),
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(),'icon'=>'user','url'=>'customer.php?id='.$customer->id);
+
+
+$left_buttons=array();
+$right_buttons=array();
+if ($referer=='list') {
+	$branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id);
+
+	$sql=sprintf("select count(*) num from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d",$store->id);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res) and $row['num']>1 ) {
+
+
+		$sql=sprintf("select `List Name`,`List Key`  from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d
+	                and `List Name` < %s OR (`List Name` = %s AND `List Key` < %d)  order by `List Name` desc , `List Key` desc limit 1",
+			$store->id,
+			prepare_mysql($list->data['List Name']),
+			prepare_mysql($list->data['List Name']),
+			$list->id
+		);
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$prev_key=$row['List Key'];
+			$prev_title=_("Customer's Lists").' '.$row['List Name'];
+			$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_list.php?id='.$prev_key);
 
 		}
-		$smarty->assign( 'shipper_data', $shipper_data );
+
+		$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Lists").' '.$store->data['Store Code'],'url'=>'customers_lists.php?store='.$store->id);
+
+		$sql=sprintf("select `List Name`,`List Key`  from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d
+	                and `List Name` > %s OR (`List Name` = %s AND `List Key` > %d)  order by `List Name`  , `List Key`  limit 1",
+			$store->id,
+			prepare_mysql($list->data['List Name']),
+			prepare_mysql($list->data['List Name']),
+			$list->id
+		);
 
 
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$next_key=$row['List Key'];
+			$next_title=_("Customer's Lists").' '.$row['List Name'];
+			$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_list.php?id='.$next_key.'&p='.$list->id);
+
+		}
+
+
+
+
+
+
+	}
+	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customers_list.php?id='.$list->id);
+
+}else {
+	$prev_key=0;
+	$next_key=0;
+	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d
+	                and `Customer Name` < %s OR (`Customer Name` = %s AND `Customer Key` < %d)  order by `Customer Name` desc , `Customer Key` desc limit 1",
+		$store->id,
+		prepare_mysql($customer->data['Customer Name']),
+		prepare_mysql($customer->data['Customer Name']),
+		$customer->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_key=$row['object_key'];
+		$prev_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+	}
+
+
+	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d
+	                and `Customer Name` > %s OR (`Customer Name` = %s AND `Customer Key` > %d)  order by `Customer Name`  , `Customer Key`  limit 1",
+		$store->id,
+		prepare_mysql($customer->data['Customer Name']),
+		prepare_mysql($customer->data['Customer Name']),
+		$customer->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_key=$row['object_key'];
+		$next_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+	}
+	if ($prev_key) {
+		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer.php?id='.$prev_key);
+
+	}
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Exit edit"),'url'=>'customer.php?id='.$customer->id);
+	if ($next_key) {
+		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer.php?id='.$next_key);
+
+	}
+
+
+	$right_buttons[]=array('icon'=>'sign-out fa-flip-horizontal','title'=>_('Exit edit'),'url'=>"customer.php?id=".$customer->id);
+	if ($customer->get('Customer With Orders')=='No') {
+		$right_buttons[]=array('icon'=>'trash-o','title'=>_('Delete'),'id'=>'delete_customer');
+	}
+}
+
+
+
+
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>'<span class="edit"><i class="fa fa-edit bullet "></i></span> '._("Customer").' <span class="id"><span id="title_name">'.$customer->get('Customer Name').'<span> ('.$customer->get_formated_id().')</span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
 $smarty->display('edit_customer.tpl');
 
 

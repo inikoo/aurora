@@ -4747,6 +4747,11 @@ function list_customers_lists() {
 
 	global $user;
 
+if (isset( $_REQUEST['store_key']))
+		$store_key=$_REQUEST['store_key'];
+	else{
+		exit('no stoer key');
+}
 	$conf=$_SESSION['state']['customers']['list'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -4790,11 +4795,6 @@ function list_customers_lists() {
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['store_id'])    ) {
-		$store=$_REQUEST['store_id'];
-		$_SESSION['state']['customers']['store']=$store;
-	} else
-		$store=$_SESSION['state']['customers']['store'];
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -4815,8 +4815,8 @@ function list_customers_lists() {
 
 
 
-	if (in_array($store,$user->stores)) {
-		$where.=sprintf(' and `List Parent Key`=%d  ',$store);
+	if (in_array($store_key,$user->stores)) {
+		$where.=sprintf(' and `List Parent Key`=%d  ',$store_key);
 
 	}
 
@@ -4911,7 +4911,6 @@ function list_customers_lists() {
 
 
 	$sql="select `List Number Items`, CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
 
 	$adata=array();
 

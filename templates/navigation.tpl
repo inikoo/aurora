@@ -1,13 +1,13 @@
  <div id="navigation">
-	<div id="section_links">
-		{foreach from=$_content.section_links item=section_link } 
-		<div {if isset($section_link.id) and $button.id }id="{$button.id}"{/if} class="text_button right" {if isset($section_link.url)}onclick="location.href='{$section_link.url}'"{/if} title="{$section_link.title}">
-			<i class="fa fa-{$section_link.icon} fa-fw"></i> {$section_link.label} 
+	<div id="section_links" class="{if isset($_content.sections_class)}{$_content.sections_class}{/if}">
+		{foreach from=$_content.sections item=section_link } 
+		<div {if isset($section_link.id) and $button.id }id="{$button.id}"{/if} class="section right"  {if isset($section_link.url)}onclick="location.href='{$section_link.url}'"{/if} title="{$section_link.title}">
+			<i class="fa fa-{$section_link.icon} fa-fw"></i><span class="section_label"> {$section_link.label}<span> 
 		</div>
 		{/foreach} 
 	</div>
 	<div class="branch">
-		<span> {foreach from=$_content.branch name=branch item=branch } <a href="{$branch.url}"> <i class="fa fa-{$branch.icon} fa-fw"></i>{$branch.label}</a> {if !$smarty.foreach.branch.last}&rarr;{/if} {/foreach} </span> 
+		<span> {foreach from=$_content.branch name=branch item=branch } <a href="{$branch.url}"> <i class="fa fa-{$branch.icon} fa-fw"></i> {$branch.label}</a> {if !$smarty.foreach.branch.last}&rarr;{/if} {/foreach} </span> 
 	</div>
 </div>
 <div id="header">

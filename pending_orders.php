@@ -46,7 +46,6 @@ $css_files=array(
 	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-	'theme.css.php'
 
 );
 
@@ -73,8 +72,8 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','orders');
-$smarty->assign('title', _('Pending Orders'));
+$smarty->assign('parent','customers');
+$smarty->assign('title', _('Pending orders (All stores)'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -107,6 +106,38 @@ if (isset($_REQUEST['show']) and  array_key_exists($_REQUEST['show'],$_SESSION['
 $smarty->assign('elements',$_SESSION['state']['stores']['pending_orders']['elements']);
 
 $smarty->assign('block_view','pending_orders');
+
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+
+
+$left_buttons=array();
+
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers (All stores)'),'url'=>'customers_server.php');
+
+
+$right_buttons=array();
+
+
+
+$sections=get_sections('customers_server');
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>$sections,
+
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_('Pending orders (All stores)'),
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers all stores'))
+
+);
+$smarty->assign('content',$_content);
+
+
+
 $smarty->display('pending_orders.tpl');
 
 ?>

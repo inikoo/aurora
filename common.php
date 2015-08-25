@@ -50,6 +50,7 @@ if (!$db_selected) {
 mysql_set_charset('utf8');
 
 mysql_query("SET time_zone='+0:00'");
+require_once 'conf/modules.php';
 require_once 'conf/conf.php';
 
 $inikoo_account=new Account();

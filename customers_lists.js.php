@@ -54,8 +54,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				 
 				 ];
+	    
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&store_id="+Dom.get('store_key').value);
+	    
+	    request="ar_contacts.php?tipo=customers_lists&store_key="+Dom.get('store_key').value+'&sf=0'
+	   
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
+	    
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
