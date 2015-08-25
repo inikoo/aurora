@@ -1,12 +1,4 @@
 {include file='header.tpl'} 
-<div id="bd" class="no_padding">
-<div id="top_containter">
-		 {include file='contacts_navigation.tpl'} 
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
-		</div>
-		</div>
-	<div style="padding:0px 20px;">
 		<input type="hidden" id="customer_key" value="{$customer->id}"> 
 		<input type="hidden" id="store_key" value="{$store->id}"> 
 		<input type="hidden" id="subject" value="customer"> 
@@ -18,30 +10,18 @@
 
 		<input type="hidden" id="decimal_point" value="{$decimal_point}"> 
 		<input type="hidden" id="thousands_sep" value="{$thousands_sep}"> 
-
-		
-		
-		<div id="top_page_menu" class="top_page_menu">
-			<div class="buttons" style="float:left">
-				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if}
-				<span class="id main_title no_buttons"><img src="art/icons/id.png" style="height:20px;position:relative;bottom:2px" /> {$id}</span> 
-			</div>
-			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
-			<div class="buttons small" style="float:right;position:relative;top:5px">
-				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
-				
-				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> 
-				<button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> 
-				<button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> 
-				
-				<button id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> 
-				<button style="display:none" id="make_order" class="disabled"><img src="art/icons/database_go.png" alt="">QO Data</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
 		<input type="hidden" id="modify" value="{$modify}" />
 		<input type="hidden" id="other_email_count" value="{$other_email_count}" />
+
+<div id="bd" class="no_padding">
+{include file='navigation.tpl' _content=$content} 	
+
+
+
+	<div style="padding:0px 20px;">
+
+		
+	
 		<div style="width:520px;float:left;padding-top:0px">
 			<span id="warning_message" class="edit_td_alert"> {foreach from=$all_warning item=item key=key} {foreach from=$item item=msg key=msg_key} {$msg}<br />
 				{/foreach} {/foreach} </span> 

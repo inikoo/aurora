@@ -31,16 +31,13 @@ $css_files=array(
 	$yui_path.'menu/assets/skins/sam/menu.css',
 	$yui_path.'assets/skins/sam/autocomplete.css',
 	$yui_path.'assets/skins/sam/calendar.css',
-
 	'css/common.css',
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
 	'css/edit.css',
-
 	'css/new_list.css',
 
-	'theme.css.php'
 );
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
@@ -311,6 +308,58 @@ $smarty->assign('filter_menu8',$filter_menu8);
 $smarty->assign('filter8',$tipo_filter8);
 $smarty->assign('filter_value8','');
 $smarty->assign('options_box_width','550px');
+
+
+//--------------- Content spa
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+$branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+	
+	
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+	
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	    $prev_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else{$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	    $next_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else{$next_title='';}
+	
+
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Lists").' '.$store->data['Store Code'],'url'=>'customers_lists.php?store='.$store->id);
+
+}
+
+
+$right_buttons=array();
+
+$right_buttons[]=array('icon'=>'sign-out fa-flip-horizontal','title'=>_('Go back'),'url'=>"customers_lists.php?store=".$store->id);
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>'<span class="new"><i class="fa fa-plus bullet "></i></span> '._("Customer's List").' <span class="id">'.$store->get('Store Code').'</span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
 
 
 $smarty->display('new_customers_list.tpl');

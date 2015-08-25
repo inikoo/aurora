@@ -76,7 +76,6 @@ $css_files=array(
 	'css/table.css',
 	'css/edit.css',
 	'css/edit_address.css',
-	'theme.css.php'
 );
 
 $js_files=array(

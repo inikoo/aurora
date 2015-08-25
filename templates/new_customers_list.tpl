@@ -1,22 +1,12 @@
 {include file='header.tpl'} 
-<div id="bd">
-	{include file='contacts_navigation.tpl'} 
 	<input type="hidden" id="store_id" value="{$store->id}"> 
 	<input type="hidden" id="auto" value="{if $auto==1}1{else}0{/if}"> {foreach from=$v_calpop key=key item=item} 
 	<input type="hidden" id="v_calpop" cat="{$key}" value="{$item}"> {/foreach} <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span> 
-	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; {t}New List{/t}</span> 
-	</div>
-	<div class="top_page_menu">
-		<div class="buttons" style="float:left">
-			<span class="main_title">{t}New Customers List{/t} <span class="id">{$store->get('Store Code')}</span></span> 
-		</div>
-		<div class="buttons">
-			<button class="negative" onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Close{/t}</button> 
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
+
+<div id="bd" class="no_padding">
+	
+	 {include file='navigation.tpl' _content=$content} 	
+	 
 	<div style="margin-top:15px;width:130px;float:right;border:0px solid red" id="fields_management" class="buttons small">
 		<button style="margin-bottom:10px;width:120px" id="show_contact_fields" field="contact_fields" class="fields selected">{t}Contacts who..{/t}</button><br> 
 		<button style="margin-bottom:10px;width:120px" id="show_products_fields" field="products_fields" class="fields">{t}Products Ordered{/t}</button><br> 

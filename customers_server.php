@@ -26,7 +26,6 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
-	'theme.css.php'
 );
 
 
@@ -116,6 +115,32 @@ $state_data=array(
 'stores'=>$_SESSION['state']['stores']
 );
 $smarty->assign('state_data',base64_encode(json_encode($state_data)));
+
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+
+
+
+$left_buttons=array();
+
+
+
+$right_buttons=array();
+$sections=get_sections('customers_server');
+array_pop($sections);
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'',
+	'sections'=>$sections,
+
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_('Customers (All stores)'),
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers all stores'))
+
+);
+$smarty->assign('content',$_content);
+
 
 $smarty->display('customers_server.tpl');
 

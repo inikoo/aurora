@@ -22,7 +22,22 @@ body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;
 #navigation a{color:#333}
 
 
+
+
 #section_links{font-family: "Ubuntu","Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;;}
+
+.section{text-align:center;cursor:pointer;background-color: #fefefe;color:#333;padding:0px 25px;}
+
+.section .fa{font-size:80%;color:#999}
+
+.section:hover{background-color: #edf3f8;color:#000;text-decoration: }
+.section:hover > .fa{color:#666;}
+.section.right{float:right;border-left:1px solid #ccc}
+
+.only_icons .section{padding:0px 2px;width:22px}
+.only_icons .section_label{display:none}
+
+
 .branch {font-style:italic; ;font-size:90%;}
 .branch span{cursor:pointer}
 .branch span.selected{font-weight:800;}
@@ -50,7 +65,12 @@ body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;
 
 
 #header{text-align:left;padding:0px ;background:#fefefe;height:26px;line-height:26px;margin-bottom:10px;border-bottom:1px solid #ccc;}
-#header h1{float:left;padding-left: 10px;font-size:18px;font-family: "Ubuntu","Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;;font-weight: 700;}
+#header h1{color:#555;float:left;padding-left: 10px;font-size:18px;font-family: "Ubuntu","Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;;font-weight: 700;}
+#header h1 .bullet{color:#000;position:relative;top:1px;padding:0px 5px}
+#header h1 span.new{background: yellow;}
+#header h1  span.subtitle{font-size:80%;}
+#header h1  span.id{color:#000}
+
 
 .square_button{height:26px;width:26px;font-size:16px;;text-align:center;line-height:26px;;color:#444;cursor:pointer}
 .square_button:hover{color:#000;background: #FFF;}
@@ -59,12 +79,6 @@ body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;
 .square_button.right{float:right;border-left:1px solid #ccc}
 .square_button.right.border{border-right: 1px solid #aaa}
 
-.text_button{text-align:center;cursor:pointer;padding:0px 25px;background-color: #fefefe;color:#333}
-.text_button .fa{font-size:80%;color:#999}
-
-.text_button:hover{background-color: #edf3f8;color:#000;text-decoration: }
-.text_button:hover > .fa{color:#666;}
-.text_button.right{float:right;border-left:1px solid #ccc}
 
 
 #bd{background:#fff;min-height:800px;padding:0 20px 40px 20px;height:auto !important;height:800px;border-bottom:1px solid #ccc}

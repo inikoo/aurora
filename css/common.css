@@ -628,7 +628,7 @@ table.discontinued,tr.discontinued{border-top:1px solid #574017;background:#dece
 
 .data_block{ min-height:300px;}
 
-div.tabbed_container{border:1px solid #ccc;padding:20px 20px;clear:both;margin-bottom:20px}
+div.tabbed_container{border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:20px 20px;clear:both;margin-bottom:20px}
 div.tabbed_container.blocks{border-bottom:none}
 div.tabbed_container.no_padding{padding:0px 0px}
 div.tabbed_container.no_padding .edit_block_content{padding:20px 20px}
