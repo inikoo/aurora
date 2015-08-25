@@ -9,7 +9,7 @@ $currency='';
 
 
 $where='where true ';
-$table='`Order Dimension` O ';
+$table='`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 if ($from)$from=$from.' 00:00:00';
 if ($to)$to=$to.' 23:59:59';
