@@ -5,7 +5,7 @@ $wheref='';
 
 $currency='';
 $where='where true';
-$table='`Invoice Dimension` I ';
+$table='`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 $where_type='';
 
 if ($awhere) {
