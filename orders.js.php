@@ -27,6 +27,7 @@ Event.addListener(window, "load", function() {
 		//alert("ar_orders.php?tipo=orders&where=");
 		
 		request="ar_orders.php?tipo=orders&where=&parent=store&parent_key="+Dom.get('store_key').value
+		
 		//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;

@@ -454,8 +454,8 @@ class Invoice extends DB_Table {
 
 
 		$tax_category=$this->data['Invoice Tax Code'];
-		$sql=sprintf('select OTF.`Order Transaction Fact Key`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate` 
-		from `Order Transaction Fact` OTF left join 
+		$sql=sprintf('select OTF.`Order Transaction Fact Key`,IFNULL(`Fraction Discount`,0) as `Fraction Discount` ,`Product History Price`,`No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,`No Shipped Due Out of Stock`,OTF.`Order Quantity`,`Order Transaction Amount`,`Transaction Tax Rate`
+		from `Order Transaction Fact` OTF left join
 		`Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`)  left join `Order Transaction Deal Bridge` OTDB on (OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) where OTF.`Order Key`=%d and ISNULL(OTF.`Invoice Key`)  ',
 			$order_key
 		);
@@ -1408,10 +1408,10 @@ class Invoice extends DB_Table {
 		}
 
 
-	if ($this->data['Invoice Net Amount Off']) {
-	
-	$tax_category=new TaxCategory($this->data['Invoice Tax Code']);
-	
+		if ($this->data['Invoice Net Amount Off']) {
+
+			$tax_category=new TaxCategory($this->data['Invoice Tax Code']);
+
 			if (array_key_exists($this->data['Invoice Tax Code'],$tax_sum_by_code))
 				$tax_sum_by_code[$this->data['Invoice Tax Code']]-=round($this->data['Invoice Net Amount Off']*$tax_category->data['Tax Category Rate'],2);
 			else
@@ -1520,7 +1520,7 @@ class Invoice extends DB_Table {
 
 
 
-		
+
 		// exit;
 		foreach ($tax_sum_by_code as $tax_code=>$amount ) {
 
@@ -2617,14 +2617,15 @@ class Invoice extends DB_Table {
 
 		$this->data['Invoice Paid Amount']=$paid_amount;
 		$this->data['Invoice Outstanding Total Amount']=round($this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'],2);
-		$this->data['Invoice Main Payment Method']=$this->get_main_payment_method();
+		list($this->data['Invoice Main Payment Method'],$this->data['Invoice Payment Account Key'],$this->data['Invoice Payment Account Code'])=$this->get_main_payment_method();
 
 
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=%.2f, `Invoice Paid Amount`=%.2f,`Invoice Main Payment Method`=%s where `Invoice Key`=%d",
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Outstanding Total Amount`=%.2f, `Invoice Paid Amount`=%.2f,`Invoice Main Payment Method`=%s ,`Invoice Payment Account Key`=%s,`Invoice Payment Account Code`=%s     where `Invoice Key`=%d",
 			$this->data['Invoice Outstanding Total Amount'],
 			$this->data['Invoice Paid Amount'],
 			prepare_mysql($this->data['Invoice Main Payment Method']),
-
+			prepare_mysql($this->data['Invoice Payment Account Key']),
+			prepare_mysql($this->data['Invoice Payment Account Code']),
 			$this->id);
 		mysql_query( $sql );
 
@@ -2887,16 +2888,18 @@ class Invoice extends DB_Table {
 
 
 
-		$main_payment_method=$this->get_main_payment_method();
+		list($this->data['Invoice Main Payment Method'],$this->data['Invoice Payment Account Key'],$this->data['Invoice Payment Account Code'])=$this->get_main_payment_method();
 
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
-			,prepare_mysql($main_payment_method)
-			,prepare_mysql($this->data['Invoice Paid Date'])
-
-			,$this->id);
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice Main Payment Method`=%s,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' ,`Invoice Payment Account Key`=%s,`Invoice Payment Account Code`=%s  where `Invoice Key`=%d",
+			prepare_mysql($this->data['Invoice Main Payment Method']),
+			prepare_mysql($this->data['Invoice Paid Date']),
+			prepare_mysql($this->data['Invoice Payment Account Key']),
+			prepare_mysql($this->data['Invoice Payment Account Code']),
+			$this->id);
 		mysql_query( $sql );
-		//print "$sql\n";
-		$this->data['Invoice Main Payment Method']= $main_payment_method;
+
+
+
 
 
 		$this->updated=true;
@@ -2907,19 +2910,22 @@ class Invoice extends DB_Table {
 	function get_main_payment_method() {
 
 		$method='Unknown';
-
-		$sql=sprintf("select `Payment Method`   from `Invoice Payment Bridge` B left join `Payment Dimension` P on (B.`Payment Key`=P.`Payment Key`) where `Invoice Key`=%d  group by `Payment Method` order by sum(ABS(`Amount`)) desc limit 1  ",
+		$payent_account_key='';
+		$payent_account_code='';
+		$sql=sprintf("select `Payment Method`,P.`Payment Account Key`,P.`Payment Account Code`   from `Invoice Payment Bridge` B left join `Payment Dimension` P on (B.`Payment Key`=P.`Payment Key`) where `Invoice Key`=%d  group by `Payment Method` order by sum(ABS(`Amount`)) desc limit 1  ",
 			$this->id);
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$method=$row['Payment Method'];
+			$payent_account_key=$row['Payment Account Key'];
+			$payent_account_code=$row['Payment Account Code'];
 		}
 
 
 
 
-		return $method;
+		return array($method,$payent_account_key,$payent_account_code);
 
 	}
 
@@ -3492,7 +3498,7 @@ class Invoice extends DB_Table {
 		foreach ($dns as $dn) {
 
 			$dn->update_xhtml_invoices();
-            $dn->update(array('Delivery Note Invoiced'=>'No'));
+			$dn->update(array('Delivery Note Invoiced'=>'No'));
 
 		}
 
