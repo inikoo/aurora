@@ -71,16 +71,26 @@ a:hover {
     padding: 0px;
     margin: 0px 0px 0px 0px; }
   #app_leftmenu li {
-    padding: 3px 5px 3px 30px;
+    padding: 3px 5px 3px 20px;
     background-color: #555;
     cursor: pointer;
     border-top: 1px solid #777;
     color: #ddd; }
-  #app_leftmenu li:hover {
-    background-color: #666;
-    color: #fff; }
+    #app_leftmenu li .fa {
+      margin-right: 6px;
+      font-size: 95%;
+      opacity: .20; }
+    #app_leftmenu li:hover {
+      background-color: #666;
+      color: #fff; }
+      #app_leftmenu li:hover:last-of-type {
+        border-bottom: 1px solid #777; }
+      #app_leftmenu li:hover .fa {
+        opacity: 1; }
   #app_leftmenu li.selected, #app_leftmenu li.selected:hover {
     color: yellow; }
+    #app_leftmenu li.selected .fa, #app_leftmenu li.selected:hover .fa {
+      opacity: .75; }
 
 #top_info {
   height: 32px;

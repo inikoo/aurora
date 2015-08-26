@@ -41,7 +41,7 @@ body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;
 .branch {font-style:italic; ;font-size:90%;}
 .branch span{cursor:pointer}
 .branch span.selected{font-weight:800;}
-
+.branch .fa{font-size:95%;opacity:.75}
 
 
 #search_form{float:right;border-left:1px solid #aaa;margin-left:4px}
@@ -70,9 +70,10 @@ body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;
 #header h1 span.new{background: yellow;}
 #header h1  span.subtitle{font-size:80%;}
 #header h1  span.id{color:#000}
-
+#header h1 img{vertical-align: -5%}
 
 .square_button{height:26px;width:26px;font-size:16px;;text-align:center;line-height:26px;;color:#444;cursor:pointer}
+.square_button .disabled{opacity:.2}
 .square_button:hover{color:#000;background: #FFF;}
 .square_button.left{float:left;border-right:1px solid #ccc}
 
@@ -82,4 +83,7 @@ body{color:#333;border-right:1px solid#ccc;margin: 0px 10px 0px 0px;padding:0px;
 
 
 #bd{background:#fff;min-height:800px;padding:0 20px 40px 20px;height:auto !important;height:800px;border-bottom:1px solid #ccc}
+
+.id ,.id a,a.id:hover{color:SteelBlue}
+.id2{font-style: italic;}
 

@@ -65,7 +65,7 @@ $css_files=array(
 	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-
+	'theme.css.php'
 );
 
 $js_files=array(
@@ -129,7 +129,7 @@ $branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
 if ( $user->get_number_stores()>1) {
 	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
 }
-	$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
 
 
 $left_buttons=array();

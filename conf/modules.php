@@ -21,7 +21,7 @@ function get_sections($module,$parent_key=false) {
 
 			'sections'=>array(
 				array('label'=>_('Statistics'),'title'=>_('Statistics'),'icon'=>'line-chart','url'=>'customers_stats.php?store='.$parent_key),
-				array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'cubes','url'=>'customer_categories.php?id=0&store_id='.$parent_key),
+				array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','url'=>'customer_categories.php?id=0&store_id='.$parent_key),
 				array('label'=>_('Lists'),'title'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$parent_key),
 				array('label'=>_('Pending orders'),'title'=>_('Pending orders'),'icon'=>'clock-o','url'=>'store_pending_orders.php?id='.$parent_key),
 				array('label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','url'=>'customers.php?store='.$parent_key)

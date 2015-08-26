@@ -1,34 +1,16 @@
 {include file='header.tpl'} 
-<div id="bd">
-	{include file='contacts_navigation.tpl'} 
-	<input type="hidden" id="list_key" value="{$customer_list_id}" />
+<input type="hidden" id="list_key" value="{$customer_list_id}" />
 	<input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="parent_key" value="{$store->id}" />
 <input type="hidden" id="parent" value="store" />	
-	{if $customer_list_id} 
-	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; <a href="customers_list.php?id={$customer_list_id}">{$customer_list_name}</a> ({t}Editing{/t})</span> 
-	</div>
-	{else} 
-	<div class="branch">
-		<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Editing{/t}</span> 
-	</div>
-	{/if} 
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-		<div class="buttons left" style="float:left">
-			<span class="main_title"> {t}Editing Customers{/t} <span class="id">{if $customer_list_id}{$customer_list_name}{else}{$store->get('Store Code')}{/if}</span> </span> 
-		</div>
-		<div class="buttons" style="float:right">
-			<button style="margin-left:0px" onclick="window.location='{if $customer_list_id}customers_list.php?id={$customer_list_id}{else}customers.php?store={$store->id}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button id="delete_all" class="negative" style="margin-left:20px;{if $user->id!=1}display:none{/if}"><img src="art/icons/cross.png" alt="" /> {t}Delete All Customers{/t}</button> 
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
-	<div style="clear:left;margin:0 0px">
-	</div>
-	<div style="margin-top:15px">
-	<div style="clear:both">
-				<span class="clean_table_title">{t}Customers List{/t} 
+<div id="bd" class="no_padding">
+{include file='navigation.tpl' _content=$content} 	
+
+	
+
+	
+	<div style="clear:both;padding:0px 20px">
+				<span class="clean_table_title">{t}Customers{/t} 
 				</span> 
 				
 					<div class="elements_chooser" id="customer_type_chooser">
@@ -58,7 +40,7 @@
 				<div id="table0" style="font-size:90%" class="data_table_container dtable btable">
 				</div>
 			</div>
-	</div>
+	
 </div>
 
 <div id="dialog_delete_all" style="padding:20px 10px 10px 10px">

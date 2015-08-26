@@ -46,7 +46,7 @@ $css_files=array(
 	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-
+	'theme.css.php'
 );
 
 $js_files=array(
@@ -59,7 +59,7 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
@@ -114,7 +114,7 @@ $branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.
 
 $left_buttons=array();
 
-	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers (All stores)'),'url'=>'customers_server.php');
+$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers (All stores)'),'url'=>'customers_server.php');
 
 
 $right_buttons=array();

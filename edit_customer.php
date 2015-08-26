@@ -95,6 +95,7 @@ $css_files=array(
 	'css/container.css',
 	'css/table.css',
 	'css/edit_address.css',
+	'theme.css.php'
 );
 
 $js_files=array(
@@ -777,7 +778,8 @@ if ($referer=='list') {
 	}
 	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customers_list.php?id='.$list->id);
 
-}else {
+}
+else {
 	$prev_key=0;
 	$next_key=0;
 	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d

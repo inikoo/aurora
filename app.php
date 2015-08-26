@@ -64,10 +64,15 @@ if(!isset($_REQUEST['u'])){
     exit();
 }
 
-$app_view_url=$_REQUEST['u'];
+$app_view_url='';
+foreach($_REQUEST as $key=>$value){
+    if($key=='u'){
+    $app_view_url=$value;
+    }else{
+     $app_view_url.='&'.$key.'='.$value;
+    }
 
-$account_label=($inikoo_account->data['Account Menu Label']==''?_('Company'):$inikoo_account->data['Account Menu Label']);
-$smarty->assign('account_label',$account_label);
+}
 
 
 
@@ -90,19 +95,19 @@ if ($user->data['User Type']=='Supplier') {
 
 $nav_menu=array();
 
-$nav_menu[] = array(_('Dashboard'), 'index.php','index');
+$nav_menu[] = array('<i class="fa fa-dashboard fa-fw"></i> '._('Dashboard'), 'index.php','index');
 
 if ($user->can_view('customers')) {
 
 	if (count($user->stores)==1) {
-		$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0],'customers');
+		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers.php?store='.$user->stores[0],'customers');
 	} elseif (count($user->stores)>1)
 
 		if ($user->data['User Hooked Store Key']) {
-			$nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->data['User Hooked Store Key'],'customers');
+			$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers.php?store='.$user->data['User Hooked Store Key'],'customers');
 		}
 	else {
-		$nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
+		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers_server.php','customers');
 	}
 
 
@@ -112,14 +117,14 @@ if ($user->can_view('customers')) {
 if ($user->can_view('orders')) {
 
 	if (count($user->stores)==1) {
-		$nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0],'orders');
+		$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders.php?store='.$user->stores[0],'orders');
 	} elseif (count($user->stores)>1) {
 
 		if ($user->data['User Hooked Store Key']) {
-			$nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->data['User Hooked Store Key'],'orders');
+			$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders.php?store='.$user->data['User Hooked Store Key'],'orders');
 		}
 		else {
-			$nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
+			$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders_server.php','orders');
 		}
 	}
 
@@ -132,24 +137,24 @@ if ($user->can_view('sites')) {
 
 
 		if ($user->data['User Hooked Site Key']) {
-			$nav_menu[] = array(_('Website'), 'site.php?id='.$user->data['User Hooked Site Key'],'websites');
+			$nav_menu[] = array('<i class="fa fa-globe fa-fw"></i> '._('Website'), 'site.php?id='.$user->data['User Hooked Site Key'],'websites');
 		}
 		else {
-			$nav_menu[] = array(_('Websites'), 'sites.php','websites');
+			$nav_menu[] = array('<i class="fa fa-globe fa-fw"></i> '._('Websites'), 'sites.php','websites');
 		}
 	}
 }
 
 if ($user->can_view('stores')) {
 	if (count($user->stores)==1) {
-		$nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
+		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'store.php?id='.$user->stores[0],'products');
 	} elseif (count($user->stores)>1) {
 
 		if ($user->data['User Hooked Store Key']) {
-			$nav_menu[] = array(_('Products'), 'store.php?id='.$user->data['User Hooked Store Key'],'products');
+			$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'store.php?id='.$user->data['User Hooked Store Key'],'products');
 		}
 		else {
-			$nav_menu[] = array(_('Products'), 'stores.php','products');
+			$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'stores.php','products');
 
 		}
 	}
@@ -158,14 +163,14 @@ if ($user->can_view('stores')) {
 
 if ($user->can_view('marketing')) {
 	if (count($user->stores)==1) {
-		$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->stores[0],'marketing');
+		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing');
 	} elseif (count($user->stores)>1) {
 
 		if ($user->data['User Hooked Store Key']) {
-			$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing.php?store='.$user->data['User Hooked Store Key'],'marketing');
+			$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing.php?store='.$user->data['User Hooked Store Key'],'marketing');
 		}
 		else {
-			$nav_menu[] = array(($_SESSION['text_locale_country_code']=='ES'?'Merca':('Marketing')), 'marketing_server.php','marketing');
+			$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing_server.php','marketing');
 
 		}
 	}
@@ -177,40 +182,37 @@ if ($user->can_view('warehouses')) {
 
 
 	if (count($user->warehouses)==1)
-		$nav_menu[] = array(_('Inventory'), 'inventory.php?block_view=parts&warehouse_id='.$user->warehouses[0],'parts');
+		$nav_menu[] = array('<i class="fa fa-th  fa-fw"></i> '._('Inventory'), 'inventory.php?block_view=parts&warehouse_id='.$user->warehouses[0],'parts');
 	else
-		$nav_menu[] = array(_('Inventory'), 'warehouses.php','parts');
+		$nav_menu[] = array('<i class="fa fa-th fa-fw"></i> '._('Inventory'), 'warehouses.php','parts');
 
 	if (count($user->warehouses)==1)
-		$nav_menu[] = array(_('Locations'), 'warehouse.php?id='.$user->warehouses[0],'locations');
+		$nav_menu[] = array('<i class="fa fa-map-marker fa-fw"></i> '._('Locations'), 'warehouse.php?id='.$user->warehouses[0],'locations');
 	else
-		$nav_menu[] = array(_('Locations'), 'warehouses.php','locations');
+		$nav_menu[] = array('<i class="fa fa-map-marker fa-fw"></i> '._('Locations'), 'warehouses.php','locations');
 
 
 }
 if ($user->can_view('reports')) {
-	$nav_menu[] = array(_('Reports'), 'reports.php','reports');
+	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i> '._('Reports'), 'reports.php','reports');
 }
 
 
 if ($user->can_view('suppliers')){
-	$nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
+	$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i> '._('Suppliers'), 'suppliers.php','suppliers');
 }
 
 
 if ($user->can_view('staff'))
-	$nav_menu[] = array($account_label, 'hr.php','staff');
+	$nav_menu[] = array('<i class="fa fa-hand-rock-o fa-fw"></i> '._('Manpower'), 'hr.php','staff');
 
-if ($user->can_view('account'))
-	$nav_menu[] = array(_('Account'), 'account.php','account');
 
 
 if ($user->can_view('users'))
-	$nav_menu[] = array(_('Users'), 'users.php','users');
-elseif ($user->data['User Type']=='Staff')
-	$nav_menu[] = array(_('Profile'), 'user.php','users');
+	$nav_menu[] = array('<i class="fa fa-male fa-fw"></i> '._('Users'), 'users.php','users');
 
-
+if ($user->can_view('account'))
+	$nav_menu[] = array('<i class="fa fa-cog fa-fw"></i> '._('Settings'), 'account.php','account');
 
 
 

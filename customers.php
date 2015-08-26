@@ -126,7 +126,7 @@ $css_files=array(
 	'css/edit.css',
 	'css/button.css',
 	'css/table.css',
-	//'theme.css.php'
+	'theme.css.php'
 
 );
 
@@ -295,8 +295,8 @@ if ($user->stores>1) {
 
 
 $right_buttons=array();
-$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store=',$store->id);
-$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'url'=>'edit_customers.php?store=',$store->id);
+//$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store='.$store->id);
+$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'url'=>'edit_customers.php?store='.$store->id);
 $right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_customer");
 $sections=get_sections('customers',$store->id);
 array_pop($sections);

@@ -1,38 +1,20 @@
 {include file='header.tpl'} 
-<div id="bd">
-	{include file='contacts_navigation.tpl'} 
-	<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
-	<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
-	<input type="hidden" value="{$store->id}" id="store_key" />
-	<input type="hidden" value="{$store->id}" id="new_category_store_key" />
-
-	
-	
-	<input type="hidden" value="Customer" id="category_subject" />
-	<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; <a href="customer_categories.php?store_id={$store->id}">{t}Categories{/t}</a> ({t}Editing{/t})</span> 
-
-	</div>
-	<div class="top_page_menu">
-		<div class="buttons" style="float:left">
-			<span class="main_title">{t}Editing Customers Categories{/t}</span> 
-		</div>
-		<div class="buttons" style="float:right">
-			<button onclick="window.location='customer_categories.php?store_id={$store->id}&id=0'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}New Main Category{/t}</button> 
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
+<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
+<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
+<input type="hidden" value="{$store->id}" id="store_key" />
+<input type="hidden" value="{$store->id}" id="new_category_store_key" />
+<input type="hidden" value="Customer" id="category_subject" />
+<div id="bd" class="no_padding">
+	{include file='navigation.tpl' _content=$content} 
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='subcategory'}selected{/if}" style="{if !$create_subcategory}display:none{/if}" id="subcategory"> <span> {t}Categories{/t}</span></span></li>
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
 			<span class="clean_table_title">{t}Categories{/t}</span> 
-			<div  class="elements_chooser">
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_customer_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_customer_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_customer_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 
-				</div>
-			
+			<div class="elements_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_customer_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_customer_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_customer_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 
+			</div>
 			<div class="table_top_bar space">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
@@ -45,10 +27,9 @@
 	</div>
 	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
 		<span class="clean_table_title">{t}Changelog{/t}</span> 
-				<div  class="elements_chooser">
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if}" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_customer_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
-			</div>
-		
+		<div class="elements_chooser">
+			<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Changes}selected{/if}" id="elements_Changes" table_type="Changes">{t}Changes{/t} (<span id="elements_Changes_number">{$history_elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_customer_Assign" id="elements_Assign" table_type="Assign">{t}Assign{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
+		</div>
 		<div class="table_top_bar space">
 		</div>
 		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 

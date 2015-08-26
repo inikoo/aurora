@@ -36,6 +36,7 @@ $css_files=array(
 	'css/container.css',
 	'css/button.css',
 	'css/table.css',
+	'theme.css.php'
 );
 $js_files=array(
 	$yui_path.'utilities/utilities.js',
@@ -47,7 +48,7 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/search.js',
@@ -106,28 +107,28 @@ $branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
 if ( $user->get_number_stores()>1) {
 	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
 }
-	$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
 
 
 $left_buttons=array();
 if ($user->stores>1) {
 
-	
-	
+
+
 
 	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
-	
+
 	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
 	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-	    $prev_title=_("Customer's Lists").' '.$row['Store Code'];
-	}else{$prev_title='';}
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$prev_title='';}
 	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
 	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-	    $next_title=_("Customer's Lists").' '.$row['Store Code'];
-	}else{$next_title='';}
-	
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$next_title='';}
+
 
 	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_lists.php?store='.$prev_key);
 	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);

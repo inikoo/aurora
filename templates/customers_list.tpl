@@ -4,7 +4,7 @@
 		<input type="hidden" id="customer_list_key" value="{$list->id}" />
 		<input type="hidden" id="parent" value="list" />
 		<input type="hidden" id="parent_key" value="{$list->id}" />
-				<input type="hidden" id="block_view" value="{$block_view}" />
+				<input type="hidden" id="block_view" valuxe="{$block_view}" />
 
 
 <div id="bd" class="no_padding">

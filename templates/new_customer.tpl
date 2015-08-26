@@ -1,29 +1,19 @@
 {include file='header.tpl'} 
 <input type="hidden" id="default_country" value="{$store->get('Store Home Country Code 2 Alpha')}">
 <input type="hidden" id="store_key" value="{$store->id}">
+				<input type="hidden" value="{$store_key}" id="Store_Key" />
+				<input type="hidden" value="{$customer_type}" id="Customer_Type" />
 
-<div id="bd" style="padding:0 20px">
-	{include file='contacts_navigation.tpl'} 
-	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Adding Customer{/t}</span> 
-	</div>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:15px">
-		<div class="buttons" style="float:left">
-			<span class="main_title"> {t}Adding new customer{/t}, <span class="id">{$store->get('Store Code')}</span> </span> 
-		</div>
-		<div class="buttons">
-			<button class="negative" onclick="window.location='customers.php?store={$store->id}'">{t}Cancel{/t}</button> 
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
-	<div>
+<div id="bd" class="no_padding">
+
+{include file='navigation.tpl' _content=$content} 	
+
+
+	<div style="padding:0px 20px">
 		<div id="results" style="margin-top:0px;float:right;width:390px;">
 		</div>
 		<div id="form" style="float:left;width:540px;">
 			<table class="edit" border="0" style="width:100%;margin-bottom:0px">
-				<input type="hidden" value="{$store_key}" id="Store_Key" />
-				<input type="hidden" value="{$customer_type}" id="Customer_Type" />
 					
 				<tbody id="company_section">
 					<tr class="title">
@@ -299,7 +289,7 @@
 					<td><span style="cursor:pointer;text-decoration:underline" onclick="edit_founded()" id="pick_founded">{t}Edit the Customer found{/t} (<span id="founded_name"></span>)</span></td>
 				</tr>
 				<tr>
-					<td><span style="color:red">{t}Creating this customer is likely to produce duplicate contacts.{/t}</span></br<span style="cursor:pointer;text-decoration:underline;color:red" id="save_when_founded">{t}Create customer anyway{/t}</span></td>
+					<td><span style="color:red">{t}Creating this customer is likely to produce duplicate contacts.{/t}</span><br><span style="cursor:pointer;text-decoration:underline;color:red" id="save_when_founded">{t}Create customer anyway{/t}</span></td>
 				</tr>
 			</table>
 		</div>
@@ -310,7 +300,7 @@
 					<td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit the Customer found{/t} (<span id="email_founded_name"></span>)</td>
 				</tr>
 				<tr>
-					<td><span style="color:red">{t}Creating this customer will produce duplicate contacts. The email will not be added.{/t}</span></br>
+					<td><span style="color:red">{t}Creating this customer will produce duplicate contacts. The email will not be added.{/t}</span><br>
 					<span style="cursor:pointer;text-decoration:underline;color:red" id="force_new">{t}Create customer anyway{/t}</span></td>
 				</tr>
 			</table>
