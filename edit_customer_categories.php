@@ -47,7 +47,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
@@ -114,7 +114,7 @@ $smarty->assign('filter_value0',$_SESSION['state']['customer_categories']['edit_
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
-		'label'=>array('db_key'=>'label','menu_label'=>_('Category Label'),'label'=>_('Label')),
+	'label'=>array('db_key'=>'label','menu_label'=>_('Category Label'),'label'=>_('Label')),
 
 );
 
@@ -146,7 +146,7 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 
 $elements_number=array('Root'=>0,'Node'=>0,'Head'=>0);
 $sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Store Key`=%d and  `Category Subject`='Customer' group by  `Category Branch Type`   "
-,$store->id
+	,$store->id
 );
 //print_r($sql);
 $res=mysql_query($sql);
@@ -171,6 +171,60 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['customer_categories']['history']['elements']);
 
+//======== start SPA
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+$branch[]=array('label'=>_('Categories'),'icon'=>'sitemap','url'=>'customer_categories.php?id=0&store_id='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+
+
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Categories").' '.$row['Store Code'];
+	}else {$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Categories").' '.$row['Store Code'];
+	}else {$next_title='';}
+
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer_categories.php?id=0&store_id='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer_categories.php?id=0&store_id='.$next_key);
+}
+
+
+$right_buttons=array();
+ 	$right_buttons[]=array('icon'=>'sign-out fa-flip-horizontal','title'=>_('Exit edit'),'url'=>"customer_categories.php?id=0&store_id=".$store->id);
+
+ $right_buttons[]=array('icon'=>'plus','title'=>_('Add category'),'id'=>'new_category');
+
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>'<span class="edit"><i class="fa fa-edit bullet "></i></span> '._("Customer's Categories").' <span class="id">'.$store->get('Store Code').'<span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
 
 
 $smarty->display('edit_customer_categories.tpl');

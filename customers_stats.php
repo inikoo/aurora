@@ -94,7 +94,56 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
+//--------------- Content spa
 
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+
+
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Stats").' '.$row['Store Code'];
+	}else {$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Stats").' '.$row['Store Code'];
+	}else {$next_title='';}
+
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_stats.php?store='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_stats.php?store='.$next_key);
+}
+
+
+$right_buttons=array();
+
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_("Customer's Stats").' <span class="id">'.$store->get('Store Code').'<span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
 
 $smarty->display('customers_stats.tpl');
 ?>

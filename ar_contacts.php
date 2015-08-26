@@ -2556,87 +2556,7 @@ function list_customers() {
 
 
 
-	$_order=$order;
-	$_dir=$order_direction;
-	// if($order=='location'){
-	//      if($order_direction=='desc')
-	//        $order='country_code desc ,town desc';
-	//      else
-	//        $order='country_code,town';
-	//      $order_direction='';
-	//    }
 
-	//     if($order=='total'){
-	//       $order='supertotal';
-	//    }
-
-
-	if ($order=='name')
-		$order='`Customer File As`';
-	elseif ($order=='id')
-		$order='C.`Customer Key`';
-	elseif ($order=='location')
-		$order='`Customer Main Location`';
-	elseif ($order=='orders')
-		$order='`Customer Orders`';
-	elseif ($order=='email')
-		$order='`Customer Main Plain Email`';
-	elseif ($order=='telephone')
-		$order='`Customer Main Plain Telephone`';
-	elseif ($order=='last_order')
-		$order='`Customer Last Order Date`';
-	elseif ($order=='contact_name')
-		$order='`Customer Main Contact Name`';
-	elseif ($order=='address')
-		$order='`Customer Main Plain Address`';
-	elseif ($order=='town')
-		$order='`Customer Main Town`';
-	elseif ($order=='postcode')
-		$order='`Customer Main Postal Code`';
-	elseif ($order=='region')
-		$order='`Customer Main Country First Division`';
-	elseif ($order=='country')
-		$order='`Customer Main Country`';
-	//  elseif($order=='ship_address')
-	//  $order='`customer main ship to header`';
-	elseif ($order=='ship_town')
-		$order='`Customer Main Delivery Address Town`';
-	elseif ($order=='ship_postcode')
-		$order='`Customer Main Delivery Address Postal Code`';
-	elseif ($order=='ship_region')
-		$order='`Customer Main Delivery Address Country Region`';
-	elseif ($order=='ship_country')
-		$order='`Customer Main Delivery Address Country`';
-	elseif ($order=='net_balance')
-		$order='`Customer Net Balance`';
-	elseif ($order=='balance')
-		$order='`Customer Outstanding Net Balance`';
-	elseif ($order=='total_profit')
-		$order='`Customer Profit`';
-	elseif ($order=='total_payments')
-		$order='`Customer Net Payments`';
-	elseif ($order=='top_profits')
-		$order='`Customer Profits Top Percentage`';
-	elseif ($order=='top_balance')
-		$order='`Customer Balance Top Percentage`';
-	elseif ($order=='top_orders')
-		$order='``Customer Orders Top Percentage`';
-	elseif ($order=='top_invoices')
-		$order='``Customer Invoices Top Percentage`';
-	elseif ($order=='total_refunds')
-		$order='`Customer Total Refunds`';
-	elseif ($order=='contact_since')
-		$order='`Customer First Contacted Date`';
-	elseif ($order=='activity')
-		$order='`Customer Type by Activity`';
-	elseif ($order=='logins')
-		$order='`Customer Number Web Logins`';
-	elseif ($order=='failed_logins')
-		$order='`Customer Number Web Failed Logins`';
-	elseif ($order=='requests')
-		$order='`Customer Number Web Requests`';
-	else
-		$order='`Customer File As`';
 
 
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
@@ -2657,7 +2577,7 @@ function list_customers() {
 		}
 
 
-		$id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+		$id="<a href='customer.php?p=".$parent."&pk=".$parent_key."&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
 		if ($data['Customer Type']=='Person') {
 			$name='<img src="art/icons/user.png" alt="('._('Person').')">';
 		} else {
@@ -2665,7 +2585,7 @@ function list_customers() {
 
 		}
 
-		$name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
+		$name.=" <a href='customer.php?p=".$parent."&pk=".$parent_key."&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
 
 
 

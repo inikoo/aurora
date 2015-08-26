@@ -1,23 +1,8 @@
 {include file='header.tpl'} 
-<div id="bd" class="no_padding">
-	<div style="padding:0px 20px">
 	<input type="hidden" value="{$store->id}" id="store_key"/>
-		{include file='contacts_navigation.tpl'} 
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {t}Categories{/t}</span> 
-
-		</div>
-		<div class="top_page_menu">
-			<div class="buttons" style="float:left">
-				<span class="main_title">{t}Customers Categories Home{/t}</span> 
-			</div>
-			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_customer_categories.php?store_id={$store->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>  
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
-	</div>
+<div id="bd" class="no_padding">
+{include file='navigation.tpl' _content=$content} 	
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Categories{/t}</span></span></li>
 		<li> <span  class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changeslog{/t}</span></span></li>

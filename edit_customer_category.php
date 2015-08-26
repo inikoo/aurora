@@ -69,7 +69,7 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	$yui_path.'animation/animation-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
@@ -247,10 +247,10 @@ $tipo_filter=$_SESSION['state']['customer_categories']['history']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['customer_categories']['history']['f_value']);
 $filter_menu=array(
-		'notes'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract *<i>x</i>*'),'label'=>_('Abstract')),
+	'notes'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract *<i>x</i>*'),'label'=>_('Abstract')),
 	'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
-//	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
-//	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
+	// 'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	// 'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
 
 );
 
@@ -307,6 +307,111 @@ while ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['customer_categories']['history']['elements']);
+
+// Start spa
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+$branch[]=array('label'=>_('Categories'),'icon'=>'sitemap','url'=>'customer_categories.php?id=0&store_id='.$store->id);
+
+$category_keys=preg_split('/\>/',preg_replace('/\>$/','',$category->data['Category Position']));
+array_pop($category_keys);
+if (count($category_keys)>0) {
+	$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+	//print $sql;
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$branch[]=array('label'=>$row['Category Code'],'icon'=>'','url'=>'customer_category.php?id='.$row['Category Key']);
+
+	}
+}
+
+$left_buttons=array();
+$right_buttons=array();
+
+
+$sql=sprintf("select count(*) num from `Category Dimension` where `Category Store Key`=%d and `Category Parent Key`=%d",$store->id,$category->data['Category Parent Key']);
+$res=mysql_query($sql);
+if ($row=mysql_fetch_assoc($res) and $row['num']>1 ) {
+
+
+	$sql=sprintf("select `Category Code`,`Category Key`  from `Category Dimension` where `Category Store Key`=%d and
+
+	(`Category Parent Key`=%d and `Category Code` < %s OR (`Category Code` = %s AND `Category Key` < %d) ) order by `Category Code` desc , `Category Key` desc limit 1",
+		$store->id,
+		$category->data['Category Parent Key'],
+		prepare_mysql($category->data['Category Code']),
+		prepare_mysql($category->data['Category Code']),
+		$category->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_key=$row['Category Key'];
+		$prev_title=_("Customer's Categories").' '.$row['Category Code'];
+		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer_category.php?id='.$prev_key);
+
+	}else {
+		$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
+
+	}
+
+
+	if ($category->data['Category Parent Key']) {
+		$parent_url='edit_customer_category.php?id='.$category->data['Category Parent Key'];
+		$parent_title=_('Parent category');
+	}else {
+		$parent_url='edit_customer_categories.php?id=0&store_id='.$store->id;
+		$parent_title=_("Customer's Categories").' '.$store->data['Store Code'];
+	}
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>$parent_title,'url'=>$parent_url);
+
+
+	$sql=sprintf("select `Category Code`,`Category Key`  from `Category Dimension` where `Category Store Key`=%d and `Category Parent Key`=%d
+	                and (`Category Code` > %s OR (`Category Code` = %s AND `Category Key` > %d))  order by `Category Code`  , `Category Key`  limit 1",
+		$store->id,
+		$category->data['Category Parent Key'],
+		prepare_mysql($category->data['Category Code']),
+		prepare_mysql($category->data['Category Code']),
+		$category->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_key=$row['Category Key'];
+		$next_title=_("Customer's Categories").' '.$row['Category Code'];
+		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer_category.php?id='.$next_key);
+
+	}else {
+		$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
+
+	}
+}
+
+$right_buttons[]=array('icon'=>'sign-out fa-flip-horizontal','title'=>_('Exit edit'),'url'=>"customer_category.php?id=".$category->id);
+$right_buttons[]=array('icon'=>'trash','title'=>_('Delete'),'id'=>'delete_category');
+if($create_subcategory){
+$right_buttons[]=array('icon'=>'plus-square','title'=>_('Add subcategory'),'id'=>'new_category');
+}
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>'<span class="edit"><i class="fa fa-edit bullet "></i></span> '.'<span class="icon">'.$category->get_icon().' '.$category->get_user_view_icon().'</span> '._("Category").' <span class="id">'.$category->get('Category Code').($category->get('Category Code')!=$category->get('Category Code')?', <span class="id2">'.$category->get('Category Label').'</span>':'').'</span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
+
 
 $smarty->display('edit_customer_category.tpl');
 ?>

@@ -1,8 +1,5 @@
-{include file='header.tpl'} 
-<div id="bd" class="no_padding">
-	<div style="padding:0 20px">
-		{include file='contacts_navigation.tpl'} 
-		<input type="hidden" value="{$session_data}" id="session_data" />
+{include file='header.tpl'}
+<input type="hidden" value="{$session_data}" id="session_data" />
 		<input type="hidden" id="store_key" value="{$store->id}" />
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
@@ -11,20 +8,11 @@
 		<input type="hidden" id="parent_key" value="{$category->id}" />
 		<input type="hidden" id="show_subjects" value="{$show_subjects}" />
 		<input type="hidden" id="show_subcategories" value="{$show_subcategories}" />
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr;<a href="customer_categories.php?&store_id={$store->id}"> {t}Categories{/t} </a> &rarr; {$category->get('Category XHTML Branch Tree')} </span> 
-		</div>
-		<div class="top_page_menu">
-			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title"> {t}Category{/t}: {$category->get('Category Label')} <span class="id">({$category->get('Category Code')})</span> {$category->get_icon()} <span id="user_view_icon">{$category->get_user_view_icon()}</span></span> 
-			</div>
-			<div class="buttons" style="float:right">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button onclick="window.location='edit_customer_category.php?id={$category->id}'"> <img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t} </button> 
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
-	</div>
+ 
+<div id="bd" class="no_padding">
+{include file='navigation.tpl' _content=$content} 	
+
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='overview'}selected{/if}" id="overview"> <span> {t}Overview{/t}</span></span> </li>
 		<li style="{if !$show_subcategories}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Number Children')})</span></span> </li>

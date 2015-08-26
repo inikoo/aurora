@@ -42,19 +42,6 @@ $(document).ready(function() {
 
 
 
-function change_inikoo_content(url) {
-
-    var $iframe = $('#inikoo_content', window.parent.document);
-    if ($iframe.length) {
-
-
-        $iframe.attr('src', url);
-
-    }
-    window.history.replaceState(null, null, url.replace('.php', '.app.php'))
-
-
-}
 
 
 

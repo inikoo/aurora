@@ -61,20 +61,6 @@ span.onright {float:right}
 #bd.no_padding{padding:0px 0px 20px 0px}
 
 
-#footer a{color:#fff}
-
-#footer .adv{float:left}
-#footer .adv img {position:relative;bottom:.5px;right:2px;height:14px}
-
-#footer {
-    padding:3px 20px 0px 20px;
-   position:fixed;
-   left:0px;
-   bottom:0px;
-   height:20px;
-   width:100%;
-   background:#555;
-}
 
 .bd labelc { display:block;float:left;width:30%;clear:left; }
 
@@ -103,16 +89,6 @@ table.show_info_product tr.section{border-top:1px dashed #ddd}
 
 
 
-.newcontact{border:1px solid #3b5998;padding:10px}
-.newcontact table, .newcontact div {border:none;float:left;margin-right:10px}
-.newcontact table td {padding:0 5px;vertical-align:top}
-.newcontact table td.noborder {border:none}
-.newcontact div {padding:10px}
-.newcontact .img{padding:5px 5px 7px 5px}
-.newcontact h2{padding:0}
-.newcontact legend{background:#3b5998;color:#fff;margin-left:5px;padding:0px 10px 2px 10px;font-size:85%}
-
-
 .noshow{display:none}
 .show{display:block}
 
@@ -130,7 +106,6 @@ img.calpop_to {position:relative;bottom:2px;cursor:pointer;right:36px;  }
 .nodisplay {display:none}
 .display {display:block}
 .product_plot{width: 800px;height: 350px;}
-.xprodinfo .product_details{clear:both;border:none}
 .product_plots{clear:both;border:none}
 
 table.other_images{margin:5px auto ;border:none}
@@ -142,7 +117,6 @@ table.editborder td{border:1px solid #b52b34;}
 table.other_images img{border:none;padding:0;margin:0;cursor:pointer}
 .xprodinfo div.image_caption{padding:0px ;border:none;margin:5px auto;width:100%}
 
-.xprodinfo td.img_arrow{border:none;width:20px;padding:0;margin:0}
 
 #image{border:none}
 
@@ -163,7 +137,6 @@ input.normal_right{color:#000;text-align:right}
 .ok{background:#a6edaa}
 .text_ok{color:#4aa42b}
 
-img{vertical-align:bottom}
 
 .chooser {width:670px;margin:0px auto}
 .chooser ul {;margin:0px auto;}
@@ -365,7 +338,6 @@ font-size: 11px;
 color: #316D89;
 }
 
-.id ,.id a,a.id:hover{color:SteelBlue}
 
 /*Common search div*/
 

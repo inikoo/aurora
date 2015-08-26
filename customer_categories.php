@@ -59,7 +59,6 @@ $smarty->assign('category_period',$_SESSION['state']['customer_categories']['per
 
 
 
-
 if (isset($_REQUEST['store_id']) ) {
 
 	$store=new Store($_REQUEST['store_id']);
@@ -168,6 +167,58 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['customer_categories']['history']['elements']);
+
+//======== start SPA
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
+}
+$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
+
+
+$left_buttons=array();
+if ($user->stores>1) {
+
+
+
+
+	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Categories").' '.$row['Store Code'];
+	}else {$prev_title='';}
+	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Categories").' '.$row['Store Code'];
+	}else {$next_title='';}
+
+
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer_categories.php?id=0&store_id='.$prev_key);
+	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer_categories.php?id=0&store_id='.$next_key);
+}
+
+
+$right_buttons=array();
+
+$right_buttons[]=array('icon'=>'edit','title'=>_('Edit'),'url'=>"edit_customer_categories.php?store_id=".$store->id);
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('customers',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_("Customer's Categories").' <span class="id">'.$store->get('Store Code').'<span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+);
+$smarty->assign('content',$_content);
 
 $smarty->display('customer_categories.tpl');
 

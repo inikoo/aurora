@@ -3,9 +3,6 @@
 <input type="hidden" id="state_data" value="{$state_data}"/>
 
 <div id="bd" class="no_padding">
-
-
-
  {include file='navigation.tpl' _content=$content} 	
 
 	<div style="padding:0px">

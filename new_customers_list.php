@@ -37,6 +37,7 @@ $css_files=array(
 	'css/table.css',
 	'css/edit.css',
 	'css/new_list.css',
+	'theme.css.php'
 
 );
 $js_files=array(
@@ -51,7 +52,7 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/php.default.min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/customers_common.js',
@@ -323,22 +324,22 @@ $branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?s
 $left_buttons=array();
 if ($user->stores>1) {
 
-	
-	
+
+
 
 	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
-	
+
 	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
 	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-	    $prev_title=_("Customer's Lists").' '.$row['Store Code'];
-	}else{$prev_title='';}
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$prev_title='';}
 	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
 	$res=mysql_query($sql);
-	if($row=mysql_fetch_assoc($res)){
-	    $next_title=_("Customer's Lists").' '.$row['Store Code'];
-	}else{$next_title='';}
-	
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_title=_("Customer's Lists").' '.$row['Store Code'];
+	}else {$next_title='';}
+
 
 	$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Lists").' '.$store->data['Store Code'],'url'=>'customers_lists.php?store='.$store->id);
 

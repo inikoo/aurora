@@ -30,15 +30,15 @@ $smarty->assign('modify',$modify);
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
-	$customer_id=$_REQUEST['id'];
+	$customer_key=$_REQUEST['id'];
 } else {
-	$customer_id=$_SESSION['state']['customer']['id'];
+	$customer_key=$_SESSION['state']['customer']['id'];
 }
 
 
-$customer=new customer($customer_id);
+$customer=new customer($customer_key);
 if (!$customer->id) {
-	header('Location: customer_deleted.php?id='.$customer_id);
+	header('Location: customer_deleted.php?id='.$customer_key);
 	exit;
 }
 
@@ -52,11 +52,18 @@ if (!in_array($customer->data['Customer Store Key'],$user->stores)) {
 	exit;
 }
 
-$referer='customers';
+$store=new Store($customer->data['Customer Store Key']);
+$smarty->assign('store', $store);
+
+$parent='store';
+$parent_key=$store->id;
+if (isset($_REQUEST['p']) and isset($_REQUEST['pk']) and ($_REQUEST['p']=='list' or $_REQUEST['p']=='category') ) {
+
+	$parent=$_REQUEST['p'];
+	$parent_key=$_REQUEST['pk'];
+}
 
 
-$_SESSION['state']['customer']['id']=$customer_id;
-$_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 
 
 
@@ -120,6 +127,7 @@ $css_files=array(
 	'css/customer.css',
 	'css/upload.css',
 	'css/edit.css',
+	'theme.css.php'
 
 );
 $js_files=array(
@@ -173,7 +181,7 @@ $smarty->assign('customer',$customer);
 $smarty->assign('all_warning',get_all_warnings($customer));
 
 
-list($customer_type, $login_stat)=$customer->is_user_customer($customer_id);
+list($customer_type, $login_stat)=$customer->is_user_customer($customer_key);
 $_login_stat=array('UserHandle'=>false);
 
 if ($customer_type) {
@@ -194,9 +202,8 @@ if ($customer_type) {
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
-$store=new Store($customer->data['Customer Store Key']);
-$smarty->assign('store', $store);
 
+/*
 if (isset($_REQUEST['p'])) {
 	$smarty->assign('parent_list',$_REQUEST['p']);
 	if ($_REQUEST['p']=='cs') {
@@ -359,17 +366,12 @@ if (isset($_REQUEST['p'])) {
 
 
 }
-
+*/
 
 $smarty->assign('store_key',$customer->data['Customer Store Key']);
 
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+/*
 $new_customer=false;
 if ($modify) {
 	if (isset($_REQUEST['r']) and $_REQUEST['r']=='nc') {
@@ -385,7 +387,7 @@ $general_options_list=array();
 //$smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('new_customer',$new_customer);
-
+*/
 
 
 $smarty->assign('number_orders',$customer->get('Customer Orders'));
@@ -536,12 +538,12 @@ $msg='';
 $sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200",$customer->id);
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_assoc($res2)) {
-	$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer B Key'],$myconf['customer_id_prefix'].sprintf("%05d",$row2['Customer B Key']));
+	$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer B Key'],sprintf("%05d",$row2['Customer B Key']));
 }
 $sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200",$customer->id);
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_assoc($res2)) {
-	$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer A Key'],$myconf['customer_id_prefix'].sprintf("%05d",$row2['Customer A Key']));
+	$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$customer->id,$row2['Customer A Key'],sprintf("%05d",$row2['Customer A Key']));
 }
 
 $msg=preg_replace('/^,/','',$msg);
@@ -598,7 +600,7 @@ $smarty->assign('hq_country',$corporate_country_code);
 $smarty->assign('gold_reward',$gold_reward);
 
 $smarty->assign('options_box_width','550px');
-$smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
+$smarty->assign('id',$customer->get_formated_id());
 
 $smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
 $smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
@@ -713,66 +715,71 @@ $branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'
 
 $left_buttons=array();
 $right_buttons=array();
-if ($referer=='list') {
-	$branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id);
 
-	$sql=sprintf("select count(*) num from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d",$store->id);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res) and $row['num']>1 ) {
+switch ($parent) {
+case 'store':
+	$conf_table='customers';
+	break;
+case 'category':
+	$conf_table='customer_categories';
+	break;
+case 'list':
+	$conf_table='customers_list';
+	break;
+}
 
-
-		$sql=sprintf("select `List Name`,`List Key`  from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d
-	                and `List Name` < %s OR (`List Name` = %s AND `List Key` < %d)  order by `List Name` desc , `List Key` desc limit 1",
-			$store->id,
-			prepare_mysql($list->data['List Name']),
-			prepare_mysql($list->data['List Name']),
-			$list->id
-		);
-
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_key=$row['List Key'];
-			$prev_title=_("Customer's Lists").' '.$row['List Name'];
-			$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_list.php?id='.$prev_key);
-
-		}
-
-		$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Lists").' '.$store->data['Store Code'],'url'=>'customers_lists.php?store='.$store->id);
-
-		$sql=sprintf("select `List Name`,`List Key`  from `List Dimension` where `List Scope`='Customer' and `List Parent Key`=%d
-	                and `List Name` > %s OR (`List Name` = %s AND `List Key` > %d)  order by `List Name`  , `List Key`  limit 1",
-			$store->id,
-			prepare_mysql($list->data['List Name']),
-			prepare_mysql($list->data['List Name']),
-			$list->id
-		);
-
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_key=$row['List Key'];
-			$next_title=_("Customer's Lists").' '.$row['List Name'];
-			$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_list.php?id='.$next_key.'&p='.$list->id);
-
-		}
+$conf=$_SESSION['state'][$conf_table]['customers'];
 
 
 
+$order=$conf['order'];
+
+$order_dir=$conf['order_dir'];
 
 
 
-	}
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customers_list.php?id='.$list->id);
+$f_field=$conf['f_field'];
 
-}else {
-	$prev_key=0;
-	$next_key=0;
-	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d
-	                and `Customer Name` < %s OR (`Customer Name` = %s AND `Customer Key` < %d)  order by `Customer Name` desc , `Customer Key` desc limit 1",
-		$store->id,
-		prepare_mysql($customer->data['Customer Name']),
-		prepare_mysql($customer->data['Customer Name']),
+
+$f_value=$conf['f_value'];
+
+
+$awhere=$conf['where'];
+
+
+
+$elements=$conf['elements'];
+
+$elements_type=$_SESSION['state'][$conf_table]['customers']['elements_type'];
+$orders_type=$_SESSION['state'][$conf_table]['customers']['orders_type'];
+$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+include_once 'splinters/customers_prepare_list.php';
+
+$_order_field=$order;
+
+$order=preg_replace('/^.*\.`/','',$order);
+$order=preg_replace('/^`/','',$order);
+
+$order=preg_replace('/`$/','',$order);
+
+$_order_field_value=$customer->get($order);
+
+
+
+$prev_key=0;
+$next_key=0;
+$sql="select count(Distinct C.`Customer Key`) as num from $table   $where $wheref $where_type";
+$res2=mysql_query($sql);
+if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
+
+	$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Customer Key` < %d))  order by $_order_field desc , C.`Customer Key` desc limit 1",
+
+		prepare_mysql($_order_field_value),
+		prepare_mysql($_order_field_value),
 		$customer->id
 	);
 
@@ -784,12 +791,10 @@ if ($referer=='list') {
 
 	}
 
-
-	$sql=sprintf("select `Customer Name` object_name,`Customer Key` as object_key from `Customer Dimension` where   `Customer Store Key`=%d
-	                and `Customer Name` > %s OR (`Customer Name` = %s AND `Customer Key` > %d)  order by `Customer Name`  , `Customer Key`  limit 1",
-		$store->id,
-		prepare_mysql($customer->data['Customer Name']),
-		prepare_mysql($customer->data['Customer Name']),
+	$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Customer Key` > %d))  order by $_order_field   , C.`Customer Key`  limit 1",
+		prepare_mysql($_order_field_value),
+		prepare_mysql($_order_field_value),
 		$customer->id
 	);
 
@@ -800,26 +805,88 @@ if ($referer=='list') {
 		$next_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 	}
-	if ($prev_key) {
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer.php?id='.$prev_key);
 
+
+	if ($order_direction=='desc') {
+		$_tmp1=$prev_key;
+		$_tmp2=$prev_title;
+		$prev_key=$next_key;
+		$prev_title=$next_title;
+		$next_key=$_tmp1;
+		$next_title=$_tmp2;
 	}
-	$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customers").' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
-	if ($next_key) {
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer.php?id='.$next_key);
 
-	}
-
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customer.php?id='.$customer->id);
-	$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
-	$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
-	$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
-	$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
 }
 
+if ($parent=='list') {
+
+	include_once 'class.List.php';
+	$list=new SubjectList($parent_key);
+
+	$branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id);
+	$branch[]=array('label'=>$list->data['List Name'],'icon'=>'','url'=>'customers_list.php?id='.$list->id);
+
+	$up_button=array('icon'=>'arrow-up','title'=>_("List").' '.$list->data['List Name'],'url'=>'customers_list.php?id='.$list->id);
+
+}elseif ($parent=='category') {
 
 
+
+	include_once 'class.Category.php';
+	$category=new Category($parent_key);
+
+	$branch[]=array('label'=>_('Categories'),'icon'=>'sitemap','url'=>'customer_categories.php?id=0&store_id='.$store->id);
+
+	$category_keys=preg_split('/\>/',preg_replace('/\>$/','',$category->data['Category Position']));
+	array_pop($category_keys);
+	if (count($category_keys)>0) {
+		$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+		//print $sql;
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$branch[]=array('label'=>$row['Category Code'],'icon'=>'','url'=>'customer_category.php?id='.$row['Category Key']);
+
+		}
+	}
+
+
+	$up_button=array('icon'=>'arrow-up','title'=>_("Category").' '.$category->data['Category Code'],'url'=>'customer_category.php?id='.$category->id);
+
+}
+
+else {
+
+	$up_button=array('icon'=>'arrow-up','title'=>_("Customers").' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+
+
+
+}
+
+if ($prev_key) {
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer.php?p='.$parent.'&pk='.$parent_key.'&id='.$prev_key);
+
+}else {
+	$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
+
+}
+$left_buttons[]=$up_button;
+
+
+if ($next_key) {
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer.php?p='.$parent.'&pk='.$parent_key.'&id='.$next_key);
+
+}else {
+	$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
+
+}
+$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customer.php?id='.$customer->id);
+$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
+$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
+$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
 
 $_content=array(
@@ -834,6 +901,10 @@ $_content=array(
 );
 $smarty->assign('content',$_content);
 
+
 $smarty->display('customer.tpl');
+
+
+
 
 ?>
