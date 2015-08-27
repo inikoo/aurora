@@ -1,8 +1,8 @@
- <div id="navigation">
+ <div id="address_bar">
 	<div id="section_links" class="{if isset($_content.sections_class)}{$_content.sections_class}{/if}">
 		{foreach from=$_content.sections item=section_link } 
-		<div {if isset($section_link.id) and $button.id }id="{$button.id}"{/if} class="section right"  {if isset($section_link.url)}onclick="location.href='{$section_link.url}'"{/if} title="{$section_link.title}">
-			{if $section_link.icon!=''}<i class="fa fa-{$section_link.icon}"></i>{/if} <span class="section_label">{$section_link.label}</span> 
+		<div {if isset($section_link.id) and $section_link.id }id="{$section_link.id}"{/if} class="section right"  {if isset($section_link.url)}onclick="location.href='{$section_link.url}'"{/if} title="{$section_link.title}">
+			{if $section_link.icon!=''}<i class="fa fa-{$section_link.icon}"></i>{/if} <span class="section_label"> {$section_link.label}</span> 
 		</div>
 		{/foreach} 
 	</div>

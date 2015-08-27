@@ -654,57 +654,6 @@ $smarty->assign('zero_money',money(0,$customer->data['Customer Currency Code']))
 
 //--------------- Content spa
 
-$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
-if ( $user->get_number_stores()>1) {
-	$branch[]=array('label'=>_('Customers'),'icon'=>'bars','url'=>'customers_server.php');
-}
-$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','url'=>'customers.php?store='.$store->id);
-
-
-$left_buttons=array();
-if ($user->stores>1) {
-
-
-
-
-	list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
-
-	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		$prev_title=_("Customer's Lists").' '.$row['Store Code'];
-	}else {$prev_title='';}
-	$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		$next_title=_("Customer's Lists").' '.$row['Store Code'];
-	}else {$next_title='';}
-
-
-	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customers_lists.php?store='.$prev_key);
-	$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
-
-	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customers_lists.php?store='.$next_key);
-}
-
-
-$right_buttons=array();
-
-$right_buttons[]=array('icon'=>'plus','title'=>_('New list'),'url'=>"new_customers_list.php?store=".$store->id);
-
-$_content=array(
-	'branch'=>$branch
-	,
-
-	'section_links'=>array(
-	),
-	'left_buttons'=>$left_buttons,
-	'right_buttons'=>$right_buttons,
-	'title'=>_("Customer's Lists").' '.$store->get('Store Code'),
-	'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
-
-);
-$smarty->assign('content',$_content);
 
 $branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
 if ( $user->get_number_stores()>1) {
@@ -733,21 +682,10 @@ $conf=$_SESSION['state'][$conf_table]['customers'];
 
 
 $order=$conf['order'];
-
 $order_dir=$conf['order_dir'];
-
-
-
 $f_field=$conf['f_field'];
-
-
 $f_value=$conf['f_value'];
-
-
 $awhere=$conf['where'];
-
-
-
 $elements=$conf['elements'];
 
 $elements_type=$_SESSION['state'][$conf_table]['customers']['elements_type'];

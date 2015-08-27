@@ -727,6 +727,199 @@ $smarty->assign('session_data',$session_data);
 $smarty->assign('sticky_note',$order->data['Order Sticky Note']);
 
 
+
+$order_object=$order;
+unset($order);
+//--------------- Content spa
+
+
+$branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
+if ( $user->get_number_stores()>1) {
+	$branch[]=array('label'=>_('Orders'),'icon'=>'bars','url'=>'orders_server.php');
+}
+$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'],'icon'=>'shopping-cart','url'=>'order.php?store='.$store->id);
+
+
+$left_buttons=array();
+$right_buttons=array();
+
+switch ($parent) {
+case 'store':
+	$conf_table='customers';
+	break;
+case 'category':
+	$conf_table='customer_categories';
+	break;
+case 'list':
+	$conf_table='customers_list';
+	break;
+}
+
+$conf=$_SESSION['state'][$conf_table]['customers'];
+
+
+
+$order=$conf['order'];
+$order_dir=$conf['order_dir'];
+$f_field=$conf['f_field'];
+$f_value=$conf['f_value'];
+$awhere=$conf['where'];
+$elements=$conf['elements'];
+
+$elements_type=$_SESSION['state'][$conf_table]['customers']['elements_type'];
+$orders_type=$_SESSION['state'][$conf_table]['customers']['orders_type'];
+$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+include_once 'splinters/customers_prepare_list.php';
+
+$_order_field=$order;
+
+$order=preg_replace('/^.*\.`/','',$order);
+$order=preg_replace('/^`/','',$order);
+
+$order=preg_replace('/`$/','',$order);
+
+$_order_field_value=$customer->get($order);
+
+
+
+$prev_key=0;
+$next_key=0;
+$sql="select count(Distinct C.`Customer Key`) as num from $table   $where $wheref $where_type";
+$res2=mysql_query($sql);
+if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
+
+	$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Customer Key` < %d))  order by $_order_field desc , C.`Customer Key` desc limit 1",
+
+		prepare_mysql($_order_field_value),
+		prepare_mysql($_order_field_value),
+		$customer->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$prev_key=$row['object_key'];
+		$prev_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+	}
+
+	$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Customer Key` > %d))  order by $_order_field   , C.`Customer Key`  limit 1",
+		prepare_mysql($_order_field_value),
+		prepare_mysql($_order_field_value),
+		$customer->id
+	);
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$next_key=$row['object_key'];
+		$next_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+	}
+
+
+	if ($order_direction=='desc') {
+		$_tmp1=$prev_key;
+		$_tmp2=$prev_title;
+		$prev_key=$next_key;
+		$prev_title=$next_title;
+		$next_key=$_tmp1;
+		$next_title=$_tmp2;
+	}
+
+
+}
+
+if ($parent=='list') {
+
+	include_once 'class.List.php';
+	$list=new SubjectList($parent_key);
+
+	$branch[]=array('label'=>_('Lists'),'icon'=>'list','url'=>'customers_lists.php?store='.$store->id);
+	$branch[]=array('label'=>$list->data['List Name'],'icon'=>'','url'=>'customers_list.php?id='.$list->id);
+
+	$up_button=array('icon'=>'arrow-up','title'=>_("List").' '.$list->data['List Name'],'url'=>'customers_list.php?id='.$list->id);
+
+}
+elseif ($parent=='category') {
+
+
+
+	include_once 'class.Category.php';
+	$category=new Category($parent_key);
+
+	$branch[]=array('label'=>_('Categories'),'icon'=>'sitemap','url'=>'customer_categories.php?id=0&store_id='.$store->id);
+
+	$category_keys=preg_split('/\>/',preg_replace('/\>$/','',$category->data['Category Position']));
+	array_pop($category_keys);
+	if (count($category_keys)>0) {
+		$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+		//print $sql;
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$branch[]=array('label'=>$row['Category Code'],'icon'=>'','url'=>'customer_category.php?id='.$row['Category Key']);
+
+		}
+	}
+
+
+	$up_button=array('icon'=>'arrow-up','title'=>_("Category").' '.$category->data['Category Code'],'url'=>'customer_category.php?id='.$category->id);
+
+}
+
+else {
+
+	$up_button=array('icon'=>'arrow-up','title'=>_("Customers").' '.$store->data['Store Code'],'url'=>'customers.php?store='.$store->id);
+
+
+
+
+}
+
+if ($prev_key) {
+	$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'url'=>'customer.php?p='.$parent.'&pk='.$parent_key.'&id='.$prev_key);
+
+}else {
+	$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
+
+}
+$left_buttons[]=$up_button;
+
+
+if ($next_key) {
+	$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'url'=>'customer.php?p='.$parent.'&pk='.$parent_key.'&id='.$next_key);
+
+}else {
+	$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
+
+}
+$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customer.php?id='.$customer->id);
+$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
+$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
+$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
+
+
+$_content=array(
+	'branch'=>$branch,
+	'sections_class'=>'only_icons',
+	'sections'=>get_sections('orders',$store->id),
+	'left_buttons'=>$left_buttons,
+	'right_buttons'=>$right_buttons,
+	'title'=>_("Order").' <span class="id">'.$order_object->get('Order Public ID').'</span> <class="subtitle">('.$order_object->get_formated_dispatch_state().')</span>',
+	'search'=>array('show'=>true,'placeholder'=>_('Search orders'))
+
+);
+$smarty->assign('content',$_content);
+
+
+
 $smarty->display($template);
 
 ?>

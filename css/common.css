@@ -2,7 +2,6 @@
 td {text-align:left}
 
 
-.hide{visibility:hidden}
 
 
 th,td {padding:.2em;}
@@ -610,58 +609,7 @@ div.tabbed_container.no_padding .edit_block_content{padding:20px 20px}
 .edit_block .tabs button.selected:hover,.block .tabs button.selected:hover{color:none;background:none;border-color:#ccc;border-bottom-color:#fff}
 .edit_block .tabs_base,.block .tabs_base{clear:both;height:0px;;margin-bottom:0px;border-bottom:1px solid #ccc}
 
-ul.tabs{margin-left:20px;margin-top:10px}
-.tabs span.item{
-color: #777;
-background: #fff ;
-text-decoration: none;
-padding-left: 10px;
-border:1px solid #ccc;
-border-bottom:1px solid #999;
-border-bottom:none;
-cursor:pointer
-}
-.tabs span.option{
-border-bottom:1px solid #ddd;
 
-}
-.tabs span.selected{
- color: #000;
- border:1px solid #ccc;
- border-bottom:1px solid #fff;
- position:relative;
-top:0px;
-}
-.tabs span.item span{
- padding-right: 10px;
-}
-.tabs span.item, .tabs span.item span{display: block;float: left}
-.tabs span.item, .tabs span.item span{float: none}
-.tabs span.item:hover{
-color: #000;
-background: #fff ;
-padding-left: 10px;
- border-top:1px solid #ccc;
- border-left:1px solid #ccc;
- border-right:1px solid #ccc;
-
-}
-.tabs span.item:hover span{
-
-padding-right: 10px
-}
-.tabs ul{
-list-style: none;
-padding: 0;
-margin: 0
-}
-.tabs li{
-float: left;
-margin: 0;
-margin-right:5px;
-position:relative;top:1px
-} 
-.tabs_base{clear:both;width:100%;border-bottom:1px solid #ccc}
 
 .buttons.tabs button{color:#777;background-color:#fff;border:1px solid #ccc;border-bottom:1px solid #ccc;margin-bottom:0px;position:relative;position:relative;top:1px;border-top-right-radius: 7px;}
 .buttons.tabs button.selected{border:1px solid #ccc;border-bottom:1px solid #fff; color:#000;}

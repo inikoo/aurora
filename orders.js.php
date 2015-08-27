@@ -359,6 +359,11 @@ function change_block_view(e) {
     ids = ['orders', 'invoices', 'dn','payments'];
     block_ids = ['block_orders', 'block_invoices', 'block_dn','block_payments'];
 
+  dialog_export['orders'].hide()
+  dialog_export['invoices'].hide()
+                  dialog_export['dn'].hide()
+
+/*
     if (this.id == 'invoices') {
 
         Dom.get('category_button').onclick = function() {
@@ -395,7 +400,7 @@ function change_block_view(e) {
          dialog_export['invoices'].hide()
 
     }
-
+*/
     Dom.setStyle(block_ids, 'display', 'none');
     Dom.setStyle('block_' + this.id, 'display', '');
     Dom.removeClass(ids, 'selected');
@@ -466,8 +471,8 @@ function init() {
 
 
     init_search('orders_store');
-    var ids = ['orders', 'invoices', 'dn','payments'];
-    Event.addListener(ids, "click", change_block_view);
+//    var ids = ['orders', 'invoices', 'dn','payments'];
+ //   Event.addListener(ids, "click", change_block_view);
 
  
 
