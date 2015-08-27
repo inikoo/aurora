@@ -42,7 +42,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/jquery.min.js',
-'js/common.js',
+	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
@@ -54,6 +54,7 @@ $js_files=array(
 	'js/invoices_common.js',
 	'js/dn_common.js',
 	'orders.js.php',
+	'js/orders.js',
 );
 
 if (!$user->can_view('orders')) {
@@ -267,6 +268,8 @@ $from_little_edian=($from==''?'':date("d-m-Y",strtotime($from)));
 $smarty->assign('to_little_edian',$to_little_edian);
 $smarty->assign('from_little_edian',$from_little_edian);
 $smarty->assign('calendar_id','sales');
+
+
 
 
 $smarty->display('orders.tpl');

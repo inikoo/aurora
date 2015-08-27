@@ -259,7 +259,7 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 include 'customers_export_common.php';
 
 
-
+//========= Start SPA
 
 $branch=array(array('label'=>'','icon'=>'home','url'=>'index.php'));
 if ( $user->get_number_stores()>1) {

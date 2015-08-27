@@ -1,43 +1,22 @@
 {include file='header.tpl' } 
+<input type="hidden" id="link_extra_argument" value="&store={$store->id}" />
+<input type="hidden" id="block_view" value="{$block_view}" />
+
+<input type="hidden" id="store_key" value="{$store->id}" />
+<input type="hidden" id="store_id" value="{$store->id}" />
+<input type="hidden" id="from" value="{$from}" />
+<input type="hidden" id="to" value="{$to}" />
+<input type="hidden" id="orders_table_id" value="0" />
+<input type="hidden" id="invoices_table_id" value="1" />
+<input type="hidden" id="dn_table_id" value="2" />
+<input type="hidden" id="calendar_id" value="{$calendar_id}" />
+<input type="hidden" id="subject" value="orders" />
+
 <div id="bd" class="no_padding">
-	<div style="padding:0 20px">
-		{include file='orders_navigation.tpl'} 
-		<input type="hidden" id="store_key" value="{$store->id}" />
-		<input type="hidden" id="store_id" value="{$store->id}" />
-		<input type="hidden" id="link_extra_argument" value="&store={$store->id}" />
-		<input type="hidden" id="from" value="{$from}" />
-		<input type="hidden" id="to" value="{$to}" />
-		<input type="hidden" id="orders_table_id" value="0" />
-		<input type="hidden" id="invoices_table_id" value="1" />
-		<input type="hidden" id="dn_table_id" value="2" />
-		<input type="hidden" id="calendar_id" value="{$calendar_id}" />
-		<input type="hidden" id="subject" value="orders" />
-		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1} <a href="orders_server.php?view=dn" id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}">&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}">&#8704; {t}Invoices{/t}</a> <a href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}">&#8704; {t}Orders{/t}</a> &rarr; {/if} <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}">{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}">{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}">{t}Orders{/t}</span> ({$store->get('Store Code')})</span> 
-		</div>
-		<div class="top_page_menu">
-			<div class="buttons" style="float:left">
-				<span class="main_title" style="bottom:-7px">{t}Orders{/t} <span class="id">{$store->get('Store Code')}</span> </span> 
-			</div>
-			<div class="buttons" style="float:right">
-				<button onclick="window.location='store_pending_orders.php?id={$store->id}'"><img src="art/icons/application_view_list.png" alt=""> {t}Pending Orders{/t}</button> <button id="list_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoices{else}dn{/if}_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button style="{if $block_view!='invoices'}display:none{/if}" id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
-			</div>
-			<div style="clear:both">
-			</div>
-		</div>
-	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-		<li> <span class="item {if $block_view=='orders'}selected{/if}" id="orders"> <span> {t}Orders{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='invoices'}selected{/if}" id="invoices"> <span> {t}Invoices{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='dn'}selected{/if}" id="dn"> <span> {t}Delivery Notes{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='payments'}selected{/if}" id="payments"> <span> {t}Payments{/t}</span></span></li>
-	</ul>
-	<div class="tabs_base">
-	</div>
-	<div style="display:none">
-		<img style="float:right;margin-right:20px;margin-top:3px;cursor:pointer" title="{t}Show details{/t}" onmouseover="this.src='art/icons/statistics.png'" onmouseout="this.src='art/icons/statistics_grey.png'" src="art/icons/statistics_grey.png" /> 
-	</div>
-	<div id="calendar_container" style="{if $block_view=='parts'}display:none{/if}">
+	<div id="navigation"></div> 
+	
+	
+	<div id="calendar_container" style="clear:both;margin-top:10px;padding-top:10px">
 		<div id="period_label_container" style="{if $period==''}display:none{/if}">
 			<img src="art/icons/clock_16.png"> <span id="period_label">{$period_label}</span> 
 		</div>
@@ -45,8 +24,8 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="padding:0 20px;padding-bottom:30px;clear:both;margin-top:10px">
-		<div id="block_orders" class="data_table" style="{if $block_view!='orders'}display:none{/if};clear:both;">
+	<div id="blocks" style="padding:0 20px;padding-bottom:30px;clear:both;margin-top:10px">
+		<div id="block_orders" class="block  {if $block_view!='orders'}hide{/if}">
 			<span class="clean_table_title">{t}Orders{/t} <img id="export_orders" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
 			<div class="elements_chooser">
 				<img class="menu" id="order_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -94,9 +73,8 @@
 			<div id="table0" style="font-size:85%" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_invoices" class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
-			<span class="clean_table_title">{t}Invoices{/t} 
-			<img id="export_invoices" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
+		<div id="block_invoices" class="block  {if $block_view!='invoices'}hide{/if}">
+			<span class="clean_table_title">{t}Invoices{/t} <img id="export_invoices" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
 			<div class="elements_chooser">
 				<img class="menu" id="invoice_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
 				<div id="invoice_type_chooser" style="{if $elements_invoice_elements_type!='type'}display:none{/if}">
@@ -112,7 +90,7 @@
 			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
-		<div id="block_dn" class="data_table" style="{if $block_view!='dn'}display:none{/if};clear:both">
+		<div id="block_dn" class="block  {if $block_view!='dn'}hide{/if}">
 			<span class="clean_table_title">{t}Delivery Note List{/t} <img id="export_dn" class="export_data_link" label="{t}Export Table{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"> </span> 
 			<div class="elements_chooser">
 				<img class="menu" id="dn_element_chooser_menu_button" title="{t}Group by menu{/t}" src="art/icons/list.png" /> 
@@ -129,7 +107,7 @@
 			<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
 			</div>
 		</div>
-		<div id="block_payments" class="data_table" style="{if $block_view!='payments'}display:none;{/if}">
+		<div id="block_payments" class="block  {if $block_view!='payments'}hide{/if}">
 			<span class="clean_table_title">{t}Payments{/t} <img style="display:none" class="export_data_link" id="export_csv0" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 			<div class="table_top_bar">
 			</div>
@@ -295,7 +273,4 @@
 		</tr>
 	</table>
 </div>
-{include file='export_splinter.tpl' id='orders' export_fields=$export_orders_fields map=$export_orders_map is_map_default={$export_orders_map_is_default}}
- {include file='export_splinter.tpl' id='dn' export_fields=$export_dn_fields map=$export_dn_map is_map_default={$export_dn_map_is_default}} 
- {include file='export_splinter.tpl' id='invoices' export_fields=$export_invoices_fields map=$export_invoices_map is_map_default={$export_invoices_map_is_default}} 
- {include file='footer.tpl'} 
+{include file='export_splinter.tpl' id='orders' export_fields=$export_orders_fields map=$export_orders_map is_map_default={$export_orders_map_is_default}} {include file='export_splinter.tpl' id='dn' export_fields=$export_dn_fields map=$export_dn_map is_map_default={$export_dn_map_is_default}} {include file='export_splinter.tpl' id='invoices' export_fields=$export_invoices_fields map=$export_invoices_map is_map_default={$export_invoices_map_is_default}} {include file='footer.tpl'} 

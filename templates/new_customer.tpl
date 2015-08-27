@@ -5,7 +5,6 @@
 				<input type="hidden" value="{$customer_type}" id="Customer_Type" />
 
 <div id="bd" class="no_padding">
-
 {include file='navigation.tpl' _content=$content} 	
 
 
