@@ -178,7 +178,7 @@ class Payment_Account extends DB_Table {
 	}
 
 
-function in_store($site_key) {
+	function in_store($site_key) {
 		$is_in_store=false;
 		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Store Key`=%d and `Payment Account Key`=%d ",
 			$site_key,
@@ -233,16 +233,16 @@ function in_store($site_key) {
 
 
 	function get_formated_bank_data() {
-	
-	//print_r($this->data);
-	
+
+		//print_r($this->data);
+
 		$data='';
 		$data.=_('Beneficiary').': <b>'.$this->data['Payment Account Recipient Holder'].'</b><br>';
 		$data.=_('Bank').': <b>'.$this->data['Payment Account Recipient Bank Name'].'</b><br>';
-				if ($this->data['Payment Account Recipient Address']!=''){
+		if ($this->data['Payment Account Recipient Address']!='') {
 
-		$data.=_('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
-		
+			$data.=_('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
+
 		}
 		if ($this->data['Payment Account Recipient Bank Account Number']!='')
 			$data.=_('Account Number').': <b>'.$this->data['Payment Account Recipient Bank Account Number'].'</b><br>';
@@ -256,6 +256,9 @@ function in_store($site_key) {
 		return $data;
 	}
 
+	function get_settings() {
+		return json_decode($this->data['Payment Account Settings'],true);
 
+	}
 
 }

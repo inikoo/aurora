@@ -2070,18 +2070,45 @@ $sql = 'SELECT word FROM words_list
 		);
 		//print $sql;
 		$res=mysql_query($sql);
+
+		$counter=0;
 		while ($row=mysql_fetch_assoc($res)) {
-			$payment_options_data[]=array(
+
+			$payment_account=new Payment_Account($row['Payment Account Key']);
+
+			switch ($payment_account->data['Payment Type']) {
+			case 'Credit Card':
+				$label='<i class="fa fa-credit-card"></i> '._('Credit Card');
+				break;
+			case 'Bank Transfer':
+				$label='<i class="fa fa-bank"></i> '._('Bank Transfer');
+				break;
+			case 'Paypal':
+				$label='<i class="fa fa-paypal"></i> Paypal';
+				break;
+			case 'Sofort':
+				$label='Sofort'.' '._('eBank Transfers');
+				break;
+			default:
+				$label=$payment_account->data['Payment Type'];
+				break;
+			}
+
+			$payment_options_data[$row['Payment Service Provider Code']]=array(
 				'payment_service_provider_code'=>$row['Payment Service Provider Code'],
 				'payment_account_key'=>$row['Payment Account Key'],
-				'payment_account'=>new Payment_Account($row['Payment Account Key'])
+				'payment_account'=>$payment_account,
+				'label'=>$label,
+				'options'=>array(),
+				'selected'=>($counter?false:true)
 			);
-
+			$counter++;
 		}
 		return $payment_options_data;
 
 
 	}
+
 
 
 }
