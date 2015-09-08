@@ -4941,7 +4941,7 @@ class Customer extends DB_Table {
 	function add_history_order_cancelled($history_key) {
 
 
-		
+
 
 
 		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
@@ -6583,6 +6583,151 @@ class Customer extends DB_Table {
 	}
 	function get_formated_pending_payment_amount_from_account_balance() {
 		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Customer Currency Code']);
+	}
+	function get_number_saved_credit_cards($billing_to_key,$ship_to_key) {
+
+		$number_saved_credit_cards=0;
+		$sql=sprintf("select count(*) as number from `Customer Credit Card Token Dimension` where `Customer Key`=%d and `Billing To Key`=%d and `Ship To Key`=%d and `Valid Until`>NOW()",
+			$this->id,
+			$billing_to_key,
+			$ship_to_key
+		);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$number_saved_credit_cards=$row['number'];
+		}
+		return $number_saved_credit_cards;
+	}
+
+	function get_saved_credit_cards($billing_to_key,$ship_to_key) {
+
+		$key=md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
+
+		$card_data=array();
+		$sql=sprintf("select * from `Customer Credit Card Token Dimension` where `Customer Key`=%d and `Billing To Key`=%d and `Ship To Key`=%d and `Valid Until`>NOW()",
+			$this->id,
+			$billing_to_key,
+			$ship_to_key
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$_card_data=json_decode(AESDecryptCtr($row['Metadata'],$key,256),true);
+			$_card_data['id']=$row['Customer Credit Card Token Key'];
+
+			$card_data[]=$_card_data;
+
+		}
+
+		return $card_data;
+
+	}
+
+	function delete_credit_card($card_key) {
+
+
+		$tokens=array();
+		$sql=sprintf("select `CCUI` from `Customer Credit Card Token Dimension` where `Customer Key`=%d  and `Customer Credit Card Token Key`=%d ",
+			$this->id,
+
+			$card_key
+		);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+
+			$sql=sprintf('select `Customer Credit Card Token Key`,`Billing To Key`,`Ship To Key` from `Customer Credit Card Token Dimension`  where `Customer Key`=%d and `CCUI`=%s',
+				$this->id,
+				prepare_mysql($row['CCUI'])
+			);
+
+			$res2=mysql_query($sql);
+			while ($row2=mysql_fetch_assoc($res2)) {
+				$tokens[]=$this->get_credit_card_token(
+					$row2['Customer Credit Card Token Key'],
+					$row2['Billing To Key'],
+					$row2['Ship To Key']
+				);
+
+				$sql=sprintf('delete from `Customer Credit Card Token Dimension`  where `Customer Credit Card Token Key`=%d',
+					$row2['Customer Credit Card Token Key']
+				);
+
+				mysql_query($sql);
+			}
+		}
+
+		return $tokens;
+
+	}
+
+	function get_credit_card_token($card_key,$billing_to_key,$ship_to_key) {
+
+		$key=md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
+
+		$token=false;
+		$sql=sprintf("select `Metadata` from `Customer Credit Card Token Dimension` where `Customer Key`=%d and `Billing To Key`=%d and `Ship To Key`=%d and   `Valid Until`>NOW() and  `Customer Credit Card Token Key`=%d ",
+			$this->id,
+			$billing_to_key,
+			$ship_to_key,
+			$card_key
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$_card_data=json_decode(AESDecryptCtr($row['Metadata'],$key,256),true);
+			$token=$_card_data['Token'];
+
+		}
+
+		return $token;
+
+	}
+
+	function save_credit_card($vault,$card_info,$billing_to_key,$ship_to_key) {
+		include_once 'aes.php';
+
+		$key=md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
+
+		$card_data=AESEncryptCtr(
+			json_encode(
+				array(
+					'Token'=>$card_info['token'],
+					'Card Type'=>preg_replace('/\s/','',$card_info['cardType']),
+					'Card Number'=>substr($card_info['bin'],0,4).' ****  **** '.$card_info['last4'],
+					'Card Expiration'=>$card_info['expirationMonth'].'/'.$card_info['expirationYear'],
+					'Card CVV Length'=>($card_info['cardType']=='American Express'?4:3),
+					'Random'=>password_hash(time(), PASSWORD_BCRYPT)
+
+				)
+			),$key,256);
+
+
+		$sql=sprintf("insert into `Customer Credit Card Token Dimension` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`,`Metadata`,`Created`,`Updated`,`Valid Until`,`Vault`) values (%d,%d,%d,%s,%s,%s,%s,%s,%s)
+		ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s
+		 ",
+			$this->id,
+			$billing_to_key,
+			$ship_to_key,
+			prepare_mysql($card_info['uniqueNumberIdentifier']),
+			prepare_mysql($card_data),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gmdate('Y-m-d H:i:s',strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month' ))),
+			prepare_mysql($vault),
+
+			prepare_mysql($card_data),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gmdate('Y-m-d H:i:s',strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month' )))
+
+		);
+		mysql_query($sql);
+		print $sql;
 	}
 
 
