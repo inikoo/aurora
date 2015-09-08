@@ -58,7 +58,7 @@ function getMagentoAttNumber($dbh,$attribute_code,$entity_type_id) {
 	}else{
 	    print $sql. "\n";
 	    
-	    echo mysql_errno() . ": " . mysql_error(). "\n";
+	    echo mysql_errno($con_drop) . ": " . mysql_error($con_drop). "\n";
 	    exit;
 	}
 
