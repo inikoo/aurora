@@ -126,7 +126,8 @@ while ($row=mysql_fetch_assoc($res)) {
 	//print $row['state']."\n";
 	$sql=sprintf("select created_at from livedb_upg.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
-	//print $sql;
+	print $sql. "\n";
+	echo mysql_errno($con_drop) . ": " . mysql_error($con_drop) . "\n";
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$date_inv=$row2['created_at'];
 	}else {
