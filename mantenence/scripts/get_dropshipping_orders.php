@@ -93,7 +93,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 }
 */
 $sql= "SELECT * FROM livedb_upg.`sales_flat_order` where entity_id=13986	";
-$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where updated_at>'2015-08-01 00:00:00' ";
+$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where updated_at>'2015-08-28 00:00:00' ";
 //$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where increment_id='AW17841 '";
 $res=mysql_query($sql,$con_drop);
 
