@@ -99,7 +99,6 @@ $res=mysql_query($sql,$con_drop);
 
 while ($row=mysql_fetch_assoc($res)) {
 	$shipping_net=0;
-	print "Entity: ".$row['entity_id']."\n";
 
 	//print_r($row);
 
@@ -115,6 +114,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	if ($rowxx=mysql_fetch_assoc($resxx)) {
 		continue;
 	}
+	//print "Entity: ".$row['entity_id']."\n";
 
 	delete_old_data();
 	//print_r($row);
@@ -134,6 +134,8 @@ while ($row=mysql_fetch_assoc($res)) {
 		$date_inv=$row['created_at'];
 	}
 
+
+print $row['increment_id']."\n";
 
 	//print $date_inv."\n";
 	$customer=new Customer('old_id',$row['customer_id'],$store->id);
