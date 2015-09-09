@@ -135,7 +135,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 
-print $row['increment_id']."\n";
+print $row['increment_id'].' '.$row['updated_at']."\n";
 
 	//print $date_inv."\n";
 	$customer=new Customer('old_id',$row['customer_id'],$store->id);
