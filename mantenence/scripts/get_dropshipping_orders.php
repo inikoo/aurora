@@ -24,12 +24,10 @@ date_default_timezone_set('UTC');
 
 
 
-$mysql_host='localhost';
-//$mysql_host='localhost';
-$mysql_user='root';
-//$mysql_user='root';
+$mysql_host='bk.inikoo.com';
+$mysql_user='inikoo';
 
-$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd_dropshipping );
+$con_drop=@mysql_connect($mysql_host,$mysql_user,'E76hfjmPAFRJTy7z' );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
