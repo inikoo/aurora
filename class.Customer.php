@@ -2816,6 +2816,25 @@ class Customer extends DB_Table {
 
 		switch ($key) {
 
+		case('First Name'):
+			$contact=new Contact($this->get('Customer Main Contact Key'));
+			$first_name='';
+			if ($contact->id) {
+				$first_name= $contact->get('Contact First Name');
+			}
+			return $first_name;
+			break;
+
+		case('Last Name'):
+		case('Surname'):
+			$contact=new Contact($this->get('Customer Main Contact Key'));
+			$last_name='';
+			if ($contact->id) {
+				$last_name= $contact->get('Contact Surname');
+			}
+			return $last_name;
+			break;
+			break;
 		case('Tax Number Valid'):
 
 			switch ($this->data['Customer '.$key]) {
@@ -6727,7 +6746,7 @@ class Customer extends DB_Table {
 
 		);
 		mysql_query($sql);
-		print $sql;
+		
 	}
 
 
