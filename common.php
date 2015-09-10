@@ -2,8 +2,6 @@
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-
-
 require_once 'conf/dns.php';
 require_once 'conf/key.php';
 
@@ -80,6 +78,11 @@ $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 //$smarty->error_reporting = E_STRICT;
+
+$smarty->assign('inikoo_account',$inikoo_account);
+
+
+
 
 if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
 	$log_as="supplier";
@@ -221,28 +224,6 @@ $smarty->assign('lang_menu',$lang_menu);
 
 $common='';
 
-
-if ($user->data['User Type']=='Supplier') {
-
-
-	//$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
-	$nav_menu[] = array(_('Products'), 'suppliers.php'  ,'suppliers');
-	$nav_menu[] = array(_('Dashboard'), 'index.php','home');
-}
-
-
-if ($user->data['User Type']=='Warehouse') {
-
-	$nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php?id='.$user->data['User Parent Key'],'orders');
-
-
-}
-
-//else
-//   $nav_menu[] = array(_('Dashboard'), 'index.php','home');
-
-//$smarty->assign('theme',$myconf['theme']);
-//$smarty->assign('my_name',$myconf['name']);
 
 /*
 if(!$is_root_available){

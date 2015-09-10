@@ -216,6 +216,15 @@ class Account extends DB_Table{
 		return $positions;
 	}
 
+    function get_store_keys(){
+        $store_keys=array();
+        $sql=sprintf('select `Store Key` from `Store Dimension`');
+        $res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+            $store_keys[]=$row['Store Key'];
+        }
+        return $store_keys;
+    }
 
 }
 

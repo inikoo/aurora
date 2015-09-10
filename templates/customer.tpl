@@ -159,7 +159,7 @@
 						</tbody>
 					</table>
 				</div>
-				<div style="margin-top:3px;width:370px;float:left">
+		<div style="margin-top:3px;width:370px;float:left">
 					<div id="sticky_note_div" class="sticky_note" style="{if $customer->get('Sticky Note')==''}display:none{/if}">
 						<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
 						<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
@@ -266,7 +266,11 @@
 							{/if} 
 						</div>
 					</div>
+				
+				
 				</div>
+				
+				
 				<div style="clear:both">
 				</div>
 				<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">

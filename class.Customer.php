@@ -4941,7 +4941,7 @@ class Customer extends DB_Table {
 	function add_history_order_cancelled($history_key) {
 
 
-		
+
 
 
 		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
@@ -6585,6 +6585,53 @@ class Customer extends DB_Table {
 		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Customer Currency Code']);
 	}
 
+
+	function get_custmon_fields() {
+
+		$custom_field=array();
+		$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Customer'");
+		$res = mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+		}
+
+		$show_case=array();
+		$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+
+			foreach ($custom_field as $key=>$value) {
+				$show_case[$value]=$row[$key];
+			}
+		}
+
+		return $show_case;
+
+	}
+
+	function get_correlation_info() {
+		$correlation_msg='';
+		$msg='';
+		$sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200",$this->id);
+		$res2=mysql_query($sql);
+		while ($row2=mysql_fetch_assoc($res2)) {
+			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$this->id,$row2['Customer B Key'],sprintf("%05d",$row2['Customer B Key']));
+		}
+		$sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200",$this->id);
+		$res2=mysql_query($sql);
+		while ($row2=mysql_fetch_assoc($res2)) {
+			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$this->id,$row2['Customer A Key'],sprintf("%05d",$row2['Customer A Key']));
+		}
+
+		$msg=preg_replace('/^,/','',$msg);
+		if ($msg!='') {
+			$correlation_msg='<p>'._('Potential duplicated').': '.$msg.'</p>';
+
+		}
+
+		return $correlation_msg;
+
+	}
 
 }
 ?>
