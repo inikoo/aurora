@@ -533,6 +533,8 @@ if ($customer->data['Customer Last Order Date']    ) {
 		$gold_reward='Gold Reward Member';
 
 }
+
+
 $correlation_msg='';
 $msg='';
 $sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200",$customer->id);

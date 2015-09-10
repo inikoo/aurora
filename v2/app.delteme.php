@@ -7,7 +7,7 @@
  Created: 20 August 2015 13:07:27 GMT+8, Singapure
  Copyright (c) 2015, Inikoo
 
- Version 2.0
+ Version 2.5
 */
 
 
@@ -17,9 +17,7 @@ require_once 'conf/key.php';
 
 require_once 'common_functions.php';
 require_once 'common_detect_agent.php';
-
 require_once "class.User.php";
-
 require_once "class.Account.php";
 
 $default_DB_link=@mysql_connect($dns_host,$dns_user,$dns_pwd );

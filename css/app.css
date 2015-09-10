@@ -2,33 +2,64 @@
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: 300;
-  src: local("Ubuntu Light"), local("Ubuntu-Light"), url("../fonts/ubuntu300.woff2") format("woff2"); }
+  src: local("Ubuntu Light"), local("Ubuntu-Light"), url("/fonts/ubuntu300.woff2") format("woff2"); }
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: 700;
-  src: local("Ubuntu Bold"), local("Ubuntu-Bold"), url("fonts/ubuntu700.woff2") format("woff2"); }
+  src: local("Ubuntu Bold"), local("Ubuntu-Bold"), url("/fonts/ubuntu700.woff2") format("woff2"); }
 html, body {
   width: 100%;
   height: 100%;
-  font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  color: #555;
   background: #fcfcfc;
   margin: 0px; }
-
-a, table, button, tbody {
-  outline: none; }
+  html a, body a {
+    color: #555; }
+  html a, html table, html button, html tbody, body a, body table, body button, body tbody {
+    outline: none; }
+  html a, body a {
+    text-decoration: none;
+    color: #222; }
+  html a:hover, body a:hover {
+    text-decoration: underline;
+    color: #000; }
+  html .invisible, body .invisible {
+    visibility: hidden; }
+  html .hide, body .hide {
+    display: none; }
 
 a {
-  text-decoration: none;
-  color: #222; }
+  color: #555; }
 
-a:hover {
-  text-decoration: underline;
-  color: #000; }
+#top_bar {
+  padding: 3px 20px 0px 20px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  height: 20px;
+  width: 100%;
+  background: #555;
+  font-size: 11px;
+  color: #fff; }
+  #top_bar a {
+    color: #fff; }
+  #top_bar #view_position .fa {
+    opacity: .6;
+    padding-right: 3px; }
+  #top_bar #view_position span {
+    cursor: pointer; }
+  #top_bar #view_position .selected {
+    font-weight: 800; }
+  #top_bar #view_position .separator {
+    padding: 0px 5px;
+    opacity: .5; }
 
 .grid {
   padding-left: 1300px;
-  height: 100%; }
+  height: 100%;
+  margin-top: 22px; }
 
 .grid > aside {
   float: right;
@@ -51,10 +82,10 @@ a:hover {
   height: 20px;
   width: 100%;
   background: #555;
-  font-size: 12px; }
-
-#footer a {
+  font-size: 12px;
   color: #fff; }
+  #footer a {
+    color: #fff; }
 
 #app_leftmenu {
   float: left;
@@ -91,50 +122,211 @@ a:hover {
     color: yellow; }
     #app_leftmenu li.selected .fa, #app_leftmenu li.selected:hover .fa {
       opacity: .75; }
+  #app_leftmenu #top_info {
+    height: 32px;
+    line-height: 32px;
+    border-bottom: 1px solid #777;
+    padding: 0px;
+    background-color: #656565;
+    font-size: 11px;
+    text-align: center; }
+  #app_leftmenu #top_info div {
+    height: 100%;
+    float: left;
+    text-align: center; }
+  #app_leftmenu #hello_user {
+    width: 166px;
+    text-align: center; }
+  #app_leftmenu #inikoo_logo {
+    width: 32px;
+    border-right: 1px solid #777;
+    padding: 0px;
+    vertical-align: middle; }
+  #app_leftmenu #inikoo_logo img {
+    width: 25.6px;
+    vertical-align: middle; }
+  #app_leftmenu #inikoo_account_name {
+    line-height: 32px;
+    height: 32px;
+    font-size: 11.2px;
+    color: #bbb;
+    text-align: center;
+    font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+    font-weight: 300; }
 
-#top_info {
-  height: 32px;
-  line-height: 32px;
-  border-bottom: 1px solid #777;
-  padding: 0px;
-  background-color: #656565;
-  font-size: 11px;
-  text-align: center; }
+#notifications {
+  background-color: #fcfcfc; }
 
-#top_info div {
-  height: 100%;
-  float: left;
-  text-align: center; }
-
-#hello_user {
-  width: 166px;
-  text-align: center; }
-
-#inikoo_logo {
-  width: 32px;
-  border-right: 1px solid #777;
-  padding: 0px;
-  vertical-align: middle; }
-
-#inikoo_logo img {
-  width: 25.6px;
-  vertical-align: middle; }
-
-#inikoo_account_name {
-  line-height: 32px;
-  height: 32px;
-  font-size: 11.2px;
-  color: #bbb;
+.square_button {
+  height: 30px;
+  width: 30px;
+  font-size: 16px;
   text-align: center;
-  font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
-  font-weight: 300; }
+  line-height: 30px;
+  color: #444;
+  cursor: pointer; }
+
+.square_button .disabled {
+  opacity: .2; }
+
+.square_button:hover {
+  color: #000;
+  background: #FFF; }
+
+.square_button.left {
+  float: left;
+  border-right: 1px solid #ccc; }
+
+.square_button.right {
+  float: right;
+  border-left: 1px solid #ccc; }
+
+.square_button.right.border {
+  border-right: 1px solid #aaa; }
 
 #app_main {
   height: 100%;
   float: left;
-  width: 1100px; }
+  width: 1099px;
+  border-right: 1px solid #ccc; }
+  #app_main #navigation {
+    height: 58px; }
+    #app_main #navigation #address_bar {
+      font-size: 14px;
+      background: #f7f7f7;
+      color: #333;
+      padding-left: 6px;
+      padding-right: 0px;
+      text-align: left;
+      height: 28px;
+      line-height: 28px;
+      border-bottom: 1px solid #ccc; }
+      #app_main #navigation #address_bar a {
+        color: #333; }
+      #app_main #navigation #address_bar #section_links {
+        font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif; }
+      #app_main #navigation #address_bar .section {
+        text-align: center;
+        cursor: pointer;
+        background-color: #fefefe;
+        color: #333;
+        padding: 0px 30px; }
+        #app_main #navigation #address_bar .section .fa {
+          font-size: 80%;
+          color: #999; }
+        #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected {
+          background-color: #edf3f8;
+          color: #000; }
+        #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected > .fa {
+          color: #666; }
+      #app_main #navigation #address_bar .right {
+        float: right;
+        border-left: 1px solid #ccc; }
+      #app_main #navigation #address_bar .left {
+        float: left;
+        border-right: 1px solid #ccc; }
+      #app_main #navigation #address_bar .only_icons .section {
+        padding: 0px 2px;
+        width: 22px; }
+      #app_main #navigation #address_bar .only_icons .section_label {
+        display: none; }
+    #app_main #navigation #header {
+      text-align: left;
+      padding: 0px;
+      background: #fefefe;
+      height: 30px;
+      line-height: 30px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc; }
+      #app_main #navigation #header .title {
+        color: #555;
+        float: left;
+        padding-left: 10px;
+        font-size: 21px;
+        font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+        font-weight: 700; }
+        #app_main #navigation #header .title .bullet {
+          color: #000;
+          position: relative;
+          top: 1px;
+          padding: 0px 5px; }
+        #app_main #navigation #header .title .id {
+          color: #000;
+          font-weight: 800; }
+        #app_main #navigation #header .title .new {
+          background: yellow; }
+        #app_main #navigation #header .title .subtitle {
+          font-size: 80%; }
+        #app_main #navigation #header .title img {
+          vertical-align: -5%; }
+      #app_main #navigation #header #search_form {
+        float: right;
+        border-left: 1px solid #aaa;
+        margin-left: 4px; }
+      #app_main #navigation #header #search {
+        height: 20px;
+        border: none;
+        border-botom: 1px solid #ddd;
+        padding-left: 5px;
+        width: 280px; }
+      #app_main #navigation #header #search::-webkit-input-placeholder {
+        color: #aaa;
+        font-style: italic; }
+      #app_main #navigation #header #search:-moz-placeholder {
+        color: #aaa;
+        font-style: italic; }
+      #app_main #navigation #header #search::-moz-placeholder {
+        color: #aaa;
+        font-style: italic; }
+      #app_main #navigation #header #search:-ms-input-placeholder {
+        color: #aaa;
+        font-style: italic; }
+  #app_main #tabs {
+    margin-top: 2px; }
+  #app_main .tabs {
+    height: 22px;
+    line-height: 22px;
+    clear: both;
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    font-size: 13.2px;
+    background-color: #fff; }
+    #app_main .tabs .tab {
+      height: 22px;
+      float: left;
+      padding: 0px 20px;
+      border-right: 1px solid #ccc;
+      cursor: pointer; }
+      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected {
+        background-color: #edf3f8;
+        color: #000; }
+      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected > .fa {
+        color: #666; }
+    #app_main .tabs .fa {
+      font-size: 75%;
+      color: #888;
+      position: relative;
+      top: -1px; }
 
-#notifications {
-  background-color: #fcfcfc; }
+#object_showcase {
+  clear: both;
+  padding: 10px 10px 20px 10px;
+  border-bottom: 1px solid #ccc; }
+
+.sticky_note {
+  border: 1px solid #BAB84E;
+  background: #EDEB82;
+  float: left;
+  width: 300px;
+  padding: 0;
+  margin-left: 20px; }
+
+.sticky_note.pink {
+  background: #ff7dbd;
+  border: 1px solid #e52789; }
+
+.sticky_note.green {
+  background: #94db84;
+  border: 1px solid #78bf41; }
 
 /*# sourceMappingURL=app.css.map */

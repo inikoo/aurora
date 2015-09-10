@@ -1,5 +1,11 @@
 RewriteEngine On
 #RewriteRule ^images/(\d+) public_image.php?id=$1
 
-RewriteCond %{REQUEST_URI} \.app\.php
-RewriteRule ^(.*)\.app\.(.*)$ app.php?u=$1.php?%{QUERY_STRING} 
+
+RewriteRule ^$ /app.php [L]
+
+RewriteBase /
+RewriteRule ^(js|css|templates)($|/) - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*) app.php [QSA,L]
