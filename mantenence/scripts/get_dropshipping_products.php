@@ -21,13 +21,10 @@ require_once '../../conf/conf.php';
 require '../../locale.php';
 $_SESSION['locale_info'] = localeconv();
 
+$mysql_host='bk.inikoo.com';
+$mysql_user='inikoo';
 
-$mysql_host='localhost';
-//$mysql_host='localhost';
-$mysql_user='root';
-//$mysql_user='root';
-
-$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd_dropshipping );
+$con_drop=@mysql_connect($mysql_host,$mysql_user,'E76hfjmPAFRJTy7z' );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;

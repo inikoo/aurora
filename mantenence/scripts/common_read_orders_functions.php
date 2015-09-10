@@ -810,6 +810,9 @@ function create_order($data) {
 
 	//print_r($discounts_map);
 
+
+    if(isset($discounts_map)){
+
 	foreach ($discounts_map as $otf_key=>$discount) {
 
 		$sql=sprintf("select `Order Transaction Total Discount Amount` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$otf_key);
@@ -825,7 +828,7 @@ function create_order($data) {
 			}
 		}
 	}
-
+    }
 
 	$order->update_deal_bridge_from_assets_deals();
 	$order->update_deals_usage();

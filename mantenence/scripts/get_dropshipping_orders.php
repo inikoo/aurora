@@ -24,12 +24,10 @@ date_default_timezone_set('UTC');
 
 
 
-$mysql_host='localhost';
-//$mysql_host='localhost';
-$mysql_user='root';
-//$mysql_user='root';
+$mysql_host='bk.inikoo.com';
+$mysql_user='inikoo';
 
-$con_drop=@mysql_connect($mysql_host,$mysql_user,$dns_pwd_dropshipping );
+$con_drop=@mysql_connect($mysql_host,$mysql_user,'E76hfjmPAFRJTy7z' );
 if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
@@ -101,7 +99,6 @@ $res=mysql_query($sql,$con_drop);
 
 while ($row=mysql_fetch_assoc($res)) {
 	$shipping_net=0;
-	//print "Entity: ".$row['entity_id']."\n";
 
 	//print_r($row);
 
@@ -117,6 +114,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	if ($rowxx=mysql_fetch_assoc($resxx)) {
 		continue;
 	}
+	//print "Entity: ".$row['entity_id']."\n";
 
 	delete_old_data();
 	//print_r($row);
@@ -128,13 +126,16 @@ while ($row=mysql_fetch_assoc($res)) {
 	//print $row['state']."\n";
 	$sql=sprintf("select created_at from livedb_upg.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
-	//print $sql;
+	//print $sql. "\n";
+	//echo mysql_errno($con_drop) . ": " . mysql_error($con_drop) . "\n";
 	if ($row2=mysql_fetch_assoc($res2)) {
 		$date_inv=$row2['created_at'];
 	}else {
 		$date_inv=$row['created_at'];
 	}
 
+
+print $row['increment_id'].' '.$row['updated_at']."\n";
 
 	//print $date_inv."\n";
 	$customer=new Customer('old_id',$row['customer_id'],$store->id);
@@ -215,6 +216,8 @@ while ($row=mysql_fetch_assoc($res)) {
 			$parts= $product->get_all_part_skus();
 
 			if (count($parts)==0) {
+			    //product with no parts 
+			
 				print $product->data['Product Code']."\n";
 				continue;
 			}
