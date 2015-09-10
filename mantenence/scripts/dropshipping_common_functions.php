@@ -47,6 +47,7 @@ function get_address($address_id) {
 function getMagentoAttNumber($dbh,$attribute_code,$entity_type_id) {
 
 	global $con_drop;
+	$Att_Got='';
 	$sql = "SELECT `attribute_id` FROM livedb_upg.`eav_attribute` WHERE `attribute_code` LIKE '".$attribute_code."' AND `entity_type_id` =".$entity_type_id."  ";
 	$res=mysql_query($sql,$con_drop);
 	if ($row=mysql_fetch_assoc($res)) {
@@ -54,6 +55,11 @@ function getMagentoAttNumber($dbh,$attribute_code,$entity_type_id) {
 
 
 		$Att_Got=$row['attribute_id'];
+	}else{
+	    print $sql. "\n";
+	    
+	    echo mysql_errno($con_drop) . ": " . mysql_error($con_drop). "\n";
+	    exit;
 	}
 
 

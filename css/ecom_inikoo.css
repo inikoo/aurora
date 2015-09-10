@@ -149,7 +149,7 @@ button.selected, .buttons a.selected{
 
 
 
-
+button.highlighted{color:steelblue;}
 
 
 button.disabled{color:#ccc;cursor:not-allowed}
@@ -249,3 +249,60 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', end
 
 
 
+ul.tabs{margin-left:20px;margin-top:10px}
+.tabs span.item{
+color: #777;
+background: #fff ;
+text-decoration: none;
+padding-left: 10px;
+padding-top: 4px;
+padding-bottom: 2px;
+
+border:1px solid #ccc;
+border-bottom:1px solid #999;
+border-bottom:none;
+cursor:pointer;
+font-size:110%
+}
+.tabs span.option{
+border-bottom:1px solid #ddd;
+
+}
+.tabs span.selected{
+ color: #000;
+ border:1px solid #aaa;
+ border-bottom:1px solid #fff;
+ position:relative;
+top:0px;
+cursor:default;
+}
+.tabs span.item span{
+ padding-right: 10px;
+}
+.tabs span.item, .tabs span.item span{display: block;float: left}
+.tabs span.item, .tabs span.item span{float: none}
+.tabs span.item:hover{
+color: #000;
+background: #fff ;
+padding-left: 10px;
+ border-top:1px solid #ccc;
+ border-left:1px solid #ccc;
+ border-right:1px solid #ccc;
+
+}
+.tabs span.item:hover span{
+
+padding-right: 10px
+}
+.tabs ul{
+list-style: none;
+padding: 0;
+margin: 0
+}
+.tabs li{
+float: left;
+margin: 0;
+margin-right:5px;
+position:relative;top:1px
+} 
+.tabs_base{clear:both;width:100%;border-bottom:1px solid #ccc}

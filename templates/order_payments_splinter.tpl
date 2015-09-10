@@ -28,7 +28,7 @@
 			<td><span id="payment_reference_{$payment->get('Payment Key')}">{if $payment->get('Payment Type')!='Payment'}{$payment->get_parent_info()}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')!='Payment'}, {/if}{$payment->get('Payment Transaction ID')}</span></td>
 			<td style="width:200px"> 
 			<div class="buttons small left">
-			{if $payment->get('Payment Transaction Status')=='Cancelled'}
+			{if $payment->get('Payment Transaction Status')=='Cancelled' or $payment->get('Payment Transaction Status')=='Declined' or $payment->get('Payment Transaction Status')=='Errors'}
 				{$payment->get('Payment Transaction Status Info')}
 			{else}
 				<button style="{if !( $payment->get('Payment Transaction Status')=='Pending')}display:none{/if}" class="negative" onclick="cancel_pending_payment({$payment->get('Payment Key')})">{t}Set as cancelled{/t}</button> 

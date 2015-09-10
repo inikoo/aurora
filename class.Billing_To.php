@@ -123,11 +123,37 @@ class Billing_To extends DB_Table {
 
 
 
-	function get($key='') {
+function get($key='') {
 
 
-		if ($key=='World Region Code') {
+		switch ($key) {
 
+		case 'Billing To First Name':
+			if ($this->data['Billing To Contact Name']!='') {
+				$name_data=Contact::parse_name($this->data['Billing To Contact Name']);
+				return $name_data['Contact First Name'];
+			}else {
+				return '';
+			}
+			break;
+		case 'Billing To Surname':
+			if ($this->data['Billing To Contact Name']!='') {
+				$name_data=Contact::parse_name($this->data['Billing To Contact Name']);
+				return $name_data['Contact Surname'];
+
+			}else {
+				return '';
+			}
+			break;
+		case '2line':
+			$line2=array();
+			$line2[]=$this->data['Billing To Line 1'];
+			$line2[]=$this->data['Billing To Line 2'];
+			if ($line2[1]!='')$line2[1].=', ';
+			$line2[1].=$this->data['Billing To Line 3'];
+			return $line2;
+			break;
+		case 'World Region Code':
 
 			if ($this->data['Billing To Country Code']=='')return 'UNKN';
 
@@ -137,20 +163,22 @@ class Billing_To extends DB_Table {
 				return $row['World Region Code']==''?'UNKN':$row['World Region Code'];
 			else
 				return 'UNKN';
+			break;
+		default:
+			if (isset($this->data[$key]))
+				return $this->data[$key];
 
+
+			$_key=ucfirst($key);
+			if (isset($this->data[$_key]))
+				return $this->data[$_key];
+			break;
 		}
 
 
-		if (isset($this->data[$key]))
-			return $this->data[$key];
 
-		switch ($key) {
-		}
-		$_key=ucfirst($key);
-		if (isset($this->data[$_key]))
-			return $this->data[$_key];
-		print "Error $key not found in get from Billing To\n";
-		return false;
+
+
 
 	}
 
