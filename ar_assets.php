@@ -550,9 +550,9 @@ function list_departments() {
 
 		if ($period_tag=='Total' or $period_tag=='3 Year') {
 			$order='`Product Department Code`';
-		}else{
-		$order='(`Product Department '.$period_tag.' Acc Invoiced Amount`-`Product Department '.$period_tag.' Acc 1YB Invoiced Amount`)/`Product Department '.$period_tag.' Acc 1YB Invoiced Amount`';
-}
+		}else {
+			$order='(`Product Department '.$period_tag.' Acc Invoiced Amount`-`Product Department '.$period_tag.' Acc 1YB Invoiced Amount`)/`Product Department '.$period_tag.' Acc 1YB Invoiced Amount`';
+		}
 
 
 	}
@@ -2311,7 +2311,7 @@ function list_families() {
 	if (isset( $_REQUEST['elements_family_normal'])) {
 		$elements['Normal']=$_REQUEST['elements_family_normal'];
 	}
-	
+
 
 	if (isset( $_REQUEST['elements_family_nosale'])) {
 		$elements['NoSale']=$_REQUEST['elements_family_nosale'];
@@ -2418,9 +2418,9 @@ function list_families() {
 
 		if ($period_tag=='Total' or $period_tag=='3 Year') {
 			$order='`Product Family Code`';
-		}else{
-		$order='(`Product Family '.$period_tag.' Acc Invoiced Amount`-`Product Family '.$period_tag.' Acc 1YB Invoiced Amount`)/`Product Family '.$period_tag.' Acc 1YB Invoiced Amount`';
-}
+		}else {
+			$order='(`Product Family '.$period_tag.' Acc Invoiced Amount`-`Product Family '.$period_tag.' Acc 1YB Invoiced Amount`)/`Product Family '.$period_tag.' Acc 1YB Invoiced Amount`';
+		}
 	}
 	elseif ($order=='code')
 		$order='`Product Family Code`';
@@ -2505,7 +2505,7 @@ function list_families() {
 	$sum_discontinued=0;
 	$sum_new=0;
 	$sum_todo=0;
-	$sql="select 
+	$sql="select
 	 sum(`Product Family 1 Quarter Acc Invoiced Amount`) sum_sales_1q,
 	          sum(`Product Family 1 Quarter Acc 1YB Invoiced Amount`) sum_sales_1q_1yb,
 	     sum(`Product Family Out Of Stock Products`) outofstock,sum(`Product Family Unknown Stock Products`)stock_error,
@@ -2524,7 +2524,7 @@ function list_families() {
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		
+
 
 		$sum_active=$row['sum_active'];
 		$sum_discontinued=$row['sum_discontinued'];
@@ -2561,7 +2561,7 @@ function list_families() {
 	$sum_total_sales=0;
 	$sum_month_sales=0;
 
-if ($period_tag=='Total' or $period_tag=='3 Year') {
+	if ($period_tag=='Total' or $period_tag=='3 Year') {
 		$where_1yb= ", 0 as sum_total_sales_1yb";
 	}else {
 		$where_1yb= ",sum(`Product Family $period_tag Acc 1YB Invoiced Amount`) as sum_total_sales_1yb";
@@ -2581,7 +2581,7 @@ if ($period_tag=='Total' or $period_tag=='3 Year') {
 		$sum_total_profit_minus=$row['total_profit_minus'];
 		$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
 
-				$delta_total_sales=delta($row['sum_total_sales'],$row['sum_total_sales_1yb']);
+		$delta_total_sales=delta($row['sum_total_sales'],$row['sum_total_sales_1yb']);
 
 	}
 
@@ -2594,7 +2594,7 @@ if ($period_tag=='Total' or $period_tag=='3 Year') {
 	$adata=array();
 	//print "$sql";
 	//print_r($row);
-		while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		//print_r($row);
 		$code=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
 		if ($percentages) {
@@ -2673,7 +2673,7 @@ if ($period_tag=='Total' or $period_tag=='3 Year') {
 			$optimal=percentage($row['Product Family Optimal Availability Products'],$sum_optimal);
 			$low=percentage($row['Product Family Low Availability Products'],$sum_low);
 			$critical=percentage($row['Product Family Critical Availability Products'],$sum_critical);
-			break;	
+			break;
 		default:
 			$stock_error=number($row['Product Family Unknown Stock Products']);
 			$surplus=number($row['Product Family Surplus Availability Products']);
@@ -2684,7 +2684,7 @@ if ($period_tag=='Total' or $period_tag=='3 Year') {
 
 		}
 
-if ($period_tag=='Total' or $period_tag=='3 Year') {
+		if ($period_tag=='Total' or $period_tag=='3 Year') {
 			$delta_sales=_('NA');
 		}else {
 			$delta_sales=delta($row['Product Family '.$period_tag.' Acc Invoiced Amount'],$row['Product Family '.$period_tag.' Acc 1YB Invoiced Amount']);
@@ -2828,10 +2828,10 @@ if ($period_tag=='Total' or $period_tag=='3 Year') {
 			'code'=>_('Total'),
 			'name'=>'',
 			'active'=>number($sum_active),
-			
+
 			'todo'=>number($sum_todo),
 
-'outofstock'=>$outofstock,
+			'outofstock'=>$outofstock,
 			'stock_error'=>$stock_error,
 			'surplus'=>$surplus,
 			'optimal'=>$optimal,
@@ -2848,7 +2848,7 @@ if ($period_tag=='Total' or $period_tag=='3 Year') {
 			//    'stockerror'=>number($row['product family unknown stock products']),
 			//    'stock_value'=>money($row['product family stock value']),
 			'sales'=>$tsall,
-						'delta_sales'=>$delta_total_sales,
+			'delta_sales'=>$delta_total_sales,
 
 			'profit'=>$tprofit,
 			'item_type'=>'total',
@@ -3790,8 +3790,6 @@ function list_customers_per_store() {
 
 
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		$name=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
-		$code=sprintf('<a href="customers.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
 		$total_contacts+=$row['Store Contacts'];
 
@@ -3847,13 +3845,14 @@ function list_customers_per_store() {
                 }
         */
 		$adata[]=array(
-			'code'=>$code,
-			'name'=>$name,
-			'contacts'=>$contacts,
-			'active_contacts'=>$active_contacts,
-			'new_contacts'=>$new_contacts,
-			'lost_contacts'=>$lost_contacts,
-			'losing_contacts'=>$losing_contacts,
+			'store_key'=>$row['Store Key'],
+			'code'=>$row['Store Code'],
+			'name'=>$row['Store Name'],
+			'contacts'=>(integer) $row['Store Contacts'],
+			'active_contacts'=>(integer) $row['active'],
+			'new_contacts'=>(integer) $row['Store New Contacts'],
+			'lost_contacts'=>(integer) $row['Store Lost Contacts'],
+			'losing_contacts'=>(integer) $row['Store Losing Contacts'],
 			'contacts_with_orders'=>$contacts_with_orders,
 			'active_contacts_with_orders'=>$active_contacts_with_orders,
 			'new_contacts_with_orders'=>$new_contacts_with_orders,
@@ -3878,16 +3877,16 @@ function list_customers_per_store() {
 		$sum_contacts='100.00%';
 		$sum_new_contacts='100.00%';
 	} else {
-		$total_contacts=number($total_contacts);
-		$total_active_contacts=number($total_active_contacts);
-		$total_new_contacts=number($total_new_contacts);
-		$total_lost_contacts=number($total_lost_contacts);
-		$total_losing_contacts=number($total_losing_contacts);
-		$total_contacts_with_orders=number($total_contacts_with_orders);
-		$total_active_contacts_with_orders=number($total_active_contacts_with_orders);
-		$total_new_contacts_with_orders=number($total_new_contacts_with_orders);
-		$total_lost_contacts_with_orders=number($total_lost_contacts_with_orders);
-		$total_losing_contacts_with_orders=number($total_losing_contacts_with_orders);
+	//	$total_contacts=number($total_contacts);
+	//	$total_active_contacts=number($total_active_contacts);
+	//	$total_new_contacts=number($total_new_contacts);
+	//	$total_lost_contacts=number($total_lost_contacts);
+	//	$total_losing_contacts=number($total_losing_contacts);
+	//	$total_contacts_with_orders=number($total_contacts_with_orders);
+	//	$total_active_contacts_with_orders=number($total_active_contacts_with_orders);
+	//	$total_new_contacts_with_orders=number($total_new_contacts_with_orders);
+	//	$total_lost_contacts_with_orders=number($total_lost_contacts_with_orders);
+	//	$total_losing_contacts_with_orders=number($total_losing_contacts_with_orders);
 
 		// $sum_total=number($total_contacts_with_orders);
 		// $sum_active=number($total_active_contacts);
@@ -3899,19 +3898,20 @@ function list_customers_per_store() {
 
 
 	$adata[]=array(
+	'store_key'=>'',
 		'name'=>'',
 		'code'=>_('Total'),
-		'contacts'=>$total_contacts,
-		'active_contacts'=>$total_active_contacts,
-		'new_contacts'=>$total_new_contacts,
-		'lost_contacts'=>$total_lost_contacts,
-		'losing_contacts'=>$total_losing_contacts,
-		'contacts_with_orders'=>$total_contacts_with_orders,
-		'active_contacts_with_orders'=>$total_active_contacts_with_orders,
-		'new_contacts_with_orders'=>$total_new_contacts_with_orders,
-		'lost_contacts_with_orders'=>$total_lost_contacts_with_orders,
-		'losing_contacts_with_orders'=>$total_losing_contacts_with_orders,
-		'users'=>$total_users
+		'contacts'=>(integer) $total_contacts,
+		'active_contacts'=>(integer) $total_active_contacts,
+		'new_contacts'=>(integer) $total_new_contacts,
+		'lost_contacts'=>(integer) $total_lost_contacts,
+		'losing_contacts'=>(integer) $total_losing_contacts,
+		'contacts_with_orders'=>(integer) $total_contacts_with_orders,
+		'active_contacts_with_orders'=>(integer) $total_active_contacts_with_orders,
+		'new_contacts_with_orders'=>(integer) $total_new_contacts_with_orders,
+		'lost_contacts_with_orders'=>(integer) $total_lost_contacts_with_orders,
+		'losing_contacts_with_orders'=>(integer) $total_losing_contacts_with_orders,
+		'users'=>(integer) $total_users
 
 		//               'customers'=>$sum_total,
 		//             'active'=>$sum_active,

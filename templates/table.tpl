@@ -1,11 +1,9 @@
  
 <div class="table_info">
-	
-	
-		<div  id="last_page" onclick="rows.getLastPage()"  class="square_button right" title="{{t}}Last page{{/t}}" style="position:relative">
-		<i class="fa fa-chevron-right fa-fw" style="position:absolute;left:2px;bottom:6px" ></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-right fa-fw"></i> 
+	<div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{{t}}Last page{{/t}}" style="position:relative">
+		<i class="fa fa-chevron-right fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-right fa-fw"></i> 
 	</div>
-	<div id="next_page" onclick="rows.getNextPage()"  class="square_button right" title="{{t}}Next page{{/t}}">
+	<div id="next_page" onclick="rows.getNextPage()" class="square_button right hide" title="{{t}}Next page{{/t}}">
 		<i class="fa fa-chevron-right fa-fw"></i> 
 	</div>
 	<div id="paginator" style="float:right;padding-left:10px;padding-right:10px;">
@@ -14,21 +12,46 @@
 		<i class="fa fa-reorder fa-fw"></i> 
 	</div>
 	{{foreach from=$results_per_page_options item=results_per_page_option}} 
-	<div id="results_per_page_{{$results_per_page_option}}" onclick="change_results_per_page({{$results_per_page_option}})"  class="square_button right hide results_per_page {{if $results_per_page==$results_per_page_option}}selected{{/if}}">
-		{{$results_per_page_option}}
+	<div id="results_per_page_{{$results_per_page_option}}" onclick="change_results_per_page({{$results_per_page_option}})" class="square_button right hide results_per_page {{if $results_per_page==$results_per_page_option}}selected{{/if}}">
+		{{$results_per_page_option}} 
 	</div>
 	{{/foreach}} 
-	<div id="prev_page" onclick="if(rows.state.currentPage==1)return;rows.getPreviousPage()" class="square_button right disabled" title="{{t}}Previous page{{/t}}">
+	<div id="prev_page" onclick="if(rows.state.currentPage==1)return;rows.getPreviousPage()" class="square_button right disabled hide" title="{{t}}Previous page{{/t}}">
 		<i class="fa fa-chevron-left   fa-fw"></i> 
 	</div>
 	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{{t}}First page{{/t}}" style="position:relative">
-		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px" ></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
+		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
 	<span id="rtext"></span> 
 </div>
+{{if isset($table_views) and count(table_views)>0}}
+<div class="table_views tabs ">
+{{foreach from=$table_views item=view key=id}} 
+<div {{if isset($view.id) and $view.id }}id="{{$view.id}}"{{/if}} class="tab left {{if isset($view.selected) and $view.selected}}selected{{/if}}"  onclick="change_table_view('{{$id}}')" title="{{$view.title}}">
+			{{if isset($view.icon) and $view.icon!=''}}<i class="fa fa-{{$view.icon}}"></i>{{/if}} <span class="label"> {{$view.label}}</span> 
+		</div>
+{{/foreach}} 
+</div>
+{{/if}}
 <div class="table" id="table">
 </div>
+
+
+
 <script>
+
+var integerHeaderCell= Backgrid.HeaderCell.extend({
+ className: "align-right",
+ 
+ 
+ 
+ render: function () {
+ 
+      this.constructor.__super__.render.apply(this, arguments);
+         this.$el.addClass('align-right');
+      return this;
+    }
+});
 
 var columns = {{include file="`$columns_file`.tpl" }};
 
@@ -53,10 +76,17 @@ $('#rtext').html(resp.resultset.rtext)
 
 var total_pages=Math.ceil(resp.resultset.total_records/state.pageSize)
 
+
+if(total_pages>1){
+$('#first_page').removeClass('hide')
+$('#prev_page').removeClass('hide')
+$('#last_page').removeClass('hide')
+$('#next_page').removeClass('hide')
+
+
     $('#paginator').html(rows.state.currentPage+'/'+total_pages) 
 
 $('#first_page').removeClass('disabled')
-$('#first_page').removeClass('hide')
 $('#prev_page').removeClass('disabled')
 $('#last_page').removeClass('disabled')
 $('#next_page').removeClass('disabled')
@@ -77,7 +107,7 @@ $('#last_page').addClass('disabled')
 
 }
 
-
+}
     return {totalRecords: parseInt(resp.resultset.total_records)};
   },
    parseRecords: function (resp, options) {
@@ -86,6 +116,8 @@ $('#last_page').addClass('disabled')
   }
   
 });
+
+
 
 
 var rows = new Rows();
@@ -117,6 +149,8 @@ var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
 
 
 var grid = new Backgrid.Grid({
+
+
     columns: columns,
     collection: rows,
    

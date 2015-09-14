@@ -109,6 +109,9 @@ function get_tab($tab,$state=false) {
 
 
 	switch ($tab) {
+	case 'customers_server':
+		include_once 'tab_customers_server.php';
+		break;
 	case 'customers':
 		include_once 'tab_customers.php';
 		break;

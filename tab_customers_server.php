@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created:27 13 September 2015 18:30:16 GMT+8, Kuala Lumpur, Malaysia
+ Created: 14 September 2015 19:11:44 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -20,18 +20,12 @@ $smarty->assign('results_per_page',$results_per_page);
 
 
 $smarty->assign('sortKey','id');
-$smarty->assign('request',"/ar_contacts.php?tipo=customers&parent=store&parent_key=".$state['parent_key']);
+$smarty->assign('request',"/ar_assets.php?tipo=customers_per_store");
 
 
-$smarty->assign('columns_file','columns_customers');
+$smarty->assign('columns_file','columns_customers_server');
 
 
-$table_views=array(
-'overview'=>array('label'=>_('Overview')),
-'sales'=>array('label'=>_('Sales'))
-
-);
-$smarty->assign('table_views',$table_views);
 
 $html=$smarty->fetch('table.tpl');
 

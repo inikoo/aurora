@@ -7,6 +7,11 @@
 
 
 function change_browser_history_state(request) {
+
+    if (request.charAt(0) !== '/') {
+        request = '/' + request
+    }
+
     window.top.history.pushState({
         request: request
     }, '', request)
@@ -118,10 +123,10 @@ function show_results_per_page() {
     var $results_per_page = $('#results_per_page')
     if ($results_per_page.hasClass('showing_options')) {
         $results_per_page.removeClass('showing_options')
-         $('.results_per_page').addClass('hide')
+        $('.results_per_page').addClass('hide')
     } else {
         $results_per_page.addClass('showing_options')
-         $('.results_per_page').removeClass('hide')
+        $('.results_per_page').removeClass('hide')
 
     }
 
@@ -133,5 +138,3 @@ function change_results_per_page(results_per_page) {
     rows.setPageSize(results_per_page)
 
 }
-
-
