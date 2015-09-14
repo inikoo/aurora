@@ -1,4 +1,5 @@
-$columans = [{
+ [
+ {
     name: "id",
     label: "ID",
     editable: false,
@@ -10,7 +11,9 @@ $columans = [{
             }
         },
         className: "link"
-    })
+       
+}),
+   
 }, {
     name: "store_key",
     label: "",
@@ -49,5 +52,6 @@ $columans = [{
     name: "invoices",
     label: "Invoices",
     editable: false,
-    cell: "integer"
+    cell: "integer",
+    headerCell: integerHeaderCell
 }]

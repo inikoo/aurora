@@ -235,15 +235,17 @@ img{vertical-align: -5%}
 .sticky_note.green{background:#94db84;border:1px solid #78bf41}
 
 
-.table_info{margin-left:10px;border-bottom:1px solid #ccc;height:$height_header;line-height:$height_header;}
+.table_info{padding-left:10px;border-bottom:1px solid #ccc;height:$height_header;line-height:$height_header;}
 
 .results_per_page.square_button{font-size:11px}
 .results_per_page.square_button.selected{color:steelblue;font-weight:800}
 
-.backgrid {}
+.backgrid {
+.totals td{color:#000;border-top:1px solid #000}
+}
 .backgrid th{text-align:left}
 
-
+.backgrid th.align-right{text-align:right}
 
 #object_showcase{
     clear:both;padding:20px 30px;border-bottom:1px solid #ccc;font-size:15px;
@@ -268,5 +270,6 @@ img{vertical-align: -5%}
     
 
 }
+
 
 

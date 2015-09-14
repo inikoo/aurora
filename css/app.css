@@ -337,7 +337,7 @@ a {
   border: 1px solid #78bf41; }
 
 .table_info {
-  margin-left: 10px;
+  padding-left: 10px;
   border-bottom: 1px solid #ccc;
   height: 30px;
   line-height: 30px; }
@@ -349,8 +349,15 @@ a {
   color: steelblue;
   font-weight: 800; }
 
+.backgrid .totals td {
+  color: #000;
+  border-top: 1px solid #000; }
+
 .backgrid th {
   text-align: left; }
+
+.backgrid th.align-right {
+  text-align: right; }
 
 #object_showcase {
   clear: both;
