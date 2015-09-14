@@ -1694,16 +1694,16 @@ class Address extends DB_Table {
 	public static function location($data,$flag='left') {
 
 		if ($data['Military Address']=='Yes') {
-			$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Military Installation Type']);
+			$location=sprintf('<img src="/art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Military Installation Type']);
 		} else {
 
 			if ($data['Address Fuzzy']=='Yes') {
 				if (preg_match('/country/i',$data['Address Fuzzy Type'])) {
-					$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Unknown'));
+					$location=sprintf('<img src="/art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Unknown'));
 					return _trim($location);
 				}
 				elseif (preg_match('/town/i',$data['Address Fuzzy Type'])) {
-					$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Somewhere in').' '.$data['Address Country Name']);
+					$location=sprintf('<img src="/art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],_('Somewhere in').' '.$data['Address Country Name']);
 					return _trim($location);
 				}
 			}
@@ -1711,9 +1711,9 @@ class Address extends DB_Table {
 			if ($flag=='none')
 				$location=sprintf('%s %s',$data['Address Town'],$data['Address Country Code']);
 			else if ($flag=='right')
-					$location=sprintf('%s <img src="art/flags/%s.gif" title="%s">',$data['Address Town'],strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code']);
+					$location=sprintf('%s <img src="/art/flags/%s.gif" title="%s">',$data['Address Town'],strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code']);
 				else
-					$location=sprintf('<img src="art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
+					$location=sprintf('<img src="/art/flags/%s.gif" title="%s"> %s',strtolower($data['Address Country 2 Alpha Code']),$data['Address Country Code'],$data['Address Town']);
 
 
 		}

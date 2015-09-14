@@ -14,7 +14,8 @@ html, body {
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
   color: #555;
   background: #fcfcfc;
-  margin: 0px; }
+  margin: 0px;
+  font-size: 14px; }
   html a, body a {
     color: #555; }
   html a, html table, html button, html tbody, body a, body table, body button, body tbody {
@@ -32,6 +33,10 @@ html, body {
 
 a {
   color: #555; }
+
+.link {
+  cursor: pointer;
+  color: steelblue; }
 
 #top_bar {
   padding: 3px 20px 0px 20px;
@@ -92,7 +97,8 @@ a {
   height: 100%;
   width: 200px;
   background: #656565;
-  color: #ddd; }
+  color: #ddd;
+  font-size: 16px; }
   #app_leftmenu a {
     color: #ddd; }
   #app_leftmenu ul {
@@ -168,6 +174,12 @@ a {
 
 .square_button .disabled {
   opacity: .2; }
+
+.square_button.disabled {
+  opacity: .2; }
+
+.square_button.disabled:hover {
+  color: #444; }
 
 .square_button:hover {
   color: #000;
@@ -308,11 +320,6 @@ a {
       position: relative;
       top: -1px; }
 
-#object_showcase {
-  clear: both;
-  padding: 10px 10px 20px 10px;
-  border-bottom: 1px solid #ccc; }
-
 .sticky_note {
   border: 1px solid #BAB84E;
   background: #EDEB82;
@@ -328,5 +335,59 @@ a {
 .sticky_note.green {
   background: #94db84;
   border: 1px solid #78bf41; }
+
+.table_info {
+  margin-left: 10px;
+  border-bottom: 1px solid #ccc;
+  height: 30px;
+  line-height: 30px; }
+
+.results_per_page.square_button {
+  font-size: 11px; }
+
+.results_per_page.square_button.selected {
+  color: steelblue;
+  font-weight: 800; }
+
+.backgrid th {
+  text-align: left; }
+
+#object_showcase {
+  clear: both;
+  padding: 20px 30px;
+  border-bottom: 1px solid #ccc;
+  font-size: 15px; }
+  #object_showcase .data_container {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px; }
+    #object_showcase .data_container i {
+      margin-right: 10px; }
+    #object_showcase .data_container .data_field {
+      text-align: left;
+      min-width: 300px;
+      margin-bottom: 4px; }
+
+.group_label {
+  font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  margin-left: 30px;
+  padding-bottom: 10px;
+  font-weight: 600; }
+
+.details_data {
+  margin-top: 20px; }
+  .details_data .field {
+    margin: 0px 20px;
+    clear: both;
+    padding: 0px  10px;
+    border-top: 1px solid #ddd; }
+  .details_data .label {
+    float: left;
+    min-width: 300px;
+    padding: 7px  0px; }
+  .details_data .value {
+    float: left;
+    min-width: 300px;
+    padding: 7px  0px; }
 
 /*# sourceMappingURL=app.css.map */

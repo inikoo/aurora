@@ -12,11 +12,12 @@
 
 $modules=array(
 	'dashboard'=>array(
+	
 		'section'=>'dashboard',
 		'parent'=>'none',
 		'parent_type'=>'none',
 		'sections'=>array(
-			'dashboard'=>array('label'=>_('Home'),'title'=>_('Home'),'icon'=>'home'),
+			'dashboard'=>array('type'=>'widgets','label'=>_('Home'),'title'=>_('Home'),'icon'=>'home'),
 		)
 
 	),
@@ -29,7 +30,9 @@ $modules=array(
 		'sections'=>array(
 			'dashboard'=>array('type'=>'navigation','label'=>_('Dashboard'),'title'=>_("Customer's dashboard"),'icon'=>'dashboard','reference'=>'customers/dashboard'),
 
-			'customers'=>array('type'=>'navigation','label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','reference'=>'customers/%d',
+			'customers'=>array(
+			'tab'=>'customers',
+			'type'=>'navigation','label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','reference'=>'customers/%d',
 
 
 
@@ -59,9 +62,9 @@ $modules=array(
 				'icon'=>'user',
 				'reference'=>'customer/%d',
 				'tabs'=>array(
-					'details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'customer/%d/details'),
-					'history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'reference'=>'customer/%d/notes'),
-					'orders'=>array('label'=>_('Orders'),'title'=>_('Orders'),'reference'=>'customer/%d/orders'),
+					'customer.details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'customer/%d/details'),
+					'customer.history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'reference'=>'customer/%d/notes'),
+					'customer.orders'=>array('label'=>_('Orders'),'title'=>_('Orders'),'reference'=>'customer/%d/orders'),
 
 				)
 			)
@@ -78,7 +81,7 @@ $modules=array(
 		'section'=>'customers',
 		'sections'=>array(
 			'customers'=>array('type'=>'navigation','label'=>_('Customers (All stores)'),'title'=>_('Customers (All stores)'),'icon'=>'','reference'=>'customers/all'),
-			'pending_orders'=>array('type'=>'navigation','label'=>_('Pending orders (All stores)'),'title'=>_('Pending orders (All stores)'),'icon'=>'','reference'=>'pending_orders/all'),
+			'pending_orders'=>array('type'=>'navigation','label'=>_('Pending orders (All stores)'),'title'=>_('Pending orders (All stores)'),'icon'=>'','reference'=>'customers/all/pending_orders/'),
 
 		)
 
@@ -156,7 +159,7 @@ function get_sections($module,$parent_key=false) {
 				$value['reference']=sprintf($value['reference'],$parent_key);
 			}
 
-			$sections[]=$value;
+			$sections[$key]=$value;
 		}
 	}
 

@@ -197,7 +197,6 @@
 		}
 	}
 	
-	
 	$_order=$order;
 	$_dir=$order_direction;
 	if ($order=='name')
@@ -264,6 +263,8 @@
 		$order='`Customer Number Web Failed Logins`';
 	elseif ($order=='requests')
 		$order='`Customer Number Web Requests`';
+	elseif ($order=='invoices')
+		$order='`Customer Orders Invoiced`';	
 	else
 		$order='`Customer File As`';
 

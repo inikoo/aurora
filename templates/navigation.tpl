@@ -1,4 +1,5 @@
- <div id="address_bar">
+ 
+ <div id="address_bar" class="{if count($_content.sections)==0}hide{/if}">
 	<div id="section_links" class="{if isset($_content.sections_class)}{$_content.sections_class}{/if}">
 		{foreach from=$_content.sections|@array_reverse item=section_link } 
 		<div {if isset($section_link.id) and $section_link.id }id="{$section_link.id}"{/if} class="section right  {if isset($section_link.selected) and $section_link.selected}selected{/if}"  {if isset($section_link.reference) and $section_link.reference!=''}onclick="change_view('{$section_link.reference}')"{/if}  title="{$section_link.title}">
@@ -10,10 +11,16 @@
 </div>
 <div id="header">
 	{foreach from=$_content.left_buttons item=button } 
+	
 	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  class="square_button left"       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} title="{$button.title}">
 		<i class="fa fa-{$button.icon} fa-fw"></i> 
 	</div>
-	{/foreach} 
+	{/foreach}  
+	
+	{if isset($_content.avatar) }
+	{$_content.avatar}
+	{/if}
+	
 	<span class="title">
 		{$_content.title}
 	</span>

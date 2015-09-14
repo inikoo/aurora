@@ -7,27 +7,49 @@
 
 
 function change_browser_history_state(request) {
-
-    window.top.history.pushState({}, '', '/' + request)
+    window.top.history.pushState({
+        request: request
+    }, '', request)
 
 }
 
+window.addEventListener('popstate', function(event) {
 
+
+});
+
+function change_tab(tab) {
+
+    var request = "/ar_views.php?tipo=tab&tab=" + tab + "&state=" + JSON.stringify(state)
+
+    $.getJSON(request, function(data) {
+
+        if (typeof(data.tab) != "undefined" && data.tab !== null) {
+            $('#tab').html(data.tab);
+        }
+
+    });
+
+
+}
 
 function change_view(_request) {
 
     var request = "/ar_views.php?tipo=views&request=" + _request + "&old_state=" + JSON.stringify(state)
-
-
     $.getJSON(request, function(data) {
+
+
+
         state = data.state;
 
-        if (typeof(data.navigation) != "undefined" && data.navigation !== null) {
-
-
-
+        if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
+            $('#navigation').removeClass('hide')
             $('#navigation').html(data.navigation);
+        } else {
+            $('#navigation').addClass('hide')
+
         }
+
         if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
             $('#tabs').html(data.tabs);
         }
@@ -41,14 +63,17 @@ function change_view(_request) {
 
             $('#view_position').html(data.view_position);
         }
-        
-        if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null) {
 
+        if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null && data.object_showcase != '') {
+            $('#object_showcase').removeClass('hide')
             $('#object_showcase').html(data.object_showcase);
-        }
-if (typeof(data.table) != "undefined" && data.table !== null) {
+        } else {
+            $('#object_showcase').addClass('hide')
 
-            $('#table').html(data.table);
+        }
+        if (typeof(data.tab) != "undefined" && data.tab !== null) {
+
+            $('#tab').html(data.tab);
         }
 
 
@@ -87,3 +112,26 @@ $(document).ready(function() {
 
 
 })
+
+
+function show_results_per_page() {
+    var $results_per_page = $('#results_per_page')
+    if ($results_per_page.hasClass('showing_options')) {
+        $results_per_page.removeClass('showing_options')
+         $('.results_per_page').addClass('hide')
+    } else {
+        $results_per_page.addClass('showing_options')
+         $('.results_per_page').removeClass('hide')
+
+    }
+
+}
+
+function change_results_per_page(results_per_page) {
+    $('.results_per_page').removeClass('selected')
+    $('#results_per_page_' + results_per_page).addClass('selected')
+    rows.setPageSize(results_per_page)
+
+}
+
+

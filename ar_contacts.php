@@ -2336,16 +2336,26 @@ function list_customers() {
 
 	$conf=$_SESSION['state'][$conf_table]['customers'];
 
-
-
-	if (isset( $_REQUEST['sf']))
-		$start_from=$_REQUEST['sf'];
-	else
-		$start_from=$conf['sf'];
 	if (isset( $_REQUEST['nr']))
 		$number_results=$_REQUEST['nr'];
 	else
 		$number_results=$conf['nr'];
+		
+		
+
+	if (isset( $_REQUEST['page'])) {
+
+		$start_from=($_REQUEST['page']-1)*$number_results;
+
+	}else {
+		if (isset( $_REQUEST['sf']))
+			$start_from=$_REQUEST['sf'];
+		else
+			$start_from=$conf['sf'];
+	}
+
+
+
 	if (isset( $_REQUEST['o']))
 		$order=$_REQUEST['o'];
 	else
@@ -2560,9 +2570,7 @@ function list_customers() {
 
 
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
-
 	$adata=array();
-
 
 
 	$result=mysql_query($sql);
@@ -2625,11 +2633,13 @@ function list_customers() {
 		}
 
 		$adata[]=array(
-			'id'=>$id,
-			'name'=>$name,
+			'id'=>(integer) $data['Customer Key'],
+			'store_key'=>$data['Customer Store Key'],
+			'formated_id'=>sprintf("%05d",$data['Customer Key']),
+			'name'=>($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']),
 			'location'=>$data['Customer Main Location'],
 
-			'invoices'=>$data['Customer Orders Invoiced'],
+			'invoices'=>(integer) $data['Customer Orders Invoiced'],
 			'email'=>$data['Customer Main XHTML Email'],
 			'telephone'=>$data['Customer Main XHTML Telephone'],
 			'orders'=>number($data['Customer Orders']),
@@ -2688,10 +2698,13 @@ function list_customers() {
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,
 			'filter_msg'=>$filter_msg,
-			'total_records'=>$total
+			'total_records'=> $total
 
 		)
 	);
+
+
+
 	if ($output_type=='ajax') {
 		echo json_encode($response);
 		return;
@@ -4667,11 +4680,11 @@ function list_customers_lists() {
 
 	global $user;
 
-if (isset( $_REQUEST['store_key']))
+	if (isset( $_REQUEST['store_key']))
 		$store_key=$_REQUEST['store_key'];
-	else{
+	else {
 		exit('no stoer key');
-}
+	}
 	$conf=$_SESSION['state']['customers']['list'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
