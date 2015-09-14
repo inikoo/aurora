@@ -11,7 +11,9 @@
 	<script type="text/javascript" src="/js/jquery.min.js"></script> 
 	<script type="text/javascript" src="/js/underscore.js"></script> 
 	<script type="text/javascript" src="/js/backbone.js"></script> 
+	<script type="text/javascript" src="/js/backbone.paginator.js"></script> 
 	<script type="text/javascript" src="/js/backgrid.js"></script> 
+	<script type="text/javascript" src="/js/backgrid-paginator.js"></script> 
 	<script type="text/javascript" src="/js/app.js"></script> 
 </head>
 <body>
@@ -44,13 +46,13 @@
 			<div id="navigation"></div>
 			<div id="object_showcase"></div>
 			<div id="tabs"></div>
-			<div id="table"></div>
+			<div id="tab"></div>
+			<div style="clear:both;margin-bottom:100px"></div>
 		</div>
 	</section>
 	<aside id="notifications">
 	</aside>
 </div>
-<div id="footer">
-</div>
+
 </body>
 </html>
