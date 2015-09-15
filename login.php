@@ -78,43 +78,12 @@ include_once 'set_locales.php';
 $Sk="skstart|".(date('U')+3600)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
 $St=AESEncryptCtr($Sk,SKEY, 256);
 
-//print AESDecryptCtr($St,SKEY,256);
-//print($St);
-$css_files=array(
-	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-	$yui_path.'button/assets/skins/sam/button.css',
-	'css/common.css',
-	'css/button.css',
-	'css/login.css',
-//	'css/login.xmas.css',
-
-	'public_theme.css.php',
-//	'css/snow.css',
-//	'http://fonts.googleapis.com/css?family=Spirax',
-//	'http://fonts.googleapis.com/css?family=Mountains+of+Christmas',
-//	'http://fonts.googleapis.com/css?family=Roboto:100'
-
-
-
-);
-$js_files=array(
-	$yui_path.'utilities/utilities.js',
-	$yui_path.'container/container.js',
-	$yui_path.'menu/menu-min.js',
-	$yui_path.'button/button.js',
-	'js/countdown.js',
-	'sha256.js.php',
-	'js/aes.js',
-	'login.js.php',
-	//  'config.js.php?store_key=1'
-);
 
 
 
 
 $smarty->assign('st',$St);
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
 
 
 if (defined('LC_MESSAGES'))
@@ -142,109 +111,20 @@ if (function_exists('bindtextdomain')) {
 }
 
 
-if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
-	$log_as="supplier";
-else
-	$log_as="staff";
+$smarty->assign('error',(isset($_REQUEST['e'])?true:false) );
 
-$smarty->assign('login_type',$log_as);
-$smarty->assign('lang_id',0);
+
+
 $smarty->assign('lang_code',$current_lang);
 
 
-$sql=sprintf("select `Inikoo Version`,`Account Code`,`Account Menu Label`,`Account Name`,`Inikoo Public URL`,`Account Country 2 Alpha Code`,`Account Country Code`,`Account Currency`,`Currency Symbol`,`Short Message` from  `Account Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Account Currency`) ");
-//print $sql;
-
-$res=mysql_query($sql);
-
-if ($row=mysql_fetch_array($res)) {
-
-	$smarty->assign('inikoo_version',$row['Inikoo Version']);
-	$smarty->assign('top_navigation_message',$row['Short Message']);
-	$smarty->assign('account_name',$row['Account Name']);
-
-}
 
 
 
-
-list($message_showcase,$message)=get_message($account_info['Account Code']);
-
-$message_showcase='';
-$message='';
-$smarty->assign('message_showcase',$message_showcase);
-
-$smarty->assign('message',$message);
 
 
 $smarty->display("login.tpl");
 
-exit();
-
-function get_message($account_code) {
-
-	$default_message="Merry Xmas";
-	$message_counter="<span style=\"font-family: 'Roboto', sans-serif;\"><span id='countdown1'>2013-12-20 15:00:00 GMT+00:00</span> to Xmas break</span>";
-	$messages=array(
-		'2013-11-19'=>"What I don't like about office Christmas parties is looking for a job the next day.",
-
-		'2013-11-20'=>'I hate Santa! He reminds me of the men who come for 10 minutes, do their thing and disappear for the remaining 364 days!',
-		'2013-11-21'=>"Dearest Santa I promise I will never bitch about anyone please get me....ah nah, forget it, I'll get it for myself!",
-		'2013-11-22'=>$message_counter,
-		'2013-11-23'=>"Put on a Santa suit and open a mall kiosk that sells reindeer jerky and Easter Bunny filets.",
-		'2013-11-24'=>'Christmas gifts are lovely, only when you are not the one paying for them though! ',
-		'2013-11-25'=>'Christmas shopping is awesome, only when it is for you.',
-		'2013-11-26'=>'Is it legal for a obese man to ride on reindeer’s? Is RSPCA listening?',
-		'2013-11-27'=>"Decorate your yard to look like a sleigh and eight tiny reindeer crashed and burned. Walk back and forth along the street muttering, \"Oh, the humanity\".",
-		'2013-11-28'=>$message_counter,
-		'2013-11-29'=>"You are all that I want this Christmas! No actually, I wouldn't mind a car, diamonds and some cash too!",
-		'2013-11-30'=>"Christmas isn't a season. It's a feeling.",
-		'2013-12-01'=>$message_counter,
-		'2013-12-02'=>"At Christmas, all roads lead home.",
-		'2013-12-03'=>"Christmas is weird. What other time of the year do you sit in front of a dead tree and eat candy out of your socks?",
-		'2013-12-04'=>$message_counter,
-		'2013-12-05'=>"Sell jars of water, advertising them as Frosty the Snowman urns.",
-		'2013-12-06'=>"Stand on a street corner selling dime bags of mistletoe.",
-		'2013-12-07'=>"Randomly replace one bulb in your neighbor's lights so they no longer work. Repeat this every day until Christmas.",
-		'2013-12-08'=>"What I don't like about office Christmas parties is looking for a job the next day.",
-		'2013-12-09'=>'Dearest God, this Christmas I planned on going green. So please get the point and send my lots of cash this Christmas. Thank you!',
-		'2013-12-10'=>"The perfect Christmas tree? All Christmas trees are perfect!",
-		'2013-12-11'=>"Hasn't Santa ever heard of Diet Coke and the treadmill?",
-		'2013-12-12'=>"This christmas i've decided to put the mistletoe in my back pocket, so all the people i don't like can kiss my ass.",
-		'2013-12-13'=>$message_counter,
-		'2013-12-14'=>$message_counter,
-		'2013-12-15'=>$message_counter,
-		'2013-12-17'=>$message_counter,
-		'2013-12-18'=>$message_counter,
-		'2013-12-19'=>$message_counter,
-		'2013-12-20'=>$message_counter,
-
-	);
-
-
-
-
-	$date=date('Y-m-d');
-
-	if (array_key_exists($date,$messages)) {
-
-		$message=$messages[$date];
-	}else {
-
-		$message=$default_message;
-	}
-
-	$message_showcase='Happy Holidays';
-
-	if ($account_code=='AWR') {
-		$message_showcase='Felices Fiestas';
-		$message='';
-
-	}
-
-	return array($message_showcase,$message);
-
-}
 
 
 ?>

@@ -89,20 +89,7 @@ if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
 else
 	$log_as="staff";
 
-$logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
-// print array_pop(explode('/', $_SERVER['PHP_SELF']));
-if ($logout) {
 
-	/*  ?><script type = "text/javascript">alert("You are about to be signed out due to Inactivity");</script><?php   */
-	$sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
-	mysql_query($sql);
-
-	session_regenerate_id();
-	session_destroy();
-	unset($_SESSION);
-	header('Location: login.php?log_as='.$log_as);
-	exit;
-}
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
@@ -151,22 +138,9 @@ foreach ($_GET as $key => $value) {
 }
 
 
-
-$smarty->assign('page_layout','doc4');
-$smarty->assign('timezone',date("e P"));
-
-//print_r($_SESSION['state']['customers']['store']);
-
-include_once 'set_state.php';
-//print_r($_SESSION['state']['customers']['store']);
-
-
-
-
 $smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
 $smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
 $smarty->assign('currency_symbol',$_SESSION['locale_info']['currency_symbol']);
-//$smarty->assign('max_session_time_in_milliseconds',$max_session_time_in_milliseconds);
 
 
 $smarty->assign('user',$user);
@@ -200,7 +174,7 @@ $account_label=($inikoo_account->data['Account Menu Label']==''?_('Company'):$in
 $smarty->assign('account_label',$account_label);
 
 
-
+/*
 $lang_menu=$mem->get('EPRLANG'.$account_code.$inikoo_account->data['Inikoo Version']);
 if (!$lang_menu) {
 	$lang_menu=array();
@@ -217,25 +191,11 @@ if (!$lang_menu) {
 
 
 $smarty->assign('lang_menu',$lang_menu);
-
-
-
-
+*/
 
 $common='';
 
-
-/*
-if(!$is_root_available){
-   include_once 'config.php';
-   exit;
-}
-*/
-
-
-
 $smarty->assign('page_name',basename($_SERVER["PHP_SELF"], ".php"));
-
 $smarty->assign('analyticstracking',( file_exists('templates/analyticstracking.tpl')?true:false));
 
 ?>

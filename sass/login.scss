@@ -1,0 +1,221 @@
+// Fonts
+
+
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Ubuntu Light'), local('Ubuntu-Light'), url("/fonts/ubuntu300.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url("/fonts/ubuntu700.woff2") format('woff2');
+}
+
+
+// Vendor
+
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+// Variables
+
+$base__bgcolor: #2c3338;
+$base__color: #606468;
+$base__font-family-fallback: sans-serif;
+$base__font-family: 'Ubuntu';
+$base__font-size: .875rem;
+$base__font-weight: 400;
+$base__line-height: 1.5;
+
+$form--login__border-radus: .25rem;
+$form--login__fw_color: #606468;
+$form--login__color: #ddd;
+
+$form--login__label__bgcolor: #363b41;
+$form--login__input__bgcolor: #3b4148;
+$form--login__input__bgcolor--hover: #434A52;
+$form--login__submit__bgcolor: #171717;
+$form--login__submit__bgcolor--hover: #000;
+$form--login__submit__color: #eee;
+
+$form--login__error__color:tomato;
+
+$grid__container__max-width: 20rem;
+$grid__container__width: 90%;
+
+$link__color: #eee;
+
+// Base
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: $base__bgcolor;
+  color: $base__color;
+  font: $base__font-weight #{$base__font-size}/#{$base__line-height} $base__font-family, $base__font-family-fallback;
+  margin: 0;
+  min-height: 100%;
+}
+
+a {
+  color: $link__color;
+  outline: 0;
+  text-decoration: none;
+
+  &:focus,
+  &:hover {
+    text-decoration: underline;
+  }
+
+}
+
+input {
+  border: 0;
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  transition: background-color .3s;
+}
+
+// Layout
+
+.site {
+
+  &__container {
+    flex: 1;
+    padding: 3rem 0;
+  }
+
+}
+
+// Forms
+
+.form {
+
+  input {
+
+    &[type="password"],
+    &[type="text"],
+    &[type="submit"] {
+      width: 100%;
+    }
+
+  }
+
+  &--login {
+    color: $form--login__color;
+
+    label,
+    input[type="text"],
+    input[type="password"],
+    input[type="submit"] {
+      border-radius: $form--login__border-radus;
+      padding: 1rem;
+    }
+    
+    input[type="submit"] {
+        cursor:pointer;
+    }
+
+    label {
+      background-color: $form--login__label__bgcolor;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+    i {position:relative;top:4px;color:$form--login__fw_color}
+    input {
+
+      &[type="text"],
+      &[type="password"] {
+        background-color: $form--login__input__bgcolor;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+
+        &:focus,
+        &:hover {
+          background-color: $form--login__input__bgcolor--hover;
+        }
+
+      }
+
+      &[type="submit"] {
+        background-color: $form--login__submit__bgcolor;
+        color: $form--login__submit__color;
+        font-weight: bold;
+        text-transform: uppercase;
+
+        &:focus,
+        &:hover {
+          background-color: $form--login__submit__bgcolor--hover;
+        }
+
+      }
+
+    }
+
+  }
+
+  &__field {
+    display: flex;
+    margin-bottom: 1rem;
+  }
+
+  &__input {
+    flex: 1;
+  }
+
+}
+
+// Utilities
+.error{color:$form--login__error__color;}
+
+.align {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.text {
+
+  &--center {
+    text-align: center;
+  }
+
+}
+
+// Grid
+
+.grid {
+
+  &__container {
+    margin: 0 auto;
+    max-width: $grid__container__max-width;
+    width: $grid__container__width;
+  }
+
+}

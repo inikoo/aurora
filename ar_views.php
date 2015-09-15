@@ -30,15 +30,7 @@ case 'views':
 
 	$state=parse_request($data['request']);
 
-	if ($state['module']=='customers' or $state['module']=='customers_server') {
-		require_once 'navigation_customers.php';
-	}elseif ($state['module']=='orders' or $state['module']=='orders_server') {
-		require_once 'navigation_orders.php';
-	}elseif ($state['module']=='websites' or $state['module']=='website') {
-		require_once 'navigation_websites.php';
-	}elseif ($state['module']=='dashboard' ) {
-		require_once 'navigation_dashboard.php';
-	}
+
 
 	$response=array('state'=>$state);
 
@@ -108,20 +100,15 @@ function get_tab($tab,$state=false) {
 	$results_per_page=20;
 
 
-	switch ($tab) {
-	case 'customers_server':
-		include_once 'tab_customers_server.php';
-		break;
-	case 'customers':
-		include_once 'tab_customers.php';
-		break;
-	case 'customer.details':
-		include_once 'tab_customer.details.php';
-		break;
-	default:
+	if (file_exists('tab_'.$tab . '.php')) {
+		include_once 'tab_'.$tab . '.php';
+	}else {
 		$html='Not found '.$tab;
-		break;
+
 	}
+
+
+
 	return $html;
 
 }
@@ -133,6 +120,10 @@ function get_object_showcase($data) {
 
 
 	switch ($data['object']) {
+	case 'store':
+		$html='';
+		break;
+
 	case 'customer':
 		include_once 'showcase_customer.php';
 		$html=get_customer_showcase($data);
@@ -157,11 +148,10 @@ function get_menu($data) {
 
 
 		if ($user->data['User Hooked Store Key']) {
-			$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers','customers');
+			$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers/'.$user->data['User Hooked Store Key'],'customers');
 
 		}else {
 			$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers_server','customers');
-
 		}
 
 
@@ -195,18 +185,15 @@ function get_menu($data) {
 	}
 
 	if ($user->can_view('stores')) {
-		if (count($user->stores)==1) {
-			$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'store.php?id='.$user->stores[0],'products');
-		} elseif (count($user->stores)>1) {
 
-			if ($user->data['User Hooked Store Key']) {
-				$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'store.php?id='.$user->data['User Hooked Store Key'],'products');
-			}
-			else {
-				$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'stores.php','products');
+		if ($user->data['User Hooked Store Key']) {
+			$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'store/'.$user->data['User Hooked Store Key'],'products');
 
-			}
+		}else {
+			$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'stores','products');
 		}
+
+
 
 	}
 
@@ -299,14 +286,37 @@ function get_menu($data) {
 function get_navigation($data) {
 
 
+
+
 	switch ($data['module']) {
 
 	case ('dashboard'):
+		require_once 'navigation_dashboard.php';
 		return get_dashboard_navigation($data);
 		break;
-		break;
-	case ('customers'):
+	case ('products'):
+		require_once 'navigation_products.php';
+		switch ($data['section']) {
 
+		case 'store':
+			return get_store_navigation($data);
+			break;
+		case 'department':
+			return get_department_navigation($data);
+			break;
+		case 'family':
+			return get_family_navigation($data);
+			break;
+		case 'product':
+			return get_product_navigation($data);
+			break;
+
+		case ('categories'):
+			return get_products_categories_navigation($data);
+			break;
+		}
+	case ('customers'):
+		require_once 'navigation_customers.php';
 		switch ($data['section']) {
 
 		case ('customer'):
@@ -337,6 +347,7 @@ function get_navigation($data) {
 
 		break;
 	case ('customers_server'):
+		require_once 'navigation_customers.php';
 		switch ($data['section']) {
 		case ('customers'):
 		case('pending_orders'):
@@ -347,7 +358,7 @@ function get_navigation($data) {
 		break;
 
 	case ('orders'):
-
+		require_once 'navigation_orders.php';
 		switch ($data['section']) {
 		case ('dn'):
 		case ('orders'):
@@ -364,7 +375,7 @@ function get_navigation($data) {
 		break;
 
 	case ('websites'):
-
+		require_once 'navigation_websites.php';
 		switch ($data['section']) {
 		case ('websites'):
 
@@ -441,6 +452,8 @@ function get_tabs($data) {
 		$subtabs=array();
 	}
 
+
+
 	if (isset($tabs[$data['tab']]) ) {
 		$tabs[$data['tab']]['selected']=true;
 	}
@@ -468,6 +481,30 @@ function get_view_position($data) {
 
 	switch ($data['module']) {
 
+	case 'products':
+
+		if ( $user->get_number_stores()>1) {
+
+
+			$branch[]=array('label'=>_('Stores'),'icon'=>'bars','reference'=>'stores');
+
+		}
+
+
+		if ($data['section']=='products') {
+
+			if ($data['object']=='store') {
+				$store=new Store($data['key']);
+				$branch[]=array('label'=>$store->get('Store Code'),'icon'=>'','reference'=>'store/'.$store->id);
+			}
+
+
+		}elseif ($data['section']=='categories') {
+			$branch[]=array('label'=>_('Pending orders (All stores)'),'icon'=>'bars','reference'=>'pending_orders/all');
+		}
+
+
+		break;
 	case 'customers_server':
 		if ($data['section']=='customers')
 			$branch[]=array('label'=>_('Customers (All stores)'),'icon'=>'bars','reference'=>'customers/all');
@@ -475,6 +512,8 @@ function get_view_position($data) {
 			$branch[]=array('label'=>_('Pending orders (All stores)'),'icon'=>'bars','reference'=>'pending_orders/all');
 
 		break;
+
+
 	case 'customers':
 
 
@@ -936,6 +975,26 @@ function parse_request($request) {
 		$root=array_shift($view_path);
 		$count_view_path=count($view_path);
 		switch ($root) {
+		case 'store':
+			$module='products';
+			$section='store';
+			$object='store';
+			if ($count_view_path==0 or !is_numeric($view_path[0])) {
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+					$key=$user->data['User Hooked Store Key'];
+				}else {
+					$_tmp=$user->stores;
+					$key=array_shift($_tmp);
+				}
+			}
+
+			if (is_numeric($view_path[0])) {
+				$key=array_shift($view_path);
+			}
+
+			$tab='store_dashboard';
+
+			break;
 		case 'customers':
 			$module='customers';
 			if ($count_view_path==0) {

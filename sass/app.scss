@@ -110,6 +110,8 @@ a {color:#555}
     a{color:$color_dark_font;}
     ul{font-family: $font_title;font-weight:300;list-style-type: none;padding:0px; margin:0px 0px 0px 0px;}
     li{padding:3px 5px 3px 20px;background-color:$color_dark_strong;cursor:pointer;;border-top:1px solid $color_dark_darker_font;color:$color_dark_font;
+     
+      &:last-of-type{border-bottom:1px solid $color_dark_darker_font}
      .fa{margin-right:6px;font-size:95%;opacity:.20}
         &:hover{
                 background-color:$color_dark_highlight;color:$color_dark_font_highlight;

@@ -672,8 +672,6 @@ function get_customer_navigation($data) {
 	
 	$_section=$data['section'];
 	if($_section=='customer')$_section='customers';
-	//print_r($sections);
-	//print $sections[$_section]['selected'];
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
