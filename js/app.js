@@ -31,6 +31,11 @@ function change_tab(tab) {
 
         if (typeof(data.tab) != "undefined" && data.tab !== null) {
             $('#tab').html(data.tab);
+            
+            $('#maintabs .tab').removeClass('selected')
+          
+            $('#tab_'+tab).addClass('selected')
+            
         }
 
     });
@@ -137,4 +142,8 @@ function change_results_per_page(results_per_page) {
     $('#results_per_page_' + results_per_page).addClass('selected')
     rows.setPageSize(results_per_page)
 
+}
+
+function logout(){
+    window.location.href ="/logout.php";
 }

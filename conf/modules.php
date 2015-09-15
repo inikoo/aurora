@@ -135,7 +135,30 @@ $modules=array(
 		)
 	),
 
+    'products'=>array(
+        'section'=>'products',
+        'sections'=>array(
+            'products'=>array('type'=>'navigation','label'=>_('Products'),'title'=>_("Products database"),'icon'=>'cube','reference'=>'store'),
+            'categories'=>array('type'=>'navigation','label'=>_('Categories'),'title'=>_("Products categories"),'icon'=>'sitemap','reference'=>'store/categories'),
+            'store'=>array(
+				'type'=>'object',
+				'label'=>_('Store'),
+				'title'=>_('Store'),
+				'icon'=>'',
+				'reference'=>'store/%d',
+				'tab'=>'store_dashboard',
+				'tabs'=>array(
+					'store_dashboard'=>array('label'=>_('Dashboard'),'title'=>_('Dashboard'),'reference'=>'store/%d/store'),
+					'store_details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'store/%d/details'),
+					'store_history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'reference'=>'store/%d/notes'),
+					'store_departments'=>array('label'=>_('Departments'),'title'=>_('Departments'),'reference'=>'store/%d/departments'),
+					'store_families'=>array('label'=>_('Families'),'title'=>_('Families'),'reference'=>'store/%d/families'),
+					'store_products'=>array('label'=>_('Products'),'title'=>_('Products'),'reference'=>'store/%d/products'),
 
+				)
+			)
+        )
+    ),
 
 
 	'utils'=>array(

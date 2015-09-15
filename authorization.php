@@ -79,11 +79,11 @@ ini_set('session.gc_maxlifetime', 57600); // 16 hours
 ini_set('session.gc_probability', 1);
 ini_set('session.gc_divisor', 100);
 session_start();
-session_start();
+
 
 $auth=new Auth(IKEY,SKEY);
-$handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
-$sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
+$handle = (array_key_exists('login__username', $_REQUEST)) ? $_REQUEST['login__username'] : false;
+$sk = (array_key_exists('ep', $_REQUEST)) ? base64_decode($_REQUEST['ep']) : false;
 
 
 if (isset($_REQUEST['user_type']) and $_REQUEST['user_type']=='supplier')
@@ -104,7 +104,6 @@ if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
 
 
 elseif ($handle) {
-
 	$auth->authenticate($handle,$sk,$user_type,0);
 }
 
@@ -141,7 +140,7 @@ if ($auth->is_authenticated()) {
 
 	$target = $_SERVER['PHP_SELF'];
 	if (!preg_match('/(js|js\.php)$/',$target)) {
-		header('Location: login.php?log_as='.$user_type);
+		header('Location: login.php?e=1');
 		exit;
 	}
 }

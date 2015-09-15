@@ -40,7 +40,12 @@
 			<div id="inikoo_account_name">
 				{$inikoo_account->get('Account Name')}
 			</div>
-			<div id="menu"></div>
+			<div id="menu" ></div>
+			
+			<ul style="margin-top:20px">
+		<li  onclick="logout()" class="xmodule" ><i class="fa fa-sign-out fa-fw"></i> {t}Logout{/t}</li>
+	    </ul>
+			
 		</div>
 		<div id="app_main">
 			<div id="navigation"></div>
