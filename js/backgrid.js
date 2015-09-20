@@ -2841,6 +2841,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     return this;
   },
 
+
+
+
   /**
      Delegates to Backgrid.Body#sort.
    */

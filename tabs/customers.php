@@ -27,6 +27,8 @@ $parameters=json_encode(array(
 	));
 
 $request='/'.$ar_file.'?tipo='.$tipo.'&parameters='.$parameters;
+$default_view='overview';
+
 $default_sort_key='id';
 $default_sort_order=1;
 $default_results_per_page=20;
@@ -53,12 +55,19 @@ if (isset($_SESSION['table_state'][$tab])) {
 		}else {
 			$results_per_page=$default_results_per_page;
 		}
+		
+		if (isset($table_state['view'])) {
+			$table_view=$table_state['view'];
+		}else {
+			$table_view=$default_view;
+		}
 
 
 	}else {
 		$sort_key=$default_sort_key;
 		$sort_order=$default_sort_order;
 		$results_per_page=$default_results_per_page;
+			$table_view=$default_view;
 	}
 
 
@@ -74,7 +83,7 @@ if (isset($_SESSION['table_state'][$tab])) {
 	$smarty->assign('ar_file',$ar_file);
 	$smarty->assign('tipo',$tipo);
 	$smarty->assign('parameters',$parameters);
-
+	$smarty->assign('table_view',$table_view);
 
 
 
@@ -83,9 +92,11 @@ if (isset($_SESSION['table_state'][$tab])) {
 
 	$table_views=array(
 		'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-		'sales'=>array('label'=>_('Sales'),'title'=>_('Sales'))
+		'weblog'=>array('label'=>_('Weblog'),'title'=>_('Weblog'))
 
 	);
+	$table_views[$table_view]['selected']=true;
+	
 	$smarty->assign('table_views',$table_views);
 
 	$html=$smarty->fetch('table.tpl');

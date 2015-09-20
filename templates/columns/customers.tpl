@@ -1,4 +1,4 @@
- [
+var columns = [
  {
     name: "id",
     label: "ID",
@@ -44,15 +44,6 @@
     
     cell: "html"
 }, {
-    name: "contact_since",
-    label: "Since",
-    editable: false,
-     defautOrder:1,
-    sortType: "toggle",
-            {if $sort_key=='contact_since'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
- 
-    cell: "html"
-}, {
     name: "activity",
     label: "Status",
     editable: false,
@@ -61,23 +52,102 @@
 
     cell: "string"
 }, {
+    name: "contact_since",
+    label: "Since",
+    editable: false,
+     defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='contact_since'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+
+}, {
     name: "last_order",
     label: "Last Order",
      defautOrder:1,
     editable: false,
     sortType: "toggle",
-             {if $sort_key=='last_order'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='last_order'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-    cell: "string"
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+
 }, {
     name: "invoices",
     label: "Invoices",
     editable: false,
-    cell: "integer",
+   
     defautOrder:1,
     sortType: "toggle",
     {if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
+}, {
+    name: "logins",
+    label: "{t}Logins{/t}",
+    editable: false,
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+}, {
+    name: "failed_logins",
+    label: "{t}Fail Logins{/t}",
+    editable: false,
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+}, {
+    name: "requests",
+    label: "{t}Pageviews{/t}",
+    editable: false,
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 }]
+
+function change_table_view(view){
+
+    $('.view').removeClass('selected');
+    $('#view_'+view).addClass('selected');
+    
+    
+grid.columns.findWhere({ name: 'invoices'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'last_order'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", false)
+
+
+
+ grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'logins'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'requests'} ).set("renderable", false)
+
+   
+  //  var idCol = grid.columns.where({ name: "logins" });
+//grid.hideColumn(idCol);
+
+      
+    
+    if(view=='overview'){
+   
+    grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'last_order'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
+
+    }else if(view=='weblog'){
+    grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
+ grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'requests'} ).set("renderable", true)
+
+    }
+    
+
+}

@@ -38,7 +38,7 @@
 {if isset($table_views) and count(table_views)>0}
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
-<div {if isset($view.id) and $view.id }id="{$view.id}"{/if} class="tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}')" title="{$view.title}">
+<div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}')" title="{$view.title}">
 			{if isset($view.icon) and $view.icon!=''}<i class="fa fa-{$view.icon}"></i>{/if} <span class="label"> {$view.label}</span> 
 		</div>
 {/foreach} 
@@ -66,8 +66,8 @@ var integerHeaderCell= Backgrid.HeaderCell.extend({
       return this;
     }
 });
-
-var columns = {/literal}{include file="columns/`$data.tab`.tpl" }{literal};
+function change_table_view(view){}
+ {/literal}{include file="columns/`$data.tab`.tpl" }{literal};
 
 var Row = Backbone.Model.extend({});
 
@@ -193,7 +193,7 @@ var grid = new Backgrid.Grid({
 
 grid.render()
 $("#table").append(grid.el);
-
+change_table_view('{/literal}{$table_view}{literal}')
  
 rows.fetch({  reset: true});
 
