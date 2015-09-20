@@ -185,7 +185,16 @@ case('staff'):
 case('customers'):
 	if (!$user->can_view('customers'))
 		exit();
-	$results=list_customers();
+
+	$data=prepare_values($_REQUEST,array(
+			'parameters'=>array('type'=>'json array'),
+			'nr'=>array('type'=>'number'),
+			'page'=>array('type'=>'number'),
+			'o'=>array('type'=>'string','optional'=>true),
+			'od'=>array('type'=>'string','optional'=>true),
+
+		));
+	$results=list_customers($data);
 	break;
 
 
@@ -2305,43 +2314,43 @@ function list_contacts() {
 
 
 
-function list_customers() {
+function list_customers($_data) {
 
 	global $myconf,$output_type,$user;
 
-	if (isset( $_REQUEST['parent']))
-		$parent=$_REQUEST['parent'];
-	else {
-		return;
-	}
-	if (isset( $_REQUEST['parent_key']))
-		$parent_key=$_REQUEST['parent_key'];
-	else {
-		return;
-	}
+
+
+	$parent=$_data['parameters']['parent'];
+	$parent_key=$_data['parameters']['parent_key'];
+	$number_results=$_data['nr'];
+	$start_from=($_data['page']-1)*$number_results;
+	$order=(isset($_data['o'])  ?$_data['o']:'id');
+	$order_direction=((isset($_data['od']) and  preg_match('/desc/i',$_data['od']) ) ?'desc':'');
+	$awhere=$_data['parameters']['awhere'];
+	$f_field=$_data['parameters']['f_field'];
+	$f_value=$_data['parameters']['f_value'];
+
+	$elements_type=$_data['parameters']['elements_type'];
 
 
 
-	switch ($parent) {
-	case 'store':
-		$conf_table='customers';
-		break;
-	case 'category':
-		$conf_table='customer_categories';
-		break;
-	case 'list':
-		$conf_table='customers_list';
-		break;
-	}
 
+
+	$_SESSION['table_state'][$_data['parameters']['tab']]['o']=$order;
+	$_SESSION['table_state'][$_data['parameters']['tab']]['od']=($order_direction==''?-1:1);
+	$_SESSION['table_state'][$_data['parameters']['tab']]['nr']=$number_results;
+
+	// if (isset($_SESSION['table_state'][$state['module']][$state['section']][$tab]['nr'])) {
+
+
+	/*
 	$conf=$_SESSION['state'][$conf_table]['customers'];
 
-	if (isset( $_REQUEST['nr']))
-		$number_results=$_REQUEST['nr'];
+
 	else
 		$number_results=$conf['nr'];
-		
-		
+
+
 
 	if (isset( $_REQUEST['page'])) {
 
@@ -2459,8 +2468,12 @@ function list_customers() {
 	$_SESSION['state'][$conf_table]['customers']['f_field']=$f_field;
 	$_SESSION['state'][$conf_table]['customers']['f_value']=$f_value;
 
+*/
 
-	include_once 'splinters/customers_prepare_list.php';
+
+
+
+	include_once 'prepare_table/customers.php';
 
 
 
@@ -2572,7 +2585,6 @@ function list_customers() {
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	$adata=array();
 
-
 	$result=mysql_query($sql);
 
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2636,7 +2648,9 @@ function list_customers() {
 			'id'=>(integer) $data['Customer Key'],
 			'store_key'=>$data['Customer Store Key'],
 			'formated_id'=>sprintf("%05d",$data['Customer Key']),
-			'name'=>($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']),
+			//'name'=>($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']),
+						'name'=>$data['Customer Name'],
+
 			'location'=>$data['Customer Main Location'],
 
 			'invoices'=>(integer) $data['Customer Orders Invoiced'],
@@ -2696,7 +2710,6 @@ function list_customers() {
 			'rtext_rpp'=>$rtext_rpp,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
 			'filter_msg'=>$filter_msg,
 			'total_records'=> $total
 

@@ -12,7 +12,7 @@
 
 $modules=array(
 	'dashboard'=>array(
-	
+
 		'section'=>'dashboard',
 		'parent'=>'none',
 		'parent_type'=>'none',
@@ -31,8 +31,8 @@ $modules=array(
 			'dashboard'=>array('type'=>'navigation','label'=>_('Dashboard'),'title'=>_("Customer's dashboard"),'icon'=>'dashboard','reference'=>'customers/dashboard'),
 
 			'customers'=>array(
-			'tab'=>'customers',
-			'type'=>'navigation','label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','reference'=>'customers/%d',
+				'tab'=>'customers',
+				'type'=>'navigation','label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','reference'=>'customers/%d',
 
 
 
@@ -110,10 +110,8 @@ $modules=array(
 				'tabs'=>array(
 
 
-					'dashboard'=>array('label'=>_('Website dashboard'),'title'=>_('Website dashboard'),'icon'=>'dashboard','reference'=>'website/%d'),
-					'pages'=>array('label'=>_('Pages'),'title'=>_('Pages'),'icon'=>'files-o','reference'=>'pages/%d'),
-					'pageviews'=>array('label'=>_('Pageviews'),'title'=>_('Pageviews'),'icon'=>'eye','reference'=>'pageviews/%d'),
-					'users'=>array('label'=>_('Users'),'title'=>_('Users'),'icon'=>'male','reference'=>'website/users/%d'),
+					'website.dashboard'=>array('label'=>_('Website dashboard'),'title'=>_('Website dashboard'),'icon'=>'dashboard','reference'=>'websites/dashboard'),
+					'website.websites'=>array('label'=>_('Websites'),'title'=>_('Websites'),'icon'=>'globe','reference'=>'websites/websites'),
 				)
 			),
 			'website'=>array('type'=>'object','label'=>_('Website'),'title'=>_('Website'),'icon'=>'globe','reference'=>'website/%d',
@@ -121,10 +119,12 @@ $modules=array(
 				'tabs'=>array(
 
 
-					'dashboard'=>array('label'=>_('Website dashboard'),'title'=>_('Website dashboard'),'icon'=>'dashboard','reference'=>'website/%d'),
-					'pages'=>array('label'=>_('Pages'),'title'=>_('Pages'),'icon'=>'files-o','reference'=>'pages/%d'),
-					'pageviews'=>array('label'=>_('Pageviews'),'title'=>_('Pageviews'),'icon'=>'eye','reference'=>'pageviews/%d'),
-					'users'=>array('label'=>_('Users'),'title'=>_('Users'),'icon'=>'male','reference'=>'website/users/%d'),
+					'dashboard'=>array('label'=>_('Website dashboard'),'title'=>_('Website dashboard'),'icon'=>'dashboard','reference'=>'website/%d/dashboard'),
+					'website.details'=>array('label'=>_('Details'),'title'=>_('Details'),'icon'=>'database','reference'=>'website/%d/details'),
+
+					'website.pages'=>array('label'=>_('Pages'),'title'=>_('Pages'),'icon'=>'files-o','reference'=>'website/%d/pages'),
+					'website.pageviews'=>array('label'=>_('Pageviews'),'title'=>_('Pageviews'),'icon'=>'eye','reference'=>'website/%d/pageviews'),
+					'website.tusers'=>array('label'=>_('Users'),'title'=>_('Users'),'icon'=>'male','reference'=>'website/%d/users'),
 				)
 			),
 
@@ -135,12 +135,12 @@ $modules=array(
 		)
 	),
 
-    'products'=>array(
-        'section'=>'products',
-        'sections'=>array(
-            'products'=>array('type'=>'navigation','label'=>_('Products'),'title'=>_("Products database"),'icon'=>'cube','reference'=>'store'),
-            'categories'=>array('type'=>'navigation','label'=>_('Categories'),'title'=>_("Products categories"),'icon'=>'sitemap','reference'=>'store/categories'),
-            'store'=>array(
+	'products'=>array(
+		'section'=>'products',
+		'sections'=>array(
+			'products'=>array('type'=>'navigation','label'=>_('Products'),'title'=>_("Products database"),'icon'=>'cube','reference'=>'store'),
+			'categories'=>array('type'=>'navigation','label'=>_('Categories'),'title'=>_("Products categories"),'icon'=>'sitemap','reference'=>'store/categories'),
+			'store'=>array(
 				'type'=>'object',
 				'label'=>_('Store'),
 				'title'=>_('Store'),
@@ -148,17 +148,17 @@ $modules=array(
 				'reference'=>'store/%d',
 				'tab'=>'store_dashboard',
 				'tabs'=>array(
-					'store_dashboard'=>array('label'=>_('Dashboard'),'title'=>_('Dashboard'),'reference'=>'store/%d/store'),
-					'store_details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'store/%d/details'),
-					'store_history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'reference'=>'store/%d/notes'),
-					'store_departments'=>array('label'=>_('Departments'),'title'=>_('Departments'),'reference'=>'store/%d/departments'),
-					'store_families'=>array('label'=>_('Families'),'title'=>_('Families'),'reference'=>'store/%d/families'),
-					'store_products'=>array('label'=>_('Products'),'title'=>_('Products'),'reference'=>'store/%d/products'),
+					'store.dashboard'=>array('label'=>_('Dashboard'),'title'=>_('Dashboard'),'reference'=>'store/%d/store'),
+					'store.details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'store/%d/details'),
+					'store.history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'reference'=>'store/%d/notes'),
+					'store.departments'=>array('label'=>_('Departments'),'title'=>_('Departments'),'reference'=>'store/%d/departments'),
+					'store.families'=>array('label'=>_('Families'),'title'=>_('Families'),'reference'=>'store/%d/families'),
+					'store.products'=>array('label'=>_('Products'),'title'=>_('Products'),'reference'=>'store/%d/products'),
 
 				)
 			)
-        )
-    ),
+		)
+	),
 
 
 	'utils'=>array(

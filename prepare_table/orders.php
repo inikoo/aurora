@@ -1,6 +1,7 @@
 <?php
 
 
+		list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($period,$from,$to);
 
 
 $wheref='';
@@ -10,9 +11,6 @@ $currency='';
 
 $where='where true ';
 $table='`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
-
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
 
 
 if ($awhere) {
@@ -99,7 +97,6 @@ else {
 
 $where_interval=prepare_mysql_dates($from,$to,'`Order Date`');
 $where.=$where_interval['mysql'];
-
 
 
 
@@ -237,7 +234,6 @@ elseif ($f_field=='country' and  $f_value!='') {
 		}
 	}
 }
-
 
 
 ?>

@@ -61,7 +61,7 @@ function get_website_navigation($data) {
 
 
 	$sections_class='';
-	$title=_('Websites');
+	$title=_('Website');
 
 	$left_buttons=array();
 
@@ -69,8 +69,8 @@ function get_website_navigation($data) {
 
 	$right_buttons=array();
 
-
-	$sections=get_sections('website',$website->id);
+$website=new Site($data['key']);
+	$sections=get_sections('websites',$website->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 

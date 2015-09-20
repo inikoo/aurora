@@ -84,12 +84,6 @@ $smarty->assign('inikoo_account',$inikoo_account);
 
 
 
-if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
-	$log_as="supplier";
-else
-	$log_as="staff";
-
-
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
@@ -97,7 +91,7 @@ if (!$is_already_logged_in) {
 	$target = $_SERVER['PHP_SELF'];
 	if (!preg_match('/(js|js\.php)$/',$target)) {
 
-		header('Location: login.php?log_as='.$log_as);
+		header('Location: /login.php');
 		exit;
 	}
 	exit;
@@ -113,7 +107,7 @@ if ($_SESSION['logged_in_page']!=0) {
 	session_destroy();
 	unset($_SESSION);
 
-	header('Location: login.php?log_as='.$log_as);
+		header('Location: /login.php');
 	exit;
 
 }

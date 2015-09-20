@@ -200,7 +200,16 @@ case('orders'):
 	if (!$user->can_view('orders')) {
 		$results=array();
 	}else {
-		$results=list_orders();
+		$data=prepare_values($_REQUEST,array(
+				'parameters'=>array('type'=>'json array'),
+				'nr'=>array('type'=>'number'),
+				'page'=>array('type'=>'number'),
+				'o'=>array('type'=>'string'),
+				'od'=>array('type'=>'string'),
+				
+			));
+
+		$results=list_orders($data);
 	}
 	break;
 case('report_invoices'):
@@ -211,7 +220,21 @@ case('invoices'):
 	if (!$user->can_view('orders')) {
 		$results=array();
 	}else {
-		$results=list_invoices();
+		$data=prepare_values($_REQUEST,array(
+				'parent'=>array('type'=>'string'),
+				'parent_key'=>array('type'=>'key'),
+				'nr'=>array('type'=>'number'),
+				'page'=>array('type'=>'number'),
+				'o'=>array('type'=>'string'),
+				'od'=>array('type'=>'string'),
+				'awhere'=>array('type'=>'string'),
+				'f_field'=>array('type'=>'string'),
+				'f_value'=>array('type'=>'string'),
+				'elements_type'=>array('type'=>'string'),
+				'from'=>array('type'=>'string'),
+				'to'=>array('type'=>'string'),
+			));
+		$results=list_invoices($data);
 	}
 	break;
 
@@ -261,9 +284,28 @@ default:
 }
 
 
-function list_orders() {
+function list_orders($_data) {
 
 	global $myconf,$output_type,$user;
+
+
+	$parent=$_data['parameters']['parent'];
+	$parent_key=$_data['parameters']['parent_key'];
+	$number_results=$_data['nr'];
+	$start_from=($_data['page']-1)*$number_results;
+	$order=$_data['o'];
+	$order_direction=(preg_match('/desc/i',$_data['od'])?'desc':'');
+	$awhere=$_data['parameters']['awhere'];
+	$f_field=$_data['parameters']['f_field'];
+	$f_value=$_data['parameters']['f_value'];
+	$period=$_data['parameters']['period'];
+	$from=$_data['parameters']['from'];
+	$to=$_data['parameters']['to'];
+
+	$elements_type=$_data['parameters']['elements_type'];
+
+
+	/*
 
 	if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
 		$conf=$_SESSION['state']['report']['sales'];
@@ -479,9 +521,11 @@ function list_orders() {
 		$_SESSION['state']['orders']['view']=$view;
 
 	}
+
+	*/
 	$filter_msg='';
 
-	include_once 'splinters/orders_prepare_list.php';
+	include_once 'prepare_table/orders.php';
 
 
 
@@ -586,9 +630,9 @@ function list_orders() {
 
 	//$sql="select   * from  $table   $where $wheref  $where_type $where_interval  order by $order $order_direction limit $start_from,$number_results";
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
-	$sql="select `Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from $table $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select `Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State` from $table $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	//print $where;exit;
-	 
+
 	$adata=array();
 
 
@@ -655,16 +699,18 @@ function list_orders() {
 			else
 				$mark=$mark_out_of_stock.$mark_out_of_credits.$mark_out_of_error;
 
-			$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$data['Order Customer Key'],$data['Order Customer Name']);
 
 
 
 
 			$adata[]=array(
-				'id'=>$id,
+				'id'=>(integer)$data['Order Key'],
+				'store_key'=> (integer) $data['Order Store Key'],
+				'customer_key'=> (integer) $data['Order Customer Key'],
+				'number'=>$data['Order Public ID'],
 				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
 				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
-				'customer'=>$customer,
+				'customer'=>$data['Order Customer Name'],
 				'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: common_order_functions.php
 				'payment_state'=>get_order_formated_payment_state($data),
 
@@ -701,13 +747,11 @@ function list_orders() {
 			'rtext_rpp'=>$rtext_rpp,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
 			'filter_msg'=>$filter_msg,
 			'total_records'=>$total,
 			'records_offset'=>$start_from,
 			'records_perpage'=>$number_results,
 			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
 			'filtered'=>$filtered
 		)
 	);
@@ -1803,11 +1847,28 @@ function list_delivery_notes() {
 	}
 }
 
-function list_invoices() {
+function list_invoices($_data) {
 
 
 	global $myconf,$output_type,$user;
 
+
+
+	$parent=$_data['parent'];
+	$parent_key=$_data['parent_key'];
+	$number_results=$_data['nr'];
+	$start_from=($_data['page']-1)*$number_results;
+	$order=$_data['o'];
+	$order_direction=(preg_match('/desc/i',$_data['od'])?'desc':'');
+	$awhere=$_data['awhere'];
+	$f_field=$_data['f_field'];
+	$f_value=$_data['f_value'];
+	$from=$_data['from'];
+	$to=$_data['to'];
+
+	$elements_type=$_data['elements_type'];
+
+	/*
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -1921,7 +1982,9 @@ function list_invoices() {
 	$_SESSION['state']['orders']['invoices']['elements']=$elements;
 	$_SESSION['state']['orders']['invoices']['elements_type']=$elements_type;
 
-	include_once 'splinters/invoices_prepare_list.php';
+*/
+
+	include_once 'prepare_table/invoices.php';
 
 
 	$sql="select count(Distinct I.`Invoice Key`) as total from $table   $where $wheref ";
@@ -2085,19 +2148,21 @@ function list_invoices() {
 
 
 			$adata[]=array(
-				'id'=>$order_id
-				,'customer'=>$customer
-				,'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Invoice Date'].' +0:00'))
-				//,'day_of_week'=>strftime("%a", strtotime($row['Invoice Date'].' +0:00'))
-				,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
-				,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
-				,'shipping'=>money($row['Invoice Shipping Net Amount'],$row['Invoice Currency'])
-				,'items'=>money($row['Invoice Items Net Amount'],$row['Invoice Currency'])
-				,'type'=>$type
-				,'method'=>$method
-				,'state'=>$state
-				,'orders'=>$row['Invoice XHTML Orders']
-				,'dns'=>$row['Invoice XHTML Delivery Notes']
+				'id'=>(integer)$row['Invoice Key'],
+				'number'=>$row['Invoice Public ID'],
+				'store_key'=>(integer)$row['Invoice Store Key'],
+				'customer_key'=>(integer)$row['Invoice Customer Key'],
+				'customer'=>$row['Invoice Customer Name'],
+				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Invoice Date'].' +0:00')),
+				'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency']),
+				'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency']),
+				'shipping'=>money($row['Invoice Shipping Net Amount'],$row['Invoice Currency']),
+				'items'=>money($row['Invoice Items Net Amount'],$row['Invoice Currency']),
+				'type'=>$type,
+				'method'=>$method,
+				'state'=>$state,
+				'orders'=>$row['Invoice XHTML Orders'],
+				'dns'=>$row['Invoice XHTML Delivery Notes']
 			);
 
 		}
@@ -2125,14 +2190,12 @@ function list_invoices() {
 			'rtext_rpp'=>$rtext_rpp,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
 			'filter_msg'=>$filter_msg,
 			'total_records'=>$total,
 			'records_offset'=>$start_from,
 
 			'records_perpage'=>$number_results,
 			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
 			'filtered'=>$filtered
 		)
 	);

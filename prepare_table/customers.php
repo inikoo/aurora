@@ -94,9 +94,9 @@
 
 
 	$where_type='';
-	if ($orders_type=='contacts_with_orders') {
-		$where_type=' and `Customer With Orders`="Yes" ';
-	}
+	//if ($orders_type=='contacts_with_orders') {
+	//	$where_type=' and `Customer With Orders`="Yes" ';
+	//}
 	switch ($elements_type) {
 	case 'activity':
 		$_elements='';

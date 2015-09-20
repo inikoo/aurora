@@ -117,7 +117,7 @@ function prepare_values( $data, $value_names ) {
 		}
 
 	}
-	$parsed_data['user']=$user;
+	//$parsed_data['user']=$user;
 	return $parsed_data;
 }
 
