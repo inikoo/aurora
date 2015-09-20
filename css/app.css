@@ -26,6 +26,8 @@ html, body {
   html a:hover, body a:hover {
     text-decoration: underline;
     color: #000; }
+  html .aright, body .aright {
+    text-align: right; }
   html .invisible, body .invisible {
     visibility: hidden; }
   html .hide, body .hide {
