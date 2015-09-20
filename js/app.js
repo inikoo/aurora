@@ -19,14 +19,14 @@ function change_browser_history_state(request) {
 }
 
 window.addEventListener('popstate', function(event) {
-
+change_view(event.state.request)
 
 });
 
 function change_tab(tab) {
 
     var request = "/ar_views.php?tipo=tab&tab=" + tab + "&state=" + JSON.stringify(state)
-
+   
     $.getJSON(request, function(data) {
 
         if (typeof(data.tab) != "undefined" && data.tab !== null) {
@@ -141,9 +141,26 @@ function change_results_per_page(results_per_page) {
     $('.results_per_page').removeClass('selected')
     $('#results_per_page_' + results_per_page).addClass('selected')
     rows.setPageSize(results_per_page)
+    
+    $('#results_per_page').attr('title',$('#results_per_page').attr('title').replace(/\(.*\)/g,'('+results_per_page+')'))
+    
 
 }
 
 function logout(){
     window.location.href ="/logout.php";
+}
+
+
+function change_period(period){
+    
+    $('#date_chooser div').removeClass('selected')
+    $('#'+period).addClass('selected')
+    
+    var parameters=jQuery.parseJSON(rows.parameters);
+    parameters.period=period;
+    rows.parameters=JSON.stringify(parameters)
+    rows.url=rows.ar_file+'?tipo='+rows.tipo+'&parameters='+rows.parameters
+    rows.fetch({  reset: true});
+    
 }

@@ -315,6 +315,7 @@
       var comparator = options.comparator;
 
       if (state.sortKey && !comparator) {
+       
         this.setSorting(state.sortKey, state.order, options);
       }
 
@@ -1276,7 +1277,7 @@
        @param {(function(Backbone.Model, string): Object) | string} [options.sortValue]
     */
     setSorting: function (sortKey, order, options) {
-
+   
       var state = this.state;
 
       state.sortKey = sortKey;

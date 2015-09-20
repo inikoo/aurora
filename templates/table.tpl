@@ -1,44 +1,58 @@
- 
+{if isset($elements) and count(elements)>0}
+<div class="table_views tabs ">
+{foreach from=$table_views item=view key=id} 
+<div {if isset($view.id) and $view.id }id="{$view.id}"{/if} class="tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_element('{$id}')" title="{$view.title}">
+			 <span class="label"> {$view.label}</span>  (<span class="quantity">{$view.quantity}</span> )
+		</div>
+{/foreach} 
+</div>
+{/if}
+{if isset($period)}
+ {include file="utils/date_chooser.tpl" period=$period} 
+{/if} 
 <div class="table_info">
-	<div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{{t}}Last page{{/t}}" style="position:relative">
+	<div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{t}Last page{/t}" style="position:relative">
 		<i class="fa fa-chevron-right fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-right fa-fw"></i> 
 	</div>
-	<div id="next_page" onclick="rows.getNextPage()" class="square_button right hide" title="{{t}}Next page{{/t}}">
+	<div id="next_page" onclick="rows.getNextPage()" class="square_button right hide" title="{t}Next page{/t}">
 		<i class="fa fa-chevron-right fa-fw"></i> 
 	</div>
 	<div id="paginator" style="float:right;padding-left:10px;padding-right:10px;">
 	</div>
-	<div id="results_per_page" onclick="show_results_per_page()" class="square_button right" title="{{t}}Results per page{{/t}} ({{$results_per_page}})">
-		<i class="fa fa-reorder fa-fw"></i> 
+	<div id="results_per_page" onclick="show_results_per_page()" class="square_button right" title="{t}Results per page{/t} ({$results_per_page})">
+		<i class="fa fa-reorder fa-fw"></i>
 	</div>
-	{{foreach from=$results_per_page_options item=results_per_page_option}} 
-	<div id="results_per_page_{{$results_per_page_option}}" onclick="change_results_per_page({{$results_per_page_option}})" class="square_button right hide results_per_page {{if $results_per_page==$results_per_page_option}}selected{{/if}}">
-		{{$results_per_page_option}} 
+	{foreach from=$results_per_page_options item=results_per_page_option} 
+	<div id="results_per_page_{$results_per_page_option}" onclick="change_results_per_page({$results_per_page_option})" class="square_button right hide results_per_page {if $results_per_page==$results_per_page_option}selected{/if}">
+		{$results_per_page_option} 
 	</div>
-	{{/foreach}} 
-	<div id="prev_page" onclick="if(rows.state.currentPage==1)return;rows.getPreviousPage()" class="square_button right disabled hide" title="{{t}}Previous page{{/t}}">
+	{/foreach} 
+	<div id="prev_page" onclick="if(rows.state.currentPage==1)return;rows.getPreviousPage()" class="square_button right disabled hide" title="{t}Previous page{/t}">
 		<i class="fa fa-chevron-left   fa-fw"></i> 
 	</div>
-	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{{t}}First page{{/t}}" style="position:relative">
+	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
 	<span id="rtext"></span> 
 </div>
-{{if isset($table_views) and count(table_views)>0}}
+{if isset($table_views) and count(table_views)>0}
 <div class="table_views tabs ">
-{{foreach from=$table_views item=view key=id}} 
-<div {{if isset($view.id) and $view.id }}id="{{$view.id}}"{{/if}} class="tab left {{if isset($view.selected) and $view.selected}}selected{{/if}}"  onclick="change_table_view('{{$id}}')" title="{{$view.title}}">
-			{{if isset($view.icon) and $view.icon!=''}}<i class="fa fa-{{$view.icon}}"></i>{{/if}} <span class="label"> {{$view.label}}</span> 
+{foreach from=$table_views item=view key=id} 
+<div {if isset($view.id) and $view.id }id="{$view.id}"{/if} class="tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}')" title="{$view.title}">
+			{if isset($view.icon) and $view.icon!=''}<i class="fa fa-{$view.icon}"></i>{/if} <span class="label"> {$view.label}</span> 
 		</div>
-{{/foreach}} 
+{/foreach} 
 </div>
-{{/if}}
+{/if}
 <div class="table" id="table">
 </div>
 
 
 
 <script>
+{literal}
+
+
 
 var integerHeaderCell= Backgrid.HeaderCell.extend({
  className: "align-right",
@@ -53,31 +67,36 @@ var integerHeaderCell= Backgrid.HeaderCell.extend({
     }
 });
 
-var columns = {{include file="`$columns_file`.tpl" }};
-
+var columns = {/literal}{include file="columns/`$data.tab`.tpl" }{literal};
 
 var Row = Backbone.Model.extend({});
 
 var Rows = Backbone.PageableCollection.extend({
     model: Row,
-    url: '{{$request}}',
+    url: '{/literal}{$request}{literal}',
+    ar_file: '{/literal}{$ar_file}{literal}',
+    tipo: '{/literal}{$tipo}{literal}',
+    parameters: '{/literal}{$parameters}{literal}',
     state: {
-    pageSize: {{$results_per_page}},
-    sortKey: '{{$sortKey}}',
-    order: 1
+    pageSize: {/literal}{$results_per_page}{literal},
+    sortKey: '{/literal}{$sort_key}{literal}',
+    order: parseInt({/literal}{$sort_order}{literal})
   },queryParams: {
     totalRecords: null,
     pageSize: "nr",
     sortKey: "o",
     order : "od"
   },
+  
+    
+  
+  
   parseState: function (resp, queryParams, state, options) {
 $('#rtext').html(resp.resultset.rtext)
 
 var total_pages=Math.ceil(resp.resultset.total_records/state.pageSize)
 
-
-if(total_pages>1){
+    if(total_pages>1){
 $('#first_page').removeClass('hide')
 $('#prev_page').removeClass('hide')
 $('#last_page').removeClass('hide')
@@ -108,7 +127,22 @@ $('#last_page').addClass('disabled')
 }
 
 }
-    return {totalRecords: parseInt(resp.resultset.total_records)};
+    
+    $('th.ascending').removeClass('ascending')
+    $('th.descending').removeClass('descending')
+   
+    if(resp.resultset.sort_dir=='desc')
+    $('th.'+resp.resultset.sort_key).addClass('descending')
+    else
+    $('th.'+resp.resultset.sort_key).addClass('ascending')
+    
+   
+   
+    
+    return {
+    totalRecords: parseInt(resp.resultset.total_records),
+    sortKey:resp.resultset.sort_key
+    };
   },
    parseRecords: function (resp, options) {
    
@@ -157,12 +191,12 @@ var grid = new Backgrid.Grid({
 });
 
 
-$("#table").append(grid.render().el);
+grid.render()
+$("#table").append(grid.el);
 
-rows.fetch({
-    reset: true
-});
+ 
+rows.fetch({  reset: true});
 
 
-
+{/literal}
 </script> 

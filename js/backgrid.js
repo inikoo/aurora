@@ -2078,7 +2078,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
 
-    this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
+//    this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
   },
 
   /**
@@ -2137,6 +2137,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      column.
    */
   render: function () {
+  
     this.$el.empty();
     var column = this.column;
     var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
@@ -2462,6 +2463,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.el.appendChild(fragment);
 
     this.delegateEvents();
+    
 
     return this;
   },
@@ -2524,6 +2526,11 @@ var Body = Backgrid.Body = Backbone.View.extend({
     if (Backbone.PageableCollection &&
         collection instanceof Backbone.PageableCollection) {
 
+     
+      
+      if(collection.state.sortKey!=column.get("name")){order=(column.get("defautOrder")!= undefined ? column.get("defautOrder"):-1)}
+      
+
       collection.setSorting(order && column.get("name"), order,
                             {sortValue: column.sortValue()});
 
@@ -2538,6 +2545,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
         collection.trigger("backgrid:sorted", column, direction, collection);
       }
       else collection.fetch({reset: true, success: function () {
+       
         collection.trigger("backgrid:sorted", column, direction, collection);
       }});
     }
@@ -2546,7 +2554,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       collection.sort();
       collection.trigger("backgrid:sorted", column, direction, collection);
     }
-
+    
     column.set("direction", direction);
 
     return this;

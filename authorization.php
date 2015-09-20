@@ -120,7 +120,7 @@ if ($auth->is_authenticated()) {
 	$user=new User($_SESSION['user_key']);
 	$_SESSION['text_locale']=$user->data['User Preferred Locale'];
 	
-	
+	$_SESSION['state']=array();
 	
 	
 	if (isset($_REQUEST['url'])) {

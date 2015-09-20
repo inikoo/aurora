@@ -40,9 +40,9 @@ $.fn.fancyzoom = function(userOptions) {
 				oOverlay
 					.appendTo('body')
 					.click(function(){closeZoomBox(o);});
-				if( $.browser.msie && $.browser.version < 7 ){
-					oOverlay.css({position:'absolute',height:$(document).height(),width:$(document).width()});
-				}
+				//if( $.browser.msie && $.browser.version < 7 ){
+				//	oOverlay.css({position:'absolute',height:$(document).height(),width:$(document).width()});
+				//}
 			}
 			var oImgZoomBox = o.oImgZoomBox;
 
@@ -66,8 +66,8 @@ $.fn.fancyzoom = function(userOptions) {
             
             var $fctEnd = function(){
             	//end of open, show the shadow
-            	if($.fn.shadow && o.shadow && !$.browser.msie){ $('img:first',oImgZoomBox).shadow(o.shadowOpts);}
-				if(o.Speed>0 && !$.browser.msie) {o.oImgClose.fadeIn('slow');$('div',oImgZoomBox).fadeIn('slow');}
+            	if($.fn.shadow && o.shadow){ $('img:first',oImgZoomBox).shadow(o.shadowOpts);}
+				if(o.Speed>0 ) {o.oImgClose.fadeIn('slow');$('div',oImgZoomBox).fadeIn('slow');}
 				else {o.oImgClose.show();$('div',oImgZoomBox).show();}			
             };
             

@@ -301,17 +301,67 @@ case('product_code_timeline'):
 
 
 case('families'):
-	list_families();
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'nr'=>array('type'=>'number'),
+			'page'=>array('type'=>'number'),
+			'o'=>array('type'=>'string'),
+			'od'=>array('type'=>'string'),
+			'awhere'=>array('type'=>'string'),
+			'f_field'=>array('type'=>'string'),
+			'f_value'=>array('type'=>'string'),
+			'elements_type'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
+		));
+	list_families($data);
 	break;
 case('stores'):
-	list_stores();
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'nr'=>array('type'=>'number'),
+			'page'=>array('type'=>'number'),
+			'o'=>array('type'=>'string'),
+			'od'=>array('type'=>'string'),
+			'awhere'=>array('type'=>'string'),
+			'f_field'=>array('type'=>'string'),
+			'f_value'=>array('type'=>'string'),
+			'elements_type'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
+		));
+	list_stores($data);
 	break;
 case('departments'):
-	list_departments();
+	$data=prepare_values($_REQUEST,array(
+			'parameters'=>array('type'=>'json array'),
+			'nr'=>array('type'=>'number'),
+			'page'=>array('type'=>'number'),
+			'o'=>array('type'=>'string'),
+			'od'=>array('type'=>'string'),
+
+		));
+	list_departments($data);
 	break;
 case('product'):
 case('products'):
-	list_products();
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'nr'=>array('type'=>'number'),
+			'page'=>array('type'=>'number'),
+			'o'=>array('type'=>'string'),
+			'od'=>array('type'=>'string'),
+			'awhere'=>array('type'=>'string'),
+			'f_field'=>array('type'=>'string'),
+			'f_value'=>array('type'=>'string'),
+			'elements_type'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string'),
+		));
+	list_products($data);
 	break;
 
 default:
@@ -323,10 +373,27 @@ default:
 
 
 
-function list_departments() {
-
+function list_departments($_data) {
 
 	global $user,$corporate_currency;
+
+	$parent=$_data['parameters']['parent'];
+	$parent_key=$_data['parameters']['parent_key'];
+	$number_results=$_data['nr'];
+	$start_from=($_data['page']-1)*$number_results;
+	$order=$_data['o'];
+	$order_direction=(preg_match('/desc/i',$_data['od'])?'desc':'');
+	$awhere=$_data['parameters']['awhere'];
+	$f_field=$_data['parameters']['f_field'];
+	$f_value=$_data['parameters']['f_value'];
+	$elements_type=$_data['parameters']['elements_type'];
+	$period=$_data['parameters']['period'];
+	$avg=$_data['parameters']['avg'];
+	$percentages=$_data['parameters']['percentages'];
+	$stock_percentages=$_data['parameters']['stock_percentages'];
+
+
+	/*
 
 	if (isset( $_REQUEST['parent_key']) and  is_numeric( $_REQUEST['parent_key']))
 		$parent_key=$_REQUEST['parent_key'];
@@ -448,8 +515,8 @@ function list_departments() {
 	$_SESSION['state'][$conf_table]['departments']['avg']=$avg;
 	$_SESSION['state'][$conf_table]['departments']['stock_percentages']=$stock_percentages;
 
-
-	include_once 'splinters/departments_prepare_list.php';
+*/
+	include_once 'prepare_table/departments.php';
 
 
 	$sql="select count(*) as total from $table $where $wheref";
@@ -508,154 +575,6 @@ function list_departments() {
 		$filter_msg='';
 
 
-
-
-	$_dir=$order_direction;
-	$_order=$order;
-
-
-	$period_tag=get_interval_db_name($period);
-
-
-
-	//    print $period;
-
-	//$order='`Product Department Code`';
-	if ($_order=='families')
-		$order='`Product Department Families`';
-
-	elseif ($_order=='aws_p') {
-		$order='`Product Department Total Acc Avg Week Sales Per Product`';
-
-	}
-	elseif ($_order=='awp_p') {
-
-
-		$order='`Product Department '.$period_tag.' Acc Avg Week Profit Per Product`';
-
-	}
-
-	elseif ($_order=='profit') {
-
-		$order='`Product Department '.$period_tag.' Acc Profit`';
-
-	}
-	elseif ($_order=='sales') {
-
-		$order='`Product Department '.$period_tag.' Acc Invoiced Amount`';
-
-	}
-	elseif ($_order=='delta_sales') {
-
-
-		if ($period_tag=='Total' or $period_tag=='3 Year') {
-			$order='`Product Department Code`';
-		}else {
-			$order='(`Product Department '.$period_tag.' Acc Invoiced Amount`-`Product Department '.$period_tag.' Acc 1YB Invoiced Amount`)/`Product Department '.$period_tag.' Acc 1YB Invoiced Amount`';
-		}
-
-
-	}
-
-
-	elseif ($_order=='name')
-		$order='`Product Department Name`';
-	elseif ($_order=='code')
-		$order='`Product Department Code`';
-	elseif ($_order=='active')
-		$order='`Product Department For Public Sale Products`';
-	elseif ($_order=='outofstock') {
-
-		if ($stock_percentages=='horizontal')
-			$order='`Product Department Out Of Stock Products`/`Product Department For Public Sale Products`';
-		else
-			$order='`Product Department Out Of Stock Products`';
-
-	}
-	elseif ($_order=='stock_error') {
-		if ($stock_percentages=='horizontal')
-			$order='`Product Department Unknown Stock Products`/`Product Department For Public Sale Products`';
-		else
-			$order='`Product Department Unknown Stock Products`';
-	}elseif ($_order=='surplus') {
-		if ($stock_percentages=='horizontal')
-			$order='`Product Department Surplus Availability Products`/`Product Department For Public Sale Products`';
-		else
-			$order='`Product Department Surplus Availability Products`';
-	}elseif ($_order=='optimal') {
-		if ($stock_percentages=='horizontal')
-			$order='`Product Department Optimal Availability Products`/`Product Department For Public Sale Products`';
-		else
-			$order='`Product Department Optimal Availability Products`';
-	}elseif ($_order=='low') {
-		if ($stock_percentages=='horizontal')
-			$order='`Product Department Low Availability Products`/`Product Department For Public Sale Products`';
-		else
-			$order='`Product Department Low Availability Products`';
-	}elseif ($_order=='critical') {
-		if ($stock_percentages=='horizontal')
-			$order='`Product Department Critical Availability Products`/`Product Department For Public Sale Products`';
-		else
-			$order='`Product Department Critical Availability Products`';
-	}elseif ($order=='from') {
-		$order='`Product Department Valid From`';
-	}elseif ($order=='to') {
-		$order='`Product Department Valid To`';
-	}elseif ($order=='last_update') {
-		$order='`Product Department Last Updated`';
-	}elseif ($order=='products_for_sale') {
-		$order='`Product Department For Public Sale Products`';
-	}elseif ($order=='percentage_out_of_stock') {
-		$order='`Product Department Out Of Stock Products`/`Product Department For Public Sale Products`';
-	}elseif ($order=='sales_1q') {
-		$order='`Product Department 1 Quarter Acc Invoiced Amount`';
-	}elseif ($order=='delta_sales_1q') {
-		$order='(`Product Department 1 Quarter Acc Invoiced Amount`-`Product Department 1 Quarter Acc 1YB Invoiced Amount`)/`Product Department 1 Quarter Acc 1YB Invoiced Amount`';
-	}elseif ($order=='customers_active') {
-		$order='`Product Department Active Customers`';
-	}elseif ($order=='customers_active_75') {
-		$order='`Product Department Active Customers More 0.75 Share`';
-	}elseif ($order=='customers_active_50') {
-		$order='`Product Department Active Customers More 0.5 Share`';
-	}elseif ($order=='customers_active_25') {
-		$order='`Product Department Active Customers More 0.25 Share`';
-	}
-
-	elseif ($order=='customers_losing') {
-		$order='`Product Department Losing Customers`';
-	}elseif ($order=='customers_losing_75') {
-		$order='`Product Department Losing Customers More 0.75 Share`';
-	}elseif ($order=='customers_losing_50') {
-		$order='`Product Department Losing Customers More 0.5 Share`';
-	}elseif ($order=='customers_losing_25') {
-		$order='`Product Department Losing Customers More 0.25 Share`';
-	}
-
-	elseif ($order=='customers_lost') {
-		$order='`Product Department Lost Customers`';
-	}elseif ($order=='customers_lost_75') {
-		$order='`Product Department Lost Customers More 0.75 Share`';
-	}elseif ($order=='customers_lost_50') {
-		$order='`Product Department Lost Customers More 0.5 Share`';
-	}elseif ($order=='customers_lost_25') {
-		$order='`Product Department Lost Customers More 0.25 Share`';
-	}elseif ($_order=='todo') {
-		$order='`Product Department In Process Products`';
-	}elseif ($_order=='discontinued') {
-		$order='`Product Department Discontinued Products`';
-	}elseif ($_order=='discontinued') {
-		$order='`Product Department Discontinued Products`';
-	}elseif ($_order=='not_for_sale') {
-		$order='`Product Department Not For Sale Products`';
-	}elseif ($_order=='public_sale') {
-		$order='`Product Department For Public Sale Products`';
-	}elseif ($_order=='private_sale') {
-		$order='`Product Department For Private Sale Products`';
-	}elseif ($_order=='historic') {
-		$order='`Product Department Historic Products`';
-	}elseif ($_order=='store') {
-		$order='`Product Department Store Code`';
-	}
 
 
 
@@ -979,9 +898,11 @@ function list_departments() {
 
 
 		$adata[]=array(
-			'code'=>$code,
-			'name'=>$name,
-			'store'=>$store,
+			'id'=>(integer) $row['Product Department Key'],
+			'store_key'=>(integer) $row['Product Department Store Key'],
+			'code'=>$row['Product Department Code'],
+			'name'=>$row['Product Department Name'],
+			'store'=>$row['Product Department Store Code'],
 			'families'=>$families,
 			'products_for_sale'=>$products_for_sale,
 			'percentage_out_of_stock'=>$percentage_out_of_stock,
@@ -1167,7 +1088,6 @@ function list_departments() {
 			'data'=>$adata,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
 			'filter_msg'=>$filter_msg,
 			'rtext'=>$rtext,
 			'rtext_rpp'=>$rtext_rpp,
@@ -3877,16 +3797,16 @@ function list_customers_per_store() {
 		$sum_contacts='100.00%';
 		$sum_new_contacts='100.00%';
 	} else {
-	//	$total_contacts=number($total_contacts);
-	//	$total_active_contacts=number($total_active_contacts);
-	//	$total_new_contacts=number($total_new_contacts);
-	//	$total_lost_contacts=number($total_lost_contacts);
-	//	$total_losing_contacts=number($total_losing_contacts);
-	//	$total_contacts_with_orders=number($total_contacts_with_orders);
-	//	$total_active_contacts_with_orders=number($total_active_contacts_with_orders);
-	//	$total_new_contacts_with_orders=number($total_new_contacts_with_orders);
-	//	$total_lost_contacts_with_orders=number($total_lost_contacts_with_orders);
-	//	$total_losing_contacts_with_orders=number($total_losing_contacts_with_orders);
+		// $total_contacts=number($total_contacts);
+		// $total_active_contacts=number($total_active_contacts);
+		// $total_new_contacts=number($total_new_contacts);
+		// $total_lost_contacts=number($total_lost_contacts);
+		// $total_losing_contacts=number($total_losing_contacts);
+		// $total_contacts_with_orders=number($total_contacts_with_orders);
+		// $total_active_contacts_with_orders=number($total_active_contacts_with_orders);
+		// $total_new_contacts_with_orders=number($total_new_contacts_with_orders);
+		// $total_lost_contacts_with_orders=number($total_lost_contacts_with_orders);
+		// $total_losing_contacts_with_orders=number($total_losing_contacts_with_orders);
 
 		// $sum_total=number($total_contacts_with_orders);
 		// $sum_active=number($total_active_contacts);
@@ -3898,7 +3818,7 @@ function list_customers_per_store() {
 
 
 	$adata[]=array(
-	'store_key'=>'',
+		'store_key'=>'',
 		'name'=>'',
 		'code'=>_('Total'),
 		'contacts'=>(integer) $total_contacts,
@@ -4318,7 +4238,6 @@ function list_invoices_per_store() {
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
-
 
 	if (isset( $_REQUEST['percentages'])) {
 		$percentages=$_REQUEST['percentages'];

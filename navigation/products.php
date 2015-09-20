@@ -54,7 +54,6 @@ function get_store_navigation($data) {
 	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');
 	$right_buttons[]=array('icon'=>'plus','title'=>_('New store'),'id'=>"new_store");
 	$sections=get_sections('products',$store->id);
-
 	$_section='products';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
