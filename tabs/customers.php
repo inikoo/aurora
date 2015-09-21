@@ -83,6 +83,7 @@ if (isset($_SESSION['table_state'][$tab])) {
 	$smarty->assign('ar_file',$ar_file);
 	$smarty->assign('tipo',$tipo);
 	$smarty->assign('parameters',$parameters);
+	$smarty->assign('tab',$tab);
 	$smarty->assign('table_view',$table_view);
 
 
