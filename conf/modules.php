@@ -28,7 +28,7 @@ $modules=array(
 		'parent'=>'store',
 		'parent_type'=>'key',
 		'sections'=>array(
-			'dashboard'=>array('type'=>'navigation','label'=>_('Dashboard'),'title'=>_("Customer's dashboard"),'icon'=>'dashboard','reference'=>'customers/dashboard'),
+			'dashboard'=>array('type'=>'navigation','label'=>_('Dashboard'),'title'=>_("Customer's dashboard"),'icon'=>'dashboard','reference'=>'customers/%d/dashboard'),
 
 			'customers'=>array(
 				'tab'=>'customers',
@@ -37,9 +37,9 @@ $modules=array(
 
 
 			),
-			'lists'=>array('type'=>'navigation','label'=>_('Lists'),'title'=>_('Lists'),'icon'=>'list','reference'=>'customers/lists/%d'),
-			'categories'=>array('type'=>'navigation','label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'customers/categories/%d'),
-			'statistics'=>array('type'=>'navigation','label'=>_('Statistics'),'title'=>_('Statistics'),'icon'=>'line-chart','reference'=>'customers/statistics/%d',
+			'lists'=>array('type'=>'navigation','label'=>_('Lists'),'title'=>_('Lists'),'icon'=>'list','reference'=>'customers/%d/lists'),
+			'categories'=>array('type'=>'navigation','label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'customers/%d/categories'),
+			'statistics'=>array('type'=>'navigation','label'=>_('Statistics'),'title'=>_('Statistics'),'icon'=>'line-chart','reference'=>'customers/%dstatistics',
 				'tabs'=>array(
 					'contacts'=>array('label'=>_('Contacts'),'title'=>_('Contacts'),'reference'=>'customers/statistics/contacts'),
 					'customers'=>array('label'=>_('Customers'),'title'=>_('Customers'),'reference'=>'customers/statistics/customers'),
