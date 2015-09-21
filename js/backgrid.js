@@ -4,7 +4,16 @@
 
   Copyright (c) 2014 Jimmy Yuen Ho Wong and contributors <wyuenho@gmail.com>
   Licensed under the MIT license.
+
+  Inikoo Changes:
+  
+  Line commented (~2090):
+  //this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
+  Add (~2538):
+   if(collection.state.sortKey!=column.get("name")){order=(column.get("defautOrder")!= undefined ? column.get("defautOrder"):-1)}  
+
 */
+
 
 (function (factory) {
 
@@ -2526,12 +2535,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
     if (Backbone.PageableCollection &&
         collection instanceof Backbone.PageableCollection) {
 
-     
+        if(collection.state.sortKey!=column.get("name")){order=(column.get("defautOrder")!= undefined ? column.get("defautOrder"):-1)}
       
-      if(collection.state.sortKey!=column.get("name")){order=(column.get("defautOrder")!= undefined ? column.get("defautOrder"):-1)}
-      
-
-      collection.setSorting(order && column.get("name"), order,
+       collection.setSorting(order && column.get("name"), order,
                             {sortValue: column.sortValue()});
 
       if (collection.fullCollection) {

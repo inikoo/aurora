@@ -259,7 +259,12 @@ img{vertical-align: -5%}
     
     
 }
-.table_info{padding-left:10px;border-bottom:1px solid #ccc;height:$height_header;line-height:$height_header;clear:both}
+.table_info{padding-left:10px;border-bottom:1px solid #ccc;height:$height_header;line-height:$height_header;clear:both;
+
+#show_filter{border-right:1px solid #ccc;margin-right:4px}
+#filter{float:right;width:248px}
+#filter_field{float:right;margin-right:10px}
+}
 
 .results_per_page.square_button{font-size:11px}
 .results_per_page.square_button.selected{color:steelblue;font-weight:800}

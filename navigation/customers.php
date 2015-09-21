@@ -201,16 +201,16 @@ function get_customers_lists_navigation($data) {
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/lists/'.$prev_key);
+		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/'.$prev_key.'/lists');
 		//$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/lists/'.$next_key);
+		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/'.$next_key.'/lists');
 	}
 
 
 	$right_buttons=array();
 
-	$right_buttons[]=array('icon'=>'plus','title'=>_('New list'),'reference'=>"customers/lists/".$store->id.'/new');
+	$right_buttons[]=array('icon'=>'plus','title'=>_('New list'),'reference'=>"customers/".$store->id.'/lists/new');
 
 	$sections=get_sections('customers',$store->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;

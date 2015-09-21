@@ -391,6 +391,15 @@ a {
   height: 30px;
   line-height: 30px;
   clear: both; }
+  .table_info #show_filter {
+    border-right: 1px solid #ccc;
+    margin-right: 4px; }
+  .table_info #filter {
+    float: right;
+    width: 248px; }
+  .table_info #filter_field {
+    float: right;
+    margin-right: 10px; }
 
 .results_per_page.square_button {
   font-size: 11px; }

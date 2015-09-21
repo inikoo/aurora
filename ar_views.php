@@ -126,7 +126,7 @@ function get_object_showcase($data) {
 		include_once 'showcase/customer.php';
 		$html=get_customer_showcase($data);
 		break;
-	
+
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -882,7 +882,7 @@ function parse_request($request) {
 			$tab='customer.details';
 			$object='customer';
 			$key=$view_path[0];
-			break;	
+			break;
 		case 'customers':
 			$module='customers';
 			if ($count_view_path==0) {
@@ -916,14 +916,24 @@ function parse_request($request) {
 				$parent='store';
 				$parent_key=$arg1;
 
-				if (isset($view_path[0]) and is_numeric($view_path[0])) {
-					$section='customer';
+				if (isset($view_path[0])) {
 
-					$tab='customer.details';
-					$parent='store';
-					$parent_key=$arg1;
-					$object='customer';
-					$key=$view_path[0];
+					if ( is_numeric($view_path[0])) {
+						$section='customer';
+
+						$tab='customer.details';
+						$parent='store';
+						$parent_key=$arg1;
+						$object='customer';
+						$key=$view_path[0];
+
+					}elseif ($view_path[0]=='lists') {
+						$section='lists';
+
+						$tab='customers.lists';
+						
+
+					}
 
 				}
 

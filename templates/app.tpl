@@ -7,12 +7,14 @@
 	<link href="/art/inikoo_logo.png" rel="shortcut icon" type="image/x-icon" />
 	<link href="/css/font-awesome.min.css" rel="stylesheet"> 
 	<link href="/css/backgrid.css" rel="stylesheet"> 
+	<link href="/css/backgrid-filter.css" rel="stylesheet"> 
 	<link href="/css/app.css" rel="stylesheet"> 
 	<script type="text/javascript" src="/js/jquery.min.js"></script> 
 	<script type="text/javascript" src="/js/underscore.js"></script> 
 	<script type="text/javascript" src="/js/backbone.js"></script> 
 	<script type="text/javascript" src="/js/backbone.paginator.js"></script> 
 	<script type="text/javascript" src="/js/backgrid.js"></script> 
+	<script type="text/javascript" src="/js/backgrid-filter.js"></script> 
 	<script type="text/javascript" src="/js/app.js"></script> 
 </head>
 <body>

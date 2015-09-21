@@ -33,9 +33,20 @@
 	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
+	
+	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" >
+		 <i class="fa fa-filter fa-fw"></i> 
+	</div>
+	<div id="filter" class="filter hide">
+	
+	</div>
+	<div id="filter_field" class="filter hide">
+	<i class="fa fa-filter fa-fw"></i> {$f_label}:
+	</div>
+	
 	<span id="rtext"></span> 
 </div>
-{if isset($table_views) and count(table_views)>0}
+{if isset($table_views) and count($table_views)>0}
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
 <div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}')" title="{$view.title}">
@@ -96,11 +107,18 @@ $('#rtext').html(resp.resultset.rtext)
 
 var total_pages=Math.ceil(resp.resultset.total_records/state.pageSize)
 
-    if(total_pages>1){
-$('#first_page').removeClass('hide')
-$('#prev_page').removeClass('hide')
-$('#last_page').removeClass('hide')
-$('#next_page').removeClass('hide')
+ if(total_pages==1){
+    $('#paginator').html(rows.state.currentPage+'/'+total_pages) 
+$('#first_page').addClass('disabled')
+$('#prev_page').addClass('disabled')
+$('#last_page').addClass('disabled')
+$('#next_page').addClass('disabled')
+
+    }else if(total_pages>=1){
+      $('#first_page').removeClass('hide')
+      $('#prev_page').removeClass('hide')
+      $('#last_page').removeClass('hide')
+     $('#next_page').removeClass('hide')
 
 
     $('#paginator').html(rows.state.currentPage+'/'+total_pages) 
@@ -180,8 +198,6 @@ var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
 
 
 
-
-
 var grid = new Backgrid.Grid({
 
 
@@ -191,12 +207,31 @@ var grid = new Backgrid.Grid({
 });
 
 
+
+var serverSideFilter = new Backgrid.Extension.ServerSideFilter({
+  collection: rows,
+  // the name of the URL query parameter
+  name: "f_value",
+  placeholder: "" // HTML5 placeholder for the search box
+});
+
+
 grid.render()
 $("#table").append(grid.el);
 change_table_view('{/literal}{$table_view}{literal}')
+ 
+ $("#filter").append(serverSideFilter.render().el);
  
 rows.fetch({  reset: true});
 
 
 {/literal}
+
+function show_filter(){
+    $('#show_filter').addClass('hide')
+    $('.filter').removeClass('hide')
+     $('#filter input').focus()
+
+}
+
 </script> 
