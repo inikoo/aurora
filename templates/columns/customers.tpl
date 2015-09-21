@@ -120,34 +120,27 @@ function change_table_view(view){
     $('#view_'+view).addClass('selected');
     
     
-grid.columns.findWhere({ name: 'invoices'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'last_order'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'invoices'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'last_order'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'logins'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'requests'} ).set("renderable", false)
 
-
-
- grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'logins'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'requests'} ).set("renderable", false)
-
-   
-  //  var idCol = grid.columns.where({ name: "logins" });
-//grid.hideColumn(idCol);
-
-      
     
     if(view=='overview'){
-   
-    grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'last_order'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
-
+        grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'last_order'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
     }else if(view=='weblog'){
-    grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
- grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'requests'} ).set("renderable", true)
-
+        grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'requests'} ).set("renderable", true)
     }
+    
+     var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
+   
+    $.getJSON(request, function(data) {});
     
 
 }
