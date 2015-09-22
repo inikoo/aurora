@@ -32,7 +32,7 @@ if (!$con_drop) {
 	print "Error can not connect with dropshipping database server\n";
 	exit;
 }
-$db2=@mysql_select_db("livedb_upg", $con_drop);
+$db2=@mysql_select_db("drop", $con_drop);
 if (!$db2) {
 	print "Error can not access the database in drop \n";
 	exit;
@@ -83,7 +83,7 @@ $editor=array(
 $store=new Store('code','DS');
 $credits=array();
 /*
-$sql=sprintf("select * from livedb_upg.`sales_flat_order_item` WHERE  sku in ('Freight-01','Freight-02','SUSA','SMalta','SF','NWS')  ");
+$sql=sprintf("select * from drop.`sales_flat_order_item` WHERE  sku in ('Freight-01','Freight-02','SUSA','SMalta','SF','NWS')  ");
 $res2=mysql_query($sql);
 while ($row2=mysql_fetch_assoc($res2)) {
 	$store_code=$store->data['Store Code'];
@@ -92,9 +92,9 @@ while ($row2=mysql_fetch_assoc($res2)) {
 	print "delete  $order_data_id \n";
 }
 */
-$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where entity_id=13986	";
-$sql= "SELECT * FROM livedb_upg.`sales_flat_order`  ";
-//$sql= "SELECT * FROM livedb_upg.`sales_flat_order` where increment_id='AW17841 '";
+$sql= "SELECT * FROM drop.`sales_flat_order` where entity_id=13986	";
+$sql= "SELECT * FROM drop.`sales_flat_order`  ";
+//$sql= "SELECT * FROM drop.`sales_flat_order` where increment_id='AW17841 '";
 $res=mysql_query($sql,$con_drop);
 
 while ($row=mysql_fetch_assoc($res)) {
@@ -124,7 +124,7 @@ while ($row=mysql_fetch_assoc($res)) {
 		continue;
 	}
 	//print $row['state']."\n";
-	$sql=sprintf("select created_at from livedb_upg.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
+	$sql=sprintf("select created_at from drop.sales_flat_order_status_history where parent_id=%d and status in ('complete')   ",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
 	//print $sql. "\n";
 	//echo mysql_errno($con_drop) . ": " . mysql_error($con_drop) . "\n";
@@ -166,7 +166,7 @@ print $row['increment_id'].' '.$row['updated_at']."\n";
 
 
 		//print "C:".$customer->id."\n";
-		$sql=sprintf("select * from livedb_upg.`sales_flat_order_item` WHERE `order_id`=%d ",
+		$sql=sprintf("select * from drop.`sales_flat_order_item` WHERE `order_id`=%d ",
 			$row['entity_id']
 		);
 		$res2=mysql_query($sql,$con_drop);
