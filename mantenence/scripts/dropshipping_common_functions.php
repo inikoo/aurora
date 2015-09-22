@@ -10,7 +10,7 @@ function get_address($address_id) {
 	$country_div='';
 	$country='';
 
-	$sql=sprintf("SELECT * FROM drop.`sales_flat_order_address` WHERE `entity_id` =%d",$address_id);
+	$sql=sprintf("SELECT * FROM `drop`.`sales_flat_order_address` WHERE `entity_id` =%d",$address_id);
 	$res3=mysql_query($sql,$con_drop);
 	if ($row3=mysql_fetch_assoc($res3)) {
 //print_r($row3);
@@ -48,7 +48,7 @@ function getMagentoAttNumber($dbh,$attribute_code,$entity_type_id) {
 
 	global $con_drop;
 	$Att_Got='';
-	$sql = "SELECT `attribute_id` FROM drop.`eav_attribute` WHERE `attribute_code` LIKE '".$attribute_code."' AND `entity_type_id` =".$entity_type_id."  ";
+	$sql = "SELECT `attribute_id` FROM `drop`.`eav_attribute` WHERE `attribute_code` LIKE '".$attribute_code."' AND `entity_type_id` =".$entity_type_id."  ";
 	$res=mysql_query($sql,$con_drop);
 	if ($row=mysql_fetch_assoc($res)) {
 
