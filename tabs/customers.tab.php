@@ -15,14 +15,10 @@ $tab='customers';
 $ar_file='ar_customers_tables.php';
 $tipo='customers';
 
-$default_view='overview';
+$default=$user->get_tab_defaults($tab);
 
-$default_sort_key='id';
-$default_f_field='name';
 
-$default_sort_order=1;
-$default_results_per_page=20;
-$results_per_page_options=array(500,100,50,20);
+
 $table_views=array(
 	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
 	'contact'=>array('label'=>_('Contact'),'title'=>_('Contact details')),
@@ -39,17 +35,13 @@ $table_filters=array(
 
 );
 
-$parameters=json_encode(array(
+$parameters=array(
 		'parent'=>'store',
 		'parent_key'=>$state['parent_key'],
 		'awhere'=>0,
-		'f_field'=>'',
-		'f_value'=>'',
 		'elements_type'=>'',
 		'tab'=>$tab
-
-
-	));
+);
 
 
 include('utils/get_table_html.php');

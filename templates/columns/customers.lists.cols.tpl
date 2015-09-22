@@ -53,3 +53,5 @@ var columns = [
     headerCell: integerHeaderCell
 }]
 
+function change_table_view(view,save_state){}
+

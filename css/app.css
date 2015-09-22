@@ -391,7 +391,7 @@ a {
   height: 30px;
   line-height: 30px;
   clear: both; }
-  .table_info #show_filter {
+  .table_info #show_filter, .table_info #filter_submit {
     border-right: 1px solid #ccc;
     margin-right: 4px; }
   .table_info #filter {
@@ -400,6 +400,8 @@ a {
   .table_info #filter_field {
     float: right;
     margin-right: 10px; }
+  .table_info #prev_page.disabled, .table_info #first_page.disabled {
+    border-left: 1px solid #000; }
 
 .results_per_page.square_button {
   font-size: 11px; }

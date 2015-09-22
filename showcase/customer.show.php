@@ -18,7 +18,7 @@ function get_customer_showcase($data) {
     
     $smarty->assign('customer',$customer);
 
-    return $smarty->fetch('customer.tpl');
+    return $smarty->fetch('showcase/customer.tpl');
     
 
 
