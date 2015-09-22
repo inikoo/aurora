@@ -43,7 +43,7 @@ elseif ($parent=='list') {
 			$raw_data=json_decode($tmp, true);
 
 			$raw_data['store_key']=$customer_list_data['List Parent Key'];
-			include_once 'list_functions_customer.php';
+			include_once 'utils/list_functions_customer.php';
 
 			list($where,$table,$group_by)=customers_awhere($raw_data);
 
@@ -74,12 +74,12 @@ elseif ($parent=='category') {
 
 }
 elseif ($parent=='store') {
-	
-	if(in_array($parent_key,$user->stores))
-	$where_stores=sprintf(' and  `Customer Store Key`=%d ',$parent_key);
+
+	if (in_array($parent_key,$user->stores))
+		$where_stores=sprintf(' and  `Customer Store Key`=%d ',$parent_key);
 	else
-	$where_stores=' and false';
-	
+		$where_stores=' and false';
+
 	$store=new Store($parent_key);
 	$currency=$store->data['Store Currency Code'];
 	$where.=$where_stores;
@@ -164,7 +164,7 @@ $filter_msg='';
 $wheref='';
 
 
-if (($f_field=='customer name'     )  and $f_value!='') {
+if (($f_field=='name'     )  and $f_value!='') {
 	$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 
 
@@ -206,8 +206,8 @@ $_order=$order;
 $_dir=$order_direction;
 if ($order=='name')
 	$order='`Customer File As`';
-	
-	
+
+
 elseif ($order=='formated_id')
 	$order='C.`Customer Key`';
 elseif ($order=='location')
@@ -286,6 +286,9 @@ elseif ($order=='invoices')
 	$order='`Customer Orders Invoiced`';
 else
 	$order='`Customer File As`';
+
+
+$sql_totals="select count(Distinct C.`Customer Key`) as num from $table  $where  $where_type";
 
 
 ?>

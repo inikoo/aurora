@@ -17,7 +17,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('customers/' + this.model.get("store_key") + '/' + this.$el.html())
+                change_view('customers/{if $data.object=='list'}list/{$data.key}{else}{$data.parent_key}{/if}/' + this.$el.html())
             }
         },
         className: "link"
@@ -193,7 +193,7 @@ var columns = [
    
 }]
 
-function change_table_view(view){
+function change_table_view(view,save_state){
 
     $('.view').removeClass('selected');
     $('#view_'+view).addClass('selected');
@@ -243,9 +243,10 @@ function change_table_view(view){
 
     }
     
+    if(save_state){
      var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
    
     $.getJSON(request, function(data) {});
-    
+    }
 
 }

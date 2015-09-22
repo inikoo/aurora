@@ -93,12 +93,13 @@ default:
 
 function get_tab($tab,$state=false) {
 
-	global $smarty;
+	global $smarty,$user;
+
 
 	$smarty->assign('data',$state);
 
-	if (file_exists('tabs/'.$tab . '.php')) {
-		include_once 'tabs/'.$tab . '.php';
+	if (file_exists('tabs/'.$tab . '.tab.php')) {
+		include_once 'tabs/'.$tab . '.tab.php';
 	}else {
 		$html='Tab Not found: '.$tab;
 
@@ -123,7 +124,7 @@ function get_object_showcase($data) {
 		break;
 
 	case 'customer':
-		include_once 'showcase/customer.php';
+		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data);
 		break;
 
@@ -182,7 +183,7 @@ function get_navigation($data) {
 			break;
 		}
 	case ('customers'):
-		require_once 'navigation/customers.php';
+		require_once 'navigation/customers.nav.php';
 		switch ($data['section']) {
 
 		case ('customer'):
@@ -198,6 +199,9 @@ function get_navigation($data) {
 			break;
 		case ('lists'):
 			return get_customers_lists_navigation($data);
+			break;
+		case ('list'):
+			return get_customers_list_navigation($data);
 			break;
 		case ('dashboard'):
 			return get_customers_dashboard_navigation($data);
@@ -909,6 +913,38 @@ function parse_request($request) {
 
 				}
 
+			}elseif ($arg1=='list') {
+				$section='list';
+				$tab='customers.list';
+				$object='list';
+
+
+
+
+				if (isset($view_path[0]) and is_numeric($view_path[0])) {
+					$key=$view_path[0];
+					include_once 'class.List.php';
+					$list=new SubjectList($key);
+					$parent='store';
+					$parent_key=$list->get('List Parent Key');
+					
+					
+					if (isset($view_path[1]) and is_numeric($view_path[1])) {
+					    $section='customer';
+
+						$tab='customer.details';
+						$parent='list';
+						$parent_key=$list->id;
+						$object='customer';
+						$key=$view_path[1];
+					
+					}
+					
+					
+				}else {
+					//error
+				}
+
 			}
 			elseif (is_numeric($arg1)) {
 				$section='customers';
@@ -931,7 +967,7 @@ function parse_request($request) {
 						$section='lists';
 
 						$tab='customers.lists';
-						
+
 
 					}
 

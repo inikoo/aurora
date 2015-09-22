@@ -1618,6 +1618,17 @@ class User extends DB_Table {
 		}
 
 	}
+	
+	
+	function get_tab_defaults($tab){
+	    include_once('conf/tabs.defaults.php');
+	    if(isset($tab_defaults[$tab]))
+	        return $tab_defaults[$tab];
+	    if(isset($tab_defaults_alias[$tab]))
+	        return $tab_defaults[$tab_defaults_alias[$tab]];
+	    exit("User class: error get_tab_defaults not configured");
+	}
+	
 
 }
 

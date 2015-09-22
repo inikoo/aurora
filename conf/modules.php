@@ -53,7 +53,13 @@ $modules=array(
 			),
 			'pending_orders'=>array('type'=>'navigation','label'=>_('Pending orders'),'title'=>_('Pending orders'),'icon'=>'clock-o','reference'=>'customers/pending_orders/%d'),
 
+            'list'=>array(
+				'tab'=>'customers',
+				'type'=>'navigation','label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','reference'=>'customers/%d',
 
+
+
+			),
 
 			'customer'=>array(
 				'type'=>'object',

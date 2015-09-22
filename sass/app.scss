@@ -261,9 +261,12 @@ img{vertical-align: -5%}
 }
 .table_info{padding-left:10px;border-bottom:1px solid #ccc;height:$height_header;line-height:$height_header;clear:both;
 
-#show_filter{border-right:1px solid #ccc;margin-right:4px}
+#show_filter,#filter_submit{border-right:1px solid #ccc;margin-right:4px}
 #filter{float:right;width:248px}
 #filter_field{float:right;margin-right:10px}
+
+#prev_page.disabled,#first_page.disabled{border-left:1px solid #000;}
+
 }
 
 .results_per_page.square_button{font-size:11px}

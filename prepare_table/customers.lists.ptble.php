@@ -9,6 +9,8 @@
 
 */
 
+$table='`List Dimension`';
+
 $where=' where `List Scope`="Customer" and `List Use Type`="UserCreated" ';
 
 
@@ -22,7 +24,8 @@ if (in_array($parent_key,$user->stores)) {
 
 
 if (($f_field=='name'     )  and $f_value!='') {
-	$wheref="  and  `List Name` like '".addslashes($f_value)."%'";
+		$wheref=sprintf('  and  `List Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+
 }else {
 	$wheref='';
 }
@@ -46,5 +49,9 @@ else
 
 
 $fields='`List Number Items`, CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type`';
+
+
+	$sql_totals="select count(*) as num from $table $where";
+
 
 ?>

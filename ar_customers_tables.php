@@ -11,6 +11,7 @@
 
 require_once 'common.php';
 require_once 'ar_edit_common.php';
+require_once 'utils/table_functions.php';
 
 
 if (!$user->can_view('customers')) {
@@ -73,118 +74,28 @@ function customers($_data) {
 	$order_direction=((isset($_data['od']) and  preg_match('/desc/i',$_data['od']) ) ?'desc':'');
 	$awhere=$_data['parameters']['awhere'];
 	$f_field=$_data['parameters']['f_field'];
-	$f_value=$_data['parameters']['f_value'];
+	if (isset($_data['f_value']) and $_data['f_value']!='') {
+		$f_value=$_data['f_value'];
+	}else {
+		$f_value='';
+	}
+
+
 
 	$elements_type=$_data['parameters']['elements_type'];
 
 	$_SESSION['table_state'][$_data['parameters']['tab']]['o']=$order;
 	$_SESSION['table_state'][$_data['parameters']['tab']]['od']=($order_direction==''?-1:1);
 	$_SESSION['table_state'][$_data['parameters']['tab']]['nr']=$number_results;
+	$_SESSION['table_state'][$_data['parameters']['tab']]['f_field']=$f_field;
+	$_SESSION['table_state'][$_data['parameters']['tab']]['f_value']=$f_value;
+	$_SESSION['table_state'][$_data['parameters']['tab']]['elements_type']=$elements_type;
+	$_SESSION['table_state'][$_data['parameters']['tab']]['awhere']=$awhere;
 
+	$rtext_label='customer';
 
-
-
-
-	include_once 'prepare_table/customers.ptble.php';
-
-
-
-	$sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		$total=$row['total'];
-	}
-	if ($wheref!='') {
-		$sql="select count(Distinct C.`Customer Key`) as total_without_filters from $table  $where  $where_type";
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-			$total_records=$row['total_without_filters'];
-			$filtered=$row['total_without_filters']-$total;
-		}
-
-	} else {
-		$filtered=0;
-		$filter_total=0;
-		$total_records=$total;
-	}
-	mysql_free_result($res);
-
-
-	$rtext=number($total_records)." ".ngettext('customer','customers',$total_records);
-
-
-
-
-	if ($total==0 and $filtered>0) {
-		switch ($f_field) {
-		case('customer name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
-			break;
-		case('postcode'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
-			break;
-		case('country'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
-			break;
-		case('id'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
-			break;
-		case('last_more'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
-			break;
-		case('last_more'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
-			break;
-		case('maxvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
-			break;
-		case('minvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
-			break;
-
-
-		}
-	}
-	elseif ($filtered>0) {
-		switch ($f_field) {
-		case('customer name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
-			break;
-		case('id'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
-			break;
-		case('postcode'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
-			break;
-		case('country'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
-			break;
-		case('last_more'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
-			break;
-		case('last_less'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
-			break;
-		case('maxvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
-			break;
-		case('minvalue'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
-			break;
-		}
-	}
-	else
-		$filter_msg='';
-
-
-
-
-
-
-
+	include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
+	list($rtext,$total)=get_table_totals($sql_totals,$wheref,$rtext_label);
 
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction limit $start_from,$number_results";
 
@@ -306,7 +217,6 @@ function customers($_data) {
 			'rtext'=>$rtext,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
-			'filter_msg'=>$filter_msg,
 			'total_records'=> $total
 
 		)
@@ -340,61 +250,11 @@ function lists($_data) {
 	$_SESSION['table_state'][$_data['parameters']['tab']]['f_field']=$f_field;
 	$_SESSION['table_state'][$_data['parameters']['tab']]['f_value']=$f_value;
 
-	include_once 'prepare_table/customers.lists.ptble.php';
 
+	$rtext_label='customer';
 
-	$sql="select count(*) as total from `List Dimension` $where $wheref ";
-	// print $sql;
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-		$total=$row['total'];
-	}
-	if ($wheref!='') {
-		$sql="select count(distinct `List Key`) as total_without_filters from `List Dimension`  $where  ";
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-			$total_records=$row['total_without_filters'];
-			$filtered=$row['total_without_filters']-$total;
-		}
-
-	} else {
-		$filtered=0;
-		$filter_total=0;
-		$total_records=$total;
-	}
-	mysql_free_result($res);
-
-    if($filtered==0){
-	    	$rtext=sprintf (ngettext ("%s list", "%s lists", $total_records), number($total_records));
-
-    }else{
-        
-	    	$rtext=sprintf (ngettext ("%s list of %s", "%s lists of %s", $total), number($total),number($total_records));
-
-    }
-
-	if ($total==0 and $filtered>0) {
-		switch ($f_field) {
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom;height:14px" src="art/icons/exclamation.png"/>'._("There isn't any list named like")." <b>$f_value*</b> ";
-			break;
-
-
-		}
-	}
-	elseif ($filtered>0) {
-		switch ($f_field) {
-		case('name'):
-			$filter_msg='<img style="xvertical-align:bottom;height:14px" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('list','lists',$total)." "._('with name like')." <b>".$f_value."*</b>";
-			break;
-		}
-	}
-	else {
-		$filter_msg="";
-	}
-
+	include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
+	list($rtext,$total)=get_table_totals($sql_totals,$wheref,$rtext_label);
 
 
 
@@ -449,7 +309,6 @@ function lists($_data) {
 			'rtext'=>$rtext,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
-			'filter_msg'=>$filter_msg,
 			'total_records'=> $total
 
 		)
