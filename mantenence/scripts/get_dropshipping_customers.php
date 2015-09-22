@@ -70,10 +70,10 @@ $editor=array(
 );
 $store=new Store('code','DS');
 
-$sql= "SELECT * FROM drop.`customer_entity` where email='matt.priest@scldirect.co.uk' ";
-$sql= "SELECT * FROM drop.`customer_entity` limit 1500,1";
-$sql= "SELECT * FROM drop.`customer_entity` ";
-//$sql= "SELECT * FROM drop.`customer_entity` where entity_id=488 ";
+$sql= "SELECT * FROM `drop`.`customer_entity` where email='matt.priest@scldirect.co.uk' ";
+$sql= "SELECT * FROM `drop`.`customer_entity` limit 1500,1";
+$sql= "SELECT * FROM `drop`.`customer_entity` ";
+//$sql= "SELECT * FROM `drop`.`customer_entity` where entity_id=488 ";
 
 $res=mysql_query($sql,$con_drop);
 while ($row=mysql_fetch_assoc($res)) {
@@ -106,7 +106,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 	$address1='';$address2='';$town='';$postcode='';$country_div='';$country='UNK';
 
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'company_name',1), $row['entity_id'] );
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'company_name',1), $row['entity_id'] );
 	//print "$sql\n";
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
@@ -114,38 +114,38 @@ while ($row=mysql_fetch_assoc($res)) {
 			$company=$row3['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'taxvat',1),$row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'taxvat',1),$row['entity_id']);
 	//print "$sql\n";
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$tax_number=$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'prefix',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'prefix',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'prefix',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop,'prefix',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'middlename',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'middlename',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'lastname',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'lastname',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$name.=' '.$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'suffix',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'suffix',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
@@ -156,27 +156,27 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'telephone',12) , $row['entity_id']);    // telephone type ID 1 is missing from new DB ??? this might not be right phone number and other one no longer in the database....
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'telephone',12) , $row['entity_id']);    // telephone type ID 1 is missing from new DB ??? this might not be right phone number and other one no longer in the database....
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$tel=$row3['value'];
 	}
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'mobile',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'mobile',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$mob=$row3['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM drop.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'website_url',1) , $row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d",getMagentoAttNumber($con_drop,'website_url',1) , $row['entity_id']);
 	$res3=mysql_query($sql,$con_drop);
 	while ($row3=mysql_fetch_assoc($res3)) {
 		if ($row3['value']!='')
 			$www=$row3['value'];
 	}
 
-	$sql=sprintf("SELECT * FROM drop.`customer_address_entity` WHERE  `parent_id` =%d",$row['entity_id']);
+	$sql=sprintf("SELECT * FROM `drop`.`customer_address_entity` WHERE  `parent_id` =%d",$row['entity_id']);
 	$res2=mysql_query($sql,$con_drop);
 
 	if ($row2=mysql_fetch_assoc($res2)) {
