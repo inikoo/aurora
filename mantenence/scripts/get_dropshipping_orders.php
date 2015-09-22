@@ -24,7 +24,7 @@ date_default_timezone_set('UTC');
 
 
 
-$mysql_host='bk.inikoo.com';
+$mysql_host='bk3.inikoo.com';
 $mysql_user='inikoo';
 
 $con_drop=@mysql_connect($mysql_host,$mysql_user,'E76hfjmPAFRJTy7z' );
