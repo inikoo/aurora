@@ -10,51 +10,62 @@
  Version 3.0
 */
 
-
 if (isset($_SESSION['table_state'][$tab])) {
 	$table_state=$_SESSION['table_state'][$tab];
-
-	if (isset($table_state['o'])) {
-		$sort_key=$table_state['o'];
-	}else {
-		$sort_key=$default['sort_key'];
-	}
-
-	if (isset($table_state['od'])) {
-		$sort_order=$table_state['od'];
-	}else {
-		$sort_order=$default['sort_order'];
-	}
-
-	if (isset($table_state['nr'])) {
-		$results_per_page=$table_state['nr'];
-	}else {
-		$results_per_page=$default['rpp'];
-	}
-
-	if (isset($table_state['view'])) {
-		$table_view=$table_state['view'];
-	}else {
-		$table_view=$default['view'];
-	}
-
-	if (isset($table_state['f_field'])) {
-		$f_field=$table_state['f_field'];
-	}else {
-		$f_field=$default['f_field'];
-	}
-
-
 }else {
-	$sort_key=$default['sort_key'];
-	$sort_order=$default['sort_order'];
-	$results_per_page=$default['rpp'];
-	$table_view=$default['view'];
-	$f_field=$default['f_field'];
+	$table_state=array();
 }
 
-$parameters['f_field']=$f_field;
+foreach ($default as $key=>$value) {
+    
+    if($key=='rpp_options'){
+
+	}elseif ($key=='sort_key') {
+
+		if (isset($table_state['o'])) {
+			$sort_key=$table_state['o'];
+		}else {
+			$sort_key=$default['sort_key'];
+		}
+
+	}elseif ($key=='sort_order') {
+		if (isset($table_state['od'])) {
+			$sort_order=$table_state['od'];
+		}else {
+			$sort_order=$default['sort_order'];
+		}
+
+
+	}elseif ($key=='rpp') {
+		if (isset($table_state['nr'])) {
+			$results_per_page=$table_state['nr'];
+		}else {
+			$results_per_page=$default['rpp'];
+		}
+
+
+	}else {
+		if (isset($table_state[$key])) {
+			$parameters[$key]=$table_state[$key];
+		}else {
+			$parameters[$key]=$value;
+		}
+	}
+}
+
 $parameters['tab']=$tab;
+
+if (isset($parameters['period'])) {
+	$smarty->assign('period',$parameters['period']);
+	$smarty->assign('from',$parameters['from']);
+	$smarty->assign('to',$parameters['to']);
+
+}
+
+$smarty->assign('f_field',$parameters['f_field']);
+$smarty->assign('f_label',$table_filters[$parameters['f_field']]['label']);
+$table_view=$parameters['view'];
+$smarty->assign('table_view',$parameters['view']);
 
 $parameters=json_encode($parameters);
 
@@ -63,13 +74,10 @@ $parameters=json_encode($parameters);
 $request='/'.$ar_file.'?tipo='.$tipo.'&parameters='.$parameters;
 
 
-
 $smarty->assign('results_per_page_options',$default['rpp_options']);
 $smarty->assign('results_per_page',$results_per_page);
 
 
-$smarty->assign('f_field',$f_field);
-$smarty->assign('f_label',$table_filters[$f_field]['label']);
 
 $smarty->assign('sort_key',$sort_key);
 $smarty->assign('sort_order',$sort_order);
@@ -78,7 +86,6 @@ $smarty->assign('ar_file',$ar_file);
 $smarty->assign('tipo',$tipo);
 $smarty->assign('parameters',$parameters);
 $smarty->assign('tab',$tab);
-$smarty->assign('table_view',$table_view);
 
 if (isset($table_views[$table_view]))
 	$table_views[$table_view]['selected']=true;

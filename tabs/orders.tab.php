@@ -9,65 +9,36 @@
 
 */
 
-$from='';
-$to='';
-$period='ytd';
-
-$ar_file='ar_orders.php';
+$tab='orders';
+$ar_file='ar_orders_tables.php';
 $tipo='orders';
-$parameters=json_encode(array(
-    'parent'=>'store',
-     'parent_key'=>$state['parent_key'],
-     'awhere'=>0,
-     'f_field'=>'',
-     'f_value'=>'',
-     'elements_type'=>'',
-     'period'=>$period,
-     'from'=>'',
-     'to'=>'',
-     
-    ));
 
-$request='/'.$ar_file.'?tipo='.$tipo.'&parameters='.$parameters;
-$default_sort_key='id';
-$default_sort_order=1;
-
-if (isset($_SESSION['state'][$state['module']][$state['section']][$tab]['o'])) {
-	$sort_key=$_SESSION['state'][$state['module']][$state['section']][$tab]['o'];
-}else {
-	$sort_key=$default_sort_key;
-}
-
-if (isset($_SESSION['state'][$state['module']][$state['section']][$tab]['od'])) {
-	$sort_order=$_SESSION['state'][$state['module']][$state['section']][$tab]['od'];
-}else {
-	$sort_order=$default_sort_order;
-}
-
-$smarty->assign('sort_key',$sort_key);
-$smarty->assign('sort_order',$sort_order);
-
-
-
-$smarty->assign('request',$request);
-$smarty->assign('ar_file',$ar_file);
-$smarty->assign('tipo',$tipo);
-$smarty->assign('parameters',$parameters);
-
-
-
-$smarty->assign('period',$period);
-
-$elements=array(
-array('id'=>'shopping_cart','label'=>_('Shopping Cart'))
-);
+$default=$user->get_tab_defaults($tab);
 
 $table_views=array(
 
+);
+
+$table_filters=array(
+	'customer'=>array('label'=>_('Customer'),'title'=>_('Customer name')),
+	'number'=>array('label'=>_('Number'),'title'=>_('Order number')),
 
 );
-$smarty->assign('table_views',$table_views);
 
-$html=$smarty->fetch('table.tpl');
+$parameters=array(
+		'parent'=>'store',
+		'parent_key'=>$state['parent_key'],
+		'awhere'=>0,
+		'elements_type'=>'',
+		'period'=>$default['period'],
+		'to'=>$default['to'],
+		'from'=>$default['from']
+	);
+
+
+
+include('utils/get_table_html.php');
+
+
 
 ?>

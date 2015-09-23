@@ -159,8 +159,10 @@ function change_period(period){
     
     var parameters=jQuery.parseJSON(rows.parameters);
     parameters.period=period;
+    
     rows.parameters=JSON.stringify(parameters)
-    rows.url=rows.ar_file+'?tipo='+rows.tipo+'&parameters='+rows.parameters
+   
+    rows.url='/'+rows.ar_file+'?tipo='+rows.tipo+'&parameters='+rows.parameters
     rows.fetch({  reset: true});
     
 }

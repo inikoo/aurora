@@ -158,11 +158,11 @@ function get_navigation($data) {
 	switch ($data['module']) {
 
 	case ('dashboard'):
-		require_once 'navigation/dashboard.php';
+		require_once 'navigation/dashboard.nav.php';
 		return get_dashboard_navigation($data);
 		break;
 	case ('products'):
-		require_once 'navigation/products.php';
+		require_once 'navigation/products.nav.php';
 		switch ($data['section']) {
 
 		case 'store':
@@ -197,6 +197,10 @@ function get_navigation($data) {
 
 			return get_customers_categories_navigation($data);
 			break;
+		case ('category'):
+
+			return get_customers_category_navigation($data);
+			break;
 		case ('lists'):
 			return get_customers_lists_navigation($data);
 			break;
@@ -217,7 +221,7 @@ function get_navigation($data) {
 
 		break;
 	case ('customers_server'):
-		require_once 'navigation/customers.php';
+		require_once 'navigation/customers.nav.php';
 		switch ($data['section']) {
 		case ('customers'):
 		case('pending_orders'):
@@ -228,7 +232,7 @@ function get_navigation($data) {
 		break;
 
 	case ('orders'):
-		require_once 'navigation/orders.php';
+		require_once 'navigation/orders.nav.php';
 		switch ($data['section']) {
 		case ('dn'):
 		case ('orders'):
@@ -245,7 +249,7 @@ function get_navigation($data) {
 		break;
 
 	case ('websites'):
-		require_once 'navigation/websites.php';
+		require_once 'navigation/websites.nav.php';
 		switch ($data['section']) {
 		case ('websites'):
 
@@ -408,16 +412,38 @@ function get_view_position($data) {
 
 		}
 
-
 		switch ($data['section']) {
+		case 'list':
+			$list=new SubjectList($data['key']);
+			$store=new Store($list->data['List Parent Key']);
+
+
+			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/'.$store->id.'/lists');
+			$branch[]=array('label'=>$list->get('List Name'),'icon'=>'','reference'=>'customers/list/'.$list->id);
+
+			break;
+
 		case 'customer':
-			$customer=new Customer($data['key']);
-			$store=new Store($customer->data['Customer Store Key']);
+
+			if ($data['parent']=='store') {
+				$customer=new Customer($data['key']);
+				$store=new Store($customer->data['Customer Store Key']);
 
 
-			$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','reference'=>'customers/'.$store->id);
-			$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(),'icon'=>'user','reference'=>'customer/'.$customer->id);
+				$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','reference'=>'customers/'.$store->id);
+				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(),'icon'=>'user','reference'=>'customer/'.$customer->id);
+			}elseif ($data['parent']=='list') {
+				$customer=new Customer($data['key']);
+				$store=new Store($customer->data['Customer Store Key']);
 
+				$list=new SubjectList($data['parent_key']);
+
+				$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/'.$store->id.'/lists');
+				$branch[]=array('label'=>$list->get('List Name'),'icon'=>'','reference'=>'customers/list/'.$list->id);
+
+
+				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(),'icon'=>'user','reference'=>'customer/'.$customer->id);
+			}
 			break;
 		case 'dashboard':
 			$branch[]=array('label'=>_("Customer's dashboard").' '.$store->data['Store Code'],'icon'=>'dashboard','reference'=>'customers/dashboard/'.$store->id);
@@ -429,7 +455,7 @@ function get_view_position($data) {
 			$branch[]=array('label'=>_("Customer's categories").' '.$store->data['Store Code'],'icon'=>'sitemap','reference'=>'customers/categories/'.$store->id);
 			break;
 		case 'lists':
-			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/lists/'.$store->id);
+			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/'.$store->id.'/lists');
 			break;
 		case 'statistics':
 			$branch[]=array('label'=>_("Customer's stats").' '.$store->data['Store Code'],'icon'=>'line-chart','reference'=>'customers/statistics/'.$store->id);
@@ -871,6 +897,43 @@ function parse_request($request) {
 				$tab='store_dashboard';
 			}
 			break;
+		case 'category':
+			$object='category';
+
+			if (isset($view_path[0]) and is_numeric($view_path[0])) {
+				$key=$view_path[0];
+				$category=new Category($key);
+
+				$parent='category';
+				$parent_key=$category->get('Category Parent Key');
+
+				switch ($category->get('Category Subject')) {
+				case 'Customer':
+					$module='customers';
+					$section='category';
+					$tab='customers.category';
+
+					if ($category->get('Category Branch Type')=='Root') {
+						$parent='store';
+						$parent_key=$category->get('Category Store Key');
+					}
+
+					break;
+				default:
+					exit('error');
+					break;
+				}
+
+			}else {
+				//error
+			}
+
+
+
+
+
+
+			break;
 		case 'website':
 			$module='websites';
 			$section='website';
@@ -913,7 +976,8 @@ function parse_request($request) {
 
 				}
 
-			}elseif ($arg1=='list') {
+			}
+			elseif ($arg1=='list') {
 				$section='list';
 				$tab='customers.list';
 				$object='list';
@@ -927,20 +991,53 @@ function parse_request($request) {
 					$list=new SubjectList($key);
 					$parent='store';
 					$parent_key=$list->get('List Parent Key');
-					
-					
+
+
 					if (isset($view_path[1]) and is_numeric($view_path[1])) {
-					    $section='customer';
+						$section='customer';
 
 						$tab='customer.details';
 						$parent='list';
 						$parent_key=$list->id;
 						$object='customer';
 						$key=$view_path[1];
-					
+
 					}
-					
-					
+
+
+				}else {
+					//error
+				}
+
+			}
+			elseif ($arg1=='category') {
+				$section='category';
+				$tab='customers.category';
+				$object='category';
+
+
+
+
+				if (isset($view_path[0]) and is_numeric($view_path[0])) {
+					$key=$view_path[0];
+					include_once 'class.Category.php';
+					$category=new Category($key);
+					$parent='store';
+					$parent_key=$category->get('Category Store Key');
+
+
+					if (isset($view_path[1]) and is_numeric($view_path[1])) {
+						$section='customer';
+
+						$tab='customer.details';
+						$parent='category';
+						$parent_key=$category->id;
+						$object='customer';
+						$key=$view_path[1];
+
+					}
+
+
 				}else {
 					//error
 				}
@@ -965,10 +1062,10 @@ function parse_request($request) {
 
 					}elseif ($view_path[0]=='lists') {
 						$section='lists';
-
 						$tab='customers.lists';
-
-
+					}elseif ($view_path[0]=='categories') {
+						$section='categories';
+						$tab='customers.categories';
 					}
 
 				}
@@ -1084,7 +1181,7 @@ function parse_request($request) {
 		'object'=>$object,
 		'key'=>$key,
 	);
-
+    //print_r($state);
 	return $state;
 
 }

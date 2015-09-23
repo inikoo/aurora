@@ -15,15 +15,14 @@ $where=' where `List Scope`="Customer" and `List Use Type`="UserCreated" ';
 
 
 
-
-if (in_array($parent_key,$user->stores)) {
-	$where.=sprintf(' and `List Parent Key`=%d  ',$parent_key);
+if (in_array($parameters['parent_key'],$user->stores)) {
+	$where.=sprintf(' and `List Parent Key`=%d  ',$parameters['parent_key']);
 
 }
 
 
 
-if (($f_field=='name'     )  and $f_value!='') {
+if (($parameters['f_field']=='name'     )  and $f_value!='') {
 		$wheref=sprintf('  and  `List Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 
 }else {

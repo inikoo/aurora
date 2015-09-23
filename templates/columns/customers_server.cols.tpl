@@ -1,4 +1,4 @@
- [
+var columns = [
  {
     name: "store_key",
     label: "",
@@ -67,3 +67,4 @@
 
 
 ]
+function change_table_view(view,save_state){}

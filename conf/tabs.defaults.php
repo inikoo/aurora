@@ -28,13 +28,43 @@ $tab_defaults=array(
             'rpp'=>20,
             'rpp_options'=>$default_rrp_options,
             'f_field'=>'name'
-            ),            
+            ),
+ 'customers.categories'=>array(
+            'view'=>'overview',
+            'sort_key'=>'code',
+            'sort_order'=>1,
+            'rpp'=>20,
+            'rpp_options'=>$default_rrp_options,
+            'f_field'=>'code'
+            ),           
+ 'customers_server'=>array(
+            'view'=>'overview',
+            'sort_key'=>'code',
+            'sort_order'=>-1,
+            'rpp'=>20,
+            'rpp_options'=>$default_rrp_options,
+            'f_field'=>'code'
+            ),
+ 'orders'=>array(
+            'view'=>'overview',
+            'sort_key'=>'id',
+            'sort_order'=>1,
+            'rpp'=>20,
+            'rpp_options'=>$default_rrp_options,
+            'f_field'=>'customer',
+            'from'=>'',
+            'to'=>'',
+            'period'=>'ytd',
+            'elements_type'=>''
+            ),                                                
 );
 
 
 $tab_defaults_alias=array(
     'customers.list'=>'customers'
 );
+
+
 
 
 ?>
