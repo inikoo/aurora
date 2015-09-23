@@ -234,7 +234,7 @@ function get_navigation($data) {
 	case ('orders'):
 		require_once 'navigation/orders.nav.php';
 		switch ($data['section']) {
-		case ('dn'):
+		case ('delivery_notes'):
 		case ('orders'):
 		case ('invoices'):
 		case ('payments'):
@@ -1162,7 +1162,46 @@ function parse_request($request) {
 
 			}
 			break;
+		case 'delivery_notes':
+			$module='orders';
+			if ($count_view_path==0) {
+				$section='delivery_notes';
+				$tab='delivery_notes';
+				$parent='store';
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+					$parent_key=$user->data['User Hooked Store Key'];
+				}else {
+					$_tmp=$user->stores;
+					$parent_key=array_shift($_tmp);
+				}
 
+			}
+			$arg1=array_shift($view_path);
+			if ($arg1=='all') {
+				$module='orders_server';
+				$section='delivery_notes';
+				$tab='orders_server.delivery_notes';
+
+				
+			}
+			elseif (is_numeric($arg1)) {
+				$section='delivery_notes';
+				$tab='delivery_notes';
+				$parent='store';
+				$parent_key=$arg1;
+
+				if (isset($view_path[0]) and is_numeric($view_path[0])) {
+					$section='delivery_notes';
+					$object='delivery_note';
+					$tab='items';
+					$parent='store';
+					$parent_key=$arg1;
+					$key=$view_path[0];
+
+				}
+
+			}
+			break;
 		default:
 
 			break;
@@ -1181,7 +1220,7 @@ function parse_request($request) {
 		'object'=>$object,
 		'key'=>$key,
 	);
-    //print_r($state);
+	//print_r($state);
 	return $state;
 
 }

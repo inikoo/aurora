@@ -108,7 +108,7 @@ $modules=array(
 		'sections'=>array(
 			'orders'=>array('type'=>'navigation','label'=>_('Orders'),'title'=>_('Orders'),'icon'=>'shopping-cart','reference'=>'orders/%d'),
 			'invoices'=>array('type'=>'navigation','label'=>_('Invoices'),'title'=>_('Invoices'),'icon'=>'file-o','reference'=>'invoices/%d'),
-			'dn'=>array('type'=>'navigation','label'=>_('Delivery Notes'),'title'=>_('Delivery Notes'),'icon'=>'truck','reference'=>'dn/%d'),
+			'delivery_notes'=>array('type'=>'navigation','label'=>_('Delivery Notes'),'title'=>_('Delivery Notes'),'icon'=>'truck','reference'=>'delivery_notes/%d'),
 			'payments'=>array('type'=>'navigation','label'=>_('Payments'),'title'=>_('Payments'),'icon'=>'credit-card','reference'=>'payments/%d'),
 
 			//'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),

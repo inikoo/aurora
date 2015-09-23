@@ -2,16 +2,16 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created:  24 September 2015 00:35:11 GMT+8, Kuala Lumpur, Malaysia
+ Created:  24 September 2015 00:36:14 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-$tab='invoices';
+$tab='delivery_notes';
 $ar_file='ar_orders_tables.php';
-$tipo='invoices';
+$tipo='delivery_notes';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -28,6 +28,11 @@ $table_filters=array(
 $parameters=array(
 		'parent'=>'store',
 		'parent_key'=>$state['parent_key'],
+		'awhere'=>0,
+		'elements_type'=>'',
+		'period'=>$default['period'],
+		'to'=>$default['to'],
+		'from'=>$default['from']
 	);
 
 

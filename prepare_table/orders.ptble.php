@@ -13,7 +13,7 @@ $where='where true ';
 $table='`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 
-if ($parameters['awhere']) {
+if (isset($parameters['awhere']) and $parameters['awhere']) {
 	$tmp=preg_replace('/\\\"/','"',$awhere);
 	$tmp=preg_replace('/\\\\\"/','"',$tmp);
 	$tmp=preg_replace('/\'/',"\'",$tmp);

@@ -49,13 +49,13 @@ var columns= [{
      })
  }, {
      name: "dispatch_state",
-     label: "{t}Number{/t}",
+     label: "{t}Dispatch Status{/t}",
      editable: false,
  sortType: "toggle",
      cell: "html"
  }, {
      name: "payment_state",
-     label: "{t}Number{/t}",
+     label: "{t}Payment State{/t}",
      editable: false,
  sortType: "toggle",
      cell: "html"
