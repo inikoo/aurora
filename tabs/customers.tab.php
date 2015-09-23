@@ -40,7 +40,6 @@ $parameters=array(
 		'parent_key'=>$state['parent_key'],
 		'awhere'=>0,
 		'elements_type'=>'',
-		'tab'=>$tab
 );
 
 

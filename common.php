@@ -18,20 +18,10 @@ require_once "class.User.php";
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
 
-$external_DB_link=false;
 
-if (isset($connect_to_external) and isset($external_dns_user)) {
-	$external_DB_link=mysql_connect($external_dns_host,$external_dns_user,$external_dns_pwd );
 
-	if (!$external_DB_link) {
-		print "Error can not connect with external database server\n";
-	}
-	$external_db_selected=mysql_select_db($external_dns_db, $external_DB_link);
-	if (!$external_db_selected) {
-		print "Error can not access the external database\n";
-	}
-	//print $external_DB_link;
-}
+$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user,$dns_pwd ,array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -43,15 +33,14 @@ if (!$db_selected) {
 	print "Error can not access the database\n";
 	exit;
 }
-
-
 mysql_set_charset('utf8');
-
 mysql_query("SET time_zone='+0:00'");
+
+
 require_once 'conf/modules.php';
 require_once 'conf/conf.php';
 
-$inikoo_account=new Account();
+$inikoo_account=new Account($db);
 date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
 define("TIMEZONE",$inikoo_account->data['Account Timezone']);
 

@@ -10,23 +10,30 @@
 */
 
 
-$smarty->left_delimiter = '{{';
-$smarty->right_delimiter = '}}';
-$smarty->assign('data',$state);
+$tab='customers_server';
+$ar_file='ar_customers_tables.php';
+$tipo='customers_server';
 
-
-$smarty->assign('results_per_page_options',$results_per_page_options);
-$smarty->assign('results_per_page',$results_per_page);
-
-
-$smarty->assign('sortKey','id');
-$smarty->assign('request',"/ar_assets.php?tipo=customers_per_store");
-
-
-$smarty->assign('columns_file','columns_customers_server');
+$default=$user->get_tab_defaults($tab);
 
 
 
-$html=$smarty->fetch('table.tpl');
+$table_views=array();
+
+$table_filters=array(
+	'code'=>array('label'=>_('Code'),'title'=>_('Store code')),
+	'name'=>array('label'=>_('Name'),'title'=>_('Store name')),
+
+);
+
+$parameters=array(
+		'parent'=>'',
+		'parent_key'=>'',
+		'percentages'=>0,
+);
+
+
+include('utils/get_table_html.php');
+
 
 ?>

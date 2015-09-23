@@ -16,7 +16,7 @@ if (!isset($_REQUEST['tipo'])) {
 	}
 	return;
 }
-
+exit;
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {

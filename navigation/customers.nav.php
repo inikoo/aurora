@@ -94,8 +94,8 @@ function get_customers_list_navigation($data) {
 	include_once 'class.List.php';
 
 	include_once 'class.List.php';
-	
-	
+
+
 	$list=new SubjectList($data['key']);
 	$store=new Store($list->get('List Parent Key'));
 
@@ -111,19 +111,13 @@ function get_customers_list_navigation($data) {
 
 	$tab='customers.lists';
 
-	$parent=$data['parent'];
-	$parent_key=$data['parent_key'];
+
 	$number_results=$_SESSION['table_state'][$tab]['nr'];
 	$start_from=0;
 	$order=$_SESSION['table_state'][$tab]['o'];
 	$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-	//$awhere=$_SESSION['table_state'][$tab]['awhere'];
-	$f_field=$_SESSION['table_state'][$tab]['f_field'];
 	$f_value=$_SESSION['table_state'][$tab]['f_value'];
-	//$elements_type=$_SESSION['table_state'][$tab]['elements_type'];
-
-
-
+	$parameters=$_SESSION['table_state'][$tab];
 
 	include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -220,7 +214,7 @@ function get_customers_list_navigation($data) {
 	$right_buttons=array();
 	$sections=get_sections('customers',$store->id);
 
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+	$sections['lists']['selected']=true;
 
 
 	$_content=array(
@@ -259,11 +253,6 @@ function get_customers_categories_navigation($data) {
 
 	$block_view=$data['section'];
 
-	$branch=array(array('label'=>'','icon'=>'home','reference'=>''));
-	if ( $user->get_number_stores()>1) {
-		$branch[]=array('label'=>_('Customers'),'icon'=>'bars','reference'=>'customers/all');
-	}
-	$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','reference'=>'customers/'.$store->id);
 
 
 	$left_buttons=array();
@@ -301,12 +290,69 @@ function get_customers_categories_navigation($data) {
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 	$_content=array(
-		'branch'=>$branch,
 		'sections_class'=>'',
 		'sections'=>$sections,
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Customer's Categories").' <span class="id">'.$store->get('Store Code').'</span>',
+		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+
+	);
+	$smarty->assign('_content',$_content);
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
+function get_customers_category_navigation($data) {
+
+	global $user,$smarty;
+
+
+	require_once 'class.Category.php';
+	require_once 'class.Store.php';
+
+
+    $category=new Category($data['key']);
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+	switch ($data['parent']) {
+	case 'category':
+		$parent_category=new Category($data['parent_key']);
+		break;
+	case 'store':
+		$store=new Store($data['parent_key']);
+		
+		$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Categories").' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id.'/categories');
+
+		
+		
+		break;
+
+	default:
+
+		break;
+	}
+
+	
+
+
+
+
+	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit'),'url'=>"edit_customer_categories.php?store_id=".$store->id);
+
+	$sections=get_sections('customers',$store->id);
+	$sections['categories']['selected']=true;
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_("Category").' <span class="id">'.$category->get('Category Code').'</span>',
 		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
 
 	);
@@ -660,29 +706,25 @@ function get_customer_navigation($data) {
 		switch ($data['parent']) {
 		case 'store':
 			$tab='customers';
+			$_section='customers';
 			break;
 		case 'category':
 			$tab='customer.categories';
+			$_section='categories';
 			break;
 		case 'list':
 			$tab='customers.list';
+			$_section='lists';
 			break;
 		}
 
 
-		$parent=$data['parent'];
-		$parent_key=$data['parent_key'];
 		$number_results=$_SESSION['table_state'][$tab]['nr'];
 		$start_from=0;
 		$order=$_SESSION['table_state'][$tab]['o'];
 		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-		$awhere=$_SESSION['table_state'][$tab]['awhere'];
-		$f_field=$_SESSION['table_state'][$tab]['f_field'];
 		$f_value=$_SESSION['table_state'][$tab]['f_value'];
-		$elements_type=$_SESSION['table_state'][$tab]['elements_type'];
-
-
-
+		$parameters=$_SESSION['table_state'][$tab];
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -826,7 +868,10 @@ function get_customer_navigation($data) {
 
 
 	}
+    else{
+    			$_section='customers';
 
+    }
 	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customer.php?id='.$customer->id);
 	$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
 	$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
@@ -835,14 +880,14 @@ function get_customer_navigation($data) {
 
 	$sections=get_sections('customers',$customer->data['Customer Store Key']);
 
-	$_section=$data['section'];
-	if ($_section=='customer')$_section='customers';
+
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
 	//  {if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="/art/avatar.jpg" style="cursor:pointer;"> {/if} {if $customer->get('Customer Level Type')=='VIP'}<img src="/art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $customer->get('Customer Level Type')=='Partner'}<img src="/art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
 	$avatar='<div class="square_button"></div>';
 	$avatar='<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
+	$avatar='';
 
 	$title= '<span class="id">'.$customer->get('Customer Name').' ('.$customer->get_formated_id().')</span>';
 

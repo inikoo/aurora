@@ -51,13 +51,23 @@ $modules=array(
 				)
 
 			),
-			'pending_orders'=>array('type'=>'navigation','label'=>_('Pending orders'),'title'=>_('Pending orders'),'icon'=>'clock-o','reference'=>'customers/pending_orders/%d'),
 
             'list'=>array(
-				'tab'=>'customers',
-				'type'=>'navigation','label'=>_('Customers'),'title'=>_('Customers'),'icon'=>'users','reference'=>'customers/%d',
+				'type'=>'object'
 
 
+
+			),
+			'category'=>array(
+				'type'=>'object',
+
+                'tabs'=>array(
+					'category.details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'category/%d/details'),
+					'category.history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'category'=>'customer/%d/history'),
+					'category.subjects'=>array('label'=>_('Customers'),'title'=>_('Customers'),'reference'=>'category/%d/subjects'),
+					'category.subcategories'=>array('label'=>_('Subcategories'),'title'=>_('Subcategories'),'reference'=>'customer/%d/subcategories'),
+
+				)
 
 			),
 
@@ -87,7 +97,6 @@ $modules=array(
 		'section'=>'customers',
 		'sections'=>array(
 			'customers'=>array('type'=>'navigation','label'=>_('Customers (All stores)'),'title'=>_('Customers (All stores)'),'icon'=>'','reference'=>'customers/all'),
-			'pending_orders'=>array('type'=>'navigation','label'=>_('Pending orders (All stores)'),'title'=>_('Pending orders (All stores)'),'icon'=>'','reference'=>'customers/all/pending_orders/'),
 
 		)
 
