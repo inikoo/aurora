@@ -4,10 +4,11 @@ $table='`Delivery Note Dimension` D ';
 $wheref='';
 $group='';
 
+list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($parameters['period'],$parameters['from'],$parameters['to']);
 
 
-if ($awhere) {
-	$tmp=preg_replace('/\\\"/','"',$awhere);
+if (isset($parameters['awhere']) and $parameters['awhere']) {
+	$tmp=preg_replace('/\\\"/','"',$parameters['awhere']);
 	$tmp=preg_replace('/\\\\\"/','"',$tmp);
 	$tmp=preg_replace('/\'/',"\'",$tmp);
 
@@ -19,15 +20,15 @@ if ($awhere) {
 	$where_interval='';
 }
 //print $where_interval;exit;
-elseif ($parent=='list') {
-	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
+elseif ($parameters['parent']=='list') {
+	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parameters['parent_key']);
 
 	$res=mysql_query($sql);
 	if ($dn_list_data=mysql_fetch_assoc($res)) {
 		$awhere=false;
 		if ($dn_list_data['List Type']=='Static') {
 			$table='`List Delivery Note Bridge` DB left join `Delivery Note Dimension` D  on (DB.`Delivery Note Key`=D.`Delivery Note Key`)';
-			$where_type=sprintf(' and `List Key`=%d ',$parent_key);
+			$where_type=sprintf(' and `List Key`=%d ',$parameters['parent_key']);
 
 		} else {
 			$tmp=preg_replace('/\\\"/','"',$dn_list_data['List Metadata']);
@@ -44,11 +45,11 @@ elseif ($parent=='list') {
 		exit("error");
 	}
 }
-elseif ($parent=='store') {
-	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
-		$where=sprintf(' where  `Delivery Note Store Key`=%d ',$parent_key);
+elseif ($parameters['parent']=='store') {
+	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'],$user->stores)) {
+		$where=sprintf(' where  `Delivery Note Store Key`=%d ',$parameters['parent_key']);
 		include_once 'class.Store.php';
-		$store=new Store($parent_key);
+		$store=new Store($parameters['parent_key']);
 		$currency=$store->data['Store Currency Code'];
 	}
 	else {
@@ -57,8 +58,8 @@ elseif ($parent=='store') {
 
 
 }
-elseif ($parent=='stores') {
-	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
+elseif ($parameters['parent']=='stores') {
+	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'],$user->stores)) {
 
 		if (count($user->stores)==0) {
 			$where=' where false';
@@ -69,9 +70,9 @@ elseif ($parent=='stores') {
 		}
 	}
 }
-elseif ($parent=='part') {
+elseif ($parameters['parent']=='part') {
 	global $corporate_currency;
-	$where=sprintf(' where  `Part SKU`=%d ',$parent_key);
+	$where=sprintf(' where  `Part SKU`=%d ',$parameters['parent_key']);
 
 	$table='`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
 	$group=' group by ITF.`Delivery Note Key`';
@@ -85,10 +86,6 @@ else {
 
 
 
-
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
-
 $where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`');
 $where.=$where_interval['mysql'];
 
@@ -98,7 +95,7 @@ $where.=$where_interval['mysql'];
 
 
 
-switch ($elements_type) {
+switch ($parameters['elements_type']) {
 case('dispatch'):
 	$_elements='';
 	$num_elements_checked=0;
@@ -165,14 +162,34 @@ case('type'):
 }
 
 
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='date' )
+		$order='`Delivery Note Date Created`';
+	elseif ($order=='id')
+		$order='`Delivery Note File As`';
+	elseif ($order=='customer')
+		$order='`Delivery Note Customer Name`';
+	elseif ($order=='type')
+		$order='`Delivery Note Type`';
+	elseif ($order=='weight')
+		$order='`Delivery Note Weight`';
+	elseif ($order=='parcels')
+		$order='`Delivery Note Parcel Type`,`Delivery Note Number Parcels`';
+    else
+      		$order='`Delivery Note Key`';
+  
 
 
 
-if ($f_field=='customer_name'       and $f_value!='')
-	$wheref="  and  `Delivery Note Customer Name` like '%".addslashes($f_value)."%'";
-elseif ($f_field=='public_id' and $f_value!='')
+if ($parameters['f_field']=='customer'       and $f_value!='')
+		$wheref=sprintf('  and  `Delivery Note Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+
+elseif ($parameters['f_field']=='number' and $f_value!='')
 	$wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
-elseif ($f_field=='country' and  $f_value!='') {
+elseif ($parameters['f_field']=='country' and  $f_value!='') {
 	if ($f_value=='UNK') {
 		$wheref.=" and  `Delivery Note Country Code`='".$f_value."'    ";
 		$find_data=' '._('a unknown country');
@@ -186,18 +203,8 @@ elseif ($f_field=='country' and  $f_value!='') {
 	}
 }
 
-//}elseif ($f_field=='max' and is_numeric($f_value) )
-// $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))<=".$f_value."    ";
-//elseif ($f_field=='min' and is_numeric($f_value) )
-// $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))>=".$f_value."    ";
-// elseif ($f_field=='invoice' and $f_value!='')
-//  $wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
-// elseif ($f_field=='order' and $f_value!='')
-//  $wheref.=" and  `Delivery Note Order` like '".addslashes($f_value)."%'";
-// elseif ($f_field=='maxvalue' and is_numeric($f_value) )
-//  $wheref.=" and  total<=".$f_value."    ";
-// elseif ($f_field=='minvalue' and is_numeric($f_value) )
-//  $wheref.=" and  total>=".$f_value."    ";
+$fields='*';
+$sql_totals="select count(Distinct D.`Delivery Note Key`) as num from $table   $where $wheref ";
 
 
 

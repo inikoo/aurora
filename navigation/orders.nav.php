@@ -46,11 +46,11 @@ function get_orders_navigation($data) {
 		$up_button=array('icon'=>'arrow-up','title'=>_('Invoices').' ('._('All stores').')','reference'=>'invoices/all');
 		$button_label=_('Invoices %s');
 		break;
-	case 'dn':
+	case 'delivery_notes':
 		$sections_class='';
 		$title=_('Delivery Notes').' <span class="id">'.$store->get('Store Code').'</span>';
 		
-		$up_button=array('icon'=>'arrow-up','title'=>_('Delivery Notes').' ('._('All stores').')','reference'=>'dn/all');
+		$up_button=array('icon'=>'arrow-up','title'=>_('Delivery Notes').' ('._('All stores').')','reference'=>'delivery_notes/all');
 		$button_label=_('Delivery Notes %s');
 		break;
 	case 'payments':

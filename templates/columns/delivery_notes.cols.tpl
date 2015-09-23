@@ -26,7 +26,7 @@ var columns= [{
      cell: "string"
  }, {
      name: "date",
-     label: "{t}Date{/t}",
+     label: "{t}Date creation{/t}",
      editable: false,
     defautOrder:1,
     sortType: "toggle",
@@ -54,20 +54,23 @@ var columns= [{
  sortType: "toggle",
      cell: "html"
  }, {
-     name: "method",
-     label: "{t}Payment Method{/t}",
-     editable: false,
- sortType: "toggle",
-     cell: "html"
- }, {
      name: "state",
-     label: "{t}Payment State{/t}",
+     label: "{t}Status{/t}",
      editable: false,
  sortType: "toggle",
      cell: "html"
  }, {
-     name: "total_amount",
-     label: "{t}Total{/t}",
+     name: "weight",
+     label: "{t}Weight{/t}",
+     editable: false,
+     defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+ }, {
+     name: "parcels",
+     label: "{t}Parcels{/t}",
      editable: false,
      defautOrder:1,
     sortType: "toggle",

@@ -2100,7 +2100,8 @@ function list_invoices($_data) {
 		$order='`Invoice Paid`';
 	elseif ($order=='net')
 		$order='`Invoice Total Net Amount`';
-
+    else
+        $order='`Invoice Key`';
 
 
 	$sql="select  * from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref     order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');

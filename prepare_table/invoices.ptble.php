@@ -8,11 +8,14 @@ $where='where true';
 $table='`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 $where_type='';
 
-if ($awhere) {
+list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($parameters['period'],$parameters['from'],$parameters['to']);
+
+
+if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 
 
-	$tmp=preg_replace('/\\\"/','"',$awhere);
+	$tmp=preg_replace('/\\\"/','"',$parameters['awhere']);
 	$tmp=preg_replace('/\\\\\"/','"',$tmp);
 	$tmp=preg_replace('/\'/',"\'",$tmp);
 
@@ -23,30 +26,30 @@ if ($awhere) {
 
 
 }
-elseif ($parent=='category') {
-	$category=new Category($parent_key);
+elseif ($parameters['parent']=='category') {
+	$category=new Category($parameters['parent_key']);
 
 	if (!in_array($category->data['Category Store Key'],$user->stores)) {
 		return;
 	}
 
-	$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d",$parent_key);
+	$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d",$parameters['parent_key']);
 	$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
 	$where_type='';
 
 	$store_key=$category->data['Category Store Key'];
 
 }
-elseif ($parent=='list') {
-	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
+elseif ($parameters['parent']=='list') {
+	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parameters['parent_key']);
 
 	$res=mysql_query($sql);
 	if ($list_data=mysql_fetch_assoc($res)) {
-		$awhere=false;
+		$parameters['awhere']=false;
 		$store_key=$list_data['List Parent Key'];
 		if ($list_data['List Type']=='Static') {
 			$table='`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
-			$where_type=sprintf(' and `List Key`=%d ',$parent_key);
+			$where_type=sprintf(' and `List Key`=%d ',$parameters['parent_key']);
 
 		} else {// Dynamic by DEFAULT
 
@@ -70,11 +73,11 @@ elseif ($parent=='list') {
 		exit("error");
 	}
 }
-elseif ($parent=='store') {
-	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
-		$where=sprintf(' where  `Invoice Store Key`=%d ',$parent_key);
-		include_once('class.Store.php');
-		$store=new Store($parent_key);
+elseif ($parameters['parent']=='store') {
+	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'],$user->stores)) {
+		$where=sprintf(' where  `Invoice Store Key`=%d ',$parameters['parent_key']);
+		include_once 'class.Store.php';
+		$store=new Store($parameters['parent_key']);
 		$currency=$store->data['Store Currency Code'];
 	}
 	else {
@@ -83,8 +86,8 @@ elseif ($parent=='store') {
 
 
 }
-elseif ($parent=='stores') {
-	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
+elseif ($parameters['parent']=='stores') {
+	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'],$user->stores)) {
 
 		if (count($user->stores)==0) {
 			$where=' where false';
@@ -100,14 +103,12 @@ else {
 }
 
 
-if ($from)$from=$from.' 00:00:00';
-if ($to)$to=$to.' 23:59:59';
 $where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 $where.=$where_interval['mysql'];
 
 
 
-switch ($elements_type) {
+switch ($parameters['elements_type']) {
 
 case('type'):
 	$_elements='';
@@ -157,20 +158,20 @@ case('payment'):
 
 
 
-if (($f_field=='customer_name'     )  and $f_value!='') {
-	$wheref="  and  `Invoice Customer Name` like '%".addslashes($f_value)."%'";
+if (($parameters['f_field']=='customer'     )  and $f_value!='') {
+	$wheref=sprintf('  and  `Invoice Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
 }
-elseif ($f_field=='public_id'  and $f_value!='' )
+elseif ($parameters['f_field']=='number'  and $f_value!='' )
 	$wheref.=" and  `Invoice Public ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-elseif ($f_field=='last_more' and is_numeric($f_value) )
+elseif ($parameters['f_field']=='last_more' and is_numeric($f_value) )
 	$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
-elseif ($f_field=='last_less' and is_numeric($f_value) )
+elseif ($parameters['f_field']=='last_less' and is_numeric($f_value) )
 	$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
-elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+elseif ($parameters['f_field']=='maxvalue' and is_numeric($f_value) )
 	$wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
-elseif ($f_field=='minvalue' and is_numeric($f_value) )
+elseif ($parameters['f_field']=='minvalue' and is_numeric($f_value) )
 	$wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
-elseif ($f_field=='country' and  $f_value!='') {
+elseif ($parameters['f_field']=='country' and  $f_value!='') {
 	if ($f_value=='UNK') {
 		$wheref.=" and  `Invoice Billing Country Code`='".$f_value."'    ";
 		$find_data=' '._('a unknown country');
@@ -180,13 +181,46 @@ elseif ($f_field=='country' and  $f_value!='') {
 		if ($f_value!='UNK') {
 			$wheref.=" and  `Invoice Billing Country Code`='".$f_value."'    ";
 			$country=new Country('code',$f_value);
-			$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+			$find_data=' '.$country->data['Country Name'].' <img src="/art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
 		}
 
 	}
 }
 
+$_order=$order;
+$_dir=$order_direction;
 
-//print $where_type;
+
+if ($order=='date')
+	$order='`Invoice Date`';
+elseif ($order=='last_date')
+	$order='`Invoice Last Updated Date`';
+elseif ($order=='number')
+	$order='`Invoice File As`';
+
+elseif ($order=='total_amount')
+	$order='`Invoice Total Amount`';
+
+elseif ($order=='items')
+	$order='`Invoice Items Net Amount`';
+elseif ($order=='shipping')
+	$order='`Invoice Shipping Net Amount`';
+
+elseif ($order=='customer')
+	$order='`Invoice Customer Name`';
+elseif ($order=='method')
+	$order='`Invoice Main Payment Method`';
+elseif ($order=='type')
+	$order='`Invoice Type`';
+elseif ($order=='state')
+	$order='`Invoice Paid`';
+elseif ($order=='net')
+	$order='`Invoice Total Net Amount`';
+else
+	$order='`Invoice Key`';
+
+
+$fields='*';
+$sql_totals="select count(Distinct I.`Invoice Key`) as num from $table   $where $wheref ";
 
 ?>

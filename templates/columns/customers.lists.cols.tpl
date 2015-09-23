@@ -13,8 +13,7 @@ var columns = [
      sortType: "toggle",
      
      
-    
-     
+ 
     cell: Backgrid.StringCell.extend({
         events: {
             "dblclick": "enterEditMode",

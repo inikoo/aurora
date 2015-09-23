@@ -28,11 +28,6 @@ $table_filters=array(
 $parameters=array(
 		'parent'=>'store',
 		'parent_key'=>$state['parent_key'],
-		'awhere'=>0,
-		'elements_type'=>'',
-		'period'=>$default['period'],
-		'to'=>$default['to'],
-		'from'=>$default['from']
 	);
 
 
