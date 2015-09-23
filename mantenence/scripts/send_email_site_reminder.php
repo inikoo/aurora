@@ -54,8 +54,8 @@ $email_data=array(
 
 	),
 	'AWC.com'=>array(
-		'promotion_name' => 'AW-Cadeaux Notification de retour en stock',
-		'from' => 'aw-cadeaux <bruno@aw-cadeaux.com>',
+		'promotion_name' => 'Back In Stock Notification FR',
+		'from' => 'aw-cadeaux <mail@aw-cadeaux.com>',
 		'subject1' => 'Produit de retour en stock',
 		'subjectn' => 'Produits de retour en stock',
 		'email_provider_user'=>'david@ancientwisdom.biz',
@@ -63,20 +63,38 @@ $email_data=array(
 	),
 
 	'AWG.com'=>array(
-		'promotion_name' => 'AW-Geschenke Mitteilung über wieder vorrätige Produkte',
-		'from' => 'aw-geschenke <martina@aw-geschenke.com>',
+		'promotion_name' => 'Back In Stock Notification DE',
+		'from' => 'aw-geschenke <info@aw-geschenke.com>',
 		'subject1' => 'Produkt wieder vorrätig',
 		'subjectn' => 'Produkte wieder vorrätig',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
 	),
-'AWR.com'=>array(
-		'promotion_name' => 'AW-Regali Prodotti Disponibili',
+	'AWR.com'=>array(
+		'promotion_name' => 'Back In Stock Notification IT',
 		'from' => 'aw-regali <mail@aw-regali.com>',
 		'subject1' => 'Prodotto disponibile',
 		'subjectn' => 'Prodotti disponibili',
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8'
+	),
+	'AWP.com'=>array(
+		'promotion_name' => 'Back In Stock Notification PL',
+		'from' => 'aw-podarki <info@aw-podarki.com>',
+		'subject1' => 'Product back in stock',
+		'subjectn' => 'Products back in stock',
+
+		'email_provider_user'=>'david@ancientwisdom.biz',
+		'email_provider_password'=>'447ba8315277320c130646a345136dc8',
+	),
+	'HA'=>array(
+		'promotion_name' => 'Back In Stock Notification Service HIP Angels',
+		'from' => 'HIP Angels <scarves@hipangels.com>',
+		'subject1' => 'Product back in stock',
+		'subjectn' => 'Products back in stock',
+
+		'email_provider_user'=>'david@ancientwisdom.biz',
+		'email_provider_password'=>'447ba8315277320c130646a345136dc8',
 	)
 
 
@@ -154,9 +172,9 @@ while ($row2=mysql_fetch_assoc($res2)) {
 
 
 			//$email_site_reminder=new EmailSiteReminder($row['Email Site Reminder Key']);
-			if($number_products>0){
-			send_email($subject_data,$products,$email_data[$site->data['Site Code']]);
-}
+			if ($number_products>0) {
+				send_email($subject_data,$products,$email_data[$site->data['Site Code']]);
+			}
 			$esr_keys=preg_split('/,/',$row['esr_keys']);
 
 
