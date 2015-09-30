@@ -21,8 +21,6 @@ $modules=array(
 		)
 
 	),
-
-
 	'customers'=>array(
 		'section'=>'customers',
 		'parent'=>'store',
@@ -52,7 +50,7 @@ $modules=array(
 
 			),
 
-            'list'=>array(
+			'list'=>array(
 				'type'=>'object'
 
 
@@ -61,7 +59,7 @@ $modules=array(
 			'category'=>array(
 				'type'=>'object',
 
-                'tabs'=>array(
+				'tabs'=>array(
 					'category.details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'category/%d/details'),
 					'category.history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'category'=>'customer/%d/history'),
 					'category.subjects'=>array('label'=>_('Customers'),'title'=>_('Customers'),'reference'=>'category/%d/subjects'),
@@ -114,7 +112,17 @@ $modules=array(
 			//'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),
 		)
 	),
+	'orders_server'=>array(
 
+		'parent'=>'none',
+		'parent_type'=>'none',
+		'section'=>'orders',
+		'sections'=>array(
+			'orders'=>array('type'=>'navigation','label'=>_('Orders'),'title'=>_('Orders'),'icon'=>'shopping-cart','reference'=>'orders/all'),
+
+		)
+
+	),
 	'websites'=>array(
 		'section'=>'dashboard',
 		'parent'=>'website',
@@ -149,7 +157,6 @@ $modules=array(
 			//'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),
 		)
 	),
-
 	'products'=>array(
 		'section'=>'products',
 		'sections'=>array(
@@ -174,8 +181,102 @@ $modules=array(
 			)
 		)
 	),
+	'suppliers'=>array(
+		'section'=>'suppliers',
+		'parent'=>'store',
+		'parent_type'=>'key',
+		'sections'=>array(
+			'dashboard'=>array('type'=>'navigation','label'=>_('Dashboard'),'title'=>_("Supplier's dashboard"),'icon'=>'dashboard','reference'=>'suppliers/%d/dashboard'),
+
+			'suppliers'=>array(
+				'tab'=>'suppliers',
+				'type'=>'navigation','label'=>_('Suppliers'),'title'=>_('Suppliers'),'icon'=>'industry','reference'=>'suppliers',
 
 
+
+			),
+			'lists'=>array('type'=>'navigation','label'=>_('Lists'),'title'=>_('Lists'),'icon'=>'list','reference'=>'suppliers/%d/lists'),
+			'categories'=>array('type'=>'navigation','label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'suppliers/%d/categories'),
+
+			'list'=>array(
+				'type'=>'object'
+
+
+
+			),
+			'category'=>array(
+				'type'=>'object',
+
+				'tabs'=>array(
+					'category.details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'category/%d/details'),
+					'category.history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'category'=>'supplier/%d/history'),
+					'category.subjects'=>array('label'=>_('Customers'),'title'=>_('Customers'),'reference'=>'category/%d/subjects'),
+					'category.subcategories'=>array('label'=>_('Subcategories'),'title'=>_('Subcategories'),'reference'=>'supplier/%d/subcategories'),
+
+				)
+
+			),
+
+			'supplier'=>array(
+				'type'=>'object',
+				'label'=>_('Supplier'),
+				'title'=>_('Supplier'),
+				'icon'=>'industry',
+				'reference'=>'supplier/%d',
+				'tabs'=>array(
+					'supplier.details'=>array('label'=>_('Details'),'title'=>_('Details'),'reference'=>'supplier/%d/details'),
+					'supplier.history'=>array('label'=>_('History, Notes'),'title'=>_('History, Notes'),'reference'=>'supplier/%d/notes'),
+					'supplier.orders'=>array('label'=>_('Orders'),'title'=>_('Orders'),'reference'=>'supplier/%d/orders'),
+
+				)
+			)
+
+
+
+
+		)
+	),
+	'warehouses_server'=>array(
+		'sections'=>array(
+
+			'warehouses'=>array(
+				'tab'=>'warehouses',
+				'type'=>'navigation','label'=>_('Warehouses'),'title'=>_('Warehouses'),'icon'=>'map-maker','reference'=>'warehouses',
+			)
+
+		)
+	),
+	'warehouses'=>array(
+		'sections'=>array(
+			'warehouse'=>array(
+				'tab'=>'areas',
+				'type'=>'navigation','label'=>_('Warehouse'),'title'=>_('Warehouse'),'icon'=>'th-large','reference'=>'warehouse/%d',
+			),
+			'inventory'=>array(
+				'tab'=>'parts',
+				'type'=>'navigation','label'=>_('Inventory'),'title'=>_('Inventory'),'icon'=>'th','reference'=>'inventory/%d',
+				'tabs'=>array(
+					'inventory.parts'=>array('label'=>_('Parts'),'title'=>_('Parts'),'reference'=>'parts/%d'),
+					'inventory.families'=>array('label'=>_("Part's Families"),'title'=>_("Part's families"),'reference'=>'inventory/%d/families'),
+					'inventory.transactions'=>array('label'=>_('Movements'),'title'=>_('Movements'),'reference'=>'inventory/%d/transactions'),
+					'inventory.stock_history'=>array('label'=>_('Stock history'),'title'=>_('Stock history'),'reference'=>'inventory/%d/stock_history'),
+
+				)
+			),
+			'locations'=>array(
+				'tab'=>'locations',
+				'type'=>'navigation','label'=>_('Locations'),'title'=>_('Locations'),'icon'=>'map-marker','reference'=>'locations/%d',
+				'tabs'=>array(
+					'locations'=>array('label'=>_('Locations'),'title'=>_('Locations'),'reference'=>'locations/%d'),
+					'locations.replenishments'=>array('label'=>_("Replenishments"),'title'=>_("Replenishments"),'reference'=>'locations/%d/replenishments'),
+					'locations.parts'=>array('label'=>_('Part-Locations'),'title'=>_('Part-Locations'),'reference'=>'locations/%d/parts'),
+
+				)
+			)
+
+
+		)
+	),
 	'utils'=>array(
 		'sections'=>array(
 			'forbidden'=>array('type'=>'object','label'=>_('Forbidden'),'title'=>_('Forbidden'),'icon'=>'shopping-cart','id'=>'forbidden'),

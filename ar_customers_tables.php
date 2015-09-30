@@ -38,6 +38,7 @@ case 'lists':
 	break;
 case 'customers_server':
 	customers_server(get_table_parameters(),$db,$user);
+	break;
 case 'categories':
 	categories(get_table_parameters(),$db,$user);
 	break;
@@ -285,10 +286,7 @@ function customers_server($_data,$db,$user) {
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';
 
-
-
-	$sql="select `Store Key`,`Store Name`,`Store Code`,`Store Contacts`,`Store Total Users`, (`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,
-         `Store Contacts With Orders`,(`Store Active Contacts With Orders`+`Store Losing Contacts With Orders`)as active_with_orders,`Store New Contacts With Orders`,`Store Lost Contacts With Orders`,`Store Losing Contacts With Orders` from  `Store Dimension`    $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 
@@ -307,68 +305,68 @@ function customers_server($_data,$db,$user) {
 
 	foreach ($db->query($sql) as $data) {
 
-		$total_contacts+=$row['Store Contacts'];
+		$total_contacts+=$data['Store Contacts'];
 
-		$total_active_contacts+=$row['active'];
-		$total_new_contacts+=$row['Store New Contacts'];
-		$total_lost_contacts+=$row['Store Lost Contacts'];
-		$total_losing_contacts+=$row['Store Losing Contacts'];
-		$total_contacts_with_orders+=$row['Store Contacts With Orders'];
-		$total_active_contacts_with_orders+=$row['active_with_orders'];
-		$total_new_contacts_with_orders+=$row['Store New Contacts With Orders'];
-		$total_lost_contacts_with_orders+=$row['Store Lost Contacts With Orders'];
-		$total_losing_contacts_with_orders+=$row['Store Losing Contacts With Orders'];
-
-
+		$total_active_contacts+=$data['active'];
+		$total_new_contacts+=$data['Store New Contacts'];
+		$total_lost_contacts+=$data['Store Lost Contacts'];
+		$total_losing_contacts+=$data['Store Losing Contacts'];
+		$total_contacts_with_orders+=$data['Store Contacts With Orders'];
+		$total_active_contacts_with_orders+=$data['active_with_orders'];
+		$total_new_contacts_with_orders+=$data['Store New Contacts With Orders'];
+		$total_lost_contacts_with_orders+=$data['Store Lost Contacts With Orders'];
+		$total_losing_contacts_with_orders+=$data['Store Losing Contacts With Orders'];
 
 
-		$contacts=number($row['Store Contacts']);
-		$new_contacts=number($row['Store New Contacts']);
-		$active_contacts=number($row['active']);
-		$losing_contacts=number($row['Store Losing Contacts']);
-		$lost_contacts=number($row['Store Lost Contacts']);
-		$contacts_with_orders=number($row['Store Contacts With Orders']);
-		$new_contacts_with_orders=number($row['Store New Contacts With Orders']);
-		$active_contacts_with_orders=number($row['active_with_orders']);
-		$losing_contacts_with_orders=number($row['Store Losing Contacts With Orders']);
-		$lost_contacts_with_orders=number($row['Store Lost Contacts With Orders']);
-		$total_users=$row['Store Total Users'];
 
-		//  $contacts_with_orders=number($row['contacts_with_orders']);
-		// $active_contacts=number($row['active_contacts']);
-		// $new_contacts=number($row['new_contacts']);
-		// $lost_contacts=number($row['lost_contacts']);
-		// $new_contacts_with_orders=number($row['new_contacts']);
+
+		$contacts=number($data['Store Contacts']);
+		$new_contacts=number($data['Store New Contacts']);
+		$active_contacts=number($data['active']);
+		$losing_contacts=number($data['Store Losing Contacts']);
+		$lost_contacts=number($data['Store Lost Contacts']);
+		$contacts_with_orders=number($data['Store Contacts With Orders']);
+		$new_contacts_with_orders=number($data['Store New Contacts With Orders']);
+		$active_contacts_with_orders=number($data['active_with_orders']);
+		$losing_contacts_with_orders=number($data['Store Losing Contacts With Orders']);
+		$lost_contacts_with_orders=number($data['Store Lost Contacts With Orders']);
+		$total_users=$data['Store Total Users'];
+
+		//  $contacts_with_orders=number($data['contacts_with_orders']);
+		// $active_contacts=number($data['active_contacts']);
+		// $new_contacts=number($data['new_contacts']);
+		// $lost_contacts=number($data['lost_contacts']);
+		// $new_contacts_with_orders=number($data['new_contacts']);
 
 
 		/*
                 if ($parameters['percentages']) {
-                    $contacts_with_orders=percentage($row['contacts_with_orders'],$total_contacts_with_orders);
-                    $active_contacts=percentage($row['active_contacts'],$total_active);
-                    $new_contacts=percentage($row['new_contacts'],$total_new);
-                    $lost_contacts=percentage($row['los_contactst'],$total_lost);
-                    $contacts=percentage($row['contacts'],$total_contacts);
-                    $new_contacts_with_orders=percentage($row['new_contacts'],$total_new_contacts);
+                    $contacts_with_orders=percentage($data['contacts_with_orders'],$total_contacts_with_orders);
+                    $active_contacts=percentage($data['active_contacts'],$total_active);
+                    $new_contacts=percentage($data['new_contacts'],$total_new);
+                    $lost_contacts=percentage($data['los_contactst'],$total_lost);
+                    $contacts=percentage($data['contacts'],$total_contacts);
+                    $new_contacts_with_orders=percentage($data['new_contacts'],$total_new_contacts);
 
                 } else {
-                    $contacts_with_orders=number($row['contacts_with_orders']);
-                    $active_contacts=number($row['active_contacts']);
-                    $new_contacts=number($row['new_contacts']);
-                    $lost_contacts=number($row['lost_contacts']);
-                    $contacts=number($row['contacts']);
-                    $new_contacts_with_orders=number($row['new_contacts']);
+                    $contacts_with_orders=number($data['contacts_with_orders']);
+                    $active_contacts=number($data['active_contacts']);
+                    $new_contacts=number($data['new_contacts']);
+                    $lost_contacts=number($data['lost_contacts']);
+                    $contacts=number($data['contacts']);
+                    $new_contacts_with_orders=number($data['new_contacts']);
 
                 }
         */
 		$adata[]=array(
-			'store_key'=>$row['Store Key'],
-			'code'=>$row['Store Code'],
-			'name'=>$row['Store Name'],
-			'contacts'=>(integer) $row['Store Contacts'],
-			'active_contacts'=>(integer) $row['active'],
-			'new_contacts'=>(integer) $row['Store New Contacts'],
-			'lost_contacts'=>(integer) $row['Store Lost Contacts'],
-			'losing_contacts'=>(integer) $row['Store Losing Contacts'],
+			'store_key'=>$data['Store Key'],
+			'code'=>$data['Store Code'],
+			'name'=>$data['Store Name'],
+			'contacts'=>(integer) $data['Store Contacts'],
+			'active_contacts'=>(integer) $data['active'],
+			'new_contacts'=>(integer) $data['Store New Contacts'],
+			'lost_contacts'=>(integer) $data['Store Lost Contacts'],
+			'losing_contacts'=>(integer) $data['Store Losing Contacts'],
 			'contacts_with_orders'=>$contacts_with_orders,
 			'active_contacts_with_orders'=>$active_contacts_with_orders,
 			'new_contacts_with_orders'=>$new_contacts_with_orders,
@@ -411,10 +409,11 @@ function customers_server($_data,$db,$user) {
 	}
 
 
+
 	$adata[]=array(
 		'store_key'=>'',
 		'name'=>'',
-		'code'=>_('Total'),
+		'code'=>_('Total').($filtered>0?' '.'<i class="fa fa-filter fa-fw"></i>':''),
 		'contacts'=>(integer) $total_contacts,
 		'active_contacts'=>(integer) $total_active_contacts,
 		'new_contacts'=>(integer) $total_new_contacts,

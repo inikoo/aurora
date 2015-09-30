@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 13 September 2015 18:30:16 GMT+8, Kuala Lumpur, Malaysia
+ Created: 27 September 2015 17:37:16 GMT+7, Bangkok, Thailand
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,34 +11,31 @@
 
 
 
-$tab='customers';
-$ar_file='ar_customers_tables.php';
-$tipo='customers';
+$tab='suppliers';
+$ar_file='ar_suppliers_tables.php';
+$tipo='suppliers';
 
 $default=$user->get_tab_defaults($tab);
-
 
 
 $table_views=array(
 	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
 	'contact'=>array('label'=>_('Contact'),'title'=>_('Contact details')),
-	'invoices'=>array('label'=>_('Invoices/Balance'),'title'=>_('Invoices & Account balance')),
-	'weblog'=>array('label'=>_('Weblog'),'title'=>_('Weblog'))
 
 );
 
 $table_filters=array(
-	'name'=>array('label'=>_('Name'),'title'=>_('Customer name')),
-	'email'=>array('label'=>_('Email'),'title'=>_('Customer email')),
+	'name'=>array('label'=>_('Name'),'title'=>_('Supplier name')),
+	'email'=>array('label'=>_('Email'),'title'=>_('Supplier email')),
 	'company_name'=>array('label'=>_('Company name'),'title'=>_('Company name')),
 	'contact_name'=>array('label'=>_('Contact name'),'title'=>_('Contact name'))
 
 );
 
 $parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['parent_key'],
-	
+		'parent'=>'',
+		'parent_key'=>'',
+		
 );
 
 

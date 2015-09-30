@@ -108,4 +108,69 @@ function get_orders_navigation($data) {
 
 }
 
+function get_orders_server_navigation($data) {
+
+	global $user,$smarty;
+
+	
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('orders_server');
+	switch ($block_view) {
+	case 'orders':
+
+		//array_pop($sections);
+		$sections_class='';
+		$title=_('Orders').' ('._('All stores').')';
+		
+		$button_label=_('Orders %s');
+		break;
+	case 'invoices':
+		$sections_class='';
+		$title=_('Invoices').' ('._('All stores').')';
+		
+		$button_label=_('Invoices %s');
+		break;
+	case 'delivery_notes':
+		$sections_class='';
+		$title=_('Delivery Notes').' ('._('All stores').')';
+		
+		$button_label=_('Delivery Notes %s');
+		break;
+	case 'payments':
+		$sections_class='';
+		$title=_('Payments').' ('._('All stores').')';
+		
+		$button_label=_('Payments %s');
+		break;
+	}
+
+	$left_buttons=array();
+	
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>$sections_class,
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true,'placeholder'=>_('Search orders'))
+
+	);
+	$smarty->assign('_content',$_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
 ?>

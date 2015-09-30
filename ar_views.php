@@ -53,7 +53,8 @@ case 'views':
 
 	$response['view_position']=get_view_position($state);
 
-	if ($modules[$state['module']]['sections'][$state['section']]['type']=='object') {
+
+	if ($state['object']!='') {
 		$response['object_showcase']=get_object_showcase($state);
 	}else {
 		$response['object_showcase']='';
@@ -127,7 +128,10 @@ function get_object_showcase($data) {
 		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data);
 		break;
-
+	case 'warehouse':
+		include_once 'showcase/warehouse.show.php';
+		$html=get_warehouse_showcase($data);
+		break;
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -230,6 +234,18 @@ function get_navigation($data) {
 		}
 
 		break;
+	case ('orders_server'):
+		require_once 'navigation/orders.nav.php';
+		switch ($data['section']) {
+		case ('delivery_notes'):
+		case ('orders'):
+		case ('invoices'):
+		case ('payments'):
+			return get_orders_server_navigation($data);
+			break;
+		}
+
+		break;
 
 	case ('orders'):
 		require_once 'navigation/orders.nav.php';
@@ -266,6 +282,59 @@ function get_navigation($data) {
 
 		}
 		break;
+	case ('suppliers'):
+		require_once 'navigation/suppliers.nav.php';
+		switch ($data['section']) {
+
+		case ('supplier'):
+			return get_supplier_navigation($data);
+			break;
+
+		case ('suppliers'):
+			return get_suppliers_navigation($data);
+			break;
+		case ('categories'):
+
+			return get_suppliers_categories_navigation($data);
+			break;
+		case ('category'):
+
+			return get_suppliers_category_navigation($data);
+			break;
+		case ('lists'):
+			return get_suppliers_lists_navigation($data);
+			break;
+		case ('list'):
+			return get_suppliers_list_navigation($data);
+			break;
+		case ('dashboard'):
+			return get_suppliers_dashboard_navigation($data);
+			break;
+		}
+
+		break;
+	case ('warehouses'):
+		require_once 'navigation/warehouses.nav.php';
+		switch ($data['section']) {
+
+		case ('warehouses'):
+			return get_warehouses_navigation($data);
+			break;
+		case ('warehouse'):
+			return get_warehouse_navigation($data);
+			break;
+		case ('inventory'):
+			return get_inventory_navigation($data);
+			break;
+		case ('locations'):
+			return get_locations_navigation($data);
+			break;
+
+		}
+
+		break;
+
+
 
 	case ('utils'):
 		switch ($data['section']) {
@@ -847,6 +916,8 @@ function parse_request($request) {
 
 	global $user,$modules,$inikoo_account;
 
+	$request=preg_replace('/\/+/','/',$request);
+
 	$original_request=preg_replace('/^\//','',$request);
 	$view_path=preg_split('/\//',$original_request);
 
@@ -929,10 +1000,6 @@ function parse_request($request) {
 			}
 
 
-
-
-
-
 			break;
 		case 'website':
 			$module='websites';
@@ -949,6 +1016,17 @@ function parse_request($request) {
 			$tab='customer.details';
 			$object='customer';
 			$key=$view_path[0];
+			break;
+		case 'supplier':
+			$module='suppliers';
+			$section='supplier';
+			$parent='suppliers';
+
+			$tab='supplier.details';
+			$object='supplier';
+
+			$key=$view_path[0];
+
 			break;
 		case 'customers':
 			$module='customers';
@@ -1088,15 +1166,11 @@ function parse_request($request) {
 			}
 			$arg1=array_shift($view_path);
 			if ($arg1=='all') {
-				$module='customers_server';
-				$section='customers';
-				$tab='customers_server';
+				$module='orders_server';
+				$section='orders';
+				$tab='orders_server';
 
-				if (isset($view_path[0]) and $view_path[0]=='pending_orders') {
-					$section='pending_orders';
-					$tab='customers_server.pending_orders';
 
-				}
 
 			}
 			elseif (is_numeric($arg1)) {
@@ -1182,7 +1256,7 @@ function parse_request($request) {
 				$section='delivery_notes';
 				$tab='orders_server.delivery_notes';
 
-				
+
 			}
 			elseif (is_numeric($arg1)) {
 				$section='delivery_notes';
@@ -1202,6 +1276,113 @@ function parse_request($request) {
 
 			}
 			break;
+		case 'warehouses':
+			$module='warehouses';
+			$section='warehouses';
+			$tab='warehouses';
+
+
+			break;
+
+		case 'warehouse':
+			$module='warehouses';
+			$section='warehouse';
+			$tab='details';
+			$object='warehouse';
+
+			$key=$view_path[0];
+			break;
+		case 'inventory':
+			$module='warehouses';
+			$section='inventory';
+			$tab='inventory';
+			$parent='warehouse';
+
+			$parent_key=$view_path[0];
+			break;
+		case 'locations':
+			$module='warehouses';
+			$section='locations';
+			$tab='locations.replenishments';
+			$parent='warehouse';
+
+			$parent_key=$view_path[0];
+			break;
+		case 'suppliers':
+			$module='suppliers';
+			$section='suppliers';
+			$tab='suppliers';
+
+
+
+			if ( isset($view_path[0]) and  $view_path[0]=='list') {
+				$section='list';
+				$tab='suppliers.list';
+				$object='list';
+
+
+
+
+				if (isset($view_path[0]) and is_numeric($view_path[0])) {
+					$key=$view_path[0];
+					include_once 'class.List.php';
+					$list=new SubjectList($key);
+					$parent='store';
+					$parent_key=$list->get('List Parent Key');
+
+
+					if (isset($view_path[1]) and is_numeric($view_path[1])) {
+						$section='supplier';
+
+						$tab='supplier.details';
+						$parent='list';
+						$parent_key=$list->id;
+						$object='supplier';
+						$key=$view_path[1];
+
+					}
+
+
+				}else {
+					//error
+				}
+
+			}
+			elseif (isset($view_path[0]) and  $view_path[0]=='category') {
+				$section='category';
+				$tab='suppliers.category';
+				$object='category';
+
+
+
+
+				if (isset($view_path[0]) and is_numeric($view_path[0])) {
+					$key=$view_path[0];
+					include_once 'class.Category.php';
+					$category=new Category($key);
+					$parent='store';
+					$parent_key=$category->get('Category Store Key');
+
+
+					if (isset($view_path[1]) and is_numeric($view_path[1])) {
+						$section='supplier';
+
+						$tab='supplier.details';
+						$parent='category';
+						$parent_key=$category->id;
+						$object='supplier';
+						$key=$view_path[1];
+
+					}
+
+
+				}else {
+					//error
+				}
+
+			}
+			break;
+
 		default:
 
 			break;
@@ -1220,7 +1401,6 @@ function parse_request($request) {
 		'object'=>$object,
 		'key'=>$key,
 	);
-	//print_r($state);
 	return $state;
 
 }

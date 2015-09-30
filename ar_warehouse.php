@@ -392,7 +392,6 @@ function list_locations() {
 		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
 
 
-//$flag="<img src='art/icons/flag_blue.png'/>"; 
 
 
 		switch ($row['Warehouse Flag']) {
@@ -1948,7 +1947,12 @@ if ($f_field=='sku' and $f_value!='')
 
 
 	$data=array();
-	$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *,
+	
+	IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data 
+	
+	from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) 
+	 $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 	// print $where;
 	
 	

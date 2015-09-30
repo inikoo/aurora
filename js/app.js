@@ -53,10 +53,10 @@ function change_view(_request) {
         state = data.state;
 
         if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-            $('#navigation').removeClass('hide')
+           // $('#navigation').removeClass('hide')
             $('#navigation').html(data.navigation);
         } else {
-            $('#navigation').addClass('hide')
+           // $('#navigation').addClass('hide')
 
         }
 
