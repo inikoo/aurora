@@ -26,9 +26,10 @@ case 'views':
 	$data=prepare_values($_REQUEST,array(
 			'request'=>array('type'=>'string'),
 			'old_state'=>array('type'=>'json array'),
+			'tab'=>array('type'=>'string','optional'=>true),
 		));
 
-	$state=parse_request($data['request']);
+	$state=parse_request($data);
 
 
 
@@ -105,7 +106,6 @@ function get_tab($tab,$state=false) {
 		$html='Tab Not found: '.$tab;
 
 	}
-
 
 
 	return $html;
@@ -581,7 +581,7 @@ function get_view_position($data) {
 
 function get_state($data) {
 
-	$state=parse_request($data['request']);
+	$state=parse_request($data);
 	$response=array('state'=>200,'resp'=>$state);
 	echo json_encode($response);
 
@@ -912,9 +912,12 @@ function parse_request_old($request) {
 
 }
 
-function parse_request($request) {
+function parse_request($_data) {
 
 	global $user,$modules,$inikoo_account;
+
+
+	$request=$_data['request'];
 
 	$request=preg_replace('/\/+/','/',$request);
 
@@ -1303,7 +1306,12 @@ function parse_request($request) {
 		case 'locations':
 			$module='warehouses';
 			$section='locations';
-			$tab='locations.replenishments';
+
+			if (isset($_data['tab'])) {
+				$tab=$_data['tab'];
+			}else {
+				$tab='locations';
+			}
 			$parent='warehouse';
 
 			$parent_key=$view_path[0];

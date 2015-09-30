@@ -19,26 +19,15 @@ function change_browser_history_state(request) {
 }
 
 window.addEventListener('popstate', function(event) {
-change_view(event.state.request)
+    change_view(event.state.request)
 
 });
 
 function change_tab(tab) {
+    $('#maintabs .tab').removeClass('selected')
+    $('#tab_' + tab).addClass('selected')
+    change_view(state.request + '&tab=' + tab)
 
-    var request = "/ar_views.php?tipo=tab&tab=" + tab + "&state=" + JSON.stringify(state)
-   
-    $.getJSON(request, function(data) {
-
-        if (typeof(data.tab) != "undefined" && data.tab !== null) {
-            $('#tab').html(data.tab);
-            
-            $('#maintabs .tab').removeClass('selected')
-          
-            $('#tab_'+tab).addClass('selected')
-            
-        }
-
-    });
 
 
 }
@@ -53,11 +42,10 @@ function change_view(_request) {
         state = data.state;
 
         if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-           // $('#navigation').removeClass('hide')
+            // $('#navigation').removeClass('hide')
             $('#navigation').html(data.navigation);
         } else {
-           // $('#navigation').addClass('hide')
-
+            // $('#navigation').addClass('hide')
         }
 
         if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
@@ -124,6 +112,17 @@ $(document).ready(function() {
 })
 
 
+
+
+
+
+function show_filter() {
+    $('#show_filter').addClass('hide')
+    $('.filter').removeClass('hide')
+    $('#filter input').focus()
+
+}
+
 function show_results_per_page() {
     var $results_per_page = $('#results_per_page')
     if ($results_per_page.hasClass('showing_options')) {
@@ -141,30 +140,30 @@ function change_results_per_page(results_per_page) {
     $('.results_per_page').removeClass('selected')
     $('#results_per_page_' + results_per_page).addClass('selected')
     rows.setPageSize(results_per_page)
-    
-    $('#results_per_page').attr('title',$('#results_per_page').attr('title').replace(/\(.*\)/g,'('+results_per_page+')'))
-    
+
+    $('#results_per_page').attr('title', $('#results_per_page').attr('title').replace(/\(.*\)/g, '(' + results_per_page + ')'))
+
 
 }
 
-function logout(){
-    window.location.href ="/logout.php";
+function logout() {
+    window.location.href = "/logout.php";
 }
 
 
-function change_period(period){
-    
+function change_period(period) {
+
     $('#date_chooser div').removeClass('selected')
-    $('#'+period).addClass('selected')
-    
-    var parameters=jQuery.parseJSON(rows.parameters);
-    parameters.period=period;
-    
-    rows.parameters=JSON.stringify(parameters)
-   
-    rows.url='/'+rows.ar_file+'?tipo='+rows.tipo+'&parameters='+rows.parameters
-    rows.fetch({  reset: true});
-    
+    $('#' + period).addClass('selected')
+
+    var parameters = jQuery.parseJSON(rows.parameters);
+    parameters.period = period;
+
+    rows.parameters = JSON.stringify(parameters)
+
+    rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+    rows.fetch({
+        reset: true
+    });
+
 }
-
-
