@@ -43,7 +43,8 @@ $tab_defaults=array(
 		'sort_order'=>-1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code'
+		'f_field'=>'code',
+		'percentages'=>0
 	),
 	'orders'=>array(
 		'view'=>'overview',
@@ -80,6 +81,56 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'ytd',
 		'elements_type'=>''
+	),
+	'orders_server'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>-1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'percentages'=>0
+	),
+	'suppliers'=>array(
+		'view'=>'overview',
+		'sort_key'=>'formated_id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		'f_period'=>'ytd',
+	),
+	'suppliers.lists'=>array(
+		'view'=>'overview',
+		'sort_key'=>'creation_date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name'
+	),
+	'suppliers.categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
+	'locations'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
+	'locations.replenishments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'location',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'location'
 	),
 );
 

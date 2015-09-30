@@ -7,9 +7,9 @@ var columns = [
     cell: "string"
 }, {
     name: "code",
-    label: "{{t}}Code{{/t}}",
+    label: "{t}Code{/t}",
     editable: false,
-     cell: Backgrid.StringCell.extend({
+     cell: Backgrid.Cell.extend({
         orderSeparator: '',
         events: {
             "click": function() {
@@ -20,6 +20,16 @@ var columns = [
         
          render: function () {
       this.constructor.__super__.render.apply(this, arguments);
+      
+      
+        this.$el.empty();
+        var rawValue = this.model.get(this.column.get("name"));
+        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
+        this.$el.append(formattedValue);
+        this.delegateEvents();
+       
+      
+      
         if(this.model.get('store_key')==''){
             this.$el.removeClass('link');
         }
@@ -30,36 +40,36 @@ var columns = [
     })
 }, {
     name: "name",
-    label:"{{t}}Store Name{{/t}}",
+    label:"{t}Store Name{/t}",
     editable: false,
     cell: "string"
 }, {
     name: "contacts",
-    label:"{{t}}Total{{/t}}",
+    label:"{t}Total{/t}",
     editable: false,
     cell: "integer",
     headerCell: integerHeaderCell
 }, {
     name: "new_contacts",
-    label:"{{t}}New{{/t}}",
+    label:"{t}New{/t}",
     editable: false,
     cell: "integer",
     headerCell: integerHeaderCell
 }, {
     name: "active_contacts",
-    label:"{{t}}Active{{/t}}",
+    label:"{t}Active{/t}",
     editable: false,
     cell: "integer",
     headerCell: integerHeaderCell
 }, {
     name: "losing_contacts",
-    label:"{{t}}Loosing{{/t}}",
+    label:"{t}Loosing{/t}",
     editable: false,
     cell: "integer",
     headerCell: integerHeaderCell
 }, {
     name: "lost_contacts",
-    label:"{{t}}Lost{{/t}}",
+    label:"{t}Lost{/t}",
     editable: false,
     cell: "integer",
     headerCell: integerHeaderCell

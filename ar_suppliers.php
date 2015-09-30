@@ -198,9 +198,7 @@ function list_suppliers() {
 	$_SESSION['state'][$conf_table]['suppliers']['period']=$period;
 
 
-	$_order=$order;
-	$_dir=$order_direction;
-
+	
 
 
 	if ($user->data['User Type']=='Supplier') {
@@ -297,6 +295,9 @@ function list_suppliers() {
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('out of stock products').")";
 		break;
 	}
+
+$_order=$order;
+	$_dir=$order_direction;
 
 
 	$db_period=get_interval_db_name($period);

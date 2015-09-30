@@ -1626,7 +1626,7 @@ class User extends DB_Table {
 	        return $tab_defaults[$tab];
 	    if(isset($tab_defaults_alias[$tab]))
 	        return $tab_defaults[$tab_defaults_alias[$tab]];
-	    exit("User class: error get_tab_defaults not configured");
+	    exit("User class: error get_tab_defaults not configured: $tab");
 	}
 	
 

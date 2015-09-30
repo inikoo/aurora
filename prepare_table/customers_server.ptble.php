@@ -20,7 +20,7 @@ else {
 $wheref='';
 if ($parameters['f_field']=='name' and $f_value!='')
 	$wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
-if ($parameters['f_field']=='code'  and $f_value!='')
+elseif ($parameters['f_field']=='code'  and $f_value!='')
 	$wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
 
 
@@ -58,8 +58,10 @@ else
 	$order='`Store Code`';
 
 
+$table='`Store Dimension`';
+$fields="`Store Key`,`Store Name`,`Store Code`,`Store Contacts`,`Store Total Users`, (`Store Active Contacts`+`Store Losing Contacts`) as active,`Store New Contacts`,`Store Lost Contacts`,`Store Losing Contacts`,`Store Contacts With Orders`,(`Store Active Contacts With Orders`+`Store Losing Contacts With Orders`)as active_with_orders,`Store New Contacts With Orders`,`Store Lost Contacts With Orders`,`Store Losing Contacts With Orders`";
 
-$sql_totals="select count(*) as num from `Store Dimension` $where ";
+$sql_totals="select count(*) as num from $table $where ";
 
 
 

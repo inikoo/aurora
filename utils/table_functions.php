@@ -31,7 +31,7 @@ function get_table_totals($sql_totals,$wheref='',$record_label='') {
 
 
 	$sql=trim($sql_totals." $wheref");
-
+	//print $sql;
 	if ($row = $db->query($sql)->fetch()) {
 		$total=$row['num'];
 	}
@@ -57,10 +57,10 @@ function get_table_totals($sql_totals,$wheref='',$record_label='') {
 	if ($filtered==0) {
 		$rtext=get_rtext($record_label,$total_records);
 	}else {
-		$rtext='<i class="fa fa-filter fa-fw"></i> '. get_rtext_with_filter($record_label,$total_records);
+		$rtext='<i class="fa fa-filter fa-fw"></i> '. get_rtext_with_filter($record_label,$total,$total_records);
 	}
 
-	return array($rtext,$total);
+	return array($rtext,$total,$filtered);
 
 }
 
@@ -83,23 +83,23 @@ function get_rtext($record_label,$total_records) {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
 }
-function get_rtext_with_filter($record_label,$total_records) {
+function get_rtext_with_filter($record_label,$total_with_filter,$total_no_filter) {
 	if ($record_label=='customer') {
-		return sprintf(ngettext('%s customer of %s', '%s customers of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s customer of %s', '%s customers of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='order') {
-		return sprintf(ngettext('%s order of %s', '%s orders of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s order of %s', '%s orders of %s', $total_with_filter),number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='store') {
-		return sprintf(ngettext('%s store of %s', '%s stores of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s store of %s', '%s stores of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='category') {
-		return sprintf(ngettext('%s category of %s', '%s categories of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s category of %s', '%s categories of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='order') {
-		return sprintf(ngettext('%s order of %s', '%s orders of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s order of %s', '%s orders of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='invoice') {
-		return sprintf(ngettext('%s invoice of %s', '%s invoices of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s invoice of %s', '%s invoices of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='delivery_note') {
-		return sprintf(ngettext('%s delivery note of %s', '%s delivery notes of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s delivery note of %s', '%s delivery notes of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}else {
-		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_records), number($total_records));
+		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}
 }
 

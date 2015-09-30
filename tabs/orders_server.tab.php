@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 14 September 2015 19:11:44 GMT+8, Kuala Lumpur, Malaysia
+ Created: 26 September 2015 16:32:32 GMT+7, Bangkok, Thailand
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -10,9 +10,9 @@
 */
 
 
-$tab='customers_server';
-$ar_file='ar_customers_tables.php';
-$tipo='customers_server';
+$tab='orders_server';
+$ar_file='ar_orders_tables.php';
+$tipo='orders_server';
 
 $default=$user->get_tab_defaults($tab);
 

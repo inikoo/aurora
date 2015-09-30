@@ -43,12 +43,10 @@ var columns = [
     name: "items",
     label: "{t}Customers{/t}",
     editable: false,
-   
     defautOrder:1,
     sortType: "toggle",
     {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
-
     headerCell: integerHeaderCell
 }]
 

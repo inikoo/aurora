@@ -198,7 +198,24 @@ var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
 });
 
 
+var RhtmlCell = Backgrid.RhtmlCell = Backgrid.Cell.extend({
 
+    /** @property */
+    className: "html-cell aright",
+    
+    initialize: function () {
+        Backgrid.Cell.prototype.initialize.apply(this, arguments);
+    },
+
+    render: function () {
+        this.$el.empty();
+        var rawValue = this.model.get(this.column.get("name"));
+        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
+        this.$el.append(formattedValue);
+        this.delegateEvents();
+        return this;
+    }
+});
 
 
 var grid = new Backgrid.Grid({
