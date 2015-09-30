@@ -64,7 +64,43 @@
 
 
 <script>
-{literal}
+
+var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
+
+    /** @property */
+    className: "html-cell",
+    
+    initialize: function () {
+        Backgrid.Cell.prototype.initialize.apply(this, arguments);
+    },
+
+    render: function () {
+        this.$el.empty();
+        var rawValue = this.model.get(this.column.get("name"));
+        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
+        this.$el.append(formattedValue);
+        this.delegateEvents();
+        return this;
+    }
+});
+var RhtmlCell = Backgrid.RhtmlCell = Backgrid.Cell.extend({
+
+    /** @property */
+    className: "html-cell aright",
+    
+    initialize: function () {
+        Backgrid.Cell.prototype.initialize.apply(this, arguments);
+    },
+
+    render: function () {
+        this.$el.empty();
+        var rawValue = this.model.get(this.column.get("name"));
+        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
+        this.$el.append(formattedValue);
+        this.delegateEvents();
+        return this;
+    }
+});
 
 
 
@@ -79,30 +115,33 @@ var integerHeaderCell= Backgrid.HeaderCell.extend({
          this.$el.addClass('align-right');
       return this;
     }
+}
+);
+{include file="columns/`$data.tab`.cols.tpl" }
+
+
+var Row = Backbone.Model.extend({
 });
-
- {/literal}{include file="columns/`$data.tab`.cols.tpl" }{literal};
-
-var Row = Backbone.Model.extend({});
 
 var Rows = Backbone.PageableCollection.extend({
     model: Row,
-    url: '{/literal}{$request}{literal}',
-    ar_file: '{/literal}{$ar_file}{literal}',
-    tipo: '{/literal}{$tipo}{literal}',
-    parameters: '{/literal}{$parameters}{literal}',
+    url: '{$request}',
+    ar_file: '{$ar_file}',
+    tipo: '{$tipo}',
+    parameters: '{$parameters}',
     state: {
-    pageSize: {/literal}{$results_per_page}{literal},
-    sortKey: '{/literal}{$sort_key}{literal}',
-    order: parseInt({/literal}{$sort_order}{literal})
-  },queryParams: {
+    pageSize: {$results_per_page},
+    sortKey: '{$sort_key}',
+    order: parseInt({$sort_order})
+  }
+  ,queryParams: {
     totalRecords: null,
     pageSize: "nr",
     sortKey: "o",
     order : "od"
   },
   
-    
+  
   
   
   parseState: function (resp, queryParams, state, options) {
@@ -176,56 +215,10 @@ $('#last_page').addClass('disabled')
 
 
 var rows = new Rows();
-
-
-var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
-
-    /** @property */
-    className: "html-cell",
-    
-    initialize: function () {
-        Backgrid.Cell.prototype.initialize.apply(this, arguments);
-    },
-
-    render: function () {
-        this.$el.empty();
-        var rawValue = this.model.get(this.column.get("name"));
-        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-        this.$el.append(formattedValue);
-        this.delegateEvents();
-        return this;
-    }
-});
-
-
-var RhtmlCell = Backgrid.RhtmlCell = Backgrid.Cell.extend({
-
-    /** @property */
-    className: "html-cell aright",
-    
-    initialize: function () {
-        Backgrid.Cell.prototype.initialize.apply(this, arguments);
-    },
-
-    render: function () {
-        this.$el.empty();
-        var rawValue = this.model.get(this.column.get("name"));
-        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-        this.$el.append(formattedValue);
-        this.delegateEvents();
-        return this;
-    }
-});
-
-
 var grid = new Backgrid.Grid({
-
-
     columns: columns,
     collection: rows,
-   
 });
-
 
 
 var serverSideFilter = new Backgrid.Extension.ServerSideFilter({
@@ -238,20 +231,17 @@ var serverSideFilter = new Backgrid.Extension.ServerSideFilter({
 
 grid.render()
 $("#table").append(grid.el);
-change_table_view('{/literal}{$table_view}{literal}',false)
+
+change_table_view('{$table_view}',false)
  
- $("#filter").append(serverSideFilter.render().el);
+$("#filter").append(serverSideFilter.render().el);
  
-rows.fetch({  reset: true});
+rows.fetch(
+{  reset: true}
+);
 
 
-{/literal}
 
-function show_filter(){
-    $('#show_filter').addClass('hide')
-    $('.filter').removeClass('hide')
-     $('#filter input').focus()
 
-}
 
 </script> 

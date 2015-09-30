@@ -7,7 +7,7 @@ $group_by='';
 $where_type='';
 
 
-if ($parameters['awhere']) {
+if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 	$tmp=preg_replace('/\\\"/','"',$parameters['awhere']);
 	$tmp=preg_replace('/\\\\\"/','"',$tmp);
@@ -102,6 +102,8 @@ $where_type='';
 //if ($orders_type=='contacts_with_orders') {
 // $where_type=' and `Customer With Orders`="Yes" ';
 //}
+
+/*
 switch ($parameters['elements_type']) {
 case 'activity':
 	$_elements='';
@@ -158,7 +160,7 @@ case 'location':
 
 
 }
-
+*/
 
 $filter_msg='';
 $wheref='';
