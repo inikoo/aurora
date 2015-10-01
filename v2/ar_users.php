@@ -1182,11 +1182,7 @@ function list_staff_users() {
 	$_SESSION['state']['users']['staff']['state']=$state;
 
 
-	//  $where=" where `User Key` IS NOT NULL  ";
 	$where=" where  `User Type`='Staff' ";
-
-
-
 	$elements_count=0;
 	$_elements='';
 	foreach ($elements as $_key=>$_value) {
@@ -1302,7 +1298,9 @@ function list_staff_users() {
 	(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
 	(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
 
-	(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)  $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
+	(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name`
+	
+	 from `User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)  $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 	$res=mysql_query($sql);
@@ -1341,7 +1339,7 @@ function list_staff_users() {
 			'groups'=>$groups,
 			'stores'=>$stores,
 			'warehouses'=>$warehouses,
-			'sites'=>$sites,
+			'websites'=>$sites,
 			'isactive'=>$is_active
 		);
 	}

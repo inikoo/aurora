@@ -34,7 +34,7 @@ var columns = [
 
 }, {
     name: "name",
-    label: "Name",
+    label: "{t}Name{/t}",
      sortType: "toggle",
     cell: Backgrid.StringCell.extend({
         events: {

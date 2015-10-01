@@ -1,4 +1,5 @@
 <?php
+
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
@@ -12,7 +13,7 @@
 require_once 'common.php';
 
 
-$smarty->assign('_request',$_SERVER['REQUEST_URI']);
+$smarty->assign('_request', $_SERVER['REQUEST_URI']);
 $smarty->display('app.tpl');
 
 ?>

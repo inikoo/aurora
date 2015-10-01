@@ -23,10 +23,10 @@ case 'views':
 
 
 
-	$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST, array(
 			'request'=>array('type'=>'string'),
 			'old_state'=>array('type'=>'json array'),
-			'tab'=>array('type'=>'string','optional'=>true),
+			'tab'=>array('type'=>'string', 'optional'=>true),
 		));
 
 	$state=parse_request($data);
@@ -61,7 +61,7 @@ case 'views':
 		$response['object_showcase']='';
 	}
 
-	$response['tab']=get_tab($state['tab'],$state);
+	$response['tab']=get_tab($state['tab'], $state);
 
 
 
@@ -70,14 +70,14 @@ case 'views':
 
 	break;
 case 'tab':
-	$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST, array(
 			'tab'=>array('type'=>'tab'),
 			'state'=>array('type'=>'json array'),
 		));
 
 
 	$response=array(
-		'tab'=>get_tab($data['tab'],$data['state'])
+		'tab'=>get_tab($data['tab'], $data['state'])
 	);
 
 
@@ -88,17 +88,17 @@ case 'tab':
 
 
 default:
-	$response=array('state'=>404,'resp'=>'Operation not found 2');
+	$response=array('state'=>404, 'resp'=>'Operation not found 2');
 	echo json_encode($response);
 
 }
 
-function get_tab($tab,$state=false) {
+function get_tab($tab, $state=false) {
 
-	global $smarty,$user;
+	global $smarty, $user;
 
 
-	$smarty->assign('data',$state);
+	$smarty->assign('data', $state);
 
 	if (file_exists('tabs/'.$tab . '.tab.php')) {
 		include_once 'tabs/'.$tab . '.tab.php';
@@ -140,9 +140,10 @@ function get_object_showcase($data) {
 
 }
 
+
 function get_menu($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 
@@ -153,6 +154,7 @@ function get_menu($data) {
 
 
 }
+
 
 function get_navigation($data) {
 
@@ -282,6 +284,62 @@ function get_navigation($data) {
 
 		}
 		break;
+		
+    case ('marketing'):
+		require_once 'navigation/marketing.nav.php';
+		switch ($data['section']) {
+
+		case ('deals'):
+			return get_deals_navigation($data);
+			break;
+
+		case ('enewsletters'):
+			return get_enewsletters_navigation($data);
+			break;
+		case ('mailshots'):
+
+			return get_mailshots_navigation($data);
+			break;
+		case ('marketing_post'):
+
+			return get_marketing_post_navigation($data);
+			break;
+		case ('lists'):
+			return get_customers_lists_navigation($data);
+			break;
+		case ('list'):
+			return get_customers_list_navigation($data);
+			break;
+		case ('dashboard'):
+			return get_customers_dashboard_navigation($data);
+			break;
+		case ('statistics'):
+
+			return get_customers_statistics_navigation($data);
+			break;
+		case ('pending_orders'):
+			return get_customers_pending_orders_navigation($data);
+			break;
+		}
+
+
+
+      case ('reports'):
+		require_once 'navigation/reports.nav.php';
+		switch ($data['section']) {
+
+		case ('performance'):
+			return get_performance_navigation($data);
+			break;
+
+		case ('sales'):
+			return get_sales_navigation($data);
+			break;
+		case ('tax'):
+
+			return get_tax_navigation($data);
+			break;
+			} 		
 	case ('suppliers'):
 		require_once 'navigation/suppliers.nav.php';
 		switch ($data['section']) {
@@ -334,7 +392,45 @@ function get_navigation($data) {
 
 		break;
 
+	case ('hr'):
+		require_once 'navigation/hr.nav.php';
+		switch ($data['section']) {
 
+		case ('employees'):
+			return get_employees_navigation($data);
+			break;
+		case ('contractors'):
+			return get_contractors_navigation($data);
+			break;
+		case ('organization'):
+			return get_organization_navigation($data);
+			break;
+		
+
+		}
+
+		break;
+		
+case ('users'):
+		require_once 'navigation/users.nav.php';
+		switch ($data['section']) {
+
+		case ('staff'):
+			return get_staff_navigation($data);
+			break;
+		case ('suppliers'):
+			return get_suppliers_navigation($data);
+			break;
+		case ('warehouse'):
+			return get_warehouse_navigation($data);
+			break;
+		case ('root'):
+			return get_root_navigation($data);
+			break;
+
+		}
+
+		break;
 
 	case ('utils'):
 		switch ($data['section']) {
@@ -351,15 +447,16 @@ function get_navigation($data) {
 
 }
 
+
 function get_utils_navigation($data) {
 	global $smarty;
-	$branch=array(array('label'=>'','icon'=>'home','reference'=>''));
+	$branch=array(array('label'=>'', 'icon'=>'home', 'reference'=>''));
 
 	if ($data['section']=='not_found') {
 		$title=_('Not found');
 	}else if ($data['section']=='forbidden') {
-			$title=_('Forbidden');
-		}else {
+		$title=_('Forbidden');
+	}else {
 		$title='';
 	}
 
@@ -370,10 +467,10 @@ function get_utils_navigation($data) {
 		'left_buttons'=>array(),
 		'right_buttons'=>array(),
 		'title'=>$title,
-		'search'=>array('show'=>false,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>false, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
@@ -383,7 +480,7 @@ function get_utils_navigation($data) {
 
 
 function get_tabs($data) {
-	global $modules,$user,$smarty;
+	global $modules, $user, $smarty;
 	if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
 		$tabs=$modules[$data['module']]['sections'][$data['section']]['tabs'];
 	}else {
@@ -412,15 +509,16 @@ function get_tabs($data) {
 	);
 
 
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('tabs.tpl');
 	return $html;
 }
 
+
 function get_view_position($data) {
-	global $user,$smarty;
-	$branch=array(array('label'=>_('Home'),'icon'=>'home','reference'=>''));
+	global $user, $smarty;
+	$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
 
 	switch ($data['module']) {
 
@@ -429,7 +527,7 @@ function get_view_position($data) {
 		if ( $user->get_number_stores()>1) {
 
 
-			$branch[]=array('label'=>_('Stores'),'icon'=>'bars','reference'=>'stores');
+			$branch[]=array('label'=>_('Stores'), 'icon'=>'bars', 'reference'=>'stores');
 
 		}
 
@@ -438,21 +536,21 @@ function get_view_position($data) {
 
 			if ($data['object']=='store') {
 				$store=new Store($data['key']);
-				$branch[]=array('label'=>$store->get('Store Code'),'icon'=>'','reference'=>'store/'.$store->id);
+				$branch[]=array('label'=>$store->get('Store Code'), 'icon'=>'', 'reference'=>'store/'.$store->id);
 			}
 
 
 		}elseif ($data['section']=='categories') {
-			$branch[]=array('label'=>_('Pending orders (All stores)'),'icon'=>'bars','reference'=>'pending_orders/all');
+			$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 		}
 
 
 		break;
 	case 'customers_server':
 		if ($data['section']=='customers')
-			$branch[]=array('label'=>_('Customers (All stores)'),'icon'=>'bars','reference'=>'customers/all');
+			$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
 		elseif ($data['section']=='pending_orders')
-			$branch[]=array('label'=>_('Pending orders (All stores)'),'icon'=>'bars','reference'=>'pending_orders/all');
+			$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 
 		break;
 
@@ -475,9 +573,9 @@ function get_view_position($data) {
 		if ( $user->get_number_stores()>1) {
 
 			if ($data['section']=='pending_orders')
-				$branch[]=array('label'=>_('Pending orders (All stores)'),'icon'=>'bars','reference'=>'pending_orders/all');
+				$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 			else
-				$branch[]=array('label'=>_('Customers (All stores)'),'icon'=>'bars','reference'=>'customers/all');
+				$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
 
 		}
 
@@ -487,8 +585,8 @@ function get_view_position($data) {
 			$store=new Store($list->data['List Parent Key']);
 
 
-			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/'.$store->id.'/lists');
-			$branch[]=array('label'=>$list->get('List Name'),'icon'=>'','reference'=>'customers/list/'.$list->id);
+			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'], 'icon'=>'list', 'reference'=>'customers/'.$store->id.'/lists');
+			$branch[]=array('label'=>$list->get('List Name'), 'icon'=>'', 'reference'=>'customers/list/'.$list->id);
 
 			break;
 
@@ -499,38 +597,38 @@ function get_view_position($data) {
 				$store=new Store($customer->data['Customer Store Key']);
 
 
-				$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','reference'=>'customers/'.$store->id);
-				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(),'icon'=>'user','reference'=>'customer/'.$customer->id);
+				$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
+				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
 			}elseif ($data['parent']=='list') {
 				$customer=new Customer($data['key']);
 				$store=new Store($customer->data['Customer Store Key']);
 
 				$list=new SubjectList($data['parent_key']);
 
-				$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/'.$store->id.'/lists');
-				$branch[]=array('label'=>$list->get('List Name'),'icon'=>'','reference'=>'customers/list/'.$list->id);
+				$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'], 'icon'=>'list', 'reference'=>'customers/'.$store->id.'/lists');
+				$branch[]=array('label'=>$list->get('List Name'), 'icon'=>'', 'reference'=>'customers/list/'.$list->id);
 
 
-				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(),'icon'=>'user','reference'=>'customer/'.$customer->id);
+				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
 			}
 			break;
 		case 'dashboard':
-			$branch[]=array('label'=>_("Customer's dashboard").' '.$store->data['Store Code'],'icon'=>'dashboard','reference'=>'customers/dashboard/'.$store->id);
+			$branch[]=array('label'=>_("Customer's dashboard").' '.$store->data['Store Code'], 'icon'=>'dashboard', 'reference'=>'customers/dashboard/'.$store->id);
 			break;
 		case 'customers':
-			$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'],'icon'=>'users','reference'=>'customers/'.$store->id);
+			$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
 			break;
 		case 'categories':
-			$branch[]=array('label'=>_("Customer's categories").' '.$store->data['Store Code'],'icon'=>'sitemap','reference'=>'customers/categories/'.$store->id);
+			$branch[]=array('label'=>_("Customer's categories").' '.$store->data['Store Code'], 'icon'=>'sitemap', 'reference'=>'customers/categories/'.$store->id);
 			break;
 		case 'lists':
-			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'],'icon'=>'list','reference'=>'customers/'.$store->id.'/lists');
+			$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'], 'icon'=>'list', 'reference'=>'customers/'.$store->id.'/lists');
 			break;
 		case 'statistics':
-			$branch[]=array('label'=>_("Customer's stats").' '.$store->data['Store Code'],'icon'=>'line-chart','reference'=>'customers/statistics/'.$store->id);
+			$branch[]=array('label'=>_("Customer's stats").' '.$store->data['Store Code'], 'icon'=>'line-chart', 'reference'=>'customers/statistics/'.$store->id);
 			break;
 		case 'pending_orders':
-			$branch[]=array('label'=>_("Pending orders").' '.$store->data['Store Code'],'icon'=>'clock-o','reference'=>'customers/pending_orders/'.$store->id);
+			$branch[]=array('label'=>_("Pending orders").' '.$store->data['Store Code'], 'icon'=>'clock-o', 'reference'=>'customers/pending_orders/'.$store->id);
 			break;
 		}
 		break;
@@ -539,22 +637,22 @@ function get_view_position($data) {
 		case 'orders':
 
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Orders').' ('._('All stores').')','icon'=>'bars','reference'=>'orders/all');
+				$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
 			}
 			break;
 		case 'invoices':
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Invoices').' ('._('All stores').')','icon'=>'bars','url'=>'invoices/all');
+				$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'invoices/all');
 			}
 			break;
 		case 'dn':
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Delivery Notes').' ('._('All stores').')','icon'=>'bars','url'=>'dn/all');
+				$branch[]=array('label'=>_('Delivery Notes').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'dn/all');
 			}
 			break;
 		case 'payments':
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Payments').' ('._('All stores').')','icon'=>'bars','url'=>'payments/all');
+				$branch[]=array('label'=>_('Payments').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'payments/all');
 			}
 			break;
 		}
@@ -566,7 +664,7 @@ function get_view_position($data) {
 		'branch'=>$branch,
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('view_position.tpl');
 	return $html;
@@ -582,16 +680,18 @@ function get_view_position($data) {
 function get_state($data) {
 
 	$state=parse_request($data);
-	$response=array('state'=>200,'resp'=>$state);
+	$response=array('state'=>200, 'resp'=>$state);
 	echo json_encode($response);
 
 }
+
+
 function parse_request_old($request) {
 
-	global $user,$modules,$inikoo_account;
+	global $user, $modules, $inikoo_account;
 
-	$original_request=preg_replace('/^\//','',$request);
-	$view_path=preg_split('/\//',$original_request);
+	$original_request=preg_replace('/^\//', '', $request);
+	$view_path=preg_split('/\//', $original_request);
 
 
 
@@ -648,7 +748,7 @@ function parse_request_old($request) {
 			$shorcut=true;
 		}else {
 
-			if (!array_key_exists($arg0,$modules)) {
+			if (!array_key_exists($arg0, $modules)) {
 				$module=key($modules);
 			}else {
 				$module=$arg0;
@@ -736,7 +836,7 @@ function parse_request_old($request) {
 
 
 			$module=array_shift($view_path);
-			if (!array_key_exists($module,$modules)) {
+			if (!array_key_exists($module, $modules)) {
 				$module=key($modules);
 			}
 			$parent=$modules[$module]['parent'];
@@ -747,7 +847,7 @@ function parse_request_old($request) {
 				$parent=$modules[$module]['parent'];
 				$parent_key=$arg;
 			}else {
-				if (array_key_exists($arg,$modules[$module]['sections'])) {
+				if (array_key_exists($arg, $modules[$module]['sections'])) {
 					$section=$arg;
 				}else {
 					$section=key($modules[$module]['sections']);
@@ -778,7 +878,7 @@ function parse_request_old($request) {
 		}else {
 
 			$module=array_shift($view_path);
-			if (!array_key_exists($module,$modules)) {
+			if (!array_key_exists($module, $modules)) {
 				$module=key($modules);
 			}
 			$parent=$modules[$module]['parent'];
@@ -789,7 +889,7 @@ function parse_request_old($request) {
 				$parent=$modules[$module]['parent'];
 				$parent_key=$arg;
 			}else {
-				if (array_key_exists($arg,$modules[$module]['sections'])) {
+				if (array_key_exists($arg, $modules[$module]['sections'])) {
 					$section=$arg;
 					if ($section=='customers') {
 						$tab='customers';
@@ -854,7 +954,7 @@ function parse_request_old($request) {
 
 	if (!$parent_key) {
 		if ($parent=='store') {
-			if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+			if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 				$parent_key=$user->data['User Hooked Store Key'];
 			}else {
 				$_tmp=$user->stores;
@@ -864,11 +964,11 @@ function parse_request_old($request) {
 	}
 
 
-	if ($parent=='store' and !in_array($parent_key,$user->stores)) {
+	if ($parent=='store' and !in_array($parent_key, $user->stores)) {
 		$module='utils';
 
 
-		if (in_array($parent_key,$inikoo_account->get_store_keys())) {
+		if (in_array($parent_key, $inikoo_account->get_store_keys())) {
 			$section='forbidden';
 		}else {
 			$section='not_found';
@@ -912,17 +1012,18 @@ function parse_request_old($request) {
 
 }
 
+
 function parse_request($_data) {
 
-	global $user,$modules,$inikoo_account;
+	global $user, $modules, $inikoo_account;
 
 
 	$request=$_data['request'];
 
-	$request=preg_replace('/\/+/','/',$request);
+	$request=preg_replace('/\/+/', '/', $request);
 
-	$original_request=preg_replace('/^\//','',$request);
-	$view_path=preg_split('/\//',$original_request);
+	$original_request=preg_replace('/^\//', '', $request);
+	$view_path=preg_split('/\//', $original_request);
 
 
 
@@ -950,7 +1051,7 @@ function parse_request($_data) {
 			$section='store';
 			$object='store';
 			if ($count_view_path==0 or !is_numeric($view_path[0])) {
-				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$key=$user->data['User Hooked Store Key'];
 				}else {
 					$_tmp=$user->stores;
@@ -1037,7 +1138,7 @@ function parse_request($_data) {
 				$section='customers';
 				$tab='customers';
 				$parent='store';
-				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
 				}else {
 					$_tmp=$user->stores;
@@ -1159,7 +1260,7 @@ function parse_request($_data) {
 				$section='orders';
 				$tab='orders';
 				$parent='store';
-				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
 				}else {
 					$_tmp=$user->stores;
@@ -1200,7 +1301,7 @@ function parse_request($_data) {
 				$section='invoices';
 				$tab='invoices';
 				$parent='store';
-				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
 				}else {
 					$_tmp=$user->stores;
@@ -1245,7 +1346,7 @@ function parse_request($_data) {
 				$section='delivery_notes';
 				$tab='delivery_notes';
 				$parent='store';
-				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'],$user->stores)) {
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
 				}else {
 					$_tmp=$user->stores;
@@ -1279,6 +1380,47 @@ function parse_request($_data) {
 
 			}
 			break;
+	case 'marketing':
+			$module='marketing';
+			if ($count_view_path==0) {
+				$section='deals';
+				$tab='offers';
+				$parent='store';
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
+					$parent_key=$user->data['User Hooked Store Key'];
+				}else {
+					$_tmp=$user->stores;
+					$parent_key=array_shift($_tmp);
+				}
+
+			}
+			$arg1=array_shift($view_path);
+			if ($arg1=='all') {
+				$module='marketing_server';
+				$section='marketing';
+				$tab='marketing_server';
+
+				
+
+			}
+			
+			elseif (is_numeric($arg1)) {
+			
+				$parent='store';
+				$parent_key=$arg1;
+
+				if (isset($view_path[0])) {
+
+					
+
+				}else{
+				
+				    $section='deals';
+				     $tab='campaigns';
+				}
+
+			}
+			break;
 		case 'warehouses':
 			$module='warehouses';
 			$section='warehouses';
@@ -1298,7 +1440,11 @@ function parse_request($_data) {
 		case 'inventory':
 			$module='warehouses';
 			$section='inventory';
-			$tab='inventory';
+			if (isset($_data['tab'])) {
+				$tab=$_data['tab'];
+			}else {
+				$tab='inventory.parts';
+			}
 			$parent='warehouse';
 
 			$parent_key=$view_path[0];
@@ -1390,7 +1536,42 @@ function parse_request($_data) {
 
 			}
 			break;
+		case 'hr':
+			$module='hr';
+			$section='employees';
 
+
+			if (isset($_data['tab'])) {
+				$tab=$_data['tab'];
+			}else {
+				$tab='employees';
+			}
+
+			break;	
+		case 'reports':
+			$module='reports';
+			$section='performance';
+
+
+			if (isset($_data['tab'])) {
+				$tab=$_data['tab'];
+			}else {
+				$tab='report.pp';
+			}
+
+			break;		
+		case 'users':
+			$module='users';
+			$section='staff';
+
+
+			if (isset($_data['tab'])) {
+				$tab=$_data['tab'];
+			}else {
+				$tab='users.staff.users';
+			}
+
+			break;
 		default:
 
 			break;
@@ -1412,5 +1593,6 @@ function parse_request($_data) {
 	return $state;
 
 }
+
 
 ?>
