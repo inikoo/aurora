@@ -91,18 +91,22 @@ if ($user->can_view('stores')) {
 }
 
 if ($user->can_view('marketing')) {
-	if (count($user->stores)==1) {
-		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing.php?store='.$user->stores[0],'marketing','module');
-	} elseif (count($user->stores)>1) {
 
-		if ($user->data['User Hooked Store Key']) {
-			$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing.php?store='.$user->data['User Hooked Store Key'],'marketing','module');
-		}
-		else {
-			$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing_server.php','marketing','module');
+if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing/'.$user->data['User Hooked Store Key'],'marketing','module');
 
-		}
+	}else {
+		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing/all','marketing','module');
 	}
+
+
+	$sections=get_sections('marketing',$data['parent_key']);
+	foreach ($sections as $key=>$section ) {
+		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'],$section['reference'],$key,'section');
+	}
+
+
+
 
 
 }
@@ -124,7 +128,7 @@ if ($user->can_view('warehouses')) {
 
 }
 if ($user->can_view('reports')) {
-	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i> '._('Reports'), 'reports.php','reports','module');
+	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i> '._('Reports'), 'reports','reports','module');
 }
 
 
@@ -134,12 +138,12 @@ if ($user->can_view('suppliers')) {
 
 
 if ($user->can_view('staff'))
-	$nav_menu[] = array('<i class="fa fa-hand-rock-o fa-fw"></i> '._('Manpower'), 'hr.php','staff','module');
+	$nav_menu[] = array('<i class="fa fa-hand-rock-o fa-fw"></i> '._('Manpower'), 'hr','hr','module');
 
 
 
 if ($user->can_view('users'))
-	$nav_menu[] = array('<i class="fa fa-male fa-fw"></i> '._('Users'), 'users.php','users','module');
+	$nav_menu[] = array('<i class="fa fa-male fa-fw"></i> '._('Users'), 'users','users','module');
 
 if ($user->can_view('account'))
 	$nav_menu[] = array('<i class="fa fa-cog fa-fw"></i> '._('Settings'), 'account.php','account','module');

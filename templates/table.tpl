@@ -49,7 +49,7 @@
 	
 	<span id="rtext"></span> 
 </div>
-{if isset($table_views) and count($table_views)>0}
+{if isset($table_views) and count($table_views)>1}
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
 <div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}',true)" title="{$view.title}">

@@ -31,6 +31,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case 'parts':
+	parts(get_table_parameters(),$db,$user);
+	break;
 case 'locations':
 	locations(get_table_parameters(),$db,$user);
 	break;
@@ -169,8 +172,8 @@ function replenishments($_data,$db,$user) {
 			}
 		}
 		$stock.='</div>';
-        
-        $pl_data='<span style="font-weight:800">'.number($data['Quantity On Hand']).'</span>  {'.number($data['Minimum Quantity']).','.number($data['Maximum Quantity']).'}';
+
+		$pl_data='<span style="font-weight:800">'.number($data['Quantity On Hand']).'</span>  {'.number($data['Minimum Quantity']).','.number($data['Maximum Quantity']).'}';
 
 
 		$adata[]=array(
@@ -199,6 +202,42 @@ function replenishments($_data,$db,$user) {
 	echo json_encode($response);
 }
 
+function parts($_data,$db,$user) {
 
+
+	$rtext_label='part';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	// print $sql;
+	foreach ($db->query($sql) as $data) {
+
+
+		$adata[]=array(
+			'id'=>(integer)$data['Part SKU'],
+			'formated_sku'=>sprintf("SKU%05d",$data['Part SKU']),
+			'reference'=>$data['Part Reference'],
+			'description'=>$data['Part Unit Description'],
+			'products'=>$data['Part XHTML Currently Used In'],
+
+
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>
