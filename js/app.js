@@ -25,7 +25,8 @@ window.addEventListener('popstate', function(event) {
 
 function change_tab(tab) {
     $('#maintabs .tab').removeClass('selected')
-    $('#tab_' + tab).addClass('selected')
+  
+    $('#tab_' + tab.replace( /(:|\.|\[|\])/g, "\\$1" )).addClass('selected')
     change_view(state.request + '&tab=' + tab)
 
 

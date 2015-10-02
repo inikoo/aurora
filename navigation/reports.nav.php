@@ -10,6 +10,41 @@
  Version 3.0
 */
 
+function get_reports_navigation($data) {
+
+	global $user, $smarty;
+
+	$block_view=$data['section'];
+
+	$left_buttons=array();
+	$right_buttons=array();
+	$sections=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+$title=_('Reports');
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search reports'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 function get_performance_navigation($data) {
 
 	global $user, $smarty;
@@ -26,17 +61,17 @@ function get_performance_navigation($data) {
 
 	switch ($data['tab']) {
 	case ('report.pp'):
-		$title='Pickers & Packers Report';
+		$title=_('Pickers & Packers Report');
 		break;
 
 	case ('report.outofstock'):
-		$title='Out of Stock';
+		$title=_('Out of Stock');
 		break;
 	case ('report.top_customers'):
-		$title='Top Customers';
+		$title=_('Top Customers');
 		break;
 	case ('report.top_customers'):
-		$title='Top Customers';
+		$title=_('Top Customers');
 		break;
 	default:
 		$title='';
@@ -60,7 +95,6 @@ function get_performance_navigation($data) {
 	return $html;
 
 }
-
 
 
 ?>

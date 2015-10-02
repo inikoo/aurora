@@ -2972,6 +2972,7 @@ function list_stores() {
 		$filter_msg='';
 	$period_tag=get_interval_db_name($period);
 
+
 	$_dir=$order_direction;
 	$_order=$order;
 	$order='`Store Code`';
@@ -3068,7 +3069,9 @@ function list_stores() {
 
 
 
-	$sql="select *  from `Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key`   $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from 
+	`Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key` 
+	  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 

@@ -9,7 +9,7 @@
 
 */
 
-$default_rrp_options=array(500,100,50,20);
+$default_rrp_options=array(500, 100, 50, 20);
 
 $tab_defaults=array(
 
@@ -90,6 +90,37 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'percentages'=>0
+	), 'stores'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'websites'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	), 'website.pages'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),'marketing_server'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
 	),
 	'suppliers'=>array(
 		'view'=>'overview',
@@ -115,6 +146,13 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
+	),'warehouses'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
 	),
 	'locations'=>array(
 		'view'=>'overview',
@@ -139,13 +177,21 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
-	),'employees'=>array(
+	), 'employees'=>array(
 		'view'=>'employees',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
+	),
+	'reports'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
 	),
 	'users.staff.users'=>array(
 		'view'=>'privilegies',
@@ -155,7 +201,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
 	),
-	
+
 );
 
 

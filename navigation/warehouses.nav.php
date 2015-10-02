@@ -28,7 +28,7 @@ function get_warehouses_navigation($data) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('suppliers','');
+	$sections=array();
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -40,8 +40,8 @@ function get_warehouses_navigation($data) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Suppliers'),
-		'search'=>array('show'=>true,'placeholder'=>_('Search suppliers'))
+		'title'=>_('Warehouses'),
+		'search'=>array('show'=>true,'placeholder'=>_('Search inventory all warehouses'))
 
 	);
 	$smarty->assign('_content',$_content);

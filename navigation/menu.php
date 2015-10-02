@@ -23,7 +23,7 @@ if ($user->can_view('customers')) {
 		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers/'.$user->data['User Hooked Store Key'],'customers','module');
 
 	}else {
-		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers_server','customers','module');
+		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i> '._('Customers'), 'customers/all','customers','module');
 	}
 
 
@@ -43,7 +43,7 @@ if ($user->can_view('orders')) {
 		$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders','orders','module');
 	}
 	else {
-		$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders_server','orders','module');
+		$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders/all','orders','module');
 	}
 
 	$sections=get_sections('orders',$data['parent_key']);
@@ -123,7 +123,7 @@ if ($user->can_view('warehouses')) {
 	if ($user->data['User Hooked Warehouse Key']) {
 		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i> '._('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'],'warehouses','module');
 	}else {
-		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i> '._('Warehouse'), 'warehouses_server','warehouses','module');
+		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i> '._('Warehouse'), 'warehouses','warehouses','module');
 	}
 
 }
@@ -168,6 +168,7 @@ if ($user->data['User Type']=='Warehouse') {
 
 $current_item=$data['module'];
 if ($current_item=='customers_server')$current_item='customers';
+if ($current_item=='marketing_server')$current_item='marketing';
 
 
 $smarty->assign('current_item',$current_item);

@@ -81,6 +81,18 @@ function get_rtext($record_label,$total_records) {
 		return sprintf(ngettext('%s delivery note', '%s delivery notes', $total_records), number($total_records));
 	}elseif ($record_label=='part') {
 		return sprintf(ngettext('%s part', '%s parts', $total_records), number($total_records));
+	}elseif ($record_label=='website') {
+		return sprintf(ngettext('%s website', '%s websites', $total_records), number($total_records));
+	}elseif ($record_label=='warehouse') {
+		return sprintf(ngettext('%s warehouse', '%s warehouses', $total_records), number($total_records));
+	}elseif ($record_label=='supplier') {
+		return sprintf(ngettext('%s supplier', '%s suppliers', $total_records), number($total_records));
+	}elseif ($record_label=='employee') {
+		return sprintf(ngettext('%s employee', '%s employees', $total_records), number($total_records));
+	}elseif ($record_label=='user') {
+		return sprintf(ngettext('%s user', '%s users', $total_records), number($total_records));
+	}elseif ($record_label=='report') {
+		return sprintf(ngettext('%s report', '%s reports', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -102,6 +114,18 @@ function get_rtext_with_filter($record_label,$total_with_filter,$total_no_filter
 		return sprintf(ngettext('%s delivery note of %s', '%s delivery notes of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='part') {
 		return sprintf(ngettext('%s part of %s', '%s parts of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='website') {
+		return sprintf(ngettext('%s website of %s', '%s websites of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='warehouse') {
+		return sprintf(ngettext('%s warehouse of %s', '%s warehouses of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='supplier') {
+		return sprintf(ngettext('%s supplier of %s', '%s suppliers of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='employee') {
+		return sprintf(ngettext('%s employee of %s', '%s employees of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='user') {
+		return sprintf(ngettext('%s user of %s', '%s users of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='report') {
+		return sprintf(ngettext('%s report of %s', '%s reports of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}

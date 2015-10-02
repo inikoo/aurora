@@ -10,7 +10,7 @@
 */
 
 require_once 'common.php';
-require_once 'ar_edit_common.php';
+require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
 
@@ -31,6 +31,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case 'warehouses':
+	warehouses(get_table_parameters(),$db,$user);
+	break;
 case 'parts':
 	parts(get_table_parameters(),$db,$user);
 	break;
@@ -45,6 +48,41 @@ default:
 	echo json_encode($response);
 	exit;
 	break;
+}
+
+function warehouses($_data, $db, $user) {
+	global $db;
+	$rtext_label='warehouse';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+//	print $sql;
+
+
+	foreach ($db->query($sql) as $data) {
+	
+		$adata[]=array(
+			'id'=>(integer) $data['Warehouse Key'],
+			'code'=>$data['Warehouse Code'],
+			'name'=>$data['Warehouse Name'],
+			);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
 }
 
 

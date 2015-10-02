@@ -10,18 +10,18 @@
 */
 
 require_once 'common.php';
-require_once 'ar_edit_common.php';
+require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'common_order_functions.php';
 
 if (!$user->can_view('orders')) {
-	echo json_encode(array('state'=>405,'resp'=>'Forbidden'));
+	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
 	exit;
 }
 
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
+	$response=array('state'=>405, 'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -31,35 +31,35 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case 'orders':
-	orders(get_table_parameters(),$db,$user);
+	orders(get_table_parameters(), $db, $user);
 	break;
 case 'invoices':
-	invoices(get_table_parameters(),$db,$user);
+	invoices(get_table_parameters(), $db, $user);
 	break;
 case 'delivery_notes':
-	delivery_notes(get_table_parameters(),$db,$user);
+	delivery_notes(get_table_parameters(), $db, $user);
 	break;
 case 'orders_server':
-	orders_server(get_table_parameters(),$db,$user);
+	orders_server(get_table_parameters(), $db, $user);
 	break;
 case 'invoices_server':
-	invoices_server(get_table_parameters(),$db,$user);
+	invoices_server(get_table_parameters(), $db, $user);
 	break;
 case 'delivery_notes_server':
-	delivery_notes_server(get_table_parameters(),$db,$user);
+	delivery_notes_server(get_table_parameters(), $db, $user);
 	break;
 case 'invoice_categories':
-	invoice_categories(get_table_parameters(),$db,$user);
+	invoice_categories(get_table_parameters(), $db, $user);
 	break;
 default:
-	$response=array('state'=>405,'resp'=>'Tipo not found '.$tipo);
+	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
 	exit;
 	break;
 }
 
 
-function orders($_data,$db,$user) {
+function orders($_data, $db, $user) {
 	global $db;
 	$rtext_label='order';
 	include_once 'prepare_table/init.php';
@@ -81,10 +81,10 @@ function orders($_data,$db,$user) {
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
 			'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
 			'customer'=>$data['Order Customer Name'],
-			'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: common_order_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'], $data['Order Key']), // function in: common_order_functions.php
 			'payment_state'=>get_order_formated_payment_state($data),
 
-			'total_amount'=>money($data['Order Total Amount'],$data['Order Currency'])
+			'total_amount'=>money($data['Order Total Amount'], $data['Order Currency'])
 
 
 		);
@@ -105,7 +105,8 @@ function orders($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function delivery_notes($_data,$db,$user) {
+
+function delivery_notes($_data, $db, $user) {
 	global $db;
 	$rtext_label='delivery_note';
 	include_once 'prepare_table/init.php';
@@ -202,7 +203,7 @@ function delivery_notes($_data,$db,$user) {
 }
 
 
-function invoices($_data,$db,$user) {
+function invoices($_data, $db, $user) {
 	global $db;
 	$rtext_label='invoice';
 	include_once 'prepare_table/init.php';
@@ -244,10 +245,10 @@ function invoices($_data,$db,$user) {
 			'number'=>$data['Invoice Public ID'],
 			'customer'=>$data['Invoice Customer Name'],
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Invoice Date'].' +0:00')),
-			'total_amount'=>money($data['Invoice Total Amount'],$data['Invoice Currency']),
-			'net'=>money($data['Invoice Total Net Amount'],$data['Invoice Currency']),
-			'shipping'=>money($data['Invoice Shipping Net Amount'],$data['Invoice Currency']),
-			'items'=>money($data['Invoice Items Net Amount'],$data['Invoice Currency']),
+			'total_amount'=>money($data['Invoice Total Amount'], $data['Invoice Currency']),
+			'net'=>money($data['Invoice Total Net Amount'], $data['Invoice Currency']),
+			'shipping'=>money($data['Invoice Shipping Net Amount'], $data['Invoice Currency']),
+			'items'=>money($data['Invoice Items Net Amount'], $data['Invoice Currency']),
 			'type'=>$type,
 			'method'=>$method,
 			'state'=>$state,
@@ -271,7 +272,8 @@ function invoices($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function orders_server($_data,$db,$user) {
+
+function orders_server($_data, $db, $user) {
 
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';
