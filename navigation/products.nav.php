@@ -145,4 +145,43 @@ function get_products_categories_navigation($data) {
 }
 
 
+
+function get_stores_navigation($data) {
+
+	global $user,$smarty;
+
+	
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('products_server');
+	
+
+	$left_buttons=array();
+	
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Stores'),
+		'search'=>array('show'=>true,'placeholder'=>_('Search products all stores'))
+
+	);
+	$smarty->assign('_content',$_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+
+}
+
 ?>

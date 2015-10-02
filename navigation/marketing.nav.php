@@ -41,6 +41,37 @@ function get_deals_navigation($data) {
 
 }
 
+function get_marketing_server_navigation($data){
+
+
+	global $user,$smarty;
+
+	$block_view=$data['section'];
+
+	$left_buttons=array();
+	$right_buttons=array();
+	$sections=get_sections('marketing_server','');
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Marketing (All stores)'),
+		'search'=>array('show'=>true,'placeholder'=>_('Search marketing all stores'))
+
+	);
+	$smarty->assign('_content',$_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 
 ?>

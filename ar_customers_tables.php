@@ -10,18 +10,18 @@
 */
 
 require_once 'common.php';
-require_once 'ar_edit_common.php';
+require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 
 
 if (!$user->can_view('customers')) {
-	echo json_encode(array('state'=>405,'resp'=>'Forbidden'));
+	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
 	exit;
 }
 
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
+	$response=array('state'=>405, 'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -31,25 +31,25 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case 'customers':
-	customers(get_table_parameters(),$db,$user);
+	customers(get_table_parameters(), $db, $user);
 	break;
 case 'lists':
-	lists(get_table_parameters(),$db,$user);
+	lists(get_table_parameters(), $db, $user);
 	break;
 case 'customers_server':
-	customers_server(get_table_parameters(),$db,$user);
+	customers_server(get_table_parameters(), $db, $user);
 	break;
 case 'categories':
-	categories(get_table_parameters(),$db,$user);
+	categories(get_table_parameters(), $db, $user);
 	break;
 default:
-	$response=array('state'=>405,'resp'=>'Tipo not found '.$tipo);
+	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
 	exit;
 	break;
 }
 
-function customers($_data,$db,$user) {
+function customers($_data, $db, $user) {
 
 	$rtext_label='customer';
 	include_once 'prepare_table/init.php';
@@ -119,7 +119,7 @@ function customers($_data,$db,$user) {
 		$adata[]=array(
 			'id'=>(integer) $data['Customer Key'],
 			'store_key'=>$data['Customer Store Key'],
-			'formated_id'=>sprintf("%06d",$data['Customer Key']),
+			'formated_id'=>sprintf("%06d", $data['Customer Key']),
 			'name'=>$data['Customer Name'],
 			'company_name'=>$data['Customer Company Name'],
 			'contact_name'=>$data['Customer Main Contact Name'],
@@ -138,18 +138,18 @@ function customers($_data,$db,$user) {
 
 			'other_value'=>$category_other_value,
 
-			'total_payments'=>money($data['Customer Net Payments'],$currency),
-			'net_balance'=>money($data['Customer Net Balance'],$currency),
-			'total_refunds'=>money($data['Customer Net Refunds'],$currency),
-			'total_profit'=>money($data['Customer Profit'],$currency),
-			'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
-			'account_balance'=>money($data['Customer Account Balance'],$currency),
+			'total_payments'=>money($data['Customer Net Payments'], $currency),
+			'net_balance'=>money($data['Customer Net Balance'], $currency),
+			'total_refunds'=>money($data['Customer Net Refunds'], $currency),
+			'total_profit'=>money($data['Customer Profit'], $currency),
+			'balance'=>money($data['Customer Outstanding Net Balance'], $currency),
+			'account_balance'=>money($data['Customer Account Balance'], $currency),
 
 
-			'top_orders'=>percentage($data['Customer Orders Top Percentage'],1,2),
-			'top_invoices'=>percentage($data['Customer Invoices Top Percentage'],1,2),
-			'top_balance'=>percentage($data['Customer Balance Top Percentage'],1,2),
-			'top_profits'=>percentage($data['Customer Profits Top Percentage'],1,2),
+			'top_orders'=>percentage($data['Customer Orders Top Percentage'], 1, 2),
+			'top_invoices'=>percentage($data['Customer Invoices Top Percentage'], 1, 2),
+			'top_balance'=>percentage($data['Customer Balance Top Percentage'], 1, 2),
+			'top_profits'=>percentage($data['Customer Profits Top Percentage'], 1, 2),
 			'address'=>$data['Customer Main XHTML Address'],
 			'billing_address'=>$billing_address,
 			'delivery_address'=>$delivery_address,
@@ -178,7 +178,8 @@ function customers($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function lists($_data,$db,$user) {
+
+function lists($_data, $db, $user) {
 
 	$rtext_label='list';
 	include_once 'prepare_table/init.php';
@@ -226,7 +227,8 @@ function lists($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function categories($_data,$db,$user) {
+
+function categories($_data, $db, $user) {
 	global $db;
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';
@@ -262,7 +264,7 @@ function categories($_data,$db,$user) {
 			'subjects'=>number($data['Category Number Subjects']),
 			'level'=>$level,
 			'subcategories'=>number($data['Category Children']),
-			'percentage_assigned'=>percentage($data['Category Number Subjects'],($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
+			'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
 		);
 
 	}
@@ -281,7 +283,8 @@ function categories($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function customers_server($_data,$db,$user) {
+
+function customers_server($_data, $db, $user) {
 
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';
@@ -378,7 +381,7 @@ function customers_server($_data,$db,$user) {
 		);
 
 	}
-	
+
 
 	if ($parameters['percentages']) {
 		$sum_total='100.00%';
@@ -387,7 +390,7 @@ function customers_server($_data,$db,$user) {
 		$sum_lost='100.00%';
 		$sum_contacts='100.00%';
 		$sum_new_contacts='100.00%';
-	} 
+	}
 	else {
 		// $total_contacts=number($total_contacts);
 		// $total_active_contacts=number($total_active_contacts);

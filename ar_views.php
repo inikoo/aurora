@@ -11,7 +11,7 @@
 */
 
 require_once 'common.php';
-require_once 'ar_common.php';
+require_once 'utils/ar_common.php';
 
 
 
@@ -170,7 +170,9 @@ function get_navigation($data) {
 	case ('products'):
 		require_once 'navigation/products.nav.php';
 		switch ($data['section']) {
-
+		case 'stores':
+			return get_stores_navigation($data);
+			break;
 		case 'store':
 			return get_store_navigation($data);
 			break;
@@ -271,7 +273,6 @@ function get_navigation($data) {
 		switch ($data['section']) {
 		case ('websites'):
 
-
 			return get_websites_navigation($data);
 			break;
 		case ('website'):
@@ -284,8 +285,18 @@ function get_navigation($data) {
 
 		}
 		break;
-		
-    case ('marketing'):
+	case ('marketing_server'):
+		require_once 'navigation/marketing.nav.php';
+		switch ($data['section']) {
+		case ('marketing'):
+
+			return get_marketing_server_navigation($data);
+			break;
+		}
+
+		break;
+
+	case ('marketing'):
 		require_once 'navigation/marketing.nav.php';
 		switch ($data['section']) {
 
@@ -324,10 +335,12 @@ function get_navigation($data) {
 
 
 
-      case ('reports'):
+	case ('reports'):
 		require_once 'navigation/reports.nav.php';
 		switch ($data['section']) {
-
+		case ('reports'):
+			return get_reports_navigation($data);
+			break;
 		case ('performance'):
 			return get_performance_navigation($data);
 			break;
@@ -339,7 +352,7 @@ function get_navigation($data) {
 
 			return get_tax_navigation($data);
 			break;
-			} 		
+		}
 	case ('suppliers'):
 		require_once 'navigation/suppliers.nav.php';
 		switch ($data['section']) {
@@ -405,13 +418,13 @@ function get_navigation($data) {
 		case ('organization'):
 			return get_organization_navigation($data);
 			break;
-		
+
 
 		}
 
 		break;
-		
-case ('users'):
+
+	case ('users'):
 		require_once 'navigation/users.nav.php';
 		switch ($data['section']) {
 
@@ -1046,6 +1059,13 @@ function parse_request($_data) {
 		$root=array_shift($view_path);
 		$count_view_path=count($view_path);
 		switch ($root) {
+		case 'stores':
+			$module='products';
+			$section='stores';
+
+			$tab='stores';
+
+			break;
 		case 'store':
 			$module='products';
 			$section='store';
@@ -1105,11 +1125,23 @@ function parse_request($_data) {
 
 
 			break;
+		case 'websites':
+			$module='websites';
+			$section='websites';
+			$tab='websites';
+			break;
 		case 'website':
 			$module='websites';
 			$section='website';
 
-			$tab='website.details';
+
+
+			if (isset($_data['tab'])) {
+				$tab=$_data['tab'];
+			}else {
+				$tab='website.details';
+			}
+
 			$object='website';
 			$key=$view_path[0];
 			break;
@@ -1380,7 +1412,7 @@ function parse_request($_data) {
 
 			}
 			break;
-	case 'marketing':
+		case 'marketing':
 			$module='marketing';
 			if ($count_view_path==0) {
 				$section='deals';
@@ -1400,23 +1432,23 @@ function parse_request($_data) {
 				$section='marketing';
 				$tab='marketing_server';
 
-				
+
 
 			}
-			
+
 			elseif (is_numeric($arg1)) {
-			
+
 				$parent='store';
 				$parent_key=$arg1;
 
 				if (isset($view_path[0])) {
 
-					
 
-				}else{
-				
-				    $section='deals';
-				     $tab='campaigns';
+
+				}else {
+
+					$section='deals';
+					$tab='campaigns';
 				}
 
 			}
@@ -1547,9 +1579,12 @@ function parse_request($_data) {
 				$tab='employees';
 			}
 
-			break;	
+			break;
 		case 'reports':
 			$module='reports';
+			$section='reports';
+			$tab='reports';
+			/*
 			$section='performance';
 
 
@@ -1558,8 +1593,8 @@ function parse_request($_data) {
 			}else {
 				$tab='report.pp';
 			}
-
-			break;		
+            */
+			break;
 		case 'users':
 			$module='users';
 			$section='staff';

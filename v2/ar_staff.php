@@ -317,7 +317,9 @@ function list_employees() {
 	else
 		$order='`Staff Name`';
 
-	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select 
+	(select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name`
+	 from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	//print $sql;
 	$adata=array();
 	$res=mysql_query($sql);

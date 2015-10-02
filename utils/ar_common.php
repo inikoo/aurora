@@ -1,4 +1,26 @@
 <?php
+date_default_timezone_set('UTC');
+
+if (isset($user) and is_object($user)) {
+	$editor=array(
+		'Author Name'=>$user->data['User Alias'],
+		'Author Alias'=>$user->data['User Alias'],
+		'Author Type'=>$user->data['User Type'],
+		'Author Key'=>$user->data['User Parent Key'],
+		'User Key'=>$user->id,
+		'Date'=>gmdate('Y-m-d H:i:s')
+	);
+}else {
+	$editor=array(
+		'Author Name'=>'',
+		'Author Alias'=>'',
+		'Author Type'=>'',
+		'Author Key'=>'',
+		'User Key'=>0,
+		'Date'=>gmdate('Y-m-d H:i:s')
+	);
+
+}
 
 function is_type( $type, $value ) {
 
@@ -122,23 +144,4 @@ function prepare_values( $data, $value_names ) {
 }
 
 
-function wheref_stores( $f_field, $f_value ) {
-	$wheref='';
-	if ( $f_field=='name' and $f_value!='' )
-		$wheref.=" and  `Store Name` like '%".addslashes( $f_value )."%'";
-	elseif ( $f_field=='code'  and $f_value!='' )
-		$wheref.=" and  `Store Code` like '".addslashes( $f_value )."%'";
-	return $wheref;
-}
-
-function wheref_departments( $f_field, $f_value ) {
-	$wheref='';
-	if ( $f_field=='name' and $f_value!='' )
-		$wheref.=" and  `Product Department Name` like '".addslashes( $f_value )."%'";
-	if ( $f_field=='code' and $f_value!='' )
-		$wheref.=" and  `Product Department Code` like '".addslashes( $f_value )."%'";
-
-	return $wheref;
-
-}
 ?>

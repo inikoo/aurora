@@ -130,24 +130,19 @@ $modules=array(
 		'sections'=>array(
 			'websites'=>array('type'=>'navigation', 'label'=>_('Websites'), 'title'=>_('Websites'), 'icon'=>'globe', 'reference'=>'websites',
 
-				'tabs'=>array(
 
-
-					'website.dashboard'=>array('label'=>_('Website dashboard'), 'title'=>_('Website dashboard'), 'icon'=>'dashboard', 'reference'=>'websites/dashboard'),
-					'website.websites'=>array('label'=>_('Websites'), 'title'=>_('Websites'), 'icon'=>'globe', 'reference'=>'websites/websites'),
-				)
 			),
 			'website'=>array('type'=>'object', 'label'=>_('Website'), 'title'=>_('Website'), 'icon'=>'globe', 'reference'=>'website/%d',
 
 				'tabs'=>array(
 
 
-					'dashboard'=>array('label'=>_('Website dashboard'), 'title'=>_('Website dashboard'), 'icon'=>'dashboard', 'reference'=>'website/%d/dashboard'),
+					'website.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Website dashboard'), 'icon'=>'dashboard', 'reference'=>'website/%d/dashboard'),
 					'website.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'icon'=>'database', 'reference'=>'website/%d/details'),
 
 					'website.pages'=>array('label'=>_('Pages'), 'title'=>_('Pages'), 'icon'=>'files-o', 'reference'=>'website/%d/pages'),
 					'website.pageviews'=>array('label'=>_('Pageviews'), 'title'=>_('Pageviews'), 'icon'=>'eye', 'reference'=>'website/%d/pageviews'),
-					'website.tusers'=>array('label'=>_('Users'), 'title'=>_('Users'), 'icon'=>'male', 'reference'=>'website/%d/users'),
+					'website.users'=>array('label'=>_('Users'), 'title'=>_('Users'), 'icon'=>'male', 'reference'=>'website/%d/users'),
 				)
 			),
 
@@ -181,7 +176,13 @@ $modules=array(
 			)
 		)
 	),
+	'products_server'=>array(
 
+		'parent'=>'none',
+		'parent_type'=>'none',
+'sections'=>array()
+
+	),
 	'marketing'=>array(
 		'section'=>'marketing',
 		'parent'=>'store',
@@ -338,7 +339,7 @@ $modules=array(
 		)
 	),
 
-	
+
 	'reports'=>array(
 
 		'sections'=>array(
