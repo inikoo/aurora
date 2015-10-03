@@ -12,7 +12,7 @@
 
 function get_customers_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -37,32 +37,32 @@ function get_customers_navigation($data) {
 
 
 
-		list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$prev_title=_('Customers').' '.$row['Store Code'];
 		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$next_title=_('Customers').' '.$row['Store Code'];
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/'.$prev_key );
-		$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers (All stores)'),'reference'=>'customers/all','parent'=>'');
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/'.$prev_key );
+		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Customers (All stores)'), 'reference'=>'customers/all', 'parent'=>'');
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/'.$next_key );
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/'.$next_key );
 	}
 
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store='.$store->id);
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'reference'=>'customers/'.$store->id.'/edit');
-	$right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_customer");
-	$sections=get_sections('customers',$store->id);
+	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customers'), 'reference'=>'customers/'.$store->id.'/edit');
+	$right_buttons[]=array('icon'=>'plus', 'title'=>_('New customer'), 'id'=>"new_customer");
+	$sections=get_sections('customers', $store->id);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -75,19 +75,20 @@ function get_customers_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Customers').' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_customers_list_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -122,9 +123,9 @@ function get_customers_list_navigation($data) {
 	include_once 'prepare_table/'.$tab.'.ptble.php';
 
 	$_order_field=$order;
-	$order=preg_replace('/^.*\.`/','',$order);
-	$order=preg_replace('/^`/','',$order);
-	$order=preg_replace('/`$/','',$order);
+	$order=preg_replace('/^.*\.`/', '', $order);
+	$order=preg_replace('/^`/', '', $order);
+	$order=preg_replace('/`$/', '', $order);
 	$_order_field_value=$list->get($order);
 
 
@@ -182,23 +183,23 @@ function get_customers_list_navigation($data) {
 
 
 
-	$up_button=array('icon'=>'arrow-up','title'=>_("Customer's lists").' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id.'/lists');
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Customer's lists").' '.$store->data['Store Code'], 'reference'=>'customers/'.$store->id.'/lists');
 
 	if ($prev_key) {
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/list/'.$prev_key);
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/list/'.$prev_key);
 
 	}else {
-		$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
+		$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
 
 	}
 	$left_buttons[]=$up_button;
 
 
 	if ($next_key) {
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/list/'.$next_key);
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/list/'.$next_key);
 
 	}else {
-		$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
+		$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
 	}
 
@@ -212,7 +213,7 @@ function get_customers_list_navigation($data) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('customers',$store->id);
+	$sections=get_sections('customers', $store->id);
 
 	$sections['lists']['selected']=true;
 
@@ -225,19 +226,20 @@ function get_customers_list_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Customer's List").' <span class="id">'.$list->get('List Name').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_customers_categories_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -261,32 +263,32 @@ function get_customers_categories_navigation($data) {
 
 
 
-		list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$prev_title=_("Customer's Categories").' '.$row['Store Code'];
 		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$next_title=_("Customer's Categories").' '.$row['Store Code'];
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/categories/'.$prev_key);
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/categories/'.$prev_key);
 		//$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/categories/'.$next_key);
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/categories/'.$next_key);
 	}
 
 
 	$right_buttons=array();
 
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit'),'url'=>"edit_customer_categories.php?store_id=".$store->id);
+	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
 
-	$sections=get_sections('customers',$store->id);
+	$sections=get_sections('customers', $store->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 	$_content=array(
@@ -295,10 +297,10 @@ function get_customers_categories_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Customer's Categories").' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
@@ -307,14 +309,14 @@ function get_customers_categories_navigation($data) {
 
 function get_customers_category_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Category.php';
 	require_once 'class.Store.php';
 
 
-    $category=new Category($data['key']);
+	$category=new Category($data['key']);
 
 	$left_buttons=array();
 	$right_buttons=array();
@@ -325,11 +327,11 @@ function get_customers_category_navigation($data) {
 		break;
 	case 'store':
 		$store=new Store($data['parent_key']);
-		
-		$left_buttons[]=array('icon'=>'arrow-up','title'=>_("Customer's Categories").' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id.'/categories');
 
-		
-		
+		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_("Customer's Categories").' '.$store->data['Store Code'], 'reference'=>'customers/'.$store->id.'/categories');
+
+
+
 		break;
 
 	default:
@@ -337,14 +339,14 @@ function get_customers_category_navigation($data) {
 		break;
 	}
 
-	
 
 
 
 
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit'),'url'=>"edit_customer_categories.php?store_id=".$store->id);
 
-	$sections=get_sections('customers',$store->id);
+	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
+
+	$sections=get_sections('customers', $store->id);
 	$sections['categories']['selected']=true;
 
 	$_content=array(
@@ -353,18 +355,19 @@ function get_customers_category_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Category").' <span class="id">'.$category->get('Category Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_customers_lists_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -387,32 +390,32 @@ function get_customers_lists_navigation($data) {
 
 
 
-		list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$prev_title=_("Customer's Lists").' '.$row['Store Code'];
 		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$next_title=_("Customer's Lists").' '.$row['Store Code'];
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/'.$prev_key.'/lists');
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/'.$prev_key.'/lists');
 		//$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/'.$next_key.'/lists');
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/'.$next_key.'/lists');
 	}
 
 
 	$right_buttons=array();
 
-	$right_buttons[]=array('icon'=>'plus','title'=>_('New list'),'reference'=>"customers/".$store->id.'/lists/new');
+	$right_buttons[]=array('icon'=>'plus', 'title'=>_('New list'), 'reference'=>"customers/".$store->id.'/lists/new');
 
-	$sections=get_sections('customers',$store->id);
+	$sections=get_sections('customers', $store->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 
@@ -422,19 +425,20 @@ function get_customers_lists_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Customer's Lists").' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_customers_dashboard_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -458,31 +462,31 @@ function get_customers_dashboard_navigation($data) {
 
 
 
-		list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$prev_title=_("Customer's Dashboard").' '.$row['Store Code'];
 		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$next_title=_("Customer's Dashboard").' '.$row['Store Code'];
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/dashboard/'.$prev_key);
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/dashboard/'.$prev_key);
 		//$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/dashboard/'.$next_key);
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/dashboard/'.$next_key);
 	}
 
 
 	$right_buttons=array();
 
 
-	$sections=get_sections('customers',$store->id);
+	$sections=get_sections('customers', $store->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 	$_content=array(
@@ -492,10 +496,10 @@ function get_customers_dashboard_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Customer's Dashboard").' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 
 	$html=$smarty->fetch('navigation.tpl');
@@ -503,9 +507,10 @@ function get_customers_dashboard_navigation($data) {
 
 }
 
+
 function get_customers_statistics_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -528,31 +533,31 @@ function get_customers_statistics_navigation($data) {
 
 
 
-		list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$prev_title=_("Customer's Stats").' '.$row['Store Code'];
 		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$next_title=_("Customer's Stats").' '.$row['Store Code'];
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/statistics/'.$prev_key);
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/statistics/'.$prev_key);
 		//$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/statistics/'.$next_key);
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/statistics/'.$next_key);
 	}
 
 
 	$right_buttons=array();
 
 
-	$sections=get_sections('customers',$store->id);
+	$sections=get_sections('customers', $store->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 	$_content=array(
@@ -561,10 +566,10 @@ function get_customers_statistics_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_("Customer's Stats").' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 
 	$html=$smarty->fetch('navigation.tpl');
@@ -572,9 +577,10 @@ function get_customers_statistics_navigation($data) {
 
 }
 
+
 function get_customers_pending_orders_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
@@ -598,29 +604,29 @@ function get_customers_pending_orders_navigation($data) {
 
 
 
-		list($prev_key,$next_key)=get_prev_next($store->id,$user->stores);
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$prev_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$prev_title=_('Pending orders').' '.$row['Store Code'];
 		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d",$next_key);
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$next_title=_('Pending orders').' '.$row['Store Code'];
 		}else {$next_title='';}
 
 
-		$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/pending_orders/'.$prev_key);
-		$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Pending orders (All stores)').' '.$store->data['Store Code'],'reference'=>'customers/all/pending_orders');
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/pending_orders/'.$prev_key);
+		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Pending orders (All stores)').' '.$store->data['Store Code'], 'reference'=>'customers/all/pending_orders');
 
-		$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/pending_orders/'.$next_key);
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/pending_orders/'.$next_key);
 	}
 
 
 	$right_buttons=array();
-	$sections=get_sections('customers',$store->id);
+	$sections=get_sections('customers', $store->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 	$_content=array(
@@ -630,10 +636,10 @@ function get_customers_pending_orders_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Pending orders').' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 
 	$html=$smarty->fetch('navigation.tpl');
@@ -641,14 +647,15 @@ function get_customers_pending_orders_navigation($data) {
 
 }
 
+
 function get_customers_server_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Store.php';
 
-	$branch=array(array('label'=>'','icon'=>'home','reference'=>''));
+	$branch=array(array('label'=>'', 'icon'=>'home', 'reference'=>''));
 
 
 
@@ -672,20 +679,21 @@ function get_customers_server_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>$title,
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers all stores'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers all stores'))
 
 	);
-	$smarty->assign('content',$_content);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('content', $_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_customer_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 	require_once 'class.Customer.php';
@@ -693,6 +701,10 @@ function get_customer_navigation($data) {
 
 
 	$customer=new Customer($data['key']);
+	
+	if(!$customer->id){
+	    return;
+	}
 
 	$block_view=$data['section'];
 
@@ -729,9 +741,9 @@ function get_customer_navigation($data) {
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
 		$_order_field=$order;
-		$order=preg_replace('/^.*\.`/','',$order);
-		$order=preg_replace('/^`/','',$order);
-		$order=preg_replace('/`$/','',$order);
+		$order=preg_replace('/^.*\.`/', '', $order);
+		$order=preg_replace('/^`/', '', $order);
+		$order=preg_replace('/`$/', '', $order);
 		$_order_field_value=$customer->get($order);
 
 
@@ -792,23 +804,23 @@ function get_customer_navigation($data) {
 			include_once 'class.List.php';
 			$list=new SubjectList($data['parent_key']);
 
-			$up_button=array('icon'=>'arrow-up','title'=>_("List").' '.$list->data['List Name'],'reference'=>'customers/list/'.$list->id);
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("List").' '.$list->data['List Name'], 'reference'=>'customers/list/'.$list->id);
 
 			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/list/'.$data['parent_key'].'/'.$prev_key);
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/list/'.$data['parent_key'].'/'.$prev_key);
 
 			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
 
 			}
 			$left_buttons[]=$up_button;
 
 
 			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/list/'.$data['parent_key'].'/'.$next_key);
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/list/'.$data['parent_key'].'/'.$next_key);
 
 			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
 			}
 
@@ -822,43 +834,43 @@ function get_customer_navigation($data) {
 			$category=new Category($data['parent_key']);
 
 
-			$category_keys=preg_split('/\>/',preg_replace('/\>$/','',$category->data['Category Position']));
+			$category_keys=preg_split('/\>/', preg_replace('/\>$/', '', $category->data['Category Position']));
 			array_pop($category_keys);
 			if (count($category_keys)>0) {
-				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
 				//print $sql;
 				$result=mysql_query($sql);
 				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-					$branch[]=array('label'=>$row['Category Code'],'icon'=>'','url'=>'customer_category.php?id='.$row['Category Key']);
+					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'customer_category.php?id='.$row['Category Key']);
 
 				}
 			}
 
 
-			$up_button=array('icon'=>'arrow-up','title'=>_("Category").' '.$category->data['Category Code'],'url'=>'customer_category.php?id='.$category->id);
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Category").' '.$category->data['Category Code'], 'url'=>'customer_category.php?id='.$category->id);
 
 		}
 
 		else {
 
-			$up_button=array('icon'=>'arrow-up','title'=>_("Customers").' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Customers").' '.$store->data['Store Code'], 'reference'=>'customers/'.$store->id);
 
 			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'customers/'.$data['parent_key'].'/'.$prev_key);
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/'.$data['parent_key'].'/'.$prev_key);
 
 			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
 
 			}
 			$left_buttons[]=$up_button;
 
 
 			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'customers/'.$data['parent_key'].'/'.$next_key);
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/'.$data['parent_key'].'/'.$next_key);
 
 			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
 			}
 
@@ -868,17 +880,17 @@ function get_customer_navigation($data) {
 
 
 	}
-    else{
-    			$_section='customers';
+	else {
+		$_section='customers';
 
-    }
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customer'),'url'=>'edit_customer.php?id='.$customer->id);
-	$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
-	$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
-	$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
-	$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
+	}
+	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$customer->id);
+	$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button');
+	$right_buttons[]=array('icon'=>'sticky-note-o', 'title'=>_('History note'), 'id'=>'note');
+	$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
+	$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
 
-	$sections=get_sections('customers',$customer->data['Customer Store Key']);
+	$sections=get_sections('customers', $customer->data['Customer Store Key']);
 
 
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
@@ -899,10 +911,10 @@ function get_customer_navigation($data) {
 		'right_buttons'=>$right_buttons,
 		'avatar'=>$avatar,
 		'title'=>$title,
-		'search'=>array('show'=>true,'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 
 	$html=$smarty->fetch('navigation.tpl');
@@ -910,5 +922,6 @@ function get_customer_navigation($data) {
 	return $html;
 
 }
+
 
 ?>

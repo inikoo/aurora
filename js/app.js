@@ -8,6 +8,11 @@
 
 function change_browser_history_state(request) {
 
+
+    if(request==undefined){
+        return;
+    }
+
     if (request.charAt(0) !== '/') {
         request = '/' + request
     }

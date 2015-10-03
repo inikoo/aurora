@@ -15,6 +15,9 @@ function get_customer_showcase($data) {
     global $smarty;
     
     $customer=new Customer($data['key']);
+    if(!$customer->id){
+        return "";
+    }
     
     $smarty->assign('customer',$customer);
 

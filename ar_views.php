@@ -33,9 +33,68 @@ case 'views':
 
 	$state=parse_request($data);
 
+	if ($state['object']!='') {
+
+		switch ($state['object']) {
+		case 'customer':
+			$_object=new Customer($state['key']);
+			break;
+		case 'website':
+			$_object=new Site($state['key']);
+			break;
+		case 'warehouse':
+			include_once 'class.Warehouse.php';
+			$_object=new Warehouse($state['key']);
+			break;
+		case 'supplier':
+			include_once 'class.Supplier.php';
+			$_object=new Supplier($state['key']);
+			break;
+		default:
+			exit('need to complete E1');
+			break;
+		}
+		if (!$_object->id) {
 
 
-	$response=array('state'=>$state);
+
+			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'');
+
+
+		}else {
+
+			$state['_object']=$_object;
+		}
+
+
+	}
+
+	switch ($state['parent']) {
+
+	case 'store':
+		$_parent=new Store($state['parent_key']);
+
+
+
+		break;
+	default:
+		$_parent=false;
+	}
+
+
+
+	if (is_object($_parent) and !$_parent->id) {
+
+
+		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'');
+
+	}
+
+
+
+
+
+	$response=array();
 
 
 	if ($data['old_state']['module']!=$state['module']) {
@@ -64,9 +123,11 @@ case 'views':
 		$response['object_showcase']='';
 	}
 
+
 	$response['tab']=get_tab($state['tab'], $state['subtab'], $state);
 
-
+	unset($state['_object']);
+	$response['state']=$state;
 
 
 	echo json_encode($response);
@@ -114,8 +175,8 @@ function get_tab($tab, $subtab, $state=false) {
 
 	if (is_array($state)) {
 		$_SESSION['state'][$state['module']][$state['section']]['tab']=$tab;
-		if($subtab!=''){
-		    $_SESSION['tab_state'][$tab]=$subtab;
+		if ($subtab!='') {
+			$_SESSION['tab_state'][$tab]=$subtab;
 		}
 
 	}
@@ -477,7 +538,38 @@ function get_utils_navigation($data) {
 	$branch=array(array('label'=>'', 'icon'=>'home', 'reference'=>''));
 
 	if ($data['section']=='not_found') {
-		$title=_('Not found');
+
+		switch ($data['parent']) {
+		case 'store':
+			$title=_('Store not found');
+			break;
+		case 'customer':
+			$title=_('Customer not found');
+			break;
+		case 'warehouse':
+			$title=_('Warehouse not found');
+			break;
+		case 'supplier':
+			$title=_('Supplier not found');
+			break;
+		case 'user':
+			$title=_('User not found');
+			break;
+		case 'order':
+			$title=_('Order not found');
+			break;
+		case 'invoice':
+			$title=_('Invoice not found');
+			break;
+		case 'delivery_note':
+			$title=_('Delivery note not found');
+			break;
+		default:
+			$title=_('Not found');
+			break;
+		}
+
+
 	}else if ($data['section']=='forbidden') {
 		$title=_('Forbidden');
 	}else {
@@ -491,7 +583,7 @@ function get_utils_navigation($data) {
 		'left_buttons'=>array(),
 		'right_buttons'=>array(),
 		'title'=>$title,
-		'search'=>array('show'=>false, 'placeholder'=>_('Search customers'))
+		'search'=>array('show'=>false, 'placeholder'=>'')
 
 	);
 	$smarty->assign('_content', $_content);
@@ -627,11 +719,15 @@ function get_view_position($data) {
 
 			if ($data['parent']=='store') {
 				$customer=new Customer($data['key']);
-				$store=new Store($customer->data['Customer Store Key']);
+				if ($customer->id) {
 
 
-				$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
-				$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
+					$store=new Store($customer->data['Customer Store Key']);
+
+
+					$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
+					$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
+				}
 			}elseif ($data['parent']=='list') {
 				$customer=new Customer($data['key']);
 				$store=new Store($customer->data['Customer Store Key']);
