@@ -8,10 +8,10 @@
 </div>
 {/if}
 {if   count($_content.subtabs)>1   }
-<div id="subtabs" class="tabs">
+<div id="subtabs" class="subtabs">
 {foreach from=$_content.subtabs item=tab key=id } 
-		<div id="subtab_{$id}"class="subtab left selected{if isset($tab.selected) and $tab.selected}selected{/if}"   onclick="change_subtab('{$id}')" title="{$tab.title}">
-			{if $tab.icon!=''}<i class="fa fa-{$tab.icon}"></i>{/if} <span class="label"> {$tab.label}</span> 
+		<div id="subtab_{$id}"class="tab left {if isset($tab.selected) and $tab.selected}selected{/if}"   onclick="change_subtab('{$id}')" title="{$tab.title}">
+			{if isset($tab.icon) and  $tab.icon!=''}<i class="fa fa-{$tab.icon}"></i>{/if} <span class="label"> {$tab.label}</span> 
 		</div>
 {/foreach} 		
 </div>
