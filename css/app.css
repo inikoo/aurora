@@ -311,7 +311,7 @@ a {
         font-style: italic; }
   #app_main #tabs {
     margin-top: 2px; }
-  #app_main .tabs {
+  #app_main .tabs, #app_main .subtabs {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -325,22 +325,33 @@ a {
     color: #666;
     font-size: 13.2px;
     background-color: #fff; }
-    #app_main .tabs .tab {
+    #app_main .tabs .tab, #app_main .subtabs .tab {
       height: 22px;
       float: left;
       padding: 0px 20px;
       border-right: 1px solid #ccc;
       cursor: pointer; }
-      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected {
+      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected {
         background-color: #edf3f8;
         color: #000; }
-      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected > .fa {
+      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected > .fa, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected > .fa {
         color: #666; }
-    #app_main .tabs .fa {
+      #app_main .tabs .tab.right, #app_main .subtabs .tab.right {
+        float: right; }
+    #app_main .tabs .fa, #app_main .subtabs .fa {
       font-size: 75%;
       color: #888;
       position: relative;
       top: -1px; }
+  #app_main .subtabs {
+    font-size: 10.8px;
+    height: 18px;
+    line-height: 18px; }
+    #app_main .subtabs .tab {
+      height: 18px; }
+      #app_main .subtabs .tab:first-of-type {
+        margin-left: 60px;
+        border-left: 1px solid #ccc; }
 
 .sticky_note {
   border: 1px solid #BAB84E;

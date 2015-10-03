@@ -25,13 +25,17 @@ window.addEventListener('popstate', function(event) {
 
 function change_tab(tab) {
     $('#maintabs .tab').removeClass('selected')
-  
     $('#tab_' + tab.replace( /(:|\.|\[|\])/g, "\\$1" )).addClass('selected')
     change_view(state.request + '&tab=' + tab)
-
-
-
 }
+function change_subtab(subtab) {
+    $('#maintabs .subtab').removeClass('selected')
+    $('#subtab_' + subtab.replace( /(:|\.|\[|\])/g, "\\$1" )).addClass('selected')
+    change_view(state.request + '&subtab=' + subtab)
+}
+
+
+
 
 function change_view(_request) {
 

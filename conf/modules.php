@@ -75,10 +75,27 @@ $modules=array(
 				'title'=>_('Customer'),
 				'icon'=>'user',
 				'reference'=>'customer/%d',
+				'subtabs_parent'=>array(
+					'customer.products.overview'=>'customer.products',
+					'customer.products.products'=>'customer.products',
+					'customer.products.favorites'=>'customer.products',
+					'customer.products.families'=>'customer.products',
+
+				),
 				'tabs'=>array(
 					'customer.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'reference'=>'customer/%d/details'),
 					'customer.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'reference'=>'customer/%d/notes'),
 					'customer.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'reference'=>'customer/%d/orders'),
+					'customer.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'reference'=>'customer/%d/products',
+						'subtabs'=>array(
+							'customer.products.overview'=>array('label'=>_('Overview'), 'title'=>_('Overview'), 'reference'=>'customer/%d/products/overview'),
+							'customer.products.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'reference'=>'customer/%d/products/products'),
+							'customer.products.favorites'=>array('label'=>_('Favourites'), 'title'=>_('Favousrites'), 'reference'=>'customer/%d/products/favorites'),
+							'customer.products.families'=>array('label'=>_('Families'), 'title'=>_('Families'), 'reference'=>'customer/%d/products/families'),
+
+						)
+
+					),
 
 				)
 			)
@@ -88,6 +105,7 @@ $modules=array(
 
 		)
 	),
+
 	'customers_server'=>array(
 
 		'parent'=>'none',
@@ -180,7 +198,7 @@ $modules=array(
 
 		'parent'=>'none',
 		'parent_type'=>'none',
-'sections'=>array()
+		'sections'=>array()
 
 	),
 	'marketing'=>array(

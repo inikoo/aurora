@@ -22,6 +22,7 @@ $color_background:#fcfcfc;
 
 $height_row:32px;
 $height_short_row:22px;
+$height_very_short_row:18px;
 
 $left_menu_width:200px;
 
@@ -225,16 +226,22 @@ img{vertical-align: -5%}
     }
 
 #tabs{margin-top:2px;}
-     .tabs{@include unselectable ;height:$height_short_row;line-height:$height_short_row;clear: both;border-bottom:1px solid #ccc;;color:#666;font-size:$height_short_row*.6;;
+     .tabs,.subtabs{@include unselectable ;height:$height_short_row;line-height:$height_short_row;clear: both;border-bottom:1px solid #ccc;;color:#666;font-size:$height_short_row*.6;
      background-color: #fff;
      .tab{height:$height_short_row;float:left;padding:0px 20px;border-right:1px solid #ccc;cursor:pointer;
-       &:hover,&.selected{background-color: #edf3f8;color:#000;}
-     &:hover,&.selected > .fa{color:#666;}
+        &:hover,&.selected{background-color: #edf3f8;color:#000;}
+        &:hover,&.selected > .fa{color:#666;}
+        &.right{float:right}
      }
      .fa{font-size: 75%;color:#888;position:relative;top:-1px}
      }
 
-
+    .subtabs{font-size:$height_very_short_row*.6;height:$height_very_short_row;line-height:$height_very_short_row;
+    .tab{height:$height_very_short_row;
+    &:first-of-type{margin-left:60px;border-left:1px solid #ccc;}
+    
+    }
+    }
 }
 
 
