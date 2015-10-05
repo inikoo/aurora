@@ -20,7 +20,7 @@ var columns = [{
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('store/'+this.model.get("store_key")+'/department/' + this.model.get("id"))
+                change_view('product/' + this.model.get("id"))
             }
         },
         className: "link",

@@ -52,7 +52,7 @@ default:
 
 
 function stores($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';
 
@@ -89,6 +89,112 @@ function stores($_data, $db, $user) {
 }
 
 
+function departments($_data, $db, $user) {
+	$rtext_label='department';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+
+	foreach ($db->query($sql) as $data) {
+
+
+		$adata[]=array(
+			'id'=>(integer) $data['Product Department Key'],
+			'store_key'=>(integer) $data['Product Department Store Key'],
+			'code'=>$data['Product Department Code'],
+			'name'=>$data['Product Department Name'],
+
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function families($_data, $db, $user) {
+	$rtext_label='family';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+	foreach ($db->query($sql) as $data) {
+		$adata[]=array(
+			'id'=>(integer) $data['Product Family Key'],
+			'code'=>$data['Product Family Code'],
+			'name'=>$data['Product Family Name'],
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function products($_data, $db, $user) {
+	$rtext_label='product';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+
+	foreach ($db->query($sql) as $data) {
+
+
+		$adata[]=array(
+
+			'id'=>(integer) $data['Product ID'],
+			'code'=>$data['Product Code'],
+			'name'=>$data['Product Name'],
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

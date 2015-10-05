@@ -2,16 +2,16 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created:27 16 September 2015 17:50:04 GMT+8, Kuala Lumpur, Malaysia
+ Created: 5 October 2015 at 17:20:33 BST, Sheffield UK
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-$tab='store.departments';
+$tab='store.families';
 $ar_file='ar_products_tables.php';
-$tipo='departments';
+$tipo='families';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -23,8 +23,8 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Department code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Department name')),
+	'code'=>array('label'=>_('Code'),'title'=>_('Family code')),
+	'name'=>array('label'=>_('Name'),'title'=>_('Family name')),
 
 );
 

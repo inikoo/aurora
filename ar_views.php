@@ -39,6 +39,22 @@ case 'views':
 		case 'customer':
 			$_object=new Customer($state['key']);
 			break;
+		case 'store':
+			include_once 'class.Store.php';
+			$_object=new Store($state['key']);
+			break;
+		case 'department':
+			include_once 'class.Department.php';
+			$_object=new Department($state['key']);
+			break;
+		case 'family':
+			include_once 'class.Family.php';
+			$_object=new Family($state['key']);
+			break;
+		case 'product':
+			include_once 'class.Product.php';
+			$_object=new Product('pid',$state['key']);
+			break;			
 		case 'website':
 			$_object=new Site($state['key']);
 			break;
@@ -49,6 +65,14 @@ case 'views':
 		case 'supplier':
 			include_once 'class.Supplier.php';
 			$_object=new Supplier($state['key']);
+			break;
+		case 'employee':
+			include_once 'class.Staff.php';
+			$_object=new Staff($state['key']);
+			break;
+		case 'user':
+			include_once 'class.User.php';
+			$_object=new User($state['key']);
 			break;
 		default:
 			exit('need to complete E1');
@@ -94,7 +118,7 @@ case 'views':
 
 
 
-	$response=array();
+	$response=array('state'=>array());
 
 
 	if ($data['old_state']['module']!=$state['module']) {
@@ -490,7 +514,9 @@ function get_navigation($data) {
 		case ('organization'):
 			return get_organization_navigation($data);
 			break;
-
+		case ('employee'):
+			return get_employee_navigation($data);
+			break;
 
 		}
 
@@ -511,6 +537,19 @@ function get_navigation($data) {
 			break;
 		case ('root'):
 			return get_root_navigation($data);
+			break;
+		case ('staff.user'):
+			return get_staff_user_navigation($data);
+			break;
+		case ('suppliers.user'):
+			return get_supplierss_user_navigation($data);
+			break;
+
+		case ('warehouse.user'):
+			return get_warehouse_user_navigation($data);
+			break;
+		case ('root.user'):
+			return get_root_user_navigation($data);
 			break;
 
 		}
@@ -551,6 +590,9 @@ function get_utils_navigation($data) {
 			break;
 		case 'supplier':
 			$title=_('Supplier not found');
+			break;
+		case 'employee':
+			$title=_('Employee not found');
 			break;
 		case 'user':
 			$title=_('User not found');

@@ -99,6 +99,60 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
+	), 'store.departments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'store.families'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'department.families'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'store.products'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'department.products'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'family.products'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
 	), 'websites'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

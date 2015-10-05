@@ -2435,21 +2435,7 @@ class Company extends DB_Table {
     /*function:get_formated_id
       Returns formated id
     */
-    function get_formated_id() {
-        global $myconf;
-        $sql="select count(*) as num from `Company Dimension`";
-        $res=mysql_query($sql);
-        $min_number_zeros=$myconf['company_min_number_zeros_id'];
-        if ($row=mysql_fetch_array($res)) {
-            if (strlen($row['num'])-1>$min_number_zeros)
-                $min_number_zeros=strlen($row['num'])-01;
-        }
-        if (!is_numeric($min_number_zeros))
-            $min_number_zeros=4;
-
-        return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->id);
-
-    }
+   
 
     function get_name() {
         return $this->data['Company Name'];
