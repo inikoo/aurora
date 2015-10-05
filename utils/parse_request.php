@@ -25,9 +25,9 @@ function parse_request($_data) {
 
 
 
-	$module='dashboard';
-	$section='dashboard';
-	$tab='dashboard';
+	$module='utils';
+	$section='not_found';
+	$tab='not_found';
 	$tab_parent='';
 	$subtab='';
 	$parent=false;
@@ -56,27 +56,93 @@ function parse_request($_data) {
 			$module='products';
 			$section='store';
 			$object='store';
-			if ($count_view_path==0 or !is_numeric($view_path[0])) {
+			if ($count_view_path==0 ) {
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$key=$user->data['User Hooked Store Key'];
 				}else {
 					$_tmp=$user->stores;
 					$key=array_shift($_tmp);
 				}
+			}else {
+
+				if (is_numeric($view_path[0])) {
+					$key=array_shift($view_path);
+				}
+               
+				if (isset($view_path[0])) {
+					if ($view_path[0]=='department') {
+						$module='products';
+						$section='department';
+						$object='department';
+						$parent='store';
+						$parent_key=$key;
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+                      
+					}
+				}
+
 			}
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+
+			break;
+
+		case 'department':
+			$module='products';
+			$section='department';
+			$object='department';
+
+			if (is_numeric($view_path[0])) {
+				$key=array_shift($view_path);
+			}
+			
+			if (isset($view_path[0])) {
+					if ($view_path[0]=='family') {
+						$module='products';
+						$section='family';
+						$object='family';
+						$parent='department';
+						$parent_key=$key;
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+                      
+					}
+					elseif ($view_path[0]=='product') {
+						$module='products';
+						$section='product';
+						$object='product';
+						$parent='department';
+						$parent_key=$key;
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+                      
+					}
+				}
+			
+
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+
+			break;
+		case 'family':
+			$module='products';
+			$section='family';
+			$object='family';
 
 			if (is_numeric($view_path[0])) {
 				$key=array_shift($view_path);
 			}
 
-			//print_r($_SESSION['state']);
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
-			if (isset ( $_SESSION['state'][$module][$section]['tab'])   ) {
-				$tab=$_SESSION['state'][$module][$section]['tab'];
-			}else {
-
-				$tab='store_dashboard';
-			}
 			break;
 		case 'category':
 			$object='category';
@@ -136,7 +202,7 @@ function parse_request($_data) {
 			$section='customer';
 			$object='customer';
 			$key=$view_path[0];
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);		
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'supplier':
 			$module='suppliers';
@@ -564,6 +630,16 @@ function parse_request($_data) {
 			}
 
 			break;
+		case 'employee':
+
+			$module='hr';
+			$section='employee';
+			$object='employee';
+			$parent='none';
+			if (isset($view_path[0]))
+				$key=$view_path[0];
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+			break;
 		case 'reports':
 			$module='reports';
 			$section='reports';
@@ -590,6 +666,33 @@ function parse_request($_data) {
 				$tab='users.staff.users';
 			}
 
+			break;
+
+		case 'user':
+
+			$module='users';
+
+			if (isset($view_path[0])) {
+
+				if ($view_path[0]=='staff') {
+					$parent='users';
+					$section='staff.user';
+					$object='user';
+					$key=$view_path[1];
+				}elseif ($view_path[0]=='suppliers') {
+
+				}elseif ($view_path[0]=='warehouse') {
+
+				}elseif ($view_path[0]=='rott') {
+
+				}else {
+
+					$key=$view_path[0];
+				}
+
+			}
+
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		default:
 

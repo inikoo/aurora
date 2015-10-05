@@ -191,6 +191,29 @@ $modules=array(
 					'store.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'reference'=>'store/%d/products'),
 
 				)
+			),
+			'department'=>array(
+				'type'=>'object',
+				
+				'tabs'=>array(
+					'department.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard'), 'reference'=>'department/%d/dashboard'),
+					'department.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'reference'=>'department/%d/details'),
+					'department.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'reference'=>'department/%d/notes'),
+					'department.families'=>array('label'=>_('Families'), 'title'=>_('Families'), 'reference'=>'dashboard/%d/families'),
+					'department.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'reference'=>'dashboard/%d/products'),
+
+				)
+			),
+			'family'=>array(
+				'type'=>'object',
+				
+				'tabs'=>array(
+					'family.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard'), 'reference'=>'department/%d/dashboard'),
+					'family.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'reference'=>'department/%d/details'),
+					'family.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'reference'=>'department/%d/notes'),
+					'family.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'reference'=>'dashboard/%d/products'),
+
+				)
 			)
 		)
 	),
@@ -411,8 +434,16 @@ $modules=array(
 			),
 			'organization'=>array(
 				'type'=>'navigation', 'label'=>_('Organization'), 'title'=>_('Organization'), 'icon'=>'sitemap', 'reference'=>'hr/organization',
-			)
+			),
+			'employee'=>array('type'=>'object',
+				'tabs'=>array(
+					'employee.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'reference'=>'employee/%d/details'),
+					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'reference'=>'employee/%d/notes'),
+					'employee.timesheet'=>array('label'=>_('Timesheet'), 'title'=>_('Timesheet'), 'reference'=>'employee/%d/timesheet'),
 
+				)
+
+			),
 
 		)
 	),
@@ -437,6 +468,13 @@ $modules=array(
 			),
 			'root'=>array(
 				'type'=>'navigation', 'label'=>'Root', 'title'=>_('Root user'), 'icon'=>'dot-circle-o', 'reference'=>'suppliers',
+			),
+			'staff.user'=>array('type'=>'object',
+				'tabs'=>array(
+					'staff.user.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'reference'=>'store/%d/details'),
+					'staff.user.login_history'=>array('label'=>_('Login History'), 'title'=>_('Login History'), 'reference'=>'store/%d/notes'),
+
+				)
 			)
 
 

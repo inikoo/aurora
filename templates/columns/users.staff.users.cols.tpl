@@ -33,7 +33,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('user/' +this.model.get("id"))
+                change_view('user/staff/' +this.model.get("id"))
             }
         },
         className: "link"

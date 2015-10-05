@@ -169,6 +169,7 @@ if ($user->data['User Type']=='Warehouse') {
 $current_item=$data['module'];
 if ($current_item=='customers_server')$current_item='customers';
 if ($current_item=='marketing_server')$current_item='marketing';
+if ($current_item=='orders_server')$current_item='orders';
 
 
 $smarty->assign('current_item',$current_item);

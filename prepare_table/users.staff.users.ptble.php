@@ -65,11 +65,11 @@ $_order=$order;
 $_dir=$order_direction;
 
 if ($order=='name')
-	$order='`Staff Name`';
+	$order='`User Alias`';
 elseif ($order=='position')
 	$order='position';
 else
-	$order='`Staff Name`';
+	$order='`User Key`';
 
 
 $table='`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
@@ -81,6 +81,6 @@ $fields="`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`U
 	(select GROUP_CONCAT(S.`Warehouse Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Warehouse Dimension` S on (URSB.`Scope Key`=S.`Warehouse Key`) where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
 	(select GROUP_CONCAT(S.`Site Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Site Dimension` S on (URSB.`Scope Key`=S.`Site Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
 
-	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name`
+	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`,`Staff Key`
 ";
 ?>

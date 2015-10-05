@@ -71,6 +71,12 @@ function get_rtext($record_label,$total_records) {
 		return sprintf(ngettext('%s order', '%s orders', $total_records), number($total_records));
 	}elseif ($record_label=='store') {
 		return sprintf(ngettext('%s store', '%s stores', $total_records), number($total_records));
+	}elseif ($record_label=='department') {
+		return sprintf(ngettext('%s department', '%s departments', $total_records), number($total_records));
+	}elseif ($record_label=='family') {
+		return sprintf(ngettext('%s family', '%s families', $total_records), number($total_records));
+	}elseif ($record_label=='product') {
+		return sprintf(ngettext('%s product', '%s products', $total_records), number($total_records));
 	}elseif ($record_label=='category') {
 		return sprintf(ngettext('%s category', '%s categories', $total_records), number($total_records));
 	}elseif ($record_label=='order') {
@@ -104,6 +110,12 @@ function get_rtext_with_filter($record_label,$total_with_filter,$total_no_filter
 		return sprintf(ngettext('%s order of %s', '%s orders of %s', $total_with_filter),number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='store') {
 		return sprintf(ngettext('%s store of %s', '%s stores of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='department') {
+		return sprintf(ngettext('%s department of %s', '%s departments of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='family') {
+		return sprintf(ngettext('%s family of %s', '%s families of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='product') {
+		return sprintf(ngettext('%s product of %s', '%s products of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='category') {
 		return sprintf(ngettext('%s category of %s', '%s categories of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='order') {
