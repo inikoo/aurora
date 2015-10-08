@@ -95,11 +95,31 @@ $email_data=array(
 
 		'email_provider_user'=>'david@ancientwisdom.biz',
 		'email_provider_password'=>'447ba8315277320c130646a345136dc8',
+	),
+	'AWR'=>array(
+		'promotion_name' => 'Back In Stock Notification - ES',
+		'from' => 'trini@aw-regalos.com',
+		'subject1' => 'Producto vuelta en stock',
+		'subjectn' => 'Productos vuelta en stock',
+
+		'email_provider_user'=>'carlos.awr@gmail.com',
+		'email_provider_password'=>'2b9affc4f81d32f7fa57d95f6f7b5268',
+	),
+	'AWP'=>array(
+		'promotion_name' => 'Back In Stock Notification - PT',
+		'from' => 'trini@aw-regalos.com',
+		'subject1' => 'Produto volta em stock',
+		'subjectn' => 'Produtos volta em stock',
+
+		'email_provider_user'=>'carlos.awr@gmail.com',
+		'email_provider_password'=>'2b9affc4f81d32f7fa57d95f6f7b5268',
 	)
 
 
 
 );
+
+
 
 
 $sql=sprintf("select `Site Key`,`Site Code` from `Site Dimension`");
@@ -157,7 +177,7 @@ while ($row2=mysql_fetch_assoc($res2)) {
 			$products=preg_replace('/,\<br\/\>$/','',$products);
 			$product_codes=preg_replace('/^, /','',$product_codes);
 			$subject_data=array(
-				'customer_name' => ($customer->data['Customer Name']==$customer->data['Customer Main Contact Name']?'':$customer->data['Customer Name']),
+				'customer_name' => $customer->data['Customer Name'],
 				'contact_name' => ($customer->data['Customer Main Contact Name']==''?_('Sir/Madam'):$customer->data['Customer Main Contact Name']),
 				'email'=>$email_reminder_user->data['User Handle']
 			);
@@ -199,9 +219,10 @@ function send_email($subject_data,$products,$email_data) {
 		'products'=>$products
 	);
 	//$email='raul@inikoo.com';
+	$email=$subject_data['email'];
 	$options = array(
 		'promotion_name' => $email_data['promotion_name'],
-		'recipients' => $subject_data['email'],
+		'recipients' => $email,
 		'from' => $email_data['from'],
 
 		'subject' =>$email_data['subject'],

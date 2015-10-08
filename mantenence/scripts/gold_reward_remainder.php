@@ -158,7 +158,7 @@ while ($rowxx=mysql_fetch_assoc($resxx)) {
 				'date1'=>strftime("%e %b %Y", strtotime($date1.' UTC')),
 				'date2'=>strftime("%a %e %b %Y", strtotime($date2.' UTC'))
 			);
-			$email='raul@inikoo.com';
+			
 			$options = array(
 				'promotion_name' => $email_data[$rowxx['Store Code']]['promotion_name'],
 				'recipients' => $email,
