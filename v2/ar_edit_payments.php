@@ -193,10 +193,10 @@ function cancel_payment($data) {
 	);
 	$payment->update($data_to_update);
 	$payment->update_balance();
-	
-	
-	
-	
+
+
+
+
 
 
 
@@ -786,10 +786,10 @@ function credit_payment($data) {
 			$refund_payment->data['Payment Amount']
 		);
 		mysql_query($sql);
-		
-	
-		
-		
+
+
+
+
 		$order->update_totals();
 		$order->update_payment_state();
 
@@ -835,7 +835,7 @@ function credit_payment($data) {
 	}
 
 
-if ($data['parent']=='invoice') {
+	if ($data['parent']=='invoice') {
 		$invoice=new Invoice($data['parent_key']);
 	}else {
 		$invoice=new Invoice($payment->data['Payment Invoice Key']);
@@ -870,6 +870,9 @@ function refund_payment($data) {
 				break;
 			case 'Worldpay':
 				$refunded_data=online_worldpay_refund($refund_amount,$payment);
+				break;
+			case 'BTree':
+				$refunded_data=online_braintree_refund($refund_amount,$payment);
 				break;
 			default:
 				$response=array('state'=>400,'msg'=>"Error 2. Payment account can't do online refunds");
@@ -971,7 +974,7 @@ function refund_payment($data) {
 		}
 
 
-        $order->apply_payment_from_customer_account();
+		$order->apply_payment_from_customer_account();
 		$response=array('state'=>200,
 			'result'=>'updated',
 			'order_shipping_method'=>$order->data['Order Shipping Method'],
@@ -999,7 +1002,7 @@ function refund_payment($data) {
 		$invoice->apply_payment($payment);
 	}
 
-	
+
 }
 
 
@@ -1148,6 +1151,51 @@ function online_worldpay_refund($refund_amount,$payment) {
 	}
 
 	return $refunded_data;
+
+
+}
+
+function online_braintree_refund($refund_amount,$payment) {
+
+
+	$refund_amount=-1*$refund_amount;
+	require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+
+	Braintree_Configuration::environment('production');
+	Braintree_Configuration::merchantId($payment->payment_account->get('Payment Account ID'));
+	Braintree_Configuration::publicKey($payment->payment_account->get('Payment Account Login'));
+	Braintree_Configuration::privateKey($payment->payment_account->get('Payment Account Password'));
+
+
+	$result = Braintree_Transaction::refund($payment->data['Payment Transaction ID'], $refund_amount);
+
+	//print_r($result);
+	if ($result->success) {
+		$refunded_data=array(
+			'status'=>'Completed',
+			'reference'=>$result->transaction->id,
+			'submit_type'=>'EPS'
+		);
+
+	}else {
+
+		if (isset($result->transaction->processorSettlementResponseText)) {
+			$msg=$result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
+
+		}else {
+			$msg=$result->message;
+
+		}
+		$refunded_data=array(
+			'status'=>'Error',
+			'reference'=>$msg,
+			'submit_type'=>'EPS'
+		);
+
+	}
+
+	return $refunded_data;
+
 
 
 }
