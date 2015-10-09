@@ -28,7 +28,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 
 
-$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Store Key`,`Product Family Main Image Key` from `Product Family Dimension`  ");
+$sql=sprintf("select `Product Family Key`,`Product Family Code`,`Product Family Store Key`,`Product Family Main Image Key` from `Product Family Dimension` where `Product Family Main Image Key`=0  and `Product Family Store Key`=1");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
@@ -66,7 +66,7 @@ while ($row=mysql_fetch_array($res)) {
 
 }
 
-$sql=sprintf("select `Product ID`,`Product Code`,`Product Store Key`,`Product Main Image Key` from `Product Dimension`  ");
+$sql=sprintf("select `Product ID`,`Product Code`,`Product Store Key`,`Product Main Image Key` from `Product Dimension` where  `Product Main Image Key`=0  and `Product Store Key`=1");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
