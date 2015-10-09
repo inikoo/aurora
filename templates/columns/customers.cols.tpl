@@ -14,7 +14,6 @@ var columns = [
     {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     
     cell: Backgrid.StringCell.extend({
-        orderSeparator: '',
         events: {
             "click": function() {
                 change_view('customers/{if $data.object=='list'}list/{$data.key}{else}{$data.parent_key}{/if}/' + this.$el.html())

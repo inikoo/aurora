@@ -22,8 +22,22 @@ var columns= [{
      name: "public_id",
      label: "{t}Number{/t}",
      editable: false,
- sortType: "toggle",
-     cell: "string"
+    sortType: "toggle",
+     cell: Backgrid.StringCell.extend({
+         events: {
+             "click": function() {
+                 {if $data['object']!=''}   
+                 change_view("{$data['object']}/{$data['key']}/order/" + this.model.get("id")  )
+                 {elseif $data['parent']=='store' }
+                   change_view("orders/{$data['parent_key']}/" + this.model.get("id")  )
+               {else}
+                   change_view("{$data['parent']}/{$data['parent_key']}/order/" + this.model.get("id")  )
+               
+                 {/if}
+             }
+         },
+         className: "link",
+     })
  }, {
      name: "date",
      label: "{t}Date{/t}",
@@ -39,7 +53,6 @@ var columns= [{
       sortType: "toggle",
      editable: false,
      cell: Backgrid.StringCell.extend({
-         orderSeparator: '',
          events: {
              "click": function() {
                  change_view('customer/' + this.model.get("customer_key")  )

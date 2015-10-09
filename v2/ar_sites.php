@@ -598,7 +598,9 @@ function list_pages() {
 
 
 
-	$sql="select *,(`Page Store Number Out of Stock Products`/`Page Store Number Products`) as percentage_out_of_stock,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select 
+	*,(`Page Store Number Out of Stock Products`/`Page Store Number Products`) as percentage_out_of_stock,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`
+	  from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 	$result=mysql_query($sql);
 	$data=array();
@@ -613,7 +615,6 @@ function list_pages() {
 		$users=number($row["Page Store $interval_db Acc Users"]);
 
 
-		//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 		switch ($row['Page Store Section']) {
 		case 'Department Catalogue':
 			$type=sprintf("d(<a href='department.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);

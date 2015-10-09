@@ -22,7 +22,11 @@
 		{foreach from=$_products item=product} 
 		<div class="block four product_showcase {if $product.col==1}first{/if}" style="margin-bottom:20px;position:relative">
 			
-			<a href="page.php?id={$product.page_id}"><img class="more_info" src="art/moreinfo_corner{$product.col}.png"> </a> 
+			
+			{assign var="corner_icon_default" value="art/moreinfo_corner{$product.col}.png"}
+			{assign var="corner_icon" value="art/moreinfo_corner{$product.col}_{$site->get('Site Locale')}.png"}
+
+			<a href="page.php?id={$product.page_id}"><img class="more_info" src="{if  file_exists($corner_icon)}{$corner_icon}{else}{$corner_icon_default}{/if}"> </a> 
 			<div class="wraptocenter">
 				<img src="{$product.img}" /> 
 			</div>

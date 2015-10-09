@@ -37,6 +37,26 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
+	'customer.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'customer.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>''
+	),
 	'customers_server'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
@@ -57,6 +77,23 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'ytd',
 		'elements_type'=>''
+	),
+	'order.items'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+
+	),
+	'order.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
 	),
 	'invoices'=>array(
 		'view'=>'overview',
@@ -90,7 +127,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'percentages'=>0
-	), 'stores'=>array(
+	),
+	'stores'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -153,6 +191,13 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
+	), 'family.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
 	), 'websites'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -166,8 +211,10 @@ $tab_defaults=array(
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code'
-	),'marketing_server'=>array(
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	), 'marketing_server'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -200,7 +247,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
-	),'warehouses'=>array(
+	), 'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,

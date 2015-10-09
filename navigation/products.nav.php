@@ -523,5 +523,196 @@ function get_family_navigation($data) {
 
 }
 
+function get_product_navigation($data) {
+
+	global $user, $smarty;
+
+
+
+	$object=$data['_object'];
+
+	$block_view=$data['section'];
+
+
+
+	$left_buttons=array();
+
+
+	if ($data['parent']) {
+
+		switch ($data['parent']) {
+		case 'store':
+			$tab='store.products';
+			$_section='products';
+			break;
+		case 'department':
+			$tab='department.products';
+			$_section='products';
+			break;
+		case 'family':
+			$tab='family.products';
+			$_section='products';
+			break;	
+
+		}
+
+
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+
+		include_once 'prepare_table/'.$tab.'.ptble.php';
+
+		$_order_field=$order;
+		$order=preg_replace('/^.*\.`/', '', $order);
+		$order=preg_replace('/^`/', '', $order);
+		$order=preg_replace('/`$/', '', $order);
+		$_order_field_value=$object->get($order);
+
+
+		$prev_title='';
+		$next_title='';
+		$prev_key=0;
+		$next_key=0;
+		$sql=trim($sql_totals." $wheref");
+
+		$res2=mysql_query($sql);
+		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
+
+			$sql=sprintf("select `Product Code` object_name,P.`Product ID` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1",
+
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
+
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$prev_key=$row['object_key'];
+				$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+			}
+
+			$sql=sprintf("select `Product Code` object_name,P.`Product ID` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
+
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$next_key=$row['object_key'];
+				$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+			}
+
+
+			if ($order_direction=='desc') {
+				$_tmp1=$prev_key;
+				$_tmp2=$prev_title;
+				$prev_key=$next_key;
+				$prev_title=$next_title;
+				$next_key=$_tmp1;
+				$next_title=$_tmp2;
+			}
+
+
+			switch ($data['parent']) {
+			case 'store':
+			
+			    $store= new Store($object->get('Product Store Key'));
+			
+				$up_button=array('icon'=>'arrow-up', 'title'=>_("Store").' ('.$store->get('Store Code').')', 'reference'=>'store/'.$object->get('Product Store Key'));
+
+				if ($prev_key) {
+					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'store/'.$data['parent_key'].'/product/'.$prev_key);
+
+				}else {
+					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+				}
+				$left_buttons[]=$up_button;
+
+
+				if ($next_key) {
+					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'store/'.$data['parent_key'].'/product/'.$next_key);
+
+				}else {
+					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+				}
+
+				break;
+			case 'department':
+				$up_button=array('icon'=>'arrow-up', 'title'=>_("Department").' ('.$object->get('Product Main Department Code').')', 'reference'=>'store/'.$object->get('Product Store Key').'/department/'.$object->get('Product Main Department Key'));
+
+				if ($prev_key) {
+					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$prev_key);
+
+				}else {
+					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+				}
+				$left_buttons[]=$up_button;
+
+
+				if ($next_key) {
+					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$next_key);
+
+				}else {
+					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+				}
+
+				break;
+
+			}
+
+
+
+
+
+		}
+
+
+	}
+	else {
+		$_section='products';
+
+	}
+
+
+
+	$right_buttons=array();
+	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');
+	$sections=get_sections('products', $object->get('Product Store Key'));
+	$_section='products';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Product').' <span class="id">'.$object->get('Product Code').'</span>',
+		'search'=>array('show'=>true, 'placeholder'=>_('Search products').' '.$object->get('Product Store Code'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 
 ?>

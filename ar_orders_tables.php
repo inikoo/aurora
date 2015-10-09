@@ -51,6 +51,9 @@ case 'delivery_notes_server':
 case 'invoice_categories':
 	invoice_categories(get_table_parameters(), $db, $user);
 	break;
+case 'order.items':
+	order_items(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -60,8 +63,9 @@ default:
 
 
 function orders($_data, $db, $user) {
-	global $db;
 	$rtext_label='order';
+
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -347,6 +351,96 @@ function orders_server($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function order_items($_data, $db, $user) {
+
+	global $_locale;// fix this locale stuff
+
+	$rtext_label='item';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	//print $sql;
+	foreach ($db->query($sql) as $data) {
+
+		$quantity=number($data['Order Quantity']);
+
+		if ($data['Order Bonus Quantity']!=0) {
+			if ($data['Order Quantity']!=0) {
+				$quantity.='<br/> +'.number($data['Order Bonus Quantity']).' '._('free');
+			}else {
+				$quantity=number($data['Order Bonus Quantity']).' '._('free');
+			}
+		}
+
+
+		if (is_numeric($data['Product Availability']))
+			$stock=number($data['Product Availability']);
+		else
+			$stock='?';
+
+		$deal_info='';
+		if ($data['Deal Info']!='') {
+			$deal_info='<br/> <span class="deal_info">'.$data['Deal Info'].'</span>';
+		}
+
+		$units=$data['Product Units Per Case'];
+		$name=$data['Product History Name'];
+		$price=$data['Product History Price'];
+		$currency=$data['Product Currency'];
+
+
+		$description='';
+		if ($units>1) {
+			$description=number($units).'x ';
+		}
+		$description.=' '.$name;
+		if ($price>0) {
+			$description.=' ('.money_locale($price, $_locale, $currency).')';
+		}
+
+
+		$description.=' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+
+
+
+		if ($data['Current Dispatching State']=='Out of Stock in Basket') {
+			$description.='<br> <span class="attention"><img src="art/icons/error.png"> '._('Product out of stock, removed from basket').'</span>';
+			$quantity=number($data['Out of Stock Quantity']);
+
+			$class='out_of_stock';
+
+		}
+
+
+		$adata[]=array(
+			'id'=>(integer)$data['Order Transaction Fact Key'],
+			'product_pid'=>(integer)$data['Product ID'],
+			'code'=>$data['Product Code'],
+			'description'=>$description,
+			'quantity'=>$quantity,
+			'net'=>money($data['Order Transaction Amount'], $data['Order Currency Code']),
+
+
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>
