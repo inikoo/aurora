@@ -68,7 +68,7 @@ function parse_request($_data) {
 				if (is_numeric($view_path[0])) {
 					$key=array_shift($view_path);
 				}
-               
+
 				if (isset($view_path[0])) {
 					if ($view_path[0]=='department') {
 						$module='products';
@@ -81,7 +81,33 @@ function parse_request($_data) {
 							$key=$view_path[1];
 						}
 
-                      
+
+					}
+					elseif ($view_path[0]=='family') {
+						$module='products';
+						$section='family';
+						$object='family';
+						$parent='store';
+						$parent_key=$key;
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+
+					}
+					elseif ($view_path[0]=='product') {
+						$module='products';
+						$section='product';
+						$object='product';
+						$parent='store';
+						$parent_key=$key;
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+
 					}
 				}
 
@@ -98,36 +124,36 @@ function parse_request($_data) {
 			if (is_numeric($view_path[0])) {
 				$key=array_shift($view_path);
 			}
-			
+
 			if (isset($view_path[0])) {
-					if ($view_path[0]=='family') {
-						$module='products';
-						$section='family';
-						$object='family';
-						$parent='department';
-						$parent_key=$key;
+				if ($view_path[0]=='family') {
+					$module='products';
+					$section='family';
+					$object='family';
+					$parent='department';
+					$parent_key=$key;
 
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}
-
-                      
+					if (is_numeric($view_path[1])) {
+						$key=$view_path[1];
 					}
-					elseif ($view_path[0]=='product') {
-						$module='products';
-						$section='product';
-						$object='product';
-						$parent='department';
-						$parent_key=$key;
 
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}
 
-                      
-					}
 				}
-			
+				elseif ($view_path[0]=='product') {
+					$module='products';
+					$section='product';
+					$object='product';
+					$parent='department';
+					$parent_key=$key;
+
+					if (is_numeric($view_path[1])) {
+						$key=$view_path[1];
+					}
+
+
+				}
+			}
+
 
 			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
@@ -185,23 +211,53 @@ function parse_request($_data) {
 		case 'website':
 			$module='websites';
 			$section='website';
-
-
-
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				$tab='website.details';
-			}
-
 			$object='website';
 			$key=$view_path[0];
+			
+			
+			if (isset($view_path[1])) {
+				if ($view_path[1]=='page') {
+					$section='page';
+					$object='page';
+					$parent='website';
+					$parent_key=$key;
+
+					if (is_numeric($view_path[2])) {
+						$key=$view_path[2];
+					}
+
+
+				}
+				
+			}
+			
+			
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'customer':
 			$module='customers';
 			$section='customer';
 			$object='customer';
 			$key=$view_path[0];
+
+			if (isset($view_path[1])) {
+				if ($view_path[1]=='order') {
+
+
+					$module='orders';
+					$section='order';
+					$parent='customer';
+					$parent_key=$key;
+					$object='order';
+					$key=$view_path[2];
+
+				}
+
+
+			}
+
+
+
 			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'supplier':
@@ -340,7 +396,7 @@ function parse_request($_data) {
 			$module='orders';
 			if ($count_view_path==0) {
 				$section='orders';
-				$tab='orders';
+				
 				$parent='store';
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
@@ -354,7 +410,7 @@ function parse_request($_data) {
 			if ($arg1=='all') {
 				$module='orders_server';
 				$section='orders';
-				$tab='orders_server';
+				
 
 
 
@@ -368,7 +424,7 @@ function parse_request($_data) {
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
 					$section='order';
 					$object='order';
-					$tab='items';
+					
 					$parent='store';
 					$parent_key=$arg1;
 					$key=$view_path[0];
@@ -376,6 +432,8 @@ function parse_request($_data) {
 				}
 
 			}
+									list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+
 			break;
 		case 'invoices':
 			$module='orders';

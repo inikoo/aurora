@@ -14,20 +14,20 @@ var columns = [{
     cell: "string"
 }, {
     name: "code",
-    label: "Code",
+    label: "{t}Code{/t}",
     editable: false,
     cell: Backgrid.StringCell.extend({
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('product/' + this.model.get("id"))
+                change_view( '{$data['object']}/{$data['key']}/product/' + this.model.get("id"))
             }
         },
         className: "link",
     })
 }, {
     name: "name",
-    label: "Name",
+    label: "{t}Name{/t}",
     editable: false,
     cell: "string"
 }]

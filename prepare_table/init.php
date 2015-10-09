@@ -12,7 +12,6 @@ if (!isset($rtext_label)) {
 	$rtext_label='';
 }
 
-global $user;
 
 $parameters=$_data['parameters'];
 $number_results=$_data['nr'];

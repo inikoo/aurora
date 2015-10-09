@@ -428,8 +428,22 @@ a {
 .backgrid th {
   text-align: left; }
 
+.backgrid th,
+.backgrid td {
+  vertical-align: top;
+  white-space: normal; }
+
 .backgrid th.align-right {
   text-align: right; }
+
+.full_date {
+  width: 250px;
+  text-align: right; }
+
+.contact_name {
+  width: 150px;
+  white-space: normal;
+  white-space: nowrap; }
 
 #object_showcase {
   clear: both;

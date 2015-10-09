@@ -2845,12 +2845,6 @@ function list_transactions_in_order() {
 
 
 	$where=sprintf(' where OTF.`Order Key`=%d',$parent_key);
-
-
-
-
-
-
 	$wheref='';
 	if ($f_field=='code'  and $f_value!='')
 		$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
@@ -2926,13 +2920,18 @@ function list_transactions_in_order() {
 	$total_picks=0;
 
 	$adata=array();
-	$sql="select `Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,OTF.`Product ID`,OTF.`Product Code`,`Order Quantity`,`Order Bonus Quantity`,`Product Availability`,`Product History XHTML Short Description`,`Order Transaction Amount`,`Transaction Tax Rate`,`Product Tariff Code`,
+	$sql="select 
+	`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,OTF.`Product ID`,OTF.`Product Code`,`Order Quantity`,`Order Bonus Quantity`,`Product Availability`,`Product History XHTML Short Description`,`Order Transaction Amount`,`Transaction Tax Rate`,`Product Tariff Code`,
 	`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,`Order Date`,`Order Last Updated Date`,`Current Dispatching State`,OO.`Quantity` as `Out of Stock Quantity`,
 		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
+
+
 	 from `Order Transaction Fact` OTF
 left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
  left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
  left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
+
+
 	 $where  order by $order $order_direction limit $start_from,$number_results ";
 
 	$res=mysql_query($sql);

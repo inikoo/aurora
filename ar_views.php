@@ -53,10 +53,26 @@ case 'views':
 			break;
 		case 'product':
 			include_once 'class.Product.php';
-			$_object=new Product('pid',$state['key']);
-			break;			
+			$_object=new Product('pid', $state['key']);
+			break;
+		case 'order':
+			include_once 'class.Order.php';
+			$_object=new Order($state['key']);
+			break;
+		case 'invoie':
+			include_once 'class.Invoice.php';
+			$_object=new Invoice($state['key']);
+			break;
+		case 'delivery_note':
+			include_once 'class.DeliveryNote.php';
+			$_object=new DeliveryNote($state['key']);
+			break;
 		case 'website':
 			$_object=new Site($state['key']);
+			break;
+		case 'page':
+			$_object=new Page($state['key']);
+
 			break;
 		case 'warehouse':
 			include_once 'class.Warehouse.php';
@@ -97,13 +113,19 @@ case 'views':
 
 	case 'store':
 		$_parent=new Store($state['parent_key']);
+		break;
+	case 'website':
+		$_parent=new Site($state['parent_key']);
 
 
 
 		break;
+
 	default:
 		$_parent=false;
 	}
+
+
 
 
 
@@ -136,6 +158,8 @@ case 'views':
 		$response['navigation']=get_navigation($state);
 
 	}
+	
+	
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
 
 	$response['view_position']=get_view_position($state);
@@ -354,9 +378,10 @@ function get_navigation($data) {
 		case ('orders'):
 		case ('invoices'):
 		case ('payments'):
-
-
 			return get_orders_navigation($data);
+			break;
+		case ('order'):
+			return get_order_navigation($data);
 			break;
 		default:
 			return 'View not found';
@@ -365,6 +390,7 @@ function get_navigation($data) {
 		break;
 
 	case ('websites'):
+	  
 		require_once 'navigation/websites.nav.php';
 		switch ($data['section']) {
 		case ('websites'):
@@ -375,6 +401,11 @@ function get_navigation($data) {
 
 
 			return get_website_navigation($data);
+			break;
+		case ('page'):
+
+
+			return get_page_navigation($data);
 			break;
 		default:
 			return 'View not found';
@@ -576,6 +607,7 @@ function get_utils_navigation($data) {
 	global $smarty;
 	$branch=array(array('label'=>'', 'icon'=>'home', 'reference'=>''));
 
+
 	if ($data['section']=='not_found') {
 
 		switch ($data['parent']) {
@@ -617,7 +649,6 @@ function get_utils_navigation($data) {
 	}else {
 		$title='';
 	}
-
 	$_content=array(
 		'branch'=>$branch,
 		'sections_class'=>'',
@@ -685,6 +716,9 @@ function get_tabs($data) {
 
 function get_view_position($data) {
 	global $user, $smarty;
+
+
+
 	$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
 
 	switch ($data['module']) {
@@ -810,6 +844,11 @@ function get_view_position($data) {
 			if ( $user->get_number_stores()>1) {
 				$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
 			}
+			$store=new Store($data['parent_key']);
+
+			$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
+
+
 			break;
 		case 'invoices':
 			if ( $user->get_number_stores()>1) {
@@ -826,6 +865,43 @@ function get_view_position($data) {
 				$branch[]=array('label'=>_('Payments').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'payments/all');
 			}
 			break;
+
+		case 'order':
+
+			if ($data['parent']=='customer') {
+
+				$customer=new Customer($data['parent_key']);
+				if ($customer->id) {
+					if ( $user->get_number_stores()>1) {
+
+
+						$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
+
+					}
+
+					$store=new Store($customer->data['Customer Store Key']);
+
+
+					$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
+					$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
+				}
+
+
+
+			}else {
+				$store=new Store($data['_object']->data['Order Store Key']);
+
+				if ( $user->get_number_stores()>1) {
+					$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
+				}
+				$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
+
+
+			}
+			$branch[]=array('label'=>_('Order').' '.$data['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
+
+			break;
+
 		}
 		break;
 

@@ -81,6 +81,8 @@ function get_rtext($record_label,$total_records) {
 		return sprintf(ngettext('%s category', '%s categories', $total_records), number($total_records));
 	}elseif ($record_label=='order') {
 		return sprintf(ngettext('%s order', '%s orders', $total_records), number($total_records));
+	}elseif ($record_label=='item') {
+		return sprintf(ngettext('%s item', '%s items', $total_records), number($total_records));
 	}elseif ($record_label=='invoice') {
 		return sprintf(ngettext('%s invoice', '%s invoices', $total_records), number($total_records));
 	}elseif ($record_label=='delivery_note') {
@@ -120,6 +122,8 @@ function get_rtext_with_filter($record_label,$total_with_filter,$total_no_filter
 		return sprintf(ngettext('%s category of %s', '%s categories of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='order') {
 		return sprintf(ngettext('%s order of %s', '%s orders of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='item') {
+		return sprintf(ngettext('%s item of %s', '%s items of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='invoice') {
 		return sprintf(ngettext('%s invoice of %s', '%s invoices of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='delivery_note') {

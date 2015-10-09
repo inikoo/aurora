@@ -1,7 +1,7 @@
 <?php
 
 
-list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_interval_dates($parameters['period'],$parameters['from'],$parameters['to']);
+list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
 
 $wheref='';
@@ -14,14 +14,14 @@ $table='`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payme
 
 
 if (isset($parameters['awhere']) and $parameters['awhere']) {
-	$tmp=preg_replace('/\\\"/','"',$awhere);
-	$tmp=preg_replace('/\\\\\"/','"',$tmp);
-	$tmp=preg_replace('/\'/',"\'",$tmp);
+	$tmp=preg_replace('/\\\"/', '"', $awhere);
+	$tmp=preg_replace('/\\\\\"/', '"', $tmp);
+	$tmp=preg_replace('/\'/', "\'", $tmp);
 
 	$raw_data=json_decode($tmp, true);
 	$raw_data['store_key']=$parameters['parent_key'];
 	//print_r( $raw_data);exit;
-	list($where,$table)=orders_awhere($raw_data);
+	list($where, $table)=orders_awhere($raw_data);
 
 	$where_interval='';
 }
@@ -30,27 +30,27 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 elseif ($parameters['parent']=='list') {
 	$where_interval='';
 
-	$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parameters['parent_key']);
+	$sql=sprintf("select * from `List Dimension` where `List Key`=%d", $parameters['parent_key']);
 	//print $sql;
 	$res=mysql_query($sql);
 	if ($list_data=mysql_fetch_assoc($res)) {
 		$awhere=false;
 		if ($list_data['List Type']=='Static') {
 			$table='`List Order Bridge` OB left join `Order Dimension` O  on (OB.`Order Key`=O.`Order Key`)';
-			$where=sprintf(' where `List Key`=%d ',$parameters['parent_key']);
+			$where=sprintf(' where `List Key`=%d ', $parameters['parent_key']);
 
 		} else {// Dynamic by DEFAULT
 
 
 
-			$tmp=preg_replace('/\\\"/','"',$list_data['List Metadata']);
-			$tmp=preg_replace('/\\\\\"/','"',$tmp);
-			$tmp=preg_replace('/\'/',"\'",$tmp);
+			$tmp=preg_replace('/\\\"/', '"', $list_data['List Metadata']);
+			$tmp=preg_replace('/\\\\\"/', '"', $tmp);
+			$tmp=preg_replace('/\'/', "\'", $tmp);
 
 			$raw_data=json_decode($tmp, true);
 
 			$raw_data['store_key']=$parameters['parent_key'];
-			list($where,$table)=orders_awhere($raw_data);
+			list($where, $table)=orders_awhere($raw_data);
 
 
 
@@ -63,8 +63,8 @@ elseif ($parameters['parent']=='list') {
 }
 
 elseif ($parameters['parent']=='store') {
-	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'],$user->stores)) {
-		$where=sprintf(' where  `Order Store Key`=%d ',$parameters['parent_key']);
+	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+		$where=sprintf(' where  `Order Store Key`=%d ', $parameters['parent_key']);
 		if (!isset($store)) {
 			include_once 'class.Store.php';
 			$store=new Store($parameters['parent_key']);
@@ -78,15 +78,34 @@ elseif ($parameters['parent']=='store') {
 
 }
 elseif ($parameters['parent']=='stores') {
-	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'],$user->stores)) {
+	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
 
 		if (count($user->stores)==0) {
 			$where=' where false';
 		}
 		else {
 
-			$where=sprintf('where  `Order Store Key` in (%s)  ',join(',',$user->stores));
+			$where=sprintf('where  `Order Store Key` in (%s)  ', join(',', $user->stores));
 		}
+	}
+}elseif ($parameters['parent']=='customer') {
+
+
+	include_once 'class.Customer.php';
+	$customer=new Customer($parameters['parent_key']);
+
+	if (!$customer->id) {
+		$where=' where false';
+	}
+	else {
+
+		if ( in_array($customer->get('Customer Store Key'), $user->stores)) {
+			$where=sprintf('where  `Order Customer Key`=%d  ', $parameters['parent_key']);
+		}
+		else {
+			$where=' where false';
+		}
+
 	}
 }
 else {
@@ -95,7 +114,7 @@ else {
 
 
 
-$where_interval=prepare_mysql_dates($from,$to,'`Order Date`');
+$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
 $where.=$where_interval['mysql'];
 
 
@@ -131,7 +150,7 @@ case('dispatch'):
 	}else {
 
 
-		$_elements=preg_replace('/^,/','',$_elements);
+		$_elements=preg_replace('/^,/', '', $_elements);
 
 		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 	}
@@ -152,7 +171,7 @@ case('source'):
 	}elseif ($num_elements_checked==6) {
 
 	}else {
-		$_elements=preg_replace('/^,/','',$_elements);
+		$_elements=preg_replace('/^,/', '', $_elements);
 		$where.=' and `Order Main Source Type` in ('.$_elements.')' ;
 	}
 	break;
@@ -172,7 +191,7 @@ case('type'):
 	}elseif ($num_elements_checked==6) {
 
 	}else {
-		$_elements=preg_replace('/^,/','',$_elements);
+		$_elements=preg_replace('/^,/', '', $_elements);
 		$where.=' and `Order Type` in ('.$_elements.')' ;
 	}
 	break;
@@ -199,7 +218,7 @@ case('payment'):
 	}elseif ($num_elements_checked==6) {
 
 	}else {
-		$_elements=preg_replace('/^,/','',$_elements);
+		$_elements=preg_replace('/^,/', '', $_elements);
 		$where.=' and `Order Current Payment State` in ('.$_elements.')' ;
 	}
 	break;
@@ -209,7 +228,7 @@ case('payment'):
 
 if (($parameters['f_field']=='customer')  and $f_value!='') {
 
-	$wheref=sprintf('  and  `Order Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$wheref=sprintf('  and  `Order Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
 
 
 }
@@ -234,7 +253,7 @@ elseif ($parameters['f_field']=='country' and  $f_value!='') {
 		$f_value=Address::parse_country($f_value);
 		if ($f_value!='UNK') {
 			$wheref.=" and  `Order Main Country Code`='".$f_value."'    ";
-			$country=new Country('code',$f_value);
+			$country=new Country('code', $f_value);
 			$find_data=' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" alt="'.$country->data['Country Code'].'"/>';
 		}
 	}
@@ -242,28 +261,28 @@ elseif ($parameters['f_field']=='country' and  $f_value!='') {
 
 
 
-	$_order=$order;
-	$_dir=$order_direction;
+$_order=$order;
+$_dir=$order_direction;
 
 
-	if ($order=='public_id')
-		$order='`Order File As`';
-	elseif ($order=='last_date' or $order=='date')
-		$order='O.`Order Date`';
+if ($order=='public_id')
+	$order='`Order File As`';
+elseif ($order=='last_date' or $order=='date')
+	$order='O.`Order Date`';
 
-	elseif ($order=='customer')
-		$order='O.`Order Customer Name`';
-	elseif ($order=='dispatch_state')
-		$order='O.`Order Current Dispatch State`';
-	elseif ($order=='payment_state')
-		$order='O.`Order Current Payment State`';
-	elseif ($order=='total_amount')
-		$order='O.`Order Total Amount`';
-	else
-		$order='`Order Key`';
+elseif ($order=='customer')
+	$order='O.`Order Customer Name`';
+elseif ($order=='dispatch_state')
+	$order='O.`Order Current Dispatch State`';
+elseif ($order=='payment_state')
+	$order='O.`Order Current Payment State`';
+elseif ($order=='total_amount')
+	$order='O.`Order Total Amount`';
+else
+	$order='`Order Key`';
 
-    $fields='`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
+$fields='`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
 
-	$sql_totals="select count(Distinct O.`Order Key`) as num from $table   $where $wheref ";
+$sql_totals="select count(Distinct O.`Order Key`) as num from $table   $where $wheref ";
 
 ?>
