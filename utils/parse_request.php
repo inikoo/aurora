@@ -24,7 +24,6 @@ function parse_request($_data) {
 	$view_path=preg_split('/\//', $original_request);
 
 
-
 	$module='utils';
 	$section='not_found';
 	$tab='not_found';
@@ -45,11 +44,14 @@ function parse_request($_data) {
 		$root=array_shift($view_path);
 		$count_view_path=count($view_path);
 		switch ($root) {
+		case 'index.php':
+		    $module='dashboard';
+	$section='dashboard';
+		    break;
 		case 'stores':
-			$module='products';
+			$module='products_server';
 			$section='stores';
 
-			$tab='stores';
 
 			break;
 		case 'store':
@@ -213,8 +215,8 @@ function parse_request($_data) {
 			$section='website';
 			$object='website';
 			$key=$view_path[0];
-			
-			
+
+
 			if (isset($view_path[1])) {
 				if ($view_path[1]=='page') {
 					$section='page';
@@ -228,10 +230,10 @@ function parse_request($_data) {
 
 
 				}
-				
+
 			}
-			
-			
+
+
 			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'customer':
@@ -332,11 +334,7 @@ function parse_request($_data) {
 			}
 			elseif ($arg1=='category') {
 				$section='category';
-				$tab='customers.category';
 				$object='category';
-
-
-
 
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
 					$key=$view_path[0];
@@ -396,7 +394,7 @@ function parse_request($_data) {
 			$module='orders';
 			if ($count_view_path==0) {
 				$section='orders';
-				
+
 				$parent='store';
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
@@ -410,7 +408,7 @@ function parse_request($_data) {
 			if ($arg1=='all') {
 				$module='orders_server';
 				$section='orders';
-				
+
 
 
 
@@ -424,7 +422,7 @@ function parse_request($_data) {
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
 					$section='order';
 					$object='order';
-					
+
 					$parent='store';
 					$parent_key=$arg1;
 					$key=$view_path[0];
@@ -432,7 +430,7 @@ function parse_request($_data) {
 				}
 
 			}
-									list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 		case 'invoices':
@@ -562,9 +560,8 @@ function parse_request($_data) {
 			}
 			break;
 		case 'warehouses':
-			$module='warehouses';
+			$module='warehouses_server';
 			$section='warehouses';
-			$tab='warehouses';
 
 
 			break;
@@ -572,22 +569,48 @@ function parse_request($_data) {
 		case 'warehouse':
 			$module='warehouses';
 			$section='warehouse';
-			$tab='details';
+
 			$object='warehouse';
 
 			$key=$view_path[0];
+
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'inventory':
-			$module='warehouses';
+			$module='inventory';
 			$section='inventory';
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				$tab='inventory.parts';
-			}
-			$parent='warehouse';
 
-			$parent_key=$view_path[0];
+
+
+			if (isset($view_path[0])) {
+				if ($view_path[0]=='part') {
+					$section='part';
+					$object='part';
+					if (is_numeric($view_path[1])) {
+						$key=$view_path[1];
+					}
+
+
+				}
+				elseif ($view_path[0]=='transactions') {
+					$section='transactions';
+				}elseif ($view_path[0]=='stock_history') {
+					$section='stock_history';
+				}elseif ($view_path[0]=='categories') {
+					$section='categories';
+					
+
+
+
+				}
+
+			}
+
+
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+
+
+
 			break;
 		case 'locations':
 			$module='warehouses';
@@ -723,6 +746,7 @@ function parse_request($_data) {
 			}else {
 				$tab='users.staff.users';
 			}
+			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 
@@ -741,7 +765,7 @@ function parse_request($_data) {
 
 				}elseif ($view_path[0]=='warehouse') {
 
-				}elseif ($view_path[0]=='rott') {
+				}elseif ($view_path[0]=='root') {
 
 				}else {
 
@@ -758,7 +782,7 @@ function parse_request($_data) {
 		}
 
 	}
-
+	list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 	$state=array(
 		'request'=>$request,
 		'module'=>$module,
@@ -780,6 +804,8 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 	$subtab='';
 
+
+
 	if (isset($_data['subtab'])) {
 		$subtab=$_data['subtab'];
 
@@ -795,10 +821,16 @@ function parse_tabs($module, $section, $_data, $modules) {
 	else {
 
 		if (isset ( $_SESSION['state'][$module][$section]['tab'])   ) {
+
+
 			$tab=$_SESSION['state'][$module][$section]['tab'];
 
 		}
 		else {
+		    if( !isset($modules[$module]['sections'][$section]['tabs']) or  !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs'])==0 ){
+		        print "problem with $module $section";
+		    }
+		
 			$tab=each($modules[$module]['sections'][$section]['tabs'])['key'];
 		}
 		$subtab=parse_subtab($module, $section, $tab, $modules);

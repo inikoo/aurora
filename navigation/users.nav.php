@@ -110,7 +110,7 @@ function get_staff_user_navigation($data) {
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$prev_key=$row['object_key'];
-				$prev_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
+				$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 			}
 
@@ -125,7 +125,7 @@ function get_staff_user_navigation($data) {
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$next_key=$row['object_key'];
-				$next_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
+				$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 			}
 
@@ -169,10 +169,10 @@ function get_staff_user_navigation($data) {
 		}
 		else {
 
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Users"), 'reference'=>'users');
 
 			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'suppliers/'.$data['parent_key'].'/'.$prev_key);
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'user/staff/'.$prev_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
@@ -182,7 +182,7 @@ function get_staff_user_navigation($data) {
 
 
 			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'suppliers/'.$data['parent_key'].'/'.$next_key);
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'user/staff/'.$next_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');

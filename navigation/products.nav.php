@@ -587,7 +587,7 @@ function get_product_navigation($data) {
 
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
-				$object->id
+				$object->pid
 			);
 
 
@@ -602,9 +602,8 @@ function get_product_navigation($data) {
 	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
-				$object->id
+				$object->pid
 			);
-
 
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {

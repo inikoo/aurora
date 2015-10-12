@@ -67,6 +67,14 @@ $smarty->assign('f_label',$table_filters[$parameters['f_field']]['label']);
 $table_view=$parameters['view'];
 $smarty->assign('table_view',$parameters['view']);
 
+
+if(array_key_exists('elements', $parameters))
+$smarty->assign('elements',$parameters['elements']);
+if(array_key_exists('elements_type', $parameters))
+$smarty->assign('elements_type',$parameters['elements_type']);
+
+
+
 $parameters=json_encode($parameters);
 
 
@@ -84,6 +92,7 @@ $smarty->assign('sort_order',$sort_order);
 $smarty->assign('request',$request);
 $smarty->assign('ar_file',$ar_file);
 $smarty->assign('tipo',$tipo);
+
 $smarty->assign('parameters',$parameters);
 $smarty->assign('tab',$tab);
 

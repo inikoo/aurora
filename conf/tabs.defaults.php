@@ -11,6 +11,50 @@
 
 $default_rrp_options=array(500, 100, 50, 20);
 
+$orders_elements=array(
+	'source'=>array(
+		'label'=>_('Source'),
+		'items'=>array(
+			'Internet'=>array('label'=>_('Website'), 'selected'=>true),
+			'Call'=>array('label'=>_('Telephone'), 'selected'=>true),
+			'Store'=>array('label'=>_('Showroom'), 'selected'=>true),
+			'Email'=>array('label'=>_('Email'), 'selected'=>true),
+			'Fax'=>array('label'=>_('Fax'), 'selected'=>true),
+			'Other'=>array('label'=>_('Other'), 'selected'=>true)
+		),
+
+	)
+	,
+	'payment'=>array(
+		'label'=>_('Payment'),
+		'items'=>array(
+			'Paid'=>array('label'=>_('Paid'), 'selected'=>true),
+			'PartiallyPaid'=>array('label'=>_('Partially Paid'), 'selected'=>true),
+			'Unknown'=>array('label'=>_('Unknown'), 'selected'=>true),
+			'WaitingPayment'=>array('label'=>_('Waiting Payment'), 'selected'=>true),
+			'NA'=>array('label'=>_('NA'), 'selected'=>true),
+		)
+	),
+	'dispatch'=>array(
+		'label'=>_('Dispatch state'),
+		'items'=>array(
+			'InProcessCustomer'=>array('label'=>_('Basket'), 'selected'=>true),
+			'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
+			'Warehouse'=>array('label'=>_('Warehouse'), 'selected'=>true),
+			'Dispatched'=>array('label'=>_('Dispatched'), 'selected'=>true),
+			'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
+			'Suspended'=>array('label'=>_('Suspended'), 'selected'=>false)),
+	),
+	'type'=>array('label'=>_('Payment'),
+		'items'=>array(
+		'Order'=>array('label'=>_('Order'), 'selected'=>true),
+		 'Sample'=>array('label'=>_('Sample'), 'selected'=>true),
+		 'Donation'=>array('label'=>_('Donation'), 'selected'=>true), 
+		 'Other'=>array('label'=>_('Other'), 'selected'=>true),
+		 )
+	)
+);
+
 $tab_defaults=array(
 
 	'customers'=>array(
@@ -76,7 +120,9 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'ytd',
-		'elements_type'=>''
+		'elements_type'=>'dispatch',
+		'elements'=>$orders_elements
+
 	),
 	'order.items'=>array(
 		'view'=>'overview',
@@ -198,6 +244,25 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
+	), 'product.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'product.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'customer',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'ytd',
+		'elements_type'=>''
 	), 'websites'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -254,8 +319,15 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
+	), 'part.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
 	),
-	'locations'=>array(
+	'warehouse.locations'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
 		'sort_order'=>1,
@@ -263,13 +335,20 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-	'locations.replenishments'=>array(
+	'warehouse.replenishments'=>array(
 		'view'=>'overview',
 		'sort_key'=>'location',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'location'
+	), 'warehouse.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
 	),
 	'inventory.parts'=>array(
 		'view'=>'overview',
@@ -301,7 +380,32 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
-	),
+	), 'staff.user.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	), 'staff.user.login_history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'ip',
+		'f_period'=>'all',
+
+	), 'users.staff.login_history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle',
+		'f_period'=>'all',
+
+	)
 
 );
 

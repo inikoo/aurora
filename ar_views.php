@@ -59,7 +59,7 @@ case 'views':
 			include_once 'class.Order.php';
 			$_object=new Order($state['key']);
 			break;
-		case 'invoie':
+		case 'invoice':
 			include_once 'class.Invoice.php';
 			$_object=new Invoice($state['key']);
 			break;
@@ -78,6 +78,10 @@ case 'views':
 			include_once 'class.Warehouse.php';
 			$_object=new Warehouse($state['key']);
 			break;
+		case 'part':
+			include_once 'class.Part.php';
+			$_object=new Part($state['key']);
+			break;
 		case 'supplier':
 			include_once 'class.Supplier.php';
 			$_object=new Supplier($state['key']);
@@ -90,6 +94,10 @@ case 'views':
 			include_once 'class.User.php';
 			$_object=new User($state['key']);
 			break;
+		case 'list':
+			include_once 'class.List.php';
+			$_object=new SubjectList($state['key']);
+			break;	
 		default:
 			exit('need to complete E1');
 			break;
@@ -158,8 +166,8 @@ case 'views':
 		$response['navigation']=get_navigation($state);
 
 	}
-	
-	
+
+
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
 
 	$response['view_position']=get_view_position($state);
@@ -210,10 +218,11 @@ function get_tab($tab, $subtab, $state=false) {
 
 	global $smarty, $user;
 
+	$_tab=($subtab!=''?$subtab:$tab);
+    $state['tab']=$_tab;
 
 	$smarty->assign('data', $state);
 
-	$_tab=($subtab!=''?$subtab:$tab);
 	if (file_exists('tabs/'.$_tab . '.tab.php')) {
 		include_once 'tabs/'.$_tab . '.tab.php';
 	}else {
@@ -221,7 +230,11 @@ function get_tab($tab, $subtab, $state=false) {
 
 	}
 
+
+
 	if (is_array($state)) {
+	
+	
 		$_SESSION['state'][$state['module']][$state['section']]['tab']=$tab;
 		if ($subtab!='') {
 			$_SESSION['tab_state'][$tab]=$subtab;
@@ -288,6 +301,7 @@ function get_navigation($data) {
 		return get_dashboard_navigation($data);
 		break;
 	case ('products'):
+	case ('products_server'):
 		require_once 'navigation/products.nav.php';
 		switch ($data['section']) {
 		case 'stores':
@@ -390,7 +404,7 @@ function get_navigation($data) {
 		break;
 
 	case ('websites'):
-	  
+
 		require_once 'navigation/websites.nav.php';
 		switch ($data['section']) {
 		case ('websites'):
@@ -511,7 +525,35 @@ function get_navigation($data) {
 		}
 
 		break;
+	case ('inventory'):
+		require_once 'navigation/inventory.nav.php';
+		switch ($data['section']) {
+
+		
+		case ('inventory'):
+			return get_inventory_navigation($data);
+			break;
+		
+		case ('part'):
+			return get_part_navigation($data);
+			break;
+		case ('transactions'):
+			return get_transactions_navigation($data);
+			break;
+		case ('stock_history'):
+			return get_stock_history_navigation($data);
+			break;
+		case ('categories'):
+			return get_categories_navigation($data);
+			break;	
+		case ('category'):
+			return get_category_navigation($data);
+			break;				
+		}
+
+		break;	
 	case ('warehouses'):
+	case ('warehouses_server'):
 		require_once 'navigation/warehouses.nav.php';
 		switch ($data['section']) {
 
@@ -521,13 +563,11 @@ function get_navigation($data) {
 		case ('warehouse'):
 			return get_warehouse_navigation($data);
 			break;
-		case ('inventory'):
-			return get_inventory_navigation($data);
-			break;
+		
 		case ('locations'):
 			return get_locations_navigation($data);
 			break;
-
+		
 		}
 
 		break;
@@ -888,7 +928,8 @@ function get_view_position($data) {
 
 
 
-			}else {
+			}
+			else {
 				$store=new Store($data['_object']->data['Order Store Key']);
 
 				if ( $user->get_number_stores()>1) {
@@ -903,7 +944,13 @@ function get_view_position($data) {
 			break;
 
 		}
+		
 		break;
+        case 'inventory':
+        				$branch[]=array('label'=>_('Inventory'), 'icon'=>'', 'url'=>'inventory');
+
+        break;
+
 
 	}
 

@@ -98,5 +98,4 @@ $fields="`Location Key`,`Warehouse Flag`,`Location Warehouse Key`,`Location Ware
 $sql_totals="select count(*) as num from $table $where ";
 
 
-
 ?>

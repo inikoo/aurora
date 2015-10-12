@@ -3,7 +3,7 @@
 
 list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
-
+$group_by='';
 $wheref='';
 
 $currency='';
@@ -107,6 +107,16 @@ elseif ($parameters['parent']=='stores') {
 		}
 
 	}
+}elseif ($parameters['parent']=='product') {
+
+
+$table='`Order Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+
+		$where=sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
+		
+	$group_by=' group by OTF.`Order Key` ';
+
+
 }
 else {
 	exit("unknown parent\n");
@@ -114,7 +124,7 @@ else {
 
 
 
-$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
+$where_interval=prepare_mysql_dates($from, $to, 'O.`Order Date`');
 $where.=$where_interval['mysql'];
 
 
@@ -123,7 +133,10 @@ switch ($parameters['elements_type']) {
 case('dispatch'):
 	$_elements='';
 	$num_elements_checked=0;
-	foreach ($elements['dispatch'] as $_key=>$_value) {
+	
+	
+	foreach ($parameters['elements']['dispatch']['items'] as $_key=>$_value) {
+	$_value=$_value['selected'];
 		if ($_value) {
 			$num_elements_checked++;
 			if ($_key=='InProcessCustomer') {
@@ -158,7 +171,8 @@ case('dispatch'):
 case('source'):
 	$_elements='';
 	$num_elements_checked=0;
-	foreach ($elements['source'] as $_key=>$_value) {
+	foreach ($parameters['elements']['source']['items'] as $_key=>$_value) {
+	$_value=$_value['selected'];
 		if ($_value) {
 			$num_elements_checked++;
 
@@ -178,7 +192,8 @@ case('source'):
 case('type'):
 	$_elements='';
 	$num_elements_checked=0;
-	foreach ($elements['type'] as $_key=>$_value) {
+	foreach ($parameters['elements']['type']['items'] as $_key=>$_value) {
+	$_value=$_value['selected'];
 		if ($_value) {
 			$num_elements_checked++;
 
@@ -201,7 +216,8 @@ case('payment'):
 
 	//'Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
 
-	foreach ($elements['payment'] as $_key=>$_value) {
+	foreach ($parameters['elements']['payment']['items'] as $_key=>$_value) {
+	$_value=$_value['selected'];
 		if ($_value) {
 			$num_elements_checked++;
 			if ($_key=='WaitingPayment')$_key='Waiting Payment';
@@ -279,10 +295,13 @@ elseif ($order=='payment_state')
 elseif ($order=='total_amount')
 	$order='O.`Order Total Amount`';
 else
-	$order='`Order Key`';
+	$order='O.`Order Key`';
 
-$fields='`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
+$fields='`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
 
 $sql_totals="select count(Distinct O.`Order Key`) as num from $table   $where $wheref ";
+
+//	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+//print $sql;
 
 ?>
