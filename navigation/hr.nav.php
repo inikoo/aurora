@@ -193,7 +193,7 @@ function get_employee_navigation($data) {
 
 	}
 
-	$sections=get_sections('users', '');
+	$sections=get_sections('hr', '');
 
 
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;

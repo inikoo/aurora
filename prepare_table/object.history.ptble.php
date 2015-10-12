@@ -65,6 +65,14 @@ elseif ($parameters['parent']=='supplier') {
 	$where=sprintf(' where   B.`Supplier Key`=%d   ', $parameters['parent_key']);
 	$subject='Supplier';
 }
+elseif ($parameters['parent']=='warehouse') {
+	$where=sprintf(' where   B.`Warehouse Key`=%d   ', $parameters['parent_key']);
+	$subject='Warehouse';
+}
+elseif ($parameters['parent']=='user') {
+	$where=sprintf(' where   B.`User Key`=%d   ', $parameters['parent_key']);
+	$subject='User';
+}
 
 
 /*

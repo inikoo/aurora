@@ -16,7 +16,8 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                 change_view('part/' + this.model.get("id"))
+                change_view( '{if $data['parent']=='warehouse'}inventory{else}{$data['parent']}{/if}/{$data['parent_key']}/part/' + this.model.get("id"))
+
             }
         },
         className: "link"
@@ -32,7 +33,7 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                 change_view('part/' + this.model.get("id"))
+                change_view( '{if $data['parent']=='warehouse'}inventory{else}{$data['parent']}{/if}/{$data['parent_key']}/part/' + this.model.get("id"))
             }
         },
         className: "link"

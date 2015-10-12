@@ -2,40 +2,32 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 30 September 2015 18:22:51 BST, Sheffield, UK
+ Created: 9 October 2015 at 12:52:22 CEST, Malaga Spain
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-
-
-$tab='inventory.parts';
-$ar_file='ar_warehouse_tables.php';
-$tipo='parts';
+$tab='part.history';
+$ar_file='ar_history_tables.php';
+$tipo='object_history';
 
 $default=$user->get_tab_defaults($tab);
 
-
-
 $table_views=array(
-
 );
 
 $table_filters=array(
-	'reference'=>array('label'=>_('Reference'),'title'=>_('Part reference')),
-
+	'note'=>array('label'=>_('Notes'),'title'=>_('Notes')),
 );
 
 $parameters=array(
-		'parent'=>'',
-		'parent_key'=>'',
-	
+		'parent'=>$state['object'],
+		'parent_key'=>$state['key'],
+		
 );
 
-
 include('utils/get_table_html.php');
-
 
 ?>

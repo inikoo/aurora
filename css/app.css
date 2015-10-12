@@ -33,6 +33,12 @@ html, body {
   html .hide, body .hide {
     display: none; }
 
+.panel {
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 0px;
+  background-color: #fff; }
+
 a {
   color: #555; }
 
@@ -311,6 +317,15 @@ a {
         font-style: italic; }
   #app_main #tabs {
     margin-top: 2px; }
+  #app_main #element_type {
+    float: left;
+    margin-left: 10px;
+    color: #777;
+    cursor: pointer;
+    min-width: 50px;
+    border: none; }
+    #app_main #element_type i {
+      margin-right: 5px; }
   #app_main .tabs, #app_main .subtabs {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -325,33 +340,63 @@ a {
     color: #666;
     font-size: 13.2px;
     background-color: #fff; }
-    #app_main .tabs .tab, #app_main .subtabs .tab {
+    #app_main .tabs .tab, #app_main .tabs .element, #app_main .subtabs .tab, #app_main .subtabs .element {
       height: 22px;
       float: left;
       padding: 0px 20px;
       border-right: 1px solid #ccc;
       cursor: pointer; }
-      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected {
-        background-color: #edf3f8;
-        color: #000; }
-      #app_main .tabs .tab:hover, #app_main .tabs .tab.selected > .fa, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected > .fa {
-        color: #666; }
-      #app_main .tabs .tab.right, #app_main .subtabs .tab.right {
-        float: right; }
-    #app_main .tabs .fa, #app_main .subtabs .fa {
-      font-size: 75%;
-      color: #888;
-      position: relative;
-      top: -1px; }
-  #app_main .subtabs {
-    font-size: 10.8px;
-    height: 18px;
-    line-height: 18px; }
-    #app_main .subtabs .tab {
-      height: 18px; }
-      #app_main .subtabs .tab:first-of-type {
-        margin-left: 60px;
+      #app_main .tabs .tab.right, #app_main .tabs .element.right, #app_main .subtabs .tab.right, #app_main .subtabs .element.right {
+        float: right;
+        border-right: none;
         border-left: 1px solid #ccc; }
+      #app_main .tabs .tab .fa, #app_main .tabs .element .fa, #app_main .subtabs .tab .fa, #app_main .subtabs .element .fa {
+        font-size: 75%;
+        color: #888;
+        position: relative;
+        top: -1px; }
+    #app_main .tabs .tab:hover, #app_main .tabs .tab.selected, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected {
+      background-color: #edf3f8;
+      color: #000; }
+    #app_main .tabs .tab:hover, #app_main .tabs .tab.selected > .fa, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected > .fa {
+      color: #666; }
+    #app_main .tabs .element .qty, #app_main .subtabs .element .qty {
+      color: #aaa; }
+    #app_main .tabs .element.selected, #app_main .subtabs .element.selected {
+      color: #222; }
+    #app_main .tabs .element.selected > .qty, #app_main .subtabs .element.selected > .qty {
+      color: #111; }
+    #app_main .tabs .element:hover, #app_main .tabs .element.selected > .fa, #app_main .subtabs .element:hover, #app_main .subtabs .element.selected > .fa {
+      color: #000; }
+    #app_main .tabs .element .fa, #app_main .subtabs .element .fa {
+      font-size: 100%;
+      position: relative;
+      top: 1px;
+      margin-right: 5px; }
+  #app_main .subtabs .tab:first-of-type {
+    margin-left: 60px;
+    border-left: 1px solid #ccc; }
+
+#elements_chooser {
+  width: 200px;
+  border-left: none; }
+  #elements_chooser div {
+    border-top: 1px solid #eee;
+    padding: 4px 0px 4px 15px;
+    cursor: pointer; }
+    #elements_chooser div .fa {
+      font-size: 70%;
+      position: relative;
+      top: -1px;
+      margin-right: 2px;
+      color: #999;
+      transition: color .7s; }
+    #elements_chooser div:last-of-type {
+      border-bottom: none; }
+    #elements_chooser div:hover > .fa {
+      color: #333; }
+    #elements_chooser div:hover > .fa, #elements_chooser div.selected > .fa {
+      color: #222; }
 
 .sticky_note {
   border: 1px solid #BAB84E;

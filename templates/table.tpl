@@ -1,14 +1,21 @@
-{if isset($elements) and count(elements)>0}
-<div class="table_views tabs ">
-{foreach from=$table_views item=view key=id} 
-<div {if isset($view.id) and $view.id }id="{$view.id}"{/if} class="tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_element('{$id}')" title="{$view.title}">
-			 <span class="label"> {$view.label}</span>  (<span class="quantity">{$view.quantity}</span> )
-		</div>
-{/foreach} 
-</div>
-{/if}
+
 {if isset($period)}
  {include file="utils/date_chooser.tpl" period=$period} 
+{/if}
+{if isset($elements) and count(elements)>0}
+
+<div id="elements" class="elements tabs ">
+<div  id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon"  class="fa fa-bars" "></i></div>
+{foreach from=$elements item=element_group key=_elements_type} 
+<div id="elements_group_{$_elements_type}" elements_type="$_elements_type" class="elements_group {if $_elements_type!=$elements_type}hide{/if}" >
+{foreach from=$element_group['items']|@array_reverse item=element key=id} 
+<div id="element_{$id}" item_key="{$id}"  class="element right  {if isset($element.selected) and $element.selected}selected{/if}"  onclick="change_table_element(event,'{$id}')" title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title}{else}{$element.label}{/if}">
+		<i  id="element_checkbox_{$id}" class="fa {if $element.selected}fa-check-square-o{else}fa-square-o{/if}"></i>	 <span class="label"> {$element.label}</span>  <span  class="qty" id="element_qty_{$id}"></span>
+		</div>
+{/foreach}
+</div>
+{/foreach} 
+</div>
 {/if} 
 <div class="table_info">
 	<div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{t}Last page{/t}" style="position:relative">
@@ -129,6 +136,7 @@ var Rows = Backbone.PageableCollection.extend({
     ar_file: '{$ar_file}',
     tipo: '{$tipo}',
     parameters: '{$parameters}',
+    tab: '{$tab}',
     state: {
     pageSize: {$results_per_page},
     sortKey: '{$sort_key}',
@@ -241,7 +249,20 @@ rows.fetch(
 );
 
 
+{if isset($elements) and count(elements)>0}
+get_elements_numbers('{$tab}',{$parameters|@json_encode})
+{/if}
 
 
 
 </script> 
+
+<div id="elements_chooser" class="hide panel" >
+{foreach from=$elements item=element_group key=_elements_type} 
+<div onClick="change_elements_type('{$_elements_type}')" id="element_group_option_{$_elements_type}" elements_type="$_elements_type" class="{if $_elements_type==$elements_type}selected{/if}" >
+<i class="fa fw {if $_elements_type==$elements_type}fa-circle{else}fa-circle-o{/if}"></i> {$element_group['label']}
+</div>
+{/foreach} 
+
+
+</div>

@@ -71,25 +71,6 @@ if ($user->can_view('sites')) {
 
 }
 
-if ($user->can_view('stores')) {
-
-	if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'store/'.$user->data['User Hooked Store Key'], 'products', 'module');
-
-	}else {
-		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Products'), 'stores', 'products', 'module');
-	}
-
-
-	$sections=get_sections('products', $data['parent_key']);
-	foreach ($sections as $key=>$section ) {
-		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section');
-	}
-
-
-
-}
-
 if ($user->can_view('marketing')) {
 
 	if ($user->data['User Hooked Store Key']) {
@@ -111,6 +92,27 @@ if ($user->can_view('marketing')) {
 
 }
 
+if ($user->can_view('stores')) {
+
+	if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array('<i class="fa fa-square-o fa-fw"></i> '._('Products'), 'store/'.$user->data['User Hooked Store Key'], 'products', 'module');
+
+	}else {
+		$nav_menu[] = array('<i class="fa fa-square-o fa-fw"></i> '._('Products'), 'stores', 'products', 'module');
+	}
+
+
+	$sections=get_sections('products', $data['parent_key']);
+	foreach ($sections as $key=>$section ) {
+		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section');
+	}
+
+
+
+}
+
+
+
 if ($user->can_view('warehouses')) {
 
 	/*
@@ -120,6 +122,10 @@ if ($user->can_view('warehouses')) {
 		$nav_menu[] = array('<i class="fa fa-th fa-fw"></i> '._('Inventory'), 'warehouses_server','parts','module');
 	}
 */
+
+		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Inventory'), 'inventory', 'inventory', 'module');
+
+
 	if ($user->data['User Hooked Warehouse Key']) {
 		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i> '._('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'], 'warehouses', 'module');
 	}else {
@@ -169,7 +175,9 @@ if ($user->data['User Type']=='Warehouse') {
 $current_item=$data['module'];
 if ($current_item=='customers_server')$current_item='customers';
 if ($current_item=='marketing_server')$current_item='marketing';
+if ($current_item=='products_server')$current_item='products';
 if ($current_item=='orders_server')$current_item='orders';
+if ($current_item=='warehouses_server')$current_item='warehouses';
 
 if ($data['object']=='order') {
 	if ($data['parent']=='customer') {

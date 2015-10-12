@@ -136,47 +136,6 @@ function get_locations_navigation($data) {
 
 }
 
-function get_inventory_navigation($data) {
 
-	global $user,$smarty;
-
-	$block_view=$data['section'];
-
-	switch ($data['parent']) {
-	case 'warehouse':
-		$warehouse=new Warehouse($data['parent_key']);
-		break;
-	default:
-		break;
-	}
-
-
-	$left_buttons=array();
-
-
-
-	$right_buttons=array();
-	$sections=get_sections($data['module'],$warehouse->id);
-
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
-
-
-	$_content=array(
-
-		'sections_class'=>'',
-		'sections'=>$sections,
-
-		'left_buttons'=>$left_buttons,
-		'right_buttons'=>$right_buttons,
-		'title'=>_('Inventory').' <span class="id">'.$warehouse->get('Warehouse Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search suppliers'))
-
-	);
-	$smarty->assign('_content',$_content);
-
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
-
-}
 
 ?>

@@ -101,6 +101,10 @@ function get_rtext($record_label,$total_records) {
 		return sprintf(ngettext('%s user', '%s users', $total_records), number($total_records));
 	}elseif ($record_label=='report') {
 		return sprintf(ngettext('%s report', '%s reports', $total_records), number($total_records));
+	}elseif ($record_label=='session') {
+		return sprintf(ngettext('%s session', '%s sessions', $total_records), number($total_records));
+	}elseif ($record_label=='list') {
+		return sprintf(ngettext('%s list', '%s lists', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -142,6 +146,10 @@ function get_rtext_with_filter($record_label,$total_with_filter,$total_no_filter
 		return sprintf(ngettext('%s user of %s', '%s users of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}elseif ($record_label=='report') {
 		return sprintf(ngettext('%s report of %s', '%s reports of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='session') {
+		return sprintf(ngettext('%s session of %s', '%s sessions of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
+	}elseif ($record_label=='list') {
+		return sprintf(ngettext('%s list of %s', '%s lists of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) ,number($total_no_filter)  );
 	}

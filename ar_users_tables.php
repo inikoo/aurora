@@ -36,7 +36,9 @@ case 'staff':
 case 'groups':
 	groups(get_table_parameters(), $db, $user);
 	break;
-
+case 'login_history':
+	login_history(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -53,9 +55,6 @@ function staff($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-//	print $sql;
-
-
 	foreach ($db->query($sql) as $data) {
 		if ($data['User Active']=='Yes')
 			$is_active=_('Yes');
@@ -64,10 +63,6 @@ function staff($_data, $db, $user) {
 
 		$groups=preg_split('/,/', $data['Groups']);
 		$stores=preg_split('/,/', $data['Stores']);
-		
-		
-		
-		
 		$warehouses=preg_split('/,/', $data['Warehouses']);
 		$sites=preg_split('/,/', $data['Sites']);
 
@@ -103,6 +98,42 @@ function staff($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function login_history($_data, $db, $user) {
+	global $db;
+	$rtext_label='session';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['User Log Key'],
+			'user_key'=>(integer) $data['User Key'],
+			'handle'=>$data['User Handle'],
+			'ip'=>$data['IP'],
+			'login_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Start Date'])),
+			'logout_date'=>($data['Logout Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Logout Date'])):''),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 
