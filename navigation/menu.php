@@ -148,11 +148,6 @@ if ($user->can_view('staff'))
 
 
 
-if ($user->can_view('users'))
-	$nav_menu[] = array('<i class="fa fa-male fa-fw"></i> '._('Users'), 'users', 'users', 'module');
-
-if ($user->can_view('account'))
-	$nav_menu[] = array('<i class="fa fa-cog fa-fw"></i> '._('Settings'), 'account.php', 'account', 'module');
 
 
 

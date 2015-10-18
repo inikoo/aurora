@@ -10,7 +10,6 @@ var columns = [
     label: "{t}Code{/t}",
     editable: false,
      cell: Backgrid.Cell.extend({
-        orderSeparator: '',
         events: {
             "click": function() {
                 change_view( '{$data['object']}/{$data['key']}/page/' + this.model.get("id"))
@@ -83,12 +82,12 @@ var columns = [
     headerCell: integerHeaderCell
 
 }, {
-    name: "pages",
-    label:"{t}Pages{/t}",
+    name: "requests",
+    label:"{t}Views{/t}",
        editable: false,
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='pages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='requests'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell
 

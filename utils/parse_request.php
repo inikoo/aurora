@@ -16,6 +16,8 @@ function parse_request($_data) {
 	global $user, $modules, $inikoo_account;
 
 
+	//print_r($_SESSION);
+
 	$request=$_data['request'];
 
 	$request=preg_replace('/\/+/', '/', $request);
@@ -45,9 +47,9 @@ function parse_request($_data) {
 		$count_view_path=count($view_path);
 		switch ($root) {
 		case 'index.php':
-		    $module='dashboard';
-	$section='dashboard';
-		    break;
+			$module='dashboard';
+			$section='dashboard';
+			break;
 		case 'stores':
 			$module='products_server';
 			$section='stores';
@@ -114,7 +116,6 @@ function parse_request($_data) {
 				}
 
 			}
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 
@@ -157,7 +158,6 @@ function parse_request($_data) {
 			}
 
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 		case 'family':
@@ -169,7 +169,6 @@ function parse_request($_data) {
 				$key=array_shift($view_path);
 			}
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 		case 'category':
@@ -186,7 +185,6 @@ function parse_request($_data) {
 				case 'Customer':
 					$module='customers';
 					$section='category';
-					$tab='customers.category';
 
 					if ($category->get('Category Branch Type')=='Root') {
 						$parent='store';
@@ -208,7 +206,7 @@ function parse_request($_data) {
 		case 'websites':
 			$module='websites';
 			$section='websites';
-			$tab='websites';
+
 			break;
 		case 'website':
 			$module='websites';
@@ -230,11 +228,45 @@ function parse_request($_data) {
 
 
 				}
+				elseif ($view_path[1]=='user') {
+					$section='website.user';
+					$object='user';
+					$parent='website';
+					$parent_key=$key;
+
+					if (is_numeric($view_path[2])) {
+						$key=$view_path[2];
+					}
+
+
+				}
 
 			}
 
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+			break;
+		case 'page':
+			$module='websites';
+			$section='page';
+			$object='page';
+			$key=$view_path[0];
+			if (isset($view_path[1])) {
+				if ($view_path[1]=='user') {
+					$section='website.user';
+					$object='user';
+					$parent='page';
+					$parent_key=$key;
+
+					if (is_numeric($view_path[2])) {
+						$key=$view_path[2];
+					}
+
+
+				}
+
+
+			}
+
 			break;
 		case 'customer':
 			$module='customers';
@@ -260,14 +292,12 @@ function parse_request($_data) {
 
 
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'supplier':
 			$module='suppliers';
 			$section='supplier';
 			$parent='suppliers';
 
-			$tab='supplier.details';
 			$object='supplier';
 
 			$key=$view_path[0];
@@ -277,7 +307,6 @@ function parse_request($_data) {
 			$module='customers';
 			if ($count_view_path==0) {
 				$section='customers';
-				$tab='customers';
 				$parent='store';
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
@@ -291,18 +320,15 @@ function parse_request($_data) {
 			if ($arg1=='all') {
 				$module='customers_server';
 				$section='customers';
-				$tab='customers_server';
 
 				if (isset($view_path[0]) and $view_path[0]=='pending_orders') {
 					$section='pending_orders';
-					$tab='customers_server.pending_orders';
 
 				}
 
 			}
 			elseif ($arg1=='list') {
 				$section='list';
-				$tab='customers.list';
 				$object='list';
 
 
@@ -322,7 +348,6 @@ function parse_request($_data) {
 						$parent_key=$list->id;
 						$object='customer';
 						$key=$view_path[1];
-						list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 					}
 
@@ -350,7 +375,6 @@ function parse_request($_data) {
 						$parent_key=$category->id;
 						$object='customer';
 						$key=$view_path[1];
-						list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 					}
 
@@ -362,7 +386,6 @@ function parse_request($_data) {
 			}
 			elseif (is_numeric($arg1)) {
 				$section='customers';
-				$tab='customers';
 				$parent='store';
 				$parent_key=$arg1;
 
@@ -376,14 +399,11 @@ function parse_request($_data) {
 						$object='customer';
 						$key=$view_path[0];
 
-						list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 					}elseif ($view_path[0]=='lists') {
 						$section='lists';
-						$tab='customers.lists';
 					}elseif ($view_path[0]=='categories') {
 						$section='categories';
-						$tab='customers.categories';
 					}
 
 				}
@@ -415,7 +435,6 @@ function parse_request($_data) {
 			}
 			elseif (is_numeric($arg1)) {
 				$section='orders';
-				$tab='orders';
 				$parent='store';
 				$parent_key=$arg1;
 
@@ -430,14 +449,12 @@ function parse_request($_data) {
 				}
 
 			}
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 		case 'invoices':
 			$module='orders';
 			if ($count_view_path==0) {
 				$section='invoices';
-				$tab='invoices';
 				$parent='store';
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
@@ -451,25 +468,21 @@ function parse_request($_data) {
 			if ($arg1=='all') {
 				$module='orders_server';
 				$section='orders';
-				$tab='orders_server';
 
 				if (isset($view_path[0]) and $view_path[0]=='pending_orders') {
 					$section='pending_orders';
-					$tab='customers_server.pending_orders';
 
 				}
 
 			}
 			elseif (is_numeric($arg1)) {
 				$section='invoices';
-				$tab='invoices';
 				$parent='store';
 				$parent_key=$arg1;
 
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
 					$section='invoices';
 					$object='invoice';
-					$tab='items';
 					$parent='store';
 					$parent_key=$arg1;
 					$key=$view_path[0];
@@ -482,7 +495,6 @@ function parse_request($_data) {
 			$module='orders';
 			if ($count_view_path==0) {
 				$section='delivery_notes';
-				$tab='delivery_notes';
 				$parent='store';
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
@@ -496,20 +508,17 @@ function parse_request($_data) {
 			if ($arg1=='all') {
 				$module='orders_server';
 				$section='delivery_notes';
-				$tab='orders_server.delivery_notes';
 
 
 			}
 			elseif (is_numeric($arg1)) {
 				$section='delivery_notes';
-				$tab='delivery_notes';
 				$parent='store';
 				$parent_key=$arg1;
 
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
 					$section='delivery_notes';
 					$object='delivery_note';
-					$tab='items';
 					$parent='store';
 					$parent_key=$arg1;
 					$key=$view_path[0];
@@ -522,7 +531,6 @@ function parse_request($_data) {
 			$module='marketing';
 			if ($count_view_path==0) {
 				$section='deals';
-				$tab='offers';
 				$parent='store';
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$parent_key=$user->data['User Hooked Store Key'];
@@ -536,7 +544,6 @@ function parse_request($_data) {
 			if ($arg1=='all') {
 				$module='marketing_server';
 				$section='marketing';
-				$tab='marketing_server';
 
 
 
@@ -554,7 +561,6 @@ function parse_request($_data) {
 				}else {
 
 					$section='deals';
-					$tab='campaigns';
 				}
 
 			}
@@ -574,7 +580,6 @@ function parse_request($_data) {
 
 			$key=$view_path[0];
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 			break;
 		case 'inventory':
 			$module='inventory';
@@ -598,7 +603,7 @@ function parse_request($_data) {
 					$section='stock_history';
 				}elseif ($view_path[0]=='categories') {
 					$section='categories';
-					
+
 
 
 
@@ -607,20 +612,12 @@ function parse_request($_data) {
 			}
 
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
-
-
-
 			break;
 		case 'locations':
 			$module='warehouses';
 			$section='locations';
 
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				$tab='locations';
-			}
+
 			$parent='warehouse';
 
 			$parent_key=$view_path[0];
@@ -628,13 +625,11 @@ function parse_request($_data) {
 		case 'suppliers':
 			$module='suppliers';
 			$section='suppliers';
-			$tab='suppliers';
 
 
 
 			if ( isset($view_path[0]) and  $view_path[0]=='list') {
 				$section='list';
-				$tab='suppliers.list';
 				$object='list';
 
 
@@ -651,7 +646,6 @@ function parse_request($_data) {
 					if (isset($view_path[1]) and is_numeric($view_path[1])) {
 						$section='supplier';
 
-						$tab='supplier.details';
 						$parent='list';
 						$parent_key=$list->id;
 						$object='supplier';
@@ -667,7 +661,6 @@ function parse_request($_data) {
 			}
 			elseif (isset($view_path[0]) and  $view_path[0]=='category') {
 				$section='category';
-				$tab='suppliers.category';
 				$object='category';
 
 
@@ -684,7 +677,6 @@ function parse_request($_data) {
 					if (isset($view_path[1]) and is_numeric($view_path[1])) {
 						$section='supplier';
 
-						$tab='supplier.details';
 						$parent='category';
 						$parent_key=$category->id;
 						$object='supplier';
@@ -704,11 +696,7 @@ function parse_request($_data) {
 			$section='employees';
 
 
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				$tab='employees';
-			}
+
 
 			break;
 		case 'employee':
@@ -719,62 +707,75 @@ function parse_request($_data) {
 			$parent='none';
 			if (isset($view_path[0]))
 				$key=$view_path[0];
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+
 			break;
 		case 'reports':
 			$module='reports';
 			$section='reports';
-			$tab='reports';
-			/*
-			$section='performance';
-
-
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				$tab='report.pp';
-			}
-            */
-			break;
-		case 'users':
-			$module='users';
-			$section='staff';
-
-
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				$tab='users.staff.users';
-			}
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 
 			break;
 
-		case 'user':
 
-			$module='users';
+
+
+			break;
+
+
+
+		case 'profile':
+			$module='profile';
+			$section='profile';
+
+			$object='user';
+			$key=$user->id;
+
+			break;
+		case 'account':
+			$module='account';
+			$section='account';
+			$object='account';
+			$key=1;
 
 			if (isset($view_path[0])) {
+				$object='';
+				if ( $view_path[0]=='users') {
+					$section='users';
 
-				if ($view_path[0]=='staff') {
-					$parent='users';
-					$section='staff.user';
-					$object='user';
-					$key=$view_path[1];
-				}elseif ($view_path[0]=='suppliers') {
+					if (isset($view_path[1])) {
 
-				}elseif ($view_path[0]=='warehouse') {
+						if ( $view_path[1]=='staff') {
+							$section='staff';
 
-				}elseif ($view_path[0]=='root') {
+						}
+					}
 
-				}else {
+				}elseif ($view_path[0]=='settings') {
+					$section='settings';
 
-					$key=$view_path[0];
+
+
+				}elseif ($view_path[0]=='user') {
+
+					if (isset($view_path[1])) {
+
+						$parent='users';
+						$section='staff.user';
+						$object='user';
+						$key=$view_path[1];
+
+
+					}
+
+
+
+
 				}
 
 			}
 
-			list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
+
+
+
 			break;
 		default:
 
@@ -794,6 +795,9 @@ function parse_request($_data) {
 		'object'=>$object,
 		'key'=>$key,
 	);
+
+
+
 	return $state;
 
 }
@@ -813,6 +817,8 @@ function parse_tabs($module, $section, $_data, $modules) {
 		$tab=$modules[$module]['sections'][$section]['subtabs_parent'][$subtab];
 
 
+
+
 	}
 	elseif (isset($_data['tab'])) {
 		$tab=$_data['tab'];
@@ -827,10 +833,10 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 		}
 		else {
-		    if( !isset($modules[$module]['sections'][$section]['tabs']) or  !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs'])==0 ){
-		        print "problem with $module $section";
-		    }
-		
+			if ( !isset($modules[$module]['sections'][$section]['tabs']) or  !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs'])==0 ) {
+				print "problem with M: $module S: $section";
+			}
+
 			$tab=each($modules[$module]['sections'][$section]['tabs'])['key'];
 		}
 		$subtab=parse_subtab($module, $section, $tab, $modules);

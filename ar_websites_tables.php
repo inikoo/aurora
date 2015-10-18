@@ -36,12 +36,137 @@ case 'websites':
 case 'pages':
 	pages(get_table_parameters(), $db, $user);
 	break;
-
+case 'pageviews':
+	pageviews(get_table_parameters(), $db, $user);
+	break;
+case 'queries':
+	queries(get_table_parameters(), $db, $user);
+	break;
+case 'search_history':
+	search_history(get_table_parameters(), $db, $user);
+	break;
+case 'users':
+	users(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
 	exit;
 	break;
+}
+
+function users($_data, $db, $user) {
+
+	$rtext_label='user';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	//print $sql;
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'site_key'=>$data['User Site Key'],
+			'id'=>$data['User Key'],
+			'customer_key'=>$data['User Parent Key'],
+			'user'=>$data['User Handle'],
+			'customer'=>$data['User Alias'],
+			'sessions'=>number($data['User Sessions Count']),
+			'last_login'=>($data['User Last Login']?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['User Last Login'].' +0:00')):''),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function queries($_data, $db, $user) {
+
+	$rtext_label='query';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+
+	foreach ($db->query($sql) as $data) {
+
+
+		$adata[]=array(
+			'site_key'=>$data['Site Key'],
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
+			'query'=>$data['Query'],
+			'number'=>number($data['number']),
+			'users'=>number($data['users']),
+			'results'=>number($data['results'], 1),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function search_history($_data, $db, $user) {
+
+	$rtext_label='search';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+
+		$user=$data['User Alias'];
+
+		$adata[]=array(
+			'site_key'=>$data['Site Key'],
+			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
+			'query'=>$data['Query'],
+			'user_key'=>$data['User Key'],
+			'user'=>$user,
+			'results'=>number($data['Number Results']),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
 }
 
 
@@ -100,6 +225,7 @@ function websites($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function pages($_data, $db, $user) {
 
 	$rtext_label='page';
@@ -110,24 +236,26 @@ function pages($_data, $db, $user) {
 
 	// print $sql;
 
-$interval_db= get_interval_db_name($parameters['f_period']);
+	$interval_db= get_interval_db_name($parameters['f_period']);
 	foreach ($db->query($sql) as $data) {
 
-	$visitors=number($data["Page Store $interval_db Acc Visitors"]);
-		$sessions=number($data["Page Store $interval_db Acc Sessions"]);
-		$requests=number($data["Page Store $interval_db Acc Requests"]);
-		$users=number($data["Page Store $interval_db Acc Users"]);
+		$period_visitors=number($data["Page Store $interval_db Acc Visitors"]);
+		$period_sessions=number($data["Page Store $interval_db Acc Sessions"]);
+		$period_requests=number($data["Page Store $interval_db Acc Requests"]);
+		$period_users=number($data["Page Store $interval_db Acc Users"]);
 
+		$users=number($data["Page Store Total Acc Users"]);
+		$requests=number($data["Page Store Total Acc Requests"]);
 
 		switch ($data['Page Store Section']) {
 		case 'Department Catalogue':
-			$type=sprintf("d(<span class=\"link\" onClick=\"change_view('department/%d')\"  >%s</span>)",$data['Page Parent Key'],$data['Page Parent Code']);
+			$type=sprintf("d(<span class=\"link\" onClick=\"change_view('department/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
 			break;
 		case 'Family Catalogue':
-			$type=sprintf("f(<span class=\"link\" onClick=\"change_view('family/%d')\"  >%s</span>)",$data['Page Parent Key'],$data['Page Parent Code']);
+			$type=sprintf("f(<span class=\"link\" onClick=\"change_view('family/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
 			break;
 		case 'Product Description':
-			$type=sprintf("p(<span class=\"link\" onClick=\"change_view('product/%d')\"  >%s</span>)",$data['Page Parent Key'],$data['Page Parent Code']);
+			$type=sprintf("p(<span class=\"link\" onClick=\"change_view('product/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
 			break;
 
 		case 'Welcome':
@@ -208,7 +336,7 @@ $interval_db= get_interval_db_name($parameters['f_period']);
 		$products=number($data['Page Store Number Products']);
 		$products_out_of_stock=number($data['Page Store Number Out of Stock Products']);
 		$products_sold_out=number($data['Page Store Number Sold Out Products']);
-		$percentage_products_out_of_stock=percentage($data['Page Store Number Out of Stock Products'],$data['Page Store Number Products']);
+		$percentage_products_out_of_stock=percentage($data['Page Store Number Out of Stock Products'], $data['Page Store Number Products']);
 		$list_products=number($data['Page Store Number List Products']);
 		$button_products=number($data['Page Store Number Button Products']);
 
@@ -228,8 +356,109 @@ $interval_db= get_interval_db_name($parameters['f_period']);
 			'type'=>$type,
 			'url'=>($data['Site SSL']=='Yes'?'https://':'http://').$data['Page URL'],
 			'title'=>$data['Page Store Title'],
-			'state'=>$state
-	
+			'state'=>$state,
+			'users'=>$users,
+			'requests'=>$requests,
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function pageviews($_data, $db, $user) {
+
+	$rtext_label='pageview';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+	$interval_db= get_interval_db_name($parameters['f_period']);
+	foreach ($db->query($sql) as $data) {
+
+switch ($data['Page Store Section']) {
+		case 'Department Catalogue':
+			$type=sprintf("d(<span class=\"link\" onClick=\"change_view('department/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
+			break;
+		case 'Family Catalogue':
+			$type=sprintf("f(<span class=\"link\" onClick=\"change_view('family/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
+			break;
+		case 'Product Description':
+			$type=sprintf("p(<span class=\"link\" onClick=\"change_view('product/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
+			break;
+
+		case 'Welcome':
+			$type=_('Welcome');
+			break;
+		case 'Login':
+			$type=_('Login');
+			break;
+		case 'Information':
+			$type=_('Information');
+			break;
+		case 'Checkout':
+			$type=_('Checkout');
+			break;
+		case 'Reset':
+			$type=_('Reset');
+			break;
+		case 'Registration':
+			$type=_('Registration');
+			break;
+		case 'Not Found':
+			$type=_('Not Found');
+			break;
+		case 'Client Section':
+			$type=_('Client Section');
+			break;
+		case 'Client Section':
+			$type=_('Client Section');
+			break;
+		case 'Front Page Store':
+			$type=_('Home');
+			break;
+		case 'Basket':
+			$type=_('Basket');
+			break;
+		case 'Thanks':
+			$type=_('Thanks');
+			break;
+		case 'Payment Limbo':
+			$type=_('Payment Limbo');
+			break;
+		case 'Search':
+			$type=_('Search');
+			break;
+		default:
+			$type=_('Other').' '.$data['Page Store Section'];
+			break;
+		}
+
+		$adata[]=array(
+			'id'=>(integer) $data['User Request Key'],
+			'page'=>$data['Page Code'],
+			'title'=>$data['Page Store Title'],
+						'type'=>$type,
+
+			'page_key'=>$data['Page Key'],
+			'site_key'=>$data['Page Site Key'],
+			'date'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Date'])),
+
 		);
 
 	}

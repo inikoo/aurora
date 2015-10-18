@@ -30,6 +30,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case 'users':
+	users(get_table_parameters(), $db, $user);
+	break;
 case 'staff':
 	staff(get_table_parameters(), $db, $user);
 	break;
@@ -114,12 +117,83 @@ function login_history($_data, $db, $user) {
 			'id'=>(integer) $data['User Log Key'],
 			'user_key'=>(integer) $data['User Key'],
 			'handle'=>$data['User Handle'],
+			'user'=>$data['User Alias'],
+			'parent_key'=>$data['User Parent Key'],
 			'ip'=>$data['IP'],
 			'login_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Start Date'])),
 			'logout_date'=>($data['Logout Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Logout Date'])):''),
 		);
 
 	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function users($_data, $db, $user) {
+	global $db;
+	$rtext_label='user category';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+//print $sql;
+	$base_data=array(
+	'Staff'=>array('User Type'=>'Staff','active_users'=>0),
+	'Warehouse'=>array('User Type'=>'Warehouse','active_users'=>0),
+	'Administrator'=>array('User Type'=>'Administrator','active_users'=>0),
+	'Supplier'=>array('User Type'=>'Supplier','active_users'=>0),
+	);
+
+	foreach ($db->query($sql) as $data) {
+	    
+	$base_data[$data['User Type']]=$data;
+	}
+
+	foreach ($base_data as $key=>$data) {
+
+		switch ($data['User Type']) {
+		case 'Staff':
+			$type=_('Staff');
+			$request='account/users/staff';
+			break;
+		case 'Warehouse':
+			$type=_('Warehouse');
+			$request='account/users/warehouse';
+			break;
+		case 'Administrator':
+			$type=_('Adminstrator');
+			$request='account/users/root';
+			break;
+		case 'Supplier':
+			$type=_('Supplier');
+			$request='account/users/suppliers';
+			break;
+		default:
+			$type=$data['User Type'];
+			break;
+		}
+
+		$adata[]=array(
+			'request'=>$request,
+			'type'=>$type,
+			'active_users'=>number($data['active_users']),
+		);
+
+	}
+
+$rtext=_('Users');
 
 	$response=array('resultset'=>
 		array(

@@ -43,8 +43,7 @@ a {
   color: #555; }
 
 .link {
-  cursor: pointer;
-  color: steelblue; }
+  cursor: pointer; }
 
 #top_bar {
   padding: 3px 20px 0px 20px;
@@ -153,14 +152,16 @@ a {
   #app_leftmenu #hello_user {
     width: 166px;
     text-align: center; }
+    #app_leftmenu #hello_user.link:hover {
+      color: #FFF; }
   #app_leftmenu #inikoo_logo {
     width: 32px;
     border-right: 1px solid #777;
     padding: 0px;
     vertical-align: middle; }
-  #app_leftmenu #inikoo_logo img {
-    width: 25.6px;
-    vertical-align: middle; }
+    #app_leftmenu #inikoo_logo img {
+      width: 25.6px;
+      vertical-align: middle; }
   #app_leftmenu #inikoo_account_name {
     line-height: 32px;
     height: 32px;
@@ -169,6 +170,8 @@ a {
     text-align: center;
     font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
     font-weight: 300; }
+    #app_leftmenu #inikoo_account_name.link:hover {
+      color: #FFF; }
 
 #notifications {
   background-color: #fcfcfc;
@@ -246,7 +249,7 @@ a {
         color: #333;
         padding: 0px 30px; }
         #app_main #navigation #address_bar .section .fa {
-          font-size: 80%;
+          margin-right: 5px;
           color: #999; }
         #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected {
           background-color: #edf3f8;
@@ -465,6 +468,12 @@ a {
 .results_per_page.square_button.selected {
   color: steelblue;
   font-weight: 800; }
+
+.backgrid .link {
+  color: #6a6d91; }
+
+.backgrid .link:hover {
+  text-decoration: underline; }
 
 .backgrid .totals td {
   color: #000;

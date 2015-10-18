@@ -8,7 +8,7 @@ var columns = [
 
 },{
     name: "formated_id",
-    label: "{t}ID{/t}",
+    label: "{t}ID{/t}{$data.object}",
     editable: false,
      sortType: "toggle",
     {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -16,7 +16,12 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
+                {if $data.object=='website'}
+                change_view('customers/'+this.model.get("store_key")+'/' + this.$el.html()+'&subtab=customer.marketing.favourites'  )
+
+                {else}
                 change_view('customers/{if $data.object=='list'}list/{$data.key}{else}{$data.parent_key}{/if}/' + this.$el.html())
+                {/if}
             }
         },
         className: "link"

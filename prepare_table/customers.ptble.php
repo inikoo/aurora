@@ -7,6 +7,8 @@ $group_by='';
 $where_type='';
 
 
+$fields=' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';
+
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 	$tmp=preg_replace('/\\\"/','"',$parameters['awhere']);
@@ -83,7 +85,21 @@ elseif ($parameters['parent']=='store') {
 	$store=new Store($parameters['parent_key']);
 	$currency=$store->data['Store Currency Code'];
 	$where.=$where_stores;
+}elseif ($parameters['parent']=='favourites') {
+
+$table='`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
+
+	if (in_array($parameters['parent_key'],$user->websites))
+		$where.=sprintf(' and  `Site Key`=%d ',$parameters['parent_key']);
+	else
+		$where.=' and false';
+		
+		$group_by='group by F.`Customer Key`';
+
+$fields=' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';	
+
 }
+
 else {
 
 	if (count($user->stores)==0)
@@ -103,13 +119,29 @@ $where_type='';
 // $where_type=' and `Customer With Orders`="Yes" ';
 //}
 
-/*
 switch ($parameters['elements_type']) {
+case 'orders':
+	$_elements='';
+	$count_elements=0;
+	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+		if ($_value['selected']) {
+			$count_elements++;
+			$_elements.=','.prepare_mysql($_key);
+
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} elseif ($count_elements==1) {
+		$where.=' and `Customer With Orders`='.$_elements.'' ;
+	}
+	break;
 case 'activity':
 	$_elements='';
 	$count_elements=0;
-	foreach ($elements['activity'] as $_key=>$_value) {
-		if ($_value) {
+	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+		if ($_value['selected']) {
 			$count_elements++;
 			$_elements.=','.prepare_mysql($_key);
 
@@ -122,11 +154,11 @@ case 'activity':
 		$where.=' and `Customer Type by Activity` in ('.$_elements.')' ;
 	}
 	break;
-case 'level_type':
+case 'type':
 	$_elements='';
 	$count_elements=0;
-	foreach ($elements['level_type'] as $_key=>$_value) {
-		if ($_value) {
+	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+		if ($_value['selected']) {
 			$count_elements++;
 			$_elements.=','.prepare_mysql($_key);
 
@@ -142,8 +174,8 @@ case 'level_type':
 case 'location':
 	$_elements='';
 	$count_elements=0;
-	foreach ($elements['location'] as $_key=>$_value) {
-		if ($_value) {
+	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+		if ($_value['selected']) {
 			$count_elements++;
 			$_elements.=','.prepare_mysql($_key);
 
@@ -160,7 +192,7 @@ case 'location':
 
 
 }
-*/
+
 
 $filter_msg='';
 $wheref='';
@@ -292,5 +324,7 @@ else
 
 $sql_totals="select count(Distinct C.`Customer Key`) as num from $table  $where  $where_type";
 
+//	$sql="select  $fields from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction limit $start_from,$number_results";
+//print $sql;
 
 ?>

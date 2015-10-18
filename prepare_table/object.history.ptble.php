@@ -75,23 +75,34 @@ elseif ($parameters['parent']=='user') {
 }
 
 
-/*
+if(isset($parameters['elements']['type']['items'])){
+$elements=$parameters['elements']['type']['items'];
+
 
 $_elements='';
-
+$elements_count=0;
 if (is_array($elements)) {
 	foreach ($elements as $_key=>$_value) {
-		if ($_value)
+		if ($_value['selected']){
 			$_elements.=','.prepare_mysql($_key);
+			$elements_count++;
+			}
 	}
 	$_elements=preg_replace('/^\,/', '', $_elements);
 	if ($_elements=='') {
 		$where.=' and false' ;
 	} else {
+	
+	    if($parameters['parent']=='customer' and $elements_count==6){
+	    
+	    }else{
+	
 		$where.=' and Type in ('.$_elements.')' ;
+		
+		}
 	}
 }
-*/
+}
 
 $wheref='';
 
@@ -124,4 +135,5 @@ $table="  `$subject History Bridge` B left join `History Dimension` H  on (B.`Hi
 
 $sql_totals="select count(Distinct B.`History Key`) as num from $table  $where  ";
 $fields="`Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date`";
+
 ?>
