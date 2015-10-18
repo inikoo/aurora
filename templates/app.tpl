@@ -33,12 +33,12 @@
 				<div id="inikoo_logo">
 					<img src="/art/inikoo_logo_small.png" /> 
 				</div>
-				<div id="hello_user">
-					<span><a href="user.php">{$user->get('User Alias')}</a></span> 
+				<div id="hello_user" class="link" onClick="change_view('profile')">
+					<span>{$user->get('User Alias')}</span> 
 				</div>
 				
 			</div>
-			<div id="inikoo_account_name">
+			<div id="inikoo_account_name" class="link" onClick="change_view('account')">
 				{$inikoo_account->get('Account Name')}
 			</div>
 			<div id="menu" ></div>

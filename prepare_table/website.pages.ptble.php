@@ -9,7 +9,7 @@
 
 */
 
-
+$period_tag=get_interval_db_name($parameters['f_period']);
 
 
 $where='where true ';
@@ -143,16 +143,20 @@ $_dir=$order_direction;
 
 if ($order=='code')
 	$order='`Page Code`';
-elseif ($order=='url')
+elseif ($order=='url'){
 	$order='`Page URL`';
-elseif ($order=='users') {
-	$order="`Page Store $interval_db Acc Users`";
-}elseif ($order=='visitors') {
-	$order="`Page Store $interval_db Acc Visitors`";
-}elseif ($order=='sessions') {
-	$order="`Page Store $interval_db Acc Sessions`";
+}elseif ($order=='period_users') {
+	$order="`Page Store $period_tag Acc Users`";
+}elseif ($order=='period_visitors') {
+	$order="`Page Store $period_tag Acc Visitors`";
+}elseif ($order=='period_sessions') {
+	$order="`Page Store $period_tag Acc Sessions`";
+}elseif ($order=='period_requests') {
+	$order="`Page Store $period_tag Acc Requests`";
+}elseif ($order=='users') {
+	$order="`Page Store Total Acc Users`";
 }elseif ($order=='requests') {
-	$order="`Page Store $interval_db Acc Requests`";
+	$order="`Page Store Total Acc Requests`";
 }
 
 
@@ -175,8 +179,6 @@ elseif ($order=='percentage_products_out_of_stock')
 	$order='percentage_out_of_stock ';
 elseif ($order=='type')
 	$order='`Page Store Section`';
-
-
 
 elseif ($order=='flag')
 	$order='`Site Flag`';

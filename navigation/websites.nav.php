@@ -116,6 +116,7 @@ function get_website_navigation($data) {
 
 }
 
+
 function get_page_navigation($data) {
 
 	global $user, $smarty;
@@ -123,6 +124,7 @@ function get_page_navigation($data) {
 
 
 	$object=$data['_object'];
+	$object->load_data();
 
 	$block_view=$data['section'];
 
@@ -133,7 +135,7 @@ function get_page_navigation($data) {
 	$left_buttons=array();
 	$right_buttons=array();
 
-	
+
 
 
 
@@ -144,7 +146,7 @@ function get_page_navigation($data) {
 			$tab='website.pages';
 			$_section='websites';
 			break;
-	
+
 		}
 
 
@@ -217,9 +219,9 @@ function get_page_navigation($data) {
 
 			switch ($data['parent']) {
 			case 'website':
-			
-			    $website= new Site($object->get('Page Site Key'));
-			
+
+				$website= new Site($object->get('Page Site Key'));
+
 				$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$website->get('Site Code').')', 'reference'=>'website/'.$object->get('Page Site Key'));
 
 				if ($prev_key) {
@@ -241,12 +243,9 @@ function get_page_navigation($data) {
 				}
 
 				break;
-		
+
 
 			}
-
-
-
 
 
 		}
@@ -278,6 +277,201 @@ function get_page_navigation($data) {
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
+
+}
+
+
+function get_user_navigation($data) {
+
+
+
+	global $smarty;
+
+	$object=$data['_object'];
+	$left_buttons=array();
+	$right_buttons=array();
+
+	if ($data['parent']) {
+
+		switch ($data['parent']) {
+		case 'website':
+			$tab='website.users';
+			$_section='';
+			break;
+		case 'customer':
+			$tab='customer.users';
+			$_section='';
+			break;
+		case 'page':
+			$tab='page.users';
+			$_section='';
+			break;
+
+		}
+
+
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+
+		include_once 'prepare_table/'.$tab.'.ptble.php';
+
+		$_order_field=$order;
+		$order=preg_replace('/^.*\.`/', '', $order);
+		$order=preg_replace('/^`/', '', $order);
+		$order=preg_replace('/`$/', '', $order);
+		$_order_field_value=$object->get($order);
+
+
+		$prev_title='';
+		$next_title='';
+		$prev_key=0;
+		$next_key=0;
+		$sql=trim($sql_totals." $wheref");
+
+		$res2=mysql_query($sql);
+		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
+
+			$sql=sprintf("select `User Handle` object_name,U.`User Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND U.`User Key` < %d))  order by $_order_field desc , U.`User Key` desc limit 1",
+
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
+
+			//print $sql;
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$prev_key=$row['object_key'];
+				$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+			}
+
+			$sql=sprintf("select `User Handle` object_name,U.`User Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND U.`User Key` > %d))  order by $_order_field   , U.`User Key`  limit 1",
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
+
+
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$next_key=$row['object_key'];
+				$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+			}
+
+
+			if ($order_direction=='desc') {
+				$_tmp1=$prev_key;
+				$_tmp2=$prev_title;
+				$prev_key=$next_key;
+				$prev_title=$next_title;
+				$next_key=$_tmp1;
+				$next_title=$_tmp2;
+			}
+
+
+		}
+
+		if ($data['parent']=='website') {
+
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Website"), 'reference'=>'website/'.$data['parent_key']);
+
+			if ($prev_key) {
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'website/'.$data['parent_key'].'/user/'.$prev_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+			}
+			$left_buttons[]=$up_button;
+
+
+			if ($next_key) {
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'website/'.$data['parent_key'].'/user/'.$next_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+			}
+
+
+			$sections=get_sections('websites', $data['parent_key']);
+
+
+
+		}
+		elseif ($data['parent']=='page') {
+
+			$page=new Page($data['parent_key']);
+
+			$website=new Site($page->get('Page Site Key'));
+
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Page"), 'reference'=>'website/'.$page->get('Page Site Key').'/page/'.$data['parent_key']);
+
+			if ($prev_key) {
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'page/'.$data['parent_key'].'/user/'.$prev_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+			}
+			$left_buttons[]=$up_button;
+
+
+			if ($next_key) {
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'page/'.$data['parent_key'].'/user/'.$next_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+			}
+
+
+			$sections=get_sections('websites', '');
+
+
+
+		}
+	}
+	else {
+
+
+	}
+
+
+
+
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+
+
+	$title= _('User').' <span class="id">'.$object->get('User Handle').' ('.$object->get_formated_id().')</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search websites'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+
 
 }
 

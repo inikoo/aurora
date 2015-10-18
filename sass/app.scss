@@ -6,7 +6,7 @@ $color_dark_highlight:#666;
 $color_dark_brighter_font:#bbb;
 $color_dark_font:#ddd;
 $color_dark_darker_font:#777;
-
+$color_highlight_over_dark:#FFF;
 
 $header_background_color:#fefefe;
 
@@ -77,7 +77,8 @@ a:hover {text-decoration:underline;color:#000}
 
 
 a {color:#555}
-.link{cursor:pointer;color:steelblue}
+.link{cursor:pointer}
+
 
 #top_bar {
     padding:3px 20px 0px 20px;
@@ -143,11 +144,18 @@ a {color:#555}
     
     #top_info{height:$height_row;line-height: $height_row;border-bottom:1px solid $color_dark_darker_font;padding:0px;background-color:$color_dark;font-size:11px;text-align:center}
     #top_info div{height:100%;float:left;text-align:center}
-    #hello_user{width:166px;text-align:center}
-    #inikoo_logo{width:$height_row;border-right:1px solid $color_dark_darker_font;padding:0px;vertical-align: middle;}
-    #inikoo_logo img{width:$height_row*.8;vertical-align: middle}
+    #hello_user{width:166px;text-align:center;
+    &.link:hover{color:$color_highlight_over_dark}
+    }
+    #inikoo_logo{width:$height_row;border-right:1px solid $color_dark_darker_font;padding:0px;vertical-align: middle;
+   
+    img{width:$height_row*.8;vertical-align: middle}
+    }
+   
 
-#inikoo_account_name{line-height: $height_row;height:$height_row;font-size:$height_row*.35;color:$color_dark_brighter_font;text-align: center;;font-family: $font_title;font-weight:300}
+#inikoo_account_name{line-height: $height_row;height:$height_row;font-size:$height_row*.35;color:$color_dark_brighter_font;text-align: center;;font-family: $font_title;font-weight:300;
+  &.link:hover{color:$color_highlight_over_dark}
+}
 
 
 }
@@ -188,7 +196,7 @@ a {color:#555}
     }
     .section{@include unselectable ;
     text-align:center;cursor:pointer;background-color: $header_background_color;color:#333;padding:0px 30px;
-     .fa{font-size:80%;color:#999}
+     .fa{margin-right:5px;color:#999}
      &:hover,&.selected{background-color: #edf3f8;color:#000;}
      &:hover,&.selected > .fa{color:#666;}
     }
@@ -314,6 +322,11 @@ img{vertical-align: -5%}
 
 .results_per_page.square_button{font-size:11px}
 .results_per_page.square_button.selected{color:steelblue;font-weight:800}
+
+
+.backgrid .link{color:#6a6d91}
+.backgrid .link:hover{text-decoration: underline}
+
 
 .backgrid {
 .totals td{color:#000;border-top:1px solid #000}

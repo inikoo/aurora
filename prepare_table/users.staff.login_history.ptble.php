@@ -12,7 +12,7 @@
 
 switch ($parameters['parent']) {
     case 'user':
-        $where=sprintf(" where  `User Type`='Staff' and U.`User Key`=%d ",$parameters['parent_key']);
+        $where=sprintf(" where  U.`User Key`=%d ",$parameters['parent_key']);
         break;
     default:
         $where=" where  `User Type`='Staff' ";
@@ -56,8 +56,8 @@ $table=' `User Log Dimension` UL left join `User Dimension` U on (U.`User Key`=U
 $sql_totals="select count(Distinct `User Log Key`) as num from $table  $where  ";
 
 
-$fields="U.`User Key`,`User Log Key`,`User Handle`,`IP`,`Start Date`,`Logout Date`";
+$fields="`User Alias`,`User Parent Key`,U.`User Key`,`User Log Key`,`User Handle`,`IP`,`Start Date`,`Logout Date`";
 
 //$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-  //  print $sql;
+ //   print $sql;
 ?>

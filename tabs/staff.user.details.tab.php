@@ -29,7 +29,7 @@ $object_fields=array(
 				'class'=>'string',
 				'id'=>'User_Handle',
 				'value'=>$_user->get('User Handle'),
-				'label'=>_('Code')
+				'label'=>_('Handle')
 			),
 			array(
 				'class'=>'string',

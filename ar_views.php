@@ -36,6 +36,9 @@ case 'views':
 	if ($state['object']!='') {
 
 		switch ($state['object']) {
+		case 'account':
+			$_object=$inikoo_account;
+			break;
 		case 'customer':
 			$_object=new Customer($state['key']);
 			break;
@@ -97,7 +100,7 @@ case 'views':
 		case 'list':
 			include_once 'class.List.php';
 			$_object=new SubjectList($state['key']);
-			break;	
+			break;
 		default:
 			exit('need to complete E1');
 			break;
@@ -218,26 +221,28 @@ function get_tab($tab, $subtab, $state=false) {
 
 	global $smarty, $user;
 
-	$_tab=($subtab!=''?$subtab:$tab);
-    $state['tab']=$_tab;
+	$_tab=$tab;
+	$_subtab=$subtab;
+
+	$actual_tab=($subtab!=''?$subtab:$tab);
+	$state['tab']=$actual_tab;
 
 	$smarty->assign('data', $state);
 
-	if (file_exists('tabs/'.$_tab . '.tab.php')) {
-		include_once 'tabs/'.$_tab . '.tab.php';
+	if (file_exists('tabs/'.$actual_tab . '.tab.php')) {
+		include_once 'tabs/'.$actual_tab . '.tab.php';
 	}else {
-		$html='Tab Not found: >'.$_tab.'<';
+		$html='Tab Not found: >'.$actual_tab.'<';
 
 	}
 
 
-
 	if (is_array($state)) {
-	
-	
-		$_SESSION['state'][$state['module']][$state['section']]['tab']=$tab;
-		if ($subtab!='') {
-			$_SESSION['tab_state'][$tab]=$subtab;
+
+
+		$_SESSION['state'][$state['module']][$state['section']]['tab']=$_tab;
+		if ($_subtab!='') {
+			$_SESSION['tab_state'][$_tab]=$_subtab;
 		}
 
 	}
@@ -417,9 +422,10 @@ function get_navigation($data) {
 			return get_website_navigation($data);
 			break;
 		case ('page'):
-
-
 			return get_page_navigation($data);
+			break;
+		case ('website.user'):
+			return get_user_navigation($data);
 			break;
 		default:
 			return 'View not found';
@@ -529,11 +535,11 @@ function get_navigation($data) {
 		require_once 'navigation/inventory.nav.php';
 		switch ($data['section']) {
 
-		
+
 		case ('inventory'):
 			return get_inventory_navigation($data);
 			break;
-		
+
 		case ('part'):
 			return get_part_navigation($data);
 			break;
@@ -545,13 +551,13 @@ function get_navigation($data) {
 			break;
 		case ('categories'):
 			return get_categories_navigation($data);
-			break;	
+			break;
 		case ('category'):
 			return get_category_navigation($data);
-			break;				
+			break;
 		}
 
-		break;	
+		break;
 	case ('warehouses'):
 	case ('warehouses_server'):
 		require_once 'navigation/warehouses.nav.php';
@@ -563,11 +569,11 @@ function get_navigation($data) {
 		case ('warehouse'):
 			return get_warehouse_navigation($data);
 			break;
-		
+
 		case ('locations'):
 			return get_locations_navigation($data);
 			break;
-		
+
 		}
 
 		break;
@@ -593,10 +599,33 @@ function get_navigation($data) {
 
 		break;
 
-	case ('users'):
-		require_once 'navigation/users.nav.php';
-		switch ($data['section']) {
 
+
+	case ('utils'):
+		require_once 'navigation/utils.nav.php';
+		switch ($data['section']) {
+		case ('forbidden'):
+		case ('not_found'):
+			return get_utils_navigation($data);
+			break;
+		}
+
+		break;
+	case ('profile'):
+		require_once 'navigation/users.nav.php';
+		return get_profile_navigation($data);
+		break;
+	case ('account'):
+		require_once 'navigation/account.nav.php';
+
+
+		switch ($data['section']) {
+		case ('account'):
+			return get_account_navigation($data);
+			break;
+		case ('users'):
+			return get_users_navigation($data);
+			break;
 		case ('staff'):
 			return get_staff_navigation($data);
 			break;
@@ -622,87 +651,22 @@ function get_navigation($data) {
 		case ('root.user'):
 			return get_root_user_navigation($data);
 			break;
-
-		}
-
-		break;
-
-	case ('utils'):
-		switch ($data['section']) {
-		case ('forbidden'):
-		case ('not_found'):
-			return get_utils_navigation($data);
+		case ('settings'):
+			return get_settings_navigation($data);
 			break;
 		}
 
+
+
+		break;
+	case ('settings'):
+		require_once 'navigation/account.nav.php';
+		return get_settings_navigation($data);
 		break;
 	default:
 		return 'Module not found';
 	}
 
-}
-
-
-function get_utils_navigation($data) {
-	global $smarty;
-	$branch=array(array('label'=>'', 'icon'=>'home', 'reference'=>''));
-
-
-	if ($data['section']=='not_found') {
-
-		switch ($data['parent']) {
-		case 'store':
-			$title=_('Store not found');
-			break;
-		case 'customer':
-			$title=_('Customer not found');
-			break;
-		case 'warehouse':
-			$title=_('Warehouse not found');
-			break;
-		case 'supplier':
-			$title=_('Supplier not found');
-			break;
-		case 'employee':
-			$title=_('Employee not found');
-			break;
-		case 'user':
-			$title=_('User not found');
-			break;
-		case 'order':
-			$title=_('Order not found');
-			break;
-		case 'invoice':
-			$title=_('Invoice not found');
-			break;
-		case 'delivery_note':
-			$title=_('Delivery note not found');
-			break;
-		default:
-			$title=_('Not found');
-			break;
-		}
-
-
-	}else if ($data['section']=='forbidden') {
-		$title=_('Forbidden');
-	}else {
-		$title='';
-	}
-	$_content=array(
-		'branch'=>$branch,
-		'sections_class'=>'',
-		'sections'=>array(),
-		'left_buttons'=>array(),
-		'right_buttons'=>array(),
-		'title'=>$title,
-		'search'=>array('show'=>false, 'placeholder'=>'')
-
-	);
-	$smarty->assign('_content', $_content);
-
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
 }
 
 
@@ -755,7 +719,7 @@ function get_tabs($data) {
 
 
 function get_view_position($data) {
-	global $user, $smarty;
+	global $user, $smarty, $inikoo_account;
 
 
 
@@ -863,6 +827,7 @@ function get_view_position($data) {
 		case 'customers':
 			$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
 			break;
+
 		case 'categories':
 			$branch[]=array('label'=>_("Customer's categories").' '.$store->data['Store Code'], 'icon'=>'sitemap', 'reference'=>'customers/categories/'.$store->id);
 			break;
@@ -944,14 +909,88 @@ function get_view_position($data) {
 			break;
 
 		}
-		
+
 		break;
-        case 'inventory':
-        				$branch[]=array('label'=>_('Inventory'), 'icon'=>'', 'url'=>'inventory');
+	case 'inventory':
+		$branch[]=array('label'=>_('Inventory'), 'icon'=>'', 'url'=>'inventory');
 
-        break;
+		break;
+	case 'websites':
 
 
+		if ( $user->get_number_websites()>1) {
+
+			$branch[]=array('label'=>_('Websites'), 'icon'=>'bars', 'reference'=>'websites');
+
+		}
+		switch ($data['section']) {
+		case 'website':
+
+			$website=$data['_object'];
+
+			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+			break;
+		case 'page':
+			$page=$data['_object'];
+			$website=new Site($page->get('Page Site Key'));
+			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+			$branch[]=array('label'=>_('Page').' '.$page->data['Page Code'], 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$website->id);
+
+			break;
+		case 'website.user':
+
+			if ($data['parent']=='website') {
+				$website=new Site($data['parent_key']);
+			}elseif ($data['parent']=='page') {
+				$page=new Page($data['parent_key']);
+
+				$website=new Site($page->get('Page Site Key'));
+
+			}
+
+			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+
+			if ($data['parent']=='page') {
+
+				$branch[]=array('label'=>_('Page').' '.$page->data['Page Code'], 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$page->id);
+
+			}
+
+			$branch[]=array('label'=>_('User').' '.$data['_object']->data['User Handle'], 'icon'=>'user', 'reference'=>'website/'.$website->id.'/user/'.$data['_object']->id);
+
+			break;
+		}
+
+		break;
+
+	case 'profile':
+		$branch[]=array('label'=>_('My profile').' <span class="id">'.$user->get('User Alias').'</span>', 'icon'=>'', 'reference'=>'profile');
+
+
+		break;
+	case 'account':
+
+		$branch[]=array('label'=>_('Account').' <span class="id">'.$inikoo_account->get('Account Code').'</span>', 'icon'=>'', 'reference'=>'account');
+		if ($data['section']=='users') {
+			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+
+		}elseif ($data['section']=='staff') {
+					$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+
+			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
+
+		}elseif ($data['section']=='staff.user') {
+							$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+
+			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
+			$branch[]=array('label'=>_('User').' <span id="id">'.$data['_object']->data['User Alias'].'</span>', 'icon'=>'male', 'reference'=>'account/user/'.$data['_object']->id);
+
+		}elseif ($data['section']=='settings') {
+			$branch[]=array('label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings');
+
+		}
+
+		break;
 	}
 
 	$_content=array(

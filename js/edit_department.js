@@ -1,6 +1,9 @@
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 
+
+
+
 function delete_department() {
     region1 = Dom.getRegion('delete');
     var pos = [region1.left, region1.bottom]
@@ -946,12 +949,19 @@ function init() {
 	department_name_oAutoComp.queryDelay = 0.1;
   
 
+  YAHOO.util.Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    YAHOO.util.Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
 
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
 
-    function mygetTerms(query) {
-        multireload();
-    };
+
+  //  function mygetTerms(query) {
+ //       multireload();
+ //   };
     var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "filtercontainer0", oACDS);

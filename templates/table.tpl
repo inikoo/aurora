@@ -26,7 +26,7 @@
 	</div>
 	<div id="paginator" style="float:right;padding-left:10px;padding-right:10px;">
 	</div>
-	<div id="results_per_page" onclick="show_results_per_page()" class="square_button right" title="{t}Results per page{/t} ({$results_per_page})">
+	<div id="results_per_page" onclick="show_results_per_page()" class="square_button right hide" title="{t}Results per page{/t} ({$results_per_page})">
 		<i class="fa fa-reorder fa-fw"></i>
 	</div>
 	{foreach from=$results_per_page_options item=results_per_page_option} 
@@ -41,6 +41,7 @@
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
 	
+	<div class="{if $f_label==''}hide{/if}">
 	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" >
 		 <i class="fa fa-filter fa-fw"></i> 
 	</div>
@@ -53,7 +54,7 @@
 	<div id="filter_field" class="filter hide">
 	{$f_label}:
 	</div>
-	
+	</div>
 	<span id="rtext"></span> 
 </div>
 {if isset($table_views) and count($table_views)>1}
@@ -156,6 +157,10 @@ var Rows = Backbone.PageableCollection.extend({
 $('#rtext').html(resp.resultset.rtext)
 
 var total_pages=Math.ceil(resp.resultset.total_records/state.pageSize)
+
+if(resp.resultset.total_records>20){
+$('#results_per_page').removeClass('hide')
+}
 
  if(total_pages==1){
     $('#paginator').html(rows.state.currentPage+'/'+total_pages) 

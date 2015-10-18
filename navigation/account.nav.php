@@ -3,22 +3,92 @@
 
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 1 October 2015 at 09:08:21 BST, Sheffield UK
+ Created: 17 October 2015 at 13:13:42 BST, Sheffield UK
 
  Copyright (c) 2015, Inikoo
 
  Version 3.0
 */
 
+
+function get_account_navigation($data) {
+	global $smarty;
+
+
+	$sections=get_sections('account', '');
+	$sections['account']['selected']=true;
+
+	$title=_('Account').' <span class="id">'.$data['_object']->get('Account Name').'</span>';
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>'')
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+
+function get_settings_navigation($data) {
+	global $smarty;
+
+
+	$sections=get_sections('account', '');
+	$sections['settings']['selected']=true;
+	$title=_('Settings');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>'')
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+
+function get_users_navigation($data) {
+	global $smarty;
+
+
+	$sections=get_sections('account', '');
+	$sections['users']['selected']=true;
+	$title=_('Users');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>'')
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+
 function get_staff_navigation($data) {
 
 	global $user, $smarty;
 
-
-
 	$block_view=$data['section'];
-
-
 
 
 	$left_buttons=array();
@@ -26,9 +96,9 @@ function get_staff_navigation($data) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('users', '');
+	$sections=get_sections('account', '');
 
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+	$sections['users']['selected']=true;
 
 
 	$_content=array(
@@ -94,7 +164,7 @@ function get_staff_user_navigation($data) {
 		$prev_key=0;
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
-		
+
 		$res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
@@ -105,7 +175,7 @@ function get_staff_user_navigation($data) {
 				prepare_mysql($_order_field_value),
 				$object->id
 			);
-            
+
 
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
@@ -158,7 +228,6 @@ function get_staff_user_navigation($data) {
 				$result=mysql_query($sql);
 				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
 
 				}
 			}
@@ -169,10 +238,10 @@ function get_staff_user_navigation($data) {
 		}
 		else {
 
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Users"), 'reference'=>'users');
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Staff users"), 'reference'=>'account/users/staff');
 
 			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'user/staff/'.$prev_key);
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'account/user/'.$prev_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
@@ -182,7 +251,7 @@ function get_staff_user_navigation($data) {
 
 
 			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'user/staff/'.$next_key);
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'account/user/'.$next_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
@@ -201,10 +270,10 @@ function get_staff_user_navigation($data) {
 
 	}
 
-	$sections=get_sections('users', '');
+	$sections=get_sections('account', '');
 
 
-	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+	$sections['users']['selected']=true;
 
 
 
@@ -227,6 +296,29 @@ function get_staff_user_navigation($data) {
 
 	return $html;
 
+}
+
+
+function get_profile_navigation($data) {
+	global $smarty;
+
+
+
+	$title=_('My profile');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>array(),
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>'')
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
 }
 
 

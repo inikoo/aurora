@@ -56,7 +56,6 @@ class Country {
 
 	}
 
-
 	function get_data($key,$id) {
 
 		if ($key=='find') {
@@ -140,8 +139,7 @@ class Country {
 
 
 	}
-
-
+	
 	function get($key) {
 
 		if (isset($this->data[$key]))
@@ -157,7 +155,6 @@ class Country {
 
 	}
 
-
 	function get_formated_exchange_reverse($currency_code,$date=false,$display='') {
 		switch ($display) {
 		case('tr'):
@@ -170,6 +167,7 @@ class Country {
 		}
 
 	}
+	
 	function get_formated_exchange($currency_code,$date=false,$display='') {
 		switch ($display) {
 		case('tr'):
@@ -182,6 +180,7 @@ class Country {
 			return money(1,$this->data['Country Currency Code']).'='.money(1/$this->exchange($currency_code,$date),$currency_code);
 		}
 	}
+	
 	function exchange($currency_code,$date=false) {
 		include_once 'class.CurrencyExchange.php';
 
@@ -191,26 +190,17 @@ class Country {
 
 	}
 
-
 	function get_country_name($locale='en_GB') {
 
 		include 'country_localized_names.php';
-
 		if (array_key_exists($locale,$country_names)) {
 			if (isset( $country_names[$locale][$this->data['Country 2 Alpha Code']])) {
 				return $country_names[$locale][$this->data['Country 2 Alpha Code']];
 			}
 		}
-
-
 		return $this->data['Country Name'];
 
 	}
-
-
-
-
-
 
 }
 
