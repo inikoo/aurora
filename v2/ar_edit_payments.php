@@ -9,7 +9,7 @@ include_once 'class.Payment_Service_Provider.php';
 
 require_once 'class.User.php';
 include_once 'class.PartLocation.php';
-require_once 'common_order_functions.php';
+require_once 'utils/order_functions.php';
 
 
 

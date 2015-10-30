@@ -22,8 +22,17 @@ var columns= [{
      name: "number",
      label: "{t}Number{/t}",
      editable: false,
- sortType: "toggle",
-     cell: "string"
+   sortType: "toggle",
+    {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+     cell: Backgrid.StringCell.extend({
+         events: {
+             "click": function() {
+                 change_view('invoices/'+this.model.get("store_key")+'/' + this.model.get("id")  )
+             }
+         },
+         className: "link",
+     })
  }, {
      name: "date",
      label: "{t}Date{/t}",

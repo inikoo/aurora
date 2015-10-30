@@ -66,8 +66,10 @@ a {color:#555}
 a,table,button,tbody{outline: none;}
 a {text-decoration:none;color:#222}
 a:hover {text-decoration:underline;color:#000} 
-
+table{ border-collapse: collapse}
 .aright{text-align: right;}
+.acenter{text-align: center;}
+
 .invisible{visibility:hidden}
 .hide{display:none}
 }
@@ -153,7 +155,7 @@ a {color:#555}
     }
    
 
-#inikoo_account_name{line-height: $height_row;height:$height_row;font-size:$height_row*.35;color:$color_dark_brighter_font;text-align: center;;font-family: $font_title;font-weight:300;
+#account_name{line-height: $height_row;height:$height_row;font-size:$height_row*.35;color:$color_dark_brighter_font;text-align: center;;font-family: $font_title;font-weight:300;
   &.link:hover{color:$color_highlight_over_dark}
 }
 
@@ -349,12 +351,83 @@ vertical-align: top;
 
 
 #object_showcase{
-    clear:both;padding:20px 30px;border-bottom:1px solid #ccc;font-size:15px;
+
+    .pdf_link{img{height:10px;vertical-align:0px}}
+
+    clear:both;border-bottom:1px solid #ccc;font-size:15px;
+    
+    #containers{padding:20px 30px;}
+    
     .data_container {
         float:left;margin-right:10px;margin-bottom:10px;
         i {margin-right:10px}
         .data_field{text-align:left;min-width: 300px;margin-bottom:4px}
     }
+    
+     .order{
+        #contact_data{width:500px}
+        #dates{width:310px}
+        }
+        .invoice{
+       #dates{width:310px}
+        #totals{width:310px}
+        }
+        
+            
+
+    .order,.invoice,.delivery_note{
+    #contact_data{float:left;padding:20px 20px;}
+    
+    #totals,#dates{float:right;border-left:1px solid #ccc;height:100%}
+    
+    #dates{
+        
+        .date_and_state{
+		    width:100%;text-align: center;
+		    .date{padding:3px;border-bottom:1px solid #ccc;}
+		    .state{font-size:80%;border-bottom:1px solid #ccc;
+		        
+		        
+		        td{
+		       
+		        padding:3px 0px}
+		    }
+		    .two-columns{
+		      td{
+		        &:first-of-type{width:50%;border-right:1px solid #ccc};}
+		    }
+		
+		}        
+        
+        .ul_table{width:100%;padding:5px;margin-top:10px;
+        .icon{width:24px;text-align:right}
+          
+    	.state{text-align:right;padding-right:10px;font-size:80%;}
+		
+		
+		
+    
+    
+       
+        }
+    }
+    
+    #totals{
+    table{width:100%}
+        padding-top:5px;
+        td{padding:4px 8px}
+        
+         .top-border{border-top:1px solid #ccc}
+          .bottom-border{border-bottom:1px solid #ccc}
+         .top-strong-border{border-top:1px solid #aaa;}
+         .bottom-strong-border{border-bottom:1px solid #aaa}
+       
+
+    }
+    }
+    
+    
+    
 }
 
 .group_label{font-family: $font_title;margin-left:30px;padding-bottom:10px;font-weight:600}

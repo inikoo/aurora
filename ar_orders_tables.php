@@ -12,7 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
-require_once 'common_order_functions.php';
+require_once 'utils/order_functions.php';
 
 if (!$user->can_view('orders')) {
 	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
@@ -54,6 +54,12 @@ case 'invoice_categories':
 case 'order.items':
 	order_items(get_table_parameters(), $db, $user);
 	break;
+case 'invoice.items':
+	invoice_items(get_table_parameters(), $db, $user);
+	break;
+case 'delivery_note.items':
+	delivery_note_items(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -85,7 +91,7 @@ function orders($_data, $db, $user) {
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
 			'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
 			'customer'=>$data['Order Customer Name'],
-			'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'], $data['Order Key']), // function in: common_order_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'], $data['Order Key']), // function in: utils/order_functions.php
 			'payment_state'=>get_order_formated_payment_state($data),
 
 			'total_amount'=>money($data['Order Total Amount'], $data['Order Currency'])
@@ -406,7 +412,7 @@ function order_items($_data, $db, $user) {
 
 
 		if ($data['Current Dispatching State']=='Out of Stock in Basket') {
-			$description.='<br> <span class="attention"><img src="art/icons/error.png"> '._('Product out of stock, removed from basket').'</span>';
+			$description.='<br> <span class="attention"><img src="/art/icons/error.png"> '._('Product out of stock, removed from basket').'</span>';
 			$quantity=number($data['Out of Stock Quantity']);
 
 			$class='out_of_stock';
@@ -415,12 +421,206 @@ function order_items($_data, $db, $user) {
 
 
 		$adata[]=array(
+	
 			'id'=>(integer)$data['Order Transaction Fact Key'],
 			'product_pid'=>(integer)$data['Product ID'],
 			'code'=>$data['Product Code'],
 			'description'=>$description,
 			'quantity'=>$quantity,
 			'net'=>money($data['Order Transaction Amount'], $data['Order Currency Code']),
+
+	
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function invoice_items($_data, $db, $user) {
+
+	global $_locale;// fix this locale stuff
+
+	$rtext_label='item';
+	include_once 'utils/geography_functions.php';
+
+	include_once 'prepare_table/init.php';
+	$invoice=new Invoice($_data['parameters']['parent_key']);
+	if ( in_array($invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area())) {
+		$print_tariff_code=false;
+	}else {
+		$print_tariff_code=true;
+	}
+
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	foreach ($db->query($sql) as $data) {
+
+		$net=money(($data['Invoice Transaction Gross Amount']-$data['Invoice Transaction Total Discount Amount']), $data['Invoice Currency Code']);
+
+		$tax=money(($data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']);
+		$amount=money(($data['Invoice Transaction Gross Amount']-$data['Invoice Transaction Total Discount Amount']+$data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']);
+
+
+		$discount=($data['Invoice Transaction Total Discount Amount']==0?'':percentage($data['Invoice Transaction Total Discount Amount'], $data['Invoice Transaction Gross Amount'], 0));
+
+		$units=$data['Product Units Per Case'];
+		$name=$data['Product History Name'];
+		$price=$data['Product History Price'];
+		$currency=$data['Product Currency'];
+
+		$desc='';
+		if ($units>1) {
+			$desc=number($units).'x ';
+		}
+		$desc.=' '.$name;
+		if ($price>0) {
+			$desc.=' ('.money_locale($price, $_locale, $currency).')';
+		}
+
+		$description=$desc;
+
+		if ($discount!='')
+			$description.=' '._('Discount').':'.$discount;
+
+		if ($data['Product RRP']!=0) {
+			$description.=' <br>'._('RRP').': '.money($data['Product RRP'], $data['Invoice Currency Code']);
+		}
+
+		if ($print_tariff_code and $data['Product Tariff Code']!='')
+			$description.='<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
+
+
+		$quantity=number($data['Invoice Quantity']);
+
+
+
+
+		$adata[]=array(
+			'id'=>(integer)$data['Order Transaction Fact Key'],
+			'product_pid'=>(integer)$data['Product ID'],
+			'code'=>$data['Product Code'],
+			'description'=>$description,
+			'quantity'=>$quantity,
+			'net'=>$net,
+			'tax'=>$net,
+			'amount'=>$net,
+
+
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function delivery_note_items($_data, $db, $user) {
+
+	global $_locale;// fix this locale stuff
+
+	$rtext_label='item';
+
+
+	$dn=new DeliveryNote($_data['parameters']['parent_key']);
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	foreach ($db->query($sql) as $data) {
+
+
+		$quantity=number($data['Order Quantity']);
+
+		if ($data['Order Bonus Quantity']!=0) {
+			if ($data['Order Quantity']!=0) {
+				$quantity.='<br/> +'.number($data['Order Bonus Quantity']).' '._('free');
+			}else {
+				$quantity=number($data['Order Bonus Quantity']).' '._('free');
+			}
+		}
+
+		switch ($dn->data['Delivery Note State']) {
+		case 'Dispatched':
+			$state=_('dispatched');
+			break;
+		case 'Cancelled':
+			$state='';
+			break;
+		case 'Cancelled to Restock':
+			$state=_('to be restocked');
+			break;
+		default:
+			$state=_('to be dispatched');
+			break;
+		}
+
+
+		$notes='<b>'.number(-1*$data['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
+
+		if ($data['Out of Stock']!=0) {
+			$notes.='<span style="margin-left:10px">'.number($data['Out of Stock']).'</span> '._('out of stock').'<br/>';
+		}
+		if ($data['Not Found']!=0) {
+			$notes.=number($data['Not Found']).' '._('Not found').'<br/>';
+		}
+		if ($data['No Picked Other']!=0) {
+			$notes.=_('not picked (other)').' '.number($data['No Picked Other']).'<br/>';
+		}
+
+		$notes=preg_replace('/\<br\/\>$/', '', $notes);
+
+
+		$description='<b>'.number($data['Required']).'x</b> '.$data['Part Unit Description'];
+		if ($data['Product Code']!=$data['Part Reference']) {
+			$description.=' (<i>'.$data['Part Reference'].', <span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
+		}else{
+		    $description.=' (<i><span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
+		}
+		
+		
+		
+		if ($data['Part UN Number']) {
+			$description.=' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</span>';
+		}
+
+
+		$adata[]=array(
+				'id'=>(integer)$data['Inventory Transaction Key'],
+
+			'code'=>$data['Product Code'],
+			'product_pid'=>$data['Product ID'],
+			'description'=>$description,
+			'quantity'=>$quantity,
+			'dispatched'=>number(-1*$data['Inventory Transaction Quantity']),
+			'packed'=>number($data['Packed']),
+			'picked'=>number($data['Picked']),
+			'notes'=>$notes
 
 
 		);

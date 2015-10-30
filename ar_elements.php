@@ -39,8 +39,14 @@ case 'orders':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_order_element_numbers($db, $data['parameters']);
+	get_orders_element_numbers($db, $data['parameters']);
 	break;
+case 'invoices':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_invoices_element_numbers($db, $data['parameters']);
+	break;	
 case 'customer.history':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -182,7 +188,7 @@ function get_history_elements($db, $data) {
 }
 
 
-function get_order_element_numbers($db, $data) {
+function get_orders_element_numbers($db, $data) {
 
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
 
@@ -265,6 +271,132 @@ function get_order_element_numbers($db, $data) {
 	//print_r($elements_numbers);
 
 
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+function get_invoices_element_numbers($db, $data) {
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+
+
+
+	$parent_key=$data['parent_key'];
+
+
+
+	$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$elements_numbers=array(
+		'type'=>array('Invoice'=>0, 'Refund'=>0),
+		'payment_state'=>array('Yes'=>0, 'No'=>0, 'Partially'=>0),
+	);
+
+
+
+	$sql=sprintf("select count(*) as number,`Invoice Paid` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Paid` ",
+		$parent_key, $where_interval);
+	$res=mysql_query($sql);
+	//print $sql;
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$elements_numbers['source'][$row['element']]=number($row['number']);
+	}
+
+	$sql=sprintf("select count(*) as number,`Invoice Type` as element from `Invoice Dimension`   where `Invoice Store Key`=%d %s group by `Invoice Type` ",
+		$parent_key, $where_interval);
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['type'][$row['element']]=number($row['number']);
+	}
+
+
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+function get_delivery_note_element_numbers($db, $data) {
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+
+
+
+	$parent_key=$data['parent_key'];
+
+
+
+	$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
+	$where_interval=$where_interval['mysql'];
+
+	
+$elements_numbers=array(
+		'dispatch'=>array('Ready'=>0,'Picking'=>0,'Packing'=>0,'Done'=>0,'Send'=>0,'Returned'=>0),
+		'type'=>array('Order'=>0,'Sample'=>0,'Donation'=>0,'Replacements'=>0,'Shortages'=>0)
+	);
+
+	$sql=sprintf("select count(*) as number,`Delivery Note Type` as element from %s %s group by `Delivery Note Type` ",
+		$table,$where
+
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		if ($row['element']=='Replacement & Shortages' ) {
+			$_element='Replacements';
+		}elseif ($row['element']=='Replacement' ) {
+			$_element='Replacements';
+		}else {
+			$_element=$row['element'];
+		}
+		if ($_element!='')
+			$elements_numbers['type'][$_element]+=$row['number'];
+	}
+
+	foreach ($elements_numbers['type'] as $key=>$value) {
+		$elements_numbers['type'][$key]=number($value);
+	}
+
+
+
+	$sql=sprintf("select count(*) as number,`Delivery Note State` as element  from %s %s group by `Delivery Note State` ",
+		$table,$where);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		if ($row['element']=='Ready to be Picked' ) {
+			$_element='Ready';
+		}elseif ($row['element']=='Picking'  or $row['element']=='Picking & Packing' or $row['element']=='Picked'  or $row['element']=='Picker Assigned' or $row['element']=='Picker & Packer Assigned' ) {
+			$_element='Picking';
+		}elseif ($row['element']=='Packing'  or $row['element']=='Packed' or $row['element']=='Packer Assigned' or $row['element']=='Packed Done' ) {
+			$_element='Packing';
+		}elseif ($row['element']=='Approved' ) {
+			$_element='Done';
+		}elseif ($row['element']=='Dispatched'  ) {
+			$_element='Send';
+		}elseif ($row['element']=='Cancelled'  or $row['element']=='Cancelled to Restock' ) {
+			$_element='Returned';
+		}else {
+			continue;
+		}
+
+		$elements_numbers['dispatch'][$_element]+=$row['number'];
+	}
+
+	foreach ($elements_numbers['dispatch'] as $key=>$value) {
+		$elements_numbers['dispatch'][$key]=number($value);
+	}
 
 	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

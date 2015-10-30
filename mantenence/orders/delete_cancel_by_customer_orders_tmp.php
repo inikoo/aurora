@@ -32,7 +32,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$inikoo_account=new Account(1);
+$account=new Account(1);
 
 $sql="select `Order Key` from `Order Dimension` where  `Order Current Dispatch State` in  ('Cancelled by Customer')  order by `Order Key` desc";
 $result=mysql_query($sql);

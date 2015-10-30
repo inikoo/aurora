@@ -59,9 +59,9 @@ include_once 'conf/key.php';
 
 
 
-$inikoo_account=new Account();
-date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
-define("TIMEZONE",$inikoo_account->data['Account Timezone']);
+$account=new Account();
+date_default_timezone_set($account->data['Account Timezone']) ;
+define("TIMEZONE",$account->data['Account Timezone']);
 
 
 include_once 'class.Auth.php';

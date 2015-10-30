@@ -8,7 +8,7 @@ include_once 'class.Payment.php';
 include_once 'class.Payment_Account.php';
 include_once 'class.Payment_Service_Provider.php';
 
-require_once 'common_geography_functions.php';
+require_once 'utils/geography_functions.php';
 
 
 
@@ -427,7 +427,7 @@ $smarty->assign('tax_data',$tax_data);
 
 
 
-if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
+if ($account->data['Apply Tax Method']=='Per Item') {
 	$html=$smarty->fetch('invoice_tax_disaggregated.pdf.tpl');
 
 }else {

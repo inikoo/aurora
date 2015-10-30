@@ -10,7 +10,7 @@
 */
 
 
-if (!isset($inikoo_account))exit;
+if (!isset($account))exit;
 
 $js_files[]='js/order_dn.js';
 

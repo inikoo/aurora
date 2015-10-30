@@ -53,7 +53,7 @@ if ($parameters['parent']=='customer' or $parameters['parent']=='order_customer'
 }elseif ($parameters['parent']=='order') {
 	$where=sprintf(' where   B.`Order Key`=%d   ', $parameters['parent_key']);
 	$subject='Order';
-}elseif ($parameters['parent']=='dn') {
+}elseif ($parameters['parent']=='delivery_note') {
 	$where=sprintf(' where   B.`Delivery Note Key`=%d   ', $parameters['parent_key']);
 	$subject='Delivery Note';
 }elseif ($parameters['parent']=='invoice') {
@@ -73,7 +73,6 @@ elseif ($parameters['parent']=='user') {
 	$where=sprintf(' where   B.`User Key`=%d   ', $parameters['parent_key']);
 	$subject='User';
 }
-
 
 if(isset($parameters['elements']['type']['items'])){
 $elements=$parameters['elements']['type']['items'];

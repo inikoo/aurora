@@ -22,8 +22,17 @@ var columns= [{
      name: "number",
      label: "{t}Number{/t}",
      editable: false,
- sortType: "toggle",
-     cell: "string"
+    sortType: "toggle",
+    {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+     cell: Backgrid.StringCell.extend({
+         events: {
+             "click": function() {
+                 change_view('delivery_notes/'+this.model.get("store_key")+'/' + this.model.get("id")  )
+             }
+         },
+         className: "link",
+     })
  }, {
      name: "date",
      label: "{t}Date creation{/t}",
@@ -39,7 +48,6 @@ var columns= [{
       sortType: "toggle",
      editable: false,
      cell: Backgrid.StringCell.extend({
-         orderSeparator: '',
          events: {
              "click": function() {
                  change_view('customer/' + this.model.get("customer_key")  )

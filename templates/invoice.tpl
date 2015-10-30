@@ -186,10 +186,9 @@
 			<div style="width:450px">
 				<table border="0" class="info_block">
 					<tr>
-						<td>{t}Date{/t}:</td>
-						<td class="aright">{$invoice->get('Date')}</td>
+						<td class="date">{$invoice->get('Date')}</td>
 					</tr>
-					<tr>
+					<tr class="state">
 						<td>{t}Paid Date{/t}:</td>
 						<td class="aright">{$invoice->get('Paid Date')}</td>
 					</tr>

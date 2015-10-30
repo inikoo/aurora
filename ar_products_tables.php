@@ -57,7 +57,7 @@ function stores($_data, $db, $user) {
 
 
 	$rtext_label='store';
-	
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -111,7 +111,7 @@ function departments($_data, $db, $user) {
 			'store_key'=>(integer) $data['Product Department Store Key'],
 			'code'=>$data['Product Department Code'],
 			'name'=>$data['Product Department Name'],
-
+			'active_families'=>number($data['Product Department Families'])
 		);
 
 	}
@@ -167,14 +167,14 @@ function families($_data, $db, $user) {
 function products($_data, $db, $user) {
 
 
-	
-	if($_data['parameters']['parent']=='customer_favourites')
-	$rtext_label='product favourited';
+
+	if ($_data['parameters']['parent']=='customer_favourites')
+		$rtext_label='product favourited';
 	else
-	$rtext_label='product';
-	
-	
-	
+		$rtext_label='product';
+
+
+
 
 
 	include_once 'prepare_table/init.php';

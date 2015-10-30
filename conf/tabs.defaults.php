@@ -51,6 +51,20 @@ $customers_elements=array(
 
 	)
 );
+$customer_history_elements=array(
+	'type'=>array(
+		'label'=>_('Type'),
+		'items'=>array(
+			'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+			'Orders'=>array('label'=>_('Orders'), 'selected'=>true),
+			'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
+			'Attachments'=>array('label'=>_('Attachments'), 'selected'=>true),
+			'WebLog'=>array('label'=>_('WebLog'), 'selected'=>true),
+			'Emails'=>array('label'=>_('Emails'), 'selected'=>true)
+		),
+
+	)
+);
 $orders_elements=array(
 	'dispatch'=>array(
 		'label'=>_('Dispatch state'),
@@ -95,20 +109,49 @@ $orders_elements=array(
 
 
 );
-$customer_history_elements=array(
+$invoices_elements=array(
 	'type'=>array(
 		'label'=>_('Type'),
 		'items'=>array(
-			'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
-			'Orders'=>array('label'=>_('Orders'), 'selected'=>true),
-			'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
-			'Attachments'=>array('label'=>_('Attachments'), 'selected'=>true),
-			'WebLog'=>array('label'=>_('WebLog'), 'selected'=>true),
-			'Emails'=>array('label'=>_('Emails'), 'selected'=>true)
-		),
-
+			'Invoice'=>array('label'=>_('Invoice'), 'selected'=>true),
+			'Refund'=>array('label'=>_('Refund'), 'selected'=>true),
+		)
+	),
+	'payment_state'=>array('label'=>_('Payment state'),
+		'items'=>array(
+			'Yes'=>array('label'=>_('Paid'), 'selected'=>true),
+			'Partially'=>array('label'=>_('Partially paid'), 'selected'=>true),
+			'No'=>array('label'=>_('Waiting payment'), 'selected'=>true),
+		)
 	)
+
 );
+
+$delivery_notes_elements=array(
+	'dispatch'=>array(
+		'label'=>_('Dispatch state'),
+		'items'=>array(
+			'Ready'=>array('label'=>_('Ready'), 'selected'=>true),
+			'Picking'=>array('label'=>_('Picking'), 'selected'=>true),
+			'Packing'=>array('label'=>_('Packing'), 'selected'=>true),
+			'Done'=>array('label'=>_('Done'), 'selected'=>true),
+			'Send'=>array('label'=>_('Send'), 'selected'=>true),
+			'Returned'=>array('label'=>_('Returned'), 'selected'=>true),
+		)
+	),
+	'type'=>array('label'=>_('Type'),
+		'items'=>array(
+			'Order'=>array('label'=>_('Order'), 'selected'=>true),
+			'Sample'=>array('label'=>_('Sample'), 'selected'=>true),
+			'Donation'=>array('label'=>_('Donation'), 'selected'=>true),
+			'Replacements'=>array('label'=>_('Replacements'), 'selected'=>true),
+			'Shortages'=>array('label'=>_('Shortages'), 'selected'=>true),
+		)
+	)
+
+);
+
+
 
 
 $tab_defaults=array(
@@ -163,7 +206,7 @@ $tab_defaults=array(
 		'elements'=>$orders_elements
 	),
 	'customer.marketing.favourites'=>array(
-	'view'=>'overview',
+		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,
@@ -171,7 +214,7 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 	),
-	
+
 	'customers_server'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
@@ -180,7 +223,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'percentages'=>0
-	), 'customer.marketing.products'=>array(
+	),
+	'customer.marketing.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -199,8 +243,8 @@ $tab_defaults=array(
 		'f_field'=>'customer',
 		'from'=>'',
 		'to'=>'',
-		'period'=>'ytd',
-		'elements_type'=>each($orders_elements)['key'],
+		'period'=>'all',
+		'elements_type'=>'dispatch',
 		'elements'=>$orders_elements
 
 	),
@@ -221,6 +265,95 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+	'order.invoices'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+	'order.delivery_notes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+	'delivery_note.invoices'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+	'delivery_note.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+    'delivery_note.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'delivery_note.items'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+
+	),'invoice.items'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+
+	),
+	'invoice.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+	'invoice.delivery_notes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+	'invoice.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+
+    
 	'invoices'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -230,8 +363,9 @@ $tab_defaults=array(
 		'f_field'=>'customer',
 		'from'=>'',
 		'to'=>'',
-		'period'=>'ytd',
-		'elements_type'=>''
+		'period'=>'all',
+		'elements_type'=>each($invoices_elements)['key'],
+		'elements'=>$invoices_elements
 	),
 	'delivery_notes'=>array(
 		'view'=>'overview',
@@ -242,8 +376,9 @@ $tab_defaults=array(
 		'f_field'=>'customer',
 		'from'=>'',
 		'to'=>'',
-		'period'=>'ytd',
-		'elements_type'=>''
+		'period'=>'all',
+		'elements_type'=>each($delivery_notes_elements)['key'],
+		'elements'=>$delivery_notes_elements
 	),
 	'orders_server'=>array(
 		'view'=>'overview',
@@ -263,7 +398,8 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'store.departments'=>array(
+	),
+	'store.departments'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -272,7 +408,8 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'store.families'=>array(
+	),
+	'store.families'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -281,7 +418,8 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'department.families'=>array(
+	),
+	'department.families'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -290,7 +428,8 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'store.products'=>array(
+	),
+	'store.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -299,7 +438,8 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'department.products'=>array(
+	),
+	'department.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -308,7 +448,8 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'family.products'=>array(
+	),
+	'family.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -317,14 +458,16 @@ $tab_defaults=array(
 		'f_field'=>'code',
 		'f_period'=>'ytd',
 
-	), 'family.history'=>array(
+	),
+	'family.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
-	), 'product.history'=>array(
+	),
+	'product.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -371,7 +514,7 @@ $tab_defaults=array(
 		'elements_type'=>each($customers_elements)['key'],
 		'elements'=>$customers_elements
 	)
-	
+
 	, 'website.search.queries'=>array(
 		'view'=>'overview',
 		'sort_key'=>'number',
@@ -406,8 +549,8 @@ $tab_defaults=array(
 		'f_field'=>'handle',
 
 	),
-	
-	 'website.user.login_history'=>array(
+
+	'website.user.login_history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -417,7 +560,7 @@ $tab_defaults=array(
 		'f_period'=>'all',
 
 	),
-	 'website.user.pageviews'=>array(
+	'website.user.pageviews'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -427,9 +570,9 @@ $tab_defaults=array(
 		'f_period'=>'all',
 
 	),
-	
-	
-	 'marketing_server'=>array(
+
+
+	'marketing_server'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,

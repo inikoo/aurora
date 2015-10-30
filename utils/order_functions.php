@@ -91,9 +91,9 @@ function get_orders_operations($row,$user) {
 
 		$operations.='<div class="buttons small '.$class.'">';
 		if ($row['Order Invoiced']=='No') {
-			$operations.='<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="art/icons/money.png"> '._('Create Invoice')."</button>";;
+			$operations.='<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="/art/icons/money.png"> '._('Create Invoice')."</button>";;
 		}else {
-			$operations.='<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="art/icons/package_green.png"> '._('Approve Dispatching')."</button>";;
+			$operations.='<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key'].'" style="height:12px;width:12px" src="/art/icons/package_green.png"> '._('Approve Dispatching')."</button>";;
 
 
 		}
@@ -106,7 +106,7 @@ function get_orders_operations($row,$user) {
 		if (count($dns)==1) {
 			foreach ($dns as $dn) {
 
-				$operations.='<button  onClick="set_as_dispatched('.$dn->data['Delivery Note Key'].','.$user->get_staff_key().',\'order\',\''.$row['Order Key'].'\')" ><img id="set_as_dispatched_img_'.$dn->data['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>";
+				$operations.='<button  onClick="set_as_dispatched('.$dn->data['Delivery Note Key'].','.$user->get_staff_key().',\'order\',\''.$row['Order Key'].'\')" ><img id="set_as_dispatched_img_'.$dn->data['Delivery Note Key'].'" src="/art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>";
 			}
 		}
 
@@ -223,11 +223,11 @@ function get_order_formated_payment_state($data) {
 }
 
 function get_invoice_operations($row,$user,$parent='order',$parent_key='') {
-	$operations='<div  id="operati_ons'.$row['Invoice Key'].'">';
+	$operations='<div  id="operations'.$row['Invoice Key'].'">';
 
 
 	$operations.='
-		<button id="delete'.$row['Invoice Key'].'" onclick="show_delete_invoice_dialog('.$row['Invoice Key'].')"><img  src="art/icons/delete.png"> '._('Delete').'</button>
+		<button id="delete'.$row['Invoice Key'].'" onclick="show_delete_invoice_dialog('.$row['Invoice Key'].')"><img  src="/art/icons/delete.png"> '._('Delete').'</button>
 
 	';
 
@@ -254,20 +254,20 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 		$operations.='<div class="buttons small '.$class.'">';
 		if ($parent=='order') {
 
-			$operations.='<button style="display:none"  class="first" onClick="show_dialog_process_delivery_note(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/lorry_go.png"> '._('Process Delivery Note')."</button>";
+			$operations.='<button style="display:none"  class="first" onClick="show_dialog_process_delivery_note(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/lorry_go.png"> '._('Process Delivery Note')."</button>";
 
 		}else {
 
 
 
 			if ($user->can_edit('assign_pp')) {
-				$operations.='<button  class="first" onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/user.png"> '._('Assign Picker')."</button>";
+				$operations.='<button  class="first" onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/user.png"> '._('Assign Picker')."</button>";
 			}
 
 			if ($user->data['User Type']=='Warehouse') {
 				$operations.=' <button  onClick="pick_it(this,'.$row['Delivery Note Key'].')">'._('Pick Order')."</button>";
 			}elseif ($user->can_edit('pick')) {
-				$operations.=' <button  onClick="pick_it_fast(this,'.$user->get_staff_key().','.$row['Delivery Note Key'].')"><img id="pick_it_fast_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Start Picking')."</button>";
+				$operations.=' <button  onClick="pick_it_fast(this,'.$user->get_staff_key().','.$row['Delivery Note Key'].')"><img id="pick_it_fast_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Start Picking')."</button>";
 
 			}
 		}
@@ -277,16 +277,16 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 	elseif ($row['Delivery Note State']=='Picker Assigned') {
 		$operations.='<div class="buttons small '.$class.'">';
 		if ($user->can_edit('assign_pp')) {
-			$operations.=' <button  style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img src="art/icons/user_edit.png"/> '._('Change Picker').'</button>';
+			$operations.=' <button  style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img src="/art/icons/user_edit.png"/> '._('Change Picker').'</button>';
 		}
 		$operations.='</span>';
 		if ($row['Delivery Note Assigned Picker Key']==$user->get_staff_key())
-			$operations.='<button onClick="start_picking('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Picker Key'].')"  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  ><img id="start_picking_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Start Picking')."</button>";
+			$operations.='<button onClick="start_picking('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Picker Key'].')"  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  ><img id="start_picking_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Start Picking')."</button>";
 
 		if ($user->data['User Type']=='Warehouse') {
 			$operations.=' <button  onClick="pick_it(this,'.$row['Delivery Note Key'].')">'._('Pick Order')."</button>";
 		}elseif ($parent!='order') {
-			$operations.='<button  onClick="location.href=\'order_pick_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Picking Aid')."</button>";
+			$operations.='<button  onClick="location.href=\'order_pick_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Picking Aid')."</button>";
 		}
 
 
@@ -297,42 +297,42 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 		$operations.='<div class="buttons small '.$class.'">';
 
 
-		$operations.='<span style="float:left;;margin-left:7px"><img style="height:12px;width:12px" src="art/icons/user_red.png" title="'._('Packing assigned to').'"/> <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
+		$operations.='<span style="float:left;;margin-left:7px"><img style="height:12px;width:12px" src="/art/icons/user_red.png" title="'._('Packing assigned to').'"/> <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
 		if ($user->can_edit('assign_pp')) {
-			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
+			$operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 		}
 
 
 
 		$operations.='</span>';
 		if ($row['Delivery Note Assigned Packer Key']==$user->get_staff_key())
-			$operations.='<button  onClick="start_packing('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"  ><img id="start_packing_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="art/icons/briefcase.png"> '._('Start Packing')."</button>";
+			$operations.='<button  onClick="start_packing('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"  ><img id="start_packing_img_'.$row['Delivery Note Key'].'" style="height:12px;width:12px" src="/art/icons/briefcase.png"> '._('Start Packing')."</button>";
 
 
 		if ($user->data['User Type']!='Warehouse'  and $parent!='order' ) {
 
-			$operations.='<button  style="margin-left:5px" onClick="location.href=\'order_pack_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Packing Aid')."</button>";
+			$operations.='<button  style="margin-left:5px" onClick="location.href=\'order_pack_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Packing Aid')."</button>";
 		}
 		$operations.='</div>';
 
 		// $operations.='<b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('pack order')."</a>";
-		//  $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
+		//  $operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 	}
 	elseif ($row['Delivery Note State']=='Picking') {
 
 		$operations.='<div class="buttons small '.$class.'">';
 
 		if ($row['Delivery Note Assigned Picker Key']==$user->get_staff_key()  and $parent!='order'  ) {
-			$operations.='<button  onClick="location.href=\'order_pick_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="art/icons/paste_plain.png"> '._('Picking Aid')."</button>";
+			$operations.='<button  onClick="location.href=\'order_pick_aid.php?id='.$row['Delivery Note Key'].'\'"  ><img style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Picking Aid')."</button>";
 		}
 		if ($user->can_edit('assign_pp')) {
-			$operations.=' <button  style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img src="art/icons/user_edit.png"/> '._('Change Picker').'</button>';
+			$operations.=' <button  style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img src="/art/icons/user_edit.png"/> '._('Change Picker').'</button>';
 		}
 
 		// $operations.='</span>';
 
 		if ($user->can_edit('assign_pp') and $row['Delivery Note Assigned Packer Key']==0) {
-			$operations.='<button  class="first" onClick="assign_packer(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/user_red.png"> '._('Assign Packer')."</button>";
+			$operations.='<button  class="first" onClick="assign_packer(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/user_red.png"> '._('Assign Packer')."</button>";
 
 		}
 
@@ -342,18 +342,18 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 
 		//$operations.=' | <b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
-		//$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
+		//$operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
 
 	}
 	elseif ($row['Delivery Note State']=='Picked') {
 		$operations.='<div class="buttons small '.$class.'">';
 		if ($user->can_edit('assign_pp')) {
-			$operations.='<button  class="first" onClick="assign_packer(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="art/icons/user_red.png"> '._('Assign Packer')."</button>";
+			$operations.='<button  class="first" onClick="assign_packer(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/user_red.png"> '._('Assign Packer')."</button>";
 
 		}
 
 		if ($user->can_edit('pack')) {
-			$operations.='<button   onClick="pack_it_fast(this,'.$user->get_staff_key().','.$row['Delivery Note Key'].')"><img id="pack_it_fast_img_'.$row['Delivery Note Key'].'"  style="height:12px;width:12px" src="art/icons/briefcase.png"> '._('Start packing')."</button>";
+			$operations.='<button   onClick="pack_it_fast(this,'.$user->get_staff_key().','.$row['Delivery Note Key'].')"><img id="pack_it_fast_img_'.$row['Delivery Note Key'].'"  style="height:12px;width:12px" src="/art/icons/briefcase.png"> '._('Start packing')."</button>";
 
 
 		}
@@ -362,13 +362,13 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 	elseif ($row['Delivery Note State']=='Packing') {
 
 		$operations.='<div class="buttons small '.$class.'">';
-		$operations.='<span style="float:left;margin-left:7px"> <img style="height:12px;width:12px" src="art/icons/user_red.png" title="'._('Packing by').'"/>  <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
+		$operations.='<span style="float:left;margin-left:7px"> <img style="height:12px;width:12px" src="/art/icons/user_red.png" title="'._('Packing by').'"/>  <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
 		if ($user->can_edit('assign_pp')) {
-			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
+			$operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 		}
 		$operations.='</span>';
 		if ($row['Delivery Note Assigned Packer Key']==$user->get_staff_key() and $parent!='order' ) {
-			$operations.='<a   href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  ><img style="height:12px;width:12px" src="art/icons/briefcase.png"> '._('Packing Aid')."</a>";
+			$operations.='<a   href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  ><img style="height:12px;width:12px" src="/art/icons/briefcase.png"> '._('Packing Aid')."</a>";
 		}
 		$operations.='</div>';
 
@@ -377,7 +377,7 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 
 		$operations.='<div class="buttons small '.$class.'">';
 		if ($user->can_edit('assign_pp')) {
-			$operations.='<button   onClick="approve_packing('.$row['Delivery Note Key'].','.$user->get_staff_key().',\'warehouse_orders\')"><img id="approve_packing_img_'.$row['Delivery Note Key'].'"  style="height:12px;width:12px" src="art/icons/flag_green.png"> '._('Approve packing')."</button>";
+			$operations.='<button   onClick="approve_packing('.$row['Delivery Note Key'].','.$user->get_staff_key().',\'warehouse_orders\')"><img id="approve_packing_img_'.$row['Delivery Note Key'].'"  style="height:12px;width:12px" src="/art/icons/flag_green.png"> '._('Approve packing')."</button>";
 		}else {
 			$operations.='<span style="margin-left:7px">'._('Waiting for packing approval').'</span>';
 
@@ -391,10 +391,10 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 	elseif ($row['Delivery Note State']=='Picking & Packing') {
 		if ($user->data['User Type']!='Warehouse'  and $parent!='order' ) {
 			$operations.='<b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
-			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
+			$operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
 
 			$operations.=' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('packing order')."</a>";
-			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
+			$operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 		}
 
 	}
@@ -407,7 +407,7 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 		if ($user->can_edit('orders')) {
 
 		
-			$operations.=' <button '.($row['Delivery Note Invoiced']=='No' and  $row['Delivery Note Type']=='Order' ?' class="disabled" title="'._('Order not invoiced').'"':'') .' onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'" src="art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
+			$operations.=' <button '.($row['Delivery Note Invoiced']=='No' and  $row['Delivery Note Type']=='Order' ?' class="disabled" title="'._('Order not invoiced').'"':'') .' onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'.$row['Delivery Note Key'].'" src="/art/icons/package_green.png" alt=""> '._('Approve Dispatching').'</button>';
 
 			$operations.='</div>';
 		}else {
@@ -420,12 +420,12 @@ function get_dn_operations($row,$user,$parent='order',$parent_key='') {
 	}
 	elseif ($row['Delivery Note State']=='Approved') {
 		$operations.='<div class="buttons small '.$class.'">
-		<button  onClick="set_as_dispatched('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key'].'" src="art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>
+		<button  onClick="set_as_dispatched('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key'].'" src="/art/icons/lorry_go.png" alt=""> '._('Mark as Dispatched')."</button>
 		</div>";
 	}
 	elseif ($row['Delivery Note State']=='Dispatched') {
 		$operations.='<div class="buttons small '.$class.'">
-		<button id="undo_dispatch_'.$row['Delivery Note Key'].'" onclick="undo_dispatch('.$row['Delivery Note Key'].')"><img id="undo_dispatch_icon_'.$row['Delivery Note Key'].'" src="art/icons/arrow_rotate_anticlockwise.png"> '._('Undo dispatch').'</button>
+		<button id="undo_dispatch_'.$row['Delivery Note Key'].'" onclick="undo_dispatch('.$row['Delivery Note Key'].')"><img id="undo_dispatch_icon_'.$row['Delivery Note Key'].'" src="/art/icons/arrow_rotate_anticlockwise.png"> '._('Undo dispatch').'</button>
 
 		</div>';
 	}

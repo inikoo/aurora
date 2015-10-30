@@ -936,9 +936,9 @@ class Invoice extends DB_Table {
 
 
 	function update_totals() {
-		global $inikoo_account;
+		global $account;
 
-		if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
+		if ($account->data['Apply Tax Method']=='Per Item') {
 			$this->update_totals_per_item_method();
 		}else {
 			$this->update_totals_per_total_method();
@@ -1343,9 +1343,9 @@ class Invoice extends DB_Table {
 
 
 	function update_tax() {
-		global $inikoo_account;
+		global $account;
 
-		if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
+		if ($account->data['Apply Tax Method']=='Per Item') {
 			$this->update_tax_per_item_method();
 		}else {
 			$this->update_tax_per_total_method();
@@ -1670,9 +1670,9 @@ class Invoice extends DB_Table {
 
 
 	function update_refund_totals() {
-		global $inikoo_account;
+		global $account;
 
-		if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
+		if ($account->data['Apply Tax Method']=='Per Item') {
 			$this->update_refund_totals_per_item_method();
 		}else {
 			$this->update_refund_totals_per_total_method();
@@ -2497,16 +2497,16 @@ class Invoice extends DB_Table {
 
 
 			if ($delivery_note->get('Delivery Note State')=='Dispatched')
-				$state='<img src="art/icons/lorry.png" style="height:14px">';
+				$state='<img src="/art/icons/lorry.png" style="height:14px">';
 
 			elseif ($delivery_note->get('Delivery Note State')=='Packed Done')
-				$state='<img src="art/icons/package.png" style="height:14px">';
+				$state='<img src="/art/icons/package.png" style="height:14px">';
 			elseif ($delivery_note->get('Delivery Note State')=='Approved')
-				$state='<img src="art/icons/package_green.png" style="height:14px">';
+				$state='<img src="/art/icons/package_green.png" style="height:14px">';
 			else
-				$state='<img src="art/icons/cart.png" style="width:14px">';
+				$state='<img src="/art/icons/cart.png" style="width:14px">';
 
-			$this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+			$this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="/art/pdf.gif" alt=""></a><br/>',
 				$state,
 				$delivery_note->data ['Delivery Note Key'],
 				$prefix,
@@ -2596,7 +2596,7 @@ class Invoice extends DB_Table {
 			}
 			break;
 		case('Payment State'):
-			return $this->get_xhtml_payment_state();
+			return $this->get_formated_payment_state();
 		}
 
 
@@ -2607,7 +2607,7 @@ class Invoice extends DB_Table {
 	}
 
 
-	function get_xhtml_payment_state() {
+	function get_formated_payment_state() {
 
 		switch ($this->data['Invoice Paid']) {
 		case 'Yes':
@@ -2742,7 +2742,7 @@ class Invoice extends DB_Table {
 
 
 	function get_operations($user, $parent='order') {
-		include_once 'common_order_functions.php';
+		include_once 'utils/order_functions.php';
 
 		return get_invoice_operations($this->data, $user, $parent);
 	}
@@ -2761,6 +2761,8 @@ class Invoice extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$paid_amount=round($row['amount'], 2);
 		}
+
+
 
 
 

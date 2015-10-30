@@ -34,9 +34,9 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$inikoo_account=new Account();
-$corporate_currency=$inikoo_account->data['Account Currency'];
-$account_code=$inikoo_account->data['Account Code'];
+$account=new Account();
+$corporate_currency=$account->data['Account Currency'];
+$account_code=$account->data['Account Code'];
 
 
 

@@ -35,7 +35,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$inikoo_account=new Account(1);
+$account=new Account(1);
 //'For Sale','Out of Stock','Discontinued','Offline'
 $sql="select `Order Key` from `Order Dimension` where  `Order Current Dispatch State` in  ('In Process by Customer')  order by `Order Key` ";
 $res=mysql_query($sql);

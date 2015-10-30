@@ -531,7 +531,66 @@ class DeliveryNote extends DB_Table {
 
 	}
 
+    function get_info(){
+    
+    $info='';
+		if ($this->data['Delivery Note Weight']) {
+			$info=$this->get('Weight');
+		}
 
+		if ($this->data['Delivery Note Number Parcels']!='') {
+			$info.=', '.$this->get_formated_parcels();
+		}
+
+
+		if ($this->data['Delivery Note Shipper Consignment']!='') {
+			$info.=', '. $this->get('Consignment');
+		}
+				$info=preg_replace('/^,/','',$info);
+
+		
+
+		return $info;
+    
+    }
+    
+    function get_missing_info(){
+    
+ 
+		if (!$this->data['Delivery Note Weight']) {
+		
+			$missing_dn_data=true;
+			$missing_dn_str=_('weight');
+
+		}
+
+		if ($this->data['Delivery Note Number Parcels']=='') {
+			
+			$missing_dn_data=true;
+			$missing_dn_str.=', '._('parcels');
+		}
+		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+
+
+		if ($this->data['Delivery Note Shipper Consignment']=='') {
+			
+			$missing_dn_data=true;
+			$missing_dn_str.=', '._('consignment');
+		}
+		$missing_dn_str=preg_replace('/^,/','',$missing_dn_str);
+
+		//if ($missing_dn_data  and in_array($order->data['Order Current Dispatch State'],array('Packed Done','Packed')) ) {
+		//	$info.=' <img src="art/icons/exclamation.png" style="height:14px;vertical-align:-3px"> <span style="font-style:italic;color:#ea6c59">'._('Missing').': '.$missing_dn_str.'</span> <img onClick="show_dialog_set_dn_data_from_order('.$this->id.')" style="cursor:pointer;display:none" src="art/icons/edit.gif"> ';
+		//}
+		
+
+		return $missing_dn_str;
+    
+    }
+    
+    
+    
+    
 
 	function get_formated_parcels() {
 
@@ -2375,7 +2434,7 @@ class DeliveryNote extends DB_Table {
 
 
 	function get_operations($user,$parent='order',$parent_key='') {
-		include_once 'common_order_functions.php';
+		include_once 'utils/order_functions.php';
 
 		return get_dn_operations($this->data,$user,$parent,$parent_key);
 	}

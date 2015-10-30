@@ -9,7 +9,7 @@ include_once 'class.Payment_Service_Provider.php';
 
 require_once 'class.User.php';
 include_once 'class.PartLocation.php';
-require_once 'common_order_functions.php';
+require_once 'utils/order_functions.php';
 
 
 
@@ -854,7 +854,7 @@ function cancel_order($data) {
 		$response=array(
 			'state'=>200,
 			'order_key'=>$order->id,
-			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: common_order_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: utils/order_functions.php
 			'payment_state'=>get_order_formated_payment_state($order->data),
 			'operations'=>get_orders_operations($order->data,$user)
 
@@ -883,7 +883,7 @@ function undo_cancel_order($data) {
 		$response=array(
 			'state'=>200,
 			'order_key'=>$order->id,
-			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: common_order_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($order->data['Order Current Dispatch State'],$order->id),// function in: utils/order_functions.php
 			'payment_state'=>get_order_formated_payment_state($order->data),
 			'operations'=>get_orders_operations($order->data,$user)
 
@@ -2345,7 +2345,7 @@ function post_transactions_to_process() {
 
 function list_pending_orders() {
 	date_default_timezone_set(TIMEZONE) ;
-	include_once 'common_order_functions.php';
+	include_once 'utils/order_functions.php';
 
 	global $user;
 
@@ -2698,7 +2698,7 @@ function list_pending_orders() {
 			'store'=>$store,
 			'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
 			'operations'=>$operations,
-			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: common_order_functions.php
+			'dispatch_state'=>get_order_formated_dispatch_state($row['Order Current Dispatch State'],$row['Order Key']),// function in: utils/order_functions.php
 			'payment_state'=>get_order_formated_payment_state($row),
 			'see_link'=>$see_link
 		);

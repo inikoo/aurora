@@ -31,7 +31,7 @@ mysql_set_charset('utf8');
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$inikoo_account=new Account(1);
+$account=new Account(1);
 
 $editor=array(
 'Author Name'=>'System Cron',

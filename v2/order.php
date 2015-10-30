@@ -10,7 +10,7 @@
 
 
 include_once 'common.php';
-include_once 'common_order_functions.php';
+include_once 'utils/order_functions.php';
 include_once 'class.CurrencyExchange.php';
 include_once 'class.CompanyArea.php';
 include_once 'class.Payment.php';
@@ -571,7 +571,7 @@ else {
 			'key'=>$invoice->id,
 			'operations'=>$invoice->get_operations($user,'order',$order->id),
 			'number'=>$invoice->data['Invoice Public ID'],
-			'state'=>$invoice->get_xhtml_payment_state(),
+			'state'=>$invoice->get_formated_payment_state(),
 			'to_pay'=>$invoice->data['Invoice Outstanding Total Amount'],
 			'data'=>'',
 

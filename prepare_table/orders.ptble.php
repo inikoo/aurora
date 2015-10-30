@@ -1,7 +1,6 @@
 <?php
 
 
-list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
 $group_by='';
 $wheref='';
@@ -110,11 +109,29 @@ elseif ($parameters['parent']=='stores') {
 }elseif ($parameters['parent']=='product') {
 
 
-$table='`Order Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+	$table='`Order Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
-		$where=sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
-		
+	$where=sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
+
 	$group_by=' group by OTF.`Order Key` ';
+
+
+}elseif ($parameters['parent']=='delivery_note') {
+
+
+	$table='`Order Delivery Note Bridge` B left join   `Order Dimension` O  on (O.`Order Key`=B.`Order Key`)     left join `Payment Account Dimension`   P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+
+	$where=sprintf(' where  `Delivery Note Key`=%d ', $parameters['parent_key']);
+
+
+
+}elseif ($parameters['parent']=='invoice') {
+
+
+	$table='`Order Invoice Bridge` B left join   `Order Dimension` O  on (O.`Order Key`=B.`Order Key`)     left join `Payment Account Dimension`   P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+
+	$where=sprintf(' where  `Invoice Key`=%d ', $parameters['parent_key']);
+
 
 
 }
@@ -122,124 +139,127 @@ else {
 	exit("unknown parent\n");
 }
 
+if (isset($parameters['period'])) {
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
-
-$where_interval=prepare_mysql_dates($from, $to, 'O.`Order Date`');
-$where.=$where_interval['mysql'];
-
-
-
-switch ($parameters['elements_type']) {
-case('dispatch'):
-	$_elements='';
-	$num_elements_checked=0;
-	
-	
-	foreach ($parameters['elements']['dispatch']['items'] as $_key=>$_value) {
-	$_value=$_value['selected'];
-		if ($_value) {
-			$num_elements_checked++;
-			if ($_key=='InProcessCustomer') {
-				$_elements.=",'In Process by Customer','Waiting for Payment Confirmation'";
-
-			}elseif ($_key=='InProcess') {
-				$_elements.=",'In Process','Submitted by Customer'";
-			}elseif ($_key=='Warehouse') {
-				$_elements.=",'Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
-			}elseif ($_key=='Dispatched') {
-				$_elements.=",'Dispatched'";
-			}elseif ($_key=='Cancelled') {
-				$_elements.=",'Cancelled'";
-			}elseif ($_key=='Suspended') {
-				$_elements.=",'Suspended'";
-			}
-		}
-	}
-
-	if ($_elements=='') {
-		$where.=' and false' ;
-	}elseif ($num_elements_checked==6) {
-
-	}else {
-
-
-		$_elements=preg_replace('/^,/', '', $_elements);
-
-		$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
-	}
-	break;
-case('source'):
-	$_elements='';
-	$num_elements_checked=0;
-	foreach ($parameters['elements']['source']['items'] as $_key=>$_value) {
-	$_value=$_value['selected'];
-		if ($_value) {
-			$num_elements_checked++;
-
-			$_elements.=", '$_key'";
-		}
-	}
-
-	if ($_elements=='') {
-		$where.=' and false' ;
-	}elseif ($num_elements_checked==6) {
-
-	}else {
-		$_elements=preg_replace('/^,/', '', $_elements);
-		$where.=' and `Order Main Source Type` in ('.$_elements.')' ;
-	}
-	break;
-case('type'):
-	$_elements='';
-	$num_elements_checked=0;
-	foreach ($parameters['elements']['type']['items'] as $_key=>$_value) {
-	$_value=$_value['selected'];
-		if ($_value) {
-			$num_elements_checked++;
-
-			$_elements.=", '$_key'";
-		}
-	}
-
-	if ($_elements=='') {
-		$where.=' and false' ;
-	}elseif ($num_elements_checked==6) {
-
-	}else {
-		$_elements=preg_replace('/^,/', '', $_elements);
-		$where.=' and `Order Type` in ('.$_elements.')' ;
-	}
-	break;
-case('payment'):
-	$_elements='';
-	$num_elements_checked=0;
-
-	//'Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
-
-	foreach ($parameters['elements']['payment']['items'] as $_key=>$_value) {
-	$_value=$_value['selected'];
-		if ($_value) {
-			$num_elements_checked++;
-			if ($_key=='WaitingPayment')$_key='Waiting Payment';
-			if ($_key=='PartiallyPaid')$_key='Partially Paid';
-			if ($_key=='NA')$_key='No Applicable';
-
-
-			$_elements.=", '$_key'";
-		}
-	}
-
-	if ($_elements=='') {
-		$where.=' and false' ;
-	}elseif ($num_elements_checked==6) {
-
-	}else {
-		$_elements=preg_replace('/^,/', '', $_elements);
-		$where.=' and `Order Current Payment State` in ('.$_elements.')' ;
-	}
-	break;
+	$where_interval=prepare_mysql_dates($from, $to, 'O.`Order Date`');
+	$where.=$where_interval['mysql'];
 }
 
+if (isset($parameters['period'])) {
+
+
+	switch ($parameters['elements_type']) {
+	case('dispatch'):
+		$_elements='';
+		$num_elements_checked=0;
+
+
+		foreach ($parameters['elements']['dispatch']['items'] as $_key=>$_value) {
+			$_value=$_value['selected'];
+			if ($_value) {
+				$num_elements_checked++;
+				if ($_key=='InProcessCustomer') {
+					$_elements.=",'In Process by Customer','Waiting for Payment Confirmation'";
+
+				}elseif ($_key=='InProcess') {
+					$_elements.=",'In Process','Submitted by Customer'";
+				}elseif ($_key=='Warehouse') {
+					$_elements.=",'Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
+				}elseif ($_key=='Dispatched') {
+					$_elements.=",'Dispatched'";
+				}elseif ($_key=='Cancelled') {
+					$_elements.=",'Cancelled'";
+				}elseif ($_key=='Suspended') {
+					$_elements.=",'Suspended'";
+				}
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+
+
+			$_elements=preg_replace('/^,/', '', $_elements);
+
+			$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
+		}
+		break;
+	case('source'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($parameters['elements']['source']['items'] as $_key=>$_value) {
+			$_value=$_value['selected'];
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/', '', $_elements);
+			$where.=' and `Order Main Source Type` in ('.$_elements.')' ;
+		}
+		break;
+	case('type'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($parameters['elements']['type']['items'] as $_key=>$_value) {
+			$_value=$_value['selected'];
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/', '', $_elements);
+			$where.=' and `Order Type` in ('.$_elements.')' ;
+		}
+		break;
+	case('payment'):
+		$_elements='';
+		$num_elements_checked=0;
+
+		//'Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+
+		foreach ($parameters['elements']['payment']['items'] as $_key=>$_value) {
+			$_value=$_value['selected'];
+			if ($_value) {
+				$num_elements_checked++;
+				if ($_key=='WaitingPayment')$_key='Waiting Payment';
+				if ($_key=='PartiallyPaid')$_key='Partially Paid';
+				if ($_key=='NA')$_key='No Applicable';
+
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/', '', $_elements);
+			$where.=' and `Order Current Payment State` in ('.$_elements.')' ;
+		}
+		break;
+	}
+}
 
 
 if (($parameters['f_field']=='customer')  and $f_value!='') {
@@ -300,8 +320,7 @@ else
 $fields='`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
 
 $sql_totals="select count(Distinct O.`Order Key`) as num from $table   $where $wheref ";
-
-//	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+// $sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 //print $sql;
 
 ?>

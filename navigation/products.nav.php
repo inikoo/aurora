@@ -523,6 +523,7 @@ function get_family_navigation($data) {
 
 }
 
+
 function get_product_navigation($data) {
 
 	global $user, $smarty;
@@ -552,8 +553,11 @@ function get_product_navigation($data) {
 		case 'family':
 			$tab='family.products';
 			$_section='products';
-			break;	
-
+			break;
+		case 'order':
+			$tab='order.items';
+			$_section='orders';
+			break;
 		}
 
 
@@ -570,36 +574,47 @@ function get_product_navigation($data) {
 		$order=preg_replace('/^.*\.`/', '', $order);
 		$order=preg_replace('/^`/', '', $order);
 		$order=preg_replace('/`$/', '', $order);
-		$_order_field_value=$object->get($order);
 
+		if ($data['parent']=='order') {
+			$_order_field_value=$data['otf'];
+			$extra_field=',OTF.`Order Transaction Fact Key` as extra_field';
+		}else {
+
+			$_order_field_value=$object->get($order);
+			$extra_field='';
+		}
 
 		$prev_title='';
 		$next_title='';
 		$prev_key=0;
 		$next_key=0;
+		$prev_extra_field_value='';
+		$next_extra_field_value='';
+
 		$sql=trim($sql_totals." $wheref");
 
 		$res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select `Product Code` object_name,P.`Product ID` as object_key from $table   $where $wheref
+			$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1",
-
+				$extra_field,
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
 				$object->pid
 			);
-
-
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$prev_key=$row['object_key'];
 				$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-
+				if ($extra_field) {
+					$prev_extra_field_value=$row['extra_field'];
+				}
 			}
 
-			$sql=sprintf("select `Product Code` object_name,P.`Product ID` as object_key from $table   $where $wheref
+			$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
+				$extra_field,
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
 				$object->pid
@@ -609,7 +624,9 @@ function get_product_navigation($data) {
 			if ($row=mysql_fetch_assoc($res)) {
 				$next_key=$row['object_key'];
 				$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-
+				if ($extra_field) {
+					$next_extra_field_value=$row['extra_field'];
+				}
 			}
 
 
@@ -620,14 +637,35 @@ function get_product_navigation($data) {
 				$prev_title=$next_title;
 				$next_key=$_tmp1;
 				$next_title=$_tmp2;
+				if ($extra_field) {
+					$_tmp3=$prev_extra_field_value;
+					$prev_extra_field_value=$next_extra_field_value;
+					$next_extra_field_value=$_tmp3;
+				}
+
 			}
 
 
-			switch ($data['parent']) {
+			
+
+
+
+
+
+		}
+
+
+	}
+	else {
+		$_section='products';
+
+	}
+
+switch ($data['parent']) {
 			case 'store':
-			
-			    $store= new Store($object->get('Product Store Key'));
-			
+
+				$store= new Store($object->get('Product Store Key'));
+
 				$up_button=array('icon'=>'arrow-up', 'title'=>_("Store").' ('.$store->get('Store Code').')', 'reference'=>'store/'.$object->get('Product Store Key'));
 
 				if ($prev_key) {
@@ -671,23 +709,30 @@ function get_product_navigation($data) {
 				}
 
 				break;
+			case 'order':
+				$order=new Order($data['parent_key']);
+				$up_button=array('icon'=>'arrow-up', 'title'=>_("Order").' ('.$order->get('Order Public ID').')', 'reference'=>'orders/'.$order->get('Order Store Key').'/'.$order->id);
 
+				if ($prev_key) {
+					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'order/'.$data['parent_key'].'/item/'.$prev_extra_field_value);
+
+				}else {
+					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+				}
+				$left_buttons[]=$up_button;
+
+
+				if ($next_key) {
+					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'order/'.$data['parent_key'].'/item/'.$next_extra_field_value);
+
+				}else {
+					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+				}
+
+				break;
 			}
-
-
-
-
-
-		}
-
-
-	}
-	else {
-		$_section='products';
-
-	}
-
-
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');

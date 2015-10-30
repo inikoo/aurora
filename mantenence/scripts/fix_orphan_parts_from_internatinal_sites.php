@@ -73,7 +73,7 @@ $_SESSION['locale_info'] = localeconv();
 
 $_SESSION['lang']=1;
 
-$inikoo_account=new Account(1);
+$account=new Account(1);
 
 
 $change=false;
