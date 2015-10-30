@@ -24,7 +24,7 @@ include_once 'class.Invoice.php';
 include_once 'class.DeliveryNote.php';
 include_once 'class.TaxCategory.php';
 include_once 'class.CurrencyExchange.php';
-require_once 'common_order_functions.php';
+require_once 'utils/order_functions.php';
 
 
 class Order extends DB_Table {
@@ -604,7 +604,7 @@ class Order extends DB_Table {
 		);
 		$orders_data='';
 		$res=mysql_query($sql);
-		include_once 'common_order_functions.php';
+		include_once 'utils/order_functions.php';
 		while ($row=mysql_fetch_assoc($res)) {
 			$orders_data.=', '.sprintf('%s (%s)',
 				sprintf('<a href="order.php?id=%d">%s</a>', $row['Order Key'], $row['Order Public ID']),
@@ -2499,13 +2499,13 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		foreach ($this->get_invoices_objects() as $invoice) {
 
 			if ($invoice->get('Invoice Paid')=='Yes')
-				$state='<img src="art/icons/money.png" style="height:14px">';
+				$state='<img src="/art/icons/money.png" style="height:14px">';
 
 			else
 
-				$state='<img src="art/icons/money_bw.png" style="width:14px">';
+				$state='<img src="/art/icons/money_bw.png" style="width:14px">';
 
-			$this->data ['Order XHTML Invoices'] .= sprintf( ' %s <a href="invoice.php?id=%d">%s%s</a> <a href="invoice.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+			$this->data ['Order XHTML Invoices'] .= sprintf( ' %s <a href="invoice.php?id=%d">%s%s</a> <a href="invoice.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="/art/pdf.gif" alt=""></a><br/>',
 				$state,
 				$invoice->data ['Invoice Key'],
 				$prefix,
@@ -2530,16 +2530,16 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			//print $delivery_note->get('Delivery Note State');
 
 			if ($delivery_note->get('Delivery Note State')=='Dispatched')
-				$state='<img src="art/icons/lorry.png" style="height:14px">';
+				$state='<img src="/art/icons/lorry.png" style="height:14px">';
 			else if ($delivery_note->get('Delivery Note State')=='Packed Done')
-				$state='<img src="art/icons/package.png" style="height:14px">';
+				$state='<img src="/art/icons/package.png" style="height:14px">';
 			else if ($delivery_note->get('Delivery Note State')=='Approved')
-				$state='<img src="art/icons/package_green.png" style="height:14px">';
+				$state='<img src="/art/icons/package_green.png" style="height:14px">';
 			else
 
-				$state='<img src="art/icons/cart.png" style="width:14px">';
+				$state='<img src="/art/icons/cart.png" style="width:14px">';
 
-			$this->data ['Order XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+			$this->data ['Order XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="/art/pdf.gif" alt=""></a><br/>',
 				$state,
 				$delivery_note->data ['Delivery Note Key'],
 				$prefix,
@@ -2708,7 +2708,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 	function get_items_totals_by_adding_transactions() {
 
-		global $inikoo_account;
+		global $account;
 
 		$sql = sprintf("select
 		sum(`Order Out of Stock Lost Amount`) as out_of_stock_net,
@@ -3208,9 +3208,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		include_once 'class.Account.php';
 
-		$inikoo_account=new Account();
+		$account=new Account();
 
-		if ($inikoo_account->data['Apply Tax Method']=='Per Item') {
+		if ($account->data['Apply Tax Method']=='Per Item') {
 			$this->update_item_totals_from_order_transactions();
 			$this->update_totals_from_order_transactions_per_item_method();
 			$this->update_no_normal_totals_per_item_method();
@@ -5313,7 +5313,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		if (in_array($this->data['Order Ship To Country Code'], array('GBR', 'JEY', 'GGY', 'IMN'))) {
-			include_once 'common_geography_functions.php';
+			include_once 'utils/geography_functions.php';
 
 			$postcode = gbr_postcode_first_part($this->data['Order Ship To Postal Code']);
 		}else {
@@ -8441,7 +8441,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 	function get_tax_data() {
 
 
-		include_once 'common_geography_functions.php';
+		include_once 'utils/geography_functions.php';
 
 		$store=new Store($this->data['Order Store Key']);
 		$customer=new Customer($this->data['Order Customer Key']);
@@ -8532,7 +8532,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 						'name'=>$tax_category['IVA+RE']['name'],
 						'rate'=>$tax_category['IVA+RE']['rate'],
 						'state'=>'delivery to ESP with RE',
-						'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
+						'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="/art/icons/delete.png"> RE</button></div>'
 
 					);
 
@@ -8543,7 +8543,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 						'name'=>$tax_category['IVA']['name'],
 						'rate'=>$tax_category['IVA']['rate'],
 						'state'=>'delivery to ESP',
-						'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
+						'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="/art/icons/add.png"> RE (5,2%)</button></div>'
 
 					);
 
@@ -8562,7 +8562,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 						'name'=>$tax_category['IVA+RE']['name'],
 						'rate'=>$tax_category['IVA+RE']['rate'],
 						'state'=>'billing to ESP with RE',
-						'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="art/icons/delete.png"> RE</button></div>'
+						'operations'=>' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="/art/icons/delete.png"> RE</button></div>'
 
 					);
 
@@ -8573,7 +8573,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 						'name'=>$tax_category['IVA']['name'],
 						'rate'=>$tax_category['IVA']['rate'],
 						'state'=>'billing to ESP',
-						'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="art/icons/add.png"> RE (5,2%)</button></div>'
+						'operations'=>' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="/art/icons/add.png"> RE (5,2%)</button></div>'
 
 					);
 
@@ -8610,7 +8610,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 							'name'=>$tax_category['IVA']['name'],
 							'rate'=>$tax_category['IVA']['rate'],
 							'state'=>'EC no tax number' ,
-							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
+							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="/art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
 
 						);
 
@@ -8625,11 +8625,11 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 							'state'=>'EC with invalid tax number',
 
 							'operations'=>'<div>
-					<img style="width:12px;position:relative;bottom:-1px" src="art/icons/error.png">
+					<img style="width:12px;position:relative;bottom:-1px" src="/art/icons/error.png">
 					<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
-					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
+					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="/art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
 					<br/>
-					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
+					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="/art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
 
 					<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
 				</div>'
@@ -8768,7 +8768,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 							'name'=>$tax_category['Standard']['name'],
 							'rate'=>$tax_category['Standard']['rate'],
 							'state'=>'EC no tax number' ,
-							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
+							'operations'=>'<div><img  style="width:12px;position:relative:bottom:2px" src="/art/icons/information.png"/><span style="font-size:90%"> '._('VAT might be exempt with a valid tax number').'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
 
 						);
 
@@ -8783,11 +8783,11 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 							'state'=>'EC with invalid tax number',
 
 							'operations'=>'<div>
-					<img style="width:12px;position:relative;bottom:-1px" src="art/icons/error.png">
+					<img style="width:12px;position:relative;bottom:-1px" src="/art/icons/error.png">
 					<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
-					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
+					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="/art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
 					<br/>
-					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
+					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="/art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
 
 					<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
 				</div>'

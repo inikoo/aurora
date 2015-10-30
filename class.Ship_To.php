@@ -204,7 +204,7 @@ class Ship_To extends DB_Table {
 
 	function display($tipo) {
 	
-		include_once('common_geography_functions.php');
+		include_once('utils/geography_functions.php');
 	
 		$separator='\n';
 

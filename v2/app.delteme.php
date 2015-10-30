@@ -36,9 +36,9 @@ mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
 
-$inikoo_account=new Account();
-date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
-define("TIMEZONE",$inikoo_account->data['Account Timezone']);
+$account=new Account();
+date_default_timezone_set($account->data['Account Timezone']) ;
+define("TIMEZONE",$account->data['Account Timezone']);
 
 
 
@@ -75,7 +75,7 @@ foreach($_REQUEST as $key=>$value){
 
 
 $user=new User($_SESSION['user_key']);
-$smarty->assign('inikoo_account',$inikoo_account);
+$smarty->assign('inikoo_account',$account);
 
 $smarty->assign('user',$user);
 

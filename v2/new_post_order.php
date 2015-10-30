@@ -215,7 +215,7 @@ foreach ($order->get_invoices_objects() as $invoice) {
 		'key'=>$invoice->id,
 		'operations'=>$invoice->get_operations($user,'order',$order->id),
 		'number'=>$invoice->data['Invoice Public ID'],
-		'state'=>$invoice->get_xhtml_payment_state(),
+		'state'=>$invoice->get_formated_payment_state(),
 		'data'=>'',
 
 	);

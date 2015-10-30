@@ -12,8 +12,8 @@
 */
 
 
-function parse_request($_data) {
-	global $user, $modules, $inikoo_account;
+function parse_request($_data, $db) {
+	global $user, $modules, $account;
 
 
 	//print_r($_SESSION);
@@ -166,7 +166,23 @@ function parse_request($_data) {
 			$object='family';
 
 			if (is_numeric($view_path[0])) {
-				$key=array_shift($view_path);
+				$key=$view_path[0];
+
+				if (isset($view_path[1])) {
+					if ($view_path[1]=='product') {
+						$module='products';
+						$section='product';
+						$object='product';
+						$parent='family';
+						$parent_key=$key;
+						if (isset($view_path[2])) {
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+						}
+					}
+				}
 			}
 
 
@@ -481,7 +497,7 @@ function parse_request($_data) {
 				$parent_key=$arg1;
 
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
-					$section='invoices';
+					$section='invoice';
 					$object='invoice';
 					$parent='store';
 					$parent_key=$arg1;
@@ -517,7 +533,7 @@ function parse_request($_data) {
 				$parent_key=$arg1;
 
 				if (isset($view_path[0]) and is_numeric($view_path[0])) {
-					$section='delivery_notes';
+					$section='delivery_note';
 					$object='delivery_note';
 					$parent='store';
 					$parent_key=$arg1;
@@ -526,6 +542,260 @@ function parse_request($_data) {
 				}
 
 			}
+			break;
+		case 'order':
+			$module='orders';
+			if ( isset($view_path[0])) {
+
+				if ( is_numeric($view_path[0])) {
+					$section='order';
+					$object='order';
+
+					$parent='';
+					$parent_key='';
+					$key=$view_path[0];
+
+					if ( isset($view_path[1])) {
+						if ( $view_path[1]=='item') {
+							$module='products';
+							$section='product';
+							$object='product';
+							$parent='order';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$otf=$view_path[2];
+							}
+
+							$sql=sprintf("select `Product ID` as `key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d", $otf);
+							if ($row = $db->query($sql)->fetch()) {
+								$key=$row['key'];
+								$_data['otf']=$otf;
+							}
+
+
+						}
+						elseif ( $view_path[1]=='delivery_note') {
+							$section='delivery_note';
+							$object='delivery_note';
+							$parent='order';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+						elseif ( $view_path[1]=='pick_aid') {
+							$section='pick_aid';
+							$object='pick_aid';
+							$parent='order';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+						elseif ( $view_path[1]=='invoice') {
+							$section='invoice';
+							$object='invoice';
+							$parent='order';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+					}
+
+
+				}
+
+
+
+			}
+
+			break;
+
+case 'delivery_note':
+			$module='orders';
+			if ( isset($view_path[0])) {
+
+				if ( is_numeric($view_path[0])) {
+					$section='delivery_note';
+					$object='delivery_note';
+
+					$parent='';
+					$parent_key='';
+					$key=$view_path[0];
+
+					if ( isset($view_path[1])) {
+						if ( $view_path[1]=='item') {
+							$module='parts';
+							$section='part';
+							$object='part';
+							$parent='delivery_note';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$otf=$view_path[2];
+							}
+
+							$sql=sprintf("select `Part SKU` as `key` from `Inventory Transaction Fact` where `Inventory Transaction Fact Key`=%d", $otf);
+							if ($row = $db->query($sql)->fetch()) {
+								$key=$row['key'];
+								$_data['otf']=$otf;
+							}
+
+
+						}
+						elseif ( $view_path[1]=='order') {
+							$section='order';
+							$object='order';
+							$parent='delivery_note';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+						elseif ( $view_path[1]=='pick_aid') {
+							$section='pick_aid';
+							$object='pick_aid';
+							$parent='delivery_note';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+						elseif ( $view_path[1]=='pack_aid') {
+							$section='pack_aid';
+							$object='pack_aid';
+							$parent='delivery_note';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+						elseif ( $view_path[1]=='invoice') {
+							$section='invoice';
+							$object='invoice';
+							$parent='delivery_note';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+					}
+
+
+				}
+
+
+
+			}
+
+			break;
+case 'invoice':
+			$module='orders';
+			if ( isset($view_path[0])) {
+
+				if ( is_numeric($view_path[0])) {
+					$section='invoice';
+					$object='invoice';
+
+					$parent='';
+					$parent_key='';
+					$key=$view_path[0];
+
+					if ( isset($view_path[1])) {
+						if ( $view_path[1]=='item') {
+							$module='products';
+							$section='product';
+							$object='product';
+							$parent='invoice';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$otf=$view_path[2];
+							}
+
+							$sql=sprintf("select `Product ID` as `key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d", $otf);
+							if ($row = $db->query($sql)->fetch()) {
+								$key=$row['key'];
+								$_data['otf']=$otf;
+							}
+
+
+						}
+						elseif ( $view_path[1]=='order') {
+							$section='order';
+							$object='order';
+							$parent='invoice';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+						
+						elseif ( $view_path[1]=='delivery_note') {
+							$section='delivery_note';
+							$object='delivery_note';
+							$parent='invoice';
+							$parent_key=$key;
+
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+
+
+
+						}
+					}
+
+
+				}
+
+
+
+			}
+
 			break;
 		case 'marketing':
 			$module='marketing';
@@ -796,8 +1066,9 @@ function parse_request($_data) {
 		'key'=>$key,
 	);
 
-
-
+	if (isset($_data['otf'])) {
+		$state['otf']=$_data['otf'];
+	}
 	return $state;
 
 }

@@ -73,7 +73,7 @@ $locales=array(
 );
 
 $smarty->assign('locales',$locales);
-$smarty->assign('inikoo_account',$inikoo_account);
+$smarty->assign('inikoo_account',$account);
 $smarty->display('new_store.tpl');
 
 ?>

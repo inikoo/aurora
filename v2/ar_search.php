@@ -693,7 +693,7 @@ function search_orders($data) {
 
 function search_customer($data) {
 
-	global $inikoo_account,$account_code,$memcache_ip;
+	global $account,$account_code,$memcache_ip;
 
 	$max_results=10;
 	$user=$data['user'];
@@ -713,7 +713,7 @@ function search_customer($data) {
 			$where_store=' and false';
 		}
 	} else {
-		if (count($user->stores)==$inikoo_account->data['Stores']) {
+		if (count($user->stores)==$account->data['Stores']) {
 			$where_store='';
 		}else {
 			$where_store=sprintf(' and `Customer Store Key` in (%s)',join(',',$user->stores));

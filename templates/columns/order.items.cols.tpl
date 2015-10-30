@@ -22,10 +22,10 @@ var columns = [
      cell: Backgrid.StringCell.extend({
       events: {
             "click": function() {
-                change_view("order/{$data['key']}/product/"+this.model.get("product_pid"))
+                change_view("order/{$data['key']}/item/"+this.model.get("id"))
             }
         },
-      className: "asset_code"
+      className: "link"
      }),
 },{
     name: "description",
@@ -36,13 +36,21 @@ var columns = [
 }, {
     name: "quantity",
     label: "{t}Quantity{/t}",
-    editable: true,
-    cell: "string"
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
 }, {
     name: "net",
     label: "{t}Net{/t}",
-    editable: true,
-    cell: "string"
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
 }
 ]
 

@@ -109,7 +109,7 @@ function get_staff_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Staff users'),
-		'search'=>array('show'=>true, 'placeholder'=>_('Search users'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search account'))
 
 	);
 	$smarty->assign('_content', $_content);
@@ -286,7 +286,7 @@ function get_staff_user_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>$title,
-		'search'=>array('show'=>true, 'placeholder'=>_('Search users'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search account'))
 
 	);
 	$smarty->assign('_content', $_content);

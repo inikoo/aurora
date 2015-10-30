@@ -310,7 +310,7 @@ default:
 
 
 function create_store($data) {
-	global $editor,$inikoo_account;
+	global $editor,$account;
 
 	$locale=$data['values']['Store Locale'];
 	$country=new Country('2alpha',$data['values']['Country Code']);
@@ -322,16 +322,16 @@ function create_store($data) {
 	}
 
 	$data['values']['Store Currency Code']=$country->data['Country Currency Code'];
-	$data['values']['Store Tax Country Code']=$inikoo_account->data['Account Country Code'];
+	$data['values']['Store Tax Country Code']=$account->data['Account Country Code'];
 
 	$data['values']['Store Home Country Code 2 Alpha']=$country->data['Country 2 Alpha Code'];
 
 	$data['values']['Store Home Country Name']=$country->data['Country Name'];
 	$data['values']['Store Valid From']=gmdate('Y-m-d H:i:s');
-	$data['values']['Store Timezone']=$inikoo_account->data['Account Timezone'];
+	$data['values']['Store Timezone']=$account->data['Account Timezone'];
 
 	$sql=sprintf("select `Tax Category Code` from `Tax Category Dimension` where  `Tax Category Default`='Yes' and `Tax Category Country Code`=%s ",
-		prepare_mysql($inikoo_account->data['Account Country Code']));
+		prepare_mysql($account->data['Account Country Code']));
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {

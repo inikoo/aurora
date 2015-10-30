@@ -30,7 +30,20 @@ var columns = [{
     label: "Name",
     editable: false,
     cell: "string"
-}]
+}, {
+    name: "active_families",
+    label:"{t}Families{/t}",
+       editable: false,
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='active_families'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+
+}
+
+
+]
 
 
 function change_table_view(view, save_state) {}

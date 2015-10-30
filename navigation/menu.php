@@ -179,6 +179,11 @@ if ($data['object']=='order') {
 		$current_item='customers';
 	}
 
+}elseif ($data['object']=='product') {
+	if ($data['parent']=='order') {
+		$current_item='orders';
+	}
+
 }
 
 $smarty->assign('current_item', $current_item);

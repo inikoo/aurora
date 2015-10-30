@@ -34,9 +34,9 @@ date_default_timezone_set('UTC');
 require_once '../../common_functions.php';
 
 mysql_set_charset('utf8');
-$inikoo_account=new Account();
-date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
-define("TIMEZONE",$inikoo_account->data['Account Timezone']);
+$account=new Account();
+date_default_timezone_set($account->data['Account Timezone']) ;
+define("TIMEZONE",$account->data['Account Timezone']);
 
 include_once '../../set_locales.php';
 

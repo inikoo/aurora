@@ -17,7 +17,7 @@ require_once 'class.Order.php';
 require_once 'class.Invoice.php';
 
 require_once 'ar_common.php';
-require_once 'common_order_functions.php';
+require_once 'utils/order_functions.php';
 
 if (!isset($output_type))
 	$output_type='ajax';
@@ -711,7 +711,7 @@ function list_orders($_data) {
 				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
 				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
 				'customer'=>$data['Order Customer Name'],
-				'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: common_order_functions.php
+				'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'],$data['Order Key']),// function in: utils/order_functions.php
 				'payment_state'=>get_order_formated_payment_state($data),
 
 				'total_amount'=>money($data['Order Total Amount'],$data['Order Currency']).$mark,

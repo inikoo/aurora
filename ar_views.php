@@ -29,15 +29,16 @@ case 'views':
 			'old_state'=>array('type'=>'json array'),
 			'tab'=>array('type'=>'string', 'optional'=>true),
 			'subtab'=>array('type'=>'string', 'optional'=>true),
+			'otf'=>array('type'=>'string', 'optional'=>true),
 		));
-
-	$state=parse_request($data);
+	$state=parse_request($data, $db);
 
 	if ($state['object']!='') {
 
 		switch ($state['object']) {
 		case 'account':
-			$_object=$inikoo_account;
+		
+			$_object=$account;
 			break;
 		case 'customer':
 			$_object=new Customer($state['key']);
@@ -67,6 +68,8 @@ case 'views':
 			$_object=new Invoice($state['key']);
 			break;
 		case 'delivery_note':
+		case 'pick_aid':
+		case 'pack_aid':
 			include_once 'class.DeliveryNote.php';
 			$_object=new DeliveryNote($state['key']);
 			break;
@@ -171,6 +174,7 @@ case 'views':
 	}
 
 
+
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
 
 	$response['view_position']=get_view_position($state);
@@ -256,6 +260,7 @@ function get_object_showcase($data) {
 
 
 
+
 	switch ($data['object']) {
 	case 'store':
 	case 'website':
@@ -265,6 +270,22 @@ function get_object_showcase($data) {
 	case 'customer':
 		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data);
+		break;
+	case 'order':
+		include_once 'showcase/order.show.php';
+		$html=get_order_showcase($data);
+		break;
+	case 'invoice':
+		include_once 'showcase/invoice.show.php';
+		$html=get_invoice_showcase($data);
+		break;
+	case 'delivery_note':
+		include_once 'showcase/delivery_note.show.php';
+		$html=get_delivery_note_showcase($data);
+		break;
+	case 'user':
+		include_once 'showcase/user.show.php';
+		$html=get_user_showcase($data);
 		break;
 	case 'warehouse':
 		include_once 'showcase/warehouse.show.php';
@@ -402,6 +423,18 @@ function get_navigation($data) {
 		case ('order'):
 			return get_order_navigation($data);
 			break;
+		case ('invoice'):
+			return get_invoice_navigation($data);
+			break;
+		case ('delivery_note'):
+			return get_delivery_note_navigation($data);
+			break;
+		case ('pick_aid'):
+			return get_pick_aid_navigation($data);
+			break;
+		case ('pack_aid'):
+			return get_pack_aid_navigation($data);
+			break;		
 		default:
 			return 'View not found';
 
@@ -719,7 +752,7 @@ function get_tabs($data) {
 
 
 function get_view_position($data) {
-	global $user, $smarty, $inikoo_account;
+	global $user, $smarty, $account;
 
 
 
@@ -735,9 +768,73 @@ function get_view_position($data) {
 			$branch[]=array('label'=>_('Stores'), 'icon'=>'bars', 'reference'=>'stores');
 
 		}
+		if ($data['section']=='store') {
+			$branch[]=array('label'=>_('Store').' <span class="id">'.$data['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$data['_object']->id);
 
 
-		if ($data['section']=='products') {
+		}elseif ($data['section']=='department') {
+
+			$store=new Store($data['parent_key']);
+			$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+			$branch[]=array('label'=>_('Department').' <span class="id">'.$data['_object']->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>$data['parent'].'/'.$data['parent_key'].'/department/'.$data['_object']->id);
+
+
+		}elseif ($data['section']=='family') {
+
+			if ($data['parent']=='store') {
+				$store=new Store($data['parent_key']);
+				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+			}elseif ($data['parent']=='department') {
+				$department=new Department($data['parent_key']);
+				$store=new Store($department->get('Product Department Store Key'));
+				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
+			}
+			$branch[]=array('label'=>_('Family').' <span class="id">'.$data['_object']->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>$data['parent'].'/'.$data['parent_key'].'/family/'.$data['_object']->id);
+
+		}elseif ($data['section']=='product') {
+
+			if ($data['parent']=='store') {
+				$store=new Store($data['parent_key']);
+				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+			}elseif ($data['parent']=='department') {
+				$department=new Department($data['parent_key']);
+				$store=new Store($department->get('Product Department Store Key'));
+				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
+			}elseif ($data['parent']=='family') {
+
+
+
+				$family=new Family($data['parent_key']);
+				$department=new Department($family->get('Product Family Main Department Key'));
+				$store=new Store($department->get('Product Department Store Key'));
+				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
+				$branch[]=array('label'=>_('Family').' <span class="id">'.$family->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>'department/'.$department->id.'/family/'.$family->id);
+			}elseif ($data['parent']=='order') {
+				$order=new Order($data['parent_key']);
+				$store=new Store($order->get('Order Store Key'));
+				$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
+
+				if ( $user->get_number_stores()>1) {
+					$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
+				}
+
+				$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
+
+				$branch[]=array('label'=>_('Order').' '.$order->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'orders/'.$store->id.'/'.$data['parent_key']);
+
+
+			}
+			$_ref=$data['parent'].'/'.$data['parent_key'].'/product/'.$data['_object']->id;
+			if (isset($data['otf'])) {
+				$_ref=$data['parent'].'/'.$data['parent_key'].'/item/'.$data['otf'];
+			}
+
+			$branch[]=array('label'=>_('Product').' <span class="id">'.$data['_object']->get('Product Code').'</span>', 'icon'=>'', 'reference'=>$_ref);
+
+		}elseif ($data['section']=='products') {
 
 			if ($data['object']=='store') {
 				$store=new Store($data['key']);
@@ -840,6 +937,11 @@ function get_view_position($data) {
 		case 'pending_orders':
 			$branch[]=array('label'=>_("Pending orders").' '.$store->data['Store Code'], 'icon'=>'clock-o', 'reference'=>'customers/pending_orders/'.$store->id);
 			break;
+		}
+		break;
+	case 'orders_server':
+		if ( $user->get_number_stores()>1) {
+			$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
 		}
 		break;
 	case 'orders':
@@ -970,17 +1072,17 @@ function get_view_position($data) {
 		break;
 	case 'account':
 
-		$branch[]=array('label'=>_('Account').' <span class="id">'.$inikoo_account->get('Account Code').'</span>', 'icon'=>'', 'reference'=>'account');
+		$branch[]=array('label'=>_('Account').' <span class="id">'.$account->get('Account Code').'</span>', 'icon'=>'', 'reference'=>'account');
 		if ($data['section']=='users') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
 		}elseif ($data['section']=='staff') {
-					$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
 			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
 
 		}elseif ($data['section']=='staff.user') {
-							$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
 			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
 			$branch[]=array('label'=>_('User').' <span id="id">'.$data['_object']->data['User Alias'].'</span>', 'icon'=>'male', 'reference'=>'account/user/'.$data['_object']->id);
@@ -1014,7 +1116,7 @@ function get_view_position($data) {
 
 function parse_request_old($request) {
 
-	global $user, $modules, $inikoo_account;
+	global $user, $modules, $account;
 
 	$original_request=preg_replace('/^\//', '', $request);
 	$view_path=preg_split('/\//', $original_request);
@@ -1303,7 +1405,7 @@ function parse_request_old($request) {
 		$module='utils';
 
 
-		if (in_array($parent_key, $inikoo_account->get_store_keys())) {
+		if (in_array($parent_key, $account->get_store_keys())) {
 			$section='forbidden';
 		}else {
 			$section='not_found';

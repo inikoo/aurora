@@ -1409,7 +1409,7 @@ class Address extends DB_Table {
 
 	function display($tipo='',$locale='en_GB') {
 
-		include_once 'common_geography_functions.php';
+		include_once 'utils/geography_functions.php';
 
 		$separator="\n";
 		switch ($tipo) {

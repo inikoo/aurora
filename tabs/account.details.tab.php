@@ -9,7 +9,7 @@
 
 */
 
-global $inikoo_account;
+global $account;
 
 
 $object_fields=array(
@@ -22,13 +22,13 @@ $object_fields=array(
 			array(
 				'class'=>'string',
 				'id'=>'Account_Code',
-				'value'=>$inikoo_account->get('Account Code'),
+				'value'=>$account->get('Account Code'),
 				'label'=>_('Code')
 			),
 			array(
 				'class'=>'string',
 				'id'=>'Account_Name',
-				'value'=>$inikoo_account->get('Account Name'),
+				'value'=>$account->get('Account Name'),
 				'label'=>_('Name')
 			),
 
@@ -40,17 +40,17 @@ $object_fields=array(
 		'fields'=>array(
 			array(
 				'id'=>'Account_Country',
-				'value'=>$inikoo_account->get('Account Country Code') ,
+				'value'=>$account->get('Account Country Code') ,
 				'label'=>_('Country')
 			),
 			array(
 				'id'=>'Account_Currency',
-				'value'=>$inikoo_account->get('Account Currency') ,
+				'value'=>$account->get('Account Currency') ,
 				'label'=>_('Currency')
 			),
 			array(
 				'id'=>'Account_Timezone',
-				'value'=>$inikoo_account->get('Account Timezone') ,
+				'value'=>$account->get('Account Timezone') ,
 				'label'=>_('Timezone')
 			)
 
@@ -62,12 +62,12 @@ $object_fields=array(
 		'fields'=>array(
 			array(
 				'id'=>'Account_Stores',
-				'value'=>$inikoo_account->get('Stores') ,
+				'value'=>$account->get('Stores') ,
 				'label'=>_('Stores')
 			),
           array(
 				'id'=>'Account_Websites',
-				'value'=>$inikoo_account->get('Websites') ,
+				'value'=>$account->get('Websites') ,
 				'label'=>_('Websites')
 			),
 

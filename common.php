@@ -40,9 +40,9 @@ mysql_query("SET time_zone='+0:00'");
 require_once 'conf/modules.php';
 require_once 'conf/conf.php';
 
-$inikoo_account=new Account($db);
-date_default_timezone_set($inikoo_account->data['Account Timezone']) ;
-define("TIMEZONE",$inikoo_account->data['Account Timezone']);
+$account=new Account($db);
+date_default_timezone_set($account->data['Account Timezone']) ;
+define("TIMEZONE",$account->data['Account Timezone']);
 
 //$max_session_time=$myconf['max_session_time'];
 //$max_session_time_in_milliseconds=1000*$max_session_time;
@@ -68,7 +68,7 @@ $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 //$smarty->error_reporting = E_STRICT;
 
-$smarty->assign('inikoo_account',$inikoo_account);
+$smarty->assign('account',$account);
 
 
 
@@ -139,26 +139,13 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-$corporate_currency=$inikoo_account->data['Account Currency'];
-$corporate_currency_symbol=$inikoo_account->data['Account Currency Symbol'];
-$corporate_country_code=$inikoo_account->data['Account Country Code'];
-$corporate_country_2alpha_code=$inikoo_account->data['Account Country 2 Alpha Code'];
-$inikoo_public_url=$inikoo_account->data['Inikoo Public URL'];
 
 
-$smarty->assign('top_navigation_message',$inikoo_account->data['Short Message']);
-$smarty->assign('account_name',$inikoo_account->data['Account Name']);
-$account_code=$inikoo_account->data['Account Code'];
-
-$smarty->assign('inikoo_version',$inikoo_account->data['Inikoo Version']);
-$smarty->assign('top_navigation_message',$inikoo_account->data['Short Message']);
-$smarty->assign('account_name',$inikoo_account->data['Account Name']);
-$account_label=($inikoo_account->data['Account Menu Label']==''?_('Company'):$inikoo_account->data['Account Menu Label']);
-$smarty->assign('account_label',$account_label);
+$smarty->assign('account',$account);
 
 
 /*
-$lang_menu=$mem->get('EPRLANG'.$account_code.$inikoo_account->data['Inikoo Version']);
+$lang_menu=$mem->get('EPRLANG'.$account_code.$account->data['Inikoo Version']);
 if (!$lang_menu) {
 	$lang_menu=array();
 	$sql=sprintf("select `Language Code`,`Country 2 Alpha Code`,`Language Original Name` from `Language Dimension` order by `Language Original Name`");
@@ -168,7 +155,7 @@ if (!$lang_menu) {
 		$_locale=$row['Language Code'].'_'.$row['Country 2 Alpha Code'].'.UTF-8';
 		$lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_locale='.$_locale,strtolower($row['Country 2 Alpha Code']),$row['Language Original Name']);
 	}
-	$mem->set('EPRLANG'.$account_code.$inikoo_account->data['Inikoo Version'], $lang_menu, 1728000);
+	$mem->set('EPRLANG'.$account_code.$account->data['Inikoo Version'], $lang_menu, 1728000);
 }
 
 

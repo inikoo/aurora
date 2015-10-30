@@ -1,4 +1,5 @@
 <?php
+chdir('../');
 
 require_once 'common.php';
 require_once 'class.Store.php';

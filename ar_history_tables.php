@@ -41,17 +41,17 @@ default:
 
 function object_history($_data, $db, $user) {
 
-   
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	
+
 
 
 	foreach ($db->query($sql) as $data) {
-	if ($data['History Details']=='')
+		if ($data['History Details']=='')
 			$note=$data['History Abstract'];
 		else
 			$note=$data['History Abstract'].' <img class="button" d="no" id="ch'.$data['History Key'].'" hid="'.$data['History Key'].'" onClick="showdetails(this)" src="/art/icons/closed.png" alt="Show details" />';
@@ -134,112 +134,6 @@ function object_history($_data, $db, $user) {
 }
 
 
-function departments($_data, $db, $user) {
-	$rtext_label='department';
-	include_once 'prepare_table/init.php';
-
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
-
-	// print $sql;
-
-
-	foreach ($db->query($sql) as $data) {
-
-
-		$adata[]=array(
-			'id'=>(integer) $data['Product Department Key'],
-			'store_key'=>(integer) $data['Product Department Store Key'],
-			'code'=>$data['Product Department Code'],
-			'name'=>$data['Product Department Name'],
-
-		);
-
-	}
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
-
-
-function families($_data, $db, $user) {
-	$rtext_label='family';
-	include_once 'prepare_table/init.php';
-
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
-
-	// print $sql;
-
-	foreach ($db->query($sql) as $data) {
-		$adata[]=array(
-			'id'=>(integer) $data['Product Family Key'],
-			'code'=>$data['Product Family Code'],
-			'name'=>$data['Product Family Name'],
-		);
-
-	}
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
-
-
-function products($_data, $db, $user) {
-	$rtext_label='product';
-	include_once 'prepare_table/init.php';
-
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
-
-	// print $sql;
-
-
-	foreach ($db->query($sql) as $data) {
-
-
-		$adata[]=array(
-
-			'id'=>(integer) $data['Product ID'],
-			'code'=>$data['Product Code'],
-			'name'=>$data['Product Name'],
-		);
-
-	}
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
-
+s
 
 ?>

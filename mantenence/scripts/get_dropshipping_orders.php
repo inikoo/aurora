@@ -66,7 +66,7 @@ require '../../locale.php';
 $_SESSION['locale_info'] = localeconv();
 
 
-$inikoo_account=new Account(1);
+$account=new Account(1);
 
 
 

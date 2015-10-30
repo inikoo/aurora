@@ -31,6 +31,9 @@ var submit_form_on_enter = function(e) {
 
 $(document).ready(function() {
 
+
+    $("#login__username").focus();
+
     $("#login_form").submit(function(event) {
 
 
@@ -38,19 +41,18 @@ $(document).ready(function() {
         var epwd = AESEncryptCtr($('#ep').val(), pwd, 256);
         $('#ep').val(btoa(epwd))
         $('#login__password').val('secret')
-       
-      
-      //  $("#login_form").submit();
 
-      // event.preventDefault();
+
+        //  $("#login_form").submit();
+        // event.preventDefault();
     });
 
-   
-  $( "#error_message" ).animate({
-    opacity: 0,
-   
-  }, 5000, function() {
-     $( "#error_message" ).css('visibility','hidden')
-  });
+
+    $("#error_message").animate({
+        opacity: 0,
+
+    }, 5000, function() {
+        $("#error_message").css('visibility', 'hidden')
+    });
 
 })

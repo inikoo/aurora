@@ -26,8 +26,12 @@ html, body {
   html a:hover, body a:hover {
     text-decoration: underline;
     color: #000; }
+  html table, body table {
+    border-collapse: collapse; }
   html .aright, body .aright {
     text-align: right; }
+  html .acenter, body .acenter {
+    text-align: center; }
   html .invisible, body .invisible {
     visibility: hidden; }
   html .hide, body .hide {
@@ -162,7 +166,7 @@ a {
     #app_leftmenu #inikoo_logo img {
       width: 25.6px;
       vertical-align: middle; }
-  #app_leftmenu #inikoo_account_name {
+  #app_leftmenu #account_name {
     line-height: 32px;
     height: 32px;
     font-size: 11.2px;
@@ -170,7 +174,7 @@ a {
     text-align: center;
     font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
     font-weight: 300; }
-    #app_leftmenu #inikoo_account_name.link:hover {
+    #app_leftmenu #account_name.link:hover {
       color: #FFF; }
 
 #notifications {
@@ -501,9 +505,13 @@ a {
 
 #object_showcase {
   clear: both;
-  padding: 20px 30px;
   border-bottom: 1px solid #ccc;
   font-size: 15px; }
+  #object_showcase .pdf_link img {
+    height: 10px;
+    vertical-align: 0px; }
+  #object_showcase #containers {
+    padding: 20px 30px; }
   #object_showcase .data_container {
     float: left;
     margin-right: 10px;
@@ -514,6 +522,60 @@ a {
       text-align: left;
       min-width: 300px;
       margin-bottom: 4px; }
+  #object_showcase .order #contact_data {
+    width: 500px; }
+  #object_showcase .order #dates {
+    width: 310px; }
+  #object_showcase .invoice #dates {
+    width: 310px; }
+  #object_showcase .invoice #totals {
+    width: 310px; }
+  #object_showcase .order #contact_data, #object_showcase .invoice #contact_data, #object_showcase .delivery_note #contact_data {
+    float: left;
+    padding: 20px 20px; }
+  #object_showcase .order #totals, #object_showcase .order #dates, #object_showcase .invoice #totals, #object_showcase .invoice #dates, #object_showcase .delivery_note #totals, #object_showcase .delivery_note #dates {
+    float: right;
+    border-left: 1px solid #ccc;
+    height: 100%; }
+  #object_showcase .order #dates .date_and_state, #object_showcase .invoice #dates .date_and_state, #object_showcase .delivery_note #dates .date_and_state {
+    width: 100%;
+    text-align: center; }
+    #object_showcase .order #dates .date_and_state .date, #object_showcase .invoice #dates .date_and_state .date, #object_showcase .delivery_note #dates .date_and_state .date {
+      padding: 3px;
+      border-bottom: 1px solid #ccc; }
+    #object_showcase .order #dates .date_and_state .state, #object_showcase .invoice #dates .date_and_state .state, #object_showcase .delivery_note #dates .date_and_state .state {
+      font-size: 80%;
+      border-bottom: 1px solid #ccc; }
+      #object_showcase .order #dates .date_and_state .state td, #object_showcase .invoice #dates .date_and_state .state td, #object_showcase .delivery_note #dates .date_and_state .state td {
+        padding: 3px 0px; }
+    #object_showcase .order #dates .date_and_state .two-columns td:first-of-type, #object_showcase .invoice #dates .date_and_state .two-columns td:first-of-type, #object_showcase .delivery_note #dates .date_and_state .two-columns td:first-of-type {
+      width: 50%;
+      border-right: 1px solid #ccc; }
+  #object_showcase .order #dates .ul_table, #object_showcase .invoice #dates .ul_table, #object_showcase .delivery_note #dates .ul_table {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px; }
+    #object_showcase .order #dates .ul_table .icon, #object_showcase .invoice #dates .ul_table .icon, #object_showcase .delivery_note #dates .ul_table .icon {
+      width: 24px;
+      text-align: right; }
+    #object_showcase .order #dates .ul_table .state, #object_showcase .invoice #dates .ul_table .state, #object_showcase .delivery_note #dates .ul_table .state {
+      text-align: right;
+      padding-right: 10px;
+      font-size: 80%; }
+  #object_showcase .order #totals, #object_showcase .invoice #totals, #object_showcase .delivery_note #totals {
+    padding-top: 5px; }
+    #object_showcase .order #totals table, #object_showcase .invoice #totals table, #object_showcase .delivery_note #totals table {
+      width: 100%; }
+    #object_showcase .order #totals td, #object_showcase .invoice #totals td, #object_showcase .delivery_note #totals td {
+      padding: 4px 8px; }
+    #object_showcase .order #totals .top-border, #object_showcase .invoice #totals .top-border, #object_showcase .delivery_note #totals .top-border {
+      border-top: 1px solid #ccc; }
+    #object_showcase .order #totals .bottom-border, #object_showcase .invoice #totals .bottom-border, #object_showcase .delivery_note #totals .bottom-border {
+      border-bottom: 1px solid #ccc; }
+    #object_showcase .order #totals .top-strong-border, #object_showcase .invoice #totals .top-strong-border, #object_showcase .delivery_note #totals .top-strong-border {
+      border-top: 1px solid #aaa; }
+    #object_showcase .order #totals .bottom-strong-border, #object_showcase .invoice #totals .bottom-strong-border, #object_showcase .delivery_note #totals .bottom-strong-border {
+      border-bottom: 1px solid #aaa; }
 
 .group_label {
   font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;

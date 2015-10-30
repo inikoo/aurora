@@ -38,8 +38,8 @@
 				</div>
 				
 			</div>
-			<div id="inikoo_account_name" class="link" onClick="change_view('account')">
-				{$inikoo_account->get('Account Name')}
+			<div id="account_name" class="link" onClick="change_view('account')">
+				{$account->get('Account Name')}
 			</div>
 			<div id="menu" ></div>
 			
