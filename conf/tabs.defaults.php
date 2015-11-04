@@ -674,6 +674,67 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
+	'payment_service_providers'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+
+	),
+	'payments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>-1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+	
+
+	),
+	'payment_service_provider.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'payment_service_provider.accounts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
+	'payment_service_provider.payments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>-1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+	),
+	
+	'payment_account.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'payment_account.payments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>-1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+	),
+	
 	'users.staff.users'=>array(
 		'view'=>'privilegies',
 		'sort_key'=>'id',

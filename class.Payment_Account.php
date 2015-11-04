@@ -14,54 +14,53 @@
 class Payment_Account extends DB_Table {
 
 
-	function Payment_Account($arg1=false,$arg2=false) {
+	function Payment_Account($arg1=false, $arg2=false) {
 
+		global $db;
+		$this->db=$db;
 		$this->table_name='Payment Account';
 		$this->ignore_fields=array('Payment Account Key');
 
 		if (is_numeric($arg1)) {
-			$this->get_data('id',$arg1);
+			$this->get_data('id', $arg1);
 			return ;
 		}
-		if (preg_match('/^(create|new)/i',$arg1)) {
-			$this->find($arg2,'create');
+		if (preg_match('/^(create|new)/i', $arg1)) {
+			$this->find($arg2, 'create');
 			return;
 		}
-		if (preg_match('/find/i',$arg1)) {
-			$this->find($arg2,$arg1);
+		if (preg_match('/find/i', $arg1)) {
+			$this->find($arg2, $arg1);
 			return;
 		}
-		$this->get_data($arg1,$arg2);
+		$this->get_data($arg1, $arg2);
 		return ;
 
 	}
 
 
 
-	function get_data($tipo,$tag) {
+	function get_data($tipo, $tag) {
 
 		if ($tipo=='id')
-			$sql=sprintf("select * from `Payment Account Dimension` where `Payment Account Key`=%d",$tag);
+			$sql=sprintf("select * from `Payment Account Dimension` where `Payment Account Key`=%d", $tag);
 		else
 			return;
 
-		// print $sql;
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Payment Account Key'];
-
-
+		}
 	}
 
 
-	function find($raw_data,$options) {
+	function find($raw_data, $options) {
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -70,7 +69,7 @@ class Payment_Account extends DB_Table {
 
 
 		foreach ( $raw_data as $key=> $value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=$value;
 
 		}
@@ -80,11 +79,11 @@ class Payment_Account extends DB_Table {
 		//  exit("s");
 
 
-		$fields=array('Payment Account Code',);
+		$fields=array('Payment Account Code', );
 
 		$sql=sprintf("select * from `Payment Account Dimension` where true  ");
 		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+			$sql.=sprintf(' and `%s`=%s', $field, prepare_mysql($data[$field], false));
 		}
 		//print $sql;
 
@@ -96,17 +95,17 @@ class Payment_Account extends DB_Table {
 
 
 		} else if ($num_results==1) {
-				$row=mysql_fetch_array($result, MYSQL_ASSOC);
+			$row=mysql_fetch_array($result, MYSQL_ASSOC);
 
-				$this->get_data('id',$row['Payment Account Key']);
-				$this->found=true;
-				$this->found_key=$row['Payment Account Key'];
+			$this->get_data('id', $row['Payment Account Key']);
+			$this->found=true;
+			$this->found_key=$row['Payment Account Key'];
 
-			} else {// Found in mora than one
+		} else {// Found in mora than one
 			print("Warning several payments accounts $sql\n");
 			$row=mysql_fetch_array($result, MYSQL_ASSOC);
 
-			$this->get_data('id',$row['Payment Account Key']);
+			$this->get_data('id', $row['Payment Account Key']);
 			$this->found=true;
 			$this->found_key=$row['Payment Account Key'];
 
@@ -153,15 +152,15 @@ class Payment_Account extends DB_Table {
 
 
 			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value,false);
+			$values.=','.prepare_mysql($value, false);
 
 
 		}
 
 
 
-		$values=preg_replace('/^,/','',$values);
-		$keys=preg_replace('/^,/','',$keys);
+		$values=preg_replace('/^,/', '', $values);
+		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Payment Account Dimension` ($keys) values ($values)";
 		//print $sql;
@@ -169,7 +168,7 @@ class Payment_Account extends DB_Table {
 			$this->id = mysql_insert_id();
 			$this->data['Address Key']= $this->id;
 			$this->new=true;
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 		} else {
 			print "Error can not create payment account\n";
 			exit;
@@ -256,9 +255,44 @@ class Payment_Account extends DB_Table {
 		return $data;
 	}
 
+
 	function get_settings() {
-		return json_decode($this->data['Payment Account Settings'],true);
+		return json_decode($this->data['Payment Account Settings'], true);
 
 	}
+
+
+	function update_payments_data() {
+		$transactions=0;
+		$payments=0;
+		$refunds=0;
+		$balance=0;
+		$currencies='';
+		
+		$sql=sprintf("select count(*) as num,group_concat(distinct `Payment Currency Code`) as currencies,sum(`Payment Amount`) as payments,sum(`Payment Refund`) as refunds,sum(`Payment Balance`) as balance from `Payment Dimension` where `Payment Account Key`=%d and `Payment Type`='Payment'", $this->id);
+		 print $sql;
+		if ($row = $this->db->query($sql)->fetch()) {
+			print_r($row);
+			$transactions=$row['num'];
+			$currencies=$row['currencies'];
+			$payments=$row['payments'];
+			$refunds=$row['refunds'];
+			$balance=$row['balance'];
+		}
+       
+		$this->update(
+			array(
+				'Payment Account Transactions'=>$transactions,
+				'Payment Account Currency'=>$currencies,
+				'Payment Account Payments Amount'=>$payments,
+				'Payment Account Refunds Amount'=>$refunds,
+				'Payment Account Balance Amount'=>$balance,
+
+
+			)
+			, 'no_history');
+
+	}
+
 
 }

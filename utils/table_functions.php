@@ -120,6 +120,10 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s query', '%s queries', $total_records), number($total_records));
 	}elseif ($record_label=='search') {
 		return sprintf(ngettext('%s search', '%s searches', $total_records), number($total_records));
+	}elseif ($record_label=='transaction') {
+		return sprintf(ngettext('%s transaction', '%s transactions', $total_records), number($total_records));
+	}elseif ($record_label=='payment_account') {
+		return sprintf(ngettext('%s payment account', '%s payment accounts', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -175,6 +179,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s query of %s', '%s queries of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='search') {
 		return sprintf(ngettext('%s search of %s', '%s searches of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='transaction') {
+		return sprintf(ngettext('%s transaction of %s', '%s transaction of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='payment_account') {
+		return sprintf(ngettext('%s payment account of %s', '%s payment accounts of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}

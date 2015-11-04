@@ -1,3 +1,4 @@
+<div class="subject_profile">
 <div id="contact_data" style="float:left">
 	<div class="data_container">
 		<div class="data_field  {if $customer->get('Customer Type')!='Company'}hide{/if}">
@@ -128,4 +129,5 @@
 	</div>
 </div>
 <div style="clear:both">
+</div>
 </div>

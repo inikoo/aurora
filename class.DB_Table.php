@@ -33,20 +33,16 @@ abstract class DB_Table {
 
 
 		$data=array();
-		$result = mysql_query("SHOW COLUMNS FROM `".$this->table_name." Dimension`");
-		if (!$result) {
-			echo 'Could not run query: ' . mysql_error();
-			exit;
+
+		$sql=sprintf('show columns from `%s Dimension`', addslashes($this->table_name));
+		foreach ($this->db->query($sql) as $row) {
+			if (!in_array($row['Field'], $this->ignore_fields))
+				$data[$row['Field']]=$row['Default'];
 		}
-		if (mysql_num_rows($result) > 0) {
-			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields))
-					$data[$row['Field']]=$row['Default'];
-			}
-		}
-		//print_r($data);
+
 		return $data;
 	}
+
 
 	function base_history_data() {
 
@@ -59,14 +55,15 @@ abstract class DB_Table {
 		}
 		if (mysql_num_rows($result) > 0) {
 			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields))
+				if (!in_array($row['Field'], $this->ignore_fields))
 					$data[$row['Field']]=$row['Default'];
 			}
 		}
 		return $data;
 	}
 
-	public function update($data,$options='') {
+
+	public function update($data, $options='') {
 
 		if (!is_array($data)) {
 
@@ -78,7 +75,7 @@ abstract class DB_Table {
 
 			foreach ($data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -93,7 +90,7 @@ abstract class DB_Table {
 				$value=_trim($value);
 
 			//print "$key,$value";
-			$this->update_field_switcher($key,$value,$options);
+			$this->update_field_switcher($key, $value, $options);
 
 
 		}
@@ -102,47 +99,49 @@ abstract class DB_Table {
 			$this->msg.=_('Nothing to be updated')."\n";
 	}
 
-	protected function update_field_switcher($field,$value,$options='') {
+
+	protected function update_field_switcher($field, $value, $options='') {
 
 
 		$base_data=$this->base_data();
 
 
-		if (preg_match('/^Address.*Data$/',$field)) {
-			$this->update_field($field,$value,$options);
+		if (preg_match('/^Address.*Data$/', $field)) {
+			$this->update_field($field, $value, $options);
 
-		}elseif (array_key_exists($field,$base_data)) {
+		}elseif (array_key_exists($field, $base_data)) {
 
 
 			if ($value!=$this->data[$field]) {
-				$this->update_field($field,$value,$options);
+				$this->update_field($field, $value, $options);
 
 			}
 		}
-		elseif (preg_match('/^custom_field_part/i',$field)) {
-			$this->update_field($field,$value,$options);
+		elseif (preg_match('/^custom_field_part/i', $field)) {
+			$this->update_field($field, $value, $options);
 		}
 
 	}
 
-	protected function translate_data($data,$options='') {
+
+	protected function translate_data($data, $options='') {
 
 		$_data=array();
 		foreach ($data as $key => $value) {
 
-			if (preg_match('/supplier/i',$options))
+			if (preg_match('/supplier/i', $options))
 				$regeprix='/^Supplier /i';
-			elseif (preg_match('/customer/i',$options))
+			elseif (preg_match('/customer/i', $options))
 				$regex='/^Customer /i';
-			elseif (preg_match('/company/i',$options))
+			elseif (preg_match('/company/i', $options))
 				$regex='/^Company /i';
-			elseif (preg_match('/contact/i',$options))
+			elseif (preg_match('/contact/i', $options))
 				$regex='/^Contact /i';
 
 			$rpl=$this->table_name.' ';
 
 
-			$_key=preg_replace($regex,$rpl,$key);
+			$_key=preg_replace($regex, $rpl, $key);
 			$_data[$_key]=$value;
 		}
 
@@ -152,7 +151,8 @@ abstract class DB_Table {
 		return $_data;
 	}
 
-	protected function update_field($field,$value,$options='') {
+
+	protected function update_field($field, $value, $options='') {
 
 		$this->updated=false;
 
@@ -180,68 +180,85 @@ abstract class DB_Table {
 
 
 
-			if (array_key_exists($field,$extra_data))
+			if (array_key_exists($field, $extra_data))
 				$this->table_name='Page Store';
 		}
 		else if ($this->table_name=='Supplier Product') {
 
-				$key_field='Supplier Product Current Key';
-			}
+			$key_field='Supplier Product Current Key';
+		}
 		else if ($this->table_name=='Part') {
-				$key_field='Part SKU';
-			}
+			$key_field='Part SKU';
+		}
 
-		if (preg_match('/^custom_field_part/i',$field)) {
-			$field1=preg_replace('/^custom_field_part_/','',$field);
+		if (preg_match('/^custom_field_part/i', $field)) {
+			$field1=preg_replace('/^custom_field_part_/', '', $field);
 			$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $this->id);
 		}
-		elseif (preg_match('/^custom_field_customer/i',$field)) {
-			$field1=preg_replace('/^custom_field_customer_/','',$field);
+		elseif (preg_match('/^custom_field_customer/i', $field)) {
+			$field1=preg_replace('/^custom_field_customer_/', '', $field);
 			$sql=sprintf("select `Custom Field Key` from `Custom Field Dimension` where `Custom Field Name`=%s", prepare_mysql($field1));
 			$res=mysql_query($sql);
 			$r=mysql_fetch_assoc($res);
 
 			$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $r['Custom Field Key'], $this->id);
 		}
-		else
-			$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
-
+		else{
+			//$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
+            
+            $sql=sprintf("select `%s` as value from `%s Dimension` where `%s`=%d ",
+				addslashes($field),
+				addslashes($this->table_name),
+				addslashes($key_field),
+				$this->id
+            
+            );
+        }
+        
 		//print $sql;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		if ($row = $this->db->query($sql)->fetch()) {
 			$old_value=$row['value'];
 		}
 
-		if (preg_match('/^custom_field_part/i',$field)) {
+
+
+		if (preg_match('/^custom_field_part/i', $field)) {
 			if (is_string($value))
-				$sql=sprintf("update `Part Custom Field Dimension` set `%s`='%s' where `Part SKU`=%d",$field1, $value, $this->id);
+				$sql=sprintf("update `Part Custom Field Dimension` set `%s`='%s' where `Part SKU`=%d", $field1, $value, $this->id);
 			else
-				$sql=sprintf("update `Part Custom Field Dimension` set `%s`='%d' where `Part SKU`=%d",$field1, $value, $this->id);
+				$sql=sprintf("update `Part Custom Field Dimension` set `%s`='%d' where `Part SKU`=%d", $field1, $value, $this->id);
 		}
-		elseif (preg_match('/^custom_field_customer/i',$field)) {
+		elseif (preg_match('/^custom_field_customer/i', $field)) {
 			if (is_string($value))
-				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%s' where `Customer Key`=%d",$r['Custom Field Key'], $value, $this->id);
+				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%s' where `Customer Key`=%d", $r['Custom Field Key'], $value, $this->id);
 			else
-				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%d' where `Customer Key`=%d",$r['Custom Field Key'], $value, $this->id);
+				$sql=sprintf("update `Customer Custom Field Dimension` set `%s`='%d' where `Customer Key`=%d", $r['Custom Field Key'], $value, $this->id);
 
 
 		}
-		else
-			$sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+		else {
+			//$sql="update `".addslashes($this->table_name)." Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
+			$sql=sprintf("update `%s Dimension` set `%s`=%s where `%s`=%d",
+				addslashes($this->table_name),
+				addslashes($field),
+				prepare_mysql($value, $null_if_empty),
+				addslashes($key_field),
+				$this->id
+			);
 
-		//print "$sql\n";
-		//$this->xxx=$sql;
-		mysql_query($sql);
-		$affected=mysql_affected_rows();
-		if ($affected==-1) {
-			$this->msg.=' '._('Record can not be updated')."\n";
-			$this->error_updated=true;
-			$this->error=true;
 
-			return;
 		}
-		elseif ($affected==0) {
+		//print $sql;
+		$update_op=$this->db->prepare($sql);
+		$update_op->execute();
+        $affected=$update_op->rowCount();
+		
+		
+		
+		if ($affected==0) {
 			$this->data[$field]=$value;
+			
 		}
 		else {
 
@@ -254,11 +271,11 @@ abstract class DB_Table {
 			$this->new_value=$value;
 
 			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
+			if (preg_match('/no( |\_)history|nohistory/i', $options))
 				$save_history=false;
 
 			if (
-				preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
+				preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $this->table_name)
 				and !$this->new
 				and $save_history
 			) {
@@ -288,9 +305,9 @@ abstract class DB_Table {
 
 				}
 
-				$history_key=$this->add_history($history_data,false,false,$options);
+				$history_key=$this->add_history($history_data, false, false, $options);
 				if (
-					in_array($this->table_name,array('Site','Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
+					in_array($this->table_name, array('Site', 'Customer', 'Store', 'Product Department', 'Product Family', 'Product', 'Part', 'Supplier', 'Supplier Product'))) {
 
 					if ($this->table_name=='Product' or $this->table_name=='Supplier Product') {
 						$subject_key=$this->pid;
@@ -299,7 +316,7 @@ abstract class DB_Table {
 						$subject_key=$this->id;
 					}
 
-					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$subject_key,$history_key);
+					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $subject_key, $history_key);
 					mysql_query($sql);
 				}
 
@@ -312,7 +329,7 @@ abstract class DB_Table {
 
 	protected function get_editor_data() {
 
-		if (isset($this->editor['Date'])  and preg_match('/^\d{4}-\d{2}-\d{2}/',$this->editor['Date']))
+		if (isset($this->editor['Date'])  and preg_match('/^\d{4}-\d{2}-\d{2}/', $this->editor['Date']))
 			$date=$this->editor['Date'];
 		else
 			$date=gmdate("Y-m-d H:i:s");
@@ -326,13 +343,13 @@ abstract class DB_Table {
 
 		return array(
 			'User Key'=>$user_key
-			,'Date'=>$date
+			, 'Date'=>$date
 		);
 	}
 
 
 
-	function add_history($raw_data,$force=false,$post_arg1=false,$options='') {
+	function add_history($raw_data, $force=false, $post_arg1=false, $options='') {
 
 
 		$editor_data=$this->get_editor_data();
@@ -368,14 +385,14 @@ abstract class DB_Table {
 			$data[$key]=$value;
 		}
 
-;
-		if (array_key_exists('User Key',$raw_data)) {
+		;
+		if (array_key_exists('User Key', $raw_data)) {
 			$data['User Key']=$raw_data['User Key'];
 		}else {
 			$data['User Key']=$editor_data['User Key'];
 		}
-		
-		
+
+
 
 		if (($data['Subject']=='' or  !$data['Subject Key']) and $data['Subject']!='System') {
 			include_once 'class.User.php';
@@ -444,7 +461,7 @@ abstract class DB_Table {
 				$supplier=new Supplier($data['Subject Key']);
 				$data['Author Name']=$staff->data['Supplier Name'];
 			}elseif ($data['Subject']=='System' ) {
-				
+
 				$data['Author Name']=_('System');
 			}
 
@@ -500,24 +517,24 @@ abstract class DB_Table {
 
 
 		$sql=sprintf("insert into `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) values (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)"
-			,prepare_mysql($data['Author Name'])
-			,prepare_mysql($data['Date'])
-			,prepare_mysql($data['Subject'])
+			, prepare_mysql($data['Author Name'])
+			, prepare_mysql($data['Date'])
+			, prepare_mysql($data['Subject'])
 			, $data['Subject Key']
-			,prepare_mysql($data['Action'])
-			,prepare_mysql($data['Direct Object'])
-			,$data['Direct Object Key']
-			,prepare_mysql($data['Preposition'],false)
-			,prepare_mysql($data['Indirect Object'],false)
-			,$data['Indirect Object Key']
-			,prepare_mysql($data['History Abstract'])
-			,prepare_mysql($data['History Details'])
+			, prepare_mysql($data['Action'])
+			, prepare_mysql($data['Direct Object'])
+			, $data['Direct Object Key']
+			, prepare_mysql($data['Preposition'], false)
+			, prepare_mysql($data['Indirect Object'], false)
+			, $data['Indirect Object Key']
+			, prepare_mysql($data['History Abstract'])
+			, prepare_mysql($data['History Details'])
 			, $data['User Key']
-			,prepare_mysql($data['Deep'])
-			,prepare_mysql($data['Metadata'])
+			, prepare_mysql($data['Deep'])
+			, prepare_mysql($data['Metadata'])
 		);
 
-		
+
 		mysql_query($sql);
 
 		$history_key=mysql_insert_id();
@@ -528,15 +545,17 @@ abstract class DB_Table {
 
 	}
 
-	function post_add_history($history_key,$type=false) {
+
+	function post_add_history($history_key, $type=false) {
 		return false;
 	}
+
 
 	function set_editor($raw_data) {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -544,16 +563,17 @@ abstract class DB_Table {
 
 	}
 
+
 	function reread() {
-		$this->get_data('id',$this->id);
+		$this->get_data('id', $this->id);
 	}
 
 
 
-	function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes',$author=false,$subject=false,$subject_key=false) {
+	function add_note($note, $details='', $date=false, $deleteable='No', $customer_history_type='Notes', $author=false, $subject=false, $subject_key=false) {
 
 
-		list($ok,$note,$details)=$this->prepare_note($note,$details);
+		list($ok, $note, $details)=$this->prepare_note($note, $details);
 		if (!$ok) {
 			return;
 		}
@@ -579,15 +599,15 @@ abstract class DB_Table {
 			$history_data['Date']=$date;
 
 
-		$history_key=$this->add_subject_history($history_data,$force_save=true,$deleteable,$customer_history_type);
+		$history_key=$this->add_subject_history($history_data, $force_save=true, $deleteable, $customer_history_type);
 
 		$this->updated=true;
 		$this->new_value=$history_key;
 	}
 
 
-	function add_subject_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
-		$history_key=$this->add_history($history_data,$force_save=true);
+	function add_subject_history($history_data, $force_save=true, $deleteable='No', $type='Changes') {
+		$history_key=$this->add_history($history_data, $force_save=true);
 
 
 
@@ -611,7 +631,7 @@ abstract class DB_Table {
 			'file'=>$raw_data['Filename']
 		);
 
-		$attach=new Attachment('find',$data,'create');
+		$attach=new Attachment('find', $data, 'create');
 
 
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
@@ -641,30 +661,30 @@ abstract class DB_Table {
 				'Indirect Object'=>$subject,
 				'Indirect Object Key'=>$subject_key
 			);
-			$history_key=$this->add_subject_history($history_data,true,'Yes','Attachments');
+			$history_key=$this->add_subject_history($history_data, true, 'Yes', 'Attachments');
 
 			$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'%s History Attachment',%d,%s,%s)",
 				$attach->id,
 				$this->table_name,
 				$history_key,
 				prepare_mysql($raw_data['Attachment File Original Name']),
-				prepare_mysql($raw_data['Attachment Caption'],false)
+				prepare_mysql($raw_data['Attachment Caption'], false)
 			);
 			mysql_query($sql);
 
 
 			$attach_bridge_key=mysql_insert_id();
 			$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `History Key`=%d",
-				prepare_mysql($attach->get_abstract($raw_data['Attachment File Original Name'],$raw_data['Attachment Caption'],$attach_bridge_key)),
+				prepare_mysql($attach->get_abstract($raw_data['Attachment File Original Name'], $raw_data['Attachment Caption'], $attach_bridge_key)),
 				$history_key
 			);
 			mysql_query($sql);
 
 			if (
-			in_array($this->table_name,array(
-			    'Purchase Order','Supplier Delivery Note','Supplier Invoice'
-			))
-			
+				in_array($this->table_name, array(
+						'Purchase Order', 'Supplier Delivery Note', 'Supplier Invoice'
+					))
+
 			) {
 
 				$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'%s',%d,%s,%s)",
@@ -672,7 +692,7 @@ abstract class DB_Table {
 					$this->table_name,
 					$subject_key,
 					prepare_mysql($raw_data['Attachment File Original Name']),
-					prepare_mysql($raw_data['Attachment Caption'],false)
+					prepare_mysql($raw_data['Attachment Caption'], false)
 				);
 				mysql_query($sql);
 			}
@@ -688,11 +708,11 @@ abstract class DB_Table {
 	}
 
 
-	function prepare_note($note,$details) {
+	function prepare_note($note, $details) {
 		$note=_trim($note);
 		if ($note=='') {
 			$this->msg=_('Empty note');
-			return array(0,0,0);
+			return array(0, 0, 0);
 		}
 
 
@@ -701,7 +721,7 @@ abstract class DB_Table {
 
 			$details='';
 			if (strlen($note)>1000) {
-				$words=preg_split('/\s/',$note);
+				$words=preg_split('/\s/', $note);
 				$len=0;
 				$note='';
 				$details='';
@@ -723,14 +743,14 @@ abstract class DB_Table {
 			}
 
 		}
-		return array(1,$note,$details);
+		return array(1, $note, $details);
 
 	}
-	
-	
-	function get_number_attachments_formated(){
-	    $attachments=0;
-	
+
+
+	function get_number_attachments_formated() {
+		$attachments=0;
+
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
 		else
@@ -753,12 +773,13 @@ abstract class DB_Table {
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		    $attachments=number($row['num']);
+			$attachments=number($row['num']);
 		}
-		
+
 		return $attachments;
-	
+
 	}
+
 
 	function get_attachments_data() {
 
@@ -807,15 +828,15 @@ abstract class DB_Table {
 
 			$name=$row['Attachment File Original Name'];
 			if (strlen($name)>20) {
-                
+
 				$exts = preg_split("/\./i", $name) ;
 				$n = count($exts)-1;
-				
+
 				$_exts = $exts[$n];
-                unset($exts[$n]);
-                $name=join(',',$exts);   
-                
-                
+				unset($exts[$n]);
+				$name=join(',', $exts);
+
+
 				$name = substr($name, 0, 15) . " <b>&hellip;</b> ".$_exts;
 			}
 
@@ -837,9 +858,9 @@ abstract class DB_Table {
 	}
 
 
-	function edit_note($note_key,$note,$details='',$change_date) {
+	function edit_note($note_key, $note, $details='', $change_date) {
 
-		list($ok,$note,$details)=$this->prepare_note($note,$details);
+		list($ok, $note, $details)=$this->prepare_note($note, $details);
 		if (!$ok) {
 			return;
 		}
@@ -868,6 +889,7 @@ abstract class DB_Table {
 		}
 
 	}
+
 
 	function get_images_slidesshow() {
 		include_once 'common_units_functions.php';
@@ -905,7 +927,7 @@ abstract class DB_Table {
 				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
 				'normal_url'=>'image.php?id='.$row['Image Key'],
 				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+				'ratio'=>$ratio, 'caption'=>$row['Image Caption'],
 				'is_principal'=>$row['Is Principal'],
 				'id'=>$row['Image Key'],
 				'size'=>formatSizeUnits($row['Image File Size']),
@@ -917,6 +939,7 @@ abstract class DB_Table {
 
 		return $images_slideshow;
 	}
+
 
 	function add_image($image_key) {
 
@@ -1011,6 +1034,7 @@ abstract class DB_Table {
 
 	}
 
+
 	function get_number_of_images() {
 
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
@@ -1040,9 +1064,9 @@ abstract class DB_Table {
 	}
 
 
-function get_formated_id($prefix='') {
+	function get_formated_id($prefix='') {
 
-/*
+		/*
         global $myconf;
         $sql="select count(*) as num from `Company Dimension`";
         $res=mysql_query($sql);
@@ -1057,8 +1081,9 @@ function get_formated_id($prefix='') {
         return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->id);
 */
 
-		return sprintf("%s%04d",$prefix, $this->id);
+		return sprintf("%s%04d", $prefix, $this->id);
 	}
+
 
 }
 
