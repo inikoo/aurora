@@ -72,6 +72,15 @@ elseif ($parameters['parent']=='warehouse') {
 elseif ($parameters['parent']=='user') {
 	$where=sprintf(' where   B.`User Key`=%d   ', $parameters['parent_key']);
 	$subject='User';
+}elseif ($parameters['parent']=='payment_service_provider') {
+	$where=sprintf(' where   B.`Payment Service Provider Key`=%d   ', $parameters['parent_key']);
+	$subject='Payment Service Provider';
+}elseif ($parameters['parent']=='payment_account') {
+	$where=sprintf(' where   B.`Payment Account Key`=%d   ', $parameters['parent_key']);
+	$subject='Payment Account';
+}elseif ($parameters['parent']=='payment_') {
+	$where=sprintf(' where   B.`Payment Key`=%d   ', $parameters['parent_key']);
+	$subject='Payment';
 }
 
 if(isset($parameters['elements']['type']['items'])){

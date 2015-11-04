@@ -16,7 +16,6 @@ function parse_request($_data, $db) {
 	global $user, $modules, $account;
 
 
-	//print_r($_SESSION);
 
 	$request=$_data['request'];
 
@@ -628,7 +627,7 @@ function parse_request($_data, $db) {
 
 			break;
 
-case 'delivery_note':
+		case 'delivery_note':
 			$module='orders';
 			if ( isset($view_path[0])) {
 
@@ -726,7 +725,7 @@ case 'delivery_note':
 			}
 
 			break;
-case 'invoice':
+		case 'invoice':
 			$module='orders';
 			if ( isset($view_path[0])) {
 
@@ -772,7 +771,7 @@ case 'invoice':
 
 
 						}
-						
+
 						elseif ( $view_path[1]=='delivery_note') {
 							$section='delivery_note';
 							$object='delivery_note';
@@ -1019,12 +1018,14 @@ case 'invoice':
 						}
 					}
 
-				}elseif ($view_path[0]=='settings') {
+				}
+				elseif ($view_path[0]=='settings') {
 					$section='settings';
 
 
 
-				}elseif ($view_path[0]=='user') {
+				}
+				elseif ($view_path[0]=='user') {
 
 					if (isset($view_path[1])) {
 
@@ -1040,12 +1041,136 @@ case 'invoice':
 
 
 				}
+				elseif ($view_path[0]=='payment_service_provider') {
+
+					if (isset($view_path[1])) {
+
+						$section='payment_service_provider';
+						$object='payment_service_provider';
+						$parent='account';
+						$key=$view_path[1];
+
+
+					}
+
+
+
+
+				}
+				elseif ($view_path[0]=='payment_account') {
+					if (isset($view_path[1])) {
+						$section='payment_account';
+						$object='payment_account';
+						$parent='account';
+						$key=$view_path[1];
+					}
+
+
+
+
+				}
+				elseif ($view_path[0]=='payment') {
+
+					if (isset($view_path[1])) {
+
+						$section='payment';
+						$object='payment';
+						$parent='account';
+						$key=$view_path[1];
+
+
+					}
+
+
+
+
+				}
 
 			}
 
 
 
 
+			break;
+		case 'payment_service_provider':
+			$module='account';
+			$section='payment_service_provider';
+			$parent='account';
+			if (isset($view_path[0])) {
+
+				if ( is_numeric($view_path[0])) {
+					$object='payment_service_provider';
+					$key=$view_path[0];
+
+					if (isset($view_path[1])) {
+
+						if ($view_path[1]=='payment_account') {
+							$section='payment_account';
+							$object='payment_account';
+							$parent='payment_service_provider';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+						}
+						elseif ($view_path[1]=='payment') {
+							$section='payment';
+							$object='payment';
+							$parent='payment_service_provider';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+						}
+
+					}
+
+
+
+				}
+
+
+
+
+
+			}
+			break;
+		case 'payment_account':
+			$module='account';
+			$section='payment_account';
+			$parent='account';
+			if (isset($view_path[0])) {
+
+				if ( is_numeric($view_path[0])) {
+					$object='payment_account';
+					$key=$view_path[0];
+
+					if (isset($view_path[1])) {
+
+						if ($view_path[1]=='payment') {
+							$section='payment';
+							$object='payment';
+							$parent='payment_account';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+						}
+
+					}
+
+
+
+				}
+
+
+
+
+
+			}
 			break;
 		default:
 

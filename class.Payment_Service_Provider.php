@@ -14,54 +14,88 @@
 class Payment_Service_Provider extends DB_Table {
 
 
-	function Payment_Service_Provider($arg1=false,$arg2=false) {
+	function Payment_Service_Provider($arg1=false, $arg2=false) {
+		global $db;
 
+		$this->db=$db;
 		$this->table_name='Payment Service Provider';
 		$this->ignore_fields=array('Payment Service Provider Key');
 
 		if (is_numeric($arg1)) {
-			$this->get_data('id',$arg1);
+			$this->get_data('id', $arg1);
 			return ;
 		}
-		if (preg_match('/^(create|new)/i',$arg1)) {
-			$this->find($arg2,'create');
+		if (preg_match('/^(create|new)/i', $arg1)) {
+			$this->find($arg2, 'create');
 			return;
 		}
-		if (preg_match('/find/i',$arg1)) {
-			$this->find($arg2,$arg1);
+		if (preg_match('/find/i', $arg1)) {
+			$this->find($arg2, $arg1);
 			return;
 		}
-		$this->get_data($arg1,$arg2);
+		$this->get_data($arg1, $arg2);
 		return ;
 
 	}
 
 
 
-	function get_data($tipo,$tag) {
+	function get_data($tipo, $tag) {
 
 		if ($tipo=='id')
-			$sql=sprintf("select * from `Payment Service Provider Dimension` where `Payment Service Provider Key`=%d",$tag);
+			$sql=sprintf("select * from `Payment Service Provider Dimension` where `Payment Service Provider Key`=%d", $tag);
 		else
 			return;
-
-		// print $sql;
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Payment Service Provider Key'];
+		}
+
+
+
+
 
 
 	}
 
 
-	function find($raw_data,$options) {
+	function get_type() {
+
+		switch ($this->data['Payment Service Provider Type']) {
+		case'EPS':
+			$type=_('Electronic payment service');
+			break;
+		case'EBeP':
+			$type=_('Electronic bank payments');
+			break;
+		case'Bank':
+			$type=_('Bank');
+			break;
+		case'Cash':
+			$type=_('Cash');
+			break;
+		case'Account':
+			$type=_('Customer account');
+			break;
+		case'ConD':
+			$type=_('Cash on delivery');
+			break;
+		default:
+			$type=$this->data['Payment Service Provider Type'];
+		}
+		
+		return $type;
+
+	}
+
+
+	function find($raw_data, $options) {
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -70,7 +104,7 @@ class Payment_Service_Provider extends DB_Table {
 
 
 		foreach ( $raw_data as $key=> $value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=$value;
 
 		}
@@ -80,7 +114,7 @@ class Payment_Service_Provider extends DB_Table {
 
 		$sql=sprintf("select * from `Payment Service Provider Dimension` where true  ");
 		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+			$sql.=sprintf(' and `%s`=%s', $field, prepare_mysql($data[$field], false));
 		}
 		//print $sql;
 
@@ -92,17 +126,17 @@ class Payment_Service_Provider extends DB_Table {
 
 
 		} else if ($num_results==1) {
-				$row=mysql_fetch_array($result, MYSQL_ASSOC);
+			$row=mysql_fetch_array($result, MYSQL_ASSOC);
 
-				$this->get_data('id',$row['Payment Service Provider Key']);
-				$this->found=true;
-				$this->found_key=$row['Payment Service Provider Key'];
+			$this->get_data('id', $row['Payment Service Provider Key']);
+			$this->found=true;
+			$this->found_key=$row['Payment Service Provider Key'];
 
-			} else {// Found in mora than one
+		} else {// Found in mora than one
 			print("Warning several payment service providers $sql\n");
 			$row=mysql_fetch_array($result, MYSQL_ASSOC);
 
-			$this->get_data('id',$row['Payment Service Provider Key']);
+			$this->get_data('id', $row['Payment Service Provider Key']);
 			$this->found=true;
 			$this->found_key=$row['Payment Service Provider Key'];
 
@@ -149,7 +183,7 @@ class Payment_Service_Provider extends DB_Table {
 				continue;
 
 			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value,false);
+			$values.=','.prepare_mysql($value, false);
 
 
 		}
@@ -157,8 +191,8 @@ class Payment_Service_Provider extends DB_Table {
 
 
 
-		$values=preg_replace('/^,/','',$values);
-		$keys=preg_replace('/^,/','',$keys);
+		$values=preg_replace('/^,/', '', $values);
+		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Payment Service Provider Dimension` ($keys) values ($values)";
 		//print $sql;
@@ -166,7 +200,7 @@ class Payment_Service_Provider extends DB_Table {
 			$this->id = mysql_insert_id();
 			$this->data['Address Key']= $this->id;
 			$this->new=true;
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 		} else {
 			print "Error can not create payment service provider\n";
 			exit;
@@ -174,14 +208,49 @@ class Payment_Service_Provider extends DB_Table {
 		}
 	}
 
-	function get_valid_payment_methods(){
+
+	function get_valid_payment_methods() {
 		$valid_payment_method=array();
-		$sql=sprintf("select `Payment Method` from `Payment Service Provider Payment Method Bridge` where `Payment Service Provider Key`=%d ",$this->id);
+		$sql=sprintf("select `Payment Method` from `Payment Service Provider Payment Method Bridge` where `Payment Service Provider Key`=%d ", $this->id);
 		$res=mysql_query($sql);
-		while($row=mysql_fetch_assoc($res)){
-		$valid_payment_method[]=$row['Payment Method'];
+		while ($row=mysql_fetch_assoc($res)) {
+			$valid_payment_method[]=$row['Payment Method'];
 		}
 		return $valid_payment_method;
 	}
+
+
+	function update_accounts_data() {
+		$number_accounts=0;
+		$transactions=0;
+		$payments=0;
+		$refunds=0;
+		$balance=0;
+		$currencies='';
+
+		$sql=sprintf("select count(*) as num, sum(`Payment Account Transactions`) as transactions, sum(`Payment Account Payments Amount`) as payments, sum(`Payment Account Refunds Amount`) as refunds, sum(`Payment Account Balance Amount`) as balance from `Payment Account Dimension` where `Payment Service Provider Key`=%d ", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			print_r($row);
+			$number_accounts=$row['num'];
+			$transactions=$row['transactions'];
+			$payments=$row['payments'];
+			$refunds=$row['refunds'];
+			$balance=$row['balance'];
+			//$currencies=$row['currencies'];
+		}
+
+		$this->update(
+			array(
+				'Payment Service Provider Accounts'=>$number_accounts,
+				'Payment Service Provider Currency'=>$currencies,
+				'Payment Service Provider Transactions'=>$transactions,
+				'Payment Service Provider Payments Amount'=>$payments,
+				'Payment Service Provider Refunds Amount'=>$refunds,
+				'Payment Service Provider Balance Amount'=>$balance,
+
+			), 'no_history');
+
+	}
+
 
 }

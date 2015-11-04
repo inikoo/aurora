@@ -1027,7 +1027,7 @@ function get_pick_aid_navigation($data) {
 
 	}
 
-$left_buttons[]=$up_button;
+	$left_buttons[]=$up_button;
 
 
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;

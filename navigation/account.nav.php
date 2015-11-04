@@ -36,6 +36,9 @@ function get_account_navigation($data) {
 }
 
 
+
+
+
 function get_settings_navigation($data) {
 	global $smarty;
 

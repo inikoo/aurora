@@ -46,6 +46,7 @@ function change_subtab(subtab) {
 function change_view(_request) {
 
     var request = "/ar_views.php?tipo=views&request=" + _request + "&old_state=" + JSON.stringify(state)
+   
     $.getJSON(request, function(data) {
 
 

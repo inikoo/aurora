@@ -351,6 +351,11 @@ vertical-align: top;
 
 
 #object_showcase{
+    
+    
+
+    
+    .subject_profile{padding:20px}
 
     .pdf_link{img{height:10px;vertical-align:0px}}
 
@@ -375,10 +380,12 @@ vertical-align: top;
         
             
 
-    .order,.invoice,.delivery_note{
     #contact_data{float:left;padding:20px 20px;}
     
-    #totals,#dates{float:right;border-left:1px solid #ccc;height:100%}
+    
+    
+    
+    .block{float:right;border-left:1px solid #ccc;height:100%;}
     
     #dates{
         
@@ -412,7 +419,7 @@ vertical-align: top;
         }
     }
     
-    #totals{
+    #totals,.block{
     table{width:100%}
         padding-top:5px;
         td{padding:4px 8px}
@@ -424,8 +431,8 @@ vertical-align: top;
        
 
     }
-    }
     
+  #account .block{min-width:150px}
     
     
 }

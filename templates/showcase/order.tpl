@@ -40,7 +40,7 @@
 	<div style="clear:both">
 	</div>
 </div>
-<div id="totals" >
+<div id="totals" class="block">
 <div style="{if $order->data['Order Invoiced']=='Yes'}display:none{/if}">
 				<table border="0" class="info_block">
 						<tr {if $order->
@@ -256,7 +256,7 @@
 </div>
 
 </div>
-<div id="dates" >
+<div id="dates"  class="block">
 	<table border="0" class="date_and_state" >
 		
 			<tr>

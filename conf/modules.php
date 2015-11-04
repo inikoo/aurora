@@ -810,7 +810,7 @@ $modules=array(
 			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'title'=>_('Account'), 'icon'=>'star', 'reference'=>'account',
 				'tabs'=>array(
 					'account.details'=>array('label'=>_('Details'), 'title'=>_('Account details'), 'reference'=>'account/details'),
-					'account.payment_options'=>array('label'=>_('Details'), 'title'=>_('Account details'), 'reference'=>'account/details'),
+					'payment_service_providers'=>array('label'=>_('Payment options'), 'title'=>_('Payment options'), 'reference'=>'account/payment_service_providers'),
 				)
 			),
 
@@ -848,6 +848,30 @@ $modules=array(
 					'staff.user.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details'), 'reference'=>'staff.user/%d/details'),
 					'staff.user.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o', 'reference'=>'staff.user/%d/history'),
 					'staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history'), 'reference'=>'staff.user/%d/login_history'),
+
+				)
+			),
+			'payment_service_provider'=>array('type'=>'object',
+				'tabs'=>array(
+					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details'), 'reference'=>'payment_service_provider/details'),
+					'payment_service_provider.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o', 'reference'=>'payment_service_provider/history'),
+					'payment_service_provider.accounts'=>array('label'=>_('Accounts'), 'title'=>_('Payment accounts'), 'reference'=>'payment_service_provider/accounts'),
+					'payment_service_provider.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions'), 'reference'=>'payment_service_provider/payments'),
+
+				)
+			),
+			'payment_account'=>array('type'=>'object',
+				'tabs'=>array(
+					'payment_account.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details'), 'reference'=>'payment_account/details'),
+					'payment_account.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o', 'reference'=>'payment_account/history'),
+					'payment_account.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions'), 'reference'=>'payment_account/payments'),
+
+				)
+			),
+			'payment'=>array('type'=>'object',
+				'tabs'=>array(
+					'payment.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details'), 'reference'=>'payment/details'),
+					'payment.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o', 'reference'=>'payment/history'),
 
 				)
 			)

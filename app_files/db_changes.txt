@@ -1,0 +1,49 @@
+ALTER TABLE `Payment Service Provider Dimension` CHANGE `Service Provider Last Used Date` `Payment Service Provider Last Used Date` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `Payment Service Provider Dimension` ADD `Payment Service Provider Accounts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Service Provider Last Used Date`, ADD `Payment Service Provider Transactions` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Service Provider Accounts`, ADD `Payment Service Provider Payments Amount` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Payment Service Provider Transactions`, ADD `Payment Service Provider Refunds Amount` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Payment Service Provider Payments Amount`, ADD `Payment Service Provider Balance` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Payment Service Provider Refunds Amount`;
+ALTER TABLE `Payment Service Provider Dimension` ADD `Payment Service Provider Currency` TEXT NOT NULL AFTER `Payment Service Provider Transactions`;
+ALTER TABLE `Payment Account Dimension` ADD `Payment Account Currency` TEXT NOT NULL AFTER `Payment Account Settings`, ADD `Payment Account Transactions` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account Currency`, ADD `Payment Account Payments Amount` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Payment Account Transactions`, ADD `Payment Account Refunds Amount` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Payment Account Payments Amount`, ADD `Payment Account Balance Amount` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Payment Account Refunds Amount`;
+ALTER TABLE `Payment Service Provider Dimension` CHANGE `Payment Service Provider Balance` `Payment Service Provider Balance Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.00';
+CREATE TABLE IF NOT EXISTS `Payment Service Provider History Bridge` (
+  `Payment Service Provider Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Payment Service Provider History Bridge`
+  ADD PRIMARY KEY (`Payment Service Provider Key`,`History Key`),
+  ADD KEY `Payment Service Provider Key` (`Payment Service Provider Key`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Type` (`Type`);
+  
+  CREATE TABLE IF NOT EXISTS `Payment Account History Bridge` (
+  `Payment Account Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Payment Account History Bridge`
+  ADD PRIMARY KEY (`Payment Account Key`,`History Key`),
+  ADD KEY `Payment Account Key` (`Payment Account Key`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Type` (`Type`);
+  
+   CREATE TABLE IF NOT EXISTS `Payment History Bridge` (
+  `Payment Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Payment History Bridge`
+  ADD PRIMARY KEY (`Payment Key`,`History Key`),
+  ADD KEY `Payment Key` (`Payment Key`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Type` (`Type`);
+  
+  
+  

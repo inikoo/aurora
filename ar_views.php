@@ -37,7 +37,7 @@ case 'views':
 
 		switch ($state['object']) {
 		case 'account':
-		
+
 			$_object=$account;
 			break;
 		case 'customer':
@@ -104,8 +104,20 @@ case 'views':
 			include_once 'class.List.php';
 			$_object=new SubjectList($state['key']);
 			break;
+		case 'payment_service_provider':
+			require_once "class.Payment_Service_Provider.php";
+			$_object=new Payment_Service_Provider($state['key']);
+			break;
+		case 'payment_account':
+			require_once "class.Payment_Account.php";
+			$_object=new Payment_Account($state['key']);
+			break;
+		case 'payment':
+			require_once "class.Payment.php";
+			$_object=new Payment($state['key']);
+			break;		
 		default:
-			exit('need to complete E1');
+			exit('need to complete E1 '.$state['object']);
 			break;
 		}
 		if (!$_object->id) {
@@ -266,7 +278,10 @@ function get_object_showcase($data) {
 	case 'website':
 		$html='';
 		break;
-
+	case 'account':
+		include_once 'showcase/account.show.php';
+		$html=get_account_showcase($data);
+		break;
 	case 'customer':
 		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data);
@@ -434,7 +449,7 @@ function get_navigation($data) {
 			break;
 		case ('pack_aid'):
 			return get_pack_aid_navigation($data);
-			break;		
+			break;
 		default:
 			return 'View not found';
 
@@ -687,6 +702,18 @@ function get_navigation($data) {
 		case ('settings'):
 			return get_settings_navigation($data);
 			break;
+		case ('payment_service_provider'):
+			require_once 'navigation/payments.nav.php';
+			return get_payment_service_provider_navigation($data);
+			break;
+		case ('payment_account'):
+			require_once 'navigation/payments.nav.php';
+			return get_payment_account_navigation($data);
+			break;
+		case ('payment'):
+			require_once 'navigation/payments.nav.php';
+			return get_payment_navigation($data);
+			break;		
 		}
 
 

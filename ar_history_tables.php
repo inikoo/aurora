@@ -133,7 +133,4 @@ function object_history($_data, $db, $user) {
 	echo json_encode($response);
 }
 
-
-s
-
 ?>
