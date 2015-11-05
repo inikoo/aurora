@@ -19,6 +19,7 @@ switch ($parameters['parent']) {
         break;
      case 'payment_account':
       $where=sprintf("where `Payment Account Key`=%d",$parameters['parent_key']);
+      break;   
      case 'account':
       $where=sprintf("where true");
         break;   
