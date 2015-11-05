@@ -1,1 +1,0 @@
-ecom_home.tpl
