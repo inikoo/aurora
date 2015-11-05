@@ -317,7 +317,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 
-	),'invoice.items'=>array(
+	),
+	'invoice.items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -352,8 +353,6 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-
-    
 	'invoices'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -487,14 +486,16 @@ $tab_defaults=array(
 		'period'=>'ytd',
 		'elements_type'=>each($orders_elements)['key'],
 		'elements'=>$orders_elements
-	), 'websites'=>array(
+	),
+	'websites'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
-	), 'website.pages'=>array(
+	),
+	'website.pages'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -513,9 +514,8 @@ $tab_defaults=array(
 		'f_field'=>'name',
 		'elements_type'=>each($customers_elements)['key'],
 		'elements'=>$customers_elements
-	)
-
-	, 'website.search.queries'=>array(
+	),
+	'website.search.queries'=>array(
 		'view'=>'overview',
 		'sort_key'=>'number',
 		'sort_order'=>-1,
@@ -523,7 +523,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'query',
 
-	), 'website.search.history'=>array(
+	),
+	'website.search.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>-1,
@@ -531,16 +532,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'query',
 
-	), 'website.users'=>array(
-		'view'=>'overview',
-		'sort_key'=>'id',
-		'sort_order'=>1,
-		'rpp'=>20,
-		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'handle',
-
-	)
-	, 'page.users'=>array(
+	),
+	'website.users'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -549,7 +542,15 @@ $tab_defaults=array(
 		'f_field'=>'handle',
 
 	),
+	'page.users'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle',
 
+	),
 	'website.user.login_history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -570,8 +571,6 @@ $tab_defaults=array(
 		'f_period'=>'all',
 
 	),
-
-
 	'marketing_server'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -605,14 +604,16 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
-	), 'warehouses'=>array(
+	),
+	'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
-	), 'part.history'=>array(
+	),
+	'part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -635,7 +636,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'location'
-	), 'warehouse.history'=>array(
+	),
+	'warehouse.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -650,13 +652,30 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
-	), 'employees'=>array(
+	),
+	'employees'=>array(
 		'view'=>'employees',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
+	),
+	'timesheets'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name'
+	),
+	'employee.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
 	),
 	'reports'=>array(
 		'view'=>'overview',
@@ -734,6 +753,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
+	'payment.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
 	
 	'users.staff.users'=>array(
 		'view'=>'privilegies',
@@ -742,14 +769,16 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
-	), 'staff.user.history'=>array(
+	),
+	'staff.user.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
-	), 'staff.user.login_history'=>array(
+	),
+	'staff.user.login_history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -758,7 +787,17 @@ $tab_defaults=array(
 		'f_field'=>'ip',
 		'f_period'=>'all',
 
-	), 'users.staff.login_history'=>array(
+	),
+	'staff.user.api_keys'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
+	'users.staff.login_history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,

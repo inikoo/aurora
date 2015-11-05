@@ -217,7 +217,7 @@ $modules=array(
 					'pick_aid.items'=>array('label'=>_('Items'), 'title'=>_('Items'), 'icon'=>'bars', 'reference'=>'pick_aid/%d/items'),
 				)
 
-			),'pack_aid'=>array('type'=>'object',
+			), 'pack_aid'=>array('type'=>'object',
 				'tabs'=>array(
 
 
@@ -763,6 +763,7 @@ $modules=array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees'), 'reference'=>'hr'),
+					'timesheets'=>array('label'=>_('Timesheets'), 'title'=>_('Timesheets'), 'reference'=>'hr'),
 
 				)
 
@@ -848,6 +849,7 @@ $modules=array(
 					'staff.user.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details'), 'reference'=>'staff.user/%d/details'),
 					'staff.user.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o', 'reference'=>'staff.user/%d/history'),
 					'staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history'), 'reference'=>'staff.user/%d/login_history'),
+					'staff.user.api_keys'=>array('label'=>_('API keys'), 'title'=>_('API keys'), 'reference'=>'staff.user/%d/api_keys'),
 
 				)
 			),

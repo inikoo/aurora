@@ -115,7 +115,7 @@ case 'views':
 		case 'payment':
 			require_once "class.Payment.php";
 			$_object=new Payment($state['key']);
-			break;		
+			break;
 		default:
 			exit('need to complete E1 '.$state['object']);
 			break;
@@ -713,7 +713,7 @@ function get_navigation($data) {
 		case ('payment'):
 			require_once 'navigation/payments.nav.php';
 			return get_payment_navigation($data);
-			break;		
+			break;
 		}
 
 
@@ -1040,10 +1040,25 @@ function get_view_position($data) {
 		}
 
 		break;
+	case 'hr':
+		switch ($data['section']) {
+		case 'employees':
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+			break;
+			
+		case 'employee':
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+
+			$branch[]=array('label'=>_('Employee').' <span class="id">'.$data['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$data['_object']->id);
+
+			break;	
+		}
+		break;
 	case 'inventory':
-		$branch[]=array('label'=>_('Inventory'), 'icon'=>'', 'url'=>'inventory');
+		$branch[]=array('label'=>_('Inventory'), 'icon'=>'', 'reference'=>'inventory');
 
 		break;
+
 	case 'websites':
 
 
@@ -1117,7 +1132,48 @@ function get_view_position($data) {
 		}elseif ($data['section']=='settings') {
 			$branch[]=array('label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings');
 
+		}elseif ($data['section']=='payment_service_provider') {
+			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$data['_object']->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$data['_object']->id);
+
+		}elseif ($data['section']=='payment_account') {
+
+			$psp=new Payment_Service_Provider($data['_object']->get('Payment Service Provider Key'));
+
+			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
+
+			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$data['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$data['_object']->id);
+
+		}elseif ($data['section']=='payment_account') {
+
+			$psp=new Payment_Service_Provider($data['_object']->get('Payment Service Provider Key'));
+
+			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
+
+			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$data['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$data['_object']->id);
+
+		}elseif ($data['section']=='payment') {
+
+			include_once 'class.Payment_Service_Provider.php';
+			include_once 'class.Payment_Account.php';
+
+			$psp=new Payment_Service_Provider($data['_object']->get('Payment Service Provider Key'));
+			$payment_account=new Payment_Account($data['_object']->get('Payment Account Key'));
+
+			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
+
+			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$payment_account->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'payment_service_provider/'.$psp->id.'/payment_account/'.$payment_account->id);
+
+			if ($data['parent']=='payment_service_provider') {
+				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$data['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'payment_service_provider/'.$psp->id.'/payment/'.$data['_object']->id);
+
+			}elseif ($data['parent']=='payment_account') {
+				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$data['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'payment_account/'.$payment_account->id.'/payment/'.$data['_object']->id);
+
+			}else {
+				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$data['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'account/payment/'.$data['_object']->id);
+			}
 		}
+
 
 		break;
 	}

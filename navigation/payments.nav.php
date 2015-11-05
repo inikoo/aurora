@@ -423,7 +423,6 @@ function get_payment_navigation($data) {
 
 
 
-		//print_r($_SESSION['table_state'][$tab]);
 
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
@@ -444,6 +443,7 @@ function get_payment_navigation($data) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 		$res2=mysql_query($sql);
+		
 		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
 			$sql=sprintf("select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
@@ -537,6 +537,36 @@ function get_payment_navigation($data) {
 
 			if ($next_key) {
 				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'payment_service_provider/'.$data['parent_key'].'/payment/'.$next_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+			}
+
+
+
+
+
+
+		}
+		elseif ($data['parent']=='payment_account') {
+			include_once 'class.Payment_Account.php';
+			$payment_account=new Payment_Account($data['parent_key']);
+
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Payment account").' '.$payment_account->get('Payment Account Name'), 'reference'=>'account/payment_account/'.$data['parent_key']);
+
+			if ($prev_key) {
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'payment_account/'.$data['parent_key'].'/payment/'.$prev_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+			}
+			$left_buttons[]=$up_button;
+
+
+			if ($next_key) {
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'payment_account/'.$data['parent_key'].'/payment/'.$next_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');

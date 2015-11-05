@@ -148,17 +148,17 @@ function users($_data, $db, $user) {
 
 	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-//print $sql;
+	//print $sql;
 	$base_data=array(
-	'Staff'=>array('User Type'=>'Staff','active_users'=>0),
-	'Warehouse'=>array('User Type'=>'Warehouse','active_users'=>0),
-	'Administrator'=>array('User Type'=>'Administrator','active_users'=>0),
-	'Supplier'=>array('User Type'=>'Supplier','active_users'=>0),
+		'Staff'=>array('User Type'=>'Staff', 'active_users'=>0),
+		'Warehouse'=>array('User Type'=>'Warehouse', 'active_users'=>0),
+		'Administrator'=>array('User Type'=>'Administrator', 'active_users'=>0),
+		'Supplier'=>array('User Type'=>'Supplier', 'active_users'=>0),
 	);
 
 	foreach ($db->query($sql) as $data) {
-	    
-	$base_data[$data['User Type']]=$data;
+
+		$base_data[$data['User Type']]=$data;
 	}
 
 	foreach ($base_data as $key=>$data) {
@@ -193,7 +193,7 @@ function users($_data, $db, $user) {
 
 	}
 
-$rtext=_('Users');
+	$rtext=_('Users');
 
 	$response=array('resultset'=>
 		array(
@@ -209,6 +209,41 @@ $rtext=_('Users');
 	echo json_encode($response);
 }
 
+function api_keys($_data, $db, $user) {
+	global $db;
+	$rtext_label='api_key';
+	include_once 'prepare_table/init.php';
 
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['User API Key'],
+			'user_key'=>(integer) $data['User Key'],
+			'handle'=>$data['User Handle'],
+			'user'=>$data['User Alias'],
+			'public_key'=>$data['API Public Key'],
+			'valid_ip'=>$data['Valid IP'],
+			'valid_date'=>($data['Valid Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Valid Date'])):''),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>

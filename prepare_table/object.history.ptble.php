@@ -78,7 +78,7 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='payment_account') {
 	$where=sprintf(' where   B.`Payment Account Key`=%d   ', $parameters['parent_key']);
 	$subject='Payment Account';
-}elseif ($parameters['parent']=='payment_') {
+}elseif ($parameters['parent']=='payment') {
 	$where=sprintf(' where   B.`Payment Key`=%d   ', $parameters['parent_key']);
 	$subject='Payment';
 }

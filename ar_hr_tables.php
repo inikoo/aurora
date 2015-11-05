@@ -33,6 +33,9 @@ switch ($tipo) {
 case 'employees':
 	employees(get_table_parameters(), $db, $user);
 	break;
+case 'timesheets':
+	timesheets(get_table_parameters(), $db, $user);
+	break;
 case 'contractors':
 	contractors(get_table_parameters(), $db, $user);
 	break;
@@ -53,13 +56,11 @@ function employees($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	// print $sql;
-
-
 	foreach ($db->query($sql) as $data) {
 		$adata[]=array(
 			'id'=>(integer) $data['Staff Key'],
-			'formated_id'=>sprintf("E%04d", $data['Staff Key']),
+			'formated_id'=>sprintf("%04d", $data['Staff Key']),
+			'payroll_id'=>$data['Staff ID'],
 			'name'=>$data['Staff Name'],
 			'position'=>$data['position']
 		);
@@ -80,6 +81,40 @@ function employees($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function timesheets($_data, $db, $user) {
+	global $db;
+	$rtext_label='timesheet_record';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+		$adata[]=array(
+			'id'=>(integer) $data['Staff Key'],
+			'formated_id'=>sprintf("%04d", $data['Staff Key']),
+
+			'payroll_id'=>$data['Staff ID'],
+			'name'=>$data['Staff Name'],
+			'date'=>($data['Valid Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Valid Date'])):''),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 

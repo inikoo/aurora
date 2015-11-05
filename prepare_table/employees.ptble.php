@@ -80,7 +80,7 @@ if ($order=='name')
 
 $sql_totals="select count(Distinct SD.`Staff Key`) as num from $table  $where  ";
 
-$fields="
+$fields="`Staff ID`,
 	(select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name`
 
 ";
