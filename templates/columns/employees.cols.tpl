@@ -24,7 +24,28 @@ var columns = [
        
 })
    
+}
+,{
+    name: "payroll_id",
+    label: "{t}Payroll ID{/t}",
+    editable: false,
+     sortType: "toggle",
+    {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    
+    cell: Backgrid.StringCell.extend({
+        orderSeparator: '',
+        events: {
+            "click": function() {
+                change_view('employee/' + +this.model.get("id"))
+            }
+        },
+        className: "link"
+       
+})
+   
 },
+
+
  {
     name: "name",
     label: "{t}Name{/t}",

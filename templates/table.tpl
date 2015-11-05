@@ -41,7 +41,7 @@
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
 	
-	<div class="{if $f_label==''}hide{/if}">
+	<div id="filter_container" class="hide">
 	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" >
 		 <i class="fa fa-filter fa-fw"></i> 
 	</div>
@@ -55,6 +55,16 @@
 	{$f_label}:
 	</div>
 	</div>
+	
+	{if isset($table_buttons) and count(table_buttons)>0}
+	{foreach from=$table_buttons item=button } 
+	
+	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  class="square_button right"       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} title="{$button.title}">
+		<i class="fa fa-{$button.icon} fa-fw"></i> 
+	</div>
+	{/foreach}  
+	{/if}
+	
 	<span id="rtext"></span> 
 </div>
 {if isset($table_views) and count($table_views)>1}
@@ -153,70 +163,74 @@ var Rows = Backbone.PageableCollection.extend({
   
   
   
-  parseState: function (resp, queryParams, state, options) {
-$('#rtext').html(resp.resultset.rtext)
+  parseState: function(resp, queryParams, state, options) {
+    $('#rtext').html(resp.resultset.rtext)
 
-var total_pages=Math.ceil(resp.resultset.total_records/state.pageSize)
+    var total_pages = Math.ceil(resp.resultset.total_records / state.pageSize)
 
-if(resp.resultset.total_records>20){
-$('#results_per_page').removeClass('hide')
-}
-
- if(total_pages==1){
-    $('#paginator').html(rows.state.currentPage+'/'+total_pages) 
-$('#first_page').addClass('disabled')
-$('#prev_page').addClass('disabled')
-$('#last_page').addClass('disabled')
-$('#next_page').addClass('disabled')
-
-    }else if(total_pages>=1){
-      $('#first_page').removeClass('hide')
-      $('#prev_page').removeClass('hide')
-      $('#last_page').removeClass('hide')
-     $('#next_page').removeClass('hide')
-
-
-    $('#paginator').html(rows.state.currentPage+'/'+total_pages) 
-
-$('#first_page').removeClass('disabled')
-$('#prev_page').removeClass('disabled')
-$('#last_page').removeClass('disabled')
-$('#next_page').removeClass('disabled')
-
-
-if(rows.state.currentPage==1){
-$('#prev_page').addClass('disabled')
-$('#first_page').addClass('hide')
-
-}else if(rows.state.currentPage==2){
-
-$('#first_page').addClass('disabled')
-
-}else if(rows.state.currentPage==total_pages){
-$('#next_page').addClass('disabled')
-
-$('#last_page').addClass('disabled')
-
-}
-
-}
+    if (resp.resultset.total_records > 20) {
+        $('#results_per_page').removeClass('hide')
+    }
+ 
+  if (total_pages > 1 && '{$f_label}'!='') {
+    $('#filter_container').removeClass('hide')
+  }
     
+ 
+ if (total_pages == 1) {
+        $('#paginator').html(rows.state.currentPage + '/' + total_pages)
+        $('#first_page').addClass('disabled')
+        $('#prev_page').addClass('disabled')
+        $('#last_page').addClass('disabled')
+        $('#next_page').addClass('disabled')
+
+    } else if (total_pages >= 1) {
+        $('#first_page').removeClass('hide')
+        $('#prev_page').removeClass('hide')
+        $('#last_page').removeClass('hide')
+        $('#next_page').removeClass('hide')
+
+
+        $('#paginator').html(rows.state.currentPage + '/' + total_pages)
+
+        $('#first_page').removeClass('disabled')
+        $('#prev_page').removeClass('disabled')
+        $('#last_page').removeClass('disabled')
+        $('#next_page').removeClass('disabled')
+
+
+        if (rows.state.currentPage == 1) {
+            $('#prev_page').addClass('disabled')
+            $('#first_page').addClass('hide')
+
+        } else if (rows.state.currentPage == 2) {
+
+            $('#first_page').addClass('disabled')
+
+        } else if (rows.state.currentPage == total_pages) {
+            $('#next_page').addClass('disabled')
+
+            $('#last_page').addClass('disabled')
+
+        }
+
+    }
+
     $('th.ascending').removeClass('ascending')
     $('th.descending').removeClass('descending')
-   
-    if(resp.resultset.sort_dir=='desc')
-    $('th.'+resp.resultset.sort_key).addClass('descending')
-    else
-    $('th.'+resp.resultset.sort_key).addClass('ascending')
-    
-   
-   
-    
+
+    if (resp.resultset.sort_dir == 'desc') $('th.' + resp.resultset.sort_key).addClass('descending')
+    else $('th.' + resp.resultset.sort_key).addClass('ascending')
+
+
+
+
     return {
-    totalRecords: parseInt(resp.resultset.total_records),
-    sortKey:resp.resultset.sort_key
+        totalRecords: parseInt(resp.resultset.total_records),
+        sortKey: resp.resultset.sort_key
     };
-  },
+},
+
    parseRecords: function (resp, options) {
    
     return resp.resultset.data;
@@ -258,7 +272,9 @@ rows.fetch(
 get_elements_numbers('{$tab}',{$parameters|@json_encode})
 {/if}
 
-
+{if isset($js_code_file) }
+{include file="$js_code_file" } 
+{/if}
 
 </script> 
 
