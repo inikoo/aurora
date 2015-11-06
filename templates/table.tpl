@@ -272,8 +272,8 @@ rows.fetch(
 get_elements_numbers('{$tab}',{$parameters|@json_encode})
 {/if}
 
-{if isset($js_code_file) }
-{include file="$js_code_file" } 
+{if isset($js_code) }
+{include file="string:$js_code" } 
 {/if}
 
 </script> 
