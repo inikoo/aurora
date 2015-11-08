@@ -30,62 +30,66 @@ class Customer extends DB_Table {
 	var $warning_messages=array();
 	var $warning=false;
 
-	function __construct($arg1=false,$arg2=false,$arg3=false) {
+	function __construct($arg1=false, $arg2=false, $arg3=false) {
+
+		global $db;
+		$this->db=$db;
+
 		$this->label=_('Customer');
 		$this->table_name='Customer';
 		$this->ignore_fields=array(
 			'Customer Key'
-			,'Customer Has More Orders Than'
-			,'Customer Has More  Invoices Than'
-			,'Customer Has Better Balance Than'
-			,'Customer Is More Profiteable Than'
-			,'Customer Order More Frecuently Than'
-			,'Customer Older Than'
-			,'Customer Orders Position'
-			,'Customer Invoices Position'
-			,'Customer Balance Position'
-			,'Customer Profit Position'
-			,'Customer Order Interval'
-			,'Customer Order Interval STD'
-			,'Customer Orders Top Percentage'
-			,'Customer Invoices Top Percentage'
-			,'Customer Balance Top Percentage'
-			,'Customer Profits Top Percentage'
-			,'Customer First Order Date'
-			,'Customer Last Order Date'
+			, 'Customer Has More Orders Than'
+			, 'Customer Has More  Invoices Than'
+			, 'Customer Has Better Balance Than'
+			, 'Customer Is More Profiteable Than'
+			, 'Customer Order More Frecuently Than'
+			, 'Customer Older Than'
+			, 'Customer Orders Position'
+			, 'Customer Invoices Position'
+			, 'Customer Balance Position'
+			, 'Customer Profit Position'
+			, 'Customer Order Interval'
+			, 'Customer Order Interval STD'
+			, 'Customer Orders Top Percentage'
+			, 'Customer Invoices Top Percentage'
+			, 'Customer Balance Top Percentage'
+			, 'Customer Profits Top Percentage'
+			, 'Customer First Order Date'
+			, 'Customer Last Order Date'
 		);
 
 
 		$this->status_names=array(0=>'new');
 
 		if (is_numeric($arg1) and !$arg2) {
-			$this->get_data('id',$arg1);
+			$this->get_data('id', $arg1);
 			return;
 		}
-		if (preg_match('/create anonymous|create anonimous$/i',$arg1)) {
+		if (preg_match('/create anonymous|create anonimous$/i', $arg1)) {
 			$this->create_anonymous();
 			return;
 		}
 
 
 		if ($arg1=='new') {
-			$this->find($arg2,'create');
+			$this->find($arg2, 'create');
 			return;
 		}
-		elseif (preg_match('/^find staff/',$arg1)) {
-			$this->find_staff($arg2,$arg1);
+		elseif (preg_match('/^find staff/', $arg1)) {
+			$this->find_staff($arg2, $arg1);
 			return;
 		}
-		elseif (preg_match('/^find/',$arg1)) {
-			$this->find($arg2,$arg1);
+		elseif (preg_match('/^find/', $arg1)) {
+			$this->find($arg2, $arg1);
 			return;
 		}
-		elseif (preg_match('/^force_create/',$arg1)) {
-			$this->prepare_force_create($arg2,$arg1);
+		elseif (preg_match('/^force_create/', $arg1)) {
+			$this->prepare_force_create($arg2, $arg1);
 			return;
 		}
 
-		$this->get_data($arg1,$arg2,$arg3);
+		$this->get_data($arg1, $arg2, $arg3);
 
 
 	}
@@ -97,6 +101,7 @@ class Customer extends DB_Table {
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
 			return array(true, $row);
 	}
+
 
 	function number_of_user_logins() {
 		list($is_user, $row)=$this->is_user_customer($this->id);
@@ -111,9 +116,10 @@ class Customer extends DB_Table {
 			return 0;
 	}
 
+
 	function prepare_force_create($data) {
 
-		if (array_key_exists('Customer Main Plain Email',$data)) {
+		if (array_key_exists('Customer Main Plain Email', $data)) {
 			$sql=sprintf("select `Customer Key` from `Customer Dimension` left join `Email Bridge` EB on (`Subject Key`=`Customer Key`) left join `Email Dimension` E on (E.`Email Key`=EB.`Email Key`)  where `Subject Type`='Customer'  and `Email`=%s  ", $data['Customer Main Plain Email']);
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -128,7 +134,7 @@ class Customer extends DB_Table {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -144,9 +150,9 @@ class Customer extends DB_Table {
       Find Staff Customer
     */
 
-	function find_staff($staff,$options='') {
+	function find_staff($staff, $options='') {
 
-		$sql=sprintf("select * from `Customer Dimension` where `Customer Staff`='Yes' and `Customer Staff Key`=%d",$staff->id);
+		$sql=sprintf("select * from `Customer Dimension` where `Customer Staff`='Yes' and `Customer Staff Key`=%d", $staff->id);
 		//print $sql;exit;
 		$result=mysql_query($sql);
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -154,7 +160,7 @@ class Customer extends DB_Table {
 			$this->id=$this->data['Customer Key'];
 		}
 
-		if (!$this->id and preg_match('/create|new/',$options)) {
+		if (!$this->id and preg_match('/create|new/', $options)) {
 			$raw_data['Customer Type']='Person';
 
 			$raw_data['Customer Staff']='Yes';
@@ -165,7 +171,7 @@ class Customer extends DB_Table {
 				$contact=new Contact($staff->data['Staff Contact Key']);
 				$_raw_data=$contact->data;
 				foreach ($_raw_data as $key=>$value) {
-					$raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
+					$raw_data[preg_replace('/Contact/', 'Customer', $key)]=$value;
 				}
 
 				$raw_data['Customer Staff Key']=$staff->id;
@@ -175,7 +181,7 @@ class Customer extends DB_Table {
 				$contact=new Contact('create anonymous');
 				$_raw_data=$contact->data;
 				foreach ($raw_data as $key=>$value) {
-					$raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
+					$raw_data[preg_replace('/Contact/', 'Customer', $key)]=$value;
 				}
 				$raw_data['Customer Staff Key']=0;
 				$raw_data['Customer Main Contact Key']=$contact->id;
@@ -188,6 +194,8 @@ class Customer extends DB_Table {
 
 
 	}
+
+
 	/*
 
       Method: find
@@ -200,7 +208,7 @@ class Customer extends DB_Table {
 
 
 
-	function find($raw_data,$options='') {
+	function find($raw_data, $options='') {
 
 		$this->found_child=false;
 		$this->found_child_key=0;
@@ -211,37 +219,37 @@ class Customer extends DB_Table {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
 		}
 
 		$type_of_search='complete';
-		if (preg_match('/fuzzy/i',$options)) {
+		if (preg_match('/fuzzy/i', $options)) {
 			$type_of_search='fuzzy';
 		}
-		elseif (preg_match('/fast/i',$options)) {
+		elseif (preg_match('/fast/i', $options)) {
 			$type_of_search='fast';
 		}
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
 		if (
 			!isset($raw_data['Customer Store Key']) or
-			!preg_match('/^\d+$/i',$raw_data['Customer Store Key']) ) {
+			!preg_match('/^\d+$/i', $raw_data['Customer Store Key']) ) {
 			$raw_data['Customer Store Key']=1;
 
 		}
 
-		if (!isset($raw_data['Customer Type']) or !preg_match('/^(Company|Person)$/i',$raw_data['Customer Type']) ) {
+		if (!isset($raw_data['Customer Type']) or !preg_match('/^(Company|Person)$/i', $raw_data['Customer Type']) ) {
 
 
 			// Try to detect if is a company or a person
@@ -259,9 +267,9 @@ class Customer extends DB_Table {
 
 		$raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
 		if ($raw_data['Customer Type']=='Person') {
-			$child=new Contact ("find in customer $type_of_search",$raw_data);
+			$child=new Contact ("find in customer $type_of_search", $raw_data);
 		} else {
-			$child=new Company ("find in customer $type_of_search",$raw_data);
+			$child=new Company ("find in customer $type_of_search", $raw_data);
 		}
 
 		$this->found_in_another_store=false;
@@ -301,7 +309,7 @@ class Customer extends DB_Table {
 
 
 		if ($this->found) {
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 		}
 
 
@@ -337,9 +345,9 @@ class Customer extends DB_Table {
 						isset($child->data['Contact Key']) and
 						$raw_data['Customer Main Plain Email']!='' and
 						$raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
-						and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
-						and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/",$raw_data['Customer Main Contact Name'] )
-						and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/",$child->data['Contact Name'] )
+						and (levenshtein($child->data['Contact Name'], $raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
+						and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/", $raw_data['Customer Main Contact Name'] )
+						and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/", $child->data['Contact Name'] )
 					) {
 						//print "super change!!\n";
 						// exit;
@@ -349,14 +357,14 @@ class Customer extends DB_Table {
 
 						$_customer = new Customer ( 'find create  $type_of_search', $raw_data );
 
-						$this->get_data('id',$_customer->id);
+						$this->get_data('id', $_customer->id);
 
 
 						return;
 					}
 
 
-					$child=new Contact ("find in customer $type_of_search create update",$raw_data);
+					$child=new Contact ("find in customer $type_of_search create update", $raw_data);
 
 
 
@@ -365,7 +373,7 @@ class Customer extends DB_Table {
 
 
 
-					$child=new Company ("find in customer $type_of_search create update",$raw_data);
+					$child=new Company ("find in customer $type_of_search create update", $raw_data);
 
 
 
@@ -386,7 +394,7 @@ class Customer extends DB_Table {
 					$raw_data_to_update['Customer Sticky Note']=$raw_data['Customer Sticky Note'];
 				$this->update($raw_data_to_update);
 
-				$this->get_data('id',$this->id);
+				$this->get_data('id', $this->id);
 
 			} else {// customer not found
 				if ($this->found_child) {
@@ -400,7 +408,7 @@ class Customer extends DB_Table {
 							isset($child->data['Contact Key']) and
 							$raw_data['Customer Main Plain Email']!='' and
 							$raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email'] and
-							(levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
+							(levenshtein($child->data['Contact Name'], $raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
 
 						) {
 							//print "super change2!\n";
@@ -412,7 +420,7 @@ class Customer extends DB_Table {
 							//exit;
 							$_customer = new Customer ( 'find create $type_of_search', $raw_data );
 
-							$this->get_data('id',$_customer->id);
+							$this->get_data('id', $_customer->id);
 							return;
 
 
@@ -422,13 +430,13 @@ class Customer extends DB_Table {
 						// print_r($contact->data);
 						// print_r($raw_data);
 						// print "lets update the contact\n";
-						$contact=new contact("find in customer $type_of_search create update",$raw_data);
+						$contact=new contact("find in customer $type_of_search create update", $raw_data);
 						//print "updated contact\n";
 						//print_r($contact);
 						$raw_data['Customer Main Contact Key']=$contact->id;
 
 					} else {
-						$company=new company("find in customer $type_of_search create update",$raw_data);
+						$company=new company("find in customer $type_of_search create update", $raw_data);
 						$raw_data['Customer Company Key']=$company->id;
 					}
 
@@ -447,15 +455,15 @@ class Customer extends DB_Table {
 
 	function update_correlations() {
 
-		$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ",$this->id,$this->id);
+		$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ", $this->id, $this->id);
 		mysql_query($sql);
 
 		$correlated_customers=array();
 		$data=$this->data;
 		if ($data['Customer Type']=='Person')
-			$subject=new contact('find from customer complete',$data);
+			$subject=new contact('find from customer complete', $data);
 		else
-			$subject=new company('find from customer complete',$data);
+			$subject=new company('find from customer complete', $data);
 
 
 
@@ -468,7 +476,7 @@ class Customer extends DB_Table {
 			foreach ($customer_keys as $customer_key) {
 				$customer_correlated=new Customer($customer_key);
 				if ($customer_correlated->data['Customer Store Key']==$this->data['Customer Store Key'])
-					$correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'],'score'=>$score);
+					$correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'], 'score'=>$score);
 			}
 
 		}
@@ -507,15 +515,17 @@ class Customer extends DB_Table {
 		}
 	}
 
+
 	function get_name() {
 		return $this->data['Customer Name'];
 	}
+
 
 	function get_greetings($locale=false) {
 
 		if ($locale) {
 
-			if (preg_match('/^es_/',$locale)) {
+			if (preg_match('/^es_/', $locale)) {
 				$unknown_name='A quien corresponda';
 				$greeting_prefix='Estimado';
 			} else {
@@ -536,6 +546,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_name_for_grettings() {
 
 		if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
@@ -551,11 +562,11 @@ class Customer extends DB_Table {
 
 
 
-	function get_data($tag,$id,$id2=false) {
+	function get_data($tag, $id, $id2=false) {
 		if ($tag=='id')
-			$sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
+			$sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s", prepare_mysql($id));
 		elseif ($tag=='email')
-			$sql=sprintf("select * from `Customer Dimension` where `Customer Main Plain Email`=%s",prepare_mysql($id));
+			$sql=sprintf("select * from `Customer Dimension` where `Customer Main Plain Email`=%s", prepare_mysql($id));
 		elseif ($tag=='old_id')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Old ID`=%s and `Customer Store Key`=%d",
 				prepare_mysql($id),
@@ -577,7 +588,7 @@ class Customer extends DB_Table {
 
 
 
-	function load($key='',$arg1=false) {
+	function load($key='', $arg1=false) {
 		switch ($key) {
 		case('contact_data'):
 		case('contact data'):
@@ -589,7 +600,7 @@ class Customer extends DB_Table {
 			break;
 		case('ship to'):
 
-			$sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ',$arg1);
+			$sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ', $arg1);
 
 			//  print $sql;
 			$result=mysql_query($sql);
@@ -606,7 +617,7 @@ class Customer extends DB_Table {
 	}
 
 
-	function create($raw_data,$args='') {
+	function create($raw_data, $args='') {
 
 
 		$main_telephone_key=false;
@@ -617,7 +628,7 @@ class Customer extends DB_Table {
 
 		$this->data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$this->data)) {
+			if (array_key_exists($key, $this->data)) {
 				$this->data[$key]=_trim($value);
 			}
 		}
@@ -647,17 +658,17 @@ class Customer extends DB_Table {
 		$keys='';
 		$values='';
 		foreach ($this->data as $key=>$value) {
-			if (preg_match('/Customer Main|Customer Company/i',$key))
+			if (preg_match('/Customer Main|Customer Company/i', $key))
 				continue;
 			$keys.=",`".$key."`";
 
-			if (preg_match('/Key$/',$key))
+			if (preg_match('/Key$/', $key))
 				$values.=','.prepare_mysql($value);
 			else
-				$values.=','.prepare_mysql($value,false);
+				$values.=','.prepare_mysql($value, false);
 		}
-		$values=preg_replace('/^,/','',$values);
-		$keys=preg_replace('/^,/','',$keys);
+		$values=preg_replace('/^,/', '', $values);
+		$keys=preg_replace('/^,/', '', $keys);
 
 
 
@@ -684,9 +695,9 @@ class Customer extends DB_Table {
 
 				if (!$this->data['Customer Company Key']) {
 					//print_r($raw_data);
-					$company=new company('find in customer fast create update',$raw_data);
+					$company=new company('find in customer fast create update', $raw_data);
 				} else {
-					$company=new company('id',$this->data['Customer Company Key']);
+					$company=new company('id', $this->data['Customer Company Key']);
 				}
 
 				// print_r($company);
@@ -707,9 +718,9 @@ class Customer extends DB_Table {
 
 				if (!$this->data['Customer Main Contact Key']) {
 
-					$contact=new contact('find in customer fast create update',$raw_data);
+					$contact=new contact('find in customer fast create update', $raw_data);
 				} else {
-					$contact=new contact('id',$this->data['Customer Main Contact Key']);
+					$contact=new contact('id', $this->data['Customer Main Contact Key']);
 					$contact->editor=$this->editor;
 				}
 
@@ -752,8 +763,8 @@ class Customer extends DB_Table {
 				$this->create_contact_address_bridge($address->id);
 
 
-				$address->update_parents_principal_telecom_keys('Telephone',($this->new?false:true));
-				$address->update_parents_principal_telecom_keys('FAX',($this->new?false:true));
+				$address->update_parents_principal_telecom_keys('Telephone', ($this->new?false:true));
+				$address->update_parents_principal_telecom_keys('FAX', ($this->new?false:true));
 
 
 
@@ -791,13 +802,13 @@ class Customer extends DB_Table {
 				$address->new=true;
 
 				$this->create_contact_address_bridge($address->id);
-				$address->update_parents_principal_telecom_keys('Telephone',($this->new?false:true));
-				$address->update_parents_principal_telecom_keys('FAX',($this->new?false:true));
+				$address->update_parents_principal_telecom_keys('Telephone', ($this->new?false:true));
+				$address->update_parents_principal_telecom_keys('FAX', ($this->new?false:true));
 
 
-				$address->update_parents(false,($this->new?false:true));
+				$address->update_parents(false, ($this->new?false:true));
 
-				$this->get_data('id',$this->id);
+				$this->get_data('id', $this->id);
 
 
 				//  exit;
@@ -835,7 +846,7 @@ class Customer extends DB_Table {
 
 			}
 
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 
 			$this->data['Customer Billing Address Link']='Contact';
 
@@ -846,7 +857,7 @@ class Customer extends DB_Table {
 			$this->create_billing_address_bridge($address->id);
 			$this->create_delivery_address_bridge($address->id);
 
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 
 
 
@@ -869,7 +880,7 @@ class Customer extends DB_Table {
 		//print_r ($raw_data);
 		foreach ($raw_data as $key=>$value) {
 			foreach ($new_subject as $field) {
-				if (strcmp($field['custom_field_name'],$key)==0) {
+				if (strcmp($field['custom_field_name'], $key)==0) {
 					$keys.=",`".$key."`";
 					$values.=','.prepare_mysql($value);
 				}
@@ -911,7 +922,7 @@ class Customer extends DB_Table {
 
 
 		foreach ($raw_data as $key=>$val) {
-			if (array_key_exists($key,$address_data))
+			if (array_key_exists($key, $address_data))
 				$address_data[$key]=$val;
 
 		}
@@ -921,10 +932,10 @@ class Customer extends DB_Table {
 
 
 
-		$contact=new Contact('create anonymous',$raw_data,'from customer');
+		$contact=new Contact('create anonymous', $raw_data, 'from customer');
 		$data=$contact->data;
 		foreach ($data as $key=>$value) {
-			$data[preg_replace('/Contact/','Customer',$key)]=$value;
+			$data[preg_replace('/Contact/', 'Customer', $key)]=$value;
 		}
 		$data['Customer Main Address Key']=$anon_address->id;
 		$data['Customer Billing Address Key']=$anon_address->id;
@@ -939,8 +950,8 @@ class Customer extends DB_Table {
 		$data['Customer Main Town']=$anon_address->data['Address Town'];
 		$data['Customer Main Postal Code']=$anon_address->data['Address Postal Code'];
 		$data['Customer Main Country First Division']=$anon_address->data['Address Country First Division'];
-		$data['Customer Main XHTML Address']=$anon_address->display('html',$locale);
-		$data['Customer Main Plain Address']=$anon_address->display('plain',$locale);
+		$data['Customer Main XHTML Address']=$anon_address->display('html', $locale);
+		$data['Customer Main Plain Address']=$anon_address->display('plain', $locale);
 
 		$data['Customer Staff Key']=0;
 		$data['Customer Main Contact Key']=$contact->id;
@@ -950,7 +961,7 @@ class Customer extends DB_Table {
 
 		$this->data=$this->base_data();
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$this->data)) {
+			if (array_key_exists($key, $this->data)) {
 				$this->data[$key]=_trim($value);
 			}
 		}
@@ -960,20 +971,20 @@ class Customer extends DB_Table {
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
 
-			if (preg_match('/Key$/',$key))
+			if (preg_match('/Key$/', $key))
 				$values.=','.prepare_mysql($value);
 			else
-				$values.=','.prepare_mysql($value,false);
+				$values.=','.prepare_mysql($value, false);
 		}
-		$values=preg_replace('/^,/','',$values);
-		$keys=preg_replace('/^,/','',$keys);
+		$values=preg_replace('/^,/', '', $values);
+		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Customer Dimension` ($keys) values ($values)";
 
 		if (mysql_query($sql)) {
 
 			$this->id=mysql_insert_id();
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			$this->fuzzy=true;
 			$history_data=array(
 				'History Abstract'=>_('Anonymous Customer Created'),
@@ -988,7 +999,8 @@ class Customer extends DB_Table {
 		}
 	}
 
-	function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false) {
+
+	function associate_ship_to_key($ship_to_key, $date, $current_ship_to=false) {
 
 		if (!$date or $date=='' or $date='0000-00-00 00:00:00') {
 			$date=gmdate('Y-m-d H:i:s');
@@ -1001,7 +1013,7 @@ class Customer extends DB_Table {
 			$current_ship_to=$ship_to_key;
 		}
 
-		$sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
+		$sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d', $this->id, $ship_to_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
@@ -1039,12 +1051,13 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_ship_to($data) {
 
 		$ship_to_key=$data['Ship To Key'];
 		$current_ship_to=$data['Current Ship To Is Other Key'];
 
-		$this->associate_ship_to_key($ship_to_key,$data['Date'],$current_ship_to);
+		$this->associate_ship_to_key($ship_to_key, $data['Date'], $current_ship_to);
 		$sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
 			$current_ship_to,
 			$this->id
@@ -1056,8 +1069,9 @@ class Customer extends DB_Table {
 		$this->update_ship_to_stats();
 	}
 
+
 	function update_last_ship_to_key() {
-		$sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Customer Key`=%d  order by `Ship To Last Used` desc  ',$this->id);
+		$sql=sprintf('select `Ship To Key`  from  `Customer Ship To Bridge` where `Customer Key`=%d  order by `Ship To Last Used` desc  ', $this->id);
 		$res2=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res2)) {
 			$sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%s where `Customer Key`=%d",
@@ -1070,11 +1084,12 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_ship_to_stats() {
 
 		$total_active_ship_to=0;
 		$total_ship_to=0;
-		$sql=sprintf('select sum(if(`Ship To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Ship To Bridge` where `Customer Key`=%d ',$this->id);
+		$sql=sprintf('select sum(if(`Ship To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Ship To Bridge` where `Customer Key`=%d ', $this->id);
 		$res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2)) {
 			$total_active_ship_to=$row2['active'];
@@ -1082,16 +1097,16 @@ class Customer extends DB_Table {
 		}
 		$sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
 
-			,$total_active_ship_to
-			,$total_ship_to
-			,$this->id
+			, $total_active_ship_to
+			, $total_ship_to
+			, $this->id
 		);
 		mysql_query($sql);
 	}
 
 
 
-	function associate_billing_to_key($billing_to_key,$date,$current_billing_to=false) {
+	function associate_billing_to_key($billing_to_key, $date, $current_billing_to=false) {
 
 		if (!$date or $date=='' or $date='0000-00-00 00:00:00') {
 			$date=gmdate('Y-m-d H:i:s');
@@ -1105,7 +1120,7 @@ class Customer extends DB_Table {
 			$current_billing_to=$billing_to_key;
 		}
 
-		$sql=sprintf('select * from `Customer Billing To Bridge` where `Customer Key`=%d and `Billing To Key`=%d',$this->id,$billing_to_key);
+		$sql=sprintf('select * from `Customer Billing To Bridge` where `Customer Key`=%d and `Billing To Key`=%d', $this->id, $billing_to_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
@@ -1143,12 +1158,13 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_billing_to($data) {
 
 		$billing_to_key=$data['Billing To Key'];
 		$current_billing_to=$data['Current Billing To Is Other Key'];
 
-		$this->associate_billing_to_key($billing_to_key,$data['Date'],$current_billing_to);
+		$this->associate_billing_to_key($billing_to_key, $data['Date'], $current_billing_to);
 		$sql=sprintf("update `Customer Dimension` set `Customer Last Billing To Key`=%d where `Customer Key`=%d",
 			$current_billing_to,
 			$this->id
@@ -1160,8 +1176,9 @@ class Customer extends DB_Table {
 		$this->update_billing_to_stats();
 	}
 
+
 	function update_last_billing_to_key() {
-		$sql=sprintf('select `Billing To Key`  from  `Customer Billing To Bridge` where `Customer Key`=%d  order by `Billing To Last Used` desc  ',$this->id);
+		$sql=sprintf('select `Billing To Key`  from  `Customer Billing To Bridge` where `Customer Key`=%d  order by `Billing To Last Used` desc  ', $this->id);
 		$res2=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res2)) {
 			$sql=sprintf("update `Customer Dimension` set `Customer Last Billing To Key`=%s where `Customer Key`=%d",
@@ -1174,11 +1191,12 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_billing_to_stats() {
 
 		$total_active_billing_to=0;
 		$total_billing_to=0;
-		$sql=sprintf('select sum(if(`Billing To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Billing To Bridge` where `Customer Key`=%d ',$this->id);
+		$sql=sprintf('select sum(if(`Billing To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Billing To Bridge` where `Customer Key`=%d ', $this->id);
 		$res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2)) {
 			$total_active_billing_to=$row2['active'];
@@ -1186,16 +1204,16 @@ class Customer extends DB_Table {
 		}
 		$sql=sprintf("update `Customer Dimension` set `Customer Active Billing To Records`=%d,`Customer Total Billing To Records`=%d where `Customer Key`=%d"
 
-			,$total_active_billing_to
-			,$total_billing_to
-			,$this->id
+			, $total_active_billing_to
+			, $total_billing_to
+			, $this->id
 		);
 		mysql_query($sql);
 	}
 
 
 
-	function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field, $value, $options='') {
 
 		//print ": $field,$value";
 
@@ -1203,9 +1221,9 @@ class Customer extends DB_Table {
 		if (is_string($value))
 			$value=_trim($value);
 
-		if (preg_match('/^custom_field_/i',$field)) {
+		if (preg_match('/^custom_field_/i', $field)) {
 			//$field=preg_replace('/^custom_field_/','',$field);
-			$this->update_field($field,$value,$options);
+			$this->update_field($field, $value, $options);
 
 
 			return;
@@ -1233,10 +1251,10 @@ class Customer extends DB_Table {
 		case('Customer Main Email Key'):
 			break;
 		case('Customer Sticky Note'):
-			$this->update_field_switcher('Sticky Note',$value);
+			$this->update_field_switcher('Sticky Note', $value);
 			break;
 		case('Sticky Note'):
-			$this->update_field('Customer '.$field,$value,'no_null');
+			$this->update_field('Customer '.$field, $value, 'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
 			break;
 		case('Note'):
@@ -1255,11 +1273,11 @@ class Customer extends DB_Table {
 		case('Customer Main Plain FAX'):
 
 
-			$value=preg_replace("/[^0-9]/",'',$value);
+			$value=preg_replace("/[^0-9]/", '', $value);
 
 			$old_value=$this->data[$field];
 			//print "$old_value New $value\n";
-			if (strcmp($old_value,$value)) {
+			if (strcmp($old_value, $value)) {
 
 
 
@@ -1275,7 +1293,7 @@ class Customer extends DB_Table {
 				$telephone_data['editor']=$this->editor;
 				$telephone_data['Telecom Raw Number']=$value;
 				$telephone_data['Telecom Type']=$type;
-				$telephone=new Telecom("find fast create",$telephone_data);
+				$telephone=new Telecom("find fast create", $telephone_data);
 
 
 				if ($telephone->id) {
@@ -1289,13 +1307,13 @@ class Customer extends DB_Table {
 				if ($field=='Customer Main Plain Telephone') {
 					$type='Telephone';
 
-					$this->remove_principal_telephone($save_history,$swap_principal);
+					$this->remove_principal_telephone($save_history, $swap_principal);
 
 
 
 
 				}else {
-					$this->remove_principal_fax($save_history,$swap_principal);
+					$this->remove_principal_fax($save_history, $swap_principal);
 					$type='FAX';
 				}
 
@@ -1311,7 +1329,7 @@ class Customer extends DB_Table {
 					$customers_with_this_telephone=$telephone->get_customer_keys();
 					//print_r($customers_with_this_telephone);
 					//exit;
-					if (in_array($this->id,$customers_with_this_telephone)) {
+					if (in_array($this->id, $customers_with_this_telephone)) {
 						$this->msg=_('The customer already has this number');
 						$this->error=true;
 						$this->warning_messages[]=$this->msg;
@@ -1325,27 +1343,27 @@ class Customer extends DB_Table {
 					$address->editor=$this->editor;
 
 
-					$address->disassociate_telecom($this->data["Customer Main $type Key"],$type,$swap_principal=false);
+					$address->disassociate_telecom($this->data["Customer Main $type Key"], $type, $swap_principal=false);
 
 
 
 
-					$address->associate_telecom($telephone->id,$type,$swap_principal);
+					$address->associate_telecom($telephone->id, $type, $swap_principal);
 
 
 
-					$address->update_principal_telecom($telephone->id,$type,$old_value);
+					$address->update_principal_telecom($telephone->id, $type, $old_value);
 
 
 
-					$address->associate_telecom_to_parents($type,'Customer',$this->id,$telephone->id);
+					$address->associate_telecom_to_parents($type, 'Customer', $this->id, $telephone->id);
 
-					$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telephone->id);
+					$address->associate_telecom_to_parents($type, 'Contact', $this->data['Customer Main Contact Key'], $telephone->id);
 
 
 					if ($this->data['Customer Company Key']) {
 						// print "x3";
-						$address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telephone->id);
+						$address->associate_telecom_to_parents($type, 'Company', $this->data['Customer Company Key'], $telephone->id);
 
 					}
 					// print "x4";
@@ -1374,7 +1392,7 @@ class Customer extends DB_Table {
 
 			break;
 		case('Customer Main Plain Mobile'):
-			$value=preg_replace("/[^0-9]/",'',$value);
+			$value=preg_replace("/[^0-9]/", '', $value);
 
 			$old_value=$this->data['Customer Main Plain Mobile'];
 			if ($old_value!=$value) {
@@ -1386,7 +1404,7 @@ class Customer extends DB_Table {
 					$telephone_data['editor']=$this->editor;
 					$telephone_data['Telecom Raw Number']=$value;
 					$telephone_data['Telecom Type']=$type;
-					$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+					$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'], $telephone_data);
 
 					if ($proposed_telephone->id) {
 
@@ -1397,7 +1415,7 @@ class Customer extends DB_Table {
 						// print_r($customers_with_this_number);
 
 
-						if (in_array($this->id,$customers_with_this_number)) {
+						if (in_array($this->id, $customers_with_this_number)) {
 
 							$this->error=true;
 							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('These customer already has this number');
@@ -1429,18 +1447,18 @@ class Customer extends DB_Table {
 						}
 					}
 					$contact=new Contact($this->data['Customer Main Contact Key']);
-					$contact-> update_field_switcher('Add Other Mobile',$value);
+					$contact-> update_field_switcher('Add Other Mobile', $value);
 					$new_princial_key=$contact->other_mobile_key;
 					$telecom=new Telecom($new_princial_key);
 
 
 					if ($telecom->id) {
 						//print "x1";
-						$contact->associate_mobile_to_parents('Customer',$this->id,$telecom->id);
+						$contact->associate_mobile_to_parents('Customer', $this->id, $telecom->id);
 						// print "x2";
 						if ($this->data['Customer Company Key']) {
 							// print "x3";
-							$contact->associate_mobile_to_parents('Company',$this->data['Customer Company Key'],$telecom->id,false);
+							$contact->associate_mobile_to_parents('Company', $this->data['Customer Company Key'], $telecom->id, false);
 						}
 						// print "x4";
 						$telecom->update_parents();
@@ -1465,28 +1483,28 @@ class Customer extends DB_Table {
 
 
 		case('Add Other Mobile'):
-			$value=preg_replace("/[^0-9]/",'',$value);
-			$this->add_other_telecom('Mobile',$value);
+			$value=preg_replace("/[^0-9]/", '', $value);
+			$this->add_other_telecom('Mobile', $value);
 			break;
 
 		case('Add Other FAX'):
-			$value=preg_replace("/[^0-9]/",'',$value);
-			$this->add_other_telecom('FAX',$value);
+			$value=preg_replace("/[^0-9]/", '', $value);
+			$this->add_other_telecom('FAX', $value);
 			break;
 		case('Add Other Telephone'):
-			$value=preg_replace("/[^0-9]/",'',$value);
-			$this->add_other_telecom('Telephone',$value);
+			$value=preg_replace("/[^0-9]/", '', $value);
+			$this->add_other_telecom('Telephone', $value);
 			break;
 		case('Add Other Email'):
 
 			if ($value=='') {
 				return;
 			}
-			$email=new Email('email',$value);
+			$email=new Email('email', $value);
 			if ($email->id) {
 				$customers_with_this_email=$email->get_customer_keys();
 
-				if (in_array($this->id,$customers_with_this_email)) {
+				if (in_array($this->id, $customers_with_this_email)) {
 					$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
 					$this->error=true;
 
@@ -1509,7 +1527,7 @@ class Customer extends DB_Table {
 			}
 
 			$contact=new Contact($this->data['Customer Main Contact Key']);
-			$contact-> update_field_switcher('Add Other Email',$value);
+			$contact-> update_field_switcher('Add Other Email', $value);
 			$this->updated=$contact->updated;
 			$this->msg=$contact->msg;
 			$this->new_value=$contact->new_value;
@@ -1517,9 +1535,9 @@ class Customer extends DB_Table {
 			if ($email_key=$contact->other_email_key) {
 
 				if ($this->data['Customer Company Key']) {
-					$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
+					$contact->associate_email_to_parents('Company', $this->data['Customer Company Key'], $email_key, false);
 				}
-				$contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
+				$contact->associate_email_to_parents('Customer', $this->id, $email_key, false);
 
 
 				$abstract=_('Email associated').' ('.$value.')';
@@ -1564,7 +1582,7 @@ class Customer extends DB_Table {
 				$this->remove_principal_email();
 				if ($value!='') {
 
-					$email = new Email('email',$value);
+					$email = new Email('email', $value);
 
 					//print_r($email);
 
@@ -1573,7 +1591,7 @@ class Customer extends DB_Table {
 
 						$customers_with_this_email=$email->get_customer_keys();
 						// Check if email already in this customer an return
-						if (in_array($this->id,$customers_with_this_email)) {
+						if (in_array($this->id, $customers_with_this_email)) {
 
 							$this->error=true;
 							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
@@ -1602,7 +1620,7 @@ class Customer extends DB_Table {
 
 
 					$contact=new Contact($this->data['Customer Main Contact Key']);
-					$contact->update_field_switcher('Add Other Email',$value);
+					$contact->update_field_switcher('Add Other Email', $value);
 
 
 
@@ -1613,11 +1631,11 @@ class Customer extends DB_Table {
 
 					if ($email->id) {
 
-						$contact->associate_email_to_parents('Customer',$this->id,$email->id);
+						$contact->associate_email_to_parents('Customer', $this->id, $email->id);
 						if ($this->data['Customer Company Key']) {
-							$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
+							$contact->associate_email_to_parents('Company', $this->data['Customer Company Key'], $email->id, false);
 						}
-						$email->update_parents(true,$old_value);
+						$email->update_parents(true, $old_value);
 						$this->updated=1;
 						$this->msg=_('Email updated');
 						$this->new_value=$email->data['Email'];
@@ -1644,9 +1662,9 @@ class Customer extends DB_Table {
 		default:
 			$base_data=$this->base_data();
 			//print_r($base_data);
-			if (array_key_exists($field,$base_data)) {
+			if (array_key_exists($field, $base_data)) {
 				if ($value!=$this->data[$field]) {
-					$this->update_field($field,$value,$options);
+					$this->update_field($field, $value, $options);
 				}
 			}
 		}
@@ -1654,8 +1672,8 @@ class Customer extends DB_Table {
 
 
 
-	function update_other_email_label($email_key,$label) {
-		if (!array_key_exists($email_key,$this->get_email_keys())) {
+	function update_other_email_label($email_key, $label) {
+		if (!array_key_exists($email_key, $this->get_email_keys())) {
 			$this->error=true;
 			$this->msg=_('Email not associated with customer');
 			return;
@@ -1676,11 +1694,12 @@ class Customer extends DB_Table {
 
 	}
 
-	function update_other_email($email_key,$value) {
+
+	function update_other_email($email_key, $value) {
 
 
 
-		if (!array_key_exists($email_key,$this->get_other_emails_data())) {
+		if (!array_key_exists($email_key, $this->get_other_emails_data())) {
 			$this->error=true;
 			$this->msg=_('Email not associated with customer');
 			return;
@@ -1698,7 +1717,7 @@ class Customer extends DB_Table {
 			$email_data['editor']=$this->editor;
 
 
-			$email=new Email('find',$email_data);
+			$email=new Email('find', $email_data);
 
 
 
@@ -1734,10 +1753,10 @@ class Customer extends DB_Table {
 				if ($email_key=$contact->other_email_key) {
 
 					if ($this->data['Customer Company Key']) {
-						$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
+						$contact->associate_email_to_parents('Company', $this->data['Customer Company Key'], $email_key, false);
 
 					}
-					$contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
+					$contact->associate_email_to_parents('Customer', $this->id, $email_key, false);
 
 				}
 
@@ -1811,23 +1830,28 @@ class Customer extends DB_Table {
 
 	}
 
-	function update_other_fax($telecom_key,$value) {
-		return $this->update_other_telecom('FAX',$telecom_key,$value);
-	}
-	function update_other_mobile($telecom_key,$value) {
-		return $this->update_other_telecom('Mobile',$telecom_key,$value);
-	}
-	function update_other_telephone($telecom_key,$value) {
-		return $this->update_other_telecom('Telephone',$telecom_key,$value);
+
+	function update_other_fax($telecom_key, $value) {
+		return $this->update_other_telecom('FAX', $telecom_key, $value);
 	}
 
 
+	function update_other_mobile($telecom_key, $value) {
+		return $this->update_other_telecom('Mobile', $telecom_key, $value);
+	}
+
+
+	function update_other_telephone($telecom_key, $value) {
+		return $this->update_other_telecom('Telephone', $telecom_key, $value);
+	}
 
 
 
 
-	function update_other_telecom_label($type,$telecom_key,$label) {
-		if (!array_key_exists($telecom_key,$this->get_telecom_keys($type))) {
+
+
+	function update_other_telecom_label($type, $telecom_key, $label) {
+		if (!array_key_exists($telecom_key, $this->get_telecom_keys($type))) {
 			$this->error=true;
 			$this->msg=_('Telecom not associated with customer');
 			return;
@@ -1849,9 +1873,9 @@ class Customer extends DB_Table {
 	}
 
 
-	function update_other_telecom($type,$telecom_key,$value) {
+	function update_other_telecom($type, $telecom_key, $value) {
 
-		if (!array_key_exists($telecom_key,$this->get_other_telecoms_data($type))) {
+		if (!array_key_exists($telecom_key, $this->get_other_telecoms_data($type))) {
 			$this->error=true;
 			$this->msg=_('Telecom not associated with customer');
 			return;
@@ -1859,10 +1883,10 @@ class Customer extends DB_Table {
 
 		if ($value=='') {
 			//print $telecom_key;//fax67795;fax67796
-			$this->remove_telecom($type,$telecom_key);
+			$this->remove_telecom($type, $telecom_key);
 
 		} else {
-			$this->add_other_telecom($type,$value,$telecom_key);
+			$this->add_other_telecom($type, $value, $telecom_key);
 
 		}
 
@@ -1875,7 +1899,7 @@ class Customer extends DB_Table {
 
 
 
-	function add_other_telecom($type='Telephone',$value,$telecom_key_to_replace=0) {
+	function add_other_telecom($type='Telephone', $value, $telecom_key_to_replace=0) {
 
 		if ($value=='') {
 			return;
@@ -1885,13 +1909,13 @@ class Customer extends DB_Table {
 		$telephone_data['editor']=$this->editor;
 		$telephone_data['Telecom Raw Number']=$value;
 		$telephone_data['Telecom Type']=$type;
-		$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+		$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'], $telephone_data);
 		//$proposed_telephone=new Telecom('new',$telephone_data);
 
 		if ($proposed_telephone->id) {
 			$customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
-			if (in_array($this->id,$customers_with_this_telephone)) {
+			if (in_array($this->id, $customers_with_this_telephone)) {
 				$this->msg=_('This customer already has this number');
 				$this->error=true;
 
@@ -1919,11 +1943,11 @@ class Customer extends DB_Table {
 		$telecom_to_replace=new Telecom($telecom_key_to_replace);
 		$old_value=$telecom_to_replace->display('xhtml');
 
-		$this->remove_telecom($type,$telecom_key_to_replace,$save_history=false);
+		$this->remove_telecom($type, $telecom_key_to_replace, $save_history=false);
 
 		if ($type=='Mobile') {
 			$contact=new Contact($this->data['Customer Main Contact Key']);
-			$contact->update_field_switcher('Add Other Mobile',$value);
+			$contact->update_field_switcher('Add Other Mobile', $value);
 			$this->updated=$contact->updated;
 			$this->msg=$contact->msg;
 			$this->new_value=$contact->new_value;
@@ -1931,7 +1955,7 @@ class Customer extends DB_Table {
 			if ($telecom_key=$contact->other_mobile_key) {
 
 
-				$contact->associate_mobile_to_parents('Customer',$this->id,$telecom_key,$set_as_main=false);
+				$contact->associate_mobile_to_parents('Customer', $this->id, $telecom_key, $set_as_main=false);
 				// $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
 
 				$new_telecom=new Telecom($telecom_key);
@@ -1950,10 +1974,10 @@ class Customer extends DB_Table {
 
 
 			if ($type=='Telephone') {
-				$address->add_other_telecom('Telephone',$value,$old_value);
+				$address->add_other_telecom('Telephone', $value, $old_value);
 			}else {
 
-				$address->add_other_telecom('FAX',$value,$old_value);
+				$address->add_other_telecom('FAX', $value, $old_value);
 			}
 
 
@@ -1964,10 +1988,10 @@ class Customer extends DB_Table {
 			if ($telecom_key=$address->other_telecom_key) {
 
 				if ($this->data['Customer Company Key']) {
-					$address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telecom_key,$set_as_main=false);
+					$address->associate_telecom_to_parents($type, 'Company', $this->data['Customer Company Key'], $telecom_key, $set_as_main=false);
 				}
-				$address->associate_telecom_to_parents($type,'Customer',$this->id,$telecom_key,$set_as_main=false);
-				$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,$set_as_main=false);
+				$address->associate_telecom_to_parents($type, 'Customer', $this->id, $telecom_key, $set_as_main=false);
+				$address->associate_telecom_to_parents($type, 'Contact', $this->data['Customer Main Contact Key'], $telecom_key, $set_as_main=false);
 
 				$new_telecom=new Telecom($telecom_key);
 				$new_telecom->editor=$this->editor;
@@ -1994,7 +2018,7 @@ class Customer extends DB_Table {
 
 
 
-	function update_name($value,$options='') {
+	function update_name($value, $options='') {
 		if ($value=='') {
 			$this->error=true;
 			$this->msg=_('Invalid Customer Name');
@@ -2002,25 +2026,27 @@ class Customer extends DB_Table {
 		}
 
 		$field='Customer Name';
-		$this->update_field($field,$value,$options);
+		$this->update_field($field, $value, $options);
 		$this->update_postal_address();
 
 	}
-	function update_file_as($value,$options='') {
+
+
+	function update_file_as($value, $options='') {
 		$field='Customer File As';
-		$this->update_field($field,$value,$options.' nohistory');
+		$this->update_field($field, $value, $options.' nohistory');
 
 	}
 
 
-	function update_main_contact_name($value,$options='') {
+	function update_main_contact_name($value, $options='') {
 		if ($value=='') {
 			$this->error=true;
 			$this->msg=_('Invalid Customer Contact Name');
 			return;
 		}
 		$field='Customer Main Contact Name';
-		$this->update_field($field,$value,$options);
+		$this->update_field($field, $value, $options);
 		$this->update_postal_address();
 	}
 
@@ -2102,8 +2128,8 @@ class Customer extends DB_Table {
 
 		if ($this->data['Customer Type']=='Company') {
 			$sql=sprintf("select `Is Active` from `Contact Bridge` where `Subject`='Company' and `Subjet Key`=%d and `Contact Key`=%d "
-				,$this->data['Customer Comapany Key']
-				,$contact->id
+				, $this->data['Customer Comapany Key']
+				, $contact->id
 			);
 			$res=mysql_query($sql);
 			$number=mysql_num_rows($res);
@@ -2121,9 +2147,9 @@ class Customer extends DB_Table {
 		$old_value=$this->data['Customer Main Contact Name'];
 		$old_contact=new Contact ($this->data['Customer Main Contact Key']);
 		$sql=sprintf("update `Customer Dimension` set `Customer Main Contact Key`=%d ,`Customer Main Contact Name`=%s where `Customer Key`=%d"
-			,$contact->id
-			,prepare_mysql($contact->display('name'))
-			,$this->id
+			, $contact->id
+			, prepare_mysql($contact->display('name'))
+			, $this->id
 		);
 
 		mysql_query($sql);
@@ -2157,8 +2183,8 @@ class Customer extends DB_Table {
 			$this->msg_updated=$details;
 			$history_data=array(
 				'Indirect Object'=>$field
-				,'History Details'=>$details
-				,'History Abstract'=>$note
+				, 'History Details'=>$details
+				, 'History Abstract'=>$note
 			);
 			$this->add_subject_history($history_data);
 		}
@@ -2222,18 +2248,18 @@ class Customer extends DB_Table {
 				$this->data['Customer Name']=$contact->display('name');
 				$this->data['Customer File As']=$contact->data['Contact File As'];
 				$sql=sprintf("update `Customer Dimension` set `Customer Name`=%s,`Customer File As`=%s where `Customer Key`=%d"
-					,prepare_mysql($this->data['Customer Name'])
-					,prepare_mysql($this->data['Customer File As'])
-					,$this->id
+					, prepare_mysql($this->data['Customer Name'])
+					, prepare_mysql($this->data['Customer File As'])
+					, $this->id
 				);
 				mysql_query($sql);
 				$note=_('Contact name changed');
 				$details=_('Customer Name changed from')." \"".$old_customer_name."\" "._('to')." \"".$this->data['Customer Name']."\"";
 				$history_data=array(
 					'Indirect Object'=>'Customer Name'
-					,'History Details'=>$details
-					,'History Abstract'=>$note
-					,'Action'=>'edited'
+					, 'History Details'=>$details
+					, 'History Abstract'=>$note
+					, 'Action'=>'edited'
 				);
 				$this->add_subject_history($history_data);
 
@@ -2243,9 +2269,9 @@ class Customer extends DB_Table {
 			$this->data['Customer Main Contact Name']=$contact->display('name');
 			$sql=sprintf("update `Customer Dimension` set `Customer Main Contact Key`=%d,`Customer Main Contact Name`=%s where `Customer Key`=%d"
 
-				,$this->data['Customer Main Contact Key']
-				,prepare_mysql($this->data['Customer Main Contact Name'])
-				,$this->id
+				, $this->data['Customer Main Contact Key']
+				, prepare_mysql($this->data['Customer Main Contact Name'])
+				, $this->id
 			);
 			mysql_query($sql);
 
@@ -2281,15 +2307,16 @@ class Customer extends DB_Table {
 			$details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
 			$history_data=array(
 				'Indirect Object'=>'Customer Name'
-				,'History Details'=>$details
-				,'History Abstract'=>$note
-				,'Action'=>'edited',
+				, 'History Details'=>$details
+				, 'History Abstract'=>$note
+				, 'Action'=>'edited',
 				'Deep'=>2
 			);
-			$this->add_subject_history($history_data,true);
+			$this->add_subject_history($history_data, true);
 		}
 
 	}
+
 
 	function update_company($company_key=false) {
 
@@ -2339,18 +2366,18 @@ class Customer extends DB_Table {
 				$this->data['Customer Name']=$company->data['Company Name'];
 				$this->data['Customer File As']=$company->data['Company File As'];
 				$sql=sprintf("update `Customer Dimension` set `Customer Main Name`=%d,`Customer File As`=%s where `Customer Key`=%d"
-					,prepare_mysql($this->data['Customer Name'])
-					,prepare_mysql($this->data['Customer File As'])
-					,$this->id
+					, prepare_mysql($this->data['Customer Name'])
+					, prepare_mysql($this->data['Customer File As'])
+					, $this->id
 				);
 				mysql_query($sql);
 				$note=_('Company name changed');
 				$details=_('Customer Name changed from')." \"".$old_customer_name."\" "._('to')." \"".$this->data['Customer Name']."\"";
 				$history_data=array(
 					'Indirect Object'=>'Customer Name'
-					,'History Details'=>$details
-					,'History Abstract'=>$note
-					,'Action'=>'edited'
+					, 'History Details'=>$details
+					, 'History Abstract'=>$note
+					, 'Action'=>'edited'
 				);
 				$this->add_subject_history($history_data);
 
@@ -2360,9 +2387,9 @@ class Customer extends DB_Table {
 			$this->data['Customer Company Name']=$company->data['Company Name'];
 			$sql=sprintf("update `Customer Dimension` set `Customer Company Key`=%d,`Customer Company Name`=%s where `Customer Key`=%d"
 
-				,$this->data['Customer Company Key']
-				,prepare_mysql($this->data['Customer Company Name'])
-				,$this->id
+				, $this->data['Customer Company Key']
+				, prepare_mysql($this->data['Customer Company Name'])
+				, $this->id
 			);
 			mysql_query($sql);
 
@@ -2385,9 +2412,9 @@ class Customer extends DB_Table {
 			$history_data=array(
 				'Indirect Object'=>'Customer Company Name'
 
-				,'History Details'=>$details
-				,'History Abstract'=>$note
-				,'Action'=>'edited'
+				, 'History Details'=>$details
+				, 'History Abstract'=>$note
+				, 'Action'=>'edited'
 			);
 			//$this->add_subject_history($history_data);
 
@@ -2399,12 +2426,12 @@ class Customer extends DB_Table {
 			$details=_('Company')." ".$company->data['Company Name']." (".$company->get_formated_id_link().") "._('associated with Customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
 			$history_data=array(
 				'Indirect Object'=>'Customer Name'
-				,'History Details'=>$details
-				,'History Abstract'=>$note
-				,'Action'=>'edited',
+				, 'History Details'=>$details
+				, 'History Abstract'=>$note
+				, 'Action'=>'edited',
 				'Deep'=>2
 			);
-			$this->add_subject_history($history_data,true);
+			$this->add_subject_history($history_data, true);
 		}
 
 		$this->update_contact($company->data['Company Main Contact Key']);
@@ -2421,19 +2448,19 @@ class Customer extends DB_Table {
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$first_order_date=date('U',strtotime($row['date']));
+			$first_order_date=date('U', strtotime($row['date']));
 			if ($row['date']!=''
 				and (
 					$this->data['Customer First Contacted Date']==''
-					or ( gmdate('U',strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
+					or ( gmdate('U', strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
 				)
 			) {
 
 				//print $this->data['Customer First Contacted Date']." ->  ".$row['date']."\n";
 
 				$sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s  where `Customer Key`=%d"
-					,prepare_mysql($row['date'])
-					,$this->id
+					, prepare_mysql($row['date'])
+					, $this->id
 				);
 				mysql_query($sql);
 			}
@@ -2475,7 +2502,7 @@ class Customer extends DB_Table {
 			}
 
 			//print "\n\n".$this->data['Customer First Contacted Date']." +".$this->data['Customer First Contacted Date']." seconds\n";
-			$this->data['Customer Lost Date']=gmdate('Y-m-d H:i:s',strtotime($this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"));
+			$this->data['Customer Lost Date']=gmdate('Y-m-d H:i:s', strtotime($this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"));
 		} else {
 
 
@@ -2509,10 +2536,10 @@ class Customer extends DB_Table {
 		}
 
 		$sql=sprintf("update `Customer Dimension` set `Customer Active`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s where `Customer Key`=%d"
-			,prepare_mysql($this->data['Customer Active'])
-			,prepare_mysql($this->data['Customer Type by Activity'])
-			,prepare_mysql($this->data['Customer Lost Date'])
-			,$this->id
+			, prepare_mysql($this->data['Customer Active'])
+			, prepare_mysql($this->data['Customer Type by Activity'])
+			, prepare_mysql($this->data['Customer Lost Date'])
+			, $this->id
 		);
 
 		//   print "\n $orders\n$sql\n";
@@ -2613,7 +2640,7 @@ class Customer extends DB_Table {
 			$intervals=array();
 			$result2=mysql_query($sql);
 			while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
-				$this_date=gmdate('U',strtotime($row2['date']));
+				$this_date=gmdate('U', strtotime($row2['date']));
 				if ($last_order) {
 					$intervals[]=($this_date-$last_date);
 				}
@@ -2701,28 +2728,28 @@ class Customer extends DB_Table {
 
 		$sql=sprintf("update `Customer Dimension` set `Customer Last Invoiced Dispatched Date`=%s,`Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  where `Customer Key`=%d",
 			prepare_mysql($this->data['Customer Last Invoiced Dispatched Date'])
-			,$this->data['Customer Net Balance']
-			,$this->data['Customer Orders']
-			,$this->data['Customer Orders Cancelled']
-			,$this->data['Customer Orders Invoiced']
-			,prepare_mysql($this->data['Customer First Order Date'])
-			,prepare_mysql($this->data['Customer Last Order Date'])
-			,prepare_mysql($this->data['Customer Order Interval'])
-			,prepare_mysql($this->data['Customer Order Interval STD'])
-			,$this->data['Customer Net Refunds']
-			,$this->data['Customer Net Payments']
-			,$this->data['Customer Outstanding Net Balance']
+			, $this->data['Customer Net Balance']
+			, $this->data['Customer Orders']
+			, $this->data['Customer Orders Cancelled']
+			, $this->data['Customer Orders Invoiced']
+			, prepare_mysql($this->data['Customer First Order Date'])
+			, prepare_mysql($this->data['Customer Last Order Date'])
+			, prepare_mysql($this->data['Customer Order Interval'])
+			, prepare_mysql($this->data['Customer Order Interval STD'])
+			, $this->data['Customer Net Refunds']
+			, $this->data['Customer Net Payments']
+			, $this->data['Customer Outstanding Net Balance']
 
-			,$this->data['Customer Tax Balance']
-			,$this->data['Customer Tax Refunds']
-			,$this->data['Customer Tax Payments']
-			,$this->data['Customer Outstanding Tax Balance']
+			, $this->data['Customer Tax Balance']
+			, $this->data['Customer Tax Refunds']
+			, $this->data['Customer Tax Payments']
+			, $this->data['Customer Outstanding Tax Balance']
 
-			,$this->data['Customer Profit']
-			,prepare_mysql($this->data['Customer With Orders'])
+			, $this->data['Customer Profit']
+			, prepare_mysql($this->data['Customer With Orders'])
 
 
-			,$this->id
+			, $this->id
 		);
 		mysql_query($sql);
 		//print "$sql\n\n";
@@ -2734,13 +2761,13 @@ class Customer extends DB_Table {
 
 
 
-	function updatex($values,$args='') {
+	function updatex($values, $args='') {
 		$res=array();
 		foreach ($values as $data) {
 
 			$key=$data['key'];
 			$value=$data['value'];
-			$res[$key]=array('ok'=>false,'msg'=>'');
+			$res[$key]=array('ok'=>false, 'msg'=>'');
 
 			switch ($key) {
 
@@ -2755,7 +2782,7 @@ class Customer extends DB_Table {
 			case('tax_number'):
 				$this->data['tax_number']=$value;
 				if ($value=='')
-					$this->update(array(array('key'=>'tax_number_valid','value'=>0)),'save');
+					$this->update(array(array('key'=>'tax_number_valid', 'value'=>0)), 'save');
 				break;
 			case('main_email'):
 				$main_email=new email($value);
@@ -2771,7 +2798,7 @@ class Customer extends DB_Table {
 
 
 			}
-			if (preg_match('/save/',$args)) {
+			if (preg_match('/save/', $args)) {
 				$this->save($key);
 			}
 
@@ -2781,7 +2808,7 @@ class Customer extends DB_Table {
 
 
 
-	function get($key,$arg1=false) {
+	function get($key, $arg1=false) {
 
 		if ($key=='Customer Tax Number' or $key=='Tax Number') {
 			return $this->get_tax_number();
@@ -2792,23 +2819,23 @@ class Customer extends DB_Table {
 		elseif ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
 			return $this->get_fiscal_name();
 		}
-		elseif (array_key_exists($key,$this->data)) {
+		elseif (array_key_exists($key, $this->data)) {
 			return $this->data[$key];
 		}
-		elseif (preg_match('/^contact /i',$key)) {
+		elseif (preg_match('/^contact /i', $key)) {
 			if (!$this->contact_data)
 				$this->load('contact data');
 			if (isset($this->contact_data[$key]))
 				return $this->contact_data[$key];
 		}
-		elseif (preg_match('/^ship to /i',$key)) {
+		elseif (preg_match('/^ship to /i', $key)) {
 			if (!$arg1)
 				$ship_to_key=$this->data['Customer Main Delivery Address Key'];
 			else
 				$ship_to_key=$arg1;
 			if (!$this->ship_to[$ship_to_key])
-				$this->load('ship to',$ship_to_key);
-			if (isset($this->ship_to[$ship_to_key])    and  array_key_exists($key,$this->ship_to[$ship_to_key]) )
+				$this->load('ship to', $ship_to_key);
+			if (isset($this->ship_to[$ship_to_key])    and  array_key_exists($key, $this->ship_to[$ship_to_key]) )
 				return $this->ship_to[$ship_to_key][$key];
 		}
 
@@ -2884,7 +2911,7 @@ class Customer extends DB_Table {
 			return number($this->data['Customer Orders']);
 			break;
 		case('Notes'):
-			$sql=sprintf("select count(*) as total from  `Customer History Bridge`     where `Customer Key`=%d and `Type`='Notes'  ",$this->id);
+			$sql=sprintf("select count(*) as total from  `Customer History Bridge`     where `Customer Key`=%d and `Type`='Notes'  ", $this->id);
 			$res=mysql_query($sql);
 			$notes=0;
 			if ($row=mysql_fetch_assoc($res)) {
@@ -2909,11 +2936,11 @@ class Customer extends DB_Table {
 			break;
 		case('Net Balance'):
 		case('Account Balance'):
-			return money($this->data['Customer '.$key],$this->data['Customer Currency Code']);
+			return money($this->data['Customer '.$key], $this->data['Customer Currency Code']);
 			break;
 		case('Total Net Per Order'):
 			if ($this->data['Customer Orders Invoiced']>0)
-				return money($this->data['Customer Net Balance']/$this->data['Customer Orders Invoiced'],$this->data['Customer Currency Code']);
+				return money($this->data['Customer Net Balance']/$this->data['Customer Orders Invoiced'], $this->data['Customer Currency Code']);
 			else
 				return _('ND');
 			break;
@@ -2928,10 +2955,10 @@ class Customer extends DB_Table {
 					$order_interval=$order_interval.' '._('weeks');
 
 			} else if ($order_interval=='')
-					$order_interval='';
-				else
-					$order_interval=round($order_interval).' '._('days');
-				return $order_interval;
+				$order_interval='';
+			else
+				$order_interval=round($order_interval).' '._('days');
+			return $order_interval;
 			break;
 
 		case('Tax Rate'):
@@ -3001,22 +3028,22 @@ class Customer extends DB_Table {
 
 		if (
 			$address->id!=$this->data['Customer Main Address Key']
-			or $address->display('xhtml',$locale)!=$this->data['Customer Main XHTML Address']
-			or $address->display('plain',$locale)!=$this->data['Customer Main Plain Address']
-			or $address->display('location',$locale)!=$this->data['Customer Main Location']      ) {
+			or $address->display('xhtml', $locale)!=$this->data['Customer Main XHTML Address']
+			or $address->display('plain', $locale)!=$this->data['Customer Main Plain Address']
+			or $address->display('location', $locale)!=$this->data['Customer Main Location']      ) {
 
 
 
 			$old_value=$this->data['Customer Main XHTML Address'];
 			$this->data['Customer Main Address Key']=$address->id;
-			$this->data['Customer Main XHTML Address']=$address->display('xhtml',$locale);
+			$this->data['Customer Main XHTML Address']=$address->display('xhtml', $locale);
 			$this->data['Customer Main Country Code']=$address->data['Address Country Code'];
 			$this->data['Customer Main Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
 
 
 
 			$this->data['Customer Main Country']=$address->data['Address Country Name'];
-			$this->data['Customer Main Location']=$address->display('location',$locale);
+			$this->data['Customer Main Location']=$address->display('location', $locale);
 			$this->data['Customer Main Town']=$address->data['Address Town'];
 			$this->data['Customer Main Postal Code']=$address->data['Address Postal Code'];
 			$this->data['Customer Main Country First Division']=$address->data['Address Country First Division'];
@@ -3024,19 +3051,19 @@ class Customer extends DB_Table {
 
 			$sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d,`Customer Main Plain Address`=%s,`Customer Main XHTML Address`=%s,`Customer Main Country`=%s,`Customer Main Location`=%s,`Customer Main Country Code`=%s,`Customer Main Country 2 Alpha Code`=%s,`Customer Main Town`=%s,`Customer Main Postal Code`=%s ,`Customer Main Country First Division`=%s    where `Customer Key`=%d"
 
-				,$this->data['Customer Main Address Key']
-				,prepare_mysql($this->data['Customer Main Plain Address'],false)
-				,prepare_mysql($this->data['Customer Main XHTML Address'])
-				,prepare_mysql($this->data['Customer Main Country'])
-				,prepare_mysql($this->data['Customer Main Location'])
-				,prepare_mysql($this->data['Customer Main Country Code'])
-				,prepare_mysql($this->data['Customer Main Country 2 Alpha Code'])
-				,prepare_mysql($this->data['Customer Main Town'])
-				,prepare_mysql($this->data['Customer Main Postal Code'])
-				,prepare_mysql($this->data['Customer Main Country First Division'])
+				, $this->data['Customer Main Address Key']
+				, prepare_mysql($this->data['Customer Main Plain Address'], false)
+				, prepare_mysql($this->data['Customer Main XHTML Address'])
+				, prepare_mysql($this->data['Customer Main Country'])
+				, prepare_mysql($this->data['Customer Main Location'])
+				, prepare_mysql($this->data['Customer Main Country Code'])
+				, prepare_mysql($this->data['Customer Main Country 2 Alpha Code'])
+				, prepare_mysql($this->data['Customer Main Town'])
+				, prepare_mysql($this->data['Customer Main Postal Code'])
+				, prepare_mysql($this->data['Customer Main Country First Division'])
 
 
-				,$this->id
+				, $this->id
 			);
 
 
@@ -3057,8 +3084,8 @@ class Customer extends DB_Table {
 
 				$history_data=array(
 					'Indirect Object'=>'Address'
-					,'History Details'=>$details
-					,'History Abstract'=>$note
+					, 'History Details'=>$details
+					, 'History Abstract'=>$note
 				);
 				$this->add_subject_history($history_data);
 
@@ -3074,20 +3101,21 @@ class Customer extends DB_Table {
 
 
 	function get_formated_id_link($customer_id_prefix='') {
-		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id($customer_id_prefix));
+		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>', $this->id, $this->get_formated_id($customer_id_prefix));
 
 	}
 
 
 
 	function get_formated_id($customer_id_prefix='') {
-		return sprintf("%s%04d",$customer_id_prefix, $this->id);
+		return sprintf("%s%04d", $customer_id_prefix, $this->id);
 	}
 
 
 	function update_custom_fields($id, $value) {
 		$this->update(array($id=>$value));
 	}
+
 
 	function update_fiscal_name($value) {
 		if ($this->data['Customer Type']=='Person') {
@@ -3106,8 +3134,9 @@ class Customer extends DB_Table {
 		$this->new_value=$subject->new_value;
 	}
 
+
 	function update_tax_number_valid($value) {
-		$this->update_field('Customer Tax Number Valid',$value);
+		$this->update_field('Customer Tax Number Valid', $value);
 		if ($this->updated) {
 
 			/* delete this
@@ -3134,7 +3163,7 @@ class Customer extends DB_Table {
 
 			//print "->$value<-  ->".$this->data['Customer Tax Number']."<-\n";
 
-			$this->update_field('Customer Tax Number',$value);
+			$this->update_field('Customer Tax Number', $value);
 			if ($this->updated) {
 				$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
 					$this->id
@@ -3182,6 +3211,7 @@ class Customer extends DB_Table {
 		$this->new_value=$subject->new_value;
 	}
 
+
 	function get_fiscal_name() {
 		if ($this->data['Customer Type']=='Person') {
 			$this->data['Customer Fiscal Name']=$this->data['Customer Name'];
@@ -3191,7 +3221,7 @@ class Customer extends DB_Table {
 			$subject_key=$this->data['Customer Company Key'];
 		}
 
-		$sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+		$sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ", $subject_key);
 		$res=mysql_query($sql);
 
 		if ($row=mysql_fetch_assoc($res)) {
@@ -3206,9 +3236,11 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_tax_number($reread=false) {
 		return $this->data['Customer Tax Number'];
 	}
+
 
 	function get_registration_number($reread=false) {
 		return $this->data['Customer Registration Number'];
@@ -3235,25 +3267,25 @@ class Customer extends DB_Table {
 			$this->msg_updated='Wrong company key when trying to remove it';
 		}
 
-		$company->set_scope('Customer',$this->id);
+		$company->set_scope('Customer', $this->id);
 		if ( $company->associated_with_scope) {
 
 			$sql=sprintf("delete `Company Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
 				$this->id
 
-				,$this->data['Customer Main Company Key']
+				, $this->data['Customer Main Company Key']
 			);
 			mysql_query($sql);
 
 			if ($company->id==$this->data['Customer Main Company Key']) {
 				$sql=sprintf("update `Customer Dimension` set `Customer Company Name`='' , `Customer Company Key`=''  where `Customer Key`=%d"
-					,$this->id
+					, $this->id
 				);
 
 				mysql_query($sql);
 				if ($this->data['Customer Type']=='Company') {
 					$sql=sprintf("update `Customer Dimension` set `Customer Name`='' , `Customer File As`=''  where `Customer Key`=%d"
-						,$this->id
+						, $this->id
 					);
 
 					mysql_query($sql);
@@ -3282,26 +3314,26 @@ class Customer extends DB_Table {
 			$this->msg_updated='Wrong contact key when trying to remove it';
 		}
 
-		$contact->set_scope('Customer',$this->id);
+		$contact->set_scope('Customer', $this->id);
 		$contact->editor=$this->editor;
 		if ( $contact->associated_with_scope) {
 
 			$sql=sprintf("delete `Contact Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
 				$this->id
 
-				,$this->data['Customer Main Contact Key']
+				, $this->data['Customer Main Contact Key']
 			);
 			mysql_query($sql);
 
 			if ($contact->id==$this->data['Customer Main Contact Key']) {
 				$sql=sprintf("update `Customer Dimension` set `Customer Main Contact Name`='' , `Customer Main Contact Key`=''  where `Customer Key`=%d"
-					,$this->id
+					, $this->id
 				);
 
 				mysql_query($sql);
 				if ($this->data['Customer Type']=='Person') {
 					$sql=sprintf("update `Customer Dimension` set `Customer Name`='' , `Customer File As`=''  where `Customer Key`=%d"
-						,$this->id
+						, $this->id
 					);
 
 					mysql_query($sql);
@@ -3318,12 +3350,12 @@ class Customer extends DB_Table {
 
 	function get_last_order() {
 		$order_key=0;
-		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc  ",$this->id);
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc  ", $this->id);
 		// $sql=sprintf("select *  from `Order Dimension` limit 10");
 		// print "$sql\n";
 		$res=mysql_query($sql);
 
-		if ($row=mysql_fetch_array($res,MYSQL_ASSOC)) {
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			//   print_r($row);
 			$order_key=$row['Order Key'];
 			//print "****************$order_key\n";
@@ -3336,9 +3368,9 @@ class Customer extends DB_Table {
 
 
 
-	function add_customer_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
+	function add_customer_history($history_data, $force_save=true, $deleteable='No', $type='Changes') {
 
-		return $this->add_subject_history($history_data,$force_save,$deleteable,$type);
+		return $this->add_subject_history($history_data, $force_save, $deleteable, $type);
 	}
 
 
@@ -3367,9 +3399,10 @@ class Customer extends DB_Table {
 			$tel=_('Tel').': '.$tel.'</br>';
 		}
 
-		return $tel.$address->display('xhtml',$locale);
+		return $tel.$address->display('xhtml', $locale);
 
 	}
+
 
 	function billing_address_xhtml() {
 		$store=new Store($this->data['Customer Store Key']);
@@ -3384,7 +3417,7 @@ class Customer extends DB_Table {
 
 
 
-		return $address->display('xhtml',$locale);
+		return $address->display('xhtml', $locale);
 
 	}
 
@@ -3393,7 +3426,7 @@ class Customer extends DB_Table {
 	function get_address_keys() {
 
 
-		$sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+		$sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ", $this->id);
 		// print $sql;
 		$address_keys=array();
 		$result=mysql_query($sql);
@@ -3405,6 +3438,7 @@ class Customer extends DB_Table {
 		return $address_keys;
 
 	}
+
 
 	function get_is_billing_address($address_key) {
 		$is_billing_address=false;
@@ -3424,10 +3458,11 @@ class Customer extends DB_Table {
 		return $is_billing_address;
 	}
 
+
 	function get_delivery_address_keys($options='all') {
 
 
-		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`   ",$this->id);
+		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`   ", $this->id);
 		$address_keys=array();
 		$result=mysql_query($sql);
 
@@ -3443,10 +3478,12 @@ class Customer extends DB_Table {
 		return $address_keys;
 
 	}
+
+
 	function get_billing_address_keys($options='all') {
 
 
-		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`  ",$this->id);
+		$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing','Contact')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Address Key`  ", $this->id);
 		$address_keys=array();
 		$result=mysql_query($sql);
 
@@ -3475,6 +3512,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_billing_address_objects($options='all') {
 
 
@@ -3492,8 +3530,9 @@ class Customer extends DB_Table {
 		return $this->data['Customer Main Address Key'];
 	}
 
+
 	function set_current_ship_to($return='key') {
-		if (preg_match('/object/i',$return))
+		if (preg_match('/object/i', $return))
 			return $this->set_current_ship_to_get_object();
 		else
 			return $this->set_current_ship_to_get_key();
@@ -3549,7 +3588,7 @@ class Customer extends DB_Table {
 
 
 	function set_current_billing_to($return='key') {
-		if (preg_match('/object/i',$return))
+		if (preg_match('/object/i', $return))
 			return $this->set_current_billing_to_get_object();
 		else
 			return $this->set_current_billing_to_get_key();
@@ -3621,12 +3660,13 @@ class Customer extends DB_Table {
 		return $rate;
 	}
 
+
 	function get_telecom_keys($type='Telephone') {
 
 
 		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and     `Subject Type`='Customer' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  "
-			,prepare_mysql($type)
-			,$this->id);
+			, prepare_mysql($type)
+			, $this->id);
 		$address_keys=array();
 		$result=mysql_query($sql);
 
@@ -3643,9 +3683,12 @@ class Customer extends DB_Table {
 		return $this->get_other_telecoms_data('FAX');
 	}
 
+
 	function get_other_mobiles_data() {
 		return $this->get_other_telecoms_data('Mobile');
 	}
+
+
 	function get_other_telephones_data() {
 		return $this->get_other_telecoms_data('Telephone');
 	}
@@ -3717,43 +3760,46 @@ class Customer extends DB_Table {
 		return $comment;
 	}
 
+
 	function users_last_login() {
 
 		$user_keys=array();
 		$sql=sprintf("select max(`User Last Login`) as last_login from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
-			,$this->id
+			, $this->id
 
 		);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			return strftime('%x',strtotime($row['last_login']));
+			return strftime('%x', strtotime($row['last_login']));
 		}
 
 		return '';
 	}
+
 
 	function users_last_failed_login() {
 
 		$user_keys=array();
 		$sql=sprintf("select max(`User Last Failed Login`) as last_login from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
-			,$this->id
+			, $this->id
 
 		);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			return strftime('%x',strtotime($row['last_login']));
+			return strftime('%x', strtotime($row['last_login']));
 		}
 
 		return '';
 	}
 
+
 	function users_number_logins() {
 
 		$user_keys=array();
 		$sql=sprintf("select sum(`User Login Count`) as logins from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
-			,$this->id
+			, $this->id
 
 		);
 		$result=mysql_query($sql);
@@ -3764,12 +3810,13 @@ class Customer extends DB_Table {
 
 		return 0;
 	}
+
 
 	function users_number_failed_logins() {
 
 		$user_keys=array();
 		$sql=sprintf("select sum(`User Failed Login Count`) as logins from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
-			,$this->id
+			, $this->id
 
 		);
 		$result=mysql_query($sql);
@@ -3781,11 +3828,12 @@ class Customer extends DB_Table {
 		return 0;
 	}
 
+
 	function get_users_keys() {
 		$user_keys=array();
 		$sql=sprintf("select `User Key` from `User Dimension` U
         where  `User Type`='Customer' and `User Parent Key`=%d "
-			,$this->id
+			, $this->id
 
 		);
 
@@ -3805,8 +3853,8 @@ class Customer extends DB_Table {
 		$user_key=0;
 		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Customer' and `User Parent Key`=%d "
 
-			,prepare_mysql($this->data['Customer Main Plain Email'])
-			,$this->id
+			, prepare_mysql($this->data['Customer Main Plain Email'])
+			, $this->id
 		);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3815,14 +3863,15 @@ class Customer extends DB_Table {
 		return $user_key;
 	}
 
+
 	function get_other_emails_data() {
 
 		$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
         `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
         left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )
         where  `Subject Type`='Customer' and `Subject Key`=%d "
-			,$this->id
-			,$this->id
+			, $this->id
+			, $this->id
 		);
 
 		$email_keys=array();
@@ -3841,6 +3890,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_other_email_login_handle() {
 		$other_login_handle_emails=array();
 		foreach ($this->get_other_emails_data() as $email) {
@@ -3856,9 +3906,10 @@ class Customer extends DB_Table {
 		return $other_login_handle_emails;
 	}
 
+
 	function get_email_keys() {
 		$sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
-			,$this->id );
+			, $this->id );
 
 		$email_keys=array();
 		$result=mysql_query($sql);
@@ -3868,9 +3919,11 @@ class Customer extends DB_Table {
 		return $email_keys;
 
 	}
+
+
 	function get_ship_to_keys() {
 		$sql=sprintf("select `Ship To Key` from `Customer Ship To Bridge` where `Customer Key`=%d "
-			,$this->id );
+			, $this->id );
 
 		$ship_to=array();
 		$result=mysql_query($sql);
@@ -3881,9 +3934,10 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_billing_to_keys() {
 		$sql=sprintf("select `Billing To Key` from `Customer Billing To Bridge` where `Customer Key`=%d "
-			,$this->id );
+			, $this->id );
 
 		$billing_to=array();
 		$result=mysql_query($sql);
@@ -3897,25 +3951,27 @@ class Customer extends DB_Table {
 
 	function associate_contact($contact_key) {
 		$contact_keys=$this->get_contact_keys();
-		if (!array_key_exists($contact_key,$contact_keys)) {
+		if (!array_key_exists($contact_key, $contact_keys)) {
 			$this->create_contact_bridge($contact_key);
 
 		}
 	}
 
+
 	function associate_company($company_key) {
 		$company_keys=$this->get_company_keys();
-		if (!array_key_exists($company_key,$company_keys)) {
+		if (!array_key_exists($company_key, $company_keys)) {
 			$this->create_company_bridge($company_key);
 
 		}
 	}
 
+
 	function create_contact_bridge($contact_key) {
 		$sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
-			,$contact_key
-			,prepare_mysql('Customer')
-			,$this->id
+			, $contact_key
+			, prepare_mysql('Customer')
+			, $this->id
 
 		);
 		mysql_query($sql);
@@ -3927,11 +3983,12 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function create_company_bridge($company_key) {
 		$sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
-			,$company_key
-			,prepare_mysql('Customer')
-			,$this->id
+			, $company_key
+			, prepare_mysql('Customer')
+			, $this->id
 
 		);
 		mysql_query($sql);
@@ -3942,6 +3999,8 @@ class Customer extends DB_Table {
 
 
 	}
+
+
 	function update_principal_company($company_key) {
 		$main_company_key=$this->get_principal_company_key();
 
@@ -3952,16 +4011,16 @@ class Customer extends DB_Table {
 
 			$sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
 				$this->id
-				,$company_key
+				, $company_key
 			);
 			mysql_query($sql);
 			$sql=sprintf("update `Company Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
 				$this->id
-				,$company_key
+				, $company_key
 			);
 			mysql_query($sql);
 
-			$sql=sprintf("update `Customer Dimension` set  `Customer Company Key`=%d where `Customer Key`=%d",$company->id,$this->id);
+			$sql=sprintf("update `Customer Dimension` set  `Customer Company Key`=%d where `Customer Key`=%d", $company->id, $this->id);
 			mysql_query($sql);
 
 
@@ -3983,16 +4042,16 @@ class Customer extends DB_Table {
 
 			$sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
 				$this->id
-				,$contact_key
+				, $contact_key
 			);
 			mysql_query($sql);
 			$sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
 				$this->id
-				,$contact_key
+				, $contact_key
 			);
 			mysql_query($sql);
 
-			$sql=sprintf("update `Customer Dimension` set  `Customer Main Contact Key`=%d where `Customer Key`=%d",$contact->id,$this->id);
+			$sql=sprintf("update `Customer Dimension` set  `Customer Main Contact Key`=%d where `Customer Key`=%d", $contact->id, $this->id);
 			mysql_query($sql);
 
 
@@ -4019,7 +4078,7 @@ class Customer extends DB_Table {
 
 	function get_principal_contact_key() {
 
-		$sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+		$sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Is Main`='Yes'", $this->id );
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$main_contact_key=$row['Contact Key'];
@@ -4032,7 +4091,7 @@ class Customer extends DB_Table {
 
 
 	function get_principal_company_key() {
-		$sql=sprintf("select `Company Key` from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+		$sql=sprintf("select `Company Key` from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Is Main`='Yes'", $this->id );
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$main_company_key=$row['Company Key'];
@@ -4047,7 +4106,7 @@ class Customer extends DB_Table {
 	function get_contact_keys() {
 
 		$sql=sprintf("select `Contact Key` from `Contact Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d   "
-			,$this->id
+			, $this->id
 		);
 		$contacts=array();
 		$result=mysql_query($sql);
@@ -4070,10 +4129,11 @@ class Customer extends DB_Table {
 		return $cards;
 	}
 
+
 	function get_company_keys() {
 
 		$sql=sprintf("select `Company Key` from `Company Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d   "
-			,$this->id
+			, $this->id
 		);
 		$companies=array();
 		$result=mysql_query($sql);
@@ -4082,6 +4142,7 @@ class Customer extends DB_Table {
 		}
 		return $companies;
 	}
+
 
 	function is_tax_number_valid() {
 		if ($this->data['Customer Tax Number']=='')
@@ -4105,13 +4166,14 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function associate_delivery_address($address_key) {
 		if (!$address_key) {
 			return;
 
 		}
 		$address_keys=$this->get_delivery_address_keys();
-		if (!array_key_exists($address_key,$address_keys)) {
+		if (!array_key_exists($address_key, $address_keys)) {
 			$this->create_delivery_address_bridge($address_key);
 			$this->updated=true;
 			$this->new_data=$address_key;
@@ -4130,7 +4192,7 @@ class Customer extends DB_Table {
 
 
 
-		if (!array_key_exists($address_key,$address_keys)) {
+		if (!array_key_exists($address_key, $address_keys)) {
 			$this->create_billing_address_bridge($address_key);
 			$this->updated=true;
 			$this->new_data=$address_key;
@@ -4159,6 +4221,7 @@ class Customer extends DB_Table {
 		}
 	}
 
+
 	function create_delivery_address_bridge($address_key) {
 		$sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
 			$this->id,
@@ -4175,6 +4238,8 @@ class Customer extends DB_Table {
 		}
 
 	}
+
+
 	function create_billing_address_bridge($address_key) {
 		$sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Billing',%d,%d)  ",
 			$this->id,
@@ -4195,7 +4260,7 @@ class Customer extends DB_Table {
 
 
 	function update_only_principal_contact_address($address_key) {
-		$this->update_principal_address($address_key,false);
+		$this->update_principal_address($address_key, false);
 
 	}
 
@@ -4204,23 +4269,24 @@ class Customer extends DB_Table {
 		$this->update_principal_address($address_key);
 	}
 
-	function update_principal_address($address_key,$update_other_address_type=true) {
+
+	function update_principal_address($address_key, $update_other_address_type=true) {
 
 
 
 		$sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
 			$this->id
-			,$address_key
+			, $address_key
 		);
 		mysql_query($sql);
 		$sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
 			$this->id
-			,$address_key
+			, $address_key
 		);
 		mysql_query($sql);
 		$sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d where `Customer Key`=%d"
-			,$address_key
-			,$this->id
+			, $address_key
+			, $this->id
 		);
 		mysql_query($sql);
 		//print $sql;
@@ -4237,7 +4303,7 @@ class Customer extends DB_Table {
 		$address=new Address($address_key);
 		$address->editor=$this->editor;
 
-		$address->update_parents('Customer',($this->new?false:true));
+		$address->update_parents('Customer', ($this->new?false:true));
 
 
 		$this->updated=true;
@@ -4246,7 +4312,8 @@ class Customer extends DB_Table {
 
 	}
 
-	function update_principal_delivery_address($address_key,$locale='en_GB') {
+
+	function update_principal_delivery_address($address_key, $locale='en_GB') {
 
 		//  $main_address_key=$this->get_principal_delivery_address_key();
 		$main_address_key=$this->data['Customer Main Delivery Address Key'];
@@ -4265,12 +4332,12 @@ class Customer extends DB_Table {
 
 			$sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
 				$this->id
-				,$main_address_key
+				, $main_address_key
 			);
 			mysql_query($sql);
 			$sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
 				$this->id
-				,$address_key
+				, $address_key
 			);
 			mysql_query($sql);
 
@@ -4281,9 +4348,9 @@ class Customer extends DB_Table {
 			}
 
 			$sql=sprintf("update `Customer Dimension` set  `Customer Delivery Address Link`=%s,`Customer Main Delivery Address Key`=%d where `Customer Key`=%d"
-				,prepare_mysql($this->data['Customer Delivery Address Link'])
-				,$address->id
-				,$this->id);
+				, prepare_mysql($this->data['Customer Delivery Address Link'])
+				, $address->id
+				, $this->id);
 			$this->data['Customer Main Delivery Address Key']=$address->id;
 			mysql_query($sql);
 
@@ -4292,15 +4359,15 @@ class Customer extends DB_Table {
 
 
 			$sql=sprintf('update `Customer Dimension` set `Customer XHTML Main Delivery Address`=%s,`Customer Main Delivery Address Lines`=%s,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
-				,prepare_mysql($address->display('xhtml',$locale))
-				,prepare_mysql($address->display('lines',$locale),false)
-				,prepare_mysql($address->data['Address Town'],false)
-				,prepare_mysql($address->data['Address Country Name'])
-				,prepare_mysql($address->data['Address Postal Code'],false)
-				,prepare_mysql($address->data['Address Country Code'])
-				,prepare_mysql($address->data['Address Country 2 Alpha Code'])
-				,$address->data['Address Country Key']
-				,$this->id
+				, prepare_mysql($address->display('xhtml', $locale))
+				, prepare_mysql($address->display('lines', $locale), false)
+				, prepare_mysql($address->data['Address Town'], false)
+				, prepare_mysql($address->data['Address Country Name'])
+				, prepare_mysql($address->data['Address Postal Code'], false)
+				, prepare_mysql($address->data['Address Country Code'])
+				, prepare_mysql($address->data['Address Country 2 Alpha Code'])
+				, $address->data['Address Country Key']
+				, $this->id
 			);
 
 			mysql_query($sql);
@@ -4310,15 +4377,16 @@ class Customer extends DB_Table {
 
 
 
-			$address->update_parents(false,($this->new?false:true));
-			$this->get_data('id',$this->id);
+			$address->update_parents(false, ($this->new?false:true));
+			$this->get_data('id', $this->id);
 			$this->updated=true;
 			$this->new_value=$address->id;
 		}
 
 	}
 
-	function update_principal_billing_address($address_key,$locale='en_GB') {
+
+	function update_principal_billing_address($address_key, $locale='en_GB') {
 
 
 		$main_address_key=$this->data['Customer Billing Address Key'];
@@ -4334,12 +4402,12 @@ class Customer extends DB_Table {
 
 			$sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Billing' and  `Subject Key`=%d  and `Address Key`=%d",
 				$this->id
-				,$main_address_key
+				, $main_address_key
 			);
 			mysql_query($sql);
 			$sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Billing' and  `Subject Key`=%d  and `Address Key`=%d",
 				$this->id
-				,$address_key
+				, $address_key
 			);
 			mysql_query($sql);
 
@@ -4350,15 +4418,15 @@ class Customer extends DB_Table {
 			}
 
 			$sql=sprintf("update `Customer Dimension` set  `Customer Billing Address Link`=%s,`Customer Billing Address Key`=%d where `Customer Key`=%d"
-				,prepare_mysql($this->data['Customer Billing Address Link'])
-				,$address->id
-				,$this->id);
+				, prepare_mysql($this->data['Customer Billing Address Link'])
+				, $address->id
+				, $this->id);
 			$this->data['Customer Billing Address Key']=$address->id;
 			mysql_query($sql);
 
 
 
-			$lines=$address->display('3lines',$locale);
+			$lines=$address->display('3lines', $locale);
 
 
 			$sql=sprintf('update `Customer Dimension` set `Customer XHTML Billing Address`=%s,`Customer Billing Address Lines`=%s,
@@ -4373,19 +4441,19 @@ class Customer extends DB_Table {
 						`Customer Billing Address 2 Alpha Country Code`=%s
 
 						where `Customer Key`=%d '
-				,prepare_mysql($address->display('xhtml',$locale))
-				,prepare_mysql($address->display('lines',$locale),false)
-				,prepare_mysql($lines[1],false)
-				,prepare_mysql($lines[2],false)
-				,prepare_mysql($lines[3],false)
-				,prepare_mysql($address->data['Address Town'],false)
-				,prepare_mysql($address->data['Address Postal Code'],false)
+				, prepare_mysql($address->display('xhtml', $locale))
+				, prepare_mysql($address->display('lines', $locale), false)
+				, prepare_mysql($lines[1], false)
+				, prepare_mysql($lines[2], false)
+				, prepare_mysql($lines[3], false)
+				, prepare_mysql($address->data['Address Town'], false)
+				, prepare_mysql($address->data['Address Postal Code'], false)
 
-				,prepare_mysql($address->data['Address Country Code'])
-				,prepare_mysql($address->data['Address Country 2 Alpha Code'])
+				, prepare_mysql($address->data['Address Country Code'])
+				, prepare_mysql($address->data['Address Country 2 Alpha Code'])
 
 
-				,$this->id
+				, $this->id
 			);
 
 			mysql_query($sql);
@@ -4394,9 +4462,9 @@ class Customer extends DB_Table {
 
 
 
-			$address->update_parents(false,($this->new?false:true));
+			$address->update_parents(false, ($this->new?false:true));
 
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 
 
 
@@ -4406,9 +4474,10 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_principal_contact_address_key() {
 		$main_address_key=0;
-		$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+		$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'", $this->id );
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$main_address_key=$row['Address Key'];
@@ -4428,7 +4497,7 @@ class Customer extends DB_Table {
 			break;
 
 		default:
-			$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Billing' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+			$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Billing' and `Subject Key`=%d and `Is Main`='Yes'", $this->id );
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_array($res)) {
 				$main_address_key=$row['Address Key'];
@@ -4442,6 +4511,8 @@ class Customer extends DB_Table {
 
 
 	}
+
+
 	function get_principal_delivery_address_key() {
 
 		switch ($this->data['Customer Delivery Address Link']) {
@@ -4451,7 +4522,7 @@ class Customer extends DB_Table {
 			//case 'Billing':
 			// return $this->data['Customer Billing Address Key'];
 		default:
-			$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+			$sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'", $this->id );
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_array($res)) {
 				$main_address_key=$row['Address Key'];
@@ -4510,6 +4581,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_billing_to($date=false) {
 
 
@@ -4533,6 +4605,7 @@ class Customer extends DB_Table {
 		return $billing_to;
 
 	}
+
 
 	function get_billing_to_old($date=false) {
 
@@ -4589,6 +4662,7 @@ class Customer extends DB_Table {
 		return $order_key;
 	}
 
+
 	function get_order_in_process_keys($dispatch_state='all') {
 
 		if ($dispatch_state=='all') {
@@ -4611,6 +4685,7 @@ class Customer extends DB_Table {
 		}
 		return $order_keys;
 	}
+
 
 	function get_pending_orders_keys($dispatch_state='') {
 
@@ -4649,6 +4724,7 @@ class Customer extends DB_Table {
 		return $credits;
 	}
 
+
 	function get_credits_formated() {
 
 		$credits=$this->get_credits();
@@ -4657,7 +4733,7 @@ class Customer extends DB_Table {
 
 
 
-		return money($credits,$store->data['Store Currency Code']);
+		return money($credits, $store->data['Store Currency Code']);
 	}
 
 
@@ -4670,7 +4746,8 @@ class Customer extends DB_Table {
 			return array();
 	}
 
-	function display($tipo='card',$option='') {
+
+	function display($tipo='card', $option='') {
 		switch ($tipo) {
 		case 'card':
 
@@ -4687,9 +4764,9 @@ class Customer extends DB_Table {
 			$fax='';
 			$mobile='';
 			$contact='';
-			$name=sprintf('<span class="name">%s</span>',$this->data['Customer Name']);
+			$name=sprintf('<span class="name">%s</span>', $this->data['Customer Name']);
 			if ($this->data['Customer Main Contact Name'] and $this->data['Customer Type']=='Company')
-				$contact=sprintf('<span class="name">%s %s</span><br/>',$contact_label,$this->data['Customer Main Contact Name']);
+				$contact=sprintf('<span class="name">%s %s</span><br/>', $contact_label, $this->data['Customer Main Contact Name']);
 
 
 			if ($this->data['Customer Main XHTML Email']) {
@@ -4699,33 +4776,33 @@ class Customer extends DB_Table {
 				}else {
 					$user_icon='';
 				}
-				$email=$user_icon.sprintf('<span class="email">%s</span><br/>',$this->data['Customer Main XHTML Email']);
+				$email=$user_icon.sprintf('<span class="email">%s</span><br/>', $this->data['Customer Main XHTML Email']);
 			}
 			if ($this->data['Customer Main XHTML Telephone'])
-				$tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Customer Main XHTML Telephone']);
+				$tel=sprintf('<span class="tel">%s %s</span><br/>', $tel_label, $this->data['Customer Main XHTML Telephone']);
 			if ($this->data['Customer Main XHTML Mobile'])
-				$mobile=sprintf('<span class="tel">%s %s</span><br/>',$mobile_label,$this->data['Customer Main XHTML Mobile']);
+				$mobile=sprintf('<span class="tel">%s %s</span><br/>', $mobile_label, $this->data['Customer Main XHTML Mobile']);
 			if ($this->data['Customer Main XHTML FAX'])
-				$fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Customer Main XHTML FAX']);
+				$fax=sprintf('<span class="fax">%s %s</span><br/>', $fax_label, $this->data['Customer Main XHTML FAX']);
 
 
-			$address=sprintf('<span class="mobile">%s</span>',$this->data['Customer Main XHTML Address']);
+			$address=sprintf('<span class="mobile">%s</span>', $this->data['Customer Main XHTML Address']);
 
 			$card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
-				,$name
-				,$contact
-				,$email
-				,$tel
-				,$mobile
-				,$fax
+				, $name
+				, $contact
+				, $email
+				, $tel
+				, $mobile
+				, $fax
 
-				,$address
+				, $address
 			);
 
 
 
 
-			$card=preg_replace('/\<div class=\"contact_card\"\>/','<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$this->get_formated_id($option).'</a>',$card);
+			$card=preg_replace('/\<div class=\"contact_card\"\>/', '<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$this->get_formated_id($option).'</a>', $card);
 			return $card;
 
 			break;
@@ -4737,6 +4814,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function display_delivery_address($tipo='xhtml') {
 		$store=new Store($this->data['Customer Store Key']);
 		$locale=$store->data['Store Locale'];
@@ -4744,15 +4822,16 @@ class Customer extends DB_Table {
 
 		case 'xhtml':
 			$address=new address($this->data['Customer Main Delivery Address Key']);
-			return $address->display('xhtml',$locale);
+			return $address->display('xhtml', $locale);
 			break;
 		default:
 			$address=new address($this->data['Customer Main Delivery Address Key']);
-			return $address->get($tipo,$locale);
+			return $address->get($tipo, $locale);
 			break;
 		}
 
 	}
+
 
 	function display_billing_address($tipo='xhtml') {
 		$store=new Store($this->data['Customer Store Key']);
@@ -4762,15 +4841,16 @@ class Customer extends DB_Table {
 
 		case 'xhtml':
 			$address=new address($this->data['Customer Billing Address Key']);
-			return $address->display('xhtml',$locale);
+			return $address->display('xhtml', $locale);
 			break;
 		default:
 			$address=new address($this->data['Customer Billing Address Key']);
-			return $address->get($tipo,$locale);
+			return $address->get($tipo, $locale);
 			break;
 		}
 
 	}
+
 
 	function display_contact_address($tipo='xhtml') {
 		$store=new Store($this->data['Customer Store Key']);
@@ -4778,15 +4858,15 @@ class Customer extends DB_Table {
 		switch ($tipo) {
 		case 'label':
 			$address=new address($this->data['Customer Main Address Key']);
-			return $this->data['Customer Name']."\n".($this->data['Customer Type']=='Company'?$this->data['Customer Main Contact Name']."\n":'').$address->display('label',$locale);
+			return $this->data['Customer Name']."\n".($this->data['Customer Type']=='Company'?$this->data['Customer Main Contact Name']."\n":'').$address->display('label', $locale);
 			break;
 		case 'xhtml':
 			$address=new address($this->data['Customer Main Address Key']);
-			return $address->display('xhtml',$locale);
+			return $address->display('xhtml', $locale);
 			break;
 		default:
 			$address=new address($this->data['Customer Main Address Key']);
-			return $address->get($tipo,$locale);
+			return $address->get($tipo, $locale);
 			break;
 		}
 
@@ -4797,10 +4877,10 @@ class Customer extends DB_Table {
 
 	function get_address_bridge_data($address_key) {
 
-		$sql=sprintf("select * from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Address Key`=%d",$this->id,$address_key);
+		$sql=sprintf("select * from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Address Key`=%d", $this->id, $address_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			return array('Address Type'=>$row['Address Type'],'Address Function'=>$row['Address Function']);
+			return array('Address Type'=>$row['Address Type'], 'Address Function'=>$row['Address Function']);
 		}
 		return false;
 	}
@@ -4817,9 +4897,9 @@ class Customer extends DB_Table {
 		$address=new Address($this->data['Customer Main Address Key']);
 		$address_plain='';
 		if ($address->id) {
-			$address_plain=$address->display('Plain',$locale);
+			$address_plain=$address->display('Plain', $locale);
 		}
-		$address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'].' '.preg_replace('/[^a-z^A-Z^\d]/','',$address->data['Address Postal Code']);
+		$address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'].' '.preg_replace('/[^a-z^A-Z^\d]/', '', $address->data['Address Postal Code']);
 		$first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
 		$second_full_search=$this->data['Customer Type'];
 
@@ -4840,7 +4920,7 @@ class Customer extends DB_Table {
 		if ($this->data['Customer Main Telephone Key'])$_address.='<br/>T: '.$this->data['Customer Main XHTML Telephone'];
 		$_address.='<br/>'.$this->data['Customer Main Location'];
 		if ($this->data['Customer Main Postal Code'])$_address.=', '.$this->data['Customer Main Postal Code'];
-		$_address=preg_replace('/^\<br\/\>/','',$_address);
+		$_address=preg_replace('/^\<br\/\>/', '', $_address);
 
 		$description='<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
 
@@ -4855,20 +4935,20 @@ class Customer extends DB_Table {
 		$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
                      values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key
                      update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
-			,$this->data['Customer Store Key']
-			,$this->id
-			,prepare_mysql($first_full_search)
-			,prepare_mysql($second_full_search)
-			,prepare_mysql($this->data['Customer Name'])
-			,prepare_mysql($description)
-			,"''"
-			,prepare_mysql($first_full_search)
-			,prepare_mysql($second_full_search)
-			,prepare_mysql($this->data['Customer Name'])
-			,prepare_mysql($description)
+			, $this->data['Customer Store Key']
+			, $this->id
+			, prepare_mysql($first_full_search)
+			, prepare_mysql($second_full_search)
+			, prepare_mysql($this->data['Customer Name'])
+			, prepare_mysql($description)
+			, "''"
+			, prepare_mysql($first_full_search)
+			, prepare_mysql($second_full_search)
+			, prepare_mysql($this->data['Customer Name'])
+			, prepare_mysql($description)
 
 
-			,"''"
+			, "''"
 		);
 		mysql_query($sql);
 	}
@@ -4889,8 +4969,8 @@ class Customer extends DB_Table {
 			'User Key'=>$data['User Key']
 		);
 
-		$history_key=$this->add_history($history_data,$force_save=true);
-		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','WebLog')",$this->id,$history_key);
+		$history_key=$this->add_history($history_data, $force_save=true);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','WebLog')", $this->id, $history_key);
 
 		mysql_query($sql);
 	}
@@ -4898,7 +4978,7 @@ class Customer extends DB_Table {
 
 
 
-	function add_history_new_order($order,$text_locale='en_GB') {
+	function add_history_new_order($order, $text_locale='en_GB') {
 
 		date_default_timezone_set(TIMEZONE) ;
 		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
@@ -4908,22 +4988,22 @@ class Customer extends DB_Table {
 
 		switch ($text_locale) {
 		default :
-			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order Processed'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order Processed'), $order->data ['Order Key'], $order->data ['Order Public ID'] );
 			if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
 				if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
+					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'] , $this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
 				} else {
 					$details = sprintf( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
 						$this->get ( 'Customer Name' ),
-						$this->id,$this->get('Formated ID'),
+						$this->id, $this->get('Formated ID'),
 						$tz_date
 					);
 
 				}
 			} else {
 				$details = sprintf( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s',
-					$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
+					$this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'),
 					$tz_date
 				);
 			}
@@ -4952,23 +5032,26 @@ class Customer extends DB_Table {
 		);
 
 		$history_key=$order->add_history($history_data);
-		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')", $this->id, $history_key);
 
 		mysql_query($sql);
 
 	}
+
+
 	function add_history_order_cancelled($history_key) {
 
 
 
 
 
-		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')", $this->id, $history_key);
 		mysql_query($sql);
 
 
 
 	}
+
 
 	function add_history_order_suspended($order) {
 
@@ -4986,7 +5069,7 @@ class Customer extends DB_Table {
 
 		switch ($lang) {
 		default :
-			$note = sprintf( 'Order <a href="order.php?id=%d">%s</a> (Suspended)',$order->data ['Order Key'], $order->data ['Order Public ID'] );
+			$note = sprintf( 'Order <a href="order.php?id=%d">%s</a> (Suspended)', $order->data ['Order Key'], $order->data ['Order Public ID'] );
 			if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
 				$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> suspended %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s',
 					$this->editor['Author Key'],
@@ -5002,7 +5085,7 @@ class Customer extends DB_Table {
 				$details = sprintf( '%s (<a href="customer.php?id=%d">%s</a>)  order <a href="order.php?id=%d">%s</a>  has been suspended on %s',
 
 					$this->get ( 'Customer Name' ),
-					$this->id,$this->get('Formated ID'),
+					$this->id, $this->get('Formated ID'),
 					$order->data ['Order Key'],
 					$order->data ['Order Public ID'],
 					$tz_date
@@ -5032,13 +5115,13 @@ class Customer extends DB_Table {
 		);
 		mysql_query($sql);
 		$history_key=$order->add_history($history_data);
-		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')", $this->id, $history_key);
 		mysql_query($sql);
 
 
 		switch ($lang) {
 		default :
-			$note_created = sprintf( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+			$note_created = sprintf( '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'), $order->data ['Order Key'], $order->data ['Order Public ID'] );
 
 		}
 		$sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
@@ -5068,7 +5151,7 @@ class Customer extends DB_Table {
 		switch ($lang) {
 		default :
 			$state=$dn->data['Delivery Note State'];
-			$note = sprintf( '%s <a href="dn.php?id=%d">%s</a> (%s)',$dn->data['Delivery Note Type'],$dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'],$state );
+			$note = sprintf( '%s <a href="dn.php?id=%d">%s</a> (%s)', $dn->data['Delivery Note Type'], $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'], $state );
 			$details=$dn->data['Delivery Note Title'];
 
 			if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
@@ -5096,7 +5179,7 @@ class Customer extends DB_Table {
 		//   print_r($history_data);
 
 		$history_key=$dn->add_history($history_data);
-		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')", $this->id, $history_key);
 		mysql_query($sql);
 
 
@@ -5122,7 +5205,7 @@ class Customer extends DB_Table {
 
 
 
-			$note=$refund->data['Invoice XHTML Orders'].' '._('refunded for').' '.money(-1*$refund->data['Invoice Total Amount'],$refund->data['Invoice Currency']);
+			$note=$refund->data['Invoice XHTML Orders'].' '._('refunded for').' '.money(-1*$refund->data['Invoice Total Amount'], $refund->data['Invoice Currency']);
 			$details=_('Date refunded').": $tz_date";
 
 
@@ -5152,11 +5235,12 @@ class Customer extends DB_Table {
 
 		//print_r($history_data);
 
-		$history_key=$this->add_subject_history($history_data,$force_save=true,$deleteable='No',$type='Orders');
+		$history_key=$this->add_subject_history($history_data, $force_save=true, $deleteable='No', $type='Orders');
 
 
 
 	}
+
 
 	function update_history_order_in_warehouse($order) {
 
@@ -5179,7 +5263,7 @@ class Customer extends DB_Table {
 				$order->data ['Order Public ID'],
 				$order->data['Order Current XHTML Payment State'],
 				$order->get('Weight'),
-				money($order->data['Order Invoiced Balance Total Amount'],$order->data['Order Currency'])
+				money($order->data['Order Invoiced Balance Total Amount'], $order->data['Order Currency'])
 
 			);
 
@@ -5207,7 +5291,9 @@ class Customer extends DB_Table {
 		*/
 
 	}
-	function add_history_new_post_order($order,$type) {
+
+
+	function add_history_new_post_order($order, $type) {
 
 		date_default_timezone_set(TIMEZONE) ;
 		$tz_date=strftime( "%e %b %Y %H:%M %Z", strtotime( $order->data ['Order Date']." +00:00" ) );
@@ -5217,22 +5303,22 @@ class Customer extends DB_Table {
 
 		switch ($_SESSION ['lang']) {
 		default :
-			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+			$note = sprintf( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'), $order->data ['Order Key'], $order->data ['Order Public ID'] );
 			if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
 				if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
+					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'] , $this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
 				} else {
 					$details = sprintf( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
 						$this->get ( 'Customer Name' ),
-						$this->id,$this->get('Formated ID'),
+						$this->id, $this->get('Formated ID'),
 						$tz_date
 					);
 
 				}
 			} else {
 				$details = sprintf( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s',
-					$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
+					$this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'),
 					$tz_date
 				);
 			}
@@ -5260,13 +5346,14 @@ class Customer extends DB_Table {
 			'Metadata'=>'Process'
 		);
 		$history_key=$order->add_history($history_data);
-		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')",$this->id,$history_key);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Orders')", $this->id, $history_key);
 		mysql_query($sql);
 
 	}
 
+
 	function get_number_of_orders() {
-		$sql=sprintf("select count(*) as number from `Order Dimension` where `Order Customer Key`=%d ",$this->id);
+		$sql=sprintf("select count(*) as number from `Order Dimension` where `Order Customer Key`=%d ", $this->id);
 		$number=0;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -5276,6 +5363,7 @@ class Customer extends DB_Table {
 
 
 	}
+
 
 	function remove_principal_address() {
 
@@ -5303,7 +5391,7 @@ class Customer extends DB_Table {
 
 
 	function close_account() {
-		$sql=sprintf("update `Customer Dimension` set `Customer Account Operative`='No' where `Customer Key`=%d ",$this->id);
+		$sql=sprintf("update `Customer Dimension` set `Customer Account Operative`='No' where `Customer Key`=%d ", $this->id);
 		mysql_query();
 
 	}
@@ -5315,13 +5403,13 @@ class Customer extends DB_Table {
 	function get_mobiles() {
 
 
-		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ", $this->id);
 		$mobiles=array();
 		$result=mysql_query($sql);
 		//print $sql;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$mobile= new Telecom($row['Telecom Key']);
-			$mobile->set_scope('Contact',$this->id);
+			$mobile->set_scope('Contact', $this->id);
 			$mobiles[]= $mobile;
 			$mobile->data['Mobile Is Main']=$row['Is Main'];
 
@@ -5331,14 +5419,15 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_telephones() {
-		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ", $this->id);
 		$mobiles=array();
 		$result=mysql_query($sql);
 		//print $sql;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$mobile= new Telecom($row['Telecom Key']);
-			$mobile->set_scope('Contact',$this->id);
+			$mobile->set_scope('Contact', $this->id);
 			$mobiles[]= $mobile;
 			$mobile->data['Mobile Is Main']=$row['Is Main'];
 
@@ -5347,48 +5436,54 @@ class Customer extends DB_Table {
 		return $mobiles;
 	}
 
+
 	function get_work_telephones($company_key=false) {
 		$telephones=array();
 		$in_company='';
 		if ($company_key)
-			$in_company=sprintf(" and `Auxiliary Key`=%s",$company_key);
-		$sql=sprintf('select * from `Telecom Bridge` TB  left join `Telecom Dimension` T on T.`Telecom Key`=TB.`Telecom Key`  where `Subject Key`=%d and `Telecom Type`="Work Telephone"  and `Subject Type`="Contact" %s order by `Is Main` desc ',$this->id,$in_company);
+			$in_company=sprintf(" and `Auxiliary Key`=%s", $company_key);
+		$sql=sprintf('select * from `Telecom Bridge` TB  left join `Telecom Dimension` T on T.`Telecom Key`=TB.`Telecom Key`  where `Subject Key`=%d and `Telecom Type`="Work Telephone"  and `Subject Type`="Contact" %s order by `Is Main` desc ', $this->id, $in_company);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-			$tel=new Telecom('id',$row['Telecom Key']);
+			$tel=new Telecom('id', $row['Telecom Key']);
 
 			$telephones[]=array(
 				'id'=>$row['Telecom Key']
-				,'type'=>$row['Telecom Type']
-				,'country_code'=>$row['Telecom Country Telephone Code']
-				,'national_access_code'=>$row['Telecom National Access Code']
-				,'area_code'=>$row['Telecom Area Code']
-				,'number'=>$row['Telecom Number']
-				,'extension'=>$row['Telecom Extension']
-				,'formated_number'=>$tel->display('formated')
+				, 'type'=>$row['Telecom Type']
+				, 'country_code'=>$row['Telecom Country Telephone Code']
+				, 'national_access_code'=>$row['Telecom National Access Code']
+				, 'area_code'=>$row['Telecom Area Code']
+				, 'number'=>$row['Telecom Number']
+				, 'extension'=>$row['Telecom Extension']
+				, 'formated_number'=>$tel->display('formated')
 
 			);
 		}
 		return $telephones;
 	}
 
-	function remove_principal_email($save_history=true,$swap_principal=true) {
-		$this->remove_email($this->data['Customer Main Email Key'],$save_history,$swap_principal);
+
+	function remove_principal_email($save_history=true, $swap_principal=true) {
+		$this->remove_email($this->data['Customer Main Email Key'], $save_history, $swap_principal);
 	}
 
-	function remove_principal_mobile($save_history=true,$swap_principal=true) {
-		$this->remove_telecom('Mobile',$this->data['Customer Main Mobile Key'],$save_history,$swap_principal);
+
+	function remove_principal_mobile($save_history=true, $swap_principal=true) {
+		$this->remove_telecom('Mobile', $this->data['Customer Main Mobile Key'], $save_history, $swap_principal);
 	}
 
-	function remove_principal_telephone($save_history=true,$swap_principal=true) {
-		$this->remove_telecom('Telephone',$this->data['Customer Main Telephone Key'],$save_history,$swap_principal);
+
+	function remove_principal_telephone($save_history=true, $swap_principal=true) {
+		$this->remove_telecom('Telephone', $this->data['Customer Main Telephone Key'], $save_history, $swap_principal);
 	}
 
-	function remove_principal_fax($save_history=true,$swap_principal=true) {
-		$this->remove_telecom('Fax',$this->data['Customer Main FAX Key'],$save_history,$swap_principal);
+
+	function remove_principal_fax($save_history=true, $swap_principal=true) {
+		$this->remove_telecom('Fax', $this->data['Customer Main FAX Key'], $save_history, $swap_principal);
 	}
 
-	function remove_email($email_key,$save_history=true,$swap_principal=true) {
+
+	function remove_email($email_key, $save_history=true, $swap_principal=true) {
 
 		$email=new Email($email_key);
 		if (!$email->id) {
@@ -5417,7 +5512,7 @@ class Customer extends DB_Table {
 
 
 
-		$email->remove_from_parent('Customer',$this->id);
+		$email->remove_from_parent('Customer', $this->id);
 		if (($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys)==0) {
 
 
@@ -5429,7 +5524,7 @@ class Customer extends DB_Table {
 				$company_customers_number_keys=count($company_customers_keys);
 				$company_suppliers_number_keys=count($company_suppliers_keys);
 				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
-					$email->remove_from_parent('Company',$company->id);
+					$email->remove_from_parent('Company', $company->id);
 				}
 			}
 			$contact=new Contact($this->data['Customer Main Contact Key']);
@@ -5443,7 +5538,7 @@ class Customer extends DB_Table {
 
 
 			if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
-				$email->remove_from_parent('Contact',$contact->id);
+				$email->remove_from_parent('Contact', $contact->id);
 				$email->delete();
 			}
 
@@ -5452,8 +5547,8 @@ class Customer extends DB_Table {
 
 		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Customer' and `User Parent Key`=%d  and `User Active`='Yes' "
 
-			,prepare_mysql($email_to_delete_handle)
-			,$this->id
+			, prepare_mysql($email_to_delete_handle)
+			, $this->id
 		);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -5471,7 +5566,8 @@ class Customer extends DB_Table {
 
 	}
 
-	function remove_telecom($type,$telecom_key,$save_history=true,$swap_principal=true) {
+
+	function remove_telecom($type, $telecom_key, $save_history=true, $swap_principal=true) {
 
 		$telecom=new Telecom($telecom_key);
 		$telecom->editor=$this->editor;
@@ -5497,7 +5593,7 @@ class Customer extends DB_Table {
 		$telecom_contacts_number_keys=count($telecom_contacts_keys);
 		$telecom_suppliers_number_keys=count($telecom_suppliers_keys);
 		$telecom_companies_number_keys=count($telecom_companies_keys);
-		$telecom->remove_from_parent('Customer',$this->id,$save_history,$swap_principal);
+		$telecom->remove_from_parent('Customer', $this->id, $save_history, $swap_principal);
 
 
 
@@ -5514,7 +5610,7 @@ class Customer extends DB_Table {
 
 				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
 
-					$telecom->remove_from_parent('Company',$company->id,$save_history,$swap_principal);
+					$telecom->remove_from_parent('Company', $company->id, $save_history, $swap_principal);
 				}
 			}
 			$contact=new Contact($this->data['Customer Main Contact Key']);
@@ -5529,7 +5625,7 @@ class Customer extends DB_Table {
 			// print_r($contact_suppliers_keys);
 
 			if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
-				$telecom->remove_from_parent('Contact',$contact->id,$save_history,$swap_principal);
+				$telecom->remove_from_parent('Contact', $contact->id, $save_history, $swap_principal);
 			}
 
 			$this->updated=true;
@@ -5550,7 +5646,8 @@ class Customer extends DB_Table {
 
 	}
 
-	function delete($note='',$customer_id_prefix='') {
+
+	function delete($note='', $customer_id_prefix='') {
 		$this->deleted=false;
 		$deleted_company_keys=array();
 
@@ -5583,7 +5680,7 @@ class Customer extends DB_Table {
 			'Action'=>'deleted'
 		);
 
-		$this->add_history($history_data,$force_save=true);
+		$this->add_history($history_data, $force_save=true);
 
 
 
@@ -5594,40 +5691,40 @@ class Customer extends DB_Table {
 
 
 
-		$sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%s",$this->id,$this->id);
+		$sql=sprintf("delete from `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%s", $this->id, $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `List Customer Bridge` where `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `List Customer Bridge` where `Customer Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
-		mysql_query($sql);
-
-		$sql=sprintf("delete from `Customer Billing To Bridge` where `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d", $this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("delete from `Customer Send Post` where `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer Billing To Bridge` where `Customer Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
+
+		$sql=sprintf("delete from `Customer Send Post` where `Customer Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Category Bridge` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from `Category Bridge` where `Subject`='Customer' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
 
 
 
-		$sql=sprintf("delete from `Customer Send Post` where  `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer Send Post` where  `Customer Key`=%d", $this->id);
 		mysql_query($sql);
 
 
@@ -5668,9 +5765,9 @@ class Customer extends DB_Table {
 			prepare_mysql($this->data['Customer Name']),
 			prepare_mysql($this->data['Customer Main Contact Name']),
 			prepare_mysql($this->data['Customer Main Plain Email']),
-			prepare_mysql($this->display('card',$customer_id_prefix)),
+			prepare_mysql($this->display('card', $customer_id_prefix)),
 			prepare_mysql($this->editor['Date']),
-			prepare_mysql($note,false)
+			prepare_mysql($note, false)
 		);
 
 
@@ -5798,7 +5895,7 @@ class Customer extends DB_Table {
 	}
 
 
-	function merge($customer_key,$customer_id_prefix='') {
+	function merge($customer_key, $customer_id_prefix='') {
 		$this->merged=false;
 
 		$customer_to_merge=new Customer($customer_key);
@@ -5846,42 +5943,42 @@ class Customer extends DB_Table {
 
 
 
-		$sql=sprintf("select `History Key` from `Customer History Bridge` where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$customer_to_merge->id);
+		$sql=sprintf("select `History Key` from `Customer History Bridge` where `Type` in ('Orders','Notes') and `Customer Key`=%d ", $customer_to_merge->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$history_key=$row['History Key'];
-			$sql=sprintf("select * from `History Dimension` where `History Key`=%d ",$history_key);
+			$sql=sprintf("select * from `History Dimension` where `History Key`=%d ", $history_key);
 			$res2=mysql_query($sql);
 			if ($row2=mysql_fetch_assoc($res2)) {
-				$sql=sprintf("update `History Dimension` set `Subject Key`=%d   where `History Key`=%d and `Subject`='Customer' ",$this->id,$history_key);
+				$sql=sprintf("update `History Dimension` set `Subject Key`=%d   where `History Key`=%d and `Subject`='Customer' ", $this->id, $history_key);
 				mysql_query($sql);
-				$sql=sprintf("update `History Dimension` set `Direct Object Key`=%d   where `History Key`=%d and `Direct Object`='Customer' ",$this->id,$history_key);
+				$sql=sprintf("update `History Dimension` set `Direct Object Key`=%d   where `History Key`=%d and `Direct Object`='Customer' ", $this->id, $history_key);
 				mysql_query($sql);
-				$sql=sprintf("update `History Dimension` set `Indirect Object Key`=%d  where `History Key`=%d and `Indirect Object`='Customer' ",$this->id,$history_key);
+				$sql=sprintf("update `History Dimension` set `Indirect Object Key`=%d  where `History Key`=%d and `Indirect Object`='Customer' ", $this->id, $history_key);
 				mysql_query($sql);
 			}
 		}
-		$sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
 
-		$sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Customer History Bridge` set `Customer Key`=%d where `Type` in ('Orders','Notes') and `Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
 
-		$sql=sprintf("update `Customer Ship To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Customer Ship To Bridge` set `Customer Key`=%d where `Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
-		$sql=sprintf("update `Customer Billing To Bridge` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
-		$res=mysql_query($sql);
-
-		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Customer Key`=%d where `Delivery Note Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Customer Billing To Bridge` set `Customer Key`=%d where `Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
 
-		$sql=sprintf("update `Invoice Dimension` set `Invoice Customer Key`=%d where `Invoice Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Customer Key`=%d where `Delivery Note Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
 
-		$sql=sprintf("update `Order Dimension` set `Order Customer Key`=%d where `Order Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Invoice Dimension` set `Invoice Customer Key`=%d where `Invoice Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
 
-		$sql=sprintf("update `Order Transaction Fact` set `Customer Key`=%d where `Customer Key`=%d ",$this->id,$customer_to_merge->id);
+		$sql=sprintf("update `Order Dimension` set `Order Customer Key`=%d where `Order Customer Key`=%d ", $this->id, $customer_to_merge->id);
+		$res=mysql_query($sql);
+
+		$sql=sprintf("update `Order Transaction Fact` set `Customer Key`=%d where `Customer Key`=%d ", $this->id, $customer_to_merge->id);
 		$res=mysql_query($sql);
 
 
@@ -5932,13 +6029,13 @@ class Customer extends DB_Table {
 		$this->update_activity();
 		$this->update_is_new();
 
-		$customer_to_merge->delete('',$customer_id_prefix);
+		$customer_to_merge->delete('', $customer_id_prefix);
 
 
-		$sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d,`Date Merged`=%s where `Customer Key`=%d ",$this->id,prepare_mysql($this->editor['Date']),$customer_to_merge->id);
+		$sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d,`Date Merged`=%s where `Customer Key`=%d ", $this->id, prepare_mysql($this->editor['Date']), $customer_to_merge->id);
 		$res=mysql_query($sql);
 
-		$sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d,%s) ",$customer_to_merge->id,$this->id,prepare_mysql($this->editor['Date']));
+		$sql=sprintf("insert into  `Customer Merge Bridge` values(%d,%d,%s) ", $customer_to_merge->id, $this->id, prepare_mysql($this->editor['Date']));
 		$res=mysql_query($sql);
 
 		$store=new Store($this->data['Customer Store Key']);
@@ -5954,6 +6051,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_subscription($customer_id, $type) {
 		if (!isset($customer_id) || !isset($type)) {
 			return;
@@ -5961,6 +6059,7 @@ class Customer extends DB_Table {
 
 
 	}
+
 
 	function get_order_key() {
 		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Key` DESC", $this->id);
@@ -5972,14 +6071,15 @@ class Customer extends DB_Table {
 			return -1;
 	}
 
+
 	function get_faxes() {
-		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Fax'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Fax'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ", $this->id);
 		$telephones=array();
 		$result=mysql_query($sql);
 		//print $sql;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$telephone= new Telecom($row['Telecom Key']);
-			$telephone->set_scope('Contact',$this->id);
+			$telephone->set_scope('Contact', $this->id);
 			$telephones[]= $telephone;
 			$telephone->data['Mobile Is Main']=$row['Is Main'];
 
@@ -5987,6 +6087,7 @@ class Customer extends DB_Table {
 		//$this->number_mobiles=count($mobiles);
 		return $telephones;
 	}
+
 
 	function update_principal_faxes($fax_key) {
 
@@ -5997,19 +6098,19 @@ class Customer extends DB_Table {
 			$fax=new Telecom($fax_key);
 			$fax->editor=$this->editor;
 			$sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Fax'  "
-				,$this->id
-				,$main_fax_key
+				, $this->id
+				, $main_fax_key
 			);
 			mysql_query($sql);
 
 			$sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
-				,$this->id
-				,$fax->id
+				, $this->id
+				, $fax->id
 			);
 			mysql_query($sql);
 
 
-			$sql=sprintf("update `Contact Dimension` set  `Contact Main Fax Key`=%d where `Contact Key`=%d",$fax->id,$this->id);
+			$sql=sprintf("update `Contact Dimension` set  `Contact Main Fax Key`=%d where `Contact Key`=%d", $fax->id, $this->id);
 			$this->data['Contact Main Fax Key']=$fax->id;
 			mysql_query($sql);
 			$this->updated=true;
@@ -6024,10 +6125,11 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_principal_telephone_key() {
 
 		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Telephone'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
-			,$this->id );
+			, $this->id );
 
 		//print "$sql\n";
 
@@ -6040,11 +6142,12 @@ class Customer extends DB_Table {
 
 		return $main_telephone_key;
 	}
+
 
 	function get_principal_mobile_key() {
 
 		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
-			,$this->id );
+			, $this->id );
 
 		//print "$sql\n";
 
@@ -6058,10 +6161,11 @@ class Customer extends DB_Table {
 		return $main_telephone_key;
 	}
 
+
 	function get_principal_fax_key() {
 
 		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Fax'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
-			,$this->id );
+			, $this->id );
 
 		//print "$sql\n";
 
@@ -6091,7 +6195,7 @@ class Customer extends DB_Table {
 
 		$exclude_orders=$this->get_order_in_process_keys();
 		if (count($exclude_orders)>0) {
-			$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
+			$where=sprintf("and `Order Key` not in(%s)", join($exclude_orders));
 		}else {
 			$where='';
 		}
@@ -6099,7 +6203,7 @@ class Customer extends DB_Table {
 		$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d  and `Order Dispatched Date`>=%s $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes'",
 			$this->id,
 
-			prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
+			prepare_mysql(date('Y-m-d', strtotime("now -30 day")).' 00:00:00')
 		);
 
 		//print $sql;
@@ -6125,7 +6229,7 @@ class Customer extends DB_Table {
 		if ($state) {
 			$exclude_orders=$this->get_order_in_process_keys();
 			if (count($exclude_orders)>0) {
-				$where=sprintf("and `Order Key` not in(%s)",join($exclude_orders));
+				$where=sprintf("and `Order Key` not in(%s)", join($exclude_orders));
 			}else {
 				$where='';
 			}
@@ -6134,7 +6238,7 @@ class Customer extends DB_Table {
 			$sql=sprintf("select `Order Dispatched Date` as date from `Order Dimension` where `Order Customer Key`=%d  $where and `Order Current Dispatch State`='Dispatched' and `Order Invoiced`='Yes' order by `Order Dispatched Date` desc  ",
 				$this->id,
 
-				prepare_mysql(date('Y-m-d',strtotime("now -30 day")).' 00:00:00')
+				prepare_mysql(date('Y-m-d', strtotime("now -30 day")).' 00:00:00')
 			);
 
 			$res2=mysql_query($sql);
@@ -6162,7 +6266,7 @@ class Customer extends DB_Table {
 	function badge_state_freedom() {
 
 
-		$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'free-%%' ",$this->id);
+		$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'free-%%' ", $this->id);
 
 
 
@@ -6175,13 +6279,13 @@ class Customer extends DB_Table {
 			return true;
 		}
 
-		$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'freeinc-%%' ",$this->id);
+		$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'freeinc-%%' ", $this->id);
 		$res=mysql_query($sql);
 		if (mysql_num_rows($res)) {
 			return true;
 		}
 
-		$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'style-%%' ",$this->id);
+		$sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'style-%%' ", $this->id);
 		$res=mysql_query($sql);
 		if (mysql_num_rows($res)) {
 			return true;
@@ -6191,6 +6295,8 @@ class Customer extends DB_Table {
 
 
 	}
+
+
 	function badge_caption_freedom($state) {
 
 
@@ -6219,7 +6325,7 @@ class Customer extends DB_Table {
 
 
 	function badge_caption_profile($state) {
-		return percentage(0,1,0);
+		return percentage(0, 1, 0);
 	}
 
 
@@ -6255,6 +6361,7 @@ class Customer extends DB_Table {
 		}
 
 	}
+
 
 	function badge_info($badge_key) {
 
@@ -6351,9 +6458,9 @@ class Customer extends DB_Table {
 		}
 
 		if ($state) {
-			$html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>',$badge_data[$badge_key]['Badge Image On'],$caption);
+			$html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>', $badge_data[$badge_key]['Badge Image On'], $caption);
 		} else {
-			$html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>',$badge_data[$badge_key]['Badge Image Off'],$caption);
+			$html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>', $badge_data[$badge_key]['Badge Image Off'], $caption);
 
 		}
 
@@ -6399,6 +6506,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_web_data() {
 
 		$failed_logins=0;
@@ -6426,6 +6534,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_category_data() {
 		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
 
@@ -6450,11 +6559,12 @@ class Customer extends DB_Table {
 			else {
 				$value=$row['Category Label'];
 			}
-			$category_data[]=array('root_label'=>$root_label,'root_code'=>$root_code,'label'=>$row['Category Label'],'label'=>$row['Category Code'], 'value'=>$value);
+			$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value);
 		}
 
 		return $category_data;
 	}
+
 
 	function update_rankings() {
 		$total_customers_with_less_invoices=0;
@@ -6555,6 +6665,7 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function update_postal_address() {
 		$store=new Store($this->data['Customer Store Key']);
 		$locale=$store->data['Store Locale'];
@@ -6572,7 +6683,7 @@ class Customer extends DB_Table {
 
 		}
 		if ($postal_address!='')$postal_address.=$separator;
-		$postal_address.=$address->display('postal',$locale);
+		$postal_address.=$address->display('postal', $locale);
 
 		$this->data['Customer Main Postal Address']=_trim($postal_address);
 
@@ -6600,10 +6711,14 @@ class Customer extends DB_Table {
 		}
 		return $pending_amount;
 	}
+
+
 	function get_formated_pending_payment_amount_from_account_balance() {
-		return money($this->get_pending_payment_amount_from_account_balance(),$this->data['Customer Currency Code']);
+		return money($this->get_pending_payment_amount_from_account_balance(), $this->data['Customer Currency Code']);
 	}
-	function get_number_saved_credit_cards($billing_to_key,$ship_to_key) {
+
+
+	function get_number_saved_credit_cards($billing_to_key, $ship_to_key) {
 
 		$number_saved_credit_cards=0;
 		$sql=sprintf("select count(*) as number from `Customer Credit Card Token Dimension` where `Customer Key`=%d and `Billing To Key`=%d and `Ship To Key`=%d and `Valid Until`>NOW()",
@@ -6620,7 +6735,8 @@ class Customer extends DB_Table {
 		return $number_saved_credit_cards;
 	}
 
-	function get_saved_credit_cards($billing_to_key,$ship_to_key) {
+
+	function get_saved_credit_cards($billing_to_key, $ship_to_key) {
 
 		$key=md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
 
@@ -6634,7 +6750,7 @@ class Customer extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$_card_data=json_decode(AESDecryptCtr($row['Metadata'],$key,256),true);
+			$_card_data=json_decode(AESDecryptCtr($row['Metadata'], $key, 256), true);
 			$_card_data['id']=$row['Customer Credit Card Token Key'];
 
 			$card_data[]=$_card_data;
@@ -6644,6 +6760,7 @@ class Customer extends DB_Table {
 		return $card_data;
 
 	}
+
 
 	function delete_credit_card($card_key) {
 
@@ -6684,7 +6801,8 @@ class Customer extends DB_Table {
 
 	}
 
-	function get_credit_card_token($card_key,$billing_to_key,$ship_to_key) {
+
+	function get_credit_card_token($card_key, $billing_to_key, $ship_to_key) {
 
 		$key=md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
 
@@ -6699,7 +6817,7 @@ class Customer extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$_card_data=json_decode(AESDecryptCtr($row['Metadata'],$key,256),true);
+			$_card_data=json_decode(AESDecryptCtr($row['Metadata'], $key, 256), true);
 			$token=$_card_data['Token'];
 
 		}
@@ -6708,7 +6826,8 @@ class Customer extends DB_Table {
 
 	}
 
-	function save_credit_card($vault,$card_info,$billing_to_key,$ship_to_key) {
+
+	function save_credit_card($vault, $card_info, $billing_to_key, $ship_to_key) {
 		include_once 'aes.php';
 
 		$key=md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
@@ -6717,14 +6836,14 @@ class Customer extends DB_Table {
 			json_encode(
 				array(
 					'Token'=>$card_info['token'],
-					'Card Type'=>preg_replace('/\s/','',$card_info['cardType']),
-					'Card Number'=>substr($card_info['bin'],0,4).' ****  **** '.$card_info['last4'],
+					'Card Type'=>preg_replace('/\s/', '', $card_info['cardType']),
+					'Card Number'=>substr($card_info['bin'], 0, 4).' ****  **** '.$card_info['last4'],
 					'Card Expiration'=>$card_info['expirationMonth'].'/'.$card_info['expirationYear'],
 					'Card CVV Length'=>($card_info['cardType']=='American Express'?4:3),
 					'Random'=>password_hash(time(), PASSWORD_BCRYPT)
 
 				)
-			),$key,256);
+			), $key, 256);
 
 
 		$sql=sprintf("insert into `Customer Credit Card Token Dimension` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`,`Metadata`,`Created`,`Updated`,`Valid Until`,`Vault`) values (%d,%d,%d,%s,%s,%s,%s,%s,%s)
@@ -6737,16 +6856,16 @@ class Customer extends DB_Table {
 			prepare_mysql($card_data),
 			prepare_mysql(gmdate('Y-m-d H:i:s')),
 			prepare_mysql(gmdate('Y-m-d H:i:s')),
-			prepare_mysql(gmdate('Y-m-d H:i:s',strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month' ))),
+			prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month' ))),
 			prepare_mysql($vault),
 
 			prepare_mysql($card_data),
 			prepare_mysql(gmdate('Y-m-d H:i:s')),
-			prepare_mysql(gmdate('Y-m-d H:i:s',strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month' )))
+			prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month' )))
 
 		);
 		mysql_query($sql);
-		
+
 	}
 
 
@@ -6773,21 +6892,22 @@ class Customer extends DB_Table {
 
 	}
 
+
 	function get_correlation_info() {
 		$correlation_msg='';
 		$msg='';
-		$sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200",$this->id);
+		$sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200", $this->id);
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
-			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$this->id,$row2['Customer B Key'],sprintf("%05d",$row2['Customer B Key']));
+			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer B Key'], sprintf("%05d", $row2['Customer B Key']));
 		}
-		$sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200",$this->id);
+		$sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200", $this->id);
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_assoc($res2)) {
-			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>",$this->id,$row2['Customer A Key'],sprintf("%05d",$row2['Customer A Key']));
+			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer A Key'], sprintf("%05d", $row2['Customer A Key']));
 		}
 
-		$msg=preg_replace('/^,/','',$msg);
+		$msg=preg_replace('/^,/', '', $msg);
 		if ($msg!='') {
 			$correlation_msg='<p>'._('Potential duplicated').': '.$msg.'</p>';
 
@@ -6797,5 +6917,8 @@ class Customer extends DB_Table {
 
 	}
 
+
 }
+
+
 ?>

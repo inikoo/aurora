@@ -203,18 +203,18 @@ abstract class DB_Table {
 
 			$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $r['Custom Field Key'], $this->id);
 		}
-		else{
+		else {
 			//$sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
-            
-            $sql=sprintf("select `%s` as value from `%s Dimension` where `%s`=%d ",
+
+			$sql=sprintf("select `%s` as value from `%s Dimension` where `%s`=%d ",
 				addslashes($field),
 				addslashes($this->table_name),
 				addslashes($key_field),
 				$this->id
-            
-            );
-        }
-        
+
+			);
+		}
+
 		//print $sql;
 
 		if ($row = $this->db->query($sql)->fetch()) {
@@ -252,13 +252,13 @@ abstract class DB_Table {
 		//print $sql;
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
-        $affected=$update_op->rowCount();
-		
-		
-		
+		$affected=$update_op->rowCount();
+
+
+
 		if ($affected==0) {
 			$this->data[$field]=$value;
-			
+
 		}
 		else {
 
@@ -1031,6 +1031,12 @@ abstract class DB_Table {
 
 	function get_name() {
 		return '';
+
+	}
+
+
+	function get_object_name() {
+		return $this->table_name;
 
 	}
 

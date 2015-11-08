@@ -964,6 +964,13 @@ function parse_request($_data, $db) {
 			$module='hr';
 			$section='employees';
 
+			if (isset($view_path[0])) {
+				if ( $view_path[0]=='new_timesheet_record') {
+					$parent='hr';
+					$section='new_timesheet_record';
+				}
+			}
+
 
 
 
@@ -973,7 +980,8 @@ function parse_request($_data, $db) {
 			$module='hr';
 			$section='employee';
 			$object='employee';
-			$parent='none';
+			$parent='account';
+			$parent_key=1;
 			if (isset($view_path[0]))
 				$key=$view_path[0];
 
