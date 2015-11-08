@@ -30,7 +30,7 @@ $object_fields=array(
 			),
 
 			array(
-				'class'=>'string',
+				'edit'=>'anything',
 				'id'=>'Customer_Registration_Number',
 				'value'=>$customer->get('Customer Registration Number'),
 				'label'=>_('Registration number')
@@ -120,6 +120,10 @@ $object_fields=array(
 		)
 	),
 );
+
+$smarty->assign('object', $state['_object']);
+$smarty->assign('key', $state['key']);
+
 $smarty->assign('object_fields',$object_fields);
 
 $html=$smarty->fetch('object_fields.tpl');

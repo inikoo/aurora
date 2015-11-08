@@ -50,7 +50,7 @@ function get_employee_navigation($data) {
 	if ($data['parent']) {
 
 		switch ($data['parent']) {
-		case 'none':
+		case 'account':
 			$tab='employees';
 			$_section='employees';
 			break;
@@ -200,7 +200,7 @@ function get_employee_navigation($data) {
 
 
 
-	$title= '<span class="id">'.$object->get('Staff Name').' ('.$object->get_formated_id().')</span>';
+	$title= '<span class="id Staff_Name">'.$object->get('Staff Name').'</span> <span class="id">('.$object->get_formated_id().')</span>';
 
 
 	$_content=array(

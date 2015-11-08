@@ -75,9 +75,10 @@ table{ border-collapse: collapse}
 }
 
 
+
 .panel{ border:1px solid #ccc;border-top:none;padding:0px;background-color:#fff ;}
 
-
+.fa{;@include unselectable ;}
 a {color:#555}
 .link{cursor:pointer}
 
@@ -446,9 +447,121 @@ vertical-align: top;
     }
     
     
-    .label{float:left;min-width:300px;padding:7px  0px}
-    .value{float:left;min-width:300px;padding:7px  0px}
+    .label{float:left;min-width:280px;padding:7px  0px}
     
+    .value{float:left;min-width:300px;padding:7px  0px;
+    .fa.edit{cursor:pointer;opacity:.2;
+        transition: opacity .2s ease-in-out;
+         &:hover{opacity:1}
+    }
+    .fa.reset{cursor:pointer;opacity:.9;
+        transition: opacity .2s ease-in-out;
+         &:hover{opacity:1}
+    }
+    
+    input{
+    
+    position: absolute;
+   
+ 
+  width: 206px;
+
+  padding: 4px 6px;
+  font-weight: normal;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fff;
+  
+  border:1px solid #ccc;
+    
+     margin: 0px;
+     
+  font-family: inherit;
+  font-size: 100%;
+  line-height: normal;
+    
+    
+    outline: none;
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+  -webkit-appearance: none;
+  
+  &.option_input_field{padding-left:16px}
+    
+    }
+    
+     .fa.save{
+      margin-left:226px;opacity:.4;
+    
+    }
+    
+    .changed{
+         .fa.save{opacity:1;cursor:pointer;}
+    }
+    .invalid{
+         .fa.save,.msg{color:tomato;}
+         .msg{margin-left:5px}
+    }
+    
+     .waiting{
+       }
+    
+    
+    .msg{
+    margin-left:30px;
+    &.success{color:#26A65B}
+    &.error{color:tomato}
+    }
+    
+    }
+    
+
+}
+
+
+
+
+.dropcontainer {
+position: relative;
+color: #777;
+width:460px;margin-left:18px;margin-top:5px;
+ ul {
+    border: 1px solid #ccc;
+    border-top: none;
+    background: #fff;
+    list-style-type: none;
+    padding: 10px 10px 10px 10px;
+    margin: 0;
+    width: 50%;
+    z-index: 100;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    li {
+        padding: 5px;cursor:pointer;
+
+        &:hover {
+            background: #f5f5f5;
+            outline: none;
+        }
+        
+        &.selected{
+        
+            background: #e3e2e2;
+            outline: none;cursor:normal;
+            
+        }
+
+        .current_mark{font-size:50%;position:relative;bottom:2px;margin-right:5px;visibility:hidden;opacity:.5}
+        .current_mark.current{visibility:visible}
+
+}
+
+
+}
+
 
 }
 

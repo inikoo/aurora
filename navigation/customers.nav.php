@@ -701,9 +701,9 @@ function get_customer_navigation($data) {
 
 
 	$customer=new Customer($data['key']);
-	
-	if(!$customer->id){
-	    return;
+
+	if (!$customer->id) {
+		return;
 	}
 
 	$block_view=$data['section'];

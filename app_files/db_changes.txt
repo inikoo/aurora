@@ -45,5 +45,32 @@ ALTER TABLE `Payment History Bridge`
   ADD KEY `Deletable` (`Deletable`),
   ADD KEY `Type` (`Type`);
   
+//======^ done  
   
+CREATE TABLE IF NOT EXISTS `User API Dimension` (
+  `User API Key` int(11) NOT NULL,
+  `User Key` mediumint(8) unsigned NOT NULL,
+  `Valid Until` datetime DEFAULT NULL,
+  `Valid IP` varchar(64) DEFAULT NULL,
+  `API Public Key` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `User API Dimension`
+  ADD PRIMARY KEY (`User API Key`);
+ALTER TABLE `User API Dimension`
+  MODIFY `User API Key` int(11) NOT NULL AUTO_INCREMENT;
+  
+  CREATE TABLE IF NOT EXISTS `Staff Timesheet Dimension` (
+  `Staff Timesheet Key` mediumint(9) NOT NULL,
+  `Staff Key` mediumint(8) unsigned NOT NULL,
+  `Date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Staff Timesheet Dimension`
+  ADD PRIMARY KEY (`Staff Timesheet Key`);
+ALTER TABLE `Staff Timesheet Dimension`
+  MODIFY `Staff Timesheet Key` mediumint(9) NOT NULL AUTO_INCREMENT;
+  
+ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM('Employee','Volunteer','Contractor','TemporalWorker','WorkExperience') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
+  
+  
+
   

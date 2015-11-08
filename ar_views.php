@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
+require_once 'utils/object_functions.php';
 
 
 
@@ -32,94 +33,9 @@ case 'views':
 			'otf'=>array('type'=>'string', 'optional'=>true),
 		));
 	$state=parse_request($data, $db);
-
 	if ($state['object']!='') {
+		$_object=get_object($state['object'], $state['key']);
 
-		switch ($state['object']) {
-		case 'account':
-
-			$_object=$account;
-			break;
-		case 'customer':
-			$_object=new Customer($state['key']);
-			break;
-		case 'store':
-			include_once 'class.Store.php';
-			$_object=new Store($state['key']);
-			break;
-		case 'department':
-			include_once 'class.Department.php';
-			$_object=new Department($state['key']);
-			break;
-		case 'family':
-			include_once 'class.Family.php';
-			$_object=new Family($state['key']);
-			break;
-		case 'product':
-			include_once 'class.Product.php';
-			$_object=new Product('pid', $state['key']);
-			break;
-		case 'order':
-			include_once 'class.Order.php';
-			$_object=new Order($state['key']);
-			break;
-		case 'invoice':
-			include_once 'class.Invoice.php';
-			$_object=new Invoice($state['key']);
-			break;
-		case 'delivery_note':
-		case 'pick_aid':
-		case 'pack_aid':
-			include_once 'class.DeliveryNote.php';
-			$_object=new DeliveryNote($state['key']);
-			break;
-		case 'website':
-			$_object=new Site($state['key']);
-			break;
-		case 'page':
-			$_object=new Page($state['key']);
-
-			break;
-		case 'warehouse':
-			include_once 'class.Warehouse.php';
-			$_object=new Warehouse($state['key']);
-			break;
-		case 'part':
-			include_once 'class.Part.php';
-			$_object=new Part($state['key']);
-			break;
-		case 'supplier':
-			include_once 'class.Supplier.php';
-			$_object=new Supplier($state['key']);
-			break;
-		case 'employee':
-			include_once 'class.Staff.php';
-			$_object=new Staff($state['key']);
-			break;
-		case 'user':
-			include_once 'class.User.php';
-			$_object=new User($state['key']);
-			break;
-		case 'list':
-			include_once 'class.List.php';
-			$_object=new SubjectList($state['key']);
-			break;
-		case 'payment_service_provider':
-			require_once "class.Payment_Service_Provider.php";
-			$_object=new Payment_Service_Provider($state['key']);
-			break;
-		case 'payment_account':
-			require_once "class.Payment_Account.php";
-			$_object=new Payment_Account($state['key']);
-			break;
-		case 'payment':
-			require_once "class.Payment.php";
-			$_object=new Payment($state['key']);
-			break;
-		default:
-			exit('need to complete E1 '.$state['object']);
-			break;
-		}
 		if (!$_object->id) {
 
 
@@ -132,8 +48,8 @@ case 'views':
 			$state['_object']=$_object;
 		}
 
-
 	}
+
 
 	switch ($state['parent']) {
 
@@ -631,6 +547,7 @@ function get_navigation($data) {
 		switch ($data['section']) {
 
 		case ('employees'):
+		case ('new_timesheet_record'):
 			return get_employees_navigation($data);
 			break;
 		case ('contractors'):
@@ -1045,13 +962,13 @@ function get_view_position($data) {
 		case 'employees':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 			break;
-			
+
 		case 'employee':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 
-			$branch[]=array('label'=>_('Employee').' <span class="id">'.$data['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$data['_object']->id);
+			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$data['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$data['_object']->id);
 
-			break;	
+			break;
 		}
 		break;
 	case 'inventory':

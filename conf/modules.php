@@ -789,7 +789,8 @@ $modules=array(
 				'tabs'=>array(
 					'timesheet_record.new'=>array('label'=>_('New timesheet record'), 'title'=>_('New timesheet record')),
 					'timesheet_record.import'=>array('label'=>_('Import'), 'title'=>_('Import timesheet record')),
-					'timesheet_record.cancel'=>array('class'=>'right','label'=>_('Cancel'), 'title'=>_('Cancel'),'reference'=>'hr'),
+					'timesheet_record.api'=>array('label'=>_('API'), 'title'=>_('API')),
+					'timesheet_record.cancel'=>array('class'=>'right','label'=>_('Cancel'), 'title'=>_('Cancel'),'icon'=>'sign-out fa-flip-horizontal','reference'=>'hr'),
 
 				)
 				
