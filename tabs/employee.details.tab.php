@@ -90,10 +90,12 @@ $object_fields=array(
 			array(
 
 				'id'=>'Staff_Valid_From',
-				'edit'=>'string',
+				'edit'=>'date',
+				'time'=>'09:00:00',
 				'value'=>$employee->get('Staff Valid From'),
 				'formated_value'=>$employee->get('Valid From'),
-				'label'=>_('Working from')
+				'label'=>_('Working from'),
+				'invalid_msg'=>get_invalid_message('date'),
 			),
 
 
@@ -103,6 +105,8 @@ $object_fields=array(
 
 
 );
+
+
 $smarty->assign('state', $state);
 
 $smarty->assign('object_fields', $object_fields);
