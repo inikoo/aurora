@@ -8,16 +8,16 @@ function key_press(e) {
 
     switch (e.keyCode) {
     case 37:
-        navigate(e,'left');
+        navigate(e, 'left');
         break;
     case 38:
-        navigate(e,'up');
+        navigate(e, 'up');
     case 39:
-        navigate(e,'right');
+        navigate(e, 'right');
         break
         break;
     case 40:
-        navigate(e,'down');
+        navigate(e, 'down');
         break
     case 13:
         enter_hit(e)
@@ -28,13 +28,13 @@ function key_press(e) {
 
 }
 
-function navigate(e,direction) {
+function navigate(e, direction) {
 
     if (key_scope) {
 
         switch (key_scope.type) {
         case 'option':
-            navigate_option(e,key_scope.field, direction);
+            navigate_option(e, key_scope.field, direction);
             break;
 
 
@@ -45,7 +45,7 @@ function navigate(e,direction) {
     }
 }
 
-function navigate_option(e,field, direction) {
+function navigate_option(e, field, direction) {
 
     switch (direction) {
     case 'up':
@@ -57,7 +57,7 @@ function navigate_option(e,field, direction) {
         break;
 
     case 'down':
-     e.preventDefault();
+        e.preventDefault();
         var element = $('#' + field + '_options  li.selected').next()
 
         if (element.attr('id') != undefined) {
@@ -84,7 +84,7 @@ function enter_hit(e) {
         case 'int':
         case 'smallint':
         case 'mediumint':
-case 'date':
+        case 'date':
             save_field(key_scope.object, key_scope.key, key_scope.field)
             break;
 

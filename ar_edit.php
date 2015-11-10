@@ -81,11 +81,12 @@ function edit_field($data, $db, $user) {
 			'state'=>200,
 			'msg'=>$msg,
 			'formated_value'=>$object->get($formated_field),
-
-			'value'=>$object->get($field)
-
-
+			'value'=>$object->get($field),
+			'other_fields'=>$object->get_other_fields_update_info()
 		);
+        
+        
+       
 
 	}
 	echo json_encode($response);

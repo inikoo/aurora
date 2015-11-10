@@ -12,6 +12,8 @@
 	{foreach from=$field_group.fields item=field name=fields} 
 	
 	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
+		{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
+
 	{if isset($field.server_validation)}{assign "server_validation" $field.server_validation}{else}{assign "server_validation" ""}{/if} 
 	{if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" "{t}Invalid value{/t}"}{/if} 
 	
@@ -22,14 +24,14 @@
 	{else} 
 	<span id="{$field.id}__invalid_msg" class="hide">{$invalid_msg}</span> 
 	{/if} 
-	<tr  class="{if $smarty.foreach.fields.last}last{/if}" >
+	<tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}" >
 		<td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		<td class="show_buttons" ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide" onclick="close_edit_field('{$field.id}')"></i> <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit==''}invisible{/if}" onclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> </td>
 		
 		
 		<td  id="{$field.id}_container" class="value {$field.class}" field_type='{$edit}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> <span id="{$field.id}_editor" class=""> 
 		
-					 <span id="{$field.id}_value" class="{$field.id}" ondblclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
+		<span id="{$field.id}_value" class="{$field.id}" ondblclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
 
 		{if $edit=='string' or $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
 		

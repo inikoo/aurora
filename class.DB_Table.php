@@ -1091,6 +1091,16 @@ abstract class DB_Table {
 	}
 
 
+	function get_other_fields_update_info() {
+
+		if (isset($this->other_fields_updated)) {
+			return $this->other_fields_updated;
+		}else {
+			return false;
+		}
+	}
+
+
 }
 
 
