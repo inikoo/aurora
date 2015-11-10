@@ -97,6 +97,16 @@ $object_fields=array(
 				'label'=>_('Working from'),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
+			array(
+                'render'=>($employee->get('Staff Currently Working')=='Yes'?false:true),
+				'id'=>'Staff_Valid_To',
+				'edit'=>'date',
+				'time'=>'17:00:00',
+				'value'=>$employee->get('Staff Valid To'),
+				'formated_value'=>$employee->get('Valid To'),
+				'label'=>_('End of employement'),
+				'invalid_msg'=>get_invalid_message('date'),
+			),
 
 
 

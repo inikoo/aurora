@@ -81,12 +81,12 @@ class Staff extends DB_Table{
 		if (array_key_exists($key, $this->data))
 			return $this->data[$key];
 		switch ($key) {
-    
-        case ('Valid From'):
-        
-            return (($this->data['Staff Valid From']=='' or $this->data['Staff Valid From']=='0000-00-00 00:00:00') ?'':strftime("%Y-%m-%d",strtotime($this->data['Staff Valid From'])));
-            
-                break;
+
+		case ('Valid From'):
+		case ('Valid To'):
+			return ($this->data['Staff '.$key]=='' or $this->data['Staff '.$key]=='0000-00-00 00:00:00') ?'':strftime("%Y-%m-%d", strtotime($this->data['Staff '.$key]));
+
+			break;
 
 		case('Currently Working'):
 
@@ -430,19 +430,28 @@ class Staff extends DB_Table{
 	function update_is_working($value, $options) {
 
 
-		if ($value=='No' and $this->data['Staff Currently Working']=='Yes') {
 
-
-
-			$this->update_field('Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
-		}
 
 
 		$this->update_field('Staff Currently Working', $value, $options);
 
+		if ($value=='No' ) {
+			$this->update_field('Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
+		}else {
+			$this->update_field('Staff Valid To', '', 'no_history');
 
+		}
 
-
+		$this->other_fields_updated=array(
+			'Staff_Valid_To'=>array(
+				'field'=>'Staff_Valid_To',
+				'render'=>($this->get('Staff Currently Working')=='Yes'?false:true),
+				'value'=>$this->get('Staff Valid To'),
+				'formated_value'=>$this->get('Valid To'),
+				
+				
+			)
+		);
 
 	}
 

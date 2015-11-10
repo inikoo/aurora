@@ -59,10 +59,10 @@ function close_edit_field(field) {
 
     var type = $('#' + field + '_container').attr('field_type')
 
-        $('#' + field + '_value').removeClass('hide')
-        $('#' + field + '_edit_button').removeClass('hide')
-        $('#' + field + '_reset_button').addClass('hide')
-        $('#' + field + '_save_button').addClass('hide')
+    $('#' + field + '_value').removeClass('hide')
+    $('#' + field + '_edit_button').removeClass('hide')
+    $('#' + field + '_reset_button').addClass('hide')
+    $('#' + field + '_save_button').addClass('hide')
     switch (type) {
     case 'string':
     case 'anything':
@@ -78,17 +78,17 @@ function close_edit_field(field) {
 
         break;
     case 'option':
-      
+
 
         $('#' + field + '_options').addClass('hide')
         $('#' + field + '_formated').addClass('hide')
 
         break;
-        case 'date':
+    case 'date':
         $('#' + field + '_formated').addClass('hide')
         $('#' + field + '_datepicker').addClass('hide')
 
- 
+
     default:
 
     }
@@ -157,7 +157,7 @@ function on_changed_value(field, new_value) {
 
 
         if (validation.class == 'invalid') {
-console.log('#' + field + '_' + validation.type + '_invalid_msg')
+            console.log('#' + field + '_' + validation.type + '_invalid_msg')
             var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
         } else {
             var msg = '';
@@ -192,9 +192,13 @@ function save_field(object, key, field) {
 
 
     var value = field_element.val()
-
+    if (type == 'date') {
+        value = value + ' ' + $('#' + field + '_time').val()
+    }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+
+
     $.getJSON(request, function(data) {
         if (data.state == 200) {
 
@@ -206,7 +210,7 @@ function save_field(object, key, field) {
                 $('.' + field).html(data.formated_value)
 
             } else if (type == 'date') {
-                 $('.' + field).html(data.formated_value)
+                $('.' + field).html(data.formated_value)
 
             } else {
                 $('.' + field).html(data.value)
@@ -216,11 +220,52 @@ function save_field(object, key, field) {
 
             close_edit_field(field)
 
+            if (data.other_fields) {
+                for (var key in data.other_fields) {
+
+                    update_field(data.other_fields[key])
+
+                }
+            }
+
         } else if (data.state == 400) {
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
 
         }
     })
+
+
+}
+
+function update_field(data) {
+    var field = data.field
+    var type = $('#' + field + '_container').attr('field_type')
+    if (data.render) {
+        $('#' + field + '_field').removeClass('hide')
+    } else {
+        $('#' + field + '_field').addClass('hide')
+        close_edit_field(field)
+    }
+
+    if (type == 'date') {
+        $('.' + field).html(data.formated_value)
+
+
+        $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
+        $("#" + field).val(data.value)
+        $("#" + field + '_formated').val(data.formated_value)
+
+
+
+
+    }
+    if (type == 'option') {
+
+    } else {
+        $('.' + field).html(data.value_formated)
+        $("#" + field).val(data.value)
+
+    }
 
 
 }
