@@ -81,6 +81,12 @@ class Staff extends DB_Table{
 		if (array_key_exists($key, $this->data))
 			return $this->data[$key];
 		switch ($key) {
+    
+        case ('Valid From'):
+        
+            return (($this->data['Staff Valid From']=='' or $this->data['Staff Valid From']=='0000-00-00 00:00:00') ?'':strftime("%Y-%m-%d",strtotime($this->data['Staff Valid From'])));
+            
+                break;
 
 		case('Currently Working'):
 

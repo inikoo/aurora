@@ -115,6 +115,17 @@ function client_validation(type, value) {
         }
 
         break;
+        
+    case'date':
+   
+     if (value =='') {
+      
+            return {
+                class: 'invalid',
+                type: 'invalid'
+            }
+        }
+    break;    
 
     case 'email':
 

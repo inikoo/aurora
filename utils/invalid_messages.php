@@ -99,7 +99,12 @@ function get_invalid_message($type) {
 
 		);
 		break;
+case 'date':
+		$messages=array(
+			'invalid'=>_('Invalid date')
 
+		);
+		break;
 	}
 
 	return $messages;
