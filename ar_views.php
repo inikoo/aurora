@@ -151,7 +151,7 @@ default:
 
 function get_tab($tab, $subtab, $state=false) {
 
-	global $smarty, $user;
+	global $smarty, $user,$db;
 
 	$_tab=$tab;
 	$_subtab=$subtab;

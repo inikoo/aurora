@@ -76,6 +76,7 @@ function enter_hit(e) {
 
         switch (key_scope.type) {
         case 'option':
+        case 'radio_option':
         case 'string':
         case 'anything':
         case 'int_unsigned':

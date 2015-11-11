@@ -82,6 +82,12 @@ class Staff extends DB_Table{
 			return $this->data[$key];
 		switch ($key) {
 
+		case('Staff Position'):
+			return $this->get_positions();
+			break;
+		case('Position'):
+			return $this->get_formated_positions();
+			break;
 		case ('Valid From'):
 		case ('Valid To'):
 			return ($this->data['Staff '.$key]=='' or $this->data['Staff '.$key]=='0000-00-00 00:00:00') ?'':strftime("%Y-%m-%d", strtotime($this->data['Staff '.$key]));
@@ -448,8 +454,8 @@ class Staff extends DB_Table{
 				'render'=>($this->get('Staff Currently Working')=='Yes'?false:true),
 				'value'=>$this->get('Staff Valid To'),
 				'formated_value'=>$this->get('Valid To'),
-				
-				
+
+
 			)
 		);
 
@@ -463,7 +469,25 @@ class Staff extends DB_Table{
 
 	function update_positions($values) {
 
-		foreach ($values as $key=>$value) {
+
+
+
+
+		$positions=array();
+		$sql=sprintf('select `Company Position Key` from `Company Position Dimension`  ');
+		foreach ($this->db->query($sql) as $row) {
+			$positions[$row['Company Position Key']]=false;
+		}
+
+		foreach (preg_split('/,/', $values) as $salected_position) {
+			$positions[$salected_position]['selected']=true;
+		}
+
+
+
+
+
+		foreach ($positions as $key=>$value) {
 			if ($value) {
 				$this->add_position($key);
 			}else {
@@ -501,6 +525,28 @@ class Staff extends DB_Table{
 
 
 
+	}
+
+
+	function get_positions() {
+		$positions='';
+		$sql=sprintf('select GROUP_CONCAT(`Company Position Key`) as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`) where  `Staff Key`=%d ', $this->id);
+
+		if ($row = $this->db->query($sql)->fetch()) {
+			$positions=$row['positions'];
+		}
+		return $positions;
+	}
+
+
+	function get_formated_positions() {
+
+		$positions='';
+		$sql=sprintf('select GROUP_CONCAT(`Company Position Title` separator ", ") as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  `Staff Key`=%d ', $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$positions=$row['positions'];
+		}
+		return $positions;
 	}
 
 
@@ -569,6 +615,19 @@ class Staff extends DB_Table{
 				);
 		}
 		return $email_keys;
+
+	}
+
+
+	function get_user_data() {
+
+		$sql=sprintf('select * from `User Dimension` where `User Type`="Staff" and `User Parent Key`=%d ', $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			foreach ($row as $key=>$value) {
+				$this->data['Staff '.$key]=$value;
+			}
+		}
 
 	}
 
