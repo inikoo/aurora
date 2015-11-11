@@ -823,6 +823,8 @@ a {
     .fa.save {
         margin-left: 5px;
         opacity: .4;
+        
+        &.radio_option {margin-left:265px;}
     }
     .changed {
         .fa.save {
@@ -854,10 +856,14 @@ a {
         margin-top: 0px;
     }
     
-    .dropcontainer {
-        position: relative;
+  
+     .dropcontainer{
+    
+        .checkbox{margin-right: 4px;}
+    
+       
         color: #777;
-        width: 517px;
+        width: 259px;
         margin-left: 5px;
         margin-top: -3px;
         ul {
@@ -867,8 +873,7 @@ a {
             list-style-type: none;
             padding: 5px 10px 5px 10px;
             margin: 0;
-            width: 50%;
-            z-index: 100;
+          
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
@@ -899,6 +904,10 @@ a {
                 }
             }
         }
+        &.radio_option{
+          margin-top: -30px;
+         ul{ border-top: 1px solid #ccc;}
+         }
     }
 }
 

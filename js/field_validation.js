@@ -7,9 +7,7 @@ function validate_field(field, new_value) {
 
     var field_data = $('#' + field + '_container')
 
-    var type = field_data.attr('field_type')
-
-    var validation = client_validation(type, new_value)
+    var validation = client_validation(field_data.attr('field_type'), field_data.attr('required'), new_value)
 
     if (validation.class == 'valid' && field_data.attr('server_validation')) {
 
@@ -28,12 +26,22 @@ function validate_field(field, new_value) {
 }
 
 
-function client_validation(type, value) {
+function client_validation(type, required, value) {
 
     var valid_state = {
         class: 'valid',
         type: ''
     }
+
+
+    if (value == '' && required) {
+        return {
+            class: 'invalid',
+            type: 'empty'
+        }
+
+    }
+
 
     switch (type) {
     case 'smallint_unsigned':
@@ -106,26 +114,10 @@ function client_validation(type, value) {
 
         break;
     case 'string':
-
-        if (value == '') {
-            return {
-                class: 'invalid',
-                type: ''
-            }
-        }
-
         break;
-        
-    case'date':
-   
-     if (value =='') {
-      
-            return {
-                class: 'invalid',
-                type: 'invalid'
-            }
-        }
-    break;    
+
+    case 'date':
+        break;
 
     case 'email':
 

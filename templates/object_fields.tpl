@@ -12,37 +12,37 @@
 	{foreach from=$field_group.fields item=field name=fields} 
 	
 	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
-		{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
+	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
+	{if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if} 
 
 	{if isset($field.server_validation)}{assign "server_validation" $field.server_validation}{else}{assign "server_validation" ""}{/if} 
-	{if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" "{t}Invalid value{/t}"}{/if} 
+	{if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" ""}{/if} 
 	
 	{if isset($field.invalid_msg)} 
 	{foreach from=$field.invalid_msg item=msg key=msg_key } 
 	<span id="{$field.id}_{$msg_key}_invalid_msg" class="hide">{$msg}</span> 
 	{/foreach} 
-	{else} 
-	<span id="{$field.id}__invalid_msg" class="hide">{$invalid_msg}</span> 
 	{/if} 
+	<span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
+	
 	<tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}" >
 		<td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		<td class="show_buttons" ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide" onclick="close_edit_field('{$field.id}')"></i> <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit==''}invisible{/if}" onclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> </td>
-		
-		
-		<td  id="{$field.id}_container" class="value {$field.class}" field_type='{$edit}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> <span id="{$field.id}_editor" class=""> 
-		
-		<span id="{$field.id}_value" class="{$field.id}" ondblclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
+		<td  id="{$field.id}_container" class="value {$field.class}" required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> <span id="{$field.id}_editor" class=""> 
+		<span id="{$field.id}_formated_value" class="{$field.id}" ondblclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
+		<span id="{$field.id}_value" class="hide" >{$field.value}</span>
 
 		{if $edit=='string' or $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
 		
 	
 		<input id="{$field.id}" class="input_field hide" value="{$field.value}" />
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
-		
+		<span id="{$field.id}_msg" class="msg"></span> 
 		{elseif $edit=='option' } 
 		<input id="{$field.id}" type="hidden" value="{$field.value}" />
 		<input id="{$field.id}_formated"  class="option_input_field hide" value="{$field.formated_value}" readonly />
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_options" class="dropcontainer hide">
 			<ul>
 				{foreach from=$field.options item=option key=value} 
@@ -50,18 +50,33 @@
 				{/foreach} 
 			</ul>
 		</div>
+
+
+		{elseif $edit=='radio_option' } 
+		
+		<input id="{$field.id}" type="hidden" value="{$field.value}" />
+		<input id="{$field.id}_formated"  type="hidden" class="option_input_field hide" value="{$field.formated_value}" readonly />
+		<i  id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
+        <span id="{$field.id}_msg" class="msg"></span> 
+		<div id="{$field.id}_options" class="dropcontainer radio_option hide" >
+			<ul>
+				{foreach from=$field.options item=option key=value} 
+				<li id="{$field.id}_option_{$value}" label="{$option.label}" value="{$value}" is_selected="{$option.selected}" onclick="select_radio_option('{$field.id}','{$value}','{$option.label}' )"><i class="fa fa-fw checkbox {if $option.selected}fa-check-square-o{else}fa-square-o{/if}"></i> {$option.label} <i class="fa fa-circle fw current_mark {if $option.selected}current{/if}"></i></li>
+				{/foreach} 
+			</ul>
+		</div>
+
 	
 		{elseif $edit=='date' } 
 		<input id="{$field.id}" type="hidden" value="{$field.value}" />
 		<input id="{$field.id}_time" type="hidden" value="{$field.time}" />
 		<input id="{$field.id}_formated" class="option_input_field hide"  value="{$field.formated_value}" />
-				<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
-
-		<div id="{$field.id}_datepicker" class="hide datepicker" >
-		</div>
+		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<div id="{$field.id}_datepicker" class="hide datepicker"></div>
 		<script>
 		
-	$(function() {
+		    $(function() {
     $("#{$field.id}_datepicker").datepicker({
         showOtherMonths: true,
         selectOtherMonths: true,
@@ -80,36 +95,28 @@
         }
     });
 });
+            $('#{$field.id}_formated').on('input', function() {
+                var date = chrono.parseDate($('#{$field.id}_formated').val())
 
-$('#{$field.id}_formated').on('input', function() {
-    var date = chrono.parseDate($('#{$field.id}_formated').val())
-
-    if (date == null) {
-        var value = '';
-    } else {
-        var value = date.toISOString().slice(0, 10)
-             $("#{$field.id}_datepicker").datepicker("setDate", date );
-
-    }
+                if (date == null) {
+                    var value = '';
+                } else {
+                    var value = date.toISOString().slice(0, 10)
+                    $("#{$field.id}_datepicker").datepicker("setDate", date );
+                }
     
     
     $('#{$field.id}').val(value)
     $('#{$field.id}').change();
 
 });
-
-$('#{$field.id}').on('change', function() {
-
-      on_changed_value('{$field.id}', $('#{$field.id}').val())
-    
-    //console.log('cc')
-    //console.log($(this).val())
-    //  $('#{$field.id}').val(value)
-});
+            $('#{$field.id}').on('change', function() {
+            on_changed_value('{$field.id}', $('#{$field.id}').val())
+            });
 
         </script> 
         {/if} 
-  	<span id="{$field.id}_msg" class="msg"></span> 
+  	    
   
 		
 	</td>

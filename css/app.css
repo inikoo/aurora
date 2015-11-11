@@ -650,6 +650,8 @@ a {
   .details_data .fa.save {
     margin-left: 5px;
     opacity: .4; }
+    .details_data .fa.save.radio_option {
+      margin-left: 265px; }
   .details_data .changed .fa.save {
     opacity: 1;
     cursor: pointer; }
@@ -667,11 +669,12 @@ a {
     margin-left: 5px;
     margin-top: 0px; }
   .details_data .dropcontainer {
-    position: relative;
     color: #777;
-    width: 517px;
+    width: 259px;
     margin-left: 5px;
     margin-top: -3px; }
+    .details_data .dropcontainer .checkbox {
+      margin-right: 4px; }
     .details_data .dropcontainer ul {
       border: 1px solid #ccc;
       border-top: none;
@@ -679,8 +682,6 @@ a {
       list-style-type: none;
       padding: 5px 10px 5px 10px;
       margin: 0;
-      width: 50%;
-      z-index: 100;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       box-sizing: border-box; }
@@ -705,6 +706,10 @@ a {
           opacity: .5; }
         .details_data .dropcontainer ul li .current_mark.current {
           visibility: visible; }
+    .details_data .dropcontainer.radio_option {
+      margin-top: -30px; }
+      .details_data .dropcontainer.radio_option ul {
+        border-top: 1px solid #ccc; }
 
 .datepicker {
   font-size: 109%; }

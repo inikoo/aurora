@@ -17,9 +17,9 @@ function get_invalid_message($type) {
 	case 'bigint_unsigned':
 		$messages=array(
 			'not_integer'=>sprintf(_('Value has to be a positive integer. e.g. %s'), rand(5, 25)),
-			'negative'=>sprintf(_('Value has to be a positive')),
+			'negative'=>_('Value has to be a positive'),
 			'too_big'=>sprintf(_('The maximum value is %s'), '18446744073709551615'),
-
+			'empty'=>_("Value can't be empty"),
 		);
 		break;
 	case 'int_unsigned':
@@ -27,6 +27,7 @@ function get_invalid_message($type) {
 			'not_integer'=>sprintf(_('Value has to be a positive integer. e.g. %s'), rand(5, 25)),
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '4294967295'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -35,6 +36,7 @@ function get_invalid_message($type) {
 			'not_integer'=>sprintf(_('Value has to be a positive integer. e.g. %s'), rand(5, 25)),
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '16777215'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -43,6 +45,7 @@ function get_invalid_message($type) {
 			'not_integer'=>sprintf(_('Value has to be a positive integer. e.g. %s'), rand(5, 25)),
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '65535'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -51,6 +54,7 @@ function get_invalid_message($type) {
 			'not_integer'=>sprintf(_('Value has to be a positive integer. e.g. %s'), rand(5, 25)),
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '255'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -60,6 +64,7 @@ function get_invalid_message($type) {
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '9223372036854775807'),
 			'too_small'=>sprintf(_('The minimum value is %s'), '-9223372036854775808'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -69,6 +74,7 @@ function get_invalid_message($type) {
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '2147483647'),
 			'too_small'=>sprintf(_('The minimum value is %s'), '-2147483648'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -78,6 +84,7 @@ function get_invalid_message($type) {
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '8388607'),
 			'too_small'=>sprintf(_('The minimum value is %s'), '-8388608'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -87,6 +94,7 @@ function get_invalid_message($type) {
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '32767'),
 			'too_small'=>sprintf(_('The minimum value is %s'), '-32768'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
@@ -96,12 +104,21 @@ function get_invalid_message($type) {
 			'negative'=>sprintf(_('Value has to be a positive')),
 			'too_big'=>sprintf(_('The maximum value is %s'), '127'),
 			'too_small'=>sprintf(_('The minimum value is %s'), '-128'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;
-case 'date':
+	case 'date':
 		$messages=array(
-			'invalid'=>_('Invalid date')
+			'invalid'=>_('Invalid date'),
+			'empty'=>_("Value can't be empty"),
+
+		);
+		break;
+	case 'string':
+		$messages=array(
+			'invalid'=>_('Invalid value'),
+			'empty'=>_("Value can't be empty"),
 
 		);
 		break;

@@ -9,7 +9,7 @@ function open_edit_field(object, key, field) {
     var type = $('#' + field + '_container').attr('field_type')
     var offset = $('#' + field + '_label').position();
 
-    $('#' + field + '_value').addClass('hide')
+    $('#' + field + '_formated_value').addClass('hide')
     $('#' + field + '_edit_button').addClass('hide')
     $('#' + field + '_reset_button').removeClass('hide')
 
@@ -35,11 +35,18 @@ function open_edit_field(object, key, field) {
     case 'option':
         $('#' + field + '_options').removeClass('hide')
         $('#' + field + '_formated').removeClass('hide')
+
+        break;
+    case 'radio_option':
+        $('#' + field + '_formated').removeClass('hide')
+        $('#' + field + '_options').removeClass('hide')
+
+        break;
     case 'date':
 
         $('#' + field + '_formated').removeClass('hide')
         $('#' + field + '_datepicker').removeClass('hide')
-
+        break;
 
 
 
@@ -59,7 +66,9 @@ function close_edit_field(field) {
 
     var type = $('#' + field + '_container').attr('field_type')
 
-    $('#' + field + '_value').removeClass('hide')
+    $('#' + field + '_formated_value').removeClass('hide')
+
+
     $('#' + field + '_edit_button').removeClass('hide')
     $('#' + field + '_reset_button').addClass('hide')
     $('#' + field + '_save_button').addClass('hide')
@@ -83,12 +92,54 @@ function close_edit_field(field) {
         $('#' + field + '_options').addClass('hide')
         $('#' + field + '_formated').addClass('hide')
 
+        $('#' + field + '_options li.selected').removeClass('selected')
+        $('#' + field + '_option_' + $('#' + field + '_value').html()).addClass('selected')
+
+        $('#' + field + '_formated').val($('#' + field + '_formated_value').html())
+        $("#" + field + '_editor').removeClass('changed')
+
+        break;
+    case 'radio_option':
+
+
+        $('#' + field + '_options').addClass('hide')
+        $('#' + field + '_formated').addClass('hide')
+
+
+
+
+        $('#' + field + '_options li').attr('is_selected', 0)
+        $('#' + field + '_options li  .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
+
+        var values = $('#' + field + '_value').html().split(",");
+
+        for (var i = 0; i < values.length; i++) {
+
+            $('#' + field + '_option_' + values[i]).attr('is_selected', 1)
+            $('#' + field + '_option_' + values[i] + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
+
+
+
+
+        }
+        $("#" + field + '_editor').removeClass('changed')
+
         break;
     case 'date':
         $('#' + field + '_formated').addClass('hide')
         $('#' + field + '_datepicker').addClass('hide')
 
 
+        $('#' + field + '_formated').val($('#' + field + '_formated_value').html())
+        $("#" + field + '_editor').removeClass('changed')
+        var date = chrono.parseDate($('#' + field + '_formated').val())
+
+        var value = date.toISOString().slice(0, 10)
+        $('#' + field + '_datepicker').datepicker("setDate", date);
+
+
+
+        break;
     default:
 
     }
@@ -122,14 +173,18 @@ function delayed_on_change_field(object, timeout) {
     }, timeout));
 }
 
-
 function on_changed_value(field, new_value) {
 
+    var type = $('#' + field + '_container').attr('field_type')
+
+    if (type == 'date') {
+        new_value = new_value + ' ' + $('#' + field + '_time').val()
+    }
+
     if (new_value != $('#' + field + '_value').html()) {
-        var changed = true
         $("#" + field + '_editor').addClass('changed')
+        
     } else {
-        var changed = false
         $("#" + field + '_editor').removeClass('changed')
 
     }
@@ -139,12 +194,12 @@ function on_changed_value(field, new_value) {
 
     $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
-
+    console.log(new_value + ' ' + $('#' + field + '_value').html())
 
 
     var validation = validate_field(field, new_value)
 
-
+console.log(validation.class)
 
     $('#' + field + '_editor').addClass(validation.class)
     if (validation.class == 'waiting') {
@@ -158,7 +213,13 @@ function on_changed_value(field, new_value) {
 
         if (validation.class == 'invalid') {
             console.log('#' + field + '_' + validation.type + '_invalid_msg')
-            var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
+            if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
+                var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
+            } else {
+                var msg = $('#invalid_msg').html()
+            }
+
+
         } else {
             var msg = '';
         }
@@ -166,9 +227,6 @@ function on_changed_value(field, new_value) {
     }
 
 }
-
-
-
 
 function select_option(field, value, label) {
     $('#' + field).val(value)
@@ -180,16 +238,50 @@ function select_option(field, value, label) {
 
 }
 
+function select_radio_option(field, value, label) {
+
+    var checkbox_option = $('#' + field + '_option_' + value);
+
+
+    if (checkbox_option.attr('is_selected') == 1) {
+        $('#' + field + '_option_' + value + ' .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
+        checkbox_option.attr('is_selected', 0)
+    } else {
+
+        $('#' + field + '_option_' + value + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
+        checkbox_option.attr('is_selected', 1)
+
+    }
+
+    var count_selected = 0;
+    var selected = [];
+
+
+
+    $('#' + field + '_options li').each(function() {
+        if ($(this).attr('is_selected') == 1) {
+            count_selected++;
+            selected.push($(this).attr('value'))
+        }
+    });
+
+
+    $('#' + field).val(selected.sort().join())
+    on_changed_value(field, selected.sort().join())
+
+
+}
+
+
 function save_field(object, key, field) {
-
+ console.log('xx')
     var type = $('#' + field + '_container').attr('field_type')
-
     var field_element = $('#' + field);
 
     if ($("#" + field + '_editor').hasClass('invalid') || !$("#" + field + '_editor').hasClass('changed')) {
+       
         return;
     }
-
 
     var value = field_element.val()
     if (type == 'date') {
@@ -197,14 +289,19 @@ function save_field(object, key, field) {
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
-
-
+   
     $.getJSON(request, function(data) {
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+            $('#' + field + '_value').html(data.value)
 
             if (type == 'option') {
+                $('#' + field + '_options li .current_mark').removeClass('current')
+                $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                $('.' + field).html(data.formated_value)
+
+            }else if (type == 'radio_option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
                 $('.' + field).html(data.formated_value)
@@ -233,11 +330,10 @@ function save_field(object, key, field) {
 
         }
     })
-
-
 }
 
 function update_field(data) {
+
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
     if (data.render) {
@@ -249,15 +345,9 @@ function update_field(data) {
 
     if (type == 'date') {
         $('.' + field).html(data.formated_value)
-
-
         $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
         $("#" + field).val(data.value)
         $("#" + field + '_formated').val(data.formated_value)
-
-
-
-
     }
     if (type == 'option') {
 
@@ -266,12 +356,8 @@ function update_field(data) {
         $("#" + field).val(data.value)
 
     }
-
-
 }
 
 function hide_edit_field_msg(field) {
-
     $('#' + field + '_msg').html('').addClass('hide')
-
 }
