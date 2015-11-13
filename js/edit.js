@@ -13,39 +13,63 @@ function open_edit_field(object, key, field) {
     $('#' + field + '_edit_button').addClass('hide')
     $('#' + field + '_reset_button').removeClass('hide')
 
-    $('#' + field).val($('#' + field + '_value').html())
-
+    // $('#' + field).val($('#' + field + '_value').html())
     $('#' + field + '_msg').html('').removeClass('success error')
-    $('#' + field + '_save_button').removeClass('hide')
 
     switch (type) {
     case 'string':
-    case 'anything':
+    case 'email':
+
     case 'int_unsigned':
     case 'smallint_unsigned':
     case 'mediumint_unsigned':
     case 'int':
     case 'smallint':
     case 'mediumint':
-
+    case 'pin':
+    case 'password':
         $('#' + field).removeClass('hide')
+        $('#' + field).focus()
+        $('#' + field + '_save_button').removeClass('hide')
+        break;
+    case 'telephone':
+        $('#' + field).removeClass('hide')
+        $('#' + field).focus()
+        $('#' + field + '_save_button').removeClass('hide')
+        $('.intl-tel-input .flag-container').css({
+            'display': 'block'
+        })
+
+
+
+        break;
+    case 'pin_with_confirmation':
+    case 'password_with_confirmation':
+        $('#' + field).removeClass('hide')
+        $('#' + field + '_confirm_button').removeClass('hide')
         $('#' + field).focus()
 
         break;
+
     case 'option':
         $('#' + field + '_options').removeClass('hide')
         $('#' + field + '_formated').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
+
 
         break;
     case 'radio_option':
         $('#' + field + '_formated').removeClass('hide')
         $('#' + field + '_options').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
 
         break;
     case 'date':
 
         $('#' + field + '_formated').removeClass('hide')
         $('#' + field + '_datepicker').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
+
         break;
 
 
@@ -74,16 +98,41 @@ function close_edit_field(field) {
     $('#' + field + '_save_button').addClass('hide')
     switch (type) {
     case 'string':
-    case 'anything':
+    case 'email':
     case 'int_unsigned':
     case 'smallint_unsigned':
     case 'mediumint_unsigned':
     case 'int':
     case 'smallint':
     case 'mediumint':
+    case 'pin':
+    case 'password':
         $('#' + field).addClass('hide')
-
         $('#' + field + '_editor').removeClass('changed')
+        break;
+
+
+
+    case 'telephone':
+        $('#' + field).addClass('hide')
+        $('#' + field + '_editor').removeClass('changed')
+        $('.intl-tel-input .flag-container').css({
+            'display': 'none'
+        })
+
+
+
+    case 'pin_with_confirmation':
+    case 'password_with_confirmation':
+
+
+        $('#' + field).addClass('hide')
+        $('#' + field + '_editor').removeClass('changed')
+        $('#' + field + '_confirm_button').addClass('hide')
+
+
+
+        $('#' + field + '_confirm').addClass('hide')
 
         break;
     case 'option':
@@ -173,6 +222,51 @@ function delayed_on_change_field(object, timeout) {
     }, timeout));
 }
 
+function on_changed_confirm_value(field, confirm_value) {
+
+
+    if (confirm_value != '') {
+        $("#" + field + '_editor').addClass('changed')
+
+    } else {
+        $("#" + field + '_editor').removeClass('changed')
+
+    }
+    $('#' + field + '_editor').removeClass('invalid valid')
+
+    var value = $('#' + field).val()
+    if (value == confirm_value) {
+        validation = 'valid'
+    } else if (value.substring(0, confirm_value.length) == confirm_value) {
+        validation = 'potentially_valid'
+    } else {
+        validation = 'invalid'
+    }
+
+
+
+
+
+
+    $('#' + field + '_editor').addClass(validation)
+
+    if (validation == 'invalid') {
+        if ($('#' + field + '_no_match_invalid_msg').length) {
+            var msg = $('#' + field + '_no_match_invalid_msg').html()
+        } else {
+            var msg = $('#not_match_invalid_msg').html()
+        }
+
+        msg = msg + ' '
+
+    } else {
+        var msg = '';
+    }
+    $('#' + field + '_msg').html(msg)
+
+
+}
+
 function on_changed_value(field, new_value) {
 
     var type = $('#' + field + '_container').attr('field_type')
@@ -183,47 +277,64 @@ function on_changed_value(field, new_value) {
 
     if (new_value != $('#' + field + '_value').html()) {
         $("#" + field + '_editor').addClass('changed')
-        
+        var changed = true;
+
     } else {
         $("#" + field + '_editor').removeClass('changed')
+        var changed = false;
 
     }
 
-    $('#' + field + '_editor').removeClass('invalid valid')
+    $('#' + field + '_editor').removeClass('invalid valid potentially_valid')
 
 
-    $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
-    console.log(new_value + ' ' + $('#' + field + '_value').html())
+    if (changed) {
 
 
-    var validation = validate_field(field, new_value)
-
-console.log(validation.class)
-
-    $('#' + field + '_editor').addClass(validation.class)
-    if (validation.class == 'waiting') {
+        $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
 
 
-    } else {
+        var validation = validate_field(field, new_value)
 
-        $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
+        //console.log(validation)
+        if (validation.class == 'potentially_valid' && $('#' + field).attr('has_been_valid') == 1) {
+            validation.class = 'invalid';
+        }
 
 
-        if (validation.class == 'invalid') {
-            console.log('#' + field + '_' + validation.type + '_invalid_msg')
-            if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
-                var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
-            } else {
-                var msg = $('#invalid_msg').html()
-            }
+
+        $('#' + field + '_editor').addClass(validation.class)
+        if (validation.class == 'waiting') {
+
 
 
         } else {
-            var msg = '';
+
+            $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
+
+
+            if (validation.class == 'valid') {
+                $('#' + field).attr('has_been_valid', 1)
+
+            }
+
+            if (validation.class == 'invalid') {
+                //console.log('#' + field + '_' + validation.type + '_invalid_msg')
+                if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
+                    var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
+                } else {
+                    var msg = $('#invalid_msg').html()
+                }
+
+
+            } else {
+                var msg = '';
+            }
+            $('#' + field + '_msg').html(msg)
         }
-        $('#' + field + '_msg').html(msg)
+    } else {
+        $('#' + field + '_msg').html('')
     }
 
 }
@@ -274,23 +385,80 @@ function select_radio_option(field, value, label) {
 
 
 function save_field(object, key, field) {
- console.log('xx')
     var type = $('#' + field + '_container').attr('field_type')
     var field_element = $('#' + field);
 
-    if ($("#" + field + '_editor').hasClass('invalid') || !$("#" + field + '_editor').hasClass('changed')) {
-       
+    var value = field_element.val()
+
+
+
+    if (!$("#" + field + '_editor').hasClass('changed')) {
+        console.log('no changed')
         return;
     }
 
-    var value = field_element.val()
-    if (type == 'date') {
-        value = value + ' ' + $('#' + field + '_time').val()
+    if ($("#" + field + '_editor').hasClass('invalid')) {
+        console.log('invalid')
+        return;
+    }
+    if ($("#" + field + '_editor').hasClass('waiting')) {
+        console.log('waiting')
+        return;
     }
 
-    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
-   
+    if ($("#" + field + '_editor').hasClass('potentially_valid')) {
+
+
+
+        var validation = validate_field(field, value)
+        $('#' + field).attr('has_been_valid', 1)
+
+        if ((type == 'password_with_confirmation' || type == 'in_with_confirmation') && !$('#' + field + '_confirm').hasClass('hide')) {
+
+            if ($('#' + field + '_no_match_invalid_msg').length) {
+                var msg = $('#' + field + '_no_match_invalid_msg').html()
+            } else {
+                var msg = $('#not_match_invalid_msg').html()
+            }
+
+            msg = msg + $('#' + field + '_cancel_confirm_button').html()
+
+
+        } else {
+
+            if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
+                var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
+            } else {
+                var msg = $('#invalid_msg').html()
+            }
+        }
+
+        $('#' + field + '_msg').html(msg)
+        $('#' + field + '_editor').addClass('invalid')
+
+        return;
+    }
+
+
+    var metadata = {};
+
+    if (type == 'date') {
+        value = value + ' ' + $('#' + field + '_time').val()
+    } else if (type == 'password' || type == 'password_with_confirmation' || type == 'password_with_confirmation_paranoid' || type == 'pin' || type == 'pin_with_confirmation' || type == 'pin_with_confirmation_paranoid') {
+        value = sha256_digest(value)
+    } else if (type == 'telephone') {
+        value = $('#' + field).intlTelInput("getNumber");
+        metadata = {
+                
+          'extra_fields':[{field:field + '_Formated',value: fixedEncodeURIComponent( $('#' + field).intlTelInput("getNumber", intlTelInputUtils.numberFormat.INTERNATIONAL))}] 
+            
+        }
+    }
+
+    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+    console.log(request)
     $.getJSON(request, function(data) {
+        console.log(data)
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
@@ -301,7 +469,7 @@ function save_field(object, key, field) {
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
                 $('.' + field).html(data.formated_value)
 
-            }else if (type == 'radio_option') {
+            } else if (type == 'radio_option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
                 $('.' + field).html(data.formated_value)
@@ -310,7 +478,7 @@ function save_field(object, key, field) {
                 $('.' + field).html(data.formated_value)
 
             } else {
-                $('.' + field).html(data.value)
+                $('.' + field).html(data.formated_value)
 
             }
 
@@ -360,4 +528,37 @@ function update_field(data) {
 
 function hide_edit_field_msg(field) {
     $('#' + field + '_msg').html('').addClass('hide')
+}
+
+function confirm_field(field) {
+
+    $('#' + field).addClass('hide')
+    $('#' + field + '_confirm_button').addClass('hide')
+
+    $('#' + field + '_confirm').removeClass('hide')
+    $('#' + field + '_save_button').removeClass('hide')
+    $('#' + field + '_editor').removeClass('invalid valid changed')
+
+    $('#' + field + '_confirm').focus()
+
+}
+
+function cancel_confirm_field(field) {
+
+    $('#' + field).removeClass('hide')
+    $('#' + field + '_confirm_button').removeClass('hide')
+
+    $('#' + field + '_confirm').addClass('hide')
+    $('#' + field + '_save_button').addClass('hide')
+    $('#' + field + '_editor').removeClass('invalid valid changed')
+    $('#' + field + '_msg').html('')
+    $('#' + field).val('')
+    $('#' + field).attr('has_been_valid', 0)
+    $('#' + field).focus()
+
+
+}
+
+function fixedEncodeURIComponent (str) {
+  return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
 }

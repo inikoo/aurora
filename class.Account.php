@@ -14,7 +14,7 @@ include_once 'class.Company.php';
 
 class Account extends DB_Table{
 
-	function Account($a1=false,$a2=false) {
+	function Account($a1=false, $a2=false) {
 
 		$this->table_name='Account';
 
@@ -24,6 +24,8 @@ class Account extends DB_Table{
 		}else
 			$this->get_data();
 	}
+
+
 	function get_data() {
 
 
@@ -42,10 +44,12 @@ class Account extends DB_Table{
 
 
 	}
+
+
 	function create($data) {
 		$this->new=false;
 
-		$company=new Company('find create auto',$data);
+		$company=new Company('find create auto', $data);
 
 		$data['Account Company Key']=$company->id;
 		$data['Account Company Name']=$company->data['Company Name'];
@@ -59,7 +63,7 @@ class Account extends DB_Table{
 		$base_data=$this->base_data();
 
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$base_data))
+			if (array_key_exists($key, $base_data))
 				$base_data[$key]=_trim($value);
 		}
 
@@ -68,16 +72,16 @@ class Account extends DB_Table{
 			$keys.="`$key`,";
 
 			if ($key=='Short Message')
-				$values.=prepare_mysql($value,false).",";
+				$values.=prepare_mysql($value, false).",";
 
 			else
 				$values.=prepare_mysql($value).",";
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("delete * from  `Account Dimension` " );
 		mysql_query($sql);
-		$sql=sprintf("insert into `Account Dimension` %s %s",$keys,$values);
+		$sql=sprintf("insert into `Account Dimension` %s %s", $keys, $values);
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->msg=_("Account Added");
@@ -96,8 +100,26 @@ class Account extends DB_Table{
 			$this->msg="Error can not create account\n";
 		}
 	}
-	function get($key,$data=false) {
+
+
+	function get($key, $data=false) {
 		switch ($key) {
+
+			case 'National Employment Code Label':
+
+			switch ($this->data['Account Country 2 Alpha Code']) {
+			case 'GB':
+				return _('National insurance number');
+				break;
+			case 'ES':
+				return _('DNI');
+				break;	
+			default:
+				return '';
+				break;
+			}
+
+			break;
 
 		default:
 			if (isset($this->data[$key]))
@@ -109,7 +131,7 @@ class Account extends DB_Table{
 	}
 
 
-	protected function update_field_switcher($field,$value,$options='') {
+	protected function update_field_switcher($field, $value, $options='') {
 
 
 		switch ($field) {
@@ -122,7 +144,7 @@ class Account extends DB_Table{
 			$this->update_currency($value);
 			break;
 		default:
-			$this->company->update_field_switcher($field,$value,$options);
+			$this->company->update_field_switcher($field, $value, $options);
 			break;
 		}
 	}
@@ -131,7 +153,7 @@ class Account extends DB_Table{
 	function update_name($value) {
 
 
-		$sql=sprintf("update `Account Dimension` set `Account Name`=%s",prepare_mysql($value));
+		$sql=sprintf("update `Account Dimension` set `Account Name`=%s", prepare_mysql($value));
 		mysql_query($sql);
 
 		$this->updated=true;
@@ -144,7 +166,7 @@ class Account extends DB_Table{
 
 	function update_company_name($value) {
 
-		$this->company->update_field_switcher('Company Name',$value);
+		$this->company->update_field_switcher('Company Name', $value);
 
 		$this->updated=$this->company->updated;
 		$this->new_value=$this->company->data['Company Name'];
@@ -154,11 +176,11 @@ class Account extends DB_Table{
 
 	function update_currency($value) {
 		$value=strtoupper($value);
-		$sql=sprintf("select * from kbase.`Currency Dimension` where `Currency Code`=%s",prepare_mysql($value));
+		$sql=sprintf("select * from kbase.`Currency Dimension` where `Currency Code`=%s", prepare_mysql($value));
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("update `Account Dimension` set `Account Currency`=%s",prepare_mysql($value));
+			$sql=sprintf("update `Account Dimension` set `Account Currency`=%s", prepare_mysql($value));
 			mysql_query($sql);
 
 			$this->updated=true;
@@ -172,11 +194,12 @@ class Account extends DB_Table{
 	}
 
 
-	function add_account_history($history_key,$type=false) {
-		$this->post_add_history($history_key,$type=false);
+	function add_account_history($history_key, $type=false) {
+		$this->post_add_history($history_key, $type=false);
 	}
 
-	function post_add_history($history_key,$type=false) {
+
+	function post_add_history($history_key, $type=false) {
 
 		if (!$type) {
 			$type='Changes';
@@ -191,22 +214,22 @@ class Account extends DB_Table{
 	}
 
 
-	function get_current_staff_with_position_code($position_code,$options='') {
+	function get_current_staff_with_position_code($position_code, $options='') {
 		$positions=array();
 		$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where  `Company Position Code`=%s and `Staff Currently Working`="Yes"'
-			,prepare_mysql($position_code)
+			, prepare_mysql($position_code)
 		);
 
 
 		$smarty=false;
-		if (preg_match('/smarty/i',$options))
+		if (preg_match('/smarty/i', $options))
 			$smarty=true;
 		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res,MYSQL_ASSOC)) {
+		while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if ($smarty) {
 				$_row=array();
 				foreach ($row as $key=>$value) {
-					$_row[preg_replace('/\s/','',$key)]=$value;
+					$_row[preg_replace('/\s/', '', $key)]=$value;
 				}
 
 				$positions[$row['Staff Key']]=$_row;
@@ -216,16 +239,19 @@ class Account extends DB_Table{
 		return $positions;
 	}
 
-    function get_store_keys(){
-        $store_keys=array();
-        $sql=sprintf('select `Store Key` from `Store Dimension`');
-        $res=mysql_query($sql);
+
+	function get_store_keys() {
+		$store_keys=array();
+		$sql=sprintf('select `Store Key` from `Store Dimension`');
+		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-            $store_keys[]=$row['Store Key'];
-        }
-        return $store_keys;
-    }
+			$store_keys[]=$row['Store Key'];
+		}
+		return $store_keys;
+	}
+
 
 }
+
 
 ?>

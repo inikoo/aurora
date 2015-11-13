@@ -32,6 +32,7 @@ case 'edit_field':
 			'key'=>array('type'=>'key'),
 			'field'=>array('type'=>'string'),
 			'value'=>array('type'=>'string'),
+			'metadata'=>array('type'=>'json array','optional'=>true),
 
 		));
 
@@ -57,20 +58,36 @@ function edit_field($data, $db, $user) {
 	$formated_field= preg_replace('/^'.$object->get_object_name().' /','',$field);
 	
 	$object->update(array($field=>$data['value']));
+	
+	
+	if(isset($data['metadata'])){
+	
+	    if(isset($data['metadata']['extra_fields'])){
+	        foreach( $data['metadata']['extra_fields'] as $extra_field){
+	        	$_field=preg_replace('/_/', ' ', $extra_field['field']);
+	        	
+	        	$_value=$extra_field['value'];
+	        	
+	        	$object->update(array($_field=>$_value));
+
+	        }
+	        
+	    }
+	
+	  
+	}
 
 	if ($object->error) {
 		$response=array('resultset'=>
 			array(
 				'state'=>400,
 				'msg'=>$object->msg,
-
-
 			)
 		);
 
 
 	}else {
-		$object->reread();
+		
 		if ($object->updated) {
 			$msg=sprintf('<i class="fa fa-check" onClick="hide_edit_field_msg(\'%s\')" ></i> %s', $data['field'], _('Updated'));
 		}else {

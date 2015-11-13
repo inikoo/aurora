@@ -10,6 +10,10 @@ $color_dark_font_selected: yellow;
 $color_dark_font_selected_bis: #F58025;
 $color_dark_font_highlight: #fff;
 $color_background: #fcfcfc;
+
+
+$color_save:#0EBFE9;
+
 $height_row: 32px;
 $height_short_row: 22px;
 $height_very_short_row: 18px;
@@ -100,6 +104,8 @@ html, body {
     padding: 0px;
     background-color: #fff;
 }
+
+.iti-flag {background-image: url("images/flags.png");}
 .fa {
     @include unselectable;
 }
@@ -746,6 +752,9 @@ a {
     padding: 10px 20px;
     table {
         width: 100%;
+        
+        .formated_value{margin-right:10px}
+        
         td {
             vertical-align: text-top;
         }
@@ -753,32 +762,56 @@ a {
       
         
         tr {
-            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
             
             height: $height_row;
             line-height: $height_row;
             
-            &.last {
-                border-bottom: 1px solid #ddd;
-            }
+            
+
+            
+           // &.last {
+           //     border-bottom: 1px solid #ddd;
+           // }
+           
+           
+          
+           
         }
+        
+         tr.new{
+           cursor:pointer;
+           &:hover  {color:$color_save}
+           }
+        
+        .new_button{position:relative;top:1px;left:5px}
+        
+        
+        
+        
+        
         .title {
             border-top: none;
             td {
                 font-family: $font_title;
                 font-weight: 600;
                 padding-top: 10px;
+                
+                .fa.link{margin-left:5px;position:relative;top:2px}
             }
         }
+         
         .label {
             width: 280px;
         }
+        
         .value span {
-            padding-left: 5px;
+          //  padding-left: 5px;
         }
+      
         .show_buttons {
-            width: 16px;
-            text-align: center;
+            width:20px;
+            text-align: left;
             .fa.edit {
                 cursor: pointer;
                 opacity: .2;
@@ -796,6 +829,7 @@ a {
                 }
             }
         }
+       
     }
     input {
         position: relative;
@@ -819,6 +853,12 @@ a {
         &.option_input_field {
             padding-left: 16px;width:235px
         }
+        
+        &.telephone_input_field {
+            padding-left: 45px;width:235px
+        } 
+        
+        
     }
     .fa.save {
         margin-left: 5px;
@@ -828,8 +868,10 @@ a {
     }
     .changed {
         .fa.save {
-            opacity: 1;
-            cursor: pointer;
+            opacity: .6;
+            transition: opacity .2s ease-in-out;
+
+            
         }
     }
     .invalid {
@@ -840,10 +882,24 @@ a {
             margin-left: 5px;
         }
     }
+    
+   
+     .valid.changed {
+        .fa.save {
+            opacity: 1;
+            cursor: pointer;
+        }
+     
+        .fa.save, .msg {
+            color: $color_save;
+        }
+       
+    }
+    
     .waiting {
     }
     .msg {
-        margin-left: 30px;
+       
         &.success {
             color: #26A65B;
         }
@@ -851,20 +907,26 @@ a {
             color: tomato;
         }
     }
+    
+.intl-tel-input .flag-container {display:none};
+
+    
     .datepicker{
-     margin-left: 5px;
+     margin-bottom:5px;
+    // margin-left: 5px;
         margin-top: 0px;
     }
     
   
      .dropcontainer{
     
+    margin-bottom:5px;
         .checkbox{margin-right: 4px;}
     
        
         color: #777;
         width: 259px;
-        margin-left: 5px;
+       // margin-left: 5px;
         margin-top: -3px;
         ul {
             border: 1px solid #ccc;
@@ -910,7 +972,6 @@ a {
          }
     }
 }
-
 
 .datepicker{
 

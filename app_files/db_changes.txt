@@ -69,8 +69,20 @@ ALTER TABLE `Staff Timesheet Dimension`
 ALTER TABLE `Staff Timesheet Dimension`
   MODIFY `Staff Timesheet Key` mediumint(9) NOT NULL AUTO_INCREMENT;
   
+// change to dont delete work experences and tempral workers
 ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM('Employee','Volunteer','Contractor','TemporalWorker','WorkExperience') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
+
+ALTER TABLE `Staff Dimension` ADD `Staff Job Title` VARCHAR(255) NULL AFTER `Staff Type`;
   
-  
+CREATE TABLE IF NOT EXISTS `Staff Supervisor Bridge` (
+  `Staff Key` mediumint(8) unsigned NOT NULL,
+  `Supervisor Key` mediumint(8) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Staff Supervisor Bridge`
+  ADD PRIMARY KEY (`Staff Key`,`Supervisor Key`);
+
+ALTER TABLE `Staff Dimension`  DROP `Staff Contact Key`;  
+
+ALTER TABLE `Staff Dimension` ADD `Staff Birthday` DATETIME NULL DEFAULT NULL AFTER `Staff Name`, ADD `Staff Official ID` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Birthday`, ADD `Staff Email` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Official ID`, ADD `Staff Telephone` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Email`, ADD `Staff Next of Kind` VARCHAR(1024) NULL DEFAULT NULL AFTER `Staff Telephone`;
 
   

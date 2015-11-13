@@ -14,7 +14,7 @@ require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 
 
-if (!$user->can_view('customers')) {
+if (!$user->can_view('users')) {
 	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
 	exit;
 }

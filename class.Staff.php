@@ -18,11 +18,6 @@ require_once 'class.User.php';
 
 class Staff extends DB_Table{
 
-
-
-
-
-
 	function __construct($arg1=false, $arg2=false, $arg3=false) {
 		global $db;
 		$this->db=$db;
@@ -52,12 +47,6 @@ class Staff extends DB_Table{
 	}
 
 
-
-
-
-
-
-
 	function get_data($key, $id) {
 
 		if ($key=='alias')
@@ -76,11 +65,42 @@ class Staff extends DB_Table{
 
 
 	function get($key) {
+
+
 		if (!$this->id)
 			return;
-		if (array_key_exists($key, $this->data))
-			return $this->data[$key];
+
+
+
 		switch ($key) {
+		case('Telephone'):
+			return $this->data['Staff Telephone Formated'];
+			break;
+		
+		case('User Active'):
+		if(array_key_exists('Staff User Active',$this->data)){
+			switch ( $this->data['Staff User Active']) {
+			case('Yes'):
+				$formated_value=_('Yes');
+				break;
+			case('No'):
+				$formated_value=_('No');
+				break;
+
+			default:
+				$formated_value=$this->data['Staff User Active'];
+			}
+
+			return $formated_value;
+			
+			}else{
+			    return _('No');
+			}
+			
+			break;
+
+
+
 
 		case('Staff Position'):
 			return $this->get_positions();
@@ -88,8 +108,16 @@ class Staff extends DB_Table{
 		case('Position'):
 			return $this->get_formated_positions();
 			break;
+		case('Staff Supervisor'):
+			return $this->get_supervisors();
+			break;
+		case('Supervisor'):
+			return $this->get_formated_supervisors();
+			break;
+
 		case ('Valid From'):
 		case ('Valid To'):
+		case ('Birthday'):
 			return ($this->data['Staff '.$key]=='' or $this->data['Staff '.$key]=='0000-00-00 00:00:00') ?'':strftime("%Y-%m-%d", strtotime($this->data['Staff '.$key]));
 
 			break;
@@ -138,31 +166,13 @@ class Staff extends DB_Table{
 		case('Formated ID'):
 		case("ID"):
 			return $this->get_formated_id();
-		case('First Name'):
-			if (!is_object($this->contact))
-				$this->contact=new Contact($this->data['Staff Contact Key']);
-			if ($this->contact->id)
-				return $this->contact->data['Contact First Name'];
-			else
-				return '';
-			break;
-		case('Surname'):
-			if (!is_object($this->contact))
-				$this->contact=new Contact($this->data['Staff Contact Key']);
-			if ($this->contact->id)
-				return $this->contact->data['Contact Surname'];
-			else
-				return '';
-			break;
-		case('Email'):
-			if (!is_object($this->contact))
-				$this->contact=new Contact($this->data['Staff Contact Key']);
-			if ($this->contact->id)
-				return strip_tags($this->contact->data['Contact Main XHTML Email']);
-			else
-				return '';
-			break;
 
+		default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('Staff '.$key, $this->data))
+				return $this->data['Staff '.$key];
 
 		}
 
@@ -223,24 +233,9 @@ class Staff extends DB_Table{
 				exit("Error no corporation\n");
 			}
 
-			$data=array(
-				'Staff Address Line 1'=>'',
-				'Staff Address Town'=>'',
-				'Staff Address Line 2'=>'',
-				'Staff Address Line 3'=>'',
-				'Staff Address Postal Code'=>'',
-				'Staff Address Country Code'=>'',
-				'Staff Address Country Name'=>$company->data['Company Main Country'],
-				'Staff Address Country First Division'=>'',
-				'Staff Address Country Second Division'=>''
-			);
-
-			foreach ($raw_data as $key=>$value) {
-				$data[$key]=$value;
-			}
 
 
-			$this->create($data);
+			$this->create($raw_data);
 
 		}
 
@@ -250,37 +245,8 @@ class Staff extends DB_Table{
 
 
 	function create($data) {
-		$sql="select `Account Company Key` from `Account Dimension`";
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$company_key=$row['Account Company Key'];
-			$company=new Company($company_key);
-		}else {
-			exit("Error no corporation\n");
-		}
 
 
-
-
-		$child=new Contact ('find in staff create update', $data);
-
-
-
-		if ($child->error) {
-			$this->error=true;
-			$this->error=$child->error;
-			return;
-		}
-
-
-
-
-		$company->create_contact_bridge($child->id);
-		$data['Staff Contact Key']=$child->id;
-
-
-		$contact=new Contact($data['Staff Contact Key']);
-		$data['Staff Name']=$contact->display('name');
 
 
 
@@ -314,8 +280,6 @@ class Staff extends DB_Table{
 			$this->get_data('id', $this->id);
 
 
-			$sql=sprintf("insert into `Contact Bridge` values (%d,'Staff',%d,'Yes','Yes')", $child->id, $this->id);
-			mysql_query($sql);
 
 
 			if (!$this->data['Staff ID']) {
@@ -325,9 +289,9 @@ class Staff extends DB_Table{
 
 
 			$history_data=array(
-				'History Abstract'=>_('Staff Created')
-				, 'History Details'=>_trim(_('New staff')." \"".$this->data['Staff Name']."\"  "._('added'))
-				, 'Action'=>'created'
+				'History Abstract'=>sprintf(_('%s employee record created'), $this->data['Staff Alias']),
+				'History Details'=>'',
+				'Action'=>'created'
 			);
 			$this->add_history($history_data);
 			$this->new=true;
@@ -374,32 +338,29 @@ class Staff extends DB_Table{
 	}
 
 
-	function update_name($value) {
+	function update_name($value, $options='') {
 
 		if ($value=='') {
 			$this->error=true;
-			$this->msg=_('Invalid Name');
+			$this->msg='invalid value';
 			return;
 		}
 
-		$contact=new Contact($this->data['Staff Contact Key']);
-		$contact->editor=$this->editor;
-		$contact->update(array('Contact Name'=>$value));
+		$this->get_user_data();
+		$system_user=new User($this->data['Staff User Key']);
+		if ($system_user->id) {
 
-
-		if ($contact->updated) {
-
-			$this->updated=true;
-			$this->new_value=$contact->new_value;
-			$this->data['Staff Name']=$value;
+			$system_user->update(array('User Alias'=>$value), $options);
 		}
 
+
+
+		$this->update_field('Staff Name', $value);
+
 	}
 
 
-	function update_alias($value) {
-		$this->update_field('Staff Alias', $value, '');
-	}
+
 
 
 	function update_field_switcher($field, $value, $options='') {
@@ -409,27 +370,45 @@ class Staff extends DB_Table{
 
 
 		switch ($field) {
-
+        
+        
 		case('Staff Currently Working'):
 			$this->update_is_working($value, $options);
 			break;
-
-		case('Staff Alias'):
-			$this->update_alias($value);
-			break;
 		case('Staff Name'):
-		case('name'):
 			$this->update_name($value);
 			break;
 		case('Staff Position'):
 			$this->update_positions($value);
 			break;
+		case('Staff Supervisor'):
+			$this->update_supervisors($value);
+			break;
+		case('Staff User Handle'):
+		case('Staff User Password'):
+		case('Staff User PIN'):
+		case('Staff User Active'):
+
+			$this->get_user_data();
+			$system_user=new User($this->data['Staff User Key']);
+
+			$user_field=preg_replace('/^Staff /', '', $field);
+
+			$system_user->update(array($user_field=>$value), $options);
+			$this->error=$system_user->error;
+			$this->msg=$system_user->msg;
+			$this->updated=$system_user->updated;
+
+			break;
+
 		default:
 			$base_data=$this->base_data();
 			if (array_key_exists($field, $base_data)) {
 				$this->update_field($field, $value, $options);
 			}
 		}
+		$this->reread();
+		$this->get_user_data();
 	}
 
 
@@ -469,23 +448,15 @@ class Staff extends DB_Table{
 
 	function update_positions($values) {
 
-
-
-
-
 		$positions=array();
 		$sql=sprintf('select `Company Position Key` from `Company Position Dimension`  ');
 		foreach ($this->db->query($sql) as $row) {
 			$positions[$row['Company Position Key']]=false;
 		}
 
-		foreach (preg_split('/,/', $values) as $salected_position) {
-			$positions[$salected_position]['selected']=true;
+		foreach (preg_split('/,/', $values) as $selected_position) {
+			$positions[$selected_position]['selected']=true;
 		}
-
-
-
-
 
 		foreach ($positions as $key=>$value) {
 			if ($value) {
@@ -495,36 +466,25 @@ class Staff extends DB_Table{
 			}
 		}
 
-
 	}
 
 
 	function remove_position($position_key) {
 
 		$sql=sprintf("delete from  `Company Position Staff Bridge` where `Position Key`=%d and `Staff Key`=%d", $position_key, $this->id);
-
-
 		if (mysql_query($sql)) {
 			$this->updated=true;
 		}
-
-
 	}
 
 
 	function add_position($value) {
 		$updated=false;
-
-
-
 		$sql=sprintf("insert into `Company Position Staff Bridge` (`Position Key`, `Staff Key`) values (%d, %d)   ON DUPLICATE KEY UPDATE  `Position Key`= %d", $value, $this->id, $value);
 		// print $sql."\n";
 		if (mysql_query($sql)) {
 			$this->update=true;
 		}
-
-
-
 	}
 
 
@@ -542,7 +502,7 @@ class Staff extends DB_Table{
 	function get_formated_positions() {
 
 		$positions='';
-		$sql=sprintf('select GROUP_CONCAT(`Company Position Title` separator ", ") as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  `Staff Key`=%d ', $this->id);
+		$sql=sprintf('select GROUP_CONCAT(`Company Position Title`  order by `Company Position Title` separator ", ") as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  `Staff Key`=%d  ', $this->id);
 		if ($row = $this->db->query($sql)->fetch()) {
 			$positions=$row['positions'];
 		}
@@ -550,73 +510,75 @@ class Staff extends DB_Table{
 	}
 
 
-	function get_other_telecoms_data($type='Telephone') {
+	function update_supervisors($values) {
 
-		$sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Staff' and `Subject Key`=%d ",
-			prepare_mysql($type),
-			$this->id
-		);
-		//print $sql;
-		$telecom_keys=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if ($row['Telecom Key']!=$this->data["Staff Main $type Key"]) {
+		$supervisors=array();
+		$sql=sprintf('select `Staff Key` from `Staff Dimension`  ');
+		foreach ($this->db->query($sql) as $row) {
+			$supervisors[$row['Staff Key']]=false;
+		}
 
-				$telecom=new Telecom($row['Telecom Key']);
+		foreach (preg_split('/,/', $values) as $selected_supervisor) {
+			if (is_numeric($selected_supervisor)  and array_key_exists($selected_supervisor, $supervisors) )
+				$supervisors[$selected_supervisor]=true;
+		}
 
-				$telecom_keys[$row['Telecom Key']]= array(
-					'number'=>$telecom->display('plain'),
-					'xhtml'=>$telecom->display('xhtml'),
-					'label'=>$row['Telecom Description']
-				);
 
+
+		foreach ($supervisors as $key=>$value) {
+			if ($value) {
+				$this->add_supervisor($key);
+			}else {
+				$this->remove_supervisor($key);
 			}
 		}
-		return $telecom_keys;
 
 	}
 
 
-	function get_other_telephones_data() {
-		return $this->get_other_telecoms_data('Telephone');
-	}
 
+	function remove_supervisor($supervisor_key) {
 
-	function get_other_faxes_data() {
-		return $this->get_other_telecoms_data('FAX');
-	}
-
-
-	function get_other_mobiles_data() {
-		return $this->get_other_telecoms_data('Mobile');
-	}
-
-
-	function get_other_emails_data() {
-
-		$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
-        `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
-        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Staff' and `User Parent Key`=%d )
-        where  `Subject Type`='STAFF' and `Subject Key`=%d "
-			, $this->id
-			, $this->id
-		);
-
-		$email_keys=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if ($row['Email Key']!=$this->data['Staff Main Email Key'])
-				$email_keys[$row['Email Key']]= array(
-					'email'=>$row['Email'],
-					'key'=>$row['Email Key'],
-					'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
-					'label'=>$row['Email Description'],
-					'user_key'=>$row['User Key']
-				);
+		$sql=sprintf("delete from  `Staff Supervisor Bridge` where `Supervisor Key`=%d and `Staff Key`=%d", $supervisor_key, $this->id);
+		if (mysql_query($sql)) {
+			$this->updated=true;
 		}
-		return $email_keys;
-
 	}
+
+
+	function add_supervisor($value) {
+		$updated=false;
+		$sql=sprintf("insert into `Staff Supervisor Bridge` (`Supervisor Key`, `Staff Key`) values (%d, %d)   ON DUPLICATE KEY UPDATE  `Supervisor Key`= %d", $value, $this->id, $value);
+		if (mysql_query($sql)) {
+			$this->update=true;
+		}
+	}
+
+
+	function get_supervisors() {
+		$supervisors='';
+		$sql=sprintf('select GROUP_CONCAT(B.`Supervisor Key`) as supervisors  from `Staff Supervisor Bridge` B where  `Staff Key`=%d ', $this->id);
+
+		if ($row = $this->db->query($sql)->fetch()) {
+			$supervisors=$row['supervisors'];
+		}
+		return $supervisors;
+	}
+
+
+	function get_formated_supervisors() {
+
+		$supervisors='';
+		$sql=sprintf('select GROUP_CONCAT(`Staff Alias`  order by `Staff Alias` separator ", ") as supervisors   from  `Staff Supervisor Bridge` B left join `Staff Dimension` S on (B.`Supervisor Key`=S.`Staff Key`)  where  B.`Staff Key`=%d ', $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			$supervisors=$row['supervisors'];
+		}
+
+		$supervisors=preg_replace('/, $/', '', $supervisors);
+		return $supervisors;
+	}
+
 
 
 	function get_user_data() {
@@ -626,8 +588,11 @@ class Staff extends DB_Table{
 
 			foreach ($row as $key=>$value) {
 				$this->data['Staff '.$key]=$value;
+				// print "$key -> $value\n";
 			}
 		}
+
+
 
 	}
 

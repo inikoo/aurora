@@ -134,7 +134,7 @@ function get_staff_user_navigation($data) {
 	if ($data['parent']) {
 
 		switch ($data['parent']) {
-		case 'users':
+		case 'account':
 			$tab='users.staff.users';
 			$_section='staff';
 			break;
