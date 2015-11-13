@@ -14,6 +14,7 @@
 
 function get_object($object_name, $key) {
 
+global $account;
 
 
 	switch ($object_name) {
@@ -56,6 +57,7 @@ function get_object($object_name, $key) {
 		$object=new DeliveryNote($key);
 		break;
 	case 'website':
+	case 'Site':
 		$object=new Site($key);
 		break;
 	case 'page':
@@ -63,10 +65,12 @@ function get_object($object_name, $key) {
 
 		break;
 	case 'warehouse':
+	case 'Warehouse':
 		include_once 'class.Warehouse.php';
 		$object=new Warehouse($key);
 		break;
 	case 'part':
+	case 'Part':
 		include_once 'class.Part.php';
 		$object=new Part($key);
 		break;
@@ -80,6 +84,7 @@ function get_object($object_name, $key) {
 		$object=new Staff($key);
 		break;
 	case 'user':
+	case 'User':
 		include_once 'class.User.php';
 		$object=new User($key);
 		break;

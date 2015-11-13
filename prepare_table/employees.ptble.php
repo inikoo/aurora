@@ -10,7 +10,7 @@
 */
 
 
-$table='`Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)';
+$table='`Staff Dimension` SD';
 
 	if($parameters['parent']=='company'){
 		$where=' where true';
@@ -23,7 +23,7 @@ $table='`Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=
 		$where=sprintf(' where `Staff Area Key`=%d',$parameters['parent_key']);
 	
 	}elseif($parameters['parent']=='position'){
-		$table='`Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) left join `Company Position Staff Bridge` on B (B.`Staff Key`=SD.`Staff Key`)';
+		$table='`Staff Dimension` SD  left join `Company Position Staff Bridge` on B (B.`Staff Key`=SD.`Staff Key`)';
 
 		$where=sprintf(' where B.`Position Key`=%d',$parameters['parent_key']);
 	

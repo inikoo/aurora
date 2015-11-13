@@ -51,23 +51,29 @@ default:
 function check_for_duplicates($data, $db, $user) {
 	global  $account;
 
-	//print_r($data);
+	
 	$field=preg_replace('/_/', ' ', $data['field']);
 
 	switch ($data['object']) {
 	case 'Staff':
-        
-        switch ($field) {
-            case 'Staff ID':
-                $invalid_msg=_('Another employee is using this payroll Id');
-                break;
-             case 'Staff Alias':
-                $invalid_msg=_('Another employee is using this code');
-                break;    
-            default:
-               
-                break;
-        }
+
+		switch ($field) {
+		case 'Staff ID':
+			$invalid_msg=_('Another employee is using this payroll Id');
+			break;
+		case 'Staff Alias':
+			$invalid_msg=_('Another employee is using this code');
+			break;
+		case 'Staff User Handle':
+			$invalid_msg=_('Another user is using this login handle');
+			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`='Staff' and `User Handle`=%s",
+				prepare_mysql($data['value'])
+			);
+			break;
+		default:
+
+			break;
+		}
 
 
 		break;
@@ -97,11 +103,17 @@ function check_for_duplicates($data, $db, $user) {
 		);
 
 	}
+	
+	
+	
 	if (!isset($invalid_msg)) {
 		$invalid_msg=_('Another object with same value found');
 	}
 	$validation='valid';
 	$msg='';
+
+	//print $sql;
+
 	if ($row = $db->query($sql)->fetch()) {
 		if ($row['key']!=$data['key']) {
 			$validation='invalid';

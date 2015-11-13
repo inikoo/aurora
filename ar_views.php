@@ -151,7 +151,7 @@ default:
 
 function get_tab($tab, $subtab, $state=false) {
 
-	global $smarty, $user,$db;
+	global $smarty, $user,$db,$account;
 
 	$_tab=$tab;
 	$_subtab=$subtab;
@@ -198,6 +198,10 @@ function get_object_showcase($data) {
 		include_once 'showcase/account.show.php';
 		$html=get_account_showcase($data);
 		break;
+	case 'employee':
+		include_once 'showcase/employee.show.php';
+		$html=get_employee_showcase($data);
+		break;	
 	case 'customer':
 		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data);

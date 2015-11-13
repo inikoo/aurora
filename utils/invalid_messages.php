@@ -119,7 +119,56 @@ function get_invalid_message($type) {
 		$messages=array(
 			'invalid'=>_('Invalid value'),
 			'empty'=>_("Value can't be empty"),
+		);
+		break;
+	case 'password':
+		$messages=array(
+			'invalid'=>_('Invalid password'),
+			'short'=>sprintf(_('Password has to be at least %d characters'), 6),
+		);
+		break;
+	case 'password_with_confirmation':
+		$messages=array(
+			'invalid'=>_('Invalid password'),
+			'short'=>sprintf(_('Password has to be at least %d characters'), 6),
+			'not_match'=>_("Passwords don't match"),
 
+		);
+		break;
+	case 'password_with_confirmation_paranoid':
+		$messages=array(
+			'incorrect'=>_('Incorrect password'),
+			'invalid'=>_('Invalid password'),
+			'short'=>sprintf(_('Password has to be at least %d characters'), 6),
+			'not_match'=>_("Passwords don't match"),
+
+		);
+		break;
+	case 'pin':
+		$messages=array(
+			'invalid'=>_('Invalid value'),
+			'short'=>sprintf(_('PIN has to be at least %d characters'), 4),
+		);
+		break;
+	case 'pin_paranoid':
+		$messages=array(
+			'incorrect'=>_('Incorrect password'),
+			'invalid'=>_('Invalid value'),
+			'short'=>sprintf(_('PIN has to be at least %d characters'), 4),
+		);
+		break;
+	case 'email':
+		$messages=array(
+			'invalid'=>_('Invalid email'),
+			'empty'=>_('Please provide an email'),
+		);
+	case 'telephone':
+		$messages=array(
+			'invalid'=>_('Invalid number'),
+			'empty'=>_('Please provide a number'),
+			'short'=>_('Number to short'),
+			'long'=>_('Number to long'),
+			'invalid_code'=>_('Invalid contry code'),
 		);
 		break;
 	}

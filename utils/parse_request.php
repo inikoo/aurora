@@ -1037,7 +1037,8 @@ function parse_request($_data, $db) {
 
 					if (isset($view_path[1])) {
 
-						$parent='users';
+						$parent='account';
+						$parent_key=1;
 						$section='staff.user';
 						$object='user';
 						$key=$view_path[1];

@@ -9,75 +9,112 @@
 
 */
 
-$_user=new User($state['key']);
+include_once 'utils/invalid_messages.php';
+
+$options_yn=array(
+	'Yes'=>_('Yes'), 'No'=>_('No')
+);
+
+asort($options_yn);
+
+
+
+
+$system_user=new User($state['key']);
 
 
 
 $object_fields=array(
 	array(
-		'label'=>_('Id'),
+		'label'=>_('Employee'),
 		'show_title'=>true,
+		'class'=>'links',
 		'fields'=>array(
 			array(
+			    'render'=>false,
 				'class'=>'locked',
 				'id'=>'User_ID',
-				'value'=>$_user->get_formated_id() ,
+				'value'=>$system_user->get_formated_id() ,
 				'label'=>_('ID')
 			),
-           
+
 			array(
-				'class'=>'string',
-				'id'=>'User_Handle',
-				'value'=>$_user->get('User Handle'),
-				'label'=>_('Handle')
-			),
-			array(
-				'class'=>'string',
+				'class'=>'link',
 				'id'=>'User_Alias',
-				'value'=>$_user->get('User Alias'),
-				'label'=>_('Name')
+				'value'=>'',
+				'label'=>$system_user->get('User Alias').' ('.sprintf('%35d',$system_user->get('User Parent Key')).')',
+				'reference'=>'employee/'.$system_user->get('User Parent Key')
 			),
 
 		)
 	),
-	
+
 	array(
 		'label'=>_('Access'),
 		'show_title'=>true,
+		'class'=>'edit_fields',
 		'fields'=>array(
 			array(
-				'id'=>'User_Active',
-				'value'=>$_user->get('User Active') ,
-				'label'=>_('Active')
+				
+			'id'=>'User_Active',
+			'edit'=>'option',
+			'value'=>$system_user->get('User Active'),
+			'formated_value'=>$system_user->get('Active'),
+			'options'=>$options_yn,
+			'label'=>_('Active')
+				
 			),
-            array(
-				'id'=>'User_Password',
-				'value'=>'********' ,
-				'label'=>_('User_Password')
+
+			array(
+
+				'id'=>'User_Handle',
+				'edit'=>'string',
+				'value'=>$system_user->get('User Handle'),
+				'formated_value'=>$system_user->get('Handle'),
+				'label'=>_('Login'),
+				'server_validation'=>'check_for_duplicates'
+
+
+
 			),
 			array(
-				'class'=>'string',
+				'render'=>($system_user->get('User Active')=='Yes'?true:false),
+				'id'=>'User_Password',
+				'edit'=>'password',
+				'value'=>$system_user->get('User Password'),
+				'formated_value'=>$system_user->get('Password'),
+				'label'=>_('Password'),
+				'invalid_msg'=>get_invalid_message('password'),
+			),
+			array(
+				'render'=>($system_user->get('User Active')=='Yes'?true:false),
 				'id'=>'User_PIN',
-				'value'=>'****' ,
-				'label'=>_('PIN')
-			)
+				'edit'=>'pin',
+				'value'=>$system_user->get('User PIN'),
+				'formated_value'=>$system_user->get('PIN'),
+				'label'=>_('PIN'),
+				'invalid_msg'=>get_invalid_message('pin'),
+			),
 
 		)
 	),
 	array(
 		'label'=>_('Preferences'),
 		'show_title'=>true,
+		'class'=>'edit_fields',
 		'fields'=>array(
 			array(
 				'id'=>'User_Preferred_Locale',
-				'value'=>$_user->get('User Preferred Locale') ,
+				'value'=>$system_user->get('User Preferred Locale') ,
 				'label'=>_('Language')
 			)
 
 		)
 	),
 );
-$smarty->assign('object_fields',$object_fields);
+$smarty->assign('state', $state);
+$smarty->assign('object_fields', $object_fields);
+
 
 $html=$smarty->fetch('object_fields.tpl');
 

@@ -9,10 +9,15 @@
 	<link href="/css/font-awesome.min.css" rel="stylesheet">
 	<link href="/css/backgrid.css" rel="stylesheet">
 	<link href="/css/backgrid-filter.css" rel="stylesheet">
+	<link href="/css/intlTelInput.css" rel="stylesheet">
+	
+	
+	
 	<link href="/css/app.css" rel="stylesheet">
 	<script type="text/javascript" src="/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/jquery-ui.min.js"></script> 
 	<script type="text/javascript" src="/js/chrono.min.js"></script> 
+	<script type="text/javascript" src="/js/sha256.js"></script> 
 	<script type="text/javascript" src="/js/underscore.js"></script> 
 	<script type="text/javascript" src="/js/backbone.js"></script> 
 	<script type="text/javascript" src="/js/backbone.paginator.js"></script> 
@@ -23,6 +28,10 @@
 	<script type="text/javascript" src="/js/table.js"></script> 
 	<script type="text/javascript" src="/js/field_validation.js"></script> 
 	<script type="text/javascript" src="/js/edit.js"></script> 
+	<script type="text/javascript" src="/js/intlTelInput.min.js"></script> 
+	
+	
+	
 </head>
 <body>
 <input type="hidden" id="_request" value="{$_request}">

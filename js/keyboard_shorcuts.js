@@ -78,6 +78,8 @@ function enter_hit(e) {
         case 'option':
         case 'radio_option':
         case 'string':
+        case 'telephone':
+        case 'email':
         case 'anything':
         case 'int_unsigned':
         case 'smallint_unsigned':
@@ -86,9 +88,20 @@ function enter_hit(e) {
         case 'smallint':
         case 'mediumint':
         case 'date':
+        case 'pin':
+        case 'password':
             save_field(key_scope.object, key_scope.key, key_scope.field)
             break;
+        case 'pin_with_confirmation':
+        case 'password_with_confirmation':
+            if ($('#' + key_scope.field + '_confirm').hasClass('hide')) {
+                confirm_field(key_scope.field)
 
+            } else {
+                save_field(key_scope.object, key_scope.key, key_scope.field)
+
+            }
+            break;
 
         default:
 

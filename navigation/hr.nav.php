@@ -102,7 +102,7 @@ function get_employee_navigation($data) {
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$prev_key=$row['object_key'];
-				$prev_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
+				$prev_title=_("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 			}
 
@@ -117,7 +117,7 @@ function get_employee_navigation($data) {
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$next_key=$row['object_key'];
-				$next_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
+				$next_title=_("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 			}
 
@@ -134,37 +134,12 @@ function get_employee_navigation($data) {
 
 		}
 
-		if ($data['parent']=='group') {
-
-
-
-			include_once 'class.Category.php';
-			$category=new Category($data['parent_key']);
-
-
-			$category_keys=preg_split('/\>/', preg_replace('/\>$/', '', $category->data['Category Position']));
-			array_pop($category_keys);
-			if (count($category_keys)>0) {
-				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
-				//print $sql;
-				$result=mysql_query($sql);
-				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
-
-				}
-			}
-
-
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Category").' '.$category->data['Category Code'], 'url'=>'supplier_category.php?id='.$category->id);
-
-		}
-		else {
+		if ($data['parent']=='account')  {
 
 			$up_button=array('icon'=>'arrow-up', 'title'=>_("Employees"), 'reference'=>'hr');
 
 			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'employee/'.$data['parent_key'].'/'.$prev_key);
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'employee/'.$prev_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
@@ -174,7 +149,7 @@ function get_employee_navigation($data) {
 
 
 			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'employee/'.$data['parent_key'].'/'.$next_key);
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'employee/'.$next_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
@@ -209,7 +184,7 @@ function get_employee_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>$title,
-		'search'=>array('show'=>true, 'placeholder'=>_('Search users'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search employees'))
 
 	);
 	$smarty->assign('_content', $_content);

@@ -7,7 +7,8 @@ function validate_field(field, new_value) {
 
     var field_data = $('#' + field + '_container')
 
-    var validation = client_validation(field_data.attr('field_type'), field_data.attr('required'), new_value)
+
+    var validation = client_validation(field_data.attr('field_type'), field_data.attr('required'), new_value, field)
 
     if (validation.class == 'valid' && field_data.attr('server_validation')) {
 
@@ -26,17 +27,18 @@ function validate_field(field, new_value) {
 }
 
 
-function client_validation(type, required, value) {
+function client_validation(type, required, value, field) {
 
     var valid_state = {
         class: 'valid',
+
         type: ''
     }
 
 
-    if (value == '' && required) {
+    if (value == '' && !required) {
         return {
-            class: 'invalid',
+            class: 'potentially_valid',
             type: 'empty'
         }
 
@@ -49,6 +51,7 @@ function client_validation(type, required, value) {
         if (!$.isNumeric(value)) {
             return {
                 class: 'invalid',
+
                 type: 'not_integer'
             }
         }
@@ -56,6 +59,7 @@ function client_validation(type, required, value) {
         if (value > 65535) {
             return {
                 class: 'invalid',
+
                 type: 'too_big'
             }
         }
@@ -63,6 +67,7 @@ function client_validation(type, required, value) {
         if (value < 0) {
             return {
                 class: 'invalid',
+
                 type: 'negative'
             }
         }
@@ -70,6 +75,7 @@ function client_validation(type, required, value) {
         if (Math.floor(value) != value) {
             return {
                 class: 'invalid',
+
                 type: 'not_integer'
             }
         }
@@ -82,6 +88,7 @@ function client_validation(type, required, value) {
         if (!$.isNumeric(value)) {
             return {
                 class: 'invalid',
+
                 type: 'not_integer'
             }
         }
@@ -89,6 +96,7 @@ function client_validation(type, required, value) {
         if (value > 4294967295) {
             return {
                 class: 'invalid',
+
                 type: 'too_big'
             }
         }
@@ -96,6 +104,7 @@ function client_validation(type, required, value) {
         if (value < 0) {
             return {
                 class: 'invalid',
+
                 type: 'negative'
             }
         }
@@ -103,6 +112,7 @@ function client_validation(type, required, value) {
         if (Math.floor(value) != value) {
             return {
                 class: 'invalid',
+
                 type: 'not_integer'
             }
         }
@@ -115,9 +125,95 @@ function client_validation(type, required, value) {
         break;
     case 'string':
         break;
+    case 'pin':
+
+        if (value.length < 4) {
+            return {
+                class: 'potentially_valid',
+
+                type: 'short'
+            }
+        }
+
+        break;
+    case 'password':
+
+        if (value.length < 6) {
+            return {
+                class: 'potentially_valid',
+
+                type: 'short'
+            }
+        }
+
+        break;
+
+    case 'password_with_confirmation':
+
+        if (value.length < 6) {
+            return {
+                class: 'potentially_valid',
+
+                type: 'short'
+            }
+        }
+
+        break;
 
     case 'date':
         break;
+
+    case 'telephone':
+
+
+
+
+        if (value.length == 1) {
+            if ($.isNumeric(value)) {
+                return {
+                    class: 'potentially_valid',
+                    type: 'short'
+                }
+            } else {
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            }
+
+        } else {
+
+
+            if (!$('#' + field).intlTelInput("isValidNumber")) {
+                var error = $('#' + field).intlTelInput("getValidationError");
+                console.log(error)
+                if (error == intlTelInputUtils.validationError.TOO_SHORT) {
+                    return {
+                        class: 'potentially_valid',
+                        type: 'short'
+                    }
+                } else if (error == intlTelInputUtils.validationError.TOO_LONG) {
+                    return {
+                        class: 'invalid',
+                        type: 'long'
+                    }
+                } else if (error == intlTelInputUtils.validationError.NOT_A_NUMBER) {
+                    return {
+                        class: 'invalid',
+                        type: 'invalid'
+                    }
+                } else if (error == intlTelInputUtils.validationError.INVALID_COUNTRY_CODE) {
+                    return {
+                        class: 'invalid',
+                        type: 'invalid_code'
+                    }
+                }
+
+            }
+        }
+
+        break;
+
 
     case 'email':
 
@@ -125,9 +221,11 @@ function client_validation(type, required, value) {
 
 
         if (!emailReg.test(value)) {
+
             return {
-                class: 'invalid',
-                type: ''
+                class: 'potentially_valid',
+
+                type: 'invalid'
             }
         }
 
@@ -147,8 +245,9 @@ function client_validation(type, required, value) {
 function server_validation(tipo, parent, parent_key, object, key, field, value) {
 
     var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
-
+    console.log(request)
     $.getJSON(request, function(data) {
+        $("#" + field + '_editor').removeClass('waiting')
 
         if (!$('#' + field + '_value').hasClass('hide')) {
             return;
@@ -162,11 +261,10 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
         } else {
             var validation = 'invalid'
             var msg = "Error, can't verify value on server"
-            console.log(data.msg)
+
         }
 
         $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
-
 
         if (validation == 'valid') {
 

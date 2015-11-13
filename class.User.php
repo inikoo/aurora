@@ -21,7 +21,9 @@ class User extends DB_Table {
 	private $rights_read=false;
 
 
-	function User($a1='id',$a2=false,$a3=false) {
+	function User($a1='id', $a2=false, $a3=false) {
+		global $db;
+		$this->db=$db;
 
 		$this->table_name='User';
 		$this->ignore_fields=array(
@@ -30,12 +32,12 @@ class User extends DB_Table {
 		);
 
 		if (($a1=='new'  )and is_array($a2)) {
-			$this->find($a2,'create');
+			$this->find($a2, 'create');
 			return;
 		}
 
 		if (($a1=='find'  )and is_array($a2)) {
-			$this->find($a2,$a3);
+			$this->find($a2, $a3);
 			return;
 		}
 
@@ -48,15 +50,16 @@ class User extends DB_Table {
 			$key=$a1;
 		}
 
-		$this->get_data($key,$_data,$a3);
+		$this->get_data($key, $_data, $a3);
 		return;
 	}
 
-	function find($raw_data,$options='') {
+
+	function find($raw_data, $options='') {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -65,10 +68,10 @@ class User extends DB_Table {
 		$create=false;
 		$update=false;
 
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -76,13 +79,13 @@ class User extends DB_Table {
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data)) {
+			if (array_key_exists($key, $data)) {
 				$data[$key]=_trim($value);
 			}
 		}
 
 		if ($data['User Type']=='Customer') {
-			$where_site=sprintf(" and `User Site Key`=%d",$data['User Site Key']);
+			$where_site=sprintf(" and `User Site Key`=%d", $data['User Site Key']);
 		}else {
 			$where_site='';
 		}
@@ -116,7 +119,7 @@ class User extends DB_Table {
 			if ($row2 = mysql_fetch_array($result2, MYSQL_ASSOC)) {
 
 
-				if ($this->reactivate($row2['User Key'],$data['User Handle'],$row2['User Site Key'])) {
+				if ($this->reactivate($row2['User Key'], $data['User Handle'], $row2['User Site Key'])) {
 
 
 
@@ -131,7 +134,7 @@ class User extends DB_Table {
 
 
 		if ($this->found) {
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 
 		}
 
@@ -142,6 +145,7 @@ class User extends DB_Table {
 
 	}
 
+
 	function create($data) {
 
 		$this->new=false;
@@ -149,7 +153,7 @@ class User extends DB_Table {
 		$base_data=$this->base_data();
 
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$base_data))
+			if (array_key_exists($key, $base_data))
 				$base_data[$key]=_trim($value);
 		}
 
@@ -168,7 +172,7 @@ class User extends DB_Table {
 		}
 
 		if ($base_data['User Type']=='Customer') {
-			$where_site=sprintf(" and `User Site Key`=%d",$base_data['User Site Key']);
+			$where_site=sprintf(" and `User Site Key`=%d", $base_data['User Site Key']);
 		}else {
 			$where_site='';
 		}
@@ -197,7 +201,7 @@ class User extends DB_Table {
 
 		if ($base_data['User Type']=='Staff') {
 
-			$sql=sprintf("select `User Handle`  from `User Dimension` where `User Type`='Staff' and `User Parent Key`=%d",$data['User Parent Key']);
+			$sql=sprintf("select `User Handle`  from `User Dimension` where `User Type`='Staff' and `User Parent Key`=%d", $data['User Parent Key']);
 
 			$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 			if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -207,7 +211,7 @@ class User extends DB_Table {
 
 		}
 		if ($base_data['User Type']=='Customer') {
-			$sql=sprintf("update `Store Dimension` set `Store Total Users`=`Store Total Users`+1 where `Store Key`=%d",$base_data['User Site Key']);
+			$sql=sprintf("update `Store Dimension` set `Store Total Users`=`Store Total Users`+1 where `Store Key`=%d", $base_data['User Site Key']);
 			mysql_query($sql);
 		}
 		if ($base_data['User Type']=='Administrator') {
@@ -220,13 +224,13 @@ class User extends DB_Table {
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 			if ($key=='User Inactive Note')
-				$values.=prepare_mysql($value,false).",";
+				$values.=prepare_mysql($value, false).",";
 			else
 				$values.=prepare_mysql($value).",";
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+		$sql=sprintf("insert into `User Dimension` %s %s", $keys, $values);
 		//print $sql;
 		if (mysql_query($sql)) {
 
@@ -234,7 +238,7 @@ class User extends DB_Table {
 
 			$this->new=true;
 			$this->msg= _('User added successfully');
-			$this->get_data('id',$user_id);
+			$this->get_data('id', $user_id);
 			$this->update_staff_type();
 
 			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
@@ -242,7 +246,7 @@ class User extends DB_Table {
 					$this->id
 				);
 				mysql_query($sql);
-				$this->get_data('id',$this->id);
+				$this->get_data('id', $this->id);
 			}
 
 			return;
@@ -252,18 +256,19 @@ class User extends DB_Table {
 			return;
 		}
 
-		$this->get_data('id',$user_id);
+		$this->get_data('id', $user_id);
 
 
 
 	}
 
-	function get_data($key,$data,$data2='Staff') {
+
+	function get_data($key, $data, $data2='Staff') {
 		global $_group;
 		if ($key=='handle')
 			$sql=sprintf("select * from  `User Dimension` where `User Handle`=%s and `User Type`=%s"
-				,prepare_mysql($data)
-				,prepare_mysql($data2)
+				, prepare_mysql($data)
+				, prepare_mysql($data2)
 			);
 		elseif ($key=='Administrator')
 			$sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
@@ -275,7 +280,7 @@ class User extends DB_Table {
 			);
 
 		else
-			$sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
+			$sql=sprintf("select * from `User Dimension` where `User Key`=%d", $data);
 
 		$result=mysql_query($sql);
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -284,11 +289,11 @@ class User extends DB_Table {
 
 			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator'  or $this->data['User Type']=='Warehouse') {
 
-				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d",$this->id);
+				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d", $this->id);
 
 				$result2=mysql_query($sql);
 				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-					$this->data=array_merge($this->data,$row2);
+					$this->data=array_merge($this->data, $row2);
 				}
 			}
 		}
@@ -296,56 +301,47 @@ class User extends DB_Table {
 
 	}
 
+
 	function update_active($value) {
 		$this->updated=false;
 
-		if (preg_match('/^(activate|yes|si|1|true)$/i',$value))
-			$value='Yes';
-		if (preg_match('/^(des?activate|no|0|false)$/i',$value))
-			$value='No';
 
-		if (!preg_match('/^(Yes|No)$/',$value)) {
+		if (!preg_match('/^(Yes|No)$/', $value)) {
 			$this->error=true;
-			$thus->msg=_('Wrong value');
+			$this->msg=sprintf( _('Wrong value %s'), $value);
+			return;
 		}
 
-		$sql=sprintf("update `User Dimension` set `User Active`=%s where `User Key`=%d  ",prepare_mysql($value),$this->id);
-		mysql_query($sql);
+        $this->update_field('User Active',$value);
 
-		if (mysql_affected_rows()>0) {
-			$this->updated=true;
-			$this->data['User Active']=$value;
-			$this->new_value=$value;
-			if ($value=='Yes') {
-				$history_data=array(
-					'History Abstract'=>_('User Activated')
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('activated'))
-					,'Action'=>'edited'
+		$this->other_fields_updated=array(
+			'User_Password'=>array(
+				'field'=>'User_Password',
+				'render'=>($this->get('User Active')=='Yes'?true:false),
+				'value'=>$this->get('User Password'),
+				'formated_value'=>$this->get('Password'),
 
-				);
-			} else {
-				$history_data=array(
-					'History Abstract'=>_('User Desactivated')
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('deactivated'))
-					,'Action'=>'edited'
-				);
 
-			}
+			),
+				'User_PIN'=>array(
+				'field'=>'User_PIN',
+				'render'=>($this->get('User Active')=='Yes'?true:false),
+				'value'=>$this->get('User PIN'),
+				'formated_value'=>$this->get('PIN'),
 
-			$this->add_history($history_data);
-			$this->update_staff_type();
-		} else {
-			$this->msg=_('Nothing to change');
-		}
+
+			)
+		);
 
 	}
+
 
 	function update_warehouses($value) {
 		$this->updated=false;
 
 		if ($this->data['User Type']!='Staff')
 			return;
-		$warehouses=preg_split('/,/',$value);
+		$warehouses=preg_split('/,/', $value);
 		foreach ($warehouses as $key=>$value) {
 			if (!is_numeric($value) )
 				unset($warehouses[$key]);
@@ -368,12 +364,13 @@ class User extends DB_Table {
 		}
 	}
 
+
 	function update_stores($value) {
 		$this->updated=false;
 
 		if ($this->data['User Type']!='Staff')
 			return;
-		$stores=preg_split('/,/',$value);
+		$stores=preg_split('/,/', $value);
 		foreach ($stores as $key=>$value) {
 			if (!is_numeric($value) )
 				unset($stores[$key]);
@@ -397,12 +394,13 @@ class User extends DB_Table {
 		}
 	}
 
+
 	function update_websites($value) {
 		$this->updated=false;
 
 		if ($this->data['User Type']!='Staff')
 			return;
-		$websites=preg_split('/,/',$value);
+		$websites=preg_split('/,/', $value);
 		foreach ($websites as $key=>$value) {
 			if (!is_numeric($value) )
 				unset($websites[$key]);
@@ -428,28 +426,29 @@ class User extends DB_Table {
 				$groups_changed=$this->add_group(array($row['User Group Key']));
 			}
 		}else if (count($this->websites)==0) {
-				$this->read_groups();
-				$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_assoc($res)) {
-					$groups_changed=$this->delete_group(array($row['User Group Key']));
-				}
+			$this->read_groups();
+			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res)) {
+				$groups_changed=$this->delete_group(array($row['User Group Key']));
 			}
+		}
 
 
 		if ($changed>0) {
 			$this->read_groups();
 			$this->updated=true;
-			$this->new_value=array('websites'=>$this->websites,'groups'=>$this->groups_key_array);
+			$this->new_value=array('websites'=>$this->websites, 'groups'=>$this->groups_key_array);
 		}
 	}
+
 
 	function update_groups($value) {
 
 		$this->updated=false;
 
 		//     global $_group;
-		$groups=preg_split('/,/',$value);
+		$groups=preg_split('/,/', $value);
 		foreach ($groups as $key=>$value) {
 			if (!is_numeric($value) )
 				unset($groups[$key]);
@@ -481,46 +480,69 @@ class User extends DB_Table {
 		if ($changed>0) {
 			$this->read_websites();
 			$this->updated=true;
-			$this->new_value=array('websites'=>$this->websites,'groups'=>$this->groups_key_array);
+			$this->new_value=array('websites'=>$this->websites, 'groups'=>$this->groups_key_array);
 		}
 
 
 	}
 
-	public function update($tipo,$data='') {
-		switch ($tipo) {
-		case('isactive'):
-			$this->update_active($data['value']);
+
+	function update_field_switcher($field, $value, $options='') {
+
+
+
+
+		if (is_string($value))
+			$value=_trim($value);
+
+
+
+		switch ($field) {
+
+
+		case('User Active'):
+			$this->update_active($value);
 			break;
+		case('User Password'):
+			$this->change_password($value,$options);
+			break;	
 		case('groups'):
-			$this->update_groups($data['value']);
+			$this->update_groups($value);
 			break;
 		case('stores'):
-			$this->update_stores($data['value']);
+			$this->update_stores($value);
 			break;
 		case('websites'):
-			$this->update_websites($data['value']);
+			$this->update_websites($value);
 			break;
 		case('warehouses'):
-			$this->update_warehouses($data['value']);
+			$this->update_warehouses($value);
 			break;
-		case('name'):
-		case('alias'):
-		case('User Alias'):
-			$this->update_field('User Alias',$data['value']);
-			break;
+
+
 		case('User Theme Key'):
 		case('User Theme Background Key'):
 
-			$this->update_staff_setting_field($tipo,$data['value']);
+			$this->update_staff_setting_field($tipo, $value);
 			break;
 
+
+		default:
+			$base_data=$this->base_data();
+
+
+			if (array_key_exists($field, $base_data)) {
+
+				$this->update_field($field, $value, $options);
+			}
 		}
-
-
+		$this->reread();
 	}
 
-	function update_staff_setting_field($field,$value,$options='') {
+
+
+
+	function update_staff_setting_field($field, $value, $options='') {
 
 		$this->updated=false;
 
@@ -550,7 +572,7 @@ class User extends DB_Table {
 		}
 
 
-		$sql="update  `User Staff Settings Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+		$sql="update  `User Staff Settings Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
 
 		mysql_query($sql);
 		$affected=mysql_affected_rows();
@@ -575,11 +597,11 @@ class User extends DB_Table {
 			$this->new_value=$value;
 
 			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
+			if (preg_match('/no( |\_)history|nohistory/i', $options))
 				$save_history=false;
 
 			if (
-				preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
+				preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $this->table_name)
 				and !$this->new
 				and $save_history
 			) {
@@ -597,8 +619,8 @@ class User extends DB_Table {
 
 				$history_key=$this->add_history($history_data);
 				if (
-					in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
-					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->id,$history_key);
+					in_array($this->table_name, array('Customer', 'Store', 'Product Department', 'Product Family', 'Product', 'Part', 'Supplier', 'Supplier Product'))) {
+					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
 					mysql_query($sql);
 
 				}
@@ -609,44 +631,35 @@ class User extends DB_Table {
 
 	}
 
-	function change_password($data) {
 
-		if (strlen($data)!=64) {
-			$this->error=true;
-			$this->error_updated=true;
-			$this->msg.=', Wrong password format ('.strlen($data).')';
-			$this->msg_updated.=', Wrong password format';
-			return;
-		}
+	function change_password($value,$options='') {
 
-		$sql=sprintf("update `User Dimension` set `User Password`=%s where `User Key`=%d",prepare_mysql($data),$this->id);
-		//print $sql;
-		mysql_query($sql);
-		$this->updated=true;
+		$this->update_field('User Password',$value,$options);
 
 	}
 
-	function add_group($to_add,$history=true) {
+
+	function add_group($to_add, $history=true) {
 		$changed=0;
 		foreach ($to_add as $group_id) {
 
-			$sql=sprintf("select * from  `User Group Dimension` where `User Group Key`=%d",$group_id);
+			$sql=sprintf("select * from  `User Group Dimension` where `User Group Key`=%d", $group_id);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_array($res)) {
 				$group_name=$row['User Group Name'];
 
 
-				$sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ",$this->id,$group_id);
+				$sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ", $this->id, $group_id);
 				//print $sql;
 				mysql_query($sql);
 				if (mysql_affected_rows()>0) {
 					$changed++;
 					$history_data=array(
 						'History Abstract'=>_('User added to Group')
-						,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$group_name)
-						,'Action'=>'associate'
-						,'Indirect Object'=>'Group'
-						,'Indirect Object Key'=>$group_id
+						, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$group_name)
+						, 'Action'=>'associate'
+						, 'Indirect Object'=>'Group'
+						, 'Indirect Object Key'=>$group_id
 					);
 					$this->add_history($history_data);
 				}
@@ -657,14 +670,15 @@ class User extends DB_Table {
 		return $changed;
 	}
 
-	function delete_group($to_delete,$history=true) {
+
+	function delete_group($to_delete, $history=true) {
 		$changed=0;
 		foreach ($to_delete as $group_id) {
 
 
 
 
-			$sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d and `User Group Key`=%d ",$this->id,$group_id);
+			$sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d and `User Group Key`=%d ", $this->id, $group_id);
 			//   print $sql;
 			mysql_query($sql);
 
@@ -672,14 +686,14 @@ class User extends DB_Table {
 				$changed++;
 				$history_data=array(
 					'History Abstract'=>_('User deleted from Group')
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups[$group_id]['User Group Name'])
-					,'Action'=>'disassociate'
-					,'Indirect Object'=>'Group'
-					,'Indirect Object Key'=>$group_id
+					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups[$group_id]['User Group Name'])
+					, 'Action'=>'disassociate'
+					, 'Indirect Object'=>'Group'
+					, 'Indirect Object Key'=>$group_id
 				);
 				$this->add_history($history_data);
 
-				$sql=sprintf("select `User Group Name` from `User Group Dimension` where `User Group Key`=%d ",$group_id);
+				$sql=sprintf("select `User Group Name` from `User Group Dimension` where `User Group Key`=%d ", $group_id);
 				$res=mysql_query($sql);
 				if ($row=mysql_fetch_assoc($res)) {
 					if ($row['User Group Name']=='Webmaster') {
@@ -697,23 +711,24 @@ class User extends DB_Table {
 		return $changed;
 	}
 
-	function add_store($to_add,$history=true) {
+
+	function add_store($to_add, $history=true) {
 		$changed=0;
 		foreach ($to_add as $scope_id) {
 
 			$store=new Store($scope_id);
 			if (!$store->id)
 				continue;
-			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Store',%d) ",$this->id,$scope_id);
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Store',%d) ", $this->id, $scope_id);
 			mysql_query($sql);
 			if (mysql_affected_rows()>0) {
 				$changed++;
 				$history_data=array(
 					'History Abstract'=>_('User rights granted for store').'. ('.$store->data['Store Code'].')'
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$store->data['Store Name'])
-					,'Action'=>'associate'
-					,'Indirect Object'=>'Store'
-					,'Indirect Object Key'=>$store->id
+					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$store->data['Store Name'])
+					, 'Action'=>'associate'
+					, 'Indirect Object'=>'Store'
+					, 'Indirect Object Key'=>$store->id
 				);
 				$this->add_history($history_data);
 			}
@@ -722,25 +737,26 @@ class User extends DB_Table {
 
 	}
 
-	function delete_store($to_delete,$history=true) {
+
+	function delete_store($to_delete, $history=true) {
 		$changed=0;
 		foreach ($to_delete as $scope_id) {
 			$store=new Store($scope_id);
 			if (!$store->id)
 				continue;
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Store' ",$this->id,$scope_id);
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Store' ", $this->id, $scope_id);
 			mysql_query($sql);
 		}
 		if (mysql_affected_rows()>0) {
 			$changed++;
 			$history_data=array(
-				
-					'History Abstract'=>_('User rights removed from store').'. ('.$store->data['Store Code'].')'
 
-				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$store->data['Store Name'])
-				,'Action'=>'disassociate'
-				,'Indirect Object'=>'Store'
-				,'Indirect Object Key'=>$store->id
+				'History Abstract'=>_('User rights removed from store').'. ('.$store->data['Store Code'].')'
+
+				, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$store->data['Store Name'])
+				, 'Action'=>'disassociate'
+				, 'Indirect Object'=>'Store'
+				, 'Indirect Object Key'=>$store->id
 			);
 			$this->add_history($history_data);
 
@@ -748,23 +764,24 @@ class User extends DB_Table {
 		return $changed;
 	}
 
-	function add_website($to_add,$history=true) {
+
+	function add_website($to_add, $history=true) {
 		$changed=0;
 		foreach ($to_add as $scope_id) {
 
 			$website=new Site($scope_id);
 			if (!$website->id)
 				continue;
-			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ",$this->id,$scope_id);
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ", $this->id, $scope_id);
 			mysql_query($sql);
 			if (mysql_affected_rows()>0) {
 				$changed++;
 				$history_data=array(
 					'History Abstract'=>_('User rights granted for website').'. ('.$store->data['Site Code'].')'
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$website->data['Site Name'])
-					,'Action'=>'associate'
-					,'Indirect Object'=>'Site'
-					,'Indirect Object Key'=>$website->id
+					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$website->data['Site Name'])
+					, 'Action'=>'associate'
+					, 'Indirect Object'=>'Site'
+					, 'Indirect Object Key'=>$website->id
 				);
 				$this->add_history($history_data);
 			}
@@ -773,23 +790,24 @@ class User extends DB_Table {
 
 	}
 
-	function delete_website($to_delete,$history=true) {
+
+	function delete_website($to_delete, $history=true) {
 		$changed=0;
 		foreach ($to_delete as $scope_id) {
 			$website=new Site($scope_id);
 			if (!$website->id)
 				continue;
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Website' ",$this->id,$scope_id);
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Website' ", $this->id, $scope_id);
 			mysql_query($sql);
 		}
 		if (mysql_affected_rows()>0) {
 			$changed++;
 			$history_data=array(
 				'History Abstract'=>_('User rights removed from website').'. ('.$store->data['Site Code'].')'
-				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$website->data['Site Name'])
-				,'Action'=>'disassociate'
-				,'Indirect Object'=>'Site'
-				,'Indirect Object Key'=>$website->id
+				, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$website->data['Site Name'])
+				, 'Action'=>'disassociate'
+				, 'Indirect Object'=>'Site'
+				, 'Indirect Object Key'=>$website->id
 			);
 			$this->add_history($history_data);
 
@@ -797,7 +815,8 @@ class User extends DB_Table {
 		return $changed;
 	}
 
-	function add_warehouse($to_add,$history=true) {
+
+	function add_warehouse($to_add, $history=true) {
 		$changed=0;
 		include_once 'class.Warehouse.php';
 		foreach ($to_add as $scope_id) {
@@ -805,17 +824,17 @@ class User extends DB_Table {
 			$warehouse=new Warehouse($scope_id);
 			if (!$warehouse->id)
 				continue;
-			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Warehouse',%d) ",$this->id,$scope_id);
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Warehouse',%d) ", $this->id, $scope_id);
 			//print $sql;
 			mysql_query($sql);
 			if (mysql_affected_rows()>0) {
 				$changed++;
 				$history_data=array(
 					'History Abstract'=>_('User Rights Associated with Warehouse')
-					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$warehouse->data['Warehouse Name'])
-					,'Action'=>'associate'
-					,'Indirect Object'=>'Warehouse'
-					,'Indirect Object Key'=>$warehouse->id
+					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$warehouse->data['Warehouse Name'])
+					, 'Action'=>'associate'
+					, 'Indirect Object'=>'Warehouse'
+					, 'Indirect Object Key'=>$warehouse->id
 				);
 				$this->add_history($history_data);
 			}
@@ -824,24 +843,25 @@ class User extends DB_Table {
 
 	}
 
-	function delete_warehouse($to_delete,$history=true) {
+
+	function delete_warehouse($to_delete, $history=true) {
 		$changed=0;
 		include_once 'class.Warehouse.php';
 		foreach ($to_delete as $scope_id) {
 			$warehouse=new Warehouse($scope_id);
 			if (!$warehouse->id)
 				continue;
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Warehouse'",$this->id,$scope_id);
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Warehouse'", $this->id, $scope_id);
 			mysql_query($sql);
 		}
 		if (mysql_affected_rows()>0) {
 			$changed++;
 			$history_data=array(
 				'History Abstract'=>_('User Rights Disassociated with Warehouse')
-				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$warehouse->data['Warehouse Name'])
-				,'Action'=>'disassociate'
-				,'Indirect Object'=>'Warehouse'
-				,'Indirect Object Key'=>$warehouse->id
+				, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$warehouse->data['Warehouse Name'])
+				, 'Action'=>'disassociate'
+				, 'Indirect Object'=>'Warehouse'
+				, 'Indirect Object Key'=>$warehouse->id
 			);
 			$this->add_history($history_data);
 
@@ -849,14 +869,44 @@ class User extends DB_Table {
 		return $changed;
 	}
 
+
 	function get($key) {
 
 		//print $key;
 
-		if (array_key_exists($key,$this->data))
-			return $this->data[$key];
 
 		switch ($key) {
+
+		case('User Passoword'):
+		case('User PIN'):
+			return '';
+			break;
+		case('Password'):
+			return '******';
+			break;
+		case('PIN'):
+			return '****';
+			break;
+
+		case('Active'):
+
+			switch ( $this->data['User Active']) {
+			case('Yes'):
+				$formated_value=_('Yes');
+				break;
+			case('No'):
+				$formated_value=_('No');
+				break;
+
+			default:
+				$formated_value=$this->data['User Active'];
+			}
+
+			return $formated_value;
+
+			break;
+
+
 		case('Login Count'):
 		case('Failed Login Count'):
 			return number($this->data['User '.$key]);
@@ -870,15 +920,25 @@ class User extends DB_Table {
 			else
 				return strftime("%a %e %b %Y %H:%M %Z", strtotime( $this->data ['User '.$key]." +00:00" ) );
 			break;
-		case('User Pasword'):
-			return "******";
+
 		case('isactive'):
 			return $this->data['Is Active'];
+			break;
 		case('groups'):
 			return $this->data['groups'];
+			break;
+		default:
+				default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('User '.$key, $this->data))
+				return $this->data['User '.$key];
+
 		}
 
 	}
+
 
 	function get_staff_key() {
 		$staff_key=0;
@@ -890,6 +950,7 @@ class User extends DB_Table {
 		return $staff_key;
 	}
 
+
 	function get_staff_alias() {
 		$staff_alias='';
 		$staff_key=$this->get_staff_key();
@@ -899,7 +960,8 @@ class User extends DB_Table {
 		}
 		return $staff_alias;
 	}
-	
+
+
 	function get_staff_name() {
 		$staff_name='';
 		$staff_key=$this->get_staff_key();
@@ -909,7 +971,8 @@ class User extends DB_Table {
 		}
 		return $staff_name;
 	}
-	
+
+
 	function get_customer_key() {
 		$customer_key=0;
 		if ($this->data['User Type']=='Customer') {
@@ -919,6 +982,7 @@ class User extends DB_Table {
 		}
 		return $customer_key;
 	}
+
 
 	function get_customer_name() {
 		$customer_name='';
@@ -930,21 +994,26 @@ class User extends DB_Table {
 		return $customer_name;
 	}
 
+
 	function get_number_suppliers() {
 		return count($this->suppliers);
 	}
+
 
 	function get_number_warehouses() {
 		return count($this->warehouses);
 	}
 
+
 	function get_number_stores() {
 		return count($this->stores);
 	}
 
+
 	function get_number_websites() {
 		return count($this->websites);
 	}
+
 
 	function is($tag='') {
 		if (strtolower($this->data['User Type'])==strtolower($tag)) {
@@ -954,25 +1023,30 @@ class User extends DB_Table {
 
 	}
 
-	function can_view($tag,$tag_key=false) {
 
-		return $this->can_do('View',$tag,$tag_key);
+	function can_view($tag, $tag_key=false) {
+
+		return $this->can_do('View', $tag, $tag_key);
 
 	}
 
-	function can_create($tag,$tag_key=false) {
-		return $this->can_do('Create',$tag,$tag_key);
+
+	function can_create($tag, $tag_key=false) {
+		return $this->can_do('Create', $tag, $tag_key);
 	}
 
-	function can_edit($tag,$tag_key=false) {
-		return $this->can_do('Edit',$tag,$tag_key);
+
+	function can_edit($tag, $tag_key=false) {
+		return $this->can_do('Edit', $tag, $tag_key);
 	}
 
-	function can_delete($tag,$tag_key=false) {
-		return $this->can_do('Delete',$tag,$tag_key);
+
+	function can_delete($tag, $tag_key=false) {
+		return $this->can_do('Delete', $tag, $tag_key);
 	}
 
-	function can_do($right_type,$tag,$tag_key=false) {
+
+	function can_do($right_type, $tag, $tag_key=false) {
 
 		//  print_r($this->rights_allow);
 
@@ -996,9 +1070,10 @@ class User extends DB_Table {
 
 	}
 
-	function can_do_anyx($right_type,$tag) {
 
-		if (array_key_exists($tag,$this->rights_allow[$right_type]))
+	function can_do_anyx($right_type, $tag) {
+
+		if (array_key_exists($tag, $this->rights_allow[$right_type]))
 			return true;
 		else
 			return false;
@@ -1010,7 +1085,7 @@ class User extends DB_Table {
 		$this->groups_key_list='';
 		$this->groups_key_array=array();
 
-		$sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d",$this->id);
+		$sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d", $this->id);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
@@ -1018,10 +1093,11 @@ class User extends DB_Table {
 			$this->groups_key_list.=','.$row['User Group Key'];
 			$this->groups_key_array[]=$row['User Group Key'];
 		}
-		$this->groups_key_list=preg_replace('/^,/','', $this->groups_key_list);
+		$this->groups_key_list=preg_replace('/^,/', '', $this->groups_key_list);
 
 		$this->groups_read=true;
 	}
+
 
 	function read_warehouses() {
 
@@ -1034,6 +1110,7 @@ class User extends DB_Table {
 		}
 
 	}
+
 
 	function read_websites() {
 
@@ -1048,6 +1125,7 @@ class User extends DB_Table {
 
 	}
 
+
 	function read_stores() {
 
 		$this->stores=array();
@@ -1059,6 +1137,7 @@ class User extends DB_Table {
 		}
 
 	}
+
 
 	function read_suppliers() {
 
@@ -1082,6 +1161,7 @@ class User extends DB_Table {
 				$this->supplier_righs='some';
 		}
 	}
+
 
 	function read_rights() {
 
@@ -1153,6 +1233,7 @@ class User extends DB_Table {
 
 	}
 
+
 	function can_view_list($right_name) {
 		$list=array();
 
@@ -1177,6 +1258,7 @@ class User extends DB_Table {
 
 		return $list;
 	}
+
 
 	function forgot_password() {
 
@@ -1213,7 +1295,7 @@ class User extends DB_Table {
 			$signature_name='';
 			$signature_company='';
 
-			$master_key=$user_key.'x'.generatePassword(6,10);
+			$master_key=$user_key.'x'.generatePassword(6, 10);
 
 
 
@@ -1221,7 +1303,7 @@ class User extends DB_Table {
 			$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
 				prepare_mysql($master_key),
 				$user_key,
-				prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
+				prepare_mysql(date("Y-m-d H:i:s", strtotime("now +24 hours"))),
 				prepare_mysql(ip())
 			);
 
@@ -1234,7 +1316,7 @@ class User extends DB_Table {
 
 
 
-			$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
+			$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key, $secret_key, 256));
 
 
 			$plain_message=$customer->get('greetings')."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
@@ -1274,13 +1356,13 @@ class User extends DB_Table {
 			$result=$send_email->send();
 
 			if ($result['msg']=='ok') {
-				$response=array('state'=>200,'result'=>'send');
+				$response=array('state'=>200, 'result'=>'send');
 				echo json_encode($response);
 				exit;
 
 			}else {
 				print_r($result);
-				$response=array('state'=>200,'result'=>'error');
+				$response=array('state'=>200, 'result'=>'error');
 				echo json_encode($response);
 				exit;
 			}
@@ -1288,12 +1370,13 @@ class User extends DB_Table {
 
 		}
 		else {
-			$response=array('state'=>200,'result'=>'handle_not_found');
+			$response=array('state'=>200, 'result'=>'handle_not_found');
 			echo json_encode($response);
 			exit;
 		}
 
 	}
+
 
 	function update_staff_type() {
 
@@ -1302,6 +1385,7 @@ class User extends DB_Table {
 
 		}
 		else {
+        include_once('class.staff.php');
 			$staff=new Staff($this->data['User Parent Key']);
 			if ($staff->data['Staff Currently Working']=='Yes') {
 				$this->data['User Staff Type']='Working';
@@ -1321,6 +1405,7 @@ class User extends DB_Table {
 		mysql_query($sql);
 	}
 
+
 	function add_image($image_key) {
 
 		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Key`=%d and `Subject Type`='User Profile'", $this->id);
@@ -1338,7 +1423,7 @@ class User extends DB_Table {
 
 
 		///////////////////
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->nochange=true;
@@ -1352,9 +1437,9 @@ class User extends DB_Table {
 
 
 		$sql=sprintf("insert into `Image Bridge` values ('User Profile',%d,%d,%s,'')"
-			,$this->id
-			,$image_key
-			,prepare_mysql($principal)
+			, $this->id
+			, $image_key
+			, prepare_mysql($principal)
 
 		);
 
@@ -1367,8 +1452,8 @@ class User extends DB_Table {
 
 
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-			,$this->id
-			,$image_key
+			, $this->id
+			, $image_key
 		);
 
 		$res=mysql_query($sql);
@@ -1397,9 +1482,10 @@ class User extends DB_Table {
 		$this->msg=_("image added");
 	}
 
+
 	function update_main_image($image_key) {
 
-		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
 		$res=mysql_query($sql);
 		if (!mysql_num_rows($res)) {
 			$this->error=true;
@@ -1407,7 +1493,7 @@ class User extends DB_Table {
 		}
 
 
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
 		mysql_query($sql);
 
 
@@ -1427,8 +1513,9 @@ class User extends DB_Table {
 
 	}
 
+
 	function get_image() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d",$this->id);
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		$image=array();
 		while ($row=mysql_fetch_array($res)) {
@@ -1442,16 +1529,17 @@ class User extends DB_Table {
 				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
 				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
 				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+				'ratio'=>$ratio, 'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'], 'id'=>$row['Image Key']);
 		}
 		// print_r($images_slideshow);
 
 		return $image;
 	}
 
+
 	function get_image_src() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d",$this->id);
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		$image=false;
 		while ($row=mysql_fetch_array($res)) {
@@ -1466,6 +1554,7 @@ class User extends DB_Table {
 		return $image;
 	}
 
+
 	function get_image_key() {
 		$data=$this->get_image();
 
@@ -1474,18 +1563,19 @@ class User extends DB_Table {
 		return $new_data;
 	}
 
+
 	function remove_image($image_key) {
 
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
 			mysql_query($sql);
 			$this->updated=true;
 
 
-			$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  ",$this->id);
+			$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  ", $this->id);
 			$res2=mysql_query($sql);
 			if ($row2=mysql_fetch_assoc($res2)) {
 				$this->update_main_image($row2['Image Key']) ;
@@ -1501,11 +1591,12 @@ class User extends DB_Table {
 
 	}
 
-	function reactivate($user_key,$handle,$site_key) {
+
+	function reactivate($user_key, $handle, $site_key) {
 
 
 		$num_handles=0;
-		$sql=sprintf("select count(*) as num_handles  from `User Dimension` where `User Type`='Customer' and `User Site Key`=%d and   `User Handle`=%s",$site_key,prepare_mysql($handle));
+		$sql=sprintf("select count(*) as num_handles  from `User Dimension` where `User Type`='Customer' and `User Site Key`=%d and   `User Handle`=%s", $site_key, prepare_mysql($handle));
 		$res=mysql_query($sql);
 
 
@@ -1533,6 +1624,7 @@ class User extends DB_Table {
 
 	}
 
+
 	function deactivate() {
 
 		if ($this->data['User Active']=='No') {
@@ -1556,6 +1648,7 @@ class User extends DB_Table {
 
 	}
 
+
 	function update_request_data() {
 		switch ($this->data['User Type']) {
 		case 'Customer';
@@ -1564,7 +1657,7 @@ class User extends DB_Table {
 			$number_sessions=0;
 			$last_request='';
 
-			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d",$this->id);
+			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d", $this->id);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 
@@ -1589,10 +1682,11 @@ class User extends DB_Table {
 
 	}
 
-	function update_table_export_field($table_key,$fields) {
+
+	function update_table_export_field($table_key, $fields) {
 
 
-		$sql=sprintf("select `Table Key` from `Table User Export Fields`  where `Table Key`=%d and `User Key`=%d",$table_key,$this->id);
+		$sql=sprintf("select `Table Key` from `Table User Export Fields`  where `Table Key`=%d and `User Key`=%d", $table_key, $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
@@ -1618,23 +1712,24 @@ class User extends DB_Table {
 		}
 
 	}
-	
-	
-	function get_tab_defaults($tab){
-	    include('conf/tabs.defaults.php');
 
-	    
-	    if(isset($tab_defaults[$tab])){
-	    
-	        return $tab_defaults[$tab];
-	    }if(isset($tab_defaults_alias[$tab])){
-	        return $tab_defaults[$tab_defaults_alias[$tab]];
-	    }
-	    
-	    exit("User class: error get_tab_defaults not configured: $tab");
+
+	function get_tab_defaults($tab) {
+		include 'conf/tabs.defaults.php';
+
+
+		if (isset($tab_defaults[$tab])) {
+
+			return $tab_defaults[$tab];
+		}if (isset($tab_defaults_alias[$tab])) {
+			return $tab_defaults[$tab_defaults_alias[$tab]];
+		}
+
+		exit("User class: error get_tab_defaults not configured: $tab");
 	}
-	
+
 
 }
+
 
 ?>

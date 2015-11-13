@@ -9,13 +9,14 @@
 
 */
 
+
 include_once 'utils/invalid_messages.php';
 
 $employee=$state['_object'];
 $employee->get_user_data();
 
 $options_Staff_Type=array(
-	'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'Contractor'=>_('Contractor'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
+	'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
 );
 
 $options_yn=array(
@@ -26,17 +27,34 @@ $options_Staff_Position=array();
 $sql=sprintf('select `Company Position Key`,`Company Position Code`,`Company Position Title` from `Company Position Dimension`  ');
 foreach ($db->query($sql) as $row) {
 	$options_Staff_Position[$row['Company Position Key']]=array(
-	'label'=>$row['Company Position Title'],
-	'selected'=>false
+		'label'=>$row['Company Position Title'],
+		'selected'=>false
 	);
 }
 
-foreach(preg_split('/,/',$employee->get('Staff Position')) as $current_position_key){
-$options_Staff_Position[$current_position_key]['selected']=true;
+foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
+	$options_Staff_Position[$current_position_key]['selected']=true;
 }
 
+$options_Staff_Supervisor=array();
+$sql=sprintf('select `Staff Name`,`Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Currently Working`="Yes" ');
+foreach ($db->query($sql) as $row) {
+	$options_Staff_Supervisor[$row['Staff Key']]=array(
+		'label'=>$row['Staff Alias'],
+
+		'label2'=>$row['Staff Name'].' ('.sprintf('%03d', $row['Staff Key']).')',
+		'selected'=>false
+	);
+}
+
+foreach (preg_split('/,/', $employee->get('Staff Supervisor')) as $current_supervisor_key) {
+	if ( array_key_exists($current_supervisor_key, $options_Staff_Supervisor ) ) {
+		$options_Staff_Supervisor[$current_supervisor_key]['selected']=true;
+	}
+}
 
 asort($options_Staff_Position);
+asort($options_Staff_Supervisor);
 
 asort($options_Staff_Type);
 asort($options_yn);
@@ -45,6 +63,7 @@ $object_fields=array(
 	array(
 		'label'=>_('Id'),
 		'show_title'=>true,
+		'class'=>'edit_fields',
 		'fields'=>array(
 
 
@@ -73,6 +92,17 @@ $object_fields=array(
 				'server_validation'=>'check_for_duplicates',
 				'invalid_msg'=>get_invalid_message('string'),
 			),
+
+
+		)
+	),
+
+	array(
+		'label'=>_('Personal information'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+
 			array(
 
 				'id'=>'Staff_Name',
@@ -80,7 +110,55 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Name'),
 				'label'=>_('Name'),
 				'invalid_msg'=>get_invalid_message('string'),
-				
+
+			),
+			array(
+
+				'id'=>'Staff_Birthday',
+				'edit'=>'date',
+				'time'=>'00:00:00',
+				'value'=>$employee->get('Staff Birthday'),
+				'formated_value'=>$employee->get('Birthday'),
+				'label'=>_('Date of birth'),
+				'invalid_msg'=>get_invalid_message('date'),
+			),
+			array(
+
+				'id'=>'Staff_Official_ID',
+				'edit'=>'string',
+				'value'=>$employee->get('Staff Official ID'),
+				'label'=>($account->get('National Employment Code Label')==''?_('Official Id'):$account->get('National Employment Code Label')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'server_validation'=>'check_for_duplicates',
+				'required'=>false
+			),
+			array(
+
+				'id'=>'Staff_Email',
+				'edit'=>'email',
+				'value'=>$employee->get('Staff Email'),
+				'formated_value'=>$employee->get('Email'),
+				'label'=>_('Email'),
+				'server_validation'=>'check_for_duplicates',
+				'invalid_msg'=>get_invalid_message('email'),
+			),
+			array(
+
+				'id'=>'Staff_Telephone',
+				'edit'=>'telephone',
+				'value'=>$employee->get('Staff Telephone'),
+				'formated_value'=>$employee->get('Telephone'),
+				'label'=>_('Contact number'),
+				'invalid_msg'=>get_invalid_message('telephone'),
+			),
+			array(
+
+				'id'=>'Staff_Next_of_Kind',
+				'edit'=>'string',
+				'value'=>$employee->get('Staff Next of Kind'),
+				'label'=>_('Next of kin'),
+				'invalid_msg'=>get_invalid_message('string'),
+
 			),
 
 		)
@@ -88,6 +166,7 @@ $object_fields=array(
 	array(
 		'label'=>_('Employment'),
 		'show_title'=>true,
+		'class'=>'edit_fields',
 		'fields'=>array(
 			array(
 
@@ -135,7 +214,25 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Position'),
 				'formated_value'=>$employee->get('Position'),
 				'options'=>$options_Staff_Position,
-				'label'=>_('Position')
+				'label'=>_('Roles')
+			),
+			array(
+
+				'id'=>'Staff_Job_Title',
+				'edit'=>'string',
+				'value'=>$employee->get('Staff Job Title'),
+				'label'=>_('Job title'),
+			),
+			array(
+				//   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
+				'id'=>'Staff_Supervisor',
+				'edit'=>'radio_option',
+				'value'=>$employee->get('Staff Supervisor'),
+				'formated_value'=>$employee->get('Supervisor'),
+				'options'=>$options_Staff_Supervisor,
+				'label'=>_('Supervisor'),
+				'required'=>false
+
 			),
 
 		)
@@ -143,53 +240,81 @@ $object_fields=array(
 
 );
 
-
-$object_fields[]=array(
-	'label'=>_('System user'),
-	'show_title'=>true,
-	'fields'=>array(
-
-		array(
-
-			'id'=>'Staff_User_Active',
-			'edit'=>'option',
-			'value'=>$employee->get('Staff User Active'),
-			'formated_value'=>$employee->get('User Active'),
-			'options'=>$options_yn,
-			'label'=>_('Enabled')
-		),
-		array(
-
-			'id'=>'Staff_User_Handle',
-			'edit'=>'string',
-			'value'=>$employee->get('Staff User Handle'),
-			'formated_value'=>$employee->get('User Handle'),
-			'label'=>_('Login'),
-			'server_validation'=>'check_for_duplicates'
-		),
-
-		array(
-
-			'id'=>'Staff_User_Password',
-			'edit'=>'password',
-			'value'=>'********',
-			'label'=>_('Password'),
-		),
-		array(
-
-			'id'=>'Staff_User_PIN',
-			'edit'=>'password',
-			'value'=>'****',
-			'label'=>_('PIN'),
-		),
+if ($employee->get('Staff User Key')) {
 
 
+	$object_fields[]=array(
+		'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-link link"></i>',
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
 
-	)
-);
+			array(
+
+				'id'=>'Staff_User_Active',
+				'edit'=>'option',
+				'value'=>$employee->get('Staff User Active'),
+				'formated_value'=>$employee->get('User Active'),
+				'options'=>$options_yn,
+				'label'=>_('Active')
+			),
+			array(
+
+				'id'=>'Staff_User_Handle',
+				'edit'=>'string',
+				'value'=>$employee->get('Staff User Handle'),
+				'formated_value'=>$employee->get('User Handle'),
+				'label'=>_('Login'),
+				'server_validation'=>'check_for_duplicates'
+			),
+
+			array(
+				'render'=>($employee->get('Staff User Active')=='Yes'?true:false),
+
+				'id'=>'Staff_User_Password',
+				'edit'=>'password',
+				'value'=>'',
+				'formated_value'=>'******',
+				'label'=>_('Password'),
+				'invalid_msg'=>get_invalid_message('password'),
+			),
+			array(
+				'render'=>($employee->get('Staff User Active')=='Yes'?true:false),
+
+				'id'=>'Staff_User_PIN',
+				'edit'=>'pin',
+				'value'=>'',
+				'formated_value'=>'****',
+				'label'=>_('PIN'),
+				'invalid_msg'=>get_invalid_message('pin'),
+			),
+
+
+
+		)
+	);
+
+}else {
+	$object_fields[]=array(
+		'label'=>_('System user'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			array(
+
+				'id'=>'new_user',
+				'class'=>'new',
+				'value'=>'',
+				'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+				'reference'=>'employee/'.$employee->id.'/new/user'
+			),
+
+		)
+	);
+
+}
 
 $smarty->assign('state', $state);
-
 $smarty->assign('object_fields', $object_fields);
 
 $html=$smarty->fetch('object_fields.tpl');
