@@ -284,6 +284,20 @@ abstract class DB_Table {
 				$old_value=htmlentities($old_value);
 				$value=htmlentities($value);
 
+                
+                $this->add_changelog_record($field,$old_value,$value,$options);
+
+			}
+
+		}
+
+	}
+
+
+    function add_changelog_record($field,$old_value,$value,$options){
+    
+    
+    
 
 
 				$history_data=array(
@@ -306,8 +320,15 @@ abstract class DB_Table {
 				}
 
 				$history_key=$this->add_history($history_data, false, false, $options);
+
+
 				if (
-					in_array($this->table_name, array('Site', 'Customer', 'Store', 'Product Department', 'Product Family', 'Product', 'Part', 'Supplier', 'Supplier Product'))) {
+					!in_array($this->table_name,
+						array(
+
+
+						))) 
+				{
 
 					if ($this->table_name=='Product' or $this->table_name=='Supplier Product') {
 						$subject_key=$this->pid;
@@ -319,12 +340,9 @@ abstract class DB_Table {
 					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $subject_key, $history_key);
 					mysql_query($sql);
 				}
+    
+    }
 
-			}
-
-		}
-
-	}
 
 
 	protected function get_editor_data() {
@@ -351,6 +369,7 @@ abstract class DB_Table {
 
 	function add_history($raw_data, $force=false, $post_arg1=false, $options='') {
 
+		global $account;
 
 		$editor_data=$this->get_editor_data();
 		if ($this->no_history)
@@ -422,12 +441,40 @@ abstract class DB_Table {
 				case 'Customer Name':
 					$formated_indirect_object=_('Customer name');
 					break;
+
+
 				default:
-					$formated_indirect_object=$data['Indirect Object'];
+					$formated_indirect_object=$this->get_field_label($data['Indirect Object']);
 
 				}
 
-				$data['History Abstract']=$formated_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
+				switch ($table) {
+				case 'Staff':
+					if ($raw_data['new_value']=='')
+						$data['History Abstract']=sprintf(_("Employee's %s was deleted"), $formated_indirect_object);
+					else
+						$data['History Abstract']=sprintf(_("Employee's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^Staff /','',$data['Indirect Object'])));
+					break;
+				case 'User':
+					if ($raw_data['new_value']=='')
+						$data['History Abstract']=sprintf(_("User's %s was deleted"), $formated_indirect_object);
+					else
+						$data['History Abstract']=sprintf(_("User's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^User /','',$data['Indirect Object'])));
+					break;	
+				default:
+					$formated_table=$table."'s";
+					if ($raw_data['new_value']=='')
+						$data['History Abstract']=sprintf(_("%s %s was deleted"), $formated_table, $formated_indirect_object);
+					else
+						$data['History Abstract']=sprintf(_("%s %s was changed to %s"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+
+
+				}
+
+
+
+
+				$formated_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
 			}else {
 				$data['History Abstract']='Unknown';
 			}
@@ -538,7 +585,6 @@ abstract class DB_Table {
 		mysql_query($sql);
 
 		$history_key=mysql_insert_id();
-		//$this->post_add_history($history_key,$post_arg1);
 		return $history_key;
 
 
@@ -1098,6 +1144,11 @@ abstract class DB_Table {
 		}else {
 			return false;
 		}
+	}
+
+
+	function get_field_label($field) {
+		return $field;
 	}
 
 

@@ -215,7 +215,6 @@ function get_order_navigation($data) {
 		}else {
 
 			$default=$user->get_tab_defaults($tab);
-
 			$number_results=$default['rpp'];
 			$start_from=0;
 			$order=$default['sort_key'];
@@ -224,7 +223,6 @@ function get_order_navigation($data) {
 			$parameters=$default;
 			$parameters['parent']=$data['parent'];
 			$parameters['parent_key']=$data['parent_key'];
-
 		}
 
 

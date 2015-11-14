@@ -71,14 +71,14 @@ $object_fields=array(
 
 				'id'=>'Staff_Key',
 				'value'=>$employee->get('Staff Key'),
-				'label'=>_('Id')
+				'label'=>ucfirst($employee->get_field_label('Staff Key')),
 			),
 			array(
 
 				'id'=>'Staff_ID',
 				'edit'=>'smallint_unsigned',
 				'value'=>$employee->get('Staff ID'),
-				'label'=>_('Payroll Id'),
+				'label'=>ucfirst($employee->get_field_label('Staff ID')),
 				'invalid_msg'=>get_invalid_message('smallint_unsigned'),
 				'server_validation'=>'check_for_duplicates',
 				'required'=>false
@@ -88,7 +88,7 @@ $object_fields=array(
 				'id'=>'Staff_Alias',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Alias'),
-				'label'=>_('Code'),
+				'label'=>ucfirst($employee->get_field_label('Staff Alias')),
 				'server_validation'=>'check_for_duplicates',
 				'invalid_msg'=>get_invalid_message('string'),
 			),
@@ -108,8 +108,9 @@ $object_fields=array(
 				'id'=>'Staff_Name',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Name'),
-				'label'=>_('Name'),
+				'label'=>ucfirst($employee->get_field_label('Staff Name')),
 				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true
 
 			),
 			array(
@@ -119,7 +120,7 @@ $object_fields=array(
 				'time'=>'00:00:00',
 				'value'=>$employee->get('Staff Birthday'),
 				'formated_value'=>$employee->get('Birthday'),
-				'label'=>_('Date of birth'),
+				'label'=>ucfirst($employee->get_field_label('Staff Birthday')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
 			array(
@@ -127,7 +128,7 @@ $object_fields=array(
 				'id'=>'Staff_Official_ID',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Official ID'),
-				'label'=>($account->get('National Employment Code Label')==''?_('Official Id'):$account->get('National Employment Code Label')),
+				'label'=>ucfirst($employee->get_field_label('Staff Official ID')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'server_validation'=>'check_for_duplicates',
 				'required'=>false
@@ -138,7 +139,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>$employee->get('Staff Email'),
 				'formated_value'=>$employee->get('Email'),
-				'label'=>_('Email'),
+				'label'=>ucfirst($employee->get_field_label('Staff Email')),
 				'server_validation'=>'check_for_duplicates',
 				'invalid_msg'=>get_invalid_message('email'),
 			),
@@ -148,7 +149,7 @@ $object_fields=array(
 				'edit'=>'telephone',
 				'value'=>$employee->get('Staff Telephone'),
 				'formated_value'=>$employee->get('Telephone'),
-				'label'=>_('Contact number'),
+				'label'=>ucfirst($employee->get_field_label('Staff Telephone')),
 				'invalid_msg'=>get_invalid_message('telephone'),
 			),
 			array(
@@ -156,7 +157,7 @@ $object_fields=array(
 				'id'=>'Staff_Next_of_Kind',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Next of Kind'),
-				'label'=>_('Next of kin'),
+				'label'=>ucfirst($employee->get_field_label('Staff Next of Kind')),
 				'invalid_msg'=>get_invalid_message('string'),
 
 			),
@@ -175,7 +176,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Type'),
 				'formated_value'=>$employee->get('Type'),
 				'options'=>$options_Staff_Type,
-				'label'=>_('Type')
+				'label'=>ucfirst($employee->get_field_label('Staff Type')),
 			),
 
 			array(
@@ -185,7 +186,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Currently Working'),
 				'formated_value'=>$employee->get('Currently Working'),
 				'options'=>$options_yn,
-				'label'=>_('Currently working')
+				'label'=>ucfirst($employee->get_field_label('Staff Currently Working')),
 			),
 			array(
 
@@ -194,7 +195,7 @@ $object_fields=array(
 				'time'=>'09:00:00',
 				'value'=>$employee->get('Staff Valid From'),
 				'formated_value'=>$employee->get('Valid From'),
-				'label'=>_('Working from'),
+				'label'=>ucfirst($employee->get_field_label('Staff Valid From')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
 			array(
@@ -204,7 +205,7 @@ $object_fields=array(
 				'time'=>'17:00:00',
 				'value'=>$employee->get('Staff Valid To'),
 				'formated_value'=>$employee->get('Valid To'),
-				'label'=>_('End of employement'),
+				'label'=>ucfirst($employee->get_field_label('Staff Valid To')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
 			array(
@@ -214,14 +215,14 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Position'),
 				'formated_value'=>$employee->get('Position'),
 				'options'=>$options_Staff_Position,
-				'label'=>_('Roles')
+				'label'=>ucfirst($employee->get_field_label('Staff Position')),
 			),
 			array(
 
 				'id'=>'Staff_Job_Title',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Job Title'),
-				'label'=>_('Job title'),
+				'label'=>ucfirst($employee->get_field_label('Staff Job Title')),
 			),
 			array(
 				//   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
@@ -230,7 +231,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Supervisor'),
 				'formated_value'=>$employee->get('Supervisor'),
 				'options'=>$options_Staff_Supervisor,
-				'label'=>_('Supervisor'),
+				'label'=>ucfirst($employee->get_field_label('Staff Supervisor')),
 				'required'=>false
 
 			),
@@ -256,7 +257,7 @@ if ($employee->get('Staff User Key')) {
 				'value'=>$employee->get('Staff User Active'),
 				'formated_value'=>$employee->get('User Active'),
 				'options'=>$options_yn,
-				'label'=>_('Active')
+				'label'=>ucfirst($employee->get_field_label('Staff Active')),
 			),
 			array(
 
@@ -264,7 +265,7 @@ if ($employee->get('Staff User Key')) {
 				'edit'=>'string',
 				'value'=>$employee->get('Staff User Handle'),
 				'formated_value'=>$employee->get('User Handle'),
-				'label'=>_('Login'),
+				'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
 				'server_validation'=>'check_for_duplicates'
 			),
 
@@ -275,7 +276,7 @@ if ($employee->get('Staff User Key')) {
 				'edit'=>'password',
 				'value'=>'',
 				'formated_value'=>'******',
-				'label'=>_('Password'),
+				'label'=>ucfirst($employee->get_field_label('Staff User Password')),
 				'invalid_msg'=>get_invalid_message('password'),
 			),
 			array(
@@ -285,7 +286,7 @@ if ($employee->get('Staff User Key')) {
 				'edit'=>'pin',
 				'value'=>'',
 				'formated_value'=>'****',
-				'label'=>_('PIN'),
+				'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
 				'invalid_msg'=>get_invalid_message('pin'),
 			),
 

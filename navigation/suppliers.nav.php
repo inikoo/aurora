@@ -76,12 +76,25 @@ function get_suppliers_list_navigation($data) {
 	$tab='suppliers.lists';
 
 
-	$number_results=$_SESSION['table_state'][$tab]['nr'];
-	$start_from=0;
-	$order=$_SESSION['table_state'][$tab]['o'];
-	$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-	$f_value=$_SESSION['table_state'][$tab]['f_value'];
-	$parameters=$_SESSION['table_state'][$tab];
+		if (isset($_SESSION['table_state'][$tab])) {
+			$number_results=$_SESSION['table_state'][$tab]['nr'];
+			$start_from=0;
+			$order=$_SESSION['table_state'][$tab]['o'];
+			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+			$f_value=$_SESSION['table_state'][$tab]['f_value'];
+			$parameters=$_SESSION['table_state'][$tab];
+		}else {
+
+			$default=$user->get_tab_defaults($tab);
+			$number_results=$default['rpp'];
+			$start_from=0;
+			$order=$default['sort_key'];
+			$order_direction=($default['sort_order']==1 ?'desc':'');
+			$f_value='';
+			$parameters=$default;
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
+		}
 
 	include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -683,12 +696,25 @@ function get_supplier_navigation($data) {
 		}
 
 
-		$number_results=$_SESSION['table_state'][$tab]['nr'];
-		$start_from=0;
-		$order=$_SESSION['table_state'][$tab]['o'];
-		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-		$f_value=$_SESSION['table_state'][$tab]['f_value'];
-		$parameters=$_SESSION['table_state'][$tab];
+		if (isset($_SESSION['table_state'][$tab])) {
+			$number_results=$_SESSION['table_state'][$tab]['nr'];
+			$start_from=0;
+			$order=$_SESSION['table_state'][$tab]['o'];
+			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+			$f_value=$_SESSION['table_state'][$tab]['f_value'];
+			$parameters=$_SESSION['table_state'][$tab];
+		}else {
+
+			$default=$user->get_tab_defaults($tab);
+			$number_results=$default['rpp'];
+			$start_from=0;
+			$order=$default['sort_key'];
+			$order_direction=($default['sort_order']==1 ?'desc':'');
+			$f_value='';
+			$parameters=$default;
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
+		}
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 

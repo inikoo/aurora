@@ -31,7 +31,18 @@ case 'views':
 			'tab'=>array('type'=>'string', 'optional'=>true),
 			'subtab'=>array('type'=>'string', 'optional'=>true),
 			'otf'=>array('type'=>'string', 'optional'=>true),
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
+
 		));
+
+	
+	
+	if(isset($data['metadata']['reload']) and $data['metadata']['reload'] ){
+	$reload=true;
+	}else{
+	$reload=false;
+	}
+
 	$state=parse_request($data, $db);
 	if ($state['object']!='') {
 		$_object=get_object($state['object'], $state['key']);
@@ -85,7 +96,7 @@ case 'views':
 	$response=array('state'=>array());
 
 
-	if ($data['old_state']['module']!=$state['module']) {
+	if ($data['old_state']['module']!=$state['module']  or $reload ) {
 		$response['menu']=get_menu($state);
 
 	}
@@ -93,7 +104,7 @@ case 'views':
 
 	if ($data['old_state']['section']!=$state['section'] or
 		$data['old_state']['parent_key']!=$state['parent_key'] or
-		$data['old_state']['key']!=$state['key']
+		$data['old_state']['key']!=$state['key'] or  $reload
 
 	) {
 
@@ -101,7 +112,9 @@ case 'views':
 
 	}
 
-
+    if($reload){
+        $response['logout_label']=_('Logout');
+    }
 
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
 
@@ -151,7 +164,7 @@ default:
 
 function get_tab($tab, $subtab, $state=false) {
 
-	global $smarty, $user,$db,$account;
+	global $smarty, $user, $db, $account;
 
 	$_tab=$tab;
 	$_subtab=$subtab;
@@ -201,7 +214,7 @@ function get_object_showcase($data) {
 	case 'employee':
 		include_once 'showcase/employee.show.php';
 		$html=get_employee_showcase($data);
-		break;	
+		break;
 	case 'customer':
 		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data);

@@ -73,34 +73,52 @@ class Staff extends DB_Table{
 
 
 		switch ($key) {
+
+		case('Staff User Password'):
+		case('Staff PIN'):
+			return '';
+			break;
+
+		case('PIN'):
+			return '****';
+			break;
+		case('User Password'):
+		case('Password'):
+			return '******';
+			break;
+
 		case('Telephone'):
 			return $this->data['Staff Telephone Formated'];
 			break;
-		
+		case('Email'):
+			return $this->data['Staff Email']!=''?sprintf('<a href="mailto:%s" target="_top">%s</a>', $this->data['Staff Email'], $this->data['Staff Email']):'';
+			break;
 		case('User Active'):
-		if(array_key_exists('Staff User Active',$this->data)){
-			switch ( $this->data['Staff User Active']) {
-			case('Yes'):
-				$formated_value=_('Yes');
-				break;
-			case('No'):
-				$formated_value=_('No');
-				break;
+			if (array_key_exists('Staff User Active', $this->data)) {
+				switch ( $this->data['Staff User Active']) {
+				case('Yes'):
+					$formated_value=_('Yes');
+					break;
+				case('No'):
+					$formated_value=_('No');
+					break;
 
-			default:
-				$formated_value=$this->data['Staff User Active'];
+				default:
+					$formated_value=$this->data['Staff User Active'];
+				}
+
+				return $formated_value;
+
+			}else {
+				return _('No');
 			}
 
-			return $formated_value;
-			
-			}else{
-			    return _('No');
-			}
-			
 			break;
 
 
-
+		case('Staff PIN'):
+			return '';
+			break;
 
 		case('Staff Position'):
 			return $this->get_positions();
@@ -163,9 +181,6 @@ class Staff extends DB_Table{
 
 			return $type;
 			break;
-		case('Formated ID'):
-		case("ID"):
-			return $this->get_formated_id();
 
 		default:
 			if (array_key_exists($key, $this->data))
@@ -179,6 +194,92 @@ class Staff extends DB_Table{
 
 	}
 
+
+	function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+		case 'Staff Key':
+			$label=_('id');
+			break;
+		case 'Staff ID':
+			$label=_('payroll Id');
+			break;
+		case 'Staff Alias':
+			$label=_('code');
+			break;
+		case 'Staff Name':
+			$label=_('name');
+			break;
+		case 'Staff Birthday':
+			$label=_('date of birth');
+			break;
+		case 'Staff Email':
+			$label=_('email');
+			break;
+		case 'Staff Telephone':
+		case 'Staff Telephone Formated':
+			$label=_('contact number');
+			break;
+
+		case 'Staff Official ID':
+			$label=$account->get('National Employment Code Label')==''?_('official Id'):$account->get('National Employment Code Label');
+			break;
+		case 'Staff Next of Kind':
+			$label=_('next of kin');
+			break;
+
+		case 'Staff Type':
+			$label=_('type');
+			break;
+		case 'Staff Currently Working':
+			$label=_('currently working');
+			break;
+		case 'Staff Valid From':
+			$label=_('working from');
+			break;
+		case 'Staff Valid To':
+			$label=_('end of employement');
+			break;
+		case 'Staff Position':
+			$label=_('role');
+			break;
+		case 'Staff Job Title':
+			$label=_('job title');
+			break;
+		case 'Staff Supervisor':
+			$label=_('supervisor');
+			break;
+
+
+		case 'Staff User Active':
+			$label=_('active');
+			break;
+		case 'Staff User Handle':
+			$label=_('login');
+			break;
+
+		case 'Staff User Password':
+			$label=_('password');
+			break;
+
+		case 'Staff PIN':
+			$label=_('PIN');
+			break;
+
+
+
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
+	}
 
 
 	function find($raw_data, $options) {
@@ -360,7 +461,20 @@ class Staff extends DB_Table{
 	}
 
 
+	function update_pin($value) {
 
+		$value=password_hash($value, PASSWORD_DEFAULT);
+
+		$this->update_field('Staff PIN', $value, 'nohistory');
+		$this->add_changelog_record('Staff PIN', '****', '****', '');
+		$system_user=new User($this->data['Staff User Key']);
+		$system_user->editor=$this->editor;
+
+		if ($system_user->id) {
+			$system_user->add_changelog_record('User PIN', '****', '****', '');
+		}
+
+	}
 
 
 	function update_field_switcher($field, $value, $options='') {
@@ -370,8 +484,10 @@ class Staff extends DB_Table{
 
 
 		switch ($field) {
-        
-        
+
+		case('Staff PIN'):
+			$this->update_pin($value);
+			break;
 		case('Staff Currently Working'):
 			$this->update_is_working($value, $options);
 			break;
@@ -386,18 +502,25 @@ class Staff extends DB_Table{
 			break;
 		case('Staff User Handle'):
 		case('Staff User Password'):
-		case('Staff User PIN'):
 		case('Staff User Active'):
 
 			$this->get_user_data();
-			$system_user=new User($this->data['Staff User Key']);
 
+
+			$system_user=new User($this->data['Staff User Key']);
+			$system_user->editor=$this->editor;
 			$user_field=preg_replace('/^Staff /', '', $field);
+			//$old_value=$this->get($user_field);
 
 			$system_user->update(array($user_field=>$value), $options);
 			$this->error=$system_user->error;
 			$this->msg=$system_user->msg;
 			$this->updated=$system_user->updated;
+
+
+			//$new_value=$this->get($user_field);
+
+			//$this->add_changelog_record($field, $old_value, $new_value, '');
 
 			break;
 
@@ -446,7 +569,9 @@ class Staff extends DB_Table{
 	}
 
 
-	function update_positions($values) {
+	function update_positions($values, $options='') {
+
+		$old_value=$this->get('Position');
 
 		$positions=array();
 		$sql=sprintf('select `Company Position Key` from `Company Position Dimension`  ');
@@ -465,6 +590,11 @@ class Staff extends DB_Table{
 				$this->remove_position($key);
 			}
 		}
+
+		$new_value=$this->get('Position');
+		$this->add_changelog_record('Staff Position', $old_value, $new_value, $options);
+
+
 
 	}
 
@@ -510,7 +640,10 @@ class Staff extends DB_Table{
 	}
 
 
-	function update_supervisors($values) {
+	function update_supervisors($values, $options='') {
+
+		$old_value=$this->get('Supervisor');
+
 
 		$supervisors=array();
 		$sql=sprintf('select `Staff Key` from `Staff Dimension`  ');
@@ -532,6 +665,10 @@ class Staff extends DB_Table{
 				$this->remove_supervisor($key);
 			}
 		}
+
+		$new_value=$this->get('Supervisor');
+		$this->add_changelog_record('Staff Supervisor', $old_value, $new_value, $options);
+
 
 	}
 

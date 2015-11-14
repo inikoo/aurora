@@ -14,7 +14,7 @@ include_once 'class.Warehouse.php';
 
 function get_warehouses_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 
@@ -41,19 +41,20 @@ function get_warehouses_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Warehouses'),
-		'search'=>array('show'=>true,'placeholder'=>_('Search inventory all warehouses'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory all warehouses'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_warehouse_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 
@@ -68,7 +69,7 @@ function get_warehouse_navigation($data) {
 
 
 	$right_buttons=array();
-	$sections=get_sections($data['module'],$warehouse->id);
+	$sections=get_sections($data['module'], $warehouse->id);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -81,19 +82,20 @@ function get_warehouse_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Warehouse').' <span class="id">'.$warehouse->get('Warehouse Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search suppliers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
 
+
 function get_locations_navigation($data) {
 
-	global $user,$smarty;
+	global $user, $smarty;
 
 
 
@@ -113,7 +115,7 @@ function get_locations_navigation($data) {
 
 
 	$right_buttons=array();
-	$sections=get_sections($data['module'],$warehouse->id);
+	$sections=get_sections($data['module'], $warehouse->id);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -126,10 +128,10 @@ function get_locations_navigation($data) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Locations').' <span class="id">'.$warehouse->get('Warehouse Code').'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search suppliers'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;

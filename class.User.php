@@ -305,14 +305,34 @@ class User extends DB_Table {
 	function update_active($value) {
 		$this->updated=false;
 
-
+		$old_value=$this->get('Active');
 		if (!preg_match('/^(Yes|No)$/', $value)) {
 			$this->error=true;
 			$this->msg=sprintf( _('Wrong value %s'), $value);
 			return;
 		}
 
-        $this->update_field('User Active',$value);
+		$this->update_field('User Active', $value);
+
+
+
+		switch ($this->data['User Type']) {
+		case 'Staff':
+			include_once 'class.Staff.php';
+			$staff=new Staff($this->data['User Parent Key']);
+			$staff->editor=$this->editor;
+			$staff->get_user_data();
+			$new_value=$this->get('Active');
+			$staff->add_changelog_record('Staff User Active', $old_value, $new_value, '');
+
+			break;
+		default:
+			return;
+			break;
+		}
+
+
+
 
 		$this->other_fields_updated=array(
 			'User_Password'=>array(
@@ -323,7 +343,7 @@ class User extends DB_Table {
 
 
 			),
-				'User_PIN'=>array(
+			'User_PIN'=>array(
 				'field'=>'User_PIN',
 				'render'=>($this->get('User Active')=='Yes'?true:false),
 				'value'=>$this->get('User PIN'),
@@ -490,22 +510,19 @@ class User extends DB_Table {
 	function update_field_switcher($field, $value, $options='') {
 
 
-
-
 		if (is_string($value))
 			$value=_trim($value);
 
-
-
 		switch ($field) {
-
-
 		case('User Active'):
 			$this->update_active($value);
 			break;
 		case('User Password'):
-			$this->change_password($value,$options);
-			break;	
+			$this->update_password($value, $options);
+			break;
+		case('User PIN'):
+			$this->update_pin($value, $options);
+			break;
 		case('groups'):
 			$this->update_groups($value);
 			break;
@@ -518,15 +535,30 @@ class User extends DB_Table {
 		case('warehouses'):
 			$this->update_warehouses($value);
 			break;
-
-
 		case('User Theme Key'):
 		case('User Theme Background Key'):
-
 			$this->update_staff_setting_field($tipo, $value);
 			break;
+		case('User Handle'):
+			$old_value=$this->get('Handle');
+			$this->update_field($field, $value, $options);
+			switch ($this->data['User Type']) {
+			case 'Staff':
+				include_once 'class.Staff.php';
+				$staff=new Staff($this->data['User Parent Key']);
+				$staff->editor=$this->editor;
+				$staff->get_user_data();
+				$new_value=$this->get('Handle');
+				$staff->add_changelog_record('Staff User Handle', $old_value, $new_value, '');
+
+				break;
+			default:
+				return;
+				break;
+			}
 
 
+			break;
 		default:
 			$base_data=$this->base_data();
 
@@ -632,9 +664,45 @@ class User extends DB_Table {
 	}
 
 
-	function change_password($value,$options='') {
+	function update_password($value, $options='') {
 
-		$this->update_field('User Password',$value,$options);
+		$this->update_field('User Password', $value, $options);
+
+		switch ($this->data['User Type']) {
+		case 'Staff':
+			include_once 'class.Staff.php';
+			$staff=new Staff($this->data['User Parent Key']);
+			$staff->editor=$this->editor;
+			$staff->get_user_data();
+			$staff->add_changelog_record('Staff User Password', '******', '******', '');
+
+			break;
+		default:
+			return;
+			break;
+		}
+
+
+	}
+
+
+	function update_pin($value, $options='') {
+
+
+		switch ($this->data['User Type']) {
+		case 'Staff':
+			include_once 'class.Staff.php';
+			$staff=new Staff($this->data['User Parent Key']);
+			$staff->editor=$this->editor;
+			$staff->get_user_data();
+			$staff->update(array('Staff PIN'=>$value));
+			break;
+		default:
+			return;
+			break;
+		}
+
+
 
 	}
 
@@ -877,7 +945,7 @@ class User extends DB_Table {
 
 		switch ($key) {
 
-		case('User Passoword'):
+		case('User Password'):
 		case('User PIN'):
 			return '';
 			break;
@@ -886,6 +954,21 @@ class User extends DB_Table {
 			break;
 		case('PIN'):
 			return '****';
+			break;
+
+		case('Preferred Locale'):
+
+
+			include 'conf/available_locales.php';
+
+			if (array_key_exists($this->data['User Preferred Locale'], $available_locales)) {
+				$locale=$available_locales[$this->data['User Preferred Locale']];
+
+				return $locale['Language Name'].($locale['Language Name']!=$locale['Language Original Name']?' ('.$locale['Language Original Name'].')':'');
+			}else {
+
+				return $this->data['User Preferred Locale'];
+			}
 			break;
 
 		case('Active'):
@@ -928,7 +1011,7 @@ class User extends DB_Table {
 			return $this->data['groups'];
 			break;
 		default:
-				default:
+		default:
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 
@@ -936,6 +1019,43 @@ class User extends DB_Table {
 				return $this->data['User '.$key];
 
 		}
+
+	}
+
+
+	function get_field_label($field) {
+
+		switch ($field) {
+
+
+
+
+		case 'User Active':
+			$label=_('active');
+			break;
+		case 'User Handle':
+			$label=_('login');
+			break;
+
+		case 'User Password':
+			$label=_('password');
+			break;
+
+		case 'User PIN':
+			$label=_('PIN');
+			break;
+
+		case 'Preferred Locale':
+			$label=_('Language');
+			break;
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
 
 	}
 
@@ -1385,7 +1505,7 @@ class User extends DB_Table {
 
 		}
 		else {
-        include_once('class.staff.php');
+			include_once 'class.staff.php';
 			$staff=new Staff($this->data['User Parent Key']);
 			if ($staff->data['Staff Currently Working']=='Yes') {
 				$this->data['User Staff Type']='Working';
