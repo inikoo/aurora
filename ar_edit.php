@@ -32,11 +32,11 @@ case 'edit_field':
 			'key'=>array('type'=>'key'),
 			'field'=>array('type'=>'string'),
 			'value'=>array('type'=>'string'),
-			'metadata'=>array('type'=>'json array','optional'=>true),
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
 
 		));
 
-	edit_field($data, $db, $user);
+	edit_field($account, $db, $user, $editor, $data);
 	break;
 
 default:
@@ -47,47 +47,59 @@ default:
 }
 
 
-function edit_field($data, $db, $user) {
-	global  $account;
+function edit_field($account, $db, $user, $editor, $data) {
+
 
 	$object=get_object($data['object'], $data['key']);
+	$object->editor=$editor;
 
 	$field=preg_replace('/_/', ' ', $data['field']);
-	
-	
-	$formated_field= preg_replace('/^'.$object->get_object_name().' /','',$field);
-	
-	$object->update(array($field=>$data['value']));
-	
-	
-	if(isset($data['metadata'])){
-	
-	    if(isset($data['metadata']['extra_fields'])){
-	        foreach( $data['metadata']['extra_fields'] as $extra_field){
-	        	$_field=preg_replace('/_/', ' ', $extra_field['field']);
-	        	
-	        	$_value=$extra_field['value'];
-	        	
-	        	$object->update(array($_field=>$_value));
 
-	        }
-	        
-	    }
-	
-	  
+
+	$formated_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
+
+
+	if (preg_match('/ Telephone$/', $field)) {
+		$options='no_history';
+	}else {
+		$options='';
+	}
+
+	$object->update(array($field=>$data['value']), $options);
+
+
+
+
+	if (isset($data['metadata'])) {
+
+		if (isset($data['metadata']['extra_fields'])) {
+			foreach ( $data['metadata']['extra_fields'] as $extra_field) {
+
+				$options='';
+
+				$_field=preg_replace('/_/', ' ', $extra_field['field']);
+
+				$_value=$extra_field['value'];
+
+				$object->update(array($_field=>$_value), $options);
+
+			}
+
+		}
+
+
 	}
 
 	if ($object->error) {
-		$response=array('resultset'=>
-			array(
+		$response=array(
 				'state'=>400,
 				'msg'=>$object->msg,
-			)
+		
 		);
 
 
 	}else {
-		
+
 		if ($object->updated) {
 			$msg=sprintf('<i class="fa fa-check" onClick="hide_edit_field_msg(\'%s\')" ></i> %s', $data['field'], _('Updated'));
 		}else {
@@ -101,9 +113,9 @@ function edit_field($data, $db, $user) {
 			'value'=>$object->get($field),
 			'other_fields'=>$object->get_other_fields_update_info()
 		);
-        
-        
-       
+
+
+
 
 	}
 	echo json_encode($response);

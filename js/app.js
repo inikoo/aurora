@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-var key_scope=false;
+var key_scope = false;
 
 
 function change_browser_history_state(request) {
@@ -43,9 +43,13 @@ function change_subtab(subtab) {
 
 
 
-function change_view(_request) {
+function change_view(_request, metadata) {
 
-    var request = "/ar_views.php?tipo=views&request=" + _request + "&old_state=" + JSON.stringify(state)
+    if (metadata == undefined) {
+        metadata = {};
+    }
+
+    var request = "/ar_views.php?tipo=views&request=" + _request + "&old_state=" + JSON.stringify(state) + '&metadata=' + JSON.stringify(metadata)
 
     $.getJSON(request, function(data) {
 
@@ -68,6 +72,15 @@ function change_view(_request) {
 
 
         }
+        
+         if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
+            $('#logout_label').html(data.logout_label);
+
+
+        }
+        
+        
+        
 
         if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
 
@@ -124,7 +137,7 @@ $(document).ready(function() {
         key_press(e)
     });
 
-    
+
 
 })
 
@@ -134,4 +147,3 @@ $(document).ready(function() {
 function logout() {
     window.location.href = "/logout.php";
 }
-

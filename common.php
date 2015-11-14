@@ -5,6 +5,8 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 require_once 'conf/dns.php';
 require_once 'conf/key.php';
 
+include_once 'utils/i18n.php';
+
 require_once 'common_functions.php';
 require_once 'common_detect_agent.php';
 
@@ -102,28 +104,40 @@ if ($_SESSION['logged_in_page']!=0) {
 }
 $user=new User($_SESSION['user_key']);
 
-$_client_locale='en_GB.UTF-8';
-include_once 'set_locales.php';
-require 'locale.php';
+//$_client_locale='en_GB.UTF-8';
 
-$_SESSION['locale_info'] = localeconv();
-if ($_SESSION['locale_info']['currency_symbol']=='EU')
-	$_SESSION['locale_info']['currency_symbol']='Û';
 
-$smarty->assign('lang_code',$_SESSION['text_locale_code']);
-$smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));
-$smarty->assign('locale',$_SESSION['text_locale_code'].'_'.$_SESSION['text_locale_country_code']);
 
-$args="?";
-
-foreach ($_GET as $key => $value) {
-	if ($key!='_locale')$args.=$key.'='.$value.'&';
+if(isset($user)){
+    $locale=$user->get('User Preferred Locale');
+}else{
+    $locale='en_GB.UTF-8';
 }
+set_locale($locale);
 
 
-$smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
-$smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
-$smarty->assign('currency_symbol',$_SESSION['locale_info']['currency_symbol']);
+
+//include_once 'set_locales.php';
+//require 'locale.php';
+
+//$_SESSION['locale_info'] = localeconv();
+//if ($_SESSION['locale_info']['currency_symbol']=='EU')
+//	$_SESSION['locale_info']['currency_symbol']='Û';
+
+//$smarty->assign('lang_code',$_SESSION['text_locale_code']);
+//$smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));
+//$smarty->assign('locale',$_SESSION['text_locale_code'].'_'.$_SESSION['text_locale_country_code']);
+
+//$args="?";
+
+//foreach ($_GET as $key => $value) {
+//	if ($key!='_locale')$args.=$key.'='.$value.'&';
+//}
+
+
+//$smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
+//$smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
+//$smarty->assign('currency_symbol',$_SESSION['locale_info']['currency_symbol']);
 
 
 $smarty->assign('user',$user);

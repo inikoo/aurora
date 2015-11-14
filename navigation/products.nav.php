@@ -213,12 +213,25 @@ function get_department_navigation($data) {
 		}
 
 
-		$number_results=$_SESSION['table_state'][$tab]['nr'];
-		$start_from=0;
-		$order=$_SESSION['table_state'][$tab]['o'];
-		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-		$f_value=$_SESSION['table_state'][$tab]['f_value'];
-		$parameters=$_SESSION['table_state'][$tab];
+		if (isset($_SESSION['table_state'][$tab])) {
+			$number_results=$_SESSION['table_state'][$tab]['nr'];
+			$start_from=0;
+			$order=$_SESSION['table_state'][$tab]['o'];
+			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+			$f_value=$_SESSION['table_state'][$tab]['f_value'];
+			$parameters=$_SESSION['table_state'][$tab];
+		}else {
+
+			$default=$user->get_tab_defaults($tab);
+			$number_results=$default['rpp'];
+			$start_from=0;
+			$order=$default['sort_key'];
+			$order_direction=($default['sort_order']==1 ?'desc':'');
+			$f_value='';
+			$parameters=$default;
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
+		}
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -368,12 +381,25 @@ function get_family_navigation($data) {
 		}
 
 
-		$number_results=$_SESSION['table_state'][$tab]['nr'];
-		$start_from=0;
-		$order=$_SESSION['table_state'][$tab]['o'];
-		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-		$f_value=$_SESSION['table_state'][$tab]['f_value'];
-		$parameters=$_SESSION['table_state'][$tab];
+		if (isset($_SESSION['table_state'][$tab])) {
+			$number_results=$_SESSION['table_state'][$tab]['nr'];
+			$start_from=0;
+			$order=$_SESSION['table_state'][$tab]['o'];
+			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+			$f_value=$_SESSION['table_state'][$tab]['f_value'];
+			$parameters=$_SESSION['table_state'][$tab];
+		}else {
+
+			$default=$user->get_tab_defaults($tab);
+			$number_results=$default['rpp'];
+			$start_from=0;
+			$order=$default['sort_key'];
+			$order_direction=($default['sort_order']==1 ?'desc':'');
+			$f_value='';
+			$parameters=$default;
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
+		}
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -561,12 +587,25 @@ function get_product_navigation($data) {
 		}
 
 
-		$number_results=$_SESSION['table_state'][$tab]['nr'];
-		$start_from=0;
-		$order=$_SESSION['table_state'][$tab]['o'];
-		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-		$f_value=$_SESSION['table_state'][$tab]['f_value'];
-		$parameters=$_SESSION['table_state'][$tab];
+		if (isset($_SESSION['table_state'][$tab])) {
+			$number_results=$_SESSION['table_state'][$tab]['nr'];
+			$start_from=0;
+			$order=$_SESSION['table_state'][$tab]['o'];
+			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+			$f_value=$_SESSION['table_state'][$tab]['f_value'];
+			$parameters=$_SESSION['table_state'][$tab];
+		}else {
+
+			$default=$user->get_tab_defaults($tab);
+			$number_results=$default['rpp'];
+			$start_from=0;
+			$order=$default['sort_key'];
+			$order_direction=($default['sort_order']==1 ?'desc':'');
+			$f_value='';
+			$parameters=$default;
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
+		}
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -646,7 +685,7 @@ function get_product_navigation($data) {
 			}
 
 
-			
+
 
 
 
@@ -661,78 +700,78 @@ function get_product_navigation($data) {
 
 	}
 
-switch ($data['parent']) {
-			case 'store':
+	switch ($data['parent']) {
+	case 'store':
 
-				$store= new Store($object->get('Product Store Key'));
+		$store= new Store($object->get('Product Store Key'));
 
-				$up_button=array('icon'=>'arrow-up', 'title'=>_("Store").' ('.$store->get('Store Code').')', 'reference'=>'store/'.$object->get('Product Store Key'));
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Store").' ('.$store->get('Store Code').')', 'reference'=>'store/'.$object->get('Product Store Key'));
 
-				if ($prev_key) {
-					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'store/'.$data['parent_key'].'/product/'.$prev_key);
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'store/'.$data['parent_key'].'/product/'.$prev_key);
 
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
 
-				}
-				$left_buttons[]=$up_button;
-
-
-				if ($next_key) {
-					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'store/'.$data['parent_key'].'/product/'.$next_key);
-
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-				}
-
-				break;
-			case 'department':
-				$up_button=array('icon'=>'arrow-up', 'title'=>_("Department").' ('.$object->get('Product Main Department Code').')', 'reference'=>'store/'.$object->get('Product Store Key').'/department/'.$object->get('Product Main Department Key'));
-
-				if ($prev_key) {
-					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$prev_key);
-
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
-
-				}
-				$left_buttons[]=$up_button;
+		}
+		$left_buttons[]=$up_button;
 
 
-				if ($next_key) {
-					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$next_key);
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'store/'.$data['parent_key'].'/product/'.$next_key);
 
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
-				}
+		}
 
-				break;
-			case 'order':
-				$order=new Order($data['parent_key']);
-				$up_button=array('icon'=>'arrow-up', 'title'=>_("Order").' ('.$order->get('Order Public ID').')', 'reference'=>'orders/'.$order->get('Order Store Key').'/'.$order->id);
+		break;
+	case 'department':
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Department").' ('.$object->get('Product Main Department Code').')', 'reference'=>'store/'.$object->get('Product Store Key').'/department/'.$object->get('Product Main Department Key'));
 
-				if ($prev_key) {
-					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'order/'.$data['parent_key'].'/item/'.$prev_extra_field_value);
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$prev_key);
 
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
 
-				}
-				$left_buttons[]=$up_button;
+		}
+		$left_buttons[]=$up_button;
 
 
-				if ($next_key) {
-					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'order/'.$data['parent_key'].'/item/'.$next_extra_field_value);
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$next_key);
 
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
-				}
+		}
 
-				break;
-			}
+		break;
+	case 'order':
+		$order=new Order($data['parent_key']);
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Order").' ('.$order->get('Order Public ID').')', 'reference'=>'orders/'.$order->get('Order Store Key').'/'.$order->id);
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'order/'.$data['parent_key'].'/item/'.$prev_extra_field_value);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'order/'.$data['parent_key'].'/item/'.$next_extra_field_value);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+		}
+
+		break;
+	}
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');

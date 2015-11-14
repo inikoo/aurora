@@ -36,7 +36,8 @@ function client_validation(type, required, value, field) {
     }
 
 
-    if (value == '' && !required) {
+
+    if (value == '' &&  required) {
         return {
             class: 'potentially_valid',
             type: 'empty'

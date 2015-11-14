@@ -777,9 +777,9 @@ $modules=array(
 			),
 			'employee'=>array('type'=>'object',
 				'tabs'=>array(
-					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details'), 'reference'=>'employee/%d/details'),
-					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o', 'reference'=>'employee/%d/notes'),
-					'employee.timesheet'=>array('label'=>_('Timesheet'), 'title'=>_('Timesheet'), 'reference'=>'employee/%d/timesheet'),
+					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'employee.timesheet'=>array('label'=>_('Timesheet'), 'title'=>_('Timesheet')),
 
 				)
 
@@ -790,7 +790,7 @@ $modules=array(
 					'timesheet_record.new'=>array('label'=>_('New timesheet record'), 'title'=>_('New timesheet record')),
 					'timesheet_record.import'=>array('label'=>_('Import'), 'title'=>_('Import timesheet record')),
 					'timesheet_record.api'=>array('label'=>_('API'), 'title'=>_('API')),
-					'timesheet_record.cancel'=>array('class'=>'right','label'=>_('Cancel'), 'title'=>_('Cancel'),'icon'=>'sign-out fa-flip-horizontal','reference'=>'hr'),
+					'timesheet_record.cancel'=>array('class'=>'right','label'=>_('Cancel'), 'title'=>_('Cancel'),'icon'=>'sign-out fa-flip-horizontal'),
 
 				)
 				

@@ -59,7 +59,7 @@ function navigate_option(e, field, direction) {
     case 'down':
         e.preventDefault();
         var element = $('#' + field + '_options  li.selected').next()
-
+console.log(element)
         if (element.attr('id') != undefined) {
             select_option(field, element.attr('value'), element.attr('label'))
         }

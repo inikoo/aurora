@@ -297,7 +297,6 @@ function on_changed_value(field, new_value) {
 
         var validation = validate_field(field, new_value)
 
-        //console.log(validation)
         if (validation.class == 'potentially_valid' && $('#' + field).attr('has_been_valid') == 1) {
             validation.class = 'invalid';
         }
@@ -320,7 +319,6 @@ function on_changed_value(field, new_value) {
             }
 
             if (validation.class == 'invalid') {
-                //console.log('#' + field + '_' + validation.type + '_invalid_msg')
                 if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
                     var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
                 } else {
@@ -343,7 +341,9 @@ function select_option(field, value, label) {
     $('#' + field).val(value)
     $('#' + field + '_formated').val(label)
     $('#' + field + '_options li').removeClass('selected')
-    $('#' + field + '_option_' + value).addClass('selected')
+   
+   
+    $('#' + field + '_option_' + value.replace(".", "\\.")).addClass('selected')
 
     on_changed_value(field, value)
 
@@ -393,16 +393,13 @@ function save_field(object, key, field) {
 
 
     if (!$("#" + field + '_editor').hasClass('changed')) {
-        console.log('no changed')
         return;
     }
 
     if ($("#" + field + '_editor').hasClass('invalid')) {
-        console.log('invalid')
         return;
     }
     if ($("#" + field + '_editor').hasClass('waiting')) {
-        console.log('waiting')
         return;
     }
 
@@ -456,9 +453,9 @@ function save_field(object, key, field) {
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
-    console.log(request)
+   
     $.getJSON(request, function(data) {
-        console.log(data)
+         console.log(request)
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
@@ -493,11 +490,30 @@ function save_field(object, key, field) {
                 }
             }
 
+            post_save_actions(field,data)
+
         } else if (data.state == 400) {
-            $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+           $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
+
+            $('#' + field + '_msg').html(data.msg).removeClass('hide')
 
         }
     })
+}
+
+function post_save_actions(field,data){
+    
+    switch ( field ) {
+    	case 'User_Preferred_Locale':
+    		change_view(state.request,{'reload':true})
+    		break;
+    	
+    	
+    	default:
+    	
+    }
+
+    
 }
 
 function update_field(data) {

@@ -84,5 +84,6 @@ ALTER TABLE `Staff Supervisor Bridge`
 ALTER TABLE `Staff Dimension`  DROP `Staff Contact Key`;  
 
 ALTER TABLE `Staff Dimension` ADD `Staff Birthday` DATETIME NULL DEFAULT NULL AFTER `Staff Name`, ADD `Staff Official ID` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Birthday`, ADD `Staff Email` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Official ID`, ADD `Staff Telephone` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Email`, ADD `Staff Next of Kind` VARCHAR(1024) NULL DEFAULT NULL AFTER `Staff Telephone`;
+ALTER TABLE `Staff Dimension` ADD `Staff Telephone Formated` VARCHAR(255) NULL DEFAULT NULL AFTER `Staff Telephone`;
 
   

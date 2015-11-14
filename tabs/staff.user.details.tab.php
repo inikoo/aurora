@@ -10,14 +10,21 @@
 */
 
 include_once 'utils/invalid_messages.php';
+include 'conf/available_locales.php';
 
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
 
+$options_locales=array();
+foreach ($available_locales as $locale) {
+
+	$options_locales[$locale['Locale']]=$locale['Language Name'].($locale['Language Name']!=$locale['Language Original Name']?' ('.$locale['Language Original Name'].')':'');
+}
+
+
 asort($options_yn);
-
-
+asort($options_locales);
 
 
 $system_user=new User($state['key']);
@@ -31,7 +38,7 @@ $object_fields=array(
 		'class'=>'links',
 		'fields'=>array(
 			array(
-			    'render'=>false,
+				'render'=>false,
 				'class'=>'locked',
 				'id'=>'User_ID',
 				'value'=>$system_user->get_formated_id() ,
@@ -42,7 +49,7 @@ $object_fields=array(
 				'class'=>'link',
 				'id'=>'User_Alias',
 				'value'=>'',
-				'label'=>$system_user->get('User Alias').' ('.sprintf('%35d',$system_user->get('User Parent Key')).')',
+				'label'=>$system_user->get('User Alias').' ('.sprintf('%35d', $system_user->get('User Parent Key')).')',
 				'reference'=>'employee/'.$system_user->get('User Parent Key')
 			),
 
@@ -55,14 +62,14 @@ $object_fields=array(
 		'class'=>'edit_fields',
 		'fields'=>array(
 			array(
-				
-			'id'=>'User_Active',
-			'edit'=>'option',
-			'value'=>$system_user->get('User Active'),
-			'formated_value'=>$system_user->get('Active'),
-			'options'=>$options_yn,
-			'label'=>_('Active')
-				
+
+				'id'=>'User_Active',
+				'edit'=>'option',
+				'value'=>$system_user->get('User Active'),
+				'formated_value'=>$system_user->get('Active'),
+				'options'=>$options_yn,
+				'label'=>ucfirst($system_user->get_field_label('User Active')),
+
 			),
 
 			array(
@@ -105,8 +112,13 @@ $object_fields=array(
 		'fields'=>array(
 			array(
 				'id'=>'User_Preferred_Locale',
+				'edit'=>'option',
 				'value'=>$system_user->get('User Preferred Locale') ,
-				'label'=>_('Language')
+				'formated_value'=>$system_user->get('Preferred Locale') ,
+				'label'=>ucfirst($system_user->get_field_label('Preferred Locale')),
+				'options'=>$options_locales,
+
+				
 			)
 
 		)
