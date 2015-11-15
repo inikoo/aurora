@@ -39,7 +39,7 @@ mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 
 
-require_once 'conf/modules.php';
+require_once 'utils/modules.php';
 require_once 'conf/conf.php';
 
 $account=new Account($db);

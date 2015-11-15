@@ -10,7 +10,11 @@
 */
 
 include_once 'utils/invalid_messages.php';
-include 'conf/available_locales.php';
+include 'utils/available_locales.php';
+include 'utils/user_groups.php';
+
+$system_user=new User($state['key']);
+
 
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
@@ -23,11 +27,67 @@ foreach ($available_locales as $locale) {
 }
 
 
+
+$options_Groups=array();
+foreach ($user_groups as $key=>$user_group) {
+	$options_Groups[$key]=array(
+		'label'=>$user_group['Name'],
+		'selected'=>false
+	);
+}
+
+foreach (preg_split('/,/', $system_user->get('User Groups')) as $key) {
+	if ($key) {
+		$options_Groups[$key]['selected']=true;
+	}
+}
+
+
+$options_Stores=array();
+$sql=sprintf('select `Store Key` as `key` ,`Store Name`,`Store Code`   from `Store Dimension`  ');
+foreach ($db->query($sql) as $row) {
+	$options_Stores[$row['key']]=array(
+		'label'=>$row['Store Code'],
+		'selected'=>false
+	);
+}
+foreach (preg_split('/,/', $system_user->get('User Stores')) as $key) {
+	if (array_key_exists($key, $options_Stores))
+		$options_Stores[$key]['selected']=true;
+}
+
+$options_Websites=array();
+$sql=sprintf('select `Site Key` as `key` ,`Site Name`,`Site Code` from `Site Dimension`  ');
+foreach ($db->query($sql) as $row) {
+	$options_Websites[$row['key']]=array(
+		'label'=>$row['Site Code'],
+		'selected'=>false
+	);
+}
+foreach (preg_split('/,/', $system_user->get('User Websites')) as $key) {
+	if (array_key_exists($key, $options_Websites))
+		$options_Websites[$key]['selected']=true;
+}
+
+$options_Warehouses=array();
+$sql=sprintf('select `Warehouse Key` as `key` ,`Warehouse Name`,`Warehouse Code` from `Warehouse Dimension`  ');
+foreach ($db->query($sql) as $row) {
+	$options_Warehouses[$row['key']]=array(
+		'label'=>$row['Warehouse Code'],
+		'selected'=>false
+	);
+}
+foreach (preg_split('/,/', $system_user->get('User Warehouses')) as $key) {
+	if (array_key_exists($key, $options_Warehouses))
+
+		$options_Warehouses[$key]['selected']=true;
+}
+
+
+
 asort($options_yn);
 asort($options_locales);
-
-
-$system_user=new User($state['key']);
+asort($options_Groups);
 
 
 
@@ -106,6 +166,54 @@ $object_fields=array(
 		)
 	),
 	array(
+		'label'=>_('Permissions'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			array(
+				'id'=>'User_Groups',
+				'edit'=>'radio_option',
+				'value'=>$system_user->get('User Groups') ,
+				'formated_value'=>$system_user->get('Groups') ,
+				'label'=>ucfirst($system_user->get_field_label('User Groups')),
+				'options'=>$options_Groups,
+
+
+			),
+			array(
+				'id'=>'User_Stores',
+				'edit'=>'radio_option',
+				'value'=>$system_user->get('User Stores') ,
+				'formated_value'=>$system_user->get('Stores') ,
+				'label'=>ucfirst($system_user->get_field_label('User Stores')),
+				'options'=>$options_Stores,
+				'required'=>false
+
+			),
+			array(
+				'id'=>'User_Websites',
+				'edit'=>'radio_option',
+				'value'=>$system_user->get('User Websites') ,
+				'formated_value'=>$system_user->get('Websites') ,
+				'label'=>ucfirst($system_user->get_field_label('User Websites')),
+				'options'=>$options_Websites,
+				'required'=>false
+
+			), array(
+				'id'=>'User_Warehouses',
+				'edit'=>'radio_option',
+				'value'=>$system_user->get('User Warehouses') ,
+				'formated_value'=>$system_user->get('Warehouses') ,
+				'label'=>ucfirst($system_user->get_field_label('User Warehouses')),
+				'options'=>$options_Warehouses,
+				'required'=>false
+
+
+			)
+
+		)
+	),
+	array(
 		'label'=>_('Preferences'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -118,7 +226,7 @@ $object_fields=array(
 				'label'=>ucfirst($system_user->get_field_label('Preferred Locale')),
 				'options'=>$options_locales,
 
-				
+
 			)
 
 		)
