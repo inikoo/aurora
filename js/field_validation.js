@@ -7,8 +7,7 @@ function validate_field(field, new_value) {
 
     var field_data = $('#' + field + '_container')
 
-
-    var validation = client_validation(field_data.attr('field_type'), field_data.attr('required'), new_value, field)
+    var validation = client_validation(field_data.attr('field_type'), field_data.attr('_required'), new_value, field)
 
     if (validation.class == 'valid' && field_data.attr('server_validation')) {
 
@@ -37,10 +36,20 @@ function client_validation(type, required, value, field) {
 
 
 
-    if (value == '' &&  required) {
-        return {
-            class: 'potentially_valid',
-            type: 'empty'
+    if (value == '') {
+        if (required) {
+            return {
+                class: 'invalid',
+                type: 'empty'
+            }
+
+
+        } else {
+            return {
+                class: 'valid',
+                type: ''
+            }
+
         }
 
     }

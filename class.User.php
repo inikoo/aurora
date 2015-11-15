@@ -356,80 +356,31 @@ class User extends DB_Table {
 	}
 
 
-	function update_warehouses($value) {
-		$this->updated=false;
-
-		if ($this->data['User Type']!='Staff')
-			return;
-		$warehouses=preg_split('/,/', $value);
-		foreach ($warehouses as $key=>$value) {
-			if (!is_numeric($value) )
-				unset($warehouses[$key]);
-		}
-		$this->read_warehouses();
-		$old_warehouses=$this->warehouses;
-		$to_delete = array_diff($old_warehouses, $warehouses);
-		$to_add = array_diff($warehouses, $old_warehouses);
-		$changed=0;
-		if (count($to_delete)>0) {
-			$changed+=$this->delete_warehouse($to_delete);
-		}
-		if (count($to_add)>0) {
-			$changed+=$this->add_warehouse($to_add);
-		}
-		$this->read_warehouses();
-		if ($changed>0) {
-			$this->updated=true;
-			$this->new_value=$this->warehouses;
-		}
-	}
 
 
-	function update_stores($value) {
-		$this->updated=false;
 
-		if ($this->data['User Type']!='Staff')
-			return;
-		$stores=preg_split('/,/', $value);
-		foreach ($stores as $key=>$value) {
-			if (!is_numeric($value) )
-				unset($stores[$key]);
-		}
-		$this->read_stores();
-		$old_stores=$this->stores;
-		$to_delete = array_diff($old_stores, $stores);
-		$to_add = array_diff($stores, $old_stores);
-		$changed=0;
-
-		if (count($to_delete)>0) {
-			$changed+=$this->delete_store($to_delete);
-		}
-		if (count($to_add)>0) {
-			$changed+=$this->add_store($to_add);
-		}
-		$this->read_stores();
-		if ($changed>0) {
-			$this->updated=true;
-			$this->new_value=$this->stores;
-		}
-	}
 
 
 	function update_websites($value) {
 		$this->updated=false;
 
-		if ($this->data['User Type']!='Staff')
+		if ($this->data['User Type']!='Staff') {
+			$this->error=true;
 			return;
+		}
 		$websites=preg_split('/,/', $value);
 		foreach ($websites as $key=>$value) {
 			if (!is_numeric($value) )
 				unset($websites[$key]);
 		}
-		$this->read_websites();
-		$old_websites=$this->websites;
+		$old_websites=preg_split('/,/', $this->get_websites());
+
+		$old_formated_websites=$this->get_websites_formated();
 		$to_delete = array_diff($old_websites, $websites);
 		$to_add = array_diff($websites, $old_websites);
 		$changed=0;
+
+
 
 		if (count($to_delete)>0) {
 			$changed+=$this->delete_website($to_delete);
@@ -437,15 +388,16 @@ class User extends DB_Table {
 		if (count($to_add)>0) {
 			$changed+=$this->add_website($to_add);
 		}
-		$this->read_websites();
 
-		if (count($this->websites)>0) {
+		$number_websites=$this->get_number_websites();
+
+		if ($number_websites>0) {
 			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$groups_changed=$this->add_group(array($row['User Group Key']));
 			}
-		}else if (count($this->websites)==0) {
+		}else {
 			$this->read_groups();
 			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
 			$res=mysql_query($sql);
@@ -456,10 +408,9 @@ class User extends DB_Table {
 
 
 		if ($changed>0) {
-			$this->read_groups();
 			$this->updated=true;
-			$this->new_value=array('websites'=>$this->websites, 'groups'=>$this->groups_key_array);
 		}
+
 	}
 
 
@@ -514,6 +465,18 @@ class User extends DB_Table {
 			$value=_trim($value);
 
 		switch ($field) {
+		case('User Groups'):
+			$this->update_groups($value);
+			break;
+		case('User Stores'):
+			$this->update_stores($value);
+			break;
+		case('User Websites'):
+			$this->update_websites($value);
+			break;
+		case('User Warehouses'):
+			$this->update_warehouses($value);
+			break;
 		case('User Active'):
 			$this->update_active($value);
 			break;
@@ -708,31 +671,35 @@ class User extends DB_Table {
 
 
 	function add_group($to_add, $history=true) {
+
+		include 'utils/user_groups.php';
+
 		$changed=0;
-		foreach ($to_add as $group_id) {
+		foreach ($to_add as $group_key) {
 
-			$sql=sprintf("select * from  `User Group Dimension` where `User Group Key`=%d", $group_id);
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_array($res)) {
-				$group_name=$row['User Group Name'];
+			if (array_key_exists($group_key, $user_groups)) {
+				$group_name=$user_groups[$group_key]['Name'];
 
 
-				$sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ", $this->id, $group_id);
-				//print $sql;
-				mysql_query($sql);
-				if (mysql_affected_rows()>0) {
+				$sql=sprintf("insert into `User Group User Bridge`values (%d,%d) ", $this->id, $group_key);
+				$_changed = $this->db->exec($sql);
+				if ($_changed>0) {
 					$changed++;
-					$history_data=array(
-						'History Abstract'=>_('User added to Group')
-						, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$group_name)
-						, 'Action'=>'associate'
-						, 'Indirect Object'=>'Group'
-						, 'Indirect Object Key'=>$group_id
-					);
-					$this->add_history($history_data);
-				}
-			}
 
+					$history_data=array(
+						'History Abstract'=>sprintf(_("User's was added to group %s"),  $user_groups[$group_key]['Name']  ),
+						'History Details'=>'',
+						'Action'=>'disassociate',
+						'Indirect Object'=>'User Group',
+						'Indirect Object Key'=>$group_key
+					);
+					$history_key=$this->add_history($history_data);
+					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+					$this->db->exec($sql);
+
+				}
+
+			}
 
 		}
 		return $changed;
@@ -740,36 +707,38 @@ class User extends DB_Table {
 
 
 	function delete_group($to_delete, $history=true) {
+
+		include 'utils/user_groups.php';
+
 		$changed=0;
-		foreach ($to_delete as $group_id) {
+		foreach ($to_delete as $group_key) {
 
+			$sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d and `User Group Key`=%d ", $this->id, $group_key);
+			$_changed = $this->db->exec($sql);
 
-
-
-			$sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d and `User Group Key`=%d ", $this->id, $group_id);
-			//   print $sql;
-			mysql_query($sql);
-
-			if (mysql_affected_rows()>0) {
+			if ($_changed>0) {
 				$changed++;
-				$history_data=array(
-					'History Abstract'=>_('User deleted from Group')
-					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups[$group_id]['User Group Name'])
-					, 'Action'=>'disassociate'
-					, 'Indirect Object'=>'Group'
-					, 'Indirect Object Key'=>$group_id
-				);
-				$this->add_history($history_data);
 
-				$sql=sprintf("select `User Group Name` from `User Group Dimension` where `User Group Key`=%d ", $group_id);
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_assoc($res)) {
-					if ($row['User Group Name']=='Webmaster') {
-						$this->read_websites();
-						$this->delete_website($this->websites);
-						$this->read_websites();
-					}
-				}
+
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's was removed from group %s"),  $user_groups[$group_key]['Name']  ),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'User Group',
+					'Indirect Object Key'=>$group_key
+				);
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+
+
+				//if ($group_key==10) {
+				// $this->update_groups('', 'no_history');
+				//}
+
+
+
+
 
 			}
 		}
@@ -777,6 +746,169 @@ class User extends DB_Table {
 
 
 		return $changed;
+	}
+
+
+
+	function add_website($to_add, $history=true) {
+		$changed=0;
+		foreach ($to_add as $scope_id) {
+
+			$website=new Site($scope_id);
+			if (!$website->id)
+				continue;
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ", $this->id, $scope_id);
+			mysql_query($sql);
+			if (mysql_affected_rows()>0) {
+				$changed++;
+
+
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's rights for website %s were granted"), $website->data['Site Code']),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Site',
+					'Indirect Object Key'=>$website->id
+				);
+
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+			}
+		}
+		return $changed;
+
+	}
+
+
+	function delete_website($to_delete, $history=true) {
+		$changed=0;
+		foreach ($to_delete as $website_key) {
+
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `Scope Key`=%d and `Scope`='Website' ", $this->id, $website_key);
+			$_changed = $this->db->exec($sql);
+			$changed+=$_changed;
+
+			$website=new Site($website_key);
+			if ($website->id and $_changed) {
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's rights for website %s were removed"), $website->data['Site Code']),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Site',
+					'Indirect Object Key'=>$website->id
+				);
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+			}
+
+
+
+		}
+
+
+		return $changed;
+	}
+
+
+	function add_warehouse($to_add, $history=true) {
+		$changed=0;
+		foreach ($to_add as $scope_id) {
+
+			$warehouse=new Warehouse($scope_id);
+			if (!$warehouse->id)
+				continue;
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Warehouse',%d) ", $this->id, $scope_id);
+			mysql_query($sql);
+			if (mysql_affected_rows()>0) {
+				$changed++;
+
+
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's rights for warehouse %s were granted"), $warehouse->data['Warehouse Code']),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Warehouse',
+					'Indirect Object Key'=>$warehouse->id
+				);
+
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+			}
+		}
+		return $changed;
+
+	}
+
+
+	function delete_warehouse($to_delete, $history=true) {
+
+		include_once 'class.Warehouse.php';
+		$changed=0;
+		foreach ($to_delete as $warehouse_key) {
+
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `Scope Key`=%d and `Scope`='Warehouse' ", $this->id, $warehouse_key);
+			$_changed = $this->db->exec($sql);
+			$changed+=$_changed;
+
+			$warehouse=new Warehouse($warehouse_key);
+			if ($warehouse->id and $_changed) {
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's rights for warehouse %s were removed"), $warehouse->data['Warehouse Code']),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Warehouse',
+					'Indirect Object Key'=>$warehouse->id
+				);
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+			}
+
+
+
+		}
+
+
+		return $changed;
+	}
+
+
+	function update_warehouses($value) {
+
+		$this->updated=false;
+
+		if ($this->data['User Type']!='Staff') {
+			$this->error=true;
+			return;
+		}
+		$warehouses=preg_split('/,/', $value);
+		foreach ($warehouses as $key=>$value) {
+			if (!is_numeric($value) )
+				unset($warehouses[$key]);
+		}
+		$old_warehouses=preg_split('/,/', $this->get_warehouses());
+
+		$old_formated_warehouses=$this->get_warehouses_formated();
+		$to_delete = array_diff($old_warehouses, $warehouses);
+		$to_add = array_diff($warehouses, $old_warehouses);
+		$changed=0;
+
+
+
+		if (count($to_delete)>0) {
+			$changed+=$this->delete_warehouse($to_delete);
+		}
+		if (count($to_add)>0) {
+			$changed+=$this->add_warehouse($to_add);
+		}
+
+		if ($changed>0) {
+			$this->updated=true;
+		}
+
 	}
 
 
@@ -791,14 +923,19 @@ class User extends DB_Table {
 			mysql_query($sql);
 			if (mysql_affected_rows()>0) {
 				$changed++;
+
+
 				$history_data=array(
-					'History Abstract'=>_('User rights granted for store').'. ('.$store->data['Store Code'].')'
-					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$store->data['Store Name'])
-					, 'Action'=>'associate'
-					, 'Indirect Object'=>'Store'
-					, 'Indirect Object Key'=>$store->id
+					'History Abstract'=>sprintf(_("User's rights for store %s were granted"), $store->data['Store Code']),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Store',
+					'Indirect Object Key'=>$store->id
 				);
-				$this->add_history($history_data);
+
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
 			}
 		}
 		return $changed;
@@ -807,134 +944,71 @@ class User extends DB_Table {
 
 
 	function delete_store($to_delete, $history=true) {
+
+		include_once 'class.Store.php';
 		$changed=0;
-		foreach ($to_delete as $scope_id) {
-			$store=new Store($scope_id);
-			if (!$store->id)
-				continue;
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Store' ", $this->id, $scope_id);
-			mysql_query($sql);
-		}
-		if (mysql_affected_rows()>0) {
-			$changed++;
-			$history_data=array(
+		foreach ($to_delete as $store_key) {
 
-				'History Abstract'=>_('User rights removed from store').'. ('.$store->data['Store Code'].')'
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `Scope Key`=%d and `Scope`='Store' ", $this->id, $store_key);
+			$_changed = $this->db->exec($sql);
+			$changed+=$_changed;
 
-				, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$store->data['Store Name'])
-				, 'Action'=>'disassociate'
-				, 'Indirect Object'=>'Store'
-				, 'Indirect Object Key'=>$store->id
-			);
-			$this->add_history($history_data);
-
-		}
-		return $changed;
-	}
-
-
-	function add_website($to_add, $history=true) {
-		$changed=0;
-		foreach ($to_add as $scope_id) {
-
-			$website=new Site($scope_id);
-			if (!$website->id)
-				continue;
-			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ", $this->id, $scope_id);
-			mysql_query($sql);
-			if (mysql_affected_rows()>0) {
-				$changed++;
+			$store=new Store($store_key);
+			if ($store->id and $_changed) {
 				$history_data=array(
-					'History Abstract'=>_('User rights granted for website').'. ('.$store->data['Site Code'].')'
-					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights granted for')." ".$website->data['Site Name'])
-					, 'Action'=>'associate'
-					, 'Indirect Object'=>'Site'
-					, 'Indirect Object Key'=>$website->id
+					'History Abstract'=>sprintf(_("User's rights for store %s were removed"), $store->data['Store Code']),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Store',
+					'Indirect Object Key'=>$store->id
 				);
-				$this->add_history($history_data);
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
 			}
-		}
-		return $changed;
-
-	}
 
 
-	function delete_website($to_delete, $history=true) {
-		$changed=0;
-		foreach ($to_delete as $scope_id) {
-			$website=new Site($scope_id);
-			if (!$website->id)
-				continue;
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Website' ", $this->id, $scope_id);
-			mysql_query($sql);
-		}
-		if (mysql_affected_rows()>0) {
-			$changed++;
-			$history_data=array(
-				'History Abstract'=>_('User rights removed from website').'. ('.$store->data['Site Code'].')'
-				, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights removed from')." ".$website->data['Site Name'])
-				, 'Action'=>'disassociate'
-				, 'Indirect Object'=>'Site'
-				, 'Indirect Object Key'=>$website->id
-			);
-			$this->add_history($history_data);
 
 		}
+
+
 		return $changed;
 	}
 
 
-	function add_warehouse($to_add, $history=true) {
+	function update_stores($value) {
+
+		$this->updated=false;
+
+		if ($this->data['User Type']!='Staff') {
+			$this->error=true;
+			return;
+		}
+		$stores=preg_split('/,/', $value);
+		foreach ($stores as $key=>$value) {
+			if (!is_numeric($value) )
+				unset($stores[$key]);
+		}
+		$old_stores=preg_split('/,/', $this->get_stores());
+
+		$old_formated_stores=$this->get_stores_formated();
+		$to_delete = array_diff($old_stores, $stores);
+		$to_add = array_diff($stores, $old_stores);
 		$changed=0;
-		include_once 'class.Warehouse.php';
-		foreach ($to_add as $scope_id) {
 
-			$warehouse=new Warehouse($scope_id);
-			if (!$warehouse->id)
-				continue;
-			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Warehouse',%d) ", $this->id, $scope_id);
-			//print $sql;
-			mysql_query($sql);
-			if (mysql_affected_rows()>0) {
-				$changed++;
-				$history_data=array(
-					'History Abstract'=>_('User Rights Associated with Warehouse')
-					, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$warehouse->data['Warehouse Name'])
-					, 'Action'=>'associate'
-					, 'Indirect Object'=>'Warehouse'
-					, 'Indirect Object Key'=>$warehouse->id
-				);
-				$this->add_history($history_data);
-			}
+
+
+		if (count($to_delete)>0) {
+			$changed+=$this->delete_store($to_delete);
 		}
-		return $changed;
-
-	}
-
-
-	function delete_warehouse($to_delete, $history=true) {
-		$changed=0;
-		include_once 'class.Warehouse.php';
-		foreach ($to_delete as $scope_id) {
-			$warehouse=new Warehouse($scope_id);
-			if (!$warehouse->id)
-				continue;
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Warehouse'", $this->id, $scope_id);
-			mysql_query($sql);
+		if (count($to_add)>0) {
+			$changed+=$this->add_store($to_add);
 		}
-		if (mysql_affected_rows()>0) {
-			$changed++;
-			$history_data=array(
-				'History Abstract'=>_('User Rights Disassociated with Warehouse')
-				, 'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$warehouse->data['Warehouse Name'])
-				, 'Action'=>'disassociate'
-				, 'Indirect Object'=>'Warehouse'
-				, 'Indirect Object Key'=>$warehouse->id
-			);
-			$this->add_history($history_data);
 
+		if ($changed>0) {
+			$this->updated=true;
 		}
-		return $changed;
+
 	}
 
 
@@ -944,6 +1018,33 @@ class User extends DB_Table {
 
 
 		switch ($key) {
+
+		case 'User Groups':
+			return $this->get_groups();
+			break;
+		case 'Groups':
+			return $this->get_groups_formated();
+			break;
+		case 'User Stores':
+			return $this->get_stores();
+			break;
+		case 'Stores':
+			return $this->get_stores_formated();
+			break;
+		case 'User Websites':
+			return $this->get_websites();
+			break;
+		case 'Websites':
+			return $this->get_websites_formated();
+			break;
+		case 'User Warehouses':
+			return $this->get_warehouses();
+			break;
+		case 'Warehouses':
+			return $this->get_warehouses_formated();
+			break;
+
+
 
 		case('User Password'):
 		case('User PIN'):
@@ -959,7 +1060,7 @@ class User extends DB_Table {
 		case('Preferred Locale'):
 
 
-			include 'conf/available_locales.php';
+			include 'utils/available_locales.php';
 
 			if (array_key_exists($this->data['User Preferred Locale'], $available_locales)) {
 				$locale=$available_locales[$this->data['User Preferred Locale']];
@@ -1120,19 +1221,19 @@ class User extends DB_Table {
 	}
 
 
-	function get_number_warehouses() {
-		return count($this->warehouses);
-	}
+	//function get_number_warehouses() {
+	// return count($this->warehouses);
+	//}
 
 
-	function get_number_stores() {
-		return count($this->stores);
-	}
+	// function get_number_stores() {
+	//  return count($this->stores);
+	// }
 
 
-	function get_number_websites() {
-		return count($this->websites);
-	}
+	// function get_number_websites() {
+	//  return count($this->websites);
+	// }
 
 
 	function is($tag='') {
@@ -1198,6 +1299,179 @@ class User extends DB_Table {
 		else
 			return false;
 	}
+
+
+	function get_groups() {
+		$groups=array();
+		$sql=sprintf("select GROUP_CONCAT(`User Group Key`) as groups from `User Group User Bridge` UGUB  where UGUB.`User Key`=%d", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$groups=$row['groups'];
+		}
+		return $groups;
+	}
+
+
+	function get_number_groups() {
+		$number_groups=0;
+		$sql=sprintf("select count(*) as groups from `User Group User Bridge` UGUB  where UGUB.`User Key`=%d", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_groups=$row['groups'];
+		}
+		return $number_groups;
+	}
+
+
+	function get_groups_formated() {
+
+		$number_groups=$this->get_number_groups();
+
+		if ($number_groups==0) {
+			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+		}if ($number_groups==12) {
+			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+		}else {
+
+			include 'utils/user_groups.php';
+			$groups=array();
+			$sql=sprintf("select `User Group Key` as `key` from `User Group User Bridge` UGUB  where UGUB.`User Key`=%d", $this->id);
+			foreach ($this->db->query($sql) as $row) {
+
+				$groups[]=$user_groups[$row['key']]['Name'];
+			}
+			return join($groups, ', ');
+		}
+	}
+
+
+	function get_stores() {
+		$stores=array();
+		$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as stores  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store'", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$stores=$row['stores'];
+		}
+		return $stores;
+	}
+
+
+	function get_number_stores() {
+		$number_stores=0;
+		$sql=sprintf("select count(*) as stores from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store'", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_stores=$row['stores'];
+		}
+		return $number_stores;
+	}
+
+
+	function get_stores_formated() {
+		global $account;
+
+		$number_stores=$this->get_number_stores();
+
+		if ($number_stores==0) {
+			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+		}if ($number_stores==$account->get('Stores')) {
+			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+		}else {
+
+			$stores=array();
+			$sql=sprintf("select `Scope Key`,`Store Code`,`Store Name` as `key` from `User Right Scope Bridge`  left join `Store Dimension` on (`Store Key`=`Scope Key`) where `User Key`=%d and `Scope`='Store'", $this->id);
+			foreach ($this->db->query($sql) as $row) {
+
+				$stores[]=$row['Store Code'];
+			}
+			return join($stores, ', ');
+		}
+	}
+
+
+	function get_websites() {
+		$websites=array();
+		$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as websites  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website'", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$websites=$row['websites'];
+		}
+		return $websites;
+	}
+
+
+	function get_number_websites() {
+		$number_websites=0;
+		$sql=sprintf("select count(*) as websites from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website'", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_websites=$row['websites'];
+		}
+		return $number_websites;
+	}
+
+
+	function get_websites_formated() {
+		global $account;
+
+		$number_websites=$this->get_number_websites();
+
+		if ($number_websites==0) {
+			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+		}if ($number_websites==$account->get('Websites')) {
+			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+		}else {
+
+			$websites=array();
+			$sql=sprintf("select `Scope Key`,`Site Code`,`Site Name` as `key` from `User Right Scope Bridge`  left join `Site Dimension` on (`Site Key`=`Scope Key`) where `User Key`=%d and `Scope`='Website'", $this->id);
+
+			foreach ($this->db->query($sql) as $row) {
+				if ($row['Site Code']!='')
+					$websites[]=$row['Site Code'];
+			}
+			return join($websites, ', ');
+		}
+	}
+
+
+	function get_warehouses() {
+		$warehouses=array();
+		$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as warehouses  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Warehouse'", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$warehouses=$row['warehouses'];
+		}
+		return $warehouses;
+	}
+
+
+	function get_number_warehouses() {
+		$number_warehouses=0;
+		$sql=sprintf("select count(*) as warehouses from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Warehouse'", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_warehouses=$row['warehouses'];
+		}
+		return $number_warehouses;
+	}
+
+
+	function get_warehouses_formated() {
+		global $account;
+
+		$number_warehouses=$this->get_number_warehouses();
+		if ($number_warehouses==0) {
+			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+		}if ($number_warehouses==$account->get('Warehouses')) {
+			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+		}else {
+
+			$warehouses=array();
+			$sql=sprintf("select `Scope Key`,`Warehouse Code`,`Warehouse Name` as `key` from `User Right Scope Bridge`  left join `Warehouse Dimension` on (`Warehouse Key`=`Scope Key`) where `User Key`=%d and `Scope`='Warehouse'", $this->id);
+
+			foreach ($this->db->query($sql) as $row) {
+				if ($row['Warehouse Code']!='')
+					$warehouses[]=$row['Warehouse Code'];
+			}
+			return join($warehouses, ', ');
+		}
+	}
+
+
+
+
 
 
 	function read_groups() {
