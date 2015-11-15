@@ -15,7 +15,9 @@ include_once 'class.Company.php';
 class Account extends DB_Table{
 
 	function Account($a1=false, $a2=false) {
-
+        global $db;
+        $this->db=$db;
+        
 		$this->table_name='Account';
 
 		if ($a1=='create') {
@@ -31,18 +33,9 @@ class Account extends DB_Table{
 
 		$sql=sprintf("select * from `Account Dimension` where `Account Key`=1 ");
 
-
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=1;
-
-
-			$this->company=new Company($this->data['Account Company Key']);
 		}
-
-
-
-
 	}
 
 
@@ -105,7 +98,7 @@ class Account extends DB_Table{
 	function get($key, $data=false) {
 		switch ($key) {
 
-			case 'National Employment Code Label':
+		case 'National Employment Code Label':
 
 			switch ($this->data['Account Country 2 Alpha Code']) {
 			case 'GB':
@@ -113,7 +106,7 @@ class Account extends DB_Table{
 				break;
 			case 'ES':
 				return _('DNI');
-				break;	
+				break;
 			default:
 				return '';
 				break;

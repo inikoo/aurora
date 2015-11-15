@@ -40,7 +40,6 @@ mysql_query("SET time_zone='+0:00'");
 
 
 require_once 'utils/modules.php';
-require_once 'conf/conf.php';
 
 $account=new Account($db);
 date_default_timezone_set($account->data['Account Timezone']) ;
@@ -111,7 +110,7 @@ $user=new User($_SESSION['user_key']);
 if(isset($user)){
     $locale=$user->get('User Preferred Locale');
 }else{
-    $locale='en_GB.UTF-8';
+    $locale=$account->get('Locale').'.UTF-8';
 }
 set_locale($locale);
 

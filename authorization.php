@@ -28,6 +28,9 @@ error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
+$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user,$dns_pwd ,array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
@@ -36,24 +39,25 @@ if (!$con) {
 	exit;
 }
 //$dns_db='dw_avant';
-$db=@mysql_select_db($dns_db, $con);
-if (!$db) {
+$db2=@mysql_select_db($dns_db, $con);
+if (!$db2) {
 	print "Error can not access the database\n";
 	exit;
 }
 
 
+
+
 require_once 'common_functions.php';
 
 mysql_set_charset('utf8');
-require_once 'conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
 require_once 'common_detect_agent.php';
 include_once 'conf/key.php';
 include_once 'aes.php';
-include_once 'set_locales.php';
+include_once 'utils/i18n.php';
 
 include_once 'conf/key.php';
 
@@ -68,11 +72,7 @@ include_once 'class.Auth.php';
 require_once "class.Session.php";
 
 include_once 'class.User.php';
-require_once 'conf/conf.php';
 
-//$max_session_time=$myconf['max_session_time'];
-//$max_session_time_in_milliseconds=1000*$max_session_time;
-//$session = new Session($max_session_time,1,100);
 
 session_save_path('server_files/tmp');
 ini_set('session.gc_maxlifetime', 57600); // 16 hours
