@@ -10,37 +10,41 @@
  Version 3.0
 */
 
-function set_locale($locale){
+function set_locale($locale) {
 
 
 
 
-if (!function_exists('_')) {
-	function _($str) {
-		return $str;
+	if (!function_exists('_')) {
+		function _($str) {
+			return $str;
+		}
+
+
+		function gettext($str) {
+			return $str;
+		}
+
+
+		function ngettext($str) {
+			return $str;
+		}
+
+
+		function bindtextdomain() {};
+		function bind_textdomain_codeset() {};
+		function textdomain() {};
+
 	}
-	function gettext($str) {
-		return $str;
-	}
-	function ngettext($str) {
-		return $str;
-	}
+	putenv('LC_MESSAGES='.$locale);
 
-	function bindtextdomain() {};
-	function bind_textdomain_codeset() {};
-	function textdomain() {};
-
-}
-
-putenv('LC_MESSAGES='.$locale);
-
-if (defined('LC_MESSAGES'))
-	setlocale(LC_MESSAGES, $locale);
-else
-	setlocale(LC_ALL, $locale);
-bindtextdomain("inikoo", "./locale");
-textdomain("inikoo");
-bind_textdomain_codeset("inikoo", 'UTF-8'); //This was the missing piece.
+	if (defined('LC_MESSAGES'))
+		setlocale(LC_MESSAGES, $locale);
+	else
+		setlocale(LC_ALL, $locale);
+	bindtextdomain("inikoo", "./locale");
+	textdomain("inikoo");
+	bind_textdomain_codeset("inikoo", 'UTF-8'); //This was the missing piece.
 
 
 }
