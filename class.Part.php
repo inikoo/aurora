@@ -406,7 +406,7 @@ class part extends DB_Table {
 
 	function update_weight_dimensions_data($field, $value, $type) {
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		//print "$field $value |";
 
@@ -452,7 +452,7 @@ class part extends DB_Table {
 
 			//print "x".$this->updated."< $type <";
 			if ($type=='Dimensions') {
-				include_once 'common_geometry_functions.php';
+				include_once 'utils/geometry_functions.php';
 				$volume=get_volume($this->data["Part $tag Dimensions Type"], $this->data["Part $tag Dimensions Width"], $this->data["Part $tag Dimensions Depth"], $this->data["Part $tag Dimensions Length"], $this->data["Part $tag Dimensions Diameter"]);
 
 				//print "*** $volume $volume";

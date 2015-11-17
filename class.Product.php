@@ -14,7 +14,7 @@ include_once 'class.DB_Table.php';
 include_once 'class.DealComponent.php';
 include_once 'class.Store.php';
 include_once 'class.Family.php';
-include_once 'common_store_functions.php';
+include_once 'utils/store_functions.php';
 include_once 'class.Department.php';
 /* class: product
    Class to manage the *Product Family Dimension* table
@@ -2133,7 +2133,7 @@ class product extends DB_Table {
 
 	function update_weight_dimensions_data($field,$value,$type) {
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		//print "$field $value |";
 
@@ -2177,7 +2177,7 @@ class product extends DB_Table {
 
 				//print "x".$this->updated."< $type <";
 				if ($type=='Dimensions') {
-					include_once 'common_geometry_functions.php';
+					include_once 'utils/geometry_functions.php';
 					$volume=get_volume($this->data["Product $tag Dimensions Type"],$this->data["Product $tag Dimensions Width"],$this->data["Product $tag Dimensions Depth"],$this->data["Product $tag Dimensions Length"],$this->data["Product $tag Dimensions Diameter"]);
 					//print $this->data["Product $tag Dimensions Type"]."*** $volume $volume";
 					if (is_numeric($volume) and $volume>0) {
@@ -5258,7 +5258,7 @@ class product extends DB_Table {
 		$tmp_lastValue = end($weight_package_units);
 		$weight_package_units_lastKey = key($weight_package_units);
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		$weight_package_display=convert_units($weight_package,'Kg',$weight_package_units_lastKey);
 

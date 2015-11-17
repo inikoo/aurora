@@ -829,7 +829,7 @@ abstract class DB_Table {
 
 	function get_attachments_data() {
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
@@ -938,7 +938,7 @@ abstract class DB_Table {
 
 
 	function get_images_slidesshow() {
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
@@ -989,7 +989,7 @@ abstract class DB_Table {
 
 	function add_image($image_key) {
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
 			$subject_key=$this->pid;
@@ -1052,7 +1052,7 @@ abstract class DB_Table {
 				$ratio=$row['Image Width']/$row['Image Height'];
 			else
 				$ratio=1;
-			include_once 'common_units_functions.php';
+			include_once 'utils/units_functions.php';
 
 			$this->new_value=array(
 				'name'=>$row['Image Filename'],

@@ -34,7 +34,6 @@ $parameters=array(
 
 $table_buttons=array();
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New timesheet record'), 'id'=>"new_timesheet_record");
-
 $smarty->assign('table_buttons', $table_buttons);
 
 

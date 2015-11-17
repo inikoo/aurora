@@ -1623,7 +1623,7 @@ class Site extends DB_Table {
 		else
 			$ratio=1;
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 		$this->new_value=array(
 			'name'=>$image->data['Image Filename'],
 			'small_url'=>'image.php?id='.$image->data['Image Key'].'&size=small',
@@ -1657,7 +1657,7 @@ class Site extends DB_Table {
 
 	function get_images_slidesshow() {
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d",$this->id);
 		$res=mysql_query($sql);
