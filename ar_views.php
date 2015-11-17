@@ -44,6 +44,8 @@ case 'views':
 	}
 
 	$state=parse_request($data, $db);
+	
+	
 	if ($state['object']!='') {
 		$_object=get_object($state['object'], $state['key']);
 
@@ -576,7 +578,9 @@ function get_navigation($data) {
 		case ('employee'):
 			return get_employee_navigation($data);
 			break;
-
+case ('employee.new'):
+			return get_new_employee_navigation($data);
+			break;
 		}
 
 		break;

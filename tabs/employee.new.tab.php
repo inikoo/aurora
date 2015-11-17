@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 4 November 2015 at 22:57:18 CET Tessera Italy
+ Created: 15 November 2015 at 14:20:16 GMT Sheffied UK
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,9 +11,10 @@
 
 
 include_once 'utils/invalid_messages.php';
+include_once 'class.staff.php';
 
-$employee=$state['_object'];
-$employee->get_user_data();
+
+$employee=new Staff(0);
 
 $options_Staff_Type=array(
 	'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
@@ -32,12 +33,7 @@ foreach ($db->query($sql) as $row) {
 	);
 }
 
-foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
-	if ( array_key_exists($current_position_key, $options_Staff_Position ) ) {
 
-	$options_Staff_Position[$current_position_key]['selected']=true;
-	}
-}
 
 $options_Staff_Supervisor=array();
 $sql=sprintf('select `Staff Name`,`Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Currently Working`="Yes" ');
@@ -50,11 +46,6 @@ foreach ($db->query($sql) as $row) {
 	);
 }
 
-foreach (preg_split('/,/', $employee->get('Staff Supervisor')) as $current_supervisor_key) {
-	if ( array_key_exists($current_supervisor_key, $options_Staff_Supervisor ) ) {
-		$options_Staff_Supervisor[$current_supervisor_key]['selected']=true;
-	}
-}
 
 
 asort($options_Staff_Position);
@@ -71,21 +62,17 @@ $object_fields=array(
 		'fields'=>array(
 
 
-			array(
 
-				'id'=>'Staff_Key',
-				'value'=>$employee->get('Staff Key'),
-				'label'=>ucfirst($employee->get_field_label('Staff Key')),
-			),
 			array(
 
 				'id'=>'Staff_ID',
 				'edit'=>'string',
-				'value'=>$employee->get('Staff ID'),
+				'value'=>'',
 				'label'=>ucfirst($employee->get_field_label('Staff ID')),
 				'invalid_msg'=>get_invalid_message('smallint_unsigned'),
 				'server_validation'=>'check_for_duplicates',
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -95,6 +82,7 @@ $object_fields=array(
 				'label'=>ucfirst($employee->get_field_label('Staff Alias')),
 				'server_validation'=>'check_for_duplicates',
 				'invalid_msg'=>get_invalid_message('string'),
+				'type'=>'value'
 			),
 
 
@@ -114,7 +102,8 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Name'),
 				'label'=>ucfirst($employee->get_field_label('Staff Name')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>true
+				'required'=>true,
+				'type'=>'value'
 
 			),
 			array(
@@ -122,11 +111,12 @@ $object_fields=array(
 				'id'=>'Staff_Birthday',
 				'edit'=>'date',
 				'time'=>'00:00:00',
-				'value'=>'',
-				'formated_value'=>'',
+				'value'=>$employee->get('Staff Birthday'),
+				'formated_value'=>$employee->get('Birthday'),
 				'label'=>ucfirst($employee->get_field_label('Staff Birthday')),
 				'invalid_msg'=>get_invalid_message('date'),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -136,7 +126,8 @@ $object_fields=array(
 				'label'=>ucfirst($employee->get_field_label('Staff Official ID')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'server_validation'=>'check_for_duplicates',
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -147,6 +138,8 @@ $object_fields=array(
 				'label'=>ucfirst($employee->get_field_label('Staff Email')),
 				'server_validation'=>'check_for_duplicates',
 				'invalid_msg'=>get_invalid_message('email'),
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -156,6 +149,8 @@ $object_fields=array(
 				'formated_value'=>$employee->get('Telephone'),
 				'label'=>ucfirst($employee->get_field_label('Staff Telephone')),
 				'invalid_msg'=>get_invalid_message('telephone'),
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -164,6 +159,8 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Next of Kind'),
 				'label'=>ucfirst($employee->get_field_label('Staff Next of Kind')),
 				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
 
 			),
 
@@ -178,49 +175,46 @@ $object_fields=array(
 
 				'id'=>'Staff_Type',
 				'edit'=>'option',
-				'value'=>$employee->get('Staff Type'),
-				'formated_value'=>$employee->get('Type'),
+				'value'=>'Employee',
+				'formated_value'=>_('Employee'),
 				'options'=>$options_Staff_Type,
 				'label'=>ucfirst($employee->get_field_label('Staff Type')),
+				'type'=>'value'
 			),
 
 			array(
-
-				'id'=>'Staff_Currently_Working',
+				'render'=>false,
 				'edit'=>'option',
-				'value'=>$employee->get('Staff Currently Working'),
-				'formated_value'=>$employee->get('Currently Working'),
+				'id'=>'Staff_Currently_Working',
+				'value'=>'Yes',
+				'formated_value'=>_('Yes'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($employee->get_field_label('Staff Currently Working')),
+				'type'=>'value'
 			),
 			array(
-
+				'render'=>false,
+				'edit'=>'hidden',
 				'id'=>'Staff_Valid_From',
-				'edit'=>'date',
+
 				'time'=>'09:00:00',
 				'value'=>$employee->get('Staff Valid From'),
 				'formated_value'=>$employee->get('Valid From'),
 				'label'=>ucfirst($employee->get_field_label('Staff Valid From')),
 				'invalid_msg'=>get_invalid_message('date'),
+				'type'=>'value',
+				'required'=>false,
 			),
+			
 			array(
-				'render'=>($employee->get('Staff Currently Working')=='Yes'?false:true),
-				'id'=>'Staff_Valid_To',
-				'edit'=>'date',
-				'time'=>'17:00:00',
-				'value'=>$employee->get('Staff Valid To'),
-				'formated_value'=>$employee->get('Valid To'),
-				'label'=>ucfirst($employee->get_field_label('Staff Valid To')),
-				'invalid_msg'=>get_invalid_message('date'),
-			),
-			array(
-				'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
 				'id'=>'Staff_Position',
 				'edit'=>'radio_option',
-				'value'=>$employee->get('Staff Position'),
-				'formated_value'=>$employee->get('Position'),
+				'value'=>'',
+				'formated_value'=>'',
 				'options'=>$options_Staff_Position,
 				'label'=>ucfirst($employee->get_field_label('Staff Position')),
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -228,6 +222,8 @@ $object_fields=array(
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Job Title'),
 				'label'=>ucfirst($employee->get_field_label('Staff Job Title')),
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				//   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
@@ -237,7 +233,8 @@ $object_fields=array(
 				'formated_value'=>$employee->get('Supervisor'),
 				'options'=>$options_Staff_Supervisor,
 				'label'=>ucfirst($employee->get_field_label('Staff Supervisor')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 
 			),
 
@@ -246,83 +243,105 @@ $object_fields=array(
 
 );
 
-if ($employee->get('Staff User Key')) {
 
 
-	$object_fields[]=array(
-		'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-link link"></i>',
-		'show_title'=>true,
-		'class'=>'edit_fields',
-		'fields'=>array(
-
-			array(
-
-				'id'=>'Staff_User_Active',
-				'edit'=>'option',
-				'value'=>$employee->get('Staff User Active'),
-				'formated_value'=>$employee->get('User Active'),
-				'options'=>$options_yn,
-				'label'=>ucfirst($employee->get_field_label('Staff Active')),
-			),
-			array(
-
-				'id'=>'Staff_User_Handle',
-				'edit'=>'string',
-				'value'=>$employee->get('Staff User Handle'),
-				'formated_value'=>$employee->get('User Handle'),
-				'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
-				'server_validation'=>'check_for_duplicates'
-			),
-
-			array(
-				'render'=>($employee->get('Staff User Active')=='Yes'?true:false),
-
-				'id'=>'Staff_User_Password',
-				'edit'=>'password',
-				'value'=>'',
-				'formated_value'=>'******',
-				'label'=>ucfirst($employee->get_field_label('Staff User Password')),
-				'invalid_msg'=>get_invalid_message('password'),
-			),
-			array(
-				'render'=>($employee->get('Staff User Active')=='Yes'?true:false),
-
-				'id'=>'Staff_User_PIN',
-				'edit'=>'pin',
-				'value'=>'',
-				'formated_value'=>'****',
-				'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
-				'invalid_msg'=>get_invalid_message('pin'),
-			),
+$object_fields[]=array(
+	'label'=>_('System user'),
+	'show_title'=>true,
+	'class'=>'edit_fields',
+	'fields'=>array(
 
 
+		array(
 
-		)
-	);
+			'id'=>'add_new_user',
+			'class'=>'',
+			'value'=>'',
+			'label'=>_('Set up system user').' <i onClick="show_user_fields()" class="fa fa-plus new_button link"></i>',
+			'required'=>false,
+			'type'=>'util'
+		),
 
-}else {
-	$object_fields[]=array(
-		'label'=>_('System user'),
-		'show_title'=>true,
-		'class'=>'edit_fields',
-		'fields'=>array(
-			array(
+		array(
+			'render'=>false,
+			'id'=>'dont_add_new_user',
+			'class'=>'',
+			'value'=>'',
+			'label'=>_("Don't set up system user").' <i onClick="hide_user_fields()" class="fa fa-minus new_button link"></i>',
+			'required'=>false,
+			'type'=>'util'
+		),
 
-				'id'=>'new_user',
-				'class'=>'new',
-				'value'=>'',
-				'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-				'reference'=>'employee/'.$employee->id.'/new/user'
-			),
 
-		)
-	);
+		array(
+			'render'=>false,
+			'id'=>'Staff_User_Active',
+			'edit'=>'option',
+			'value'=>'Yes',
+			'formated_value'=>_('Yes'),
+			'options'=>$options_yn,
+			'label'=>ucfirst($employee->get_field_label('Staff User Active')),
+			'type'=>'user_value'
+		),
+		array(
+			'render'=>false,
+			'id'=>'Staff_User_Handle',
+			'edit'=>'string',
+			'value'=>$employee->get('Staff User Handle'),
+			'formated_value'=>$employee->get('User Handle'),
+			'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
+			'server_validation'=>'check_for_duplicates',
+			'type'=>'user_value'
 
-}
+		),
+
+		array(
+			'render'=>false,
+
+			'id'=>'Staff_User_Password',
+			'edit'=>'password',
+			'value'=>'',
+			'formated_value'=>'******',
+			'label'=>ucfirst($employee->get_field_label('Staff User Password')),
+			'invalid_msg'=>get_invalid_message('password'),
+			'type'=>'user_value'
+
+		),
+		array(
+			'render'=>false,
+			'id'=>'Staff_User_PIN',
+			'edit'=>'pin',
+			'value'=>'',
+			'formated_value'=>'****',
+			'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
+			'invalid_msg'=>get_invalid_message('pin'),
+			'type'=>'user_value'
+
+		),
+
+
+
+	)
+);
+
+
 
 $smarty->assign('state', $state);
-$smarty->assign('object_fields', $object_fields);
+$smarty->assign('object', $employee);
 
-$html=$smarty->fetch('object_fields.tpl');
+
+$smarty->assign('object_name', $employee->get_object_name());
+
+
+$smarty->assign('object_fields', $object_fields);
+$smarty->assign('new_object_label', _('View new employee'));
+$smarty->assign('new_object_request','employee/__key__');
+
+
+
+
+$smarty->assign('js_code', file_get_contents('js/employee.new.js'));
+
+$html=$smarty->fetch('new_object.tpl');
 
 ?>

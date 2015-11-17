@@ -982,8 +982,16 @@ function parse_request($_data, $db) {
 			$object='employee';
 			$parent='account';
 			$parent_key=1;
-			if (isset($view_path[0]))
-				$key=$view_path[0];
+
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}elseif($view_path[0]=='new'){
+				    $section='employee.new';
+				    $object='';
+				    
+				}
+			}
 
 			break;
 		case 'reports':

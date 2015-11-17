@@ -31,7 +31,7 @@ case 'check_for_duplicates':
 			'object'=>array('type'=>'string'),
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
-			'key'=>array('type'=>'key'),
+			'key'=>array('type'=>'string'),
 			'field'=>array('type'=>'string'),
 			'value'=>array('type'=>'string'),
 

@@ -269,6 +269,15 @@ function on_changed_confirm_value(field, confirm_value) {
 
 function on_changed_value(field, new_value) {
 
+    var object = $('#fields').attr('object');
+
+    if ($('#' + object + '_save').hasClass('hide')) {
+
+        reset_controls()
+    }
+
+
+
     var type = $('#' + field + '_container').attr('field_type')
 
     if (type == 'date') {
@@ -288,34 +297,30 @@ function on_changed_value(field, new_value) {
     $('#' + field + '_editor').removeClass('invalid valid potentially_valid')
 
 
+    $("#" + field + '_validation').removeClass('invalid valid potentially_valid')
+
+
     if (changed) {
 
 
         $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
-
-
         var validation = validate_field(field, new_value)
+
 
         if (validation.class == 'potentially_valid' && $('#' + field).attr('has_been_valid') == 1) {
             validation.class = 'invalid';
         }
-
-
-
         $('#' + field + '_editor').addClass(validation.class)
+        $("#" + field + '_validation').addClass(validation.class)
+
+
         if (validation.class == 'waiting') {
-
-
 
         } else {
 
             $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
-
-
             if (validation.class == 'valid') {
                 $('#' + field).attr('has_been_valid', 1)
-
             }
 
             if (validation.class == 'invalid') {
@@ -324,8 +329,6 @@ function on_changed_value(field, new_value) {
                 } else {
                     var msg = $('#invalid_msg').html()
                 }
-
-
             } else {
                 var msg = '';
             }
@@ -335,246 +338,277 @@ function on_changed_value(field, new_value) {
         $('#' + field + '_msg').html('')
     }
 
-}
+    if ($('#fields').hasClass('new_object')) {
 
-function select_option(field, value, label) {
-    $('#' + field).val(value)
-    $('#' + field + '_formated').val(label)
-    $('#' + field + '_options li').removeClass('selected')
-   
-   
-    $('#' + field + '_option_' + value.replace(".", "\\.")).addClass('selected')
+       
+       
+       
+       if(validation.class != 'waiting')
+        check_if_form_is_valid()
+          
+        //if (($('#' + object + '_save').hasClass('invalid') || $('#' + object + '_save').hasClass('valid')) && validation.class != 'waiting') {
+        //    validate_form(object)
+        //} else {
+        //    check_if_form_is_valid(object)
+       // }
+    }
 
-    on_changed_value(field, value)
-
-}
-
-function select_radio_option(field, value, label) {
-
-    var checkbox_option = $('#' + field + '_option_' + value);
-
-
-    if (checkbox_option.attr('is_selected') == 1) {
-        $('#' + field + '_option_' + value + ' .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
-        checkbox_option.attr('is_selected', 0)
-    } else {
-
-        $('#' + field + '_option_' + value + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
-        checkbox_option.attr('is_selected', 1)
 
     }
 
-    var count_selected = 0;
-    var selected = [];
+    function select_option(field, value, label) {
+        $('#' + field).val(value)
+        $('#' + field + '_formated').val(label)
+        $('#' + field + '_options li').removeClass('selected')
 
 
+        $('#' + field + '_option_' + value.replace(".", "\.")).addClass('selected')
 
-    $('#' + field + '_options li').each(function() {
-        if ($(this).attr('is_selected') == 1) {
-            count_selected++;
-            selected.push($(this).attr('value'))
+        if ($('#' + field + '_container').hasClass('new')) {
+            $('#' + field + '_options').addClass('hide')
         }
-    });
 
+        on_changed_value(field, value)
 
-    $('#' + field).val(selected.sort().join())
-    on_changed_value(field, selected.sort().join())
-
-
-}
-
-
-function save_field(object, key, field) {
-    var type = $('#' + field + '_container').attr('field_type')
-    var field_element = $('#' + field);
-
-    var value = field_element.val()
-
-
-
-    if (!$("#" + field + '_editor').hasClass('changed')) {
-        return;
     }
 
-    if ($("#" + field + '_editor').hasClass('invalid')) {
-        return;
-    }
-    if ($("#" + field + '_editor').hasClass('waiting')) {
-        return;
-    }
+    function select_radio_option(field, value, label) {
 
-    if ($("#" + field + '_editor').hasClass('potentially_valid')) {
+        var checkbox_option = $('#' + field + '_option_' + value);
 
 
-
-        var validation = validate_field(field, value)
-        $('#' + field).attr('has_been_valid', 1)
-
-        if ((type == 'password_with_confirmation' || type == 'in_with_confirmation') && !$('#' + field + '_confirm').hasClass('hide')) {
-
-            if ($('#' + field + '_no_match_invalid_msg').length) {
-                var msg = $('#' + field + '_no_match_invalid_msg').html()
-            } else {
-                var msg = $('#not_match_invalid_msg').html()
-            }
-
-            msg = msg + $('#' + field + '_cancel_confirm_button').html()
-
-
+        if (checkbox_option.attr('is_selected') == 1) {
+            $('#' + field + '_option_' + value + ' .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
+            checkbox_option.attr('is_selected', 0)
         } else {
 
-            if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
-                var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
-            } else {
-                var msg = $('#invalid_msg').html()
-            }
+            $('#' + field + '_option_' + value + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
+            checkbox_option.attr('is_selected', 1)
+
         }
 
-        $('#' + field + '_msg').html(msg)
-        $('#' + field + '_editor').addClass('invalid')
+        var count_selected = 0;
+        var selected = [];
+        var selected_formated = [];
 
-        return;
+
+        $('#' + field + '_options li').each(function() {
+            if ($(this).attr('is_selected') == 1) {
+                count_selected++;
+                selected.push($(this).attr('value'))
+                selected_formated.push($(this).attr('label'))
+            }
+        });
+
+
+        if ($('#' + field + '_container').hasClass('new')) {
+            $('#' + field + '_formated').val(selected_formated.sort().join())
+        }
+
+        $('#' + field).val(selected.sort().join())
+        on_changed_value(field, selected.sort().join())
+
+
     }
 
 
-    var metadata = {};
+    function save_field(object, key, field) {
 
-    if (type == 'date') {
-        value = value + ' ' + $('#' + field + '_time').val()
-    } else if (type == 'password' || type == 'password_with_confirmation' || type == 'password_with_confirmation_paranoid' || type == 'pin' || type == 'pin_with_confirmation' || type == 'pin_with_confirmation_paranoid') {
-        value = sha256_digest(value)
-    } else if (type == 'telephone') {
-        value = $('#' + field).intlTelInput("getNumber");
-        metadata = {
-                
-          'extra_fields':[{field:field + '_Formated',value: fixedEncodeURIComponent( $('#' + field).intlTelInput("getNumber", intlTelInputUtils.numberFormat.INTERNATIONAL))}] 
-            
+        var type = $('#' + field + '_container').attr('field_type')
+        var field_element = $('#' + field);
+
+        var value = field_element.val()
+
+
+
+        if (!$("#" + field + '_editor').hasClass('changed')) {
+            return;
         }
-    }
 
-    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
-   
-    $.getJSON(request, function(data) {
-         console.log(request)
-        if (data.state == 200) {
+        if ($("#" + field + '_editor').hasClass('invalid')) {
+            return;
+        }
+        if ($("#" + field + '_editor').hasClass('waiting')) {
+            return;
+        }
 
-            $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-            $('#' + field + '_value').html(data.value)
+        if ($("#" + field + '_editor').hasClass('potentially_valid')) {
 
-            if (type == 'option') {
-                $('#' + field + '_options li .current_mark').removeClass('current')
-                $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-                $('.' + field).html(data.formated_value)
 
-            } else if (type == 'radio_option') {
-                $('#' + field + '_options li .current_mark').removeClass('current')
-                $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-                $('.' + field).html(data.formated_value)
 
-            } else if (type == 'date') {
-                $('.' + field).html(data.formated_value)
+            var validation = validate_field(field, value)
+            $('#' + field).attr('has_been_valid', 1)
+
+            if ((type == 'password_with_confirmation' || type == 'in_with_confirmation') && !$('#' + field + '_confirm').hasClass('hide')) {
+
+                if ($('#' + field + '_no_match_invalid_msg').length) {
+                    var msg = $('#' + field + '_no_match_invalid_msg').html()
+                } else {
+                    var msg = $('#not_match_invalid_msg').html()
+                }
+
+                msg = msg + $('#' + field + '_cancel_confirm_button').html()
+
 
             } else {
-                $('.' + field).html(data.formated_value)
 
-            }
-
-
-            close_edit_field(field)
-
-            if (data.other_fields) {
-                for (var key in data.other_fields) {
-
-                    update_field(data.other_fields[key])
-
+                if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
+                    var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
+                } else {
+                    var msg = $('#invalid_msg').html()
                 }
             }
 
-            post_save_actions(field,data)
+            $('#' + field + '_msg').html(msg)
+            $('#' + field + '_editor').addClass('invalid')
 
-        } else if (data.state == 400) {
-           $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
+            return;
+        }
 
-            $('#' + field + '_msg').html(data.msg).removeClass('hide')
+
+        var metadata = {};
+
+        if (type == 'date') {
+            value = value + ' ' + $('#' + field + '_time').val()
+        } else if (type == 'password' || type == 'password_with_confirmation' || type == 'password_with_confirmation_paranoid' || type == 'pin' || type == 'pin_with_confirmation' || type == 'pin_with_confirmation_paranoid') {
+            value = sha256_digest(value)
+        } else if (type == 'telephone') {
+            value = $('#' + field).intlTelInput("getNumber");
+            metadata = {
+
+                'extra_fields': [{
+                    field: field + '_Formated',
+                    value: fixedEncodeURIComponent($('#' + field).intlTelInput("getNumber", intlTelInputUtils.numberFormat.INTERNATIONAL))
+                }]
+
+            }
+        }
+
+        var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+
+        $.getJSON(request, function(data) {
+            console.log(request)
+            if (data.state == 200) {
+
+                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+                $('#' + field + '_value').html(data.value)
+
+                if (type == 'option') {
+                    $('#' + field + '_options li .current_mark').removeClass('current')
+                    $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                    $('.' + field).html(data.formated_value)
+
+                } else if (type == 'radio_option') {
+                    $('#' + field + '_options li .current_mark').removeClass('current')
+                    $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                    $('.' + field).html(data.formated_value)
+
+                } else if (type == 'date') {
+                    $('.' + field).html(data.formated_value)
+
+                } else {
+                    $('.' + field).html(data.formated_value)
+
+                }
+
+
+                close_edit_field(field)
+
+                if (data.other_fields) {
+                    for (var key in data.other_fields) {
+
+                        update_field(data.other_fields[key])
+
+                    }
+                }
+
+                post_save_actions(field, data)
+
+            } else if (data.state == 400) {
+                $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
+
+                $('#' + field + '_msg').html(data.msg).removeClass('hide')
+
+            }
+        })
+    }
+
+    function post_save_actions(field, data) {
+
+        switch (field) {
+        case 'User_Preferred_Locale':
+            change_view(state.request, {
+                'reload': true
+            })
+            break;
+
+
+        default:
 
         }
-    })
-}
 
-function post_save_actions(field,data){
-    
-    switch ( field ) {
-    	case 'User_Preferred_Locale':
-    		change_view(state.request,{'reload':true})
-    		break;
-    	
-    	
-    	default:
-    	
+
     }
 
-    
-}
+    function update_field(data) {
 
-function update_field(data) {
+        var field = data.field
+        var type = $('#' + field + '_container').attr('field_type')
+        if (data.render) {
+            $('#' + field + '_field').removeClass('hide')
+        } else {
+            $('#' + field + '_field').addClass('hide')
+            close_edit_field(field)
+        }
 
-    var field = data.field
-    var type = $('#' + field + '_container').attr('field_type')
-    if (data.render) {
-        $('#' + field + '_field').removeClass('hide')
-    } else {
-        $('#' + field + '_field').addClass('hide')
-        close_edit_field(field)
+        if (type == 'date') {
+            $('.' + field).html(data.formated_value)
+            $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
+            $("#" + field).val(data.value)
+            $("#" + field + '_formated').val(data.formated_value)
+        }
+        if (type == 'option') {
+
+        } else {
+            $('.' + field).html(data.value_formated)
+            $("#" + field).val(data.value)
+
+        }
     }
 
-    if (type == 'date') {
-        $('.' + field).html(data.formated_value)
-        $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
-        $("#" + field).val(data.value)
-        $("#" + field + '_formated').val(data.formated_value)
+    function hide_edit_field_msg(field) {
+        $('#' + field + '_msg').html('').addClass('hide')
     }
-    if (type == 'option') {
 
-    } else {
-        $('.' + field).html(data.value_formated)
-        $("#" + field).val(data.value)
+    function confirm_field(field) {
+
+        $('#' + field).addClass('hide')
+        $('#' + field + '_confirm_button').addClass('hide')
+
+        $('#' + field + '_confirm').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
+        $('#' + field + '_editor').removeClass('invalid valid changed')
+
+        $('#' + field + '_confirm').focus()
 
     }
-}
 
-function hide_edit_field_msg(field) {
-    $('#' + field + '_msg').html('').addClass('hide')
-}
+    function cancel_confirm_field(field) {
 
-function confirm_field(field) {
+        $('#' + field).removeClass('hide')
+        $('#' + field + '_confirm_button').removeClass('hide')
 
-    $('#' + field).addClass('hide')
-    $('#' + field + '_confirm_button').addClass('hide')
-
-    $('#' + field + '_confirm').removeClass('hide')
-    $('#' + field + '_save_button').removeClass('hide')
-    $('#' + field + '_editor').removeClass('invalid valid changed')
-
-    $('#' + field + '_confirm').focus()
-
-}
-
-function cancel_confirm_field(field) {
-
-    $('#' + field).removeClass('hide')
-    $('#' + field + '_confirm_button').removeClass('hide')
-
-    $('#' + field + '_confirm').addClass('hide')
-    $('#' + field + '_save_button').addClass('hide')
-    $('#' + field + '_editor').removeClass('invalid valid changed')
-    $('#' + field + '_msg').html('')
-    $('#' + field).val('')
-    $('#' + field).attr('has_been_valid', 0)
-    $('#' + field).focus()
+        $('#' + field + '_confirm').addClass('hide')
+        $('#' + field + '_save_button').addClass('hide')
+        $('#' + field + '_editor').removeClass('invalid valid changed')
+        $('#' + field + '_msg').html('')
+        $('#' + field).val('')
+        $('#' + field).attr('has_been_valid', 0)
+        $('#' + field).focus()
 
 
-}
+    }
 
-function fixedEncodeURIComponent (str) {
-  return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
-}
+    function fixedEncodeURIComponent(str) {
+        return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
+    }

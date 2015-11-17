@@ -38,7 +38,18 @@ case 'edit_field':
 
 	edit_field($account, $db, $user, $editor, $data);
 	break;
+case 'new_object':
 
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'fields_data'=>array('type'=>'json array'),
+
+		));
+
+	new_object($account, $db, $user, $editor, $data);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -92,9 +103,9 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 	if ($object->error) {
 		$response=array(
-				'state'=>400,
-				'msg'=>$object->msg,
-		
+			'state'=>400,
+			'msg'=>$object->msg,
+
 		);
 
 
@@ -123,6 +134,52 @@ function edit_field($account, $db, $user, $editor, $data) {
 }
 
 
+function new_object($account, $db, $user, $editor, $data) {
+	$parent=get_object($data['parent'], $data['parent_key']);
+	$parent->editor=$editor;
+
+
+	switch ($data['object']) {
+	case 'Staff':
+		include_once 'class.Staff.php';
+
+		$object=$parent->add_staff($data['fields_data']);
+		break;
+	default:
+
+		break;
+	}
+
+	if ($parent->error) {
+		$response=array(
+			'state'=>400,
+			'msg'=>$parent->msg,
+
+		);
+
+
+	}else {
+
+
+		$msg=sprintf('<i class="fa fa-check"  ></i> %s', _('Success'));
+
+		if (isset($object->extra_msg)) {
+			$msg.=' '.$object->extra_msg.'<br>';
+		}
+
+		$response=array(
+			'state'=>200,
+			'msg'=>$msg,
+
+			'key'=>$object->id
+
+		);
+
+
+	}
+	echo json_encode($response);
+
+}
 
 
 ?>

@@ -28,6 +28,7 @@
 	<script type="text/javascript" src="/js/table.js"></script> 
 	<script type="text/javascript" src="/js/field_validation.js"></script> 
 	<script type="text/javascript" src="/js/edit.js"></script> 
+	<script type="text/javascript" src="/js/new.js"></script> 
 	<script type="text/javascript" src="/js/intlTelInput.min.js"></script> 
 	
 	

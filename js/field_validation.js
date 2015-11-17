@@ -196,7 +196,7 @@ function client_validation(type, required, value, field) {
 
             if (!$('#' + field).intlTelInput("isValidNumber")) {
                 var error = $('#' + field).intlTelInput("getValidationError");
-                console.log(error)
+                //   console.log(error)
                 if (error == intlTelInputUtils.validationError.TOO_SHORT) {
                     return {
                         class: 'potentially_valid',
@@ -253,11 +253,15 @@ function client_validation(type, required, value, field) {
 }
 
 function server_validation(tipo, parent, parent_key, object, key, field, value) {
-
+$("#" + field + '_editor').addClass('waiting')
     var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
-    console.log(request)
+
     $.getJSON(request, function(data) {
-        $("#" + field + '_editor').removeClass('waiting')
+
+
+
+        $("#" + field + '_editor').removeClass('waiting invalid valid')
+        $("#" + field + '_validation').removeClass('waiting invalid valid')
 
         if (!$('#' + field + '_value').hasClass('hide')) {
             return;
@@ -277,11 +281,23 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
         $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
 
         if (validation == 'valid') {
-
             var msg = '';
+        }else{
+              $('#' + object + '_save').removeClass('valid').addClass('invalid')
+        
         }
+        
+        
+        
+        $('#' + field + '_validation').addClass(validation)
+
         $('#' + field + '_msg').html(msg)
         $('#' + field + '_editor').addClass(validation)
+
+  if ($('#fields').hasClass('new_object')) {
+       check_if_form_is_valid()
+       }
+
 
 
     })

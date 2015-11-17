@@ -784,6 +784,14 @@ $modules=array(
 				)
 
 			),
+			
+			'employee.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+						'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
+
+				)
+
+			),
 			'new_timesheet_record'=>array(
 				'type'=>'new', 'label'=>_('New timesheet record'), 'title'=>_('New timesheet record'), 'icon'=>'clock', 'reference'=>'hr/new_timesheet_record',
 				'tabs'=>array(
