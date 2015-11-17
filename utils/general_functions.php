@@ -3029,34 +3029,6 @@ function number2alpha($number) {
 }
 
 
-function generatePassword($length=9, $strength=0) {
-	$vowels = 'aeiu23456789';
-	$consonants = 'qwertyupasfghjkzxcvbnm';
-	if ($strength >=1) {
-		$consonants .= 'QWERTYUPASDFGHJKLZXCVBNM';
-		$vowels .= 'AEU';
-	}
-	if ($strength>=2) {
-		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,%';// Dont use ; or : or |
-	}if ($strength>=3) {
-		$vowels = 'qwertyupasfghjkzxcvbnmQWERTYUPASDFGHJKLZXCVBNM';
-
-	}
-
-	$password = '';
-	$alt = time() % 2;
-	for ($i = 0; $i < $length; $i++) {
-		if ($alt == 1) {
-			$password .= $consonants[(mt_rand() % strlen($consonants))];
-			$alt = 0;
-		} else {
-			$password .= $vowels[(mt_rand() % strlen($vowels))];
-			$alt = 1;
-		}
-	}
-	return $password;
-}
-
 function get_corporation_data() {
 	$sql=sprintf("select * from `Account Dimension`");
 	$res=mysql_query($sql);

@@ -13,6 +13,10 @@ $color_background: #fcfcfc;
 
 
 $color_save:#0EBFE9;
+$color_success:#26A65B;
+$color_warning:#ED9121;
+$color_error:tomato;
+
 
 $height_row: 32px;
 $height_short_row: 22px;
@@ -748,7 +752,7 @@ a {
         min-width: 150px;
     }
 }
-.details_data {
+.details_data, .new_object{
     padding: 10px 20px;
     table {
         width: 100%;
@@ -874,15 +878,11 @@ a {
             
         }
     }
-    .invalid {
-        .fa.save, .msg {
-            color: tomato;
-        }
-        .msg {
+  
+    
+    .msg {
             margin-left: 5px;
         }
-    }
-    
    
      .valid.changed {
         .fa.save {
@@ -898,17 +898,8 @@ a {
     
     .waiting {
     }
-    .msg {
-       
-        &.success {
-            color: #26A65B;
-        }
-        &.error {
-            color: tomato;
-        }
-    }
     
-.intl-tel-input .flag-container {display:none};
+    
 
     
     .datepicker{
@@ -972,6 +963,59 @@ a {
          }
     }
 }
+.details_data {  
+   .intl-tel-input .flag-container {display:none};
+}
+.new_object{
+
+
+ .controls{
+     
+     td {padding-top:10px;padding-bottom:10px;;cursor:pointer}
+     .fa {
+        margin-left: 5px;
+    }
+
+
+     
+     
+   
+        
+       
+    }
+    
+    
+    
+     .save{opacity: .4;
+     
+          &.invalid{opacity:1;color:tomato}
+          &.valid{opacity:1;
+          &:hover{color:#color_save}
+          
+          }
+
+     }  
+    
+    
+ 
+    .field_state{ 
+    opacity:0;
+       &.required{opacity:.2}
+        &.required.valid{color:$color_success;opacity:.7}
+         &.invalid{opacity:1;color:tomato}
+     }
+     
+    .results{margin-left:20px;
+    
+      opacity: .9;
+       &:hover{opacity: 1;color:#color_save}
+    }
+     
+    
+     
+     
+}
+
 
 .datepicker{
 
@@ -1114,3 +1158,8 @@ a {
 }
 
 }
+
+
+.success{color:$color_success}
+.warning{color:$color_warning}
+.error,.invalid{color:$color_error}

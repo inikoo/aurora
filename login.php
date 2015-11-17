@@ -39,15 +39,11 @@ $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
 
-
-
-require_once 'common_functions.php';
-require_once 'common_detect_agent.php';
-
 include_once 'conf/key.php';
-include_once 'aes.php';
 
-
+require_once 'utils/general_functions.php';
+require_once 'utils/detect_agent.php';
+require_once "utils/aes.php";
 
 
 $Sk="skstart|".(date('U')+3600)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());

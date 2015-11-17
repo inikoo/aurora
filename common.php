@@ -7,11 +7,10 @@ require_once 'conf/key.php';
 
 include_once 'utils/i18n.php';
 
-require_once 'common_functions.php';
-require_once 'common_detect_agent.php';
+require_once 'utils/general_functions.php';
+require_once 'utils/detect_agent.php';
+require_once "utils/aes.php";
 
-//require_once "class.Session.php";
-require_once "aes.php";
 require_once "class.Account.php";
 
 require_once "class.Auth.php";

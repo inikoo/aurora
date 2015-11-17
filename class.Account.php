@@ -15,9 +15,9 @@ include_once 'class.Company.php';
 class Account extends DB_Table{
 
 	function Account($a1=false, $a2=false) {
-        global $db;
-        $this->db=$db;
-        
+		global $db;
+		$this->db=$db;
+
 		$this->table_name='Account';
 
 		if ($a1=='create') {
@@ -137,7 +137,13 @@ class Account extends DB_Table{
 			$this->update_currency($value);
 			break;
 		default:
-			$this->company->update_field_switcher($field, $value, $options);
+			
+			$base_data=$this->base_data();
+			if (array_key_exists($field, $base_data)) {
+				$this->update_field($field, $value, $options);
+			}
+			
+			
 			break;
 		}
 	}
@@ -241,6 +247,57 @@ class Account extends DB_Table{
 			$store_keys[]=$row['Store Key'];
 		}
 		return $store_keys;
+	}
+
+
+	function add_staff($data) {
+		$this->new_employee=false;
+
+        
+		$staff= new Staff('find', $data, 'create');
+		
+		
+		
+		if ($staff->id) {
+			$this->new_employee_msg=$staff->msg;
+
+			if ($staff->new) {
+				$this->new_employee=true;
+
+				$this->update_employees_data();
+
+			} else {
+				$this->error=true;
+				if ($staff->found) {
+					$this->msg=_('Duplicated employee code');
+				}else {
+					$this->msg=$staff->msg;
+				}
+			}
+
+			//$this->associate_staff($staff->id);
+
+			return $staff;
+		}
+		else{
+		    $this->error=true;
+		    $this->msg=$staff->msg;
+		}
+		
+		
+
+	}
+
+
+	function update_employees_data() {
+		$number_employees=0;
+		$sql=sprintf('select count(*) as num from `Staff Dimension` where `Staff Currently Working`="Yes" ');
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_employees=$row['num'];
+		}
+
+        $this->update(array('Employees'=>$number_employees),'no_history');
+
 	}
 
 

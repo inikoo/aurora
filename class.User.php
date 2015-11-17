@@ -163,11 +163,12 @@ class User extends DB_Table {
 			$base_data['User Created']=gmdate("Y-m-d H:i:s");
 
 		if ($base_data['User Handle']=='') {
-			$this->msg=_('Wrong handle');
+			$this->msg=_("Login can't be empty");
 			return;
 		}
 		if (strlen($base_data['User Handle'])<4) {
-			$this->msg=_('Handle to short');
+			$this->msg=_('Login too short');
+			$this->error=true;
 			return;
 		}
 
@@ -187,7 +188,7 @@ class User extends DB_Table {
 		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 			if ($row['numh']>0) {
 				$this->error=true;
-				$this->msg= _('The user')." ".$base_data['User Handle']." "._("is already in the database!");
+				$this->msg=_('Duplicate user login');
 				return;
 
 			}
@@ -231,14 +232,19 @@ class User extends DB_Table {
 		$keys=preg_replace('/,$/', ')', $keys);
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `User Dimension` %s %s", $keys, $values);
-		//print $sql;
-		if (mysql_query($sql)) {
+		
+		if ($this->db->exec($sql)) {
 
-			$user_id=mysql_insert_id();
+
+
+			$user_id=$this->db->lastInsertId();
+
 
 			$this->new=true;
 			$this->msg= _('User added successfully');
+			
 			$this->get_data('id', $user_id);
+			
 			$this->update_staff_type();
 
 			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
@@ -1779,7 +1785,7 @@ class User extends DB_Table {
 
 		}
 		else {
-			include_once 'class.staff.php';
+			
 			$staff=new Staff($this->data['User Parent Key']);
 			if ($staff->data['Staff Currently Working']=='Yes') {
 				$this->data['User Staff Type']='Working';

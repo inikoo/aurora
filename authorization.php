@@ -45,21 +45,20 @@ if (!$db2) {
 	exit;
 }
 
+include_once 'utils/i18n.php';
+include_once 'conf/key.php';
+
+require_once 'utils/general_functions.php';
+require_once 'utils/detect_agent.php';
+require_once "utils/aes.php";
 
 
 
-require_once 'common_functions.php';
 
 mysql_set_charset('utf8');
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
-require_once 'common_detect_agent.php';
-include_once 'conf/key.php';
-include_once 'aes.php';
-include_once 'utils/i18n.php';
-
-include_once 'conf/key.php';
 
 
 

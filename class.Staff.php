@@ -22,6 +22,7 @@ class Staff extends DB_Table{
 		global $db;
 		$this->db=$db;
 
+
 		$this->table_name='Staff';
 		$this->ignore_fields=array('Staff Key');
 
@@ -35,7 +36,7 @@ class Staff extends DB_Table{
 			return;
 		}
 
-		if (preg_match('/create|new/i', $arg1)) {
+		if (preg_match('/create|new/i', $arg1) and is_array($arg2) ) {
 
 			$this->find($arg2, 'create');
 			return;
@@ -325,14 +326,6 @@ class Staff extends DB_Table{
 
 		if ($create and !$this->found) {
 
-			$sql="select `Account Company Key` from `Account Dimension`";
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_array($res)) {
-				$company_key=$row['Account Company Key'];
-				$company=new Company($company_key);
-			}else {
-				exit("Error no corporation\n");
-			}
 
 
 
@@ -345,11 +338,10 @@ class Staff extends DB_Table{
 	}
 
 
+ 
+
+
 	function create($data) {
-
-
-
-
 
 		$this->data=$this->base_data();
 		foreach ($data as $key=>$value) {
@@ -359,7 +351,9 @@ class Staff extends DB_Table{
 		}
 
 
-
+		if ($this->data['Staff Valid From']=='') {
+			$this->data['Staff Valid From']=gmdate('Y-m-d H:i:s');
+		}
 
 
 
@@ -373,11 +367,12 @@ class Staff extends DB_Table{
 		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Staff Dimension` ($keys) values ($values)";
-		//print $sql;
 
-		if (mysql_query($sql)) {
+		if ($this->db->exec($sql)) {
 
-			$this->id=mysql_insert_id();
+
+
+			$this->id=$this->db->lastInsertId();
 			$this->get_data('id', $this->id);
 
 
@@ -398,43 +393,64 @@ class Staff extends DB_Table{
 			$this->new=true;
 
 
-			$this->create_user();
+			if (array_key_exists('Staff User Active', $data)) {
+				$user_data=array();
+				foreach ($data as $key=>$value) {
+					if (preg_match('/^Staff User /', $key)) {
+						$key=preg_replace('/^Staff /', '', $key);
+						$user_data[$key]=$value;
+
+					}
+				}
+				$this->create_user($user_data);
+				//print_r($this->user);
+				if ($this->create_user_error) {
+					$this->extra_msg='<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
+				}
+			}
+
+
 
 
 
 		}else {
-			// print "Error can not create staff $sql\n";
+			$this->error=true;
+			$this->msg='Error inserting staff record';
 		}
-
 
 
 
 	}
 
 
-	function create_user($user_handle='') {
+	function create_user($data) {
 
+		if (!array_key_exists('User Handle', $data) or $data['User Handle']=='' ) {
+			$this->create_user_error=true;
+			$this->create_user_msg=_('User login must be provided');
+			$this->user=false;
+			return false;
 
-		if (!$user_handle) {
-			$user_handle=$this->data['Staff Alias'];
 		}
 
-		$password=generatePassword(8, 10);
-		$user_data=array(
-			'User Handle'=>$user_handle,
-			'User Alias'=>$this->data['Staff Name'],
+		if (!array_key_exists('User Password', $data) or $data['User Password']=='' ) {
+			include_once 'utils/password_functions.php';
+			$data['User Password']=hash('sha256', generatePassword(8, 10));
+		}
+		if (!array_key_exists('User PIN', $data) or $data['User PIN']=='' ) {
+			include_once 'utis/password_functions.php';
+			$data['User Password']=hash('sha256', generatePassword(8, 10));
+		}
+		$data['User Type']='Staff';
+		$data['User Parent Key']=$this->id;
+		
+		$user= new User('find', $data, 'create');
 
-			'User Password'=>hash('sha256', $password),
-			'User Active'=>'No',
-			'User Type'=>'Staff',
+		$this->create_user_error=$user->error;
+		$this->create_user_msg=$user->msg;
+		$this->user=$user;
 
-			'User Parent Key'=>$this->id,
 
-		);
-
-		$user= new User('find', $user_data, 'create');
-
-		return $user;
 
 	}
 
