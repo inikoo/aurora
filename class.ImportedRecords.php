@@ -192,7 +192,7 @@ return true;
 			break;
 
 		case ('Filesize'):
-			include_once 'common_units_functions.php';
+			include_once 'utils/units_functions.php';
 			return formatSizeUnits($this->data['Imported Records File Size']);
 			break;
 		case('Todo'):

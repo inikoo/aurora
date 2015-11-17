@@ -1502,7 +1502,7 @@ class Department extends DB_Table {
 			else
 				$ratio=1;
 
-			include_once 'common_units_functions.php';
+			include_once 'utils/units_functions.php';
 			$this->new_value=array(
 				'name'=>$row['Image Filename'],
 				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',

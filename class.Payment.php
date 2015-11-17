@@ -225,7 +225,7 @@ class Payment extends DB_Table {
 	}
 
 	function get_formated_time_lapse($key) {
-		include_once 'common_date_functions.php';
+		include_once 'utils/date_functions.php';
 		return gettext_relative_time(gmdate('U')-gmdate('U',strtotime($this->data['Payment '.$key].' +0:00'))  );
 	}
 

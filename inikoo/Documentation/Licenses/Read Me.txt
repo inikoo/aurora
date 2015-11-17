@@ -1,4 +1,0 @@
-Inside the "Licenses" folder you will find the license information that came with the assets (icons, javascript, etc.) used in this theme. These licenses apply only to the assets themselves, not the theme itself as a whole. 
-
-License information for this theme and items bought on ThemeForest can be found here:
-http://wiki.envato.com/buying/licenses-buying/themeforest-regular-and-extended-license-usage-examples/

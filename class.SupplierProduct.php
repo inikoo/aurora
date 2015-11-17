@@ -962,7 +962,7 @@ class supplierproduct extends DB_Table {
 
 	function update_weight_dimensions_data($field,$value,$type) {
 
-		include_once 'common_units_functions.php';
+		include_once 'utils/units_functions.php';
 
 		//print "$field $value |";
 
@@ -1006,7 +1006,7 @@ class supplierproduct extends DB_Table {
 
 				//print "x".$this->updated."< $type <";
 				if ($type=='Dimensions') {
-					include_once 'common_geometry_functions.php';
+					include_once 'utils/geometry_functions.php';
 					$volume=get_volume($this->data["Supplier Product $tag Dimensions Type"],$this->data["Supplier Product $tag Dimensions Width"],$this->data["Supplier Product $tag Dimensions Depth"],$this->data["Supplier Product $tag Dimensions Length"],$this->data["Supplier Product $tag Dimensions Diameter"]);
 					//print $this->data["Supplier Product $tag Dimensions Type"]."*** $volume $volume";
 					if (is_numeric($volume) and $volume>0) {

@@ -7622,7 +7622,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 			if ($this->data['Order Billing To Country 2 Alpha Code']!=$old_billing_country_2alpha_code) {
-				include_once 'common_tax_number_functions.php';
+				include_once 'utils/tax_number_functions.php';
 				$tax_number_data=check_tax_number($this->data['Order Tax Number'], $this->data['Order Billing To Country 2 Alpha Code']);
 
 
