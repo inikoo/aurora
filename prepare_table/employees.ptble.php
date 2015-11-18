@@ -83,7 +83,8 @@ elseif ($order=='user_last_login')
 	$order='`User Last Login`';			
 elseif ($order=='user_number_logins')
 	$order='`User Login Count`';			
-
+elseif ($order=='payroll_id')
+	$order='`Staff ID`';		
 
 			
 elseif ($order=='id')
