@@ -18,7 +18,7 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view('employee/' + +this.model.get("id"))
+                change_view('contractor/' + +this.model.get("id"))
             }
         },
         className: "link"
@@ -43,7 +43,7 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view('employee/' + +this.model.get("id"))
+                change_view('contractor/' + +this.model.get("id"))
             }
         },
         className: "link"

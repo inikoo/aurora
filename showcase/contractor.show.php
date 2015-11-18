@@ -3,14 +3,14 @@
 
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 13 November 2015 at 15:21:51 GMT, Sheffield UK
+ Created: 18 November 2015 at 21:57:02 GMT, Sheffield UK
 
  Copyright (c) 2015, Inikoo
 
  Version 3.0
 */
 
-function get_employee_showcase($data) {
+function get_contractor_showcase($data) {
 
     global $smarty;
     
@@ -19,9 +19,9 @@ function get_employee_showcase($data) {
         return "";
     }
     
-    $smarty->assign('employee',$data['_object']);
+    $smarty->assign('contractor',$data['_object']);
 
-    return $smarty->fetch('showcase/employee.tpl');
+    return $smarty->fetch('showcase/contractor.tpl');
     
 
 

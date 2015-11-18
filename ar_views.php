@@ -35,17 +35,17 @@ case 'views':
 
 		));
 
-	
-	
-	if(isset($data['metadata']['reload']) and $data['metadata']['reload'] ){
-	$reload=true;
-	}else{
-	$reload=false;
+
+
+	if (isset($data['metadata']['reload']) and $data['metadata']['reload'] ) {
+		$reload=true;
+	}else {
+		$reload=false;
 	}
 
 	$state=parse_request($data, $db);
-	
-	
+
+
 	if ($state['object']!='') {
 		$_object=get_object($state['object'], $state['key']);
 
@@ -114,9 +114,9 @@ case 'views':
 
 	}
 
-    if($reload){
-        $response['logout_label']=_('Logout');
-    }
+	if ($reload) {
+		$response['logout_label']=_('Logout');
+	}
 
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
 
@@ -216,6 +216,10 @@ function get_object_showcase($data) {
 	case 'employee':
 		include_once 'showcase/employee.show.php';
 		$html=get_employee_showcase($data);
+		break;
+	case 'contractor':
+		include_once 'showcase/contractor.show.php';
+		$html=get_contractor_showcase($data);
 		break;
 	case 'customer':
 		include_once 'showcase/customer.show.php';
@@ -578,8 +582,14 @@ function get_navigation($data) {
 		case ('employee'):
 			return get_employee_navigation($data);
 			break;
-case ('employee.new'):
+		case ('employee.new'):
 			return get_new_employee_navigation($data);
+			break;
+		case ('contractor'):
+			return get_contractor_navigation($data);
+			break;
+		case ('contractor.new'):
+			return get_new_contractor_navigation($data);
 			break;
 		}
 

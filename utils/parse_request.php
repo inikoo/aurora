@@ -999,6 +999,25 @@ function parse_request($_data, $db) {
 			}
 
 			break;
+		case 'contractor':
+
+			$module='hr';
+			$section='contractor';
+			$object='contractor';
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}elseif($view_path[0]=='new'){
+				    $section='contractor.new';
+				    $object='';
+				    
+				}
+			}
+
+			break;	
 		case 'reports':
 			$module='reports';
 			$section='reports';
