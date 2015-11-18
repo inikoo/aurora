@@ -1,4 +1,3 @@
-
 {if isset($period)}
  {include file="utils/date_chooser.tpl" period=$period} 
 {/if}
@@ -70,7 +69,7 @@
 {if isset($table_views) and count($table_views)>1}
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
-<div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}',true)" title="{$view.title}">
+<div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}',true)" title="{if isset($view.title)}{$view.title}{else}{$view.label}{/if}">
 			{if isset($view.icon) and $view.icon!=''}<i class="fa fa-{$view.icon}"></i>{/if} <span class="label"> {$view.label}</span> 
 		</div>
 {/foreach} 
@@ -82,6 +81,9 @@
 
 
 <script>
+{if isset($title)}
+$('#nav_title').html("{$title}")
+{/if}
 
 var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
 

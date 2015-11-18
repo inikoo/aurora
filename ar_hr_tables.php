@@ -31,7 +31,10 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case 'employees':
-	employees(get_table_parameters(), $db, $user);
+	employees(get_table_parameters(), $db, $user, 'current');
+	break;
+case 'exemployees':
+	employees(get_table_parameters(), $db, $user, 'ex');
 	break;
 case 'timesheets':
 	timesheets(get_table_parameters(), $db, $user);
@@ -48,21 +51,74 @@ default:
 }
 
 
-function employees($_data, $db, $user) {
+function employees($_data, $db, $user, $type='') {
 	global $db;
-	$rtext_label='employee';
+
+	if ($type=='current') {
+		$extra_where=' and `Staff Currently Working`="Yes"';
+		$rtext_label='employee';
+
+	}elseif ($type=='ex') {
+		$extra_where=' and `Staff Currently Working`="No"';
+		$rtext_label='ex employee';
+
+	}
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
 
+	//print $sql;
+
+	$adata=array();
 	foreach ($db->query($sql) as $data) {
+	
+
+		switch ($data['User Active']) {
+		case 'Yes':
+			$user_active=_('Active');
+			break;
+		case 'No':
+			$user_active=_('Suspended');
+			break;
+		case '':
+			$user_active=_("Don't set up");
+			break;
+		default:
+			$user_active=$data['User Active'];
+			break;
+		}
+
 		$adata[]=array(
 			'id'=>(integer) $data['Staff Key'],
 			'formated_id'=>sprintf("%04d", $data['Staff Key']),
 			'payroll_id'=>$data['Staff ID'],
 			'name'=>$data['Staff Name'],
-			'position'=>$data['position']
+			'code'=>$data['Staff Alias'],
+
+
+			'birthday'=>($data['Staff Birthday']=='' ?'': strftime("%e %b %Y", strtotime($data['Staff Birthday'].' +0:00'))),
+
+			'official_id'=>$data['Staff Official ID' ],
+			'email'=>$data['Staff Email'],
+			'telephone'=>$data['Staff Telephone Formated'],
+			'next_of_kind'=>$data['Staff Next of Kind'],
+			'from'=>(($data['Staff Valid From']==''or $data['Staff Valid From']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Valid From'].' +0:00'))),
+
+			'until'=>($data['Staff Valid To']=='' ?'': strftime("%e %b %Y", strtotime($data['Staff Valid To'].' +0:00'))),
+
+
+			'supervisors'=>$data['supervisors'],
+
+			'job_title'=>$data['Staff Job Title'],
+			'user_login'=>$data['User Handle'],
+			'user_active'=>$user_active,
+			'user_last_login'=>($data['User Last Login']=='' ?'': strftime("%a %e %b %Y %H:%M %Z", strtotime($data['User Last Login'].' +0:00'))),
+			'user_number_logins'=>($data['User Active']=='' ?'': number($data['User Login Count']) ),
+
+
+
+			'roles'=>$data['roles']
 		);
 
 	}

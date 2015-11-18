@@ -21,7 +21,7 @@
 	{$_content.avatar}
 	{/if}
 	
-	<span class="title">
+	<span id="nav_title" class="title">
 		{$_content.title}
 	</span>
 	<div id="search_form" style="{if !$_content.search.show}display:none{/if}">

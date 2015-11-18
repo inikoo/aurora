@@ -104,6 +104,8 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s supplier', '%s suppliers', $total_records), number($total_records));
 	}elseif ($record_label=='employee') {
 		return sprintf(ngettext('%s employee', '%s employees', $total_records), number($total_records));
+	}elseif ($record_label=='ex employee') {
+		return sprintf(ngettext('%s ex employee', '%s ex employees', $total_records), number($total_records));
 	}elseif ($record_label=='user') {
 		return sprintf(ngettext('%s user', '%s users', $total_records), number($total_records));
 	}elseif ($record_label=='report') {
@@ -163,6 +165,8 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s supplier of %s', '%s suppliers of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='employee') {
 		return sprintf(ngettext('%s employee of %s', '%s employees of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='ex employee') {
+		return sprintf(ngettext('%s ex employee of %s', '%s ex employees of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='user') {
 		return sprintf(ngettext('%s user of %s', '%s users of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='report') {

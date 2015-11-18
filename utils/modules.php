@@ -763,6 +763,7 @@ $modules=array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
+					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'),'class'=>'right'),
 					'timesheets'=>array('label'=>_('Timesheets'), 'title'=>_('Timesheets')),
 
 				)

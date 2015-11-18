@@ -69,7 +69,9 @@ ALTER TABLE `Staff Timesheet Dimension`
 ALTER TABLE `Staff Timesheet Dimension`
   MODIFY `Staff Timesheet Key` mediumint(9) NOT NULL AUTO_INCREMENT;
   
-// change to dont delete work experences and tempral workers
+ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM('Employee','Volunteer','Contractor','TemporalWorker','WorkExperience','Temporal Worker','Work Experience') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
+update `Staff Dimension` set `Staff Type`='TemporalWorker' where `Staff Type`='Temporal Worker';
+ update `Staff Dimension` set `Staff Type`='WorkExperience' where `Staff Type`='Work Experience';
 ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM('Employee','Volunteer','Contractor','TemporalWorker','WorkExperience') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
 
 ALTER TABLE `Staff Dimension` ADD `Staff Job Title` VARCHAR(255) NULL AFTER `Staff Type`;
@@ -88,5 +90,6 @@ ALTER TABLE `Staff Dimension` ADD `Staff Telephone Formated` VARCHAR(255) NULL D
 ALTER TABLE `Staff Dimension` CHANGE `Staff PIN` `Staff PIN` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `Account Dimension` ADD `Employees` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouses`;
 ALTER TABLE `Staff Dimension` CHANGE `Staff ID` `Staff ID` VARCHAR(64) NULL DEFAULT NULL;
+ALTER TABLE `Staff Dimension` CHANGE `Staff Valid from` `Staff Valid From` DATETIME NULL DEFAULT NULL;
 
   
