@@ -11,7 +11,7 @@
 
 
 include_once 'utils/invalid_messages.php';
-include_once 'class.staff.php';
+include_once 'class.Staff.php';
 
 
 $employee=new Staff(0);
