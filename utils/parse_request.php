@@ -966,8 +966,13 @@ function parse_request($_data, $db) {
 
 			if (isset($view_path[0])) {
 				if ( $view_path[0]=='new_timesheet_record') {
-					$parent='hr';
+					$parent='account';
+					$parent_key=1;
 					$section='new_timesheet_record';
+				}elseif ( $view_path[0]=='contractors') {
+					$parent='account';
+					$parent_key=1;
+					$section='contractors';
 				}
 			}
 

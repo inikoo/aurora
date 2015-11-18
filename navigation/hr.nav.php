@@ -39,6 +39,35 @@ function get_employees_navigation($data) {
 
 }
 
+function get_contractors_navigation($data) {
+
+	global $user, $smarty;
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+	$sections=get_sections('hr', '');
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Contractors'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 
 function get_employee_navigation($data) {
 
