@@ -70,9 +70,9 @@ elseif ($order=='roles')
 elseif ($order=='supervisors')
 	$order='supervisors';
 elseif ($order=='from')
-	$order='`Staff Valid To`';
-elseif ($order=='until')
 	$order='`Staff Valid From`';
+elseif ($order=='until')
+	$order='`Staff Valid To`';
 elseif ($order=='roles')
 	$order='roles';	
 elseif ($order=='user_login')
