@@ -213,15 +213,7 @@ $object_fields=array(
 				'label'=>ucfirst($employee->get_field_label('Staff Valid To')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
-			array(
-				'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
-				'id'=>'Staff_Position',
-				'edit'=>'radio_option',
-				'value'=>$employee->get('Staff Position'),
-				'formated_value'=>$employee->get('Position'),
-				'options'=>$options_Staff_Position,
-				'label'=>ucfirst($employee->get_field_label('Staff Position')),
-			),
+			
 			array(
 
 				'id'=>'Staff_Job_Title',
@@ -240,6 +232,24 @@ $object_fields=array(
 				'required'=>false
 
 			),
+
+		)
+	),
+	array(
+		'label'=>_('System roles'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			
+			array(
+				'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
+				'id'=>'Staff_Position',
+				'edit'=>'radio_option',
+				'value'=>$employee->get('Staff Position'),
+				'formated_value'=>$employee->get('Position'),
+				'options'=>$options_Staff_Position,
+				'label'=>ucfirst($employee->get_field_label('Staff Position')),
+			)
 
 		)
 	),

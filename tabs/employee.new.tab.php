@@ -207,16 +207,6 @@ $object_fields=array(
 			),
 			
 			array(
-				'id'=>'Staff_Position',
-				'edit'=>'radio_option',
-				'value'=>'',
-				'formated_value'=>'',
-				'options'=>$options_Staff_Position,
-				'label'=>ucfirst($employee->get_field_label('Staff Position')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
 
 				'id'=>'Staff_Job_Title',
 				'edit'=>'string',
@@ -237,6 +227,26 @@ $object_fields=array(
 				'type'=>'value'
 
 			),
+
+		)
+	),
+	
+	array(
+		'label'=>_('System roles'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			
+			array(
+				'id'=>'Staff_Position',
+				'edit'=>'radio_option',
+				'value'=>'',
+				'formated_value'=>'',
+				'options'=>$options_Staff_Position,
+				'label'=>ucfirst($employee->get_field_label('Staff Position')),
+				'required'=>false,
+				'type'=>'value'
+			)
 
 		)
 	),
