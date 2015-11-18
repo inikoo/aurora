@@ -771,7 +771,13 @@ $modules=array(
 			),
 
 			'contractors'=>array(
-				'type'=>'navigation', 'label'=>_('Contractors'), 'title'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors',
+				'type'=>'navigation', 'label'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors',
+				'tabs'=>array(
+					'contractors'=>array('label'=>_('Employees')),
+				
+				)
+				
+				
 			),
 			'organization'=>array(
 				'type'=>'navigation', 'label'=>_('Organization'), 'title'=>_('Organization'), 'icon'=>'sitemap', 'reference'=>'hr/organization',
