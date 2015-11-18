@@ -241,7 +241,8 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'telephone'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'next_of_kind'} ).set("renderable", true)
      }else if(view=='employment'){
-        grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", true)
+     
+        grid.columns.findWhere({ name: 'code'} ).set("renderable", true)
               grid.columns.findWhere({ name: 'roles'} ).set("renderable", true)
               grid.columns.findWhere({ name: 'job_title'} ).set("renderable", true)
               
