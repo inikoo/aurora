@@ -654,7 +654,15 @@ $tab_defaults=array(
 		'f_field'=>'reference'
 	),
 	'employees'=>array(
-		'view'=>'employees',
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name'
+	),
+	'exemployees'=>array(
+		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,

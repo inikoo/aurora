@@ -36,6 +36,7 @@ $table_buttons=array();
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New timesheet record'), 'id'=>"new_timesheet_record");
 $smarty->assign('table_buttons', $table_buttons);
 
+$smarty->assign('title',_("Employees' timesheets"));
 
 $smarty->assign('js_code', file_get_contents('js/timesheets.js'));
 

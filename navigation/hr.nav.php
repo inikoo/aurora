@@ -39,6 +39,7 @@ function get_employees_navigation($data) {
 
 }
 
+
 function get_employee_navigation($data) {
 
 	global $smarty;
@@ -54,7 +55,7 @@ function get_employee_navigation($data) {
 			$tab='employees';
 			$_section='employees';
 			break;
-			case 'users':
+		case 'users':
 			$tab='users.staff.users';
 			$_section='staff';
 			break;
@@ -86,6 +87,7 @@ function get_employee_navigation($data) {
 			$parameters['parent_key']=$data['parent_key'];
 		}
 
+		$extra_where=' and `Staff Currently Working`="Yes"';
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
 		$_order_field=$order;
@@ -100,7 +102,7 @@ function get_employee_navigation($data) {
 		$prev_key=0;
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
-		
+
 		$res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
@@ -147,7 +149,7 @@ function get_employee_navigation($data) {
 
 		}
 
-		if ($data['parent']=='account')  {
+		if ($data['parent']=='account') {
 
 			$up_button=array('icon'=>'arrow-up', 'title'=>_("Employees"), 'reference'=>'hr');
 
@@ -209,24 +211,25 @@ function get_employee_navigation($data) {
 
 }
 
+
 function get_new_employee_navigation($data) {
 
 	global $smarty;
 
-	
+
 	$left_buttons=array();
 	$right_buttons=array();
 
 
 	$sections=get_sections('hr', '');
 
-$_section='employees';
+	$_section='employees';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 	$up_button=array('icon'=>'arrow-up', 'title'=>_("Employees"), 'reference'=>'hr');
 
-		
-			$left_buttons[]=$up_button;
+
+	$left_buttons[]=$up_button;
 
 
 	$title= '<span class="id ">'._('New Employee').'</span>';
@@ -249,5 +252,6 @@ $_section='employees';
 	return $html;
 
 }
+
 
 ?>
