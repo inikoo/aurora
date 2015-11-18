@@ -21,6 +21,7 @@ $table_views=array(
 	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
 	'personal_info'=>array('label'=>_('Personal information'),'title'=>_('Personal information')),
 	'employment'=>array('label'=>_('Employment'),'title'=>_('Employment')),
+	'system_roles'=>array('label'=>_('System roles')),
 	'system_user'=>array('label'=>_('System user'))
 
 );

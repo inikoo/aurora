@@ -16,7 +16,6 @@ var columns = [
     {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     
     cell: Backgrid.StringCell.extend({
-        orderSeparator: '',
         events: {
             "click": function() {
                 change_view('employee/' + +this.model.get("id"))
@@ -36,19 +35,33 @@ var columns = [
           
         }
     })
+},
+{
+    name: "code_link",
+    label: "{t}Code{/t}",
+     sortType: "toggle",
+    cell: Backgrid.StringCell.extend({
+        events: {
+            "click": function() {
+                change_view('employee/' + +this.model.get("id"))
+            }
+        },
+        className: "link"
+    })
 }
 ,{
+ 
+ 
+  
+ 
     name: "payroll_id",
     label: "{t}Payroll ID{/t}",
     editable: false,
      sortType: "toggle",
-    {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    
-    cell: Backgrid.StringCell.extend({
-      
-       
-})
-   
+    {if $sort_key=='payroll_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+   cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+
 },
 
 
@@ -69,11 +82,8 @@ var columns = [
     name: "birthday",
     label: "{t}Date of birth{/t}",
      sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-           
-        }
-    })
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 },
 
 {
@@ -117,7 +127,14 @@ var columns = [
     })
 },
 
-
+{
+    name: "type",
+    label: "{t}Type{/t}",
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='type'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: "string"
+},
 {
     name: "job_title",
     label: "{t}Job title{/t}",
@@ -135,14 +152,23 @@ var columns = [
     sortType: "toggle",
     {if $sort_key=='roles'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: "string"
+}
+,{
+    name: "supervisors",
+    label: "{t}Supervisor{/t}",
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='supervisors'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: "string"
 },
+
 {
     name: "from",
     label: "{t}Working since{/t}",
     editable: false,
-    sortType: "frtoggleom",
-    {if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: "string"
+    sortType: "toggle",
+   cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 },
 {
     name: "until",
@@ -151,14 +177,9 @@ var columns = [
     sortType: "toggle",
     {if $sort_key=='until'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: "string"
-},{
-    name: "supervisors",
-    label: "{t}Supervisor{/t}",
-    editable: false,
-    sortType: "toggle",
-    {if $sort_key=='supervisors'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: "string"
-},{
+}
+
+,{
     name: "user_active",
     label: "{t}System user{/t}",
     editable: false,
@@ -178,16 +199,21 @@ var columns = [
     name: "user_number_logins",
     label: "{t}Number logins{/t}",
     editable: false,
-    sortType: "user_last_login",
-    {if $sort_key=='user_last_login'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: "string"
+    sortType: "toggle",
+        defautOrder:1,
+
+    {if $sort_key=='user_last_login'}direction: '{if $sort_order==1}ascending{else}descending{/if}',{/if}
+      cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 },{
     name: "user_last_login",
     label: "{t}Last login{/t}",
     editable: false,
-    sortType: "user_last_login",
-    {if $sort_key=='user_last_login'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: "string"
+    sortType: "toggle",
+            defautOrder:1,
+
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 },
 
 ]
@@ -197,11 +223,12 @@ function change_table_view(view,save_state){
     $('.view').removeClass('selected');
     $('#view_'+view).addClass('selected');
     
-    grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", false)
-     grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", false)
 
-    grid.columns.findWhere({ name: 'code'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'code'} ).set("renderable", false)
+         grid.columns.findWhere({ name: 'code_link'} ).set("renderable", false)
+       grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
     
         grid.columns.findWhere({ name: 'birthday'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'official_id'} ).set("renderable", false)
@@ -209,7 +236,8 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'next_of_kind'} ).set("renderable", false)
 
-    
+        grid.columns.findWhere({ name: 'type'} ).set("renderable", false)
+
     
     grid.columns.findWhere({ name: 'job_title'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'roles'} ).set("renderable", false)
@@ -231,7 +259,7 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'job_title'} ).set("renderable", true)
     }else if(view=='personal_info'){
-         grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", true)
+         grid.columns.findWhere({ name: 'code_link'} ).set("renderable", true)
 
      grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 
@@ -242,8 +270,9 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'next_of_kind'} ).set("renderable", true)
      }else if(view=='employment'){
      
-        grid.columns.findWhere({ name: 'code'} ).set("renderable", true)
-              grid.columns.findWhere({ name: 'roles'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'code_link'} ).set("renderable", true)
+                grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", true)
+
               grid.columns.findWhere({ name: 'job_title'} ).set("renderable", true)
               
               grid.columns.findWhere({ name: 'supervisors'} ).set("renderable", true)
@@ -256,11 +285,16 @@ function change_table_view(view,save_state){
               
 
     }else if(view=='system_user'){
-           grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", true)
+           grid.columns.findWhere({ name: 'code_link'} ).set("renderable", true)
              grid.columns.findWhere({ name: 'user_login'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'user_active'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'user_last_login'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'user_number_logins'} ).set("renderable", true)
+
+    }else if(view=='system_roles'){
+           grid.columns.findWhere({ name: 'code_link'} ).set("renderable", true)
+                        grid.columns.findWhere({ name: 'roles'} ).set("renderable", true)
+
 
     }
     

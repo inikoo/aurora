@@ -11,21 +11,21 @@
 
 
 $table='`Staff Dimension` SD left join `User Dimension` U on (SD.`Staff Key`=U.`User Parent Key` and `User Type`="Staff") ';
+$where=' where `Staff Type`!="Contractor" ';
 
 if ($parameters['parent']=='account') {
-	$where=' where true';
 
 }elseif ($parameters['parent']=='department') {
-	$where=sprintf(' where `Staff Department Key`=%d', $parameters['parent_key']);
+	$where.=sprintf('  and  `Staff Department Key`=%d', $parameters['parent_key']);
 
 }elseif ($parameters['parent']=='area') {
 
-	$where=sprintf(' where `Staff Area Key`=%d', $parameters['parent_key']);
+	$where.=sprintf(' and  `Staff Area Key`=%d', $parameters['parent_key']);
 
 }elseif ($parameters['parent']=='position') {
 	$table='`Staff Dimension` SD  left join `Company Position Staff Bridge` on B (B.`Staff Key`=SD.`Staff Key`)';
 
-	$where=sprintf(' where B.`Position Key`=%d', $parameters['parent_key']);
+	$where.=sprintf(' and  B.`Position Key`=%d', $parameters['parent_key']);
 
 }
 
@@ -49,7 +49,7 @@ $_dir=$order_direction;
 
 if ($order=='name')
 	$order='`Staff Name`';
-elseif ($order=='code')
+elseif ($order=='code' or $order=='code_link')
 	$order='`Staff Alias`';
 
 elseif ($order=='birthday')
@@ -85,7 +85,8 @@ elseif ($order=='user_number_logins')
 	$order='`User Login Count`';			
 elseif ($order=='payroll_id')
 	$order='`Staff ID`';		
-
+elseif ($order=='type')
+	$order='`Staff Type`';	
 			
 elseif ($order=='id')
 	$order='`Staff Key`';
@@ -100,7 +101,7 @@ else
 $sql_totals="select count(Distinct SD.`Staff Key`) as num from $table  $where  ";
 
 $fields="`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formated`,`Staff Telephone`,`Staff Next of Kind`,
-`Staff Alias`,`Staff Key`,`Staff Name`,
+`Staff Alias`,`Staff Key`,`Staff Name`,`Staff Type`,
 `Staff Valid To`,`Staff Valid From`,`User Login Count`,
 `User Handle`,`User Active`,`User Last Login`,
 (select GROUP_CONCAT(`Company Position Title`  order by `Company Position Title` separator \", \")   from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  B.`Staff Key`=SD.`Staff Key` ) as roles,

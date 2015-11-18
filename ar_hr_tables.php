@@ -88,6 +88,24 @@ function employees($_data, $db, $user, $type='') {
 			$user_active=$data['User Active'];
 			break;
 		}
+		
+		switch ($data['Staff Type']) {
+		case 'Employee':
+			$type=_('Employee');
+			break;
+		case 'Volunteer':
+			$type=_('Volunteer');
+			break;
+		case 'TemporalWorker':
+			$type=_("Temporal worker");
+			break;
+		case 'WorkExperience':
+			$type=_("Work experience");
+			break;	
+		default:
+			$type=$data['Staff Type'];
+			break;
+		}
 
 		$adata[]=array(
 			'id'=>(integer) $data['Staff Key'],
@@ -95,17 +113,19 @@ function employees($_data, $db, $user, $type='') {
 			'payroll_id'=>$data['Staff ID'],
 			'name'=>$data['Staff Name'],
 			'code'=>$data['Staff Alias'],
+			'code_link'=>$data['Staff Alias'],
 
 
-			'birthday'=>($data['Staff Birthday']=='' ?'': strftime("%e %b %Y", strtotime($data['Staff Birthday'].' +0:00'))),
+			'birthday'=>(($data['Staff Birthday']=='' or $data['Staff Birthday']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Birthday'].' +0:00'))),
 
 			'official_id'=>$data['Staff Official ID' ],
 			'email'=>$data['Staff Email'],
 			'telephone'=>$data['Staff Telephone Formated'],
 			'next_of_kind'=>$data['Staff Next of Kind'],
-			'from'=>(($data['Staff Valid From']==''or $data['Staff Valid From']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Valid From'].' +0:00'))),
+			'from'=>(($data['Staff Valid From']=='' or $data['Staff Valid From']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Valid From'].' +0:00'))),
 
-			'until'=>($data['Staff Valid To']=='' ?'': strftime("%e %b %Y", strtotime($data['Staff Valid To'].' +0:00'))),
+			'until'=>(($data['Staff Valid To']=='' or  $data['Staff Valid To']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Valid To'].' +0:00'))),
+			'type'=>$type,
 
 
 			'supervisors'=>$data['supervisors'],
