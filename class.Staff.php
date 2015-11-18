@@ -205,7 +205,11 @@ class Staff extends DB_Table{
 			$label=_('id');
 			break;
 		case 'Staff ID':
-			$label=_('payroll Id');
+			if ($this->data['Staff Type']=='Contractor') {
+				$label=_('reference');
+			}else {
+				$label=_('payroll Id');
+			}
 			break;
 		case 'Staff Alias':
 			$label=_('code');
@@ -241,16 +245,31 @@ class Staff extends DB_Table{
 			$label=_('working from');
 			break;
 		case 'Staff Valid To':
-			$label=_('end of employement');
+
+			if ($this->data['Staff Type']=='Contractor') {
+				$label=_('end of contract');
+			}else {
+				$label=_('end of employement');
+			}
+
 			break;
 		case 'Staff Position':
 			$label=_('role');
 			break;
 		case 'Staff Job Title':
-			$label=_('job title');
+
+			if ($this->data['Staff Type']=='Contractor') {
+				$label=_('assignment title');
+			}else {
+				$label=_('job title');
+			}
 			break;
 		case 'Staff Supervisor':
+			if ($this->data['Staff Type']=='Contractor') {
+				$label=_('point of contact');
+			}else {
 			$label=_('supervisor');
+			}
 			break;
 
 
@@ -338,7 +357,7 @@ class Staff extends DB_Table{
 	}
 
 
- 
+
 
 
 	function create($data) {
@@ -443,7 +462,7 @@ class Staff extends DB_Table{
 		}
 		$data['User Type']='Staff';
 		$data['User Parent Key']=$this->id;
-		
+
 		$user= new User('find', $data, 'create');
 
 		$this->create_user_error=$user->error;

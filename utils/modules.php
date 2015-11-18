@@ -412,7 +412,7 @@ $modules=array(
 					'product.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'),
 
 					),
-					'product.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers'), 
+					'product.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers'),
 						'subtabs'=>array(
 							'product.customers.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
 							'product.customers.favourites'=>array('label'=>_('Customers who favorited'), 'title'=>_('Customers who favorited')),
@@ -638,7 +638,7 @@ $modules=array(
 
 					'part.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'icon'=>'database'),
 					'part.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
-					'part.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'), 'icon'=>'money', 
+					'part.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'), 'icon'=>'money',
 						'subtabs'=>array(
 							'part.sales.overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
 							'part.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
@@ -656,8 +656,8 @@ $modules=array(
 
 						)
 					),
-					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'title'=>_('Purchase Orders'), 'icon'=>'ship', 
-							'subtabs'=>array(
+					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'title'=>_('Purchase Orders'), 'icon'=>'ship',
+						'subtabs'=>array(
 							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders'), 'title'=>_('Purchase Orders')),
 							'part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes'), 'title'=>_("Supplier's delivery notes")),
 							'part.purchase_orders.invoices'=>array('label'=>_('Invoices'), 'title'=>_("Supplier's invoices")),
@@ -763,7 +763,7 @@ $modules=array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
-					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'),'class'=>'right'),
+					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
 					'timesheets'=>array('label'=>_('Timesheets'), 'title'=>_('Timesheets')),
 
 				)
@@ -774,10 +774,10 @@ $modules=array(
 				'type'=>'navigation', 'label'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors',
 				'tabs'=>array(
 					'contractors'=>array('label'=>_('Employees')),
-				
+
 				)
-				
-				
+
+
 			),
 			'organization'=>array(
 				'type'=>'navigation', 'label'=>_('Organization'), 'title'=>_('Organization'), 'icon'=>'sitemap', 'reference'=>'hr/organization',
@@ -791,24 +791,45 @@ $modules=array(
 				)
 
 			),
-			
+
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-						'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
+					'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
 
 				)
 
 			),
+
+			'contractor'=>array('type'=>'object',
+				'tabs'=>array(
+					'contractor.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'contractor.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o')
+
+				)
+
+			),
+
+			'contractor.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'contractor.new'=>array('label'=>_('New contractor')),
+
+				)
+
+			),
+
+
+
+
 			'new_timesheet_record'=>array(
 				'type'=>'new', 'label'=>_('New timesheet record'), 'title'=>_('New timesheet record'), 'icon'=>'clock', 'reference'=>'hr/new_timesheet_record',
 				'tabs'=>array(
 					'timesheet_record.new'=>array('label'=>_('New timesheet record'), 'title'=>_('New timesheet record')),
 					'timesheet_record.import'=>array('label'=>_('Import'), 'title'=>_('Import timesheet record')),
 					'timesheet_record.api'=>array('label'=>_('API'), 'title'=>_('API')),
-					'timesheet_record.cancel'=>array('class'=>'right','label'=>_('Cancel'), 'title'=>_('Cancel'),'icon'=>'sign-out fa-flip-horizontal'),
+					'timesheet_record.cancel'=>array('class'=>'right', 'label'=>_('Cancel'), 'title'=>_('Cancel'), 'icon'=>'sign-out fa-flip-horizontal'),
 
 				)
-				
+
 			),
 
 		)

@@ -32,6 +32,9 @@ if ($parameters['parent']=='customer' or $parameters['parent']=='order_customer'
 }elseif ($parameters['parent']=='employee') {
 	$where=sprintf(' where   B.`Staff Key`=%d   ', $parameters['parent_key']);
 	$subject='Staff';
+}elseif ($parameters['parent']=='contractor') {
+	$where=sprintf(' where   B.`Staff Key`=%d   ', $parameters['parent_key']);
+	$subject='Staff';
 }elseif ($parameters['parent']=='supplier_product') {
 	$where=sprintf(' where   B.`Supplier Product ID`=%d   ', $parameters['parent_key']);
 	$subject='Supplier Product';

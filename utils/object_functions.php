@@ -14,7 +14,7 @@
 
 function get_object($object_name, $key) {
 
-global $account;
+	global $account;
 
 
 	switch ($object_name) {
@@ -79,6 +79,7 @@ global $account;
 		$object=new Supplier($key);
 		break;
 	case 'employee':
+	case 'contractor':
 	case 'Staff':
 		include_once 'class.Staff.php';
 		$object=new Staff($key);
