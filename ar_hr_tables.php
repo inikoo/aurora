@@ -262,6 +262,7 @@ function timesheets($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
 	$adata=array();
 
 	foreach ($db->query($sql) as $data) {

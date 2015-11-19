@@ -835,6 +835,24 @@ a {
         }
        
     }
+    
+    textarea{
+      position: relative;
+       padding: 4px 6px;
+    width: 206px;
+    height: 120px;
+    font-family: inherit;
+        font-size: 100%;
+        line-height: normal;
+        outline: none;
+       font-weight: normal;
+        color: #555;
+        vertical-align: middle;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        margin: 0px;
+    }
+    
     input {
         position: relative;
         bottom: 2px;

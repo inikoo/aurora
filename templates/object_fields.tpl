@@ -61,7 +61,13 @@
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
+			{elseif $edit=='textarea'  } 
 		
+	
+		<textarea id="{$field.id}" class="input_field hide"   has_been_valid="0">{$field.value}</textarea>
+		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+	
 				{elseif $edit=='telephone' } 
 	<input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 

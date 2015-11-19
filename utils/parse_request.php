@@ -973,6 +973,10 @@ function parse_request($_data, $db) {
 					$parent='account';
 					$parent_key=1;
 					$section='contractors';
+				}elseif ( $view_path[0]=='organization') {
+					$parent='account';
+					$parent_key=1;
+					$section='organization';
 				}
 			}
 

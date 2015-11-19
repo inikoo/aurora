@@ -781,6 +781,14 @@ $modules=array(
 			),
 			'organization'=>array(
 				'type'=>'navigation', 'label'=>_('Organization'), 'title'=>_('Organization'), 'icon'=>'sitemap', 'reference'=>'hr/organization',
+				'tabs'=>array(
+					'organization.areas'=>array('label'=>_('Working Areas')),
+					'organization.departments'=>array('label'=>_('Company departments')),
+					'organization.positions'=>array('label'=>_('Job positions')),
+					'organization.organigram'=>array('label'=>_('Organizational chart')),
+
+
+				)
 			),
 			'employee'=>array('type'=>'object',
 				'tabs'=>array(

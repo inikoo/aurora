@@ -18,6 +18,7 @@ function open_edit_field(object, key, field) {
 
     switch (type) {
     case 'string':
+    case 'textarea':
     case 'email':
 
     case 'int_unsigned':
@@ -107,6 +108,8 @@ function close_edit_field(field) {
     case 'mediumint':
     case 'pin':
     case 'password':
+        case 'textarea':
+
         $('#' + field).addClass('hide')
         $('#' + field + '_editor').removeClass('changed')
         break;

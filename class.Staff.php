@@ -74,7 +74,9 @@ class Staff extends DB_Table{
 
 
 		switch ($key) {
-
+		case('Address'):
+			return nl2br($this->data['Staff Address']);
+			break;
 		case('Staff User Password'):
 		case('Staff PIN'):
 			return '';
@@ -227,7 +229,9 @@ class Staff extends DB_Table{
 		case 'Staff Telephone Formated':
 			$label=_('contact number');
 			break;
-
+		case 'Staff Address':
+			$label=_('address');
+			break;
 		case 'Staff Official ID':
 			$label=$account->get('National Employment Code Label')==''?_('official Id'):$account->get('National Employment Code Label');
 			break;
@@ -268,7 +272,7 @@ class Staff extends DB_Table{
 			if ($this->data['Staff Type']=='Contractor') {
 				$label=_('point of contact');
 			}else {
-			$label=_('supervisor');
+				$label=_('supervisor');
 			}
 			break;
 
