@@ -154,6 +154,17 @@ $object_fields=array(
 			),
 			array(
 
+				'id'=>'Staff_Address',
+				'edit'=>'textarea',
+				'value'=>$employee->get('Staff Staff_Address'),
+				'formated_value'=>$employee->get('Staff_Address'),
+				'label'=>ucfirst($employee->get_field_label('Staff Staff_Address')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+
 				'id'=>'Staff_Next_of_Kind',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Next of Kind'),

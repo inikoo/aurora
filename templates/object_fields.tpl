@@ -170,8 +170,16 @@
     });
 });
             $('#{$field.id}_formated').on('input', function() {
-                var date = chrono.parseDate($('#{$field.id}_formated').val())
-
+             
+                 var _moment=moment($('#{$field.id}_formated').val(), ["DD-MM-YYYY", "MM-DD-YYYY"], 'en');
+        
+       
+           if(_moment.isValid()){
+             var date=new Date(_moment)
+           }else{
+           var date = chrono.parseDate($('#{$field.id}_formated').val())
+           }
+           
                 if (date == null) {
                     var value = '';
                 } else {

@@ -15,7 +15,9 @@
 	
 	<link href="/css/app.css" rel="stylesheet">
 	<script type="text/javascript" src="/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/jquery-ui.min.js"></script> 
+	<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/js/moment.min.js"></script> 
+ 
 	<script type="text/javascript" src="/js/chrono.min.js"></script> 
 	<script type="text/javascript" src="/js/sha256.js"></script> 
 	<script type="text/javascript" src="/js/underscore.js"></script> 
