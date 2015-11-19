@@ -66,6 +66,12 @@
 		<input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0"/>
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
+		{elseif $edit=='textarea' } 
+		
+	
+		<textarea id="{$field.id}" class="input_field "  has_been_valid="0">{$field.value}</textarea>
+		<span id="{$field.id}_msg" class="msg"></span> 
+		
 		
 				{elseif $edit=='telephone' } 
 	<input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0"/>
