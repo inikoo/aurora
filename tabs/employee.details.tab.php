@@ -155,7 +155,16 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Telephone'),
 				'formated_value'=>$employee->get('Telephone'),
 				'label'=>ucfirst($employee->get_field_label('Staff Telephone')),
-				'invalid_msg'=>get_invalid_message('telephone'),
+				'invalid_msg'=>get_invalid_message('email'),
+			),
+			array(
+
+				'id'=>'Staff_Address',
+				'edit'=>'textarea',
+				'value'=>$employee->get('Staff Address'),
+				'formated_value'=>$employee->get('Address'),
+				'label'=>ucfirst($employee->get_field_label('Staff Address')),
+				'invalid_msg'=>get_invalid_message('string'),
 			),
 			array(
 

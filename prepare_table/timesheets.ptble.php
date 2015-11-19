@@ -47,10 +47,9 @@ elseif ($order=='id')
 else
 	$order='STD.`Staff Timesheet Key`';
 
-$table=' `Staff Timesheet Dimension` STD left join  `Staff Dimension` SD on (STD.`Staff Key`=SD.`Staff Key`)  left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)';
+$table=' `Staff Timesheet Dimension` STD left join  `Staff Dimension` SD on (STD.`Staff Key`=SD.`Staff Key`)  ';
 
 
 $sql_totals="select count(Distinct STD.`Staff Timesheet Key`) as num from $table  $where  ";
-
 $fields=" `Staff Alias`,STD.`Staff Key`,`Staff Name`,`Date`,STD.`Staff Timesheet Key`  ";
 ?>
