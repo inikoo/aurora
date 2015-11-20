@@ -16,7 +16,6 @@ function get_object($object_name, $key) {
 
 	global $account;
 
-
 	switch ($object_name) {
 	case 'account':
 
@@ -105,6 +104,11 @@ function get_object($object_name, $key) {
 		require_once "class.Payment.php";
 		$object=new Payment($key);
 		break;
+	case 'api_key':
+		require_once "class.API_Key.php";
+		$object=new API_Key($key);
+		break;	
+		
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

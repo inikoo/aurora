@@ -1,6 +1,12 @@
-{assign "object_name" $object->get_object_name()}
 
-<div id="fields" class="new_object" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
+<div id="result" class="result hide">
+   
+</div>
+
+<div  id="fields" class="new_object" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
+
+
+
 <table >
 
 

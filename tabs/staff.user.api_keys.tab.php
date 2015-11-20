@@ -10,8 +10,8 @@
 */
 
 $tab='staff.user.api_keys';
-$ar_file='ar_history_tables.php';
-$tipo='object_history';
+$ar_file='ar_users_tables.php';
+$tipo='api_keys';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -26,6 +26,11 @@ $parameters=array(
 		'parent_key'=>$state['key'],
 		
 );
+
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New API key'), 'reference'=>"account/user/174264/new/api_key");
+$smarty->assign('table_buttons', $table_buttons);
+
 
 include('utils/get_table_html.php');
 

@@ -2128,6 +2128,20 @@ class User extends DB_Table {
 		exit("User class: error get_tab_defaults not configured: $tab");
 	}
 
+    function create_api_key($data){
+    
+        $data['API Key User Key']=$this->id;
+        $data['API Key Valid From']=gmdate('Y-m-d H:i:s');
+       
+        $api_key= new API_Key('create', $data);
+
+		$this->create_user_error=$api_key->error;
+		$this->create_user_msg=$api_key->msg;
+		$this->api_key=$api_key;
+
+        return $this->api_key;
+    
+    }
 
 }
 

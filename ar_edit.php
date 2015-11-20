@@ -135,15 +135,22 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 
 function new_object($account, $db, $user, $editor, $data) {
+
+    global $account,$smarty;
+
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;
-
 
 	switch ($data['object']) {
 	case 'Staff':
 		include_once 'class.Staff.php';
-
-		$object=$parent->add_staff($data['fields_data']);
+		$object=$parent->create_staff($data['fields_data']);
+		$pcard_template='presentation_cards/api_key.pcard.tpl';
+		break;
+	case 'API_Key':
+		include_once 'class.API_Key.php';
+		$object=$parent->create_api_key($data['fields_data']);
+		$pcard_template='presentation_cards/api_key.pcard.tpl';
 		break;
 	default:
 
@@ -159,19 +166,15 @@ function new_object($account, $db, $user, $editor, $data) {
 
 
 	}else {
+		$smarty->assign('account', $account);
 
-
-		$msg=sprintf('<i class="fa fa-check"  ></i> %s', _('Success'));
-
-		if (isset($object->extra_msg)) {
-			$msg.=' '.$object->extra_msg.'<br>';
-		}
+		$smarty->assign('object', $object);
 
 		$response=array(
 			'state'=>200,
-			'msg'=>$msg,
+			'pcard'=>$smarty->fetch($pcard_template),
 
-			'key'=>$object->id
+
 
 		);
 

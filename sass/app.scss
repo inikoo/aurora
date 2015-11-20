@@ -752,7 +752,7 @@ a {
         min-width: 150px;
     }
 }
-.details_data, .new_object{
+.details_data, .new_object, .presention_card{
     padding: 10px 20px;
     table {
         width: 100%;
@@ -984,6 +984,23 @@ a {
 .details_data {  
    .intl-tel-input .flag-container {display:none};
 }
+
+
+.result{
+
+margin-top:20px;
+
+  .results{
+        margin-left:20px;
+      &:first-of-type { margin-left:0px;
+      }
+      opacity: .9;
+       &:hover{opacity: 1;color:$color_save;
+        transition: color .2s ease-in-out;
+       }
+    }
+}
+
 .new_object{
 
 
@@ -1008,7 +1025,7 @@ a {
      
           &.invalid{opacity:1;color:tomato}
           &.valid{opacity:1;
-          &:hover{color:#color_save}
+          &:hover{color:$color_save}
           
           }
 
@@ -1023,16 +1040,15 @@ a {
          &.invalid{opacity:1;color:tomato}
      }
      
-    .results{margin-left:20px;
-    
-      opacity: .9;
-       &:hover{opacity: 1;color:#color_save}
-    }
+  
      
     
      
      
 }
+
+
+
 
 
 .datepicker{

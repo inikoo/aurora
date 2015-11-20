@@ -995,10 +995,10 @@ function parse_request($_data, $db) {
 			if (isset($view_path[0])) {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
-				}elseif($view_path[0]=='new'){
-				    $section='employee.new';
-				    $object='';
-				    
+				}elseif ($view_path[0]=='new') {
+					$section='employee.new';
+					$object='';
+
 				}
 			}
 
@@ -1014,14 +1014,14 @@ function parse_request($_data, $db) {
 			if (isset($view_path[0])) {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
-				}elseif($view_path[0]=='new'){
-				    $section='contractor.new';
-				    $object='';
-				    
+				}elseif ($view_path[0]=='new') {
+					$section='contractor.new';
+					$object='';
+
 				}
 			}
 
-			break;	
+			break;
 		case 'reports':
 			$module='reports';
 			$section='reports';
@@ -1078,6 +1078,44 @@ function parse_request($_data, $db) {
 						$section='staff.user';
 						$object='user';
 						$key=$view_path[1];
+
+
+						if (isset($view_path[2])) {
+
+							if ($view_path[2]=='new') {
+
+								if (isset($view_path[3])) {
+
+									if ($view_path[3]=='api_key') {
+
+										$parent='user';
+										$parent_key=$key;
+										$section='staff.user.api_key.new';
+										$object='api_key';
+
+									}
+
+								}
+							}
+							elseif ($view_path[2]=='api_key') {
+
+								if (isset($view_path[3])) {
+
+									if (is_numeric($view_path[3])) {
+
+										$parent='user';
+										$parent_key=$key;
+										$section='staff.user.api_key';
+										$object='api_key';
+
+										$key=$view_path[3];
+									}
+
+								}
+							}
+
+						}
+
 
 
 					}

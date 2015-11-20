@@ -42,6 +42,9 @@ case 'groups':
 case 'login_history':
 	login_history(get_table_parameters(), $db, $user);
 	break;
+case 'api_keys':
+	api_keys(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -209,6 +212,7 @@ function users($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function api_keys($_data, $db, $user) {
 	global $db;
 	$rtext_label='api_key';
@@ -220,14 +224,50 @@ function api_keys($_data, $db, $user) {
 
 	foreach ($db->query($sql) as $data) {
 
+
+
+
+		switch ($data['API Key Scope']) {
+		case 'Timesheet':
+			$scope=_('Timesheet');
+			break;
+		default:
+			$scope=$data['API Key Scope'];
+			break;
+		}
+
+		switch ($data['API Key Active']) {
+		case 'Yes':
+			$active=_('Active');
+			break;
+		case 'No':
+			$active=_('Suspended');
+			break;
+		default:
+			$active=$data['API Key Active'];
+			break;
+		}
+
+
+
+
+
 		$adata[]=array(
-			'id'=>(integer) $data['User API Key'],
-			'user_key'=>(integer) $data['User Key'],
+			'id'=>(integer) $data['API Key Key'],
+			'user_key'=>(integer) $data['API Key User Key'],
 			'handle'=>$data['User Handle'],
+			'scope'=>$scope,
+			'active'=>$active,
+			'formated_id'=>sprintf('%04d', $data['API Key Key']),
 			'user'=>$data['User Alias'],
-			'public_key'=>$data['API Public Key'],
-			'valid_ip'=>$data['Valid IP'],
-			'valid_date'=>($data['Valid Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Valid Date'])):''),
+			'from'=>($data['API Key Valid From']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])):''),
+			'to'=>($data['API Key Valid To']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid To'])):''),
+			'valid_ip'=>$data['API Key Allowed IP'],
+			'ok_requests'=>number($data['API Key Successful Requests']),
+			'fail_ip'=>number($data['API Key Successful Requests']),
+			'fail_limit'=>number($data['API Key Successful Requests']),
+			'last_request_date'=>($data['API Key Last Request Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Last Request Date'])):''),
+
 		);
 
 	}
@@ -245,5 +285,6 @@ function api_keys($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
 
 ?>
