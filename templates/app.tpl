@@ -46,7 +46,7 @@
 	<section>
 		<div id="app_leftmenu">
 			<div id="top_info">
-				<div id="inikoo_logo">
+				<div id="inikoo_logo" class="link" onclick="help()" >
 					<img src="/art/inikoo_logo_small.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
