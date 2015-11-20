@@ -47,9 +47,11 @@ case 'views':
 
 
 	if ($state['object']!='') {
-		$_object=get_object($state['object'], $state['key']);
-
-		if (!$_object->id) {
+	
+	$_object=get_object($state['object'], $state['key']);
+	
+	
+		if (!$_object->id  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 
 
 
@@ -59,10 +61,10 @@ case 'views':
 		}else {
 
 			$state['_object']=$_object;
+			
 		}
 
 	}
-
 
 	switch ($state['parent']) {
 
@@ -123,7 +125,7 @@ case 'views':
 	$response['view_position']=get_view_position($state);
 
 
-	if ($state['object']!='') {
+	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 		$response['object_showcase']=get_object_showcase($state);
 	}else {
 		$response['object_showcase']='';
@@ -176,6 +178,8 @@ function get_tab($tab, $subtab, $state=false) {
 
 	$smarty->assign('data', $state);
 
+
+
 	if (file_exists('tabs/'.$actual_tab . '.tab.php')) {
 		include_once 'tabs/'.$actual_tab . '.tab.php';
 	}else {
@@ -204,7 +208,7 @@ function get_object_showcase($data) {
 
 
 
-	switch ($data['object']) {
+	switch ($data['object']  ) {
 	case 'store':
 	case 'website':
 		$html='';
@@ -614,7 +618,6 @@ function get_navigation($data) {
 	case ('account'):
 		require_once 'navigation/account.nav.php';
 
-
 		switch ($data['section']) {
 		case ('account'):
 			return get_account_navigation($data);
@@ -650,6 +653,12 @@ function get_navigation($data) {
 		case ('settings'):
 			return get_settings_navigation($data);
 			break;
+		case ('staff.user.api_key')	:
+			return get_api_key_navigation($data);
+			break;	
+		case ('staff.user.api_key.new')	:
+			return get_new_api_key_navigation($data);
+			break;		
 		case ('payment_service_provider'):
 			require_once 'navigation/payments.nav.php';
 			return get_payment_service_provider_navigation($data);
@@ -662,6 +671,8 @@ function get_navigation($data) {
 			require_once 'navigation/payments.nav.php';
 			return get_payment_navigation($data);
 			break;
+		
+		
 		}
 
 

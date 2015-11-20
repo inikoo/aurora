@@ -908,9 +908,24 @@ $modules=array(
 
 				)
 			),
+			'staff.user.api_key.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'staff.user.api_key.new'=>array('label'=>_('New API')),
+	
+				)
+			),
+			'staff.user.api_key'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'staff.user.api_key.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'staff.user.api_key.requests'=>array('label'=>_('Requests'), 'icon'=>'arrow-circle-right'),
+	
+				)
+			),
+			
+			
 			'payment_service_provider'=>array('type'=>'object',
 				'tabs'=>array(
-					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database'),
 					'payment_service_provider.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'payment_service_provider.accounts'=>array('label'=>_('Accounts'), 'title'=>_('Payment accounts')),
 					'payment_service_provider.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),

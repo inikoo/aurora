@@ -250,7 +250,7 @@ class Account extends DB_Table{
 	}
 
 
-	function add_staff($data) {
+	function create_staff($data) {
 		$this->new_employee=false;
 
         

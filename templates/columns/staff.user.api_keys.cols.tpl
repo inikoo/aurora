@@ -7,52 +7,56 @@ var columns = [
     cell: "string",
 
 },
+ {
+    name: "user_key",
+    label: "",
+    editable: false,
+     renderable: false,
+    cell: "string",
+
+},
 {
-    name: "handle",
-    label: "{t}Handle{/t}",
-     renderable: {if $data['object']=='user'}false{else}true{/if},
+    name: "formated_id",
+    label: "{t}ID{/t}",
     editable: false,
      sortType: "toggle",
-    {if $sort_key=='handle'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='formated_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     
     cell: Backgrid.StringCell.extend({
-        orderSeparator: '',
         events: {
             "click": function() {
-                change_view('user/staff/' +this.model.get("id"))
+                change_view('account/user/'+this.model.get("user_key")+'/api_key/' +this.model.get("id"))
             }
         },
         className: "link"
        
 })
    
-}, 
-{
-    name: "ip",
-    label: "IP",
+}, {
+    name: "active",
+    label: "{t}Active{/t}",
      sortType: "toggle",
     cell:'string'
-}, {
-    name: "login_date",
-    label: "{t}Login date{/t}",
+},
+ {
+    name: "scope",
+    label: "{t}Scope{/t}",
+     sortType: "toggle",
+    cell:'string'
+},
+
+ {
+    name: "from",
+    label: "{t}Created{/t}",
    editable: false,
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='login_date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell
     
-    }, {
-    name: "logout_date",
-    label: "{t}Logout date{/t}",
-     editable: false,
-    defautOrder:1,
-    sortType: "toggle",
-    {if $sort_key=='logout_date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: Backgrid.StringCell.extend({ className: "aright"} ),
-    headerCell: integerHeaderCell
-    
-}
+    },
+
 
 ]
 
