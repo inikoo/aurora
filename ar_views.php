@@ -36,6 +36,11 @@ case 'views':
 		));
 
 
+	if (isset($data['metadata']['help']) and $data['metadata']['help'] ) {
+		get_help($data, $db);
+		return;
+	}
+
 
 	if (isset($data['metadata']['reload']) and $data['metadata']['reload'] ) {
 		$reload=true;
@@ -47,10 +52,10 @@ case 'views':
 
 
 	if ($state['object']!='') {
-	
-	$_object=get_object($state['object'], $state['key']);
-	
-	
+
+		$_object=get_object($state['object'], $state['key']);
+
+
 		if (!$_object->id  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 
 
@@ -61,7 +66,7 @@ case 'views':
 		}else {
 
 			$state['_object']=$_object;
-			
+
 		}
 
 	}
@@ -653,12 +658,12 @@ function get_navigation($data) {
 		case ('settings'):
 			return get_settings_navigation($data);
 			break;
-		case ('staff.user.api_key')	:
+		case ('staff.user.api_key') :
 			return get_api_key_navigation($data);
-			break;	
-		case ('staff.user.api_key.new')	:
+			break;
+		case ('staff.user.api_key.new') :
 			return get_new_api_key_navigation($data);
-			break;		
+			break;
 		case ('payment_service_provider'):
 			require_once 'navigation/payments.nav.php';
 			return get_payment_service_provider_navigation($data);
@@ -671,8 +676,8 @@ function get_navigation($data) {
 			require_once 'navigation/payments.nav.php';
 			return get_payment_navigation($data);
 			break;
-		
-		
+
+
 		}
 
 
@@ -998,6 +1003,16 @@ function get_view_position($data) {
 
 		}
 
+		break;
+		
+	case 'help':	
+		switch ($data['section']) {
+		case 'help':
+			$branch[]=array('label'=>_('Help'), 'icon'=>'', 'reference'=>'help');
+			break;
+
+		
+		}
 		break;
 	case 'hr':
 		switch ($data['section']) {
@@ -1493,6 +1508,70 @@ function parse_request_old($request) {
 
 
 
+function get_help($data, $db) {
+
+	$scope_state=parse_request($data, $db);
+
+
+$state=array(
+		'request'=>$scope_state['request'],
+		'module'=>'help',
+		'section'=>'help',
+		'tab'=>'help',
+		'subtab'=>'',
+		'parent'=>'',
+		'parent_key'=>'',
+		'object'=>'',
+		'key'=>'',
+	);
+
+	$response=array('state'=>array());
+
+
+	if ($data['old_state']['module']!=$state['module']   ) {
+		$response['menu']=get_menu($state);
+
+	}
+
+
+	if ($data['old_state']['section']!=$state['section'] or
+		$data['old_state']['parent_key']!=$state['parent_key'] or
+		$data['old_state']['key']!=$state['key']
+
+	) {
+
+	require_once 'navigation/help.nav.php';
+	$response['navigation']=get_help_navigation($data);
+
+	}
+
+	
+
+
+	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
+
+	$response['view_position']=get_view_position($state);
+
+
+	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
+		$response['object_showcase']=get_object_showcase($state);
+	}else {
+		$response['object_showcase']='';
+	}
+
+
+	$response['tab']=get_tab($state['tab'], $state['subtab'], $state);
+
+	unset($state['_object']);
+	$response['state']=$state;
+
+
+	echo json_encode($response);
+
+
+
+
+}
 
 
 ?>

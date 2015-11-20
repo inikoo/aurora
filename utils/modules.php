@@ -967,6 +967,23 @@ $modules=array(
 				)
 			),
 		)
+	),
+	
+	'help'=>array(
+		'sections'=>array(
+			'help'=>array('type'=>'object', 'label'=>_('Help'), 'icon'=>'shopping-cart', 'id'=>'forbidden',
+				'tabs'=>array(
+					'help'=>array()
+				)
+			)
+		),
+		'about'=>array(
+			'about'=>array('type'=>'object', 'label'=>_('About'), 'icon'=>'',
+				'tabs'=>array(
+					'about'=>array()
+				)
+			)
+		)
 	)
 
 );

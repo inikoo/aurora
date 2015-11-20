@@ -41,7 +41,11 @@ function change_subtab(subtab) {
 }
 
 
+function help(){
+    
+    change_view(state.request,{help:true})
 
+}
 
 function change_view(_request, metadata) {
 
