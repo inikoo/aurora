@@ -28,7 +28,7 @@ $parameters=array(
 );
 
 $table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New API key'), 'reference'=>"account/user/174264/new/api_key");
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New API key'), 'reference'=>"account/".$state['object']."/".$state['key']."/new/api_key");
 $smarty->assign('table_buttons', $table_buttons);
 
 
