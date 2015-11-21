@@ -43,9 +43,9 @@ function get_new_api_key_navigation($data) {
 
 	$title=_('New API key');
 
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Staff user"), 'reference'=>'account/user/'.$data['parent_key']);
-$left_buttons=array();
-$left_buttons[]=$up_button;
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Staff user"), 'reference'=>'account/user/'.$data['parent_key']);
+	$left_buttons=array();
+	$left_buttons[]=$up_button;
 	$_content=array(
 		'sections_class'=>'',
 		'sections'=>$sections,
@@ -155,7 +155,7 @@ function get_staff_navigation($data) {
 
 function get_staff_user_navigation($data) {
 
-	global $smarty,$user;
+	global $smarty, $user;
 
 	$object=$data['_object'];
 	$left_buttons=array();
@@ -218,9 +218,11 @@ function get_staff_user_navigation($data) {
 		$res2=mysql_query($sql);
 		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND U.`User Key` < %d))  order by $_order_field desc , U.`User Key` desc limit 1",
 
+
+
+			$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND U.`User Key` < %d))  order by $_order_field desc , U.`User Key` desc limit 1",
+                "$table $where $wheref",
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
 				$object->id
@@ -234,8 +236,8 @@ function get_staff_user_navigation($data) {
 
 			}
 
-			$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND U.`User Key` > %d))  order by $_order_field   , U.`User Key`  limit 1",
+			$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND U.`User Key` > %d))  order by $_order_field   , U.`User Key`  limit 1",
+				"$table  $where $wheref",
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
 				$object->id
@@ -351,7 +353,7 @@ function get_staff_user_navigation($data) {
 
 function get_api_key_navigation($data) {
 
-	global $smarty,$user;
+	global $smarty, $user;
 
 	$object=$data['_object'];
 	$left_buttons=array();
@@ -459,10 +461,10 @@ function get_api_key_navigation($data) {
 
 		if ($data['parent']=='user') {
 
-$system_user=new User($data['parent_key']);
+			$system_user=new User($data['parent_key']);
 
 
-		$up_button=array('icon'=>'arrow-up', 'title'=>_("Staff user").' '.$system_user->get('Alias'), 'reference'=>'account/user/'.$system_user->id);
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Staff user").' '.$system_user->get('Alias'), 'reference'=>'account/user/'.$system_user->id);
 
 			if ($prev_key) {
 				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'account/user/'.$system_user->id.'/api_key/'.$prev_key);

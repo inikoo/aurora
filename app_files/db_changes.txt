@@ -92,4 +92,9 @@ ALTER TABLE `Account Dimension` ADD `Employees` MEDIUMINT UNSIGNED NOT NULL DEFA
 ALTER TABLE `Staff Dimension` CHANGE `Staff ID` `Staff ID` VARCHAR(64) NULL DEFAULT NULL;
 ALTER TABLE `Staff Dimension` CHANGE `Staff Valid from` `Staff Valid From` DATETIME NULL DEFAULT NULL;
 
+
+//==
+
+DROP TABLE `User API Dimension`;
+
   

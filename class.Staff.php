@@ -27,7 +27,7 @@ class Staff extends DB_Table{
 		$this->ignore_fields=array('Staff Key');
 
 		if (is_numeric($arg1)) {
-			$this->get_data('id', $arg1);
+			$this->get_data('key', $arg1);
 			return ;
 		}
 		if (preg_match('/^find/i', $arg1)) {
@@ -49,18 +49,20 @@ class Staff extends DB_Table{
 
 
 	function get_data($key, $id) {
-
 		if ($key=='alias')
 			$sql=sprintf("select * from `Staff Dimension` where `Staff Alias`=%s", prepare_mysql($id));
 		elseif ($key=='id')
-			$sql=sprintf("select * from  `Staff Dimension`     where `Staff Key`=%d", $id);
+			$sql=sprintf("select * from  `Staff Dimension`  where `Staff ID`=%s", prepare_mysql($id));
+		elseif ($key=='key')
+			$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d", $id);
 		else
 			return;
 
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-			$this->id=$this->data['Staff Key'];
 
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Staff Key'];
+		}
 
 	}
 
@@ -343,7 +345,7 @@ class Staff extends DB_Table{
 		if ($row=mysql_fetch_array($res)) {
 			$this->found=true;
 			$this->found_key=$row['Staff Key'];
-			$this->get_data('id', $this->found_key);
+			$this->get_data('key', $this->found_key);
 		}
 
 
@@ -396,7 +398,7 @@ class Staff extends DB_Table{
 
 
 			$this->id=$this->db->lastInsertId();
-			$this->get_data('id', $this->id);
+			$this->get_data('key', $this->id);
 
 
 
@@ -475,6 +477,18 @@ class Staff extends DB_Table{
 
 
 
+	}
+
+
+	function create_timesheet_record($data) {
+
+		$data['Staff Timesheet Record Staff Key']=$this->id;
+		$timesheet_record=new Staff_Timesheet_Record('new', $data);
+
+		$this->create_timesheet_record_error=$timesheet_record->error;
+		$this->create_timesheet_record_duplicated=$timesheet_record->duplicated;
+		$this->create_timesheet_record_msg=$timesheet_record->msg;
+		$this->timesheet_record=$timesheet_record;
 	}
 
 
@@ -771,6 +785,10 @@ class Staff extends DB_Table{
 
 
 	}
+
+
+
+
 
 
 }

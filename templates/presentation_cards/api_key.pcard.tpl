@@ -21,7 +21,7 @@
 <td class="label">{t}Scope{/t}</td><td>{$api_key->get('Scope')}</td>
 </tr>
 <tr>
-<td class="label">{t}API Key{/t}</td><td><span id="show_key" class="link action" onClick="show_key()">{t}Show key{/t} <i class="fa fa-eye"></i></span><span class="hide" id="api_key">{$api_key->get('API Key User Key')}u{$api_key->id}k{$api_key->secret_key}</span>
+<td class="label">{t}API Key{/t}</td><td><span id="show_key" class="link action" onClick="show_key()">{t}Show key{/t} <i class="fa fa-eye"></i></span><span class="hide" id="api_key">{$api_key->get('API Key Code')}{$api_key->secret_key}</span>
 <br><span class="warning"><i class="fa fa-exclamation-circle"></i> {t}The API key is a secret information and should be treated as a password{/t}</span></td>
 </tr>
 

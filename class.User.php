@@ -288,8 +288,11 @@ class User extends DB_Table {
 		else
 			$sql=sprintf("select * from `User Dimension` where `User Key`=%d", $data);
 
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+		
+		
 			$this->id=$this->data['User Key'];
 			$this->data['User Password']='';
 
@@ -297,9 +300,11 @@ class User extends DB_Table {
 
 				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d", $this->id);
 
-				$result2=mysql_query($sql);
-				if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-					$this->data=array_merge($this->data, $row2);
+				if ($row = $this->db->query($sql)->fetch()) {
+				
+				
+				
+					$this->data=array_merge($this->data, $row);
 				}
 			}
 		}

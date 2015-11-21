@@ -54,18 +54,33 @@ if ($_state=='') {
 
 $wheref='';
 if ($parameters['f_field']=='name' and $f_value!=''  ){
-	$wheref.=" and  name like '%".addslashes($f_value)."%'    ";
+	$wheref.=" and  `User Alias` like '".addslashes($f_value)."%'    ";
+}elseif ($parameters['f_field']=='handle' and $f_value!=''  ){
+	$wheref.=" and  `User Handle` like '".addslashes($f_value)."%'    ";
 }else if ($parameters['f_field']=='position_id' or $parameters['f_field']=='area_id'   and is_numeric($f_value) ){
 	$wheref.=sprintf(" and  %s=%d ",$parameters['f_field'], $f_value);
 }
 
 
+	
 
 $_order=$order;
 $_dir=$order_direction;
 
 if ($order=='name')
 	$order='`User Alias`';
+elseif ($order=='handle')
+	$order='`User Handle`';	
+elseif ($order=='active')
+	$order='`User Active`';		
+elseif ($order=='logins')
+	$order='`User Login Count`';
+elseif ($order=='last_login')
+	$order='`User Last Login`';		
+elseif ($order=='fail_logins')
+	$order='`User Failed Login Count`';
+elseif ($order=='fail_last_login')
+	$order='`User Last Failed Login`';								
 elseif ($order=='position')
 	$order='position';
 else
