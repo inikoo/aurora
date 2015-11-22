@@ -963,19 +963,17 @@ function parse_request($_data, $db) {
 		case 'hr':
 			$module='hr';
 			$section='employees';
-
+			$parent='account';
+			$parent_key=1;
 			if (isset($view_path[0])) {
 				if ( $view_path[0]=='new_timesheet_record') {
-					$parent='account';
-					$parent_key=1;
+
 					$section='new_timesheet_record';
 				}elseif ( $view_path[0]=='contractors') {
-					$parent='account';
-					$parent_key=1;
+
 					$section='contractors';
 				}elseif ( $view_path[0]=='organization') {
-					$parent='account';
-					$parent_key=1;
+
 					$section='organization';
 				}
 			}

@@ -11,15 +11,15 @@
 */
 
 
-class Staff_Timesheet_Record extends DB_Table {
+class Timesheet_Record extends DB_Table {
 
 
-	function Staff_Timesheet_Record($arg1=false, $arg2=false) {
+	function Timesheet_Record($arg1=false, $arg2=false) {
 		global $db;
 
 		$this->db=$db;
-		$this->table_name='Staff Timesheet Record';
-		$this->ignore_fields=array('Staff Timesheet Record Key');
+		$this->table_name='Timesheet Record';
+		$this->ignore_fields=array('Timesheet Record Key');
 
 		if (is_numeric($arg1)) {
 			$this->get_data('key', $arg1);
@@ -40,11 +40,11 @@ class Staff_Timesheet_Record extends DB_Table {
 	function get_data($tipo, $tag) {
 
 		if ($tipo=='key')
-			$sql=sprintf("select * from `Staff Timesheet Record Dimension` where `Staff Timesheet Record Key`=%d", $tag);
+			$sql=sprintf("select * from `Timesheet Record Dimension` where `Timesheet Record Key`=%d", $tag);
 		else
 			return;
 		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=$this->data['Staff Timesheet Record Key'];
+			$this->id=$this->data['Timesheet Record Key'];
 		}
 
 	}
@@ -61,7 +61,7 @@ class Staff_Timesheet_Record extends DB_Table {
 		case 'Source':
 
 
-			switch ($this->data['Staff Timesheet Record Source']) {
+			switch ($this->data['Timesheet Record Source']) {
 			case 'ClockingMachine':
 				$scope=_('Clocking machine');
 				break;
@@ -69,7 +69,7 @@ class Staff_Timesheet_Record extends DB_Table {
 				$scope=_('Manual');
 				break;
 			default:
-				$scope=$this->data['Staff Timesheet Record Source'];
+				$scope=$this->data['Timesheet Record Source'];
 				break;
 			}
 			return $scope;
@@ -110,7 +110,7 @@ class Staff_Timesheet_Record extends DB_Table {
 		$values=preg_replace('/^,/', '', $values);
 		$keys=preg_replace('/^,/', '', $keys);
 
-		$sql="insert into `Staff Timesheet Record Dimension` ($keys) values ($values)";
+		$sql="insert into `Timesheet Record Dimension` ($keys) values ($values)";
 
 		//print  $sql;
 		if ($this->db->exec($sql)) {
@@ -131,7 +131,7 @@ class Staff_Timesheet_Record extends DB_Table {
 				$this->duplicated=true;
 				$this->msg=_('Record already exists');
 			}else {
-				$this->msg='Can not create Staff Timesheet Record. '.$error_info[2];
+				$this->msg='Can not create Timesheet Record. '.$error_info[2];
 			}
 
 
@@ -154,10 +154,10 @@ class Staff_Timesheet_Record extends DB_Table {
 
 		switch ($field) {
 
-		case 'Staff Timesheet Record Source':
+		case 'Timesheet Record Source':
 			$label=_('source');
 			break;
-		case 'Staff Timesheet Record Date':
+		case 'Timesheet Record Date':
 			$label=_('date');
 			break;
 		default:

@@ -271,7 +271,11 @@ rows.fetch(
 
 
 {if isset($elements) and count(elements)>0}
+var with_elements=true;
 get_elements_numbers('{$tab}',{$parameters|@json_encode})
+{else}
+var with_elements=false;
+
 {/if}
 
 {if isset($js_code) }
