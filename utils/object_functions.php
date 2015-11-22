@@ -105,6 +105,7 @@ function get_object($object_name, $key) {
 		$object=new Payment($key);
 		break;
 	case 'api_key':
+	case 'API Key':
 		require_once "class.API_Key.php";
 		$object=new API_Key($key);
 		break;	

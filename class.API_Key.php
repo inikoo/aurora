@@ -61,9 +61,39 @@ class API_Key extends DB_Table {
 
 
 		switch ($key) {
+		case 'Allowed Requests per Hour':
+		case 'Successful Requests':
+		case 'Failed Attempt Requests':
+		case 'Failed Access Request':
+		case 'Failed Time Limit Requests':
+		case 'Failed Operation Requests':
+		case 'Failed IP Requests':
+			return number($this->data['API Key '.$key]);
+			break;
+
+
+		case ('Valid From'):
+		case ('Valid To'):
+		case ('Last Request Date'):
+			return ($this->data['API Key '.$key]=='' or $this->data['API Key '.$key]=='0000-00-00 00:00:00') ?'':strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['API Key '.$key]));
+
+			break;
+
+
+		case 'Active':
+			switch ($this->data['API Key Active']) {
+			case 'Yes':
+				return _('Yes');
+				break;
+			case 'No':
+				return _('No');
+				break;
+			default:
+				return $this->data['API Key Active'];
+			}
+			break;
+
 		case 'Scope':
-
-
 			switch ($this->data['API Key Scope']) {
 			case 'Timesheet':
 				$scope=_('Timesheet');
@@ -77,9 +107,9 @@ class API_Key extends DB_Table {
 		default:
 			if (isset($this->data[$key]))
 				return $this->data[$key];
-			$_key=ucfirst($key);
-			if (isset($this->data[$_key]))
-				return $this->data[$_key];
+
+			if (array_key_exists('API Key '.$key, $this->data))
+				return $this->data['API Key '.$key];
 
 			return false;
 
@@ -98,8 +128,8 @@ class API_Key extends DB_Table {
 		$this->secret_key=generatePassword(40, 10);
 
 		$data['API Key Code']=hash('crc32', generatePassword(32, 10), false);
-		
-		
+
+
 		$data['API Key Hash']=password_hash($this->secret_key, PASSWORD_DEFAULT);
 		$this->secret_key=base64_encode($this->secret_key);
 		$this->data=$data;

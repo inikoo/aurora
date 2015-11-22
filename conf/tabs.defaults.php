@@ -821,6 +821,15 @@ $tab_defaults=array(
 		'f_field'=>'',
 
 	),
+	'staff.user.api_key.requests'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+
+	),
 	'users.staff.login_history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
