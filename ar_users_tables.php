@@ -45,6 +45,10 @@ case 'login_history':
 case 'api_keys':
 	api_keys(get_table_parameters(), $db, $user);
 	break;
+case 'api_requests':
+	api_requests(get_table_parameters(), $db, $user);
+	break;
+
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -271,6 +275,107 @@ function api_keys($_data, $db, $user) {
 		);
 
 	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function api_requests($_data, $db, $user) {
+	global $db;
+	$rtext_label='request';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+
+
+
+			switch ($data['API Key Scope']) {
+			case 'Timesheet':
+				$scope=_('Timesheet');
+				break;
+			default:
+				$scope=$data['API Key Scope'];
+				break;
+			}
+
+			switch ($data['Response']) {
+			case 'OK':
+				$response=_('Success');
+				break;
+			case 'Fail_Attempt':
+				$response=_('Fail attempt');
+				break;
+			case 'Fail_Attempt':
+				$response=_('Fail attempt');
+				break;
+			case 'Fail_TimeLimit':
+				$response=_('Fail to many requests');
+				break;
+			case 'Fail_Access':
+				$response=_('Fail access');
+				break;
+			case 'Fail_Operation':
+				$response=_('Fail operation');
+				break;
+			case 'Fail_IP':
+				$response=_('Unauthorized IP');
+				break;
+			default:
+				$response=$data['Response'];
+				break;
+			}
+
+
+			$response_code=$data['Response Code'];
+
+			$adata[]=array(
+
+				'user_key'=>(integer) $data['API Key User Key'],
+				'handle'=>$data['User Handle'],
+				'scope'=>$scope,
+
+				'formated_id'=>sprintf('%04d', $data['API Key Key']),
+				'user'=>$data['User Alias'],
+
+				'date'=>($data['Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])):''),
+				'ip'=>$data['IP'],
+				'method'=>$data['HTTP Method'],
+				'response'=>$response,
+				'response_code'=>$response_code,
+
+			);
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+
+
 
 	$response=array('resultset'=>
 		array(

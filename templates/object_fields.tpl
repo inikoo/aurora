@@ -46,7 +46,7 @@
 	
 	<tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "  {if $class=='new'}onClick="change_view('{$field.reference}')"{/if} >
 		<td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
-		<td class="show_buttons" ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide" onclick="close_edit_field('{$field.id}')"></i> <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit==''}invisible{/if}" onclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> </td>
+		<td class="show_buttons" > <i  class="fa fa-lock fw {if $edit!=''}hide{/if} edit " ></i>  <i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide" onclick="close_edit_field('{$field.id}')"></i> <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit==''}hide{/if}" onclick="open_edit_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> </td>
 		<td  id="{$field.id}_container" class="value " _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
 		
 		<span id="{$field.id}_editor" class=""> 

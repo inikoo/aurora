@@ -198,13 +198,14 @@ function log_api_key_access_failture($db, $api_key_key , $fail_type, $fail_reaso
 	include_once 'utils/detect_agent.php';
 
 	$fail_code=hash('crc32', $fail_reason, false);
-
-	$sql=sprintf('insert into `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`) values(%d,%s,%s,%s,%s)',
+	$method=$_SERVER['REQUEST_METHOD'];
+	$sql=sprintf('insert into `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`) values(%d,%s,%s,%s,%s,%s)',
 		$api_key_key,
 		prepare_mysql(gmdate('Y-m-d H:i:s')),
 		prepare_mysql($fail_type),
 		prepare_mysql($fail_code),
-		prepare_mysql(ip())
+		prepare_mysql(ip()),
+		prepare_mysql( $method)
 	);
 
 	$db->exec($sql);
@@ -213,18 +214,22 @@ function log_api_key_access_failture($db, $api_key_key , $fail_type, $fail_reaso
 
 }
 
+
 function log_api_key_access_success($db, $api_key_key , $success_reason) {
 
 	include_once 'utils/detect_agent.php';
 
 	$success_code=hash('crc32', $success_reason, false);
 
-	$sql=sprintf('insert into `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`) values(%d,%s,%s,%s,%s)',
+	$method=$_SERVER['REQUEST_METHOD'];
+
+	$sql=sprintf('insert into `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`) values(%d,%s,%s,%s,%s,%s)',
 		$api_key_key,
 		prepare_mysql(gmdate('Y-m-d H:i:s')),
 		prepare_mysql('OK'),
 		prepare_mysql($success_code),
-		prepare_mysql(ip())
+		prepare_mysql(ip()),
+		prepare_mysql( $method)
 	);
 
 	$db->exec($sql);
