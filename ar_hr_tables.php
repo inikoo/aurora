@@ -42,6 +42,9 @@ case 'timesheets':
 case 'contractors':
 	contractors(get_table_parameters(), $db, $user);
 	break;
+case 'timesheet_records':
+	timesheet_records(get_table_parameters(), $db, $user);
+	break;
 
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -72,7 +75,7 @@ function employees($_data, $db, $user, $type='') {
 
 	$adata=array();
 	foreach ($db->query($sql) as $data) {
-	
+
 
 		switch ($data['User Active']) {
 		case 'Yes':
@@ -88,7 +91,7 @@ function employees($_data, $db, $user, $type='') {
 			$user_active=$data['User Active'];
 			break;
 		}
-		
+
 		switch ($data['Staff Type']) {
 		case 'Employee':
 			$type=_('Employee');
@@ -101,7 +104,7 @@ function employees($_data, $db, $user, $type='') {
 			break;
 		case 'WorkExperience':
 			$type=_("Work experience");
-			break;	
+			break;
 		default:
 			$type=$data['Staff Type'];
 			break;
@@ -157,6 +160,7 @@ function employees($_data, $db, $user, $type='') {
 	echo json_encode($response);
 }
 
+
 function contractors($_data, $db, $user) {
 	global $db;
 
@@ -170,7 +174,7 @@ function contractors($_data, $db, $user) {
 
 	$adata=array();
 	foreach ($db->query($sql) as $data) {
-	
+
 
 		switch ($data['User Active']) {
 		case 'Yes':
@@ -186,7 +190,7 @@ function contractors($_data, $db, $user) {
 			$user_active=$data['User Active'];
 			break;
 		}
-		
+
 		switch ($data['Staff Type']) {
 		case 'Employee':
 			$type=_('Employee');
@@ -199,7 +203,7 @@ function contractors($_data, $db, $user) {
 			break;
 		case 'WorkExperience':
 			$type=_("Work experience");
-			break;	
+			break;
 		default:
 			$type=$data['Staff Type'];
 			break;
@@ -262,7 +266,7 @@ function timesheets($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	
+
 	$adata=array();
 
 	foreach ($db->query($sql) as $data) {
@@ -291,6 +295,118 @@ function timesheets($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function timesheet_records($_data, $db, $user) {
+	global $db;
+	$rtext_label='request';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+
+
+
+			switch ($data['Timesheet Record Source']) {
+			case 'ClockingMachine':
+				$source=_('Clocking machine');
+				break;
+			case 'Manual':
+				$source=_('Manual');
+				break;
+			case 'API':
+				$source='API';
+				break;
+			default:
+				$source=$data['Timesheet Record Source'];
+				break;
+			}
+			switch ($data['Timesheet Record Type']) {
+			case 'WorkingHoursMark':
+				$type=_('Working hours mark');
+				break;
+			case 'OvertimeMark':
+				$type=_('Overtime mark');
+				break;
+			case 'CheckRecord':
+				$type=_('Clocking record');
+				break;		
+		
+		
+			default:
+				$type=$data['Timesheet Record Type'];
+				break;
+			}
+			
+			
+			
+
+			switch ($data['Timesheet Record Action Type']) {
+			case 'Start':
+				$action_type=_('Start');
+				break;
+			case 'End':
+				$action_type=_('End');
+				break;
+			case 'Unknown':
+				$action_type=_('Unknown');
+				break;
+
+			default:
+				$action_type=$data['Timesheet Record Action Type'];
+				break;
+			}
+
+
+
+			$adata[]=array(
+
+				'id'=>(integer) $data['Timesheet Record Key'],
+				'staff_key'=>(integer) $data['Timesheet Record Staff Key'],
+				'alias'=>$data['Staff Alias'],
+				'name'=>$data['Staff Name'],
+                 'type'=>$type,
+                 'action_type'=>$action_type,
+                 'source'=>$source,
+
+				'date'=>($data['Timesheet Record Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])):''),
+				'time'=>($data['Timesheet Record Date']!=''?strftime("%H:%M %Z", strtotime($data['Timesheet Record Date'])):''),
+
+
+			);
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

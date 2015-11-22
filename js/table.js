@@ -54,7 +54,7 @@ function change_period(period) {
     rows.fetch({
         reset: true
     });
-
+    if(with_elements)
     get_elements_numbers(rows.tab, rows.parameters)
 
 }

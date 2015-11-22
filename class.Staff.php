@@ -482,8 +482,8 @@ class Staff extends DB_Table{
 
 	function create_timesheet_record($data) {
 
-		$data['Staff Timesheet Record Staff Key']=$this->id;
-		$timesheet_record=new Staff_Timesheet_Record('new', $data);
+		$data['Timesheet Record Staff Key']=$this->id;
+		$timesheet_record=new Timesheet_Record('new', $data);
 
 		$this->create_timesheet_record_error=$timesheet_record->error;
 		$this->create_timesheet_record_duplicated=$timesheet_record->duplicated;

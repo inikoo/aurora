@@ -33,10 +33,16 @@ function get_table_totals($sql_totals, $wheref='', $record_label='') {
 	if ($sql_totals) {
 		$sql=trim($sql_totals." $wheref");
 
-		if ($row = $db->query($sql)->fetch()) {
-			$total=$row['num'];
-		}
+		if ($result=$db->query($sql)) {
 
+			if ($row = $result->fetch()) {
+				$total=$row['num'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+
+		}
 
 		if ($wheref!='') {
 			$sql=$sql_totals;

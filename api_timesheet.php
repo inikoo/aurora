@@ -11,7 +11,7 @@
 */
 
 include_once 'class.Staff.php';
-include_once 'class.Staff_Timesheet_Record.php';
+include_once 'class.Timesheet_Record.php';
 
 function post_timesheet($db, $editor, $api_key_key) {
 
@@ -49,8 +49,8 @@ function post_timesheet($db, $editor, $api_key_key) {
 
 	}
 	$data=array(
-		'Staff Timesheet Record Date'=>$_REQUEST['Date'],
-		'Staff Timesheet Record Source'=>$source,
+		'Timesheet Record Date'=>$_REQUEST['Date'],
+		'Timesheet Record Source'=>$source,
 		'editor'=>$editor
 	);
 

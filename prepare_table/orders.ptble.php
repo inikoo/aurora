@@ -146,7 +146,7 @@ if (isset($parameters['period'])) {
 	$where.=$where_interval['mysql'];
 }
 
-if (isset($parameters['period'])) {
+if (isset($parameters['elements_type'])) {
 
 
 	switch ($parameters['elements_type']) {

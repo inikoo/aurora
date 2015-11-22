@@ -28,7 +28,7 @@ foreach ($files as $file) {
 					$datetime=parse_datetime($row[2], 'biotime');
 					$staff_payroll_id=parse_staff_payroll_id($row[1], 'biotime');
 					if ($datetime and $staff_payroll_id) {
-						$result=process_timesheet_reading($api_key.$service_url, $staff_payroll_id, $datetime);
+						$result=process_timesheet_reading($api_key,$service_url, $staff_payroll_id, $datetime);
 						if ($result['state']=='Error') {
 							$error=true;
 						}else {
@@ -142,8 +142,6 @@ function process_timesheet_reading($api_key,$service_url, $staff_payroll_id, $da
 
 
 }
-
-
 ?>
 
 </code>

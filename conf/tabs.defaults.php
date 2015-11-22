@@ -685,6 +685,30 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
 	),
+	'timesheets.records'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+
+	),
+	'employee.timesheets.records'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+				'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+
+	),
 	'employee.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -809,7 +833,9 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'ip',
-		'f_period'=>'all',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
 
 	),
 	'staff.user.api_keys'=>array(
@@ -828,6 +854,9 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
 
 	),
 	'users.staff.login_history'=>array(

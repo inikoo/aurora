@@ -761,10 +761,24 @@ $modules=array(
 
 		'sections'=>array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
+				
+				'subtabs_parent'=>array(
+					'timesheets.timesheets'=>'timesheets',
+					'timesheets.records'=>'timesheets',
+					
+
+				),
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
-					'timesheets'=>array('label'=>_('Timesheets'), 'title'=>_('Timesheets')),
+					'timesheets'=>array('label'=>_('Timesheets'),
+					'subtabs'=>array(
+							'timesheets.timesheets'=>array('label'=>_('Timesheets')),
+							'timesheets.records'=>array('label'=>_('Records')),
+
+						)
+					
+					),
 
 				)
 
@@ -791,10 +805,25 @@ $modules=array(
 				)
 			),
 			'employee'=>array('type'=>'object',
+			
+			'subtabs_parent'=>array(
+					'employee.timesheets.timesheets'=>'employee.timesheets',
+					'employee.timesheets.records'=>'employee.timesheets',
+					
+
+				),
+			
 				'tabs'=>array(
 					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
 					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'employee.timesheet'=>array('label'=>_('Timesheet'), 'title'=>_('Timesheet')),
+					'employee.timesheets'=>array('label'=>_('Timesheets'),
+					'subtabs'=>array(
+							'employee.timesheets.timesheets'=>array('label'=>_('Timesheets')),
+							'employee.timesheets.records'=>array('label'=>_('Records')),
+
+						)
+					
+					),
 
 				)
 
