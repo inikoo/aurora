@@ -254,6 +254,10 @@ function get_object_showcase($data) {
 		include_once 'showcase/warehouse.show.php';
 		$html=get_warehouse_showcase($data);
 		break;
+	case 'timesheet':
+		include_once 'showcase/timesheet.show.php';
+		$html=get_timesheet_showcase($data);
+		break;	
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -600,6 +604,9 @@ function get_navigation($data) {
 		case ('contractor.new'):
 			return get_new_contractor_navigation($data);
 			break;
+		case ('timesheet'):
+			return get_timesheet_navigation($data);
+			break;	
 		}
 
 		break;

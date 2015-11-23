@@ -271,12 +271,16 @@ function timesheets($_data, $db, $user) {
 
 	foreach ($db->query($sql) as $data) {
 		$adata[]=array(
-			'id'=>(integer) $data['Staff Key'],
-			'formated_id'=>sprintf("%04d", $data['Staff Key']),
+			'id'=>(integer) $data['Timesheet Key'],
+			'staff_key'=>(integer) $data['Timesheet Staff Key'],
+			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
 
-			'payroll_id'=>$data['Staff ID'],
+			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+			'alias'=>$data['Staff Alias'],
 			'name'=>$data['Staff Name'],
-			'date'=>($data['Valid Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Valid Date'])):''),
+			'payroll_id'=>$data['Staff ID'],
+			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
+			'clocked_hours'=>number($data['Timesheet Clocked Hours'],2)
 		);
 
 	}
@@ -336,16 +340,16 @@ function timesheet_records($_data, $db, $user) {
 				break;
 			case 'CheckRecord':
 				$type=_('Clocking record');
-				break;		
-		
-		
+				break;
+
+
 			default:
 				$type=$data['Timesheet Record Type'];
 				break;
 			}
-			
-			
-			
+
+
+
 
 			switch ($data['Timesheet Record Action Type']) {
 			case 'Start':
@@ -369,11 +373,13 @@ function timesheet_records($_data, $db, $user) {
 
 				'id'=>(integer) $data['Timesheet Record Key'],
 				'staff_key'=>(integer) $data['Timesheet Record Staff Key'],
+				'staff_formated_id'=>sprintf("%04d", $data['Timesheet Record Staff Key']),
+
 				'alias'=>$data['Staff Alias'],
 				'name'=>$data['Staff Name'],
-                 'type'=>$type,
-                 'action_type'=>$action_type,
-                 'source'=>$source,
+				'type'=>$type,
+				'action_type'=>$action_type,
+				'source'=>$source,
 
 				'date'=>($data['Timesheet Record Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])):''),
 				'time'=>($data['Timesheet Record Date']!=''?strftime("%H:%M %Z", strtotime($data['Timesheet Record Date'])):''),

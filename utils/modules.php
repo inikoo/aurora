@@ -761,23 +761,23 @@ $modules=array(
 
 		'sections'=>array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
-				
+
 				'subtabs_parent'=>array(
 					'timesheets.timesheets'=>'timesheets',
 					'timesheets.records'=>'timesheets',
-					
+
 
 				),
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
 					'timesheets'=>array('label'=>_('Timesheets'),
-					'subtabs'=>array(
+						'subtabs'=>array(
 							'timesheets.timesheets'=>array('label'=>_('Timesheets')),
 							'timesheets.records'=>array('label'=>_('Records')),
 
 						)
-					
+
 					),
 
 				)
@@ -805,24 +805,24 @@ $modules=array(
 				)
 			),
 			'employee'=>array('type'=>'object',
-			
-			'subtabs_parent'=>array(
+
+				'subtabs_parent'=>array(
 					'employee.timesheets.timesheets'=>'employee.timesheets',
 					'employee.timesheets.records'=>'employee.timesheets',
-					
+
 
 				),
-			
+
 				'tabs'=>array(
 					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
 					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
-					'subtabs'=>array(
+						'subtabs'=>array(
 							'employee.timesheets.timesheets'=>array('label'=>_('Timesheets')),
 							'employee.timesheets.records'=>array('label'=>_('Records')),
 
 						)
-					
+
 					),
 
 				)
@@ -849,6 +849,14 @@ $modules=array(
 			'contractor.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'contractor.new'=>array('label'=>_('New contractor')),
+
+				)
+
+			),
+
+			'timesheet'=>array('type'=>'object',
+				'tabs'=>array(
+					'timesheet.timesheet_records'=>array('label'=>_('Clocking records')),
 
 				)
 
@@ -940,18 +948,18 @@ $modules=array(
 			'staff.user.api_key.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'staff.user.api_key.new'=>array('label'=>_('New API')),
-	
+
 				)
 			),
 			'staff.user.api_key'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'staff.user.api_key.details'=>array('label'=>_('Details'), 'icon'=>'database'),
 					'staff.user.api_key.requests'=>array('label'=>_('Requests'), 'icon'=>'arrow-circle-right'),
-	
+
 				)
 			),
-			
-			
+
+
 			'payment_service_provider'=>array('type'=>'object',
 				'tabs'=>array(
 					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database'),
@@ -997,7 +1005,7 @@ $modules=array(
 			),
 		)
 	),
-	
+
 	'help'=>array(
 		'sections'=>array(
 			'help'=>array('type'=>'object', 'label'=>_('Help'), 'icon'=>'shopping-cart', 'id'=>'forbidden',

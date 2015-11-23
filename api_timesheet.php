@@ -12,6 +12,7 @@
 
 include_once 'class.Staff.php';
 include_once 'class.Timesheet_Record.php';
+include_once 'class.Timesheet.php';
 
 function post_timesheet($db, $editor, $api_key_key) {
 
@@ -21,9 +22,9 @@ function post_timesheet($db, $editor, $api_key_key) {
 	}elseif (isset($_REQUEST['Staff Key'])) {
 		$staff=new Staff($_REQUEST['Staff Key']);
 	}elseif (isset($_REQUEST['Staff_Official_ID'])) {
-		$staff=new Staff('id', $_REQUEST['Staff_Official_ID']);
+		$staff=new Staff('staff_id', $_REQUEST['Staff_Official_ID']);
 	}elseif (isset($_REQUEST['Staff Official ID'])) {
-		$staff=new Staff('id', $_REQUEST['Staff Official ID']);
+		$staff=new Staff('staff_id', $_REQUEST['Staff Official ID']);
 	}elseif (isset($_REQUEST['Staff_Alias'])) {
 		$staff=new Staff('alias', $_REQUEST['Staff_Alias']);
 	}elseif (isset($_REQUEST['Staff Alias'])) {

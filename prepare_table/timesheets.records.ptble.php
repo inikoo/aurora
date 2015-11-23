@@ -70,7 +70,7 @@ $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
-`Timesheet Record Key`,`Timesheet Record Source`,`Staff Alias`,`Timesheet Record Staff Key`,`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
+`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,`Staff Alias`,`Timesheet Record Staff Key`,`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
 ";
 
 ?>

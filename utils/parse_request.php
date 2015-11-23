@@ -982,6 +982,23 @@ function parse_request($_data, $db) {
 
 
 			break;
+			
+			case 'timesheet':
+
+			$module='hr';
+			$section='timesheet';
+			$object='timesheet';
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}
+			}
+
+			break;
+			
 		case 'employee':
 
 			$module='hr';
