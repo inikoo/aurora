@@ -14,6 +14,13 @@ function get_invalid_message($type) {
 
 	$messages=array();
 	switch ($type) {
+	case 'float_unsigned':
+		$messages=array(
+			'not_numeric'=>_('Value has to be a number'),
+			'negative'=>_('Value has to be a positive'),
+			'empty'=>_("Value can't be empty"),
+		);
+		break;
 	case 'bigint_unsigned':
 		$messages=array(
 			'not_integer'=>sprintf(_('Value has to be a positive integer. e.g. %s'), rand(5, 25)),

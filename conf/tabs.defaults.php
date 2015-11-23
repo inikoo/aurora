@@ -677,13 +677,16 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
 	),
-	'timesheets'=>array(
+	'timesheets.timesheets'=>array(
 		'view'=>'overview',
-		'sort_key'=>'id',
+		'sort_key'=>'date',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'name'
+		'f_field'=>'alias',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
 	),
 	'timesheets.records'=>array(
 		'view'=>'overview',

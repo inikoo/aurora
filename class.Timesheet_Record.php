@@ -5,7 +5,7 @@
  Autor: Raul Perusquia <raul@inikoo.com>
 
  Copyright (c) 2014, Inikoo
- Created: 21 November 2015 at 18:54:03 GMT GMT Sheffield UK
+ Created: 21 November 2015 at 18:54:03 GMT Sheffield UK
 
  Version 2.0
 */
@@ -22,7 +22,7 @@ class Timesheet_Record extends DB_Table {
 		$this->ignore_fields=array('Timesheet Record Key');
 
 		if (is_numeric($arg1)) {
-			$this->get_data('key', $arg1);
+			$this->get_data('id', $arg1);
 			return ;
 		}
 		if (preg_match('/^(create|new)/i', $arg1)) {
@@ -39,7 +39,7 @@ class Timesheet_Record extends DB_Table {
 
 	function get_data($tipo, $tag) {
 
-		if ($tipo=='key')
+		if ($tipo=='id')
 			$sql=sprintf("select * from `Timesheet Record Dimension` where `Timesheet Record Key`=%d", $tag);
 		else
 			return;
@@ -119,6 +119,11 @@ class Timesheet_Record extends DB_Table {
 			$this->new=true;
 
 			$this->get_data('key', $this->id);
+			
+			
+			
+			
+			
 		} else {
 			$this->error=true;
 

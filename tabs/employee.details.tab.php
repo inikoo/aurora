@@ -15,6 +15,10 @@ include_once 'utils/invalid_messages.php';
 $employee=$state['_object'];
 $employee->get_user_data();
 
+$options_Staff_Payment_Terms=array(
+	'Monthy'=>_('Monthy (fixed)'), 'PerHour'=>_('Per hour (prorata)')
+);
+
 $options_Staff_Type=array(
 	'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
 );
@@ -59,6 +63,8 @@ foreach (preg_split('/,/', $employee->get('Staff Supervisor')) as $current_super
 
 asort($options_Staff_Position);
 asort($options_Staff_Supervisor);
+asort($options_Staff_Payment_Terms);
+
 
 asort($options_Staff_Type);
 asort($options_yn);
@@ -244,6 +250,45 @@ $object_fields=array(
 
 		)
 	),
+	
+		array(
+		'label'=>_('Working hours & salary'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			array(
+
+				'id'=>'Staff_Working_Hours',
+				'edit'=>'option',
+				'value'=>$employee->get('Staff Working Hours'),
+				'formated_value'=>$employee->get('Working Hours'),
+				'options'=>$options_Staff_Type,
+				'label'=>ucfirst($employee->get_field_label('Staff Working Hours')),
+			),
+
+			array(
+
+				'id'=>'Staff_Payment_Terms',
+				'edit'=>'option',
+				'value'=>$employee->get('Staff Payment Terms'),
+				'formated_value'=>$employee->get('Payment Terms'),
+				'options'=>$options_Staff_Payment_Terms,
+				'label'=>ucfirst($employee->get_field_label('Staff Payment Terms')),
+			),
+			array(
+
+				'id'=>'Staff_Salary_Base_Rate',
+				'edit'=>'float_unsigned',
+				'value'=>$employee->get('Staff Salary Base Rate'),
+				'formated_value'=>$employee->get('Salary Base Rate'),
+				'label'=>ucfirst($employee->get_field_label('Staff Salary Base Rate')),
+				'invalid_msg'=>get_invalid_message('float_unsigned'),
+			)
+			
+
+		)
+	),
+	
 	array(
 		'label'=>_('System roles'),
 		'show_title'=>true,

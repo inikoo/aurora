@@ -27,7 +27,7 @@ class Staff extends DB_Table{
 		$this->ignore_fields=array('Staff Key');
 
 		if (is_numeric($arg1)) {
-			$this->get_data('key', $arg1);
+			$this->get_data('id', $arg1);
 			return ;
 		}
 		if (preg_match('/^find/i', $arg1)) {
@@ -51,9 +51,9 @@ class Staff extends DB_Table{
 	function get_data($key, $id) {
 		if ($key=='alias')
 			$sql=sprintf("select * from `Staff Dimension` where `Staff Alias`=%s", prepare_mysql($id));
-		elseif ($key=='id')
+		elseif ($key=='staff_id')
 			$sql=sprintf("select * from  `Staff Dimension`  where `Staff ID`=%s", prepare_mysql($id));
-		elseif ($key=='key')
+		elseif ($key=='id')
 			$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d", $id);
 		else
 			return;
@@ -345,7 +345,7 @@ class Staff extends DB_Table{
 		if ($row=mysql_fetch_array($res)) {
 			$this->found=true;
 			$this->found_key=$row['Staff Key'];
-			$this->get_data('key', $this->found_key);
+			$this->get_data('id', $this->found_key);
 		}
 
 
@@ -361,10 +361,6 @@ class Staff extends DB_Table{
 
 
 	}
-
-
-
-
 
 	function create($data) {
 
@@ -398,7 +394,7 @@ class Staff extends DB_Table{
 
 
 			$this->id=$this->db->lastInsertId();
-			$this->get_data('key', $this->id);
+			$this->get_data('id', $this->id);
 
 
 
@@ -483,12 +479,25 @@ class Staff extends DB_Table{
 	function create_timesheet_record($data) {
 
 		$data['Timesheet Record Staff Key']=$this->id;
-		$timesheet_record=new Timesheet_Record('new', $data);
+		$this->timesheet_record=new Timesheet_Record('new', $data);
 
-		$this->create_timesheet_record_error=$timesheet_record->error;
-		$this->create_timesheet_record_duplicated=$timesheet_record->duplicated;
-		$this->create_timesheet_record_msg=$timesheet_record->msg;
-		$this->timesheet_record=$timesheet_record;
+		$this->create_timesheet_record_error=$this->timesheet_record->error;
+		$this->create_timesheet_record_duplicated=$this->timesheet_record->duplicated;
+		$this->create_timesheet_record_msg=$this->timesheet_record->msg;
+		
+		
+		if($this->timesheet_record->new){
+		    $timesheet_data=array(
+		    'Timesheet Date'=>date("Y-m-d", strtotime($this->timesheet_record->data['Timesheet Record Date'].' +0:00')),
+		    'Timesheet Staff Key'=>$this->id,
+		    'editor'=>$this->editor
+		    );
+		    $timesheet=new Timesheet('find',$timesheet_data,'create');
+		    
+		    $this->timesheet_record->update(array('Timesheet Key'=>$timesheet->id));
+		    $timesheet->process_records();
+		}
+		
 	}
 
 

@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Refurbished: 5 November 2015 at 19:12:32 CET, Venice Airport
+ Refurbished:22 November 2015 at 21:37:03 GMT Sheffield UK
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,45 +11,64 @@
 
 
 
-if ($parameters['parent']=='company') {
-	$where=' where true';
+switch ($parameters['parent']) {
+    case 'employee':
+        $where=sprintf(" where  TD.`Timesheet Staff Key`=%d ",$parameters['parent_key']);
+        break;
+    
+     case 'account':
+        $where=sprintf(" where true ");
+        break;    
+    default:
+       exit('parent not suported');
+        break;
+}
 
-}elseif ($parameters['parent']=='employee') {
-	$where=sprintf(' where STD.`Staff Key`=%d', $parameters['parent_key']);
 
-}else {
+if (isset($parameters['period'])) {
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
-	$where=' where false';
+	$where_interval=prepare_mysql_dates($from, $to, '`Timesheet Date`');
+	$where.=$where_interval['mysql'];
 }
 
 
 
-$wheref='';
 
-if ($parameters['f_field']=='name' and $f_value!=''  )
-	$wheref.=" and  `Staff Name` like '".addslashes($f_value)."%'    ";
-elseif ($parameters['f_field']=='id')
-	$wheref.=sprintf(" and  `Staff Key`=%d ", $f_value);
-if ($parameters['f_field']=='alias' and $f_value!=''  )
+$wheref='';
+if ($parameters['f_field']=='alias' and $f_value!=''  ) {
 	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
+}elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
+	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+}
+
 
 
 
 $_order=$order;
 $_dir=$order_direction;
 
-if ($order=='name')
+
+if ($order=='alias')
+	$order='`Staff Alias`';
+	elseif ($order=='name')
 	$order='`Staff Name`';
 elseif ($order=='date')
-	$order='`Date`';
-elseif ($order=='id')
-	$order='`Staff Key`';
+	$order='`Timesheet Date`';
+
 else
-	$order='STD.`Staff Timesheet Key`';
-
-$table=' `Staff Timesheet Dimension` STD left join  `Staff Dimension` SD on (STD.`Staff Key`=SD.`Staff Key`)  ';
+	$order='`Timesheet Key`';
 
 
-$sql_totals="select count(Distinct STD.`Staff Timesheet Key`) as num from $table  $where  ";
-$fields=" `Staff Alias`,STD.`Staff Key`,`Staff Name`,`Date`,STD.`Staff Timesheet Key`  ";
+
+
+$table='  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
+
+$sql_totals="select count(*) as num from $table  $where  ";
+
+//print $sql_totals;
+$fields="
+`Timesheet Key`,`Timesheet Clocked Hours`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
+";
+
 ?>

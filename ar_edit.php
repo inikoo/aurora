@@ -62,6 +62,15 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 
 	$object=get_object($data['object'], $data['key']);
+
+
+	if (!$object->id) {
+		$response=array('state'=>405, 'resp'=>'Object not found');
+		echo json_encode($response);
+		exit;
+
+	}
+
 	$object->editor=$editor;
 
 	$field=preg_replace('/_/', ' ', $data['field']);
@@ -78,16 +87,11 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 	$object->update(array($field=>$data['value']), $options);
 
-
-
-
 	if (isset($data['metadata'])) {
-
 		if (isset($data['metadata']['extra_fields'])) {
 			foreach ( $data['metadata']['extra_fields'] as $extra_field) {
 
 				$options='';
-
 				$_field=preg_replace('/_/', ' ', $extra_field['field']);
 
 				$_value=$extra_field['value'];
@@ -116,7 +120,10 @@ function edit_field($account, $db, $user, $editor, $data) {
 		}else {
 			$msg='';
 		}
-
+		
+		
+		
+		
 		$response=array(
 			'state'=>200,
 			'msg'=>$msg,
@@ -136,7 +143,7 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 function new_object($account, $db, $user, $editor, $data) {
 
-    global $account,$smarty;
+	global $account, $smarty;
 
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;
@@ -145,7 +152,7 @@ function new_object($account, $db, $user, $editor, $data) {
 	case 'Staff':
 		include_once 'class.Staff.php';
 		$object=$parent->create_staff($data['fields_data']);
-		$pcard_template='presentation_cards/api_key.pcard.tpl';
+		$pcard_template='presentation_cards/employee.pcard.tpl';
 		break;
 	case 'API_Key':
 		include_once 'class.API_Key.php';
