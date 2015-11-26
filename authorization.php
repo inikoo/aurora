@@ -108,7 +108,6 @@ elseif ($handle) {
 
 
 
-
 if ($auth->is_authenticated()) {
 
 

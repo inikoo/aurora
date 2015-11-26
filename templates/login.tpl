@@ -17,10 +17,14 @@
 	<div class="grid__container">
 		<div style="margin-bottom:30px">
 			<div class="text--center">
-				<img style="width:100px" src="art/inikoo_logo.png">
+				<img style="width:150px" src="art/aurora_logo.png">
 			</div>
-			<div class="text--center">
-				Inikoo
+			<div class="text--center" style="font-size:30px;
+			background: -webkit-linear-gradient(#A02070, #EDE275);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+			">
+				aurora
 			</div>
 		</div>
 		<form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off" action="authorization.php">
