@@ -530,9 +530,11 @@ function get_new_contractor_navigation($data) {
 
 function get_timesheet_navigation($data) {
 
-	global $smarty, $db;
+	global $smarty, $db, $user;
 
 	$object=$data['_object'];
+	$object->get_staff_data();
+
 	$left_buttons=array();
 	$right_buttons=array();
 
@@ -543,14 +545,17 @@ function get_timesheet_navigation($data) {
 
 		switch ($data['parent']) {
 		case 'account':
-			$tab='timesheets.timesheets';
+			$tab='employees.timesheets';
 			$_section='timesheets';
 			break;
 		case 'employee':
 			$tab='employee.timesheets';
 			$_section='timesheets';
 			break;
-
+		case 'timesheet':
+			$tab='timesheet.timesheets';
+			$_section='timesheets';
+			break;
 
 		}
 
@@ -690,7 +695,7 @@ function get_timesheet_navigation($data) {
 
 
 
-	$title= _('Timesheet').' <span class="id Staff_Name">'.$object->get('Staff Name').'</span> <span class="id Staff_Date">'.$object->get('Date').'</span> <span class="id">('.$object->get_formated_id().')</span>';
+	$title= '<span class=" Timesheet_Date">'.$object->get('Date').'</span>, <span class=" Timesheet_Staff_Name">'.$object->get('Timesheet Staff Name').'</span>  <span class="id hide">('.$object->get_formated_id().')</span>';
 
 
 	$_content=array(

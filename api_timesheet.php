@@ -52,6 +52,7 @@ function post_timesheet($db, $editor, $api_key_key) {
 	$data=array(
 		'Timesheet Record Date'=>$_REQUEST['Date'],
 		'Timesheet Record Source'=>$source,
+		'Timesheet Record Type'=>'ClockingRecord',
 		'editor'=>$editor
 	);
 

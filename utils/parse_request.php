@@ -24,7 +24,6 @@ function parse_request($_data, $db) {
 	$original_request=preg_replace('/^\//', '', $request);
 	$view_path=preg_split('/\//', $original_request);
 
-
 	$module='utils';
 	$section='not_found';
 	$tab='not_found';
@@ -976,14 +975,30 @@ function parse_request($_data, $db) {
 
 					$section='organization';
 				}
+				
+				elseif ($view_path[0]=='timesheet') {
+							$section='timesheet';
+							$object='timesheet';
+							$parent='account';
+							$parent_key=1;
+							if (isset($view_path[1])) {
+								if (is_numeric($view_path[1])) {
+									$key=$view_path[1];
+								}
+							}
+
+
+
+						}
+				
 			}
 
 
 
 
 			break;
-			
-			case 'timesheet':
+
+		case 'timesheet':
 
 			$module='hr';
 			$section='timesheet';
@@ -998,7 +1013,7 @@ function parse_request($_data, $db) {
 			}
 
 			break;
-			
+
 		case 'employee':
 
 			$module='hr';
@@ -1010,6 +1025,26 @@ function parse_request($_data, $db) {
 			if (isset($view_path[0])) {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
+
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='timesheet') {
+							$section='timesheet';
+							$object='timesheet';
+							$parent='employee';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}
+							}
+
+
+
+						}
+					}
+
+
+
 				}elseif ($view_path[0]=='new') {
 					$section='employee.new';
 					$object='';
@@ -1084,6 +1119,13 @@ function parse_request($_data, $db) {
 
 
 				}
+				
+				
+				
+				
+				
+				
+				
 				elseif ($view_path[0]=='user') {
 
 					if (isset($view_path[1])) {

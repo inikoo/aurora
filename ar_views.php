@@ -59,7 +59,6 @@ case 'views':
 		if (!$_object->id  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 
 
-
 			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'');
 
 
@@ -283,7 +282,6 @@ function get_menu($data) {
 
 
 function get_navigation($data) {
-
 
 
 

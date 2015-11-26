@@ -485,8 +485,8 @@ class Staff extends DB_Table{
 		$this->create_timesheet_record_duplicated=$this->timesheet_record->duplicated;
 		$this->create_timesheet_record_msg=$this->timesheet_record->msg;
 		
-		
 		if($this->timesheet_record->new){
+		
 		    $timesheet_data=array(
 		    'Timesheet Date'=>date("Y-m-d", strtotime($this->timesheet_record->data['Timesheet Record Date'].' +0:00')),
 		    'Timesheet Staff Key'=>$this->id,
@@ -494,8 +494,11 @@ class Staff extends DB_Table{
 		    );
 		    $timesheet=new Timesheet('find',$timesheet_data,'create');
 		    
-		    $this->timesheet_record->update(array('Timesheet Key'=>$timesheet->id));
-		    $timesheet->process_records();
+		    $this->timesheet_record->update(array('Timesheet Record Timesheet Key'=>$timesheet->id));
+		    $timesheet->process_records_action_type();
+		    $timesheet->update_clocked_hours();
+		    $timesheet->update_clocking_records();
+		    
 		}
 		
 	}
@@ -787,7 +790,6 @@ class Staff extends DB_Table{
 
 			foreach ($row as $key=>$value) {
 				$this->data['Staff '.$key]=$value;
-				// print "$key -> $value\n";
 			}
 		}
 

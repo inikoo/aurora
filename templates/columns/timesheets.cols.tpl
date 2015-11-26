@@ -27,7 +27,12 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view('timesheet/'+this.model.get("id"))
+                 {if $data['object']==''}
+                                change_view('hr/timesheet/'+this.model.get("id"))
+
+                {else}
+                change_view('{$data['object']}/{$data['key']}/timesheet/'+this.model.get("id"))
+                 {/if}   
             }
         },
         className: "link"
@@ -69,10 +74,16 @@ var columns = [
     
     },
   
-
+ {
+    name: "clocking_records",
+    label: "{t}Clockings{/t}",
+     sortType: "toggle",
+     cell: Backgrid.StringCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
  {
     name: "clocked_hours",
-    label: "{t}Clocked hours{/t}",
+    label: "{t}Clocked{/t}",
      sortType: "toggle",
      cell: Backgrid.StringCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell

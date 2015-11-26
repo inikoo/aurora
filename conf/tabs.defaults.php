@@ -677,7 +677,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
 	),
-	'timesheets.timesheets'=>array(
+	'employees.timesheets'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -688,7 +688,7 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'all',
 	),
-	'timesheets.records'=>array(
+	'employees.timesheets.records'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -712,6 +712,17 @@ $tab_defaults=array(
 		'period'=>'all',
 
 	),
+	'employee.timesheets'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+	),
 	'employee.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -720,6 +731,19 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+	
+	'timesheet.records'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+		
+
+	),
+	
+	
 	'contractor.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',

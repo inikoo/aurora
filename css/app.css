@@ -29,7 +29,7 @@ html, body {
   html table, body table {
     border-collapse: collapse; }
   html .aright, body .aright {
-    text-align: right; }
+    text-align: right !important; }
   html .acenter, body .acenter {
     text-align: center; }
   html .invisible, body .invisible {
@@ -57,7 +57,7 @@ html, body {
 a {
   color: #555; }
 
-.link {
+.link, .checkbox {
   cursor: pointer; }
 
 #top_bar {
@@ -459,6 +459,32 @@ a {
     width: 4.25%;
     text-align: center; }
 
+#table_buttons div:last-of-type {
+  border-right: 1px solid #ccc;
+  margin-right: 2px; }
+#table_buttons input {
+  position: relative;
+  bottom: 2px;
+  width: 206px;
+  padding: 4px 6px;
+  font-weight: normal;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  margin: 0px;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: normal;
+  outline: none;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-appearance: none; }
+  #table_buttons input.time_input_field {
+    width: 40px;
+    text-align: center; }
+
 .table_info {
   padding-left: 10px;
   border-bottom: 1px solid #ccc;
@@ -754,6 +780,19 @@ a {
       color: #0EBFE9;
       transition: color .2s ease-in-out; }
 
+.inline_new_object {
+  float: right;
+  margin: 0px 20px 0px 10px; }
+  .inline_new_object .valid .save {
+    opacity: 1;
+    cursor: pointer; }
+  .inline_new_object .invalid {
+    cursor: normal; }
+
+#inline_new_object_msg {
+  float: right;
+  margin-right: 10px; }
+
 .new_object .controls td {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -960,10 +999,44 @@ a {
 .success {
   color: #26A65B; }
 
+.valid {
+  color: #0EBFE9; }
+
 .warning {
   color: #ED9121; }
 
 .error, .invalid {
   color: tomato; }
+
+.disabled {
+  opacity: .5;
+  color: #777; }
+
+#table .padding_left_10 {
+  padding-left: 10px; }
+#table .padding_left_20 {
+  padding-left: 20px; }
+#table .padding_left_30 {
+  padding-left: 30px; }
+#table .padding_right_10 {
+  padding-right: 10px; }
+#table .padding_right_20 {
+  padding-right: 20px; }
+#table .padding_right_30 {
+  padding-right: 30px; }
+#table .width_20 {
+  width: 20px; }
+#table .width_50 {
+  width: 50px; }
+#table .width_100 {
+  width: 100px; }
+#table .width_150 {
+  width: 150px; }
+#table .width_200 {
+  width: 200px; }
+#table .width_250 {
+  width: 250px; }
+#table .width_300 {
+  width: 300px; }
 
 /*# sourceMappingURL=app.css.map */

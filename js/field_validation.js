@@ -7,6 +7,8 @@ function validate_field(field, new_value) {
 
     var field_data = $('#' + field + '_container')
 
+
+
     var validation = client_validation(field_data.attr('field_type'), field_data.attr('_required'), new_value, field)
 
     if (validation.class == 'valid' && field_data.attr('server_validation')) {
@@ -241,6 +243,61 @@ function client_validation(type, required, value, field) {
 
         break;
 
+    case 'time':
+
+        if (value.length > 5) {
+            return {
+                class: 'invalid',
+                type: 'invalid'
+            }
+        } else if (value.length == 1) {
+
+            var partial_timeReg = /^[0-9]$/
+            if (!partial_timeReg.test(value)) {
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            }
+
+        } else if (value.length == 2) {
+
+
+            var partial_timeReg = /^(1?[0-9]|2[0-3])|[0-9]:$/
+            if (!partial_timeReg.test(value)) {
+                return {
+                    class: 'invalid',
+
+                    type: 'invalid'
+                }
+            }
+
+
+        }else if (value.length == 4) {
+
+
+           var timelReg = /^(1?[0-9]|2[0-3])[0-5][0-9]$/
+        if (timelReg.test(value)) {
+
+            return {
+                class: 'valid',
+                type: 'valid'
+            }
+        }
+
+        }
+
+
+
+        var timelReg = /^(1?[0-9]|2[0-3]):[0-5][0-9]$/
+        if (!timelReg.test(value)) {
+
+            return {
+                class: 'potentially_valid',
+                type: 'invalid'
+            }
+        }
+
 
 
     default:
@@ -253,7 +310,7 @@ function client_validation(type, required, value, field) {
 }
 
 function server_validation(tipo, parent, parent_key, object, key, field, value) {
-$("#" + field + '_editor').addClass('waiting')
+    $("#" + field + '_editor').addClass('waiting')
     var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
 
     $.getJSON(request, function(data) {
@@ -282,21 +339,21 @@ $("#" + field + '_editor').addClass('waiting')
 
         if (validation == 'valid') {
             var msg = '';
-        }else{
-              $('#' + object + '_save').removeClass('valid').addClass('invalid')
-        
+        } else {
+            $('#' + object + '_save').removeClass('valid').addClass('invalid')
+
         }
-        
-        
-        
+
+
+
         $('#' + field + '_validation').addClass(validation)
 
         $('#' + field + '_msg').html(msg)
         $('#' + field + '_editor').addClass(validation)
 
-  if ($('#fields').hasClass('new_object')) {
-       check_if_form_is_valid()
-       }
+        if ($('#fields').hasClass('new_object')) {
+            check_if_form_is_valid()
+        }
 
 
 

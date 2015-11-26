@@ -16,7 +16,7 @@ switch ($parameters['parent']) {
         $where=sprintf(" where  TRD.`Timesheet Record Staff Key`=%d ",$parameters['parent_key']);
         break;
      case 'timesheet':
-        $where=sprintf(" where  TRD.`Timesheet Key`=%d ",$parameters['parent_key']);
+        $where=sprintf(" where  TRD.`Timesheet Record Timesheet Key`=%d ",$parameters['parent_key']);
         break;   
      case 'account':
         $where=sprintf(" where true ");
@@ -57,6 +57,8 @@ if ($order=='alias')
 	$order='`Staff Name`';
 elseif ($order=='date')
 	$order='`Timesheet Record Date`';
+	elseif ($order=='ignored')
+	$order='`Timesheet Record Ignored`';
 
 else
 	$order='`Timesheet Record Key`';
@@ -70,7 +72,7 @@ $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
-`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,`Staff Alias`,`Timesheet Record Staff Key`,`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
+`Timesheet Record Ignored`,`Timesheet Record Timesheet Key`,`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,`Staff Alias`,`Timesheet Record Staff Key`,`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
 ";
 
 ?>

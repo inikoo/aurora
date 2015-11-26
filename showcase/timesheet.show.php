@@ -14,6 +14,11 @@ function get_timesheet_showcase($data) {
 
     global $smarty;
      
+   // $timesheet= $data['_object'];
+    
+   // $timesheet->update_clocked_hours();
+     
+     
     $smarty->assign('timesheet',$data['_object']);
 
     return $smarty->fetch('showcase/timesheet.tpl');
