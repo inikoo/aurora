@@ -70,6 +70,7 @@ asort($options_Staff_Type);
 asort($options_yn);
 
 $object_fields=array(
+/*
 	array(
 		'label'=>_('Id'),
 		'show_title'=>true,
@@ -250,7 +251,7 @@ $object_fields=array(
 
 		)
 	),
-	
+*/	
 		array(
 		'label'=>_('Working hours & salary'),
 		'show_title'=>true,
@@ -259,7 +260,7 @@ $object_fields=array(
 			array(
 
 				'id'=>'Staff_Working_Hours',
-				'edit'=>'option',
+				'edit'=>'working_hours',
 				'value'=>$employee->get('Staff Working Hours'),
 				'formated_value'=>$employee->get('Working Hours'),
 				'options'=>$options_Staff_Type,
@@ -383,6 +384,20 @@ if ($employee->get('Staff User Key')) {
 	);
 
 }
+
+
+;
+$smarty->assign('day_labels',$day_labels=array(
+_('Weekdays'),
+_('Mon'),
+_('Tue'),
+_('Wed'),
+_('Thu'),
+_('Fri'),
+_('Weekend'),
+_('Sat'),
+_('Sun')
+));
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);

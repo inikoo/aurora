@@ -1,37 +1,25 @@
 <div id="fields"  class="details_data" >
 <table >
-
-
- {foreach from=$object_fields item=field_group } 
- <tr class="title" >
- <td  colspan=3>
-	{$field_group.label}
-	</td>
-</tr>
+{foreach from=$object_fields item=field_group } 
+    <tr class="title" >
+        <td  colspan=3>{$field_group.label}</td>
+    </tr>
  
  	{if isset($field_group.class)}{assign "field_class" $field_group.class}{else}{assign "field_class" ""}{/if} 
-
- 
- {if $field_class=='links'}
-{foreach from=$field_group.fields item=field name=fields} 
+    {if $field_class=='links'}
+    {foreach from=$field_group.fields item=field name=fields} 
 	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
-
-<tr  class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
- <td  colspan=3>
-	<i style="margin-right:10px" class="fa fa-link"></i> {$field.label}
-	</td>
-</tr>
-
-{/foreach}
-{else}
- 
-	{foreach from=$field_group.fields item=field name=fields} 
-	
+    <tr  class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
+        <td  colspan=3><i style="margin-right:10px" class="fa fa-link"></i> {$field.label}</td>
+    </tr>
+    {/foreach}
+    
+    {else}
+ 	{foreach from=$field_group.fields item=field name=fields} 
 	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
 	{if isset($field.class)}{assign "class" $field.class}{else}{assign "class" ""}{/if} 
 	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
 	{if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if} 
-
 	{if isset($field.server_validation)}{assign "server_validation" $field.server_validation}{else}{assign "server_validation" ""}{/if} 
 	{if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" ""}{/if} 
 	
@@ -61,7 +49,9 @@
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
-			{elseif $edit=='textarea'  } 
+		{elseif $edit=='working_hours'  } 
+			  {include file="working_hours.tpl" field=$field } 
+		{elseif $edit=='textarea'  } 
 		
 	
 		<textarea id="{$field.id}" class="input_field hide"   has_been_valid="0">{$field.value}</textarea>
