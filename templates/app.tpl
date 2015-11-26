@@ -3,7 +3,7 @@
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Inikoo</title>
+	<title>Aurora</title>
 	<link href="/art/inikoo_logo.png" rel="shortcut icon" type="image/x-icon" />
 	<link href="/css/jquery-ui.min.css" rel="stylesheet">
 	<link href="/css/font-awesome.min.css" rel="stylesheet">
@@ -47,7 +47,7 @@
 		<div id="app_leftmenu">
 			<div id="top_info">
 				<div id="inikoo_logo" class="link" onclick="help()" >
-					<img src="/art/inikoo_logo_small.png" /> 
+					<img src="/art/aurora_logo.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
 					<span>{$user->get('User Alias')}</span> 
