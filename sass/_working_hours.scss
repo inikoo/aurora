@@ -1,0 +1,18 @@
+.working_hours{
+padding:0px;margin:10px;position:relative;top:-30px;
+
+td.expand_days{
+    width:30px; 
+    .fa{
+        cursor:pointer;
+        opacity: .3;
+        &:hover{opacity: 1}
+        }
+    }
+
+td.day_labels{
+    min-width:80px; 
+    }
+
+
+}
