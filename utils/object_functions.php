@@ -108,11 +108,17 @@ function get_object($object_name, $key) {
 	case 'API Key':
 		require_once "class.API_Key.php";
 		$object=new API_Key($key);
-		break;	
+		break;
 	case 'timesheet':
 		require_once "class.Timesheet.php";
 		$object=new Timesheet($key);
-		break;	
+		break;
+	case 'timesheet_record':
+		require_once "class.Timesheet_Record.php";
+		$object=new Timesheet_Record($key);
+		break;
+
+
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

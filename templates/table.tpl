@@ -3,6 +3,7 @@
 {/if}
 {if isset($elements) and count(elements)>0}
 
+
 <div id="elements" class="elements tabs ">
 <div  id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon"  class="fa fa-bars" "></i></div>
 {foreach from=$elements item=element_group key=_elements_type} 
@@ -56,12 +57,26 @@
 	</div>
 	
 	{if isset($table_buttons) and count(table_buttons)>0}
+	<div id="table_buttons">
 	{foreach from=$table_buttons item=button } 
 	
-	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  class="square_button right"       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} title="{$button.title}">
-		<i class="fa fa-{$button.icon} fa-fw"></i> 
+	 {if isset($button.inline_new_object)} 
+	  {include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}} 
+	 {/if} 
+	
+	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
+	  
+	
+	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="fa fa-{$button.icon} fa-fw"></i> 
+
+
 	</div>
-	{/foreach}  
+	
+	
+	<span id="inline_new_object_msg" ></span>
+	
+	{/foreach}
+	  </div>
 	{/if}
 	
 	<span id="rtext"></span> 

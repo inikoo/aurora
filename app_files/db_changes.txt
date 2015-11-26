@@ -96,5 +96,10 @@ ALTER TABLE `Staff Dimension` CHANGE `Staff Valid from` `Staff Valid From` DATET
 //==
 
 DROP TABLE `User API Dimension`;
+ALTER TABLE `Staff Dimension` ADD `Staff Payment Terms` ENUM('Monthy','PerHour') NULL DEFAULT NULL AFTER `Staff Is Supervisor`;
+ALTER TABLE `Staff Dimension` ADD `Staff Base Rate` FLOAT UNSIGNED NULL AFTER `Staff Payment Terms`;
+ALTER TABLE `Staff Dimension` CHANGE `Staff Base Rate` `Staff Salary Base Rate` FLOAT UNSIGNED NULL DEFAULT NULL;
+
+
 
   

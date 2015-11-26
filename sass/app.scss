@@ -90,7 +90,7 @@ html, body {
         border-collapse: collapse;
     }
     .aright {
-        text-align: right;
+        text-align: right !important;
     }
     .acenter {
         text-align: center;
@@ -116,7 +116,7 @@ html, body {
 a {
     color: #555;
 }
-.link {
+.link,.checkbox {
     cursor: pointer;
 }
 #top_bar {
@@ -574,6 +574,48 @@ a {
         text-align: center;
     }
 }
+
+#table_buttons{
+div{
+&:last-of-type {
+border-right:1px solid #ccc;margin-right:2px;
+}
+}
+
+
+ input {
+        position: relative;
+        bottom: 2px;
+        width: 206px;
+        padding: 4px 6px;
+        font-weight: normal;
+        color: #555;
+        vertical-align: middle;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        margin: 0px;
+        font-family: inherit;
+        font-size: 100%;
+        line-height: normal;
+        outline: none;
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+        -webkit-appearance: none;
+       
+        
+        &.time_input_field {
+           width:40px;
+           text-align: center;
+        } 
+        
+        
+    }
+
+
+}
+
+
 .table_info {
     padding-left: 10px;
     border-bottom: 1px solid #ccc;
@@ -1001,6 +1043,21 @@ margin-top:20px;
     }
 }
 
+.inline_new_object{
+  float:right;margin:0px 20px 0px 10px;
+  .valid{
+   .save{opacity:1;cursor:pointer;}
+  }
+  
+  .invalid{cursor:normal;}
+  
+   
+
+}
+
+#inline_new_object_msg{float:right;margin-right:10px}
+
+
 .new_object{
 
 
@@ -1023,7 +1080,7 @@ margin-top:20px;
     
      .save{opacity: .4;
      
-          &.invalid{opacity:1;color:tomato}
+          &.invalid{opacity:1;color:$color_error}
           &.valid{opacity:1;
           &:hover{color:$color_save}
           
@@ -1037,7 +1094,7 @@ margin-top:20px;
     opacity:0;
        &.required{opacity:.2}
         &.required.valid{color:$color_success;opacity:.7}
-         &.invalid{opacity:1;color:tomato}
+         &.invalid{opacity:1;color:$color_error}
      }
      
   
@@ -1310,5 +1367,28 @@ right connector from last child*/
 
 
 .success{color:$color_success}
+.valid{color:$color_save}
+
 .warning{color:$color_warning}
 .error,.invalid{color:$color_error}
+.disabled{opacity:.5;color:#777}
+
+#table{
+.padding_left_10{padding-left:10px}
+ .padding_left_20{padding-left:20px}
+ .padding_left_30{padding-left:30px}
+
+ .padding_right_10{padding-right:10px}
+ .padding_right_20{padding-right:20px}
+ .padding_right_30{padding-right:30px}
+
+ .width_20{width:20px}
+ .width_50{width:50px}
+
+ .width_100{width:100px}
+ .width_150{width:150px}
+ .width_200{width:200px}
+ .width_250{width:250px}
+ .width_300{width:300px}
+
+}

@@ -37,7 +37,6 @@ function validate_form(object) {
 
         if ($('#' + field + '_validation').hasClass('invalid')) {
             form_validation = 'invalid'
-console.log(field+' '+'invalid')
 
         } else if ($('#' + field + '_validation').hasClass('potentially_valid')) {
 
@@ -54,10 +53,9 @@ console.log(field+' '+'invalid')
             }
             $('#' + field + '_msg').html(msg)
             $('#' + field + '_msg').removeClass('hide').addClass('invalid')
-            
-            console.log(field+' '+'invalid')
 
-            
+            //console.log(field+' '+'invalid')
+
         } else {
 
             $('#' + field + '_validation').removeClass('invalid')
@@ -85,26 +83,23 @@ console.log(field+' '+'invalid')
             } else {
 
             }
-            console.log(field+' '+validation.class)
-
+            //console.log(field+' '+validation.class)
 
         }
 
     });
 
- //  console.log('xxx>'+form_validation+'<<<')
-
+    //  console.log('xxx>'+form_validation+'<<<')
 
     //$('#' + object + '_controls').removeClass('waiting')
     $('#' + object + '_save_icon').addClass('fa-cloud')
     $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin')
-$('#' + object + '_save').addClass(form_validation)
+    $('#' + object + '_save').addClass(form_validation)
 
     $('#fields').attr('has_been_fully_validated', true);
 
 
-   console.log('#' + object + '_save')
-
+    //console.log('#' + object + '_save')
 }
 
 
@@ -128,7 +123,6 @@ function check_if_form_is_valid() {
 
 
         //    var validation = validate_field(field, value)
-
         //     if (validation.class == 'waiting') {
         //       return true
         // }
@@ -152,7 +146,7 @@ function save_new_object(object) {
 
     validate_form(object)
 
-//return
+    //return
     console.log($('#' + object + '_save').hasClass('valid'))
 
     if ($('#' + object + '_save').hasClass('valid')) {
@@ -186,22 +180,22 @@ function save_new_object(object) {
         console.log(request)
         //return;
         $.getJSON(request, function(data) {
-           // console.log(data)
+            // console.log(data)
             $('#' + object + '_save_icon').addClass('fa-cloud');
             $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
 
 
             if (data.state == 200) {
-                 $('#result').html(data.pcard)
-                
+                $('#result').html(data.pcard)
+
                 $('#fields').addClass('hide');
                 $('#result').removeClass('hide');
 
-                
-                
-               
-           
-           
+
+
+
+
+
             } else if (data.state == 400) {
 
                 $('#' + object + '_msg').html(data.msg).removeClass('hide').addClass('error')
@@ -216,12 +210,128 @@ function save_new_object(object) {
 
 
 }
+
+
+function save_inline_new_object(trigger) {
+
+
+    var object = $('#inline_new_object').attr('object')
+    var parent = $('#inline_new_object').attr('parent')
+    var parent_key = $('#inline_new_object').attr('parent_key')
+    var field = $('#inline_new_object').attr('field')
+    var field_edit = $('#' + field + '_container').attr('field_type')
+
+
+
+
+    if (!$('#' + field + '_editor').hasClass('valid')) {
+
+        return;
+    }
+
+    $('#' + field + '_editor').removeClass('valid ')
+    $('#' + object + '_save').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
+
+
+    var fields_data = {};
+    var re = new RegExp('_', 'g');
+
+    if (field_edit == 'time') {
+        value = clean_time($('#' + field).val())
+
+
+        value = $('#' + field + '_date').val() + ' ' + value
+        value = fixedEncodeURIComponent(value)
+    } else {
+        var value = fixedEncodeURIComponent($('#' + field).val())
+    }
+
+
+    fields_data[fixedEncodeURIComponent(field.replace(re, ' '))] = value
+    var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
+    //console.log(request)
+    $.getJSON(request, function(data) {
+        // console.log(data)
+        $('#' + field + '_editor').removeClass('valid ')
+        $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+        if (data.state == 200) {
+
+
+            $('#inline_new_object_msg').html(data.msg).addClass('success')
+            $('#inline_new_object').addClass('hide')
+            $('#inline_new_object').addClass('hide')
+            $('#icon_' + trigger).addClass('fa-plus')
+            $('#icon_' + trigger).removeClass('fa-times')
+            $('#' + field).val('').attr('has_been_valid', 0)
+            $('#' + field + '_editor').removeClass('valid invalid')
+            $('#' + field + '_validation').removeClass('valid invalid')
+
+            var updated_fields;
+            for (updated_fields in data.updated_data) {
+                $('.' + updated_fields).html(data.updated_data[updated_fields])
+            }
+
+            rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+            rows.fetch({
+                reset: true
+            });
+
+
+
+
+        } else if (data.state == 400) {
+            $('#inline_new_object_msg').html(data.msg).addClass('error')
+            $('#' + field + '_editor').removeClass('invalid').addClass('invalid')
+            $('#' + field + '_validation').removeClass('invalid').addClass('invalid')
+
+
+        }
+    })
+
+
+}
+
+
+function toggle_inline_new_object_form(trigger) {
+
+    var field = $('#inline_new_object').attr('field')
+    var field_edit = $('#' + field + '_container').attr('field_type')
+
+    $('#inline_new_object_msg').html('').removeClass('error success')
+
+    if ($('#icon_' + trigger).hasClass('fa-plus')) {
+        $('#inline_new_object').removeClass('hide')
+        $('#icon_' + trigger).removeClass('fa-plus').addClass('fa-times')
+
+
+
+        if (field_edit == 'time') {
+            var d = new Date();
+            var time = addZero2dateComponent(d.getHours()) + ':' + addZero2dateComponent(d.getMinutes())
+            $('#' + field).val(time)
+            on_changed_value(field, time)
+        } else {
+            $('#{$data.field_id}').val('')
+
+        }
+
+
+    } else {
+        $('#inline_new_object').addClass('hide')
+        $('#icon_' + trigger).addClass('fa-plus').removeClass('fa-times')
+
+    }
+
+}
+
+
 function clone_it() {
     $('#result').html('')
-                
-                $('#fields').removeClass('hide');
-                $('#result').addClass('hide');
-  
+
+    $('#fields').removeClass('hide');
+    $('#result').addClass('hide');
+
 }
 
 

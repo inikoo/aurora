@@ -9,7 +9,7 @@
 
 */
 
-$tab='timesheets.records';
+$tab='employees.timesheets.records';
 $ar_file='ar_hr_tables.php';
 $tipo='timesheet_records';
 

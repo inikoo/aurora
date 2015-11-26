@@ -12,16 +12,16 @@
 
 
 switch ($parameters['parent']) {
-    case 'employee':
-        $where=sprintf(" where  TD.`Timesheet Staff Key`=%d ",$parameters['parent_key']);
-        break;
-    
-     case 'account':
-        $where=sprintf(" where true ");
-        break;    
-    default:
-       exit('parent not suported');
-        break;
+case 'employee':
+	$where=sprintf(" where  TD.`Timesheet Staff Key`=%d ", $parameters['parent_key']);
+	break;
+
+case 'account':
+	$where=sprintf(" where true ");
+	break;
+default:
+	exit('parent not suported');
+	break;
 }
 
 
@@ -39,10 +39,21 @@ $wheref='';
 if ($parameters['f_field']=='alias' and $f_value!=''  ) {
 	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
 }elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
 }
+/*
+	'id'=>(integer) $data['Timesheet Key'],
+			'staff_key'=>(integer) $data['Timesheet Staff Key'],
+			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
 
-
+			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+			'alias'=>$data['Staff Alias'],
+			'name'=>$data['Staff Name'],
+			'payroll_id'=>$data['Staff ID'],
+			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
+			'clocked_hours'=>number($data['Timesheet Clocked Hours'],2).' '._('hours'),
+			'clocking_records'=>number($data['Timesheet Clocking Records'])
+*/
 
 
 $_order=$order;
@@ -51,9 +62,18 @@ $_dir=$order_direction;
 
 if ($order=='alias')
 	$order='`Staff Alias`';
-	elseif ($order=='name')
+elseif ($order=='name')
 	$order='`Staff Name`';
-elseif ($order=='date')
+elseif ($order=='payroll_id')
+	$order='`Staff ID`';	
+	
+elseif ($order=='clocked_hours')
+	$order='`Timesheet Clocked Hours`';
+elseif ($order=='clocking_records')
+	$order='`Timesheet Clocking Records`';		
+elseif ($order=='staff_formated_id')
+	$order='`Timesheet Staff Key`';	
+elseif ($order=='date' or $order=='time')
 	$order='`Timesheet Date`';
 
 else
@@ -68,7 +88,7 @@ $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
-`Timesheet Key`,`Timesheet Clocked Hours`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
+`Timesheet Clocking Records`,`Timesheet Ignored Clocking Records`,`Timesheet Key`,`Timesheet Clocked Hours`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
 ";
 
 ?>

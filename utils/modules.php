@@ -763,8 +763,8 @@ $modules=array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 
 				'subtabs_parent'=>array(
-					'timesheets.timesheets'=>'timesheets',
-					'timesheets.records'=>'timesheets',
+					'employees.timesheets'=>'timesheets',
+					'employees.timesheets.records'=>'timesheets',
 
 
 				),
@@ -773,8 +773,8 @@ $modules=array(
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
 					'timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
-							'timesheets.timesheets'=>array('label'=>_('Timesheets')),
-							'timesheets.records'=>array('label'=>_('Records')),
+							'employees.timesheets'=>array('label'=>_('Timesheets')),
+							'employees.timesheets.records'=>array('label'=>_('Clockings')),
 
 						)
 
@@ -807,7 +807,7 @@ $modules=array(
 			'employee'=>array('type'=>'object',
 
 				'subtabs_parent'=>array(
-					'employee.timesheets.timesheets'=>'employee.timesheets',
+					'employee.timesheets'=>'employee.timesheets',
 					'employee.timesheets.records'=>'employee.timesheets',
 
 
@@ -818,8 +818,8 @@ $modules=array(
 					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
-							'employee.timesheets.timesheets'=>array('label'=>_('Timesheets')),
-							'employee.timesheets.records'=>array('label'=>_('Records')),
+							'employee.timesheets'=>array('label'=>_('Timesheets')),
+							'employee.timesheets.records'=>array('label'=>_('Clockings')),
 
 						)
 
@@ -856,7 +856,7 @@ $modules=array(
 
 			'timesheet'=>array('type'=>'object',
 				'tabs'=>array(
-					'timesheet.timesheet_records'=>array('label'=>_('Clocking records')),
+					'timesheet.records'=>array('label'=>_('Clockings')),
 
 				)
 

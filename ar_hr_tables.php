@@ -262,7 +262,7 @@ function contractors($_data, $db, $user) {
 
 function timesheets($_data, $db, $user) {
 	global $db;
-	$rtext_label='timesheet_record';
+	$rtext_label='timesheet';
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -280,7 +280,9 @@ function timesheets($_data, $db, $user) {
 			'name'=>$data['Staff Name'],
 			'payroll_id'=>$data['Staff ID'],
 			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
-			'clocked_hours'=>number($data['Timesheet Clocked Hours'],2)
+			'clocked_hours'=>number($data['Timesheet Clocked Hours'], 2).' '._('hours'),
+			'clocking_records'=>number($data['Timesheet Clocking Records'])
+
 		);
 
 	}
@@ -338,7 +340,7 @@ function timesheet_records($_data, $db, $user) {
 			case 'OvertimeMark':
 				$type=_('Overtime mark');
 				break;
-			case 'CheckRecord':
+			case 'ClockingRecord':
 				$type=_('Clocking record');
 				break;
 
@@ -353,36 +355,65 @@ function timesheet_records($_data, $db, $user) {
 
 			switch ($data['Timesheet Record Action Type']) {
 			case 'Start':
-				$action_type=_('Start');
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span></span>';
 				break;
 			case 'End':
-				$action_type=_('End');
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
 				break;
 			case 'Unknown':
-				$action_type=_('Unknown');
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
 				break;
-
+			case 'Ignored':
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').'</span></span>';
+				break;
 			default:
 				$action_type=$data['Timesheet Record Action Type'];
 				break;
 			}
 
+			switch ($data['Timesheet Record Ignored']) {
+			case 'Yes':
+				$ignored=_('Yes');
+				$used=sprintf('<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-square-o checkbox"></i>',
+					$data['Timesheet Record Key'],
+					$data['Timesheet Record Key']
+				);
+				break;
+			case 'No':
+				$ignored=_('No');
+				$used=sprintf('<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-check-square-o checkbox"></i>',
+					$data['Timesheet Record Key'],
+					$data['Timesheet Record Key']
+				);
+				break;
 
+
+			default:
+				$ignored=$data['Timesheet Record Ignored'];
+				$used='';
+				break;
+			}
+
+			$notes=sprintf('<span id="notes_%d" ></span>', $data['Timesheet Record Key']);
 
 			$adata[]=array(
 
 				'id'=>(integer) $data['Timesheet Record Key'],
 				'staff_key'=>(integer) $data['Timesheet Record Staff Key'],
+				'timesheet_key'=>(integer) $data['Timesheet Record Timesheet Key'],
 				'staff_formated_id'=>sprintf("%04d", $data['Timesheet Record Staff Key']),
-
+				'formated_id'=>sprintf("%06d", $data['Timesheet Record Key']),
+				'formated_timesheet_id'=>sprintf("%06d", $data['Timesheet Record Timesheet Key']),
 				'alias'=>$data['Staff Alias'],
 				'name'=>$data['Staff Name'],
 				'type'=>$type,
 				'action_type'=>$action_type,
 				'source'=>$source,
-
+				'ignored'=>$ignored,
+				'used'=>$used,
+				'notes'=>$notes,
 				'date'=>($data['Timesheet Record Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])):''),
-				'time'=>($data['Timesheet Record Date']!=''?strftime("%H:%M %Z", strtotime($data['Timesheet Record Date'])):''),
+				'time'=>($data['Timesheet Record Date']!=''?strftime("%H:%M:%S", strtotime($data['Timesheet Record Date'])):''),
 
 
 			);

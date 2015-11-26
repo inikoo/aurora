@@ -44,6 +44,7 @@ class Timesheet_Record extends DB_Table {
 		else
 			return;
 		if ($this->data = $this->db->query($sql)->fetch()) {
+
 			$this->id=$this->data['Timesheet Record Key'];
 		}
 
@@ -118,12 +119,12 @@ class Timesheet_Record extends DB_Table {
 			$this->id=$this->db->lastInsertId();
 			$this->new=true;
 
-			$this->get_data('key', $this->id);
-			
-			
-			
-			
-			
+			$this->get_data('id', $this->id);
+
+
+
+
+
 		} else {
 			$this->error=true;
 
@@ -145,9 +146,9 @@ class Timesheet_Record extends DB_Table {
 
 
 		}
-		
-		
-		
+
+
+
 	}
 
 
@@ -171,6 +172,83 @@ class Timesheet_Record extends DB_Table {
 		}
 
 		return $label;
+
+	}
+
+
+	function update_field_switcher($field, $value, $options='') {
+		if (is_string($value))
+			$value=_trim($value);
+
+
+
+		switch ($field) {
+
+		case('Timesheet Record Ignored'):
+			$this->update_field($field, $value, $options);
+
+			if ($value=='Yes') {
+				$this->update_field('Timesheet Record Action Type', 'ignored', 'no_history');
+
+			}
+
+			include_once 'class.TimeSheet.php';
+			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
+			$timesheet->process_records_action_type();
+			$timesheet->update_clocked_hours();
+			$timesheet->update_clocking_records();
+
+
+
+			$sql=sprintf('select `Timesheet Record Action Type`,`Timesheet Record Key`   from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d   and `Timesheet Record Type`="ClockingRecord" ',
+				$this->data['Timesheet Record Timesheet Key']
+			);
+			$records_data=array();
+			if ($result=$this->db->query($sql)) {
+
+				foreach ($result as $row) {
+
+					switch ($row['Timesheet Record Action Type']) {
+					case 'Start':
+						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span></span>';
+						break;
+					case 'End':
+						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
+						break;
+					case 'Unknown':
+						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
+						break;
+					case 'Ignored':
+						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').'</span></span>';
+						break;
+
+
+					default:
+						$action_type=$row['Timesheet Record Action Type'];
+						break;
+					}
+					$records_data[$row['Timesheet Record Key']]['action_type']=$action_type;
+
+				}
+			}
+
+
+			$this->other_fields_updated=array(
+				'records_data'=>$records_data,
+				'updated_data'=>array('Timesheet_Clocked_Hours'=>$timesheet->get('Clocked Hours'))
+
+			);
+
+
+			break;
+
+		default:
+			$base_data=$this->base_data();
+			if (array_key_exists($field, $base_data)) {
+				$this->update_field($field, $value, $options);
+			}
+		}
+		$this->reread();
 
 	}
 

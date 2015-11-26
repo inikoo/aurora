@@ -48,11 +48,14 @@ class Timesheet extends DB_Table {
 
 		if ($tipo=='id')
 			$sql=sprintf("select * from `Timesheet Dimension` where `Timesheet Key`=%d", $tag);
-		else
+		else {
 			return;
+		}
+
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Timesheet Key'];
 		}
+
 
 	}
 
@@ -65,19 +68,28 @@ class Timesheet extends DB_Table {
 
 
 		switch ($key) {
-		
-	
+
+
 		case 'Clocked Hours':
-		return number($this->data['TImesheet ',$key],2);
-		
-		break;
-		
+
+			$hours=$this->data['Timesheet '.$key];
+
+			return  sprintf(ngettext("%.2f hr", "%.2f hrs", $hours), $hours); // 1 okno
+
+
+			break;
+		case 'IsoDate':
+			return $this->data['Timesheet Date']!=''?date("Y-m-d", strtotime($this->data['Timesheet Date'])):'';
+
+
+			break;
+
 		case 'Date':
-		return ($this->data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($this->data['Timesheet Date'])):'')
-		
-		break;
-		
-	
+			return $this->data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($this->data['Timesheet Date'])):'';
+
+			break;
+
+
 		default:
 			if (isset($this->data[$key]))
 				return $this->data[$key];
@@ -183,7 +195,7 @@ class Timesheet extends DB_Table {
 			$this->id=$this->db->lastInsertId();
 			$this->new=true;
 
-			$this->get_data('key', $this->id);
+			$this->get_data('id', $this->id);
 		} else {
 			$this->error=true;
 
@@ -202,13 +214,39 @@ class Timesheet extends DB_Table {
 	}
 
 
+	function create_timesheet_record($data) {
+
+		$data['Timesheet Record Timesheet Key']=$this->id;
+		$data['Timesheet Record Staff Key']=$this->data['Timesheet Staff Key'];
+		$data['editor']=$this->editor;
+		$timesheet_record=new Timesheet_Record('new', $data);
+
+	
+		if ($timesheet_record->new) {
+
+
+			$this->process_records_action_type();
+			$this->update_clocked_hours();
+			$this->update_clocking_records();
+
+		}else{
+		    $this->error=true;
+		    $this->msg=$timesheet_record->msg;
+		   
+		    
+		}
+
+		return $timesheet_record;
+
+	}
+
 
 	function get_field_label($field) {
 
 		switch ($field) {
 
-		case 'Timesheet Source':
-			$label=_('source');
+		case 'Timesheet Clocked Hours':
+			$label=_('Clocked');
 			break;
 		case 'Timesheet Date':
 			$label=_('date');
@@ -223,7 +261,131 @@ class Timesheet extends DB_Table {
 	}
 
 
-	function process_records() {
+	function get_staff_data() {
+
+		$sql=sprintf('select * from `Staff Dimension` where  `Staff Key`=%d ', $this->data['Timesheet Staff Key']);
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			foreach ($row as $key=>$value) {
+				$this->data['Timesheet '.$key]=$value;
+			}
+		}
+
+
+
+	}
+
+
+	function update_clocking_records() {
+
+		$clocking_records=0;
+		$ignored_clocking_records=0;
+
+
+		$sql=sprintf('select count(*) num,`Timesheet Record Ignored` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Type`="ClockingRecord" group by `Timesheet Record Ignored`  ',
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
+
+			while ($row = $result->fetch()) {
+				if ($row['Timesheet Record Ignored']=='Yes')
+					$ignored_clocking_records=$row['num'];
+
+				else
+					$clocking_records=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+
+		}
+
+		$this->update(array('Timesheet Clocking Records'=>$clocking_records), 'no_history');
+		$this->update(array('Timesheet Ignored Clocking Records'=>$ignored_clocking_records), 'no_history');
+
+
+	}
+
+
+	function update_clocked_hours() {
+		$action_type='Start';
+
+		$clocked_seconds=0;
+
+		$sql=sprintf('select `Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`="No"  and `Timesheet Record Type`="ClockingRecord" order by `Timesheet Record Date`',
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
+
+			foreach ($result as $row) {
+				//print_r($row);
+
+
+
+
+
+				if ($action_type=='Start') {
+					$start_date=$row['date'];
+
+
+					$action_type='End';
+				}else {
+
+					$end_date=$row['date'];
+					$clocked_seconds=$clocked_seconds+($end_date-$start_date);
+					$action_type='Start';
+
+				}
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$this->update(array('Timesheet Clocked Hours'=>($clocked_seconds/3600)), 'no_history');
+
+	}
+
+
+	function process_records_action_type() {
+
+		$action_type='Start';
+
+		$sql=sprintf('select `Timesheet Record Date`,`Timesheet Record Key` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`="No"  and `Timesheet Record Type`="ClockingRecord" order by `Timesheet Record Date`',
+			$this->id
+
+		);
+
+		if ($result=$this->db->query($sql)) {
+
+			foreach ($result as $row) {
+
+
+
+				$sql=sprintf("update `Timesheet Record Dimension` set `Timesheet Record Action Type`=%s where `Timesheet Record Key`=%d  ",
+					prepare_mysql($action_type),
+					$row['Timesheet Record Key']
+				);
+				$this->db->exec($sql);
+
+				if ($action_type=='Start') {
+					$action_type='End';
+				}else {
+					$action_type='Start';
+
+				}
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
 
 
 	}
