@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Aurora</title>
-	<link href="/art/inikoo_logo.png" rel="shortcut icon" type="image/x-icon" />
+	<link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon" />
 	<link href="/css/jquery-ui.min.css" rel="stylesheet">
 	<link href="/css/font-awesome.min.css" rel="stylesheet">
 	<link href="/css/backgrid.css" rel="stylesheet">
@@ -46,8 +46,8 @@
 	<section>
 		<div id="app_leftmenu">
 			<div id="top_info">
-				<div id="inikoo_logo" class="link" onclick="help()" >
-					<img src="/art/aurora_logo.png" /> 
+				<div id="aurora_logo" class="link" onclick="help()" >
+					<img src="/art/aurora_log_v2_orange_small.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
 					<span>{$user->get('User Alias')}</span> 

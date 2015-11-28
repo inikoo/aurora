@@ -4,6 +4,8 @@
     "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang_code}">
 <head>
+	<link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon" />
+
 	<title>{t}Inikoo Login{/t}</title>
 	<link href="/css/font-awesome.min.css" rel="stylesheet"> 
 	<link rel="stylesheet" href="css/login.css"> 
@@ -17,10 +19,10 @@
 	<div class="grid__container">
 		<div style="margin-bottom:30px">
 			<div class="text--center">
-				<img style="width:150px" src="art/aurora_logo.png">
+				<img style="width:150px" src="art/aurora_log_v2_purple.png">
 			</div>
 			<div class="text--center" style="font-size:30px;
-			background: -webkit-linear-gradient(#A02070, #EDE275);
+			background: -webkit-linear-gradient(#FDD017, #D4A017);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 			">

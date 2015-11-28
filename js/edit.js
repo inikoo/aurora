@@ -209,22 +209,12 @@ function close_edit_field(field) {
 
 function delayed_on_change_field(object, timeout) {
     var field = object.attr('id');
-
     var field_element = $('#' + field);
     var new_value = field_element.val()
 
-
-
     window.clearTimeout(object.data("timeout"));
     object.data("timeout", setTimeout(function() {
-
-
         on_changed_value(field, new_value)
-
-
-
-
-
     }, timeout));
 }
 
@@ -279,8 +269,9 @@ function on_changed_value(field, new_value) {
     if ($('#' + object + '_save').hasClass('hide')) {
         reset_controls()
     }
-
-    var type = $('#' + field + '_container').attr('field_type')
+    var field_data = $('#' + field + '_container')
+    var type = field_data.attr('field_type')
+    required=field_data.attr('_required')
 
     if (type == 'date') {
         new_value = new_value + ' ' + $('#' + field + '_time').val()
@@ -289,44 +280,68 @@ function on_changed_value(field, new_value) {
     if (new_value != $('#' + field + '_value').html()) {
         $("#" + field + '_editor').addClass('changed')
         var changed = true;
-
     } else {
         $("#" + field + '_editor').removeClass('changed')
         var changed = false;
-
     }
 
-    $('#' + field + '_editor').removeClass('invalid valid potentially_valid')
-
-
-    $("#" + field + '_validation').removeClass('invalid valid potentially_valid')
+    $('#' + field + '_save_button').removeClass('invalid valid potentially_valid')
+     $('#' + field + '_msg').removeClass('invalid valid potentially_valid')
+   $("#" + field + '_validation').removeClass('invalid valid potentially_valid')
 
 
     if (changed) {
 
 
         $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-        var validation = validate_field(field, new_value)
+        
+       var server_validation=field_data.attr('server_validation')
+    var parent=field_data.attr('parent')
+    var parent_key=field_data.attr('parent_key')
+    var _object=field_data.attr('object')
+    var key=field_data.attr('object')
+        
+        var validation = validate_field(field, new_value,type,required,server_validation,parent,parent_key,_object,key)
+process_validation(validation,field,true)
+
+     
+    } 
+    else {
+        $('#' + field + '_msg').html('')
+    }
+
+    if ($('#fields').hasClass('new_object')) {
+        if (validation.class != 'waiting') check_if_form_is_valid()   
+    }
 
 
-        if (validation.class == 'potentially_valid' && $('#' + field).attr('has_been_valid') == 1) {
+}
+
+
+function process_validation(validation,field,mark_invalid_if_previously_valid){
+   if (validation.class == 'potentially_valid' && $('#' + field).attr('has_been_valid') == 1  &&  mark_invalid_if_previously_valid ) {
             validation.class = 'invalid';
         }
-        $('#' + field + '_editor').addClass(validation.class)
-        $("#" + field + '_validation').addClass(validation.class)
+        $('#' + field + '_save_button').addClass(validation.class)
+       $("#" + field + '_validation').addClass(validation.class)
+       $("#" + field + '_msg').addClass(validation.class)
 
 
         if (validation.class == 'waiting') {
 
-        } else {
-            console.log(validation.class)
+        } 
+        else {
 
             $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
             if (validation.class == 'valid') {
                 $('#' + field).attr('has_been_valid', 1)
             }
 
+
             if (validation.class == 'invalid') {
+            
+              
+            
                 if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
                     var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
                 } else {
@@ -337,26 +352,9 @@ function on_changed_value(field, new_value) {
             }
             $('#' + field + '_msg').html(msg)
         }
-    } else {
-        $('#' + field + '_msg').html('')
-    }
-
-    if ($('#fields').hasClass('new_object')) {
-
-
-
-
-        if (validation.class != 'waiting') check_if_form_is_valid()
-
-        //if (($('#' + object + '_save').hasClass('invalid') || $('#' + object + '_save').hasClass('valid')) && validation.class != 'waiting') {
-        //    validate_form(object)
-        //} else {
-        //    check_if_form_is_valid(object)
-        // }
-    }
-
-
 }
+
+
 
 function select_option(field, value, label) {
     $('#' + field).val(value)
@@ -421,7 +419,11 @@ function select_radio_option(field, value, label) {
 
 function save_field(object, key, field) {
 
-    var type = $('#' + field + '_container').attr('field_type')
+     var field_data = $('#' + field + '_container')
+
+    var type = field_data.attr('field_type')
+required=field_data.attr('_required')
+
     var field_element = $('#' + field);
 
     var value = field_element.val()
@@ -441,9 +443,16 @@ function save_field(object, key, field) {
 
     if ($("#" + field + '_editor').hasClass('potentially_valid')) {
 
+      var server_validation=field_data.attr('server_validation')
+    var parent=field_data.attr('parent')
+    var parent_key=field_data.attr('parent_key')
+    var _object=field_data.attr('object')
+    var key=field_data.attr('object')
+        
+        var validation = validate_field(field, value,type,required,server_validation,parent,parent_key,_object,key)
 
 
-        var validation = validate_field(field, value)
+
         $('#' + field).attr('has_been_valid', 1)
 
         if ((type == 'password_with_confirmation' || type == 'in_with_confirmation') && !$('#' + field + '_confirm').hasClass('hide')) {
@@ -644,3 +653,15 @@ function clean_time(value) {
 
 
 }
+
+
+
+function add_minutes_to_time(time,minutes){
+
+  var time_components = time.split(':');
+  var d = new Date(2000, 0, 1,  time_components[0], parseInt(time_components[1])+parseInt(minutes),time_components[2])
+  time=addZero2dateComponent(d.getHours())+':'+addZero2dateComponent(d.getMinutes())+':00'
+  return time;
+
+}
+
