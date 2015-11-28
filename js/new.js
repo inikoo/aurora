@@ -21,8 +21,6 @@ function hide_options(field) {
 function validate_form(object) {
 
 
-    //  $('#' + object + '_controls').removeClass('invalid valid')
-    //  $('#' + object + '_controls').addClass('waiting')
     $('#' + object + '_save_icon').removeClass('fa-cloud')
     $('#' + object + '_save_icon').addClass('fa-spinner fa-spin')
 
@@ -35,6 +33,17 @@ function validate_form(object) {
         var field = $(this).attr('field')
         var value = $('#' + field).val()
 
+  var field_data = $('#' + field + '_container')
+    var type = field_data.attr('field_type')
+    var required=field_data.attr('_required')
+    var server_validation=field_data.attr('server_validation')
+    var parent=field_data.attr('parent')
+    var parent_key=field_data.attr('parent_key')
+    var _object=field_data.attr('object')
+    var key=field_data.attr('object')
+
+
+
         if ($('#' + field + '_validation').hasClass('invalid')) {
             form_validation = 'invalid'
 
@@ -44,7 +53,9 @@ function validate_form(object) {
 
             form_validation = 'invalid'
 
-            var validation = validate_field(field, value)
+  
+
+            var validation = validate_field(field, value,type,required,server_validation,parent,parent_key,_object,key)
 
             if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
                 var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
@@ -60,7 +71,8 @@ function validate_form(object) {
 
             $('#' + field + '_validation').removeClass('invalid')
 
-            var validation = validate_field(field, value)
+
+            var validation = validate_field(field, value,type,required,server_validation,parent,parent_key,_object,key)
 
 
             if (validation.class == 'invalid' || validation.class == 'potentially_valid') {
@@ -116,19 +128,9 @@ function check_if_form_is_valid() {
             console.log(field + ' ' + $("#" + field + '_validation').hasClass('valid'))
 
             valid = false;
-
-
-            //  return false
         }
 
 
-        //    var validation = validate_field(field, value)
-        //     if (validation.class == 'waiting') {
-        //       return true
-        // }
-        // if (validation.class != 'valid') {
-        //     valid = false;
-        // }
     });
 
     if (valid) {

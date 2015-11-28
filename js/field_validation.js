@@ -3,15 +3,11 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-function validate_field(field, new_value) {
+function validate_field(field, new_value, field_type, required, server_validation_type, parent, parent_key, object, key) {
 
-    var field_data = $('#' + field + '_container')
+    var validation = client_validation(field_type, required, new_value, field)
 
-
-
-    var validation = client_validation(field_data.attr('field_type'), field_data.attr('_required'), new_value, field)
-
-    if (validation.class == 'valid' && field_data.attr('server_validation')) {
+    if (validation.class == 'valid' && server_validation_type) {
 
 
         var validation = {
@@ -19,7 +15,7 @@ function validate_field(field, new_value) {
             type: ''
         }
 
-        server_validation(field_data.attr('server_validation'), field_data.attr('parent'), field_data.attr('parent_key'), field_data.attr('object'), field_data.attr('key'), field, new_value)
+        server_validation(server_validation_type, parent, parent_key, object, key, field, new_value)
     }
 
 
@@ -30,9 +26,9 @@ function validate_field(field, new_value) {
 
 function client_validation(type, required, value, field) {
 
+    //console.log(type+' '+required+' '+value+' '+field)
     var valid_state = {
         class: 'valid',
-
         type: ''
     }
 
@@ -58,83 +54,8 @@ function client_validation(type, required, value, field) {
 
 
     switch (type) {
-    case 'smallint_unsigned':
-
-        if (!$.isNumeric(value)) {
-            return {
-                class: 'invalid',
-
-                type: 'not_integer'
-            }
-        }
-
-        if (value > 65535) {
-            return {
-                class: 'invalid',
-
-                type: 'too_big'
-            }
-        }
-
-        if (value < 0) {
-            return {
-                class: 'invalid',
-
-                type: 'negative'
-            }
-        }
-
-        if (Math.floor(value) != value) {
-            return {
-                class: 'invalid',
-
-                type: 'not_integer'
-            }
-        }
 
 
-        break;
-    case 'int_unsigned':
-
-
-        if (!$.isNumeric(value)) {
-            return {
-                class: 'invalid',
-
-                type: 'not_integer'
-            }
-        }
-
-        if (value > 4294967295) {
-            return {
-                class: 'invalid',
-
-                type: 'too_big'
-            }
-        }
-
-        if (value < 0) {
-            return {
-                class: 'invalid',
-
-                type: 'negative'
-            }
-        }
-
-        if (Math.floor(value) != value) {
-            return {
-                class: 'invalid',
-
-                type: 'not_integer'
-            }
-        }
-
-
-
-
-
-
-        break;
     case 'string':
         break;
     case 'pin':
@@ -244,8 +165,8 @@ function client_validation(type, required, value, field) {
         break;
 
     case 'time':
-
         if (value.length > 5) {
+        
             return {
                 class: 'invalid',
                 type: 'invalid'
@@ -273,41 +194,125 @@ function client_validation(type, required, value, field) {
             }
 
 
-        }else if (value.length == 4) {
+        } else if (value.length == 4) {
 
 
-           var timelReg = /^(1?[0-9]|2[0-3])[0-5][0-9]$/
-        if (timelReg.test(value)) {
+            var timelReg = /^(1?[0-9]|2[0-3]|0[0-9])[0-5][0-9]$/
+            if (timelReg.test(value)) {
 
-            return {
-                class: 'valid',
-                type: 'valid'
+                return {
+                    class: 'valid',
+                    type: 'valid'
+                }
             }
-        }
 
         }
 
 
-
-        var timelReg = /^(1?[0-9]|2[0-3]):[0-5][0-9]$/
+        var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5][0-9]$/
         if (!timelReg.test(value)) {
 
+            if (value.length == 5 || value.length == 4) {
+
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            } else {
+
+                return {
+                    class: 'potentially_valid',
+                    type: 'invalid'
+                }
+            }
+        }else{
+         return {
+                    class: 'valid',
+                    type: ''
+                }
+        
+        }
+
+    case 'smallint_unsigned':
+        var res = validate_signed_integer(value, 65535)
+        if (res) return res
+        break;
+    case 'int_unsigned':
+        var res = validate_signed_integer(value, 4294967295)
+        if (res) return res
+        break;
+    case 'minutes_in_day':
+        var res = validate_signed_integer(value, 1440)
+        if (res) return res
+        break;
+
+    case 'minutes_in_break':
+
+        if (value == 0) {
+       
             return {
-                class: 'potentially_valid',
-                type: 'invalid'
+                class: 'invalid',
+                type: 'invalid_break_duration'
             }
         }
 
+        var res = validate_signed_integer(value, 1440)
+        if (res) return res
+        break;
 
+    case 'seconds_in_day':
+        var res = validate_signed_integer(value, 86400)
+        if (res) return res
+        break;
+    case 'seconds_in_hour':
+        var res = validate_signed_integer(value, 3600)
+        if (res) return res
+        break;
 
     default:
 
     }
 
 
-
     return valid_state;
 }
+
+function validate_signed_integer(value, max_value) {
+
+    if (!$.isNumeric(value)) {
+        return {
+            class: 'invalid',
+            type: 'not_integer'
+        }
+    }
+
+    if (value > max_value) {
+        return {
+            class: 'invalid',
+
+            type: 'too_big'
+        }
+    }
+
+    if (value < 0) {
+        return {
+            class: 'invalid',
+
+            type: 'negative'
+        }
+    }
+
+    if (Math.floor(value) != value) {
+        return {
+            class: 'invalid',
+
+            type: 'not_integer'
+        }
+    }
+
+    return false
+}
+
 
 function server_validation(tipo, parent, parent_key, object, key, field, value) {
     $("#" + field + '_editor').addClass('waiting')

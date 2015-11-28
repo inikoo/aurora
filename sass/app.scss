@@ -293,13 +293,13 @@ input{
             color: $color_highlight_over_dark;
         }
     }
-    #inikoo_logo {
+    #aurora_logo {
         width: $height_row;
         border-right: 1px solid $color_dark_darker_font;
         padding: 0px;
         vertical-align: middle;
         img {
-            width: $height_row*.8;
+            width: $height_row*.7;
             vertical-align: middle;
         }
     }
@@ -1394,7 +1394,8 @@ right connector from last child*/
 
 
 .success{color:$color_success}
-.valid{color:$color_save}
+.valid{color:$color_success}
+.valid.save{color:$color_save}
 
 .warning{color:$color_warning}
 .error,.invalid{color:$color_error}

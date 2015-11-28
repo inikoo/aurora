@@ -209,13 +209,13 @@ input {
     text-align: center; }
     #app_leftmenu #hello_user.link:hover {
       color: #FFF; }
-  #app_leftmenu #inikoo_logo {
+  #app_leftmenu #aurora_logo {
     width: 32px;
     border-right: 1px solid #777;
     padding: 0px;
     vertical-align: middle; }
-    #app_leftmenu #inikoo_logo img {
-      width: 25.6px;
+    #app_leftmenu #aurora_logo img {
+      width: 22.4px;
       vertical-align: middle; }
   #app_leftmenu #account_name {
     line-height: 32px;
@@ -1027,6 +1027,9 @@ input {
   color: #26A65B; }
 
 .valid {
+  color: #26A65B; }
+
+.valid.save {
   color: #0EBFE9; }
 
 .warning {

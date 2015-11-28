@@ -178,6 +178,17 @@ function get_invalid_message($type) {
 			'invalid_code'=>_('Invalid contry code'),
 		);
 		break;
+	case 'working_hours':
+		$messages=array(
+			'invalid_time'=>_('Invalid time'),
+			'same_start_end'=>_('Same start & finish time'),
+			'end_less_start'=>_("finish < start"),
+			'break_ends_after_end'=>_('Break ends after finish'),
+			'break_before_start'=>_('Break before start'),
+			'wrong_break'=>_('Break ends next day'),
+			'invalid_break_duration'=>_('Invalid break duration'),
+		);
+		break;	
 	}
 
 	return $messages;

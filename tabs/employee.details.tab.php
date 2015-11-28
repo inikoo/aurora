@@ -70,7 +70,7 @@ asort($options_Staff_Type);
 asort($options_yn);
 
 $object_fields=array(
-/*
+
 	array(
 		'label'=>_('Id'),
 		'show_title'=>true,
@@ -107,7 +107,7 @@ $object_fields=array(
 
 		)
 	),
-
+/*
 	array(
 		'label'=>_('Personal information'),
 		'show_title'=>true,
@@ -265,6 +265,7 @@ $object_fields=array(
 				'formated_value'=>$employee->get('Working Hours'),
 				'options'=>$options_Staff_Type,
 				'label'=>ucfirst($employee->get_field_label('Staff Working Hours')),
+				'invalid_msg'=>get_invalid_message('working_hours'),
 			),
 
 			array(
