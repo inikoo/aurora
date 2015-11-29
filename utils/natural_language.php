@@ -1,6 +1,6 @@
 <?php
 
-function seconds_to_string($secs,$suffix=false) {
+function seconds_to_string($secs, $suffix=false, $short=false) {
 	$units = array(
 		"weeks"   => 7*24*3600,
 		"days"    =>   24*3600,
@@ -16,27 +16,54 @@ function seconds_to_string($secs,$suffix=false) {
 	}
 
 	$string='';
-	foreach ($units as $key=>$value) {
-		if ($value) {
-			switch ($key) {
-			case 'weeks':
-				$string.=' '.sprintf("%d %s",$value,ngettext("week", "weeks", $value));
-				break 2;
-			case 'days':
-				$string.=' '.sprintf("%d %s",$value,ngettext("day", "days", $value));
-				break 2;
-			case 'hours':
-				$string.=' '.sprintf("%d %s",$value,ngettext("hour", "hours", $value));
-				break 2;
-			case 'minutes':
-				$string.=' '.sprintf("%d %s",$value,ngettext("minute", "minutes", $value));
-				break 2;
-			case 'seconds':
-				$string.=' '.sprintf("%d %s",$value,ngettext("second", "seconds", $value));
-				break 2;
+
+	if ($short) {
+		foreach ($units as $key=>$value) {
+			if ($value) {
+				switch ($key) {
+				case 'weeks':
+					$string.=' '.sprintf(_('%s w'), $value);
+					break 2;
+				case 'days':
+					$string.=' '.sprintf(_('%s d'), $value);
+					break 2;
+				case 'hours':
+					$string.=' '.sprintf("%d %s", $value, ngettext("h", "hrs", $value));
+					break 2;
+				case 'minutes':
+					$string.=' '.' '.sprintf(_('%smin'), $value);
+					break 2;
+				case 'seconds':
+					$string.=' '.sprintf("%d %s", $value, ngettext("sec", "secs", $value));
+					break 2;
+				}
+			}
+		}
+	}else {
+
+		foreach ($units as $key=>$value) {
+			if ($value) {
+				switch ($key) {
+				case 'weeks':
+					$string.=' '.sprintf("%d %s", $value, ngettext("week", "weeks", $value));
+					break 2;
+				case 'days':
+					$string.=' '.sprintf("%d %s", $value, ngettext("day", "days", $value));
+					break 2;
+				case 'hours':
+					$string.=' '.sprintf("%d %s", $value, ngettext("hour", "hours", $value));
+					break 2;
+				case 'minutes':
+					$string.=' '.sprintf("%d %s", $value, ngettext("minute", "minutes", $value));
+					break 2;
+				case 'seconds':
+					$string.=' '.sprintf("%d %s", $value, ngettext("second", "seconds", $value));
+					break 2;
+				}
 			}
 		}
 	}
+
 	$string=trim($string);
 	if ($suffix) {
 		$string.=' '._('ago');

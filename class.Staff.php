@@ -76,6 +76,94 @@ class Staff extends DB_Table{
 
 
 		switch ($key) {
+		case('Working Hours'):
+			include_once 'utils/natural_language.php';
+			function get_breaks($data) {
+				// print_r($data);
+
+				$formated_breaks=' (<i class="fa fa-fw fa-cutlery"></i> ';
+				if (count($data)==0)return'';
+				foreach ($data as $break_data) {
+
+					$break_duration = seconds_to_string(abs(strtotime('2000-01-01 '.$break_data['s']) - strtotime('2000-01-01 '.$break_data['e'])), false, true);
+
+
+
+					$formated_breaks.=$break_duration.' @'.$break_data['s'].', ';
+				}
+				$formated_breaks=preg_replace('/, $/', '', $formated_breaks);
+				return $formated_breaks.')';
+			}
+
+
+			$day_names=array(1=>_('Mon'), 2=>_('Tue'), 3=>_('Wed'), 4=>_('Thu'), 5=>_('Fri'), 6=>_('Sat'), 7=>_('Sun'));
+
+			$formated_working_hours='';
+
+			$working_hours=json_decode($this->data['Staff Working Hours'], true);
+			if (!$working_hours)return '';
+
+			//  print_r($working_hours);
+
+			if (
+				( isset($working_hours['data'][1]) and isset($working_hours['data'][2]) and isset($working_hours['data'][3]) and isset($working_hours['data'][4]) and isset($working_hours['data'][5]) )
+				and
+				( $working_hours['data'][1]==$working_hours['data'][2] and $working_hours['data'][1]==$working_hours['data'][3] and $working_hours['data'][1]==$working_hours['data'][4] and $working_hours['data'][1]==$working_hours['data'][5])
+
+			) {
+
+				$start=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][1]['s']));
+				$end=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][1]['e']));
+
+				$breaks=get_breaks($working_hours['data'][1]['b']);
+
+				$formated_working_hours=_('Mon-Fri').' '.$start.'-'.$end.$breaks.', ';
+
+
+
+				if ( isset($working_hours['data'][6]) and  isset($working_hours['data'][7]) and $working_hours['data'][6]=$working_hours['data'][7]  ) {
+
+					$start=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][6]['s']));
+					$end=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][6]['e']));
+
+					$breaks=get_breaks($working_hours['data'][6]['b']);
+
+					$formated_working_hours.=_('Sat-Sun').' '.$start.'-'.$end.$breaks.', ';
+
+
+				}else {
+
+
+					foreach ($working_hours['data'] as $day_key=>$day_working_hours) {
+						if ($day_key>=6) {
+							$start=date('H:i', strtotime('2000-01-01 '.$day_working_hours['s']));
+							$end=date('H:i', strtotime('2000-01-01 '.$day_working_hours['e']));
+							$breaks=get_breaks($day_working_hours['b']);
+
+							$formated_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
+						}
+					}
+				}
+
+			}else {
+
+
+				foreach ($working_hours['data'] as $day_key=>$day_working_hours) {
+					$start=date('H:i', strtotime('2000-01-01 '.$day_working_hours['s']));
+					$end=date('H:i', strtotime('2000-01-01 '.$day_working_hours['e']));
+					$breaks=get_breaks($day_working_hours['b']);
+
+					$formated_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
+
+				}
+
+			}
+
+
+			$formated_working_hours=preg_replace('/, $/', '', $formated_working_hours);
+			//print $formated_working_hours;exit;
+			return $formated_working_hours;
+
 		case('Address'):
 			return nl2br($this->data['Staff Address']);
 			break;
@@ -362,6 +450,7 @@ class Staff extends DB_Table{
 
 	}
 
+
 	function create($data) {
 
 		$this->data=$this->base_data();
@@ -484,23 +573,23 @@ class Staff extends DB_Table{
 		$this->create_timesheet_record_error=$this->timesheet_record->error;
 		$this->create_timesheet_record_duplicated=$this->timesheet_record->duplicated;
 		$this->create_timesheet_record_msg=$this->timesheet_record->msg;
-		
-		if($this->timesheet_record->new){
-		
-		    $timesheet_data=array(
-		    'Timesheet Date'=>date("Y-m-d", strtotime($this->timesheet_record->data['Timesheet Record Date'].' +0:00')),
-		    'Timesheet Staff Key'=>$this->id,
-		    'editor'=>$this->editor
-		    );
-		    $timesheet=new Timesheet('find',$timesheet_data,'create');
-		    
-		    $this->timesheet_record->update(array('Timesheet Record Timesheet Key'=>$timesheet->id));
-		    $timesheet->process_records_action_type();
-		    $timesheet->update_clocked_hours();
-		    $timesheet->update_clocking_records();
-		    
+
+		if ($this->timesheet_record->new) {
+
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", strtotime($this->timesheet_record->data['Timesheet Record Date'].' +0:00')),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
+
+			$this->timesheet_record->update(array('Timesheet Record Timesheet Key'=>$timesheet->id));
+			$timesheet->process_records_action_type();
+			$timesheet->update_clocked_hours();
+			$timesheet->update_clocking_records();
+
 		}
-		
+
 	}
 
 
