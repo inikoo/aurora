@@ -636,41 +636,7 @@ input {
     min-width: 150px; }
 
 .details_data, .new_object, .presention_card {
-  padding: 10px 20px;
-  /*
-  input {
-      position: relative;
-      bottom: 2px;
-      width: 206px;
-      padding: 4px 6px;
-      font-weight: normal;
-      color: #555;
-      vertical-align: middle;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      margin: 0px;
-      font-family: inherit;
-      font-size: 100%;
-      line-height: normal;
-      outline: none;
-      -webkit-box-sizing: content-box;
-      -moz-box-sizing: content-box;
-      box-sizing: content-box;
-      -webkit-appearance: none;
-      &.option_input_field {
-          padding-left: 16px;width:235px
-      }
-      
-      &.telephone_input_field {
-          padding-left: 45px;width:235px
-      } 
-       &.time_input_field {
-         width:40px ;
-         text-align: center;
-      } 
-      
-      
-  }*/ }
+  padding: 10px 20px; }
   .details_data table, .new_object table, .presention_card table {
     width: 100%; }
     .details_data table .formated_value, .new_object table .formated_value, .presention_card table .formated_value {
@@ -745,7 +711,7 @@ input {
     opacity: 1;
     cursor: pointer; }
   .details_data .valid.changed .fa.save, .details_data .valid.changed .msg, .new_object .valid.changed .fa.save, .new_object .valid.changed .msg, .presention_card .valid.changed .fa.save, .presention_card .valid.changed .msg {
-    color: #0EBFE9; }
+    color: red; }
   .details_data .datepicker, .new_object .datepicker, .presention_card .datepicker {
     margin-bottom: 5px;
     margin-top: 0px; }
@@ -1030,7 +996,8 @@ input {
   color: #26A65B; }
 
 .valid.save {
-  color: #0EBFE9; }
+  color: #0EBFE9;
+  cursor: pointer; }
 
 .warning {
   color: #ED9121; }

@@ -918,40 +918,7 @@ border-right:1px solid #ccc;margin-right:2px;
         border: 1px solid #ccc;
         margin: 0px;
     }
-    /*
-    input {
-        position: relative;
-        bottom: 2px;
-        width: 206px;
-        padding: 4px 6px;
-        font-weight: normal;
-        color: #555;
-        vertical-align: middle;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        margin: 0px;
-        font-family: inherit;
-        font-size: 100%;
-        line-height: normal;
-        outline: none;
-        -webkit-box-sizing: content-box;
-        -moz-box-sizing: content-box;
-        box-sizing: content-box;
-        -webkit-appearance: none;
-        &.option_input_field {
-            padding-left: 16px;width:235px
-        }
-        
-        &.telephone_input_field {
-            padding-left: 45px;width:235px
-        } 
-         &.time_input_field {
-           width:40px ;
-           text-align: center;
-        } 
-        
-        
-    }*/
+    
     .fa.save {
         margin-left: 5px;
         opacity: .4;
@@ -976,10 +943,11 @@ border-right:1px solid #ccc;margin-right:2px;
         .fa.save {
             opacity: 1;
             cursor: pointer;
+           
         }
      
         .fa.save, .msg {
-            color: $color_save;
+            color: red
         }
        
     }
@@ -1395,7 +1363,7 @@ right connector from last child*/
 
 .success{color:$color_success}
 .valid{color:$color_success}
-.valid.save{color:$color_save}
+.valid.save{color:$color_save;cursor:pointer}
 
 .warning{color:$color_warning}
 .error,.invalid{color:$color_error}

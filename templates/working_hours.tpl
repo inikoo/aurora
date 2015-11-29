@@ -1,16 +1,18 @@
 	{if isset($metadata.compact_weekdays)}{assign "compact_weekdays" $metadata.compact_weekdays}{else}{assign "compact_weekdays" 1}{/if} 
 	{if isset($metadata.compact_weekend)}{assign "compact_weekend" $metadata.compact_weekend}{else}{assign "compact_weekend" 1}{/if} 
+<span id="{$field.id}_hrs" style="position:relative;left:-10px"></span>
+<span id="{$field.id}_hours_label" class="hide ">{t}hrs/w{/t}</span>
 
-	
 <input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}" has_been_valid="0"/>
-<div class="working_hours" >
+<div id="working_hours" class="working_hours hide" >
 	<table border="0" style="" >
 		<tr class="title">
-			<td class="expand_days"></td>
-			<td class="day_labels"></td>
+			<td  colspan=2></td>
+			
 			<td>{t}Start{/t}</td>
 			<td>{t}Finish{/t}</td>
-			<td style="width:280px;padding-left:20px">{t}Unpaid breaks{/t}</td>
+			<td style="padding-left:20px">{t}Unpaid breaks{/t}</td>
+			<td style="width:120px;padding-right:10px" class="aright"</span>  </td>
 			<td style="width:30%" id="">
 			
 		
@@ -21,9 +23,11 @@
 		</tr>
 
 		{for $i=0 to 8}
+		{$day_index = $i}
 		<tr id="day_{$i}" class="{if  ($i>=0 and $i<6) }weekday{else}weekend{/if}  {if $i==0 or $i==6}group{else}day{/if}      {if  ($i>0 and $i<6) and $compact_weekdays}hide{/if}  {if  ( $i==7 or $i==8 )and $compact_weekend}hide{/if} {if  ( $i==6 )and !$compact_weekend}hide{/if} {if  ( $i==0 )and !$compact_weekdays}hide{/if}  "  >
 			<td class="expand_days">
 			{if $i==0}
+			{$day_index = 1}
 			<i class="fa fa-expand" onClick="expand_weekday()"></i>
 			{else if $i==1}
 			<i class="fa fa-compress"  onClick="compress_weekday()"></i>
@@ -34,31 +38,34 @@
 			{/if}
 			
 			</td>
-			<td class="day_labels">{$day_labels[$i]}</td>
+			<td class="day_labels">
 			<td> 
-			<input maxlength="5" id="wa_weekdays_start_{$i}" index='{$i}' class="start time_input_field working_hours_input_field valid" placeholder="09:00" value="{if isset($data[$i].start)}$data[$i].start{/if}" />
+			<input maxlength="5" id="wa_weekdays_start_{$i}" index='{$i}' class="start time_input_field working_hours_input_field valid" placeholder="09:00" value="{if isset($working_hours.data[$day_index]['s'])}{$working_hours.data[$day_index]['s']}{/if}" />
 			</td>
 			<td> 
-			<input  maxlength="5" id="wa_weekdays_end_{$i}" index='{$i}' class="end time_input_field working_hours_input_field valid" placeholder="17:00" value="{if isset($data[$i].end)}$data[$i].end{/if}" />
+			<input  maxlength="5" id="wa_weekdays_end_{$i}" index='{$i}' class="end time_input_field working_hours_input_field valid" placeholder="17:00" value="{if isset($working_hours.data[$day_index]['e'])}{$working_hours.data[$day_index]['e']}{/if}" />
 			</td>
-			<td style="padding-left:20px"> 
+			<td colspan=2 style="width:280px;padding-left:20px"> 
 			<table id="breaks_{$i}" border=0>
 			    
-			    {if isset($data[{$i}].breaks)}
-					<tr>
-					<td> {t}Starting{/t}: 
-					<input id="wa_weekdays_start" maxlength="5"  placeholder="12:00" class="break_input_field  time_input_field" value="{if isset($data[0].start)}$data[0].start{/if}" />
-					<input id="wa_weekdays_start" maxlength="4" placeholder="30" class="break_input_field minutes_input_field" value="{if isset($data[0].start)}$data[0].start{/if}" />
+			    {if isset($working_hours.data[$day_index]['b'])}
+			    {foreach from=$working_hours.data[$day_index]['b'] item=break_data key=break_key } 
+			   
+			   
+			    
+
+			    
+					<tr id="break_{$i}_{$break_key}" break_id="{$break_key}" day_id="{$i}">
+					<td><i class="fa fa-times link delete_break" ></i>  {t}Starting{/t}: 
+					<input  maxlength="5"  placeholder="12:00" class="time_input_field break_input_field valid" value="{$break_data.s}" />
+					<input  maxlength="4" placeholder="30"  class="minutes_input_field break_input_field valid" value="{$break_data.d}" />
 					{t}minutes{/t} </td>
 				</tr>
 				
-				
+				{/foreach}
 				{/if}
 				
-				
-				
-				
-				<tr id="add_break_tr_{$i}">
+				<tr id="add_break_tr_{$i}" class=" {if isset($working_hours.data[$day_index]['b']) and $working_hours.data[$day_index]['b']|@count gt 0   }hide{/if}" >
 				<td  >
 				<span onClick="add_break('{$i}')"  style="color:#aaa" class="link" ><i class="fa fa-plus"></i> {t}add break{/t}</span>
 				
@@ -78,8 +85,8 @@
 				<td >
 		<i class="fa fa-times link delete_break" ></i> 
 				 {t}Starting{/t}: 
-					<input  placeholder="12:00" class="time_input_field break_input_field valid" value="" />
-					<input  placeholder="30" class="minutes_input_field break_input_field valid" value="" />
+					<input   maxlength="5" placeholder="12:00" class="time_input_field break_input_field valid" value="" />
+					<input  maxlength="4" placeholder="30" class="minutes_input_field break_input_field valid" value="" />
 					{t}minutes{/t} 
 			
 				
@@ -101,27 +108,29 @@
 
 function add_break(i) {
 
+    if ($('#breaks_' + i + ' .break_input_field').length != 0) {
+        return;
+    }
+
     var clone = $("#new_break_" + i).clone()
 
     if ($('#breaks_' + i + ' tr').length == 1) {
         break_id = 0;
     } else {
-
         var last_tr = $('#breaks_' + i + ' tr[id^="break_"]:last');
         break_id = parseInt(last_tr.attr('break_id')) + 1
     }
 
     clone.prop('id', 'break_' + i + '_' + break_id);
 
-
-
-
     $("#add_break_tr_" + i).before(clone)
-
-
     $('#break_' + i + '_' + break_id).attr('break_id', break_id)
+    $('#break_' + i + '_' + break_id).attr('day_id', i)
+
+    $("#add_break_tr_" + i).addClass('hide')
 
 }
+
 
 function working_hours_delayed_on_change_field(object, timeout) {
 
@@ -181,26 +190,41 @@ function on_changed_break_value(object, new_value) {
     object.removeClass('invalid potentially_valid valid').addClass(component_validation.class)
 
 
+validate_working_hours()
 
 
+   
+    
+}
 
-    var validation = validate_individual_times()
-
-    tmp = validation;
-
-
+function validate_working_hours( ) {
+	 var validation = validate_individual_times()
     if (validation.class == 'valid') {
-        validation = validate_working_hours()
-
-        // console.log('V:'+tmp.class+' '+validation.class)
-    } else {
-        // console.log('V:'+tmp.class)
+        validation = validate_working_hours_components()
     }
 
-
-
     process_validation(validation, '{$field.id}')
+    
+    if(validation.class=='valid'){
+        var working_hours=process_working_hours()
+        
+       
+    }else{
+    var working_hours='invalid';
+    }
+    
+     $('#{$field.id}').val(working_hours)
+    
+      if (working_hours != $('#{$field.id}_value').html()) {
+        $('#{$field.id}_editor').addClass('changed')
+        var changed = true;
+    } else {
+        $('#{$field.id}_editor').removeClass('changed')
+        var changed = false;
+    }
+    
 }
+
 
 function on_changed_working_hours_value(field, new_value) {
     // console.log(field + ' : ' + new_value)
@@ -214,7 +238,6 @@ function on_changed_working_hours_value(field, new_value) {
 
     $('#{$field.id}_save_button').removeClass('invalid valid potentially_valid')
     $('#{$field.id}_msg').removeClass('invalid valid potentially_valid')
-
     $('#{$field.id}_validation').removeClass('invalid valid potentially_valid')
 
 
@@ -227,25 +250,11 @@ function on_changed_working_hours_value(field, new_value) {
 
     }
 
-
-    var validation = validate_individual_times()
-    tmp = validation
-    if (validation.class == 'valid') {
-        validation = validate_working_hours()
-
-        // console.log('V:'+tmp.class+' '+validation.class)
-    } else {
-        // console.log('V:'+tmp.class)
-    }
-
-
-
-
-    process_validation(validation, '{$field.id}')
+   validate_working_hours()
 }
 
 
-function validate_working_hours() {
+function validate_working_hours_components() {
 
     var valid_state = {
         class: 'valid',
@@ -300,6 +309,7 @@ function validate_working_hours() {
 
 function validate_breaks(i) {
 
+    //  // 1 break only (matrix validate all breaks)
 
     if ($('#breaks_' + i + ' .break_input_field').length) {
 
@@ -633,24 +643,15 @@ $('.working_hours').on('input propertychange', '.break_input_field', function() 
 $('.working_hours').on('click', '.delete_break', function() {
 
 
+    var i = $(this).parent().parent().attr('day_id') // 1 break only
     $(this).parent().parent().remove()
 
-    var validation = validate_individual_times()
-
-    tmp = validation;
+    $("#add_break_tr_" + i).removeClass('hide') // 1 break only
 
 
-    if (validation.class == 'valid') {
-        validation = validate_working_hours()
-
-        // console.log('V:'+tmp.class+' '+validation.class)
-    } else {
-        // console.log('V:'+tmp.class)
-    }
-
-
-
-    process_validation(validation, '{$field.id}',false)
+    validate_working_hours()
+    
+    
 
 });
 
@@ -659,21 +660,178 @@ $('.working_hours').on('click', '.delete_break', function() {
 function expand_weekday() {
     $('.day.weekday').removeClass('hide')
     $('.group.weekday').addClass('hide')
+    
+    validate_working_hours()
 }
 
 function compress_weekday() {
     $('.day.weekday').addClass('hide')
     $('.group.weekday').removeClass('hide')
+    validate_working_hours()
 }
 
 function expand_weekend() {
     $('.day.weekend').removeClass('hide')
     $('.group.weekend').addClass('hide')
+    validate_working_hours()
 }
 
 function compress_weekend() {
     $('.day.weekend').addClass('hide')
     $('.group.weekend').removeClass('hide')
+    validate_working_hours()
+}
+
+
+function process_day(i) {
+
+    if ($('#wa_weekdays_start_' + i).val() == '' || $('#wa_weekdays_end_' + i).val() == '') {
+        return false
+    }
+
+    var start = clean_time($('#wa_weekdays_start_' + i).val())
+    var end = clean_time($('#wa_weekdays_end_' + i).val())
+    var start_time_components = start.split(':');
+    var start_d = new Date(2000, 0, 1, parseInt(start_time_components[0]), parseInt(start_time_components[1]), parseInt(start_time_components[2]))
+    var end_time_components = end.split(':');
+    var end_d = new Date(2000, 0, 1, parseInt(end_time_components[0]), parseInt(end_time_components[1]), parseInt(end_time_components[2]))
+    var diff = (end_d - start_d) / 3600000
+
+
+    var breaks = {}
+
+    if ($('#breaks_' + i + ' .break_input_field').length) {
+
+
+        // 1 break only (Todo sort breaks)
+        var break_number = 0
+        $('#breaks_' + i + ' .break_input_field.time_input_field').each(function() {
+
+            if ($(this).val() != '' && $(this).next().val() != '') {
+
+                var break_start = clean_time($(this).val())
+                var break_end = add_minutes_to_time(break_start, $(this).next().val())
+
+
+
+                var start_time_components = break_start.split(':');
+                var start_d = new Date(2000, 0, 1, parseInt(start_time_components[0]), parseInt(start_time_components[1]), parseInt(start_time_components[2]))
+                var end_time_components = break_end.split(':');
+                var end_d = new Date(2000, 0, 1, parseInt(end_time_components[0]), parseInt(end_time_components[1]), parseInt(end_time_components[2]))
+                var break_diff = (end_d - start_d) / 3600000
+
+                diff = diff - break_diff
+                breaks[break_number] = {
+                    's': break_start.replace(/:00$/, ""),
+                    'e': break_end.replace(/:00$/, ""),
+                    'd':break_diff*60
+                }
+
+
+                break_number++;
+            }
+
+        })
+
+
+
+
+
+    }
+
+
+    return {
+        'data': {
+            's': start.replace(/:00$/, ""),
+            'e': end.replace(/:00$/, ""),
+            'b': breaks
+        },
+        'hours': diff
+    }
+}
+
+function process_working_hours() {
+
+
+
+    var number_working_hours = 0;
+    var working_hours = {};
+    if ($('#day_0').hasClass('hide')) {
+
+        var group_weekdays = false;
+
+        for (i = 1; i < 6; i++) {
+            var day_data = process_day(i)
+            if (day_data) {
+                number_working_hours = number_working_hours + day_data.hours
+                working_hours[i] = day_data.data
+            }
+
+        }
+    } else {
+        var group_weekdays = true;
+        var day_data = process_day(0)
+        if (day_data) {
+
+            for (i = 1; i < 6; i++) {
+                number_working_hours = number_working_hours + day_data.hours
+                working_hours[i] = day_data.data
+
+            }
+
+
+        }
+
+
+    }
+
+    if ($('#day_6').hasClass('hide')) {
+        var group_weekend = false;
+        for (i = 7; i < 9; i++) {
+            var day_data = process_day(i)
+            if (day_data) {
+                number_working_hours = number_working_hours + day_data.hours
+                working_hours[i-1] = day_data.data
+            }
+        }
+
+    } else {
+        var group_weekend = true;
+        var day_data = process_day(6)
+        if (day_data) {
+
+            for (i = 7; i < 9; i++) {
+                number_working_hours = number_working_hours + day_data.hours
+                working_hours[i-1] = day_data.data
+
+            }
+
+
+        }
+
+
+    }
+
+
+    working_hours = JSON.stringify({
+        'metadata': {
+            'group_weekdays': group_weekdays,
+            'group_weekend': group_weekend
+        },
+        'data': working_hours
+    })
+    //  console.log(working_hours)
+    //  console.log(number_working_hours)
+
+    if (number_working_hours > 0) {
+
+        $('#{$field.id}_hrs').html(number_working_hours.toFixed(2).replace(/[.,]00$/, "") + ' ' + $('#{$field.id}_hours_label').html())
+    } else {
+        $('#{$field.id}_hrs').html('')
+    }
+
+    return working_hours
+
 }
 
 

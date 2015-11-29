@@ -387,7 +387,11 @@ if ($employee->get('Staff User Key')) {
 }
 
 
-;
+
+
+
+$smarty->assign('working_hours',json_decode($employee->data['Staff Working Hours'], true));
+
 $smarty->assign('day_labels',$day_labels=array(
 _('Weekdays'),
 _('Mon'),

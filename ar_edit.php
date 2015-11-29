@@ -85,6 +85,8 @@ function edit_field($account, $db, $user, $editor, $data) {
 		$options='';
 	}
 
+
+
 	$object->update(array($field=>$data['value']), $options);
 
 	if (isset($data['metadata'])) {
