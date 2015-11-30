@@ -270,21 +270,12 @@ $object_fields=array(
 
 			array(
 
-				'id'=>'Staff_Payment_Terms',
-				'edit'=>'option',
-				'value'=>$employee->get('Staff Payment Terms'),
-				'formated_value'=>$employee->get('Payment Terms'),
-				'options'=>$options_Staff_Payment_Terms,
-				'label'=>ucfirst($employee->get_field_label('Staff Payment Terms')),
-			),
-			array(
-
-				'id'=>'Staff_Salary_Base_Rate',
-				'edit'=>'float_unsigned',
-				'value'=>$employee->get('Staff Salary Base Rate'),
-				'formated_value'=>$employee->get('Salary Base Rate'),
-				'label'=>ucfirst($employee->get_field_label('Staff Salary Base Rate')),
-				'invalid_msg'=>get_invalid_message('float_unsigned'),
+				'id'=>'Staff_Salary',
+				'edit'=>'salary',
+				'value'=>$employee->get('Staff Salary'),
+				'formated_value'=>$employee->get('Salary'),
+				'label'=>ucfirst($employee->get_field_label('Staff Salary')),
+				'invalid_msg'=>get_invalid_message('salary'),
 			)
 			
 
@@ -391,6 +382,7 @@ if ($employee->get('Staff User Key')) {
 
 
 $smarty->assign('working_hours',json_decode($employee->data['Staff Working Hours'], true));
+$smarty->assign('salary',json_decode($employee->data['Staff Salary'], true));
 
 $smarty->assign('day_labels',$day_labels=array(
 _('Weekdays'),

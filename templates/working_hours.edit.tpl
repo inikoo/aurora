@@ -1,8 +1,9 @@
 	{if isset($metadata.compact_weekdays)}{assign "compact_weekdays" $metadata.compact_weekdays}{else}{assign "compact_weekdays" 1}{/if} 
 	{if isset($metadata.compact_weekend)}{assign "compact_weekend" $metadata.compact_weekend}{else}{assign "compact_weekend" 1}{/if} 
+{*}
 <span id="{$field.id}_hrs" style="position:relative;left:-10px"></span>
 <span id="{$field.id}_hours_label" class="hide ">{t}hrs/w{/t}</span>
-
+{*}
 <input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}" has_been_valid="0"/>
 <div id="working_hours" class="working_hours hide" >
 	<table border="0" style="" >
@@ -55,7 +56,7 @@
 			    
 
 			    
-					<tr id="break_{$i}_{$break_key}" break_id="{$break_key}" day_id="{$i}">
+					<tr class="breaks" id="break_{$i}_{$break_key}" break_id="{$break_key}" day_id="{$i}">
 					<td><i class="fa fa-times link delete_break" ></i>  {t}Starting{/t}: 
 					<input  maxlength="5"  placeholder="12:00" class="time_input_field break_input_field valid" value="{$break_data.s}" />
 					<input  maxlength="4" placeholder="30"  class="minutes_input_field break_input_field valid" value="{$break_data.d}" />
@@ -65,7 +66,7 @@
 				{/foreach}
 				{/if}
 				
-				<tr id="add_break_tr_{$i}" class=" {if isset($working_hours.data[$day_index]['b']) and $working_hours.data[$day_index]['b']|@count gt 0   }hide{/if}" >
+				<tr id="add_break_tr_{$i}" class="breaks {if isset($working_hours.data[$day_index]['b']) and $working_hours.data[$day_index]['b']|@count gt 0   }hide{/if}" >
 				<td  >
 				<span onClick="add_break('{$i}')"  style="color:#aaa" class="link" ><i class="fa fa-plus"></i> {t}add break{/t}</span>
 				
@@ -81,7 +82,7 @@
 			</table>
 			
 			<table class="hide">
-			<tr  id="new_break_{$i}" class="break" break_id=""  >
+			<tr  id="new_break_{$i}" class="break breaks" break_id=""  >
 				<td >
 		<i class="fa fa-times link delete_break" ></i> 
 				 {t}Starting{/t}: 
@@ -825,9 +826,9 @@ function process_working_hours() {
 
     if (number_working_hours > 0) {
 
-        $('#{$field.id}_hrs').html(number_working_hours.toFixed(2).replace(/[.,]00$/, "") + ' ' + $('#{$field.id}_hours_label').html())
+    //    $('#{$field.id}_hrs').html(number_working_hours.toFixed(2).replace(/[.,]00$/, "") + ' ' + $('#{$field.id}_hours_label').html())
     } else {
-        $('#{$field.id}_hrs').html('')
+   //     $('#{$field.id}_hrs').html('')
     }
 
     return working_hours

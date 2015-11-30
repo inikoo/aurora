@@ -1038,9 +1038,9 @@ input {
 
 .working_hours {
   padding: 0px;
-  margin: 10px;
   position: relative;
-  top: -30px; }
+  top: -10px;
+  margin-top: 5px; }
   .working_hours td.expand_days {
     width: 30px; }
     .working_hours td.expand_days .fa {
@@ -1050,5 +1050,42 @@ input {
         opacity: 1; }
   .working_hours td.day_labels {
     min-width: 80px; }
+  .working_hours .breaks {
+    border: none; }
+
+.salary td.label {
+  width: 160px; }
+.salary td.header_field {
+  width: 300px; }
+.salary input.day_of_the_month {
+  width: 30px;
+  text-align: center; }
+.salary input.amount {
+  width: 80px; }
+.salary .inline_options span {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  cursor: pointer;
+  opacity: .4; }
+.salary .inline_options span.selected {
+  opacity: 1;
+  background-color: #fff; }
+.salary .inline_options.medium span {
+  min-width: 120px; }
+.salary .inline_options.small span {
+  min-width: 60px; }
+.salary table tr {
+  border: none; }
+  .salary table tr .fa-expand, .salary table tr .fa-compress {
+    cursor: pointer;
+    padding-right: 5px;
+    padding-left: 2px;
+    opacity: .3; }
+    .salary table tr .fa-expand:hover, .salary table tr .fa-compress:hover {
+      opacity: 1; }
+  .salary table tr .compress {
+    width: 28px; }
+  .salary table tr td.small_label {
+    width: 80px; }
 
 /*# sourceMappingURL=app.css.map */
