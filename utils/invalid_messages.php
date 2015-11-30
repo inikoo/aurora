@@ -169,6 +169,7 @@ function get_invalid_message($type) {
 			'invalid'=>_('Invalid email'),
 			'empty'=>_('Please provide an email'),
 		);
+		break;
 	case 'telephone':
 		$messages=array(
 			'invalid'=>_('Invalid number'),
@@ -188,7 +189,12 @@ function get_invalid_message($type) {
 			'wrong_break'=>_('Break ends next day'),
 			'invalid_break_duration'=>_('Invalid break duration'),
 		);
-		break;	
+
+		break;
+	case 'salary':
+		$messages=array(
+			'invalid'=>_('Invalid amount'),
+		);
 	}
 
 	return $messages;

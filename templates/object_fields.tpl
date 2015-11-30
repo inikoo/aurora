@@ -50,7 +50,9 @@
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
 		{elseif $edit=='working_hours'  } 
-			  {include file="working_hours.tpl" field=$field working_hours=$working_hours } 
+		{include file="working_hours.edit.tpl" field=$field working_hours=$working_hours } 
+		{elseif $edit=='salary'  } 
+		{include file="salary.edit.tpl" field=$field salary=$salary } 
 		{elseif $edit=='textarea'  } 
 		
 	

@@ -73,7 +73,14 @@ function open_edit_field(object, key, field) {
 
         break;
 
+    case 'working_hours':
+        $('#working_hours').removeClass('hide')
 
+        break;
+    case 'salary':
+        $('#salary').removeClass('hide')
+
+        break;
 
     default:
 
@@ -190,6 +197,14 @@ function close_edit_field(field) {
         $('#' + field + '_datepicker').datepicker("setDate", date);
 
 
+
+        break;
+    case 'working_hours':
+        $('#working_hours').addClass('hide')
+
+        break;
+    case 'salary':
+        $('#salary').addClass('hide')
 
         break;
     default:
