@@ -99,7 +99,20 @@ case 'views':
 
 
 
+	$sql=sprintf('insert into `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  values (%d,%s,%s,%s,%s,%s,%s,%s,%s)',
+		$user->id,
+		prepare_mysql(gmdate('Y-m-d H:i:s')),
+		prepare_mysql($state['module']),
+		prepare_mysql($state['section']),
+		prepare_mysql(($state['subtab']!=''?$state['subtab']:$state['tab'])),
+		prepare_mysql($state['parent']),
+		prepare_mysql($state['parent_key']),
+		prepare_mysql($state['object']),
+		prepare_mysql($state['key'])
 
+	);
+    $db->exec($sql);
+    
 
 	$response=array('state'=>array());
 
@@ -140,6 +153,9 @@ case 'views':
 
 	unset($state['_object']);
 	$response['state']=$state;
+
+
+
 
 
 	echo json_encode($response);
@@ -256,7 +272,7 @@ function get_object_showcase($data) {
 	case 'timesheet':
 		include_once 'showcase/timesheet.show.php';
 		$html=get_timesheet_showcase($data);
-		break;	
+		break;
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -604,7 +620,7 @@ function get_navigation($data) {
 			break;
 		case ('timesheet'):
 			return get_timesheet_navigation($data);
-			break;	
+			break;
 		}
 
 		break;
@@ -1009,14 +1025,14 @@ function get_view_position($data) {
 		}
 
 		break;
-		
-	case 'help':	
+
+	case 'help':
 		switch ($data['section']) {
 		case 'help':
 			$branch[]=array('label'=>_('Help'), 'icon'=>'', 'reference'=>'help');
 			break;
 
-		
+
 		}
 		break;
 	case 'hr':
@@ -1518,7 +1534,7 @@ function get_help($data, $db) {
 	$scope_state=parse_request($data, $db);
 
 
-$state=array(
+	$state=array(
 		'request'=>$scope_state['request'],
 		'module'=>'help',
 		'section'=>'help',
@@ -1545,12 +1561,12 @@ $state=array(
 
 	) {
 
-	require_once 'navigation/help.nav.php';
-	$response['navigation']=get_help_navigation($data);
+		require_once 'navigation/help.nav.php';
+		$response['navigation']=get_help_navigation($data);
 
 	}
 
-	
+
 
 
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
