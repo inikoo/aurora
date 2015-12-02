@@ -2341,7 +2341,7 @@ class Page extends DB_Table {
 
 
 				foreach ($products as $key=>$product) {
-					$rrp=money_locale($product['Product RRP'],$this->site->data['Site Locale'],$product['Product Currency']);
+					$rrp=money($product['Product RRP'],$product['Product Currency'],$this->site->data['Site Locale']);
 					$tmp=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
 						$product['Product Units Per Case'],
 						$product['Product Name'],
@@ -2366,7 +2366,7 @@ class Page extends DB_Table {
 
 
 				foreach ($products as $key=>$product) {
-					$rrp=money_locale($product['Product RRP'],$this->site->data['Site Locale'],$product['Product Currency']);
+					$rrp=money($product['Product RRP'],$product['Product Currency'],$this->site->data['Site Locale']);
 
 					$products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
 						$product['Product Units Per Case'],
@@ -3837,7 +3837,7 @@ class Page extends DB_Table {
 				<span class="basket_info">
 				    <img  onClick=\'window.location="basket.php"\' src="art/basket.jpg" />
 				     '._('Items total').':
-				 	<span onClick=\'window.location="basket.php"\'  id="basket_total">'.money_locale(0,$this->site->data['Site Locale'],$this->set_currency).'</span>
+				 	<span onClick=\'window.location="basket.php"\'  id="basket_total">'.money(0,$this->set_currency,$this->site->data['Site Locale']).'</span>
 				 	 (<span id="number_items">0</span> '._('items').') </span>
 				 	  <span onClick=\'window.location="basket.php"\'  class="link basket"  id="see_basket"  >'._('Basket').'</span>
 				 </div>' ;

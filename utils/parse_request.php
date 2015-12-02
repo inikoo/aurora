@@ -33,6 +33,7 @@ function parse_request($_data, $db) {
 	$parent_key=false;
 	$object='';
 	$key='';
+	
 
 	$count_view_path=count($view_path);
 	$shorcut=false;

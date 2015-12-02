@@ -269,6 +269,32 @@ function client_validation(type, required, value, field) {
         if (res) return res
         break;
 
+case 'day_of_month':
+
+        if (value == 0) {
+       
+            return {
+                class: 'invalid',
+                type: 'invalid_day_of_month'
+            }
+        }
+
+        var res = validate_signed_integer(value, 31)
+        if (res) return res
+        break;
+
+case 'amount':
+
+var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
+   if (!regex.test(value)){
+   console.log('ccc')
+   
+     return {
+                class: 'invalid',
+                type: 'invalid_amount'
+            }
+   }
+break
     default:
 
     }

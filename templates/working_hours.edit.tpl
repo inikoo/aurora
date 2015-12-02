@@ -150,9 +150,6 @@ function working_hours_delayed_on_change_field(object, timeout) {
 function break_input_delayed_on_change_field(object, timeout) {
 
     var new_value = object.val()
-
-
-
     window.clearTimeout(object.data("timeout"));
     object.data("timeout", setTimeout(function() {
         on_changed_break_value(object, new_value)
@@ -163,39 +160,19 @@ function break_input_delayed_on_change_field(object, timeout) {
 
 function on_changed_break_value(object, new_value) {
 
-
-
-
     $('#{$field.id}_save_button').removeClass('invalid valid potentially_valid')
     $('#{$field.id}_msg').removeClass('invalid valid potentially_valid')
-
     $('#{$field.id}_validation').removeClass('invalid valid potentially_valid')
-
-
-
     $('#{$field.id}_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
-
-
 
     if (object.hasClass('minutes_input_field')) var field_type = 'minutes_in_break'
     else var field_type = 'time'
 
-
-
     var component_validation = validate_field('{$field.id}', new_value, field_type, false, false)
-
-
-
-
     object.removeClass('invalid potentially_valid valid').addClass(component_validation.class)
 
+    validate_working_hours()
 
-validate_working_hours()
-
-
-   
-    
 }
 
 function validate_working_hours( ) {
@@ -624,7 +601,7 @@ function get_validation_of_times_in_day(i) {
 
 $(".working_hours_input_field").on("input propertychange", function(evt) {
 
-    var delay = 10;
+    var delay = 200;
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
     working_hours_delayed_on_change_field($(this), delay)
 });
@@ -633,7 +610,7 @@ $(".working_hours_input_field").on("input propertychange", function(evt) {
 $('.working_hours').on('input propertychange', '.break_input_field', function() {
 
 
-    var delay = 10;
+    var delay = 200;
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
     break_input_delayed_on_change_field($(this), delay)
 
