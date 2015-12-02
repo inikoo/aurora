@@ -97,8 +97,16 @@ case 'views':
 
 	}
 
+	if ($state['module']=='hr') {
 
+		if (!$user->can_view('staff') ) {
+	
+			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'forbidden', 'tab'=>'forbidden', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>$state['parent_key'], '_object'=>'', 'object'=>'', 'key'=>'');
+	
+		}
 
+	}
+   
 	$sql=sprintf('insert into `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  values (%d,%s,%s,%s,%s,%s,%s,%s,%s)',
 		$user->id,
 		prepare_mysql(gmdate('Y-m-d H:i:s')),
@@ -113,6 +121,7 @@ case 'views':
 	);
 	$db->exec($sql);
 
+	
 
 	list($state, $response['view_position'])=get_view_position($state);
 
