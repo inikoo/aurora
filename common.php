@@ -115,29 +115,6 @@ set_locale($locale);
 
 
 
-//include_once 'set_locales.php';
-//require 'locale.php';
-
-//$_SESSION['locale_info'] = localeconv();
-//if ($_SESSION['locale_info']['currency_symbol']=='EU')
-//	$_SESSION['locale_info']['currency_symbol']='Û';
-
-//$smarty->assign('lang_code',$_SESSION['text_locale_code']);
-//$smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));
-//$smarty->assign('locale',$_SESSION['text_locale_code'].'_'.$_SESSION['text_locale_country_code']);
-
-//$args="?";
-
-//foreach ($_GET as $key => $value) {
-//	if ($key!='_locale')$args.=$key.'='.$value.'&';
-//}
-
-
-//$smarty->assign('decimal_point',$_SESSION['locale_info']['decimal_point']);
-//$smarty->assign('thousands_sep',$_SESSION['locale_info']['thousands_sep']);
-//$smarty->assign('currency_symbol',$_SESSION['locale_info']['currency_symbol']);
-
-
 $smarty->assign('user',$user);
 
 $user->read_groups();

@@ -12,7 +12,7 @@ function formated_rrp($data,$options=false) {
 		$show_units=true;
 	}
 	
-    $rrp=money_locale($data['Product RRP']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
+    $rrp=money($data['Product RRP']/$data['Product Units Per Case'],$data['Product Currency'],$locale);
     if ($locale=="de_DE") {
         return ($prefix?'UVP: ':'')."$rrp ".($show_units?"pro Stück":'');
     }
@@ -39,8 +39,8 @@ function formated_price($data) {
     $locale=$data['locale'];
 
 
-    $price=money_locale($data['Product Price'],$locale,$data['Product Currency']);
-    $price_per_unit=money_locale($data['Product Price']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
+    $price=money($data['Product Price'],$data['Product Currency'],$locale);
+    $price_per_unit=money($data['Product Price']/$data['Product Units Per Case'],$data['Product Currency'],$locale);
 
     if (!array_key_exists('Label',$data)) {
         $label='price';
@@ -161,7 +161,7 @@ function formated_price_per_unit($data) {
     $locale=$data['locale'];
 
 
-    $price_per_unit=money_locale($data['Product Price']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
+    $price_per_unit=money($data['Product Price']/$data['Product Units Per Case'],$data['Product Currency'],$locale);
 
     if (!array_key_exists('Label',$data)) {
         $label='price';

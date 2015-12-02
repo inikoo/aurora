@@ -619,7 +619,7 @@ class product extends DB_Table {
 			}
 			$desc.=' '.$name;
 			if ($price>0) {
-				$desc.=' ('.money_locale($price,$this->locale,$this->get('Product Currency')).')';
+				$desc.=' ('.money($price,$this->get('Product Currency'),$this->locale).')';
 			}
 
 			return _trim($desc);
@@ -644,7 +644,7 @@ class product extends DB_Table {
 			if ($price>0) {
 				//print money($price,$currency)." $price,$currency <---\n";exit;
 
-				$desc.=' ('.money_locale($price,$this->locale,$currency).')';
+				$desc.=' ('.money($price,$currency,$this->locale).')';
 			}
 
 			return _trim($desc);

@@ -143,7 +143,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	}
 	$desc.=' '.$name;
 	if ($price>0) {
-		$desc.=' ('.money_locale($price,$_locale,$currency).')';
+		$desc.=' ('.money($price,$currency,$_locale).')';
 	}
 
 	$description=$desc;

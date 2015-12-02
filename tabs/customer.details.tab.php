@@ -9,11 +9,14 @@
 
 */
 
-$customer=new Customer($state['key']);
+$customer=$state['_object'];
 
 if ($customer->data['Customer Type']=='Company') {
 
 }
+
+
+
 
 $company_field=array();
 
@@ -125,6 +128,7 @@ $smarty->assign('object', $state['_object']);
 $smarty->assign('key', $state['key']);
 
 $smarty->assign('object_fields',$object_fields);
+$smarty->assign('state', $state);
 
 $html=$smarty->fetch('object_fields.tpl');
 

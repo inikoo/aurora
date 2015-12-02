@@ -111,8 +111,11 @@ case 'views':
 		prepare_mysql($state['key'])
 
 	);
-    $db->exec($sql);
-    
+	$db->exec($sql);
+
+
+	list($state, $response['view_position'])=get_view_position($state);
+
 
 	$response=array('state'=>array());
 
@@ -139,7 +142,6 @@ case 'views':
 
 	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
 
-	$response['view_position']=get_view_position($state);
 
 
 	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
@@ -763,14 +765,16 @@ function get_tabs($data) {
 }
 
 
-function get_view_position($data) {
+function get_view_position($state) {
 	global $user, $smarty, $account;
 
-
+	$state['current_store']='';
+	$state['current_website']='';
+	$state['current_warehouse']='';
 
 	$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
 
-	switch ($data['module']) {
+	switch ($state['module']) {
 
 	case 'products':
 
@@ -780,52 +784,54 @@ function get_view_position($data) {
 			$branch[]=array('label'=>_('Stores'), 'icon'=>'bars', 'reference'=>'stores');
 
 		}
-		if ($data['section']=='store') {
-			$branch[]=array('label'=>_('Store').' <span class="id">'.$data['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$data['_object']->id);
+		if ($state['section']=='store') {
+			$branch[]=array('label'=>_('Store').' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
+			$state['current_store']=$state['_object']->id;
 
+		}elseif ($state['section']=='department') {
 
-		}elseif ($data['section']=='department') {
-
-			$store=new Store($data['parent_key']);
+			$store=new Store($state['parent_key']);
 			$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-			$branch[]=array('label'=>_('Department').' <span class="id">'.$data['_object']->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>$data['parent'].'/'.$data['parent_key'].'/department/'.$data['_object']->id);
+			$branch[]=array('label'=>_('Department').' <span class="id">'.$state['_object']->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>$state['parent'].'/'.$state['parent_key'].'/department/'.$state['_object']->id);
+			$state['current_store']=$store->id;
 
+		}elseif ($state['section']=='family') {
 
-		}elseif ($data['section']=='family') {
-
-			if ($data['parent']=='store') {
-				$store=new Store($data['parent_key']);
+			if ($state['parent']=='store') {
+				$store=new Store($state['parent_key']);
 				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-			}elseif ($data['parent']=='department') {
-				$department=new Department($data['parent_key']);
+				$state['current_store']=$store->id;
+			}elseif ($state['parent']=='department') {
+				$department=new Department($state['parent_key']);
 				$store=new Store($department->get('Product Department Store Key'));
 				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
 				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
+				$state['current_store']=$store->id;
 			}
-			$branch[]=array('label'=>_('Family').' <span class="id">'.$data['_object']->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>$data['parent'].'/'.$data['parent_key'].'/family/'.$data['_object']->id);
+			$branch[]=array('label'=>_('Family').' <span class="id">'.$state['_object']->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>$state['parent'].'/'.$state['parent_key'].'/family/'.$state['_object']->id);
 
-		}elseif ($data['section']=='product') {
+		}elseif ($state['section']=='product') {
 
-			if ($data['parent']=='store') {
-				$store=new Store($data['parent_key']);
+			if ($state['parent']=='store') {
+				$store=new Store($state['parent_key']);
 				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-			}elseif ($data['parent']=='department') {
-				$department=new Department($data['parent_key']);
+			}elseif ($state['parent']=='department') {
+				$department=new Department($state['parent_key']);
 				$store=new Store($department->get('Product Department Store Key'));
 				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
 				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
-			}elseif ($data['parent']=='family') {
+			}elseif ($state['parent']=='family') {
 
 
 
-				$family=new Family($data['parent_key']);
+				$family=new Family($state['parent_key']);
 				$department=new Department($family->get('Product Family Main Department Key'));
 				$store=new Store($department->get('Product Department Store Key'));
 				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
 				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
 				$branch[]=array('label'=>_('Family').' <span class="id">'.$family->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>'department/'.$department->id.'/family/'.$family->id);
-			}elseif ($data['parent']=='order') {
-				$order=new Order($data['parent_key']);
+			}elseif ($state['parent']=='order') {
+				$order=new Order($state['parent_key']);
 				$store=new Store($order->get('Order Store Key'));
 				$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
 
@@ -835,35 +841,37 @@ function get_view_position($data) {
 
 				$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
 
-				$branch[]=array('label'=>_('Order').' '.$order->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'orders/'.$store->id.'/'.$data['parent_key']);
+				$branch[]=array('label'=>_('Order').' '.$order->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'orders/'.$store->id.'/'.$state['parent_key']);
 
 
 			}
-			$_ref=$data['parent'].'/'.$data['parent_key'].'/product/'.$data['_object']->id;
-			if (isset($data['otf'])) {
-				$_ref=$data['parent'].'/'.$data['parent_key'].'/item/'.$data['otf'];
+			$state['current_store']=$store->id;
+			$_ref=$state['parent'].'/'.$state['parent_key'].'/product/'.$state['_object']->id;
+			if (isset($state['otf'])) {
+				$_ref=$state['parent'].'/'.$state['parent_key'].'/item/'.$state['otf'];
 			}
 
-			$branch[]=array('label'=>_('Product').' <span class="id">'.$data['_object']->get('Product Code').'</span>', 'icon'=>'', 'reference'=>$_ref);
+			$branch[]=array('label'=>_('Product').' <span class="id">'.$state['_object']->get('Product Code').'</span>', 'icon'=>'', 'reference'=>$_ref);
 
-		}elseif ($data['section']=='products') {
+		}elseif ($state['section']=='products') {
 
-			if ($data['object']=='store') {
-				$store=new Store($data['key']);
+			if ($state['object']=='store') {
+				$store=new Store($state['key']);
 				$branch[]=array('label'=>$store->get('Store Code'), 'icon'=>'', 'reference'=>'store/'.$store->id);
+				$state['current_store']=$store->id;
 			}
 
 
-		}elseif ($data['section']=='categories') {
+		}elseif ($state['section']=='categories') {
 			$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 		}
 
 
 		break;
 	case 'customers_server':
-		if ($data['section']=='customers')
+		if ($state['section']=='customers')
 			$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
-		elseif ($data['section']=='pending_orders')
+		elseif ($state['section']=='pending_orders')
 			$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 
 		break;
@@ -872,9 +880,11 @@ function get_view_position($data) {
 	case 'customers':
 
 
-		switch ($data['parent']) {
+		switch ($state['parent']) {
 		case 'store':
-			$store=new Store($data['parent_key']);
+			$store=new Store($state['parent_key']);
+			$state['current_store']=$store->id;
+
 			break;
 
 
@@ -883,19 +893,18 @@ function get_view_position($data) {
 
 
 
-
 		if ( $user->get_number_stores()>1) {
 
-			if ($data['section']=='pending_orders')
+			if ($state['section']=='pending_orders')
 				$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 			else
 				$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
 
 		}
 
-		switch ($data['section']) {
+		switch ($state['section']) {
 		case 'list':
-			$list=new SubjectList($data['key']);
+			$list=new SubjectList($state['key']);
 			$store=new Store($list->data['List Parent Key']);
 
 
@@ -906,8 +915,8 @@ function get_view_position($data) {
 
 		case 'customer':
 
-			if ($data['parent']=='store') {
-				$customer=new Customer($data['key']);
+			if ($state['parent']=='store') {
+				$customer=new Customer($state['key']);
 				if ($customer->id) {
 
 
@@ -917,11 +926,11 @@ function get_view_position($data) {
 					$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
 					$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
 				}
-			}elseif ($data['parent']=='list') {
-				$customer=new Customer($data['key']);
+			}elseif ($state['parent']=='list') {
+				$customer=new Customer($state['key']);
 				$store=new Store($customer->data['Customer Store Key']);
 
-				$list=new SubjectList($data['parent_key']);
+				$list=new SubjectList($state['parent_key']);
 
 				$branch[]=array('label'=>_("Customer's lists").' '.$store->data['Store Code'], 'icon'=>'list', 'reference'=>'customers/'.$store->id.'/lists');
 				$branch[]=array('label'=>$list->get('List Name'), 'icon'=>'', 'reference'=>'customers/list/'.$list->id);
@@ -957,13 +966,13 @@ function get_view_position($data) {
 		}
 		break;
 	case 'orders':
-		switch ($data['section']) {
+		switch ($state['section']) {
 		case 'orders':
 
 			if ( $user->get_number_stores()>1) {
 				$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
 			}
-			$store=new Store($data['parent_key']);
+			$store=new Store($state['parent_key']);
 
 			$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
 
@@ -987,9 +996,9 @@ function get_view_position($data) {
 
 		case 'order':
 
-			if ($data['parent']=='customer') {
+			if ($state['parent']=='customer') {
 
-				$customer=new Customer($data['parent_key']);
+				$customer=new Customer($state['parent_key']);
 				if ($customer->id) {
 					if ( $user->get_number_stores()>1) {
 
@@ -1009,7 +1018,7 @@ function get_view_position($data) {
 
 			}
 			else {
-				$store=new Store($data['_object']->data['Order Store Key']);
+				$store=new Store($state['_object']->data['Order Store Key']);
 
 				if ( $user->get_number_stores()>1) {
 					$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
@@ -1018,7 +1027,7 @@ function get_view_position($data) {
 
 
 			}
-			$branch[]=array('label'=>_('Order').' '.$data['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
+			$branch[]=array('label'=>_('Order').' '.$state['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
 
 			break;
 
@@ -1027,7 +1036,7 @@ function get_view_position($data) {
 		break;
 
 	case 'help':
-		switch ($data['section']) {
+		switch ($state['section']) {
 		case 'help':
 			$branch[]=array('label'=>_('Help'), 'icon'=>'', 'reference'=>'help');
 			break;
@@ -1036,7 +1045,7 @@ function get_view_position($data) {
 		}
 		break;
 	case 'hr':
-		switch ($data['section']) {
+		switch ($state['section']) {
 		case 'employees':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 			break;
@@ -1044,7 +1053,7 @@ function get_view_position($data) {
 		case 'employee':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 
-			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$data['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$data['_object']->id);
+			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
 
 			break;
 		}
@@ -1062,15 +1071,15 @@ function get_view_position($data) {
 			$branch[]=array('label'=>_('Websites'), 'icon'=>'bars', 'reference'=>'websites');
 
 		}
-		switch ($data['section']) {
+		switch ($state['section']) {
 		case 'website':
 
-			$website=$data['_object'];
+			$website=$state['_object'];
 
 			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
 			break;
 		case 'page':
-			$page=$data['_object'];
+			$page=$state['_object'];
 			$website=new Site($page->get('Page Site Key'));
 			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
 			$branch[]=array('label'=>_('Page').' '.$page->data['Page Code'], 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$website->id);
@@ -1078,10 +1087,10 @@ function get_view_position($data) {
 			break;
 		case 'website.user':
 
-			if ($data['parent']=='website') {
-				$website=new Site($data['parent_key']);
-			}elseif ($data['parent']=='page') {
-				$page=new Page($data['parent_key']);
+			if ($state['parent']=='website') {
+				$website=new Site($state['parent_key']);
+			}elseif ($state['parent']=='page') {
+				$page=new Page($state['parent_key']);
 
 				$website=new Site($page->get('Page Site Key'));
 
@@ -1089,13 +1098,13 @@ function get_view_position($data) {
 
 			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
 
-			if ($data['parent']=='page') {
+			if ($state['parent']=='page') {
 
 				$branch[]=array('label'=>_('Page').' '.$page->data['Page Code'], 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$page->id);
 
 			}
 
-			$branch[]=array('label'=>_('User').' '.$data['_object']->data['User Handle'], 'icon'=>'user', 'reference'=>'website/'.$website->id.'/user/'.$data['_object']->id);
+			$branch[]=array('label'=>_('User').' '.$state['_object']->data['User Handle'], 'icon'=>'user', 'reference'=>'website/'.$website->id.'/user/'.$state['_object']->id);
 
 			break;
 		}
@@ -1110,62 +1119,62 @@ function get_view_position($data) {
 	case 'account':
 
 		$branch[]=array('label'=>_('Account').' <span class="id">'.$account->get('Account Code').'</span>', 'icon'=>'', 'reference'=>'account');
-		if ($data['section']=='users') {
+		if ($state['section']=='users') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
-		}elseif ($data['section']=='staff') {
-			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
-
-			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
-
-		}elseif ($data['section']=='staff.user') {
+		}elseif ($state['section']=='staff') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
 			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
-			$branch[]=array('label'=>_('User').' <span id="id">'.$data['_object']->data['User Alias'].'</span>', 'icon'=>'male', 'reference'=>'account/user/'.$data['_object']->id);
 
-		}elseif ($data['section']=='settings') {
+		}elseif ($state['section']=='staff.user') {
+			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+
+			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
+			$branch[]=array('label'=>_('User').' <span id="id">'.$state['_object']->data['User Alias'].'</span>', 'icon'=>'male', 'reference'=>'account/user/'.$state['_object']->id);
+
+		}elseif ($state['section']=='settings') {
 			$branch[]=array('label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings');
 
-		}elseif ($data['section']=='payment_service_provider') {
-			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$data['_object']->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$data['_object']->id);
+		}elseif ($state['section']=='payment_service_provider') {
+			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$state['_object']->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
 
-		}elseif ($data['section']=='payment_account') {
+		}elseif ($state['section']=='payment_account') {
 
-			$psp=new Payment_Service_Provider($data['_object']->get('Payment Service Provider Key'));
-
-			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
-
-			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$data['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$data['_object']->id);
-
-		}elseif ($data['section']=='payment_account') {
-
-			$psp=new Payment_Service_Provider($data['_object']->get('Payment Service Provider Key'));
+			$psp=new Payment_Service_Provider($state['_object']->get('Payment Service Provider Key'));
 
 			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
 
-			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$data['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$data['_object']->id);
+			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
 
-		}elseif ($data['section']=='payment') {
+		}elseif ($state['section']=='payment_account') {
+
+			$psp=new Payment_Service_Provider($state['_object']->get('Payment Service Provider Key'));
+
+			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
+
+			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
+
+		}elseif ($state['section']=='payment') {
 
 			include_once 'class.Payment_Service_Provider.php';
 			include_once 'class.Payment_Account.php';
 
-			$psp=new Payment_Service_Provider($data['_object']->get('Payment Service Provider Key'));
-			$payment_account=new Payment_Account($data['_object']->get('Payment Account Key'));
+			$psp=new Payment_Service_Provider($state['_object']->get('Payment Service Provider Key'));
+			$payment_account=new Payment_Account($state['_object']->get('Payment Account Key'));
 
 			$branch[]=array('label'=>_('Payment option').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
 
 			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$payment_account->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'payment_service_provider/'.$psp->id.'/payment_account/'.$payment_account->id);
 
-			if ($data['parent']=='payment_service_provider') {
-				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$data['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'payment_service_provider/'.$psp->id.'/payment/'.$data['_object']->id);
+			if ($state['parent']=='payment_service_provider') {
+				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$state['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'payment_service_provider/'.$psp->id.'/payment/'.$state['_object']->id);
 
-			}elseif ($data['parent']=='payment_account') {
-				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$data['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'payment_account/'.$payment_account->id.'/payment/'.$data['_object']->id);
+			}elseif ($state['parent']=='payment_account') {
+				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$state['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'payment_account/'.$payment_account->id.'/payment/'.$state['_object']->id);
 
 			}else {
-				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$data['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'account/payment/'.$data['_object']->id);
+				$branch[]=array('label'=>_('Payment').'  <span id="id">'.$state['_object']->get('Payment Key').'</span>', 'icon'=>'', 'reference'=>'account/payment/'.$state['_object']->id);
 			}
 		}
 
@@ -1180,7 +1189,7 @@ function get_view_position($data) {
 	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('view_position.tpl');
-	return $html;
+	return array($state, $html);
 
 
 

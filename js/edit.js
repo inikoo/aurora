@@ -75,10 +75,12 @@ function open_edit_field(object, key, field) {
 
     case 'working_hours':
         $('#working_hours').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
 
         break;
     case 'salary':
         $('#salary').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
 
         break;
 
@@ -514,9 +516,8 @@ function save_field(object, key, field) {
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
-
     $.getJSON(request, function(data) {
-        console.log(request)
+        //console.log(request)
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
@@ -545,7 +546,7 @@ function save_field(object, key, field) {
 
             if (data.other_fields) {
                 for (var key in data.other_fields) {
-
+                   
                     update_field(data.other_fields[key])
 
                 }
@@ -599,7 +600,8 @@ function update_field(data) {
     if (type == 'option') {
 
     } else {
-        $('.' + field).html(data.value_formated)
+ 
+        $('.' + field).html(data.formated_value)
         $("#" + field).val(data.value)
 
     }

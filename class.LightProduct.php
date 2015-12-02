@@ -257,15 +257,14 @@ class LightProduct {
             $form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
                           // ,$this->get_formated_price($this->locale)
                           ,$this->data['Product Code']
-                          ,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8").' ('.money_locale($this->data['Product Price'],$this->locale,$currency).')'.$rrp
+                          ,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8").' ('.money($this->data['Product Price'],$currency,$this->locale).')'.$rrp
 
                           ,$out_of_stock
                          );
         } else {
             $form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="dis
                           price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
-                          //,money_locale($this->data['Product Price'],$this->locale,$currency)
-                          ,$this->data['Product Code'].' '.money_locale($this->data['Product Price'],$this->locale,$currency).''
+                          ,$this->data['Product Code'].' '.money($this->data['Product Price'],$currency,$this->locale).''
                           ,$counter
                           ,$counter
                           ,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8")

@@ -2,7 +2,7 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 
-function get_prev_next($pivot,$array) {
+function get_prev_next($pivot, $array) {
 	$prev_key=current($array);
 	$next_key=false;
 	while (current($array) !== $pivot && key($array) !== null) {
@@ -20,8 +20,9 @@ function get_prev_next($pivot,$array) {
 		}
 
 	}
-	return array($prev_key,$next_key);
+	return array($prev_key, $next_key);
 }
+
 
 if (!function_exists('money_format')) {
 	function money_format($format, $number) {
@@ -109,6 +110,8 @@ if (!function_exists('money_format')) {
 		}
 		return $format;
 	}
+
+
 }
 function getEnumValues($table, $field) {
 	$enum_array = array();
@@ -125,60 +128,8 @@ function getEnumValues($table, $field) {
 }
 
 
-function money($amount,$currency='') {
 
 
-	return money_locale($amount,'',$currency);
-}
-
-
-function money_locale($amount,$locale='',$currency_code='') {
-
-	//print "\n";
-
-	if (!is_numeric($amount))
-		$amount=0;
-	//  global $_client_locale;
-	$format='%i';
-
-
-	$oldLocale = setlocale(LC_MONETARY, '0');
-
-
-	if ($locale) {
-		$locale.='.UTF-8';
-		setlocale(LC_MONETARY, ($locale));
-	}
-	if ($currency_code) {
-
-		$locale_info = localeconv();
-		$client_currency=_trim($locale_info['int_curr_symbol']);
-		//        print("->".$_client_locale."<-");
-		//        print("->".$client_currency."<-");
-		//        print("->".money_format($format,$amount)."<-");
-		$format='%i';
-
-		$money=preg_replace("/$client_currency/",$currency_code,money_format($format,round($amount,2)));
-	} else {
-		$money=money_format($format,round($amount,2));
-	}
-
-	//
-
-	//print("->".$money."<-");
-	//exit($money);
-	if (preg_match('/[A-Z]{3}/',$money,$match)) {
-		$money=preg_replace('/[A-Z]{3}\s*/',currency_symbol($match[0]),$money);
-
-	}
-
-
-	setlocale(LC_MONETARY, $oldLocale);
-
-	// exit($money);
-	//print "\n";
-	return $money;
-}
 
 
 function get_currency_symbol_from_locale($locale) {
@@ -211,35 +162,37 @@ Replace Non-English characters to its ANSI equivalent.
 function clean_accents($str) {
 
 
-	$str=preg_replace('/é|è|ê|ë|æ/','e',$str);
-	$str=preg_replace('/á|à|â|ã|ä|å|æ|ª/','a',$str);
-	$str=preg_replace('/ù|ú|û|ü/','u',$str);
-	$str=preg_replace('/ò|ó|ô|õ|ö|ø|°/','o',$str);
-	$str=preg_replace('/ì|í|î|ï/','i',$str);
+	$str=preg_replace('/é|è|ê|ë|æ/', 'e', $str);
+	$str=preg_replace('/á|à|â|ã|ä|å|æ|ª/', 'a', $str);
+	$str=preg_replace('/ù|ú|û|ü/', 'u', $str);
+	$str=preg_replace('/ò|ó|ô|õ|ö|ø|°/', 'o', $str);
+	$str=preg_replace('/ì|í|î|ï/', 'i', $str);
 
-	$str=preg_replace('/É|È|Ê|Ë|Æ/','E',$str);
-	$str=preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/','A',$str);
-	$str=preg_replace('/Ù|Ú|Û|Ü/','U',$str);
-	$str=preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/','O',$str);
-	$str=preg_replace('/Ì|Í|Î|Ï/','I',$str);
+	$str=preg_replace('/É|È|Ê|Ë|Æ/', 'E', $str);
+	$str=preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/', 'A', $str);
+	$str=preg_replace('/Ù|Ú|Û|Ü/', 'U', $str);
+	$str=preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/', 'O', $str);
+	$str=preg_replace('/Ì|Í|Î|Ï/', 'I', $str);
 
-	$str=preg_replace('/ñ/','n',$str);
-	$str=preg_replace('/Ñ/','N',$str);
-	$str=preg_replace('/ç|¢|©/','c',$str);
-	$str=preg_replace('/Ç/','C',$str);
-	$str=preg_replace('/ß|§/i','s',$str);
+	$str=preg_replace('/ñ/', 'n', $str);
+	$str=preg_replace('/Ñ/', 'N', $str);
+	$str=preg_replace('/ç|¢|©/', 'c', $str);
+	$str=preg_replace('/Ç/', 'C', $str);
+	$str=preg_replace('/ß|§/i', 's', $str);
 
 	return $str;
 }
+
 
 function unformat_money($number) {
 	$locale_info = localeconv();
 
 
-	$number=preg_replace('/\\'.$locale_info['thousand_sep'].'/','',$number);
-	$number=preg_replace('/\\'.$locale_info['decimal_point'].'/','.',$number);
+	$number=preg_replace('/\\'.$locale_info['thousand_sep'].'/', '', $number);
+	$number=preg_replace('/\\'.$locale_info['decimal_point'].'/', '.', $number);
 	return $number;
 }
+
 
 function getOrdinal($number) {
 	// get first digit
@@ -249,18 +202,19 @@ function getOrdinal($number) {
 	return $number.$ext;
 }
 
-function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='') {
+
+function prepare_mysql_dates($date1='', $date2='', $date_field='date', $options='') {
 
 
 
 	$start='';
 	$end='';
-	if (preg_match('/start.*end/i',$options)) {
+	if (preg_match('/start.*end/i', $options)) {
 		$start=' start';
 		$end=' end';
 
 	}
-	if (preg_match('/(dates?_only|dates? only|only dates|date|whole_day|only_dates?)/i',$options)) {
+	if (preg_match('/(dates?_only|dates? only|only dates|date|whole_day|only_dates?)/i', $options)) {
 		$d_option='date';
 
 
@@ -272,7 +226,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 	}
 
 
-	$tmp=prepare_mysql_datetime($date1,$d_option.$start);
+	$tmp=prepare_mysql_datetime($date1, $d_option.$start);
 
 
 
@@ -281,7 +235,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 	if ($tmp['status']=='empty')
 		$ok1=true;
 
-	$tmp=prepare_mysql_datetime($date2,$d_option.$end);
+	$tmp=prepare_mysql_datetime($date2, $d_option.$end);
 	$mysql_date2=$tmp['mysql_date'];
 
 	$ok2=$tmp['ok'];
@@ -294,14 +248,14 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$error=0;
 
 
-	if (preg_match('/complete months/i',$options)) {
-		list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',$mysql_date1);
-		list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',$mysql_date2);
+	if (preg_match('/complete months/i', $options)) {
+		list($_date1['y'], $_date1['m'], $_date1['d'])=preg_split('/-/', $mysql_date1);
+		list($_date2['y'], $_date2['m'], $_date2['d'])=preg_split('/-/', $mysql_date2);
 		if ($_date1['d']>1)
-			list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
+			list($_date1['y'], $_date1['m'], $_date1['d'])=preg_split('/-/', date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
 		$last_day= getLastDayOfMonth($_date2['m'], $_date2['y']);
 		if ($_date2['d']!= $last_day  )
-			list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1,$last_day-1 , $_date2['y'])));
+			list($_date2['y'], $_date2['m'], $_date2['d'])=preg_split('/-/', date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1, $last_day-1 , $_date2['y'])));
 
 		$mysql_date1=$_date1['y'].'-'.$_date1['m'].'-'.$_date1['d'];
 		$mysql_date2=$_date2['y'].'-'.$_date2['m'].'-'.$_date2['d'];
@@ -340,27 +294,27 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 
 
 
-	return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2,'mysql_from'=>$mysql_date1,'mysql_to'=>$mysql_date2);
+	return array('0'=>$mysql_interval, '1'=>$date1, '2'=>$date2, '3'=>$error, 'error'=>$error, 'mysql'=>$mysql_interval, 'from'=>$date1, 'to'=>$date2, 'mysql_from'=>$mysql_date1, 'mysql_to'=>$mysql_date2);
 
 
 }
 
 
-function prepare_mysql_datetime($datetime,$tipo='datetime') {
+function prepare_mysql_datetime($datetime, $tipo='datetime') {
 
 	//print "** $tipo \n";exit;
 	if ($datetime=='')
-		return array('mysql_date'=>'','status'=>_('Empty field'),'ok'=>false);
+		return array('mysql_date'=>'', 'status'=>_('Empty field'), 'ok'=>false);
 	$time='';
 
-	if (preg_match('/datetime/',$tipo)) {
-		if (preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
+	if (preg_match('/datetime/', $tipo)) {
+		if (preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/', $datetime))
 			$datetime=$datetime.':00';
 
-		if (preg_match('/^[0123]\d[\-\/][01]\d[\-\/][12]\d{3} /',$datetime)) {
-			$_tmp=preg_split('/\s/',$datetime);
+		if (preg_match('/^[0123]\d[\-\/][01]\d[\-\/][12]\d{3} /', $datetime)) {
+			$_tmp=preg_split('/\s/', $datetime);
 
-			$tmp=preg_split('/\-|\//',$_tmp[0]);
+			$tmp=preg_split('/\-|\//', $_tmp[0]);
 			if (count($tmp)==3) {
 				$_datetime=$tmp[2].'-'.$tmp[1].'-'.$tmp[0];
 			}
@@ -372,60 +326,61 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 
 		}
 
-		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
-			return array('mysql_date'=>'','status'=>"Error, date time not recognised $datetime",'ok'=>false);
-		$ts=date('U',strtotime($datetime));
-		list($date,$time)=preg_split('/\s+/',$datetime);
+		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/', $datetime))
+			return array('mysql_date'=>'', 'status'=>"Error, date time not recognised $datetime", 'ok'=>false);
+		$ts=date('U', strtotime($datetime));
+		list($date, $time)=preg_split('/\s+/', $datetime);
 
 		//exit;
 
 	} else {
 
 
-		if (preg_match('/[0123]\d[\-\/][01]\d[\-\/][12]\d{3}/',$datetime)) {
-			$tmp=preg_split('/\-|\//',$datetime);
+		if (preg_match('/[0123]\d[\-\/][01]\d[\-\/][12]\d{3}/', $datetime)) {
+			$tmp=preg_split('/\-|\//', $datetime);
 			if (count($tmp)==3) {
 				$datetime=$tmp[2].'-'.$tmp[1].'-'.$tmp[0];
 			}
 		}
 
-		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
-			return array('mysql_date'=>'','status'=>_('Invalid date'),'ok'=>false);
+		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/', $datetime))
+			return array('mysql_date'=>'', 'status'=>_('Invalid date'), 'ok'=>false);
 		$date=$datetime;
-		$ts=date('U',strtotime($date));
+		$ts=date('U', strtotime($date));
 	}
 
 
 	//BfxcGlE80Qt;D
 
-	$date=str_replace('/','-',$date);
-	$date=preg_split('/-/',$date);
+	$date=str_replace('/', '-', $date);
+	$date=preg_split('/-/', $date);
 
 
-	if (preg_match('/datetime/',$tipo)) {
+	if (preg_match('/datetime/', $tipo)) {
 
-		$mysql_datetime= trim(join('-',$date).' '.$time);
+		$mysql_datetime= trim(join('-', $date).' '.$time);
 	} else {
 
 
-		$mysql_datetime= join('-',$date);
-		if (preg_match('/start/i',$tipo))
+		$mysql_datetime= join('-', $date);
+		if (preg_match('/start/i', $tipo))
 			$mysql_datetime.=' 00:00:00';
-		if (preg_match('/midday/i',$tipo))
+		if (preg_match('/midday/i', $tipo))
 			$mysql_datetime.=' 12:00:00';
-		elseif (preg_match('/end/i',$tipo))
+		elseif (preg_match('/end/i', $tipo))
 			$mysql_datetime.=' 23:59:59';
 
 	}
-	return array('ts'=>$ts,'mysql_date'=>$mysql_datetime,'status'=>'ok','ok'=>true);
+	return array('ts'=>$ts, 'mysql_date'=>$mysql_datetime, 'status'=>'ok', 'ok'=>true);
 
 }
 
-function prepare_mysql_date($string,$default='NOW()') {
+
+function prepare_mysql_date($string, $default='NOW()') {
 	if ($string=='')
 		return $default;
 	else {
-		$string=str_replace("'",'',$string);
+		$string=str_replace("'", '', $string);
 		return "'".addslashes($string)."'";
 	}
 }
@@ -438,52 +393,52 @@ function getLastDayOfMonth($month, $year) {
 }
 
 
-function date_base($from,$to,$step='m',$tipo='complete_both') {
+function date_base($from, $to, $step='m', $tipo='complete_both') {
 
 
-	$tmp=prepare_mysql_datetime($from,'date');
+	$tmp=prepare_mysql_datetime($from, 'date');
 	$mysql_date1=$tmp['mysql_date'];
 	$ok1=$tmp['ok'];
 	if ($tmp['status']=='empty')
 		$ok1=true;
-	$tmp=prepare_mysql_datetime($to,'date');
+	$tmp=prepare_mysql_datetime($to, 'date');
 	$mysql_date2=$tmp['mysql_date'];
 	$ok2=$tmp['ok'];
 	if ($tmp['status']=='empty')
 		$ok2=true;
 	if ( !$ok1  or !$ok2)
 		return array();
-	list($date1['y'],$date1['m'],$date1['d'])=preg_split('/-/',$mysql_date1);
-	list($date2['y'],$date2['m'],$date2['d'])=preg_split('/-/',$mysql_date2);
+	list($date1['y'], $date1['m'], $date1['d'])=preg_split('/-/', $mysql_date1);
+	list($date2['y'], $date2['m'], $date2['d'])=preg_split('/-/', $mysql_date2);
 	$base=array();
 
 
 	switch ($step) {
 	case('m'):
 
-		if (preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_first|complete_from|only_complete|complete months/i',$tipo)) {
+		if (preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_first|complete_from|only_complete|complete months/i', $tipo)) {
 
 			if ($date1['d']>1) {
-				list($date1['y'],$date1['m'],$date1['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $date1['m']+1, 1, $date1['y'])));
+				list($date1['y'], $date1['m'], $date1['d'])=preg_split('/-/', date("Y-m-d", mktime(0, 0, 0, $date1['m']+1, 1, $date1['y'])));
 			}
 		}
-		if (preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_second|complete_to|only_complete|complete months/i',$tipo)) {
+		if (preg_match('/(^|\s|,)complete($|\s|,)|complete_both|complete_second|complete_to|only_complete|complete months/i', $tipo)) {
 			$last_day= getLastDayOfMonth($date2['m'], $date2['y']);
 
 			if ($date2['d']!= $last_day  ) {
-				list($date2['y'],$date2['m'],$date2['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $date2['m']-1,$last_day-1 , $date2['y'])));
+				list($date2['y'], $date2['m'], $date2['d'])=preg_split('/-/', date("Y-m-d", mktime(0, 0, 0, $date2['m']-1, $last_day-1 , $date2['y'])));
 			}
 		}
 
 
 
-		foreach (range($date1['y'],$date2['y']) as $y) {
-			foreach (range(1,12) as $m) {
+		foreach (range($date1['y'], $date2['y']) as $y) {
+			foreach (range(1, 12) as $m) {
 				if ($y==$date1['y'] and $m<$date1['m'])
 					continue;
 				if ($y==$date2['y'] and $m>$date2['m'])
 					break;
-				$base[sprintf('%d-%02d',$y,$m)]='';
+				$base[sprintf('%d-%02d', $y, $m)]='';
 
 			}
 		}
@@ -501,21 +456,22 @@ function date_base($from,$to,$step='m',$tipo='complete_both') {
 
 
 function getmicrotime() {
-	list($usec, $sec) = explode(" ",microtime());
+	list($usec, $sec) = explode(" ", microtime());
 	return (float)$usec + (float)$sec;
 }
 
 
 
-function delta($current_value,$old_value) {
+function delta($current_value, $old_value) {
 
 	if ($current_value==$old_value) {
 		return '--';
 	}
-	return percentage($current_value-$old_value,$old_value,1,'NA','%',true);
+	return percentage($current_value-$old_value, $old_value, 1, 'NA', '%', true);
 }
 
-function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false) {
+
+function percentage($a, $b, $fixed=1, $error_txt='NA', $psign='%', $plus_sing=false) {
 
 	$locale_info = localeconv();
 
@@ -526,7 +482,7 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false) 
 			$sing='+';
 		else
 			$sing='';
-		$per=$sing.number_format((100*($a/$b)),$fixed,$locale_info['decimal_point'],$locale_info['thousands_sep']).$psign;
+		$per=$sing.number_format((100*($a/$b)), $fixed, $locale_info['decimal_point'], $locale_info['thousands_sep']).$psign;
 	} else
 		$per=$error_txt;
 	return $per;
@@ -556,8 +512,8 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false) 
 (end code)
 
  */
-function parse_money($amount,$currency=false) {
-	global $myconf,$corporate_currency;
+function parse_money($amount, $currency=false) {
+	global $myconf, $corporate_currency;
 	// preg_match('/(\$|\£|\€|EUR|GBP|USD)[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/',$term_description , $match){
 
 	$locale_info = localeconv();
@@ -566,7 +522,7 @@ function parse_money($amount,$currency=false) {
 		$currency=$corporate_currency;
 	else
 		$currency=$currency;
-	if (preg_match('/$|£|¥|€|zł/i',$amount,$match)) {
+	if (preg_match('/$|£|¥|€|zł/i', $amount, $match)) {
 		if ($match[0]=='$')
 			$currency='USD';
 		elseif ($match[0]=='€')
@@ -581,17 +537,18 @@ function parse_money($amount,$currency=false) {
 			$currency='PLN';
 
 	}
-	elseif (preg_match('/[a-z]{3}/i',$amount,$match)) {
+	elseif (preg_match('/[a-z]{3}/i', $amount, $match)) {
 		//todo integrate do country db
-		if (preg_match('/usd|eur|gbp|jpy|cad|aud|inr|pkr|mxn|nok/i',$match[0])) {
+		if (preg_match('/usd|eur|gbp|jpy|cad|aud|inr|pkr|mxn|nok/i', $match[0])) {
 			$currency=strtoupper($match[0]);
 		}
 	}
 	$locale_info = localeconv();
-	$amount=preg_replace("/[^\d\.".$locale_info['decimal_point']."\-]/i","",$amount);
-	return array($currency,ParseFloat($amount));
+	$amount=preg_replace("/[^\d\.".$locale_info['decimal_point']."\-]/i", "", $amount);
+	return array($currency, ParseFloat($amount));
 
 }
+
 
 function ParseFloat($floatString) {
 	$LocaleInfo = localeconv();
@@ -645,12 +602,12 @@ function currency_symbol($currency) {
 
 
 function money_cents($amount) {
-	$amount=sprintf("%02d",100*($amount-floor($amount)));
+	$amount=sprintf("%02d", 100*($amount-floor($amount)));
 	return $amount;
 }
 
 
-function weight($w,$unit='Kg',$number_decimals=3,$simplify=false,$zero_fill=false) {
+function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=false) {
 	if ($w=='') return '';
 	if ($simplify) {
 		if ($w==0) {
@@ -662,15 +619,15 @@ function weight($w,$unit='Kg',$number_decimals=3,$simplify=false,$zero_fill=fals
 		if ($w==0) {
 			return '~1'.$unit;
 		}elseif ($w>1000) {
-			$w=number($w,0);
+			$w=number($w, 0);
 		}
 		return $w.$unit;
 	}else {
 		if ($zero_fill) {
-			return number($w,$number_decimals,true).$unit;
+			return number($w, $number_decimals, true).$unit;
 
 		}else {
-			return number($w,$number_decimals).$unit;
+			return number($w, $number_decimals).$unit;
 		}
 	}
 }
@@ -678,7 +635,7 @@ function weight($w,$unit='Kg',$number_decimals=3,$simplify=false,$zero_fill=fals
 
 
 
-function number($a,$fixed=1,$force_fix=false) {
+function number($a, $fixed=1, $force_fix=false) {
 	if (!$a)
 		$a=0;
 
@@ -686,23 +643,25 @@ function number($a,$fixed=1,$force_fix=false) {
 	$floored=floor($a);
 	if ($floored==$a and !$force_fix)
 		$fixed=0;
-	$a=number_format($a,$fixed,$locale_info['decimal_point'],$locale_info['thousands_sep']);
+	$a=number_format($a, $fixed, $locale_info['decimal_point'], $locale_info['thousands_sep']);
 
 	return $a;
 }
 
-function endmonth($m,$y) {
+
+function endmonth($m, $y) {
 	return idate('d', mktime(0, 0, 0, ($m + 1), 0, $y));
 
 }
 
-function detect_interval($date1,$date2) {
+
+function detect_interval($date1, $date2) {
 
 	return false;
 }
 
 
-function display_dif($present,$past) {
+function display_dif($present, $past) {
 	if ($present==_('NA'))
 		$present=0;
 
@@ -729,7 +688,7 @@ function display_dif($present,$past) {
 			$class='same';
 			$arrow='&harr;';
 		}
-		$dif_str='<td class="'.$class.'"><span class="arrow">'.$arrow.'</span>   '.number_format($dif,1).'%</td>';
+		$dif_str='<td class="'.$class.'"><span class="arrow">'.$arrow.'</span>   '.number_format($dif, 1).'%</td>';
 
 
 		return $dif_str;
@@ -737,59 +696,60 @@ function display_dif($present,$past) {
 }
 
 
-function ft_request($from,$to,$output='phpdate',$mysql_date='date') {
+function ft_request($from, $to, $output='phpdate', $mysql_date='date') {
 
 	if ($to=='')
 		$to=$from;
 	if ($from!='') {
-		$day_from=preg_split('/-/',$from);
-		$day_to=preg_split('/-/',$to);
+		$day_from=preg_split('/-/', $from);
+		$day_to=preg_split('/-/', $to);
 
 
 		if (count($day_from)==3 and count($day_to)==3) {
 			switch ($output) {
 			case('mysql_dates'):
-				$date1=join('-',array_reverse($day_from));
-				$date2=join('-',array_reverse($day_to));
-				return array(true,$date1,$date2);
+				$date1=join('-', array_reverse($day_from));
+				$date2=join('-', array_reverse($day_to));
+				return array(true, $date1, $date2);
 
 			case('phpdate'):
-				$date1=strtotime(join('-',array_reverse($day_from)));
-				$date2=strtotime(join('-',array_reverse($day_to)));
-				return array(true,$date1,$date2);
+				$date1=strtotime(join('-', array_reverse($day_from)));
+				$date2=strtotime(join('-', array_reverse($day_to)));
+				return array(true, $date1, $date2);
 			case('mysqlwhere'):
-				$date1=join('-',array_reverse($day_from));
-				$date2=join('-',array_reverse($day_to));
+				$date1=join('-', array_reverse($day_from));
+				$date2=join('-', array_reverse($day_to));
 				if ($date1==$date2)
 					$where_sql="( date='$date1'   )";
 				else
 					$where_sql="( DATE($mysql_date)>='$date1' and DATE($mysql_date)<='$date2'  )";
-				return array(true,$where_sql,'');
+				return array(true, $where_sql, '');
 
 			}
 		}
 	}
-	return array(false,'','');
+	return array(false, '', '');
 
 
 }
 
-function ft_dates($from,$to,$output='phpdate',$mysql_date='date') {
+
+function ft_dates($from, $to, $output='phpdate', $mysql_date='date') {
 
 
 	switch ($output) {
 	case('mysql_dates'):
-		$date1=date('Y-m-d',$from);
-		$date2=date('Y-m-d',$to);
-		return array(true,$date1,$date2);
+		$date1=date('Y-m-d', $from);
+		$date2=date('Y-m-d', $to);
+		return array(true, $date1, $date2);
 	case('mysqlwhen'):
-		$date1=date('Y-m-d',$from);
-		$date2=date('Y-m-d',$to);
+		$date1=date('Y-m-d', $from);
+		$date2=date('Y-m-d', $to);
 		if ($date1==$date2)
 			$where_sql="(date='$date1')";
 		else
 			$where_sql="(DATE($mysql_date)>='$date1' and DATE($mysql_date)<='$date2')";
-		return array(true,$where_sql,'');
+		return array(true, $where_sql, '');
 
 	}
 
@@ -809,6 +769,7 @@ function selfURL() {
 	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
 }
 
+
 function strleft($s1, $s2) {
 	return substr($s1, 0, strpos($s1, $s2));
 }
@@ -816,13 +777,14 @@ function strleft($s1, $s2) {
 
 /**
  *
- *
- * @return timestamp
- * @param integer year
- * @param integer woy
- * @param integer dow
  * @desc This function retrieves the time for the given year, week of year and day of the week and returns it.
+ * @param integer    year
+ * @param integer    woy
+ * @param integer    dow
+ * @return timestamp
  */
+
+
 function mktimefromcw($year, $woy=1, $dow=1) {
 	// $year = year (four digits)
 	// $woy  = week of the year (1..53)
@@ -832,7 +794,7 @@ function mktimefromcw($year, $woy=1, $dow=1) {
 	$woy = ($woy) - 1;
 
 	// Get reference value (this is the first monday of the first week of the year, not easy to calculate)
-	$fdoy_timestamp = mktime(0,0,0,1,1,$year);
+	$fdoy_timestamp = mktime(0, 0, 0, 1, 1, $year);
 	$fdoy = ((date("w", $fdoy_timestamp) + 6) % 7) + 1;
 
 	if ($fdoy == 1) {
@@ -855,6 +817,8 @@ function mktimefromcw($year, $woy=1, $dow=1) {
 	// Return timestamp
 	return $time;
 }
+
+
 function translate($string) {
 	$arg = array();
 	for ($i = 1 ; $i < func_num_args(); $i++)
@@ -863,7 +827,8 @@ function translate($string) {
 	return vsprintf(gettext($string), $arg);
 }
 
-function interval($days,$units='auto') {
+
+function interval($days, $units='auto') {
 
 	switch ($units) {
 	case('auto'):
@@ -871,22 +836,22 @@ function interval($days,$units='auto') {
 		if (!is_numeric($days) or $days<=0)
 			$interval='';
 		else if ($days<14)
-				$interval=number($days)._('d');
-			elseif ($days<89)
-				$interval=number($days/7)._('w');
-			elseif ($days<534)
-				$interval=number($days/30)._('m');
-			elseif ($days<1826)
-				$interval=number($days/365.25)._('y');
-			else
-				$interval=">5"._('y');
+			$interval=number($days)._('d');
+		elseif ($days<89)
+			$interval=number($days/7)._('w');
+		elseif ($days<534)
+			$interval=number($days/30)._('m');
+		elseif ($days<1826)
+			$interval=number($days/365.25)._('y');
+		else
+			$interval=">5"._('y');
 
 	}
 	return $interval;
 }
 
 
-function get_time_interval($d1,$d2,$units='days') {
+function get_time_interval($d1, $d2, $units='days') {
 
 	$interval=$d2-$d1;
 
@@ -952,22 +917,22 @@ function invoices_awhere($awhere) {
 
 	$where_billing_geo_constraints='';
 	if ($where_data['billing_geo_constraints']!='') {
-		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'", $where_data['billing_geo_constraints']);
 	}
 
 	$where_delivery_geo_constraints='';
 	if ($where_data['delivery_geo_constraints']!='') {
-		$where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+		$where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'", $where_data['delivery_geo_constraints']);
 	}
 
 	$where_tax_code='';
 	if ($where_data['tax_code']!='') {
-		$where_delivery_geo_constraints=sprintf(" and `Invoice Tax Code`='%s'",$where_data['tax_code']);
+		$where_delivery_geo_constraints=sprintf(" and `Invoice Tax Code`='%s'", $where_data['tax_code']);
 	}
 
 
-	$date_interval_invoice_created=prepare_mysql_dates($where_data['invoice_date_from'],$where_data['invoice_date_to'],'`Invoice Date`','only_dates');
-	$date_interval_invoice_paid=prepare_mysql_dates($where_data['invoice_paid_date_from'],$where_data['invoice_paid_date_to'],'`Invoice Paid Date`','only_dates');
+	$date_interval_invoice_created=prepare_mysql_dates($where_data['invoice_date_from'], $where_data['invoice_date_to'], '`Invoice Date`', 'only_dates');
+	$date_interval_invoice_paid=prepare_mysql_dates($where_data['invoice_paid_date_from'], $where_data['invoice_paid_date_to'], '`Invoice Paid Date`', 'only_dates');
 
 
 	$where='where ( true '.$date_interval_invoice_created['mysql'].$date_interval_invoice_paid['mysql'].") $where_billing_geo_constraints $where_delivery_geo_constraints $where_tax_code";
@@ -992,7 +957,7 @@ function invoices_awhere($awhere) {
 
 
 	}
-	$paid_status_where=preg_replace('/^\s*or/','',$paid_status_where);
+	$paid_status_where=preg_replace('/^\s*or/', '', $paid_status_where);
 	if ($paid_status_where!='') {
 		$where.="and ($paid_status_where)";
 	}
@@ -1014,7 +979,7 @@ function invoices_awhere($awhere) {
 
 
 	}
-	$not_paid_status_where=preg_replace('/^\s*or/','',$not_paid_status_where);
+	$not_paid_status_where=preg_replace('/^\s*or/', '', $not_paid_status_where);
 	if ($not_paid_status_where!='') {
 		$where.="and ($not_paid_status_where)";
 	}
@@ -1024,20 +989,20 @@ function invoices_awhere($awhere) {
 	foreach ($where_data['total_net_amount'] as $total_net_amount) {
 		switch ($total_net_amount) {
 		case 'less':
-			$total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`<'%s' ",$where_data['total_net_amount_lower']);
+			$total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`<'%s' ", $where_data['total_net_amount_lower']);
 			break;
 		case 'equal':
-			$total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`='%s'  ",$where_data['total_net_amount_lower']);
+			$total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`='%s'  ", $where_data['total_net_amount_lower']);
 			break;
 		case 'more':
-			$total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`>'%s'  ",$where_data['total_net_amount_upper']);
+			$total_net_amount_where.=sprintf(" and `Invoice Total Net Amount`>'%s'  ", $where_data['total_net_amount_upper']);
 			break;
 		case 'between':
 			$total_net_amount_where.=sprintf(" and  `Invoice Total Net Amount`>'%s'  and `Invoice Total Net Amount`<'%s'", $where_data['total_net_amount_lower'], $where_data['total_net_amount_upper']);
 			break;
 		}
 	}
-	$total_net_amount_where=preg_replace('/^\s*and/','',$total_net_amount_where);
+	$total_net_amount_where=preg_replace('/^\s*and/', '', $total_net_amount_where);
 
 	if ($total_net_amount_where!='') {
 		$where.="and ($total_net_amount_where)";
@@ -1048,20 +1013,20 @@ function invoices_awhere($awhere) {
 	foreach ($where_data['total_tax_amount'] as $total_tax_amount) {
 		switch ($total_tax_amount) {
 		case 'less':
-			$total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`<'%s' ",$where_data['total_tax_amount_lower']);
+			$total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`<'%s' ", $where_data['total_tax_amount_lower']);
 			break;
 		case 'equal':
-			$total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`='%s'  ",$where_data['total_tax_amount_lower']);
+			$total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`='%s'  ", $where_data['total_tax_amount_lower']);
 			break;
 		case 'more':
-			$total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`>'%s'  ",$where_data['total_tax_amount_upper']);
+			$total_tax_amount_where.=sprintf(" and `Invoice Total Tax Amount`>'%s'  ", $where_data['total_tax_amount_upper']);
 			break;
 		case 'between':
 			$total_tax_amount_where.=sprintf(" and  `Invoice Total Tax Amount`>'%s'  and `Invoice Total Tax Amount`<'%s'", $where_data['total_tax_amount_lower'], $where_data['total_tax_amount_upper']);
 			break;
 		}
 	}
-	$total_tax_amount_where=preg_replace('/^\s*and/','',$total_tax_amount_where);
+	$total_tax_amount_where=preg_replace('/^\s*and/', '', $total_tax_amount_where);
 
 	if ($total_tax_amount_where!='') {
 		$where.="and ($total_tax_amount_where)";
@@ -1071,20 +1036,20 @@ function invoices_awhere($awhere) {
 	foreach ($where_data['total_profit'] as $total_profit) {
 		switch ($total_profit) {
 		case 'less':
-			$total_profit_where.=sprintf(" and `Invoice Total Profit`<'%s' ",$where_data['total_profit_lower']);
+			$total_profit_where.=sprintf(" and `Invoice Total Profit`<'%s' ", $where_data['total_profit_lower']);
 			break;
 		case 'equal':
-			$total_profit_where.=sprintf(" and `Invoice Total Profit`='%s'  ",$where_data['total_profit_lower']);
+			$total_profit_where.=sprintf(" and `Invoice Total Profit`='%s'  ", $where_data['total_profit_lower']);
 			break;
 		case 'more':
-			$total_profit_where.=sprintf(" and `Invoice Total Profit`>'%s'  ",$where_data['total_profit_upper']);
+			$total_profit_where.=sprintf(" and `Invoice Total Profit`>'%s'  ", $where_data['total_profit_upper']);
 			break;
 		case 'between':
 			$total_profit_where.=sprintf(" and  `Invoice Total Profit`>'%s'  and `Invoice Total Profit`<'%s'", $where_data['total_profit_lower'], $where_data['total_profit_upper']);
 			break;
 		}
 	}
-	$total_profit_where=preg_replace('/^\s*and/','',$total_profit_where);
+	$total_profit_where=preg_replace('/^\s*and/', '', $total_profit_where);
 
 	if ($total_profit_where!='') {
 		$where.="and ($total_profit_where)";
@@ -1094,20 +1059,20 @@ function invoices_awhere($awhere) {
 	foreach ($where_data['total_amount'] as $total_amount) {
 		switch ($total_amount) {
 		case 'less':
-			$total_amount_where.=sprintf(" and `Invoice Total Amount`<'%s' ",$where_data['total_amount_lower']);
+			$total_amount_where.=sprintf(" and `Invoice Total Amount`<'%s' ", $where_data['total_amount_lower']);
 			break;
 		case 'equal':
-			$total_amount_where.=sprintf(" and `Invoice Total Amount`='%s'  ",$where_data['total_amount_lower']);
+			$total_amount_where.=sprintf(" and `Invoice Total Amount`='%s'  ", $where_data['total_amount_lower']);
 			break;
 		case 'more':
-			$total_amount_where.=sprintf(" and `Invoice Total Amount`>'%s'  ",$where_data['total_amount_upper']);
+			$total_amount_where.=sprintf(" and `Invoice Total Amount`>'%s'  ", $where_data['total_amount_upper']);
 			break;
 		case 'between':
 			$total_amount_where.=sprintf(" and  `Invoice Total Amount`>'%s'  and `Invoice Total Amount`<'%s'", $where_data['total_amount_lower'], $where_data['total_amount_upper']);
 			break;
 		}
 	}
-	$total_amount_where=preg_replace('/^\s*and/','',$total_amount_where);
+	$total_amount_where=preg_replace('/^\s*and/', '', $total_amount_where);
 
 	if ($total_amount_where!='') {
 		$where.="and ($total_amount_where)";
@@ -1151,7 +1116,7 @@ function invoices_awhere($awhere) {
 		//print_r($subject_keys);exit;
 		$category_where.=sprintf(" and `Invoice Key` in ($subject_keys)");
 	}
-	$category_where=preg_replace('/^\s*and/','',$category_where);
+	$category_where=preg_replace('/^\s*and/', '', $category_where);
 
 	if ($category_where!='') {
 		$where.="and ($category_where)";
@@ -1160,10 +1125,11 @@ function invoices_awhere($awhere) {
 
 
 	//print $table. $where; exit;
-	return array($where,$table);
+	return array($where, $table);
 
 
 }
+
 
 //Parts awhere
 function parts_awhere($awhere) {
@@ -1200,10 +1166,10 @@ function parts_awhere($awhere) {
 	}
 
 
-	$date_interval_from=prepare_mysql_dates($where_data['part_valid_from'],$where_data['part_valid_to'],array('`Part Valid From`','`Part Valid To`'),'whole_day');
-	$date_dispatched=prepare_mysql_dates($where_data['part_dispatched_from'],$where_data['part_dispatched_to'],'ITF.`Date`','whole_day');
+	$date_interval_from=prepare_mysql_dates($where_data['part_valid_from'], $where_data['part_valid_to'], array('`Part Valid From`', '`Part Valid To`'), 'whole_day');
+	$date_dispatched=prepare_mysql_dates($where_data['part_dispatched_from'], $where_data['part_dispatched_to'], 'ITF.`Date`', 'whole_day');
 	if ($where_data['geo_constraints']!='') {
-		$where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'`Dispatch Country Code`','CD.`World Region Code`');
+		$where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'], '`Dispatch Country Code`', 'CD.`World Region Code`');
 	}else {
 		$where_geo_constraints='';
 	}
@@ -1235,8 +1201,10 @@ function parts_awhere($awhere) {
 	$where.=$where_geo_constraints;
 	//print_r($where_data);
 	//print "$table $where  *";exit;
-	return array($where,$table,$sql_type);
+	return array($where, $table, $sql_type);
 }
+
+
 ////
 
 
@@ -1282,20 +1250,20 @@ function product_awhere($awhere) {
 	foreach ($where_data['price'] as $price) {
 		switch ($price) {
 		case 'less':
-			$price_where.=sprintf(" and `Product Price`<%s ",prepare_mysql($where_data['price_lower']));
+			$price_where.=sprintf(" and `Product Price`<%s ", prepare_mysql($where_data['price_lower']));
 			break;
 		case 'equal':
-			$price_where.=sprintf(" and `Product Price`=%s  ",prepare_mysql($where_data['price_lower']));
+			$price_where.=sprintf(" and `Product Price`=%s  ", prepare_mysql($where_data['price_lower']));
 			break;
 		case 'more':
-			$price_where.=sprintf(" and `Product Price`>%s  ",prepare_mysql($where_data['price_upper']));
+			$price_where.=sprintf(" and `Product Price`>%s  ", prepare_mysql($where_data['price_upper']));
 			break;
 		case 'between':
 			$price_where.=sprintf(" and  `Product Price`>%s  and `Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
 			break;
 		}
 	}
-	$price_where=preg_replace('/^\s*and/','',$price_where);
+	$price_where=preg_replace('/^\s*and/', '', $price_where);
 
 	if ($price_where!='') {
 		$where.=" and ($price_where)";
@@ -1305,20 +1273,20 @@ function product_awhere($awhere) {
 	foreach ($where_data['invoice'] as $invoice) {
 		switch ($invoice) {
 		case 'less':
-			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`<%s ",prepare_mysql($where_data['invoice_lower']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`<%s ", prepare_mysql($where_data['invoice_lower']));
 			break;
 		case 'equal':
-			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`=%s  ",prepare_mysql($where_data['invoice_lower']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`=%s  ", prepare_mysql($where_data['invoice_lower']));
 			break;
 		case 'more':
-			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`>%s  ",prepare_mysql($where_data['invoice_upper']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`>%s  ", prepare_mysql($where_data['invoice_upper']));
 			break;
 		case 'between':
 			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`>%s  and `Product Total Invoiced Amount`<%s", prepare_mysql($where_data['invoice_lower']), prepare_mysql($where_data['invoice_upper']));
 			break;
 		}
 	}
-	$invoice_where=preg_replace('/^\s*and/','',$invoice_where);
+	$invoice_where=preg_replace('/^\s*and/', '', $invoice_where);
 
 	if ($invoice_where!='') {
 		$where.=" and ($invoice_where)";
@@ -1346,7 +1314,7 @@ function product_awhere($awhere) {
 			break;
 		}
 	}
-	$web_state_where=preg_replace('/^\s*or/','',$web_state_where);
+	$web_state_where=preg_replace('/^\s*or/', '', $web_state_where);
 	if ($web_state_where!='') {
 		$where.=" and ($web_state_where)";
 	}
@@ -1379,15 +1347,15 @@ function product_awhere($awhere) {
 			break;
 		}
 	}
-	$availability_state_where=preg_replace('/^\s*or/','',$availability_state_where);
+	$availability_state_where=preg_replace('/^\s*or/', '', $availability_state_where);
 	if ($availability_state_where!='') {
 		$where.=" and ($availability_state_where)";
 	}
 
 
 
-	$date_interval_from=prepare_mysql_dates($where_data['product_valid_from'],'','`Product Valid From`','only_dates');
-	$date_interval_to=prepare_mysql_dates('',$where_data['product_valid_to'],'`Product Valid To`','only_dates');
+	$date_interval_from=prepare_mysql_dates($where_data['product_valid_from'], '', '`Product Valid From`', 'only_dates');
+	$date_interval_to=prepare_mysql_dates('', $where_data['product_valid_to'], '`Product Valid To`', 'only_dates');
 
 
 
@@ -1406,8 +1374,9 @@ function product_awhere($awhere) {
 
 	//print $table. $where; exit;
 
-	return array($where,$table);
+	return array($where, $table);
 }
+
 
 function dn_awhere($awhere) {
 
@@ -1460,20 +1429,20 @@ function dn_awhere($awhere) {
 	foreach ($where_data['weight'] as $weight) {
 		switch ($weight) {
 		case 'less':
-			$weight_where.=sprintf(" and `Delivery Note Weight`<'%s' ",$where_data['weight_lower']);
+			$weight_where.=sprintf(" and `Delivery Note Weight`<'%s' ", $where_data['weight_lower']);
 			break;
 		case 'equal':
-			$weight_where.=sprintf(" and `Delivery Note Weight`='%s'  ",$where_data['weight_lower']);
+			$weight_where.=sprintf(" and `Delivery Note Weight`='%s'  ", $where_data['weight_lower']);
 			break;
 		case 'more':
-			$weight_where.=sprintf(" and `Delivery Note Weight`>'%s'  ",$where_data['weight_upper']);
+			$weight_where.=sprintf(" and `Delivery Note Weight`>'%s'  ", $where_data['weight_upper']);
 			break;
 		case 'between':
 			$weight_where.=sprintf(" and  `Delivery Note Weight`>'%s'  and `Delivery Note Weight`<'%s'", $where_data['weight_lower'], $where_data['weight_upper']);
 			break;
 		}
 	}
-	$weight_where=preg_replace('/^\s*and/','',$weight_where);
+	$weight_where=preg_replace('/^\s*and/', '', $weight_where);
 
 	if ($weight_where!='') {
 		$where.=" and ($weight_where)";
@@ -1521,7 +1490,7 @@ function dn_awhere($awhere) {
 
 		}
 	}
-	$state_where=preg_replace('/^\s*or/','',$state_where);
+	$state_where=preg_replace('/^\s*or/', '', $state_where);
 	if ($state_where!='') {
 		$where.=" and ($state_where)";
 	}
@@ -1550,7 +1519,7 @@ function dn_awhere($awhere) {
 
 		}
 	}
-	$note_type_where=preg_replace('/^\s*or/','',$note_type_where);
+	$note_type_where=preg_replace('/^\s*or/', '', $note_type_where);
 	if ($note_type_where!='') {
 		$where.=" and ($note_type_where)";
 	}
@@ -1575,7 +1544,7 @@ function dn_awhere($awhere) {
 
 		}
 	}
-	$dispatch_method_where=preg_replace('/^\s*or/','',$dispatch_method_where);
+	$dispatch_method_where=preg_replace('/^\s*or/', '', $dispatch_method_where);
 	if ($dispatch_method_where!='') {
 		$where.=" and ($dispatch_method_where)";
 	}
@@ -1597,19 +1566,19 @@ function dn_awhere($awhere) {
 
 		}
 	}
-	$parcel_type_where=preg_replace('/^\s*or/','',$parcel_type_where);
+	$parcel_type_where=preg_replace('/^\s*or/', '', $parcel_type_where);
 	if ($parcel_type_where!='') {
 		$where.=" and ($parcel_type_where)";
 	}
 
 
-	$date_interval_created=prepare_mysql_dates($where_data['created_date_from'],$where_data['created_date_to'],'`Delivery Note Date Created`','only_dates');
-	$date_interval_start_picking=prepare_mysql_dates($where_data['start_picking_date_from'],$where_data['start_picking_date_to'],'`Delivery Note Date Start Picking`','only_dates');
-	$date_interval_finish_picking=prepare_mysql_dates($where_data['finish_picking_date_from'],$where_data['finish_picking_date_to'],'`Delivery Note Date Finish Picking`','only_dates');
-	$date_interval_start_packing=prepare_mysql_dates($where_data['start_packing_date_from'],$where_data['start_packing_date_to'],'`Delivery Note Date Start Packing`','only_dates');
-	$date_interval_finish_packing=prepare_mysql_dates($where_data['finish_packing_date_from'],$where_data['finish_packing_date_to'],'`Delivery Note Date Finish Packing`','only_dates');
-	$date_interval_dispatched_approved=prepare_mysql_dates($where_data['dispatched_approved_date_from'],$where_data['dispatched_approved_date_to'],'`Delivery Note Date Dispatched Approved`','only_dates');
-	$date_interval_delivery_note=prepare_mysql_dates($where_data['delivery_note_date_from'],$where_data['delivery_note_date_to'],'`Delivery Note Date`','only_dates');
+	$date_interval_created=prepare_mysql_dates($where_data['created_date_from'], $where_data['created_date_to'], '`Delivery Note Date Created`', 'only_dates');
+	$date_interval_start_picking=prepare_mysql_dates($where_data['start_picking_date_from'], $where_data['start_picking_date_to'], '`Delivery Note Date Start Picking`', 'only_dates');
+	$date_interval_finish_picking=prepare_mysql_dates($where_data['finish_picking_date_from'], $where_data['finish_picking_date_to'], '`Delivery Note Date Finish Picking`', 'only_dates');
+	$date_interval_start_packing=prepare_mysql_dates($where_data['start_packing_date_from'], $where_data['start_packing_date_to'], '`Delivery Note Date Start Packing`', 'only_dates');
+	$date_interval_finish_packing=prepare_mysql_dates($where_data['finish_packing_date_from'], $where_data['finish_packing_date_to'], '`Delivery Note Date Finish Packing`', 'only_dates');
+	$date_interval_dispatched_approved=prepare_mysql_dates($where_data['dispatched_approved_date_from'], $where_data['dispatched_approved_date_to'], '`Delivery Note Date Dispatched Approved`', 'only_dates');
+	$date_interval_delivery_note=prepare_mysql_dates($where_data['delivery_note_date_from'], $where_data['delivery_note_date_to'], '`Delivery Note Date`', 'only_dates');
 
 
 
@@ -1620,7 +1589,7 @@ function dn_awhere($awhere) {
 
 	$where_billing_geo_constraints='';
 	if ($where_data['billing_geo_constraints']!='') {
-		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'", $where_data['billing_geo_constraints']);
 	}
 
 
@@ -1628,8 +1597,9 @@ function dn_awhere($awhere) {
 
 	//print $table. $where; exit;
 
-	return array($where,$table);
+	return array($where, $table);
 }
+
 
 function orders_awhere($awhere) {
 	// $awhere=preg_replace('/\\\"/','"',$awhere);
@@ -1701,16 +1671,16 @@ function orders_awhere($awhere) {
 	$pattern_pc = array("/^pc\(/", "/\)/");
 	$pattern_country = '';
 
-	$temp=explode(",",$where_data['billing_geo_constraints']);
+	$temp=explode(",", $where_data['billing_geo_constraints']);
 	foreach ($temp as $key=>$value) {
 		if (preg_match('/^wr\(/', $value))
-			$wr[]=preg_replace($pattern_wr,'',$value);
+			$wr[]=preg_replace($pattern_wr, '', $value);
 		else if (preg_match('/^t\(/', $value))
-				$city[]=preg_replace($pattern_city,'',$value);
-			else if (preg_match('/^pc\(/', $value))
-					$postal_code[]=preg_replace($pattern_pc,'',$value);
-				else
-					$country[]=$value;
+			$city[]=preg_replace($pattern_city, '', $value);
+		else if (preg_match('/^pc\(/', $value))
+			$postal_code[]=preg_replace($pattern_pc, '', $value);
+		else
+			$country[]=$value;
 	}
 	//print 'wr';
 	//print_r($wr);
@@ -1722,12 +1692,12 @@ function orders_awhere($awhere) {
 	//print_r($postal_code);
 	//exit;
 	if ($where_data['billing_geo_constraints']!='') {
-		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
+		$where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'", $where_data['billing_geo_constraints']);
 	}
 
 	$where_delivery_geo_constraints='';
 	if ($where_data['delivery_geo_constraints']!='') {
-		$where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'",$where_data['delivery_geo_constraints']);
+		$where_delivery_geo_constraints=sprintf(" and `Order Ship To Country Code`='%s'", $where_data['delivery_geo_constraints']);
 	}
 
 	if ($where_data['product_ordered_or']=='')
@@ -1746,7 +1716,7 @@ function orders_awhere($awhere) {
 	//print $where_product_ordered1;
 
 
-	$date_interval_order_created=prepare_mysql_dates($where_data['order_created_from'],$where_data['order_created_to'],'`Order Date`','only_dates');
+	$date_interval_order_created=prepare_mysql_dates($where_data['order_created_from'], $where_data['order_created_to'], '`Order Date`', 'only_dates');
 
 	/*
         $date_interval_when_customer_created=prepare_mysql_dates($where_data['customer_created_from'],$where_data['customer_created_to'],'`Customer First Contacted Date`','only_dates');
@@ -1957,12 +1927,13 @@ function orders_awhere($awhere) {
 	//print $where; exit;
 
 	//exit;
-	return array($where,$table);
+	return array($where, $table);
 
 
 }
 
-function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Code` like',$q_prod_id='OTF.`Product ID`',$q_group_id='OTF.`Product Family Key` in',$q_department_id='OTF.`Product Department Key`  in') {
+
+function extract_product_groups($str, $store_key=0, $q_prod_name='OTF.`Product Code` like', $q_prod_id='OTF.`Product ID`', $q_group_id='OTF.`Product Family Key` in', $q_department_id='OTF.`Product Department Key`  in') {
 
 
 	if ($str=='')
@@ -1978,13 +1949,13 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 	$department_names=array();
 	$department_ids=array();
 
-	if (preg_match_all('/d\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/d\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 
 
 		foreach ($matches[0] as $match) {
 
-			$_groups=preg_replace('/\)$/i','',preg_replace('/^d\(/i','',$match));
-			$_groups=preg_split('/\s*,\s*/i',$_groups);
+			$_groups=preg_replace('/\)$/i', '', preg_replace('/^d\(/i', '', $match));
+			$_groups=preg_split('/\s*,\s*/i', $_groups);
 
 			foreach ($_groups as $group) {
 				//$use_product=true;
@@ -1997,14 +1968,14 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 
 			}
 		}
-		$str=preg_replace('/d\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/d\([a-z0-9\-\,]*\)/i', '', $str);
 	}
 	if (count($department_names)>0) {
 		if ($store_key and is_numeric($store_key))
 			$store_where=' and `Product Department Store Key`='.$store_key;
 		else
 			$store_where='';
-		$sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s) %s ",join(',',$department_names),$store_where);
+		$sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s) %s ", join(',', $department_names), $store_where);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
@@ -2014,7 +1985,7 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 	}
 
 	if (count($department_ids)>0) {
-		$where_d='or '.$q_department_id.' ('.join(',',$department_ids).') ';
+		$where_d='or '.$q_department_id.' ('.join(',', $department_ids).') ';
 		//   $use_product=true;
 	}
 
@@ -2023,12 +1994,12 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 	$family_names=array();
 	$family_ids=array();
 
-	if (preg_match_all('/f\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/f\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 
 		foreach ($matches[0] as $match) {
 
-			$_groups=preg_replace('/\)$/i','',preg_replace('/^f\(/i','',$match));
-			$_groups=preg_split('/\s*,\s*/i',$_groups);
+			$_groups=preg_replace('/\)$/i', '', preg_replace('/^f\(/i', '', $match));
+			$_groups=preg_split('/\s*,\s*/i', $_groups);
 
 			foreach ($_groups as $group) {
 				//$use_product=true;
@@ -2041,7 +2012,7 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 
 			}
 		}
-		$str=preg_replace('/f\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/f\([a-z0-9\-\,]*\)/i', '', $str);
 	}
 
 
@@ -2051,7 +2022,7 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 			$store_where=' and `Product Family Store Key`='.$store_key;
 		else
 			$store_where='';
-		$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Code` in (%s) %s ",join(',',$family_names),$store_where);
+		$sql=sprintf("select `Product Family Key` from `Product Family Dimension` where `Product Family Code` in (%s) %s ", join(',', $family_names), $store_where);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
@@ -2061,13 +2032,13 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 	}
 
 	if (count($family_ids)>0) {
-		$where_g='or '.$q_group_id.' ('.join(',',$family_ids).') ';
+		$where_g='or '.$q_group_id.' ('.join(',', $family_ids).') ';
 		// $use_product=true;
 	}
 	//print_r($family_ids);
 
 
-	$products=preg_split('/\s*,\s*/i',$str);
+	$products=preg_split('/\s*,\s*/i', $str);
 
 	$where_p='';
 	foreach ($products as $product) {
@@ -2082,12 +2053,12 @@ function extract_product_groups($str,$store_key=0,$q_prod_name='OTF.`Product Cod
 
 
 
-	$where=preg_replace('/^\s*or\s*/i','',$where_d.$where_g.$where_p);
+	$where=preg_replace('/^\s*or\s*/i', '', $where_d.$where_g.$where_p);
 
 
 
 
-	return array('('.$where.')',$use_product);
+	return array('('.$where.')', $use_product);
 
 }
 
@@ -2101,7 +2072,7 @@ function _trim($string) {
 
 function mb_ucwords($str) {
 	$str=_trim($str);
-	if (preg_match('/^PO BOX\s+/i',$str))
+	if (preg_match('/^PO BOX\s+/i', $str))
 		return strtoupper($str);
 
 
@@ -2109,18 +2080,18 @@ function mb_ucwords($str) {
 	$result='';
 
 
-	$words=preg_split('/ /',$str);
+	$words=preg_split('/ /', $str);
 	$first=true;
 	foreach ($words as $word) {
-		if (preg_match('/([a-z]\.){1,}$/i',$word)) {
+		if (preg_match('/([a-z]\.){1,}$/i', $word)) {
 			$result.=' '.strtoupper($word);
 			continue;
 		}
-		elseif (!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i',$word)) {
+		elseif (!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i', $word)) {
 			$result.=' '.strtoupper($word);
 			continue;
 		}
-		elseif (!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i',$word)) {
+		elseif (!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i', $word)) {
 			$result.=' '.strtoupper($word);
 			continue;
 		}
@@ -2145,7 +2116,7 @@ function mb_ucwordsols($str) {
 	}
 
 
-	if (preg_match('/^PO BOX\s+/i',$str))
+	if (preg_match('/^PO BOX\s+/i', $str))
 		return strtoupper($str);
 
 	$exceptions = array();
@@ -2189,9 +2160,9 @@ function mb_ucwordsols($str) {
 
 	//print "=========================\n";
 
-	$separator = array("-","+",","," ");
+	$separator = array("-", "+", ",", " ");
 
-	$str = mb_strtolower(trim($str),"UTF-8");
+	$str = mb_strtolower(trim($str), "UTF-8");
 	foreach ($separator as $s) {
 		$word = explode($s, $str);
 
@@ -2199,46 +2170,46 @@ function mb_ucwordsols($str) {
 		foreach ($word as $val) {
 
 
-			if (preg_match('/^www\.[^\s]+/i',$val)) {
-				$return .= $s .mb_strtolower($val,"UTF-8");
+			if (preg_match('/^www\.[^\s]+/i', $val)) {
+				$return .= $s .mb_strtolower($val, "UTF-8");
 			}
-			elseif (preg_match('/^[a-z]{2,}\.$/i',$val)) {
-				$return .= $s .mb_strtolower($val,"UTF-8");
+			elseif (preg_match('/^[a-z]{2,}\.$/i', $val)) {
+				$return .= $s .mb_strtolower($val, "UTF-8");
 			}
-			elseif (preg_match('/^(st|Mr|Mrs|Miss|Dr|Ltd)$/i',$val)) {
+			elseif (preg_match('/^(st|Mr|Mrs|Miss|Dr|Ltd)$/i', $val)) {
 				$return .= $s
-					. mb_strtoupper($val {0},"UTF-8")
-					. mb_substr($val,1,mb_strlen($val,"UTF-8")-1,"UTF-8");
+					. mb_strtoupper($val {0}, "UTF-8")
+					. mb_substr($val, 1, mb_strlen($val, "UTF-8")-1, "UTF-8");
 			}
 
-			elseif (preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)) {
-				$return .= $s .mb_strtolower($val,"UTF-8");
+			elseif (preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i', $val)) {
+				$return .= $s .mb_strtolower($val, "UTF-8");
 			}
-			elseif (preg_match('/^(aa|ee|ii|oo|uu)$/i',$val)) {
-				$return .= $s .mb_strtoupper($val,"UTF-8");
+			elseif (preg_match('/^(aa|ee|ii|oo|uu)$/i', $val)) {
+				$return .= $s .mb_strtoupper($val, "UTF-8");
 			}
-			elseif (preg_match('/^([a-z]\.){1,}$/i',$val)) {
-				$return .= $s .mb_strtoupper($val,"UTF-8");
+			elseif (preg_match('/^([a-z]\.){1,}$/i', $val)) {
+				$return .= $s .mb_strtoupper($val, "UTF-8");
 			}
-			elseif (preg_match('/^c\/o$/i',$val)) {
+			elseif (preg_match('/^c\/o$/i', $val)) {
 				$return .= $s .'C/O';
 
 			}
-			elseif (preg_match('/^t\/a$/i',$val)) {
+			elseif (preg_match('/^t\/a$/i', $val)) {
 				$return .= $s .'T/A';
 
 			}
-			elseif (preg_match('/^([^(aeoiu)]{2,3})$/i',$val)) {
+			elseif (preg_match('/^([^(aeoiu)]{2,3})$/i', $val)) {
 
-				$return .= $s .mb_strtoupper($val,"UTF-8");
+				$return .= $s .mb_strtoupper($val, "UTF-8");
 			}
-			elseif (preg_match('/^\(.+\)$/i',$val)) {
-				$text=preg_replace('/^\(|\)$/i','',$val);
+			elseif (preg_match('/^\(.+\)$/i', $val)) {
+				$text=preg_replace('/^\(|\)$/i', '', $val);
 				//print "*** $text\n";
 				$return .= $s.'('.mb_ucwords($text).')';
 			}
 
-			elseif (mb_strlen($val,"UTF-8")>0) {
+			elseif (mb_strlen($val, "UTF-8")>0) {
 				$return.=$s.capitalize($val);
 				// $return .= $s
 				//   . mb_strtoupper($val{0},"UTF-8")
@@ -2272,6 +2243,8 @@ function mb_ucwordsols($str) {
 	// print $return."\n";
 	return $return;
 }
+
+
 function capitalize($str, $encoding = 'UTF-8') {
 	$str=trim($str);
 	return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_strtolower(mb_substr($str, 1, mb_strlen($str), $encoding), $encoding);
@@ -2290,7 +2263,7 @@ $string - *string* to be prepared
 $null_if_empty - *bolean* config flag
  */
 
-function prepare_mysql($string,$null_if_empty=true) {
+function prepare_mysql($string, $null_if_empty=true) {
 
 	if (is_numeric($string)) {
 		return "'".$string."'";
@@ -2310,7 +2283,7 @@ function prepare_mysql($string,$null_if_empty=true) {
 
 
 function is_url($url) {
-	if (preg_match('/^(www\.)?[a-z0-9-]+(.[a-z0-9-]+)*\.(com|uk|fr|biz|net|info|mx|jp|org)$/i',$url))
+	if (preg_match('/^(www\.)?[a-z0-9-]+(.[a-z0-9-]+)*\.(com|uk|fr|biz|net|info|mx|jp|org)$/i', $url))
 		return true;
 	else
 		return false;
@@ -2320,7 +2293,7 @@ function is_url($url) {
 
 
 
-function array_transverse($a,$cols) {
+function array_transverse($a, $cols) {
 	$total=count($a);
 	$rows=ceil($total/$cols);
 	$to_add=($rows*$cols)-$total;
@@ -2343,7 +2316,7 @@ function array_transverse($a,$cols) {
 
 
 
-		if (fmod($i,$cols)==0) {
+		if (fmod($i, $cols)==0) {
 			$i=0;
 			$j++;
 		}
@@ -2360,7 +2333,7 @@ function array_transverse($a,$cols) {
 
 
 	}
-	return array($new,$rows);
+	return array($new, $rows);
 
 }
 
@@ -2473,21 +2446,23 @@ function datediff($interval, $datefrom, $dateto, $using_timestamps = false) {
 
 }
 
-function number_weeks($days,$day) {
+
+function number_weeks($days, $day) {
 
 	$rainbow=array(
-		array(0,0.2,0.2,0.2,0.4,0.6,0.8),
-		array(0,0.2,0.4,2,0.4,0.6,0.8),
-		array(0,0.2,0.4,0.6,0.6,0.6,0.8),
-		array(0,0.2,0.4,0.6,0.8,0.8,0.8),
-		array(0,0.2,0.4,0.6,0.8,1,1),
-		array(0,0,0.2,0.4,0.6,0.8,1),
-		array(0,0,0,0.2,0.4,0.6,0.8)
+		array(0, 0.2, 0.2, 0.2, 0.4, 0.6, 0.8),
+		array(0, 0.2, 0.4, 2, 0.4, 0.6, 0.8),
+		array(0, 0.2, 0.4, 0.6, 0.6, 0.6, 0.8),
+		array(0, 0.2, 0.4, 0.6, 0.8, 0.8, 0.8),
+		array(0, 0.2, 0.4, 0.6, 0.8, 1, 1),
+		array(0, 0, 0.2, 0.4, 0.6, 0.8, 1),
+		array(0, 0, 0, 0.2, 0.4, 0.6, 0.8)
 	);
 	//print fmod($days,7);
 	// print " $day \n";
-	return floor($days/7)+$rainbow[$day][fmod($days,7)];
+	return floor($days/7)+$rainbow[$day][fmod($days, 7)];
 }
+
 
 function array_change_key_name( $orig, $new, &$array ) {
 	foreach ( $array as $k => $v )
@@ -2503,6 +2478,7 @@ function average($array) {
 		return false;
 	return $sum/$count;
 }
+
 
 //The average function can be use independantly but the deviation function uses the average function.
 
@@ -2521,18 +2497,18 @@ function deviation($array) {
 
 
 
-function currency_conversion($currency_from, $currency_to,$update_interval="-1 hour") {
+function currency_conversion($currency_from, $currency_to, $update_interval="-1 hour") {
 	$reload=false;
 	$in_db=false;
 	$exchange_rate=1;
 	//get info from database;
-	$sql=sprintf("select * from kbase.`Currency Exchange Dimension` where `Currency Pair`=%s",prepare_mysql($currency_from.$currency_to));
+	$sql=sprintf("select * from kbase.`Currency Exchange Dimension` where `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to));
 
 	$res = mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-		if (strtotime($row['Currency Exchange Last Updated'])<date("U",strtotime($update_interval)))
+		if (strtotime($row['Currency Exchange Last Updated'])<date("U", strtotime($update_interval)))
 			$reload=true;
 		$exchange_rate=$row['Exchange'];
 	} else {
@@ -2543,7 +2519,7 @@ function currency_conversion($currency_from, $currency_to,$update_interval="-1 h
 		$url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X". "&f=l1&e=.csv";
 
 		$handle = fopen($url, "r");
-		$contents = floatval(fread($handle,2000));
+		$contents = floatval(fread($handle, 2000));
 		fclose($handle);
 
 
@@ -2554,7 +2530,7 @@ function currency_conversion($currency_from, $currency_to,$update_interval="-1 h
 
 
 			$sql=sprintf("insert into kbase.`Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')  ON DUPLICATE KEY update `Exchange`=%f,`Currency Exchange Last Updated`=NOW(),`Currency Exchange Source`='Yahoo'",
-				prepare_mysql($currency_from.$currency_to),$exchange_rate,$exchange_rate);
+				prepare_mysql($currency_from.$currency_to), $exchange_rate, $exchange_rate);
 
 			mysql_query($sql);
 
@@ -2655,6 +2631,7 @@ function strlcs($str1, $str2) {
 	return $strLCS;
 }
 
+
 /*
 Function array_empty
 Check if all elemaents of the array are empty
@@ -2677,15 +2654,17 @@ function array_empty($array) {
 	} else
 		return empty($array);
 }
+
+
 /*
 function:yearweek
 returns: equivalent of YEARWEEK mysql function
  */
 function yearweek($str) {
 	$date=strtotime($str);
-	$w=date('W',$date);
-	$y=date("Y",$date);
-	$m=date("m",$date);
+	$w=date('W', $date);
+	$y=date("Y", $date);
+	$m=date("m", $date);
 
 	if ($w==1 and $m==12) {
 		$y=$y+1;
@@ -2693,12 +2672,13 @@ function yearweek($str) {
 	if ($w>=52 and $m==1) {
 		$y=$y-1;
 	}
-	return sprintf("%d%02d",$y,$w);
+	return sprintf("%d%02d", $y, $w);
 }
+
 
 function quarter($date) {
 	$date=strtotime($date);
-	$month=date('m',$date);
+	$month=date('m', $date);
 	if ($month<=3)
 		return 1;
 	elseif ($month<=6)
@@ -2710,34 +2690,36 @@ function quarter($date) {
 
 }
 
+
 function yearquarter($date) {
 
-	return date('Y',strtotime($date)).quarter($date);
+	return date('Y', strtotime($date)).quarter($date);
 
 }
 
 
 function translate_written_number($string) {
 
-	$numbers=array('zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven');
-	$common_suffixes=array('hundreds?'=>100,'thousands?'=>1000,'millons?'=>100000);
+	$numbers=array('zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven');
+	$common_suffixes=array('hundreds?'=>100, 'thousands?'=>1000, 'millons?'=>100000);
 
-	$number_flat=join("|",$numbers);
-	$common_suffixes_flat=join("|",$common_suffixes);
-	if (preg_match("/$number_flat/i",$string)) {
-		if (preg_match("/$common_suffixes_flat/i",$string)) {
+	$number_flat=join("|", $numbers);
+	$common_suffixes_flat=join("|", $common_suffixes);
+	if (preg_match("/$number_flat/i", $string)) {
+		if (preg_match("/$common_suffixes_flat/i", $string)) {
 			foreach ($numbers as $number=>$number_string) {
 				foreach ($common_suffixes as $common_suffix=>$number_common_suffix) {
-					$string=_trim(preg_replace('/^(.*\s+|)$number_string\s?$common_suffix(\s+.*|)$/ '," ".($number*$number_common_suffix)." ",$string));
+					$string=_trim(preg_replace('/^(.*\s+|)$number_string\s?$common_suffix(\s+.*|)$/ ', " ".($number*$number_common_suffix)." ", $string));
 				}
 			}
 		} else {
 			foreach ($numbers as $number=>$number_string)
-				$string=_trim(preg_replace('/^(.*\s+|)$number_string(\s+.*|)$/ '," $number ",$string));
+				$string=_trim(preg_replace('/^(.*\s+|)$number_string(\s+.*|)$/ ', " $number ", $string));
 		}
 	}
 	return $string;
 }
+
 
 function shuffle_assoc(&$array) {
 	if (count($array)==0)
@@ -2769,15 +2751,15 @@ function guess_file_format($filename) {
 
 	// print "S:$system M:$mimetype\n";
 
-	if (preg_match('/darwin/i',$_system)) {
+	if (preg_match('/darwin/i', $_system)) {
 		ob_start();
 		$system='Mac';
 		system('file -I "'.addslashes($filename).'"');
 		$mimetype=ob_get_clean();
-		$mimetype=preg_replace('/^.*\:/','',$mimetype);
+		$mimetype=preg_replace('/^.*\:/', '', $mimetype);
 
 	}
-	elseif (preg_match('/linux/i',$_system)) {
+	elseif (preg_match('/linux/i', $_system)) {
 		ob_start();
 		$system='Linux';
 		$mimetype = system('file -ib "'.addslashes($filename).'"');
@@ -2791,24 +2773,24 @@ function guess_file_format($filename) {
 
 	//print "** $filename **";
 
-	if (preg_match('/png/i',$mimetype))
+	if (preg_match('/png/i', $mimetype))
 		$format='png';
-	else if (preg_match('/jpeg/i',$mimetype))
-			$format='jpeg';
-		else if (preg_match('/image.psd/i',$mimetype))
-				$format='psd';
-			else if (preg_match('/gif/i',$mimetype))
-					$format='gif';
-				else if (preg_match('/wbmp$/i',$mimetype))
-						$format='wbmp';
+	else if (preg_match('/jpeg/i', $mimetype))
+		$format='jpeg';
+	else if (preg_match('/image.psd/i', $mimetype))
+		$format='psd';
+	else if (preg_match('/gif/i', $mimetype))
+		$format='gif';
+	else if (preg_match('/wbmp$/i', $mimetype))
+		$format='wbmp';
 
-					else {
-						$format='other';
-					}
-				//  print "S:$system M:$mimetype\n";
-				// return;
+	else {
+		$format='other';
+	}
+	//  print "S:$system M:$mimetype\n";
+	// return;
 
-				return $format;
+	return $format;
 
 }
 
@@ -2832,18 +2814,18 @@ function formatBytes($bytes, $precision = 1) {
 }
 
 
-function getEnumVals($table,$field,$sorted=true) {
+function getEnumVals($table, $field, $sorted=true) {
 
 	$result=mysql_query('show columns from '.$table.';');
 
 	while ($tuple=mysql_fetch_assoc($result)) {
 		if ($tuple['Field'] == $field) {
 			$types=$tuple['Type'];
-			$beginStr=strpos($types,"(")+1;
-			$endStr=strpos($types,")");
-			$types=substr($types,$beginStr,$endStr-$beginStr);
-			$types=str_replace("'","",$types);
-			$types=preg_split('/\,/',$types);
+			$beginStr=strpos($types, "(")+1;
+			$endStr=strpos($types, ")");
+			$types=substr($types, $beginStr, $endStr-$beginStr);
+			$types=str_replace("'", "", $types);
+			$types=preg_split('/\,/', $types);
 			if ($sorted)
 				sort($types);
 			break;
@@ -2853,51 +2835,53 @@ function getEnumVals($table,$field,$sorted=true) {
 	return $types;
 }
 
+
 function parse_number($value) {
 	if (is_numeric($value))
 		return $value;
 
-	$value=preg_replace('/[^\.^\,\d]/','',$value);
-	if (preg_match('/\.\d?$/',$value)) {
-		$value=preg_replace('/\,/','',$value);
+	$value=preg_replace('/[^\.^\,\d]/', '', $value);
+	if (preg_match('/\.\d?$/', $value)) {
+		$value=preg_replace('/\,/', '', $value);
 
 	}
-	elseif (preg_match('/\..*\,\d?$/',$value)) {
-		$value=preg_replace('/\./','',$value);
-		$value=preg_replace('/,/',',',$value);
+	elseif (preg_match('/\..*\,\d?$/', $value)) {
+		$value=preg_replace('/\./', '', $value);
+		$value=preg_replace('/,/', ',', $value);
 	}
 	return (float) $value;
 
 
 }
 
+
 function parse_weight($value) {
 	$unit='Kg';
 	$value=_trim($value);
-	if (preg_match('/(kg|kilo?|kilograms?)$/i',$value)) {
+	if (preg_match('/(kg|kilo?|kilograms?)$/i', $value)) {
 		$value=parse_number($value);
 		$unit='Kg';
 	}
-	elseif (preg_match('/(lb?s|pounds?|libras?)$/i',$value)) {
+	elseif (preg_match('/(lb?s|pounds?|libras?)$/i', $value)) {
 		$value=parse_number($value)*.4545 ;
 		$unit='Lb';
 	}
-	elseif (preg_match('/(g|grams?|gms)$/i',$value)) {
+	elseif (preg_match('/(g|grams?|gms)$/i', $value)) {
 		$value=parse_number($value)*0.001 ;
 		$unit='g';
 	}
-	elseif (preg_match('/(tons?|tonnes?|t)$/i',$value)) {
+	elseif (preg_match('/(tons?|tonnes?|t)$/i', $value)) {
 		$value=parse_number($value)*1000 ;
 		$unit='t';
 	}
 	else
 		$value=parse_number($value);
 
-	return array($value,$unit);
+	return array($value, $unit);
 }
 
 
-function convert_weigth($value,$from,$to) {
+function convert_weigth($value, $from, $to) {
 	$factors['KgKg']=1;
 	$factors['LbLb']=1;
 	$factors['gg']=1;
@@ -2919,7 +2903,7 @@ function convert_weigth($value,$from,$to) {
 	$factors['Lbg']=454.5;
 	$factors['Lbt']=0.0004545;
 
-	if (array_key_exists($from.$to,$factors)) {
+	if (array_key_exists($from.$to, $factors)) {
 		return $factors[$from.$to]*$value;
 	} else
 		return $value;
@@ -2927,59 +2911,62 @@ function convert_weigth($value,$from,$to) {
 
 }
 
+
 function parse_volume($value) {
 	$unit='L';
 	$value=_trim($value);
-	if (preg_match('/(cc|cm3)$/i',$value)) {
+	if (preg_match('/(cc|cm3)$/i', $value)) {
 		$value=parse_number($value)*.001 ;
 		$unit='cm3';
 	}
-	elseif (preg_match('/(cubic meter|cubic m|m3)$/i',$value)) {
+	elseif (preg_match('/(cubic meter|cubic m|m3)$/i', $value)) {
 		$value=parse_number($value)*1000 ;
 		$unit='m3';
 	}
-	elseif (preg_match('/(mL)$/i',$value)) {
+	elseif (preg_match('/(mL)$/i', $value)) {
 		$value=parse_number($value)*001 ;
 		$unit='mL';
 	}
 	else
 		$value=parse_number($value);
 
-	return array($value,$unit);
+	return array($value, $unit);
 }
+
 
 function parse_distance($value) {
 
 
 	$original_unit='m';
 	$value=_trim($value);
-	if (preg_match('/(cent.metro?|centimeter?|cm)$/i',$value)) {
+	if (preg_match('/(cent.metro?|centimeter?|cm)$/i', $value)) {
 		$value=parse_number($value)/100 ;
 		$original_unit='cm';
 	}
-	elseif (preg_match('/(mm|milimiters?)$/i',$value)) {
+	elseif (preg_match('/(mm|milimiters?)$/i', $value)) {
 		$value=parse_number($value)/1000 ;
 		$original_unit='mm';
 	}
-	elseif (preg_match('/(inches|inch|in)$/i',$value)) {
+	elseif (preg_match('/(inches|inch|in)$/i', $value)) {
 		$value=parse_number($value)*0.0254;
 		$original_unit='inch';
 	}
-	elseif (preg_match('/(foot|feets?|ft)$/i',$value)) {
+	elseif (preg_match('/(foot|feets?|ft)$/i', $value)) {
 		$value=parse_number($value)*0.3048;
 		$original_unit='ft';
 	}
-	elseif (preg_match('/(mile?|milles?)$/i',$value)) {
+	elseif (preg_match('/(mile?|milles?)$/i', $value)) {
 		$value=parse_number($value)* 1609.344;
 		$original_unit='mile';
 	}
 	else
 		$value=parse_number($value);
 
-	return array($value,$original_unit);
+	return array($value, $original_unit);
 }
 
-function distance($value,$unit='m') {
+
+function distance($value, $unit='m') {
 	switch ($unit) {
 	case('cm'):
 		return number($value*100).'cm';
@@ -2992,7 +2979,7 @@ function distance($value,$unit='m') {
 }
 
 
-function volume($value,$unit='L') {
+function volume($value, $unit='L') {
 	if ($value=='') return '';
 	return number($value).'L';
 }
@@ -3001,23 +2988,23 @@ function volume($value,$unit='L') {
 function parse_parcels($value) {
 	$unit='Box';
 	$value=_trim($value);
-	if (preg_match('/(pallet)$/i',$value)) {
+	if (preg_match('/(pallet)$/i', $value)) {
 		$value=parse_number($value)*.4545 ;
 		$unit='Pallet';
 	}
-	elseif (preg_match('/(sobre|envelope)$/i',$value)) {
+	elseif (preg_match('/(sobre|envelope)$/i', $value)) {
 		$value=parse_number($value)*0.001 ;
 		$unit='Envelope';
 	}
 	else
 		$value=parse_number($value);
 
-	return array($value,$unit);
+	return array($value, $unit);
 }
 
 
 function number2alpha($number) {
-	$alpha=  chr(65+fmod($number-1,26));
+	$alpha=  chr(65+fmod($number-1, 26));
 	$pos=floor(($number-1)/26);
 
 	$prefix='';
@@ -3038,6 +3025,7 @@ function get_corporation_data() {
 	}
 	return $corporate_data;
 }
+
 
 function xml2array_to_delete($xml) {
 	$xmlary = array();
@@ -3064,8 +3052,8 @@ function xml2array_to_delete($xml) {
 		if (preg_match($reels, $elements[3][$ie]))
 			$xmlary[$ie]["elements"] = xml2array($elements[3][$ie]);
 		else if ($elements[3][$ie]) {
-				$xmlary[$ie]["text"] = $elements[3][$ie];
-			}
+			$xmlary[$ie]["text"] = $elements[3][$ie];
+		}
 	}
 
 	return $xmlary;
@@ -3124,7 +3112,7 @@ function products_awhere($awhere) {
 	if ($where_data['product_ordered1']!='') {
 		if ($where_data['product_ordered1']!='∀') {
 			$use_otf=true;
-			list($where_product_ordered1,$use_product)=extract_products_groups($where_data['product_ordered1']);
+			list($where_product_ordered1, $use_product)=extract_products_groups($where_data['product_ordered1']);
 		} else
 			$where_product_ordered1='true';
 	} else {
@@ -3134,7 +3122,7 @@ function products_awhere($awhere) {
 	if ($where_data['product_not_ordered1']!='') {
 		if ($where_data['product_not_ordered1']!='ALL') {
 			$use_otf=true;
-			$where_product_not_ordered1=extract_products_groups($where_data['product_ordered1'],'O.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','O.`Product Family Key` like');
+			$where_product_not_ordered1=extract_products_groups($where_data['product_ordered1'], 'O.`Product Code` not like', 'transaction.product_id not like', 'F.`Product Family Code` not like', 'O.`Product Family Key` like');
 		} else
 			$where_product_not_ordered1='false';
 	} else
@@ -3143,7 +3131,7 @@ function products_awhere($awhere) {
 	if ($where_data['product_not_received1']!='') {
 		if ($where_data['product_not_received1']!='∀') {
 			$use_otf=true;
-			$where_product_not_received1=extract_products_groups($where_data['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+			$where_product_not_received1=extract_products_groups($where_data['product_ordered1'], '(ordered-dispatched)>0 and    product.code  like', '(ordered-dispatched)>0 and  transaction.product_id not like', '(ordered-dispatched)>0 and  product_group.name not like', '(ordered-dispatched)>0 and  product_group.id like');
 		} else {
 			$use_otf=true;
 			$where_product_not_received1=' ((ordered-dispatched)>0)  ';
@@ -3151,11 +3139,11 @@ function products_awhere($awhere) {
 	} else
 		$where_product_not_received1='true';
 
-	$date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Invoice Date`','only_dates');
+	$date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'], $where_data['ordered_to'], '`Invoice Date`', 'only_dates');
 	if ($date_interval_when_ordered['mysql']) {
 		$use_otf=true;
 	}
-	$date_interval_when_customer_created=prepare_mysql_dates($where_data['product_valid_from'],$where_data['product_valid_to'],'`Product Valid From`','only_dates');
+	$date_interval_when_customer_created=prepare_mysql_dates($where_data['product_valid_from'], $where_data['product_valid_to'], '`Product Valid From`', 'only_dates');
 	if ($date_interval_when_customer_created['mysql']) {
 
 	}
@@ -3179,13 +3167,14 @@ function products_awhere($awhere) {
 	$where='where (  '.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].")  $where_geo_constraints";
 
 
-	return array($where,$table);
+	return array($where, $table);
 
 }
 
+
 //--------------------------------------------------------------------------------------------------------------
 
-function extract_products_groups($str,$q_prod_name='C.`Product Code` like',$q_prod_id='C.`Product ID`',$q_department_name='C.`Product Main Department Code` like',$q_department_id='C.`Product Main Department Key` like') {
+function extract_products_groups($str, $q_prod_name='C.`Product Code` like', $q_prod_id='C.`Product ID`', $q_department_name='C.`Product Main Department Code` like', $q_department_id='C.`Product Main Department Key` like') {
 	if ($str=='')
 		return '';
 	$where='';
@@ -3193,13 +3182,13 @@ function extract_products_groups($str,$q_prod_name='C.`Product Code` like',$q_pr
 	$where_d='';
 	$use_product=false;
 
-	if (preg_match_all('/d\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/d\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 
 
 		foreach ($matches[0] as $match) {
 
-			$_departments=preg_replace('/\)$/i','',preg_replace('/^d\(/i','',$match));
-			$_departments=preg_split('/\s*,\s*/i',$_departments);
+			$_departments=preg_replace('/\)$/i', '', preg_replace('/^d\(/i', '', $match));
+			$_departments=preg_split('/\s*,\s*/i', $_departments);
 
 			foreach ($_departments as $department) {
 				$department_ordered=addslashes($department);
@@ -3211,16 +3200,16 @@ function extract_products_groups($str,$q_prod_name='C.`Product Code` like',$q_pr
 				}
 			}
 		}
-		$str=preg_replace('/d\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/d\([a-z0-9\-\,]*\)/i', '', $str);
 	}
 
-	if (preg_match_all('/f\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/f\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 
 
 		foreach ($matches[0] as $match) {
 
-			$_groups=preg_replace('/\)$/i','',preg_replace('/^f\(/i','',$match));
-			$_groups=preg_split('/\s*,\s*/i',$_groups);
+			$_groups=preg_replace('/\)$/i', '', preg_replace('/^f\(/i', '', $match));
+			$_groups=preg_split('/\s*,\s*/i', $_groups);
 
 			foreach ($_groups as $group) {
 				$group_ordered=addslashes($group);
@@ -3232,11 +3221,11 @@ function extract_products_groups($str,$q_prod_name='C.`Product Code` like',$q_pr
 				}
 			}
 		}
-		$str=preg_replace('/f\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/f\([a-z0-9\-\,]*\)/i', '', $str);
 	}
 
 
-	$products=preg_split('/\s*,\s*/i',$str);
+	$products=preg_split('/\s*,\s*/i', $str);
 
 	$where_p='';
 	foreach ($products as $product) {
@@ -3251,11 +3240,13 @@ function extract_products_groups($str,$q_prod_name='C.`Product Code` like',$q_pr
 
 
 
-	$where=preg_replace('/^\s*or\s*/i','',$where_d.$where_g.$where_p);
-	return array('('.$where.')',$use_product);
+	$where=preg_replace('/^\s*or\s*/i', '', $where_d.$where_g.$where_p);
+	return array('('.$where.')', $use_product);
 
 }
-function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Country Code`',$q_wregion_code='C.`Customer Main Country Code`',$q_town_name='C.`Customer Main Town`',$q_post_code='C.`Customer Main Postal Code`') {
+
+
+function extract_products_geo_groups($str, $q_country_code='C.`Customer Main Country Code`', $q_wregion_code='C.`Customer Main Country Code`', $q_town_name='C.`Customer Main Town`', $q_post_code='C.`Customer Main Postal Code`') {
 	if ($str=='')
 		return '';
 	$where='';
@@ -3270,10 +3261,10 @@ function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Coun
 	$country_codes=array();
 	$wregion_codes=array();
 
-	if (preg_match_all('/t\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/t\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 		foreach ($matches[0] as $match) {
-			$_towns=preg_replace('/\)$/i','',preg_replace('/^t\(/i','',$match));
-			$_towns=preg_split('/\s*,\s*/i',$_towns);
+			$_towns=preg_replace('/\)$/i', '', preg_replace('/^t\(/i', '', $match));
+			$_towns=preg_split('/\s*,\s*/i', $_towns);
 			foreach ($_towns as $town) {
 				if ($town!='') {
 					$town=addslashes($town);
@@ -3284,15 +3275,15 @@ function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Coun
 			}
 		}
 		if (count($town_names)>0)
-			$where_t.= " or $q_town_name in ('".join("','",$town_names)."')";
+			$where_t.= " or $q_town_name in ('".join("','", $town_names)."')";
 
-		$str=preg_replace('/t\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/t\([a-z0-9\-\,]*\)/i', '', $str);
 	}
 
-	if (preg_match_all('/pc\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/pc\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 		foreach ($matches[0] as $match) {
-			$_post_codes=preg_replace('/\)$/i','',preg_replace('/^pc\(/i','',$match));
-			$_post_codes=preg_split('/\s*,\s*/i',$_post_codes);
+			$_post_codes=preg_replace('/\)$/i', '', preg_replace('/^pc\(/i', '', $match));
+			$_post_codes=preg_split('/\s*,\s*/i', $_post_codes);
 			foreach ($_post_codes as $post_code) {
 				if ($post_code!='') {
 					$post_code=addslashes($post_code);
@@ -3303,17 +3294,17 @@ function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Coun
 			}
 		}
 		if (count($post_code_names)>0)
-			$where_t.= " or $q_post_code in ('".join("','",$post_code_names)."')";
+			$where_t.= " or $q_post_code in ('".join("','", $post_code_names)."')";
 
-		$str=preg_replace('/pc\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/pc\([a-z0-9\-\,]*\)/i', '', $str);
 	}
-	if (preg_match_all('/wr\([a-z0-9\-\,]*\)/i',$str,$matches)) {
+	if (preg_match_all('/wr\([a-z0-9\-\,]*\)/i', $str, $matches)) {
 
 
 		foreach ($matches[0] as $match) {
 
-			$_world_regions=preg_replace('/\)$/i','',preg_replace('/^wr\(/i','',$match));
-			$_world_regions=preg_split('/\s*,\s*/i',$_world_regions);
+			$_world_regions=preg_replace('/\)$/i', '', preg_replace('/^wr\(/i', '', $match));
+			$_world_regions=preg_split('/\s*,\s*/i', $_world_regions);
 
 			// print_r($_world_regions);
 			foreach ($_world_regions as $world_region) {
@@ -3324,15 +3315,15 @@ function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Coun
 
 			}
 		}
-		$sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `World Region Code` in (%s)","'".join("','",$wregion_codes)."'");
+		$sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `World Region Code` in (%s)", "'".join("','", $wregion_codes)."'");
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$country_codes[$row['Country Code']]=$row['Country Code'];
 
 		}
-		$str=preg_replace('/wr\([a-z0-9\-\,]*\)/i','',$str);
+		$str=preg_replace('/wr\([a-z0-9\-\,]*\)/i', '', $str);
 	}
-	$products=preg_split('/\s*,\s*/i',$str);
+	$products=preg_split('/\s*,\s*/i', $str);
 	$where_c='';
 	foreach ($products as $product) {
 		if ($product!='' and strlen($product)==3) {
@@ -3342,14 +3333,15 @@ function extract_products_geo_groups($str,$q_country_code='C.`Customer Main Coun
 		}
 	}
 	if (count($country_codes)>0)
-		$where_c.= " or $q_country_code in ('".join("','",$country_codes)."')";
+		$where_c.= " or $q_country_code in ('".join("','", $country_codes)."')";
 
-	$where=preg_replace('/^\s*or\s*/i','',$where_wr.$where_c.$where_pc.$where_t);
+	$where=preg_replace('/^\s*or\s*/i', '', $where_wr.$where_c.$where_pc.$where_t);
 	if ($where!='')
 		$where=' and '.$where;
 	return $where;
 
 }
+
 
 function array_to_CSV($data) {
 	$outstream = fopen("php://temp", 'r+');
@@ -3360,6 +3352,7 @@ function array_to_CSV($data) {
 	return $csv;
 }
 
+
 function CSV_to_array($data) {
 	$instream = fopen("php://temp", 'r+');
 	fwrite($instream, $data);
@@ -3368,6 +3361,7 @@ function CSV_to_array($data) {
 	fclose($instream);
 	return $csv;
 }
+
 
 function aasort(&$array, $key) {
 	$sorter=array();
@@ -3404,10 +3398,10 @@ function prepare_sentence_similar($a) {
 
 	$a=_trim($a);
 
-	$a=preg_split('/\s+/',$a);
+	$a=preg_split('/\s+/', $a);
 
 
-	$a=array_diff($a,$words_to_ignore);
+	$a=array_diff($a, $words_to_ignore);
 
 
 	foreach ($a as $key=>$value) {
@@ -3421,7 +3415,8 @@ function prepare_sentence_similar($a) {
 
 }
 
-function sentence_similarity($a,$b) {
+
+function sentence_similarity($a, $b) {
 
 	$a=prepare_sentence_similar($a);
 	$b=prepare_sentence_similar($b);
@@ -3444,7 +3439,7 @@ function sentence_similarity($a,$b) {
 			$levenshtein=levenshtein($item_a, $item_b);
 
 			if ($levenshtein>=0) {
-				$max_strlen=max(strlen($item_a),strlen($item_b));
+				$max_strlen=max(strlen($item_a), strlen($item_b));
 				$sim1= ($max_strlen-$levenshtein)/$max_strlen;
 			}else {
 				$sim1=0;
@@ -3489,6 +3484,7 @@ function sentence_similarity($a,$b) {
 
 
 }
+
 
 function get_interval_db_name($interval) {
 
@@ -3614,9 +3610,11 @@ function get_interval_db_name($interval) {
 	return $db_interval;
 }
 
+
 function calculate_inteval_dates($interval) {
 	return calculate_interval_dates($interval);
 }
+
 
 function calculate_interval_dates($interval) {
 
@@ -3643,11 +3641,11 @@ function calculate_interval_dates($interval) {
 	case 'Last Month':
 	case 'last_m':
 		$db_interval='Last Month';
-		$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
-		$to_date=date('Y-m-d 23:59:59',mktime(0,0,-1,date('m'),1,date('Y')));
+		$from_date=date('Y-m-d 00:00:00', mktime(0, 0, 0, date('m')-1, 1, date('Y')));
+		$to_date=date('Y-m-d 23:59:59', mktime(0, 0, -1, date('m'), 1, date('Y')));
 
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 		break;
 
@@ -3656,11 +3654,11 @@ function calculate_interval_dates($interval) {
 		$db_interval='Last Week';
 
 
-		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d", date('Y'), date('W'));
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
-			$to_date=date('Y-m-d 23:59:59',strtotime($row['First Day'].' -1 second'  ));
+			$from_date=date('Y-m-d 00:00:00', strtotime($row['First Day'].' -1 week'));
+			$to_date=date('Y-m-d 23:59:59', strtotime($row['First Day'].' -1 second'  ));
 
 		} else {
 			return;
@@ -3668,18 +3666,18 @@ function calculate_interval_dates($interval) {
 
 
 
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 
 	case 'Yesterday':
 	case 'yesterday':
 		$db_interval='Yesterday';
-		$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
-		$to_date=date('Y-m-d 23:59:59',strtotime('today -1 day'));
+		$from_date=date('Y-m-d 00:00:00', strtotime('today -1 day'));
+		$to_date=date('Y-m-d 23:59:59', strtotime('today -1 day'));
 
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("today -1 year"));
 		break;
 
 	case 'Week To Day':
@@ -3689,7 +3687,7 @@ function calculate_interval_dates($interval) {
 		$from_date=false;
 		$from_date_1yb=false;
 
-		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d", date('Y'), date('W'));
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3700,14 +3698,14 @@ function calculate_interval_dates($interval) {
 			return;
 		}
 
-		$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+		$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d", date('Y')-1, date('W'));
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$from_date_1yb=$row['First Day'].' 00:00:00';
 		}
 
 
-		$to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime($from_date_1yb." +$lapsed_seconds seconds"));
 
 
 
@@ -3716,8 +3714,8 @@ function calculate_interval_dates($interval) {
 	case 'today':
 		$db_interval='Today';
 		$from_date=date('Y-m-d 00:00:00');
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 
 
@@ -3725,21 +3723,21 @@ function calculate_interval_dates($interval) {
 	case 'mtd':
 		$db_interval='Month To Day';
 		$from_date=date('Y-m-01 00:00:00');
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case 'Year To Day':
 	case 'ytd':
 		$db_interval='Year To Day';
 		$from_date=date('Y-01-01 00:00:00');
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 		break;
 	case '3 Year':
 	case '3y':
 		$db_interval='3 Year';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -3 year"));
 		$from_date_1yb=false;
 		$to_1yb=false;
 		break;
@@ -3747,74 +3745,76 @@ function calculate_interval_dates($interval) {
 	case '1y':
 	case 'year':
 		$db_interval='1 Year';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '6 Month':
 		$db_interval='6 Month';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -6 months"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '1 Quarter':
 	case '1q':
 		$db_interval='1 Quarter';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -3 months"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '1 Month':
 	case '1m':
 		$db_interval='1 Month';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -1 month"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '10 Day':
 	case '10d':
 		$db_interval='10 Day';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -10 days"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '1 Week':
 	case '1w':
 		$db_interval='1 Week';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -1 week"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '1 Day':
 	case '1d':
 		$db_interval='1 Day';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -1 day"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -1 day"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	case '1 Hour':
 	case '1h':
 		$db_interval='1 Hour';
-		$from_date=date('Y-m-d H:i:s',strtotime("now -1 hour"));
-		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+		$from_date=date('Y-m-d H:i:s', strtotime("now -1 hour"));
+		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 	default:
 		return;
 		break;
 	}
 
-	return array($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb);
+	return array($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb);
 
 }
+
 
 function floattostr( $val ) {
 	preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
-	return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
+	return $o[1].sprintf('%d', $o[2]).($o[3]!='.'?$o[3]:'');
 }
 
-function not_found($title='',$parent='') {
-	global $yui_path,$smarty;
+
+function not_found($title='', $parent='') {
+	global $yui_path, $smarty;
 	$css_files=array(
 		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		$yui_path.'menu/assets/skins/sam/menu.css',
@@ -3835,12 +3835,31 @@ function not_found($title='',$parent='') {
 
 
 	);
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
-	$smarty->assign('parent',$parent);
-	$smarty->assign('title',$title);
+	$smarty->assign('css_files', $css_files);
+	$smarty->assign('js_files', $js_files);
+	$smarty->assign('parent', $parent);
+	$smarty->assign('title', $title);
 	$smarty->display('not_found.tpl');
 	exit;
 }
+
+
+function get_ordinal_suffix( $n, $locale=false ) {
+
+	if (!$locale) { global $locale;}
+
+	$nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
+	return $nf->format($n);
+
+}
+
+
+function money($amount, $currency='', $locale=false) {
+	if (!$locale) {global $locale;}
+
+	$money = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+	return $money->format($amount);
+}
+
 
 ?>

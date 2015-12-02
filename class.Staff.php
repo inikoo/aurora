@@ -73,32 +73,110 @@ class Staff extends DB_Table{
 		if (!$this->id)
 			return;
 
-
-
 		switch ($key) {
+		case 'Salary':
+
+			$salary='';
+
+			global $account;
+			$salary_data=json_decode($this->data['Staff Salary'], true);
+			if (!$salary_data)return '';
+
+			if (isset($salary_data['data']['amount'])) {
+				$salary_amount=money($salary_data['data']['amount'], $account->get('Account Currency'));
+
+			}else {
+				$salary_amount='('.money($salary_data['data']['amount_weekdays'], $account->get('Account Currency')).' '._('Mon-Fri').', ';
+				$salary_amount.=money($salary_data['data']['amount_saturday'], $account->get('Account Currency')).' '._('Sat').', ';
+				$salary_amount.=money($salary_data['data']['amount_sunday'], $account->get('Account Currency')).' '._('Sun').') ';
+				$compress=false;
+			}
+			if ($salary_data['data']['type']=='prorata_hour') {
+
+
+				if ($salary_data['data']['frequency']=='monthy') {
+
+					if (isset($salary_data['data']['amount'])) {
+						$average_year_amount=$salary_data['data']['amount']*$this->data['Staff Working Hours Per Week']*52.1429;
+					}else {
+						$week_hours_day_breakdown=json_decode($this->data['Staff Working Hours Per Week Metadata'], true);
+						$average_year_amount=(
+							$salary_data['data']['amount_weekdays']*$week_hours_day_breakdown['Weekdays']+
+							$salary_data['data']['amount_saturday']*$week_hours_day_breakdown['Saturday']+
+							$salary_data['data']['amount_sunday']*$week_hours_day_breakdown['Sunday'])*52.1429;
+
+					}
+
+					$salary=sprintf(_('%s/hour (pro rata) paid every %s day of the month (%s per year)'), $salary_amount, get_ordinal_suffix($salary_data['data']['payday']),
+						money($average_year_amount, $account->get('Account Currency')));
+
+				}elseif ($salary_data['data']['frequency']=='weekly') {
+					$day_names=array(1=>_('Monday'), 2=>_('Tuesday'), 3=>_('Wednesday'), 4=>_('Thursday'), 5=>_('Friday'), 6=>_('Satday'), 7=>_('Sunday'));
+
+
+					if (isset($salary_data['data']['amount'])) {
+						$average_year_amount=$salary_data['data']['amount']*$this->data['Staff Working Hours Per Week']*52.1429;
+					}else {
+						$week_hours_day_breakdown=json_decode($this->data['Staff Working Hours Per Week Metadata'], true);
+						$average_year_amount=(
+							$salary_data['data']['amount_weekdays']*$week_hours_day_breakdown['Weekdays']+
+							$salary_data['data']['amount_saturday']*$week_hours_day_breakdown['Saturday']+
+							$salary_data['data']['amount_sunday']*$week_hours_day_breakdown['Sunday'])*52.1429;
+
+					}
+
+
+					$salary=sprintf(_('%s/hour (pro rata) paid every %s (&#8776;%s per year)'), $salary_amount, $day_names[$salary_data['data']['payday']],
+						money($average_year_amount, $account->get('Account Currency'))
+					);
+
+				}
+			}elseif ($salary_data['data']['type']=='fixed_month' ) {
+
+
+
+				if ($salary_data['data']['frequency']=='monthy') {
+
+					$average_hour_amount=$salary_data['data']['amount']/($this->data['Staff Working Hours Per Week']*4.348125);
+
+					$salary=sprintf(_('%s paid every %s day of the month (%s per year, ~%s per hour)'), $salary_amount, get_ordinal_suffix($salary_data['data']['payday']),
+						money($salary_data['data']['amount']*12, $account->get('Account Currency')),
+						money($average_hour_amount, $account->get('Account Currency'))
+					);
+
+				}elseif ($salary_data['data']['frequency']=='weekly') {
+					$day_names=array(1=>_('Monday'), 2=>_('Tuesday'), 3=>_('Wednesday'), 4=>_('Thursday'), 5=>_('Friday'), 6=>_('Satday'), 7=>_('Sunday'));
+
+					$salary=sprintf(_('%s paid every %s'), $salary_amount, $day_names[$salary_data['data']['payday']]);
+
+				}
+			}elseif ($salary_data['data']['type']=='fixed_week' ) {
+				$day_names=array(1=>_('Monday'), 2=>_('Tuesday'), 3=>_('Wednesday'), 4=>_('Thursday'), 5=>_('Friday'), 6=>_('Satday'), 7=>_('Sunday'));
+
+
+
+				$salary=sprintf(_('%s paid every %s (&#8776;%s per year)'), $salary_amount, $day_names[$salary_data['data']['payday']],
+					money($salary_data['data']['amount']*52.1429, $account->get('Account Currency'))
+				);
+
+
+			}
+
+
+			//print $salary;exit;
+			return $salary;
+
+			//{"metadata":{},"data":{"frequency":"monthy","payday":"23","type":"prorata_hour","amount":"2323"}}
+			break;
 		case('Working Hours'):
 			include_once 'utils/natural_language.php';
-			function get_breaks($data) {
-				// print_r($data);
 
-				$formated_breaks=' (<i class="fa fa-fw fa-cutlery"></i> ';
-				if (count($data)==0)return'';
-				foreach ($data as $break_data) {
-
-					$break_duration = seconds_to_string(abs(strtotime('2000-01-01 '.$break_data['s']) - strtotime('2000-01-01 '.$break_data['e'])), false, true);
-
-
-
-					$formated_breaks.=$break_duration.' @'.$break_data['s'].', ';
-				}
-				$formated_breaks=preg_replace('/, $/', '', $formated_breaks);
-				return $formated_breaks.')';
-			}
 
 
 			$day_names=array(1=>_('Mon'), 2=>_('Tue'), 3=>_('Wed'), 4=>_('Thu'), 5=>_('Fri'), 6=>_('Sat'), 7=>_('Sun'));
 
 			$formated_working_hours='';
+
 
 			$working_hours=json_decode($this->data['Staff Working Hours'], true);
 			if (!$working_hours)return '';
@@ -115,7 +193,7 @@ class Staff extends DB_Table{
 				$start=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][1]['s']));
 				$end=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][1]['e']));
 
-				$breaks=get_breaks($working_hours['data'][1]['b']);
+				$breaks=$this->get_breaks($working_hours['data'][1]['b']);
 
 				$formated_working_hours=_('Mon-Fri').' '.$start.'-'.$end.$breaks.', ';
 
@@ -126,7 +204,7 @@ class Staff extends DB_Table{
 					$start=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][6]['s']));
 					$end=date('H:i', strtotime('2000-01-01 '.$working_hours['data'][6]['e']));
 
-					$breaks=get_breaks($working_hours['data'][6]['b']);
+					$breaks=$this->get_breaks($working_hours['data'][6]['b']);
 
 					$formated_working_hours.=_('Sat-Sun').' '.$start.'-'.$end.$breaks.', ';
 
@@ -138,7 +216,7 @@ class Staff extends DB_Table{
 						if ($day_key>=6) {
 							$start=date('H:i', strtotime('2000-01-01 '.$day_working_hours['s']));
 							$end=date('H:i', strtotime('2000-01-01 '.$day_working_hours['e']));
-							$breaks=get_breaks($day_working_hours['b']);
+							$breaks=$this->get_breaks($day_working_hours['b']);
 
 							$formated_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
 						}
@@ -151,7 +229,7 @@ class Staff extends DB_Table{
 				foreach ($working_hours['data'] as $day_key=>$day_working_hours) {
 					$start=date('H:i', strtotime('2000-01-01 '.$day_working_hours['s']));
 					$end=date('H:i', strtotime('2000-01-01 '.$day_working_hours['e']));
-					$breaks=get_breaks($day_working_hours['b']);
+					$breaks=$this->get_breaks($day_working_hours['b']);
 
 					$formated_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
 
@@ -162,6 +240,9 @@ class Staff extends DB_Table{
 
 			$formated_working_hours=preg_replace('/, $/', '', $formated_working_hours);
 			//print $formated_working_hours;exit;
+
+			$formated_working_hours.='; '.sprintf(_('%s hrs/w'), number($this->data['Staff Working Hours Per Week']));
+
 			return $formated_working_hours;
 
 		case('Address'):
@@ -638,7 +719,25 @@ class Staff extends DB_Table{
 
 
 		switch ($field) {
+		case('Staff Working Hours'):
+			$this->update_field($field, $value, $options);
 
+			list($working_hours_per_week, $working_hours_per_week_metadata)=$this->get_working_hours_per_week($this->data['Staff Working Hours']);
+			$this->update_field('Staff Working Hours Per Week', $working_hours_per_week, 'no_history');
+			$this->update_field('Staff Working Hours Per Week Metadata', json_encode($working_hours_per_week_metadata), 'no_history');
+
+			$this->other_fields_updated=array(
+				'Staff_Salary'=>array(
+					'field'=>'Staff_Salary',
+					'render'=>true,
+					'value'=>$this->get('Staff Salary'),
+					'formated_value'=>$this->get('Salary'),
+
+
+				)
+			);
+
+			break;
 		case('Staff PIN'):
 			$this->update_pin($value);
 			break;
@@ -888,10 +987,65 @@ class Staff extends DB_Table{
 
 
 
+	function get_breaks($data) {
+		// print_r($data);
 
+		$formated_breaks=' (<i class="fa fa-fw fa-cutlery"></i> ';
+		if (count($data)==0)return'';
+		foreach ($data as $break_data) {
+
+			$break_duration = seconds_to_string(abs(strtotime('2000-01-01 '.$break_data['s']) - strtotime('2000-01-01 '.$break_data['e'])), false, true);
+
+
+
+			$formated_breaks.=$break_duration.' @'.$break_data['s'].', ';
+		}
+		$formated_breaks=preg_replace('/, $/', '', $formated_breaks);
+		return $formated_breaks.')';
+	}
+
+
+	function get_working_hours_per_week($data) {
+
+		$working_hours=json_decode($data, true);
+		if (!$working_hours)return '';
+		$diff=0;
+		$metadata=array('Weekdays'=>0, 'Saturday'=>0, 'Sunday'=>0);
+		foreach ($working_hours['data'] as $day_key=>$day_data) {
+			//$start=date('H:i', strtotime('2000-01-01 '.$day_data['s']));
+			//$end=date('H:i', strtotime('2000-01-01 '.$day_data['e']));
+			$day_hours= strtotime('2000-01-01 '.$day_data['e'])-strtotime('2000-01-01 '.$day_data['s']);
+			$break_diff=0;
+			foreach ($day_data['b'] as $break_data) {
+
+
+				$break_diff+=strtotime('2000-01-01 '.$break_data['e'])-strtotime('2000-01-01 '.$break_data['s']);
+
+			}
+			$day_hours=$day_hours-$break_diff;
+
+			if ($day_key==6) {
+				$metadata['Saturday']=$day_hours/3600;
+			}elseif ($day_key==7) {
+				$metadata['Sunday']=$day_hours/3600;
+
+			}else {
+				$metadata['Weekdays']= $metadata['Weekdays']+($day_hours/3600);
+
+			}
+
+			$diff+=$day_hours;
+
+		}
+		$diff=$diff/3600;
+
+		return array($diff, $metadata);
+
+	}
 
 
 }
+
 
 
 

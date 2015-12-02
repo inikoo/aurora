@@ -403,7 +403,7 @@ function order_items($_data, $db, $user) {
 		}
 		$description.=' '.$name;
 		if ($price>0) {
-			$description.=' ('.money_locale($price, $_locale, $currency).')';
+			$description.=' ('.money($price,$currency, $_locale ).')';
 		}
 
 
@@ -488,7 +488,7 @@ function invoice_items($_data, $db, $user) {
 		}
 		$desc.=' '.$name;
 		if ($price>0) {
-			$desc.=' ('.money_locale($price, $_locale, $currency).')';
+			$desc.=' ('.money($price, $currency,$_locale).')';
 		}
 
 		$description=$desc;

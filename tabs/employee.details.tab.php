@@ -39,7 +39,7 @@ foreach ($db->query($sql) as $row) {
 foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
 	if ( array_key_exists($current_position_key, $options_Staff_Position ) ) {
 
-	$options_Staff_Position[$current_position_key]['selected']=true;
+		$options_Staff_Position[$current_position_key]['selected']=true;
 	}
 }
 
@@ -107,7 +107,7 @@ $object_fields=array(
 
 		)
 	),
-/*
+
 	array(
 		'label'=>_('Personal information'),
 		'show_title'=>true,
@@ -229,7 +229,7 @@ $object_fields=array(
 				'label'=>ucfirst($employee->get_field_label('Staff Valid To')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
-			
+
 			array(
 
 				'id'=>'Staff_Job_Title',
@@ -251,8 +251,8 @@ $object_fields=array(
 
 		)
 	),
-*/	
-		array(
+
+	array(
 		'label'=>_('Working hours & salary'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -277,17 +277,17 @@ $object_fields=array(
 				'label'=>ucfirst($employee->get_field_label('Staff Salary')),
 				'invalid_msg'=>get_invalid_message('salary'),
 			)
-			
+
 
 		)
 	),
-	
+
 	array(
 		'label'=>_('System roles'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(
-			
+
 			array(
 				'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
 				'id'=>'Staff_Position',
@@ -381,20 +381,20 @@ if ($employee->get('Staff User Key')) {
 
 
 
-$smarty->assign('working_hours',json_decode($employee->data['Staff Working Hours'], true));
-$smarty->assign('salary',json_decode($employee->data['Staff Salary'], true));
+$smarty->assign('working_hours', json_decode($employee->data['Staff Working Hours'], true));
+$smarty->assign('salary', json_decode($employee->data['Staff Salary'], true));
 
-$smarty->assign('day_labels',$day_labels=array(
-_('Weekdays'),
-_('Mon'),
-_('Tue'),
-_('Wed'),
-_('Thu'),
-_('Fri'),
-_('Weekend'),
-_('Sat'),
-_('Sun')
-));
+$smarty->assign('day_labels', $day_labels=array(
+		_('Weekdays'),
+		_('Mon'),
+		_('Tue'),
+		_('Wed'),
+		_('Thu'),
+		_('Fri'),
+		_('Weekend'),
+		_('Sat'),
+		_('Sun')
+	));
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
