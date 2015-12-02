@@ -40,6 +40,25 @@
 			
 			</td>
 			<td class="day_labels">
+			{if $i==0}
+			{t}Weekdays{/t}
+			{elseif $i==1}
+			{t}Monday{/t}
+			{elseif $i==2}
+			{t}Tuesday{/t}
+			{elseif $i==3}
+			{t}Wednesday{/t}
+			{elseif $i==4}
+			{t}Thursday{/t}
+			{elseif $i==5}
+			{t}Friday{/t}
+			{elseif $i==6}
+			{t}Weekend{/t}
+			{elseif $i==7}
+			{t}Saturday{/t}
+			{elseif $i==8}
+			{t}Sunday{/t}
+			{/if}
 			<td> 
 			<input maxlength="5" id="wa_weekdays_start_{$i}" index='{$i}' class="start time_input_field working_hours_input_field valid" placeholder="09:00" value="{if isset($working_hours.data[$day_index]['s'])}{$working_hours.data[$day_index]['s']}{/if}" />
 			</td>
