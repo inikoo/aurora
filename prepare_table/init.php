@@ -39,7 +39,7 @@ $_SESSION['table_state'][$_data['parameters']['tab']]['f_value']=$f_value;
 
 
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
-list($rtext,$total,$filtered)=get_table_totals($sql_totals,$wheref,$rtext_label);
+list($rtext,$total,$filtered)=get_table_totals($sql_totals,$wheref,$rtext_label,(isset($totals_metadata)?$totals_metadata:false));
 
 
 

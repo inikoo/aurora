@@ -100,7 +100,9 @@ DROP TABLE `User API Dimension`;
 ALTER TABLE `Staff Dimension` ADD `Staff Working Hours` TEXT NULL DEFAULT NULL AFTER `Staff Is Supervisor`;
 ALTER TABLE `Staff Dimension` ADD `Staff Salary` TEXT NULL AFTER `Staff Working Hours`;
 
+//
 
+DELETE FROM `User Group User Bridge` WHERE `User Group Key` in (4);
 
 
   
