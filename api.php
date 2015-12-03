@@ -23,7 +23,7 @@ authorization($db, $user_key, $api_key_key, $scope);
 
 function authorization($db, $user_key, $api_key_key, $scope) {
 	$method=$_SERVER['REQUEST_METHOD'];
-	$parsed_scope=parse_scope($_SERVER['PATH_INFO']);
+	$parsed_scope=parse_scope($_SERVER['REDIRECT_URL']);
 
 	if (!$scope) {
 		$response= log_api_key_access_failture($db, $api_key_key, 'Fail_Access', 'Wrong path');
@@ -86,7 +86,7 @@ function check_permisions($db, $user_key, $scope) {
 
 function parse_scope($request) {
 
-	if ($request=='/timesheet_record') {
+	if ($request=='/api/timesheet_record') {
 		return 'Timesheet';
 	}
 
