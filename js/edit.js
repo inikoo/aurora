@@ -319,7 +319,14 @@ function on_changed_value(field, new_value) {
         var key = field_data.attr('object')
 
         var validation = validate_field(field, new_value, type, required, server_validation, parent, parent_key, _object, key)
+        
+      
+        
         process_validation(validation, field, true)
+        
+        
+        
+        
 
 
     } else {
@@ -329,6 +336,11 @@ function on_changed_value(field, new_value) {
     if ($('#fields').hasClass('new_object')) {
         if (validation.class != 'waiting') check_if_form_is_valid()
     }
+
+if($('#inline_new_object')){
+            $('#' + $('#inline_new_object').attr('object') + '_save').addClass(validation.class)
+
+        }
 
 
 }
@@ -342,6 +354,7 @@ function process_validation(validation, field, mark_invalid_if_previously_valid)
     $("#" + field + '_validation').addClass(validation.class)
     $("#" + field + '_msg').addClass(validation.class)
 
+   
 
     if (validation.class == 'waiting') {
 
@@ -661,6 +674,7 @@ function clean_time(value) {
         var time_components = value.split(':');
     }
 
+console.log(time_components)
     var hours = addZero2dateComponent(parseInt(time_components[0]))
     var minutes = addZero2dateComponent(parseInt(time_components[1]))
     var seconds = '00';
