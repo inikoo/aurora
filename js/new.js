@@ -33,14 +33,14 @@ function validate_form(object) {
         var field = $(this).attr('field')
         var value = $('#' + field).val()
 
-  var field_data = $('#' + field + '_container')
-    var type = field_data.attr('field_type')
-    var required=field_data.attr('_required')
-    var server_validation=field_data.attr('server_validation')
-    var parent=field_data.attr('parent')
-    var parent_key=field_data.attr('parent_key')
-    var _object=field_data.attr('object')
-    var key=field_data.attr('object')
+        var field_data = $('#' + field + '_container')
+        var type = field_data.attr('field_type')
+        var required = field_data.attr('_required')
+        var server_validation = field_data.attr('server_validation')
+        var parent = field_data.attr('parent')
+        var parent_key = field_data.attr('parent_key')
+        var _object = field_data.attr('object')
+        var key = field_data.attr('object')
 
 
 
@@ -53,9 +53,9 @@ function validate_form(object) {
 
             form_validation = 'invalid'
 
-  
 
-            var validation = validate_field(field, value,type,required,server_validation,parent,parent_key,_object,key)
+
+            var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 
             if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
                 var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
@@ -66,13 +66,12 @@ function validate_form(object) {
             $('#' + field + '_msg').removeClass('hide').addClass('invalid')
 
             //console.log(field+' '+'invalid')
-
         } else {
 
             $('#' + field + '_validation').removeClass('invalid')
 
 
-            var validation = validate_field(field, value,type,required,server_validation,parent,parent_key,_object,key)
+            var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 
 
             if (validation.class == 'invalid' || validation.class == 'potentially_valid') {
@@ -96,13 +95,11 @@ function validate_form(object) {
 
             }
             //console.log(field+' '+validation.class)
-
         }
 
     });
 
     //  console.log('xxx>'+form_validation+'<<<')
-
     //$('#' + object + '_controls').removeClass('waiting')
     $('#' + object + '_save_icon').addClass('fa-cloud')
     $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin')
@@ -163,8 +160,16 @@ function save_new_object(object) {
 
         function(index) {
             var field = $(this).attr('field')
-            var value = fixedEncodeURIComponent($('#' + field).val())
+            var field_type = $(this).attr('field_type')
 
+
+
+            if (field_type == 'time') {
+                value = fixedEncodeURIComponent($('#' + field + '_date').val() + ' ' + clean_time($('#' + field).val()))
+            } else {
+                var value = fixedEncodeURIComponent($('#' + field).val())
+
+            }
 
 
             console.log($(this).attr('id') + ' ' + field)
@@ -182,7 +187,7 @@ function save_new_object(object) {
         console.log(request)
         //return;
         $.getJSON(request, function(data) {
-            // console.log(data)
+            console.log(data)
             $('#' + object + '_save_icon').addClass('fa-cloud');
             $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
 
@@ -195,8 +200,11 @@ function save_new_object(object) {
 
 
 
+                for (var field in data.updated_data) {
+                    $('.' + field).html(data.updated_data[field])
+                }
 
-
+                post_new_actions(object, data)
 
             } else if (data.state == 400) {
 
@@ -214,6 +222,25 @@ function save_new_object(object) {
 }
 
 
+function post_new_actions(object, data) {
+
+    switch (object) {
+    case 'Timesheet_Record':
+
+        rows.fetch({
+            reset: true
+        });
+        break;
+
+
+    default:
+
+    }
+
+
+}
+
+
 function save_inline_new_object(trigger) {
 
 
@@ -226,7 +253,7 @@ function save_inline_new_object(trigger) {
 
 
 
-    if (!$('#' + field + '_editor').hasClass('valid')) {
+    if (!$('#' + object + '_save').hasClass('valid')) {
 
         return;
     }
@@ -251,9 +278,9 @@ function save_inline_new_object(trigger) {
 
     fields_data[fixedEncodeURIComponent(field.replace(re, ' '))] = value
     var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-    //console.log(request)
+    console.log(request)
     $.getJSON(request, function(data) {
-        // console.log(data)
+         console.log(data)
         $('#' + field + '_editor').removeClass('valid ')
         $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
 
