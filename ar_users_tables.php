@@ -158,6 +158,7 @@ function users($_data, $db, $user) {
 	//print $sql;
 	$base_data=array(
 		'Staff'=>array('User Type'=>'Staff', 'active_users'=>0),
+		'Contractor'=>array('User Type'=>'Contractor', 'active_users'=>0),
 		'Warehouse'=>array('User Type'=>'Warehouse', 'active_users'=>0),
 		'Administrator'=>array('User Type'=>'Administrator', 'active_users'=>0),
 		'Supplier'=>array('User Type'=>'Supplier', 'active_users'=>0),
@@ -172,7 +173,7 @@ function users($_data, $db, $user) {
 
 		switch ($data['User Type']) {
 		case 'Staff':
-			$type=_('Staff');
+			$type=_('Employees');
 			$request='account/users/staff';
 			break;
 		case 'Warehouse':
@@ -376,6 +377,67 @@ function api_requests($_data, $db, $user) {
 
 
 
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function groups($_data, $db, $user) {
+	global $db;
+	$rtext_label='user group';
+	include_once 'utils/user_groups.php';
+
+	$totals_metadata=array(
+		'filtered'=>0,
+		'filter_total'=>0,
+		'total_records'=>count($user_groups),
+		'total'=>count($user_groups)
+
+	);
+
+	include_once 'prepare_table/init.php';
+
+
+	$sql="select $fields from $table $where $wheref $group_by ";
+
+
+	foreach ($db->query($sql) as $data) {
+
+		if (isset($user_groups[$data['User Group Key']])) {
+
+			$user_groups[$data['User Group Key']]['users']=$data['users'];
+			$user_groups[$data['User Group Key']]['active_users']=$data['active_users'];
+			$user_groups[$data['User Group Key']]['inactive_users']=$data['inactive_users'];
+		}
+	}
+
+	foreach ($user_groups as $key=>$data) {
+
+		
+
+		$adata[]=array(
+			'id'=> (integer) $key,
+			'name'=>$data['Name'],
+			'view'=>$data['View'],
+			'edit'=>$data['Edit'],
+			'active_users'=>(isset($data['active_users'])?number($data['active_users']):0),
+			'inactive_users'=>(isset($data['inactive_users'])?number($data['inactive_users']):0),
+		);
+
+	}
+
+	$rtext=_("User's privilegies groups");
 
 	$response=array('resultset'=>
 		array(

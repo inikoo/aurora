@@ -24,7 +24,7 @@ function get_table_parameters() {
 }
 
 
-function get_table_totals($sql_totals, $wheref='', $record_label='') {
+function get_table_totals($sql_totals, $wheref='', $record_label='',$metadata='') {
 
 
 	global $db;
@@ -57,6 +57,13 @@ function get_table_totals($sql_totals, $wheref='', $record_label='') {
 			$total_records=$total;
 		}
 
+	}
+	elseif($metadata){
+	    $filtered=$metadata['filtered'];
+		$filter_total=$metadata['filter_total'];
+		$total_records=$metadata['total_records'];
+		$total=$metadata['total'];
+	    
 	}else {
 		$filtered=0;
 		$filter_total=0;
@@ -71,6 +78,7 @@ function get_table_totals($sql_totals, $wheref='', $record_label='') {
 	}else {
 		$rtext='<i class="fa fa-filter fa-fw"></i> '. get_rtext_with_filter($record_label, $total, $total_records);
 	}
+
 
 	return array($rtext, $total, $filtered);
 
@@ -181,6 +189,8 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s contractor of %s', '%s contractors of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='user') {
 		return sprintf(ngettext('%s user of %s', '%s users of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='user_group') {
+		return sprintf(ngettext('%s user group of %s', '%s user groups of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='report') {
 		return sprintf(ngettext('%s report of %s', '%s reports of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='session') {

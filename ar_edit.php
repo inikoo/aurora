@@ -154,12 +154,18 @@ function new_object($account, $db, $user, $editor, $data) {
 	case 'Staff':
 		include_once 'class.Staff.php';
 		$object=$parent->create_staff($data['fields_data']);
+		$smarty->assign('account', $account);
+		$smarty->assign('object', $object);
+
 		$pcard=$smarty->fetch('presentation_cards/employee.pcard.tpl');
 		$updated_data=array();
 		break;
 	case 'API_Key':
 		include_once 'class.API_Key.php';
 		$object=$parent->create_api_key($data['fields_data']);
+		$smarty->assign('account', $account);
+		$smarty->assign('object', $object);
+
 		$pcard=$smarty->fetch('presentation_cards/api_key.pcard.tpl');
 		$updated_data=array();
 
@@ -169,9 +175,9 @@ function new_object($account, $db, $user, $editor, $data) {
 		$object=$parent->create_timesheet_record($data['fields_data']);
 		$pcard='';
 		$updated_data=array(
-		'Timesheet_Clocked_Hours'=>$parent->get('Clocked Hours')
+			'Timesheet_Clocked_Hours'=>$parent->get('Clocked Hours')
 		);
-		break;	
+		break;
 	default:
 		$response=array(
 			'state'=>400,
@@ -191,9 +197,6 @@ function new_object($account, $db, $user, $editor, $data) {
 		);
 
 	}else {
-		$smarty->assign('account', $account);
-
-		$smarty->assign('object', $object);
 
 		$response=array(
 			'state'=>200,

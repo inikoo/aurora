@@ -1035,6 +1035,8 @@ input {
   width: 250px; }
 #table .width_300 {
   width: 300px; }
+#table .icon_container i {
+  display: inline; }
 
 .working_hours {
   padding: 0px;

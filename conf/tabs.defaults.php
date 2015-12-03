@@ -768,6 +768,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
+	'users.staff.groups'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
 	'payment_service_providers'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',

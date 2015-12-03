@@ -909,7 +909,7 @@ $modules=array(
 
 			'users'=>array('type'=>'navigation', 'label'=>_('Users'), 'title'=>('Users'), 'icon'=>'male', 'reference'=>'account/users',
 				'tabs'=>array(
-					'account.users'=>array('label'=>_('Details'), 'title'=>_('Account details')),
+					'account.users'=>array('label'=>_('Users')),
 				)
 			),
 			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'title'=>('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
