@@ -1,8 +1,6 @@
 RewriteEngine On
-#RewriteRule ^images/(\d+) public_image.php?id=$1
 
-
-RewriteRule ^/api/ api.php [L]
+RewriteRule ^api/ api.php [L]
 
 
 RewriteRule ^$ /app.php [L]
