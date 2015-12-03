@@ -32,7 +32,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
 	}
 
 	if ($parsed_scope!=$scope) {
-		$response= log_api_key_access_failture($db, $api_key_key, 'Fail_Access', "Path and Scope don't match");
+		$response= log_api_key_access_failture($db, $api_key_key, 'Fail_Access', "Path and Scope don't match $parsed_scope $scope  ");
 		echo json_encode($response);
 		exit;
 	}
