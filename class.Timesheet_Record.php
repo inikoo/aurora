@@ -192,7 +192,7 @@ class Timesheet_Record extends DB_Table {
 
 			}
 
-			include_once 'class.TimeSheet.php';
+			include_once 'class.Timesheet.php';
 			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
 			$timesheet->process_records_action_type();
 			$timesheet->update_clocked_hours();
