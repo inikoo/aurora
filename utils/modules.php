@@ -773,6 +773,7 @@ $modules=array(
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
 					'timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
+							'employees.calendar'=>array('label'=>_('Calendar')),
 							'employees.timesheets'=>array('label'=>_('Timesheets')),
 							'employees.timesheets.records'=>array('label'=>_('Clockings')),
 
@@ -814,10 +815,13 @@ $modules=array(
 				),
 
 				'tabs'=>array(
-					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
-					'employee.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'employee.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
+													'employee.calendar'=>array('label'=>_('Calendar')),
+
 							'employee.timesheets'=>array('label'=>_('Timesheets')),
 							'employee.timesheets.records'=>array('label'=>_('Clockings')),
 
@@ -832,6 +836,14 @@ $modules=array(
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
+
+				)
+
+			),
+			
+			'employee.attachment.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'employee.attachment.new'=>array('label'=>_('New attachment')),
 
 				)
 

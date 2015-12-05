@@ -632,6 +632,9 @@ function get_navigation($data) {
 		case ('timesheet'):
 			return get_timesheet_navigation($data);
 			break;
+		case ('employee.attachment.new'):
+			return get_new_employee_attachment_navigation($data);
+			break;	
 		}
 
 		break;

@@ -141,11 +141,9 @@ function check_if_form_is_valid() {
 }
 
 
-function save_new_object(object) {
+function save_new_object(object,upload_file) {
 
     validate_form(object)
-
-    //return
     console.log($('#' + object + '_save').hasClass('valid'))
 
     if ($('#' + object + '_save').hasClass('valid')) {
@@ -156,38 +154,61 @@ function save_new_object(object) {
         var fields_data = {};
         var re = new RegExp('_', 'g');
 
+        var form_data = new FormData();
+
         $(".value").each(
 
         function(index) {
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
-
-
             if (field_type == 'time') {
-                value = fixedEncodeURIComponent($('#' + field + '_date').val() + ' ' + clean_time($('#' + field).val()))
+                value = clean_time($('#' + field).val())
+            } else if (field_type == 'attachment') {
+                form_data.append("file", $('#' + field).prop("files")[0])             
+                value = ''
             } else {
-                var value = fixedEncodeURIComponent($('#' + field).val())
-
+                    var value = $('#' + field).val()
             }
-
-
             console.log($(this).attr('id') + ' ' + field)
-
-
-
-            fields_data[fixedEncodeURIComponent(field.replace(re, ' '))] = value
-
+                fields_data[field.replace(re, ' ')] = value
         });
-
-
 
 
         var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
-        //return;
-        $.getJSON(request, function(data) {
-            console.log(data)
+        
+        form_data.append("tipo", (upload_file!=''?upload_file:'new_object')) 
+        form_data.append("object", object) 
+        form_data.append("parent", $('#fields').attr('parent')) 
+        form_data.append("parent_key", $('#fields').attr('parent_key')) 
+        form_data.append("fields_data",  JSON.stringify(fields_data)) 
+        
+      
+           
+       var request = $.ajax({
+                //url: "/ar_edit.php",
+                //dataType: 'script',
+                //cache: false,
+                //contentType: false,
+                //processData: false,
+                //data: form_data,                       
+                //type: 'post'
+                
+                url: "/ar_edit.php",
+        data: form_data,
+processData: false,
+  contentType: false,
+  type: 'POST',
+  dataType: 'json'
+                
+       })
+        
+        
+         request.done(function(data) {
+        
+    
+                 console.log(data)
             $('#' + object + '_save_icon').addClass('fa-cloud');
             $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
 
@@ -211,7 +232,22 @@ function save_new_object(object) {
                 $('#' + object + '_msg').html(data.msg).removeClass('hide').addClass('error')
 
             }
-        })
+
+    })
+
+    request.fail(function(jqXHR, textStatus) {
+    console.log(textStatus)
+
+    console.log(jqXHR.responseText)
+        $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+        $('#inline_new_object_msg').html('Server error please contact Aurora support').addClass('error')
+
+
+    });
+
+        
+        
+     
 
 
     }
@@ -239,7 +275,6 @@ function post_new_actions(object, data) {
 
 
 }
-
 
 function save_inline_new_object(trigger) {
 
@@ -270,20 +305,38 @@ function save_inline_new_object(trigger) {
 
 
         value = $('#' + field + '_date').val() + ' ' + value
-        value = fixedEncodeURIComponent(value)
+       // value = fixedEncodeURIComponent(value)
     } else {
-        var value = fixedEncodeURIComponent($('#' + field).val())
+        var value = $('#' + field).val()
+        //var value = fixedEncodeURIComponent($('#' + field).val())
     }
 
 
-    fields_data[fixedEncodeURIComponent(field.replace(re, ' '))] = value
-    var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-    console.log(request)
-    $.getJSON(request, function(data) {
-         console.log(data)
+    fields_data[field.replace(re, ' ')] = value
+    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
+    //console.log(request)
+    var form_data = new FormData();
+    form_data.append("tipo", 'new_object')
+    form_data.append("object", object)
+    form_data.append("parent", parent)
+    form_data.append("parent_key", parent_key)
+    form_data.append("fields_data", JSON.stringify(fields_data))
+
+    var request = $.ajax({
+        url: "/ar_edit.php",
+        data: form_data,
+processData: false,
+  contentType: false,
+  type: 'POST',
+  dataType: 'json'
+    })
+
+    request.done(function(data) {
+        
+    
         $('#' + field + '_editor').removeClass('valid ')
         $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
-
+ //console.log(data)
         if (data.state == 200) {
 
 
@@ -318,9 +371,18 @@ function save_inline_new_object(trigger) {
         }
     })
 
+    request.fail(function(jqXHR, textStatus) {
+    console.log(textStatus)
+
+    console.log(jqXHR.responseText)
+        $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+        $('#inline_new_object_msg').html('Server error please contact Aurora support').addClass('error')
+
+
+    });
+
 
 }
-
 
 function toggle_inline_new_object_form(trigger) {
 

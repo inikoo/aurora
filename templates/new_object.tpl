@@ -1,38 +1,26 @@
+	{if isset($upload_file)}{assign "upload_file" $upload_file}{else}{assign "upload_file" ""}{/if} 
 
 <div id="result" class="result hide">
-   
 </div>
-
-<div  id="fields" class="new_object" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
-
-
-
-<table >
-
-
- {foreach from=$object_fields item=field_group } 
- <tr class="title" >
- <td  colspan=3>
-	{$field_group.label}
-	</td>
-</tr>
- 
- 	{if isset($field_group.class)}{assign "field_class" $field_group.class}{else}{assign "field_class" ""}{/if} 
-
- 
- {if $field_class=='links'}
-{foreach from=$field_group.fields item=field name=fields} 
-	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
-
-<tr  class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
- <td  colspan=3>
-	<i style="margin-right:10px" class="fa fa-link"></i> {$field.label}
-	</td>
-</tr>
-
-{/foreach}
-{else}
- 
+<div  id="fields" class="new_object {if $upload_file}$upload_file{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
+    <table >
+    {foreach from=$object_fields item=field_group } 
+        <tr class="title" >
+            <td  colspan=3>
+	            {$field_group.label}
+	        </td>
+        </tr>
+        {if isset($field_group.class)}{assign "field_class" $field_group.class}{else}{assign "field_class" ""}{/if} 
+        {if $field_class=='links'}
+        {foreach from=$field_group.fields item=field name=fields} 
+	    {if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
+        <tr  class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
+            <td  colspan=3>
+	            <i style="margin-right:10px" class="fa fa-link"></i> {$field.label}
+	        </td>
+        </tr>
+        {/foreach}
+    {else}
 	{foreach from=$field_group.fields item=field name=fields} 
 	
 	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
@@ -78,6 +66,10 @@
 		<textarea id="{$field.id}" class="input_field "  has_been_valid="0">{$field.value}</textarea>
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
+		{elseif $edit=='attachment' } 
+		
+	<input id="{$field.id}" type="file"  class="input_field " has_been_valid="0" >
+		<span id="{$field.id}_msg" class="msg"></span> 
 		
 				{elseif $edit=='telephone' } 
 	<input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0"/>
@@ -159,53 +151,55 @@
 		<script>
 		
 		    $(function() {
-    $("#{$field.id}_datepicker").datepicker({
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        defaultDate: new Date('{$field.value}'),
-        altField: "#{$field.id}",
-        altFormat: "yy-mm-dd",
-        onSelect: function() {
-            $('#{$field.id}').change();
-                        $('#{$field.id}_formated').val('xx');
-                        
-                   //     var date = $(this).datepicker("getDate");
-                        
-                    $('#{$field.id}_formated').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
-                        
-                $('#{$field.id}_datepicker').addClass('hide')
-        }
-    });
-});
+		        $("#{$field.id}_datepicker").datepicker({
+		            showOtherMonths: true,
+		            selectOtherMonths: true,
+		            defaultDate: new Date('{$field.value}'),
+		            altField: "#{$field.id}",
+		            altFormat: "yy-mm-dd",
+		            onSelect: function() {
+		                $('#{$field.id}').change();
+		                $('#{$field.id}_formated').val('xx');
 
- $('#{$field.id}_formated').focusin(function() {
-$('#{$field.id}_datepicker').removeClass('hide')
+		                //     var date = $(this).datepicker("getDate");
+		                $('#{$field.id}_formated').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
 
-});
+		                $('#{$field.id}_datepicker').addClass('hide')
+		            }
+		        });
+		    });
 
-            $('#{$field.id}_formated').on('input', function() {
-                var date = chrono.parseDate($('#{$field.id}_formated').val())
+		    $('#{$field.id}_formated').focusin(function() {
+		        $('#{$field.id}_datepicker').removeClass('hide')
 
-                if (date == null) {
-                    var value = '';
-                } else {
-                    var value = date.toISOString().slice(0, 10)
-                    $("#{$field.id}_datepicker").datepicker("setDate", date );
-                }
-    
-    
-    $('#{$field.id}').val(value)
-    $('#{$field.id}').change();
+		    });
 
-});
-            $('#{$field.id}').on('change', function() {
-            on_changed_value('{$field.id}', $('#{$field.id}').val())
-           
-            });
+		    $('#{$field.id}_formated').on('input', function() {
+		        var date = chrono.parseDate($('#{$field.id}_formated').val())
 
-    if('{$field.value}'==''){ $('#{$field.id}').val('')}
+		        if (date == null) {
+		            var value = '';
+		        } else {
+		            var value = date.toISOString().slice(0, 10)
+		            $("#{$field.id}_datepicker").datepicker("setDate", date);
+		        }
 
-        </script> 
+
+		        $('#{$field.id}').val(value)
+		        $('#{$field.id}').change();
+
+		    });
+		    $('#{$field.id}').on('change', function() {
+		        on_changed_value('{$field.id}', $('#{$field.id}').val())
+
+		    });
+
+		    if ('{$field.value}' == '') {
+		        $('#{$field.id}').val('')
+		    }
+
+		     < /script>
+
         {/if} 
   	    
   
@@ -225,7 +219,8 @@ $('#{$field.id}_datepicker').removeClass('hide')
 <td></td>
 <td></td>
 <td>
-<span class="save potentially_valid" id="{$object_name}_save"  onclick="save_new_object('{$object_name}')">{t}Save{/t} <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
+{*}onclick="{if $upload_file}upload_new_object('{$object_name}'){else}save_new_object('{$object_name}'){/if}" {*}
+<span class="save potentially_valid" id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$upload_file}')"  >{t}Save{/t} <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
 <span id="{$object_name}_msg" class="msg"></span></span> 
 <span class="hide results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
 <span class="hide results" id="{$object_name}_go_new" request="" request_template="{$new_object_request}" onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>

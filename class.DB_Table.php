@@ -283,8 +283,8 @@ abstract class DB_Table {
 				$old_value=htmlentities($old_value);
 				$value=htmlentities($value);
 
-                
-                $this->add_changelog_record($field,$old_value,$value,$options);
+
+				$this->add_changelog_record($field, $old_value, $value, $options);
 
 			}
 
@@ -293,54 +293,53 @@ abstract class DB_Table {
 	}
 
 
-    function add_changelog_record($field,$old_value,$value,$options){
-    
-    
-    
-
-
-				$history_data=array(
-					'Indirect Object'=>$field,
-					'old_value'=>$old_value,
-					'new_value'=>$value
-
-				);
+	function add_changelog_record($field, $old_value, $value, $options) {
 
 
 
-				if ($this->table_name=='Product Family')
-					$history_data['direct_object']='Family';
-				if ($this->table_name=='Product Department')
-					$history_data['direct_object']='Department';
-				if ($this->table_name=='Page Store') {
-					$history_data['direct_object']='Page';
-					$this->table_name='Page';
-
-				}
-
-				$history_key=$this->add_history($history_data, false, false, $options);
 
 
-				if (
-					!in_array($this->table_name,
-						array(
+		$history_data=array(
+			'Indirect Object'=>$field,
+			'old_value'=>$old_value,
+			'new_value'=>$value
+
+		);
 
 
-						))) 
-				{
 
-					if ($this->table_name=='Product' or $this->table_name=='Supplier Product') {
-						$subject_key=$this->pid;
+		if ($this->table_name=='Product Family')
+			$history_data['direct_object']='Family';
+		if ($this->table_name=='Product Department')
+			$history_data['direct_object']='Department';
+		if ($this->table_name=='Page Store') {
+			$history_data['direct_object']='Page';
+			$this->table_name='Page';
 
-					}else {
-						$subject_key=$this->id;
-					}
+		}
 
-					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $subject_key, $history_key);
-					mysql_query($sql);
-				}
-    
-    }
+		$history_key=$this->add_history($history_data, false, false, $options);
+
+
+		if (
+			!in_array($this->table_name,
+				array(
+
+
+				))) {
+
+			if ($this->table_name=='Product' or $this->table_name=='Supplier Product') {
+				$subject_key=$this->pid;
+
+			}else {
+				$subject_key=$this->id;
+			}
+
+			$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $subject_key, $history_key);
+			mysql_query($sql);
+		}
+
+	}
 
 
 
@@ -452,14 +451,14 @@ abstract class DB_Table {
 					if ($raw_data['new_value']=='')
 						$data['History Abstract']=sprintf(_("Employee's %s was deleted"), $formated_indirect_object);
 					else
-						$data['History Abstract']=sprintf(_("Employee's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^Staff /','',$data['Indirect Object'])));
+						$data['History Abstract']=sprintf(_("Employee's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^Staff /', '', $data['Indirect Object'])));
 					break;
 				case 'User':
 					if ($raw_data['new_value']=='')
 						$data['History Abstract']=sprintf(_("User's %s was deleted"), $formated_indirect_object);
 					else
-						$data['History Abstract']=sprintf(_("User's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^User /','',$data['Indirect Object'])));
-					break;	
+						$data['History Abstract']=sprintf(_("User's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^User /', '', $data['Indirect Object'])));
+					break;
 				default:
 					$formated_table=$table."'s";
 					if ($raw_data['new_value']=='')
@@ -690,13 +689,27 @@ abstract class DB_Table {
 			$subject='Department';
 		}else {
 
-			$subject=$this->table_name;
+			$subject=$this->get_object_name();
 		}
 
 
 
 		if ($attach->id) {
 
+
+			$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`) values (%d,%s,%d,%s,%s,%s)",
+				$attach->id,
+				prepare_mysql($this->get_object_name()),
+				$this->get_main_id(),
+				prepare_mysql($raw_data['Attachment File Original Name']),
+				prepare_mysql($raw_data['Attachment Caption'], false),
+				prepare_mysql($raw_data['Attachment Subject Type'])
+				
+				
+			);
+			mysql_query($sql);
+
+			/*
 			$history_data=array(
 				'History Abstract'=>'tmp',
 				'History Details'=>$attach->get_details(),
@@ -744,12 +757,16 @@ abstract class DB_Table {
 
 			$this->updated=true;
 			$this->new_value='';
+			*/
+
 		}
 		else {
 			$this->error;
 			$this->msg=$attach->msg;
 		}
 
+
+		return $attach;
 	}
 
 
@@ -1148,6 +1165,15 @@ abstract class DB_Table {
 
 	function get_field_label($field) {
 		return $field;
+	}
+
+
+	function get_main_id() {
+		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
+			return $this->pid;
+		else
+			return $this->id;
+
 	}
 
 

@@ -117,7 +117,10 @@ function get_object($object_name, $key) {
 		require_once "class.Timesheet_Record.php";
 		$object=new Timesheet_Record($key);
 		break;
-
+case 'attachment':
+		require_once "class.Attachment.php";
+		$object=new Attachment($key);
+		break;
 
 	default:
 		exit('need to complete E1 '.$object_name);

@@ -17,35 +17,38 @@ include_once 'class.DB_Table.php';
 class Attachment extends DB_Table {
 	var $locations=false;
 	var $compress=true;
-	function Attachment($arg1=false,$arg2=false,$arg3=false) {
+	function Attachment($arg1=false, $arg2=false, $arg3=false) {
+
+		global $db;
+		$this->db=$db;
 
 		$this->table_name='Attachment';
 		$this->ignore_fields=array('Attachment Key');
 
-		if (preg_match('/^(new|create)$/i',$arg1) and is_array($arg2)) {
+		if (preg_match('/^(new|create)$/i', $arg1) and is_array($arg2)) {
 			$this->create($arg2);
 			return;
 		}
 
-		if (preg_match('/find/i',$arg1)) {
-			$this->find($arg2,$arg3);
+		if (preg_match('/find/i', $arg1)) {
+			$this->find($arg2, $arg3);
 			return;
 		}
 		if (is_numeric($arg1)) {
-			$this->get_data('id',$arg1);
+			$this->get_data('id', $arg1);
 			return;
 		}
-		$this->get_data($arg1,$arg2);
+		$this->get_data($arg1, $arg2);
 	}
 
 
 
-	function find($raw_data,$options) {
+	function find($raw_data, $options) {
 
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -55,10 +58,10 @@ class Attachment extends DB_Table {
 		$this->found=false;
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -95,7 +98,7 @@ class Attachment extends DB_Table {
 
 
 		$sql=sprintf("select `Attachment Key` from `Attachment Dimension` where `Attachment File Checksum`=%s"
-			,prepare_mysql($data['Attachment File Checksum'])
+			, prepare_mysql($data['Attachment File Checksum'])
 		);
 
 		$res=mysql_query($sql);
@@ -106,7 +109,7 @@ class Attachment extends DB_Table {
 
 		//what to do if found
 		if ($this->found) {
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 			$this->found=true;
 			return;
 		}
@@ -114,7 +117,7 @@ class Attachment extends DB_Table {
 
 		if ($create) {
 
-			$this->create($data,$options);
+			$this->create($data, $options);
 
 		}
 
@@ -123,11 +126,11 @@ class Attachment extends DB_Table {
 	}
 
 
-	function create($data,$options='') {
+	function create($data, $options='') {
 
 		$this->data=$this->base_data();
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$this->data))
+			if (array_key_exists($key, $this->data))
 				$this->data[$key]=_trim($value);
 		}
 
@@ -153,18 +156,18 @@ class Attachment extends DB_Table {
 
 		}
 
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
 
 
 
-		$sql=sprintf("insert into `Attachment Dimension` %s %s",$keys,$values);
+		$sql=sprintf("insert into `Attachment Dimension` %s %s", $keys, $values);
 
 		// exit;
 		if (mysql_query($sql)) {
 			$this->id= mysql_insert_id();
 			$this->new=true;
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 
 			$this->update_type();
 			$this->create_thumbnail();
@@ -172,7 +175,7 @@ class Attachment extends DB_Table {
 
 		} else {
 			$error=mysql_error();
-			if (preg_match('/max_allowed_packet/i',$error)) {
+			if (preg_match('/max_allowed_packet/i', $error)) {
 				$this->msg="Got a packet bigger than 'max_allowed_packet' bytes ";
 			} else {
 				$this->msg='Unknown error';
@@ -183,27 +186,27 @@ class Attachment extends DB_Table {
 
 	}
 
-	function get_data($key,$tag) {
+
+	function get_data($key, $tag) {
 
 		if ($key=='id')
-			$sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d",$tag);
+			$sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d", $tag);
 
 		else
 			return;
 
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Attachment Key'];
 		}
-
-
-
 
 	}
 
 
 
-	function get_abstract($original_name='',$caption='',$reference=false) {
+	function get_abstract($original_name='', $caption='', $reference=false) {
 
 		if (!$reference) {
 			$reference_type='id';
@@ -215,15 +218,16 @@ class Attachment extends DB_Table {
 
 		$mime=$this->mime_type_icon($this->data['Attachment MIME Type']);
 		return sprintf('%s <a href="file.php?%s=%d">%s</a> (%s) %s'
-			,$mime
-			,$reference_type
-			,$reference_key
-			,$original_name
+			, $mime
+			, $reference_type
+			, $reference_key
+			, $original_name
 
-			,formatBytes($this->data['Attachment File Size'])
-			,$caption
+			, formatBytes($this->data['Attachment File Size'])
+			, $caption
 		);
 	}
+
 
 	function get_details() {
 		return '';
@@ -234,7 +238,7 @@ class Attachment extends DB_Table {
 
 
 
-	function get($key,$data=false) {
+	function get($key, $data=false) {
 		switch ($key) {
 
 		default:
@@ -266,6 +270,7 @@ class Attachment extends DB_Table {
 		fclose($fp);
 	}
 
+
 	function compress($srcName, $dstName) {
 		$fp = fopen($srcName, "r");
 		$data = fread($fp, filesize($srcName));
@@ -278,19 +283,19 @@ class Attachment extends DB_Table {
 
 
 	function mime_type_icon($mime_type) {
-		if (preg_match('/^image/',$mime_type)) {
+		if (preg_match('/^image/', $mime_type)) {
 			return '<img src="art/icons/page_white_picture.png" alt="'.$mime_type.'" title="'.$mime_type.'" />';
 		}
-		elseif (preg_match('/excel/',$mime_type)) {
+		elseif (preg_match('/excel/', $mime_type)) {
 			return '<img src="art/icons/page_white_excel.png" alt="'.$mime_type.'" title="'.$mime_type.'"/>';
 		}
-		elseif (preg_match('/msword/',$mime_type)) {
+		elseif (preg_match('/msword/', $mime_type)) {
 			return '<img src="art/icons/page_white_word.png" alt="'.$mime_type.'" title="'.$mime_type.'"/>';
-		}elseif (preg_match('/pdf/',$mime_type)) {
+		}elseif (preg_match('/pdf/', $mime_type)) {
 			return '<img src="art/icons/page_white_acrobat.png" alt="'.$mime_type.'" title="'.$mime_type.'"/>';
-		}elseif (preg_match('/(zip|rar)/',$mime_type)) {
+		}elseif (preg_match('/(zip|rar)/', $mime_type)) {
 			return '<img src="art/icons/page_white_compressed.png" alt="'.$mime_type.'" title="'.$mime_type.'"/>';
-		}elseif (preg_match('/(text)/',$mime_type)) {
+		}elseif (preg_match('/(text)/', $mime_type)) {
 			return '<img src="art/icons/page_white_text.png" alt="'.$mime_type.'" title="'.$mime_type.'"/>';
 		}
 
@@ -298,9 +303,10 @@ class Attachment extends DB_Table {
 			return $mime_type;
 	}
 
+
 	function get_subjects() {
 		$subjects=array();
-		$sql=sprintf('select * from `Attachment Bridge` where `Attachment Key`=%d',$this->id);
+		$sql=sprintf('select * from `Attachment Bridge` where `Attachment Key`=%d', $this->id);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
@@ -309,32 +315,34 @@ class Attachment extends DB_Table {
 		return $subjects;
 	}
 
+
 	function delete($force=false) {
 		$subjects=$this->get_subjects();
 		$num_subjects=count($subjects);
 		if ($num_subjects==0 or $force) {
-			$sql=sprintf("delete from `Attachment Dimension` where `Attachment Key`=%d",$this->id);
+			$sql=sprintf("delete from `Attachment Dimension` where `Attachment Key`=%d", $this->id);
 
 			mysql_query($sql);
-			$sql=sprintf("delete from `Attachment Bridge` where `Attachment Key`=%d",$this->id);
+			$sql=sprintf("delete from `Attachment Bridge` where `Attachment Key`=%d", $this->id);
 			mysql_query($sql);
 			$this->deleted=true;
 		}
 	}
 
+
 	function update_type() {
 		$type='Other';
-		if (preg_match('/^image/',$this->data['Attachment MIME Type'])) {
+		if (preg_match('/^image/', $this->data['Attachment MIME Type'])) {
 			$type='Image';
-		}elseif (preg_match('/excel/',$this->data['Attachment MIME Type'])) {
+		}elseif (preg_match('/excel/', $this->data['Attachment MIME Type'])) {
 			$type='Spreadsheet';
-		}elseif (preg_match('/msword/',$this->data['Attachment MIME Type'])) {
+		}elseif (preg_match('/msword/', $this->data['Attachment MIME Type'])) {
 			$type='Word';
-		}elseif (preg_match('/pdf/',$this->data['Attachment MIME Type'])) {
+		}elseif (preg_match('/pdf/', $this->data['Attachment MIME Type'])) {
 			$type='PDF';
-		}elseif (preg_match('/(zip|rar)/',$this->data['Attachment MIME Type'])) {
+		}elseif (preg_match('/(zip|rar)/', $this->data['Attachment MIME Type'])) {
 			$type='Compresed';
-		}elseif (preg_match('/(text)/',$this->data['Attachment MIME Type'])) {
+		}elseif (preg_match('/(text)/', $this->data['Attachment MIME Type'])) {
 			$type='Text';
 		}
 
@@ -347,11 +355,12 @@ class Attachment extends DB_Table {
 
 	}
 
+
 	function create_thumbnail() {
 		include_once 'class.Image.php';
-		if (preg_match('/application\/pdf/',$this->data['Attachment MIME Type'])) {
+		if (preg_match('/application\/pdf/', $this->data['Attachment MIME Type'])) {
 			$tmp_file='server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
-			file_put_contents($tmp_file.'.pdf',$this->data['Attachment Data']);
+			file_put_contents($tmp_file.'.pdf', $this->data['Attachment Data']);
 
 			$im = new imagick($tmp_file.'.pdf[0]');
 			$im->setImageFormat('jpg');
@@ -368,7 +377,7 @@ class Attachment extends DB_Table {
 
 
 
-			$image=new Image('find',$image_data,'create');
+			$image=new Image('find', $image_data, 'create');
 
 			if (!$image->error) {
 
@@ -407,5 +416,6 @@ class Attachment extends DB_Table {
 
 
 }
+
 
 ?>

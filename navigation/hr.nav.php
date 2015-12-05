@@ -540,7 +540,6 @@ function get_timesheet_navigation($data) {
 
 
 
-
 	if ($data['parent']) {
 
 		switch ($data['parent']) {
@@ -682,6 +681,33 @@ function get_timesheet_navigation($data) {
 
 
 		}
+		if ($data['parent']=='employee') {
+			include_once 'class.Staff.php';
+			$employee=new Staff($data['parent_key']);
+
+			$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
+
+			if ($prev_key) {
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'timesheet/'.$prev_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+			}
+			$left_buttons[]=$up_button;
+
+
+			if ($next_key) {
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'timesheet/'.$next_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+			}
+
+
+
+		}
 	}
 	else {
 		$_section='staff';
@@ -715,6 +741,52 @@ function get_timesheet_navigation($data) {
 	return $html;
 
 }
+
+
+function get_new_employee_attachment_navigation($data) {
+
+	global $smarty;
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('hr', '');
+
+	$_section='employees';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	include_once 'class.Staff.php';
+	$employee=new Staff($data['parent_key']);
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span class="id ">'.sprintf(_('New attachment for %s'), $employee->get('Name')).'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
 
 
 ?>
