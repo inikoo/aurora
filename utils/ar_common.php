@@ -52,13 +52,9 @@ function is_type( $type, $value ) {
 
 function prepare_values( $data, $value_names ) {
 
-
-
 	global $user;
 	if ( !is_array( $data ) )
 		exit( json_encode( array( 'state'=>400, 'msg'=>'Error wrong value 1' ) ) );
-
-
 
 	foreach ( $value_names as $value_name=>$extra_data ) {
 		$optional=false;
@@ -96,6 +92,8 @@ function prepare_values( $data, $value_names ) {
 		case( 'json with html array' ):
 			// I did this bacause inputing a &nbsp; dont work with the json array one
 			$tmp=$data[$value_name];
+
+
 			$raw_data=json_decode( $tmp, true );
 			if ( is_array( $raw_data ) ) {
 				if ( !isset( $extra_data['required elements'] ) )
@@ -116,10 +114,9 @@ function prepare_values( $data, $value_names ) {
 		case( 'json array' ):
 
 			$tmp=$data[$value_name];
+
 			$raw_data=json_decode( $tmp, true );
-			
-			
-			
+
 			if ( is_array( $raw_data ) ) {
 				if ( !isset( $extra_data['required elements'] ) )
 					$extra_data['required elements']=array();

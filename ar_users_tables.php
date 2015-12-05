@@ -58,7 +58,7 @@ default:
 
 
 function staff($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='user';
 	include_once 'prepare_table/init.php';
 
@@ -110,7 +110,7 @@ function staff($_data, $db, $user) {
 
 
 function login_history($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='session';
 	include_once 'prepare_table/init.php';
 
@@ -149,7 +149,7 @@ function login_history($_data, $db, $user) {
 
 
 function users($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='user category';
 	include_once 'prepare_table/init.php';
 
@@ -219,7 +219,7 @@ function users($_data, $db, $user) {
 
 
 function api_keys($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='api_key';
 	include_once 'prepare_table/init.php';
 
@@ -293,7 +293,7 @@ function api_keys($_data, $db, $user) {
 
 
 function api_requests($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='request';
 	include_once 'prepare_table/init.php';
 
@@ -394,7 +394,7 @@ function api_requests($_data, $db, $user) {
 
 
 function groups($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='user group';
 	include_once 'utils/user_groups.php';
 
