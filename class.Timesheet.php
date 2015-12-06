@@ -60,21 +60,24 @@ class Timesheet extends DB_Table {
 	}
 
 
-
-
-
 	function get($key='') {
 
 
 
 		switch ($key) {
 
+		case 'Clocked Minutes':
+		case 'Working Minutes':
+		case 'Breaks Minutes':
+			$hours=$this->data['Timesheet '.preg_replace('/Minutes/', 'Time', $key)]/3600;
+			return sprintf("%s %s", number($hours, 3), ngettext("h", "hrs", $hours));
 
-		case 'Clocked Hours':
+			break;
+		case 'Clocked Time':
+		case 'Working Time':
+		case 'Breaks Time':
 
-			$hours=$this->data['Timesheet '.$key];
-
-			return  sprintf(ngettext("%.2f hr", "%.2f hrs", $hours), $hours); // 1 okno
+			return seconds_to_string($this->data['Timesheet '.$key] , 'minutes', true);
 
 
 			break;
@@ -221,7 +224,7 @@ class Timesheet extends DB_Table {
 		$data['editor']=$this->editor;
 		$timesheet_record=new Timesheet_Record('new', $data);
 
-	
+
 		if ($timesheet_record->new) {
 
 
@@ -229,11 +232,11 @@ class Timesheet extends DB_Table {
 			$this->update_clocked_hours();
 			$this->update_clocking_records();
 
-		}else{
-		    $this->error=true;
-		    $this->msg=$timesheet_record->msg;
-		   
-		    
+		}else {
+			$this->error=true;
+			$this->msg=$timesheet_record->msg;
+
+
 		}
 
 		return $timesheet_record;
@@ -245,8 +248,20 @@ class Timesheet extends DB_Table {
 
 		switch ($field) {
 
-		case 'Timesheet Clocked Hours':
+		case 'Timesheet Clocked Time':
 			$label=_('Clocked');
+			break;
+		case 'Timesheet Working Time':
+			$label=_('Worked');
+			break;
+		case 'Timesheet Breaks Time':
+			$label=_('Breaks');
+			break;
+		case 'Timesheet Unpaid Overtime':
+			$label=_('Overtime (unpaid)');
+			break;
+		case 'Timesheet Paid Overtime':
+			$label=_('Overtime (paid)');
 			break;
 		case 'Timesheet Date':
 			$label=_('date');
@@ -276,11 +291,10 @@ class Timesheet extends DB_Table {
 	}
 
 
-	function update_clocking_records() {
+	function update_number_clocking_records() {
 
 		$clocking_records=0;
 		$ignored_clocking_records=0;
-
 
 		$sql=sprintf('select count(*) num,`Timesheet Record Ignored` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Type`="ClockingRecord" group by `Timesheet Record Ignored`  ',
 			$this->id
@@ -308,35 +322,93 @@ class Timesheet extends DB_Table {
 	}
 
 
-	function update_clocked_hours() {
-		$action_type='Start';
+	function update_type() {
+		$number_records=0;
 
-		$clocked_seconds=0;
-
-		$sql=sprintf('select `Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`="No"  and `Timesheet Record Type`="ClockingRecord" order by `Timesheet Record Date`',
+		$sql=sprintf('select count(*) num  from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Type`="WorkingHoursMark"   ',
 			$this->id
 		);
 
 		if ($result=$this->db->query($sql)) {
 
+			if ($row = $result->fetch()) {
+
+				$number_records=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+
+		}
+
+		if ($number_records>=2) {
+			$type='WorkingDay';
+		}else {
+			$type='DayOff';
+		}
+
+		$this->update(array('Timesheet Type'=>$type), 'no_history');
+
+
+
+	}
+
+
+	function update_number_records($type) {
+
+		$number_records=0;
+
+		$sql=sprintf('select count(*) num  from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Type`=%s   ',
+			$this->id,
+			prepare_mysql($type)
+		);
+
+		if ($result=$this->db->query($sql)) {
+
+			if ($row = $result->fetch()) {
+
+				$number_records=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+
+		}
+
+		if ($type=='WorkingHoursMark') {
+			$this->update(array('Timesheet Working Hours Records'=>$number_records), 'no_history');
+
+		}elseif ($type=='OvertimeMark') {
+			$this->update(array('Timesheet Overtime Records'=>$number_records), 'no_history');
+
+		}elseif ($type=='BreakMark') {
+			$this->update(array('Timesheet Break Records'=>$number_records), 'no_history');
+
+		}
+
+
+
+
+	}
+
+
+	function update_clocked_time() {
+		$action_type='Start';
+
+		$clocked_seconds=0;
+		$sql=sprintf('select `Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`="No"  and `Timesheet Record Type`="ClockingRecord" order by `Timesheet Record Date`',
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
-				//print_r($row);
-
-
-
-
-
 				if ($action_type=='Start') {
 					$start_date=$row['date'];
-
-
 					$action_type='End';
 				}else {
-
 					$end_date=$row['date'];
 					$clocked_seconds=$clocked_seconds+($end_date-$start_date);
 					$action_type='Start';
-
 				}
 
 			}
@@ -344,14 +416,141 @@ class Timesheet extends DB_Table {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
-
-
-		$this->update(array('Timesheet Clocked Hours'=>($clocked_seconds/3600)), 'no_history');
+		$this->update(array('Timesheet Clocked Time'=>($clocked_seconds)), 'no_history');
 
 	}
 
 
-	function process_records_action_type() {
+
+	function update_working_time() {
+		$clocked_in=false;
+		$valid_working_hours=false;
+		$working_seconds=0;
+
+		$start_date=false;
+
+		//'WorkingHoursMark','OvertimeMark','ClockingRecord','BreakMark'
+		$sql=sprintf("select `Timesheet Record Action Type`,`Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`='No' and `Timesheet Record Type` in ('WorkingHoursMark','ClockingRecord','BreakMark') order by `Timesheet Record Date`,`Timesheet Record Action Type`",
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Timesheet Record Action Type']=='MarkStart') {
+					$valid_working_hours=true;
+				}elseif ($row['Timesheet Record Action Type']=='MarkEnd') {
+					$valid_working_hours=false;
+				}elseif ($row['Timesheet Record Action Type']=='Start') {
+					$clocked_in=true;
+				}elseif ($row['Timesheet Record Action Type']=='End') {
+					$clocked_in=false;
+				}
+
+				if ($valid_working_hours and $clocked_in ) {
+
+					if (!$start_date) {
+						$start_date=$row['date'];
+					}
+
+				}elseif (!$valid_working_hours and $clocked_in ) {
+
+					if ($start_date) {
+
+						$working_seconds=$working_seconds+($row['date']-$start_date);
+						$start_date=false;
+					}
+
+				}elseif ($valid_working_hours and !$clocked_in ) {
+
+					if ($start_date) {
+
+						$working_seconds=$working_seconds+($row['date']-$start_date);
+						$start_date=false;
+					}
+
+				}
+
+				//print_r($row);
+				//print "v wh $valid_working_hours, in: $clocked_in ; $start_date -> ".($working_seconds/3600)." \n";
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$this->update(array('Timesheet Working Time'=>$working_seconds), 'no_history');
+
+	}
+
+
+	function update_breaks_time() {
+		$clocked_in=false;
+		$valid_working_hours=false;
+		$working_seconds=0;
+
+		$start_date=false;
+
+		//'WorkingHoursMark','OvertimeMark','ClockingRecord','BreakMark'
+		$sql=sprintf("select `Timesheet Record Action Type`,`Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`='No' and `Timesheet Record Type` in ('ClockingRecord','BreakMark') order by `Timesheet Record Date`,`Timesheet Record Action Type`",
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Timesheet Record Action Type']=='MarkStart') {
+					$valid_working_hours=false;
+				}elseif ($row['Timesheet Record Action Type']=='MarkEnd') {
+					$valid_working_hours=true;
+				}elseif ($row['Timesheet Record Action Type']=='Start') {
+					$clocked_in=true;
+				}elseif ($row['Timesheet Record Action Type']=='End') {
+					$clocked_in=false;
+				}
+
+				if ($valid_working_hours and $clocked_in ) {
+
+					if (!$start_date) {
+						$start_date=$row['date'];
+					}
+
+				}elseif (!$valid_working_hours and $clocked_in ) {
+
+					if ($start_date) {
+
+						$working_seconds=$working_seconds+($row['date']-$start_date);
+						$start_date=false;
+					}
+
+				}elseif ($valid_working_hours and !$clocked_in ) {
+
+					if ($start_date) {
+
+						$working_seconds=$working_seconds+($row['date']-$start_date);
+						$start_date=false;
+					}
+
+				}
+
+				print_r($row);
+				print "v wh $valid_working_hours, in: $clocked_in ; $start_date -> ".($working_seconds/3600)." \n";
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$this->update(array('Timesheet Breaks Time'=>$working_seconds), 'no_history');
+
+	}
+
+
+	function process_clocking_records_action_type() {
 
 		$action_type='Start';
 
@@ -387,6 +586,58 @@ class Timesheet extends DB_Table {
 
 
 
+
+	}
+
+
+	function process_mark_records_action_type() {
+
+		$action_type='MarkStart';
+
+		$sql=sprintf('select `Timesheet Record Date`,`Timesheet Record Key` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored`="No"  and `Timesheet Record Type` in ("WorkingHoursMark","BreakMark") order by `Timesheet Record Date`',
+			$this->id
+
+		);
+
+		if ($result=$this->db->query($sql)) {
+
+			foreach ($result as $row) {
+
+
+
+				$sql=sprintf("update `Timesheet Record Dimension` set `Timesheet Record Action Type`=%s where `Timesheet Record Key`=%d  ",
+					prepare_mysql($action_type),
+					$row['Timesheet Record Key']
+				);
+				$this->db->exec($sql);
+
+				if ($action_type=='MarkStart') {
+					$action_type='MarkEnd';
+				}else {
+					$action_type='MarkStart';
+
+				}
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+	}
+
+
+	function remove_records($type) {
+
+		$sql=sprintf('delete  from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Type`=%s ',
+			$this->id,
+			prepare_mysql($type)
+		);
+
+		$this->db->exec($sql);
 
 	}
 

@@ -340,6 +340,9 @@ function timesheet_records($_data, $db, $user) {
 			case 'OvertimeMark':
 				$type=_('Overtime mark');
 				break;
+			case 'BreakMark':
+				$type=_('Break mark');
+				break;
 			case 'ClockingRecord':
 				$type=_('Clocking record');
 				break;
@@ -366,32 +369,52 @@ function timesheet_records($_data, $db, $user) {
 			case 'Ignored':
 				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').'</span></span>';
 				break;
+			case 'MarkStart':
+				if ($data['Timesheet Record Type']=='WorkingHoursMark')
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-map-marker"></i> '._('Start').'</span></span>';
+				else
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-cutlery"></i> '._('End').'</span></span>';
+
+				break;
+			case 'MarkEnd':
+				if ($data['Timesheet Record Type']=='WorkingHoursMark')
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-map-marker"></i> '._('End').'</span></span>';
+				else
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-cutlery"></i> '._('Start').'</span></span>';
+
+				break;
 			default:
 				$action_type=$data['Timesheet Record Action Type'];
 				break;
 			}
 
-			switch ($data['Timesheet Record Ignored']) {
-			case 'Yes':
-				$ignored=_('Yes');
-				$used=sprintf('<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-square-o checkbox"></i>',
-					$data['Timesheet Record Key'],
-					$data['Timesheet Record Key']
-				);
-				break;
-			case 'No':
-				$ignored=_('No');
-				$used=sprintf('<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-check-square-o checkbox"></i>',
-					$data['Timesheet Record Key'],
-					$data['Timesheet Record Key']
-				);
-				break;
+			if ($data['Timesheet Record Type']=='ClockingRecord') {
+
+				switch ($data['Timesheet Record Ignored']) {
+				case 'Yes':
+					$ignored=_('Yes');
+					$used=sprintf('<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-square-o checkbox"></i>',
+						$data['Timesheet Record Key'],
+						$data['Timesheet Record Key']
+					);
+					break;
+				case 'No':
+					$ignored=_('No');
+					$used=sprintf('<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-check-square-o checkbox"></i>',
+						$data['Timesheet Record Key'],
+						$data['Timesheet Record Key']
+					);
+					break;
 
 
-			default:
+				default:
+					$ignored=$data['Timesheet Record Ignored'];
+					$used='';
+					break;
+				}
+			}else {
 				$ignored=$data['Timesheet Record Ignored'];
 				$used='';
-				break;
 			}
 
 			$notes=sprintf('<span id="notes_%d" ></span>', $data['Timesheet Record Key']);

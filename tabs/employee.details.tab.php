@@ -15,6 +15,16 @@ include_once 'utils/invalid_messages.php';
 $employee=$state['_object'];
 $employee->get_user_data();
 
+$timesheet=$employee->create_timesheet(strtotime('2015-11-18 00:00:00'),'overwrite');
+$timesheet->update_clocked_time();
+
+$timesheet->update_working_time();
+$timesheet->update_breaks_time();
+
+
+
+//exit;
+
 $options_Staff_Payment_Terms=array(
 	'Monthy'=>_('Monthy (fixed)'), 'PerHour'=>_('Per hour (prorata)')
 );

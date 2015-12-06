@@ -12,18 +12,18 @@
 
 
 switch ($parameters['parent']) {
-    case 'employee':
-        $where=sprintf(" where  TRD.`Timesheet Record Staff Key`=%d ",$parameters['parent_key']);
-        break;
-     case 'timesheet':
-        $where=sprintf(" where  TRD.`Timesheet Record Timesheet Key`=%d ",$parameters['parent_key']);
-        break;   
-     case 'account':
-        $where=sprintf(" where true ");
-        break;    
-    default:
-       exit('parent not suported');
-        break;
+case 'employee':
+	$where=sprintf(" where  TRD.`Timesheet Record Staff Key`=%d ", $parameters['parent_key']);
+	break;
+case 'timesheet':
+	$where=sprintf(" where  TRD.`Timesheet Record Timesheet Key`=%d ", $parameters['parent_key']);
+	break;
+case 'account':
+	$where=sprintf(" where true ");
+	break;
+default:
+	exit('parent not suported');
+	break;
 }
 
 
@@ -41,7 +41,7 @@ $wheref='';
 if ($parameters['f_field']=='alias' and $f_value!=''  ) {
 	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
 }elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
 }
 
 
@@ -53,11 +53,13 @@ $_dir=$order_direction;
 
 if ($order=='alias')
 	$order='`Staff Alias`';
-	elseif ($order=='name')
+elseif ($order=='name')
 	$order='`Staff Name`';
+elseif ($order=='time')
+	$order='`Timesheet Record Date`';
 elseif ($order=='date')
 	$order='`Timesheet Record Date`';
-	elseif ($order=='ignored')
+elseif ($order=='ignored')
 	$order='`Timesheet Record Ignored`';
 
 else
