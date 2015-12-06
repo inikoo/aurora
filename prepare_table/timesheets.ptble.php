@@ -68,7 +68,7 @@ elseif ($order=='payroll_id')
 	$order='`Staff ID`';	
 	
 elseif ($order=='clocked_hours')
-	$order='`Timesheet Clocked Hours`';
+	$order='`Timesheet Clocked Time`';
 elseif ($order=='clocking_records')
 	$order='`Timesheet Clocking Records`';		
 elseif ($order=='staff_formated_id')
@@ -88,7 +88,7 @@ $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
-`Timesheet Clocking Records`,`Timesheet Ignored Clocking Records`,`Timesheet Key`,`Timesheet Clocked Hours`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
+`Timesheet Clocking Records`,`Timesheet Ignored Clocking Records`,`Timesheet Key`,`Timesheet Clocked Time`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
 ";
 
 ?>

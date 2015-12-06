@@ -66,17 +66,17 @@ class Timesheet extends DB_Table {
 
 		switch ($key) {
 
-		case 'Clocked Minutes':
-		case 'Working Minutes':
-		case 'Breaks Minutes':
-			$hours=$this->data['Timesheet '.preg_replace('/Minutes/', 'Time', $key)]/3600;
+		case 'Clocked Hours':
+		case 'Working Hours':
+		case 'Breaks Hours':
+			$hours=$this->data['Timesheet '.preg_replace('/Hours/', 'Time', $key)]/3600;
 			return sprintf("%s %s", number($hours, 3), ngettext("h", "hrs", $hours));
 
 			break;
 		case 'Clocked Time':
 		case 'Working Time':
 		case 'Breaks Time':
-
+        include_once('utils/natural_language.php');
 			return seconds_to_string($this->data['Timesheet '.$key] , 'minutes', true);
 
 

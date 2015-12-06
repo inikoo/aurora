@@ -45,7 +45,9 @@ case 'contractors':
 case 'timesheet_records':
 	timesheet_records(get_table_parameters(), $db, $user);
 	break;
-
+case 'overtimes':
+	overtimes(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -261,7 +263,7 @@ function contractors($_data, $db, $user) {
 
 
 function timesheets($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='timesheet';
 	include_once 'prepare_table/init.php';
 
@@ -280,7 +282,7 @@ function timesheets($_data, $db, $user) {
 			'name'=>$data['Staff Name'],
 			'payroll_id'=>$data['Staff ID'],
 			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
-			'clocked_hours'=>number($data['Timesheet Clocked Hours'], 2).' '._('hours'),
+			'clocked_hours'=>number($data['Timesheet Clocked Time']/3600, 2).' '._('hours'),
 			'clocking_records'=>number($data['Timesheet Clocking Records'])
 
 		);
@@ -303,7 +305,7 @@ function timesheets($_data, $db, $user) {
 
 
 function timesheet_records($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='request';
 	include_once 'prepare_table/init.php';
 
@@ -451,6 +453,100 @@ function timesheet_records($_data, $db, $user) {
 
 
 
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function overtimes($_data, $db, $user) {
+
+	$rtext_label='overtime';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['Overtime Status']) {
+			case 'Active':
+				$status=sprintf('<i id="status_%d"  onClick="suspend_overtime(%d)" class="fa fa-fw fa-play checkbox"></i>',
+					$data['Overtime Key'],
+					$data['Overtime Key']
+				);
+				break;
+			case 'Suspended':
+				$status=sprintf('<i id="status_%d"  onClick="active_overtime(%d)" class="fa fa-fw fa-pause checkbox"></i>',
+					$data['Overtime Key'],
+					$data['Overtime Key']
+				);
+				break;
+			case 'Pending':
+				$used=sprintf('<i  class="fa fa-fw fa-hourglass-start "></i>',
+					$data['Timesheet Record Key'],
+					$data['Timesheet Record Key']
+				);
+				break;
+			case 'Finish':
+				$used=sprintf('<i  class="fa fa-fw fa-step-forward "></i>',
+					$data['Timesheet Record Key'],
+					$data['Timesheet Record Key']
+				);
+				break;
+
+			default:
+				$ignored=$data['Timesheet Record Ignored'];
+				$used='';
+				break;
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Overtime Key'],
+				'formated_key'=>sprintf('%04d', $data['Overtime Key']),
+				'reference'=>$data['Overtime Reference'],
+				'status'=>$status,
+
+				'start'=>($data['Overtime Start Date']!=''?strftime("%e %b %Y", strtotime($data['Overtime Start Date'])):''),
+				'end'=>($data['Overtime End Date']!=''?strftime("%e %b %Y", strtotime($data['Overtime End Date'])):''),
+
+				/*
+			'staff_key'=>(integer) $data['Timesheet Staff Key'],
+			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
+
+			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+			'alias'=>$data['Staff Alias'],
+			'name'=>$data['Staff Name'],
+			'payroll_id'=>$data['Staff ID'],
+			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
+			'clocked_hours'=>number($data['Timesheet Clocked Hours'], 2).' '._('hours'),
+			'clocking_records'=>number($data['Timesheet Clocking Records'])
+			*/
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
 
 
 

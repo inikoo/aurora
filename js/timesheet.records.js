@@ -26,14 +26,15 @@ function toggle_ignore_record(key) {
                 $('#used_' + key).attr('value', 'Yes')
 
             }
-            var record_key;
-            for (record_key in data.other_fields.records_data) {
+            for (var record_key in data.other_fields.records_data) {
                 $('#action_type_' + record_key).html(data.other_fields.records_data[record_key].action_type)
             }
             
-            var field;
-            for (field in data.other_fields.updated_data) {
+            for (var field in data.other_fields.updated_data) {
                 $('.' + field).html(data.other_fields.updated_data[field])
+            }
+             for (var field in data.other_fields.updated_titles) {
+                $('.' + field).prop('title',data.other_fields.updated_titles[field])
             }
 
            $("#inline_new_object_msg").html('').removeClass('success error')

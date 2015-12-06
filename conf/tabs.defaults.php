@@ -653,6 +653,40 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
+	'overtimes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+	),
+	'overtime.timesheets'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'alias',
+		
+	),
+		'overtime.employees'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'alias',
+		
+	),
+	'overtimes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+	),
 	'employees'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
