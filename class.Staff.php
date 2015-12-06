@@ -644,6 +644,87 @@ class Staff extends DB_Table{
 	}
 
 
+	function create_timesheet($date='', $options='') {
+
+		include_once 'class.Timesheet.php';
+		include_once 'class.Timesheet_Record.php';
+		if ($date=='') {
+			$date=date();
+		}
+
+		//$start = microtime(true);
+		//exit;
+		$working_hours=json_decode($this->data['Staff Working Hours'], true);
+		if (!$working_hours) {
+
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", $date),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
+			$this->update(array('Timesheet Type'=>'NoFixedWorkingHours'), 'no_history');
+
+
+			return $timesheet;
+		}
+		$day_of_the_week=date('N', $date);
+		$day_data=$working_hours['data'][$day_of_the_week];
+
+
+		$timesheet_data=array(
+			'Timesheet Date'=>date("Y-m-d", $date),
+			'Timesheet Staff Key'=>$this->id,
+			'editor'=>$this->editor
+		);
+		$timesheet=new Timesheet('find', $timesheet_data, 'create');
+
+		if ($timesheet->get('Timesheet Working Hours Records')>=2 and $options=='') {
+			$timesheet->update_number_records('WorkingHoursMark');
+			$timesheet->update_type();
+
+
+			return $timesheet;
+		}
+
+		$timesheet->remove_records('WorkingHoursMark');
+
+		$record_data=array(
+			'Timesheet Record Timesheet Key'=>$timesheet->id,
+			'Timesheet Record Type'=>'WorkingHoursMark',
+			'Timesheet Record Staff Key'=>$this->id,
+			'Timesheet Record Date'=>date('Y-m-d', $date).' '.$day_data['s'].':00',
+			'Timesheet Record Source'=>'System',
+			'editor'=>$this->editor
+
+		);
+
+		$timesheet_record=new Timesheet_Record('new', $record_data);
+		$record_data['Timesheet Record Type']='WorkingHoursMark';
+
+		$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$day_data['e'].':00';
+		$timesheet_record=new Timesheet_Record('new', $record_data);
+
+		foreach ($day_data['b'] as $break) {
+			$record_data['Timesheet Record Type']='BreakMark';
+			$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['s'].':00';
+			$timesheet_record=new Timesheet_Record('new', $record_data);
+			$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['e'].':00';
+			$timesheet_record=new Timesheet_Record('new', $record_data);
+		}
+		$timesheet->update_number_records('BreakMark');
+
+		$timesheet->update_number_records('WorkingHoursMark');
+		$timesheet->update_type();
+		$timesheet->process_mark_records_action_type();
+
+		//$time_elapsed_secs = 1000*(microtime(true) - $start);
+		//print "\n<br>$time_elapsed_secs\n";
+
+		return $timesheet;
+	}
+
+
 	function create_timesheet_record($data) {
 
 		$data['Timesheet Record Staff Key']=$this->id;
@@ -663,9 +744,9 @@ class Staff extends DB_Table{
 			$timesheet=new Timesheet('find', $timesheet_data, 'create');
 
 			$this->timesheet_record->update(array('Timesheet Record Timesheet Key'=>$timesheet->id));
-			$timesheet->process_records_action_type();
-			$timesheet->update_clocked_hours();
-			$timesheet->update_clocking_records();
+			$timesheet->process_clocking_records_action_type();
+			$timesheet->update_clocked_time();
+			$timesheet->update_number_clocking_records();
 
 		}
 
