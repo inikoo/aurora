@@ -769,8 +769,10 @@ $modules=array(
 
 				),
 				'tabs'=>array(
-					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
-					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
+					'employees'=>array('label'=>_('Employees')),
+					'overtimes'=>array('label'=>_('Overtimes')),
+
+					'exemployees'=>array('label'=>_('Ex employees'), 'class'=>'right'),
 					'timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
 							'employees.calendar'=>array('label'=>_('Calendar')),
@@ -820,7 +822,7 @@ $modules=array(
 					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
-													'employee.calendar'=>array('label'=>_('Calendar')),
+							'employee.calendar'=>array('label'=>_('Calendar')),
 
 							'employee.timesheets'=>array('label'=>_('Timesheets')),
 							'employee.timesheets.records'=>array('label'=>_('Clockings')),
@@ -835,12 +837,12 @@ $modules=array(
 
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
+					'employee.new'=>array('label'=>_('New employee')),
 
 				)
 
 			),
-			
+
 			'employee.attachment.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'employee.attachment.new'=>array('label'=>_('New attachment')),
@@ -861,6 +863,39 @@ $modules=array(
 			'contractor.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'contractor.new'=>array('label'=>_('New contractor')),
+
+				)
+
+			),
+'overtime'=>array('type'=>'object',
+
+				'subtabs_parent'=>array(
+					'overtime.timesheets'=>'overtime.timesheets',
+					'overtime.timesheets.records'=>'overtime.timesheets',
+
+
+				),
+
+				'tabs'=>array(
+					'overtime.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'overtime.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'overtime.timesheets'=>array('label'=>_('Timesheets'),
+						'subtabs'=>array(
+							'overtime.calendar'=>array('label'=>_('Calendar')),
+
+							'overtime.timesheets'=>array('label'=>_('Timesheets')),
+							'overtime.timesheets.records'=>array('label'=>_('Clockings')),
+
+						)
+
+					),
+
+				)
+
+			),
+			'overtime.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'overtime.new'=>array('label'=>_('New overtime')),
 
 				)
 

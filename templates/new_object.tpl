@@ -198,7 +198,8 @@
 		        $('#{$field.id}').val('')
 		    }
 
-		     < /script>
+
+		     </script>
 
         {/if} 
   	    

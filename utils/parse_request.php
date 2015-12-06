@@ -1072,6 +1072,31 @@ function parse_request($_data, $db) {
 			}
 
 			break;
+			
+			case 'overtime':
+
+			$module='hr';
+			$section='overtime';
+			$object='overtime';
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+
+					
+
+
+				}elseif ($view_path[0]=='new') {
+					$section='overtime.new';
+					$object='overtime';
+
+				}
+			}
+
+			break;	
+			
 		case 'contractor':
 
 			$module='hr';
@@ -1138,12 +1163,6 @@ function parse_request($_data, $db) {
 
 
 				}
-
-
-
-
-
-
 
 				elseif ($view_path[0]=='user') {
 

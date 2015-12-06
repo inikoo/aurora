@@ -194,9 +194,9 @@ class Timesheet_Record extends DB_Table {
 
 			include_once 'class.Timesheet.php';
 			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
-			$timesheet->process_records_action_type();
-			$timesheet->update_clocked_hours();
-			$timesheet->update_clocking_records();
+			$timesheet->process_clocking_records_action_type();
+			$timesheet->update_clocked_time();
+			$timesheet->update_number_clocking_records();
 
 
 
@@ -235,7 +235,8 @@ class Timesheet_Record extends DB_Table {
 
 			$this->other_fields_updated=array(
 				'records_data'=>$records_data,
-				'updated_data'=>array('Timesheet_Clocked_Hours'=>$timesheet->get('Clocked Hours'))
+				'updated_data'=>array('Timesheet_Clocked_Time'=>$timesheet->get('Clocked Time')),
+				'updated_titles'=>array('Timesheet_Clocked_Time'=>$timesheet->get('Clocked Hours'))
 
 			);
 
