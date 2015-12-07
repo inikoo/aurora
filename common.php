@@ -4,7 +4,6 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'conf/dns.php';
 require_once 'conf/key.php';
-
 include_once 'utils/i18n.php';
 
 require_once 'utils/general_functions.php';
@@ -38,27 +37,20 @@ mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 
 
-require_once 'utils/modules.php';
 
 $account=new Account($db);
 date_default_timezone_set($account->data['Account Timezone']) ;
 define("TIMEZONE",$account->data['Account Timezone']);
 
-//$max_session_time=$myconf['max_session_time'];
-//$max_session_time_in_milliseconds=1000*$max_session_time;
+require_once 'utils/modules.php';
 
-//$session = new Session($max_session_time);
 session_save_path('server_files/tmp');
 ini_set('session.gc_maxlifetime', 57600); // 16 hours
 ini_set('session.gc_probability', 1);
 ini_set('session.gc_divisor', 100);
 session_start();
 
-//print date("%c",1349421365);
 
-//print_r($session);
-//print '//'.session_id( );
-//print_r($_SESSION['state']);
 
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty = new Smarty();
@@ -69,9 +61,6 @@ $smarty->config_dir = 'server_files/smarty/configs';
 //$smarty->error_reporting = E_STRICT;
 
 $smarty->assign('account',$account);
-
-
-
 
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);

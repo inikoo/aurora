@@ -1015,6 +1015,36 @@ function parse_request($_data, $db) {
 
 			break;
 
+		case 'timesheets':
+
+			$module='hr';
+			$section='timesheets';
+			$object='';
+			
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+
+				if ($view_path[0]=='year') {
+					$parent=$view_path[0];
+
+			}elseif ($view_path[0]=='month') {
+					$parent=$view_path[0];
+				}elseif ($view_path[0]=='week') {
+					$parent=$view_path[0];
+				}elseif ($view_path[0]=='day') {
+					$parent=$view_path[0];
+				}
+
+			}
+
+			if (isset($view_path[1])) {
+				$parent_key=$view_path[1];
+			}
+
+			break;
+
 		case 'employee':
 
 			$module='hr';
@@ -1043,15 +1073,15 @@ function parse_request($_data, $db) {
 
 						}
 						else if ($view_path[1]=='new') {
-						
-							
+
+
 							$parent='employee';
 							$parent_key=$key;
-						
+
 
 							if (isset($view_path[2])) {
 								if ($view_path[2]=='attachment') {
-								
+
 									$section='employee.attachment.new';
 									$object='attachment';
 								}
@@ -1072,8 +1102,8 @@ function parse_request($_data, $db) {
 			}
 
 			break;
-			
-			case 'overtime':
+
+		case 'overtime':
 
 			$module='hr';
 			$section='overtime';
@@ -1085,7 +1115,7 @@ function parse_request($_data, $db) {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
 
-					
+
 
 
 				}elseif ($view_path[0]=='new') {
@@ -1095,8 +1125,8 @@ function parse_request($_data, $db) {
 				}
 			}
 
-			break;	
-			
+			break;
+
 		case 'contractor':
 
 			$module='hr';

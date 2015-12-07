@@ -51,6 +51,7 @@ case 'views':
 	$state=parse_request($data, $db);
 
 
+
 	if ($state['object']!='') {
 
 		$_object=get_object($state['object'], $state['key']);
@@ -605,6 +606,7 @@ function get_navigation($data) {
 
 	case ('hr'):
 		require_once 'navigation/hr.nav.php';
+		
 		switch ($data['section']) {
 
 		case ('employees'):
@@ -632,6 +634,9 @@ function get_navigation($data) {
 		case ('timesheet'):
 			return get_timesheet_navigation($data);
 			break;
+		case ('timesheets'):
+			return get_timesheets_navigation($data);
+			break;	
 		case ('employee.attachment.new'):
 			return get_new_employee_attachment_navigation($data);
 			break;	

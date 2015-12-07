@@ -48,6 +48,18 @@ case 'timesheet_records':
 case 'overtimes':
 	overtimes(get_table_parameters(), $db, $user);
 	break;
+case 'months':
+	months(get_table_parameters(), $db, $user);
+	break;
+case 'weeks':
+	weeks(get_table_parameters(), $db, $user);
+	break;
+case 'days':
+	days(get_table_parameters(), $db, $user);
+	break;
+case 'timesheets.employees':
+	timesheets_employees(get_table_parameters(), $db, $user);
+	break;	
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -268,20 +280,25 @@ function timesheets($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
+//print $sql;
 	$adata=array();
 
 	foreach ($db->query($sql) as $data) {
+	
+	$date=strtotime($data['Timesheet Date']);
+	
+	
 		$adata[]=array(
 			'id'=>(integer) $data['Timesheet Key'],
 			'staff_key'=>(integer) $data['Timesheet Staff Key'],
-			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
+			'formated_id'=>'<i class="fa fa-calendar"></i>',
+			'date_key'=>date('Ymd',$date),
 
 			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
 			'alias'=>$data['Staff Alias'],
 			'name'=>$data['Staff Name'],
 			'payroll_id'=>$data['Staff ID'],
-			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
+			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", $date):''),
 			'clocked_hours'=>number($data['Timesheet Clocked Time']/3600, 2).' '._('hours'),
 			'clocking_records'=>number($data['Timesheet Clocking Records'])
 
@@ -526,18 +543,7 @@ function overtimes($_data, $db, $user) {
 				'start'=>($data['Overtime Start Date']!=''?strftime("%e %b %Y", strtotime($data['Overtime Start Date'])):''),
 				'end'=>($data['Overtime End Date']!=''?strftime("%e %b %Y", strtotime($data['Overtime End Date'])):''),
 
-				/*
-			'staff_key'=>(integer) $data['Timesheet Staff Key'],
-			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
 
-			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
-			'alias'=>$data['Staff Alias'],
-			'name'=>$data['Staff Name'],
-			'payroll_id'=>$data['Staff ID'],
-			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
-			'clocked_hours'=>number($data['Timesheet Clocked Hours'], 2).' '._('hours'),
-			'clocking_records'=>number($data['Timesheet Clocking Records'])
-			*/
 
 			);
 
@@ -564,5 +570,203 @@ function overtimes($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function months($_data, $db, $user) {
+
+	$rtext_label='month';
+	include_once 'prepare_table/init.php';
+
+
+	
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	//print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+		$date=strtotime($data['Timesheet Date']);
+			$adata[]=array(
+				'name'=>strftime("%B", $date),
+				'key'=>date('Ym',$date),
+				'timesheets'=>number($data['timesheets']),
+				'days'=>number($data['days']),
+				'employees'=>number($data['employees'])
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function weeks($_data, $db, $user) {
+
+	$rtext_label='week';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	//print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+			$adata[]=array(
+				'name'=>sprintf('%02d', $data['week']),
+				'key'=>$data['yearweek'],
+				'week_starting'=>strftime("%e %b %Y", strtotime($data['week_starting'])),
+				'timesheets'=>number($data['timesheets']),
+				'days'=>number($data['days']),
+				'employees'=>number($data['employees'])
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function days($_data, $db, $user) {
+
+	$rtext_label='day';
+	include_once 'prepare_table/init.php';
+
+
+
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+			$date=strtotime($data['Timesheet Date']);
+			$adata[]=array(
+				'name'=>strftime("%e %b %Y", $date),
+				'key'=>date('Ymd', $date),
+
+				'day_of_week'=>strftime("%a", $date),
+				'timesheets'=>number($data['timesheets']),
+				'days'=>number($data['days']),
+				'employees'=>number($data['employees'])
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function timesheets_employees($_data, $db, $user) {
+
+	$rtext_label='employee';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	//print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+					$hours=$data['clocked_time']/3600;
+
+		$date=strtotime($data['Timesheet Date']);
+			$adata[]=array(
+				'staff_key'=>$data['Timesheet Staff Key'],
+				'name'=>$data['Staff Name'],
+				'days'=>number($data['days']),
+				'clocking_records'=>number($data['clocking_records']),
+				//'clocked_time'=>seconds_to_string($data['clocked_time'], 'minutes', true)
+            'clocked_time'=>sprintf("%s %s", number($hours, 2), ngettext("h", "hrs", $hours))
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>

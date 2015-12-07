@@ -109,18 +109,29 @@ DELETE FROM `User Group User Bridge` WHERE `User Group Key` in (4);
 
 ALTER TABLE `Timesheet Dimension` ADD `Timesheet Working Hours Records` TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Staff Key`, ADD `Timesheet Overtime Records` TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Working Hours Records`;
 ALTER TABLE `Timesheet Dimension` CHANGE `Timesheet Clocking Records` `Timesheet Clocking Records` SMALLINT UNSIGNED NOT NULL DEFAULT '0', CHANGE `Timesheet Ignored Clocking Records` `Timesheet Ignored Clocking Records` SMALLINT UNSIGNED NOT NULL DEFAULT '0';
-
 ALTER TABLE `Timesheet Record Dimension` CHANGE `Timesheet Record Source` `Timesheet Record Source` ENUM('ClockingMachine','Manual','API','System') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Manual';
+
 ALTER TABLE `Timesheet Record Dimension` DROP INDEX `Staff Key`, ADD UNIQUE `Staff Key` (`Timesheet Record Staff Key`, `Timesheet Record Date`, `Timesheet Record Type`) USING BTREE;
+
 ALTER TABLE `Timesheet Dimension` ADD `Timesheet Type` ENUM('WorkingDay','DayOff','NoFixedWorkingHours') NULL AFTER `Timesheet Date`;
 ALTER TABLE `Timesheet Dimension` CHANGE `Timesheet Type` `Timesheet Type` ENUM('WorkingDay','DayOff','NoFixedWorkingHours') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'NoFixedWorkingHours';
 ALTER TABLE `Timesheet Record Dimension` CHANGE `Timesheet Record Type` `Timesheet Record Type` ENUM('WorkingHoursMark','OvertimeMark','ClockingRecord','BreakMark') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'ClockingRecord';
 ALTER TABLE `Timesheet Dimension` ADD `Timesheet Break Records` TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Working Hours Records`;
+
 ALTER TABLE `Timesheet Record Dimension` CHANGE `Timesheet Record Action Type` `Timesheet Record Action Type` ENUM('Start','End','Unknown','Ignored','MarkStart','MarkEnd') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Timesheet Dimension` ADD `Timesheet Working Hours` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Clocked Hours`, ADD `Timesheet Unpaid Overtime` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Working Hours`, ADD `Timesheet Paid Overtime` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Unpaid Overtime`;
 ALTER TABLE `Timesheet Dimension` CHANGE `Timesheet Working Hours` `Timesheet Working Time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0';
+
 ALTER TABLE `Timesheet Dimension` CHANGE `Timesheet Clocked Hours` `Timesheet Clocked Time` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Timesheet Record Dimension` CHANGE `Timesheet Record Action Type` `Timesheet Record Action Type` ENUM('MarkStart','Start','End','MarkEnd','Ignored','Unknown') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Timesheet Dimension` ADD `Timesheet Breaks Time` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Working Time`;
+update `Staff Dimension` set `Staff Valid From`=NULL where  `Staff Valid From`='0000-00-00 00:00:00';
+update `Staff Dimension` set `Staff Valid To`=NULL where  `Staff Valid To`='0000-00-00 00:00:00';
+
+ALTER TABLE `Timesheet Dimension` ADD INDEX (`Timesheet Date`);
+
+
+  
+  INSERT INTO `Overtime Dimension` (`Overtime Key`, `Overtime Reference`, `Overtime Status`, `Overtime Start Date`, `Overtime End Date`, `Overtime Metadata`, `Overtime Type`, `Overtime Timesheets Entitled`, `Overtime Timesheets Granted`, `Overtime Staff Entitled`, `Overtime Staff Granted`, `Overtime Time`, `Overtime Paid Amount`, `Overtime Accrued Time`) VALUES (NULL, 'Xmas overtime W&P', 'Active', '2015-10-01 00:00:00', '2015-12-06 23:59:59', '{"data":{"amount_weekdays":7.44,"amount_saturday":15.44,"amount_sunday":15.44}}', 'Pay', '0', '0', '0', '0', '0', '0', '0');
 
   

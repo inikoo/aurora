@@ -762,26 +762,14 @@ $modules=array(
 		'sections'=>array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 
-				'subtabs_parent'=>array(
-					'employees.timesheets'=>'timesheets',
-					'employees.timesheets.records'=>'timesheets',
 
-
-				),
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees')),
 					'overtimes'=>array('label'=>_('Overtimes')),
 
+
 					'exemployees'=>array('label'=>_('Ex employees'), 'class'=>'right'),
-					'timesheets'=>array('label'=>_('Timesheets'),
-						'subtabs'=>array(
-							'employees.calendar'=>array('label'=>_('Calendar')),
-							'employees.timesheets'=>array('label'=>_('Timesheets')),
-							'employees.timesheets.records'=>array('label'=>_('Clockings')),
 
-						)
-
-					),
 
 				)
 
@@ -867,7 +855,7 @@ $modules=array(
 				)
 
 			),
-'overtime'=>array('type'=>'object',
+			'overtime'=>array('type'=>'object',
 
 				'subtabs_parent'=>array(
 					'overtime.timesheets'=>'overtime.timesheets',
@@ -910,6 +898,23 @@ $modules=array(
 			),
 
 
+
+
+
+
+			'timesheets'=>array('type'=>'navigation','icon'=>'calendar-o','label'=>_('Calendar'),'reference'=>'timesheets/day/'.date('Ymd'),
+				'tabs'=>array(
+					'timesheets.months'=>array('label'=>_('Months')),
+
+					'timesheets.weeks'=>array('label'=>_('Weeks')),
+					'timesheets.days'=>array('label'=>_('Days')),
+					'timesheets.employees'=>array('label'=>_("Employes'")),
+
+					'timesheets.timesheets'=>array('label'=>_('Timesheets')),
+
+				)
+
+			),
 
 
 			'new_timesheet_record'=>array(
