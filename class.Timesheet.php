@@ -535,8 +535,8 @@ class Timesheet extends DB_Table {
 
 				}
 
-				print_r($row);
-				print "v wh $valid_working_hours, in: $clocked_in ; $start_date -> ".($working_seconds/3600)." \n";
+				//print_r($row);
+				//print "v wh $valid_working_hours, in: $clocked_in ; $start_date -> ".($working_seconds/3600)." \n";
 
 
 

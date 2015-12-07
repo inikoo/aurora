@@ -669,49 +669,60 @@ class Staff extends DB_Table{
 			return $timesheet;
 		}
 		$day_of_the_week=date('N', $date);
-		$day_data=$working_hours['data'][$day_of_the_week];
+
+		if (isset($working_hours['data'][$day_of_the_week])) {
+
+			$day_data=$working_hours['data'][$day_of_the_week];
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", $date),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
+
+			if ($timesheet->get('Timesheet Working Hours Records')>=2 and $options=='') {
+				$timesheet->update_number_records('WorkingHoursMark');
+				$timesheet->update_type();
 
 
-		$timesheet_data=array(
-			'Timesheet Date'=>date("Y-m-d", $date),
-			'Timesheet Staff Key'=>$this->id,
-			'editor'=>$this->editor
-		);
-		$timesheet=new Timesheet('find', $timesheet_data, 'create');
+				return $timesheet;
+			}
 
-		if ($timesheet->get('Timesheet Working Hours Records')>=2 and $options=='') {
-			$timesheet->update_number_records('WorkingHoursMark');
-			$timesheet->update_type();
+			$timesheet->remove_records('WorkingHoursMark');
 
+			$record_data=array(
+				'Timesheet Record Timesheet Key'=>$timesheet->id,
+				'Timesheet Record Type'=>'WorkingHoursMark',
+				'Timesheet Record Staff Key'=>$this->id,
+				'Timesheet Record Date'=>date('Y-m-d', $date).' '.$day_data['s'].':00',
+				'Timesheet Record Source'=>'System',
+				'editor'=>$this->editor
 
-			return $timesheet;
+			);
+
+			$timesheet_record=new Timesheet_Record('new', $record_data);
+			$record_data['Timesheet Record Type']='WorkingHoursMark';
+
+			$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$day_data['e'].':00';
+			$timesheet_record=new Timesheet_Record('new', $record_data);
+
+			foreach ($day_data['b'] as $break) {
+				$record_data['Timesheet Record Type']='BreakMark';
+				$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['s'].':00';
+				$timesheet_record=new Timesheet_Record('new', $record_data);
+				$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['e'].':00';
+				$timesheet_record=new Timesheet_Record('new', $record_data);
+			}
+
+		}else {
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", $date),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
 		}
 
-		$timesheet->remove_records('WorkingHoursMark');
-
-		$record_data=array(
-			'Timesheet Record Timesheet Key'=>$timesheet->id,
-			'Timesheet Record Type'=>'WorkingHoursMark',
-			'Timesheet Record Staff Key'=>$this->id,
-			'Timesheet Record Date'=>date('Y-m-d', $date).' '.$day_data['s'].':00',
-			'Timesheet Record Source'=>'System',
-			'editor'=>$this->editor
-
-		);
-
-		$timesheet_record=new Timesheet_Record('new', $record_data);
-		$record_data['Timesheet Record Type']='WorkingHoursMark';
-
-		$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$day_data['e'].':00';
-		$timesheet_record=new Timesheet_Record('new', $record_data);
-
-		foreach ($day_data['b'] as $break) {
-			$record_data['Timesheet Record Type']='BreakMark';
-			$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['s'].':00';
-			$timesheet_record=new Timesheet_Record('new', $record_data);
-			$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['e'].':00';
-			$timesheet_record=new Timesheet_Record('new', $record_data);
-		}
 		$timesheet->update_number_records('BreakMark');
 
 		$timesheet->update_number_records('WorkingHoursMark');

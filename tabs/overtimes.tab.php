@@ -33,6 +33,9 @@ $table_buttons=array();
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New overtime'), 'reference'=>'overtime/new');
 $smarty->assign('table_buttons', $table_buttons);
 
+$smarty->assign('title', _('Overtimes'));
+
+
 
 include('utils/get_table_html.php');
 
