@@ -1363,6 +1363,8 @@ right connector from last child*/
 
 .success{color:$color_success}
 .valid{color:$color_success}
+
+
 .valid.save{color:$color_save;cursor:pointer}
 
 .warning{color:$color_warning}
@@ -1393,7 +1395,8 @@ right connector from last child*/
 
 }
 
-
+.unchecked{background:#ddd;cursor:pointer}
+.checked{background:#71BC78;color:#FFF;cursor:pointer}
 
 @import 'working_hours';
 @import 'salary';

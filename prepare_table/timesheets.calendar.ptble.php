@@ -74,6 +74,11 @@ else
 
 
 $fields="
+sum(`Timesheet Paid Overtime`+`Timesheet Unpaid Overtime`+`Timesheet Working Time`)  worked_time,
+sum(`Timesheet Paid Overtime`) paid_overtime,
+sum(`Timesheet Unpaid Overtime`) unpaid_overtime,
+sum(`Timesheet Working Time`) work_time,
+sum(`Timesheet Breaks Time`) breaks,
 month(`Timesheet Date`) month,
 year(`Timesheet Date`) year,
 yearweek(`Timesheet Date`,3) yearweek,

@@ -1380,6 +1380,10 @@ function parse_request($_data, $db) {
 
 			}
 			break;
+		case 'fire':
+		    $module='utils';
+			$section='fire';	
+			
 		default:
 
 			break;
