@@ -73,7 +73,7 @@ $table='  `Timesheet Record Dimension` as TRD left join `Staff Dimension` SD on 
 $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
-$fields="
+$fields="`Timesheet Record Ignored Due Missing End`,
 `Timesheet Record Ignored`,`Timesheet Record Timesheet Key`,`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,`Staff Alias`,`Timesheet Record Staff Key`,`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
 ";
 

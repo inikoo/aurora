@@ -131,6 +131,13 @@ update `Staff Dimension` set `Staff Valid To`=NULL where  `Staff Valid To`='0000
 ALTER TABLE `Timesheet Dimension` ADD INDEX (`Timesheet Date`);
 
 
+//============
+
+ALTER TABLE `Timesheet Record Dimension` ADD `Timesheet Record Ignored Due Missing End` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Timesheet Record Ignored`, ADD INDEX (`Timesheet Record Ignored Due Missing End`);
+update `Timesheet Record Dimension` set `Timesheet Record Ignored Due Missing End`= `Timesheet Record Ignored`;
+ALTER TABLE `Timesheet Dimension` ADD `Timesheet Missing Clocking Records` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Ignored Clocking Records`;
+
+
   
   INSERT INTO `Overtime Dimension` (`Overtime Key`, `Overtime Reference`, `Overtime Status`, `Overtime Start Date`, `Overtime End Date`, `Overtime Metadata`, `Overtime Type`, `Overtime Timesheets Entitled`, `Overtime Timesheets Granted`, `Overtime Staff Entitled`, `Overtime Staff Granted`, `Overtime Time`, `Overtime Paid Amount`, `Overtime Accrued Time`) VALUES (NULL, 'Xmas overtime W&P', 'Active', '2015-10-01 00:00:00', '2015-12-06 23:59:59', '{"data":{"amount_weekdays":7.44,"amount_saturday":15.44,"amount_sunday":15.44}}', 'Pay', '0', '0', '0', '0', '0', '0', '0');
 

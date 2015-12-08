@@ -59,7 +59,7 @@ case 'days':
 	break;
 case 'timesheets.employees':
 	timesheets_employees(get_table_parameters(), $db, $user);
-	break;	
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -280,30 +280,59 @@ function timesheets($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
+	//print $sql;
 	$adata=array();
 
-	foreach ($db->query($sql) as $data) {
-	
-	$date=strtotime($data['Timesheet Date']);
-	
-	
-		$adata[]=array(
-			'id'=>(integer) $data['Timesheet Key'],
-			'staff_key'=>(integer) $data['Timesheet Staff Key'],
-			'formated_id'=>'<i class="fa fa-calendar"></i>',
-			'date_key'=>date('Ymd',$date),
 
-			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
-			'alias'=>$data['Staff Alias'],
-			'name'=>$data['Staff Name'],
-			'payroll_id'=>$data['Staff ID'],
-			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", $date):''),
-			'clocked_hours'=>number($data['Timesheet Clocked Time']/3600, 2).' '._('hours'),
-			'clocking_records'=>number($data['Timesheet Clocking Records'])
+	if ($result=$db->query($sql)) {
 
-		);
+		foreach ($result as $data) {
 
+
+
+			$date=strtotime($data['Timesheet Date']);
+
+
+			$clocked_hours=$data['Timesheet Clocked Time']/3600;
+			$breaks_hours=$data['Timesheet Breaks Time']/3600;
+			$work_time_hours=$data['Timesheet Working Time']/3600;
+			$unpaid_overtime=$data['Timesheet Unpaid Overtime']/3600;
+			$paid_overtime=$data['Timesheet Paid Overtime']/3600;
+			$worked_time=$data['worked_time']/3600;
+
+
+			$alert=($data['Timesheet Missing Clocking Records']>0?'<i class="fa fa-exclamation-circle warning"></i>':'');
+
+			$adata[]=array(
+				'id'=>(integer) $data['Timesheet Key'],
+				'staff_key'=>(integer) $data['Timesheet Staff Key'],
+				'formated_id'=>'<i class="fa fa-calendar"></i>',
+				'date_key'=>date('Ymd', $date),
+				'alert'=>$alert,
+
+				'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+				'alias'=>$data['Staff Alias'],
+				'name'=>$data['Staff Name'],
+				'payroll_id'=>$data['Staff ID'],
+				'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", $date):''),
+				'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
+				'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2), _('h')):'<span class="disabled">-</span>'),
+
+
+
+
+				'clocking_records'=>number($data['Timesheet Clocking Records'])
+
+			);
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
 
 	$response=array('resultset'=>
@@ -378,6 +407,11 @@ function timesheet_records($_data, $db, $user) {
 			switch ($data['Timesheet Record Action Type']) {
 			case 'Start':
 				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span></span>';
+
+				if ($data['Timesheet Record Ignored Due Missing End']=='Yes') {
+					$action_type.=' <i class="fa fa-exclamation-circle warning"></i>';
+				}
+
 				break;
 			case 'End':
 				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
@@ -577,7 +611,7 @@ function months($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 
-	
+
 
 	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
 	//print $sql;
@@ -587,10 +621,10 @@ function months($_data, $db, $user) {
 	if ($result=$db->query($sql)) {
 
 		foreach ($result as $data) {
-		$date=strtotime($data['Timesheet Date']);
+			$date=strtotime($data['Timesheet Date']);
 			$adata[]=array(
 				'name'=>strftime("%B", $date),
-				'key'=>date('Ym',$date),
+				'key'=>date('Ym', $date),
 				'timesheets'=>number($data['timesheets']),
 				'days'=>number($data['days']),
 				'employees'=>number($data['employees'])
@@ -734,16 +768,33 @@ function timesheets_employees($_data, $db, $user) {
 	if ($result=$db->query($sql)) {
 
 		foreach ($result as $data) {
-					$hours=$data['clocked_time']/3600;
 
-		$date=strtotime($data['Timesheet Date']);
+			$date=strtotime($data['Timesheet Date']);
+
+			$clocked_hours=$data['clocked_time']/3600;
+			$breaks_hours=$data['breaks']/3600;
+			$work_time_hours=$data['work_time']/3600;
+			$unpaid_overtime=$data['unpaid_overtime']/3600;
+			$paid_overtime=$data['paid_overtime']/3600;
+			$worked_time=$data['worked_time']/3600;
+
+
+
+
 			$adata[]=array(
 				'staff_key'=>$data['Timesheet Staff Key'],
 				'name'=>$data['Staff Name'],
 				'days'=>number($data['days']),
 				'clocking_records'=>number($data['clocking_records']),
-				//'clocked_time'=>seconds_to_string($data['clocked_time'], 'minutes', true)
-            'clocked_time'=>sprintf("%s %s", number($hours, 2), ngettext("h", "hrs", $hours))
+
+				'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2, 2), _('h')):'<span class="disabled">-</span>'),
+
+
 			);
 
 		}
@@ -768,5 +819,6 @@ function timesheets_employees($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
 
 ?>

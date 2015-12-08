@@ -19,10 +19,10 @@ case 'week':
 	$where=sprintf(" where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']);
 	break;
 case 'month':
-$year=substr($parameters['parent_key'], 0, 4);
-		$month=substr($parameters['parent_key'], 4, 2);
-	$where=sprintf(" where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month,$year);
-	break;	
+	$year=substr($parameters['parent_key'], 0, 4);
+	$month=substr($parameters['parent_key'], 4, 2);
+	$where=sprintf(" where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month, $year);
+	break;
 
 default:
 	exit('parent not suported '.$parameters['parent']);
