@@ -238,11 +238,11 @@ class Timesheet_Record extends DB_Table {
 			$this->other_fields_updated=array(
 				'records_data'=>$records_data,
 				'updated_data'=>array(
-				'Timesheet_Clocked_Time'=>$timesheet->get('Clocked Time'),
-				'Timesheet_Working_Time'=>$timesheet->get('Working Time'),
-				'Timesheet_Breaks_Time'=>$timesheet->get('Breaks Time'),
-				'Timesheet_Unpaid_Overtime'=>$timesheet->get('Unpaid Overtime')
-				
+					'Timesheet_Clocked_Time'=>$timesheet->get('Clocked Time'),
+					'Timesheet_Working_Time'=>$timesheet->get('Working Time'),
+					'Timesheet_Breaks_Time'=>$timesheet->get('Breaks Time'),
+					'Timesheet_Unpaid_Overtime'=>$timesheet->get('Unpaid Overtime')
+
 				),
 				'updated_titles'=>array('Timesheet_Clocked_Time'=>$timesheet->get('Clocked Hours'))
 
