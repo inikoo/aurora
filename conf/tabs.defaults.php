@@ -759,6 +759,15 @@ $tab_defaults=array(
 		'f_field'=>'name',
 		
 	),
+	'fire'=>array(
+		'view'=>'overview',
+		'sort_key'=>'status',
+		'sort_order'=>-1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		
+	),
 	
 	'employees.timesheets'=>array(
 		'view'=>'overview',

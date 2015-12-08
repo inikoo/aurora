@@ -653,6 +653,9 @@ function get_navigation($data) {
 		case ('not_found'):
 			return get_utils_navigation($data);
 			break;
+		case ('fire'):
+			return get_fire_navigation($data);
+			break;	
 		}
 
 		break;

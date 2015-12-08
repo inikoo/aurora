@@ -102,6 +102,14 @@ $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
+(`Timesheet Paid Overtime`+`Timesheet Unpaid Overtime`+`Timesheet Working Time`)  worked_time,
+`Timesheet Paid Overtime` paid_overtime,
+`Timesheet Unpaid Overtime`unpaid_overtime,
+`Timesheet Working Time` work_time,
+`Timesheet Breaks Time` breaks,
+`Timesheet Clocked Time` clocked_time,
+`Timesheet Missing Clocking Records`,
+
 `Timesheet Clocking Records`,`Timesheet Ignored Clocking Records`,`Timesheet Key`,`Timesheet Clocked Time`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
 ";
 

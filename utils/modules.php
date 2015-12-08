@@ -1043,15 +1043,21 @@ $modules=array(
 
 	'utils'=>array(
 		'sections'=>array(
-			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'title'=>_('Forbidden'), 'icon'=>'shopping-cart', 'id'=>'forbidden',
+			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'icon'=>'shopping-cart', 'id'=>'forbidden',
 				'tabs'=>array(
 					'forbidden'=>array()
 				)
 			),
-			'not_found'=>array('type'=>'object', 'label'=>_('Not found'), 'title'=>_('Not found'), 'icon'=>'file-o', 'id'=>'not_found',
+			'not_found'=>array('type'=>'object', 'label'=>_('Not found'), 'icon'=>'file-o', 'id'=>'not_found',
 
 				'tabs'=>array(
 					'not_found'=>array(),
+				)
+			),
+			'fire'=>array('type'=>'object', 'label'=>_('Fire'), 'icon'=>'file-o', 'id'=>'not_found',
+
+				'tabs'=>array(
+					'fire'=>array(),
 				)
 			),
 		)

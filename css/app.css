@@ -1035,8 +1035,21 @@ input {
   width: 250px; }
 #table .width_300 {
   width: 300px; }
+#table .width_350 {
+  width: 350px; }
+#table .width_400 {
+  width: 400px; }
 #table .icon_container i {
   display: inline; }
+
+.unchecked {
+  background: #ddd;
+  cursor: pointer; }
+
+.checked {
+  background: #71BC78;
+  color: #FFF;
+  cursor: pointer; }
 
 .working_hours {
   padding: 0px;
