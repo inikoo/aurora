@@ -755,9 +755,17 @@ class Staff extends DB_Table{
 			$timesheet=new Timesheet('find', $timesheet_data, 'create');
 
 			$this->timesheet_record->update(array('Timesheet Record Timesheet Key'=>$timesheet->id));
+
+
+			$timesheet->update_number_clocking_records();
+
 			$timesheet->process_clocking_records_action_type();
 			$timesheet->update_clocked_time();
-			$timesheet->update_number_clocking_records();
+			$timesheet->update_working_time();
+			$timesheet->update_unpaid_overtime();
+
+
+
 
 		}
 

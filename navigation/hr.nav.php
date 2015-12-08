@@ -802,6 +802,9 @@ function get_timesheets_navigation($data) {
 
 	$left_buttons=array();
 	$right_buttons=array();
+	
+	//print_r($data);
+	
 	switch ($data['parent']) {
 
 	case 'day':
@@ -917,7 +920,7 @@ function get_timesheets_navigation($data) {
 
 	$right_buttons[]=array('icon'=>'calendar-o', 'title'=>_('Today'), 'reference'=>'timesheets/day/'.date('Ymd'));
 	$right_buttons[]=array('icon'=>'calendar-plus-o', 'title'=>_('This week'), 'reference'=>'timesheets/week/'.date('oW'));
-	$right_buttons[]=array('icon'=>'calendar', 'title'=>_('This month'), 'reference'=>'timesheets/montj/'.date('Ym'));
+	$right_buttons[]=array('icon'=>'calendar', 'title'=>_('This month'), 'reference'=>'timesheets/month/'.date('Ym'));
 
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;

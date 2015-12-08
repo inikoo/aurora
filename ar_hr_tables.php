@@ -62,7 +62,7 @@ case 'timesheets.employees':
 	break;
 case 'fire':
 	fire(get_table_parameters(), $db, $user);
-	break;	
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -295,7 +295,7 @@ function timesheets($_data, $db, $user) {
 
 
 			$date=strtotime($data['Timesheet Date']);
-/*
+			/*
 
 			$clocked_hours=$data['Timesheet Clocked Time']/3600;
 			$breaks_hours=$data['Timesheet Breaks Time']/3600;
@@ -303,8 +303,8 @@ function timesheets($_data, $db, $user) {
 			$unpaid_overtime=$data['Timesheet Unpaid Overtime']/3600;
 			$paid_overtime=$data['Timesheet Paid Overtime']/3600;
 			$worked_time=$data['worked_time']/3600;
-		*/	
-	$clocked_hours=$data['clocked_time']/3600;
+		*/
+			$clocked_hours=$data['clocked_time']/3600;
 			$breaks_hours=$data['breaks']/3600;
 			$work_time_hours=$data['work_time']/3600;
 			$unpaid_overtime=$data['unpaid_overtime']/3600;
@@ -331,11 +331,11 @@ function timesheets($_data, $db, $user) {
 				//'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
 				//'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
 				//'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2), _('h')):'<span class="disabled">-</span>'),
-				'clocked_time'=> ($clocked_hours!=0? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Clocked Time']).'</span>'  :'<span class="disabled">-</span>'),
-				'breaks_time'=> ($breaks_hours!=0? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Breaks Time']).'</span>'  :'<span class="disabled">-</span>'),
-				'work_time_hours'=> ($work_time_hours!=0? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Working Time']).'</span>'  :'<span class="disabled">-</span>'),
-				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Unpaid Overtime']).'</span>'  :'<span class="disabled">-</span>'),
-				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Paid Overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time'=> ($clocked_hours!=0? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['breaks']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
 				'worked_time'=> ($worked_time!=0? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'  :'<span class="disabled">-</span>'),
 
 
@@ -841,6 +841,7 @@ function timesheets_employees($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function fire($_data, $db, $user) {
 
 	$rtext_label='employee';
@@ -848,7 +849,7 @@ function fire($_data, $db, $user) {
 	include_once 'utils/natural_language.php';
 
 	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
-//	print $sql;
+	// print $sql;
 	$adata=array();
 
 
@@ -858,30 +859,30 @@ function fire($_data, $db, $user) {
 
 			switch ($data['status']) {
 			case 'In':
-				$status=sprintf('<span class="success padding_right_10">%s</span>',_('In'));
-				
+				$status=sprintf('<span class="success padding_right_10">%s</span>', _('In'));
+
 				break;
 			case 'Out':
-				$status=sprintf('<span class="error padding_right_10">%s</span>',_('Out'));
+				$status=sprintf('<span class="error padding_right_10">%s</span>', _('Out'));
 				break;
 			case 'Off':
-				$status=sprintf('<span class="disabled padding_right_10">%s</span>',_('Off'));
-				break;	
+				$status=sprintf('<span class="disabled padding_right_10">%s</span>', _('Off'));
+				break;
 			default:
 				$status=$data['statud'];
 				$used='';
 				break;
 			}
 
-		
-$check='<div id="check_'.$data['Timesheet Key'].'" onClick="toggle_check_record('.$data['Timesheet Key'].')" class="disabled acenter width_100 unchecked" style="margin:0px 20px"><i class="fa fa-star-o"></i></div>';
+
+			$check='<div id="check_'.$data['Timesheet Key'].'" onClick="toggle_check_record('.$data['Timesheet Key'].')" class="disabled acenter width_100 unchecked" style="margin:0px 20px"><i class="fa fa-star-o"></i></div>';
 
 			$adata[]=array(
 				'staff_key'=>$data['Timesheet Staff Key'],
 				'name'=>$data['Staff Name'],
 				'clocking_records'=>number($data['clocking_records']),
-                'status'=>$status,
-	                'check'=>$check
+				'status'=>$status,
+				'check'=>$check
 
 
 			);
