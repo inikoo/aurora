@@ -79,6 +79,49 @@ function seconds_to_string($seconds, $until='seconds', $short=false) {
 }
 
 
+function seconds_to_hourminutes($seconds) {
+	$units = array(
+		
+		"hours"   => 3600,
+		"minutes" => 60,
+		
+	);
+
+	$start=false;
+	$end=false;
+	$string='';
+	foreach ( $units as $key=>$unit ) {
+		$quot  = intval($seconds / $unit);
+		$seconds -= $quot * $unit;
+		
+					switch ($key) {
+					
+					case 'hours':
+						$string.=' '.sprintf(_('%s:'), $quot);
+						break;
+					case 'minutes':
+						$string.=sprintf(_('%02d'), $quot);
+						break;
+					
+					}
+				
+				
+				
+			
+
+	
+
+		//if ($until==$key)$end=true;
+
+	}
+
+
+	return $string;
+
+
+
+}
+
 function file_size($bytes) {
 	if ($bytes >= 1073741824) {
 		$bytes = number_format($bytes / 1073741824, 1) . ' GB';

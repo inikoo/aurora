@@ -18,8 +18,8 @@ require_once 'class.Timesheet_Record.php';
 
 require_once 'utils/dates.php';
 
-$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=21 order by `Timesheet Date` desc');
-//$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=350 ');
+//$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=21 order by `Timesheet Date` desc');
+//$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=24 ');
 $sql=sprintf('select `Timesheet Key` from `Timesheet Dimension`  ');
 
 if ($result=$db->query($sql)) {

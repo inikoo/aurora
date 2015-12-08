@@ -572,6 +572,7 @@ class Timesheet extends DB_Table {
 		$clocked_seconds=0;
 		$action_type='';
 
+		$maarked_start=false;
 
 		//'WorkingHoursMark','OvertimeMark','ClockingRecord','BreakMark'
 		$sql=sprintf("select `Timesheet Record Ignored`,`Timesheet Record Ignored Due Missing End`,`Timesheet Record Action Type`,`Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored Due Missing End`='No' and `Timesheet Record Type` in ('ClockingRecord','WorkingHoursMark') order by `Timesheet Record Date`,`Timesheet Record Action Type`",
@@ -594,6 +595,7 @@ class Timesheet extends DB_Table {
 					$action_type='End';
 
 				}elseif ($row['Timesheet Record Action Type']=='MarkStart') {
+					$maarked_start=true;;
 
 
 					if ($action_type=='Start' ) {
@@ -619,52 +621,54 @@ class Timesheet extends DB_Table {
 		}
 		//print "start ".($clocked_seconds/60)." \n";
 		//print "++++++++++++++\n";
-		$action_type='';
-		$sql=sprintf("select  `Timesheet Record Ignored`,`Timesheet Record Ignored Due Missing End`,`Timesheet Record Action Type`,`Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored Due Missing End`='No'  and `Timesheet Record Type` in ('ClockingRecord','WorkingHoursMark') order by `Timesheet Record Date` desc,`Timesheet Record Action Type` desc",
-			$this->id
-		);
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
 
-				//print_r($row);
-				if ($row['Timesheet Record Action Type']=='End') {
+		if ($maarked_start) {
+			$action_type='';
+			$sql=sprintf("select  `Timesheet Record Ignored`,`Timesheet Record Ignored Due Missing End`,`Timesheet Record Action Type`,`Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored Due Missing End`='No'  and `Timesheet Record Type` in ('ClockingRecord','WorkingHoursMark') order by `Timesheet Record Date` desc,`Timesheet Record Action Type` desc",
+				$this->id
+			);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
 
-					$action_type='Start';
-					$start_date=$row['date'];
-				}elseif ($row['Timesheet Record Action Type']=='Start') {
+					//print_r($row);
+					if ($row['Timesheet Record Action Type']=='End') {
 
-					if ($start_date) {
-						$end_date=$row['date'];
-						$clocked_seconds=$clocked_seconds-($end_date-$start_date);
+						$action_type='Start';
+						$start_date=$row['date'];
+					}elseif ($row['Timesheet Record Action Type']=='Start') {
+
+						if ($start_date) {
+							$end_date=$row['date'];
+							$clocked_seconds=$clocked_seconds-($end_date-$start_date);
+						}
+						$action_type='End';
+
+					}elseif ($row['Timesheet Record Action Type']=='MarkEnd') {
+
+
+						if ($action_type=='Start' ) {
+							$end_date=$row['date'];
+
+
+							$clocked_seconds=$clocked_seconds-($end_date-$start_date);
+
+						}
+
+						break;
+
 					}
-					$action_type='End';
-
-				}elseif ($row['Timesheet Record Action Type']=='MarkEnd') {
 
 
-					if ($action_type=='Start' ) {
-						$end_date=$row['date'];
 
 
-						$clocked_seconds=$clocked_seconds-($end_date-$start_date);
-
-					}
-
-					break;
 
 				}
-
-
-
-
-
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
+
 		}
-
-
 
 		//print "v ".($clocked_seconds/60)." \n";
 		$this->update(array('Timesheet Unpaid Overtime'=>$clocked_seconds), 'no_history');

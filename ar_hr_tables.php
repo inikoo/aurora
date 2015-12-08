@@ -278,6 +278,7 @@ function timesheets($_data, $db, $user) {
 
 	$rtext_label='timesheet';
 	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	//print $sql;
@@ -315,14 +316,18 @@ function timesheets($_data, $db, $user) {
 				'name'=>$data['Staff Name'],
 				'payroll_id'=>$data['Staff ID'],
 				'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", $date):''),
-				'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2), _('h')):'<span class="disabled">-</span>'),
-				'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2), _('h')):'<span class="disabled">-</span>'),
-				'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2), _('h')):'<span class="disabled">-</span>'),
-				'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
-				'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
-				'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2), _('h')):'<span class="disabled">-</span>'),
-
-
+				//'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				//'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				//'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				//'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
+				//'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
+				//'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2), _('h')):'<span class="disabled">-</span>'),
+				'clocked_time'=> ($clocked_hours!=0? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Clocked Time']).'</span>'  :'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Breaks Time']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Working Time']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Unpaid Overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['Timesheet Paid Overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time'=> ($worked_time!=0? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'  :'<span class="disabled">-</span>'),
 
 
 				'clocking_records'=>number($data['Timesheet Clocking Records'])
@@ -787,12 +792,19 @@ function timesheets_employees($_data, $db, $user) {
 				'days'=>number($data['days']),
 				'clocking_records'=>number($data['clocking_records']),
 
-				'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
-				'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
-				'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
-				'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
-				'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
-				'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2, 2), _('h')):'<span class="disabled">-</span>'),
+
+				'clocked_time'=> ($clocked_hours!=0? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['breaks']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time'=> ($worked_time!=0? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'  :'<span class="disabled">-</span>'),
 
 
 			);
