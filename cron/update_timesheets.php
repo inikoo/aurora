@@ -25,12 +25,15 @@ $sql=sprintf('select `Timesheet Key` from `Timesheet Dimension`  ');
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$timesheet=new Timesheet($row['Timesheet Key']);
-		
-		
+
+		$timesheet->update_number_clocking_records();
 		$timesheet->process_clocking_records_action_type();
 		$timesheet->update_clocked_time();
 		$timesheet->update_working_time();
 		$timesheet->update_unpaid_overtime();
+
+
+
 
 	}
 

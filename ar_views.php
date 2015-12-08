@@ -37,7 +37,7 @@ case 'views':
 
 
 	if (isset($data['metadata']['help']) and $data['metadata']['help'] ) {
-		get_help($data, $db);
+		get_help($data, $modules, $db);
 		return;
 	}
 
@@ -101,13 +101,13 @@ case 'views':
 	if ($state['module']=='hr') {
 
 		if (!$user->can_view('staff') ) {
-	
+
 			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'forbidden', 'tab'=>'forbidden', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>$state['parent_key'], '_object'=>'', 'object'=>'', 'key'=>'');
-	
+
 		}
 
 	}
-   
+
 	$sql=sprintf('insert into `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  values (%d,%s,%s,%s,%s,%s,%s,%s,%s)',
 		$user->id,
 		prepare_mysql(gmdate('Y-m-d H:i:s')),
@@ -122,7 +122,7 @@ case 'views':
 	);
 	$db->exec($sql);
 
-	
+
 
 	list($state, $response['view_position'])=get_view_position($state);
 
@@ -150,7 +150,37 @@ case 'views':
 		$response['logout_label']=_('Logout');
 	}
 
-	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
+	//special dynamic tabs
+	if ($state['section']=='timesheets') {
+
+		if ($state['parent']=='day') {
+
+            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.days']);
+            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.weeks']);
+            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
+
+			if ($state['tab']=='timesheets.days' or $state['tab']=='timesheets.weeks' or $state['tab']=='timesheets.months' )
+				$state['tab']='timesheets.employees';
+
+		}elseif ($state['parent']=='week') {
+
+            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.weeks']);
+            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
+
+			if ( $state['tab']=='timesheets.weeks' or $state['tab']=='timesheets.months' )
+				$state['tab']='timesheets.days';
+
+		}elseif ($state['parent']=='month') {
+
+            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
+
+			if ( $state['tab']=='timesheets.months' )
+				$state['tab']='timesheets.weeks';
+
+		}
+	}
+
+	$response['tabs']=get_tabs($state, $modules);// todo only calculate when is subtabs in the section
 
 
 
@@ -606,7 +636,7 @@ function get_navigation($data) {
 
 	case ('hr'):
 		require_once 'navigation/hr.nav.php';
-		
+
 		switch ($data['section']) {
 
 		case ('employees'):
@@ -636,10 +666,10 @@ function get_navigation($data) {
 			break;
 		case ('timesheets'):
 			return get_timesheets_navigation($data);
-			break;	
+			break;
 		case ('employee.attachment.new'):
 			return get_new_employee_attachment_navigation($data);
-			break;	
+			break;
 		}
 
 		break;
@@ -655,7 +685,7 @@ function get_navigation($data) {
 			break;
 		case ('fire'):
 			return get_fire_navigation($data);
-			break;	
+			break;
 		}
 
 		break;
@@ -739,8 +769,8 @@ function get_navigation($data) {
 
 
 
-function get_tabs($data) {
-	global $modules, $user, $smarty;
+function get_tabs($data, $modules) {
+	global $user, $smarty;
 
 
 
@@ -1558,7 +1588,7 @@ function parse_request_old($request) {
 
 
 
-function get_help($data, $db) {
+function get_help($data, $modules, $db) {
 
 	$scope_state=parse_request($data, $db);
 
@@ -1598,7 +1628,7 @@ function get_help($data, $db) {
 
 
 
-	$response['tabs']=get_tabs($state);// todo only calculate when is subtabs in the section
+	$response['tabs']=get_tabs($state, $modules);// todo only calculate when is subtabs in the section
 
 	$response['view_position']=get_view_position($state);
 

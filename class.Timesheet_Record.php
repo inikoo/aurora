@@ -196,6 +196,8 @@ class Timesheet_Record extends DB_Table {
 			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
 
 
+            $timesheet->update_number_clocking_records();
+
 			$timesheet->process_clocking_records_action_type();
 			$timesheet->update_clocked_time();
 			$timesheet->update_working_time();
