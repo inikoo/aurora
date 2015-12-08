@@ -16,30 +16,7 @@ var columns = [
 
 },
 
-{
-    name: "formated_id",
-    label: "",
-    renderable: true,
-    editable: false,
-     sortType: "toggle",
-    {if $sort_key=='formated_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    
-    cell: Backgrid.HtmlCell.extend({
-        events: {
-            "click": function() {
-                 {if $data['object']==''}
-                                change_view('hr/timesheet/'+this.model.get("id"))
 
-                {else}
-                change_view('{$data['object']}/{$data['key']}/timesheet/'+this.model.get("id"))
-                 {/if}   
-            }
-        },
-        className: "link width20"
-       
-})
-   
-},
 
 {
     name: "name",
@@ -94,7 +71,46 @@ var columns = [
     name: "clocked_time",
     label: "{t}Clocked{/t}",
      sortType: "toggle",
-     cell: Backgrid.StringCell.extend({ className: "aright"} ),
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+ {
+    name: "unpaid_overtime",
+    label: "{t}Unpaid overtime{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+{
+    name: "breaks_time",
+    label: "{t}Breaks{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+ {
+    name: "work_time_hours",
+    label: "{t}Paid time{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+
+
+
+ {
+    name: "paid_overtime",
+    label: "{t}Paid overtime{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+
+ {
+    name: "worked_time",
+    label: "{t}Worked{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell
 },
 

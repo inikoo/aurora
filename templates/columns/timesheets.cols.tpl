@@ -24,7 +24,7 @@ var columns = [
      sortType: "toggle",
     {if $sort_key=='formated_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     
-    cell: Backgrid.StringCell.extend({
+    cell: Backgrid.HtmlCell.extend({
         events: {
             "click": function() {
                  {if $data['object']==''}
@@ -35,7 +35,23 @@ var columns = [
                  {/if}   
             }
         },
-        className: "link"
+        className: "link width_20"
+       
+})
+   
+},
+
+{
+    name: "alert",
+    label: "",
+    renderable: true,
+    editable: false,
+     sortType: "toggle",
+    {if $sort_key=='alerts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    
+    cell: Backgrid.HtmlCell.extend({
+       
+        className: "width_20"
        
 })
    
@@ -76,16 +92,56 @@ var columns = [
   
  {
     name: "clocking_records",
+    renderable:false,
     label: "{t}Clockings{/t}",
      sortType: "toggle",
      cell: Backgrid.StringCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell
 },
  {
-    name: "clocked_hours",
+    name: "clocked_time",
     label: "{t}Clocked{/t}",
      sortType: "toggle",
-     cell: Backgrid.StringCell.extend({ className: "aright"} ),
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+ {
+    name: "unpaid_overtime",
+    label: "{t}Unpaid overtime{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+{
+    name: "breaks_time",
+    label: "{t}Breaks{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+ {
+    name: "work_time_hours",
+    label: "{t}Paid time{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+
+
+
+ {
+    name: "paid_overtime",
+    label: "{t}Paid overtime{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+},
+
+ {
+    name: "worked_time",
+    label: "{t}Worked{/t}",
+     sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell
 },
 

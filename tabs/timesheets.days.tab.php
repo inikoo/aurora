@@ -32,6 +32,7 @@ $parameters=array(
 
 );
 
+$smarty->assign('js_code', file_get_contents('js/timesheets.days.js'));
 
 
 include('utils/get_table_html.php');

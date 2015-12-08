@@ -16,6 +16,10 @@
 				<td class="label">{$timesheet->get_field_label('Timesheet Breaks Time')}:</td>
 				<td class="Timesheet_Breaks_Time" title="{$timesheet->get('Breaks Hours')}">{$timesheet->get('Breaks Time')}</td>
 			</tr>
+			<tr>
+				<td class="label">{$timesheet->get_field_label('Timesheet Unpaid Overtime')}:</td>
+				<td class="Timesheet_Unpaid_Overtime" title="{$timesheet->get('Unpaid Overtime Hours')}">{$timesheet->get('Unpaid Overtime')}</td>
+			</tr>
 		</table>
 	</div>
 </div>

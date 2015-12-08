@@ -2,7 +2,7 @@
 <div id="maintabs" class="tabs">
 {foreach from=$_content.tabs item=tab  key=id} 
 		<div id="tab_{$id}" class="tab {if isset($tab.class)}{$tab.class}{else}left{/if} {if isset($tab.selected) and $tab.selected}selected{/if}"   {if  isset($tab.reference)}onclick="change_view('{$tab.reference}')" {else} onclick="change_tab('{$id}')"{/if} title="{if isset($tab.title)}{$tab.title}{else}{$tab.label}{/if}">
-			{if isset($tab.icon) and $tab.icon!=''}<i class="fa fa-{$tab.icon}"></i>{/if} <span class="label"> {$tab.label}</span> 
+			{if isset($tab.icon) and $tab.icon!=''}<i class="fa fa-{$tab.icon}"></i>{/if} <span class="label"> {$tab.label} </span> 
 		</div>
 {/foreach}
 	

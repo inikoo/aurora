@@ -194,10 +194,12 @@ class Timesheet_Record extends DB_Table {
 
 			include_once 'class.Timesheet.php';
 			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
+
+
 			$timesheet->process_clocking_records_action_type();
 			$timesheet->update_clocked_time();
-			$timesheet->update_number_clocking_records();
-
+			$timesheet->update_working_time();
+			$timesheet->update_unpaid_overtime();
 
 
 			$sql=sprintf('select `Timesheet Record Action Type`,`Timesheet Record Key`   from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d   and `Timesheet Record Type`="ClockingRecord" ',
@@ -235,7 +237,13 @@ class Timesheet_Record extends DB_Table {
 
 			$this->other_fields_updated=array(
 				'records_data'=>$records_data,
-				'updated_data'=>array('Timesheet_Clocked_Time'=>$timesheet->get('Clocked Time')),
+				'updated_data'=>array(
+				'Timesheet_Clocked_Time'=>$timesheet->get('Clocked Time'),
+				'Timesheet_Working_Time'=>$timesheet->get('Working Time'),
+				'Timesheet_Breaks_Time'=>$timesheet->get('Breaks Time'),
+				'Timesheet_Unpaid_Overtime'=>$timesheet->get('Unpaid Overtime')
+				
+				),
 				'updated_titles'=>array('Timesheet_Clocked_Time'=>$timesheet->get('Clocked Hours'))
 
 			);
