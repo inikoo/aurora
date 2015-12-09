@@ -49,6 +49,7 @@ function attachments($_data, $db, $user) {
 	$adata=array();
 
 	foreach ($db->query($sql) as $data) {
+		
 		if ($data['Attachment Public']=='Yes')
 			$visibility=sprintf('<i title="%s" class="fa fa-eye"></i>', _('Public'));
 		else

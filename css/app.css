@@ -666,7 +666,8 @@ input {
           position: relative;
           top: 2px; }
     .details_data table .label, .new_object table .label, .presention_card table .label {
-      width: 280px; }
+      width: 280px;
+      vertical-align: top; }
     .details_data table .show_buttons, .new_object table .show_buttons, .presention_card table .show_buttons {
       width: 20px;
       text-align: left; }
