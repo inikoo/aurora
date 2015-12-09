@@ -704,10 +704,22 @@ abstract class DB_Table {
 				prepare_mysql($raw_data['Attachment File Original Name']),
 				prepare_mysql($raw_data['Attachment Caption'], false),
 				prepare_mysql($raw_data['Attachment Subject Type'])
-				
-				
+
+
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
+
+			$subject_bridge_key=$this->db->lastInsertId();
+
+			if (!$subject_bridge_key) {
+
+				$this->error=true;
+				$this->msg=_('File already attached');
+				return $attach;
+			}
+
+			$attach->get_subject_data($subject_bridge_key);
+
 
 			/*
 			$history_data=array(
