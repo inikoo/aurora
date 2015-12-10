@@ -538,12 +538,11 @@ class Staff extends DB_Table{
 				$this->data[$key]=_trim($value);
 			}
 		}
-
+		$this->editor=$data['editor'];
 
 		if ($this->data['Staff Valid From']=='') {
 			$this->data['Staff Valid From']=gmdate('Y-m-d H:i:s');
 		}
-
 
 
 		$keys='';
@@ -558,14 +557,8 @@ class Staff extends DB_Table{
 		$sql="insert into `Staff Dimension` ($keys) values ($values)";
 
 		if ($this->db->exec($sql)) {
-
-
-
 			$this->id=$this->db->lastInsertId();
 			$this->get_data('id', $this->id);
-
-
-
 
 			if (!$this->data['Staff ID']) {
 				$sql=sprintf("update `Staff Dimension` set `Staff ID`=%d where `Staff Key`=%d", $this->id, $this->id);
@@ -574,11 +567,13 @@ class Staff extends DB_Table{
 
 
 			$history_data=array(
-				'History Abstract'=>sprintf(_('%s employee record created'), $this->data['Staff Alias']),
+				'History Abstract'=>sprintf(_('%s employee record created'), $this->data['Staff Name']),
 				'History Details'=>'',
 				'Action'=>'created'
 			);
-			$this->add_history($history_data);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
 			$this->new=true;
 
 
@@ -591,6 +586,7 @@ class Staff extends DB_Table{
 
 					}
 				}
+
 				$this->create_user($user_data);
 				//print_r($this->user);
 				if ($this->create_user_error) {
@@ -613,6 +609,9 @@ class Staff extends DB_Table{
 
 
 	function create_user($data) {
+
+
+		$data['editor']=$this->editor;
 
 		if (!array_key_exists('User Handle', $data) or $data['User Handle']=='' ) {
 			$this->create_user_error=true;
@@ -781,7 +780,7 @@ class Staff extends DB_Table{
 		}
 
 		$this->get_user_data();
-		$system_user=new User($this->data['Staff User Key']);
+		$system_user=new User($this->get('Staff User Key'));
 		if ($system_user->id) {
 
 			$system_user->update(array('User Alias'=>$value), $options);
@@ -799,12 +798,12 @@ class Staff extends DB_Table{
 		$value=password_hash($value, PASSWORD_DEFAULT);
 
 		$this->update_field('Staff PIN', $value, 'nohistory');
-		$this->add_changelog_record('Staff PIN', '****', '****', '');
+		$this->add_changelog_record('Staff PIN', '****', '****', '', $this->table_name, $this->id);
 		$system_user=new User($this->data['Staff User Key']);
 		$system_user->editor=$this->editor;
 
 		if ($system_user->id) {
-			$system_user->add_changelog_record('User PIN', '****', '****', '');
+			$system_user->add_changelog_record('User PIN', '****', '****', '', $system_user->table_name, $system_user->id);
 		}
 
 	}
@@ -868,10 +867,6 @@ class Staff extends DB_Table{
 			$this->msg=$system_user->msg;
 			$this->updated=$system_user->updated;
 
-
-			//$new_value=$this->get($user_field);
-
-			//$this->add_changelog_record($field, $old_value, $new_value, '');
 
 			break;
 
@@ -943,7 +938,7 @@ class Staff extends DB_Table{
 		}
 
 		$new_value=$this->get('Position');
-		$this->add_changelog_record('Staff Position', $old_value, $new_value, $options);
+		$this->add_changelog_record('Staff Position', $old_value, $new_value, $options, $this->table_name, $this->id);
 
 
 
@@ -1018,7 +1013,7 @@ class Staff extends DB_Table{
 		}
 
 		$new_value=$this->get('Supervisor');
-		$this->add_changelog_record('Staff Supervisor', $old_value, $new_value, $options);
+		$this->add_changelog_record('Staff Supervisor', $old_value, $new_value, $options, $this->table_name, $this->id);
 
 
 	}
