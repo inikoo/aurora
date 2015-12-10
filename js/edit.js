@@ -6,6 +6,8 @@
 
 function open_edit_field(object, key, field) {
 
+
+
     var type = $('#' + field + '_container').attr('field_type')
     var offset = $('#' + field + '_label').position();
 

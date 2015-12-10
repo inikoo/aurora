@@ -315,6 +315,10 @@ function get_object_showcase($data) {
 		include_once 'showcase/timesheet.show.php';
 		$html=get_timesheet_showcase($data);
 		break;
+	case 'attachment':
+		include_once 'showcase/attachment.show.php';
+		$html=get_attachment_showcase($data);
+		break;	
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -670,6 +674,9 @@ function get_navigation($data) {
 		case ('employee.attachment.new'):
 			return get_new_employee_attachment_navigation($data);
 			break;
+		case ('employee.attachment'):
+			return get_employee_attachment_navigation($data);
+			break;	
 		}
 
 		break;

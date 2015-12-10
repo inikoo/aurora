@@ -157,7 +157,7 @@ class User extends DB_Table {
 				$base_data[$key]=_trim($value);
 		}
 
-
+		$this->editor=$data['editor'];
 
 		if ($base_data['User Created']=='')
 			$base_data['User Created']=gmdate("Y-m-d H:i:s");
@@ -232,18 +232,27 @@ class User extends DB_Table {
 		$keys=preg_replace('/,$/', ')', $keys);
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `User Dimension` %s %s", $keys, $values);
-		
+
 		if ($this->db->exec($sql)) {
 
 
 
 			$user_id=$this->db->lastInsertId();
+$this->get_data('id', $user_id);
 
 
 			$this->new=true;
+			$history_data=array(
+				'History Abstract'=>sprintf(_('%s user record created'), $this->get('Handle')),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
 			$this->msg= _('User added successfully');
-			
-			$this->get_data('id', $user_id);
+
 			
 			$this->update_staff_type();
 
@@ -288,11 +297,11 @@ class User extends DB_Table {
 		else
 			$sql=sprintf("select * from `User Dimension` where `User Key`=%d", $data);
 
-		
+
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
-		
-		
+
+
 			$this->id=$this->data['User Key'];
 			$this->data['User Password']='';
 
@@ -301,9 +310,9 @@ class User extends DB_Table {
 				$sql=sprintf("select * from `User Staff Settings Dimension` where `User Key`=%d", $this->id);
 
 				if ($row = $this->db->query($sql)->fetch()) {
-				
-				
-				
+
+
+
 					$this->data=array_merge($this->data, $row);
 				}
 			}
@@ -334,7 +343,7 @@ class User extends DB_Table {
 			$staff->editor=$this->editor;
 			$staff->get_user_data();
 			$new_value=$this->get('Active');
-			$staff->add_changelog_record('Staff User Active', $old_value, $new_value, '');
+			$staff->add_changelog_record('Staff User Active', $old_value, $new_value, '', $staff->table_name, $staff->id);
 
 			break;
 		default:
@@ -523,7 +532,7 @@ class User extends DB_Table {
 				$staff->editor=$this->editor;
 				$staff->get_user_data();
 				$new_value=$this->get('Handle');
-				$staff->add_changelog_record('Staff User Handle', $old_value, $new_value, '');
+				$staff->add_changelog_record('Staff User Handle', $old_value, $new_value, '', $staff->table_name, $staff->id);
 
 				break;
 			default:
@@ -648,7 +657,7 @@ class User extends DB_Table {
 			$staff=new Staff($this->data['User Parent Key']);
 			$staff->editor=$this->editor;
 			$staff->get_user_data();
-			$staff->add_changelog_record('Staff User Password', '******', '******', '');
+			$staff->add_changelog_record('Staff User Password', '******', '******', '', $staff->table_name, $staff->id);
 
 			break;
 		default:
@@ -1790,7 +1799,7 @@ class User extends DB_Table {
 
 		}
 		else {
-			
+
 			$staff=new Staff($this->data['User Parent Key']);
 			if ($staff->data['Staff Currently Working']=='Yes') {
 				$this->data['User Staff Type']='Working';
@@ -2133,20 +2142,22 @@ class User extends DB_Table {
 		exit("User class: error get_tab_defaults not configured: $tab");
 	}
 
-    function create_api_key($data){
-    
-        $data['API Key User Key']=$this->id;
-        $data['API Key Valid From']=gmdate('Y-m-d H:i:s');
-       
-        $api_key= new API_Key('create', $data);
+
+	function create_api_key($data) {
+
+		$data['API Key User Key']=$this->id;
+		$data['API Key Valid From']=gmdate('Y-m-d H:i:s');
+
+		$api_key= new API_Key('create', $data);
 
 		$this->create_user_error=$api_key->error;
 		$this->create_user_msg=$api_key->msg;
 		$this->api_key=$api_key;
 
-        return $this->api_key;
-    
-    }
+		return $this->api_key;
+
+	}
+
 
 }
 

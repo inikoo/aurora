@@ -11,6 +11,7 @@
 
 
 require_once 'common.php';
+require_once 'utils/authorize_file_view.php';
 
 if (!isset($_REQUEST['id'])) {
 	$id=-1;
@@ -18,7 +19,7 @@ if (!isset($_REQUEST['id'])) {
 	$id=$_REQUEST['id'];
 
 
-if (isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/', $_REQUEST['size']))
+if (isset($_REQUEST['size']) and preg_match('/^(large|small|thumbnail|tiny|original)$/', $_REQUEST['size']))
 	$size=$_REQUEST['size'];
 else
 	$size='large';
@@ -26,9 +27,10 @@ else
 
 $attachement_not_found_image='art/error_404.png';
 $no_preview_image='art/error_404.png';
+$forbidden_image='art/error_403.jpg';
 
 
-$sql=sprintf("select B.`Attachment Key`,`Attachment Thumbnail Image Key` from `Attachment Bridge` B left join  `Attachment Dimension` A on (A.`Attachment Key`= B.`Attachment Key`) where `Attachment Bridge Key`=%d", $id);
+$sql=sprintf("select `Attachment Public`,`Subject`,`Subject Key`,B.`Attachment Key`,`Attachment Thumbnail Image Key` from `Attachment Bridge` B left join  `Attachment Dimension` A on (A.`Attachment Key`= B.`Attachment Key`) where `Attachment Bridge Key`=%d", $id);
 
 
 
@@ -39,9 +41,14 @@ if ($result=$db->query($sql)) {
 
 		if ($row['Attachment Thumbnail Image Key']) {
 
+			if ( authorize_file_view($user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])  ) {
 
-			display_database_image($db, $row['Attachment Thumbnail Image Key']);
-
+				display_database_image($db, $row['Attachment Thumbnail Image Key']);
+			}else {
+				header('Content-type:image/jpg');
+				readfile($forbidden_image);
+				exit;
+			}
 
 		}else {
 			header('Content-type:image/png');

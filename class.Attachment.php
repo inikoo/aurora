@@ -189,10 +189,12 @@ class Attachment extends DB_Table {
 
 	function get_data($key, $tag) {
 
-		if ($key=='id')
+		if ($key=='id') {
 			$sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d", $tag);
 
-		else
+		}elseif ($key=='bridge_key') {
+			$sql=sprintf("select * from `Attachment Bridge` B left join  `Attachment Dimension` A on (A.`Attachment Key`= B.`Attachment Key`) where `Attachment Bridge Key`=%d", $tag);
+		}else
 			return;
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
@@ -257,6 +259,13 @@ class Attachment extends DB_Table {
 			return sprintf('/attachment_preview.php?id=%d', $this->get('Attachment Bridge Key'));
 
 		case 'Public':
+			if ($this->data['Attachment Public']=='Yes')
+				return _('Yes');
+			else
+				return _('No');
+
+			break;
+		case 'Public Info':
 
 			if ($this->get('Subject')=='Staff') {
 				if ($this->data['Attachment Public']=='Yes')
@@ -274,13 +283,15 @@ class Attachment extends DB_Table {
 			return $visibility;
 
 			break;
+
+
 		case 'Subject Type':
 			switch ($this->data['Attachment Subject Type']) {
 			case 'Contract':
-				$type=_('Contract');
+				$type=_('Employment contract');
 				break;
 			case 'CV':
-				$type=_('CV');
+				$type=_('Curriculum vitae');
 				break;
 			default:
 				$type=_('Other');
@@ -538,7 +549,7 @@ class Attachment extends DB_Table {
 			$label=_('Content type');
 			break;
 		case 'Attachment Caption':
-			$label=_('Description');
+			$label=_('Short description');
 			break;
 
 		case 'Attachment Public':
@@ -566,6 +577,47 @@ class Attachment extends DB_Table {
 		}
 
 		return $label;
+	}
+
+
+	function update_field_switcher($field, $value, $options='') {
+		if (is_string($value))
+			$value=_trim($value);
+
+
+
+		switch ($field) {
+		case 'Attachment Caption':
+		case 'Attachment Subject Type':
+		case 'Attachment Public':
+			$this->update_table_field($field, $value, $options, 'Attachment Bridge', 'Attachment Bridge', $this->get('Attachment Bridge Key'));
+
+			if ($field=='Attachment Public') {
+				$this->other_fields_updated=array(
+					'Public_Info'=>array(
+						'field'=>'Public_Info',
+						'render'=>true,
+						'value'=>$this->get('Public_Info'),
+						'formated_value'=>$this->get('Public Info'),
+
+
+					)
+				);
+
+			}
+
+			break;
+		default:
+			$base_data=$this->base_data();
+			if (array_key_exists($field, $base_data)) {
+				$this->update_field($field, $value, $options);
+			}
+		}
+		$bridge_key=$this->get('Attachment Bridge Key');
+		$this->reread();
+
+		$this->get_subject_data($bridge_key);
+
 	}
 
 

@@ -118,8 +118,9 @@ function get_object($object_name, $key) {
 		$object=new Timesheet_Record($key);
 		break;
 	case 'attachment':
+	case 'Attachment':
 		require_once "class.Attachment.php";
-		$object=new Attachment($key);
+		$object=new Attachment('bridge_key',$key);
 		break;
 	case 'overtime':
 		require_once "class.Overtime.php";

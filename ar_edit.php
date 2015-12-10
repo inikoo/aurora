@@ -320,10 +320,20 @@ function upload_attachment($account, $db, $user, $editor, $data) {
 
 			$object=$parent->add_attachment($data['fields_data']);
 
+            switch ($parent->get_object_name()) {
+                case 'Staff':
+                    $parent_reference='employee';
+                    break;
+                default:
+                      $parent_reference=strtolower($parent->get_object_name());
+                    break;
+            }
 
 
 			$smarty->assign('account', $account);
 			$smarty->assign('object', $object);
+			$smarty->assign('parent', $parent_reference);
+			$smarty->assign('parent_key', $parent->id);
 
 			$pcard=$smarty->fetch('presentation_cards/attachment.pcard.tpl');
 			$updated_data=array();

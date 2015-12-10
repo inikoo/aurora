@@ -11,7 +11,7 @@
 </td>
 </tr>
 <tr class="title">
-<td colspan=2>{t}Attachment{/t} <i  onClick="change_view('employee/{$object->id}')" class="fa fa-link link"></i></td>
+<td colspan=2>{t}Attachment{/t} <i  onClick="change_view('{$parent}/{$parent_key}/attachment/{$object->get('Attachment Bridge Key')}')" class="fa fa-link link"></i></td>
 </tr>
 <tr>
 <td class="label">{$object->get_field_label('Attachment Subject Type')|capitalize}</td><td>{$object->get('Subject Type')}</td>
@@ -20,7 +20,7 @@
 <td class="label">{$object->get_field_label('Attachment Caption')|capitalize}</td><td>{$object->get('Caption')}</td>
 </tr>
 <tr>
-<td class="label">{$object->get_field_label('Attachment Public')|capitalize}</td><td>{$object->get('Public')}</td>
+<td class="label">{$object->get_field_label('Attachment Public')|capitalize}</td><td>{$object->get('Public Info')}</td>
 </tr>
 <tr>
 <td class="label">{$object->get_field_label('Attachment File Original Name')|capitalize}</td><td>{$object->get('File Original Name')}</td>
