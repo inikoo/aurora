@@ -74,20 +74,23 @@ html, body {
     background: $color_background;
     margin: 0px;
     font-size: 14px;
-    a {
-        color: #555;
-    }
-    a, table, button, tbody {
+    
+     a, table, button, tbody {
         outline: none;
     }
-    a {
-        text-decoration: none;
-        color: #222;
+    .link,a {
+    
+        color: #6a6d91;cursor:pointer;text-decoration:none;
     }
-    a:hover {
+   
+   
+   .link:hover,a:hover {
         text-decoration: underline;
-        color: #000;
+       
     }
+    
+   
+    
     table {
         border-collapse: collapse;
     }
@@ -194,6 +197,9 @@ input{
             padding: 0px 5px;
             opacity: .5;
         }
+        
+        .id{color:#F3E5AB}
+        
     }
 }
 .grid {
@@ -303,6 +309,7 @@ input{
             vertical-align: middle;
         }
     }
+    #hello_user{ color: $color_dark_brighter_font;}
     #account_name {
         line-height: $height_row;
         height: $height_row;
@@ -669,12 +676,8 @@ border-right:1px solid #ccc;margin-right:2px;
     color: steelblue;
     font-weight: 800;
 }
-.backgrid .link {
-    color: #6a6d91;
-}
-.backgrid .link:hover {
-    text-decoration: underline;
-}
+
+
 .backgrid {
     .totals td {
         color: #000;
@@ -683,6 +686,8 @@ border-right:1px solid #ccc;margin-right:2px;
 }
 .backgrid th {
     text-align: left;
+    
+    a {color:#444;}
 }
 .backgrid th, .backgrid td {
     vertical-align: top;

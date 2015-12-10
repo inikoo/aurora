@@ -50,11 +50,11 @@
 					<img src="/art/aurora_log_v2_orange_small.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
-					<span>{$user->get('User Alias')}</span> 
+					{$user->get('User Alias')}
 				</div>
 			</div>
 			<div id="account_name" class="link" onclick="change_view('account')">
-				{$account->get('Account Name')} 
+				{$account->get('Account Name')}
 			</div>
 			<div id="menu">
 			</div>
