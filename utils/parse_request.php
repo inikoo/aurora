@@ -1071,6 +1071,19 @@ function parse_request($_data, $db) {
 
 
 
+						}if ($view_path[1]=='attachment') {
+							$section='employee.attachment';
+							$object='attachment';
+							$parent='employee';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}
+							}
+
+
+
 						}
 						else if ($view_path[1]=='new') {
 

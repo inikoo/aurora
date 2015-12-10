@@ -137,6 +137,23 @@ ALTER TABLE `Timesheet Record Dimension` ADD `Timesheet Record Ignored Due Missi
 update `Timesheet Record Dimension` set `Timesheet Record Ignored Due Missing End`= `Timesheet Record Ignored`;
 ALTER TABLE `Timesheet Dimension` ADD `Timesheet Missing Clocking Records` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Timesheet Ignored Clocking Records`;
 
+//=======
+
+CREATE TABLE IF NOT EXISTS `Attachment Bridge History Bridge` (
+  `Attachment Bridge Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Attachment Bridge History Bridge` ADD PRIMARY KEY (`Attachment Bridge Key`, `History Key`);
+ALTER TABLE `Attachment Bridge History Bridge` ADD INDEX (`Attachment Bridge Key`);
+ALTER TABLE `Attachment Bridge History Bridge` ADD INDEX (`Attachment Bridge Key`);
+ALTER TABLE `Attachment Bridge History Bridge` ADD INDEX (`History Key`);
+ALTER TABLE `Attachment Bridge History Bridge` ADD INDEX (`Type`);
+
+
+
 
   
   INSERT INTO `Overtime Dimension` (`Overtime Key`, `Overtime Reference`, `Overtime Status`, `Overtime Start Date`, `Overtime End Date`, `Overtime Metadata`, `Overtime Type`, `Overtime Timesheets Entitled`, `Overtime Timesheets Granted`, `Overtime Staff Entitled`, `Overtime Staff Granted`, `Overtime Time`, `Overtime Paid Amount`, `Overtime Accrued Time`) VALUES (NULL, 'Xmas overtime W&P', 'Active', '2015-10-01 00:00:00', '2015-12-06 23:59:59', '{"data":{"amount_weekdays":7.44,"amount_saturday":15.44,"amount_sunday":15.44}}', 'Pay', '0', '0', '0', '0', '0', '0', '0');

@@ -62,7 +62,7 @@ $table=' `Attachment Bridge` B  left join `Attachment Dimension` A on (A.`Attach
 $sql_totals="select count(Distinct B.`Attachment Key`) as num from $table  $where  ";
 
 
-$fields="B.`Attachment Key`,`Attachment Subject Type`,`Attachment Caption`,`Attachment File Original Name`,`Attachment Public`,`Attachment MIME Type`,`Attachment Type`,`Attachment File Size`";
+$fields="`Attachment Bridge Key`,B.`Attachment Key`,`Attachment Subject Type`,`Attachment Caption`,`Attachment File Original Name`,`Attachment Public`,`Attachment MIME Type`,`Attachment Type`,`Attachment File Size`";
 
 
 ?>

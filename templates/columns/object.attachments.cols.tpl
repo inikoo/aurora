@@ -19,7 +19,13 @@ var columns = [{
     label: "{t}Caption{/t}",
     editable: false,
      cell: Backgrid.StringCell.extend({
-      className: ""
+      events: {
+            "click": function() {
+                change_view('/{$data['object']}/{$data['key']}/attachment/'+this.model.get("id"))
+            }
+        },
+     
+      className: "link"
      }),
 },{
     name: "type",

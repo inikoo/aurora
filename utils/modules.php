@@ -108,8 +108,8 @@ $modules=array(
 
 				),
 				'tabs'=>array(
-					'customer.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
-					'customer.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'customer.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'customer.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'customer.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders')),
 					'customer.marketing'=>array('label'=>_('Interests'), 'title'=>_("Customer's interests"),
 						'subtabs'=>array(
@@ -762,14 +762,24 @@ $modules=array(
 		'sections'=>array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 
+				'subtabs_parent'=>array(
+					'employees.timesheets'=>'timesheets',
+					'employees.timesheets.records'=>'timesheets',
 
+
+				),
 				'tabs'=>array(
-					'employees'=>array('label'=>_('Employees')),
-					'overtimes'=>array('label'=>_('Overtimes')),
+					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
+					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
+					'timesheets'=>array('label'=>_('Timesheets'),
+						'subtabs'=>array(
+							'employees.calendar'=>array('label'=>_('Calendar')),
+							'employees.timesheets'=>array('label'=>_('Timesheets')),
+							'employees.timesheets.records'=>array('label'=>_('Clockings')),
 
+						)
 
-					'exemployees'=>array('label'=>_('Ex employees'), 'class'=>'right'),
-
+					),
 
 				)
 
@@ -810,6 +820,7 @@ $modules=array(
 					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
+													'employee.calendar'=>array('label'=>_('Calendar')),
 
 							'employee.timesheets'=>array('label'=>_('Timesheets')),
 							'employee.timesheets.records'=>array('label'=>_('Clockings')),
@@ -824,15 +835,24 @@ $modules=array(
 
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'employee.new'=>array('label'=>_('New employee')),
+					'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
 
 				)
 
 			),
-
+			
 			'employee.attachment.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'employee.attachment.new'=>array('label'=>_('New attachment')),
+
+				)
+
+			),
+			
+			'employee.attachment'=>array('type'=>'object',
+				'tabs'=>array(
+					'employee.attachment.details'=>array('label'=>_('Details'),'icon'=>'database'),
+					'employee.attachment.history'=>array('label'=>_('History'),'icon'=>'clock-o'),
 
 				)
 
@@ -854,39 +874,6 @@ $modules=array(
 				)
 
 			),
-			'overtime'=>array('type'=>'object',
-
-				'subtabs_parent'=>array(
-					'overtime.timesheets'=>'overtime.timesheets',
-					'overtime.timesheets.records'=>'overtime.timesheets',
-
-
-				),
-
-				'tabs'=>array(
-					'overtime.details'=>array('label'=>_('Details'), 'icon'=>'database'),
-					'overtime.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'overtime.timesheets'=>array('label'=>_('Timesheets'),
-						'subtabs'=>array(
-							'overtime.calendar'=>array('label'=>_('Calendar')),
-
-							'overtime.timesheets'=>array('label'=>_('Timesheets')),
-							'overtime.timesheets.records'=>array('label'=>_('Clockings')),
-
-						)
-
-					),
-
-				)
-
-			),
-			'overtime.new'=>array('type'=>'new_object',
-				'tabs'=>array(
-					'overtime.new'=>array('label'=>_('New overtime')),
-
-				)
-
-			),
 
 			'timesheet'=>array('type'=>'object',
 				'tabs'=>array(
@@ -897,23 +884,6 @@ $modules=array(
 			),
 
 
-
-
-
-
-			'timesheets'=>array('type'=>'navigation','icon'=>'calendar-o','label'=>_('Calendar'),'reference'=>'timesheets/day/'.date('Ymd'),
-				'tabs'=>array(
-					'timesheets.months'=>array('label'=>_('Months')),
-
-					'timesheets.weeks'=>array('label'=>_('Weeks')),
-					'timesheets.days'=>array('label'=>_('Days')),
-					'timesheets.employees'=>array('label'=>_("Employes'")),
-
-					'timesheets.timesheets'=>array('label'=>_('Timesheets')),
-
-				)
-
-			),
 
 
 			'new_timesheet_record'=>array(
@@ -1043,21 +1013,15 @@ $modules=array(
 
 	'utils'=>array(
 		'sections'=>array(
-			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'icon'=>'shopping-cart', 'id'=>'forbidden',
+			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'title'=>_('Forbidden'), 'icon'=>'shopping-cart', 'id'=>'forbidden',
 				'tabs'=>array(
 					'forbidden'=>array()
 				)
 			),
-			'not_found'=>array('type'=>'object', 'label'=>_('Not found'), 'icon'=>'file-o', 'id'=>'not_found',
+			'not_found'=>array('type'=>'object', 'label'=>_('Not found'), 'title'=>_('Not found'), 'icon'=>'file-o', 'id'=>'not_found',
 
 				'tabs'=>array(
 					'not_found'=>array(),
-				)
-			),
-			'fire'=>array('type'=>'object', 'label'=>_('Fire'), 'icon'=>'file-o', 'id'=>'not_found',
-
-				'tabs'=>array(
-					'fire'=>array(),
 				)
 			),
 		)

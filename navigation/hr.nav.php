@@ -794,6 +794,49 @@ function get_new_employee_attachment_navigation($data) {
 
 }
 
+function get_employee_attachment_navigation($data) {
+
+	global $smarty;
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('hr', '');
+
+	$_section='employees';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	include_once 'class.Staff.php';
+	$employee=new Staff($data['parent_key']);
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
+
+	$right_buttons[]=array('icon'=>'download', 'title'=>_('Download'), 'id'=>'download_button' );
+	$left_buttons[]=$up_button;
+
+	$title= _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
 
 function get_timesheets_navigation($data) {
 

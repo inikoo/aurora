@@ -842,7 +842,14 @@ $tab_defaults=array(
 		
 
 	),
-	
+	'employee.attachment.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
 	
 	'contractor.history'=>array(
 		'view'=>'overview',
