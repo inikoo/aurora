@@ -253,7 +253,7 @@ class Account extends DB_Table{
 	function create_staff($data) {
 		$this->new_employee=false;
 
-        
+        $data['editor']=$this->editor;
 		$staff= new Staff('find', $data, 'create');
 		
 		
