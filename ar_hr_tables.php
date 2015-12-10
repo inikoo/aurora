@@ -386,7 +386,7 @@ function timesheet_records($_data, $db, $user) {
 				$source=_('Clocking machine');
 				break;
 			case 'Manual':
-				$source=_('Manual');
+				$source=_('Manual').' '.($data['authoriser']!=''?'('.$data['authoriser'].')':'');
 				break;
 			case 'API':
 				$source='API';
@@ -420,11 +420,13 @@ function timesheet_records($_data, $db, $user) {
 
 			switch ($data['Timesheet Record Action Type']) {
 			case 'Start':
-				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span></span>';
 
 				if ($data['Timesheet Record Ignored Due Missing End']=='Yes') {
-					$action_type.=' <i class="fa fa-exclamation-circle warning"></i>';
+					$warning=' <i title="'._('No associated clock out').'" class="fa fa-exclamation-circle warning"></i>';
+				}else {
+					$warning='';
 				}
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span> '.$warning.'</span>';
 
 				break;
 			case 'End':
@@ -434,7 +436,7 @@ function timesheet_records($_data, $db, $user) {
 				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
 				break;
 			case 'Ignored':
-				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').'</span></span>';
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').' '.($data['ignorer']!=''?'('.$data['ignorer'].')':'').'</span></span>';
 				break;
 			case 'MarkStart':
 				if ($data['Timesheet Record Type']=='WorkingHoursMark')
