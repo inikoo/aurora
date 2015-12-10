@@ -549,7 +549,12 @@ class Staff extends DB_Table{
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value, false);
+			if ($key=='Staff Valid To') {
+				$values.=','.prepare_mysql($value, true);
+
+			}else {
+				$values.=','.prepare_mysql($value, false);
+			}
 		}
 		$values=preg_replace('/^,/', '', $values);
 		$keys=preg_replace('/^,/', '', $keys);

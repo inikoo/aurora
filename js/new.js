@@ -395,7 +395,7 @@ function toggle_inline_new_object_form(trigger) {
         $('#inline_new_object').removeClass('hide')
         $('#icon_' + trigger).removeClass('fa-plus').addClass('fa-times')
 
-
+/*
 
         if (field_edit == 'time') {
             var d = new Date();
@@ -406,7 +406,9 @@ function toggle_inline_new_object_form(trigger) {
             $('#{$data.field_id}').val('')
 
         }
-
+*/
+       
+        $('#' + field).val('')
 
     } else {
         $('#inline_new_object').addClass('hide')

@@ -118,20 +118,15 @@ class Timesheet_Record extends DB_Table {
 
 			$this->id=$this->db->lastInsertId();
 			$this->new=true;
-
 			$this->get_data('id', $this->id);
 
+			if ($this->data['Timesheet Record Source']=='Manual') {
+				$this->update_field('Timesheet Authoriser Key', $this->editor['Author Key'], 'no_history');
 
-
-
+			}
 
 		} else {
 			$this->error=true;
-
-
-
-
-
 			$error_info=$this->db->errorInfo();
 			if ($error_info[0]==23000) {
 				$this->duplicated=true;
@@ -189,6 +184,7 @@ class Timesheet_Record extends DB_Table {
 
 			if ($value=='Yes') {
 				$this->update_field('Timesheet Record Action Type', 'ignored', 'no_history');
+				$this->update_field('Timesheet Remover Key', $this->editor['Author Key'], 'no_history');
 
 			}
 
@@ -196,7 +192,7 @@ class Timesheet_Record extends DB_Table {
 			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
 
 
-            $timesheet->update_number_clocking_records();
+			$timesheet->update_number_clocking_records();
 
 			$timesheet->process_clocking_records_action_type();
 			$timesheet->update_clocked_time();
@@ -204,7 +200,7 @@ class Timesheet_Record extends DB_Table {
 			$timesheet->update_unpaid_overtime();
 
 
-			$sql=sprintf('select `Timesheet Record Action Type`,`Timesheet Record Key`   from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d   and `Timesheet Record Type`="ClockingRecord" ',
+			$sql=sprintf('select `Timesheet Record Ignored Due Missing End`,`Staff Alias`,`Timesheet Remover Key`,`Timesheet Record Action Type`,`Timesheet Record Key`   from `Timesheet Record Dimension` left join  `Staff Dimension` S on (`Timesheet Remover Key`=S.`Staff Key`) where `Timesheet Record Timesheet Key`=%d   and `Timesheet Record Type`="ClockingRecord" ',
 				$this->data['Timesheet Record Timesheet Key']
 			);
 			$records_data=array();
@@ -214,7 +210,16 @@ class Timesheet_Record extends DB_Table {
 
 					switch ($row['Timesheet Record Action Type']) {
 					case 'Start':
-						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span></span>';
+
+						if ($row['Timesheet Record Ignored Due Missing End']=='Yes') {
+							$warning=' <i title="'._('No associated clock out').'" class="fa fa-exclamation-circle warning"></i>';
+						}else {
+							$warning='';
+						}
+
+
+
+						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span> '.$warning.'</span>';
 						break;
 					case 'End':
 						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
@@ -223,7 +228,10 @@ class Timesheet_Record extends DB_Table {
 						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
 						break;
 					case 'Ignored':
-						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').'</span></span>';
+
+
+
+						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignoredx').' '.($row['Staff Alias']!=''?'('.$row['Staff Alias'].')':'').'</span></span>';
 						break;
 
 

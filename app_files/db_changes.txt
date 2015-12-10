@@ -153,6 +153,8 @@ ALTER TABLE `Attachment Bridge History Bridge` ADD INDEX (`History Key`);
 ALTER TABLE `Attachment Bridge History Bridge` ADD INDEX (`Type`);
 
 
+ALTER TABLE `Timesheet Record Dimension` ADD `Timesheet Authoriser Key` MEDIUMINT UNSIGNED NULL AFTER `Timesheet Record Source`;
+ALTER TABLE `Timesheet Record Dimension` ADD `Timesheet Remover Key` MEDIUMINT UNSIGNED NULL AFTER `Timesheet Authoriser Key`;
 
 
   

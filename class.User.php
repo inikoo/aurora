@@ -238,7 +238,7 @@ class User extends DB_Table {
 
 
 			$user_id=$this->db->lastInsertId();
-$this->get_data('id', $user_id);
+			$this->get_data('id', $user_id);
 
 
 			$this->new=true;
@@ -253,7 +253,7 @@ $this->get_data('id', $user_id);
 
 			$this->msg= _('User added successfully');
 
-			
+
 			$this->update_staff_type();
 
 			if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
