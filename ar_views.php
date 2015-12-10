@@ -122,12 +122,14 @@ case 'views':
 	);
 	$db->exec($sql);
 
-
+	$response=array('state'=>array());
 
 	list($state, $response['view_position'])=get_view_position($state);
 
 
-	$response=array('state'=>array());
+
+
+
 
 
 	if ($data['old_state']['module']!=$state['module']  or $reload ) {
@@ -155,24 +157,24 @@ case 'views':
 
 		if ($state['parent']=='day') {
 
-            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.days']);
-            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.weeks']);
-            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
+			unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.days']);
+			unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.weeks']);
+			unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
 
 			if ($state['tab']=='timesheets.days' or $state['tab']=='timesheets.weeks' or $state['tab']=='timesheets.months' )
 				$state['tab']='timesheets.employees';
 
 		}elseif ($state['parent']=='week') {
 
-            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.weeks']);
-            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
+			unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.weeks']);
+			unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
 
 			if ( $state['tab']=='timesheets.weeks' or $state['tab']=='timesheets.months' )
 				$state['tab']='timesheets.days';
 
 		}elseif ($state['parent']=='month') {
 
-            unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
+			unset($modules[$state['module']]['sections'][$state['section']]['tabs']['timesheets.months']);
 
 			if ( $state['tab']=='timesheets.months' )
 				$state['tab']='timesheets.weeks';
@@ -318,7 +320,7 @@ function get_object_showcase($data) {
 	case 'attachment':
 		include_once 'showcase/attachment.show.php';
 		$html=get_attachment_showcase($data);
-		break;	
+		break;
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -676,7 +678,7 @@ function get_navigation($data) {
 			break;
 		case ('employee.attachment'):
 			return get_employee_attachment_navigation($data);
-			break;	
+			break;
 		}
 
 		break;
@@ -1113,6 +1115,50 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
 
 			break;
+		case 'employee.attachment':
+			include_once 'class.Staff.php';
+			$employee=new Staff($state['parent_key']);
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+
+			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$employee->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$employee->id);
+			$branch[]=array('label'=>_('Attachment').' <span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'', 'reference'=>'employee/'.$employee->id.'/attachment/'.$state['_object']->id);
+
+		case 'timesheets':
+			$branch[]=array('label'=>_("Employees' calendar"), 'icon'=>'', 'reference'=>'timesheets/day/'.date('Ymd'));
+			if ($state['parent']=='year') {
+				$branch[]=array('label'=>$state['parent_key'], 'icon'=>'', 'reference'=>'timesheets/year/'.$state['parent_key']);
+
+			}elseif ($state['parent']=='month') {
+				$year=substr($state['parent_key'], 0, 4);
+				$month=substr($state['parent_key'], 4, 2);
+				$branch[]=array('label'=>$year, 'icon'=>'', 'reference'=>'timesheets/year/'.$year);
+
+				$date=strtotime("$year-$month-01");
+				$branch[]=array('label'=>strftime('%B', $date), 'icon'=>'', 'reference'=>'timesheets/month/'.$state['parent_key']);
+
+			}elseif ($state['parent']=='week') {
+				$year=substr($state['parent_key'], 0, 4);
+				$week=substr($state['parent_key'], 4, 2);
+				$branch[]=array('label'=>$year, 'icon'=>'', 'reference'=>'timesheets/year/'.$year);
+
+				$date=strtotime("$year".'W'.$week);
+				$branch[]=array('label'=>  sprintf(_('%s week (starting %s %s)'), get_ordinal_suffix($week),strftime('%a', $date), get_ordinal_suffix(strftime('%d', $date)))               , 'icon'=>'', 'reference'=>'timesheets/week/'.$year.$week);
+
+			}elseif ($state['parent']=='day') {
+
+				$year=substr($state['parent_key'], 0, 4);
+				$month=substr($state['parent_key'], 4, 2);
+				$day=substr($state['parent_key'], 6, 2);
+
+				$date=strtotime("$year-$month-$day");
+
+				$branch[]=array('label'=>$year, 'icon'=>'', 'reference'=>'timesheets/year/'.$year);
+
+				$branch[]=array('label'=> strftime('%B', $date) , 'icon'=>'', 'reference'=>'timesheets/month/'.$year.$month);
+				$branch[]=array('label'=> strftime('%a', $date).' '. get_ordinal_suffix(strftime('%d', $date))   , 'icon'=>'', 'reference'=>'timesheets/month/'.$year.$month.$day);
+
+			}
+
 		}
 		break;
 	case 'inventory':

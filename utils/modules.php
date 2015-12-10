@@ -762,24 +762,14 @@ $modules=array(
 		'sections'=>array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 
-				'subtabs_parent'=>array(
-					'employees.timesheets'=>'timesheets',
-					'employees.timesheets.records'=>'timesheets',
-
-
-				),
+				
 				'tabs'=>array(
-					'employees'=>array('label'=>_('Employees'), 'title'=>_('Employees')),
+					'employees'=>array('label'=>_('Employees')),
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
-					'timesheets'=>array('label'=>_('Timesheets'),
-						'subtabs'=>array(
-							'employees.calendar'=>array('label'=>_('Calendar')),
-							'employees.timesheets'=>array('label'=>_('Timesheets')),
-							'employees.timesheets.records'=>array('label'=>_('Clockings')),
+										'overtimes'=>array('label'=>_('Overtimes')),
 
-						)
-
-					),
+					
+					
 
 				)
 
@@ -883,7 +873,19 @@ $modules=array(
 
 			),
 
+'timesheets'=>array('type'=>'navigation','icon'=>'calendar-o','label'=>_('Calendar'),'reference'=>'timesheets/day/'.date('Ymd'),
+				'tabs'=>array(
+					'timesheets.months'=>array('label'=>_('Months')),
 
+					'timesheets.weeks'=>array('label'=>_('Weeks')),
+					'timesheets.days'=>array('label'=>_('Days')),
+					'timesheets.employees'=>array('label'=>_("Employes'")),
+
+					'timesheets.timesheets'=>array('label'=>_('Timesheets')),
+
+				)
+
+			),
 
 
 			'new_timesheet_record'=>array(
@@ -1013,17 +1015,26 @@ $modules=array(
 
 	'utils'=>array(
 		'sections'=>array(
-			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'title'=>_('Forbidden'), 'icon'=>'shopping-cart', 'id'=>'forbidden',
+			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'title'=>_('Forbidden'),  'id'=>'forbidden',
 				'tabs'=>array(
 					'forbidden'=>array()
 				)
 			),
-			'not_found'=>array('type'=>'object', 'label'=>_('Not found'), 'title'=>_('Not found'), 'icon'=>'file-o', 'id'=>'not_found',
+			'not_found'=>array('type'=>'object', 'label'=>_('Not found'), 'title'=>_('Not found'), 'id'=>'not_found',
 
 				'tabs'=>array(
 					'not_found'=>array(),
 				)
 			),
+			
+			
+			'fire'=>array('type'=>'object', 'label'=>_('Fire'), 'icon'=>'file-o', 'id'=>'not_found',
+
+				'tabs'=>array(
+					'fire'=>array(),
+				)
+			),
+			
 		)
 	),
 

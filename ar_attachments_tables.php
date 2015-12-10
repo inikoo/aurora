@@ -103,7 +103,7 @@ function attachments($_data, $db, $user) {
 			'visibility'=>$visibility,
 			'type'=>$type,
 			'file_type'=>$file_type,
-			'file'=>sprintf('<a href="attachment/%d" download>%s</a>' ,$data['Attachment Bridge Key'],$data['Attachment File Original Name']),
+			'file'=>sprintf('<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>' ,$data['Attachment Bridge Key'],$data['Attachment Bridge Key'],$data['Attachment File Original Name']),
 		);
 
 	}

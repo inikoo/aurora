@@ -24,7 +24,11 @@ case 'month':
 	$where=sprintf(" where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month, $year);
 	break;
 case 'day':
-	$where=sprintf(" where  `Timesheet Date`=%s ", prepare_mysql($parameters['parent_key']));
+$year=substr($parameters['parent_key'], 0, 4);
+	$month=substr($parameters['parent_key'], 4, 2);
+		$day=substr($parameters['parent_key'], 6, 2);
+
+	$where=sprintf(" where  `Timesheet Date`=%s ", prepare_mysql("$year-$month-$day"));
 	break;
 default:
 	exit('parent not suported '.$parameters['parent']);

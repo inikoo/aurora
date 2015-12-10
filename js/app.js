@@ -84,7 +84,6 @@ function change_view(_request, metadata) {
         }
         
         
-        
 
         if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
 
