@@ -46,6 +46,7 @@ function parse_request($_data, $db) {
 		$count_view_path=count($view_path);
 		switch ($root) {
 		case 'index.php':
+		case 'dashboard':
 			$module='dashboard';
 			$section='dashboard';
 			break;
@@ -1015,6 +1016,36 @@ function parse_request($_data, $db) {
 
 			break;
 
+		case 'timesheets':
+
+			$module='hr';
+			$section='timesheets';
+			$object='';
+			
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+
+				if ($view_path[0]=='year') {
+					$parent=$view_path[0];
+
+			}elseif ($view_path[0]=='month') {
+					$parent=$view_path[0];
+				}elseif ($view_path[0]=='week') {
+					$parent=$view_path[0];
+				}elseif ($view_path[0]=='day') {
+					$parent=$view_path[0];
+				}
+
+			}
+
+			if (isset($view_path[1])) {
+				$parent_key=$view_path[1];
+			}
+
+			break;
+
 		case 'employee':
 
 			$module='hr';
@@ -1041,17 +1072,30 @@ function parse_request($_data, $db) {
 
 
 
-						}
-						else if ($view_path[1]=='new') {
-						
-							
+						}if ($view_path[1]=='attachment') {
+							$section='employee.attachment';
+							$object='attachment';
 							$parent='employee';
 							$parent_key=$key;
-						
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}
+							}
+
+
+
+						}
+						else if ($view_path[1]=='new') {
+
+
+							$parent='employee';
+							$parent_key=$key;
+
 
 							if (isset($view_path[2])) {
 								if ($view_path[2]=='attachment') {
-								
+
 									$section='employee.attachment.new';
 									$object='attachment';
 								}
@@ -1072,6 +1116,31 @@ function parse_request($_data, $db) {
 			}
 
 			break;
+
+		case 'overtime':
+
+			$module='hr';
+			$section='overtime';
+			$object='overtime';
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+
+
+
+
+				}elseif ($view_path[0]=='new') {
+					$section='overtime.new';
+					$object='overtime';
+
+				}
+			}
+
+			break;
+
 		case 'contractor':
 
 			$module='hr';
@@ -1138,12 +1207,6 @@ function parse_request($_data, $db) {
 
 
 				}
-
-
-
-
-
-
 
 				elseif ($view_path[0]=='user') {
 
@@ -1331,6 +1394,10 @@ function parse_request($_data, $db) {
 
 			}
 			break;
+		case 'fire':
+		    $module='utils';
+			$section='fire';	
+			
 		default:
 
 			break;
@@ -1362,18 +1429,9 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 
 	$subtab='';
-
-
-
 	if (isset($_data['subtab'])) {
 		$subtab=$_data['subtab'];
-
-
 		$tab=$modules[$module]['sections'][$section]['subtabs_parent'][$subtab];
-
-
-
-
 	}
 	elseif (isset($_data['tab'])) {
 		$tab=$_data['tab'];
@@ -1382,8 +1440,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 	else {
 
 		if (isset ( $_SESSION['state'][$module][$section]['tab'])   ) {
-
-
 			$tab=$_SESSION['state'][$module][$section]['tab'];
 
 		}
@@ -1391,7 +1447,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 			if ( !isset($modules[$module]['sections'][$section]['tabs']) or  !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs'])==0 ) {
 				print "problem with M: $module S: $section";
 			}
-
 			$tab=each($modules[$module]['sections'][$section]['tabs'])['key'];
 		}
 		$subtab=parse_subtab($module, $section, $tab, $modules);

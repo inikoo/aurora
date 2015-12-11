@@ -538,19 +538,23 @@ class Staff extends DB_Table{
 				$this->data[$key]=_trim($value);
 			}
 		}
-
+		$this->editor=$data['editor'];
 
 		if ($this->data['Staff Valid From']=='') {
 			$this->data['Staff Valid From']=gmdate('Y-m-d H:i:s');
 		}
 
 
-
 		$keys='';
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value, false);
+			if ($key=='Staff Valid To') {
+				$values.=','.prepare_mysql($value, true);
+
+			}else {
+				$values.=','.prepare_mysql($value, false);
+			}
 		}
 		$values=preg_replace('/^,/', '', $values);
 		$keys=preg_replace('/^,/', '', $keys);
@@ -558,14 +562,8 @@ class Staff extends DB_Table{
 		$sql="insert into `Staff Dimension` ($keys) values ($values)";
 
 		if ($this->db->exec($sql)) {
-
-
-
 			$this->id=$this->db->lastInsertId();
 			$this->get_data('id', $this->id);
-
-
-
 
 			if (!$this->data['Staff ID']) {
 				$sql=sprintf("update `Staff Dimension` set `Staff ID`=%d where `Staff Key`=%d", $this->id, $this->id);
@@ -574,11 +572,13 @@ class Staff extends DB_Table{
 
 
 			$history_data=array(
-				'History Abstract'=>sprintf(_('%s employee record created'), $this->data['Staff Alias']),
+				'History Abstract'=>sprintf(_('%s employee record created'), $this->data['Staff Name']),
 				'History Details'=>'',
 				'Action'=>'created'
 			);
-			$this->add_history($history_data);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
 			$this->new=true;
 
 
@@ -591,6 +591,7 @@ class Staff extends DB_Table{
 
 					}
 				}
+
 				$this->create_user($user_data);
 				//print_r($this->user);
 				if ($this->create_user_error) {
@@ -613,6 +614,9 @@ class Staff extends DB_Table{
 
 
 	function create_user($data) {
+
+
+		$data['editor']=$this->editor;
 
 		if (!array_key_exists('User Handle', $data) or $data['User Handle']=='' ) {
 			$this->create_user_error=true;
@@ -644,6 +648,98 @@ class Staff extends DB_Table{
 	}
 
 
+	function create_timesheet($date='', $options='') {
+
+		include_once 'class.Timesheet.php';
+		include_once 'class.Timesheet_Record.php';
+		if ($date=='') {
+			$date=date();
+		}
+
+		//$start = microtime(true);
+		//exit;
+		$working_hours=json_decode($this->data['Staff Working Hours'], true);
+		if (!$working_hours) {
+
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", $date),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
+			$this->update(array('Timesheet Type'=>'NoFixedWorkingHours'), 'no_history');
+
+
+			return $timesheet;
+		}
+		$day_of_the_week=date('N', $date);
+
+		if (isset($working_hours['data'][$day_of_the_week])) {
+
+			$day_data=$working_hours['data'][$day_of_the_week];
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", $date),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
+
+			if ($timesheet->get('Timesheet Working Hours Records')>=2 and $options=='') {
+				$timesheet->update_number_records('WorkingHoursMark');
+				$timesheet->update_type();
+
+
+				return $timesheet;
+			}
+
+			$timesheet->remove_records('WorkingHoursMark');
+
+			$record_data=array(
+				'Timesheet Record Timesheet Key'=>$timesheet->id,
+				'Timesheet Record Type'=>'WorkingHoursMark',
+				'Timesheet Record Staff Key'=>$this->id,
+				'Timesheet Record Date'=>date('Y-m-d', $date).' '.$day_data['s'].':00',
+				'Timesheet Record Source'=>'System',
+				'editor'=>$this->editor
+
+			);
+
+			$timesheet_record=new Timesheet_Record('new', $record_data);
+			$record_data['Timesheet Record Type']='WorkingHoursMark';
+
+			$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$day_data['e'].':00';
+			$timesheet_record=new Timesheet_Record('new', $record_data);
+
+			foreach ($day_data['b'] as $break) {
+				$record_data['Timesheet Record Type']='BreakMark';
+				$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['s'].':00';
+				$timesheet_record=new Timesheet_Record('new', $record_data);
+				$record_data['Timesheet Record Date']=date('Y-m-d', $date).' '.$break['e'].':00';
+				$timesheet_record=new Timesheet_Record('new', $record_data);
+			}
+
+		}else {
+			$timesheet_data=array(
+				'Timesheet Date'=>date("Y-m-d", $date),
+				'Timesheet Staff Key'=>$this->id,
+				'editor'=>$this->editor
+			);
+			$timesheet=new Timesheet('find', $timesheet_data, 'create');
+		}
+
+		$timesheet->update_number_records('BreakMark');
+
+		$timesheet->update_number_records('WorkingHoursMark');
+		$timesheet->update_type();
+		$timesheet->process_mark_records_action_type();
+
+		//$time_elapsed_secs = 1000*(microtime(true) - $start);
+		//print "\n<br>$time_elapsed_secs\n";
+
+		return $timesheet;
+	}
+
+
 	function create_timesheet_record($data) {
 
 		$data['Timesheet Record Staff Key']=$this->id;
@@ -663,9 +759,17 @@ class Staff extends DB_Table{
 			$timesheet=new Timesheet('find', $timesheet_data, 'create');
 
 			$this->timesheet_record->update(array('Timesheet Record Timesheet Key'=>$timesheet->id));
-			$timesheet->process_records_action_type();
-			$timesheet->update_clocked_hours();
-			$timesheet->update_clocking_records();
+
+
+			$timesheet->update_number_clocking_records();
+
+			$timesheet->process_clocking_records_action_type();
+			$timesheet->update_clocked_time();
+			$timesheet->update_working_time();
+			$timesheet->update_unpaid_overtime();
+
+
+
 
 		}
 
@@ -681,7 +785,7 @@ class Staff extends DB_Table{
 		}
 
 		$this->get_user_data();
-		$system_user=new User($this->data['Staff User Key']);
+		$system_user=new User($this->get('Staff User Key'));
 		if ($system_user->id) {
 
 			$system_user->update(array('User Alias'=>$value), $options);
@@ -699,12 +803,12 @@ class Staff extends DB_Table{
 		$value=password_hash($value, PASSWORD_DEFAULT);
 
 		$this->update_field('Staff PIN', $value, 'nohistory');
-		$this->add_changelog_record('Staff PIN', '****', '****', '');
+		$this->add_changelog_record('Staff PIN', '****', '****', '', $this->table_name, $this->id);
 		$system_user=new User($this->data['Staff User Key']);
 		$system_user->editor=$this->editor;
 
 		if ($system_user->id) {
-			$system_user->add_changelog_record('User PIN', '****', '****', '');
+			$system_user->add_changelog_record('User PIN', '****', '****', '', $system_user->table_name, $system_user->id);
 		}
 
 	}
@@ -768,10 +872,6 @@ class Staff extends DB_Table{
 			$this->msg=$system_user->msg;
 			$this->updated=$system_user->updated;
 
-
-			//$new_value=$this->get($user_field);
-
-			//$this->add_changelog_record($field, $old_value, $new_value, '');
 
 			break;
 
@@ -843,7 +943,7 @@ class Staff extends DB_Table{
 		}
 
 		$new_value=$this->get('Position');
-		$this->add_changelog_record('Staff Position', $old_value, $new_value, $options);
+		$this->add_changelog_record('Staff Position', $old_value, $new_value, $options, $this->table_name, $this->id);
 
 
 
@@ -918,7 +1018,7 @@ class Staff extends DB_Table{
 		}
 
 		$new_value=$this->get('Supervisor');
-		$this->add_changelog_record('Staff Supervisor', $old_value, $new_value, $options);
+		$this->add_changelog_record('Staff Supervisor', $old_value, $new_value, $options, $this->table_name, $this->id);
 
 
 	}

@@ -84,35 +84,41 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='payment') {
 	$where=sprintf(' where   B.`Payment Key`=%d   ', $parameters['parent_key']);
 	$subject='Payment';
+}elseif ($parameters['parent']=='attachment') {
+	$where=sprintf(' where   B.`Attachment Bridge Key`=%d   ', $parameters['parent_key']);
+	$subject='Attachment Bridge';
+}else {
+	print_r($parameters);
+	exit('parent not set up');
 }
 
-if(isset($parameters['elements']['type']['items'])){
-$elements=$parameters['elements']['type']['items'];
+if (isset($parameters['elements']['type']['items'])) {
+	$elements=$parameters['elements']['type']['items'];
 
 
-$_elements='';
-$elements_count=0;
-if (is_array($elements)) {
-	foreach ($elements as $_key=>$_value) {
-		if ($_value['selected']){
-			$_elements.=','.prepare_mysql($_key);
-			$elements_count++;
+	$_elements='';
+	$elements_count=0;
+	if (is_array($elements)) {
+		foreach ($elements as $_key=>$_value) {
+			if ($_value['selected']) {
+				$_elements.=','.prepare_mysql($_key);
+				$elements_count++;
 			}
-	}
-	$_elements=preg_replace('/^\,/', '', $_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} else {
-	
-	    if($parameters['parent']=='customer' and $elements_count==6){
-	    
-	    }else{
-	
-		$where.=' and Type in ('.$_elements.')' ;
-		
+		}
+		$_elements=preg_replace('/^\,/', '', $_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} else {
+
+			if ($parameters['parent']=='customer' and $elements_count==6) {
+
+			}else {
+
+				$where.=' and Type in ('.$_elements.')' ;
+
+			}
 		}
 	}
-}
 }
 
 $wheref='';
@@ -145,6 +151,8 @@ $order_direction='';
 $table="  `$subject History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`) ";
 
 $sql_totals="select count(Distinct B.`History Key`) as num from $table  $where  ";
+
+//print $sql_totals;
 $fields="`Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date`";
 
 ?>

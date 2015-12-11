@@ -12,18 +12,18 @@
 
 
 switch ($parameters['parent']) {
-    case 'employee':
-        $where=sprintf(" where  TRD.`Timesheet Record Staff Key`=%d ",$parameters['parent_key']);
-        break;
-     case 'timesheet':
-        $where=sprintf(" where  TRD.`Timesheet Record Timesheet Key`=%d ",$parameters['parent_key']);
-        break;   
-     case 'account':
-        $where=sprintf(" where true ");
-        break;    
-    default:
-       exit('parent not suported');
-        break;
+case 'employee':
+	$where=sprintf(" where  TRD.`Timesheet Record Staff Key`=%d ", $parameters['parent_key']);
+	break;
+case 'timesheet':
+	$where=sprintf(" where  TRD.`Timesheet Record Timesheet Key`=%d ", $parameters['parent_key']);
+	break;
+case 'account':
+	$where=sprintf(" where true ");
+	break;
+default:
+	exit('parent not suported');
+	break;
 }
 
 
@@ -39,9 +39,9 @@ if (isset($parameters['period'])) {
 
 $wheref='';
 if ($parameters['f_field']=='alias' and $f_value!=''  ) {
-	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
+	$wheref.=" and  SD.`Staff Alias` like '".addslashes($f_value)."%'    ";
 }elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$wheref=sprintf('  and  SD.`Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
 }
 
 
@@ -52,12 +52,14 @@ $_dir=$order_direction;
 
 
 if ($order=='alias')
-	$order='`Staff Alias`';
-	elseif ($order=='name')
-	$order='`Staff Name`';
+	$order='SD.`Staff Alias`';
+elseif ($order=='name')
+	$order='SD.`Staff Name`';
+elseif ($order=='time')
+	$order='`Timesheet Record Date`';
 elseif ($order=='date')
 	$order='`Timesheet Record Date`';
-	elseif ($order=='ignored')
+elseif ($order=='ignored')
 	$order='`Timesheet Record Ignored`';
 
 else
@@ -66,13 +68,17 @@ else
 
 
 
-$table='  `Timesheet Record Dimension` as TRD left join `Staff Dimension` SD on (SD.`Staff Key`=TRD.`Timesheet Record Staff Key`) ';
+$table='  `Timesheet Record Dimension` as TRD left join `Staff Dimension` SD on (SD.`Staff Key`=TRD.`Timesheet Record Staff Key`) left join `Staff Dimension` A on (A.`Staff Key`=TRD.`Timesheet Authoriser Key`)  left join `Staff Dimension` I on (I.`Staff Key`=TRD.`Timesheet Remover Key`)    ';
 
 $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
-`Timesheet Record Ignored`,`Timesheet Record Timesheet Key`,`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,`Staff Alias`,`Timesheet Record Staff Key`,`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
+A.`Staff Alias` authoriser,
+I.`Staff Alias` ignorer,
+
+`Timesheet Record Ignored Due Missing End`,
+`Timesheet Record Ignored`,`Timesheet Record Timesheet Key`,SD.`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,SD.`Staff Alias`,`Timesheet Record Staff Key`,SD.`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
 ";
 
 ?>

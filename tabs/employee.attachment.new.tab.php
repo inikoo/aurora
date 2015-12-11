@@ -13,13 +13,14 @@
 include_once 'utils/invalid_messages.php';
 include_once 'class.Staff.php';
 
-$api_key=$state['_object'];
+$attachment=$state['_object'];
+$attachment->set_subject('staff');
 
 $options_Attachment_Subject_Type=array(
 	'CV'=>_('Curriculum vitae'),
 	'Contract'=>_('Employment contract'),
 	'Other'=>_('Other'),
-	
+
 );
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
@@ -42,21 +43,21 @@ $object_fields=array(
 				'value'=>'Other',
 				'formated_value'=>_('Other'),
 				'options'=>$options_Attachment_Subject_Type,
-				'label'=>ucfirst($api_key->get_field_label('Attachment Subject Type')),
+				'label'=>ucfirst($attachment->get_field_label('Attachment Subject Type')),
 				'required'=>true,
 
 				'type'=>'value'
 			),
-array(
+			array(
 
 				'id'=>'Attachment_Caption',
 				'edit'=>'string',
 				'value'=>'',
 				'formated_value'=>'',
 
-				'label'=>ucfirst($api_key->get_field_label('Attachment Caption')),
+				'label'=>ucfirst($attachment->get_field_label('Attachment Caption')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>false,
+				'required'=>true,
 				'type'=>'value'
 
 			),
@@ -72,12 +73,12 @@ array(
 
 			array(
 
-			'id'=>'Attachment_Public',
+				'id'=>'Attachment_Public',
 				'edit'=>'option',
 				'value'=>'No',
 				'formated_value'=>_('No'),
 				'options'=>$options_yn,
-				'label'=>ucfirst($api_key->get_field_label('Attachment Public')),
+				'label'=>ucfirst($attachment->get_field_label('Attachment Public')),
 				'required'=>true,
 
 				'type'=>'value'
@@ -87,7 +88,7 @@ array(
 		)
 	),
 
-array(
+	array(
 		'label'=>_('Attachment'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -95,11 +96,11 @@ array(
 
 			array(
 
-			'id'=>'Attachment_File',
+				'id'=>'Attachment_File',
 				'edit'=>'attachment',
 				'value'=>'',
 				'formated_value'=>'',
-				'label'=>ucfirst($api_key->get_field_label('Attachment File')),
+				'label'=>ucfirst($attachment->get_field_label('Attachment File')),
 				'required'=>true,
 
 				'type'=>'value'
@@ -114,9 +115,9 @@ array(
 
 
 $smarty->assign('state', $state);
-$smarty->assign('object', $api_key);
+$smarty->assign('object', $attachment);
 
-$smarty->assign('object_name', preg_replace('/ /','_',$api_key->get_object_name()));
+$smarty->assign('object_name', preg_replace('/ /', '_', $attachment->get_object_name()));
 
 
 $smarty->assign('upload_file', 'upload_attachment');

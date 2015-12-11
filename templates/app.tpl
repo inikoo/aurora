@@ -51,11 +51,11 @@
 					<img src="/art/aurora_log_v2_orange_small.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
-					<span>{$user->get('User Alias')}</span> 
+					{$user->get('User Alias')}
 				</div>
 			</div>
 			<div id="account_name" class="link" onclick="change_view('account')">
-				{$account->get('Account Name')} 
+				{$account->get('Account Name')}
 			</div>
 			<div id="menu">
 			</div>
@@ -77,6 +77,11 @@
 		</div>
 	</section>
 	<aside id="notifications">
+	<div class="top_buttons" style="padding:2px 10px;border-bottom:1px solid #eee">
+	<div onclick="change_view('/fire')"  class="square_button  " title="{t}Fire evacuation roll call{/t}" >
+		<i class="fa fa-fire fa-fw" style="color:orange"></i> 
+	</div>
+	<div>
 	</aside>
 </div>
 </body>

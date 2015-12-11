@@ -25,7 +25,7 @@ var columns = [
      sortType: "toggle",
    
     cell: Backgrid.HtmlCell.extend({
-      className: "used_col"
+      className: "width_20"
     })
     
 },
@@ -134,7 +134,9 @@ var columns = [
     label: "{t}Action{/t}",
      editable: false,
      sortType: "toggle",
-     cell:'html'
+     cell: Backgrid.HtmlCell.extend({
+      className: "width_200"
+    })
 },
 {
     name: "ignored",

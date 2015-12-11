@@ -26,10 +26,24 @@ default:
 
 
 if (isset($parameters['period'])) {
+
+
+
+
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
+//print_r($parameters);
+//print " $from, $to\n";
+
+
 	$where_interval=prepare_mysql_dates($from, $to, '`Timesheet Date`');
-	$where.=$where_interval['mysql'];
+	
+	
+	
+	$where.=preg_replace('/ \d{2}:\d{2}:\d{2}/','',$where_interval['mysql']);
+	
+//	print " $from, $to $where\n";
+
 }
 
 
@@ -68,7 +82,7 @@ elseif ($order=='payroll_id')
 	$order='`Staff ID`';	
 	
 elseif ($order=='clocked_hours')
-	$order='`Timesheet Clocked Hours`';
+	$order='`Timesheet Clocked Time`';
 elseif ($order=='clocking_records')
 	$order='`Timesheet Clocking Records`';		
 elseif ($order=='staff_formated_id')
@@ -88,7 +102,17 @@ $sql_totals="select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
 $fields="
-`Timesheet Clocking Records`,`Timesheet Ignored Clocking Records`,`Timesheet Key`,`Timesheet Clocked Hours`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
+`Timesheet Missing Clocking Records`,
+(`Timesheet Paid Overtime`+`Timesheet Unpaid Overtime`+`Timesheet Working Time`)  worked_time,
+`Timesheet Paid Overtime` paid_overtime,
+`Timesheet Unpaid Overtime`unpaid_overtime,
+`Timesheet Working Time` work_time,
+`Timesheet Breaks Time` breaks,
+`Timesheet Clocked Time` clocked_time,
+ 
+ 
+ 
+`Timesheet Clocking Records`,`Timesheet Ignored Clocking Records`,`Timesheet Key`,`Timesheet Clocked Time`,`Staff Alias`,`Timesheet Staff Key`,`Staff Name`,`Timesheet Date`,`Staff ID`
 ";
 
 ?>
