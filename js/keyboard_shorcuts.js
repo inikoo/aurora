@@ -33,6 +33,9 @@ function navigate(e, direction) {
     if (key_scope) {
 
         switch (key_scope.type) {
+        case 'search':
+            navigate_search(e, direction);
+            break;
         case 'option':
             navigate_option(e, key_scope.field, direction);
             break;
@@ -41,6 +44,32 @@ function navigate(e, direction) {
         default:
 
         }
+
+    }
+}
+
+function navigate_search(e, direction) {
+
+    switch (direction) {
+    case 'up':
+        e.preventDefault();
+        var element = $('#results .result.selected').prev()
+        if (element.attr('id') != undefined) {
+            $('#results .result.selected').removeClass('selected');
+            element.addClass('selected');
+        }
+        break;
+
+    case 'down':
+        e.preventDefault();
+        var element = $('#results .result.selected').next()
+        if (element.attr('id') != undefined) {
+            $('#results .result.selected').removeClass('selected');
+            element.addClass('selected');
+        }
+        break;
+
+    default:
 
     }
 }
@@ -71,9 +100,16 @@ function navigate_option(e, field, direction) {
 
 
 function enter_hit(e) {
+
     if (key_scope) {
 
         switch (key_scope.type) {
+        case 'search':
+            var view = $("#results .result.selected").attr('view')
+            if (view) {
+                change_view(view)
+            }
+            break;
         case 'option':
         case 'radio_option':
         case 'string':
