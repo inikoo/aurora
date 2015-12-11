@@ -46,6 +46,7 @@ function parse_request($_data, $db) {
 		$count_view_path=count($view_path);
 		switch ($root) {
 		case 'index.php':
+		case 'dashboard':
 			$module='dashboard';
 			$section='dashboard';
 			break;

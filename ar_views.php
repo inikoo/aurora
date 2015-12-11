@@ -122,6 +122,8 @@ case 'views':
 	);
 	$db->exec($sql);
 
+	$_SESSION['request']=$state['request'];
+
 	$response=array('state'=>array());
 
 	list($state, $response['view_position'])=get_view_position($state);
@@ -275,6 +277,7 @@ function get_object_showcase($data) {
 	switch ($data['object']  ) {
 	case 'store':
 	case 'website':
+	case 'dashboard':
 		$html='';
 		break;
 	case 'account':
@@ -831,7 +834,7 @@ function get_view_position($state) {
 	$state['current_website']='';
 	$state['current_warehouse']='';
 
-	$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
+	$branch=array(array('label'=>'<span class="id">'._('Home').'</a>', 'icon'=>'home', 'reference'=>'/dashboard'));
 
 	switch ($state['module']) {
 
@@ -1142,7 +1145,7 @@ function get_view_position($state) {
 				$branch[]=array('label'=>$year, 'icon'=>'', 'reference'=>'timesheets/year/'.$year);
 
 				$date=strtotime("$year".'W'.$week);
-				$branch[]=array('label'=>  sprintf(_('%s week (starting %s %s)'), get_ordinal_suffix($week),strftime('%a', $date), get_ordinal_suffix(strftime('%d', $date)))               , 'icon'=>'', 'reference'=>'timesheets/week/'.$year.$week);
+				$branch[]=array('label'=>  sprintf(_('%s week (starting %s %s)'), get_ordinal_suffix($week), strftime('%a', $date), get_ordinal_suffix(strftime('%d', $date)))               , 'icon'=>'', 'reference'=>'timesheets/week/'.$year.$week);
 
 			}elseif ($state['parent']=='day') {
 

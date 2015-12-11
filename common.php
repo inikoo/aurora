@@ -69,7 +69,7 @@ if (!$is_already_logged_in) {
 	$target = $_SERVER['PHP_SELF'];
 	if (!preg_match('/(js|js\.php)$/',$target)) {
 
-		header('Location: /login.php');
+		header('Location: /login.php?ref='.$_SERVER['REQUEST_URI']);
 		exit;
 	}
 	exit;
