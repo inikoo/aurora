@@ -379,11 +379,12 @@ input {
           color: #000;
           background: none; }
         #app_main #navigation #header #search_form #results_container {
+          z-index: 100;
           position: absolute;
-          width: 550px; }
+          width: 650px; }
           #app_main #navigation #header #search_form #results_container #results_container_shifted {
             position: relative;
-            left: -227px;
+            left: -327px;
             background: #FFF;
             width: 100%; }
             #app_main #navigation #header #search_form #results_container #results_container_shifted.show {

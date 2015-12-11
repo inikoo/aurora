@@ -18,11 +18,12 @@
         background: none;
     }
     #results_container {
+    z-index: 100;
         position: absolute;
-        width: 550px;
+        width: 650px;
         #results_container_shifted {
             position: relative;
-            left: -227px;
+            left: -327px;
             background: #FFF;
             width: 100%;
             &.show {
