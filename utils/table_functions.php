@@ -144,6 +144,16 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s payment account', '%s payment accounts', $total_records), number($total_records));
 	}elseif ($record_label=='timesheet') {
 		return sprintf(ngettext('%s timesheet', '%s timesheets', $total_records), number($total_records));
+	}elseif ($record_label=='overtime') {
+		return sprintf(ngettext('%s overtime', '%s overtimes', $total_records), number($total_records));
+	}elseif ($record_label=='attachment') {
+		return sprintf(ngettext('%s attachment', '%s attachments', $total_records), number($total_records));
+	}elseif ($record_label=='week') {
+		return sprintf(ngettext('%s week', '%s weeks', $total_records), number($total_records));
+	}elseif ($record_label=='month') {
+		return sprintf(ngettext('%s month', '%s months', $total_records), number($total_records));
+	}elseif ($record_label=='day') {
+		return sprintf(ngettext('%s day', '%s days', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -211,6 +221,16 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s payment account of %s', '%s payment accounts of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='timesheet') {
 		return sprintf(ngettext('%s timesheet of %s', '%s timesheets of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='overtime') {
+		return sprintf(ngettext('%s overtime of %s', '%s overtimes of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='attachment') {
+		return sprintf(ngettext('%s attachment of %s', '%s attachments of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='month') {
+		return sprintf(ngettext('%s month of %s', '%s months of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='week') {
+		return sprintf(ngettext('%s week of %s', '%s weeks of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='day') {
+		return sprintf(ngettext('%s day of %s', '%s days of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}

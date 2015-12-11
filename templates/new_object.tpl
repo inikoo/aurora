@@ -68,11 +68,11 @@
 		
 		{elseif $edit=='attachment' } 
 		
-	<input id="{$field.id}" type="file"  class="input_field " has_been_valid="0" >
+	    <input id="{$field.id}" type="file"  class="input_field " has_been_valid="0" >
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
-				{elseif $edit=='telephone' } 
-	<input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0"/>
+		{elseif $edit=='telephone' } 
+	    <input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0"/>
 		<span id="{$field.id}_msg" class="msg"></span> 
 	
 		
@@ -198,7 +198,8 @@
 		        $('#{$field.id}').val('')
 		    }
 
-		     < /script>
+
+		     </script>
 
         {/if} 
   	    
@@ -242,6 +243,14 @@
         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
         delayed_on_change_field($(this),delay)
     });
+    
+     $(".input_field").on("file change", function(evt) {
+     
+     on_changed_value($(this).attr('id'), $(this).val())
+      });
+    
+    
+    
     
      $(".confirm_input_field").on("input propertychange", function(evt) {
         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;

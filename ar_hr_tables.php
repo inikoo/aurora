@@ -45,7 +45,24 @@ case 'contractors':
 case 'timesheet_records':
 	timesheet_records(get_table_parameters(), $db, $user);
 	break;
-
+case 'overtimes':
+	overtimes(get_table_parameters(), $db, $user);
+	break;
+case 'months':
+	months(get_table_parameters(), $db, $user);
+	break;
+case 'weeks':
+	weeks(get_table_parameters(), $db, $user);
+	break;
+case 'days':
+	days(get_table_parameters(), $db, $user);
+	break;
+case 'timesheets.employees':
+	timesheets_employees(get_table_parameters(), $db, $user);
+	break;
+case 'fire':
+	fire(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -261,30 +278,75 @@ function contractors($_data, $db, $user) {
 
 
 function timesheets($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='timesheet';
 	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
+	//print $sql;
 	$adata=array();
 
-	foreach ($db->query($sql) as $data) {
-		$adata[]=array(
-			'id'=>(integer) $data['Timesheet Key'],
-			'staff_key'=>(integer) $data['Timesheet Staff Key'],
-			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
 
-			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
-			'alias'=>$data['Staff Alias'],
-			'name'=>$data['Staff Name'],
-			'payroll_id'=>$data['Staff ID'],
-			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
-			'clocked_hours'=>number($data['Timesheet Clocked Hours'], 2).' '._('hours'),
-			'clocking_records'=>number($data['Timesheet Clocking Records'])
+	if ($result=$db->query($sql)) {
 
-		);
+		foreach ($result as $data) {
 
+
+
+			$date=strtotime($data['Timesheet Date']);
+			/*
+
+			$clocked_hours=$data['Timesheet Clocked Time']/3600;
+			$breaks_hours=$data['Timesheet Breaks Time']/3600;
+			$work_time_hours=$data['Timesheet Working Time']/3600;
+			$unpaid_overtime=$data['Timesheet Unpaid Overtime']/3600;
+			$paid_overtime=$data['Timesheet Paid Overtime']/3600;
+			$worked_time=$data['worked_time']/3600;
+		*/
+			$clocked_hours=$data['clocked_time']/3600;
+			$breaks_hours=$data['breaks']/3600;
+			$work_time_hours=$data['work_time']/3600;
+			$unpaid_overtime=$data['unpaid_overtime']/3600;
+			$paid_overtime=$data['paid_overtime']/3600;
+			$worked_time=$data['worked_time']/3600;
+
+			$alert=($data['Timesheet Missing Clocking Records']>0?'<i class="fa fa-exclamation-circle warning"></i>':'');
+
+			$adata[]=array(
+				'id'=>(integer) $data['Timesheet Key'],
+				'staff_key'=>(integer) $data['Timesheet Staff Key'],
+				'formated_id'=>'<i class="fa fa-calendar"></i>',
+				'date_key'=>date('Ymd', $date),
+				'alert'=>$alert,
+
+				'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+				'alias'=>$data['Staff Alias'],
+				'name'=>$data['Staff Name'],
+				'payroll_id'=>$data['Staff ID'],
+				'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", $date):''),
+				//'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				//'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				//'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2), _('h')):'<span class="disabled">-</span>'),
+				//'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
+				//'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
+				//'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2), _('h')):'<span class="disabled">-</span>'),
+				'clocked_time'=> ($clocked_hours!=0? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['breaks']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time'=> ($worked_time!=0? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'  :'<span class="disabled">-</span>'),
+
+
+				'clocking_records'=>number($data['Timesheet Clocking Records'])
+
+			);
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
 
 	$response=array('resultset'=>
@@ -303,7 +365,7 @@ function timesheets($_data, $db, $user) {
 
 
 function timesheet_records($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='request';
 	include_once 'prepare_table/init.php';
 
@@ -324,7 +386,7 @@ function timesheet_records($_data, $db, $user) {
 				$source=_('Clocking machine');
 				break;
 			case 'Manual':
-				$source=_('Manual');
+				$source=_('Manual').' '.($data['authoriser']!=''?'('.$data['authoriser'].')':'');
 				break;
 			case 'API':
 				$source='API';
@@ -339,6 +401,9 @@ function timesheet_records($_data, $db, $user) {
 				break;
 			case 'OvertimeMark':
 				$type=_('Overtime mark');
+				break;
+			case 'BreakMark':
+				$type=_('Break mark');
 				break;
 			case 'ClockingRecord':
 				$type=_('Clocking record');
@@ -355,7 +420,14 @@ function timesheet_records($_data, $db, $user) {
 
 			switch ($data['Timesheet Record Action Type']) {
 			case 'Start':
-				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span></span>';
+
+				if ($data['Timesheet Record Ignored Due Missing End']=='Yes') {
+					$warning=' <i title="'._('No associated clock out').'" class="fa fa-exclamation-circle warning"></i>';
+				}else {
+					$warning='';
+				}
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span> '.$warning.'</span>';
+
 				break;
 			case 'End':
 				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
@@ -364,34 +436,54 @@ function timesheet_records($_data, $db, $user) {
 				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
 				break;
 			case 'Ignored':
-				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').'</span></span>';
+				$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').' '.($data['ignorer']!=''?'('.$data['ignorer'].')':'').'</span></span>';
+				break;
+			case 'MarkStart':
+				if ($data['Timesheet Record Type']=='WorkingHoursMark')
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-map-marker"></i> '._('Start').'</span></span>';
+				else
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-cutlery"></i> '._('End').'</span></span>';
+
+				break;
+			case 'MarkEnd':
+				if ($data['Timesheet Record Type']=='WorkingHoursMark')
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-map-marker"></i> '._('End').'</span></span>';
+				else
+					$action_type='<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-cutlery"></i> '._('Start').'</span></span>';
+
 				break;
 			default:
 				$action_type=$data['Timesheet Record Action Type'];
 				break;
 			}
 
-			switch ($data['Timesheet Record Ignored']) {
-			case 'Yes':
-				$ignored=_('Yes');
-				$used=sprintf('<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-square-o checkbox"></i>',
-					$data['Timesheet Record Key'],
-					$data['Timesheet Record Key']
-				);
-				break;
-			case 'No':
-				$ignored=_('No');
-				$used=sprintf('<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-check-square-o checkbox"></i>',
-					$data['Timesheet Record Key'],
-					$data['Timesheet Record Key']
-				);
-				break;
+			if ($data['Timesheet Record Type']=='ClockingRecord') {
+
+				switch ($data['Timesheet Record Ignored']) {
+				case 'Yes':
+					$ignored=_('Yes');
+					$used=sprintf('<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-square-o checkbox"></i>',
+						$data['Timesheet Record Key'],
+						$data['Timesheet Record Key']
+					);
+					break;
+				case 'No':
+					$ignored=_('No');
+					$used=sprintf('<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-check-square-o checkbox"></i>',
+						$data['Timesheet Record Key'],
+						$data['Timesheet Record Key']
+					);
+					break;
 
 
-			default:
+				default:
+					$ignored=$data['Timesheet Record Ignored'];
+					$used='';
+					break;
+				}
+			}else {
 				$ignored=$data['Timesheet Record Ignored'];
 				$used='';
-				break;
 			}
 
 			$notes=sprintf('<span id="notes_%d" ></span>', $data['Timesheet Record Key']);
@@ -428,6 +520,381 @@ function timesheet_records($_data, $db, $user) {
 
 
 
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function overtimes($_data, $db, $user) {
+
+	$rtext_label='overtime';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['Overtime Status']) {
+			case 'Active':
+				$status=sprintf('<i id="status_%d"  onClick="suspend_overtime(%d)" class="fa fa-fw fa-play checkbox"></i>',
+					$data['Overtime Key'],
+					$data['Overtime Key']
+				);
+				break;
+			case 'Suspended':
+				$status=sprintf('<i id="status_%d"  onClick="active_overtime(%d)" class="fa fa-fw fa-pause checkbox"></i>',
+					$data['Overtime Key'],
+					$data['Overtime Key']
+				);
+				break;
+			case 'Pending':
+				$used=sprintf('<i  class="fa fa-fw fa-hourglass-start "></i>',
+					$data['Timesheet Record Key'],
+					$data['Timesheet Record Key']
+				);
+				break;
+			case 'Finish':
+				$used=sprintf('<i  class="fa fa-fw fa-step-forward "></i>',
+					$data['Timesheet Record Key'],
+					$data['Timesheet Record Key']
+				);
+				break;
+
+			default:
+				$ignored=$data['Timesheet Record Ignored'];
+				$used='';
+				break;
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Overtime Key'],
+				'formated_key'=>sprintf('%04d', $data['Overtime Key']),
+				'reference'=>$data['Overtime Reference'],
+				'status'=>$status,
+
+				'start'=>($data['Overtime Start Date']!=''?strftime("%e %b %Y", strtotime($data['Overtime Start Date'])):''),
+				'end'=>($data['Overtime End Date']!=''?strftime("%e %b %Y", strtotime($data['Overtime End Date'])):''),
+
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function months($_data, $db, $user) {
+
+	$rtext_label='month';
+	include_once 'prepare_table/init.php';
+
+
+
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	//print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+			$date=strtotime($data['Timesheet Date']);
+			$adata[]=array(
+				'name'=>strftime("%B", $date),
+				'key'=>date('Ym', $date),
+				'timesheets'=>number($data['timesheets']),
+				'days'=>number($data['days']),
+				'employees'=>number($data['employees'])
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function weeks($_data, $db, $user) {
+
+	$rtext_label='week';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	//print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+			$adata[]=array(
+				'name'=>sprintf('%02d', $data['week']),
+				'key'=>$data['yearweek'],
+				'week_starting'=>strftime("%e %b %Y", strtotime($data['week_starting'])),
+				'timesheets'=>number($data['timesheets']),
+				'days'=>number($data['days']),
+				'employees'=>number($data['employees'])
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function days($_data, $db, $user) {
+
+	$rtext_label='day';
+	include_once 'prepare_table/init.php';
+
+
+
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+			$date=strtotime($data['Timesheet Date']);
+			$adata[]=array(
+				'name'=>strftime("%e %b %Y", $date),
+				'key'=>date('Ymd', $date),
+
+				'day_of_week'=>strftime("%a", $date),
+				'timesheets'=>number($data['timesheets']),
+				'days'=>number($data['days']),
+				'employees'=>number($data['employees'])
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function timesheets_employees($_data, $db, $user) {
+
+	$rtext_label='employee';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	//print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			$date=strtotime($data['Timesheet Date']);
+
+			$clocked_hours=$data['clocked_time']/3600;
+			$breaks_hours=$data['breaks']/3600;
+			$work_time_hours=$data['work_time']/3600;
+			$unpaid_overtime=$data['unpaid_overtime']/3600;
+			$paid_overtime=$data['paid_overtime']/3600;
+			$worked_time=$data['worked_time']/3600;
+
+
+
+
+			$adata[]=array(
+				'staff_key'=>$data['Timesheet Staff Key'],
+				'name'=>$data['Staff Name'],
+				'days'=>number($data['days']),
+				'clocking_records'=>number($data['clocking_records']),
+
+				//'clocked_time'=> ($clocked_hours!=0?sprintf("%s %s", number($clocked_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'breaks_time'=> ($breaks_hours!=0?sprintf("%s %s", number($breaks_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'work_time_hours'=> ($work_time_hours!=0?sprintf("%s %s", number($work_time_hours, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
+				//'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2, 2), _('h')):'<span class="disabled">-</span>'),
+
+				'clocked_time'=> ($clocked_hours!=0? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'breaks_time'=> ($breaks_hours!=0? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['breaks']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_hours'=> ($work_time_hours!=0? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time'=> ($worked_time!=0? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'  :'<span class="disabled">-</span>'),
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function fire($_data, $db, $user) {
+
+	$rtext_label='employee';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+	// print $sql;
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['status']) {
+			case 'In':
+				$status=sprintf('<span class="success padding_right_10">%s</span>', _('In'));
+
+				break;
+			case 'Out':
+				$status=sprintf('<span class="error padding_right_10">%s</span>', _('Out'));
+				break;
+			case 'Off':
+				$status=sprintf('<span class="disabled padding_right_10">%s</span>', _('Off'));
+				break;
+			default:
+				$status=$data['statud'];
+				$used='';
+				break;
+			}
+
+
+			$check='<div id="check_'.$data['Timesheet Key'].'" onClick="toggle_check_record('.$data['Timesheet Key'].')" class="disabled acenter width_100 unchecked" style="margin:0px 20px"><i class="fa fa-star-o"></i></div>';
+
+			$adata[]=array(
+				'staff_key'=>$data['Timesheet Staff Key'],
+				'name'=>$data['Staff Name'],
+				'clocking_records'=>number($data['clocking_records']),
+				'status'=>$status,
+				'check'=>$check
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
 
 
 

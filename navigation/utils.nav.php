@@ -75,5 +75,25 @@ function get_utils_navigation($data) {
 
 
 
+function get_fire_navigation($data) {
+	global $smarty;
+	$branch=array(array('label'=>'', 'icon'=>'home', 'reference'=>''));
 
+
+
+	$_content=array(
+		'branch'=>$branch,
+		'sections_class'=>'',
+		'sections'=>array(),
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>_('Fire evacuation roll call'),
+		'search'=>array('show'=>false, 'placeholder'=>'')
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
 ?>

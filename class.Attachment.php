@@ -189,14 +189,13 @@ class Attachment extends DB_Table {
 
 	function get_data($key, $tag) {
 
-		if ($key=='id')
+		if ($key=='id') {
 			$sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d", $tag);
 
-		else
+		}elseif ($key=='bridge_key') {
+			$sql=sprintf("select * from `Attachment Bridge` B left join  `Attachment Dimension` A on (A.`Attachment Key`= B.`Attachment Key`) where `Attachment Bridge Key`=%d", $tag);
+		}else
 			return;
-
-
-
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Attachment Key'];
@@ -204,6 +203,19 @@ class Attachment extends DB_Table {
 
 	}
 
+
+	function get_subject_data($bridge_key) {
+
+		$sql=sprintf("select * from `Attachment Bridge` where `Attachment Bridge Key`=%d and `Attachment Key`=%d", $bridge_key, $this->id);
+
+
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			foreach ($row as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+		}
+	}
 
 
 	function get_abstract($original_name='', $caption='', $reference=false) {
@@ -241,12 +253,94 @@ class Attachment extends DB_Table {
 	function get($key, $data=false) {
 		switch ($key) {
 
-		default:
-			if (isset($this->data[$key]))
-				return $this->data[$key];
+
+		case 'Preview':
+
+			return sprintf('/attachment_preview.php?id=%d', $this->get('Attachment Bridge Key'));
+
+		case 'Public':
+			if ($this->data['Attachment Public']=='Yes')
+				return _('Yes');
 			else
-				return '';
+				return _('No');
+
+			break;
+		case 'Public Info':
+
+			if ($this->get('Subject')=='Staff') {
+				if ($this->data['Attachment Public']=='Yes')
+					$visibility=sprintf('<i title="%s" class="fa fa-eye"></i> %s', _('Public'), _('Employee can see file'));
+				else
+					$visibility=sprintf('<span class="error" > <i title="%s" class="fa fa-eye-slash"></i> %s</span>',
+						_('Private'), _('Top secret file'));
+			}else {
+				if ($this->data['Attachment Public']=='Yes')
+					$visibility=sprintf('<i title="%s" class="fa fa-eye"></i> %s', _('Public'), _('Public'));
+				else
+					$visibility=sprintf('<i title="%s" class="fa fa-eye-slash"></i> %s', _('Private'), _('Private'));
+
+			}
+			return $visibility;
+
+			break;
+
+
+		case 'Subject Type':
+			switch ($this->data['Attachment Subject Type']) {
+			case 'Contract':
+				$type=_('Employment contract');
+				break;
+			case 'CV':
+				$type=_('Curriculum vitae');
+				break;
+			default:
+				$type=_('Other');
+				break;
+			}
+			return $type;
+			break;
+		case 'File Size':
+			include_once 'utils/natural_language.php';
+			return file_size($this->data['Attachment File Size']);
+			break;
+		case 'Type':
+			switch ($this->data['Attachment Type']) {
+			case 'PDF':
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-file-pdf-o"></i> %s', $this->data['Attachment MIME Type'], 'PDF');
+
+				break;
+			case 'Image':
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-picture-o"></i> %s', $this->data['Attachment MIME Type'], _('Image'));
+				break;
+			case 'Compresed':
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $this->data['Attachment MIME Type'], _('Compresed'));
+				break;
+			case 'Spreadsheet':
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-table"></i> %s', $this->data['Attachment MIME Type'], _('Spreadsheet'));
+				break;
+			case 'Text':
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-file-text-o"></i> %s', $this->data['Attachment MIME Type'], _('Text'));
+				break;
+			case 'Word':
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-file-word-o"></i> %s', $this->data['Attachment MIME Type'], 'Word');
+				break;
+			default:
+				$file_type=sprintf('<i title="%s" class="fa fa-fw fa-file-o"></i> %s', $this->data['Attachment MIME Type'], _('Other'));
+				break;
+			}
+
+			return $file_type;
+			break;
+		default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('Attachment '.$key, $this->data))
+				return $this->data['Attachment '.$key];
 		}
+
+
+
 		return '';
 	}
 
@@ -360,57 +454,169 @@ class Attachment extends DB_Table {
 		include_once 'class.Image.php';
 		if (preg_match('/application\/pdf/', $this->data['Attachment MIME Type'])) {
 			$tmp_file='server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
-			file_put_contents($tmp_file.'.pdf', $this->data['Attachment Data']);
-
-			$im = new imagick($tmp_file.'.pdf[0]');
-			$im->setImageFormat('jpg');
-			$im->thumbnailImage(500, 0);
-			$im->writeImage ($tmp_file.'.jpg');
 
 
-			$image_data=array(
-				'file'=>$tmp_file.'.jpg',
-				'source_path'=>'',
-				'name'=>'attachment_thumbnail',
-				'caption'=>''
+			$tmp_file_name=$tmp_file.'.pdf';
+			file_put_contents( $tmp_file_name, $this->data['Attachment Data']);
+
+			$im = new imagick( $tmp_file_name.'[0]');
+
+
+
+		}
+		elseif (preg_match('/image\/(png|jpg|gif|jpeg)/', $this->data['Attachment MIME Type'])) {
+
+			$tmp_file='server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
+			$tmp_file_name=$tmp_file;
+			file_put_contents( $tmp_file_name, $this->data['Attachment Data']);
+			$im = new imagick( $tmp_file_name);
+
+
+
+		}else {
+			return;
+		}
+
+
+
+		$im->setImageFormat('jpg');
+		$im->thumbnailImage(500, 0);
+		$im->writeImage ($tmp_file.'.jpg');
+
+
+		$image_data=array(
+			'file'=>$tmp_file.'.jpg',
+			'source_path'=>'',
+			'name'=>'attachment_thumbnail',
+			'caption'=>''
+		);
+
+
+
+		$image=new Image('find', $image_data, 'create');
+
+		if (!$image->error) {
+
+
+			$sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d",
+				prepare_mysql('Attachment Thumbnail'),
+				$this->id
+
 			);
+			mysql_query($sql);
+
+			$sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) values (%s,%d,%d,'Yes','')",
+				prepare_mysql('Attachment Thumbnail'),
+				$this->id,
+				$image->id
+			);
+			mysql_query($sql);
+
+			$sql=sprintf("update `Attachment Dimension` set `Attachment Thumbnail Image Key`=%d where `Attachment Key`=%d",
+				$image->id,
+				$this->id
+			);
+			mysql_query($sql);
+			$this->data['Attachment Thumbnail Image Key']=$image->id;
+		}else {
+
+
+		}
+
+		unlink( $tmp_file_name);
+		unlink($tmp_file.'.jpg');
 
 
 
-			$image=new Image('find', $image_data, 'create');
-
-			if (!$image->error) {
 
 
-				$sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d",
-					prepare_mysql('Attachment Thumbnail'),
-					$this->id
 
-				);
-				mysql_query($sql);
 
-				$sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) values (%s,%d,%d,'Yes','')",
-					prepare_mysql('Attachment Thumbnail'),
-					$this->id,
-					$image->id
-				);
-				mysql_query($sql);
 
-				$sql=sprintf("update `Attachment Dimension` set `Attachment Thumbnail Image Key`=%d where `Attachment Key`=%d",
-					$image->id,
-					$this->id
-				);
-				mysql_query($sql);
-				$this->data['Attachment Thumbnail Image Key']=$image->id;
+
+	}
+
+
+	function set_subject($subject) {
+		$this->data['Subject']=$subject;
+	}
+
+
+	function get_field_label($field) {
+
+		switch ($field) {
+		case 'Attachment Subject Type':
+			$label=_('Content type');
+			break;
+		case 'Attachment Caption':
+			$label=_('Short description');
+			break;
+
+		case 'Attachment Public':
+			if ($this->get('Subject')=='Staff') {
+				$label=_('Employee can see file');
 			}else {
+				$label=_('Public');
+			}
+			break;
+		case 'Attachment File':
+			$label=_('File');
+			break;
+		case 'Attachment File Original Name':
+			$label=_('File name');
+			break;
+		case 'Attachment File Size':
+			$label=_('File size');
+			break;
+		case 'Attachment Preview':
+			$label=_('Preview');
+			break;
+		default:
+			$label=$field;
+			break;
+		}
 
+		return $label;
+	}
+
+
+	function update_field_switcher($field, $value, $options='') {
+		if (is_string($value))
+			$value=_trim($value);
+
+
+
+		switch ($field) {
+		case 'Attachment Caption':
+		case 'Attachment Subject Type':
+		case 'Attachment Public':
+			$this->update_table_field($field, $value, $options, 'Attachment Bridge', 'Attachment Bridge', $this->get('Attachment Bridge Key'));
+
+			if ($field=='Attachment Public') {
+				$this->other_fields_updated=array(
+					'Public_Info'=>array(
+						'field'=>'Public_Info',
+						'render'=>true,
+						'value'=>$this->get('Public_Info'),
+						'formated_value'=>$this->get('Public Info'),
+
+
+					)
+				);
 
 			}
 
-			unlink($tmp_file.'.pdf');
-			unlink($tmp_file.'.jpg');
-
+			break;
+		default:
+			$base_data=$this->base_data();
+			if (array_key_exists($field, $base_data)) {
+				$this->update_field($field, $value, $options);
+			}
 		}
+		$bridge_key=$this->get('Attachment Bridge Key');
+		$this->reread();
+
+		$this->get_subject_data($bridge_key);
 
 	}
 

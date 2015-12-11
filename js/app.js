@@ -57,11 +57,15 @@ function change_view(_request, metadata) {
 
     var request = "/ar_views.php?tipo=views&request=" + _request + "&old_state=" + JSON.stringify(state) + '&metadata=' + JSON.stringify(metadata)
 
-    $.getJSON(request, function(data) {
 
-
+    $.getJSON(request,
+     function(data) {
+        
+    
 
         state = data.state;
+
+        console.log(data.state)
 
         if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
             // $('#navigation').removeClass('hide')
@@ -84,7 +88,6 @@ function change_view(_request, metadata) {
 
 
         }
-        
         
         
 

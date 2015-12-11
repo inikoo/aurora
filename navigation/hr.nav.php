@@ -532,8 +532,10 @@ function get_timesheet_navigation($data) {
 
 	global $smarty, $db, $user;
 
-	$object=$data['_object'];
-	$object->get_staff_data();
+	if ($data['object']) {
+		$object=$data['_object'];
+		$object->get_staff_data();
+	}
 
 	$left_buttons=array();
 	$right_buttons=array();
@@ -555,6 +557,11 @@ function get_timesheet_navigation($data) {
 			$tab='timesheet.timesheets';
 			$_section='timesheets';
 			break;
+		case 'week':
+			$tab='timesheet.timesheets';
+			$_section='timesheets';
+			break;
+
 
 		}
 
@@ -787,6 +794,197 @@ function get_new_employee_attachment_navigation($data) {
 
 }
 
+function get_employee_attachment_navigation($data) {
+
+	global $smarty;
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('hr', '');
+
+	$_section='employees';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	include_once 'class.Staff.php';
+	$employee=new Staff($data['parent_key']);
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
+
+	$right_buttons[]=array('icon'=>'download', 'title'=>_('Download'), 'id'=>'download_button' );
+	$left_buttons[]=$up_button;
+
+	$title= _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
+
+function get_timesheets_navigation($data) {
+
+	global $user, $smarty;
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+	
+	//print_r($data);
+	
+	switch ($data['parent']) {
+
+	case 'day':
+
+		$year=substr($data['parent_key'], 0, 4);
+		$month=substr($data['parent_key'], 4, 2);
+		$day=substr($data['parent_key'], 6, 2);
+
+		$date=strtotime("$year-$month-$day");
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_("Employees' calendar %s"), date('Y')   ) , 'reference'=>'timesheets/year/'.$year);
+
+		$title=sprintf(_("Employees' calendar %s"), strftime("%a %e %b %Y", $date)  );
+
+
+		$date=strtotime("$year-$month-$day -1 day");
+
+
+
+		$prev_button=array('icon'=>'arrow-left', 'title'=>sprintf(_("Employees' calendar %s"), strftime("%a %e %b %Y", $date)  ), 'reference'=>'timesheets/day/'.date('Ymd', $date));
+
+		$date=strtotime("$year-$month-$day +1 day");
+
+
+
+		$next_button=array('icon'=>'arrow-right', 'title'=>sprintf(_("Employees' calendar %s"), strftime("%a %e %b %Y", $date)  ), 'reference'=>'timesheets/day/'.date('Ymd', $date));
+
+		break;
+		
+	
+	case 'month':
+
+		$year=substr($data['parent_key'], 0, 4);
+		$month=substr($data['parent_key'], 4, 2);
+
+		$date=strtotime("$year-$month-01");
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_("Employees' calendar %s"), date('Y')   ) , 'reference'=>'timesheets/year/'.$year);
+
+		$title=sprintf(_("Employees' calendar %s"), strftime("%b %Y", $date)  );
+
+
+		$date=strtotime("$year-$month-01 -1 month");
+
+
+
+		$prev_button=array('icon'=>'arrow-left', 'title'=>sprintf(_("Employees' calendar %s"), strftime("%b %Y", $date)  ), 'reference'=>'timesheets/month/'.date('Ym', $date));
+
+		$date=strtotime("$year-$month-01 +1 month");
+
+
+
+		$next_button=array('icon'=>'arrow-right', 'title'=>sprintf(_("Employees' calendar %s"), strftime("%b %Y", $date)  ), 'reference'=>'timesheets/month/'.date('Ym', $date));
+
+		break;	
+	case 'week':
+
+		$year=substr($data['parent_key'], 0, 4);
+		$week=substr($data['parent_key'], 4, 2);
+
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_("Employees' calendar %s"), $year   ) , 'reference'=>'timesheets/year/'.$year);
+
+		$date=strtotime('week ');
+		$title=sprintf(_("Employees' calendar week %s %s"), $week, $year );
+
+
+		$date=strtotime($year."W".$week." -1 week");
+		$prev_week=sprintf('%02d', date('W', $date));
+		$prev_year=date('o', $date);
+
+
+		$prev_button=array('icon'=>'arrow-left', 'title'=>sprintf(_("Employees' calendar week %s %s"), $prev_week, $prev_year ), 'reference'=>'timesheets/week/'.$prev_year.$prev_week);
+
+		$date=strtotime($year."W".$week." +1 week");
+		$next_week=sprintf('%02d', date('W', $date));
+		$next_year=date('o', $date);
+
+
+		$next_button=array('icon'=>'arrow-right', 'title'=>sprintf(_("Employees' calendar week %s %s"), $next_week, $next_year ), 'reference'=>'timesheets/week/'.$next_year.$next_week);
+
+
+		break;
+		
+		
+		
+	case 'year':
+
+		$year=$data['parent_key'];
+
+		$date=strtotime('week ');
+		$title=sprintf(_("Employees' calendar %s"), $year ) ;
+		$prev_button=array('icon'=>'arrow-left', 'title'=>sprintf(_("Employees' calendar %s"), ($year-1) ), 'reference'=>'timesheets/year/'.($year-1));
+
+		$next_button=array('icon'=>'arrow-right', 'title'=>sprintf(_("Employees' calendar %s"), ($year+1) ), 'reference'=>'timesheets/year/'.($year+1));
+
+		break;
+	default:
+		$title='';
+		break;
+	}
+
+
+	$left_buttons[]=$prev_button;
+	if (isset($up_button))
+		$left_buttons[]=$up_button;
+	$left_buttons[]=$next_button;
+
+	$sections=get_sections('hr', '');
+
+	$right_buttons[]=array('icon'=>'calendar-o', 'title'=>_('Today'), 'reference'=>'timesheets/day/'.date('Ymd'));
+	$right_buttons[]=array('icon'=>'calendar-plus-o', 'title'=>_('This week'), 'reference'=>'timesheets/week/'.date('oW'));
+	$right_buttons[]=array('icon'=>'calendar', 'title'=>_('This month'), 'reference'=>'timesheets/month/'.date('Ym'));
+
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 
 ?>

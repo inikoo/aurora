@@ -51,6 +51,9 @@ $St=AESEncryptCtr($Sk,SKEY, 256);
 $smarty->assign('st',$St);
 
 $smarty->assign('error',(isset($_REQUEST['e'])?true:false) );
+
+$smarty->assign('url',(isset($_REQUEST['ref'])?$_REQUEST['ref']:''));
+
 $smarty->display("login.tpl");
 
 ?>

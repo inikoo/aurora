@@ -49,17 +49,21 @@ function attachments($_data, $db, $user) {
 	$adata=array();
 
 	foreach ($db->query($sql) as $data) {
+		
 		if ($data['Attachment Public']=='Yes')
 			$visibility=sprintf('<i title="%s" class="fa fa-eye"></i>', _('Public'));
 		else
 			$visibility=sprintf('<i title="%s" class="fa fa-eye-slash"></i>', _('Private'));
 
+
+
+
 		switch ($data['Attachment Subject Type']) {
 		case 'Contract':
-			$type=_('Contract');
+			$type=_('Employment contract');
 			break;
 		case 'CV':
-			$type=_('CV');
+			$type=_('Curriculum vitae');
 			break;
 		default:
 			$type=_('Other');
@@ -93,13 +97,13 @@ function attachments($_data, $db, $user) {
 		}
 
 		$adata[]=array(
-			'id'=>(integer) $data['Attachment Key'],
+			'id'=>(integer) $data['Attachment Bridge Key'],
 			'caption'=>$data['Attachment Caption'],
 			'size'=>file_size($data['Attachment File Size']),
 			'visibility'=>$visibility,
 			'type'=>$type,
 			'file_type'=>$file_type,
-			'file'=>$data['Attachment File Original Name'],
+			'file'=>sprintf('<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>' ,$data['Attachment Bridge Key'],$data['Attachment Bridge Key'],$data['Attachment File Original Name']),
 		);
 
 	}
