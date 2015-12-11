@@ -17,6 +17,9 @@ $color_success:#26A65B;
 $color_warning:#ED9121;
 $color_error:tomato;
 
+$color_background_selected:#edf3f8;
+
+
 
 $height_row: 32px;
 $height_short_row: 22px;
@@ -452,24 +455,10 @@ input{
                     vertical-align: -5%;
                 }
             }
-            #search_form {
-                float: right;
-                border-left: 1px solid #aaa;
-                margin-left: 4px;
-            }
-            #search {
-                height: 20px;
-                border: none;
-                border-botom: 1px solid #ddd;
-                padding-left: 5px;
-                width: 280px;
-            }
-            #search {
-                @include placeholder {
-                    color: #aaa;
-                    font-style: italic;
-                }
-            }
+            
+            @import 'search';
+            
+           
         }
     }
     #tabs {
@@ -1394,3 +1383,4 @@ right connector from last child*/
 
 @import 'working_hours';
 @import 'salary';
+
