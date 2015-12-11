@@ -36,23 +36,15 @@ case 'search':
 
 	$data['user']=$user;
 
-
-
 	if ($data['state']['module']=='customers') {
-
 		if ($data['state']['current_store']) {
 			$data['scope']='store';
 			$data['scope_key']=$data['state']['current_store'];
 		}else {
 			$data['scope']=='stores';
 		}
-
 		search_customers($db, $account, $memcache_ip, $data);
-
 	}elseif ($data['state']['module']=='hr') {
-
-
-
 		search_hr($db, $account, $memcache_ip, $data);
 
 	}
@@ -76,9 +68,9 @@ function search_customers($db, $account, $memcache_ip, $data) {
 	$cache=false;
 	$max_results=10;
 	$user=$data['user'];
-	$q=$data['query'];
+	$queries=trim($data['query']);
 
-	if ($q=='') {
+	if ($queries=='') {
 		$response=array('state'=>200, 'results'=>0, 'data'=>'');
 		echo json_encode($response);
 		return;
@@ -100,17 +92,17 @@ function search_customers($db, $account, $memcache_ip, $data) {
 
 		$stores=join(',', $user->stores);
 	}
-	$memcache_fingerprint=$account->get('Account Code').'SEARCH_CUST'.$stores.md5($q);
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_CUST'.$stores.md5($queries);
 
 	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
 
 
-	if (strlen($q)<=2) {
+	if (strlen($queries)<=2) {
 		$memcache_time=295200;
-	}if (strlen($q)<=3) {
+	}if (strlen($queries)<=3) {
 		$memcache_time=86400;
-	}if (strlen($q)<=4) {
+	}if (strlen($queries)<=4) {
 		$memcache_time=3600;
 	}else {
 		$memcache_time=300;
@@ -125,6 +117,8 @@ function search_customers($db, $account, $memcache_ip, $data) {
 
 
 		$candidates=array();
+
+		$q=$queries;
 
 		if (is_numeric($q)) {
 			$sql=sprintf("select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Key`=%d",
@@ -185,21 +179,7 @@ function search_customers($db, $account, $memcache_ip, $data) {
 			}
 		}
 
-		/*
-	$sql=sprintf("select `Customer Key`,`Customer Main Town` from `Customer Dimension` where true $where_store and `Customer Main Town` like '%s%%' limit 10 ",
-		$q);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Customer Main Town']==$q)
-			$candidates[$row['Customer Key']]=30;
-		else {
-			$len_name=strlen($row['Customer Main Town']);
-			$len_q=strlen($q);
-			$factor=$len_q/$len_name;
-			$candidates[$row['Customer Key']]=20*$factor;
-		}
-	}
-	*/
+
 
 		$sql=sprintf("select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Email`  like '%s%%' limit 100 ",
 			$q);
@@ -324,6 +304,10 @@ function search_customers($db, $account, $memcache_ip, $data) {
 		while ($row=mysql_fetch_array($res)) {
 
 			$name=$row['Customer Name'];
+			if ($row['Customer Type']=='Company' and $row['Customer Main Contact Name']!='') {
+				$name.= ', '.$row['Customer Main Contact Name'];
+			}
+			/*
 			if ($row['Customer Tax Number']!='') {
 				$name.='<br/>'.$row['Customer Tax Number'];
 			}
@@ -336,12 +320,15 @@ function search_customers($db, $account, $memcache_ip, $data) {
 			$address.='<br/>'.$row['Customer Main Location'];
 			if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
 			$address=preg_replace('/^\<br\/\>/', '', $address);
+			*/
 			$results[$row['Customer Key']]=array(
 				'store'=>$row['Store Code'],
-				'key'=>sprintf('%05d', $row['Customer Key']),
-				'label'=>$name,
-				'details'=>$address,
+				'label'=>highlightkeyword(sprintf('%06d', $row['Customer Key']),$queries ),
+				'details'=>highlightkeyword($name,$queries ),
 				'view'=>sprintf('customers/%d/%d', $row['Customer Store Key'], $row['Customer Key'])
+
+
+
 
 			);
 		}
@@ -351,8 +338,8 @@ function search_customers($db, $account, $memcache_ip, $data) {
 
 
 	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
 
-	$response=array('state'=>200, 'results'=>$results_data['n'], 'data'=>$results_data['d'], 'q'=>$q);
 	echo json_encode($response);
 
 }
@@ -400,7 +387,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
 		$candidates=array();
 
-   // print_r(preg_split('/\s+/', $queries));
+		// print_r(preg_split('/\s+/', $queries));
 
 		foreach (preg_split('/\s+/', $queries) as  $q) {
 
@@ -507,14 +494,14 @@ function search_hr($db, $account, $memcache_ip, $data) {
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
 						$results[$row['Staff Key']]=array(
-							'label'=>highlightkeyword($row['Staff Alias'],$queries),
-							'details'=>highlightkeyword($row['Staff Name'],$queries),
+							'label'=>highlightkeyword($row['Staff Alias'], $queries),
+							'details'=>highlightkeyword($row['Staff Name'], $queries),
 							'view'=>sprintf('employee/%d',  $row['Staff Key']),
 							'score'=>$val
 						);
 					}
 				}else {
-				    print $sql;
+					print $sql;
 					print_r($error_info=$db->errorInfo());
 					exit('a');
 				}
@@ -528,21 +515,12 @@ function search_hr($db, $account, $memcache_ip, $data) {
 		}
 
 
-
-
-
-
-
-
-
-
 		$results_data=array('n'=>count($results), 'd'=>$results);
 		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
 
 
 	}
-//print_r($results_data['d']);
 	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
 	echo json_encode($response);
 
@@ -550,20 +528,22 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
 
 function highlightkeyword($str, $search) {
-    $highlightcolor = "#daa732";
-    $occurrences = substr_count(strtolower($str), strtolower($search));
-    $newstring = $str;
-    $match = array();
- 
-    for ($i=0;$i<$occurrences;$i++) {
-        $match[$i] = stripos($str, $search, $i);
-        $match[$i] = substr($str, $match[$i], strlen($search));
-        $newstring = str_replace($match[$i], '[#]'.$match[$i].'[@]', strip_tags($newstring));
-    }
- 
-    $newstring = str_replace('[#]', '<mark>', $newstring);
-    $newstring = str_replace('[@]', '</mark>', $newstring);
-    return $newstring;
- 
+	$highlightcolor = "#daa732";
+	$occurrences = substr_count(strtolower($str), strtolower($search));
+	$newstring = $str;
+	$match = array();
+
+	for ($i=0;$i<$occurrences;$i++) {
+		$match[$i] = stripos($str, $search, $i);
+		$match[$i] = substr($str, $match[$i], strlen($search));
+		$newstring = str_replace($match[$i], '[#]'.$match[$i].'[@]', strip_tags($newstring));
+	}
+
+	$newstring = str_replace('[#]', '<mark>', $newstring);
+	$newstring = str_replace('[@]', '</mark>', $newstring);
+	return $newstring;
+
 }
+
+
 ?>

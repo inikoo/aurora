@@ -192,9 +192,8 @@ function change_table_element(event, item) {
     rows.parameters = JSON.stringify(parameters)
 
     rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
-    rows.fetch({
-        reset: true
-    });
+    
+    
 
 }
 
