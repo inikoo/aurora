@@ -6,6 +6,8 @@
 var key_scope = false;
 
 
+
+
 function change_browser_history_state(request) {
 
 
@@ -143,11 +145,15 @@ $(document).ready(function() {
 
 
 
-})
 
+})
 
 
 
 function logout() {
     window.location.href = "/logout.php";
 }
+
+
+
+

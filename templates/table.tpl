@@ -267,9 +267,8 @@ var grid = new Backgrid.Grid({
 
 var serverSideFilter = new Backgrid.Extension.ServerSideFilter({
   collection: rows,
-  // the name of the URL query parameter
   name: "f_value",
-  placeholder: "" // HTML5 placeholder for the search box
+  placeholder: "" 
 });
 
 

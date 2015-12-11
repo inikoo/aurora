@@ -55,7 +55,8 @@
 
     /** @property */
     events: {
-      "keyup input[type=search]": "showClearButtonMaybe",
+//      "keyup input[type=search]": "showClearButtonMaybe",
+  "keyup input[type=search]": "search",
       "click a[data-backgrid-action=clear]": "clear",
       "submit": "search"
     },

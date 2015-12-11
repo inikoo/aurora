@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="/js/backgrid-filter.js"></script> 
 	<script type="text/javascript" src="/js/app.js"></script> 
 	<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script> 
+	<script type="text/javascript" src="/js/search.js"></script> 
 	<script type="text/javascript" src="/js/table.js"></script> 
 	<script type="text/javascript" src="/js/field_validation.js"></script> 
 	<script type="text/javascript" src="/js/edit.js"></script> 

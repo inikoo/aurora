@@ -24,20 +24,24 @@
 	<span id="nav_title" class="title">
 		{$_content.title}
 	</span>
-	<div id="search_form" style="{if !$_content.search.show}display:none{/if}">
-		<input id="search" placeholder="{$_content.search.placeholder}" >
-		<div class="square_button right">
-			<i class="fa fa-search fa-fw"></i> 
-		</div>
-		
+ 
+<div id="search_form" style="position:relative;{if !$_content.search.show}display:none{/if}">
+	<input id="search" placeholder="{$_content.search.placeholder}"> <div id="clear_search" class="hide" ><i onclick="clear_search()" class="fa fa-times "></i></div>
+	<div class="square_button right">
+		<i class="fa fa-search fa-fw"></i> 
 	</div>
-	<div style="border:1px solid #ccc;position:absolute;background:#fff;top:0px;display:none";>
-	<table  border=0>
-	<tr>
-	<td>xx</td>
-	</tr>
-	</table>
+	<div id="results_container" >
+		<div id="results_container_shifted">
+		<table id="results" border="0" >
+			<tr class="hide" id="search_result_template" view="" onClick="change_view(this.getAttribute('view'))">
+				<td class="label" ></td>
+				<td class="details" ></td>
+			</tr>
+		</table>
 	</div>
+	</div>
+</div>
+	
 	
 	{foreach from=$_content.right_buttons name=right_buttons item=button } 
 	<div {if isset($button.id) and $button.id }id="{$button.id}" {/if} class="square_button right {if $smarty.foreach.right_buttons.first}border{/if}" {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if}title="{$button.title}">
