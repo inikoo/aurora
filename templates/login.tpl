@@ -19,7 +19,7 @@
 	<div class="grid__container">
 		<div style="margin-bottom:30px">
 			<div class="text--center">
-				<img style="width:150px" src="art/aurora_log_v2_purple.png">
+				<img style="width:150px" src="art/aurora_log_v2_orange.png">
 			</div>
 			<div class="text--center" style="font-size:30px;
 			background: -webkit-linear-gradient(#FDD017, #D4A017);
@@ -31,6 +31,8 @@
 		</div>
 		<form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off" action="authorization.php">
 			<input type="hidden" id="ep" name="ep" value="{$st}" />
+			<input type="hidden" name="url" value="{$url}" />
+
 			<div class="form__field">
 				<label for="login__username"><i class="fa fa-user fa-fw"></i> <span class="hidden">{t}Username{/t}</span></label> 
 				<input name="login__username" id="login__username" type="text" class="form__input" placeholder="Username" required> 
