@@ -1355,7 +1355,7 @@ class User extends DB_Table {
 			$groups=array();
 			$sql=sprintf("select `User Group Key` as `key` from `User Group User Bridge` UGUB  where UGUB.`User Key`=%d", $this->id);
 			foreach ($this->db->query($sql) as $row) {
-
+                if(isset($user_groups[$row['key']]))
 				$groups[]=$user_groups[$row['key']]['Name'];
 			}
 			return join($groups, ', ');

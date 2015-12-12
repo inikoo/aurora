@@ -8,8 +8,9 @@
  Version 3
 
 */
+include_once 'utils/invalid_messages.php';
 
-$product=new Product('pid',$state['key']);
+$product=$state['_object'];
 
 
 
@@ -19,12 +20,14 @@ $object_fields=array(
 		'show_title'=>true,
 		'fields'=>array(
 			array(
+				'render'=>false,
 				'class'=>'locked',
 				'id'=>'Product_ID',
 				'value'=>$product->pid ,
 				'label'=>_('ID')
 			),
-            array(
+			array(
+				'render'=>false,
 				'class'=>'locked',
 				'id'=>'Product_Key',
 				'value'=>$product->id ,
@@ -45,27 +48,67 @@ $object_fields=array(
 
 		)
 	),
-	
+
 	array(
-		'label'=>_('Unit'),
+		'label'=>_('Outer'),
 		'show_title'=>true,
 		'fields'=>array(
 			array(
-				'id'=>'Product_Units_Per_Case',
-				'value'=>number($product->get('Product Units Per Case')) ,
-				'label'=>_('Units')
+				'id'=>'Product_Price',
+				'edit'=>'amount',
+				'value'=>$product->get('Product Price') ,
+				'formated_value'=>$product->get('Price') ,
+				'label'=>ucfirst($product->get_field_label('Product Price')),
+				'invalid_msg'=>get_invalid_message('amount'),
+				'required'=>true,
 			),
-            array(
+
+			array(
+				'id'=>'Product_Units_Per_Case',
+				'edit'=>'small_integer',
+				'value'=>$product->get('Product Units Per Case') ,
+				'formated_value'=>$product->get('Units Per Case') ,
+				'label'=>ucfirst($product->get_field_label('Product Units Per Case')),
+				'invalid_msg'=>get_invalid_message('small_integer'),
+				'required'=>true,
+			),
+
+
+
+		)
+	), array(
+		'label'=>_('Unit'),
+		'show_title'=>true,
+		'fields'=>array(
+
+			array(
 				'id'=>'Product_Unit_Type',
 				'value'=>$product->get('Product Unit Type') ,
 				'label'=>_('Unit type')
 			),
 			array(
-				'class'=>'string',
-				'id'=>'Product_Unit_Container',
-				'value'=>$product->get('Product Unit Container'),
-				'label'=>_('Unit container')
-			)
+				'id'=>'Product_Retail_Units_Per_Unit',
+				'edit'=>'small_integer',
+				'value'=>$product->get('Product Retail Units Per Unit') ,
+				'formated_value'=>$product->get('Retail Units Per Unit') ,
+				'label'=>ucfirst($product->get_field_label('Product Retail Units Per Unit')),
+				'invalid_msg'=>get_invalid_message('small_integer'),
+				'required'=>true,
+			),
+
+		)
+	),
+	array(
+		'label'=>_('Retail unit'),
+		'show_title'=>true,
+		'fields'=>array(
+		
+			array(
+				'id'=>'Product_Unit_Type',
+				'value'=>$product->get('Product Unit Type') ,
+				'label'=>_('Unit type')
+			),
+
 
 		)
 	),
@@ -78,7 +121,7 @@ $object_fields=array(
 				'value'=>$product->get('Product Tariff Code') ,
 				'label'=>_('Tariff code')
 			),
-            array(
+			array(
 				'id'=>'Product_Duty_Rate',
 				'value'=>$product->get('Product Duty Rate') ,
 				'label'=>_('Duty rate')
@@ -87,7 +130,8 @@ $object_fields=array(
 		)
 	),
 );
-$smarty->assign('object_fields',$object_fields);
+$smarty->assign('object_fields', $object_fields);
+$smarty->assign('state', $state);
 
 $html=$smarty->fetch('object_fields.tpl');
 

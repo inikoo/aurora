@@ -941,9 +941,7 @@ border-right:1px solid #ccc;margin-right:2px;
            
         }
      
-        .fa.save, .msg {
-            color: red
-        }
+       
        
     }
     
@@ -1357,7 +1355,7 @@ right connector from last child*/
 
 
 .success{color:$color_success}
-.valid{color:$color_success}
+.valid{color:$color_save}
 
 
 .valid.save{color:$color_save;cursor:pointer}

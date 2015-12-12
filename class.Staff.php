@@ -474,7 +474,6 @@ class Staff extends DB_Table{
 
 	}
 
-
 	function find($raw_data, $options) {
 
 

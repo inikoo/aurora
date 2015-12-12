@@ -663,13 +663,12 @@ class product extends DB_Table {
 
 
 		}
-		$_key=ucwords($key);
-		if (isset($this->data[$_key]))
-			return $this->data[$_key];
-		// print_r($this);
-		//  exit( "Error -> $key <- not found in get from Product\n");
+		if (array_key_exists($key, $this->data))
+			return $this->data[$key];
 
-
+		if (array_key_exists('Product '.$key, $this->data))
+			return $this->data['Product '.$key];
+			
 		return false;
 
 	}

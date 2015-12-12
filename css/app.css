@@ -744,8 +744,6 @@ input {
   .details_data .valid.changed .fa.save, .new_object .valid.changed .fa.save, .presention_card .valid.changed .fa.save, .showcase .valid.changed .fa.save {
     opacity: 1;
     cursor: pointer; }
-  .details_data .valid.changed .fa.save, .details_data .valid.changed .msg, .new_object .valid.changed .fa.save, .new_object .valid.changed .msg, .presention_card .valid.changed .fa.save, .presention_card .valid.changed .msg, .showcase .valid.changed .fa.save, .showcase .valid.changed .msg {
-    color: red; }
   .details_data .datepicker, .new_object .datepicker, .presention_card .datepicker, .showcase .datepicker {
     margin-bottom: 5px;
     margin-top: 0px; }
@@ -1027,7 +1025,7 @@ input {
   color: #26A65B; }
 
 .valid {
-  color: #26A65B; }
+  color: #0EBFE9; }
 
 .valid.save {
   color: #0EBFE9;

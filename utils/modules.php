@@ -356,35 +356,12 @@ $modules=array(
 					'store.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
 					'store.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
 					'store.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'store.departments'=>array('label'=>_('Departments'), 'title'=>_('Departments')),
-					'store.families'=>array('label'=>_('Families'), 'title'=>_('Families')),
+					
 					'store.products'=>array('label'=>_('Products'), 'title'=>_('Products')),
 
 				)
 			),
-			'department'=>array(
-				'type'=>'object',
-
-				'tabs'=>array(
-					'department.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
-					'department.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'icon'=>'database'),
-					'department.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'department.families'=>array('label'=>_('Families'), 'title'=>_('Families')),
-					'department.products'=>array('label'=>_('Products'), 'title'=>_('Products')),
-
-				)
-			),
-			'family'=>array(
-				'type'=>'object',
-
-				'tabs'=>array(
-					'family.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
-					'family.details'=>array('label'=>_('Details'), 'title'=>_('Details'), 'icon'=>'database'),
-					'family.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'family.products'=>array('label'=>_('Products'), 'title'=>_('Products')),
-
-				)
-			),
+			
 			'product'=>array(
 				'type'=>'object',
 				'subtabs_parent'=>array(
@@ -810,7 +787,7 @@ $modules=array(
 					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
-													'employee.calendar'=>array('label'=>_('Calendar')),
+							//						'employee.calendar'=>array('label'=>_('Calendar')),
 
 							'employee.timesheets'=>array('label'=>_('Timesheets')),
 							'employee.timesheets.records'=>array('label'=>_('Clockings')),

@@ -166,7 +166,7 @@ function client_validation(type, required, value, field) {
 
     case 'time':
         if (value.length > 5) {
-        
+
             return {
                 class: 'invalid',
                 type: 'invalid'
@@ -225,12 +225,12 @@ function client_validation(type, required, value, field) {
                     type: 'invalid'
                 }
             }
-        }else{
-         return {
-                    class: 'valid',
-                    type: ''
-                }
-        
+        } else {
+            return {
+                class: 'valid',
+                type: ''
+            }
+
         }
 
     case 'smallint_unsigned':
@@ -249,7 +249,7 @@ function client_validation(type, required, value, field) {
     case 'minutes_in_break':
 
         if (value == 0) {
-       
+
             return {
                 class: 'invalid',
                 type: 'invalid_break_duration'
@@ -269,10 +269,10 @@ function client_validation(type, required, value, field) {
         if (res) return res
         break;
 
-case 'day_of_month':
+    case 'day_of_month':
 
         if (value == 0) {
-       
+
             return {
                 class: 'invalid',
                 type: 'invalid_day_of_month'
@@ -283,18 +283,18 @@ case 'day_of_month':
         if (res) return res
         break;
 
-case 'amount':
+    case 'amount':
 
-var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
-   if (!regex.test(value)){
-   console.log('ccc')
-   
-     return {
+        var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
+        if (!regex.test(value)) {
+            console.log('ccc')
+
+            return {
                 class: 'invalid',
                 type: 'invalid_amount'
             }
-   }
-break
+        }
+        break
     default:
 
     }
@@ -341,6 +341,8 @@ function validate_signed_integer(value, max_value) {
 
 
 function server_validation(tipo, parent, parent_key, object, key, field, value) {
+  
+ 
     $("#" + field + '_editor').addClass('waiting')
     var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
 
@@ -368,6 +370,8 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
 
         $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
 
+
+
         if (validation == 'valid') {
             var msg = '';
         } else {
@@ -375,17 +379,17 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
 
         }
 
-
+     
 
         $('#' + field + '_validation').addClass(validation)
 
         $('#' + field + '_msg').html(msg)
         $('#' + field + '_editor').addClass(validation)
 
+
         if ($('#fields').hasClass('new_object')) {
             check_if_form_is_valid()
         }
-
 
 
     })
