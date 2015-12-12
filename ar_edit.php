@@ -131,7 +131,7 @@ function edit_field($account, $db, $user, $editor, $data) {
 	}else {
 
 		if ($object->updated) {
-			$msg=sprintf('<i class="fa fa-check" onClick="hide_edit_field_msg(\'%s\')" ></i> %s', $data['field'], _('Updated'));
+			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
 		}else {
 			$msg='';
 		}

@@ -30,7 +30,7 @@ case 'check_for_duplicates':
 	$data=prepare_values($_REQUEST, array(
 			'object'=>array('type'=>'string'),
 			'parent'=>array('type'=>'string'),
-			'parent_key'=>array('type'=>'key'),
+			'parent_key'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
 			'field'=>array('type'=>'string'),
 			'value'=>array('type'=>'string'),
@@ -51,7 +51,7 @@ default:
 function check_for_duplicates($data, $db, $user) {
 	global  $account;
 
-	
+
 	$field=preg_replace('/_/', ' ', $data['field']);
 
 	switch ($data['object']) {
@@ -70,6 +70,17 @@ function check_for_duplicates($data, $db, $user) {
 				prepare_mysql($data['value'])
 			);
 			break;
+		default:
+
+			break;
+		}
+		case 'Store':
+
+		switch ($field) {
+		case 'Store Code':
+			$invalid_msg=_('Another store is using this code');
+			break;
+		
 		default:
 
 			break;
@@ -103,9 +114,9 @@ function check_for_duplicates($data, $db, $user) {
 		);
 
 	}
-	
-	
-	
+
+
+
 	if (!isset($invalid_msg)) {
 		$invalid_msg=_('Another object with same value found');
 	}

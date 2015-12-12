@@ -702,7 +702,7 @@ function get_navigation($data) {
 
 		break;
 	case ('profile'):
-		require_once 'navigation/users.nav.php';
+		require_once 'navigation/account.nav.php';
 		return get_profile_navigation($data);
 		break;
 	case ('account'):
