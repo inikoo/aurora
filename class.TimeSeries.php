@@ -3473,4 +3473,42 @@ class TimeSeries {
 	}
 
 }
+
+function yearweek($str) {
+	$date=strtotime($str);
+	$w=date('W', $date);
+	$y=date("Y", $date);
+	$m=date("m", $date);
+
+	if ($w==1 and $m==12) {
+		$y=$y+1;
+	}
+	if ($w>=52 and $m==1) {
+		$y=$y-1;
+	}
+	return sprintf("%d%02d", $y, $w);
+}
+
+
+function quarter($date) {
+	$date=strtotime($date);
+	$month=date('m', $date);
+	if ($month<=3)
+		return 1;
+	elseif ($month<=6)
+		return 2;
+	elseif ($month<=9)
+		return 3;
+	else
+		return 4;
+
+}
+
+
+function yearquarter($date) {
+
+	return date('Y', strtotime($date)).quarter($date);
+
+}
+
 ?>
