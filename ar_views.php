@@ -368,12 +368,7 @@ function get_navigation($data) {
 		case 'store':
 			return get_store_navigation($data);
 			break;
-		case 'department':
-			return get_department_navigation($data);
-			break;
-		case 'family':
-			return get_family_navigation($data);
-			break;
+
 		case 'product':
 			return get_product_navigation($data);
 			break;
@@ -850,48 +845,11 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Store').' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
 
-		}elseif ($state['section']=='department') {
-
-			$store=new Store($state['parent_key']);
-			$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-			$branch[]=array('label'=>_('Department').' <span class="id">'.$state['_object']->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>$state['parent'].'/'.$state['parent_key'].'/department/'.$state['_object']->id);
-			$state['current_store']=$store->id;
-
-		}elseif ($state['section']=='family') {
-
-			if ($state['parent']=='store') {
-				$store=new Store($state['parent_key']);
-				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-				$state['current_store']=$store->id;
-			}elseif ($state['parent']=='department') {
-				$department=new Department($state['parent_key']);
-				$store=new Store($department->get('Product Department Store Key'));
-				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
-				$state['current_store']=$store->id;
-			}
-			$branch[]=array('label'=>_('Family').' <span class="id">'.$state['_object']->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>$state['parent'].'/'.$state['parent_key'].'/family/'.$state['_object']->id);
-
 		}elseif ($state['section']=='product') {
 
 			if ($state['parent']=='store') {
 				$store=new Store($state['parent_key']);
 				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-			}elseif ($state['parent']=='department') {
-				$department=new Department($state['parent_key']);
-				$store=new Store($department->get('Product Department Store Key'));
-				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
-			}elseif ($state['parent']=='family') {
-
-
-
-				$family=new Family($state['parent_key']);
-				$department=new Department($family->get('Product Family Main Department Key'));
-				$store=new Store($department->get('Product Department Store Key'));
-				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
-				$branch[]=array('label'=>_('Department').' <span class="id">'.$department->get('Product Department Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id.'/department/'.$department->id);
-				$branch[]=array('label'=>_('Family').' <span class="id">'.$family->get('Product Family Code').'</span>', 'icon'=>'', 'reference'=>'department/'.$department->id.'/family/'.$family->id);
 			}elseif ($state['parent']=='order') {
 				$order=new Order($state['parent_key']);
 				$store=new Store($order->get('Order Store Key'));
