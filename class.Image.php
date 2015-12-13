@@ -291,7 +291,7 @@ $this->create_other_size_data();
 
 
 	function get_format($filename) {
-		$this->format=guess_file_format($filename);
+		$this->format=$this->guess_file_format($filename);
 	}
 
 
@@ -578,5 +578,63 @@ $this->create_other_size_data();
 	function get_url() {
 		return "image.php?id=".$this->id;
 	}
+	
+	
+function guess_file_format($filename) {
+
+	$mimetype='Unknown';
+
+
+	ob_start();
+	system("uname");
+	$system='Unknown';
+	$_system = ob_get_clean();
+
+	// print "S:$system M:$mimetype\n";
+
+	if (preg_match('/darwin/i', $_system)) {
+		ob_start();
+		$system='Mac';
+		system('file -I "'.addslashes($filename).'"');
+		$mimetype=ob_get_clean();
+		$mimetype=preg_replace('/^.*\:/', '', $mimetype);
+
+	}
+	elseif (preg_match('/linux/i', $_system)) {
+		ob_start();
+		$system='Linux';
+		$mimetype = system('file -ib "'.addslashes($filename).'"');
+		$mimetype=ob_get_clean();
+	}
+	else {
+		$system='Other';
+
+	}
+
+
+	//print "** $filename **";
+
+	if (preg_match('/png/i', $mimetype))
+		$format='png';
+	else if (preg_match('/jpeg/i', $mimetype))
+		$format='jpeg';
+	else if (preg_match('/image.psd/i', $mimetype))
+		$format='psd';
+	else if (preg_match('/gif/i', $mimetype))
+		$format='gif';
+	else if (preg_match('/wbmp$/i', $mimetype))
+		$format='wbmp';
+
+	else {
+		$format='other';
+	}
+	//  print "S:$system M:$mimetype\n";
+	// return;
+
+	return $format;
+
+}
+
+
 
 }

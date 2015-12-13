@@ -235,7 +235,7 @@ class Attachment extends DB_Table {
 			, $reference_key
 			, $original_name
 
-			, formatBytes($this->data['Attachment File Size'])
+			, file_size($this->data['Attachment File Size'])
 			, $caption
 		);
 	}
