@@ -13,12 +13,9 @@
 include_once 'class.DB_Table.php';
 include_once 'class.DealComponent.php';
 include_once 'class.Store.php';
-include_once 'class.Family.php';
 include_once 'utils/store_functions.php';
-include_once 'class.Department.php';
-/* class: product
-   Class to manage the *Product Family Dimension* table
-*/
+
+
 
 
 

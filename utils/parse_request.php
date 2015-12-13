@@ -74,33 +74,7 @@ function parse_request($_data, $db) {
 				}
 
 				if (isset($view_path[0])) {
-					if ($view_path[0]=='department') {
-						$module='products';
-						$section='department';
-						$object='department';
-						$parent='store';
-						$parent_key=$key;
-
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}
-
-
-					}
-					elseif ($view_path[0]=='family') {
-						$module='products';
-						$section='family';
-						$object='family';
-						$parent='store';
-						$parent_key=$key;
-
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}
-
-
-					}
-					elseif ($view_path[0]=='product') {
+					if ($view_path[0]=='product') {
 						$module='products';
 						$section='product';
 						$object='product';
@@ -119,74 +93,8 @@ function parse_request($_data, $db) {
 
 			break;
 
-		case 'department':
-			$module='products';
-			$section='department';
-			$object='department';
-
-			if (is_numeric($view_path[0])) {
-				$key=array_shift($view_path);
-			}
-
-			if (isset($view_path[0])) {
-				if ($view_path[0]=='family') {
-					$module='products';
-					$section='family';
-					$object='family';
-					$parent='department';
-					$parent_key=$key;
-
-					if (is_numeric($view_path[1])) {
-						$key=$view_path[1];
-					}
-
-
-				}
-				elseif ($view_path[0]=='product') {
-					$module='products';
-					$section='product';
-					$object='product';
-					$parent='department';
-					$parent_key=$key;
-
-					if (is_numeric($view_path[1])) {
-						$key=$view_path[1];
-					}
-
-
-				}
-			}
-
-
-
-			break;
-		case 'family':
-			$module='products';
-			$section='family';
-			$object='family';
-
-			if (is_numeric($view_path[0])) {
-				$key=$view_path[0];
-
-				if (isset($view_path[1])) {
-					if ($view_path[1]=='product') {
-						$module='products';
-						$section='product';
-						$object='product';
-						$parent='family';
-						$parent_key=$key;
-						if (isset($view_path[2])) {
-							if (is_numeric($view_path[2])) {
-								$key=$view_path[2];
-							}
-
-						}
-					}
-				}
-			}
-
-
-			break;
+	
+		
 		case 'category':
 			$object='category';
 

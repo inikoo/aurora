@@ -30,14 +30,7 @@ function get_object($object_name, $key) {
 		include_once 'class.Store.php';
 		$object=new Store($key);
 		break;
-	case 'department':
-		include_once 'class.Department.php';
-		$object=new Department($key);
-		break;
-	case 'family':
-		include_once 'class.Family.php';
-		$object=new Family($key);
-		break;
+
 	case 'product':
 		include_once 'class.Product.php';
 		$object=new Product('pid', $key);
@@ -58,6 +51,8 @@ function get_object($object_name, $key) {
 		break;
 	case 'website':
 	case 'Site':
+		include_once 'class.Site.php';
+	
 		$object=new Site($key);
 		break;
 	case 'page':
