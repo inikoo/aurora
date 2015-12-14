@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 require_once 'class.Staff.php';
-require_once 'utils/dates.php';
+require_once 'utils/date_functions.php';
 
 $sql=sprintf('select `Staff Key` from `Staff Dimension` where `Staff Type`!="Contractor" order by `Staff Key` desc ');
 
@@ -37,7 +37,7 @@ if ($result=$db->query($sql)) {
 
 		if ($from and $to) {
 
-			print $employee->get('Name')." $from $to\n";
+			//print $employee->get('Name')." $from $to\n";
 
 			$dates=date_range($from, $to);
 			foreach ($dates as $date) {

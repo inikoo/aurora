@@ -1,5 +1,5 @@
 {if isset($period)}
- {include file="utils/date_chooser.tpl" period=$period} 
+ {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  } 
 {/if}
 {if isset($elements) and count(elements)>0}
 

@@ -12,6 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/date_functions.php';
 
 
 

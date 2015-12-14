@@ -141,53 +141,43 @@
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_datepicker" class="hide datepicker"></div>
 		<script>
-		
 		    $(function() {
-    $("#{$field.id}_datepicker").datepicker({
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        defaultDate: new Date('{$field.value}'),
-        altField: "#{$field.id}",
-        altFormat: "yy-mm-dd",
-        onSelect: function() {
-            $('#{$field.id}').change();
-                        $('#{$field.id}_formated').val('xx');
-                        
-                   //     var date = $(this).datepicker("getDate");
-                        
-                    $('#{$field.id}_formated').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
-                        
-   
-        }
-    });
-});
-            $('#{$field.id}_formated').on('input', function() {
-             
-                 var _moment=moment($('#{$field.id}_formated').val(), ["DD-MM-YYYY", "MM-DD-YYYY"], 'en');
-        
-       
-           if(_moment.isValid()){
-             var date=new Date(_moment)
-           }else{
-           var date = chrono.parseDate($('#{$field.id}_formated').val())
-           }
-           
-                if (date == null) {
-                    var value = '';
-                } else {
-                    var value = date.toISOString().slice(0, 10)
-                    $("#{$field.id}_datepicker").datepicker("setDate", date );
-                }
-    
-    
-    $('#{$field.id}').val(value)
-    $('#{$field.id}').change();
+		        $("#{$field.id}_datepicker").datepicker({
+		            showOtherMonths: true,
+		            selectOtherMonths: true,
+		            defaultDate: new Date('{$field.value}'),
+		            altField: "#{$field.id}",
+		            altFormat: "yy-mm-dd",
+		            onSelect: function() {
+		                $('#{$field.id}').change();
+		                $('#{$field.id}_formated').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
+		            }
+		        });
+		    });
+		    $('#{$field.id}_formated').on('input', function() {
 
-});
-            $('#{$field.id}').on('change', function() {
-            on_changed_value('{$field.id}', $('#{$field.id}').val())
-            });
+		        var _moment = moment($('#{$field.id}_formated').val(), ["DD-MM-YYYY", "MM-DD-YYYY"], 'en');
 
+
+		        if (_moment.isValid()) {
+		            var date = new Date(_moment)
+		        } else {
+		            var date = chrono.parseDate($('#{$field.id}_formated').val())
+		        }
+
+		        if (date == null) {
+		            var value = '';
+		        } else {
+		            var value = date.toISOString().slice(0, 10)
+		            $("#{$field.id}_datepicker").datepicker("setDate", date);
+		        }
+		        $('#{$field.id}').val(value)
+		        $('#{$field.id}').change();
+
+		    });
+		    $('#{$field.id}').on('change', function() {
+		        on_changed_value('{$field.id}', $('#{$field.id}').val())
+		    });
         </script> 
         {/if} 
   	    

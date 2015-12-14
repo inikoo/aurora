@@ -25,8 +25,10 @@ $height_row: 32px;
 $height_short_row: 22px;
 $height_very_short_row: 18px;
 $height_select_option: 28px;
+
 $height_calendar_cell: 16px;
-$height_calendar_th: 6px;
+$height_calendar_th: 20px;
+
 
 $left_menu_width: 200px;
 $font_title: "Ubuntu","Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;
@@ -590,33 +592,7 @@ input{
     background: #94db84;
     border: 1px solid #78bf41;
 }
-.date_chooser {
-    @include unselectable;
-    border-bottom: 1px solid #ccc;
-    height: $height_short_row;
-    line-height: $height_short_row;
-    font-size: 90%;
-    div {
-        float: left;
-        padding: 0px 5px;
-        border-left: 1px solid #ccc;
-        cursor: pointer;
-    }
-    div:hover, div.selected {
-        background-color: #edf3f8;
-        color: #000;
-    }
-    .interval {
-        width: 15.4%;
-    }
-    .day {
-        width: 9%;
-    }
-    .fixed_interval {
-        width: 4.25%;
-        text-align: center;
-    }
-}
+
 
  
     
@@ -812,6 +788,8 @@ border-right:1px solid #ccc;margin-right:2px;
         min-width: 150px;
     }
 }
+
+
 .details_data, .new_object, .presention_card, .showcase{
     padding: 10px 20px;
     table {
@@ -952,9 +930,16 @@ border-right:1px solid #ccc;margin-right:2px;
 
     
     .datepicker{
-     margin-bottom:5px;
-    // margin-left: 5px;
+        margin-bottom:5px;
         margin-top: 0px;
+        
+         .ui-datepicker thead tr{
+      
+         height: $height_calendar_th;
+        line-height: $height_calendar_th;
+    }
+        
+      
     }
     
   
@@ -1015,8 +1000,6 @@ border-right:1px solid #ccc;margin-right:2px;
 .details_data {  
    .intl-tel-input .flag-container {display:none};
 }
-
-
 .result{
 
 margin-top:20px;
@@ -1096,147 +1079,7 @@ margin-top:20px;
 
 
 
-.datepicker{
 
-
-	font-size: 109%;
-	
-	td{
-	 height: $height_calendar_cell;
-                line-height:$height_calendar_cell;
-
-	}
-	
- 
- .ui-widget {
-	
-	border: none;
-	border-radius: 0;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-}
-
-.ui-datepicker {
-	padding: 0;
-}
-
- .ui-datepicker-header {
-	border: 1px solid #ccc;
-	border-bottom:none;
-	border-radius: 0;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-	background: transparent;
-	font-weight: normal;
-	font-size: 15px;
-	
-}
-
- .ui-datepicker-header .ui-state-hover {
-	background: transparent;
-	border-color: transparent;
-	
-	cursor: pointer;
-	border-radius: 0;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-}
-
- .ui-datepicker .ui-datepicker-title {
-	
-	color: #777;
-}
-
-.ui-datepicker .ui-datepicker-prev-hover,
- .ui-datepicker .ui-datepicker-next-hover,
- .ui-datepicker .ui-datepicker-next,
- .ui-datepicker .ui-datepicker-prev {
-	top: 8px;
-	border:none;
-}
-
- .ui-datepicker .ui-datepicker-prev-hover {
-	left: 2px;
-}
-
- .ui-datepicker .ui-datepicker-next-hover {
-	right: 2px;
-}
-
- .ui-datepicker .ui-datepicker-next span,
- .ui-datepicker .ui-datepicker-prev span {
-	background-image: url(images/ui-icons_777777_256x240.png);
-	background-position: -32px 0;
-	margin-top: 0;
-	top: 0;
-	font-weight: normal;
-}
-
- .ui-datepicker .ui-datepicker-prev span {
-	background-position: -96px 0;
-}
-
- .ui-datepicker table {
-	margin: 0;
-}
-
- .ui-datepicker th {
-
-	padding: 0px 0;
-	color: #eee;
-	background:#777;
-	font-size: 90%;
-	font-weight: normal;
-	border: none;
-	
-	 height: $height_calendar_th;
-                line-height:$height_calendar_th;
-
-	
-}
-
- .ui-datepicker td {
-
-	background: #fff;
-	
-	border: 1px solid #eee;
-	padding: 0;
-}
-
-
-
- td .ui-state-default {
-	background: transparent;
-	border: none;
-	text-align: center;
-	padding: .5em;
-	margin: 0;
-	font-weight: normal;
-	color:#777
-	
-}
-
- .ui-state-disabled  {
-	opacity: 1;
-}
-
- .ui-state-disabled .ui-state-default {
-	color: #fba49e;
-}
-
- td .ui-state-active,
- td .ui-state-hover {
-	background: yellow;
-	color:#333
-}
-
-  td.ui-datepicker-other-month {
-	background: #eee; 
-	color: #777 
-	
-}
-
-}
 
 
 .tree{
@@ -1391,6 +1234,9 @@ right connector from last child*/
 .unchecked{background:#ddd;cursor:pointer}
 .checked{background:#71BC78;color:#FFF;cursor:pointer}
 
+@import 'datepicker';
 @import 'working_hours';
 @import 'salary';
+@import 'date_chooser';
+
 
