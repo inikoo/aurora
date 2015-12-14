@@ -57,8 +57,23 @@ $parameters['tab']=$tab;
 
 if (isset($parameters['period'])) {
 	$smarty->assign('period',$parameters['period']);
+	
+	if($parameters['period']=='day' or $parameters['period']=='interval'){
+	
 	$smarty->assign('from',$parameters['from']);
 	$smarty->assign('to',$parameters['to']);
+	$smarty->assign('from_mmddyy',strftime("%m/%d/%Y",strtotime($parameters['from'])));
+	$smarty->assign('to_mmddyy',strftime("%m/%d/%Y",strtotime($parameters['to'])));
+	$smarty->assign('from_locale',strftime("%x",strtotime($parameters['from'])));
+	$smarty->assign('to_locale',strftime("%x",strtotime($parameters['to'])));
+	}else{
+	$smarty->assign('from','');
+	$smarty->assign('to','');
+	$smarty->assign('from_mmddyy','');
+	$smarty->assign('to_mmddyy','');
+	$smarty->assign('from_locale','');
+	$smarty->assign('to_locale','');
+	}
 
 }
 

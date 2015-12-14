@@ -32,8 +32,6 @@ if (isset($parameters['period'])) {
 
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
-//print_r($parameters);
-//print " $from, $to\n";
 
 
 	$where_interval=prepare_mysql_dates($from, $to, '`Timesheet Date`');

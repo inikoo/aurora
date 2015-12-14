@@ -42,10 +42,34 @@ function change_results_per_page(results_per_page) {
 
 function change_period(period) {
 
-    $('#date_chooser div').removeClass('selected')
-    $('#' + period).addClass('selected')
-
     var parameters = jQuery.parseJSON(rows.parameters);
+
+    if (period == 'date') {
+
+        parameters.from = $('#select_date').val()
+        parameters.to = $('#select_date').val()
+
+
+
+    } else if (period == 'interval') {
+
+        var components = $('#select_interval_from').val().split(/\//)
+        parameters.from = components[2] + '-' + components[0] + '-' + components[1]
+        components = $('#select_interval_to').val().split(/\//)
+        parameters.to = components[2] + '-' + components[0] + '-' + components[1]
+
+
+    } else {
+      
+    }
+
+  $('#date_chooser div').removeClass('selected')
+        $('#' + period).addClass('selected')
+
+    $('#select_date_control_panel').addClass('hide')
+    $('#select_interval_control_panel').addClass('hide')
+
+
     parameters.period = period;
 
     rows.parameters = JSON.stringify(parameters)
@@ -54,10 +78,12 @@ function change_period(period) {
     rows.fetch({
         reset: true
     });
-    if(with_elements)
-    get_elements_numbers(rows.tab, rows.parameters)
+    if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
 }
+
+
+
 
 
 function get_elements_numbers(tab, parameters) {
@@ -192,9 +218,7 @@ function change_table_element(event, item) {
     rows.parameters = JSON.stringify(parameters)
 
     rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
-    
-    
+
+
 
 }
-
-

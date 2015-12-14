@@ -47,6 +47,9 @@ function set_locale($locale) {
 	bind_textdomain_codeset("inikoo", 'UTF-8'); //This was the missing piece.
 
 
+
+setlocale(LC_TIME, $locale);
+
 }
 
 

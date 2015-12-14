@@ -122,6 +122,9 @@ function seconds_to_hourminutes($seconds) {
 
 }
 
+
+
+
 function file_size($bytes) {
 	if ($bytes >= 1073741824) {
 		$bytes = number_format($bytes / 1073741824, 1) . ' GB';
