@@ -10,7 +10,7 @@
 */
 
 
-require_once 'utils/date_functions.php';
+include_once 'utils/date_functions.php';
 
 
 if (!isset($rtext_label)) {
