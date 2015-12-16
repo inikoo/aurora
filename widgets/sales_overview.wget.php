@@ -24,17 +24,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 
 	$sales_overview=array();
 	$period_tag=get_interval_db_name($period);
-	$fields="`Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
 
-
-	if (!($period_tag=='3 Year' or $period_tag=='Total')) {
-		$fields.="`Store $period_tag Acc 1YB Refunds` as refunds_1yb,`Store $period_tag Acc 1YB Delivery Notes` delivery_notes_1yb,`Store $period_tag Acc 1YB Replacements` replacements_1yb, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb";
-
-	}else {
-		$fields.='0 as refunds_1yb, 0 as replacements_1yb,0 as delivery_notes_1yb, 0 as invoices_1yb, 0 as sales_1yb, 0 as dc_sales_1yb';
-	}
-
-	$sql=sprintf("select  %s from `Store Dimension` S left join `Store Data Dimension` SD on (S.`Store Key`=SD.`Store Key`)left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`)", $fields);
 	$adata=array();
 
 
@@ -49,29 +39,42 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 	$sum_replacements_1yb=0;
 	$sum_delivery_notes_1yb=0;
 
+
+
+	$fields="`Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
+	if (!($period_tag=='3 Year' or $period_tag=='Total')) {
+		$fields.="`Store $period_tag Acc 1YB Refunds` as refunds_1yb,`Store $period_tag Acc 1YB Delivery Notes` delivery_notes_1yb,`Store $period_tag Acc 1YB Replacements` replacements_1yb, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb";
+
+	}else {
+		$fields.='0 as refunds_1yb, 0 as replacements_1yb,0 as delivery_notes_1yb, 0 as invoices_1yb, 0 as sales_1yb, 0 as dc_sales_1yb';
+	}
+
+	$sql=sprintf("select  %s from `Store Dimension` S left join `Store Data Dimension` SD on (S.`Store Key`=SD.`Store Key`)left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`)", $fields);
+
+
 	if ($result=$db->query($sql)) {
 
 		foreach ($result as $row) {
 
+			if ($type!='invoice_categories') {
+				$sum_invoices+=$row['invoices'];
+				$sum_delivery_notes+=$row['delivery_notes'];
 
-			$sum_invoices+=$row['invoices'];
-			$sum_delivery_notes+=$row['delivery_notes'];
+				$sum_refunds+=$row['refunds'];
+				$sum_refunds_1yb+=$row['refunds_1yb'];
+				$sum_replacements+=$row['replacements'];
+				$sum_replacements_1yb+=$row['replacements_1yb'];
+				$sum_invoices_1yb+=$row['invoices_1yb'];
 
-			$sum_refunds+=$row['refunds'];
-			$sum_refunds_1yb+=$row['refunds_1yb'];
-			$sum_replacements+=$row['replacements'];
-			$sum_replacements_1yb+=$row['replacements_1yb'];
-			$sum_invoices_1yb+=$row['invoices_1yb'];
+				$sum_delivery_notes_1yb+=$row['delivery_notes_1yb'];
 
-			$sum_delivery_notes_1yb+=$row['delivery_notes_1yb'];
+				$sum_dc_sales+=$row['dc_sales'];
+				$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
-			$sum_dc_sales+=$row['dc_sales'];
-			$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
-
-
+			}
 
 			$sales_overview[]=array(
-				'class'=>'record',
+				'class'=>'record store '.($type=='invoice_categories'?'hide':''),
 				'id'=>$row['Store Key'],
 				'label'=>array('label'=>$row['Store Name'], 'title'=>$row['Store Name'], 'view'=>'store/'.$row['Store Key']),
 
@@ -111,9 +114,118 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 	}
 
 
+	/*-------- Invoice Categories*/
+
+
+
+
+	$fields="
+		`Invoice Category $period_tag Acc Refunds` as refunds,
+		`Invoice Category $period_tag Acc Invoices` as invoices,
+		`Invoice Category $period_tag Acc Invoiced Amount` as sales,
+		 `Invoice Category DC $period_tag Acc Invoiced Amount` as dc_sales,
+ 0 delivery_notes,
+        0 delivery_notes_1yb,
+	   
+        0 replacements,
+        0 replacements_1yb,
+                        ";
+
+
+
+	if ($period_tag=='3 Year' or $period_tag=='All') {
+
+		$fields.="
+	    0 as refunds_1yb,
+
+	    0 as invoices_1yb,
+	    0 as sales_1yb,
+        0 as dc_sales_1yb
+                        ";
+	}else {
+		$fields.="
+		`Invoice Category $period_tag Acc 1YB Refunds` as refunds_1yb,
+
+	    `Invoice Category $period_tag Acc 1YB Invoices` as invoices_1yb,
+	    `Invoice Category $period_tag Acc 1YB Invoiced Amount` as sales_1yb,
+        `Invoice Category DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        ";
+
+	}
+
+
+
+	$sql="select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $row) {
+
+			if ($type=='invoice_categories') {
+				$sum_invoices+=$row['invoices'];
+				$sum_delivery_notes+=$row['delivery_notes'];
+
+				$sum_refunds+=$row['refunds'];
+				$sum_refunds_1yb+=$row['refunds_1yb'];
+				$sum_replacements+=$row['replacements'];
+				$sum_replacements_1yb+=$row['replacements_1yb'];
+				$sum_invoices_1yb+=$row['invoices_1yb'];
+
+				$sum_delivery_notes_1yb+=$row['delivery_notes_1yb'];
+
+				$sum_dc_sales+=$row['dc_sales'];
+				$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
+			}
+
+
+			$sales_overview[]=array(
+				'class'=>'record category '.($type!='invoice_categories'?'hide':''),
+				'id'=>'cat'.$row['Category Key'],
+				'label'=>array('label'=>$row['Category Label'], 'title'=>$row['Category Label'], 'view'=>'store/category/'.$row['Category Key']),
+
+
+				'invoices'=>number($row['invoices']),
+				'invoices_1yb'=>number($row['invoices_1yb']),
+				'invoices_delta'=>delta($row['invoices'], $row['invoices_1yb']),
+
+				'delivery_notes'=>number($row['delivery_notes']),
+				'delivery_notes_1yb'=>number($row['delivery_notes_1yb']),
+				'delivery_notes_delta'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']),
+
+				'refunds'=>number($row['refunds']),
+				'refunds_1yb'=>number($row['refunds_1yb']),
+				'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
+
+				'replacements'=>number($row['replacements']),
+				'replacements_percentage'=>percentage($row['replacements'], $row['delivery_notes']),
+				'replacements_delta'=>delta($row['replacements'], $row['replacements_1yb']),
+				'replacements_percentage_1yb'=>percentage($row['replacements_1yb'], $row['delivery_notes_1yb']),
+				'replacements_1yb'=>number( $row['delivery_notes_1yb']),
+
+
+
+				'sales'=>($currency=='store'?money($row['sales'], $row['currency']):money($row['dc_sales'], $account->get('Account Currency')))  ,
+				'sales_1yb'=>($currency=='store'?money($row['sales_1yb'], $row['currency']):money($row['dc_sales_1yb'], $account->get('Account Currency')))  ,
+				'sales_delta'=>delta($row['sales'], $row['sales_1yb'])
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+	/*---------*/
+
 
 	$sales_overview[]=array(
-		'id'=>'store_totals',
+		'id'=>'totals',
 		'class'=>'totals',
 		'label'=>array('label'=>_('Total')),
 
