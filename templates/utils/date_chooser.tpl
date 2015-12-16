@@ -213,6 +213,8 @@
         if ($('#select_interval_control_panel').hasClass('hide')) {
             $('#select_interval_control_panel').removeClass('hide')
             $('#select_date_control_panel').addClass('hide')
+            $('#date_chooser div').removeClass('selected')
+            $('#interval' ).addClass('selected')
 
         } else {
             $('#select_interval_control_panel').addClass('hide')
@@ -225,7 +227,8 @@
         if ($('#select_date_control_panel').hasClass('hide')) {
             $('#select_date_control_panel').removeClass('hide')
             $('#select_interval_control_panel').addClass('hide')
-
+            $('#date_chooser div').removeClass('selected')
+            $('#date' ).addClass('selected')
         } else {
             $('#select_date_control_panel').addClass('hide')
 

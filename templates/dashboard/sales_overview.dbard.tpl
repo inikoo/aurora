@@ -1,0 +1,192 @@
+<div id="dashboard_sales_overview" style="margin-top:20px;padding:0px" class="dashboard">
+<input type="hidden" id="order_overview_type" value="{$type}">
+<input type="hidden" id="order_overview_period" value="{$period}">
+<input type="hidden" id="order_overview_currency" value="{$currency}">
+
+
+
+
+<table border=0 style="width:100%" >
+<tr class="main_title " >
+<td colspan=9>
+
+<div  class="widget_types" >
+		<div id="orders" onclick="change_sales_overview_type('orders')" class="hide widget  left {if $type=='orders'}selected{/if}" >
+		<i class="fa fa-shopping-cart"></i><span class="label">  {t}Orders{/t} </span> 
+		</div>
+		<div id="invoices" onclick="change_sales_overview_type('invoices')" class="widget  left {if $type=='invoices'}selected{/if}" >
+			<i class="fa fa-usd"></i><span class="label">  {t}Invoices{/t} </span> 
+		</div>
+		<div id="invoice_categories" onclick="change_sales_overview_type('invoice_categories')" class="hide widget  left {if $type=='invoice_categories'}selected{/if}" >
+			<i class="fa fa-usd"></i><span class="label">  {t}Invoices' categories{/t} </span> 
+		</div>
+		<div id="delivery_notes" onclick="change_sales_overview_type('delivery_notes')" class="widget  left {if $type=='delivery_notes'}selected{/if}" >
+			 <i class="fa fa-truck"></i>  <span class="label">{t}Delivery Notes{/t} </span> 
+		</div>
+	
+</div>
+<div id="sales_overview_currency_container" class="button  {if $type=='delivery_notes'}hide{/if} " onclick="toggle_sales_overview_currency()" style="float:right;margin-right:10px">
+<i id="sales_overview_currency"  class="fa {if $currency=='store'}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Store currency{/t}
+</div>
+</td>
+</tr>
+<tr class="small_row">
+<td colspan=9 >
+<div  class="date_chooser" >
+	<div style="visibility:hidden" id="interval" class="interval {if  $period=='interval'}selected{/if}" ><img src="/art/icons/mini-calendar_interval.png"  /> {t}Interval{/t}</div> 
+	<div style="visibility:hidden"  id="date" class="day {if  $period=='date'}selected{/if}" ><img src="/art/icons/mini-calendar.png"  /> {t}Day{/t}</div> 
+	<div onclick="change_sales_overview_period('ytd')"period="ytd" id="ytd" class="fixed_interval {if  $period=='ytd'}selected{/if}" >{t}YTD{/t}</div> 
+	<div onclick="change_sales_overview_period('mtd')"period="mtd" id="mtd" class="fixed_interval {if  $period=='mtd'}selected{/if}" >{t}MTD{/t}</div> 
+	<div onclick="change_sales_overview_period('wtd')"period="wtd" id="wtd" class="fixed_interval {if  $period=='wtd'}selected{/if}" >{t}WTD{/t}</div> 
+	<div onclick="change_sales_overview_period('today')" period="today" id="today" class="fixed_interval {if  $period=='today'}selected{/if}" >{t}Today{/t}</div> 
+	<div onclick="change_sales_overview_period('yesterday')" period="yesterday" id="yesterday" class="fixed_interval {if  $period=='yesterday'}selected{/if}" >{t}Y'day{/t}</div> 
+	<div onclick="change_sales_overview_period('last_w')" period="last_w" id="last_w" class="fixed_interval {if  $period=='last_w'}selected{/if}" >{t}Last W{/t}</div> 
+	<div onclick="change_sales_overview_period('last_m')" period="last_m" id="last_m" class="fixed_interval {if  $period=='last_m'}selected{/if}" >{t}Last M{/t}</div> 
+	<div onclick="change_sales_overview_period('1w')" period="1w" id="1w" class="fixed_interval {if  $period=='1w'}selected{/if}" >{t}1W{/t}</div> 
+	<div onclick="change_sales_overview_period('10d')" period="10d" id="10d" class="fixed_interval {if  $period=='10d'}selected{/if}" >{t}10d{/t}</div> 
+	<div onclick="change_sales_overview_period('1m')" period="1m" id="1m" class="fixed_interval {if  $period=='1m'}selected{/if}" >{t}1m{/t}</div> 
+	<div onclick="change_sales_overview_period('1q')" period="1q" id="1q" class="fixed_interval {if  $period=='1q'}selected{/if}" >{t}1q{/t}</div> 
+	<div onclick="change_sales_overview_period('1y')" period="1y" id="1y" class="fixed_interval {if  $period=='1y'}selected{/if}" >{t}1Y{/t}</div> 
+	<div onclick="change_sales_overview_period('3y')" period="3y" id="3y" class="fixed_interval {if  $period=='3y'}selected{/if}" >{t}3Y{/t}</div> 
+	<div onclick="change_sales_overview_period('all')" period="all"  id="all" class="fixed_interval {if  $period=='all'}selected{/if}" >{t}All{/t}</div>
+</div>
+
+</td>
+</tr>
+
+
+<tr class="header">
+<td class="label">{t}Store{/t}</td>
+<td class="refunds aright {if $type!='invoices'}hide{/if}">{t}Refunds{/t}</td>
+<td class="refunds aright {if $type!='invoices'}hide{/if}">&Delta; {t}Last Y{/t}</td>
+
+<td class="delivery_notes aright {if $type!='delivery_notes'}hide{/if}">{t}Delivery Notes{/t}</td>
+<td class="delivery_notes aright {if $type!='delivery_notes'}hide{/if}">&Delta; {t}Last Y{/t}</td>
+
+
+<td class="replacements aright {if $type!='delivery_notes'}hide{/if}">{t}Rpl{/t}</td>
+<td class="replacements aright {if $type!='delivery_notes'}hide{/if}">% {t}Rpl{/t}</td>
+<td class="last replacements aright {if $type!='delivery_notes'}hide{/if}">&Delta; {t}Last Y{/t}</td>
+
+<td class="invoices aright {if $type!='invoices'}hide{/if}">{t}Invoices{/t}</td>
+<td class="invoices aright {if $type!='invoices'}hide{/if}">&Delta; {t}Last Y{/t}</td>
+
+<td class="sales aright {if $type!='invoices'}hide{/if}" >{t}Sales{/t}</td>
+<td class="last sales aright {if $type!='invoices'}hide{/if}">&Delta; {t}Last Y{/t}</td>
+
+</tr>
+{foreach from=$sales_overview item=record}
+
+
+		
+
+<tr class="{$record.class}">
+<td class="label {if isset($record.label.view) and $record.label.view!='' }link{/if}"  {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')"{/if}  title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if}  ">{$record.label.label}</td>
+
+<td id="orders_overview_refunds_{$record.id}" class="refunds width_1500 aright {if $type!='invoices'}hide{/if}">{$record.refunds}</td>
+<td id="orders_overview_refunds_delta_{$record.id}" class="refunds width_100 aright {if $type!='invoices'}hide{/if}">{$record.refunds_delta}</td>
+
+
+<td id="orders_overview_delivery_notes_{$record.id}" class="delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes}</td>
+<td id="orders_overview_delivery_notes_delta_{$record.id}" class="delivery_notes width_100 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes_delta}</td>
+
+
+<td id="orders_overview_replacements_{$record.id}" class="replacements width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.replacements}</td>
+<td id="orders_overview_replacements_percentage_{$record.id}" class="replacements width_100 aright {if $type!='delivery_notes'}hide{/if}">{$record.replacements_percentage}</td>
+
+<td id="orders_overview_replacements_delta_{$record.id}" class="last replacements width_100 aright {if $type!='delivery_notes'}hide{/if}" title="{$record.replacements_1yb}" >{$record.replacements_delta}</td>
+
+<td id="orders_overview_invoices_{$record.id}" class="invoices width_150 aright {if $type!='invoices'}hide{/if}">{$record.invoices}</td>
+<td id="orders_overview_invoices_delta_{$record.id}" class="invoices width_100 aright {if $type!='invoices'}hide{/if}">{$record.invoices_delta}</td>
+
+
+<td id="orders_overview_sales_{$record.id}" class="sales width_200 aright {if $type!='invoices'}hide{/if}">{$record.sales}</td>
+<td id="orders_overview_sales_delta_{$record.id}" class="last sales width_100 aright {if $type!='invoices'}hide{/if}">{$record.sales_delta}</td>
+
+</tr>
+{/foreach}
+
+</table>
+
+</div>
+
+<script>
+
+function change_sales_overview_type(type) {
+
+    $('.widget_types .widget').removeClass('selected')
+    $('#' + type).addClass('selected')
+
+    if (type == 'orders') {
+
+    } else if (type == 'invoices') {
+        $('.refunds,.invoices,.sales').removeClass('hide')
+        $('#sales_overview_currency_container').removeClass('hide')
+
+        $('.replacements ,.delivery_notes').addClass('hide')
+    } else if (type == 'invoice_categories') {
+
+    } else if (type == 'delivery_notes') {
+        $('.refunds,.invoices,.sales').addClass('hide')
+        $('.replacements ,.delivery_notes').removeClass('hide')
+        $('#sales_overview_currency_container').addClass('hide')
+
+    }
+
+
+    get_order_overview_data(type, $('#order_overview_period').val(), $('#order_overview_currency').val())
+
+
+}
+
+
+function toggle_sales_overview_currency() {
+    if ($('#sales_overview_currency').hasClass('fa-toggle-off')) {
+        var currency = 'store'
+        $('#sales_overview_currency').removeClass('fa-toggle-off').addClass('fa-toggle-on')
+    } else {
+        var currency = 'account'
+        $('#sales_overview_currency').addClass('fa-toggle-off').removeClass('fa-toggle-on')
+    }
+
+    get_order_overview_data($('#order_overview_type').val(), $('#order_overview_period').val(), currency)
+
+    $('#order_overview_currency').val(currency)
+}
+
+
+function change_sales_overview_period(period) {
+
+    $('.date_chooser .fixed_interval').removeClass('selected')
+    $('#'.period).addClass('selected')
+
+
+    $('#order_overview_period').val(period)
+
+    get_order_overview_data($('#order_overview_type').val(), period, $('#order_overview_currency').val())
+}
+
+
+function get_order_overview_data(type, period, currency) {
+
+    var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&period=" + period + '&currency=' + currency
+
+    $.getJSON(request, function(r) {
+        console.log(r)
+
+        for (var record in r.data) {
+
+            $('#' + record).html(r.data[record].value)
+        }
+
+
+
+
+    });
+
+}
+
+
+</script>
+
+

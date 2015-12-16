@@ -349,8 +349,8 @@ processData: false,
             $('#' + field + '_editor').removeClass('valid invalid')
             $('#' + field + '_validation').removeClass('valid invalid')
 
-            var updated_fields;
-            for (updated_fields in data.updated_data) {
+           
+            for (var  updated_fields in data.updated_data) {
                 $('.' + updated_fields).html(data.updated_data[updated_fields])
             }
 

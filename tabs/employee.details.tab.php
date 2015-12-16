@@ -16,21 +16,6 @@ $employee=$state['_object'];
 $employee->get_user_data();
 
 
-/*
-$tmp=array(
-	'data'=>array(
-		'amount_weekdays'=>7.44,
-		'amount_saturday'=>15.44,
-		'amount_sunday'=>15.44,
-
-	)
-
-);
-
-print json_encode($tmp);
-
-exit;
-*/
 $options_Staff_Payment_Terms=array(
 	'Monthy'=>_('Monthy (fixed)'), 'PerHour'=>_('Per hour (prorata)')
 );

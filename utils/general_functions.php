@@ -1182,7 +1182,7 @@ function money($amount, $currency='', $locale=false) {
 	if (!$locale) {global $locale;}
 
 	$money = new NumberFormatter($locale, NumberFormatter::CURRENCY);
-	return $money->format($amount);
+	return $money->formatCurrency($amount,$currency);
 }
 
 

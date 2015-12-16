@@ -7,6 +7,11 @@ $color_dark_darker_font: #777;
 $color_highlight_over_dark: #FFF;
 $header_background_color: #fefefe;
 $color_dark_font_selected: yellow;
+$color_dark_font_hover: #FFFFCC;
+
+
+
+
 $color_dark_font_selected_bis: #F58025;
 $color_dark_font_highlight: #fff;
 $color_background: #fcfcfc;
@@ -88,6 +93,7 @@ html, body {
         color: #6a6d91;cursor:pointer;text-decoration:none;
     }
    
+   .button{cursor:pointer;} 
    
    .link:hover,a:hover {
         text-decoration: underline;
@@ -470,7 +476,11 @@ input{
            
         }
     }
-    #tabs {
+ 
+}
+
+
+   #tabs {
         margin-top: 2px;
     }
     #element_type {
@@ -549,7 +559,8 @@ input{
             }
         }
     }
-}
+
+
 #elements_chooser {
     width: 200px;
     border-left: none;
@@ -595,72 +606,9 @@ input{
 
 
  
+
     
 
-#table_buttons{
-div{
-&:last-of-type {
-border-right:1px solid #ccc;margin-right:2px;
-}
-}
-
-
- 
-
-
-
-}
-
-
-.table_info {
-    padding-left: 10px;
-    border-bottom: 1px solid #ccc;
-    height: $height_header;
-    line-height: $height_header;
-    clear: both;
-    #show_filter, #filter_submit {
-        border-right: 1px solid #ccc;
-        margin-right: 4px;
-    }
-    #filter {
-        float: right;
-        width: 248px;
-    }
-    #filter_field {
-        float: right;
-        margin-right: 10px;
-    }
-    #prev_page.disabled, #first_page.disabled {
-        border-left: 1px solid #000;
-    }
-}
-.results_per_page.square_button {
-    font-size: 11px;
-}
-.results_per_page.square_button.selected {
-    color: steelblue;
-    font-weight: 800;
-}
-
-
-.backgrid {
-    .totals td {
-        color: #000;
-        border-top: 1px solid #000;
-    }
-}
-.backgrid th {
-    text-align: left;
-    
-    a {color:#444;}
-}
-.backgrid th, .backgrid td {
-    vertical-align: top;
-    white-space: normal;
-}
-.backgrid th.align-right {
-    text-align: right;
-}
 .full_date {
     width: 250px;
     text-align: right;
@@ -790,90 +738,9 @@ border-right:1px solid #ccc;margin-right:2px;
 }
 
 
-.details_data, .new_object, .presention_card, .showcase{
+.details_data, .new_object, .presention_card, .showcase ,.dashboard{
     padding: 10px 20px;
-    table {
-        width: 100%;
-        
-        .formated_value{margin-right:10px}
-        
-        td {
-            vertical-align: text-top;
-        }
-        
-      
-        
-        tr {
-            border-bottom: 1px solid #ddd;
-            
-            height: $height_row;
-            line-height: $height_row;
-            
-            
-
-            
-           // &.last {
-           //     border-bottom: 1px solid #ddd;
-           // }
-           
-           
-          
-           
-        }
-        
-         tr.new{
-           cursor:pointer;
-           &:hover  {color:$color_save}
-           }
-        
-        .new_button{position:relative;top:1px;left:5px}
-        
-        
-        
-        
-        
-        .title {
-            border-top: none;
-            td {
-                font-family: $font_title;
-                font-weight: 600;
-                padding-top: 10px;
-                
-                .fa.link{margin-left:5px;position:relative;top:2px}
-            }
-        }
-         
-        .label {
-            width: 280px;
-           vertical-align:top
-        }
-        
-        .value span {
-          //  padding-left: 5px;
-        }
-      
-        .show_buttons {
-            width:20px;
-            text-align: left;
-            .fa.edit {
-                cursor: pointer;
-                opacity: .2;
-                transition: opacity .2s ease-in-out;
-                &:hover {
-                    opacity: 1;
-                }
-            }
-            .fa.reset {
-                cursor: pointer;
-                opacity: .9;
-                transition: opacity .2s ease-in-out;
-                &:hover {
-                    opacity: 1;
-                }
-            }
-        }
-       
-    }
+   
     
     textarea{
       position: relative;
@@ -1207,7 +1074,7 @@ right connector from last child*/
 .error,.invalid{color:$color_error}
 .disabled{opacity:.5;color:#777}
 
-#table{
+
 .padding_left_10{padding-left:10px}
  .padding_left_20{padding-left:20px}
  .padding_left_30{padding-left:30px}
@@ -1227,6 +1094,7 @@ right connector from last child*/
  .width_350{width:350px}
  .width_400{width:400px}
 
+#table{
  .icon_container{ i {display:inline}}
 
 }
@@ -1238,5 +1106,5 @@ right connector from last child*/
 @import 'working_hours';
 @import 'salary';
 @import 'date_chooser';
-
+@import 'table';
 

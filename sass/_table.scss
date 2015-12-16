@@ -1,0 +1,292 @@
+
+.details_data, .new_object, .presention_card, .showcase ,.dashboard{
+   
+    table {
+        width: 100%;
+        
+        
+        .main_title {
+        
+        .button .fa{
+          position: relative;
+                top: 1px;
+        }
+        
+         font-family: $font_title;
+        font-weight: 300 !important;
+        
+          border: none;
+        color:$color_dark_font;  
+       background-color: $color_dark;
+        
+        
+        
+           .widget_types {
+        @include unselectable;
+      //  height: $height_short_row;
+       // line-height: $height_short_row;
+        clear: both;
+        border-bottom: none;
+         color:$color_dark_font;  
+        font-size: $height_short_row*.7;
+        background-color: $color_dark;
+        .widget {
+          //  height: $height_short_row;
+            float: left;
+            padding: 0px 20px;
+            border-right: 1px solid $color_dark_highlight;
+            cursor: pointer;
+            &.right {
+                float: right;
+                border-right: none;
+                border-left: 1px solid #ccc;
+            }
+            .fa {
+                font-size: 75%;
+              //   color:$color_dark_font;  
+                position: relative;
+                top: -1px;
+            }
+        }
+        .widget {
+            &.selected,&.selected:hover {
+                
+                color: $color_dark_font_selected
+            }
+            
+           &:hover {
+                
+                color: $color_dark_font_hover
+            }
+            
+           
+        }
+      
+    }
+        
+        
+        
+        
+        
+        
+        
+        
+       
+       
+    
+       
+       .tabs{
+     
+        border-bottom: none !important;
+        color: $color_dark_font !important;
+        background-color: $color_dark !important;;
+        .tab, .element {
+           
+            border-right: 1px solid $color_dark_highlight;
+          
+            &.right {
+              
+                border-left: 1px solid $color_dark_highlight;
+            }
+            .fa {
+              
+              //  color: $color_dark_font;
+               
+            }
+        }
+        
+        .tab.widget:hover{   background-color: #color_dark_highlight !important;}
+        
+        .tab {
+            &.widget_selected:hover, &.widget_selected {
+             
+                color: $color_dark_font_selected !important;
+            }
+            &:hover, &.selected > .fa {
+             //   color: #666;
+            }
+        }
+        
+    }
+   
+        
+        
+        
+        
+        }
+        
+        .formated_value{margin-right:10px}
+        
+        td {
+            vertical-align: text-top;
+        }
+        
+      
+        
+        tr {
+            border-bottom: 1px solid #ddd;
+            
+            height: $height_row;
+            line-height: $height_row;
+            
+            
+
+            
+           // &.last {
+           //     border-bottom: 1px solid #ddd;
+           // }
+           
+           
+          
+           
+        }
+        
+        
+        tr.small_row{
+ 
+            
+            height: $height_short_row;
+            line-height: $height_short_row;
+            
+    border-bottom: none;
+}
+        
+         tr.new{
+           cursor:pointer;
+           &:hover  {color:$color_save}
+           }
+        
+        .new_button{position:relative;top:1px;left:5px}
+        
+        
+        
+        
+        
+        .title {
+            border-top: none;
+            td {
+                font-family: $font_title;
+                font-weight: 600;
+                padding-top: 10px;
+                
+                .fa.link{margin-left:5px;position:relative;top:2px}
+            }
+        }
+         
+        .label {
+            width: 280px;
+           vertical-align:top
+        }
+        
+        .value span {
+          //  padding-left: 5px;
+        }
+      
+        .show_buttons {
+            width:20px;
+            text-align: left;
+            .fa.edit {
+                cursor: pointer;
+                opacity: .2;
+                transition: opacity .2s ease-in-out;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+            .fa.reset {
+                cursor: pointer;
+                opacity: .9;
+                transition: opacity .2s ease-in-out;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+       
+    }
+    
+ 
+}
+
+
+#table_buttons {
+    div {
+        &:last-of-type {
+            border-right: 1px solid #ccc;
+            margin-right: 2px;
+        }
+    }
+}
+.table_info {
+    padding-left: 10px;
+    border-bottom: 1px solid #ccc;
+    height: $height_header;
+    line-height: $height_header;
+    clear: both;
+    #show_filter, #filter_submit {
+        border-right: 1px solid #ccc;
+        margin-right: 4px;
+    }
+    #filter {
+        float: right;
+        width: 248px;
+    }
+    #filter_field {
+        float: right;
+        margin-right: 10px;
+    }
+    #prev_page.disabled, #first_page.disabled {
+        border-left: 1px solid #000;
+    }
+}
+.results_per_page.square_button {
+    font-size: 11px;
+}
+.results_per_page.square_button.selected {
+    color: steelblue;
+    font-weight: 800;
+}
+table {
+    .totals td {
+        color: #333;
+        border-top: 1px solid #aaa;
+        border-bottom: 1px solid #ccc;
+    }
+}
+.backgrid th {
+    text-align: left;
+    a {
+        color: #444;
+    }
+}
+.backgrid th, .backgrid td {
+    vertical-align: top;
+    white-space: normal;
+}
+.backgrid th.align-right {
+    text-align: right;
+}
+
+
+
+.dashboard{
+.record td,.totals td,.title td,.header td
+{
+ &:first-of-type  {padding-left:20px}
+
+ &:last-of-type,&.last  {padding-right:20px}
+}
+
+}
+
+
+
+
+#export_dialog{
+    position:absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding:10px 20px;
+    min-width:200px;
+    .fa{margin-right:5px}
+}
