@@ -11,12 +11,12 @@
 */
 
 
-function get_dashbord_sales_overview($db,$account,$user,$smarty,$type,$period,$currency) {
+function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency) {
 
 	include_once 'utils/date_functions.php';
 
 
-	
+
 	$smarty->assign('type', $type);
 	$smarty->assign('currency', $currency);
 	$smarty->assign('period', $period);
@@ -56,7 +56,7 @@ function get_dashbord_sales_overview($db,$account,$user,$smarty,$type,$period,$c
 
 			$sum_invoices+=$row['invoices'];
 			$sum_delivery_notes+=$row['delivery_notes'];
-			
+
 			$sum_refunds+=$row['refunds'];
 			$sum_refunds_1yb+=$row['refunds_1yb'];
 			$sum_replacements+=$row['replacements'];
@@ -74,30 +74,33 @@ function get_dashbord_sales_overview($db,$account,$user,$smarty,$type,$period,$c
 				'class'=>'record',
 				'id'=>$row['Store Key'],
 				'label'=>array('label'=>$row['Store Name'], 'title'=>$row['Store Name'], 'view'=>'store/'.$row['Store Key']),
+
+
 				'invoices'=>number($row['invoices']),
+				'invoices_1yb'=>number($row['invoices_1yb']),
+				'invoices_delta'=>delta($row['invoices'], $row['invoices_1yb']),
+
 				'delivery_notes'=>number($row['delivery_notes']),
-				'delivery_notes_delta'=>'<span title="'.number($row['delivery_notes_1yb']).'">'.delta($row['delivery_notes'], $row['delivery_notes_1yb']).'</span>',
+				'delivery_notes_1yb'=>number($row['delivery_notes_1yb']),
+				'delivery_notes_delta'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']),
 
 				'refunds'=>number($row['refunds']),
-
-				'invoices_1yb'=>number($row['invoices_1yb']),
-				'invoices_delta'=>'<span title="'.number($row['invoices_1yb']).'">'.delta($row['invoices'], $row['invoices_1yb']).'</span>',
+				'refunds_1yb'=>number($row['refunds_1yb']),
 				'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
-				
+
 				'replacements'=>number($row['replacements']),
-				'replacements_percentage'=>percentage($row['replacements'],$row['delivery_notes']),
+				'replacements_percentage'=>percentage($row['replacements'], $row['delivery_notes']),
 				'replacements_delta'=>delta($row['replacements'], $row['replacements_1yb']),
-				'replacements_1yb'=>number($row['replacements_1yb']),
-				
-				
-				'invoices_share'=>$row['invoices'],
-				'sales'=>($currency=='store'?money($row['sales'], $row['currency']):money($row['dc_sales_1yb'], $account->get('Account Currency')))  ,
-				'sales_1yb'=>money($row['sales_1yb'], $row['currency']),
-				'sales_delta'=>'<span title="'.money($row['sales_1yb']).'">'.delta($row['sales'], $row['sales_1yb']).'</span>',
-				'dc_sales'=>money($row['dc_sales']),
-				'dc_sales_1yb_'=>money($row['dc_sales_1yb']),
-				'dc_sales_delta'=>'<span title="'.money($row['dc_sales_1yb']).'">'.delta($row['dc_sales'], $row['dc_sales_1yb']).'</span>',
-				'dc_sales_share'=>$row['dc_sales']
+				'replacements_percentage_1yb'=>percentage($row['replacements_1yb'], $row['delivery_notes_1yb']),
+				'replacements_1yb'=>number( $row['delivery_notes_1yb']),
+
+
+
+				'sales'=>($currency=='store'?money($row['sales'], $row['currency']):money($row['dc_sales'], $account->get('Account Currency')))  ,
+				'sales_1yb'=>($currency=='store'?money($row['sales_1yb'], $row['currency']):money($row['dc_sales_1yb'], $account->get('Account Currency')))  ,
+				'sales_delta'=>delta($row['sales'], $row['sales_1yb'])
+
+
 			);
 
 		}
@@ -107,36 +110,35 @@ function get_dashbord_sales_overview($db,$account,$user,$smarty,$type,$period,$c
 		exit;
 	}
 
-	foreach ($sales_overview as $key=>$value) {
 
-		$sales_overview[$key]['invoices_share']=percentage($sales_overview[$key]['invoices_share'], $sum_invoices);
-		$sales_overview[$key]['dc_sales_share']=percentage($sales_overview[$key]['dc_sales_share'], $sum_dc_sales);
-
-	}
 
 	$sales_overview[]=array(
 		'id'=>'store_totals',
 		'class'=>'totals',
 		'label'=>array('label'=>_('Total')),
+
 		'invoices'=>number($sum_invoices),
+		'invoices_1yb'=>number($sum_invoices_1yb),
+		'invoices_delta'=>delta($sum_invoices, $sum_invoices_1yb),
+
 		'delivery_notes'=>number($sum_delivery_notes),
-				'delivery_notes_delta'=>'<span title="'.number($sum_delivery_notes_1yb).'">'.delta($sum_delivery_notes, $sum_delivery_notes_1yb).'</span>',
+		'delivery_notes_1yb'=>number($sum_delivery_notes_1yb),
+		'delivery_notes_delta'=>delta($sum_delivery_notes, $sum_delivery_notes_1yb),
 
 		'refunds'=>number($sum_refunds),
-		'replacements'=>number($sum_replacements),
+		'refunds_1yb'=>number($sum_refunds_1yb),
 		'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
-		
-				'replacements'=>number($sum_replacements),
-				'replacements_percentage'=>percentage($sum_replacements,$sum_delivery_notes),
-				'replacements_delta'=>delta($sum_replacements, $sum_replacements_1yb),
-				
-				'replacements_1yb'=>number($sum_replacements_1yb),
 
-		'invoices_1yb'=>'',
-		'invoices_delta'=>'<span title="'.number($sum_invoices_1yb).'">'.delta($sum_invoices, $sum_invoices_1yb).'</span>',
+		'replacements'=>number($sum_replacements),
+		'replacements_percentage'=>percentage($sum_replacements, $sum_delivery_notes),
+		'replacements_delta'=>delta($sum_replacements, $sum_replacements_1yb),
+		'replacements_percentage_1yb'=>percentage($sum_replacements_1yb, $sum_delivery_notes_1yb),
+		'replacements_1yb'=>number($sum_replacements_1yb),
+
 		'sales'=>($currency=='store'?'':money($sum_dc_sales, $account->get('Account Currency')))  ,
+		'sales_1yb'=>($currency=='store'?'':money($sum_dc_sales_1yb, $account->get('Account Currency')))  ,
 		'sales_delta'=>($currency=='store'?'':delta($sum_dc_sales, $sum_dc_sales_1yb))  ,
-		'invoices_share'=>''
+
 	);
 
 
