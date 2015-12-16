@@ -17,7 +17,7 @@
 {/foreach} 
 </div>
 {/if} 
-<div class="table_info">
+<div class="table_info" >
 	<div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{t}Last page{/t}" style="position:relative">
 		<i class="fa fa-chevron-right fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-right fa-fw"></i> 
 	</div>
@@ -39,6 +39,20 @@
 	</div>
 	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
+	</div>
+	<div  id="show_export_dialog"  class="square_button right " title="{t}Export{/t}" >
+		 <i onclick="show_export_dialog()" class="fa fa-download fa-fw"></i> 
+		
+	</div>
+	<div id="export_dialog_container" style="position:relative;float:right" class="  ">
+	 <div id="export_dialog" class="hide">
+	     <div style="float:right">
+	    <div class="link" ><i class="fa fa-file-excel-o" title="Excel"></i>Excel</div>
+	     <div class="link"  ><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV</div>
+	     <div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div>
+
+      </div>
+	</div>
 	</div>
 	
 	<div id="filter_container" class="hide">

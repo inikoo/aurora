@@ -60,11 +60,11 @@ function change_period(period) {
 
 
     } else {
-      
+
     }
 
-  $('#date_chooser div').removeClass('selected')
-        $('#' + period).addClass('selected')
+    $('#date_chooser div').removeClass('selected')
+    $('#' + period).addClass('selected')
 
     $('#select_date_control_panel').addClass('hide')
     $('#select_interval_control_panel').addClass('hide')
@@ -221,4 +221,23 @@ function change_table_element(event, item) {
 
 
 
+}
+
+
+
+
+function show_export_dialog() {
+
+    if ($('#export_dialog').hasClass('hide')) {
+        $('#export_dialog').removeClass('hide')
+        $("#export_dialog").css('left', -1 * $("#export_dialog").width());
+        $("#export_dialog").css('top', $("#show_export_dialog").height());
+    } else {
+        hide_export_dialog()
+    }
+
+}
+
+function hide_export_dialog() {
+    $('#export_dialog').addClass('hide')
 }

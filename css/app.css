@@ -22,6 +22,8 @@ html, body {
     color: #6a6d91;
     cursor: pointer;
     text-decoration: none; }
+  html .button, body .button {
+    cursor: pointer; }
   html .link:hover, html a:hover, body .link:hover, body a:hover {
     text-decoration: underline; }
   html table, body table {
@@ -410,67 +412,71 @@ input {
           line-height: 20px;
           color: grey;
           text-decoration: none; }
-  #app_main #tabs {
-    margin-top: 2px; }
-  #app_main #element_type {
-    float: left;
-    margin-left: 10px;
-    color: #777;
-    cursor: pointer;
-    min-width: 50px;
-    border: none; }
-    #app_main #element_type i {
-      margin-right: 5px; }
-  #app_main .tabs, #app_main .subtabs {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+
+#tabs {
+  margin-top: 2px; }
+
+#element_type {
+  float: left;
+  margin-left: 10px;
+  color: #777;
+  cursor: pointer;
+  min-width: 50px;
+  border: none; }
+  #element_type i {
+    margin-right: 5px; }
+
+.tabs, .subtabs {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 22px;
+  line-height: 22px;
+  clear: both;
+  border-bottom: 1px solid #ccc;
+  color: #666;
+  font-size: 13.2px;
+  background-color: #fff; }
+  .tabs .tab, .tabs .element, .subtabs .tab, .subtabs .element {
     height: 22px;
-    line-height: 22px;
-    clear: both;
-    border-bottom: 1px solid #ccc;
-    color: #666;
-    font-size: 13.2px;
-    background-color: #fff; }
-    #app_main .tabs .tab, #app_main .tabs .element, #app_main .subtabs .tab, #app_main .subtabs .element {
-      height: 22px;
-      float: left;
-      padding: 0px 20px;
-      border-right: 1px solid #ccc;
-      cursor: pointer; }
-      #app_main .tabs .tab.right, #app_main .tabs .element.right, #app_main .subtabs .tab.right, #app_main .subtabs .element.right {
-        float: right;
-        border-right: none;
-        border-left: 1px solid #ccc; }
-      #app_main .tabs .tab .fa, #app_main .tabs .element .fa, #app_main .subtabs .tab .fa, #app_main .subtabs .element .fa {
-        font-size: 75%;
-        color: #888;
-        position: relative;
-        top: -1px; }
-    #app_main .tabs .tab:hover, #app_main .tabs .tab.selected, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected {
-      background-color: #edf3f8;
-      color: #000; }
-    #app_main .tabs .tab:hover, #app_main .tabs .tab.selected > .fa, #app_main .subtabs .tab:hover, #app_main .subtabs .tab.selected > .fa {
-      color: #666; }
-    #app_main .tabs .element .qty, #app_main .subtabs .element .qty {
-      color: #aaa; }
-    #app_main .tabs .element.selected, #app_main .subtabs .element.selected {
-      color: #222; }
-    #app_main .tabs .element.selected > .qty, #app_main .subtabs .element.selected > .qty {
-      color: #111; }
-    #app_main .tabs .element:hover, #app_main .tabs .element.selected > .fa, #app_main .subtabs .element:hover, #app_main .subtabs .element.selected > .fa {
-      color: #000; }
-    #app_main .tabs .element .fa, #app_main .subtabs .element .fa {
-      font-size: 100%;
+    float: left;
+    padding: 0px 20px;
+    border-right: 1px solid #ccc;
+    cursor: pointer; }
+    .tabs .tab.right, .tabs .element.right, .subtabs .tab.right, .subtabs .element.right {
+      float: right;
+      border-right: none;
+      border-left: 1px solid #ccc; }
+    .tabs .tab .fa, .tabs .element .fa, .subtabs .tab .fa, .subtabs .element .fa {
+      font-size: 75%;
+      color: #888;
       position: relative;
-      top: 1px;
-      margin-right: 5px; }
-  #app_main .subtabs .tab:first-of-type {
-    margin-left: 60px;
-    border-left: 1px solid #ccc; }
+      top: -1px; }
+  .tabs .tab:hover, .tabs .tab.selected, .subtabs .tab:hover, .subtabs .tab.selected {
+    background-color: #edf3f8;
+    color: #000; }
+  .tabs .tab:hover, .tabs .tab.selected > .fa, .subtabs .tab:hover, .subtabs .tab.selected > .fa {
+    color: #666; }
+  .tabs .element .qty, .subtabs .element .qty {
+    color: #aaa; }
+  .tabs .element.selected, .subtabs .element.selected {
+    color: #222; }
+  .tabs .element.selected > .qty, .subtabs .element.selected > .qty {
+    color: #111; }
+  .tabs .element:hover, .tabs .element.selected > .fa, .subtabs .element:hover, .subtabs .element.selected > .fa {
+    color: #000; }
+  .tabs .element .fa, .subtabs .element .fa {
+    font-size: 100%;
+    position: relative;
+    top: 1px;
+    margin-right: 5px; }
+
+.subtabs .tab:first-of-type {
+  margin-left: 60px;
+  border-left: 1px solid #ccc; }
 
 #elements_chooser {
   width: 200px;
@@ -508,51 +514,6 @@ input {
 .sticky_note.green {
   background: #94db84;
   border: 1px solid #78bf41; }
-
-#table_buttons div:last-of-type {
-  border-right: 1px solid #ccc;
-  margin-right: 2px; }
-
-.table_info {
-  padding-left: 10px;
-  border-bottom: 1px solid #ccc;
-  height: 30px;
-  line-height: 30px;
-  clear: both; }
-  .table_info #show_filter, .table_info #filter_submit {
-    border-right: 1px solid #ccc;
-    margin-right: 4px; }
-  .table_info #filter {
-    float: right;
-    width: 248px; }
-  .table_info #filter_field {
-    float: right;
-    margin-right: 10px; }
-  .table_info #prev_page.disabled, .table_info #first_page.disabled {
-    border-left: 1px solid #000; }
-
-.results_per_page.square_button {
-  font-size: 11px; }
-
-.results_per_page.square_button.selected {
-  color: steelblue;
-  font-weight: 800; }
-
-.backgrid .totals td {
-  color: #000;
-  border-top: 1px solid #000; }
-
-.backgrid th {
-  text-align: left; }
-  .backgrid th a {
-    color: #444; }
-
-.backgrid th, .backgrid td {
-  vertical-align: top;
-  white-space: normal; }
-
-.backgrid th.align-right {
-  text-align: right; }
 
 .full_date {
   width: 250px;
@@ -641,55 +602,9 @@ input {
   #object_showcase #account .block {
     min-width: 150px; }
 
-.details_data, .new_object, .presention_card, .showcase {
+.details_data, .new_object, .presention_card, .showcase, .dashboard {
   padding: 10px 20px; }
-  .details_data table, .new_object table, .presention_card table, .showcase table {
-    width: 100%; }
-    .details_data table .formated_value, .new_object table .formated_value, .presention_card table .formated_value, .showcase table .formated_value {
-      margin-right: 10px; }
-    .details_data table td, .new_object table td, .presention_card table td, .showcase table td {
-      vertical-align: text-top; }
-    .details_data table tr, .new_object table tr, .presention_card table tr, .showcase table tr {
-      border-bottom: 1px solid #ddd;
-      height: 32px;
-      line-height: 32px; }
-    .details_data table tr.new, .new_object table tr.new, .presention_card table tr.new, .showcase table tr.new {
-      cursor: pointer; }
-      .details_data table tr.new:hover, .new_object table tr.new:hover, .presention_card table tr.new:hover, .showcase table tr.new:hover {
-        color: #0EBFE9; }
-    .details_data table .new_button, .new_object table .new_button, .presention_card table .new_button, .showcase table .new_button {
-      position: relative;
-      top: 1px;
-      left: 5px; }
-    .details_data table .title, .new_object table .title, .presention_card table .title, .showcase table .title {
-      border-top: none; }
-      .details_data table .title td, .new_object table .title td, .presention_card table .title td, .showcase table .title td {
-        font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
-        font-weight: 600;
-        padding-top: 10px; }
-        .details_data table .title td .fa.link, .new_object table .title td .fa.link, .presention_card table .title td .fa.link, .showcase table .title td .fa.link {
-          margin-left: 5px;
-          position: relative;
-          top: 2px; }
-    .details_data table .label, .new_object table .label, .presention_card table .label, .showcase table .label {
-      width: 280px;
-      vertical-align: top; }
-    .details_data table .show_buttons, .new_object table .show_buttons, .presention_card table .show_buttons, .showcase table .show_buttons {
-      width: 20px;
-      text-align: left; }
-      .details_data table .show_buttons .fa.edit, .new_object table .show_buttons .fa.edit, .presention_card table .show_buttons .fa.edit, .showcase table .show_buttons .fa.edit {
-        cursor: pointer;
-        opacity: .2;
-        transition: opacity .2s ease-in-out; }
-        .details_data table .show_buttons .fa.edit:hover, .new_object table .show_buttons .fa.edit:hover, .presention_card table .show_buttons .fa.edit:hover, .showcase table .show_buttons .fa.edit:hover {
-          opacity: 1; }
-      .details_data table .show_buttons .fa.reset, .new_object table .show_buttons .fa.reset, .presention_card table .show_buttons .fa.reset, .showcase table .show_buttons .fa.reset {
-        cursor: pointer;
-        opacity: .9;
-        transition: opacity .2s ease-in-out; }
-        .details_data table .show_buttons .fa.reset:hover, .new_object table .show_buttons .fa.reset:hover, .presention_card table .show_buttons .fa.reset:hover, .showcase table .show_buttons .fa.reset:hover {
-          opacity: 1; }
-  .details_data textarea, .new_object textarea, .presention_card textarea, .showcase textarea {
+  .details_data textarea, .new_object textarea, .presention_card textarea, .showcase textarea, .dashboard textarea {
     position: relative;
     padding: 4px 6px;
     width: 206px;
@@ -704,33 +619,33 @@ input {
     background-color: #fff;
     border: 1px solid #ccc;
     margin: 0px; }
-  .details_data .fa.save, .new_object .fa.save, .presention_card .fa.save, .showcase .fa.save {
+  .details_data .fa.save, .new_object .fa.save, .presention_card .fa.save, .showcase .fa.save, .dashboard .fa.save {
     margin-left: 5px;
     opacity: .4; }
-    .details_data .fa.save.radio_option, .new_object .fa.save.radio_option, .presention_card .fa.save.radio_option, .showcase .fa.save.radio_option {
+    .details_data .fa.save.radio_option, .new_object .fa.save.radio_option, .presention_card .fa.save.radio_option, .showcase .fa.save.radio_option, .dashboard .fa.save.radio_option {
       margin-left: 265px; }
-  .details_data .changed .fa.save, .new_object .changed .fa.save, .presention_card .changed .fa.save, .showcase .changed .fa.save {
+  .details_data .changed .fa.save, .new_object .changed .fa.save, .presention_card .changed .fa.save, .showcase .changed .fa.save, .dashboard .changed .fa.save {
     opacity: .6;
     transition: opacity .2s ease-in-out; }
-  .details_data .msg, .new_object .msg, .presention_card .msg, .showcase .msg {
+  .details_data .msg, .new_object .msg, .presention_card .msg, .showcase .msg, .dashboard .msg {
     margin-left: 5px; }
-  .details_data .valid.changed .fa.save, .new_object .valid.changed .fa.save, .presention_card .valid.changed .fa.save, .showcase .valid.changed .fa.save {
+  .details_data .valid.changed .fa.save, .new_object .valid.changed .fa.save, .presention_card .valid.changed .fa.save, .showcase .valid.changed .fa.save, .dashboard .valid.changed .fa.save {
     opacity: 1;
     cursor: pointer; }
-  .details_data .datepicker, .new_object .datepicker, .presention_card .datepicker, .showcase .datepicker {
+  .details_data .datepicker, .new_object .datepicker, .presention_card .datepicker, .showcase .datepicker, .dashboard .datepicker {
     margin-bottom: 5px;
     margin-top: 0px; }
-    .details_data .datepicker .ui-datepicker thead tr, .new_object .datepicker .ui-datepicker thead tr, .presention_card .datepicker .ui-datepicker thead tr, .showcase .datepicker .ui-datepicker thead tr {
+    .details_data .datepicker .ui-datepicker thead tr, .new_object .datepicker .ui-datepicker thead tr, .presention_card .datepicker .ui-datepicker thead tr, .showcase .datepicker .ui-datepicker thead tr, .dashboard .datepicker .ui-datepicker thead tr {
       height: 20px;
       line-height: 20px; }
-  .details_data .dropcontainer, .new_object .dropcontainer, .presention_card .dropcontainer, .showcase .dropcontainer {
+  .details_data .dropcontainer, .new_object .dropcontainer, .presention_card .dropcontainer, .showcase .dropcontainer, .dashboard .dropcontainer {
     margin-bottom: 5px;
     color: #777;
     width: 259px;
     margin-top: -3px; }
-    .details_data .dropcontainer .checkbox, .new_object .dropcontainer .checkbox, .presention_card .dropcontainer .checkbox, .showcase .dropcontainer .checkbox {
+    .details_data .dropcontainer .checkbox, .new_object .dropcontainer .checkbox, .presention_card .dropcontainer .checkbox, .showcase .dropcontainer .checkbox, .dashboard .dropcontainer .checkbox {
       margin-right: 4px; }
-    .details_data .dropcontainer ul, .new_object .dropcontainer ul, .presention_card .dropcontainer ul, .showcase .dropcontainer ul {
+    .details_data .dropcontainer ul, .new_object .dropcontainer ul, .presention_card .dropcontainer ul, .showcase .dropcontainer ul, .dashboard .dropcontainer ul {
       border: 1px solid #ccc;
       border-top: none;
       background: #fff;
@@ -740,30 +655,30 @@ input {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       box-sizing: border-box; }
-      .details_data .dropcontainer ul li, .new_object .dropcontainer ul li, .presention_card .dropcontainer ul li, .showcase .dropcontainer ul li {
+      .details_data .dropcontainer ul li, .new_object .dropcontainer ul li, .presention_card .dropcontainer ul li, .showcase .dropcontainer ul li, .dashboard .dropcontainer ul li {
         height: 28px;
         line-height: 28px;
         padding: 0px 5px;
         cursor: pointer; }
-        .details_data .dropcontainer ul li:hover, .new_object .dropcontainer ul li:hover, .presention_card .dropcontainer ul li:hover, .showcase .dropcontainer ul li:hover {
+        .details_data .dropcontainer ul li:hover, .new_object .dropcontainer ul li:hover, .presention_card .dropcontainer ul li:hover, .showcase .dropcontainer ul li:hover, .dashboard .dropcontainer ul li:hover {
           background: #f5f5f5;
           outline: none; }
-        .details_data .dropcontainer ul li.selected, .new_object .dropcontainer ul li.selected, .presention_card .dropcontainer ul li.selected, .showcase .dropcontainer ul li.selected {
+        .details_data .dropcontainer ul li.selected, .new_object .dropcontainer ul li.selected, .presention_card .dropcontainer ul li.selected, .showcase .dropcontainer ul li.selected, .dashboard .dropcontainer ul li.selected {
           background: #e3e2e2;
           outline: none;
           cursor: normal; }
-        .details_data .dropcontainer ul li .current_mark, .new_object .dropcontainer ul li .current_mark, .presention_card .dropcontainer ul li .current_mark, .showcase .dropcontainer ul li .current_mark {
+        .details_data .dropcontainer ul li .current_mark, .new_object .dropcontainer ul li .current_mark, .presention_card .dropcontainer ul li .current_mark, .showcase .dropcontainer ul li .current_mark, .dashboard .dropcontainer ul li .current_mark {
           font-size: 50%;
           position: relative;
           bottom: 2px;
           margin-right: 5px;
           visibility: hidden;
           opacity: .5; }
-        .details_data .dropcontainer ul li .current_mark.current, .new_object .dropcontainer ul li .current_mark.current, .presention_card .dropcontainer ul li .current_mark.current, .showcase .dropcontainer ul li .current_mark.current {
+        .details_data .dropcontainer ul li .current_mark.current, .new_object .dropcontainer ul li .current_mark.current, .presention_card .dropcontainer ul li .current_mark.current, .showcase .dropcontainer ul li .current_mark.current, .dashboard .dropcontainer ul li .current_mark.current {
           visibility: visible; }
-    .details_data .dropcontainer.radio_option, .new_object .dropcontainer.radio_option, .presention_card .dropcontainer.radio_option, .showcase .dropcontainer.radio_option {
+    .details_data .dropcontainer.radio_option, .new_object .dropcontainer.radio_option, .presention_card .dropcontainer.radio_option, .showcase .dropcontainer.radio_option, .dashboard .dropcontainer.radio_option {
       margin-top: -30px; }
-      .details_data .dropcontainer.radio_option ul, .new_object .dropcontainer.radio_option ul, .presention_card .dropcontainer.radio_option ul, .showcase .dropcontainer.radio_option ul {
+      .details_data .dropcontainer.radio_option ul, .new_object .dropcontainer.radio_option ul, .presention_card .dropcontainer.radio_option ul, .showcase .dropcontainer.radio_option ul, .dashboard .dropcontainer.radio_option ul {
         border-top: 1px solid #ccc; }
 
 .details_data .intl-tel-input .flag-container {
@@ -933,36 +848,51 @@ input {
   opacity: .5;
   color: #777; }
 
-#table .padding_left_10 {
+.padding_left_10 {
   padding-left: 10px; }
-#table .padding_left_20 {
+
+.padding_left_20 {
   padding-left: 20px; }
-#table .padding_left_30 {
+
+.padding_left_30 {
   padding-left: 30px; }
-#table .padding_right_10 {
+
+.padding_right_10 {
   padding-right: 10px; }
-#table .padding_right_20 {
+
+.padding_right_20 {
   padding-right: 20px; }
-#table .padding_right_30 {
+
+.padding_right_30 {
   padding-right: 30px; }
-#table .width_20 {
+
+.width_20 {
   width: 20px; }
-#table .width_50 {
+
+.width_50 {
   width: 50px; }
-#table .width_100 {
+
+.width_100 {
   width: 100px; }
-#table .width_150 {
+
+.width_150 {
   width: 150px; }
-#table .width_200 {
+
+.width_200 {
   width: 200px; }
-#table .width_250 {
+
+.width_250 {
   width: 250px; }
-#table .width_300 {
+
+.width_300 {
   width: 300px; }
-#table .width_350 {
+
+.width_350 {
   width: 350px; }
-#table .width_400 {
+
+.width_400 {
   width: 400px; }
+
 #table .icon_container i {
   display: inline; }
 
@@ -1146,5 +1076,166 @@ input {
       padding-bottom: 10px; }
   #select_date_control_panel .until, #select_interval_control_panel .until {
     margin-top: 15px; }
+
+.details_data table, .new_object table, .presention_card table, .showcase table, .dashboard table {
+  width: 100%; }
+  .details_data table .main_title, .new_object table .main_title, .presention_card table .main_title, .showcase table .main_title, .dashboard table .main_title {
+    font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+    font-weight: 300 !important;
+    border: none;
+    color: #ddd;
+    background-color: #656565; }
+    .details_data table .main_title .button .fa, .new_object table .main_title .button .fa, .presention_card table .main_title .button .fa, .showcase table .main_title .button .fa, .dashboard table .main_title .button .fa {
+      position: relative;
+      top: 1px; }
+    .details_data table .main_title .widget_types, .new_object table .main_title .widget_types, .presention_card table .main_title .widget_types, .showcase table .main_title .widget_types, .dashboard table .main_title .widget_types {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      clear: both;
+      border-bottom: none;
+      color: #ddd;
+      font-size: 15.4px;
+      background-color: #656565; }
+      .details_data table .main_title .widget_types .widget, .new_object table .main_title .widget_types .widget, .presention_card table .main_title .widget_types .widget, .showcase table .main_title .widget_types .widget, .dashboard table .main_title .widget_types .widget {
+        float: left;
+        padding: 0px 20px;
+        border-right: 1px solid #666;
+        cursor: pointer; }
+        .details_data table .main_title .widget_types .widget.right, .new_object table .main_title .widget_types .widget.right, .presention_card table .main_title .widget_types .widget.right, .showcase table .main_title .widget_types .widget.right, .dashboard table .main_title .widget_types .widget.right {
+          float: right;
+          border-right: none;
+          border-left: 1px solid #ccc; }
+        .details_data table .main_title .widget_types .widget .fa, .new_object table .main_title .widget_types .widget .fa, .presention_card table .main_title .widget_types .widget .fa, .showcase table .main_title .widget_types .widget .fa, .dashboard table .main_title .widget_types .widget .fa {
+          font-size: 75%;
+          position: relative;
+          top: -1px; }
+      .details_data table .main_title .widget_types .widget.selected, .details_data table .main_title .widget_types .widget.selected:hover, .new_object table .main_title .widget_types .widget.selected, .new_object table .main_title .widget_types .widget.selected:hover, .presention_card table .main_title .widget_types .widget.selected, .presention_card table .main_title .widget_types .widget.selected:hover, .showcase table .main_title .widget_types .widget.selected, .showcase table .main_title .widget_types .widget.selected:hover, .dashboard table .main_title .widget_types .widget.selected, .dashboard table .main_title .widget_types .widget.selected:hover {
+        color: yellow; }
+      .details_data table .main_title .widget_types .widget:hover, .new_object table .main_title .widget_types .widget:hover, .presention_card table .main_title .widget_types .widget:hover, .showcase table .main_title .widget_types .widget:hover, .dashboard table .main_title .widget_types .widget:hover {
+        color: #FFFFCC; }
+    .details_data table .main_title .tabs, .new_object table .main_title .tabs, .presention_card table .main_title .tabs, .showcase table .main_title .tabs, .dashboard table .main_title .tabs {
+      border-bottom: none !important;
+      color: #ddd !important;
+      background-color: #656565 !important; }
+      .details_data table .main_title .tabs .tab, .details_data table .main_title .tabs .element, .new_object table .main_title .tabs .tab, .new_object table .main_title .tabs .element, .presention_card table .main_title .tabs .tab, .presention_card table .main_title .tabs .element, .showcase table .main_title .tabs .tab, .showcase table .main_title .tabs .element, .dashboard table .main_title .tabs .tab, .dashboard table .main_title .tabs .element {
+        border-right: 1px solid #666; }
+        .details_data table .main_title .tabs .tab.right, .details_data table .main_title .tabs .element.right, .new_object table .main_title .tabs .tab.right, .new_object table .main_title .tabs .element.right, .presention_card table .main_title .tabs .tab.right, .presention_card table .main_title .tabs .element.right, .showcase table .main_title .tabs .tab.right, .showcase table .main_title .tabs .element.right, .dashboard table .main_title .tabs .tab.right, .dashboard table .main_title .tabs .element.right {
+          border-left: 1px solid #666; }
+      .details_data table .main_title .tabs .tab.widget:hover, .new_object table .main_title .tabs .tab.widget:hover, .presention_card table .main_title .tabs .tab.widget:hover, .showcase table .main_title .tabs .tab.widget:hover, .dashboard table .main_title .tabs .tab.widget:hover {
+        background-color: #color_dark_highlight !important; }
+      .details_data table .main_title .tabs .tab.widget_selected:hover, .details_data table .main_title .tabs .tab.widget_selected, .new_object table .main_title .tabs .tab.widget_selected:hover, .new_object table .main_title .tabs .tab.widget_selected, .presention_card table .main_title .tabs .tab.widget_selected:hover, .presention_card table .main_title .tabs .tab.widget_selected, .showcase table .main_title .tabs .tab.widget_selected:hover, .showcase table .main_title .tabs .tab.widget_selected, .dashboard table .main_title .tabs .tab.widget_selected:hover, .dashboard table .main_title .tabs .tab.widget_selected {
+        color: yellow !important; }
+  .details_data table .formated_value, .new_object table .formated_value, .presention_card table .formated_value, .showcase table .formated_value, .dashboard table .formated_value {
+    margin-right: 10px; }
+  .details_data table td, .new_object table td, .presention_card table td, .showcase table td, .dashboard table td {
+    vertical-align: text-top; }
+  .details_data table tr, .new_object table tr, .presention_card table tr, .showcase table tr, .dashboard table tr {
+    border-bottom: 1px solid #ddd;
+    height: 32px;
+    line-height: 32px; }
+  .details_data table tr.small_row, .new_object table tr.small_row, .presention_card table tr.small_row, .showcase table tr.small_row, .dashboard table tr.small_row {
+    height: 22px;
+    line-height: 22px;
+    border-bottom: none; }
+  .details_data table tr.new, .new_object table tr.new, .presention_card table tr.new, .showcase table tr.new, .dashboard table tr.new {
+    cursor: pointer; }
+    .details_data table tr.new:hover, .new_object table tr.new:hover, .presention_card table tr.new:hover, .showcase table tr.new:hover, .dashboard table tr.new:hover {
+      color: #0EBFE9; }
+  .details_data table .new_button, .new_object table .new_button, .presention_card table .new_button, .showcase table .new_button, .dashboard table .new_button {
+    position: relative;
+    top: 1px;
+    left: 5px; }
+  .details_data table .title, .new_object table .title, .presention_card table .title, .showcase table .title, .dashboard table .title {
+    border-top: none; }
+    .details_data table .title td, .new_object table .title td, .presention_card table .title td, .showcase table .title td, .dashboard table .title td {
+      font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+      font-weight: 600;
+      padding-top: 10px; }
+      .details_data table .title td .fa.link, .new_object table .title td .fa.link, .presention_card table .title td .fa.link, .showcase table .title td .fa.link, .dashboard table .title td .fa.link {
+        margin-left: 5px;
+        position: relative;
+        top: 2px; }
+  .details_data table .label, .new_object table .label, .presention_card table .label, .showcase table .label, .dashboard table .label {
+    width: 280px;
+    vertical-align: top; }
+  .details_data table .show_buttons, .new_object table .show_buttons, .presention_card table .show_buttons, .showcase table .show_buttons, .dashboard table .show_buttons {
+    width: 20px;
+    text-align: left; }
+    .details_data table .show_buttons .fa.edit, .new_object table .show_buttons .fa.edit, .presention_card table .show_buttons .fa.edit, .showcase table .show_buttons .fa.edit, .dashboard table .show_buttons .fa.edit {
+      cursor: pointer;
+      opacity: .2;
+      transition: opacity .2s ease-in-out; }
+      .details_data table .show_buttons .fa.edit:hover, .new_object table .show_buttons .fa.edit:hover, .presention_card table .show_buttons .fa.edit:hover, .showcase table .show_buttons .fa.edit:hover, .dashboard table .show_buttons .fa.edit:hover {
+        opacity: 1; }
+    .details_data table .show_buttons .fa.reset, .new_object table .show_buttons .fa.reset, .presention_card table .show_buttons .fa.reset, .showcase table .show_buttons .fa.reset, .dashboard table .show_buttons .fa.reset {
+      cursor: pointer;
+      opacity: .9;
+      transition: opacity .2s ease-in-out; }
+      .details_data table .show_buttons .fa.reset:hover, .new_object table .show_buttons .fa.reset:hover, .presention_card table .show_buttons .fa.reset:hover, .showcase table .show_buttons .fa.reset:hover, .dashboard table .show_buttons .fa.reset:hover {
+        opacity: 1; }
+
+#table_buttons div:last-of-type {
+  border-right: 1px solid #ccc;
+  margin-right: 2px; }
+
+.table_info {
+  padding-left: 10px;
+  border-bottom: 1px solid #ccc;
+  height: 30px;
+  line-height: 30px;
+  clear: both; }
+  .table_info #show_filter, .table_info #filter_submit {
+    border-right: 1px solid #ccc;
+    margin-right: 4px; }
+  .table_info #filter {
+    float: right;
+    width: 248px; }
+  .table_info #filter_field {
+    float: right;
+    margin-right: 10px; }
+  .table_info #prev_page.disabled, .table_info #first_page.disabled {
+    border-left: 1px solid #000; }
+
+.results_per_page.square_button {
+  font-size: 11px; }
+
+.results_per_page.square_button.selected {
+  color: steelblue;
+  font-weight: 800; }
+
+table .totals td {
+  color: #333;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #ccc; }
+
+.backgrid th {
+  text-align: left; }
+  .backgrid th a {
+    color: #444; }
+
+.backgrid th, .backgrid td {
+  vertical-align: top;
+  white-space: normal; }
+
+.backgrid th.align-right {
+  text-align: right; }
+
+.dashboard .record td:first-of-type, .dashboard .totals td:first-of-type, .dashboard .title td:first-of-type, .dashboard .header td:first-of-type {
+  padding-left: 20px; }
+.dashboard .record td:last-of-type, .dashboard .record td.last, .dashboard .totals td:last-of-type, .dashboard .totals td.last, .dashboard .title td:last-of-type, .dashboard .title td.last, .dashboard .header td:last-of-type, .dashboard .header td.last {
+  padding-right: 20px; }
+
+#export_dialog {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  min-width: 200px; }
+  #export_dialog .fa {
+    margin-right: 5px; }
 
 /*# sourceMappingURL=app.css.map */
