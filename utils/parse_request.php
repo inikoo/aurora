@@ -93,8 +93,8 @@ function parse_request($_data, $db) {
 
 			break;
 
-	
-		
+
+
 		case 'category':
 			$object='category';
 
@@ -800,6 +800,67 @@ function parse_request($_data, $db) {
 
 			$parent_key=$view_path[0];
 			break;
+
+		case 'production':
+			$module='production';
+			$section='dashboard';
+			$parent='account';
+			$parent_key=1;
+
+			if ( isset($view_path[0]) ) {
+				if (  $view_path[0]=='manufacture_tasks') {
+					$section='manufacture_tasks';
+
+				}elseif (  $view_path[0]=='operatives') {
+					$section='operatives';
+
+				}
+				elseif (  $view_path[0]=='batches') {
+					$section='batches';
+
+				}
+				elseif (  $view_path[0]=='operative') {
+					$section='operative';
+					$object='operative';
+					if ( isset($view_path[1]) ) {
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}elseif ($view_path[1]=='add') {
+							$section='operative.add';
+						}
+					}
+
+				}
+				elseif (  $view_path[0]=='manufacture_task') {
+					$section='manufacture_task';
+					$object='manufacture_task';
+					if ( isset($view_path[1]) ) {
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}elseif ($view_path[1]=='new') {
+							$section='manufacture_task.new';
+
+						}
+					}
+
+				}
+			}
+
+			break;
+
+		case 'manufacture_task':
+			$module='production';
+			$section='manufacture_task';
+			$object='manufacture_task';
+			if ( isset($view_path[1]) ) {
+				if (is_numeric($view_path[1])) {
+					$key=$view_path[1];
+				}elseif ($view_path[1]=='new') {
+					$section='manufacture_task.new';
+				}
+			}
+			break;
+
 		case 'suppliers':
 			$module='suppliers';
 			$section='suppliers';
@@ -929,7 +990,7 @@ function parse_request($_data, $db) {
 			$module='hr';
 			$section='timesheets';
 			$object='';
-			
+
 			$parent='account';
 			$parent_key=1;
 
@@ -938,7 +999,7 @@ function parse_request($_data, $db) {
 				if ($view_path[0]=='year') {
 					$parent=$view_path[0];
 
-			}elseif ($view_path[0]=='month') {
+				}elseif ($view_path[0]=='month') {
 					$parent=$view_path[0];
 				}elseif ($view_path[0]=='week') {
 					$parent=$view_path[0];
@@ -1303,9 +1364,9 @@ function parse_request($_data, $db) {
 			}
 			break;
 		case 'fire':
-		    $module='utils';
-			$section='fire';	
-			
+			$module='utils';
+			$section='fire';
+
 		default:
 
 			break;

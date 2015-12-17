@@ -199,7 +199,7 @@ $wheref='';
 
 
 if (($parameters['f_field']=='name'     )  and $f_value!='') {
-	$wheref=sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$wheref=sprintf(' and  `Customer Name` REGEXP "[[:<:]]%s" ',addslashes($f_value));
 
 
 }

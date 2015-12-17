@@ -154,6 +154,8 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s month', '%s months', $total_records), number($total_records));
 	}elseif ($record_label=='day') {
 		return sprintf(ngettext('%s day', '%s days', $total_records), number($total_records));
+	}elseif ($record_label=='operative') {
+		return sprintf(ngettext('%s operative', '%s operatives', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -231,6 +233,8 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s week of %s', '%s weeks of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='day') {
 		return sprintf(ngettext('%s day of %s', '%s days of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='operative') {
+		return sprintf(ngettext('%s operative of %s', '%s operatives of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}
