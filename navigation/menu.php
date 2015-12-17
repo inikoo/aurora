@@ -112,7 +112,6 @@ if ($user->can_view('stores')) {
 }
 
 
-
 if ($user->can_view('warehouses')) {
 
 	/*
@@ -135,6 +134,13 @@ if ($user->can_view('warehouses')) {
 }
 if ($user->can_view('reports')) {
 	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i> '._('Reports'), 'reports', 'reports', 'module');
+}
+
+
+if ($user->can_view('suppliers')) {
+		$nav_menu[] = array('<i class="fa fa-magic fa-fw"></i> '._('Production'), 'production', 'production', 'module');
+
+
 }
 
 

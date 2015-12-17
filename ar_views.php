@@ -560,6 +560,35 @@ function get_navigation($data) {
 			return get_tax_navigation($data);
 			break;
 		}
+
+	case ('production'):
+		require_once 'navigation/production.nav.php';
+		switch ($data['section']) {
+		case ('dashboard'):
+			return get_dashboard_navigation($data);
+			break;
+
+		case ('manufacture_tasks'):
+			return get_manufacture_tasks_navigation($data);
+			break;
+		case ('operatives'):
+			return get_operatives_navigation($data);
+			break;
+		case ('batches'):
+			return get_batches_navigation($data);
+			break;
+		case ('manufacture_task'):
+			return get_manufacture_task_navigation($data);
+			break;
+		case ('operative'):
+			return get_operative_navigation($data);
+			break;
+		case ('batche'):
+			return get_batche_navigation($data);
+			break;	
+
+		}
+		break;
 	case ('suppliers'):
 		require_once 'navigation/suppliers.nav.php';
 		switch ($data['section']) {
@@ -591,6 +620,7 @@ function get_navigation($data) {
 		}
 
 		break;
+
 	case ('inventory'):
 		require_once 'navigation/inventory.nav.php';
 		switch ($data['section']) {
