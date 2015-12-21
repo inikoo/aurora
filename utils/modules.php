@@ -760,7 +760,7 @@ $modules=array(
 				)
 
 			),
-			/*
+			
 			'performance'=>array('type'=>'navigation', 'label'=>_('Activity/Performance'), 'title'=>_("Activity/Performance"), 'icon'=>'thumbs-o-up', 'reference'=>'users',
 				'tabs'=>array(
 					'report.pp'=>array('label'=>_('Pickers & Packers'), 'title'=>_('Pickers & Packers Report'), 'reference'=>'users'),
@@ -779,7 +779,14 @@ $modules=array(
 				)
 
 			),
-			'tax'=>array('type'=>'navigation', 'label'=>_('Tax Reports'), 'title'=>_("Tax Reports"), 'icon'=>'legal', 'reference'=>'users',
+			'billingregion_taxcategory'=>array('type'=>'', 'label'=>_('Billing Region/Tax Categories'), 'icon'=>'legal', 'reference'=>'',
+				'tabs'=>array(
+					'billingregion_taxcategory'=>array('label'=>_('Billing Region/Tax Categories'), 'reference'=>''),
+
+				)
+
+			),
+	'tax'=>array('type'=>'navigation', 'label'=>_('Tax Reports'), 'title'=>_("Tax Reports"), 'icon'=>'legal', 'reference'=>'users',
 				'tabs'=>array(
 					'report.notax'=>array('label'=>_('No Tax'), 'title'=>_('No Tax Report'), 'reference'=>'users'),
 					'report.intrastat'=>array('label'=>_("Intrastat"), 'title'=>_("Intrastat"), 'reference'=>'users/'),
@@ -787,7 +794,6 @@ $modules=array(
 				)
 
 			)
-*/
 
 
 		)

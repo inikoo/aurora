@@ -761,7 +761,6 @@ class Staff extends DB_Table{
 
 
 			$timesheet->update_number_clocking_records();
-
 			$timesheet->process_clocking_records_action_type();
 			$timesheet->update_clocked_time();
 			$timesheet->update_working_time();

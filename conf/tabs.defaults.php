@@ -301,7 +301,7 @@ $tab_defaults=array(
 		'f_field'=>'',
 
 	),
-    'delivery_note.history'=>array(
+	'delivery_note.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -677,7 +677,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
 	),
-	
+
 	'overtimes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -693,16 +693,16 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'alias',
-		
+
 	),
-		'overtime.employees'=>array(
+	'overtime.employees'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'alias',
-		
+
 	),
 	'overtimes'=>array(
 		'view'=>'overview',
@@ -736,7 +736,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
 	),
-	
+
 	'timesheets.months'=>array(
 		'view'=>'overview',
 		'sort_key'=>'month',
@@ -745,7 +745,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 		'year'=>strtotime('now'),
-		
+
 	),
 	'timesheets.weeks'=>array(
 		'view'=>'overview',
@@ -755,7 +755,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 		'year'=>strtotime('now'),
-		
+
 	),
 	'timesheets.days'=>array(
 		'view'=>'overview',
@@ -765,7 +765,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 		'year'=>strtotime('now'),
-		
+
 	),
 	'timesheets.timesheets'=>array(
 		'view'=>'overview',
@@ -782,7 +782,7 @@ $tab_defaults=array(
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name',
-		
+
 	),
 	'fire'=>array(
 		'view'=>'overview',
@@ -791,9 +791,9 @@ $tab_defaults=array(
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name',
-		
+
 	),
-	
+
 	'employees.timesheets'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -824,7 +824,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
-				'from'=>'',
+		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
 
@@ -856,7 +856,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'caption'
 	),
-	
+
 	'timesheet.records'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -864,7 +864,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
-		
+
 
 	),
 	'employee.attachment.history'=>array(
@@ -875,7 +875,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-	
+
 	'contractor.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -924,7 +924,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
-	
+
 
 	),
 	'payment_service_provider.history'=>array(
@@ -951,7 +951,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
-	
+
 	'payment_account.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -976,7 +976,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-	
+
 	'users.staff.users'=>array(
 		'view'=>'privilegies',
 		'sort_key'=>'id',
@@ -1035,7 +1035,18 @@ $tab_defaults=array(
 		'f_field'=>'handle',
 		'f_period'=>'all',
 
-	)
+	),
+	'billingregion_taxcategory'=>array(
+		'view'=>'overview',
+		'sort_key'=>'billing_region',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'last_m',
+	),
 
 );
 
