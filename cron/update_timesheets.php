@@ -16,7 +16,7 @@ require_once 'class.Staff.php';
 require_once 'class.Timesheet.php';
 require_once 'class.Timesheet_Record.php';
 
-require_once 'utils/dates.php';
+require_once 'utils/date_functions.php';
 
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=21 order by `Timesheet Date` desc');
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=24 ');
