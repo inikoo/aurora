@@ -158,6 +158,8 @@ ALTER TABLE `Timesheet Record Dimension` ADD `Timesheet Authoriser Key` MEDIUMIN
 ALTER TABLE `Timesheet Record Dimension` ADD `Timesheet Remover Key` MEDIUMINT UNSIGNED NULL AFTER `Timesheet Authoriser Key`;
 
 
+  ALTER TABLE `Invoice Dimension` ADD `Invoice Billing Region` VARCHAR(64) NULL AFTER `Invoice Delivery Postal Code`, ADD INDEX (`Invoice Billing Region`);
+  
   
   INSERT INTO `Overtime Dimension` (`Overtime Key`, `Overtime Reference`, `Overtime Status`, `Overtime Start Date`, `Overtime End Date`, `Overtime Metadata`, `Overtime Type`, `Overtime Timesheets Entitled`, `Overtime Timesheets Granted`, `Overtime Staff Entitled`, `Overtime Staff Granted`, `Overtime Time`, `Overtime Paid Amount`, `Overtime Accrued Time`) VALUES (NULL, 'Xmas overtime W&P', 'Active', '2015-10-01 00:00:00', '2015-12-06 23:59:59', '{"data":{"amount_weekdays":7.44,"amount_saturday":15.44,"amount_sunday":15.44}}', 'Pay', '0', '0', '0', '0', '0', '0', '0');
 

@@ -1136,8 +1136,16 @@ function parse_request($_data, $db) {
 			break;
 
 
+		case 'report':
+			$module='reports';
 
+			if (isset($view_path[0])) {
+				if ( $view_path[0]=='billingregion_taxcategory') {
+					$section='billingregion_taxcategory';
 
+				}
+
+			}
 			break;
 
 

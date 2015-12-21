@@ -1215,6 +1215,8 @@ class Store extends DB_Table {
 		$this->data["Store $db_interval Acc Invoiced Amount"]=0;
 		$this->data["Store $db_interval Acc Invoices"]=0;
 		$this->data["Store $db_interval Acc Refunds"]=0;
+		$this->data["Store $db_interval Acc Replacements"]=0;
+		$this->data["Store $db_interval Acc Delivery Notes"]=0;
 		$this->data["Store $db_interval Acc Profit"]=0;
 		$this->data["Store DC $db_interval Acc Invoiced Amount"]=0;
 		$this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=0;
@@ -1240,24 +1242,54 @@ class Store extends DB_Table {
 			$this->data["Store DC $db_interval Acc Profit"]=$row["dc_profit"];
 		}
 
+
+		$sql=sprintf("select count(*)  as replacements from `Delivery Note Dimension` where `Delivery Note Type` in ('Replacement & Shortages','Replacement','Shortages') and `Delivery Note Store Key`=%d %s %s" ,
+			$this->id,
+			($from_date?sprintf('and `Delivery Note Date`>%s', prepare_mysql($from_date)):''),
+			($to_date?sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)):'')
+
+		);
+		$result=mysql_query($sql);
+
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$this->data["Store $db_interval Acc Replacements"]=$row["replacements"];
+		}
+
+		$sql=sprintf("select count(*)  as delivery_notes from `Delivery Note Dimension` where `Delivery Note Type` in ('Order') and `Delivery Note Store Key`=%d %s %s" ,
+			$this->id,
+			($from_date?sprintf('and `Delivery Note Date`>%s', prepare_mysql($from_date)):''),
+			($to_date?sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)):'')
+
+		);
+		$result=mysql_query($sql);
+
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$this->data["Store $db_interval Acc Delivery Notes"]=$row["delivery_notes"];
+		}
+
+
 		$sql=sprintf("update `Store Data Dimension` set
                      `Store $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `Store $db_interval Acc Invoiced Amount`=%.2f,
                      `Store $db_interval Acc Invoices`=%d,
                       `Store $db_interval Acc Refunds`=%d,
-                     `Store $db_interval Acc Profit`=%.2f
+                       `Store $db_interval Acc Replacements`=%d,
+                       `Store $db_interval Acc Delivery Notes`=%d,
+                    `Store $db_interval Acc Profit`=%.2f
                      where `Store Key`=%d "
 			, $this->data["Store $db_interval Acc Invoiced Discount Amount"]
 			, $this->data["Store $db_interval Acc Invoiced Amount"]
 			, $this->data["Store $db_interval Acc Invoices"]
 			, $this->data["Store $db_interval Acc Refunds"]
+			, $this->data["Store $db_interval Acc Replacements"]
+			, $this->data["Store $db_interval Acc Delivery Notes"]
 			, $this->data["Store $db_interval Acc Profit"]
 			, $this->id
 		);
 
 		mysql_query($sql);
 
-
+		//print "$sql\n";
 
 		$sql=sprintf("update `Store Default Currency` set
                      `Store DC $db_interval Acc Invoiced Discount Amount`=%.2f,
@@ -1276,6 +1308,10 @@ class Store extends DB_Table {
 		if ($from_date_1yb) {
 			$this->data["Store $db_interval Acc 1YB Invoices"]=0;
 			$this->data["Store $db_interval Acc 1YB Refunds"]=0;
+
+			$this->data["Store $db_interval Acc 1YB Replacements"]=0;
+			$this->data["Store $db_interval Acc 1YB Delivery Notes"]=0;
+
 			$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=0;
 			$this->data["Store $db_interval Acc 1YB Invoiced Amount"]=0;
 			$this->data["Store $db_interval Acc 1YB Profit"]=0;
@@ -1301,16 +1337,46 @@ class Store extends DB_Table {
 				$this->data["Store DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
 			}
 
+
+			$sql=sprintf("select count(*)  as replacements from `Delivery Note Dimension` where `Delivery Note Type` in ('Replacement & Shortages','Replacement','Shortages') and `Delivery Note Store Key`=%d  and `Delivery Note Date`>%s and `Delivery Note Date`<%s" ,
+				$this->id,
+				prepare_mysql($from_date_1yb),
+				prepare_mysql($to_1yb)
+			);
+			$result=mysql_query($sql);
+
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$this->data["Store $db_interval Acc 1YB Replacements"]=$row["replacements"];
+			}
+
+			$sql=sprintf("select count(*)  as delivery_notes from `Delivery Note Dimension` where `Delivery Note Type` in ('Order') and `Delivery Note Store Key`=%d  and `Delivery Note Date`>%s and `Delivery Note Date`<%s" ,
+				$this->id,
+				prepare_mysql($from_date_1yb),
+				prepare_mysql($to_1yb)
+
+			);
+			$result=mysql_query($sql);
+
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$this->data["Store $db_interval Acc 1YB Delivery Notes"]=$row["delivery_notes"];
+			}
+
+
+
 			$sql=sprintf("update `Store Data Dimension` set
                          `Store $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoiced Amount`=%.2f,
                          `Store $db_interval Acc 1YB Invoices`=%d,
+                           `Store $db_interval Acc 1YB Replacements`=%d,
+                             `Store $db_interval Acc 1YB Delivery Notes`=%d,
                          `Store $db_interval Acc 1YB Refunds`=%d,
                         `Store $db_interval Acc 1YB Profit`=%.2f
                          where `Store Key`=%d "
 				, $this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]
 				, $this->data["Store $db_interval Acc 1YB Invoiced Amount"]
 				, $this->data["Store $db_interval Acc 1YB Invoices"]
+				, $this->data["Store $db_interval Acc 1YB Replacements"]
+				, $this->data["Store $db_interval Acc 1YB Delivery Notes"]
 				, $this->data["Store $db_interval Acc 1YB Refunds"]
 				, $this->data["Store $db_interval Acc 1YB Profit"]
 				, $this->id
@@ -1906,7 +1972,8 @@ class Store extends DB_Table {
 
 	}
 
-function get_field_label($field) {
+
+	function get_field_label($field) {
 
 		switch ($field) {
 
@@ -1916,7 +1983,7 @@ function get_field_label($field) {
 		case 'Store Name':
 			$label=_('Name');
 			break;
-		
+
 
 
 		default:
@@ -1927,6 +1994,7 @@ function get_field_label($field) {
 		return $label;
 
 	}
+
 
 }
 

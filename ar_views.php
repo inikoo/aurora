@@ -559,6 +559,10 @@ function get_navigation($data) {
 
 			return get_tax_navigation($data);
 			break;
+	case ('report.georegion_taxcategory'):
+
+			return get_georegion_taxcategory_navigation($data);
+			break;		
 		}
 
 	case ('production'):
