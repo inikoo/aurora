@@ -228,11 +228,12 @@ class Timesheet extends DB_Table {
 
 		if ($timesheet_record->new) {
 
-			$this->process_clocking_records_action_type();
-			$this->update_clocked_time();
-			$this->update_working_time();
-			$this->update_unpaid_overtime();
 
+			$timesheet->update_number_clocking_records();
+			$timesheet->process_clocking_records_action_type();
+			$timesheet->update_clocked_time();
+			$timesheet->update_working_time();
+			$timesheet->update_unpaid_overtime();
 
 
 
