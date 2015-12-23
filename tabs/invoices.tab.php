@@ -20,19 +20,19 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'customer'=>array('label'=>_('Customer'),'title'=>_('Customer name')),
-	'number'=>array('label'=>_('Number'),'title'=>_('Order number')),
+	'customer'=>array('label'=>_('Customer'), 'title'=>_('Customer name')),
+	'number'=>array('label'=>_('Number'), 'title'=>_('Invoice number')),
 
 );
 
 $parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['parent_key'],
-	);
+	'parent'=>$state['parent'],
+	'parent_key'=>$state['parent_key'],
+);
 
 
 
-include('utils/get_table_html.php');
+include 'utils/get_table_html.php';
 
 
 

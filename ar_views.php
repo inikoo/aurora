@@ -146,7 +146,7 @@ case 'views':
 
 	) {
 
-		$response['navigation']=get_navigation($state);
+		$response['navigation']=get_navigation($user, $smarty, $state);
 
 	}
 
@@ -348,7 +348,7 @@ function get_menu($data) {
 }
 
 
-function get_navigation($data) {
+function get_navigation($user, $smarty, $data) {
 
 
 
@@ -543,26 +543,30 @@ function get_navigation($data) {
 
 
 	case ('reports'):
+
 		require_once 'navigation/reports.nav.php';
 		switch ($data['section']) {
 		case ('reports'):
-			return get_reports_navigation($data);
+			return get_reports_navigation($user, $smarty, $data);
 			break;
 		case ('performance'):
-			return get_performance_navigation($data);
+			return get_performance_navigation($user, $smarty, $data);
 			break;
-
 		case ('sales'):
-			return get_sales_navigation($data);
+			return get_sales_navigation($user, $smarty, $data);
 			break;
 		case ('tax'):
-
-			return get_tax_navigation($data);
+			return get_tax_navigation($user, $smarty, $data);
 			break;
-	case ('report.georegion_taxcategory'):
-
-			return get_georegion_taxcategory_navigation($data);
-			break;		
+		case ('billingregion_taxcategory'):
+			return get_georegion_taxcategory_navigation($user, $smarty, $data);
+			break;
+		case ('billingregion_taxcategory.invoices'):
+			return get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, 'invoices');
+			break;
+		case ('billingregion_taxcategory.refunds'):
+			return get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, 'refunds');
+			break;
 		}
 
 	case ('production'):
@@ -589,7 +593,7 @@ function get_navigation($data) {
 			break;
 		case ('batche'):
 			return get_batche_navigation($data);
-			break;	
+			break;
 
 		}
 		break;
@@ -863,7 +867,7 @@ function get_view_position($state) {
 	$state['current_website']='';
 	$state['current_warehouse']='';
 
-	$branch=array(array('label'=>'<span class="id">'._('Home').'</a>', 'icon'=>'home', 'reference'=>'/dashboard'));
+	$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
 
 	switch ($state['module']) {
 
@@ -1278,6 +1282,64 @@ function get_view_position($state) {
 
 
 		break;
+	case 'reports':
+		$branch[]=array('label'=>_('Reports'), 'icon'=>'', 'reference'=>'reports');
+
+		if ($state['section']=='billingregion_taxcategory') {
+			$branch[]=array('label'=>_('Billing region & Tax code report'), 'icon'=>'', 'reference'=>'report/billingregion_taxcategory');
+
+		}else if ($state['section']=='billingregion_taxcategory.invoices') {
+			$branch[]=array('label'=>_('Billing region & Tax code report'), 'icon'=>'', 'reference'=>'report/billingregion_taxcategory');
+
+
+			$parents=preg_split('/_/', $state['parent_key']);
+
+			switch ($parents[0]) {
+			case 'EU':
+				$billing_region=_('European Union');
+				break;
+			case 'NOEU':
+				$billing_region=_('Outside European Union');
+				break;
+			case 'GBIM':
+				$billing_region='GB+IM';
+				break;
+			default:
+				$billing_region=$state[0];
+				break;
+			}
+
+			$label=_('Invoices')." $billing_region & ".$parents[1];
+			$branch[]=array('label'=>$label, 'icon'=>'', 'reference'=>'');
+
+		}else if ($state['section']=='billingregion_taxcategory.refunds') {
+			$branch[]=array('label'=>_('Billing region & Tax code report'), 'icon'=>'', 'reference'=>'report/billingregion_taxcategory');
+			$parents=preg_split('/_/', $state['parent_key']);
+
+			switch ($parents[0]) {
+			case 'EU':
+				$billing_region=_('European Union');
+				break;
+			case 'Unknown':
+				$billing_region=_('Unknown');
+				break;
+			case 'NOEU':
+				$billing_region=_('Outside European Union');
+				break;
+			case 'GBIM':
+				$billing_region='GB+IM';
+				break;
+			default:
+				$billing_region=$state[0];
+				break;
+			}
+
+			$label=_('Refunds')." $billing_region & ".$parents[1];
+			$branch[]=array('label'=>$label, 'icon'=>'', 'reference'=>'');
+		}
+
+		break;
+
 	}
 
 	$_content=array(

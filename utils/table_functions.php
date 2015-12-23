@@ -24,7 +24,7 @@ function get_table_parameters() {
 }
 
 
-function get_table_totals($sql_totals, $wheref='', $record_label='',$metadata='') {
+function get_table_totals($sql_totals, $wheref='', $record_label='', $metadata='') {
 
 
 	global $db;
@@ -58,17 +58,21 @@ function get_table_totals($sql_totals, $wheref='', $record_label='',$metadata=''
 		}
 
 	}
-	elseif($metadata){
-	    $filtered=$metadata['filtered'];
-		$filter_total=$metadata['filter_total'];
-		$total_records=$metadata['total_records'];
-		$total=$metadata['total'];
-	    
+	elseif ($metadata) {
+
+		if (is_array($metadata)) {
+
+			$filtered=$metadata['filtered'];
+			$filter_total=$metadata['filter_total'];
+			$total_records=$metadata['total_records'];
+			$total=$metadata['total'];
+		}
+
+
+
 	}else {
-		$filtered=0;
-		$filter_total=0;
-		$total_records=0;
-		$total=0;
+		return array('', 0, 0);
+
 	}
 
 

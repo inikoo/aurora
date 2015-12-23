@@ -214,7 +214,7 @@ function delivery_notes($_data, $db, $user) {
 
 
 function invoices($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='invoice';
 	include_once 'prepare_table/init.php';
 
