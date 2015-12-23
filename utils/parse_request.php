@@ -1143,6 +1143,24 @@ function parse_request($_data, $db) {
 				if ( $view_path[0]=='billingregion_taxcategory') {
 					$section='billingregion_taxcategory';
 
+					if (isset($view_path[1]) and isset($view_path[2]) and isset($view_path[3]) ) {
+
+						if ( $view_path[1]=='invoices') {
+							$section='billingregion_taxcategory.invoices';
+							$parent='billingregion_taxcategory.invoices';
+						}elseif ( $view_path[1]=='refunds') {
+							$section='billingregion_taxcategory.refunds';
+							$parent='billingregion_taxcategory.refunds';
+
+						}
+
+
+						$parent_key=$view_path[2].'_'.$view_path[3];
+
+
+					}
+
+
 				}
 
 			}

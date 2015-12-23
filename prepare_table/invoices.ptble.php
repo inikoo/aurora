@@ -1,5 +1,6 @@
 <?php
 
+$fields='';
 $filter_msg='';
 $wheref='';
 
@@ -106,15 +107,38 @@ elseif ($parameters['parent']=='stores') {
 	$table='`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 	$where=sprintf('where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']);
 
-}
+}elseif ($parameters['parent']=='billingregion_taxcategory.invoices') {
 
-else {
+	$fields='`Store Code`,`Store Name`,`Country Name`,';
+	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) '   ;
+
+	$parents=preg_split('/_/', $parameters['parent_key']);
+	$where=sprintf('where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
+		prepare_mysql($parents[0]),
+		prepare_mysql($parents[1])
+	);
+
+
+}elseif ($parameters['parent']=='billingregion_taxcategory.refunds') {
+
+	$fields='`Store Code`,`Store Name`,`Country Name`,';
+	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) '   ;
+
+	$parents=preg_split('/_/', $parameters['parent_key']);
+	$where=sprintf('where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
+		prepare_mysql($parents[0]),
+		prepare_mysql($parents[1])
+	);
+
+
+}else {
 	exit("unknown parent\n");
 }
 
 
 
 if (isset($parameters['period'])) {
+	include_once 'utils/date_functions.php';
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 	$where_interval=prepare_mysql_dates($from, $to, '`Invoice Date`');
 	$where.=$where_interval['mysql'];
@@ -236,11 +260,18 @@ elseif ($order=='state')
 	$order='`Invoice Paid`';
 elseif ($order=='net')
 	$order='`Invoice Total Net Amount`';
+elseif ($order=='tax')
+	$order='`Invoice Total Tax Amount`';
+elseif ($order=='store_code')
+	$order='`Store Code`';
 else
 	$order='I.`Invoice Key`';
 
 
-$fields='*';
+$fields.='`Invoice Key`,`Invoice Paid`,`Invoice Type`,`Invoice Main Payment Method`,`Invoice Store Key`,`Invoice Customer Key`,`Invoice Public ID`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`,`Invoice Currency`,
+`Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Shipping Net Amount`,`Invoice Items Net Amount`,`Invoice Total Net Amount`,`Invoice Shipping Net Amount`,
+`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`
+';
 $sql_totals="select count(Distinct I.`Invoice Key`) as num from $table   $where $wheref ";
 
 
@@ -506,5 +537,6 @@ function invoices_awhere($awhere) {
 
 
 }
+
 
 ?>
