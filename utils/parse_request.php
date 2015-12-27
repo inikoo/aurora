@@ -376,7 +376,7 @@ function parse_request($_data, $db) {
 
 			break;
 		case 'invoices':
-			$module='orders';
+			$module='invoices';
 			if ($count_view_path==0) {
 				$section='invoices';
 				$parent='store';
@@ -390,13 +390,10 @@ function parse_request($_data, $db) {
 			}
 			$arg1=array_shift($view_path);
 			if ($arg1=='all') {
-				$module='orders_server';
-				$section='orders';
+				$module='invoices_server';
+				$section='invoices';
 
-				if (isset($view_path[0]) and $view_path[0]=='pending_orders') {
-					$section='pending_orders';
-
-				}
+				
 
 			}
 			elseif (is_numeric($arg1)) {
@@ -416,7 +413,7 @@ function parse_request($_data, $db) {
 			}
 			break;
 		case 'delivery_notes':
-			$module='orders';
+			$module='delivery_notes';
 			if ($count_view_path==0) {
 				$section='delivery_notes';
 				$parent='store';
@@ -430,7 +427,7 @@ function parse_request($_data, $db) {
 			}
 			$arg1=array_shift($view_path);
 			if ($arg1=='all') {
-				$module='orders_server';
+				$module='delivery_notes_server';
 				$section='delivery_notes';
 
 
@@ -537,7 +534,7 @@ function parse_request($_data, $db) {
 			break;
 
 		case 'delivery_note':
-			$module='orders';
+			$module='delivery_notes';
 			if ( isset($view_path[0])) {
 
 				if ( is_numeric($view_path[0])) {
@@ -635,7 +632,7 @@ function parse_request($_data, $db) {
 
 			break;
 		case 'invoice':
-			$module='orders';
+			$module='invoices';
 			if ( isset($view_path[0])) {
 
 				if ( is_numeric($view_path[0])) {

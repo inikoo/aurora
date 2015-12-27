@@ -51,11 +51,14 @@ function help(){
 
 function change_view(_request, metadata) {
 
+console.log(metadata)
+
+
     if (metadata == undefined) {
         metadata = {};
     }
-
-    var request = "/ar_views.php?tipo=views&request=" + _request + "&old_state=" + JSON.stringify(state) + '&metadata=' + JSON.stringify(metadata)
+    
+    var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state) 
 
     $.getJSON(request,
      function(data) {

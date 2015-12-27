@@ -62,6 +62,7 @@ function sales_overview($_data, $db, $user, $account) {
 	$data=array();
 
 	if ($_data['type']=='invoice_categories' ) {
+	$request='invoice_categories';
 
 		$fields="
 		`Invoice Category $period_tag Acc Refunds` as refunds,
@@ -103,7 +104,7 @@ function sales_overview($_data, $db, $user, $account) {
 
 	}
 	else {
-
+$request='invoices';
 		$fields="`Store Code`,S.`Store Key` record_key ,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
 
 
@@ -161,7 +162,7 @@ function sales_overview($_data, $db, $user, $account) {
 
 
 
-			$data['orders_overview_invoices_'.$row['record_key']]=array('value'=>number($row['invoices']));
+			$data['orders_overview_invoices_'.$row['record_key']]=array('value'=>number($row['invoices']),'request'=>"$request/".$row['record_key']  );
 			$data['orders_overview_invoices_delta_'.$row['record_key']]=array('value'=>delta($row['invoices'], $row['invoices_1yb']), 'title'=>number($row['invoices_1yb'])  );
 
 
@@ -178,7 +179,7 @@ function sales_overview($_data, $db, $user, $account) {
 			$data['orders_overview_replacements_delta_'.$row['record_key']]=array('value'=>delta($row['replacements'], $row['replacements_1yb']), 'title'=>number($row['replacements_1yb']) );
 			$data['orders_overview_replacements_percentage_'.$row['record_key']]=array('value'=>percentage($row['replacements'], $row['delivery_notes']));
 			$data['orders_overview_replacements_percentage_1yb_'.$row['record_key']]=array('value'=>percentage($row['replacements_1yb'], $row['delivery_notes_1yb']), 'title'=>number($row['replacements_1yb']).'/'.number( $row['delivery_notes_1yb']));
-
+			
 
 
 		}
@@ -209,7 +210,7 @@ function sales_overview($_data, $db, $user, $account) {
 	$data['orders_overview_replacements_percentage_totals']=array('value'=>percentage($sum_replacements, $sum_delivery_notes));
 	$data['orders_overview_replacements_percentage_1yb_totals']=array('value'=>percentage($sum_replacements_1yb, $sum_delivery_notes_1yb), 'title'=>number($sum_replacements_1yb).'/'.number($sum_delivery_notes_1yb));
 
-
+	
 	$response=
 		array(
 		'state'=>200,

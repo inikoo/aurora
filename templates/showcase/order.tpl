@@ -111,7 +111,7 @@
 					
 					
 					<tr id="tr_order_total_paid" >
-						<td class="aright"><img id="order_paid_info" style="height:14px;vertical-align:-1.5px" src="/art/icons/information.png" title="{$order->get('Order Current XHTML Payment State')}"> {t}Paid{/t}</td>
+						<td class="aright"><i id="order_paid_info" class="fa fa-info-circle" title="{$order->get('Order Current XHTML Payment State')}"></i> {t}Paid{/t}</td>
 						<td id="order_total_paid" width="100" class="aright">{$order->get('Payments Amount')}</td>
 					</tr>
 					<tr id="tr_order_total_to_pay" style="{if $order->get('Order To Pay Amount')==0}display:none{/if}">

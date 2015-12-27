@@ -14,7 +14,10 @@ $current_section=$data['section'];
 
 $nav_menu=array();
 
-//$nav_menu[] = array('<i class="fa fa-home fa-fw"></i> '._('Home'), 'home','');
+$nav_menu[] = array('<i class="fa fa-dashboard fa-fw"></i> '._('Dashboard'), '/dashboard' ,'dashboard','module');
+
+
+
 
 if ($user->can_view('customers')) {
 
@@ -50,6 +53,36 @@ if ($user->can_view('orders')) {
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section');
 	}
+
+
+	if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array('<i class="fa fa-truck fa-flip-horizontal fa-fw"></i> '._('Delivery notes'), 'delivery_notes', 'delivery_notes', 'module');
+	}
+	else {
+		$nav_menu[] = array('<i class="fa fa-truck fa-flip-horizontal fa-fw"></i> '._('Delivery notes'), 'delivery_notes/all', 'delivery_notes', 'module');
+	}
+
+	$sections=get_sections('invoices', $data['parent_key']);
+	foreach ($sections as $key=>$section ) {
+		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section');
+	}
+
+
+
+
+	if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i> '._('Invoices'), 'invoices', 'invoices', 'module');
+	}
+	else {
+		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i> '._('Invoices'), 'invoices/all', 'invoices', 'module');
+	}
+
+	$sections=get_sections('invoices', $data['parent_key']);
+	foreach ($sections as $key=>$section ) {
+		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section');
+	}
+
+
 
 }
 
@@ -122,7 +155,7 @@ if ($user->can_view('warehouses')) {
 	}
 */
 
-		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Inventory'), 'inventory', 'inventory', 'module');
+	$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Inventory'), 'inventory', 'inventory', 'module');
 
 
 	if ($user->data['User Hooked Warehouse Key']) {
@@ -138,7 +171,7 @@ if ($user->can_view('reports')) {
 
 
 if ($user->can_view('suppliers')) {
-		$nav_menu[] = array('<i class="fa fa-magic fa-fw"></i> '._('Production'), 'production', 'production', 'module');
+	$nav_menu[] = array('<i class="fa fa-magic fa-fw"></i> '._('Production'), 'production', 'production', 'module');
 
 
 }

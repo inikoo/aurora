@@ -108,6 +108,165 @@ function get_orders_navigation($data) {
 
 }
 
+function get_delivery_notes_navigation($data) {
+
+	global $user, $smarty;
+	require_once 'class.Store.php';
+
+	switch ($data['parent']) {
+	case 'store':
+		$store=new Store($data['parent_key']);
+		break;
+	default:
+
+		break;
+	}
+
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('delivery_notes', $store->id);
+	switch ($block_view) {
+
+	case 'delivery_notes':
+		$sections_class='';
+		$title=_('Delivery Notes').' <span class="id">'.$store->get('Store Code').'</span>';
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_('Delivery Notes').' ('._('All stores').')', 'reference'=>'delivery_notes/all');
+		$button_label=_('Delivery Notes %s');
+		break;
+
+	}
+
+	$left_buttons=array();
+	if ($user->stores>1) {
+
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
+
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$prev_title=sprintf($button_label, $row['Store Code']);
+		}else {$prev_title='';}
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$next_title=sprintf($button_label, $row['Store Code']);
+		}else {$next_title='';}
+
+
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>$block_view.'/'.$prev_key);
+		$left_buttons[]=$up_button;
+
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>$block_view.'/'.$next_key);
+	}
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>$sections_class,
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search delivery notes'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+function get_invoices_navigation($data) {
+
+	global $user, $smarty;
+	require_once 'class.Store.php';
+
+	switch ($data['parent']) {
+	case 'store':
+		$store=new Store($data['parent_key']);
+		break;
+	default:
+
+		break;
+	}
+
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('invoices', $store->id);
+	switch ($block_view) {
+
+	case 'invoices':
+		$sections_class='';
+		$title=_('Invoices').' <span class="id">'.$store->get('Store Code').'</span>';
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_('Invoices').' ('._('All stores').')', 'reference'=>'invoices/all');
+		$button_label=_('Invoices %s');
+		break;
+
+	case 'payments':
+		$sections_class='';
+		$title=_('Payments').' <span class="id">'.$store->get('Store Code').'</span>';
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_('Payments').' ('._('All stores').')', 'reference'=>'invoices/payments/all');
+		$button_label=_('Payments %s');
+		break;
+	}
+
+	$left_buttons=array();
+	if ($user->stores>1) {
+
+		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
+
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$prev_title=sprintf($button_label, $row['Store Code']);
+		}else {$prev_title='';}
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$next_title=sprintf($button_label, $row['Store Code']);
+		}else {$next_title='';}
+
+
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>$block_view.'/'.$prev_key);
+		$left_buttons[]=$up_button;
+
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>$block_view.'/'.$next_key);
+	}
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>$sections_class,
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search invoices'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 
 function get_orders_server_navigation($data) {
 
@@ -498,7 +657,6 @@ function get_delivery_note_navigation($data) {
 
 
 
-
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 
 		$_order_field=$order;
@@ -529,7 +687,7 @@ function get_delivery_note_navigation($data) {
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$prev_key=$row['object_key'];
-				$prev_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
+				$prev_title=_("Delivery note").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 			}
 
@@ -544,7 +702,7 @@ function get_delivery_note_navigation($data) {
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$next_key=$row['object_key'];
-				$next_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
+				$next_title=_("Delivery note").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 			}
 
@@ -611,7 +769,7 @@ function get_delivery_note_navigation($data) {
 
 
 
-			$sections=get_sections('orders', $data['parent_key']);
+			$sections=get_sections('delivery_notes', $data['parent_key']);
 
 
 
@@ -669,7 +827,7 @@ function get_delivery_note_navigation($data) {
 
 
 
-			$sections=get_sections('orders', $invoice->get('Invoice Store Key'));
+			$sections=get_sections('invoices', $invoice->get('Invoice Store Key'));
 
 
 
@@ -677,7 +835,7 @@ function get_delivery_note_navigation($data) {
 	}
 	else {
 		$_section='staff';
-		$sections=get_sections('orders', '');
+		$sections=get_sections('delivery_notes', '');
 
 
 	}
