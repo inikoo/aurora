@@ -96,6 +96,7 @@ else {
 }
 
 if (isset($parameters['period'])) {
+    include_once('utils/date_functions.php');
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
 	$where_interval=prepare_mysql_dates($from, $to, '`Delivery Note Date`');

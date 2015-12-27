@@ -10,6 +10,9 @@
  Version 3.0
 */
 
+
+
+
 if (isset($_SESSION['table_state'][$tab])) {
 	$table_state=$_SESSION['table_state'][$tab];
 }else {
@@ -17,8 +20,8 @@ if (isset($_SESSION['table_state'][$tab])) {
 }
 
 foreach ($default as $key=>$value) {
-    
-    if($key=='rpp_options'){
+
+	if ($key=='rpp_options') {
 
 	}elseif ($key=='sort_key') {
 
@@ -53,40 +56,69 @@ foreach ($default as $key=>$value) {
 	}
 }
 
+//print_r($parameters['elements']['type']);
+
+if (isset($metadata['parameters'])) {
+	foreach ($metadata['parameters'] as $_key=>$_value) {
+		if (isset($parameters[$_key]))$parameters[$_key]=$_value;
+	}
+}
+
+//print_r($metadata);
+
+if (isset($metadata['element'])) {
+
+	foreach ($metadata['element'] as $element_type=>$elements) {
+    
+        if(isset($parameters['elements'][$element_type])){
+            
+            foreach($elements as $_key=>$value){
+            $parameters['elements'][$element_type]['items'][$_key]['selected']=$value;
+            }
+            
+        }
+    
+	}
+
+}
+//print_r($parameters['elements']['type']);
+
+
+
 $parameters['tab']=$tab;
 
 if (isset($parameters['period'])) {
-	$smarty->assign('period',$parameters['period']);
-	
-	if($parameters['period']=='day' or $parameters['period']=='interval'){
-	
-	$smarty->assign('from',$parameters['from']);
-	$smarty->assign('to',$parameters['to']);
-	$smarty->assign('from_mmddyy',strftime("%m/%d/%Y",strtotime($parameters['from'])));
-	$smarty->assign('to_mmddyy',strftime("%m/%d/%Y",strtotime($parameters['to'])));
-	$smarty->assign('from_locale',strftime("%x",strtotime($parameters['from'])));
-	$smarty->assign('to_locale',strftime("%x",strtotime($parameters['to'])));
-	}else{
-	$smarty->assign('from','');
-	$smarty->assign('to','');
-	$smarty->assign('from_mmddyy','');
-	$smarty->assign('to_mmddyy','');
-	$smarty->assign('from_locale','');
-	$smarty->assign('to_locale','');
+	$smarty->assign('period', $parameters['period']);
+
+	if ($parameters['period']=='day' or $parameters['period']=='interval') {
+
+		$smarty->assign('from', $parameters['from']);
+		$smarty->assign('to', $parameters['to']);
+		$smarty->assign('from_mmddyy', strftime("%m/%d/%Y", strtotime($parameters['from'])));
+		$smarty->assign('to_mmddyy', strftime("%m/%d/%Y", strtotime($parameters['to'])));
+		$smarty->assign('from_locale', strftime("%x", strtotime($parameters['from'])));
+		$smarty->assign('to_locale', strftime("%x", strtotime($parameters['to'])));
+	}else {
+		$smarty->assign('from', '');
+		$smarty->assign('to', '');
+		$smarty->assign('from_mmddyy', '');
+		$smarty->assign('to_mmddyy', '');
+		$smarty->assign('from_locale', '');
+		$smarty->assign('to_locale', '');
 	}
 
 }
 
-$smarty->assign('f_field',$parameters['f_field']);
-$smarty->assign('f_label',($parameters['f_field'] ? $table_filters[$parameters['f_field']]['label']:''  ));
+$smarty->assign('f_field', $parameters['f_field']);
+$smarty->assign('f_label', ($parameters['f_field'] ? $table_filters[$parameters['f_field']]['label']:''  ));
 $table_view=$parameters['view'];
-$smarty->assign('table_view',$parameters['view']);
+$smarty->assign('table_view', $parameters['view']);
 
 
-if(array_key_exists('elements', $parameters))
-$smarty->assign('elements',$parameters['elements']);
-if(array_key_exists('elements_type', $parameters))
-$smarty->assign('elements_type',$parameters['elements_type']);
+if (array_key_exists('elements', $parameters))
+	$smarty->assign('elements', $parameters['elements']);
+if (array_key_exists('elements_type', $parameters))
+	$smarty->assign('elements_type', $parameters['elements_type']);
 
 
 
@@ -97,24 +129,24 @@ $parameters=json_encode($parameters);
 $request='/'.$ar_file.'?tipo='.$tipo.'&parameters='.$parameters;
 
 
-$smarty->assign('results_per_page_options',$default['rpp_options']);
-$smarty->assign('results_per_page',$results_per_page);
+$smarty->assign('results_per_page_options', $default['rpp_options']);
+$smarty->assign('results_per_page', $results_per_page);
 
 
 
-$smarty->assign('sort_key',$sort_key);
-$smarty->assign('sort_order',$sort_order);
-$smarty->assign('request',$request);
-$smarty->assign('ar_file',$ar_file);
-$smarty->assign('tipo',$tipo);
+$smarty->assign('sort_key', $sort_key);
+$smarty->assign('sort_order', $sort_order);
+$smarty->assign('request', $request);
+$smarty->assign('ar_file', $ar_file);
+$smarty->assign('tipo', $tipo);
 
-$smarty->assign('parameters',$parameters);
-$smarty->assign('tab',$tab);
+$smarty->assign('parameters', $parameters);
+$smarty->assign('tab', $tab);
 
 if (isset($table_views[$table_view]))
 	$table_views[$table_view]['selected']=true;
 
-$smarty->assign('table_views',$table_views);
+$smarty->assign('table_views', $table_views);
 
 $html=$smarty->fetch('table.tpl');
 
