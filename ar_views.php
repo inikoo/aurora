@@ -440,7 +440,13 @@ function get_navigation($user, $smarty, $data) {
 		case ('payments'):
 			return get_invoices_server_navigation($data);
 			break;
+			
+		case ('categories'):
+			return get_invoices_categories_server_navigation($data);
+			break;
 		}
+		
+		
 
 		break;
 	case ('delivery_notes_server'):
@@ -1090,10 +1096,18 @@ function get_view_position($state) {
 		}
 		break;
 	case 'invoices_server':
+	
+	    if($state['section']=='categories'){
+	    			$branch[]=array('label'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'sitemap', 'reference'=>'');
+
+	    }else{
+	
+	
 		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
 
 		if ( $user->get_number_stores()>1) {
-			$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'', 'reference'=>'invoices/all');
+			$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'', 'reference'=>'');
+		}
 		}
 		break;
 	case 'delivery_notes_server':

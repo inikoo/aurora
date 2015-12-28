@@ -395,6 +395,14 @@ function parse_request($_data, $db) {
 				$section='invoices';
 				$parent='account';
 				$parent_key=1;
+				
+				if(isset($view_path[0])){
+				
+				 if($view_path[0]=='categories'){
+                	$section='categories';
+                
+				}
+				}
 
 			}
 			elseif (is_numeric($arg1)) {
@@ -402,13 +410,20 @@ function parse_request($_data, $db) {
 				$parent='store';
 				$parent_key=$arg1;
 
-				if (isset($view_path[0]) and is_numeric($view_path[0])) {
+                if(isset($view_path[0])){
+                
+                if($view_path[0]=='categories'){
+                	$section='categories';
+                
+				}elseif ( is_numeric($view_path[0])) {
 					$section='invoice';
 					$object='invoice';
 					$parent='store';
 					$parent_key=$arg1;
 					$key=$view_path[0];
 
+				}
+				
 				}
 
 			}
