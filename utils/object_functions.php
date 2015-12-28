@@ -52,7 +52,7 @@ function get_object($object_name, $key) {
 	case 'website':
 	case 'Site':
 		include_once 'class.Site.php';
-	
+
 		$object=new Site($key);
 		break;
 	case 'page':
@@ -116,13 +116,17 @@ function get_object($object_name, $key) {
 	case 'attachment':
 	case 'Attachment':
 		require_once "class.Attachment.php";
-		$object=new Attachment('bridge_key',$key);
+		$object=new Attachment('bridge_key', $key);
 		break;
 	case 'overtime':
 		require_once "class.Overtime.php";
 		$object=new Overtime($key);
 		break;
-
+	case 'category':
+	case 'Category':
+		require_once "class.Category.php";
+		$object=new Category($key);
+		break;
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

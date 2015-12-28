@@ -11,7 +11,7 @@
 
 
 
-$tab='invoices.categories';
+$tab='invoices_server.categories';
 $ar_file='ar_orders_tables.php';
 $tipo='invoice_categories';
 
