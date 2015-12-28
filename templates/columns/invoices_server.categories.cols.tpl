@@ -14,7 +14,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('category/' + this.model.get("id") )
+                change_view('invoices/all/category/' + this.model.get("id") )
             }
         },
         className: "link",

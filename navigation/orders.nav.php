@@ -435,6 +435,50 @@ function get_invoices_categories_server_navigation($data) {
 
 }
 
+function get_invoices_category_server_navigation($data) {
+
+	global $user, $smarty;
+
+
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('invoices_server');
+
+	$sections_class='';
+	$title=' <span class="Category_Label">'.$data['_object']->get('Label').'</span> <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
+	$button_label=_('Payments %s');
+
+
+
+	// $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
+	$left_buttons=array();
+
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>$sections_class,
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search invoices'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 
 function get_delivery_notes_server_navigation($data) {
 

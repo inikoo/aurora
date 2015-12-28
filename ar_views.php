@@ -444,6 +444,9 @@ function get_navigation($user, $smarty, $data) {
 		case ('categories'):
 			return get_invoices_categories_server_navigation($data);
 			break;
+		case ('category'):
+			return get_invoices_category_server_navigation($data);
+			break;	
 		}
 
 
@@ -1098,7 +1101,11 @@ function get_view_position($state) {
 	case 'invoices_server':
 
 		if ($state['section']=='categories') {
-			$branch[]=array('label'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'sitemap', 'reference'=>'');
+			$branch[]=array('label'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'', 'reference'=>'');
+
+		}if ($state['section']=='category') {
+			$branch[]=array('label'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'', 'reference'=>'');
+			$branch[]=array('label'=>'<span class="Category_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'');
 
 		}else {
 

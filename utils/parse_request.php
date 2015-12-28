@@ -114,10 +114,17 @@ function parse_request($_data, $db) {
 						$parent='store';
 						$parent_key=$category->get('Category Store Key');
 					}
+				case 'Invoice':
+					$module='invoices';
+					$section='category';
 
+					if ($category->get('Category Branch Type')=='Root') {
+						$parent='store';
+						$parent_key=$category->get('Category Store Key');
+					}
 					break;
 				default:
-					exit('error');
+					exit('error category '.$category->get('Category Subject').' not set up');
 					break;
 				}
 
@@ -395,13 +402,31 @@ function parse_request($_data, $db) {
 				$section='invoices';
 				$parent='account';
 				$parent_key=1;
-				
-				if(isset($view_path[0])){
-				
-				 if($view_path[0]=='categories'){
-                	$section='categories';
-                
-				}
+
+				if (isset($view_path[0])) {
+
+					if ($view_path[0]=='categories') {
+						$section='categories';
+
+					}elseif ($view_path[0]=='category') {
+                        
+                        $section='category';
+                        
+						$object='category';
+
+						if (isset($view_path[1]) and is_numeric($view_path[1])) {
+							$key=$view_path[1];
+							$category=new Category($key);
+
+							$parent='category';
+							$parent_key=$category->get('Category Parent Key');
+
+							if ($category->get('Category Branch Type')=='Root') {
+
+							}
+						}
+					}
+
 				}
 
 			}
@@ -410,20 +435,20 @@ function parse_request($_data, $db) {
 				$parent='store';
 				$parent_key=$arg1;
 
-                if(isset($view_path[0])){
-                
-                if($view_path[0]=='categories'){
-                	$section='categories';
-                
-				}elseif ( is_numeric($view_path[0])) {
-					$section='invoice';
-					$object='invoice';
-					$parent='store';
-					$parent_key=$arg1;
-					$key=$view_path[0];
+				if (isset($view_path[0])) {
 
-				}
-				
+					if ($view_path[0]=='categories') {
+						$section='categories';
+
+					}elseif ( is_numeric($view_path[0])) {
+						$section='invoice';
+						$object='invoice';
+						$parent='store';
+						$parent_key=$arg1;
+						$key=$view_path[0];
+
+					}
+
 				}
 
 			}
@@ -1419,6 +1444,8 @@ function parse_request($_data, $db) {
 		}
 
 	}
+
+
 	list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 	$state=array(
 		'request'=>$request,

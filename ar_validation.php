@@ -74,13 +74,13 @@ function check_for_duplicates($data, $db, $user) {
 
 			break;
 		}
-		case 'Store':
+	case 'Store':
 
 		switch ($field) {
 		case 'Store Code':
 			$invalid_msg=_('Another store is using this code');
 			break;
-		
+
 		default:
 
 			break;
@@ -88,6 +88,21 @@ function check_for_duplicates($data, $db, $user) {
 
 
 		break;
+		
+	case 'Category':
+
+		switch ($field) {
+		case 'Category Code':
+			$invalid_msg=_('Another category is using this code');
+			break;
+
+		default:
+
+			break;
+		}
+
+
+		break;	
 	default:
 
 
@@ -99,6 +114,9 @@ function check_for_duplicates($data, $db, $user) {
 		case 'store':
 			$parent_where=sprintf(' and `%s Store Key`=%d ', $data['object'], $data['parent_key']);
 			break;
+		case 'category':
+			$parent_where=sprintf(' and `%s Parent Key`=%d ', $data['object'], $data['parent_key']);
+			break;	
 		default:
 			$parent_where='';
 		}
@@ -114,7 +132,6 @@ function check_for_duplicates($data, $db, $user) {
 		);
 
 	}
-
 
 
 	if (!isset($invalid_msg)) {

@@ -305,6 +305,18 @@ $modules=array(
 					'invoices_server.categories'=>array(),
 				)
 			),
+			
+			'category'=>array('type'=>'object',
+				'tabs'=>array(
+
+		        	'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
+					'category.subjects'=>array('label'=>_('Invoices')),
+					'category.subcategories'=>array('label'=>_('Subcategories')),
+
+				)
+
+			),
 
 		)
 

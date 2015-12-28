@@ -18,7 +18,11 @@ class Category extends DB_Table {
 
 
 
-	function Category($a1,$a2=false,$a3=false) {
+	function Category($a1, $a2=false, $a3=false) {
+
+		global $db;
+		$this->db=$db;
+
 		$this->update_subjects_data=true;
 		$this->table_name='Category';
 		$this->subject_table_name='Category';
@@ -27,29 +31,30 @@ class Category extends DB_Table {
 		$this->skip_update_sales=false;
 
 		if (is_numeric($a1) and !$a2) {
-			$this->get_data('id',$a1);
+			$this->get_data('id', $a1);
 		} else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
-				$this->find($a2,'create');
+			$this->find($a2, 'create');
 
-			}
-		elseif (preg_match('/find/i',$a1))
-			$this->find($a2,$a1);
+		}
+		elseif (preg_match('/find/i', $a1))
+			$this->find($a2, $a1);
 		else
-			$this->get_data($a1,$a2,$a3);
+			$this->get_data($a1, $a2, $a3);
 
 	}
 
-	function get_data($tipo,$tag,$tag2=false) {
+
+	function get_data($tipo, $tag, $tag2=false) {
 		switch ($tipo) {
 		case 'rootkey_code':
-			$sql=sprintf("select * from `Category Dimension` where `Category Root Key`=%d and `Category Code`=%s ",$tag,prepare_mysql($tag2));
+			$sql=sprintf("select * from `Category Dimension` where `Category Root Key`=%d and `Category Code`=%s ", $tag, prepare_mysql($tag2));
 			break;
 		case 'subject_code':
 			// Note it can not be unique is just give the 1st resutl
-			$sql=sprintf("select * from `Category Dimension` where `Category Subject`=%s and `Category Code`=%s ",prepare_mysql($tag),prepare_mysql($tag2));
+			$sql=sprintf("select * from `Category Dimension` where `Category Subject`=%s and `Category Code`=%s ", prepare_mysql($tag), prepare_mysql($tag2));
 			break;
 		default:
-			$sql=sprintf("select * from `Category Dimension` where `Category Key`=%d",$tag);
+			$sql=sprintf("select * from `Category Dimension` where `Category Key`=%d", $tag);
 
 			break;
 		}
@@ -60,34 +65,34 @@ class Category extends DB_Table {
 
 			if ($this->data['Category Subject']=='Part') {
 				$this->subject_table_name='Part Category';
-				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d",$this->id);
+				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d", $this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data,$row);
+					$this->data=array_merge($this->data, $row);
 				}
 
 			}elseif ($this->data['Category Subject']=='Family') {
 				$this->subject_table_name='Product Family';
 
-				$sql=sprintf("select * from `Product Family Category Dimension` where `Product Family Category Key`=%d",$this->id);
+				$sql=sprintf("select * from `Product Family Category Dimension` where `Product Family Category Key`=%d", $this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data,$row);
+					$this->data=array_merge($this->data, $row);
 				}
 
 
 			}elseif ($this->data['Category Subject']=='Product') {
 				$this->subject_table_name='Product';
 
-				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d",$this->id);
+				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data,$row);
+					$this->data=array_merge($this->data, $row);
 				}
-/*
+				/*
 			}elseif ($this->data['Category Subject']=='Customer') {
 				$this->subject_table_name='Customer';
 
@@ -99,27 +104,27 @@ class Category extends DB_Table {
 				}
 */
 			}elseif ($this->data['Category Subject']=='Supplier') {
-			
-			
-			
+
+
+
 				$this->subject_table_name='Supplier';
-			
-				$sql=sprintf("select * from `Supplier Category Dimension` where `Category Key`=%d",$this->id);
+
+				$sql=sprintf("select * from `Supplier Category Dimension` where `Category Key`=%d", $this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data,$row);
+					$this->data=array_merge($this->data, $row);
 				}
-			
+
 
 			}elseif ($this->data['Category Subject']=='Invoice') {
 				$this->subject_table_name='Supplier';
 
-				$sql=sprintf("select * from `Invoice Category Dimension` where `Invoice Category Key`=%d",$this->id);
+				$sql=sprintf("select * from `Invoice Category Dimension` where `Invoice Category Key`=%d", $this->id);
 				//print "$sql\n";
 				$result2=mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data,$row);
+					$this->data=array_merge($this->data, $row);
 				}
 
 			}
@@ -132,11 +137,11 @@ class Category extends DB_Table {
 	}
 
 
-	function find($raw_data,$options) {
+	function find($raw_data, $options) {
 
 		if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -147,17 +152,17 @@ class Category extends DB_Table {
 		$this->found_key=0;
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
 
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=$value;
 
 		}
@@ -178,7 +183,7 @@ class Category extends DB_Table {
 		);
 		//print_r($fields);
 		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
+			$sql.=sprintf(' and `%s`=%s', $field, prepare_mysql($data[$field], false));
 		}
 
 
@@ -193,7 +198,7 @@ class Category extends DB_Table {
 
 		}
 		if ($this->found) {
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 		}
 
 		if ($create and !$this->found) {
@@ -221,7 +226,7 @@ class Category extends DB_Table {
 
 		if ($nodes->id) {
 
-			$this->get_data('id',$nodes->id);
+			$this->get_data('id', $nodes->id);
 			//print_r($this->data);
 
 			if ($this->data['Category Parent Key']==0) {
@@ -248,20 +253,20 @@ class Category extends DB_Table {
 
 
 			if ($this->data['Category Subject']=='Invoice') {
-				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
+				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
 				mysql_query($sql);
 			}
 			elseif ($this->data['Category Subject']=='Supplier') {
-				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
+				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)", $this->id);
 				mysql_query($sql);
 			}elseif ($this->data['Category Subject']=='Part') {
-				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)",$this->id,$this->data['Category Warehouse Key']);
+				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)", $this->id, $this->data['Category Warehouse Key']);
 				mysql_query($sql);
 			}elseif ($this->data['Category Subject']=='Product') {
-				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
+				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
 				mysql_query($sql);
 			}elseif ($this->data['Category Subject']=='Family') {
-				$sql=sprintf("insert into `Product Family Category Dimension` (`Product Family Category Key`,`Product Family Category Store Key`) values (%d,%d)",$this->id,$this->data['Category Store Key']);
+				$sql=sprintf("insert into `Product Family Category Dimension` (`Product Family Category Key`,`Product Family Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
 				mysql_query($sql);
 			}
 
@@ -297,7 +302,7 @@ class Category extends DB_Table {
 		$data['Category Warehouse Key']=$this->data['Category Warehouse Key'];
 
 
-		if ($this->data['Category Store Key']!=0 and array_key_exists('Category Store Key',$data))
+		if ($this->data['Category Store Key']!=0 and array_key_exists('Category Store Key', $data))
 			$data['Category Store Key']=$this->data['Category Store Key'];
 
 
@@ -311,7 +316,7 @@ class Category extends DB_Table {
 
 
 
-		if (array_key_exists('Is Category Field Other',$data)) {
+		if (array_key_exists('Is Category Field Other', $data)) {
 			if ($data['Is Category Field Other']=='Yes' and $this->data['Category Can Have Other']=='Yes'  and  $this->data['Category Children Other']=='No' ) {
 				$data['Is Category Field Other']='Yes';
 
@@ -323,7 +328,7 @@ class Category extends DB_Table {
 		}
 		// $data['editor']
 
-		$subcategory=new Category('find create',$data);
+		$subcategory=new Category('find create', $data);
 
 		if ($data['Is Category Field Other']=='Yes') {
 			$this->data['Category Children Other']='Yes';
@@ -340,8 +345,9 @@ class Category extends DB_Table {
 
 	}
 
-	function get_period($period,$key) {
-	
+
+	function get_period($period, $key) {
+
 		return $this->get($period.' '.$key);
 	}
 
@@ -360,28 +366,37 @@ class Category extends DB_Table {
 			return number($this->data['Category Children']);
 		}
 
+		switch ($key) {
+
+		default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('Category '.$key, $this->data))
+				return $this->data['Category '.$key];
+		}
 
 
 		switch ($this->data['Category Subject']) {
 		case 'Part':
 
 
-			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/',$key)) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
 				$amount='Part Category '.$key;
 
-				return percentage($this->data[$amount],1);
+				return percentage($this->data[$amount], 1);
 			}
 
 
-			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Sold|Given|Required)$/',$key)) {
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Sold|Given|Required)$/', $key)) {
 
 				$amount='Part Category '.$key;
 
 				return number($this->data[$amount]);
 			}
 
-			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/',$key)) {
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/', $key)) {
 
 				$amount='Part Category '.$key;
 
@@ -392,25 +407,30 @@ class Category extends DB_Table {
 		case 'Invoice':
 
 
-			
 
-			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Invoices|Refunds)$/',$key)) {
+
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Invoices|Refunds)$/', $key)) {
 
 				$amount='Invoice Category '.$key;
 
 				return number($this->data[$amount]);
 			}
 
-			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit|Paid|To Pay)$/',$key)) {
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit|Paid|To Pay)$/', $key)) {
 
 				$amount='Invoice Category '.$key;
 
 				return money($this->data[$amount]);
 			}
 			return $key;
-			break;	
-			
+			break;
+
 		}
+
+
+
+
+
 
 		return false;
 	}
@@ -444,9 +464,9 @@ class Category extends DB_Table {
 			$link='category.php';
 		}
 
-		$category_keys=preg_split('/\>/',preg_replace('/\>$/','',$this->data['Category Position']));
+		$category_keys=preg_split('/\>/', preg_replace('/\>$/', '', $this->data['Category Position']));
 
-		$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+		$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
 		//print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -456,8 +476,8 @@ class Category extends DB_Table {
 		$plain_tree='';
 		foreach ($category_keys as $key) {
 			if (array_key_exists($key, $category_data)) {
-				$xhtml_tree.=sprintf(" <a href='%s?id=%d'>%s</a> &rarr;",$link,$key,$category_data[$key]);
-				$plain_tree.=sprintf(" %s >",$category_data[$key]);
+				$xhtml_tree.=sprintf(" <a href='%s?id=%d'>%s</a> &rarr;", $link, $key, $category_data[$key]);
+				$plain_tree.=sprintf(" %s >", $category_data[$key]);
 			}
 		}
 		$xhtml_tree=preg_replace('/\s*\&rarr\;$/', '', $xhtml_tree);
@@ -530,14 +550,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 		if ($this->data['Category Subject']=='Invoice') {
-			$sql=sprintf('delete from `Invoice Category Dimension` where `Category Key`=%d',$this->id);
+			$sql=sprintf('delete from `Invoice Category Dimension` where `Category Key`=%d', $this->id);
 			mysql_query($sql);
 		}
 		elseif ($this->data['Category Subject']=='Supplier') {
-			$sql=sprintf('delete from `Supplier Category Dimension` where `Category Key`=%d',$this->id);
+			$sql=sprintf('delete from `Supplier Category Dimension` where `Category Key`=%d', $this->id);
 			mysql_query($sql);
 		}elseif ($this->data['Category Subject']=='Part') {
-			$sql=sprintf('delete from `Part Category Dimension`  where `Category Key`=%d',$this->id);
+			$sql=sprintf('delete from `Part Category Dimension`  where `Category Key`=%d', $this->id);
 			mysql_query($sql);
 		}
 
@@ -548,7 +568,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		//print $sql_new_deleted_category;
 		mysql_query($sql_new_deleted_category);
 		//print $sql_new_deleted_category;
-		$sql=sprintf('delete from `Category Dimension` where `Category Key`=%d',$this->id);
+		$sql=sprintf('delete from `Category Dimension` where `Category Key`=%d', $this->id);
 		mysql_query($sql);
 
 		foreach ($parent_keys as $parent_key) {
@@ -574,8 +594,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			'Indirect Object Key'=>$this->data['Category Parent Key'],
 			'Indirect Object'=>'Category '.$this->data['Category Subject'],
 			'History Abstract'=>_('Category deleted').' ('.$this->data['Category Code'].')'
-			,'History Details'=>_trim(_('Category')." ".$this->data['Category Code'].' ('.$this->data['Category Label'].') '._('has been deleted permanently') )
-			,'Action'=>'deleted'
+			, 'History Details'=>_trim(_('Category')." ".$this->data['Category Code'].' ('.$this->data['Category Label'].') '._('has been deleted permanently') )
+			, 'Action'=>'deleted'
 		);
 		$this->add_history($history_data);
 		$this->deleted=true;
@@ -657,6 +677,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 	}
 
+
 	function get_children_objects_new_subject() {
 		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Subject User Interface`='Yes' order by `Category Code` ",
 			$this->id
@@ -671,6 +692,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $children_keys;
 
 	}
+
 
 	function get_children_objects_public_edit() {
 		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public Edit`='Yes' order by `Category Code` ",
@@ -717,7 +739,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 		if (mysql_num_rows($result) > 0) {
 			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields))
+				if (!in_array($row['Field'], $this->ignore_fields))
 					$data[$row['Field']]=$row['Default'];
 			}
 		}
@@ -728,16 +750,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-	function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field, $value, $options='') {
 
 
 
 
 
-		if (array_key_exists($field,$this->base_data())) {
+		if (array_key_exists($field, $this->base_data())) {
 
 			if ($field=='Category Code') {
-				$this->update_field($field,$value,$options);
+				$this->update_field($field, $value, $options);
 				$this->update_branch_tree();
 
 				$this->load_all_descendants_keys();
@@ -748,21 +770,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				}
 			}elseif ($value!=$this->data[$field]) {
 
-				$this->update_field($field,$value,$options);
+				$this->update_field($field, $value, $options);
 
 			}
-		}elseif (array_key_exists($field,$this->subject_base_data())) {
+		}elseif (array_key_exists($field, $this->subject_base_data())) {
 
 			if ($value!=$this->data[$field]) {
 
-				$this->update_subject_field($field,$value,$options);
+				$this->update_subject_field($field, $value, $options);
 
 			}
 		}
 
 	}
 
-	function update_subject_field($field,$value,$options='') {
+
+	function update_subject_field($field, $value, $options='') {
 
 		$this->updated=false;
 		$null_if_empty=true;
@@ -791,7 +814,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 
 
-		$sql="update `".$this->subject_table_name." Category Dimension` set `".$field."`=".prepare_mysql($value,$null_if_empty)." where `$key_field`=".$this->id;
+		$sql="update `".$this->subject_table_name." Category Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
 
 		//print "$sql\n";
 
@@ -818,7 +841,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->new_value=$value;
 
 			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
+			if (preg_match('/no( |\_)history|nohistory/i', $options))
 				$save_history=false;
 
 			if (!$this->new and $save_history) {
@@ -832,7 +855,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 				$history_key=$this->add_history($history_data);
-				$sql=sprintf("insert into `%s Category History Bridge` values (%d,%d,'No','No','Changes')",$this->subject_table_name,$this->id,$history_key);
+				$sql=sprintf("insert into `%s Category History Bridge` values (%d,%d,'No','No','Changes')", $this->subject_table_name, $this->id, $history_key);
 				mysql_query($sql);
 
 
@@ -842,6 +865,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 
 	}
+
 
 	function update_children_data() {
 
@@ -882,7 +906,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$res=mysql_query($sql);
 			$max_deep=0;
 			while ($row=mysql_fetch_assoc($res)) {
-				$deep=count(preg_split('/\>/',$row['Category Position']))-2;
+				$deep=count(preg_split('/\>/', $row['Category Position']))-2;
 				if ($deep>$max_deep)
 					$max_deep=$deep;
 			}
@@ -917,6 +941,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	}
+
+
 	function update_number_of_subjects() {
 		$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
 			$this->id
@@ -935,6 +961,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$this->update_no_assigned_subjects();
 
 	}
+
+
 	function update_no_assigned_subjects() {
 		$no_assigned_subjects=0;
 		$assigned_subjects=0;
@@ -971,7 +999,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$store=sprintf(" where `%s Store Key`=%d",
 				addslashes($this->data['Category Subject']),
 				$this->data['Category Store Key']);
-			$sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
+			$sql=sprintf("select count(*) as num from `%s Dimension` %s", $table, $store);
 			break;
 		}
 
@@ -1015,17 +1043,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-	function get_number_invoices($from,$to) {
+	function get_number_invoices($from, $to) {
 		$number_invoices=0;
 		if ($this->data['Category Subject']=='Invoice') {
 
-			$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d",$this->id);
+			$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d", $this->id);
 			$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
 
 
 			if ($from)$from=$from.' 00:00:00';
 			if ($to)$to=$to.' 23:59:59';
-			$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+			$where_interval=prepare_mysql_dates($from, $to, '`Invoice Date`');
 			$where.=$where_interval['mysql'];
 
 
@@ -1077,6 +1105,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 
 	}
+
 
 	function update_last_period() {
 
@@ -1130,6 +1159,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
+
 	function update_supplier_category_last_period_sales() {
 		if (!$this->skip_update_sales) {
 			$this->update_supplier_category_sales('Yesterday');
@@ -1137,6 +1167,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->update_supplier_category_sales('Last Month');
 		}
 	}
+
 
 	function update_supplier_category_interval_sales() {
 		if (!$this->skip_update_sales) {
@@ -1151,6 +1182,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
+
 	function update_invoice_category_up_today_sales() {
 		if (!$this->skip_update_sales) {
 			$this->update_invoice_category_sales('Today');
@@ -1160,6 +1192,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
+
 	function update_invoice_category_last_period_sales() {
 		if (!$this->skip_update_sales) {
 			$this->update_invoice_category_sales('Yesterday');
@@ -1167,6 +1200,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->update_invoice_category_sales('Last Month');
 		}
 	}
+
 
 	function update_invoice_category_interval_sales() {
 		if (!$this->skip_update_sales) {
@@ -1181,6 +1215,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
+
 	function update_part_category_up_today_sales() {
 
 		if (!$this->skip_update_sales) {
@@ -1190,6 +1225,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->update_part_category_sales('Year To Day');
 		}
 	}
+
 
 	function update_part_category_last_period_sales() {
 		if (!$this->skip_update_sales) {
@@ -1250,12 +1286,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$sales_data=array(
 			'sold_amount'=>0,
-			
+
 
 		);
 
 
-	$sql=sprintf("select sum(`Supplier %s Year Ago Sales Amount`) as sold_amount   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
+		$sql=sprintf("select sum(`Supplier %s Year Ago Sales Amount`) as sold_amount   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
 			$year_tag,
 			$this->id
 
@@ -1263,13 +1299,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		);
 		$result=mysql_query($sql);
 
-	
+
 
 
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 			$sales_data['sold_amount']=$row['sold_amount'];
-			
+
 
 
 
@@ -1277,7 +1313,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		return $sales_data;
 	}
-	
+
 
 	function update_supplier_category_sales($interval) {
 
@@ -1286,7 +1322,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
 
 
 
@@ -1315,10 +1351,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                      `$db_interval Acc Part Sales`=%.2f,
                      `$db_interval Acc Profit`=%.2f
                      where `Category Key`=%d "
-			,$supplier_category_data["$db_interval Acc Cost"]
-			,$supplier_category_data["$db_interval Acc Part Sales"]
-			,$supplier_category_data["$db_interval Acc Profit"]
-			,$this->id
+			, $supplier_category_data["$db_interval Acc Cost"]
+			, $supplier_category_data["$db_interval Acc Part Sales"]
+			, $supplier_category_data["$db_interval Acc Profit"]
+			, $this->id
 		);
 
 		mysql_query($sql);
@@ -1351,12 +1387,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                          `$db_interval Acc 1YB Part Sales`=%.2f,
                          `$db_interval Acc 1YB Profit`=%.2f
                          where `Category Key`=%d "
-				,$supplier_category_data["$db_interval Acc 1YB Cost"]
-				,$supplier_category_data["$db_interval Acc 1YB Part Sales"]
-				,$supplier_category_data["$db_interval Acc 1YB Profit"]
-				,$this->id
+				, $supplier_category_data["$db_interval Acc 1YB Cost"]
+				, $supplier_category_data["$db_interval Acc 1YB Part Sales"]
+				, $supplier_category_data["$db_interval Acc 1YB Profit"]
+				, $this->id
 			);
-//print "$sql\n";
+			//print "$sql\n";
 			mysql_query($sql);
 
 		}
@@ -1365,12 +1401,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 	}
 
 
-	
+
 
 	function update_part_category_status() {
 
 		$elements_numbers=array(
-			'In Use'=>0,'Not In Use'=>0
+			'In Use'=>0, 'Not In Use'=>0
 		);
 
 		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
@@ -1397,9 +1433,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 	}
 
+
 	function update_part_category_sales($interval) {
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
 
 
 
@@ -1454,19 +1491,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                      `Part Category $db_interval Acc Lost`=%s
                       where
                      `Part Category Key`=%d "
-			,$this->data["Part Category $db_interval Acc Required"]
-			,$this->data["Part Category $db_interval Acc Provided"]
-			,$this->data["Part Category $db_interval Acc Given"]
-			,$this->data["Part Category $db_interval Acc Sold Amount"]
-			,$this->data["Part Category $db_interval Acc Profit"]
-			,$this->data["Part Category $db_interval Acc Profit After Storing"]
-			,$this->data["Part Category $db_interval Acc Sold"]
-			,$this->data["Part Category $db_interval Acc Margin"]
-			,$this->data["Part Category $db_interval Acc Acquired"]
-			,$this->data["Part Category $db_interval Acc Broken"]
-			,$this->data["Part Category $db_interval Acc Lost"]
+			, $this->data["Part Category $db_interval Acc Required"]
+			, $this->data["Part Category $db_interval Acc Provided"]
+			, $this->data["Part Category $db_interval Acc Given"]
+			, $this->data["Part Category $db_interval Acc Sold Amount"]
+			, $this->data["Part Category $db_interval Acc Profit"]
+			, $this->data["Part Category $db_interval Acc Profit After Storing"]
+			, $this->data["Part Category $db_interval Acc Sold"]
+			, $this->data["Part Category $db_interval Acc Margin"]
+			, $this->data["Part Category $db_interval Acc Acquired"]
+			, $this->data["Part Category $db_interval Acc Broken"]
+			, $this->data["Part Category $db_interval Acc Lost"]
 
-			,$this->id);
+			, $this->id);
 
 		mysql_query($sql);
 		//print "$sql\n";
@@ -1524,19 +1561,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                      `Part Category $db_interval Acc 1YB Lost`=%s
                       where
                      `Part Category Key`=%d "
-				,$this->data["Part Category $db_interval Acc 1YB Required"]
-				,$this->data["Part Category $db_interval Acc 1YB Provided"]
-				,$this->data["Part Category $db_interval Acc 1YB Given"]
-				,$this->data["Part Category $db_interval Acc 1YB Sold Amount"]
-				,$this->data["Part Category $db_interval Acc 1YB Profit"]
-				,$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]
-				,$this->data["Part Category $db_interval Acc 1YB Sold"]
-				,$this->data["Part Category $db_interval Acc 1YB Margin"]
-				,$this->data["Part Category $db_interval Acc 1YB Acquired"]
-				,$this->data["Part Category $db_interval Acc 1YB Broken"]
-				,$this->data["Part Category $db_interval Acc 1YB Lost"]
+				, $this->data["Part Category $db_interval Acc 1YB Required"]
+				, $this->data["Part Category $db_interval Acc 1YB Provided"]
+				, $this->data["Part Category $db_interval Acc 1YB Given"]
+				, $this->data["Part Category $db_interval Acc 1YB Sold Amount"]
+				, $this->data["Part Category $db_interval Acc 1YB Profit"]
+				, $this->data["Part Category $db_interval Acc 1YB Profit After Storing"]
+				, $this->data["Part Category $db_interval Acc 1YB Sold"]
+				, $this->data["Part Category $db_interval Acc 1YB Margin"]
+				, $this->data["Part Category $db_interval Acc 1YB Acquired"]
+				, $this->data["Part Category $db_interval Acc 1YB Broken"]
+				, $this->data["Part Category $db_interval Acc 1YB Lost"]
 
-				,$this->id);
+				, $this->id);
 
 			mysql_query($sql);
 			//print "$sql\n";
@@ -1563,16 +1600,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                      `Part Category $db_interval Acc 1YD Sold`=%f ,
                      `Part Category $db_interval Acc 1YD Margin`=%s where
                       `Part Category Key`=%d "
-				,$this->data["Part Category $db_interval Acc 1YD Required"]
-				,$this->data["Part Category $db_interval Acc 1YD Provided"]
-				,$this->data["Part Category $db_interval Acc 1YD Given"]
-				,$this->data["Part Category $db_interval Acc 1YD Sold Amount"]
-				,$this->data["Part Category $db_interval Acc 1YD Profit"]
-				,$this->data["Part Category $db_interval Acc 1YD Profit After Storing"]
-				,$this->data["Part Category $db_interval Acc 1YD Sold"]
-				,$this->data["Part Category $db_interval Acc 1YD Margin"]
+				, $this->data["Part Category $db_interval Acc 1YD Required"]
+				, $this->data["Part Category $db_interval Acc 1YD Provided"]
+				, $this->data["Part Category $db_interval Acc 1YD Given"]
+				, $this->data["Part Category $db_interval Acc 1YD Sold Amount"]
+				, $this->data["Part Category $db_interval Acc 1YD Profit"]
+				, $this->data["Part Category $db_interval Acc 1YD Profit After Storing"]
+				, $this->data["Part Category $db_interval Acc 1YD Sold"]
+				, $this->data["Part Category $db_interval Acc 1YD Margin"]
 
-				,$this->id);
+				, $this->id);
 
 			mysql_query($sql);
 			//print "$sql\n";
@@ -1584,9 +1621,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	}
-	
-	
-	
+
+
+
 
 
 
@@ -1595,7 +1632,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$to_date='';
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
 
 
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
@@ -1616,9 +1653,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id,
 			$this->data['Category Store Key'],
 
-			($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
+			($from_date?sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)):''),
 
-			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
+			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
 
 		);
 		$result=mysql_query($sql);
@@ -1648,15 +1685,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
                      `Invoice Category $db_interval Acc Profit`=%.2f
                      where `Invoice Category Key`=%d "
-			,$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]
-			,$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]
-			,$invoice_category_data["Invoice Category $db_interval Acc Invoices"]
-			,$invoice_category_data["Invoice Category $db_interval Acc Refunds"]
-			,$invoice_category_data["Invoice Category $db_interval Acc Paid"]
-			,$invoice_category_data["Invoice Category $db_interval Acc To Pay"]
+			, $invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]
+			, $invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]
+			, $invoice_category_data["Invoice Category $db_interval Acc Invoices"]
+			, $invoice_category_data["Invoice Category $db_interval Acc Refunds"]
+			, $invoice_category_data["Invoice Category $db_interval Acc Paid"]
+			, $invoice_category_data["Invoice Category $db_interval Acc To Pay"]
 
-			,$invoice_category_data["Invoice Category $db_interval Acc Profit"]
-			,$this->id
+			, $invoice_category_data["Invoice Category $db_interval Acc Profit"]
+			, $this->id
 		);
 
 		mysql_query($sql);
@@ -1666,10 +1703,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                      `Invoice Category DC $db_interval Acc Invoiced Amount`=%.2f,
                      `Invoice Category DC $db_interval Acc Profit`=%.2f
                      where `Invoice Category Key`=%d "
-			,$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]
-			,$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]
-			,$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]
-			,$this->id
+			, $invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]
+			, $invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]
+			, $invoice_category_data["Invoice Category DC $db_interval Acc Profit"]
+			, $this->id
 		);
 
 		mysql_query($sql);
@@ -1709,11 +1746,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                          `Invoice Category $db_interval Acc 1YB Invoices`=%.2f,
                          `Invoice Category $db_interval Acc 1YB Profit`=%.2f
                          where `Invoice Category Key`=%d "
-				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]
-				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]
-				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]
-				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]
-				,$this->id
+				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]
+				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]
+				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]
+				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]
+				, $this->id
 			);
 
 			mysql_query($sql);
@@ -1723,10 +1760,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
                          `Invoice Category DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
                          `Invoice Category DC $db_interval Acc 1YB Profit`=%.2f
                          where `Invoice Category Key`=%d "
-				,$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]
-				,$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]
-				,$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]
-				,$this->id
+				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]
+				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]
+				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]
+				, $this->id
 			);
 			// print "$sql\n";
 			mysql_query($sql);
@@ -1734,6 +1771,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	}
+
 
 	function get_other_categories() {
 		$sql=sprintf("select * from `Category Dimension` where `Is Category Field Other`='Yes' and `Category Subject`='Customer'");
@@ -1745,7 +1783,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $other_data;
 	}
 
-	function get_other_value($subject,$subject_key) {
+
+	function get_other_value($subject, $subject_key) {
 		$other_values='';
 		$sql=sprintf("select ifnull(group_concat(Distinct `Other Note`),'') as other_value from `Category Bridge` B left join  `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  where `Subject`=%s and `Subject Key`=%d and `Other Note`!='' and  `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
 			prepare_mysql($subject),
@@ -1764,7 +1803,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $other_value;
 	}
 
-	function update_other_value($subject_key,$other_value) {
+
+	function update_other_value($subject_key, $other_value) {
 
 		$sql=sprintf("update `Category Bridge` set `Other Note` =%s where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d  ",
 			prepare_mysql($other_value),
@@ -1779,7 +1819,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 	}
 
 
-	function number_of_children_with_other_value($subject,$subject_key) {
+	function number_of_children_with_other_value($subject, $subject_key) {
 
 		$number_of_children=0;
 
@@ -1794,6 +1834,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 		return $number_of_children;
 	}
+
 
 	function get_children_key_is_other_value() {
 		$children_key_is_other_value=0;
@@ -1810,6 +1851,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $children_key_is_other_value;
 	}
 
+
 	function get_children_key_is_other_value_public_edit() {
 		$children_key_is_other_value=0;
 
@@ -1825,9 +1867,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $children_key_is_other_value;
 	}
 
+
 	function get_parent_keys() {
 		$parent_keys=array();
-		$category_tree_keys=preg_split('/\>/',preg_replace('/\>$/','',$this->data['Category Position']));
+		$category_tree_keys=preg_split('/\>/', preg_replace('/\>$/', '', $this->data['Category Position']));
 		//print_r($this->data['Category Position']);
 		array_pop($category_tree_keys);
 		return $category_tree_keys;
@@ -1861,7 +1904,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 					$return_value=true;
 
 			}
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			return $return_value;
 
 		}
@@ -1887,29 +1930,29 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				include_once 'class.Part.php';
 
 				$part=new Part($subject_key);
-				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d',$part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d',$part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
 			case('Supplier'):
 				include_once 'class.Supplier.php';
 
 				$supplier=new Supplier($subject_key);
-				$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-				$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$supplier->data['Supplier Name'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+				$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$supplier->data['Supplier Name'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
 			case('Customer'):
 				include_once 'class.Customer.php';
 
 				$customer=new Customer($subject_key);
-				$abstract=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-				$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				$abstract=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+				$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
 			case('Product'):
 				include_once 'class.Product.php';
 
-				$product=new Product('pid',$subject_key);
-				$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-				$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				$product=new Product('pid', $subject_key);
+				$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+				$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
 
 
@@ -1934,7 +1977,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			);
 
 
-			$history_key=$this->add_history($history_data,$force=false,$post_arg1='Assign');
+			$history_key=$this->add_history($history_data, $force=false, $post_arg1='Assign');
 
 			switch ($this->data['Category Subject']) {
 			case('Part'):
@@ -2018,8 +2061,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 	}
 
+
 	function is_subject_associated($subject_key) {
-		$sql=sprintf("select `Subject Key` from `Category Bridge` where `Category Key`=%d and `Subject Key`=%d ",$this->id,$subject_key);
+		$sql=sprintf("select `Subject Key` from `Category Bridge` where `Category Key`=%d and `Subject Key`=%d ", $this->id, $subject_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			return true;
@@ -2028,7 +2072,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
-	function associate_subject($subject_key,$force_associate=false,$other_value='') {
+
+	function associate_subject($subject_key, $force_associate=false, $other_value='') {
 
 		if ($this->data['Category Branch Type']=='Root') {
 			$this->msg=_("Subject can't be associated with category").' (Node is Root)';
@@ -2036,7 +2081,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 
 		if ($this->is_subject_associated($subject_key)) {
-		
+
 			return true;
 		}
 
@@ -2065,31 +2110,31 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 					include_once 'class.Part.php';
 
 					$part=new Part($subject_key);
-					$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d',$part->sku).'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-					$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d',$part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+					$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 					break;
 				case('Supplier'):
 					include_once 'class.Supplier.php';
 
 					$supplier=new Supplier($subject_key);
-					$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$supplier->data['Supplier Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$supplier->data['Supplier Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 					break;
 				case('Customer'):
 					include_once 'class.Customer.php';
 
 					$customer=new Customer($subject_key);
-					$abstract=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-					$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					$abstract=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+					$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 
 
 					break;
 				case('Product'):
 					include_once 'class.Product.php';
 
-					$product=new Product('pid',$subject_key);
-					$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-					$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					$product=new Product('pid', $subject_key);
+					$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+					$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 					break;
 				default:
 					$abstract='todo';
@@ -2109,7 +2154,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				);
 
 
-				$history_key=$this->add_history($history_data,$force=false,$post_arg1='Assign');
+				$history_key=$this->add_history($history_data, $force=false, $post_arg1='Assign');
 
 
 				switch ($this->data['Category Subject']) {
@@ -2146,9 +2191,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 					if (mysql_affected_rows()) {
 						$parent_category=new Category($parent_key);
-					
+
 						$parent_category->update_number_of_subjects();
-						
+
 						$parent_category->update_subjects_data();
 
 					}
@@ -2190,7 +2235,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			}
 
-			return $this->associate_subject($subject_key,true,$other_value);
+			return $this->associate_subject($subject_key, true, $other_value);
 
 
 
@@ -2252,6 +2297,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $public_view_icon;
 
 	}
+
+
 	function get_icon() {
 		$branch_type_icon='';
 		switch ($this->data['Category Branch Type']) {
@@ -2272,7 +2319,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $branch_type_icon;
 	}
 
-	function post_add_history($history_key,$type=false) {
+
+	function post_add_history($history_key, $type=false) {
 
 		if (!$type) {
 			$type='Changes';
@@ -2325,5 +2373,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			break;
 		}
 	}
+
 
 }
