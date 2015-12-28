@@ -109,6 +109,7 @@ function get_orders_navigation($data) {
 
 }
 
+
 function get_delivery_notes_navigation($data) {
 
 	global $user, $smarty;
@@ -184,6 +185,7 @@ function get_delivery_notes_navigation($data) {
 	return $html;
 
 }
+
 
 function get_invoices_navigation($data) {
 
@@ -334,6 +336,7 @@ function get_orders_server_navigation($data) {
 
 }
 
+
 function get_invoices_server_navigation($data) {
 
 	global $user, $smarty;
@@ -342,7 +345,7 @@ function get_invoices_server_navigation($data) {
 	$block_view=$data['section'];
 
 
-	$sections=get_sections('orders_server');
+	$sections=get_sections('invoices_server');
 	switch ($block_view) {
 
 	case 'invoices':
@@ -351,7 +354,7 @@ function get_invoices_server_navigation($data) {
 
 		$button_label=_('Invoices %s');
 		break;
-	
+
 	case 'payments':
 		$sections_class='';
 		$title=_('Payments').' ('._('All stores').')';
@@ -387,6 +390,52 @@ function get_invoices_server_navigation($data) {
 
 }
 
+
+function get_invoices_categories_server_navigation($data) {
+
+	global $user, $smarty;
+
+
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('invoices_server');
+
+	$sections_class='';
+	$title=_("Invoice's categories").' ('._('All stores').')';
+
+	$button_label=_('Payments %s');
+
+
+
+	// $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
+	$left_buttons=array();
+
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>$sections_class,
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search invoices'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
 function get_delivery_notes_server_navigation($data) {
 
 	global $user, $smarty;
@@ -404,7 +453,7 @@ function get_delivery_notes_server_navigation($data) {
 
 		$button_label=_('Delivery Notes %s');
 		break;
-	
+
 	}
 
 	$up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
@@ -578,7 +627,7 @@ function get_order_navigation($data) {
 
 			}
 			$sections=get_sections('customers', $object->get('Order Store Key'));
-$search_placeholder=_('Search customers');
+			$search_placeholder=_('Search customers');
 
 
 		}
@@ -608,7 +657,7 @@ $search_placeholder=_('Search customers');
 
 			$sections=get_sections('orders', $object->get('Order Store Key'));
 
-$search_placeholder=_('Search orders');
+			$search_placeholder=_('Search orders');
 
 
 		}
@@ -637,7 +686,7 @@ $search_placeholder=_('Search orders');
 
 
 			$sections=get_sections('delivery_notes', $delivery_note->get('Delivery Note Store Key'));
-$search_placeholder=_('Search delivery notes');
+			$search_placeholder=_('Search delivery notes');
 
 
 
@@ -668,7 +717,7 @@ $search_placeholder=_('Search delivery notes');
 
 			$sections=get_sections('invoices', $invoice->get('Invoice Store Key'));
 
-$search_placeholder=_('Search invoices');
+			$search_placeholder=_('Search invoices');
 
 		}
 	}

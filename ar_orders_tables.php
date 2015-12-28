@@ -55,6 +55,9 @@ case 'invoice.items':
 case 'delivery_note.items':
 	delivery_note_items(get_table_parameters(), $db, $user);
 	break;
+case 'invoice_categories':
+	invoice_categories(get_table_parameters(), $db, $user);
+	break;	
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -618,6 +621,62 @@ function delivery_note_items($_data, $db, $user) {
 			'notes'=>$notes
 
 
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function invoice_categories($_data, $db, $user) {
+	
+	
+	$rtext_label='category';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+
+
+	foreach ($db->query($sql) as $data) {
+
+		switch ($data['Category Branch Type']) {
+		case 'Root':
+			$level=_('Root');
+			break;
+		case 'Head':
+			$level=_('Head');
+			break;
+		case 'Node':
+			$level=_('Node');
+			break;
+		default:
+			$level=$data['Category Branch Type'];
+			break;
+		}
+		$level=$data['Category Branch Type'];
+
+
+		$adata[]=array(
+			'id'=>(integer) $data['Category Key'],
+			'code'=>$data['Category Code'],
+			'label'=>$data['Category Label'],
+			'subjects'=>number($data['Category Number Subjects']),
+			'level'=>$level,
+			'subcategories'=>number($data['Category Children']),
+			'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
 		);
 
 	}

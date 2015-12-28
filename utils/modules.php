@@ -231,7 +231,12 @@ $modules=array(
 			'invoices'=>array('type'=>'navigation', 'label'=>_('Invoices'), 'title'=>_('Invoices'), 'icon'=>'usd', 'reference'=>'invoices/%d',
 				'tabs'=>array(
 					'invoices'=>array('label'=>_('Invoices'), 'icon'=>'usd'),
-					'invoices.categories'=>array('label'=>_('Categories'), 'icon'=>'sitemap'),
+				)
+			),
+
+			'categories'=>array('type'=>'navigation', 'label'=>_("Categories"), 'title'=>_("Invoice's categories"), 'icon'=>'sitemap', 'reference'=>'invoices/%d/categories',
+				'tabs'=>array(
+					'invoices.categories'=>array(),
 				)
 			),
 
@@ -286,13 +291,19 @@ $modules=array(
 
 		'parent'=>'none',
 		'parent_type'=>'none',
-		'section'=>'orders',
+
 		'sections'=>array(
-			'invoices'=>array('type'=>'navigation', 'label'=>_('Invoices'), 'icon'=>'shopping-cart', 'reference'=>'invoies/all',
+			'invoices'=>array('type'=>'navigation', 'label'=>_('Invoices'), 'icon'=>'shopping-cart', 'reference'=>'invoices/all',
 				'tabs'=>array(
 					'invoices_server'=>array()
 				)
 
+			),
+
+			'categories'=>array('type'=>'navigation', 'label'=>_("Categories"), 'title'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'sitemap', 'reference'=>'invoices/all/categories',
+				'tabs'=>array(
+					'invoices_server.categories'=>array(),
+				)
 			),
 
 		)

@@ -14,8 +14,28 @@
 
 switch ($parameters['parent']) {
 
+case 'account':
+	$where=sprintf("where `Category Parent Key`=0 and `Category Store Key`=0  ", $parameters['parent_key']);
+	switch ($parameters['subject']) {
+
+	case('customer'):
+		$where.=sprintf(" and `Category Subject`='Customer'");
+		break;
+	case('product'):
+		$where.=sprintf(" and `Category Subject`='Product' ");
+		break;
+	case('family'):
+		$where.=sprintf(" and `Category Subject`='Family'");
+		break;
+	case('invoice'):
+		$where.=sprintf(" and `Category Subject`='Invoice' ");
+		break;
+	}
+	break;
+
+
 case 'store':
-	$where=sprintf("where `Category Parent Key`=0 and `Category Store Key`=%d  ",$parameters['parent_key']);
+	$where=sprintf("where `Category Parent Key`=0 and `Category Store Key`=%d  ", $parameters['parent_key']);
 	switch ($parameters['subject']) {
 
 	case('customer'):
@@ -33,7 +53,7 @@ case 'store':
 	}
 	break;
 case 'warehouse':
-	$where=sprintf("where `Category Parent Key`=0 and `Category Warehouse Key`=%d  ",$parameters['parent_key']);
+	$where=sprintf("where `Category Parent Key`=0 and `Category Warehouse Key`=%d  ", $parameters['parent_key']);
 
 	switch ($parameters['subject']) {
 
@@ -51,7 +71,6 @@ case '':
 default:
 	exit('error: unknown parent category: '.$parameters['parent']);
 }
-
 
 
 
@@ -78,7 +97,7 @@ elseif ($order=='subjects')
 elseif ($order=='subcategories')
 	$order='`Category Children`';
 elseif ($order=='percentage_assigned')
-	$order='`Category Number Subjects`/(`Category Number Subjects`+`Category Subjects Not Assigned`)';			
+	$order='`Category Number Subjects`/(`Category Number Subjects`+`Category Subjects Not Assigned`)';
 else
 	$order='`Category Key`';
 
@@ -87,8 +106,6 @@ $fields='`Category Key`,`Category Branch Type`,`Category Children`,`Category Sub
 $table='`Category Dimension` C';
 
 $sql_totals="select count(distinct `Category Key`) as num from $table $where";
-
-
 
 
 

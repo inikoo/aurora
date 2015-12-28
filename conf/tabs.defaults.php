@@ -380,6 +380,14 @@ $tab_defaults=array(
 		'elements_type'=>each($invoices_elements)['key'],
 		'elements'=>$invoices_elements
 	),
+	'invoices.categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
 	'invoices_server'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -392,6 +400,14 @@ $tab_defaults=array(
 		'period'=>'all',
 		'elements_type'=>each($invoices_elements)['key'],
 		'elements'=>$invoices_elements
+	),
+	'invoices_server.categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
 	),
 	'delivery_notes'=>array(
 		'view'=>'overview',
