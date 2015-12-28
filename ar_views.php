@@ -440,13 +440,13 @@ function get_navigation($user, $smarty, $data) {
 		case ('payments'):
 			return get_invoices_server_navigation($data);
 			break;
-			
+
 		case ('categories'):
 			return get_invoices_categories_server_navigation($data);
 			break;
 		}
-		
-		
+
+
 
 		break;
 	case ('delivery_notes_server'):
@@ -1096,18 +1096,18 @@ function get_view_position($state) {
 		}
 		break;
 	case 'invoices_server':
-	
-	    if($state['section']=='categories'){
-	    			$branch[]=array('label'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'sitemap', 'reference'=>'');
 
-	    }else{
-	
-	
-		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+		if ($state['section']=='categories') {
+			$branch[]=array('label'=>_("Invoice's categories").' ('._('All stores').')', 'icon'=>'sitemap', 'reference'=>'');
 
-		if ( $user->get_number_stores()>1) {
-			$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'', 'reference'=>'');
-		}
+		}else {
+
+
+			$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'', 'reference'=>'');
+			}
 		}
 		break;
 	case 'delivery_notes_server':
@@ -1689,342 +1689,6 @@ function get_view_position($state) {
 
 
 
-
-
-function parse_request_old($request) {
-
-	global $user, $modules, $account;
-
-	$original_request=preg_replace('/^\//', '', $request);
-	$view_path=preg_split('/\//', $original_request);
-
-
-
-	$object='';
-	$key='';
-	$module='';
-	$section='';
-	$tab='';
-	$subtab='';
-	$parent=false;
-	$parent_key=false;
-	$count_view_path=count($view_path);
-
-	$shorcut=false;
-
-	$is_main_section=false;
-
-	reset($modules);
-
-	if ($request=='') {
-
-
-		$module=key($modules);
-		$section=key($modules[$module]['sections']);
-		$is_main_section=true;
-		$parent=$modules[$module]['parent'];
-		if (isset($modules[$module]['sections'][$section]['tabs'])) {
-			$tab=key($modules[$module]['sections'][$section]['tabs']);
-			if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
-				$tab=key($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs']);
-
-			}
-		}
-
-
-
-	}elseif ($count_view_path==1) {
-
-		$arg0=array_shift($view_path);
-
-
-		if ($arg0=='customers') {
-			$module='customers';
-			$section='customers';
-			$tab='customers';
-			$shorcut=true;
-		}elseif ($arg0=='websites') {
-			$module='websites';
-			$section='websites';
-			$shorcut=true;
-		}elseif ($arg0=='website') {
-			$module='websites';
-			$section='websites';
-			$shorcut=true;
-		}else {
-
-			if (!array_key_exists($arg0, $modules)) {
-				$module=key($modules);
-			}else {
-				$module=$arg0;
-			}
-			$section=key($modules[$module]['sections']);
-			$is_main_section=true;
-
-
-
-		}
-		$parent=$modules[$module]['parent'];
-		if (isset($modules[$module]['sections'][$section]['tabs'])) {
-			$tab=key($modules[$module]['sections'][$section]['tabs']);
-			if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
-				$tab=key($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs']);
-
-			}
-		}
-	}
-	elseif ($count_view_path==2) {
-
-		if ($view_path[1]=='all') {
-			if ($view_path[0]=='customers') {
-				$module='customers_server';
-				$section='customers';
-				$shorcut=true;
-			}elseif ($view_path[0]=='pending_orders') {
-				$module='customers_server';
-				$section='pending_orders';
-				$shorcut=true;
-			}
-
-
-		}elseif (is_numeric($view_path[1])) {
-			if ($view_path[0]=='customer') {
-				$module='customers';
-				$section='customer';
-				$parent='';
-				$parent_key='';
-				$object='customer';
-				$key=$view_path[1];
-
-				$shorcut=true;
-			}if ($view_path[0]=='customers') {
-				$module='customers';
-				$section='customers';
-				$parent='store';
-				$parent_key=$view_path[1];
-				$tab='customers';
-				$shorcut=true;
-			}elseif ($view_path[0]=='orders') {
-				$module='orders';
-				$section='orders';
-				$parent='store';
-				$parent_key=$view_path[1];
-				$shorcut=true;
-			}elseif ($view_path[0]=='invoices') {
-				$module='orders';
-				$section='invoices';
-				$parent='store';
-				$parent_key=$view_path[1];
-				$shorcut=true;
-			}elseif ($view_path[0]=='dn') {
-				$module='orders';
-				$section='dn';
-				$parent='store';
-				$parent_key=$view_path[1];
-				$shorcut=true;
-			}elseif ($view_path[0]=='payments') {
-				$module='orders';
-				$section='payments';
-				$parent='store';
-				$parent_key=$view_path[1];
-				$shorcut=true;
-			}elseif ($view_path[0]=='website') {
-				$module='websites';
-				$section='website';
-				$parent='website';
-				$parent_key=$view_path[1];
-				$shorcut=true;
-			}
-
-
-		}else {
-
-
-			$module=array_shift($view_path);
-			if (!array_key_exists($module, $modules)) {
-				$module=key($modules);
-			}
-			$parent=$modules[$module]['parent'];
-			$arg=array_shift($view_path);
-			if ($modules[$module]['parent_type']=='key' and is_numeric($arg)) {
-				$section=key($modules[$module]['sections']);
-				$is_main_section=true;
-				$parent=$modules[$module]['parent'];
-				$parent_key=$arg;
-			}else {
-				if (array_key_exists($arg, $modules[$module]['sections'])) {
-					$section=$arg;
-				}else {
-					$section=key($modules[$module]['sections']);
-				}
-			}
-			if (isset($modules[$module]['sections'][$section]['tabs'])) {
-				$tab=key($modules[$module]['sections'][$section]['tabs']);
-				if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
-					$tab=key($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs']);
-
-				}
-			}
-		}
-	}
-	elseif ($count_view_path==3) {
-
-		if (($view_path[0]=='customers' and is_numeric($view_path[1]) and is_numeric($view_path[2]))  ) {
-
-			$shorcut=true;
-			$module='customers';
-			$section='customer';
-			$parent='store';
-			$parent_key=$view_path[1];
-			$object='customer';
-			$key=$view_path[2];
-			if (isset($_data['tab'])) {
-				$tab=$_data['tab'];
-			}else {
-				if (isset ( $_SESSION['state'][$module][$section]['tab'])   ) {
-					$tab=$_SESSION['state'][$module][$section]['tab'];
-				}
-				else {
-					$tab='customer.details';
-				}
-			}
-
-		}else {
-
-			$module=array_shift($view_path);
-			if (!array_key_exists($module, $modules)) {
-				$module=key($modules);
-			}
-			$parent=$modules[$module]['parent'];
-			$arg=array_shift($view_path);
-			if ($modules[$module]['parent_type']=='key' and is_numeric($arg)) {
-				$section=key($modules[$module]['sections']);
-				$is_main_section=true;
-				$parent=$modules[$module]['parent'];
-				$parent_key=$arg;
-			}else {
-				if (array_key_exists($arg, $modules[$module]['sections'])) {
-					$section=$arg;
-					if ($section=='customers') {
-						$tab='customers';
-					}
-
-
-				}else {
-					$section=key($modules[$module]['sections']);
-				}
-			}
-
-			$arg2=array_shift($view_path);
-
-			if (!$parent_key and  $modules[$module]['parent_type']=='key' and is_numeric($arg2)) {
-
-
-				$parent_key=$arg2;
-			}else {
-
-
-			}
-
-
-			if (!$tab and isset($modules[$module]['sections'][$section]['tabs'])) {
-				$tab=key($modules[$module]['sections'][$section]['tabs']);
-				if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
-					$tab=key($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs']);
-
-				}
-			}
-
-		}
-	}
-	elseif ($count_view_path==4) {
-
-		if (($view_path[0]=='customer' and is_numeric($view_path[1]) and $view_path[2]=='store' and is_numeric($view_path[3]))  ) {
-
-			$shorcut=true;
-			$module='customers';
-			$section='customer';
-			$parent='store';
-			$parent_key=$view_path[3];
-			$object='customer';
-			$key=$view_path[1];
-
-		}elseif (($view_path[0]=='customers' and is_numeric($view_path[1]) and $view_path[2]=='customer' and is_numeric($view_path[3]))  ) {
-
-			$shorcut=true;
-			$module='customers';
-			$section='customer';
-			$parent='store';
-			$parent_key=$view_path[1];
-			$object='customer';
-			$key=$view_path[3];
-
-		}
-
-
-	}
-
-
-
-	if (!$parent_key) {
-		if ($parent=='store') {
-			if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
-				$parent_key=$user->data['User Hooked Store Key'];
-			}else {
-				$_tmp=$user->stores;
-				$parent_key=array_shift($_tmp);
-			}
-		}
-	}
-
-
-	if ($parent=='store' and !in_array($parent_key, $user->stores)) {
-		$module='utils';
-
-
-		if (in_array($parent_key, $account->get_store_keys())) {
-			$section='forbidden';
-		}else {
-			$section='not_found';
-		}
-		$parent='none';
-	}
-
-	if ($shorcut) {
-		$request=$original_request;
-	}else {
-
-		$request=$module;
-
-		if (!$is_main_section) {
-			$request.='/'.$section;
-		}
-
-		if ($parent=='store' and $user->data['User Hooked Store Key']!=$parent_key  ) {
-			$request.='/'.$parent_key;
-		}
-	}
-
-	if ($module=='') {
-		$module='utils';
-		$section='not_found';
-	}
-
-	$state=array(
-		'request'=>$request,
-		'module'=>$module,
-		'section'=>$section,
-		'tab'=>$tab,
-		'subtab'=>$subtab,
-		'parent'=>$parent,
-		'parent_key'=>$parent_key,
-		'object'=>$object,
-		'key'=>$key,
-	);
-
-	return $state;
-
-}
 
 
 
