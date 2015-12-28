@@ -85,7 +85,7 @@ elseif ($parameters['parent']=='store') {
 
 
 }
-elseif ($parameters['parent']=='stores') {
+elseif ($parameters['parent']=='account') {
 	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
 
 		if (count($user->stores)==0) {
@@ -132,7 +132,7 @@ elseif ($parameters['parent']=='stores') {
 
 
 }else {
-	exit("unknown parent\n");
+	exit("unknown parent ".$parameters['parent']." \n");
 }
 
 

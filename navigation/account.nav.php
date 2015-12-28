@@ -61,7 +61,28 @@ function get_new_api_key_navigation($data) {
 	return $html;
 }
 
+function get_orders_index_navigation($data) {
+	global $smarty;
 
+
+	$sections=array();
+	$sections['settings']['selected']=true;
+	$title=_("Order's index");
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search orders all stores'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
 
 
 

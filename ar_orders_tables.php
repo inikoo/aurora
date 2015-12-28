@@ -39,15 +39,10 @@ case 'invoices':
 case 'delivery_notes':
 	delivery_notes(get_table_parameters(), $db, $user);
 	break;
-case 'orders_server':
-	orders_server(get_table_parameters(), $db, $user);
-	break;
-case 'invoices_server':
-	invoices_server(get_table_parameters(), $db, $user);
-	break;
-case 'delivery_notes_server':
-	delivery_notes_server(get_table_parameters(), $db, $user);
-	break;
+case 'orders_index':
+	orders_index(get_table_parameters(), $db, $user);
+	break;	
+
 case 'invoice_categories':
 	invoice_categories(get_table_parameters(), $db, $user);
 	break;
@@ -283,7 +278,7 @@ function invoices($_data, $db, $user) {
 }
 
 
-function orders_server($_data, $db, $user) {
+function orders_index($_data, $db, $user) {
 
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';

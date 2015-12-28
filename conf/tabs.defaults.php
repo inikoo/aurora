@@ -248,6 +248,20 @@ $tab_defaults=array(
 		'elements'=>$orders_elements
 
 	),
+	'orders_server'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'customer',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>'dispatch',
+		'elements'=>$orders_elements
+
+	),
 	'order.items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -366,6 +380,19 @@ $tab_defaults=array(
 		'elements_type'=>each($invoices_elements)['key'],
 		'elements'=>$invoices_elements
 	),
+	'invoices_server'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'customer',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($invoices_elements)['key'],
+		'elements'=>$invoices_elements
+	),
 	'delivery_notes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -379,7 +406,20 @@ $tab_defaults=array(
 		'elements_type'=>each($delivery_notes_elements)['key'],
 		'elements'=>$delivery_notes_elements
 	),
-	'orders_server'=>array(
+	'delivery_notes_server'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'customer',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($delivery_notes_elements)['key'],
+		'elements'=>$delivery_notes_elements
+	),
+	'orders_index'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
 		'sort_order'=>-1,
@@ -1047,7 +1087,7 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'last_m',
 	),
-	
+
 	'billingregion_taxcategory.invoices'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

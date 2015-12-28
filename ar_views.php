@@ -129,18 +129,15 @@ case 'views':
 	list($state, $response['view_position'])=get_view_position($state);
 
 
-
-
-
-
-
 	if ($data['old_state']['module']!=$state['module']  or $reload ) {
 		$response['menu']=get_menu($state);
 
 	}
 
 
-	if ($data['old_state']['section']!=$state['section'] or
+	if (
+		$data['old_state']['module']!=$state['module'] or
+		$data['old_state']['section']!=$state['section'] or
 		$data['old_state']['parent_key']!=$state['parent_key'] or
 		$data['old_state']['key']!=$state['key'] or  $reload
 
@@ -428,11 +425,30 @@ function get_navigation($user, $smarty, $data) {
 	case ('orders_server'):
 		require_once 'navigation/orders.nav.php';
 		switch ($data['section']) {
-		case ('delivery_notes'):
 		case ('orders'):
-		case ('invoices'):
 		case ('payments'):
 			return get_orders_server_navigation($data);
+			break;
+		}
+
+		break;
+	case ('invoices_server'):
+		require_once 'navigation/orders.nav.php';
+		switch ($data['section']) {
+
+		case ('invoices'):
+		case ('payments'):
+			return get_invoices_server_navigation($data);
+			break;
+		}
+
+		break;
+	case ('delivery_notes_server'):
+		require_once 'navigation/orders.nav.php';
+		switch ($data['section']) {
+		case ('delivery_notes'):
+
+			return get_delivery_notes_server_navigation($data);
 			break;
 		}
 
@@ -448,7 +464,12 @@ function get_navigation($user, $smarty, $data) {
 		case ('order'):
 			return get_order_navigation($data);
 			break;
-
+		case ('delivery_note'):
+			return get_delivery_note_navigation($data);
+			break;
+		case ('invoice'):
+			return get_invoice_navigation($data);
+			break;
 		default:
 			return 'View not found';
 
@@ -466,7 +487,12 @@ function get_navigation($user, $smarty, $data) {
 		case ('invoice'):
 			return get_invoice_navigation($data);
 			break;
-
+		case ('delivery_note'):
+			return get_delivery_note_navigation($data);
+			break;
+		case ('order'):
+			return get_order_navigation($data);
+			break;
 		default:
 			return 'View not found';
 
@@ -476,11 +502,16 @@ function get_navigation($user, $smarty, $data) {
 		require_once 'navigation/orders.nav.php';
 		switch ($data['section']) {
 		case ('delivery_notes'):
-
 			return get_delivery_notes_navigation($data);
 			break;
 		case ('delivery_note'):
 			return get_delivery_note_navigation($data);
+			break;
+		case ('invoice'):
+			return get_invoice_navigation($data);
+			break;
+		case ('order'):
+			return get_order_navigation($data);
 			break;
 		case ('pick_aid'):
 			return get_pick_aid_navigation($data);
@@ -765,6 +796,10 @@ function get_navigation($user, $smarty, $data) {
 		return get_profile_navigation($data);
 		break;
 	case ('account'):
+
+
+
+
 		require_once 'navigation/account.nav.php';
 
 		switch ($data['section']) {
@@ -773,6 +808,9 @@ function get_navigation($user, $smarty, $data) {
 			break;
 		case ('users'):
 			return get_users_navigation($data);
+			break;
+		case ('orders_index'):
+			return get_orders_index_navigation($data);
 			break;
 		case ('staff'):
 			return get_staff_navigation($data);
@@ -977,9 +1015,6 @@ function get_view_position($state) {
 
 		}
 
-
-
-
 		if ( $user->get_number_stores()>1) {
 
 			if ($state['section']=='pending_orders')
@@ -1048,16 +1083,34 @@ function get_view_position($state) {
 		}
 		break;
 	case 'orders_server':
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
 		if ( $user->get_number_stores()>1) {
-			$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
+			$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'', 'reference'=>'orders/all');
+		}
+		break;
+	case 'invoices_server':
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
+		if ( $user->get_number_stores()>1) {
+			$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'', 'reference'=>'invoices/all');
+		}
+		break;
+	case 'delivery_notes_server':
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
+		if ( $user->get_number_stores()>1) {
+			$branch[]=array('label'=>_('Delivery Notes').' ('._('All stores').')', 'icon'=>'', 'reference'=>'delivery_notes/all');
 		}
 		break;
 	case 'orders':
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
 		switch ($state['section']) {
 		case 'orders':
 
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'orders/all');
 			}
 			$store=new Store($state['parent_key']);
 
@@ -1065,16 +1118,7 @@ function get_view_position($state) {
 
 
 			break;
-		case 'invoices':
-			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'invoices/all');
-			}
-			break;
-		case 'dn':
-			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Delivery Notes').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'dn/all');
-			}
-			break;
+
 		case 'payments':
 			if ( $user->get_number_stores()>1) {
 				$branch[]=array('label'=>_('Payments').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'payments/all');
@@ -1108,25 +1152,63 @@ function get_view_position($state) {
 				$store=new Store($state['_object']->data['Order Store Key']);
 
 				if ( $user->get_number_stores()>1) {
-					$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
+					$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'orders/all');
 				}
 				$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
 
 
 			}
-			$branch[]=array('label'=>_('Order').' '.$state['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
 
+			break;
+
+		case 'delivery_note':
+
+			$store=new Store($state['_object']->data['Delivery Note Store Key']);
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'orders/all');
+			}
+			$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
+
+			$parent=new Order($state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'orders/'.$store->id.'/'.$state['parent_key']);
+
+
+
+
+
+			$branch[]=array('label'=>$state['_object']->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'');
+			break;
+
+		case 'invoice':
+
+			$store=new Store($state['_object']->data['Invoice Store Key']);
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'orders/all');
+			}
+			$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
+
+			$parent=new Order($state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'orders/'.$store->id.'/'.$state['parent_key']);
+
+
+
+			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
 			break;
 
 		}
 
 		break;
-			case 'delivery_notes':
+	case 'delivery_notes':
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
 		switch ($state['section']) {
 		case 'delivery_notes':
 
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Delivery Notes').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'delivery_notes/all');
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'delivery_notes/all');
 			}
 			$store=new Store($state['parent_key']);
 
@@ -1134,7 +1216,7 @@ function get_view_position($state) {
 
 
 			break;
-	
+
 
 		case 'delivery_note':
 
@@ -1145,7 +1227,7 @@ function get_view_position($state) {
 					if ( $user->get_number_stores()>1) {
 
 
-						$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
+						$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'', 'reference'=>'customers/all');
 
 					}
 
@@ -1163,7 +1245,7 @@ function get_view_position($state) {
 				$store=new Store($state['_object']->data['Delivery Note Store Key']);
 
 				if ( $user->get_number_stores()>1) {
-					$branch[]=array('label'=>_('Delivery notes').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'delivery_notes/all');
+					$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'delivery_notes/all');
 				}
 				$branch[]=array('label'=>_('Delivery notes').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'delivery_notes/'.$store->id);
 
@@ -1173,26 +1255,67 @@ function get_view_position($state) {
 
 			break;
 
+		case 'order':
+
+			$store=new Store($state['_object']->data['Order Store Key']);
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'delivery_notes/all');
+			}
+			$branch[]=array('label'=>_('Delivery notes').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'delivery_notes/'.$store->id);
+
+			$parent=new DeliveryNote($state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'delivery_notes/'.$store->id.'/'.$state['parent_key']);
+
+
+
+			$branch[]=array('label'=>$state['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'');
+
+			break;
+
+		case 'invoice':
+
+			$store=new Store($state['_object']->data['Invoice Store Key']);
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'delivery_notes/all');
+			}
+			$branch[]=array('label'=>_('Delivery notes').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'delivery_notes/'.$store->id);
+
+			$parent=new DeliveryNote($state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'delivery_notes/'.$store->id.'/'.$state['parent_key']);
+
+
+
+			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'');
+
+			break;
+
+
 		}
 
 		break;
-case 'invoices':
+	case 'invoices':
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+
 		switch ($state['section']) {
-		
+
 		case 'invoices':
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'invoices/all');
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'url'=>'invoices/all');
 			}
-						$store=new Store($state['parent_key']);
+			$store=new Store($state['parent_key']);
 
-						$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
+			$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
 
-			
+
 			break;
-		
+
 		case 'payments':
 			if ( $user->get_number_stores()>1) {
-				$branch[]=array('label'=>_('Payments').' ('._('All stores').')', 'icon'=>'bars', 'url'=>'invoices/payments/all');
+				$branch[]=array('label'=>_('Payments').' ('._('All stores').')', 'icon'=>'', 'url'=>'invoices/payments/all');
 			}
 			break;
 
@@ -1205,7 +1328,7 @@ case 'invoices':
 					if ( $user->get_number_stores()>1) {
 
 
-						$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
+						$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'', 'reference'=>'customers/all');
 
 					}
 
@@ -1223,17 +1346,61 @@ case 'invoices':
 				$store=new Store($state['_object']->data['Invoice Store Key']);
 
 				if ( $user->get_number_stores()>1) {
-					$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'invoices/all');
+					$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'invoices/all');
 				}
 				$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
 
 
 			}
-			$branch[]=array('label'=>_('Invoice').' '.$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
 
 			break;
 
+		case 'delivery_note':
+
+			$store=new Store($state['_object']->data['Delivery Note Store Key']);
+
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'invoices/all');
+			}
+			$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
+
+			$parent=new Invoice($state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'invoices/'.$store->id.'/'.$state['parent_key']);
+
+
+
+
+
+			$branch[]=array('label'=>$state['_object']->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'');
+			break;
+
+
+		case 'order':
+
+			$store=new Store($state['_object']->data['Order Store Key']);
+
+
+			if ( $user->get_number_stores()>1) {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'', 'reference'=>'invoices/all');
+			}
+			$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
+
+			$parent=new Invoice($state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'invoices/'.$store->id.'/'.$state['parent_key']);
+
+
+
+
+
+			$branch[]=array('label'=>$state['_object']->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'');
+			break;
+
+
 		}
+
+
 
 		break;
 	case 'help':
@@ -1362,6 +1529,12 @@ case 'invoices':
 
 		break;
 	case 'account':
+
+
+		if ($state['section']=='orders_index') {
+			$branch[]=array('label'=>_("Order's index"), 'icon'=>'bars', 'reference'=>'');
+			break;
+		}
 
 		$branch[]=array('label'=>_('Account').' <span class="id">'.$account->get('Account Code').'</span>', 'icon'=>'', 'reference'=>'account');
 		if ($state['section']=='users') {

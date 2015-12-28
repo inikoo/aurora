@@ -37,7 +37,7 @@
 
 
 
-<div id="totals" >
+<div id="totals" class="block totals">
 
 
 <table border="0" >
@@ -144,7 +144,7 @@
 </div>
 
 </div>
-<div id="dates">
+<div id="dates" class="block dates">
 	<table border="0" class="date_and_state" >
 	<tr>
 		<tr class="date">
