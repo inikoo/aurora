@@ -14,7 +14,7 @@ $current_section=$data['section'];
 
 $nav_menu=array();
 
-$nav_menu[] = array('<i class="fa fa-dashboard fa-fw"></i> '._('Dashboard'), '/dashboard' ,'dashboard','module');
+$nav_menu[] = array('<i class="fa fa-dashboard fa-fw"></i> '._('Dashboard'), '/dashboard' , 'dashboard', 'module');
 
 
 
@@ -211,6 +211,9 @@ if ($current_item=='customers_server')$current_item='customers';
 if ($current_item=='marketing_server')$current_item='marketing';
 if ($current_item=='products_server')$current_item='products';
 if ($current_item=='orders_server')$current_item='orders';
+if ($current_item=='invoices_server')$current_item='invoices';
+if ($current_item=='delivery_notes_server')$current_item='delivery_notes';
+
 if ($current_item=='warehouses_server')$current_item='warehouses';
 
 if ($data['object']=='order') {

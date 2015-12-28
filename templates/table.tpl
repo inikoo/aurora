@@ -166,7 +166,10 @@ var integerHeaderCell= Backgrid.HeaderCell.extend({
     }
 }
 );
-{include file="columns/`$data.tab`.cols.tpl" }
+
+console.log('{$tab}')
+
+{include file="columns/`$tab`.cols.tpl" }
 
 
 var Row = Backbone.Model.extend({

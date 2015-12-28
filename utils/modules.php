@@ -157,7 +157,7 @@ $modules=array(
 					'orders'=>array()
 				)
 			),
-			
+
 			'payments'=>array('type'=>'navigation', 'label'=>_('Payments'), 'title'=>_('Payments'), 'icon'=>'credit-card', 'reference'=>'payments/%d',
 				'tabs'=>array(
 					'payments'=>array()
@@ -177,7 +177,30 @@ $modules=array(
 				)
 
 			),
-			
+			'delivery_note'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'delivery_note.items'=>array('label'=>_('Items'), 'title'=>_('Items'), 'icon'=>'bars'),
+					'delivery_note.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
+					'delivery_note.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'icon'=>'usd'),
+					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'title'=>_('Invoices'), 'icon'=>'usd'),
+				)
+
+			),
+			'invoice'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'invoice.items'=>array('label'=>_('Items'), 'title'=>_('Items'), 'icon'=>'bars'),
+					'invoice.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'invoice.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
+					'invoice.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'icon'=>'usd'),
+					'invoice.delivery_notes'=>array('label'=>_('Delivery notes'), 'title'=>_('Delivery notes'), 'icon'=>'truck'),
+				)
+
+			),
 
 		)
 	),
@@ -197,28 +220,53 @@ $modules=array(
 		)
 
 	),
-	
-	
+
+
 	'invoices'=>array(
 		'section'=>'invoices',
 		'parent'=>'store',
 		'parent_type'=>'key',
 		'sections'=>array(
-			
+
 			'invoices'=>array('type'=>'navigation', 'label'=>_('Invoices'), 'title'=>_('Invoices'), 'icon'=>'usd', 'reference'=>'invoices/%d',
 				'tabs'=>array(
 					'invoices'=>array('label'=>_('Invoices'), 'icon'=>'usd'),
 					'invoices.categories'=>array('label'=>_('Categories'), 'icon'=>'sitemap'),
 				)
 			),
-			
+
 			'payments'=>array('type'=>'navigation', 'label'=>_('Payments'), 'title'=>_('Payments'), 'icon'=>'credit-card', 'reference'=>'payments/%d',
 				'tabs'=>array(
 					'payments'=>array()
 				)
 			),
 
-		
+
+			'order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'order.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'order.history'=>array('label'=>_('History'), 'icon'=>'history'),
+					'order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
+					'order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
+
+				)
+
+			),
+			'delivery_note'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'delivery_note.items'=>array('label'=>_('Items'), 'title'=>_('Items'), 'icon'=>'bars'),
+					'delivery_note.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
+					'delivery_note.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'icon'=>'usd'),
+					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'title'=>_('Invoices'), 'icon'=>'usd'),
+				)
+
+			),
 			'invoice'=>array('type'=>'object',
 				'tabs'=>array(
 
@@ -231,19 +279,7 @@ $modules=array(
 				)
 
 			),
-			'delivery_note'=>array('type'=>'object',
-				'tabs'=>array(
 
-
-					'delivery_note.items'=>array('label'=>_('Items'), 'title'=>_('Items'), 'icon'=>'bars'),
-					'delivery_note.details'=>array('label'=>_('Details'), 'icon'=>'database'),
-					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
-					'delivery_note.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'icon'=>'usd'),
-					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'title'=>_('Invoices'), 'icon'=>'usd'),
-				)
-
-			),
-			
 		)
 	),
 	'invoices_server'=>array(
@@ -254,7 +290,7 @@ $modules=array(
 		'sections'=>array(
 			'invoices'=>array('type'=>'navigation', 'label'=>_('Invoices'), 'icon'=>'shopping-cart', 'reference'=>'invoies/all',
 				'tabs'=>array(
-					'invoicecs_server'=>array()
+					'invoices_server'=>array()
 				)
 
 			),
@@ -262,20 +298,33 @@ $modules=array(
 		)
 
 	),
-	
-		'delivery_notes'=>array(
+
+	'delivery_notes'=>array(
 		'section'=>'delivery_notes',
 		'parent'=>'store',
 		'parent_type'=>'key',
 		'sections'=>array(
-			
+
 			'delivery_notes'=>array('type'=>'navigation', 'label'=>_('Delivery Notes'), 'title'=>_('Delivery Notes'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'delivery_notes/%d',
 				'tabs'=>array(
 					'delivery_notes'=>array()
 				)
 			),
-			
 
+
+			'order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'order.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'order.history'=>array('label'=>_('History'), 'icon'=>'history'),
+					'order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
+					'order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
+
+				)
+
+			),
 			'delivery_note'=>array('type'=>'object',
 				'tabs'=>array(
 
@@ -285,6 +334,18 @@ $modules=array(
 					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'delivery_note.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'icon'=>'usd'),
 					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'title'=>_('Invoices'), 'icon'=>'usd'),
+				)
+
+			),
+			'invoice'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'invoice.items'=>array('label'=>_('Items'), 'title'=>_('Items'), 'icon'=>'bars'),
+					'invoice.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'invoice.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
+					'invoice.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders'), 'icon'=>'usd'),
+					'invoice.delivery_notes'=>array('label'=>_('Delivery notes'), 'title'=>_('Delivery notes'), 'icon'=>'truck'),
 				)
 
 			),
@@ -312,9 +373,9 @@ $modules=array(
 		'parent_type'=>'none',
 		'section'=>'orders',
 		'sections'=>array(
-			'orders'=>array('type'=>'navigation', 'label'=>_('Delivery notes'), 'icon'=>'shopping-cart', 'reference'=>'delivery_notes/all',
+			'delivery_notes'=>array('type'=>'navigation',
 				'tabs'=>array(
-					'orders_server'=>array()
+					'delivery_notes_server'=>array()
 				)
 
 			),
@@ -322,7 +383,7 @@ $modules=array(
 		)
 
 	),
-	
+
 	'websites'=>array(
 		'section'=>'dashboard',
 		'parent'=>'website',
@@ -1060,19 +1121,24 @@ $modules=array(
 
 
 		'sections'=>array(
-			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'title'=>_('Account'), 'icon'=>'star', 'reference'=>'account',
+			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'icon'=>'star', 'reference'=>'account',
 				'tabs'=>array(
 					'account.details'=>array('label'=>_('Details'), 'title'=>_('Account details')),
 					'payment_service_providers'=>array('label'=>_('Payment options'), 'title'=>_('Payment options')),
 				)
 			),
 
-			'users'=>array('type'=>'navigation', 'label'=>_('Users'), 'title'=>('Users'), 'icon'=>'male', 'reference'=>'account/users',
+			'users'=>array('type'=>'navigation', 'label'=>_('Users'), 'icon'=>'male', 'reference'=>'account/users',
 				'tabs'=>array(
 					'account.users'=>array('label'=>_('Users')),
 				)
 			),
-			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'title'=>('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
+			'orders_index'=>array('type'=>'', 'label'=>_("Order's Index"), 'icon'=>'bars', 'reference'=>'account/orders',
+				'tabs'=>array(
+					'orders_index'=>array('label'=>_("Order's Index")),
+				)
+			),
+			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
 				'tabs'=>array(
 					'account.settings'=>array('label'=>_('Settings'), 'title'=>_('Settings')),
 				)

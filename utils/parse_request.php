@@ -60,7 +60,7 @@ function parse_request($_data, $db) {
 			$module='products';
 			$section='store';
 			$object='store';
-			if ($count_view_path==0 ) {
+			if ($count_sview_path==0 ) {
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$key=$user->data['User Hooked Store Key'];
 				}else {
@@ -352,7 +352,8 @@ function parse_request($_data, $db) {
 			if ($arg1=='all') {
 				$module='orders_server';
 				$section='orders';
-
+				$parent='account';
+				$parent_key=1;
 
 
 
@@ -392,8 +393,8 @@ function parse_request($_data, $db) {
 			if ($arg1=='all') {
 				$module='invoices_server';
 				$section='invoices';
-
-				
+				$parent='account';
+				$parent_key=1;
 
 			}
 			elseif (is_numeric($arg1)) {
@@ -429,7 +430,8 @@ function parse_request($_data, $db) {
 			if ($arg1=='all') {
 				$module='delivery_notes_server';
 				$section='delivery_notes';
-
+				$parent='account';
+				$parent_key=1;
 
 			}
 			elseif (is_numeric($arg1)) {
@@ -1195,6 +1197,12 @@ function parse_request($_data, $db) {
 				}
 				elseif ($view_path[0]=='settings') {
 					$section='settings';
+
+
+
+				}
+				elseif ($view_path[0]=='orders') {
+					$section='orders_index';
 
 
 
