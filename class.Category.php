@@ -2374,5 +2374,29 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
+	function get_field_label($field) {
+		global $account;
 
+		switch ($field) {
+
+
+		case 'Category Code':
+			$label=_('code');
+			break;
+		case 'Category Label':
+			$label=_('label');
+			break;
+		
+
+
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
+	}
 }

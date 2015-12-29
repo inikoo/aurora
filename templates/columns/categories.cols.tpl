@@ -14,7 +14,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('customers/'+this.model.get("store_key")+'/category/' + this.model.get("id") )
+                change_view('{if $data.module=='customers'}customers/{$data._object->get('Category Store Key')}/{elseif $data.module=='invoices_server'}invoices/all/{/if}category/' + this.model.get("id") )
             }
         },
         className: "link",
@@ -52,7 +52,7 @@ var columns = [
 
 }, {
     name: "subjects",
-    label:"{t}Customers{/t}",
+    label:"{t}Subjects{/t}",
     editable: false,
         defautOrder:1,
     sortType: "toggle",

@@ -62,6 +62,14 @@ case 'warehouse':
 		break;
 	}
 	break;
+
+case 'category':
+	$where=sprintf("where `Category Parent Key`=%d  ", $parameters['parent_key']);
+
+
+	break;
+	
+	
 case '':
 	switch ($parameters['subject']) {
 	case('supplier'):
@@ -106,7 +114,6 @@ $fields='`Category Key`,`Category Branch Type`,`Category Children`,`Category Sub
 $table='`Category Dimension` C';
 
 $sql_totals="select count(distinct `Category Key`) as num from $table $where";
-
 
 
 ?>

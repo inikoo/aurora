@@ -84,10 +84,10 @@ $modules=array(
 				'type'=>'object',
 
 				'tabs'=>array(
-					'category.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
-					'category.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'category.subjects'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
-					'category.subcategories'=>array('label'=>_('Subcategories'), 'title'=>_('Subcategories')),
+					'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'category.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
+					'category.customers'=>array('label'=>_('Customers')),
+					'category.categories'=>array('label'=>_('Subcategories')),
 
 				)
 
@@ -311,8 +311,8 @@ $modules=array(
 
 		        	'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
 					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
-					'category.subjects'=>array('label'=>_('Invoices')),
-					'category.subcategories'=>array('label'=>_('Subcategories')),
+					'category.invoices'=>array('label'=>_('Invoices')),
+					'category.categories'=>array('label'=>_('Subcategories')),
 
 				)
 
@@ -763,7 +763,7 @@ $modules=array(
 					'category.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
 					'category.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'category.subjects'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
-					'category.subcategories'=>array('label'=>_('Subcategories'), 'title'=>_('Subcategories')),
+					'category.categories'=>array('label'=>_('Subcategories')),
 
 				)
 

@@ -336,7 +336,9 @@ function get_customers_category_navigation($data) {
 
 	switch ($data['parent']) {
 	case 'category':
+	
 		$parent_category=new Category($data['parent_key']);
+		$store=new Store($data['_object']->get('Category Store Key'));
 		break;
 	case 'store':
 		$store=new Store($data['parent_key']);
@@ -354,6 +356,7 @@ function get_customers_category_navigation($data) {
 
 
 
+	$title=' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
 
 
 
@@ -367,7 +370,7 @@ function get_customers_category_navigation($data) {
 		'sections'=>$sections,
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_("Category").' <span class="id">'.$category->get('Category Code').'</span>',
+		'title'=>$title,
 		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);

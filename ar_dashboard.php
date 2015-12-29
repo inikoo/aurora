@@ -62,7 +62,7 @@ function sales_overview($_data, $db, $user, $account) {
 	$data=array();
 
 	if ($_data['type']=='invoice_categories' ) {
-	$request='invoice_categories';
+		$request='invoices/all';
 
 		$fields="
 		`Invoice Category $period_tag Acc Refunds` as refunds,
@@ -98,13 +98,13 @@ function sales_overview($_data, $db, $user, $account) {
                         ";
 
 		}
-		$sql="select  concat('cat',C.`Category Key`) record_key, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
+		$sql="select  concat('cat',C.`Category Key`) record_key, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
 
 
 
 	}
 	else {
-$request='invoices';
+		$request='invoices';
 		$fields="`Store Code`,S.`Store Key` record_key ,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
 
 
@@ -160,26 +160,37 @@ $request='invoices';
 				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['dc_sales'], $row['dc_sales_1yb']) , 'title'=>money($row['dc_sales_1yb'], $account->get('Account Currency'))  );
 			}
 
+			if ($_data['type']=='invoice_categories' ) {
+				$data['orders_overview_invoices_'.$row['record_key']]=array('special_type'=>'invoice','value'=>number($row['invoices']), 'request'=>"invoices/all/category/".$row['Category Key']  );
+				$data['orders_overview_refunds_'.$row['record_key']]=array('special_type'=>'refund','value'=>number($row['refunds']), 'request'=>"invoices/all/category/".$row['Category Key']  );
 
 
-			$data['orders_overview_invoices_'.$row['record_key']]=array('value'=>number($row['invoices']),'request'=>"$request/".$row['record_key']  );
+			}else {
+				$data['orders_overview_invoices_'.$row['record_key']]=array('special_type'=>'invoice','value'=>number($row['invoices']), 'request'=>"invoices/".$row['record_key']  );
+				$data['orders_overview_refunds_'.$row['record_key']]=array('special_type'=>'refund','value'=>number($row['refunds']), 'request'=>"invoices/".$row['record_key']  );
+
+
+			}
+
+
+
+
 			$data['orders_overview_invoices_delta_'.$row['record_key']]=array('value'=>delta($row['invoices'], $row['invoices_1yb']), 'title'=>number($row['invoices_1yb'])  );
 
 
-			$data['orders_overview_delivery_notes_'.$row['record_key']]=array('value'=>number($row['delivery_notes']));
+			$data['orders_overview_delivery_notes_'.$row['record_key']]=array('value'=>number($row['delivery_notes']),'request'=>'delivery_notes/'.$row['record_key']  );
 			$data['orders_overview_delivery_notes_delta_'.$row['record_key']]=array('value'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']), 'title'=>number($row['delivery_notes_1yb']));
 
 
-			$data['orders_overview_refunds_'.$row['record_key']]=array('value'=>number($row['refunds']));
 			$data['orders_overview_refunds_delta_'.$row['record_key']]=array('value'=>delta($row['refunds'], $row['refunds_1yb']), 'title'=>number($row['refunds_1yb']) );
 
 
 
-			$data['orders_overview_replacements_'.$row['record_key']]=array('value'=>number($row['replacements']));
+			$data['orders_overview_replacements_'.$row['record_key']]=array('value'=>number($row['replacements']),'request'=>'delivery_notes/'.$row['record_key'] );
 			$data['orders_overview_replacements_delta_'.$row['record_key']]=array('value'=>delta($row['replacements'], $row['replacements_1yb']), 'title'=>number($row['replacements_1yb']) );
 			$data['orders_overview_replacements_percentage_'.$row['record_key']]=array('value'=>percentage($row['replacements'], $row['delivery_notes']));
 			$data['orders_overview_replacements_percentage_1yb_'.$row['record_key']]=array('value'=>percentage($row['replacements_1yb'], $row['delivery_notes_1yb']), 'title'=>number($row['replacements_1yb']).'/'.number( $row['delivery_notes_1yb']));
-			
+
 
 
 		}
@@ -210,7 +221,7 @@ $request='invoices';
 	$data['orders_overview_replacements_percentage_totals']=array('value'=>percentage($sum_replacements, $sum_delivery_notes));
 	$data['orders_overview_replacements_percentage_1yb_totals']=array('value'=>percentage($sum_replacements_1yb, $sum_delivery_notes_1yb), 'title'=>number($sum_replacements_1yb).'/'.number($sum_delivery_notes_1yb));
 
-	
+
 	$response=
 		array(
 		'state'=>200,

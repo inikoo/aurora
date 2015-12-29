@@ -76,10 +76,10 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 			$sales_overview[]=array(
 				'class'=>'record store '.($type=='invoice_categories'?'hide':''),
 				'id'=>$row['Store Key'],
-				'label'=>array('label'=>$row['Store Name'], 'title'=>$row['Store Name'], 'view'=>'store/'.$row['Store Key']),
+				'label'=>array('label'=>$row['Store Name'], 'title'=>$row['Store Code'], 'view'=>'store/'.$row['Store Key']),
 
 
-				'invoices'=>number($row['invoices']),
+				'invoices'=>array('value'=>number($row['invoices']), 'view'=>'invoices/'.$row['Store Key']),
 				'invoices_1yb'=>number($row['invoices_1yb']),
 				'invoices_delta'=>delta($row['invoices'], $row['invoices_1yb']),
 
@@ -87,7 +87,8 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 				'delivery_notes_1yb'=>number($row['delivery_notes_1yb']),
 				'delivery_notes_delta'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']),
 
-				'refunds'=>number($row['refunds']),
+				'refunds'=>array('value'=>number($row['refunds']), 'view'=>'invoices/'.$row['Store Key']),
+
 				'refunds_1yb'=>number($row['refunds_1yb']),
 				'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
 
@@ -126,7 +127,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		 `Invoice Category DC $period_tag Acc Invoiced Amount` as dc_sales,
  0 delivery_notes,
         0 delivery_notes_1yb,
-	   
+
         0 replacements,
         0 replacements_1yb,
                         ";
@@ -181,10 +182,13 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 			$sales_overview[]=array(
 				'class'=>'record category '.($type!='invoice_categories'?'hide':''),
 				'id'=>'cat'.$row['Category Key'],
-				'label'=>array('label'=>$row['Category Label'], 'title'=>$row['Category Label'], 'view'=>'store/category/'.$row['Category Key']),
 
 
-				'invoices'=>number($row['invoices']),
+				'label'=>array('label'=>$row['Category Label'], 'title'=>$row['Category Label'], 'view'=>'invoices/all/category/'.$row['Category Key']),
+
+
+				'invoices'=>array('value'=>number($row['invoices']), 'view'=>'invoices/all/category/'.$row['Category Key']),
+
 				'invoices_1yb'=>number($row['invoices_1yb']),
 				'invoices_delta'=>delta($row['invoices'], $row['invoices_1yb']),
 
@@ -192,7 +196,8 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 				'delivery_notes_1yb'=>number($row['delivery_notes_1yb']),
 				'delivery_notes_delta'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']),
 
-				'refunds'=>number($row['refunds']),
+				'refunds'=>array('value'=>number($row['refunds']), 'view'=>'invoices/all/category/'.$row['Category Key']),
+
 				'refunds_1yb'=>number($row['refunds_1yb']),
 				'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
 
@@ -229,7 +234,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'class'=>'totals',
 		'label'=>array('label'=>_('Total')),
 
-		'invoices'=>number($sum_invoices),
+		'invoices'=>array('value'=>number($sum_invoices)),
 		'invoices_1yb'=>number($sum_invoices_1yb),
 		'invoices_delta'=>delta($sum_invoices, $sum_invoices_1yb),
 
@@ -237,7 +242,8 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'delivery_notes_1yb'=>number($sum_delivery_notes_1yb),
 		'delivery_notes_delta'=>delta($sum_delivery_notes, $sum_delivery_notes_1yb),
 
-		'refunds'=>number($sum_refunds),
+		'refunds'=>array('value'=>number($sum_refunds)),
+
 		'refunds_1yb'=>number($sum_refunds_1yb),
 		'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
 

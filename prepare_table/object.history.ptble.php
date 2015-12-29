@@ -87,6 +87,9 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='attachment') {
 	$where=sprintf(' where   B.`Attachment Bridge Key`=%d   ', $parameters['parent_key']);
 	$subject='Attachment Bridge';
+}elseif ($parameters['parent']=='category') {
+	$where=sprintf(' where   B.`Category Key`=%d   ', $parameters['parent_key']);
+	$subject='Category';
 }else {
 	print_r($parameters);
 	exit('parent not set up');

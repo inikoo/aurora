@@ -47,7 +47,7 @@ case 'invoices':
 			'parameters'=>array('type'=>'json array')
 		));
 	get_invoices_element_numbers($db, $data['parameters']);
-	break;	
+	break;
 case 'customer.history':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -64,7 +64,7 @@ default:
 
 function get_customers_element_numbers($db, $data) {
 
-    global $user;
+	global $user;
 
 	$parent_key=$data['parent_key'];
 
@@ -90,14 +90,14 @@ function get_customers_element_numbers($db, $data) {
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
 	default:
-	    $response=array('state'=>405, 'resp'=>'customer parent not founs '.$data['parent']);
-	echo json_encode($response);
-	    
-	    return;		
+		$response=array('state'=>405, 'resp'=>'customer parent not founs '.$data['parent']);
+		echo json_encode($response);
+
+		return;
 	}
 
 
-	
+
 
 
 	$sql=sprintf("select count(*) as number,`Customer With Orders` as element from `Customer Dimension`  C $where  group by `Customer With Orders` ");
@@ -280,13 +280,14 @@ function get_orders_element_numbers($db, $data) {
 
 }
 
-function get_invoices_element_numbers($db, $data) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+function get_invoices_element_numbers($db, $parameters) {
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
 
 
 
-	$parent_key=$data['parent_key'];
+	$parent_key=$parameters['parent_key'];
 
 
 
@@ -300,17 +301,146 @@ function get_invoices_element_numbers($db, $data) {
 
 
 
-	$sql=sprintf("select count(*) as number,`Invoice Paid` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Paid` ",
-		$parent_key, $where_interval);
+	if (isset($parameters['awhere']) and $parameters['awhere']) {
+
+		include_once 'invoices_awhere.php';
+
+		$tmp=preg_replace('/\\\"/', '"', $parameters['awhere']);
+		$tmp=preg_replace('/\\\\\"/', '"', $tmp);
+		$tmp=preg_replace('/\'/', "\'", $tmp);
+
+		$raw_data=json_decode($tmp, true);
+		//$raw_data['store_key']=$store;
+		//print_r( $raw_data);exit;
+		list($where, $table)=invoices_awhere($raw_data);
+
+
+	}
+	elseif ($parameters['parent']=='category') {
+		$category=new Category($parameters['parent_key']);
+
+
+
+		$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d", $parameters['parent_key']);
+		$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
+		$where_type='';
+
+		$store_key=$category->data['Category Store Key'];
+
+	}
+	elseif ($parameters['parent']=='list') {
+		$sql=sprintf("select * from `List Dimension` where `List Key`=%d", $parameters['parent_key']);
+
+		$res=mysql_query($sql);
+		if ($list_data=mysql_fetch_assoc($res)) {
+			$parameters['awhere']=false;
+			$store_key=$list_data['List Parent Key'];
+			if ($list_data['List Type']=='Static') {
+				$table='`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
+				$where_type=sprintf(' and `List Key`=%d ', $parameters['parent_key']);
+
+			} else {// Dynamic by DEFAULT
+
+
+
+				$tmp=preg_replace('/\\\"/', '"', $list_data['List Metadata']);
+				$tmp=preg_replace('/\\\\\"/', '"', $tmp);
+				$tmp=preg_replace('/\'/', "\'", $tmp);
+
+				$raw_data=json_decode($tmp, true);
+
+				//$raw_data['store_key']=$store;
+				list($where, $table)=invoices_awhere($raw_data);
+
+
+
+
+			}
+
+		} else {
+			exit("error");
+		}
+	}
+	elseif ($parameters['parent']=='store') {
+		if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+			$where=sprintf(' where  `Invoice Store Key`=%d ', $parameters['parent_key']);
+			include_once 'class.Store.php';
+			$store=new Store($parameters['parent_key']);
+			$currency=$store->data['Store Currency Code'];
+		}
+		else {
+			$where.=sprintf(' and  false');
+		}
+
+
+	}
+	elseif ($parameters['parent']=='account') {
+		if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+
+			if (count($user->stores)==0) {
+				$where=' where false';
+			}
+			else {
+
+				$where=sprintf('where  `Invoice Store Key` in (%s)  ', join(',', $user->stores));
+
+			}
+		}
+	}
+	elseif ($parameters['parent']=='order') {
+
+		$table='`Order Invoice Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+		$where=sprintf('where  B.`Order Key`=%d  ', $parameters['parent_key']);
+
+	}
+	elseif ($parameters['parent']=='delivery_note') {
+
+		$table='`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+		$where=sprintf('where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']);
+
+	}
+	elseif ($parameters['parent']=='billingregion_taxcategory.invoices') {
+
+		$fields='`Store Code`,`Store Name`,`Country Name`,';
+		$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) '   ;
+
+		$parents=preg_split('/_/', $parameters['parent_key']);
+		$where=sprintf('where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
+			prepare_mysql($parents[0]),
+			prepare_mysql($parents[1])
+		);
+
+
+	}
+	elseif ($parameters['parent']=='billingregion_taxcategory.refunds') {
+
+		$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) '   ;
+
+		$parents=preg_split('/_/', $parameters['parent_key']);
+		$where=sprintf('where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
+			prepare_mysql($parents[0]),
+			prepare_mysql($parents[1])
+		);
+
+
+	}else {
+		exit("unknown parent ".$parameters['parent']." \n");
+	}
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Invoice Paid` as element from %s %s %s group by `Invoice Paid` ",
+		$table, $where, $where_interval);
 	$res=mysql_query($sql);
-	//print $sql;
+
 	while ($row=mysql_fetch_assoc($res)) {
 
 		$elements_numbers['source'][$row['element']]=number($row['number']);
 	}
 
-	$sql=sprintf("select count(*) as number,`Invoice Type` as element from `Invoice Dimension`   where `Invoice Store Key`=%d %s group by `Invoice Type` ",
-		$parent_key, $where_interval);
+	$sql=sprintf("select count(*) as number,`Invoice Type` as element   from %s %s %s group by `Invoice Type` ",
+		$table, $where, $where_interval);
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['type'][$row['element']]=number($row['number']);
@@ -327,6 +457,7 @@ function get_invoices_element_numbers($db, $data) {
 
 }
 
+
 function get_delivery_note_element_numbers($db, $data) {
 
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
@@ -340,14 +471,14 @@ function get_delivery_note_element_numbers($db, $data) {
 	$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
 	$where_interval=$where_interval['mysql'];
 
-	
-$elements_numbers=array(
-		'dispatch'=>array('Ready'=>0,'Picking'=>0,'Packing'=>0,'Done'=>0,'Send'=>0,'Returned'=>0),
-		'type'=>array('Order'=>0,'Sample'=>0,'Donation'=>0,'Replacements'=>0,'Shortages'=>0)
+
+	$elements_numbers=array(
+		'dispatch'=>array('Ready'=>0, 'Picking'=>0, 'Packing'=>0, 'Done'=>0, 'Send'=>0, 'Returned'=>0),
+		'type'=>array('Order'=>0, 'Sample'=>0, 'Donation'=>0, 'Replacements'=>0, 'Shortages'=>0)
 	);
 
 	$sql=sprintf("select count(*) as number,`Delivery Note Type` as element from %s %s group by `Delivery Note Type` ",
-		$table,$where
+		$table, $where
 
 	);
 	//print $sql;
@@ -372,7 +503,7 @@ $elements_numbers=array(
 
 
 	$sql=sprintf("select count(*) as number,`Delivery Note State` as element  from %s %s group by `Delivery Note State` ",
-		$table,$where);
+		$table, $where);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 
