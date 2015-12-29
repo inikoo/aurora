@@ -1,0 +1,1 @@
+categories.cols.tpl

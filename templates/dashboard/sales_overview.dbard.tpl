@@ -84,12 +84,15 @@
 <tr class="{$record.class}">
 <td class="label {if isset($record.label.view) and $record.label.view!='' }link{/if}"  {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')"{/if}  title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if}  ">{$record.label.label}</td>
 
-<td id="orders_overview_refunds_{$record.id}" onclick="change_view('invoices/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Refund:1,Invoice:''}} } )" class="link refunds width_1500 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.refunds}</td>
+<td id="orders_overview_refunds_{$record.id}" 
+{if isset($record.refunds.view) and $record.label.view!='' }onclick="change_view('{$record.refunds.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} } )"
+{/if}
+class="link refunds width_1500 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.refunds.value}</td>
 <td id="orders_overview_refunds_delta_{$record.id}" class="refunds width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{$record.refunds_1yb}" >{$record.refunds_delta}</td>
   
  
 
-<td id="orders_overview_delivery_notes_{$record.id}" onclick="change_view('delivery_notes/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes}</td>
+<td id="orders_overview_delivery_notes_{$record.id}"         onclick="change_view('delivery_notes/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes}</td>
 <td id="orders_overview_delivery_notes_delta_{$record.id}" class="delivery_notes width_100 aright {if $type!='delivery_notes'}hide{/if}" title="{$record.delivery_notes_1yb}">{$record.delivery_notes_delta}</td>
 
 
@@ -97,7 +100,11 @@
 <td id="orders_overview_replacements_percentage_{$record.id}" class="replacements width_100 aright {if $type!='delivery_notes'}hide{/if}">{$record.replacements_percentage}</td>
 <td id="orders_overview_replacements_percentage_1yb_{$record.id}" class="last replacements width_100 aright {if $type!='delivery_notes'}hide{/if}" title="{$record.replacements_1yb}/{$record.delivery_notes_1yb}" >{$record.replacements_percentage_1yb}</td>
 
-<td id="orders_overview_invoices_{$record.id}"   onclick="change_view('invoices/{$record.id}',{ parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:'',Invoice:1}} } )" class="link invoices width_150 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.invoices}</td>
+<td id="orders_overview_invoices_{$record.id}"    
+{if isset($record.invoices.view) and $record.invoices.view!='' }onclick="change_view('{$record.invoices.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:'',Invoice:1}} } )"
+{/if}
+class="link invoices width_150 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.invoices.value}</td>
+
 <td id="orders_overview_invoices_delta_{$record.id}" class="invoices width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{$record.invoices_1yb}">{$record.invoices_delta}</td>
 
 
@@ -186,14 +193,22 @@ function get_order_overview_data(type, period, currency) {
     var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&period=" + period + '&currency=' + currency
 
     $.getJSON(request, function(r) {
-        console.log(r)
 
         for (var record in r.data) {
 
             $('#' + record).html(r.data[record].value)
 
             if (r.data[record].request != undefined) {
-                $('#' + record).attr("onclick", "change_view('"+r.data[record].request+"',{ period:'" + period + "' })")
+
+                if (r.data[record].special_type != undefined) {
+                    if (r.data[record].special_type == 'invoice') {
+                        $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "',elements_type:'type' } ,element:{ type:{ Refund:'',Invoice:1}} })")
+                    } else {
+                        $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} })")
+                    }
+                } else {
+                    $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "' }})")
+                }
             }
             if (r.data[record].title != undefined) {
                 $('#' + record).attr('title', r.data[record].title)
@@ -208,6 +223,7 @@ function get_order_overview_data(type, period, currency) {
     });
 
 }
+
 
 </script>
 

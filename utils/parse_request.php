@@ -60,7 +60,7 @@ function parse_request($_data, $db) {
 			$module='products';
 			$section='store';
 			$object='store';
-			if ($count_sview_path==0 ) {
+			if ($count_view_path==0 ) {
 				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
 					$key=$user->data['User Hooked Store Key'];
 				}else {
@@ -331,10 +331,29 @@ function parse_request($_data, $db) {
 						$key=$view_path[0];
 
 
-					}elseif ($view_path[0]=='lists') {
+					}
+					elseif ($view_path[0]=='lists') {
 						$section='lists';
 					}elseif ($view_path[0]=='categories') {
 						$section='categories';
+					}elseif ($view_path[0]=='category') {
+                        
+                        $section='category';
+                        
+						$object='category';
+
+						if (isset($view_path[1]) and is_numeric($view_path[1])) {
+							$key=$view_path[1];
+							
+							$category=new Category($key);
+
+
+							$parent='category';
+							$parent_key=$category->get('Category Parent Key');
+
+							//if ($category->get('Category Branch Type')=='Root') {
+							//}
+						}
 					}
 
 				}
@@ -395,7 +414,10 @@ function parse_request($_data, $db) {
 					$parent_key=array_shift($_tmp);
 				}
 
+
+
 			}
+			else{
 			$arg1=array_shift($view_path);
 			if ($arg1=='all') {
 				$module='invoices_server';
@@ -451,6 +473,7 @@ function parse_request($_data, $db) {
 
 				}
 
+			}
 			}
 			break;
 		case 'delivery_notes':

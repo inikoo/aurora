@@ -265,6 +265,7 @@ function categories($_data, $db, $user) {
 
 		$adata[]=array(
 			'id'=>(integer) $data['Category Key'],
+			'store_key'=>(integer) $data['Category Store Key'],
 			'code'=>$data['Category Code'],
 			'label'=>$data['Category Label'],
 			'subjects'=>number($data['Category Number Subjects']),
