@@ -40,20 +40,56 @@
 	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
-	<div  id="show_export_dialog"  class="square_button right " title="{t}Export{/t}" >
+	<div  id="show_export_dialog"  class=" square_button right {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}" >
 		 <i onclick="show_export_dialog()" class="fa fa-download fa-fw"></i> 
 		
 	</div>
 	<div id="export_dialog_container" style="position:relative;float:right" class="  ">
-	 <div id="export_dialog" class="hide">
-	     <div style="float:right">
-	    <div class="link" ><i class="fa fa-file-excel-o" title="Excel"></i>Excel</div>
-	     <div class="link"  ><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV</div>
-	     <div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div>
+	<span class="hide" id="export_queued_msg"><i class="fa background fa-spinner fa-spin"></i> {t}Queued{/t}</span>
+	<div id="export_dialog" class="export_dialog hide">
+        <table border=0 style="width:100%">
+	        <tr class="no_border"> 
+                <td class="export_progress_bar_container" ><a href=""  id="download_excel" download hidden ></a> 
+                 <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_excel"></span>
+                 <div class="hide export_progress_bar" id="export_progress_bar_excel"  ></div>
+                 <div class="export_download hide" id="export_download_excel"  > {t}Download{/t}</div>
+                </td>	   
+                <td class="width_20" ><i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></td>
+                <td id="export_table_excel"  class="link" onclick="export_table('excel')"><i class="fa fa-file-excel-o" title="Excel"></i>Excel</td></tr>
+	        <tr>
+	            <td class="export_progress_bar_container"><a href=""  id="download_csv" download hidden ></a> 
+                    <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_csv"></span>
+                 <div class="hide export_progress_bar" id="export_progress_bar_csv"  ></div>
+                 <div class="export_download hide " id="export_download_csv"  > {t}Download{/t}</div>
 
+	            </td>
+	            <td class="width_20" ><i  id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></td>
+                <td id="export_table_csv" class="link" onclick="export_table('csv')"><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV</td></tr>
+	        <tr>
+	            <td colspan="2"class=""><i onclick="open_export_config()" class="fa fa-cogs button"></i></td><td><div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div></td>
+	        </tr>
+	   </table>
+	
       </div>
+       <div id="export_dialog_config" class="export_dialog hide" >
+         {if isset($export_fields)}
+       <table >
+     
+       {foreach from=$export_fields item=export_field key=_key} 
+       <tr class="small_row">
+       <td>{$export_field.label}</td>
+       <td style="width_20" class="field_export" >
+            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+        </td>
+        </tr>
+       {/foreach}
+       
+       </table>
+       {/if}
+	      </div>
 	</div>
-	</div>
+	
+
 	
 	<div id="filter_container" class="hide">
 	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" >

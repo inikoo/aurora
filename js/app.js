@@ -51,7 +51,7 @@ function help(){
 
 function change_view(_request, metadata) {
 
-console.log(metadata)
+//console.log(metadata)
 
 
     if (metadata == undefined) {
@@ -67,7 +67,7 @@ console.log(metadata)
 
         state = data.state;
 
-        console.log(data.state)
+        //console.log(data.state)
 
         if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
             // $('#navigation').removeClass('hide')

@@ -242,4 +242,142 @@ function show_export_dialog() {
 
 function hide_export_dialog() {
     $('#export_dialog').addClass('hide')
+    hide_export_config_dialog()
+    
+    
+    $('.export_download').addClass('hide').attr('title', '').click(function() {})
+    $('.export_progress_bar_bg').addClass('hide').html('')
+    $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+
+    
+}
+
+
+
+function open_export_config(){
+ if ($('#export_dialog_config').hasClass('hide')) {
+        $('#export_dialog_config').removeClass('hide')
+        $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() +40 + $("#export_dialog").width()));
+        $("#export_dialog_config").css('top', $("#show_export_dialog").height());
+    } else {
+        hide_export_config_dialog()
+    }
+}
+
+function hide_export_config_dialog() {
+    $('#export_dialog_config').addClass('hide')
+    
+    
+    
+    
+    
+}
+
+function toggle_export_field(key) {
+
+    var field_element = $('#field_export_' + key)
+
+    if (field_element.hasClass('fa-check-square-o')) {
+        field_element.removeClass('fa-check-square-o')
+        field_element.addClass('fa-square-o')
+
+    } else {
+        field_element.addClass('fa-check-square-o')
+        field_element.removeClass('fa-square-o')
+    }
+}
+
+function export_table(type) {
+    $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + $('#export_queued_msg').html())
+
+    $('#export_table_excel').removeClass('link').addClass('disabled')
+    $('#export_table_csv').removeClass('link').addClass('disabled')
+    $('.field_export').removeClass('button').addClass('disabled')
+    $('#stop_export_table_' + type).removeClass('hide')
+    $('#stop_export_table_' + type).attr('stop', 0);
+
+    var fields = []
+    $('#export_dialog_config .field_export i').each(function(index, obj) {
+        if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
+    });
+
+    var request = "/ar_export.php?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
+
+    // console.log(request)
+    $.getJSON(request, function(data) {
+        if (data.state == 200) {
+            get_export_process_bar(data.fork_key, data.tipo, type);
+        }
+    })
+
+}
+
+
+function stop_export(type) {
+    $('#stop_export_table_' + type).attr('stop', 1);
+}
+
+function get_export_process_bar(fork_key, tag, type) {
+    request = '/ar_fork.php?tipo=get_process_bar&fork_key=' + fork_key + '&tag=' + tag
+    $.getJSON(request, function(data) {
+        if (data.state == 200) {
+
+
+            if ($('#stop_export_table_' + type).attr('stop') == 1) {
+
+                $('.export_download').addClass('hide').attr('title', '').click(function() {})
+                $('.export_progress_bar_bg').addClass('hide').html('')
+                $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+                $('#export_table_excel').addClass('link').removeClass('disabled')
+                $('#export_table_csv').addClass('link').removeClass('disabled')
+                $('.field_export').addClass('button').removeClass('disabled')
+                $('#stop_export_table_' + type).addClass('hide')
+                return;
+
+            }
+
+            if (data.fork_state == 'Queued') {
+                setTimeout(function() {
+                    get_export_process_bar(data.fork_key, data.tag, type)
+                }, 100);
+
+
+            } else if (data.fork_state == 'In Process') {
+
+                $('#export_download_' + type).addClass('hide')
+
+                $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + data.download_info)
+                $('#export_progress_bar_' + type).css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.download_info);
+                setTimeout(function() {
+                    get_export_process_bar(data.fork_key, data.tag, type)
+                }, 250);
+
+            } else if (data.fork_state == 'Finished') {
+
+                $('#download_' + type).attr('href', '/download.php?file=' + data.result)
+                $('#export_download_' + type).removeClass('hide').attr('title', data.result_info).click(function() {
+                    $("#download_" + type)[0].click();
+                });
+                $('#export_progress_bar_bg_' + type).addClass('hide').html('')
+                $('#export_progress_bar_' + type).css('width', '0px').removeClass('hide').attr('title', '').html('')
+
+
+
+
+
+                $('#export_table_excel').addClass('link').removeClass('disabled')
+                $('#export_table_csv').addClass('link').removeClass('disabled')
+                $('.field_export').addClass('button').removeClass('disabled')
+                $('#stop_export_table_' + type).addClass('hide')
+
+
+
+            }
+
+
+
+        }
+    })
+
+
 }

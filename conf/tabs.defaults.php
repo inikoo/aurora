@@ -9,148 +9,10 @@
 
 */
 
+include_once('conf/export_fields.php');
+include_once('conf/elements_options.php');
 
 $default_rrp_options=array(500, 100, 50, 20);
-$customers_elements=array(
-	'orders'=>array(
-		'label'=>_('Orders'),
-		'items'=>array(
-			'Yes'=>array('label'=>_('With orders'), 'selected'=>true),
-			'No'=>array('label'=>_('Without orders'), 'selected'=>true),
-		)
-
-
-	),
-	'activity'=>array(
-		'label'=>_('Active/Lost'),
-		'items'=>array(
-			'Active'=>array('label'=>_('Active'), 'selected'=>true),
-			'Losing'=>array('label'=>_('Losing'), 'selected'=>true),
-			'Lost'=>array('label'=>_('Lost'), 'selected'=>true),
-		)
-
-
-	),
-	'type'=>array(
-		'label'=>_('Type'),
-		'items'=>array(
-			'Normal'=>array('label'=>_('Normal'), 'selected'=>true),
-			'VIP'=>array('label'=>_('VIP'), 'selected'=>true),
-			'Partner'=>array('label'=>_('Partner'), 'selected'=>true),
-			'Staff'=>array('label'=>_('Staff'), 'selected'=>true),
-		)
-	),
-	'location'=>array(
-		'label'=>_('Location'),
-		'items'=>array(
-			'Domestic'=>array('label'=>_('Domestic'), 'selected'=>true),
-			'Export'=>array('label'=>_('Export'), 'selected'=>true),
-
-		)
-
-
-	)
-);
-$customer_history_elements=array(
-	'type'=>array(
-		'label'=>_('Type'),
-		'items'=>array(
-			'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
-			'Orders'=>array('label'=>_('Orders'), 'selected'=>true),
-			'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
-			'Attachments'=>array('label'=>_('Attachments'), 'selected'=>true),
-			'WebLog'=>array('label'=>_('WebLog'), 'selected'=>true),
-			'Emails'=>array('label'=>_('Emails'), 'selected'=>true)
-		),
-
-	)
-);
-$orders_elements=array(
-	'dispatch'=>array(
-		'label'=>_('Dispatch state'),
-		'items'=>array(
-			'InProcessCustomer'=>array('label'=>_('Basket'), 'selected'=>true),
-			'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
-			'Warehouse'=>array('label'=>_('Warehouse'), 'selected'=>true),
-			'Dispatched'=>array('label'=>_('Dispatched'), 'selected'=>true),
-			'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
-			'Suspended'=>array('label'=>_('Suspended'), 'selected'=>false)),
-	),
-	'type'=>array('label'=>_('Payment'),
-		'items'=>array(
-			'Order'=>array('label'=>_('Order'), 'selected'=>true),
-			'Sample'=>array('label'=>_('Sample'), 'selected'=>true),
-			'Donation'=>array('label'=>_('Donation'), 'selected'=>true),
-			'Other'=>array('label'=>_('Other'), 'selected'=>true),
-		)
-	),
-	'source'=>array(
-		'label'=>_('Source'),
-		'items'=>array(
-			'Internet'=>array('label'=>_('Website'), 'selected'=>true),
-			'Call'=>array('label'=>_('Telephone'), 'selected'=>true),
-			'Store'=>array('label'=>_('Showroom'), 'selected'=>true),
-			'Email'=>array('label'=>_('Email'), 'selected'=>true),
-			'Fax'=>array('label'=>_('Fax'), 'selected'=>true),
-			'Other'=>array('label'=>_('Other'), 'selected'=>true)
-		),
-
-	),
-	'payment'=>array(
-		'label'=>_('Payment'),
-		'items'=>array(
-			'Paid'=>array('label'=>_('Paid'), 'selected'=>true),
-			'PartiallyPaid'=>array('label'=>_('Partially Paid'), 'selected'=>true),
-			'Unknown'=>array('label'=>_('Unknown'), 'selected'=>true),
-			'WaitingPayment'=>array('label'=>_('Waiting Payment'), 'selected'=>true),
-			'NA'=>array('label'=>_('NA'), 'selected'=>true),
-		)
-	),
-
-
-);
-$invoices_elements=array(
-	'type'=>array(
-		'label'=>_('Type'),
-		'items'=>array(
-			'Invoice'=>array('label'=>_('Invoice'), 'selected'=>true),
-			'Refund'=>array('label'=>_('Refund'), 'selected'=>true),
-		)
-	),
-	'payment_state'=>array('label'=>_('Payment state'),
-		'items'=>array(
-			'Yes'=>array('label'=>_('Paid'), 'selected'=>true),
-			'Partially'=>array('label'=>_('Partially paid'), 'selected'=>true),
-			'No'=>array('label'=>_('Waiting payment'), 'selected'=>true),
-		)
-	)
-
-);
-
-$delivery_notes_elements=array(
-	'dispatch'=>array(
-		'label'=>_('Dispatch state'),
-		'items'=>array(
-			'Ready'=>array('label'=>_('Ready'), 'selected'=>true),
-			'Picking'=>array('label'=>_('Picking'), 'selected'=>true),
-			'Packing'=>array('label'=>_('Packing'), 'selected'=>true),
-			'Done'=>array('label'=>_('Done'), 'selected'=>true),
-			'Send'=>array('label'=>_('Send'), 'selected'=>true),
-			'Returned'=>array('label'=>_('Returned'), 'selected'=>true),
-		)
-	),
-	'type'=>array('label'=>_('Type'),
-		'items'=>array(
-			'Order'=>array('label'=>_('Order'), 'selected'=>true),
-			'Sample'=>array('label'=>_('Sample'), 'selected'=>true),
-			'Donation'=>array('label'=>_('Donation'), 'selected'=>true),
-			'Replacements'=>array('label'=>_('Replacements'), 'selected'=>true),
-			'Shortages'=>array('label'=>_('Shortages'), 'selected'=>true),
-		)
-	)
-
-);
-
 
 
 
@@ -163,8 +25,9 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name',
-		'elements_type'=>each($customers_elements)['key'],
-		'elements'=>$customers_elements
+		'elements_type'=>each(  $elements_options['customers']  ) ['key'],
+		'elements'=>$elements_options['customers'],
+		'export_fields'=>$export_fields['customers']
 	),
 	'customers.lists'=>array(
 		'view'=>'overview',
@@ -189,8 +52,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note',
-		'elements_type'=>each($customer_history_elements)['key'],
-		'elements'=>$customer_history_elements
+		'elements_type'=>each($elements_options['customer_history'])['key'],
+		'elements'=>$elements_options['customer_history']
 	),
 	'customer.orders'=>array(
 		'view'=>'overview',
@@ -202,8 +65,8 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
-		'elements_type'=>each($orders_elements)['key'],
-		'elements'=>$orders_elements
+		'elements_type'=>each($elements_options['orders'])['key'],
+		'elements'=>$elements_options['orders']
 	),
 	'customer.marketing.favourites'=>array(
 		'view'=>'overview',
@@ -245,7 +108,7 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'all',
 		'elements_type'=>'dispatch',
-		'elements'=>$orders_elements
+		'elements'=>$elements_options['orders']
 
 	),
 	'orders_server'=>array(
@@ -259,7 +122,7 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'all',
 		'elements_type'=>'dispatch',
-		'elements'=>$orders_elements
+		'elements'=>$elements_options['orders']
 
 	),
 	'order.items'=>array(
@@ -377,8 +240,8 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
-		'elements_type'=>each($invoices_elements)['key'],
-		'elements'=>$invoices_elements
+		'elements_type'=>each($elements_options['invoices'])['key'],
+		'elements'=>$elements_options['invoices']
 	),
 	'invoices.categories'=>array(
 		'view'=>'overview',
@@ -398,8 +261,8 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
-		'elements_type'=>each($invoices_elements)['key'],
-		'elements'=>$invoices_elements
+		'elements_type'=>each($elements_options['invoices'])['key'],
+		'elements'=>$elements_options['invoices']
 	),
 	'invoices_server.categories'=>array(
 		'view'=>'overview',
@@ -419,8 +282,8 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
-		'elements_type'=>each($delivery_notes_elements)['key'],
-		'elements'=>$delivery_notes_elements
+		'elements_type'=>each($elements_options['delivery_notes'])['key'],
+		'elements'=>$elements_options['delivery_notes']
 	),
 	'delivery_notes_server'=>array(
 		'view'=>'overview',
@@ -432,8 +295,8 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
-		'elements_type'=>each($delivery_notes_elements)['key'],
-		'elements'=>$delivery_notes_elements
+		'elements_type'=>each($elements_options['delivery_notes'])['key'],
+		'elements'=>$elements_options['delivery_notes']
 	),
 	'orders_index'=>array(
 		'view'=>'overview',
@@ -540,8 +403,8 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'ytd',
-		'elements_type'=>each($orders_elements)['key'],
-		'elements'=>$orders_elements
+		'elements_type'=>each($elements_options['orders'])['key'],
+		'elements'=>$elements_options['orders']
 	),
 	'websites'=>array(
 		'view'=>'overview',
@@ -568,8 +431,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name',
-		'elements_type'=>each($customers_elements)['key'],
-		'elements'=>$customers_elements
+		'elements_type'=>each($elements_options['customers'])['key'],
+		'elements'=>$elements_options['customers']
 	),
 	'website.search.queries'=>array(
 		'view'=>'overview',
@@ -1144,6 +1007,8 @@ $tab_defaults=array(
 $tab_defaults_alias=array(
 	'customers.list'=>'customers'
 );
+
+
 
 
 
