@@ -1,5 +1,5 @@
 
-.details_data, .new_object, .presention_card, .showcase ,.dashboard{
+.details_data, .new_object, .presention_card, .showcase ,.dashboard ,.export_dialog{
    
     table {
         width: 100%;
@@ -128,28 +128,21 @@
             
             height: $height_row;
             line-height: $height_row;
-            
-            
-
-            
-           // &.last {
-           //     border-bottom: 1px solid #ddd;
-           // }
-           
-           
-          
-           
+     
         }
         
+     
+     
         
         tr.small_row{
- 
-            
-            height: $height_short_row;
+             height: $height_short_row;
             line-height: $height_short_row;
-            
-    border-bottom: none;
+ 
+         //  border-bottom: none;
 }
+        
+        
+        tr.no_border{ border:none}
         
          tr.new{
            cursor:pointer;
@@ -279,14 +272,32 @@ table {
 
 }
 
-
-
-
-#export_dialog{
+.export_dialog{
     position:absolute;
     background: #fff;
     border: 1px solid #ccc;
     padding:10px 20px;
-    min-width:200px;
     .fa{margin-right:5px}
+}
+#export_dialog_config{
+ 
+    min-width:400px;
+  
+}
+
+#export_dialog{
+ 
+    min-width:220px;
+    
+    .export_progress_bar_container{width:120px;align:center;;padding:0px;position:relative;
+    
+ .export_progress_bar_bg{position:absolute;top:1px;color:#ddd;z-index:10}  
+ .export_progress_bar,.export_download{position:absolute;top:6px;background:green;width:0%;overflow:hidden;color:#fff;z-index:20;height:22px;line-height:22px;
+  -webkit-transition: width 1s; /* Safari */
+    transition: width 1s;
+ } 
+ .export_download{text-align:center;cursor:pointer;width:100%;}
+ 
+  
+}
 }

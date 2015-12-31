@@ -34,14 +34,12 @@ function get_table_totals($sql_totals, $wheref='', $record_label='', $metadata='
 		$sql=trim($sql_totals." $wheref");
 
 		if ($result=$db->query($sql)) {
-
 			if ($row = $result->fetch()) {
 				$total=$row['num'];
 			}
 		}else {
 			print_r($error_info=$db->errorInfo());
 			exit;
-
 		}
 
 		if ($wheref!='') {

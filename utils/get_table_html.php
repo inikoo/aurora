@@ -20,8 +20,13 @@ if (isset($_SESSION['table_state'][$tab])) {
 }
 
 foreach ($default as $key=>$value) {
+	if ($key=='rpp_options' ) {
 
-	if ($key=='rpp_options') {
+
+	}elseif ($key=='export_fields') {
+
+
+		$smarty->assign('export_fields', $value);
 
 	}elseif ($key=='sort_key') {
 
@@ -69,15 +74,15 @@ if (isset($metadata['parameters'])) {
 if (isset($metadata['element'])) {
 
 	foreach ($metadata['element'] as $element_type=>$elements) {
-    
-        if(isset($parameters['elements'][$element_type])){
-            
-            foreach($elements as $_key=>$value){
-            $parameters['elements'][$element_type]['items'][$_key]['selected']=$value;
-            }
-            
-        }
-    
+
+		if (isset($parameters['elements'][$element_type])) {
+
+			foreach ($elements as $_key=>$value) {
+				$parameters['elements'][$element_type]['items'][$_key]['selected']=$value;
+			}
+
+		}
+
 	}
 
 }
@@ -145,6 +150,8 @@ $smarty->assign('tab', $tab);
 
 if (isset($table_views[$table_view]))
 	$table_views[$table_view]['selected']=true;
+
+
 
 $smarty->assign('table_views', $table_views);
 

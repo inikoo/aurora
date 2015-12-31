@@ -1077,18 +1077,18 @@ input {
   #select_date_control_panel .until, #select_interval_control_panel .until {
     margin-top: 15px; }
 
-.details_data table, .new_object table, .presention_card table, .showcase table, .dashboard table {
+.details_data table, .new_object table, .presention_card table, .showcase table, .dashboard table, .export_dialog table {
   width: 100%; }
-  .details_data table .main_title, .new_object table .main_title, .presention_card table .main_title, .showcase table .main_title, .dashboard table .main_title {
+  .details_data table .main_title, .new_object table .main_title, .presention_card table .main_title, .showcase table .main_title, .dashboard table .main_title, .export_dialog table .main_title {
     font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
     font-weight: 300 !important;
     border: none;
     color: #ddd;
     background-color: #656565; }
-    .details_data table .main_title .button .fa, .new_object table .main_title .button .fa, .presention_card table .main_title .button .fa, .showcase table .main_title .button .fa, .dashboard table .main_title .button .fa {
+    .details_data table .main_title .button .fa, .new_object table .main_title .button .fa, .presention_card table .main_title .button .fa, .showcase table .main_title .button .fa, .dashboard table .main_title .button .fa, .export_dialog table .main_title .button .fa {
       position: relative;
       top: 1px; }
-    .details_data table .main_title .widget_types, .new_object table .main_title .widget_types, .presention_card table .main_title .widget_types, .showcase table .main_title .widget_types, .dashboard table .main_title .widget_types {
+    .details_data table .main_title .widget_types, .new_object table .main_title .widget_types, .presention_card table .main_title .widget_types, .showcase table .main_title .widget_types, .dashboard table .main_title .widget_types, .export_dialog table .main_title .widget_types {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
@@ -1100,82 +1100,83 @@ input {
       color: #ddd;
       font-size: 15.4px;
       background-color: #656565; }
-      .details_data table .main_title .widget_types .widget, .new_object table .main_title .widget_types .widget, .presention_card table .main_title .widget_types .widget, .showcase table .main_title .widget_types .widget, .dashboard table .main_title .widget_types .widget {
+      .details_data table .main_title .widget_types .widget, .new_object table .main_title .widget_types .widget, .presention_card table .main_title .widget_types .widget, .showcase table .main_title .widget_types .widget, .dashboard table .main_title .widget_types .widget, .export_dialog table .main_title .widget_types .widget {
         float: left;
         padding: 0px 20px;
         border-right: 1px solid #666;
         cursor: pointer; }
-        .details_data table .main_title .widget_types .widget.right, .new_object table .main_title .widget_types .widget.right, .presention_card table .main_title .widget_types .widget.right, .showcase table .main_title .widget_types .widget.right, .dashboard table .main_title .widget_types .widget.right {
+        .details_data table .main_title .widget_types .widget.right, .new_object table .main_title .widget_types .widget.right, .presention_card table .main_title .widget_types .widget.right, .showcase table .main_title .widget_types .widget.right, .dashboard table .main_title .widget_types .widget.right, .export_dialog table .main_title .widget_types .widget.right {
           float: right;
           border-right: none;
           border-left: 1px solid #ccc; }
-        .details_data table .main_title .widget_types .widget .fa, .new_object table .main_title .widget_types .widget .fa, .presention_card table .main_title .widget_types .widget .fa, .showcase table .main_title .widget_types .widget .fa, .dashboard table .main_title .widget_types .widget .fa {
+        .details_data table .main_title .widget_types .widget .fa, .new_object table .main_title .widget_types .widget .fa, .presention_card table .main_title .widget_types .widget .fa, .showcase table .main_title .widget_types .widget .fa, .dashboard table .main_title .widget_types .widget .fa, .export_dialog table .main_title .widget_types .widget .fa {
           font-size: 75%;
           position: relative;
           top: -1px; }
-      .details_data table .main_title .widget_types .widget.selected, .details_data table .main_title .widget_types .widget.selected:hover, .new_object table .main_title .widget_types .widget.selected, .new_object table .main_title .widget_types .widget.selected:hover, .presention_card table .main_title .widget_types .widget.selected, .presention_card table .main_title .widget_types .widget.selected:hover, .showcase table .main_title .widget_types .widget.selected, .showcase table .main_title .widget_types .widget.selected:hover, .dashboard table .main_title .widget_types .widget.selected, .dashboard table .main_title .widget_types .widget.selected:hover {
+      .details_data table .main_title .widget_types .widget.selected, .details_data table .main_title .widget_types .widget.selected:hover, .new_object table .main_title .widget_types .widget.selected, .new_object table .main_title .widget_types .widget.selected:hover, .presention_card table .main_title .widget_types .widget.selected, .presention_card table .main_title .widget_types .widget.selected:hover, .showcase table .main_title .widget_types .widget.selected, .showcase table .main_title .widget_types .widget.selected:hover, .dashboard table .main_title .widget_types .widget.selected, .dashboard table .main_title .widget_types .widget.selected:hover, .export_dialog table .main_title .widget_types .widget.selected, .export_dialog table .main_title .widget_types .widget.selected:hover {
         color: yellow; }
-      .details_data table .main_title .widget_types .widget:hover, .new_object table .main_title .widget_types .widget:hover, .presention_card table .main_title .widget_types .widget:hover, .showcase table .main_title .widget_types .widget:hover, .dashboard table .main_title .widget_types .widget:hover {
+      .details_data table .main_title .widget_types .widget:hover, .new_object table .main_title .widget_types .widget:hover, .presention_card table .main_title .widget_types .widget:hover, .showcase table .main_title .widget_types .widget:hover, .dashboard table .main_title .widget_types .widget:hover, .export_dialog table .main_title .widget_types .widget:hover {
         color: #FFFFCC; }
-    .details_data table .main_title .tabs, .new_object table .main_title .tabs, .presention_card table .main_title .tabs, .showcase table .main_title .tabs, .dashboard table .main_title .tabs {
+    .details_data table .main_title .tabs, .new_object table .main_title .tabs, .presention_card table .main_title .tabs, .showcase table .main_title .tabs, .dashboard table .main_title .tabs, .export_dialog table .main_title .tabs {
       border-bottom: none !important;
       color: #ddd !important;
       background-color: #656565 !important; }
-      .details_data table .main_title .tabs .tab, .details_data table .main_title .tabs .element, .new_object table .main_title .tabs .tab, .new_object table .main_title .tabs .element, .presention_card table .main_title .tabs .tab, .presention_card table .main_title .tabs .element, .showcase table .main_title .tabs .tab, .showcase table .main_title .tabs .element, .dashboard table .main_title .tabs .tab, .dashboard table .main_title .tabs .element {
+      .details_data table .main_title .tabs .tab, .details_data table .main_title .tabs .element, .new_object table .main_title .tabs .tab, .new_object table .main_title .tabs .element, .presention_card table .main_title .tabs .tab, .presention_card table .main_title .tabs .element, .showcase table .main_title .tabs .tab, .showcase table .main_title .tabs .element, .dashboard table .main_title .tabs .tab, .dashboard table .main_title .tabs .element, .export_dialog table .main_title .tabs .tab, .export_dialog table .main_title .tabs .element {
         border-right: 1px solid #666; }
-        .details_data table .main_title .tabs .tab.right, .details_data table .main_title .tabs .element.right, .new_object table .main_title .tabs .tab.right, .new_object table .main_title .tabs .element.right, .presention_card table .main_title .tabs .tab.right, .presention_card table .main_title .tabs .element.right, .showcase table .main_title .tabs .tab.right, .showcase table .main_title .tabs .element.right, .dashboard table .main_title .tabs .tab.right, .dashboard table .main_title .tabs .element.right {
+        .details_data table .main_title .tabs .tab.right, .details_data table .main_title .tabs .element.right, .new_object table .main_title .tabs .tab.right, .new_object table .main_title .tabs .element.right, .presention_card table .main_title .tabs .tab.right, .presention_card table .main_title .tabs .element.right, .showcase table .main_title .tabs .tab.right, .showcase table .main_title .tabs .element.right, .dashboard table .main_title .tabs .tab.right, .dashboard table .main_title .tabs .element.right, .export_dialog table .main_title .tabs .tab.right, .export_dialog table .main_title .tabs .element.right {
           border-left: 1px solid #666; }
-      .details_data table .main_title .tabs .tab.widget:hover, .new_object table .main_title .tabs .tab.widget:hover, .presention_card table .main_title .tabs .tab.widget:hover, .showcase table .main_title .tabs .tab.widget:hover, .dashboard table .main_title .tabs .tab.widget:hover {
+      .details_data table .main_title .tabs .tab.widget:hover, .new_object table .main_title .tabs .tab.widget:hover, .presention_card table .main_title .tabs .tab.widget:hover, .showcase table .main_title .tabs .tab.widget:hover, .dashboard table .main_title .tabs .tab.widget:hover, .export_dialog table .main_title .tabs .tab.widget:hover {
         background-color: #color_dark_highlight !important; }
-      .details_data table .main_title .tabs .tab.widget_selected:hover, .details_data table .main_title .tabs .tab.widget_selected, .new_object table .main_title .tabs .tab.widget_selected:hover, .new_object table .main_title .tabs .tab.widget_selected, .presention_card table .main_title .tabs .tab.widget_selected:hover, .presention_card table .main_title .tabs .tab.widget_selected, .showcase table .main_title .tabs .tab.widget_selected:hover, .showcase table .main_title .tabs .tab.widget_selected, .dashboard table .main_title .tabs .tab.widget_selected:hover, .dashboard table .main_title .tabs .tab.widget_selected {
+      .details_data table .main_title .tabs .tab.widget_selected:hover, .details_data table .main_title .tabs .tab.widget_selected, .new_object table .main_title .tabs .tab.widget_selected:hover, .new_object table .main_title .tabs .tab.widget_selected, .presention_card table .main_title .tabs .tab.widget_selected:hover, .presention_card table .main_title .tabs .tab.widget_selected, .showcase table .main_title .tabs .tab.widget_selected:hover, .showcase table .main_title .tabs .tab.widget_selected, .dashboard table .main_title .tabs .tab.widget_selected:hover, .dashboard table .main_title .tabs .tab.widget_selected, .export_dialog table .main_title .tabs .tab.widget_selected:hover, .export_dialog table .main_title .tabs .tab.widget_selected {
         color: yellow !important; }
-  .details_data table .formated_value, .new_object table .formated_value, .presention_card table .formated_value, .showcase table .formated_value, .dashboard table .formated_value {
+  .details_data table .formated_value, .new_object table .formated_value, .presention_card table .formated_value, .showcase table .formated_value, .dashboard table .formated_value, .export_dialog table .formated_value {
     margin-right: 10px; }
-  .details_data table td, .new_object table td, .presention_card table td, .showcase table td, .dashboard table td {
+  .details_data table td, .new_object table td, .presention_card table td, .showcase table td, .dashboard table td, .export_dialog table td {
     vertical-align: text-top; }
-  .details_data table tr, .new_object table tr, .presention_card table tr, .showcase table tr, .dashboard table tr {
+  .details_data table tr, .new_object table tr, .presention_card table tr, .showcase table tr, .dashboard table tr, .export_dialog table tr {
     border-bottom: 1px solid #ddd;
     height: 32px;
     line-height: 32px; }
-  .details_data table tr.small_row, .new_object table tr.small_row, .presention_card table tr.small_row, .showcase table tr.small_row, .dashboard table tr.small_row {
+  .details_data table tr.small_row, .new_object table tr.small_row, .presention_card table tr.small_row, .showcase table tr.small_row, .dashboard table tr.small_row, .export_dialog table tr.small_row {
     height: 22px;
-    line-height: 22px;
-    border-bottom: none; }
-  .details_data table tr.new, .new_object table tr.new, .presention_card table tr.new, .showcase table tr.new, .dashboard table tr.new {
+    line-height: 22px; }
+  .details_data table tr.no_border, .new_object table tr.no_border, .presention_card table tr.no_border, .showcase table tr.no_border, .dashboard table tr.no_border, .export_dialog table tr.no_border {
+    border: none; }
+  .details_data table tr.new, .new_object table tr.new, .presention_card table tr.new, .showcase table tr.new, .dashboard table tr.new, .export_dialog table tr.new {
     cursor: pointer; }
-    .details_data table tr.new:hover, .new_object table tr.new:hover, .presention_card table tr.new:hover, .showcase table tr.new:hover, .dashboard table tr.new:hover {
+    .details_data table tr.new:hover, .new_object table tr.new:hover, .presention_card table tr.new:hover, .showcase table tr.new:hover, .dashboard table tr.new:hover, .export_dialog table tr.new:hover {
       color: #0EBFE9; }
-  .details_data table .new_button, .new_object table .new_button, .presention_card table .new_button, .showcase table .new_button, .dashboard table .new_button {
+  .details_data table .new_button, .new_object table .new_button, .presention_card table .new_button, .showcase table .new_button, .dashboard table .new_button, .export_dialog table .new_button {
     position: relative;
     top: 1px;
     left: 5px; }
-  .details_data table .title, .new_object table .title, .presention_card table .title, .showcase table .title, .dashboard table .title {
+  .details_data table .title, .new_object table .title, .presention_card table .title, .showcase table .title, .dashboard table .title, .export_dialog table .title {
     border-top: none; }
-    .details_data table .title td, .new_object table .title td, .presention_card table .title td, .showcase table .title td, .dashboard table .title td {
+    .details_data table .title td, .new_object table .title td, .presention_card table .title td, .showcase table .title td, .dashboard table .title td, .export_dialog table .title td {
       font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
       font-weight: 600;
       padding-top: 10px; }
-      .details_data table .title td .fa.link, .new_object table .title td .fa.link, .presention_card table .title td .fa.link, .showcase table .title td .fa.link, .dashboard table .title td .fa.link {
+      .details_data table .title td .fa.link, .new_object table .title td .fa.link, .presention_card table .title td .fa.link, .showcase table .title td .fa.link, .dashboard table .title td .fa.link, .export_dialog table .title td .fa.link {
         margin-left: 5px;
         position: relative;
         top: 2px; }
-  .details_data table .label, .new_object table .label, .presention_card table .label, .showcase table .label, .dashboard table .label {
+  .details_data table .label, .new_object table .label, .presention_card table .label, .showcase table .label, .dashboard table .label, .export_dialog table .label {
     width: 280px;
     vertical-align: top; }
-  .details_data table .show_buttons, .new_object table .show_buttons, .presention_card table .show_buttons, .showcase table .show_buttons, .dashboard table .show_buttons {
+  .details_data table .show_buttons, .new_object table .show_buttons, .presention_card table .show_buttons, .showcase table .show_buttons, .dashboard table .show_buttons, .export_dialog table .show_buttons {
     width: 20px;
     text-align: left; }
-    .details_data table .show_buttons .fa.edit, .new_object table .show_buttons .fa.edit, .presention_card table .show_buttons .fa.edit, .showcase table .show_buttons .fa.edit, .dashboard table .show_buttons .fa.edit {
+    .details_data table .show_buttons .fa.edit, .new_object table .show_buttons .fa.edit, .presention_card table .show_buttons .fa.edit, .showcase table .show_buttons .fa.edit, .dashboard table .show_buttons .fa.edit, .export_dialog table .show_buttons .fa.edit {
       cursor: pointer;
       opacity: .2;
       transition: opacity .2s ease-in-out; }
-      .details_data table .show_buttons .fa.edit:hover, .new_object table .show_buttons .fa.edit:hover, .presention_card table .show_buttons .fa.edit:hover, .showcase table .show_buttons .fa.edit:hover, .dashboard table .show_buttons .fa.edit:hover {
+      .details_data table .show_buttons .fa.edit:hover, .new_object table .show_buttons .fa.edit:hover, .presention_card table .show_buttons .fa.edit:hover, .showcase table .show_buttons .fa.edit:hover, .dashboard table .show_buttons .fa.edit:hover, .export_dialog table .show_buttons .fa.edit:hover {
         opacity: 1; }
-    .details_data table .show_buttons .fa.reset, .new_object table .show_buttons .fa.reset, .presention_card table .show_buttons .fa.reset, .showcase table .show_buttons .fa.reset, .dashboard table .show_buttons .fa.reset {
+    .details_data table .show_buttons .fa.reset, .new_object table .show_buttons .fa.reset, .presention_card table .show_buttons .fa.reset, .showcase table .show_buttons .fa.reset, .dashboard table .show_buttons .fa.reset, .export_dialog table .show_buttons .fa.reset {
       cursor: pointer;
       opacity: .9;
       transition: opacity .2s ease-in-out; }
-      .details_data table .show_buttons .fa.reset:hover, .new_object table .show_buttons .fa.reset:hover, .presention_card table .show_buttons .fa.reset:hover, .showcase table .show_buttons .fa.reset:hover, .dashboard table .show_buttons .fa.reset:hover {
+      .details_data table .show_buttons .fa.reset:hover, .new_object table .show_buttons .fa.reset:hover, .presention_card table .show_buttons .fa.reset:hover, .showcase table .show_buttons .fa.reset:hover, .dashboard table .show_buttons .fa.reset:hover, .export_dialog table .show_buttons .fa.reset:hover {
         opacity: 1; }
 
 #table_buttons div:last-of-type {
@@ -1229,13 +1230,45 @@ table .totals td {
 .dashboard .record td:last-of-type, .dashboard .record td.last, .dashboard .totals td:last-of-type, .dashboard .totals td.last, .dashboard .title td:last-of-type, .dashboard .title td.last, .dashboard .header td:last-of-type, .dashboard .header td.last {
   padding-right: 20px; }
 
-#export_dialog {
+.export_dialog {
   position: absolute;
   background: #fff;
   border: 1px solid #ccc;
-  padding: 10px 20px;
-  min-width: 200px; }
-  #export_dialog .fa {
+  padding: 10px 20px; }
+  .export_dialog .fa {
     margin-right: 5px; }
+
+#export_dialog_config {
+  min-width: 400px; }
+
+#export_dialog {
+  min-width: 220px; }
+  #export_dialog .export_progress_bar_container {
+    width: 120px;
+    align: center;
+    padding: 0px;
+    position: relative; }
+    #export_dialog .export_progress_bar_container .export_progress_bar_bg {
+      position: absolute;
+      top: 1px;
+      color: #ddd;
+      z-index: 10; }
+    #export_dialog .export_progress_bar_container .export_progress_bar, #export_dialog .export_progress_bar_container .export_download {
+      position: absolute;
+      top: 6px;
+      background: green;
+      width: 0%;
+      overflow: hidden;
+      color: #fff;
+      z-index: 20;
+      height: 22px;
+      line-height: 22px;
+      -webkit-transition: width 1s;
+      /* Safari */
+      transition: width 1s; }
+    #export_dialog .export_progress_bar_container .export_download {
+      text-align: center;
+      cursor: pointer;
+      width: 100%; }
 
 /*# sourceMappingURL=app.css.map */

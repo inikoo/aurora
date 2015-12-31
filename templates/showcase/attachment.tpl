@@ -43,12 +43,8 @@
 
 
 <script>
-$('#navigation').on('click', '#download_button', function() {
-
-$( "#download" )[0].click();
-    
-
-
-});
+$('#navigation').on('click', '#download_button', 
+function() {$( "#download" )[0].click();}
+);
 </script>
 
