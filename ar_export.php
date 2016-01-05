@@ -77,7 +77,8 @@ $export_data=array(
 	'user_key'=>$user->id,
 	'sql_count'=>$sql_totals,
 	'sql_data'=>$sql,
-	'fetch_type'=>'simple'
+	'fetch_type'=>'simple',
+	'download_path'=>'downloads_aurora'
 );
 
 //print_r($export_data);
