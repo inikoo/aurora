@@ -24,8 +24,9 @@ $default['from']=$_SESSION['table_state']['billingregion_taxcategory']['from'];
 if(isset($_SESSION['table_state']['billingregion_taxcategory']['period'])){
 $default['period']=$_SESSION['table_state']['billingregion_taxcategory']['period'];
 }
-
-
+if(isset($_SESSION['table_state']['billingregion_taxcategory']['excluded_stores'])){
+$default['excluded_stores']=$_SESSION['table_state']['billingregion_taxcategory']['excluded_stores'];
+}
 $table_views=array(
 
 );

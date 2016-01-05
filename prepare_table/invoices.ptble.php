@@ -6,7 +6,14 @@ $wheref='';
 $group_by='';
 
 $currency='';
-$where='where true';
+
+
+if(is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0)
+$where=sprintf(' where `Invoice Store Key` not in (%s)  ',join($parameters['excluded_stores'],','));
+else
+$where=' where true';
+
+
 $table='`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 $where_type='';
 
