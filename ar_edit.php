@@ -164,6 +164,35 @@ function new_object($account, $db, $user, $editor, $data) {
 	$parent->editor=$editor;
 
 	switch ($data['object']) {
+	case 'User':
+		include_once 'class.User.php';
+		
+		$parent->get_user_data();
+		$parent->create_user($data['fields_data']);
+
+		if ($parent->create_user_error) {
+			$response=array(
+				'state'=>400,
+				'msg'=>$parent->create_user_msg
+
+			);
+			echo json_encode($response);
+			exit;
+		}
+
+		$object=$parent->user;
+
+
+
+		$smarty->assign('account', $account);
+		$smarty->assign('object', $object);
+		$smarty->assign('employee', $parent);
+
+
+
+		$pcard=$smarty->fetch('presentation_cards/system_user.pcard.tpl');
+		$updated_data=array();
+		break;
 	case 'Staff':
 		include_once 'class.Staff.php';
 		$object=$parent->create_staff($data['fields_data']);
@@ -280,7 +309,7 @@ function upload_attachment($account, $db, $user, $editor, $data) {
 
 			}
 
-			
+
 			$response= array('state'=>400, 'msg'=>$msg, 'key'=>'attach');
 			echo json_encode($response);
 			exit;
@@ -320,14 +349,14 @@ function upload_attachment($account, $db, $user, $editor, $data) {
 
 			$object=$parent->add_attachment($data['fields_data']);
 
-            switch ($parent->get_object_name()) {
-                case 'Staff':
-                    $parent_reference='employee';
-                    break;
-                default:
-                      $parent_reference=strtolower($parent->get_object_name());
-                    break;
-            }
+			switch ($parent->get_object_name()) {
+			case 'Staff':
+				$parent_reference='employee';
+				break;
+			default:
+				$parent_reference=strtolower($parent->get_object_name());
+				break;
+			}
 
 
 			$smarty->assign('account', $account);

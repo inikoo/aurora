@@ -1129,6 +1129,10 @@ function parse_request($_data, $db) {
 
 									$section='employee.attachment.new';
 									$object='attachment';
+								}elseif ($view_path[2]=='user') {
+
+									$section='employee.user.new';
+									$object='user';
 								}
 							}
 

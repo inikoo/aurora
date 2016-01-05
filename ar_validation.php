@@ -55,6 +55,23 @@ function check_for_duplicates($data, $db, $user) {
 	$field=preg_replace('/_/', ' ', $data['field']);
 
 	switch ($data['object']) {
+	case 'User':
+	switch ($field) {
+		case 'Staff User Handle':
+			$invalid_msg=_('Another user is using this login');
+			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`='Staff' and `User Handle`=%s",
+				prepare_mysql($data['value'])
+			);
+			break;
+		
+			
+		default:
+
+			break;
+		}
+		break;
+	
+	break;
 	case 'Staff':
 
 		switch ($field) {
@@ -74,6 +91,7 @@ function check_for_duplicates($data, $db, $user) {
 
 			break;
 		}
+		break;
 	case 'Store':
 
 		switch ($field) {

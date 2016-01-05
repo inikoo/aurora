@@ -27,9 +27,11 @@ function validate_form(object) {
     $('#' + object + '_save').removeClass('invalid valid')
 
 
+
     var form_validation = 'valid';
 
     $(".value").each(function(index) {
+   
         var field = $(this).attr('field')
         var value = $('#' + field).val()
 
@@ -46,12 +48,13 @@ function validate_form(object) {
 
         if ($('#' + field + '_validation').hasClass('invalid')) {
             form_validation = 'invalid'
-
-        } else if ($('#' + field + '_validation').hasClass('potentially_valid')) {
+console.log(field+' invalid')
+        } 
+        else if ($('#' + field + '_validation').hasClass('potentially_valid')) {
 
             $('#' + field + '_validation').addClass('invalid').removeClass('potentially_valid')
 
-            form_validation = 'invalid'
+            form_validation = 'invalid 1'
 
 
 
@@ -65,8 +68,9 @@ function validate_form(object) {
             $('#' + field + '_msg').html(msg)
             $('#' + field + '_msg').removeClass('hide').addClass('invalid')
 
-            //console.log(field+' '+'invalid')
-        } else {
+            console.log(field+' '+'invalid 2')
+        }
+         else {
 
             $('#' + field + '_validation').removeClass('invalid')
 
@@ -76,7 +80,7 @@ function validate_form(object) {
 
             if (validation.class == 'invalid' || validation.class == 'potentially_valid') {
 
-
+ console.log(field+' '+'invalid 3')
 
 
                 form_validation = 'invalid'
@@ -99,7 +103,7 @@ function validate_form(object) {
 
     });
 
-    //  console.log('xxx>'+form_validation+'<<<')
+      console.log('xxx>'+form_validation+'<<<')
     //$('#' + object + '_controls').removeClass('waiting')
     $('#' + object + '_save_icon').addClass('fa-cloud')
     $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin')
@@ -144,7 +148,8 @@ function check_if_form_is_valid() {
 function save_new_object(object,upload_file) {
 
     validate_form(object)
-    console.log($('#' + object + '_save').hasClass('valid'))
+
+
 
     if ($('#' + object + '_save').hasClass('valid')) {
 
