@@ -9,7 +9,7 @@
 
  Version 2.0
 */
-
+include_once('utils/date_functions.php');
 $period_tag=get_interval_db_name($parameters['f_period']);
 
 $group_by='';

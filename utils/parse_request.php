@@ -337,14 +337,14 @@ function parse_request($_data, $db) {
 					}elseif ($view_path[0]=='categories') {
 						$section='categories';
 					}elseif ($view_path[0]=='category') {
-                        
-                        $section='category';
-                        
+
+						$section='category';
+
 						$object='category';
 
 						if (isset($view_path[1]) and is_numeric($view_path[1])) {
 							$key=$view_path[1];
-							
+
 							$category=new Category($key);
 
 
@@ -417,63 +417,63 @@ function parse_request($_data, $db) {
 
 
 			}
-			else{
-			$arg1=array_shift($view_path);
-			if ($arg1=='all') {
-				$module='invoices_server';
-				$section='invoices';
-				$parent='account';
-				$parent_key=1;
+			else {
+				$arg1=array_shift($view_path);
+				if ($arg1=='all') {
+					$module='invoices_server';
+					$section='invoices';
+					$parent='account';
+					$parent_key=1;
 
-				if (isset($view_path[0])) {
+					if (isset($view_path[0])) {
 
-					if ($view_path[0]=='categories') {
-						$section='categories';
+						if ($view_path[0]=='categories') {
+							$section='categories';
 
-					}elseif ($view_path[0]=='category') {
-                        
-                        $section='category';
-                        
-						$object='category';
+						}elseif ($view_path[0]=='category') {
 
-						if (isset($view_path[1]) and is_numeric($view_path[1])) {
-							$key=$view_path[1];
-							$category=new Category($key);
+							$section='category';
 
-							$parent='category';
-							$parent_key=$category->get('Category Parent Key');
+							$object='category';
 
-							if ($category->get('Category Branch Type')=='Root') {
+							if (isset($view_path[1]) and is_numeric($view_path[1])) {
+								$key=$view_path[1];
+								$category=new Category($key);
 
+								$parent='category';
+								$parent_key=$category->get('Category Parent Key');
+
+								if ($category->get('Category Branch Type')=='Root') {
+
+								}
 							}
 						}
-					}
-
-				}
-
-			}
-			elseif (is_numeric($arg1)) {
-				$section='invoices';
-				$parent='store';
-				$parent_key=$arg1;
-
-				if (isset($view_path[0])) {
-
-					if ($view_path[0]=='categories') {
-						$section='categories';
-
-					}elseif ( is_numeric($view_path[0])) {
-						$section='invoice';
-						$object='invoice';
-						$parent='store';
-						$parent_key=$arg1;
-						$key=$view_path[0];
 
 					}
 
 				}
+				elseif (is_numeric($arg1)) {
+					$section='invoices';
+					$parent='store';
+					$parent_key=$arg1;
 
-			}
+					if (isset($view_path[0])) {
+
+						if ($view_path[0]=='categories') {
+							$section='categories';
+
+						}elseif ( is_numeric($view_path[0])) {
+							$section='invoice';
+							$object='invoice';
+							$parent='store';
+							$parent_key=$arg1;
+							$key=$view_path[0];
+
+						}
+
+					}
+
+				}
 			}
 			break;
 		case 'delivery_notes':
@@ -1326,50 +1326,7 @@ function parse_request($_data, $db) {
 
 
 				}
-				elseif ($view_path[0]=='payment_service_provider') {
 
-					if (isset($view_path[1])) {
-
-						$section='payment_service_provider';
-						$object='payment_service_provider';
-						$parent='account';
-						$key=$view_path[1];
-
-
-					}
-
-
-
-
-				}
-				elseif ($view_path[0]=='payment_account') {
-					if (isset($view_path[1])) {
-						$section='payment_account';
-						$object='payment_account';
-						$parent='account';
-						$key=$view_path[1];
-					}
-
-
-
-
-				}
-				elseif ($view_path[0]=='payment') {
-
-					if (isset($view_path[1])) {
-
-						$section='payment';
-						$object='payment';
-						$parent='account';
-						$key=$view_path[1];
-
-
-					}
-
-
-
-
-				}
 
 			}
 
@@ -1377,10 +1334,57 @@ function parse_request($_data, $db) {
 
 
 			break;
+		case 'payment_service_providers':
+			$module='payments';
+			$section='payment_service_providers';
+			$parent='account';
+			$parent_key=1;
+			if (isset($view_path[0])) {
+
+				if ( is_numeric($view_path[0])) {
+					$object='payment_service_provider';
+					$key=$view_path[0];
+
+					if (isset($view_path[1])) {
+
+						if ($view_path[1]=='payment_account') {
+							$section='payment_account';
+							$object='payment_account';
+							$parent='payment_service_provider';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+						}
+						elseif ($view_path[1]=='payment') {
+							$section='payment';
+							$object='payment';
+							$parent='payment_service_provider';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								$key=$view_path[2];
+							}
+
+						}
+
+					}
+
+
+
+				}
+
+
+
+
+
+			}
+			break;
 		case 'payment_service_provider':
-			$module='account';
+			$module='payments';
 			$section='payment_service_provider';
 			$parent='account';
+			$parent_key=1;
 			if (isset($view_path[0])) {
 
 				if ( is_numeric($view_path[0])) {
@@ -1423,10 +1427,33 @@ function parse_request($_data, $db) {
 			}
 			break;
 		case 'payment_account':
-			$module='account';
+			$module='payments';
 			$section='payment_account';
 			$parent='account';
 			if (isset($view_path[0])) {
+
+
+				if ( is_numeric($view_path[0])  and isset($view_path[1])  and is_numeric($view_path[1]) ) {
+					$object='payment_account';
+					$key=$view_path[1];
+					$parent='store';
+					$parent_key=$view_path[0];
+				}
+
+
+				elseif (is_numeric($view_path[0])) {
+					$object='payment_account';
+					$key=$view_path[0];
+
+				}
+
+			}
+
+
+
+
+
+			/*
 
 				if ( is_numeric($view_path[0])) {
 					$object='payment_account';
@@ -1451,9 +1478,91 @@ function parse_request($_data, $db) {
 
 				}
 
+*/
 
 
 
+
+			break;
+		case 'payment':
+			$module='payments';
+			$section='payment';
+			$object='payment';
+			$parent='account';
+			$parent_key=1;
+			if (isset($view_path[0])) {
+				if ( is_numeric($view_path[0])  and isset($view_path[1])  and is_numeric($view_path[1]) ) {
+
+					$key=$view_path[1];
+					$parent='store';
+					$parent_key=$view_path[0];
+				}elseif (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+
+				}
+
+			}
+			break;
+		case 'payment_accounts':
+			$module='payments';
+			$section='payment_accounts';
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+				if ( is_numeric($view_path[0])  and isset($view_path[1])  and is_numeric($view_path[1]) ) {
+					$object='payment_account';
+					$key=$view_path[1];
+					$parent='store';
+					$parent_key=$view_path[0];
+				}elseif (is_numeric($view_path[0])) {
+					$parent='store';
+					$parent_key=$view_path[0];
+
+				}
+
+			}
+			else {
+
+				$parent='store';
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
+					$parent_key=$user->data['User Hooked Store Key'];
+				}else {
+					$_tmp=$user->stores;
+					$parent_key=array_shift($_tmp);
+				}
+
+			}
+			break;
+
+		case 'payments':
+			$module='payments';
+			$section='payments';
+			$parent='account';
+			$parent_key=1;
+
+			if (isset($view_path[0])) {
+				if ( is_numeric($view_path[0])  and isset($view_path[1])  and is_numeric($view_path[1]) ) {
+					$object='payment';
+					$key=$view_path[1];
+					$parent='store';
+					$parent_key=$view_path[0];
+				}elseif (is_numeric($view_path[0])) {
+					$parent='store';
+					$parent_key=$view_path[0];
+
+				}
+
+			}
+			else {
+
+				$parent='store';
+				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
+					$parent_key=$user->data['User Hooked Store Key'];
+				}else {
+					$_tmp=$user->stores;
+					$parent_key=array_shift($_tmp);
+				}
 
 			}
 			break;

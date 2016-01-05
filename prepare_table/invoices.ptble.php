@@ -3,6 +3,7 @@
 $fields='';
 $filter_msg='';
 $wheref='';
+$group_by='';
 
 $currency='';
 $where='where true';
@@ -111,7 +112,7 @@ elseif ($parameters['parent']=='delivery_note') {
 elseif ($parameters['parent']=='billingregion_taxcategory.invoices') {
 
 	$fields='`Store Code`,`Store Name`,`Country Name`,';
-	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) '   ;
+	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)'   ;
 
 	$parents=preg_split('/_/', $parameters['parent_key']);
 	$where=sprintf('where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
@@ -124,7 +125,7 @@ elseif ($parameters['parent']=='billingregion_taxcategory.invoices') {
 elseif ($parameters['parent']=='billingregion_taxcategory.refunds') {
 
 	$fields='`Store Code`,`Store Name`,`Country Name`,';
-	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) '   ;
+	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)'   ;
 
 	$parents=preg_split('/_/', $parameters['parent_key']);
 	$where=sprintf('where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',

@@ -83,7 +83,17 @@ if ($user->can_view('orders')) {
 	}
 
 
+	if ($user->data['User Hooked Store Key']) {
+		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i> '._('Payments'), 'payments', 'payments', 'module');
+	}
+	else {
+		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i> '._('Payments'), 'payments/all', 'payments', 'module');
+	}
 
+	$sections=get_sections('payments', $data['parent_key']);
+	foreach ($sections as $key=>$section ) {
+		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section');
+	}
 }
 
 if ($user->can_view('sites')) {

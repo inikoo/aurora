@@ -28,6 +28,35 @@ $export_fields=array(
 		array('name'=>'REPLACE(`Customer XHTML Main Delivery Address`,"<br/>","\n") as`Customer Delivery Address`', 'label'=>_('Delivery address'), 'checked'=>0),
 		array('name'=>'`Customer Main Delivery Address Lines`,`Customer Main Delivery Address Town`,`Customer Main Delivery Address Postal Code`,`Customer Main Delivery Address Region`,`Customer Main Delivery Address Country Code`', 'label'=>_('Delivery address (Separated fields)'), 'checked'=>0),
 		array('name'=>'`Customer Last Order Date`', 'label'=>_('Last order date'), 'checked'=>0),
+	),
+	'orders'=>array(
+		array('name'=>'`Order Public ID`', 'label'=>_('ID'), 'checked'=>1),
+		array('name'=>'`Order Customer Name`', 'label'=>_('Customer'), 'checked'=>1),
+		array('name'=>'`Order Customer Key`', 'label'=>_('Customer Id'), 'checked'=>0),
+		array('name'=>'`Order Date`', 'label'=>_('Date'), 'checked'=>1),
+		array('name'=>'`Order Balance Total Amount`', 'label'=>_('Total'), 'checked'=>1),
+		array('name'=>'`Order Payment Method`', 'label'=>_('Payment method'), 'checked'=>1),
+
+	),
+	'delivery_notes'=>array(
+		array('name'=>'`Delivery Note ID`', 'label'=>_('ID'), 'checked'=>1),
+		array('name'=>'`Delivery Note Customer Name`', 'label'=>_('Customer'), 'checked'=>1),
+		array('name'=>'`Delivery Note Customer Key`', 'label'=>_('Customer Id'), 'checked'=>0),
+		array('name'=>'`Delivery Note Date`', 'label'=>_('Date'), 'checked'=>1),
+		array('name'=>'`Delivery Note Weight`', 'label'=>_('Weight'), 'checked'=>1),
+	),
+	'invoices'=>array(
+		array('name'=>'`Invoice Title`', 'label'=>_('Type'), 'checked'=>1),
+		array('name'=>'`Invoice Public ID`', 'label'=>_('ID'), 'checked'=>1),
+		array('name'=>'`Invoice Customer Name`', 'label'=>_('Customer'), 'checked'=>1),
+		array('name'=>'`Invoice Customer Key`', 'label'=>_('Customer Id'), 'checked'=>0),
+		array('name'=>'`Invoice Date`', 'label'=>_('Date'), 'checked'=>1),
+		array('name'=>'`Invoice Currency`', 'label'=>_('Currency'), 'checked'=>1),
+		array('name'=>'`Invoice Total Net Amount`', 'label'=>_('Net'), 'checked'=>1),
+		array('name'=>'`Invoice Total Tax Amount`', 'label'=>_('Tax'), 'checked'=>1),
+		array('name'=>'`Payment Type`', 'label'=>_('Payment type'), 'checked'=>1),
+		array('name'=>'`Payment Account Name`', 'label'=>_('Payment Account'), 'checked'=>1),
+
 	)
 
 );

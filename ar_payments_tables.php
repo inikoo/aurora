@@ -96,22 +96,33 @@ function payment_accounts($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	foreach ($db->query($sql) as $data) {
 
 
-		$other_currency=($account_currency!=$data['Payment Account Currency']);
+	if ($result=$db->query($sql)) {
 
-		$adata[]=array(
-			'id'=>(integer) $data['Payment Account Key'],
-			'code'=>$data['Payment Account Code'],
-			'name'=>$data['Payment Account Name'],
-			'transactions'=>number($data['Payment Account Transactions']),
-			'payments'=>money($data['Payment Account Payments Amount'], $account_currency),
-			'refunds'=>money($data['Payment Account Refunds Amount'], $account_currency),
-			'balance'=>money($data['Payment Account Balance Amount'], $account_currency)
-		);
+		foreach ($result as $data) {
 
+
+			$other_currency=($account_currency!=$data['Payment Account Currency']);
+
+			$adata[]=array(
+				'id'=>(integer) $data['Payment Account Key'],
+				'code'=>$data['Payment Account Code'],
+				'name'=>$data['Payment Account Name'],
+				'transactions'=>number($data['Payment Account Transactions']),
+				'payments'=>money($data['Payment Account Payments Amount'], $account_currency),
+				'refunds'=>money($data['Payment Account Refunds Amount'], $account_currency),
+				'balance'=>money($data['Payment Account Balance Amount'], $account_currency)
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
+
+
 
 	$response=array('resultset'=>
 		array(
@@ -137,66 +148,74 @@ function payments($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	foreach ($db->query($sql) as $data) {
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
 
 
-		switch ($data['Payment Type']) {
-		case 'Payment':
-			$type=_('Payment');
-			break;
-		case 'Refund':
-			$type=_('Refund');
-			break;
-		case 'Credit':
-			$type=_('Credit');
-			break;
-		default:
-			$type=$data['Payment Type'];
-			break;
+			switch ($data['Payment Type']) {
+			case 'Payment':
+				$type=_('Payment');
+				break;
+			case 'Refund':
+				$type=_('Refund');
+				break;
+			case 'Credit':
+				$type=_('Credit');
+				break;
+			default:
+				$type=$data['Payment Type'];
+				break;
+			}
+
+
+			switch ($data['Payment Transaction Status']) {
+			case 'Pending':
+				$status=_('Pending');
+				break;
+			case 'Completed':
+				$status=_('Completed');
+				break;
+			case 'Cancelled':
+				$status=_('Cancelled');
+				break;
+			case 'Error':
+				$status=_('Error');
+				break;
+			case 'Declined':
+				$status=_('Declined');
+				break;
+			default:
+				$status=$data['Payment Transaction Status'];
+				break;
+			}
+
+
+			$notes='';
+
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Payment Key'],
+				'reference'=>$data['Payment Transaction ID'],
+				'currency'=>$data['Payment Currency Code'],
+				'amount'=>money($data['Payment Amount'], $data['Payment Currency Code']),
+				'date'=>money($data['Payment Amount'], $data['Payment Currency Code']),
+				'formated_id'=>sprintf("%05d", $data['Payment Key']),
+				'type'=>$type,
+				'status'=>$status,
+				'notes'=>$notes,
+				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
+
+			);
+
 		}
 
-
-		switch ($data['Payment Transaction Status']) {
-		case 'Pending':
-			$status=_('Pending');
-			break;
-		case 'Completed':
-			$status=_('Completed');
-			break;
-		case 'Cancelled':
-			$status=_('Cancelled');
-			break;
-		case 'Error':
-			$status=_('Error');
-			break;
-		case 'Declined':
-			$status=_('Declined');
-			break;
-		default:
-			$status=$data['Payment Transaction Status'];
-			break;
-		}
-
-
-		$notes='';
-
-
-
-		$adata[]=array(
-			'id'=>(integer) $data['Payment Key'],
-			'reference'=>$data['Payment Transaction ID'],
-			'currency'=>$data['Payment Currency Code'],
-			'amount'=>money($data['Payment Amount'], $data['Payment Currency Code']),
-			'date'=>money($data['Payment Amount'], $data['Payment Currency Code']),
-			'formated_id'=>sprintf("%05d", $data['Payment Key']),
-			'type'=>$type,
-			'status'=>$status,
-			'notes'=>$notes,
-			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
-
-		);
-
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
+
 
 	$response=array('resultset'=>
 		array(

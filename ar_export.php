@@ -37,15 +37,23 @@ $_data['nr']=1000000;
 $_data['page']=1;
 include_once 'conf/export_fields.php';
 
-if (!isset($export_fields[$_data['tipo']])) {
+
+if($_data['tipo']=='billingregion_taxcategory.invoices')
+$_tipo='invoices';
+else
+$_tipo['tipo']=$_data['tipo'];
+
+if (!isset($export_fields[$_tipo])) {
 	$response=array('state'=>405, 'resp'=>'field set not found');
 	echo json_encode($response);
 	exit;
 }
 
-$field_set=$export_fields[$_data['tipo']];
+$field_set=$export_fields[$_tipo];
 
 include_once 'prepare_table/init.php';
+
+
 
 $fields='';
 foreach ($_data['fields'] as $field_key) {
@@ -54,7 +62,7 @@ foreach ($_data['fields'] as $field_key) {
 }
 $fields=preg_replace('/,$/', '', $fields);
 
-$sql="select $fields from $table $where $wheref $where_type $group_by order by $order $order_direction ";
+$sql="select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
 
 if ($_data['type']=='excel') {
 	$output='xls';

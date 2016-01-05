@@ -13,7 +13,12 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('payment_service_provider/' + this.model.get("id") )
+                {if $data['parent']=='store'}
+                change_view('/payment_account/{$data['parent_key']}/' + this.model.get("id") )
+
+                {else}
+                change_view('{$data['object']}/{$data['key']}/payment_account/' + this.model.get("id") )
+                {/if}
             }
         },
         className: "link",
@@ -44,15 +49,6 @@ var columns = [
     editable: false,
     sortType: "toggle",
     cell: Backgrid.StringCell.extend({  }),
-}, {
-    name: "accounts",
-    label: "{t}Accounts{/t}",
-    defautOrder:1,
-    editable: false,
-    sortType: "toggle",
-    {if $sort_key=='accounts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: Backgrid.StringCell.extend({ className: "aright"} ),
-        headerCell: integerHeaderCell
 }, {
     name: "transactions",
     label: "{t}Transactions{/t}",

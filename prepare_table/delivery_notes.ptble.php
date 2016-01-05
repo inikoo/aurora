@@ -2,7 +2,7 @@
 $where='where true';
 $table='`Delivery Note Dimension` D ';
 $wheref='';
-$group='';
+$group_by='';
 
 
 
@@ -74,7 +74,7 @@ elseif ($parameters['parent']=='part') {
 	$where=sprintf(' where  `Part SKU`=%d ', $parameters['parent_key']);
 
 	$table='`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
-	$group=' group by ITF.`Delivery Note Key`';
+	$group_by=' group by ITF.`Delivery Note Key`';
 	$currency=$corporate_currency;
 
 

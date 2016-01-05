@@ -158,11 +158,7 @@ $modules=array(
 				)
 			),
 
-			'payments'=>array('type'=>'navigation', 'label'=>_('Payments'), 'title'=>_('Payments'), 'icon'=>'credit-card', 'reference'=>'payments/%d',
-				'tabs'=>array(
-					'payments'=>array()
-				)
-			),
+
 
 			'order'=>array('type'=>'object',
 				'tabs'=>array(
@@ -240,11 +236,6 @@ $modules=array(
 				)
 			),
 
-			'payments'=>array('type'=>'navigation', 'label'=>_('Payments'), 'title'=>_('Payments'), 'icon'=>'credit-card', 'reference'=>'payments/%d',
-				'tabs'=>array(
-					'payments'=>array()
-				)
-			),
 
 
 			'order'=>array('type'=>'object',
@@ -305,11 +296,11 @@ $modules=array(
 					'invoices_server.categories'=>array(),
 				)
 			),
-			
+
 			'category'=>array('type'=>'object',
 				'tabs'=>array(
 
-		        	'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
 					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
 					'category.invoices'=>array('label'=>_('Invoices')),
 					'category.categories'=>array('label'=>_('Subcategories')),
@@ -405,6 +396,60 @@ $modules=array(
 
 		)
 
+	),
+
+	'payments'=>array(
+		'section'=>'invoices',
+		'parent'=>'store',
+		'parent_type'=>'key',
+		'sections'=>array(
+
+			'payment_service_providers'=>array('type'=>'navigation', 'label'=>_('Payment Service Providers'), 'icon'=>'university', 'reference'=>'payment_service_providers',
+				'tabs'=>array(
+					'payment_service_providers'=>array('label'=>_('Payment Service Providers'), 'icon'=>'university'),
+				)
+			),
+
+			'payment_accounts'=>array('type'=>'navigation', 'label'=>_("Payment Accounts"), 'icon'=>'cc', 'reference'=>'payment_accounts/%s',
+				'tabs'=>array(
+					'payment_accounts'=>array(),
+				)
+			),
+
+			'payments'=>array('type'=>'navigation', 'label'=>_('Payments'), 'icon'=>'credit-card', 'reference'=>'payments/%s',
+				'tabs'=>array(
+					'payments'=>array()
+				)
+			),
+
+			'payment_service_provider'=>array('type'=>'object',
+				'tabs'=>array(
+					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'payment_service_provider.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'payment_service_provider.accounts'=>array('label'=>_('Accounts'), 'title'=>_('Payment accounts')),
+					'payment_service_provider.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),
+
+				)
+			),
+			'payment_account'=>array('type'=>'object',
+				'tabs'=>array(
+					'payment_account.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'payment_account.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'payment_account.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),
+
+				)
+			),
+			'payment'=>array('type'=>'object',
+				'tabs'=>array(
+					'payment.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'payment.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+
+				)
+			)
+
+
+
+		)
 	),
 
 	'websites'=>array(
@@ -649,7 +694,6 @@ $modules=array(
 		)
 
 	),
-
 	'production'=>array(
 		'section'=>'production',
 		'parent'=>'account',
@@ -712,7 +756,6 @@ $modules=array(
 
 		)
 	),
-
 	'suppliers'=>array(
 		'section'=>'suppliers',
 		'parent'=>'store',
@@ -911,8 +954,6 @@ $modules=array(
 
 		)
 	),
-
-
 	'reports'=>array(
 
 		'sections'=>array(
@@ -975,9 +1016,6 @@ $modules=array(
 
 		)
 	),
-
-
-
 	'hr'=>array(
 
 		'sections'=>array(
@@ -1123,7 +1161,6 @@ $modules=array(
 
 		)
 	),
-
 	'profile'=>array(
 
 
@@ -1147,7 +1184,6 @@ $modules=array(
 			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'icon'=>'star', 'reference'=>'account',
 				'tabs'=>array(
 					'account.details'=>array('label'=>_('Details'), 'title'=>_('Account details')),
-					'payment_service_providers'=>array('label'=>_('Payment options'), 'title'=>_('Payment options')),
 				)
 			),
 
@@ -1209,30 +1245,7 @@ $modules=array(
 			),
 
 
-			'payment_service_provider'=>array('type'=>'object',
-				'tabs'=>array(
-					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database'),
-					'payment_service_provider.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'payment_service_provider.accounts'=>array('label'=>_('Accounts'), 'title'=>_('Payment accounts')),
-					'payment_service_provider.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),
 
-				)
-			),
-			'payment_account'=>array('type'=>'object',
-				'tabs'=>array(
-					'payment_account.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
-					'payment_account.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'payment_account.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),
-
-				)
-			),
-			'payment'=>array('type'=>'object',
-				'tabs'=>array(
-					'payment.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
-					'payment.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-
-				)
-			)
 
 
 		)
