@@ -4,7 +4,6 @@ $currency='';
 $where='where true';
 $table='`Customer Dimension` C ';
 $group_by='';
-$where_type='';
 
 
 $fields=' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';
@@ -67,10 +66,7 @@ elseif ($parameters['parent']=='category') {
 	if (!in_array($category->data['Category Store Key'],$user->stores)) {
 		return;
 	}
-	$where_type='';
-	if ($orders_type=='contacts_with_orders') {
-		$where_type=' and `Customer With Orders`="Yes" ';
-	}
+	
 	$where=sprintf(" where `Subject`='Customer' and  `Category Key`=%d",$parameters['parent_key']);
 	$table=' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`) ';
 
@@ -113,11 +109,6 @@ else {
 
 
 
-
-$where_type='';
-//if ($orders_type=='contacts_with_orders') {
-// $where_type=' and `Customer With Orders`="Yes" ';
-//}
 
 switch ($parameters['elements_type']) {
 case 'orders':
@@ -322,10 +313,9 @@ else
 	$order='`Customer File As`';
 
 
-$sql_totals="select count(Distinct C.`Customer Key`) as num from $table  $where  $where_type";
+$sql_totals="select count(Distinct C.`Customer Key`) as num from $table  $where ";
 
-//	$sql="select  $fields from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
+
 
 function customers_awhere($awhere) {
 	// $awhere=preg_replace('/\\\"/','"',$awhere);

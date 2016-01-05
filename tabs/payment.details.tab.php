@@ -61,6 +61,7 @@ array(
 	
 );
 $smarty->assign('object_fields',$object_fields);
+$smarty->assign('state', $state);
 
 $html=$smarty->fetch('object_fields.tpl');
 

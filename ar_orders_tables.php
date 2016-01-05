@@ -119,7 +119,7 @@ function delivery_notes($_data, $db, $user) {
 	$rtext_label='delivery_note';
 	include_once 'prepare_table/init.php';
 
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -294,7 +294,9 @@ function orders_index($_data, $db, $user) {
 	$total_payments=0;
 
 
-	foreach ($db->query($sql) as $data) {
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
 
 		$total_orders+=$data['orders'];
 		$total_invoices+=$data['invoices'];
@@ -312,6 +314,13 @@ function orders_index($_data, $db, $user) {
 		);
 
 	}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	
 
 
 	if ($parameters['percentages']) {

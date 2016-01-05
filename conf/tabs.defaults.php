@@ -9,8 +9,8 @@
 
 */
 
-include_once('conf/export_fields.php');
-include_once('conf/elements_options.php');
+include 'conf/export_fields.php';
+include 'conf/elements_options.php';
 
 $default_rrp_options=array(500, 100, 50, 20);
 
@@ -28,6 +28,7 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['customers']  ) ['key'],
 		'elements'=>$elements_options['customers'],
 		'export_fields'=>$export_fields['customers']
+
 	),
 	'customers.lists'=>array(
 		'view'=>'overview',
@@ -108,7 +109,8 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'all',
 		'elements_type'=>'dispatch',
-		'elements'=>$elements_options['orders']
+		'elements'=>$elements_options['orders'],
+		'export_fields'=>$export_fields['orders']
 
 	),
 	'orders_server'=>array(
@@ -149,6 +151,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['invoices']
 
 	),
 	'order.delivery_notes'=>array(
@@ -158,6 +161,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['delivery_notes']
 
 	),
 	'delivery_note.invoices'=>array(
@@ -167,6 +171,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['invoices']
+
 
 	),
 	'delivery_note.orders'=>array(
@@ -176,6 +182,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['orders']
+
 
 	),
 	'delivery_note.history'=>array(
@@ -211,6 +219,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['orders'],
+
 
 	),
 	'invoice.delivery_notes'=>array(
@@ -220,6 +230,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['delivery_notes']
+
 
 	),
 	'invoice.history'=>array(
@@ -241,7 +253,9 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'all',
 		'elements_type'=>each($elements_options['invoices'])['key'],
-		'elements'=>$elements_options['invoices']
+		'elements'=>$elements_options['invoices'],
+		'export_fields'=>$export_fields['invoices']
+
 	),
 	'invoices.categories'=>array(
 		'view'=>'overview',
@@ -283,7 +297,9 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'all',
 		'elements_type'=>each($elements_options['delivery_notes'])['key'],
-		'elements'=>$elements_options['delivery_notes']
+		'elements'=>$elements_options['delivery_notes'],
+		'export_fields'=>$export_fields['delivery_notes']
+
 	),
 	'delivery_notes_server'=>array(
 		'view'=>'overview',
@@ -404,7 +420,8 @@ $tab_defaults=array(
 		'to'=>'',
 		'period'=>'ytd',
 		'elements_type'=>each($elements_options['orders'])['key'],
-		'elements'=>$elements_options['orders']
+		'elements'=>$elements_options['orders'],
+		'export_fields'=>$export_fields['orders']
 	),
 	'websites'=>array(
 		'view'=>'overview',
@@ -895,7 +912,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-
+'payment_accounts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
 	'users.staff.users'=>array(
 		'view'=>'privilegies',
 		'sort_key'=>'id',
@@ -974,6 +998,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['invoices']
+
 
 	),
 	'billingregion_taxcategory.refunds'=>array(
