@@ -1010,6 +1010,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['invoices']
 
 	),
 	'category.history'=>array(
