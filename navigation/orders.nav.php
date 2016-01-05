@@ -1124,7 +1124,6 @@ function get_invoice_navigation($data) {
 
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
-
 		$_order_field=$order;
 		$order=preg_replace('/^.*\.`/', '', $order);
 		$order=preg_replace('/^`/', '', $order);

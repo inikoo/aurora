@@ -1769,8 +1769,11 @@ function get_view_position($state) {
 			case 'GBIM':
 				$billing_region='GB+IM';
 				break;
+			case 'Unknown':
+				$billing_region=_('Unknown');
+				break;	
 			default:
-				$billing_region=$state[0];
+				$billing_region=$parents[0];
 				break;
 			}
 

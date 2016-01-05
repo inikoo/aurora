@@ -8,7 +8,7 @@ $group_by='';
 $currency='';
 
 
-if(is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0)
+if(isset($parameters['excluded_stores']) and is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0)
 $where=sprintf(' where `Invoice Store Key` not in (%s)  ',join($parameters['excluded_stores'],','));
 else
 $where=' where true';
