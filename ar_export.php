@@ -38,7 +38,7 @@ $_data['page']=1;
 include_once 'conf/export_fields.php';
 
 
-if ($_data['tipo']=='billingregion_taxcategory.invoices')
+if ($_data['tipo']=='billingregion_taxcategory.invoices' or $_data['tipo']=='billingregion_taxcategory.refunds')
 	$_tipo='invoices';
 else
 	$_tipo=$_data['tipo'];
