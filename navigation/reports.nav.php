@@ -94,7 +94,7 @@ function get_georegion_taxcategory_navigation($user, $smarty, $data) {
 	$block_view=$data['section'];
 
 	$left_buttons=array();
-	$right_buttons=array();
+	$right_buttons=array(array('icon'=>'cog', 'title'=>_("Settings"), 'id'=>'report_settings'));
 	$sections=array();
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;

@@ -360,3 +360,7 @@ var with_elements=false;
 
 
 </div>
+{if isset($aux_templates) }
+{include file="$aux_templates" } 
+{/if}
+

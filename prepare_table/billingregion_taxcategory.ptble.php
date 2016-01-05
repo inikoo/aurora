@@ -9,8 +9,11 @@
 
 */
 
-$where=' where true';
 
+if(is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0)
+$where=sprintf(' where `Invoice Store Key` not in (%s)  ',join($parameters['excluded_stores'],','));
+else
+$where=' where true';
 
 if (isset($parameters['period'])) {
 
@@ -30,6 +33,8 @@ if (isset($parameters['period'])) {
 	
 
 }
+
+
 
 
 
@@ -73,7 +78,7 @@ $table='  `Invoice Dimension` as I  left join `Tax Category Dimension` TC on (TC
 
 $sql_totals="";
 
-//print $sql_totals;
+
 $fields="
 `Invoice Billing Region`,`Invoice Tax Code`,`Tax Category Name`,
 sum(if(`Invoice Type`='Invoice',1,0)) as invoices,

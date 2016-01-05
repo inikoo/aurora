@@ -989,6 +989,7 @@ $tab_defaults=array(
 		'from'=>'',
 		'to'=>'',
 		'period'=>'last_m',
+		'excluded_stores'=>array()
 	),
 
 	'billingregion_taxcategory.invoices'=>array(

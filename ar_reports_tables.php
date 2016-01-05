@@ -118,7 +118,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 				break;
 			case 'Unknown':
 				$billing_region=_('Unknown');
-				break;	
+				break;
 			case 'NOEU':
 				$billing_region=_('Outside European Union');
 				break;
@@ -157,6 +157,31 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 	}
 
 	$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+	if (is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0) {
+		$excluded_stores='';
+		$sql=sprintf('Select `Store Key`,`Store Code`,`Store Name` from `Store Dimension` where `Store Key` in (%s)', join($parameters['excluded_stores'], ','));
+
+		if ($result=$db->query($sql)) {
+
+			foreach ($result as $data) {
+				$excluded_stores.=$data['Store Code'].', ';
+
+			}
+
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		$excluded_stores=preg_replace('/, $/', '', $excluded_stores);
+
+
+
+		$rtext.=' ('._('Excluding').': '.$excluded_stores.')';
+	}
+
 
 	$response=array('resultset'=>
 		array(
@@ -224,7 +249,7 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
 				'method'=>$method,
 				'state'=>$state,
 				'billing_country'=>$data['Invoice Billing Country 2 Alpha Code'],
-				'billing_country_flag'=>sprintf('<img title="%s" src="/art/flags/%s.gif">',$data['Country Name'], strtolower($data['Invoice Billing Country 2 Alpha Code']))
+				'billing_country_flag'=>sprintf('<img title="%s" src="/art/flags/%s.gif">', $data['Country Name'], strtolower($data['Invoice Billing Country 2 Alpha Code']))
 
 			);
 
@@ -232,6 +257,23 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
 	}else {
 		print_r($error_info=$db->errorInfo());
 		exit;
+	}
+
+	if (is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0) {
+		$excluded_stores='';
+		$sql=sprintf('Select `Store Key`,`Store Code`,`Store Name` from `Store Dimension` where `Store Key` in (%s)', join($parameters['excluded_stores'], ','));
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $data) {
+				$excluded_stores.=$data['Store Code'].', ';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		$excluded_stores=preg_replace('/, $/', '', $excluded_stores);
+		$rtext.=' ('._('Excluding').': '.$excluded_stores.')';
 	}
 
 	$response=array('resultset'=>
