@@ -38,10 +38,11 @@ $_data['page']=1;
 include_once 'conf/export_fields.php';
 
 
-if($_data['tipo']=='billingregion_taxcategory.invoices')
-$_tipo='invoices';
+if ($_data['tipo']=='billingregion_taxcategory.invoices')
+	$_tipo='invoices';
 else
-$_tipo['tipo']=$_data['tipo'];
+	$_tipo=$_data['tipo'];
+
 
 if (!isset($export_fields[$_tipo])) {
 	$response=array('state'=>405, 'resp'=>'field set not found');
@@ -85,7 +86,7 @@ list($fork_key, $msg)=new_fork('export', $export_data, $account->get('Account Co
 
 
 $response= array(
-	'state'=>200, 'fork_key'=>$fork_key, 'msg'=>$msg, 'type'=>$_data['type'],'tipo'=>$_data['tipo']
+	'state'=>200, 'fork_key'=>$fork_key, 'msg'=>$msg, 'type'=>$_data['type'], 'tipo'=>$_data['tipo']
 );
 echo json_encode($response);
 
