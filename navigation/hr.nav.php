@@ -100,6 +100,7 @@ function get_organization_navigation($data) {
 }
 
 
+
 function get_employee_navigation($data) {
 
 	global $smarty;
@@ -750,9 +751,9 @@ function get_timesheet_navigation($data) {
 }
 
 
-function get_new_employee_attachment_navigation($data) {
+function get_new_employee_attachment_navigation($data,$user, $smarty) {
 
-	global $smarty;
+
 
 
 	$left_buttons=array();
@@ -773,7 +774,7 @@ function get_new_employee_attachment_navigation($data) {
 	$left_buttons[]=$up_button;
 
 
-	$title= '<span class="id ">'.sprintf(_('New attachment for %s'), $employee->get('Name')).'</span>';
+	$title= '<span>'.sprintf(_('New attachment for %s'), '<span class="id">'.$employee->get('Name').'</span>').'</span>';
 
 
 	$_content=array(
@@ -794,9 +795,52 @@ function get_new_employee_attachment_navigation($data) {
 
 }
 
-function get_employee_attachment_navigation($data) {
 
-	global $smarty;
+function get_new_employee_user_navigation($data,$user, $smarty) {
+
+	
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('hr', '');
+
+	$_section='employees';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	include_once 'class.Staff.php';
+	$employee=new Staff($data['parent_key']);
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span >'.sprintf(_('New system user for %s'), '<span class="id">'.$employee->get('Name').'</span>').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
+function get_employee_attachment_navigation($data,$user, $smarty) {
+
+	
 
 
 	$left_buttons=array();

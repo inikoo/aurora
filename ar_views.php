@@ -748,6 +748,7 @@ function get_navigation($user, $smarty, $data) {
 
 		case ('employees'):
 		case ('new_timesheet_record'):
+		
 			return get_employees_navigation($data);
 			break;
 		case ('contractors'):
@@ -757,6 +758,7 @@ function get_navigation($user, $smarty, $data) {
 			return get_organization_navigation($data);
 			break;
 		case ('employee'):
+		
 			return get_employee_navigation($data);
 			break;
 		case ('employee.new'):
@@ -775,10 +777,13 @@ function get_navigation($user, $smarty, $data) {
 			return get_timesheets_navigation($data);
 			break;
 		case ('employee.attachment.new'):
-			return get_new_employee_attachment_navigation($data);
+			return get_new_employee_attachment_navigation($data,$user, $smarty);
 			break;
+		case ('employee.user.new'):
+		return get_new_employee_user_navigation($data,$user, $smarty);
+			break;	
 		case ('employee.attachment'):
-			return get_employee_attachment_navigation($data);
+			return get_employee_attachment_navigation($data,$user, $smarty);
 			break;
 		}
 

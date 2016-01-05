@@ -1097,6 +1097,13 @@ $modules=array(
 				)
 
 			),
+			'employee.user.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'employee.user.new'=>array('label'=>_('New system user')),
+
+				)
+
+			),
 
 			'employee.attachment'=>array('type'=>'object',
 				'tabs'=>array(

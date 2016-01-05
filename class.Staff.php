@@ -474,6 +474,7 @@ class Staff extends DB_Table{
 
 	}
 
+
 	function find($raw_data, $options) {
 
 
@@ -614,6 +615,13 @@ class Staff extends DB_Table{
 
 	function create_user($data) {
 
+		if (isset($this->data['Staff User Key']) and $this->data['Staff User Key']) {
+			$this->create_user_error=true;
+			$this->create_user_msg=_('Employee is already a system user');
+			$this->user=false;
+			return false;
+		}
+
 
 		$data['editor']=$this->editor;
 
@@ -637,10 +645,11 @@ class Staff extends DB_Table{
 		$data['User Parent Key']=$this->id;
 
 		$user= new User('find', $data, 'create');
-
+		$this->get_user_data();
 		$this->create_user_error=$user->error;
 		$this->create_user_msg=$user->msg;
 		$this->user=$user;
+
 
 
 
