@@ -169,7 +169,7 @@ function get_history_elements($db, $data) {
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge`  group by  `Type`",
 			$data['subject']);
 	else {
-		$response=array('state'=>405, 'resp'=>'parent not found '.data['parent']);
+		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
 		echo json_encode($response);
 		return;
 	}
