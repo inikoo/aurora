@@ -31,8 +31,8 @@ if ($result=$db->query($sql)) {
 				prepare_mysql($delete_from)
 			);
 			$db->exec($sql);
-         
-        
+
+
 			$sql=sprintf("select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=%d and `Timesheet Date`>=%s   ",
 				$employee->id,
 				prepare_mysql($delete_from)
@@ -43,13 +43,13 @@ if ($result=$db->query($sql)) {
 				foreach ($result3 as $data) {
 					$timesheet=new Timesheet($data['Timesheet Key']);
 
-                                print $timesheet->get('Timesheet Date').' '.$timesheet->get('Timesheet Staff Key')."\n";
+					print $timesheet->get('Timesheet Date').' '.$timesheet->get('Timesheet Staff Key')."\n";
 
 					$sql=sprintf("select count(*) as num  from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d    ",
 						$timesheet->id
 					);
 
-                    print "$sql\n";
+					print "$sql\n";
 					if ($result2=$db->query($sql)) {
 
 						if ($row2 = $result2->fetch()) {
@@ -61,12 +61,12 @@ if ($result=$db->query($sql)) {
 								$timesheet->update_unpaid_overtime();
 
 							}else {
-							    
+
 								$sql=sprintf("delete from `Timesheet Dimension` where `Timesheet Key`=%d   ",
 									$timesheet->id
 								);
 								$db->exec($sql);
-                                print "$sql\n";
+								print "$sql\n";
 
 							}
 						}
@@ -102,12 +102,12 @@ if ($result=$db->query($sql)) {
 	exit;
 }
 
-
+/*
 $sql=sprintf("delete from `Timesheet Dimension`  where `Timesheet Staff Key`=%d and `Timesheet Date`=%s   ",
 	$employee->id,
 	prepare_mysql($delete_from)
 );
 $db->exec($sql);
-
+*/
 
 ?>

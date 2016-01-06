@@ -538,6 +538,11 @@ class Staff extends DB_Table{
 
 	function create($data) {
 
+		global $account;
+		include_once 'class.Timesheet.php';
+		require_once 'utils/date_functions.php';
+
+
 		$this->data=$this->base_data();
 		foreach ($data as $key=>$value) {
 			if (array_key_exists($key, $this->data)) {
@@ -570,6 +575,16 @@ class Staff extends DB_Table{
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 			$this->get_data('id', $this->id);
+
+
+			$from=date('Y-m-d');
+			$to=date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+
+			$dates=date_range($from, $to);
+			foreach ($dates as $date) {
+				$timesheet=$this->create_timesheet(strtotime($date.' 00:00:00'), '');
+			}
+
 
 			if (!$this->data['Staff ID']) {
 				$sql=sprintf("update `Staff Dimension` set `Staff ID`=%d where `Staff Key`=%d", $this->id, $this->id);
@@ -901,16 +916,100 @@ class Staff extends DB_Table{
 
 	function update_is_working($value, $options) {
 
-
-
+		global $account;
+		include_once 'class.Timesheet.php';
+		require_once 'utils/date_functions.php';
 
 
 		$this->update_field('Staff Currently Working', $value, $options);
 
 		if ($value=='No' ) {
 			$this->update_field('Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
+
+
+
+			$delete_from=date('Y-m-d', strtotime($this->get('Staff Valid To').' + 1 day'  ));
+			$sql=sprintf("delete from `Timesheet Record Dimension` where `Timesheet Record Staff Key`=%d and `Timesheet Record Date`>=%s and `Timesheet Record Type`!='ClockingRecord'  ",
+				$this->id,
+				prepare_mysql($delete_from)
+			);
+			$this->db->exec($sql);
+
+
+			$sql=sprintf("select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=%d and `Timesheet Date`>=%s   ",
+				$this->id,
+				prepare_mysql($delete_from)
+			);
+
+			if ($result3=$this->db->query($sql)) {
+
+				foreach ($result3 as $data) {
+					$timesheet=new Timesheet($data['Timesheet Key']);
+
+					//print $timesheet->get('Timesheet Date').' '.$timesheet->get('Timesheet Staff Key')."\n";
+
+					$sql=sprintf("select count(*) as num  from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d    ",
+						$timesheet->id
+					);
+
+					//print "$sql\n";
+					if ($result2=$this->db->query($sql)) {
+
+						if ($row2 = $result2->fetch()) {
+							if ($row2['num']>0) {
+								$timesheet->update_number_clocking_records();
+								$timesheet->process_clocking_records_action_type();
+								$timesheet->update_clocked_time();
+								$timesheet->update_working_time();
+								$timesheet->update_unpaid_overtime();
+
+							}else {
+
+								$sql=sprintf("delete from `Timesheet Dimension` where `Timesheet Key`=%d   ",
+									$timesheet->id
+								);
+								$this->db->exec($sql);
+								//print "$sql\n";
+
+							}
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+
+					}
+
+
+
+
+
+
+
+				}
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+
+
 		}else {
 			$this->update_field('Staff Valid To', '', 'no_history');
+
+			$from=date('Y-m-d');
+			$to=date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+
+			$dates=date_range($from, $to);
+			foreach ($dates as $date) {
+				$timesheet=$this->create_timesheet(strtotime($date.' 00:00:00'), '');
+			}
+
+
 
 		}
 
