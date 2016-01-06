@@ -75,23 +75,30 @@ class Account extends DB_Table{
 		$sql=sprintf("delete * from  `Account Dimension` " );
 		mysql_query($sql);
 		$sql=sprintf("insert into `Account Dimension` %s %s", $keys, $values);
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
-			$this->msg=_("Account Added");
-			$this->get_data();
-			$this->new=true;
 
 
-			$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
-				_('Internal customers accounts')
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->id=$this->db->lastInsertId();
+				$this->msg=_("Account Added");
+				$this->get_data();
+				$this->new=true;
 
-			);
 
-			mysql_query($sql);
-			return;
+				$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
+					_('Internal customers accounts')
+
+				);
+
+				$this->db->exec($sql);
+			}
 		}else {
-			$this->msg="Error can not create account\n";
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 	}
 
 
@@ -115,10 +122,11 @@ class Account extends DB_Table{
 			break;
 
 		default:
-			if (isset($this->data[$key]))
+			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
-			else
-				return '';
+
+			if (array_key_exists('Account '.$key, $this->data))
+				return $this->data['Account '.$key];
 		}
 		return '';
 	}
@@ -137,13 +145,13 @@ class Account extends DB_Table{
 			$this->update_currency($value);
 			break;
 		default:
-			
+
 			$base_data=$this->base_data();
 			if (array_key_exists($field, $base_data)) {
 				$this->update_field($field, $value, $options);
 			}
-			
-			
+
+
 			break;
 		}
 	}
@@ -153,7 +161,7 @@ class Account extends DB_Table{
 
 
 		$sql=sprintf("update `Account Dimension` set `Account Name`=%s", prepare_mysql($value));
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$this->updated=true;
 		$this->new_value=$value;
@@ -176,20 +184,29 @@ class Account extends DB_Table{
 	function update_currency($value) {
 		$value=strtoupper($value);
 		$sql=sprintf("select * from kbase.`Currency Dimension` where `Currency Code`=%s", prepare_mysql($value));
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("update `Account Dimension` set `Account Currency`=%s", prepare_mysql($value));
-			mysql_query($sql);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
 
-			$this->updated=true;
-			$this->new_value=$value;
+				$sql=sprintf("update `Account Dimension` set `Account Currency`=%s", prepare_mysql($value));
+				$this->db->exec($sql);
 
+				$this->updated=true;
+				$this->new_value=$value;
+
+			}else {
+				$this->error=true;
+				$this->msg='Currency Code '.$value.' not valid';
+
+			}
 		}else {
-			$this->error=true;
-			$this->msg='Currency Code '.$value.' not valid';
-
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
+
 	}
 
 
@@ -253,19 +270,15 @@ class Account extends DB_Table{
 	function create_staff($data) {
 		$this->new_employee=false;
 
-        $data['editor']=$this->editor;
+		$data['editor']=$this->editor;
 		$staff= new Staff('find', $data, 'create');
-		
-		
-		
+
 		if ($staff->id) {
 			$this->new_employee_msg=$staff->msg;
 
 			if ($staff->new) {
 				$this->new_employee=true;
-
 				$this->update_employees_data();
-
 			} else {
 				$this->error=true;
 				if ($staff->found) {
@@ -274,18 +287,81 @@ class Account extends DB_Table{
 					$this->msg=$staff->msg;
 				}
 			}
-
-			//$this->associate_staff($staff->id);
-
 			return $staff;
 		}
-		else{
-		    $this->error=true;
-		    $this->msg=$staff->msg;
+		else {
+			$this->error=true;
+			$this->msg=$staff->msg;
 		}
-		
-		
+	}
 
+
+	function create_manufacture_task($data) {
+		$this->new_manufacture_task=false;
+
+		$data['editor']=$this->editor;
+
+
+		if (!isset($data['Manufacture Task From'])) {
+			$data['Manufacture Task From']=gmdate('Y-m-d H:i:s');
+		}
+		if (isset($data['Manufacture Task Lower Target Per Hour'])) {
+
+			if ($data['Manufacture Task Lower Target Per Hour']==0) {
+				$this->error=true;
+				$this->msg=_("Lower target per hour can't be zero");
+				return false;
+			} elseif ($data['Manufacture Task Lower Target Per Hour']<0) {
+				$this->error=true;
+				$this->msg=_("Lower target per hour can't be negative");
+				return false;
+			}
+
+			$data['Manufacture Task Lower Target']=3600/$data['Manufacture Task Lower Target Per Hour'];
+			unset($data['Manufacture Task Lower Target Per Hour']);
+		}
+
+		if (isset($data['Manufacture Task Upper Target Per Hour'])) {
+
+			if ($data['Manufacture Task Upper Target Per Hour']==0) {
+				$this->error=true;
+				$this->msg=_("Upper target per hour can't be zero");
+				return false;
+			} elseif ($data['Manufacture Task Upper Target Per Hour']<0) {
+				$this->error=true;
+				$this->msg=_("Upper target per hour can't be negative");
+				return false;
+			}
+
+			$data['Manufacture Task Upper Target']=3600/$data['Manufacture Task Upper Target Per Hour'];
+			unset($data['Manufacture Task Upper Target Per Hour']);
+		}
+
+
+
+		$manufacture_task= new Manufacture_Task('find', $data, 'create');
+
+		if ($manufacture_task->id) {
+			$this->new_manufacture_task_msg=$manufacture_task->msg;
+
+			if ($manufacture_task->new) {
+				$this->new_manufacture_task=true;
+				return $manufacture_task;
+			} else {
+				$this->error=true;
+				if ($manufacture_task->found) {
+					$this->msg=_('Duplicated manufacture task name');
+				}else {
+					$this->msg='Error '.$manufacture_task->msg;
+				}
+			}
+			return false;
+		}
+		else {
+			$this->error=true;
+			$this->msg='Error '.$manufacture_task->msg;
+			return false;
+		}
 	}
 
 
@@ -296,7 +372,7 @@ class Account extends DB_Table{
 			$number_employees=$row['num'];
 		}
 
-        $this->update(array('Employees'=>$number_employees),'no_history');
+		$this->update(array('Employees'=>$number_employees), 'no_history');
 
 	}
 

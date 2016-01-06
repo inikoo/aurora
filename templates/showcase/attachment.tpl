@@ -44,7 +44,7 @@
 
 <script>
 $('#navigation').on('click', '#download_button', 
-function() {$( "#download" )[0].click();}
+function() { $( "#download" )[0].click();}
 );
 </script>
 

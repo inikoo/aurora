@@ -127,7 +127,7 @@ function manufacture_tasks($_data, $db, $user,$account) {
 			$adata[]=array(
 				'id'=>(integer) $data['Manufacture Task Key'],
 				'name'=>$data['Manufacture Task Name'],
-				'work_cost'=>($data['Manufacture Task Work Cost']!=''?money($data['Manufacture Task Work'],$account->get('Account Currency')):_('NA')),
+				'work_cost'=>($data['Manufacture Task Work Cost']!=''?money($data['Manufacture Task Work Cost'],$account->get('Currency')):_('NA')),
 				
 			);
 

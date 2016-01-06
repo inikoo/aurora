@@ -143,7 +143,7 @@ case 'views':
 
 	) {
 
-		$response['navigation']=get_navigation($user, $smarty, $state);
+		$response['navigation']=get_navigation($user, $smarty, $state, $db);
 
 	}
 
@@ -321,6 +321,10 @@ function get_object_showcase($data) {
 		include_once 'showcase/attachment.show.php';
 		$html=get_attachment_showcase($data);
 		break;
+	case 'manufacture_task':
+		include_once 'showcase/manufacture_task.show.php';
+		$html=get_manufacture_task_showcase($data);
+		break;	
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -345,7 +349,7 @@ function get_menu($data) {
 }
 
 
-function get_navigation($user, $smarty, $data) {
+function get_navigation($user, $smarty, $data, $db) {
 
 
 	switch ($data['module']) {
@@ -638,26 +642,28 @@ function get_navigation($user, $smarty, $data) {
 		require_once 'navigation/production.nav.php';
 		switch ($data['section']) {
 		case ('dashboard'):
-			return get_dashboard_navigation($data);
+			return get_dashboard_navigation($data, $smarty, $user, $db);
 			break;
-
 		case ('manufacture_tasks'):
-			return get_manufacture_tasks_navigation($data);
+			return get_manufacture_tasks_navigation($data, $smarty, $user, $db);
+			break;
+		case ('manufacture_task.new'):
+			return get_new_manufacture_task_navigation($data, $smarty, $user, $db);
 			break;
 		case ('operatives'):
-			return get_operatives_navigation($data);
+			return get_operatives_navigation($data, $smarty, $user, $db);
 			break;
 		case ('batches'):
-			return get_batches_navigation($data);
+			return get_batches_navigation($data, $smarty, $user, $db);
 			break;
 		case ('manufacture_task'):
-			return get_manufacture_task_navigation($data);
+			return get_manufacture_task_navigation($data, $smarty, $user, $db);
 			break;
 		case ('operative'):
-			return get_operative_navigation($data);
+			return get_operative_navigation($data, $smarty, $user, $db);
 			break;
-		case ('batche'):
-			return get_batche_navigation($data);
+		case ('batch'):
+			return get_batch_navigation($data, $smarty, $user, $db);
 			break;
 
 		}
@@ -748,42 +754,42 @@ function get_navigation($user, $smarty, $data) {
 
 		case ('employees'):
 		case ('new_timesheet_record'):
-		
-			return get_employees_navigation($data);
+
+			return get_employees_navigation($data, $smarty, $user, $db);
 			break;
 		case ('contractors'):
-			return get_contractors_navigation($data);
+			return get_contractors_navigation($data, $smarty, $user, $db);
 			break;
 		case ('organization'):
-			return get_organization_navigation($data);
+			return get_organization_navigation($data, $smarty, $user, $db);
 			break;
 		case ('employee'):
-		
-			return get_employee_navigation($data);
+
+			return get_employee_navigation($data, $smarty, $user, $db);
 			break;
 		case ('employee.new'):
-			return get_new_employee_navigation($data);
+			return get_new_employee_navigation($data, $smarty, $user, $db);
 			break;
 		case ('contractor'):
-			return get_contractor_navigation($data);
+			return get_contractor_navigation($data, $smarty, $user, $db);
 			break;
 		case ('contractor.new'):
-			return get_new_contractor_navigation($data);
+			return get_new_contractor_navigation($data, $smarty, $user, $db);
 			break;
 		case ('timesheet'):
-			return get_timesheet_navigation($data);
+			return get_timesheet_navigation($data, $smarty, $user, $db);
 			break;
 		case ('timesheets'):
-			return get_timesheets_navigation($data);
+			return get_timesheets_navigation($data, $smarty, $user, $db);
 			break;
 		case ('employee.attachment.new'):
-			return get_new_employee_attachment_navigation($data,$user, $smarty);
+			return get_new_employee_attachment_navigation($data, $smarty, $user, $db);
 			break;
 		case ('employee.user.new'):
-		return get_new_employee_user_navigation($data,$user, $smarty);
-			break;	
+			return get_new_employee_user_navigation($data, $smarty, $user, $db);
+			break;
 		case ('employee.attachment'):
-			return get_employee_attachment_navigation($data,$user, $smarty);
+			return get_employee_attachment_navigation($data, $smarty, $user, $db);
 			break;
 		}
 
@@ -1583,10 +1589,10 @@ function get_view_position($state) {
 */
 
 
-        if($state['parent']=='account'){
-        					$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'cc', 'reference'=>'payment_accounts/all');
+			if ($state['parent']=='account') {
+				$branch[]=array('label'=>'('._('All stores').')', 'icon'=>'cc', 'reference'=>'payment_accounts/all');
 
-        }
+			}
 
 			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
 
@@ -1752,6 +1758,16 @@ function get_view_position($state) {
 
 
 		break;
+	case 'production':
+		if ($state['section']=='manufacture_tasks') {
+			$branch[]=array('label'=>_("Manufacture Tasks"), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks');
+		}elseif ($state['section']=='manufacture_task') {
+			$branch[]=array('label'=>_("Manufacture Tasks"), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks');
+				$branch[]=array('label'=>'<span class="Manufacture_Task_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'', 'reference'=>'');
+
+		}
+
+		break;
 	case 'reports':
 		$branch[]=array('label'=>_('Reports'), 'icon'=>'', 'reference'=>'reports');
 
@@ -1776,7 +1792,7 @@ function get_view_position($state) {
 				break;
 			case 'Unknown':
 				$billing_region=_('Unknown');
-				break;	
+				break;
 			default:
 				$billing_region=$parents[0];
 				break;

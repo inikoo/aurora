@@ -127,6 +127,11 @@ function get_object($object_name, $key) {
 		require_once "class.Category.php";
 		$object=new Category($key);
 		break;
+	case 'manufacture_task':
+	case 'Manufacture Task':
+		require_once "class.Manufacture_Task.php";
+		$object=new Manufacture_Task($key);
+		break;
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;
