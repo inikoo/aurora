@@ -508,11 +508,17 @@ class Staff extends DB_Table{
 
 
 		$sql=sprintf("select `Staff Key` from `Staff Dimension` where `Staff Alias`=%s", prepare_mysql($data['Staff Alias']));
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$this->found=true;
-			$this->found_key=$row['Staff Key'];
-			$this->get_data('id', $this->found_key);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->found=true;
+				$this->found_key=$row['Staff Key'];
+				$this->get_data('id', $this->found_key);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
@@ -567,7 +573,7 @@ class Staff extends DB_Table{
 
 			if (!$this->data['Staff ID']) {
 				$sql=sprintf("update `Staff Dimension` set `Staff ID`=%d where `Staff Key`=%d", $this->id, $this->id);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}
 
 
@@ -960,8 +966,14 @@ class Staff extends DB_Table{
 	function remove_position($position_key) {
 
 		$sql=sprintf("delete from  `Company Position Staff Bridge` where `Position Key`=%d and `Staff Key`=%d", $position_key, $this->id);
-		if (mysql_query($sql)) {
-			$this->updated=true;
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->updated=true;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 	}
 
@@ -969,10 +981,16 @@ class Staff extends DB_Table{
 	function add_position($value) {
 		$updated=false;
 		$sql=sprintf("insert into `Company Position Staff Bridge` (`Position Key`, `Staff Key`) values (%d, %d)   ON DUPLICATE KEY UPDATE  `Position Key`= %d", $value, $this->id, $value);
-		// print $sql."\n";
-		if (mysql_query($sql)) {
-			$this->update=true;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->updated=true;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 	}
 
 
@@ -1035,8 +1053,13 @@ class Staff extends DB_Table{
 	function remove_supervisor($supervisor_key) {
 
 		$sql=sprintf("delete from  `Staff Supervisor Bridge` where `Supervisor Key`=%d and `Staff Key`=%d", $supervisor_key, $this->id);
-		if (mysql_query($sql)) {
-			$this->updated=true;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->updated=true;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 	}
 
@@ -1044,8 +1067,13 @@ class Staff extends DB_Table{
 	function add_supervisor($value) {
 		$updated=false;
 		$sql=sprintf("insert into `Staff Supervisor Bridge` (`Supervisor Key`, `Staff Key`) values (%d, %d)   ON DUPLICATE KEY UPDATE  `Supervisor Key`= %d", $value, $this->id, $value);
-		if (mysql_query($sql)) {
-			$this->update=true;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->updated=true;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 	}
 

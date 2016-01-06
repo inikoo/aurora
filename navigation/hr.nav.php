@@ -10,9 +10,9 @@
  Version 3.0
 */
 
-function get_employees_navigation($data) {
+function get_employees_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+
 
 
 	$left_buttons=array();
@@ -40,9 +40,9 @@ function get_employees_navigation($data) {
 }
 
 
-function get_contractors_navigation($data) {
+function get_contractors_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+
 
 
 	$left_buttons=array();
@@ -70,9 +70,9 @@ function get_contractors_navigation($data) {
 }
 
 
-function get_organization_navigation($data) {
+function get_organization_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+
 
 
 	$left_buttons=array();
@@ -101,9 +101,9 @@ function get_organization_navigation($data) {
 
 
 
-function get_employee_navigation($data) {
+function get_employee_navigation($data, $smarty, $user, $db) {
 
-	global $smarty;
+
 
 	$object=$data['_object'];
 	$left_buttons=array();
@@ -164,51 +164,70 @@ function get_employee_navigation($data) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
+		if ($result2=$db->query($sql)) {
+			if ($row2= $result2->fetch()  and $row2['num']>1) {
 
-			$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
+
+
+				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND SD.`Staff Key` < %d))  order by $_order_field desc , SD.`Staff Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
-			}
 
-			$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
+
+				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$next_key=$row['object_key'];
+						$next_title=_("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
+
+
+
 
 			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		if ($data['parent']=='account') {
 
@@ -273,9 +292,9 @@ function get_employee_navigation($data) {
 }
 
 
-function get_new_employee_navigation($data) {
+function get_new_employee_navigation($data, $smarty, $user, $db) {
 
-	global $smarty;
+
 
 
 	$left_buttons=array();
@@ -315,9 +334,9 @@ function get_new_employee_navigation($data) {
 }
 
 
-function get_contractor_navigation($data) {
+function get_contractor_navigation($data, $smarty, $user, $db) {
 
-	global $smarty;
+
 
 	$object=$data['_object'];
 	$left_buttons=array();
@@ -378,51 +397,71 @@ function get_contractor_navigation($data) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
+		if ($result2=$db->query($sql)) {
+			if ($row2= $result2->fetch()  and $row2['num']>1) {
+
+
+
+				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND SD.`Staff Key` < %d))  order by $_order_field desc , SD.`Staff Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("Contractor").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("Contractor").' '.$row['object_name'].' ('.$row['object_key'].')';
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
-			}
 
-			$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
+
+				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("Contractor").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$next_key=$row['object_key'];
+						$next_title=_("Contractor").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
+
+
+
 
 			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		if ($data['parent']=='account') {
 
@@ -487,9 +526,9 @@ function get_contractor_navigation($data) {
 }
 
 
-function get_new_contractor_navigation($data) {
+function get_new_contractor_navigation($data, $smarty, $user, $db) {
 
-	global $smarty;
+
 
 
 	$left_buttons=array();
@@ -529,9 +568,9 @@ function get_new_contractor_navigation($data) {
 }
 
 
-function get_timesheet_navigation($data) {
+function get_timesheet_navigation($data, $smarty, $user, $db) {
 
-	global $smarty, $db, $user;
+
 
 	if ($data['object']) {
 		$object=$data['_object'];
@@ -603,63 +642,72 @@ function get_timesheet_navigation($data) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
+		if ($result2=$db->query($sql)) {
+			if ($row2= $result2->fetch()  and $row2['num']>1) {
+
+
+				$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND TD.`Timesheet Key` < %d))  order by $_order_field desc , TD.`Timesheet Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
 
 
-			if ($result=$db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$prev_key=$row['object_key'];
-					$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
 				}
-			}else {
-				print_r($error_info=$db->errorInfo());
-				exit;
-			}
 
 
 
 
 
-			$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
+				$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND TD.`Timesheet Key` > %d))  order by $_order_field   , TD.`Timesheet Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
 
-			if ($result=$db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$prev_key=$row['object_key'];
-					$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
 				}
-			}else {
-				print_r($error_info=$db->errorInfo());
-				exit;
+
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
+
+
+
 			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		if ($data['parent']=='account') {
 
@@ -751,7 +799,7 @@ function get_timesheet_navigation($data) {
 }
 
 
-function get_new_employee_attachment_navigation($data,$user, $smarty) {
+function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
 
 
 
@@ -796,9 +844,9 @@ function get_new_employee_attachment_navigation($data,$user, $smarty) {
 }
 
 
-function get_new_employee_user_navigation($data,$user, $smarty) {
+function get_new_employee_user_navigation($data, $smarty, $user, $db) {
 
-	
+
 	$left_buttons=array();
 	$right_buttons=array();
 
@@ -838,9 +886,10 @@ function get_new_employee_user_navigation($data,$user, $smarty) {
 
 }
 
-function get_employee_attachment_navigation($data,$user, $smarty) {
 
-	
+function get_employee_attachment_navigation($data, $smarty, $user, $db) {
+
+
 
 
 	$left_buttons=array();
@@ -882,16 +931,16 @@ function get_employee_attachment_navigation($data,$user, $smarty) {
 }
 
 
-function get_timesheets_navigation($data) {
+function get_timesheets_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+
 
 
 	$left_buttons=array();
 	$right_buttons=array();
-	
+
 	//print_r($data);
-	
+
 	switch ($data['parent']) {
 
 	case 'day':
@@ -921,8 +970,8 @@ function get_timesheets_navigation($data) {
 		$next_button=array('icon'=>'arrow-right', 'title'=>sprintf(_("Employees' calendar %s"), strftime("%a %e %b %Y", $date)  ), 'reference'=>'timesheets/day/'.date('Ymd', $date));
 
 		break;
-		
-	
+
+
 	case 'month':
 
 		$year=substr($data['parent_key'], 0, 4);
@@ -948,7 +997,7 @@ function get_timesheets_navigation($data) {
 
 		$next_button=array('icon'=>'arrow-right', 'title'=>sprintf(_("Employees' calendar %s"), strftime("%b %Y", $date)  ), 'reference'=>'timesheets/month/'.date('Ym', $date));
 
-		break;	
+		break;
 	case 'week':
 
 		$year=substr($data['parent_key'], 0, 4);
@@ -978,9 +1027,9 @@ function get_timesheets_navigation($data) {
 
 
 		break;
-		
-		
-		
+
+
+
 	case 'year':
 
 		$year=$data['parent_key'];

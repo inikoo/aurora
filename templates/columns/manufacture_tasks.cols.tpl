@@ -10,7 +10,7 @@ var columns = [
     name: "name",
     label: "{t}Name{/t}",
     editable: false,
-         renderable: false,
+         renderable: true,
 
      sortType: "toggle",
     {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

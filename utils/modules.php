@@ -719,14 +719,16 @@ $modules=array(
 			'manufacture_task'=>array(
 				'type'=>'object', 'label'=>_('Task'), 'icon'=>'tasks',
 				'tabs'=>array(
-					'details'=>array('label'=>_('Tasks'))
+					'manufacture_task.details'=>array('label'=>_('Details')),
+					'manufacture_task.batches'=>array('label'=>_('Batches'))
+
 				)
 
 
 
 			),
 
-			'employee.new'=>array('type'=>'new_object',
+			'manufacture_task.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'manufacture_task.new'=>array('label'=>_('New task')),
 

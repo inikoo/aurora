@@ -913,11 +913,13 @@ function parse_request($_data, $db) {
 		case 'manufacture_task':
 			$module='production';
 			$section='manufacture_task';
+			$parent='account';
+			$parent_key=1;
 			$object='manufacture_task';
-			if ( isset($view_path[1]) ) {
-				if (is_numeric($view_path[1])) {
-					$key=$view_path[1];
-				}elseif ($view_path[1]=='new') {
+			if ( isset($view_path[0]) ) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}elseif ($view_path[0]=='new') {
 					$section='manufacture_task.new';
 				}
 			}

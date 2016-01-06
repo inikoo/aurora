@@ -164,9 +164,32 @@ function new_object($account, $db, $user, $editor, $data) {
 	$parent->editor=$editor;
 
 	switch ($data['object']) {
+
+	case 'Manufacture_Task':
+		include_once 'class.Manufacture_Task.php';
+		$object=$parent->create_manufacture_task($data['fields_data']);
+
+		if ($parent->new_manufacture_task) {
+
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/manufacture_task.pcard.tpl');
+			$updated_data=array();
+		}else {
+
+
+			$response=array(
+				'state'=>400,
+				'msg'=>$parent->msg
+
+			);
+			echo json_encode($response);
+			exit;
+		}
+		break;
 	case 'User':
 		include_once 'class.User.php';
-		
+
 		$parent->get_user_data();
 		$parent->create_user($data['fields_data']);
 

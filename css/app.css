@@ -524,84 +524,6 @@ input {
   white-space: normal;
   white-space: nowrap; }
 
-#object_showcase {
-  clear: both;
-  border-bottom: 1px solid #ccc;
-  font-size: 15px; }
-  #object_showcase .subject_profile {
-    padding: 20px; }
-  #object_showcase .pdf_link img {
-    height: 10px;
-    vertical-align: 0px; }
-  #object_showcase #containers {
-    padding: 20px 30px; }
-  #object_showcase .data_container {
-    float: left;
-    margin-right: 10px;
-    margin-bottom: 10px; }
-    #object_showcase .data_container i {
-      margin-right: 10px; }
-    #object_showcase .data_container .data_field {
-      text-align: left;
-      min-width: 300px;
-      margin-bottom: 4px; }
-  #object_showcase .order #contact_data {
-    width: 500px; }
-  #object_showcase .order #dates {
-    width: 310px; }
-  #object_showcase .invoice #dates {
-    width: 310px; }
-  #object_showcase .invoice #totals {
-    width: 310px; }
-  #object_showcase #contact_data {
-    float: left;
-    padding: 20px 20px; }
-  #object_showcase .block {
-    float: right;
-    border-left: 1px solid #ccc;
-    height: 100%; }
-  #object_showcase #dates .date_and_state {
-    width: 100%;
-    text-align: center; }
-    #object_showcase #dates .date_and_state .date {
-      padding: 3px;
-      border-bottom: 1px solid #ccc; }
-    #object_showcase #dates .date_and_state .state {
-      font-size: 80%;
-      border-bottom: 1px solid #ccc; }
-      #object_showcase #dates .date_and_state .state td {
-        padding: 3px 0px; }
-    #object_showcase #dates .date_and_state .two-columns td:first-of-type {
-      width: 50%;
-      border-right: 1px solid #ccc; }
-  #object_showcase #dates .ul_table {
-    width: 100%;
-    padding: 5px;
-    margin-top: 10px; }
-    #object_showcase #dates .ul_table .icon {
-      width: 24px;
-      text-align: right; }
-    #object_showcase #dates .ul_table .state {
-      text-align: right;
-      padding-right: 10px;
-      font-size: 80%; }
-  #object_showcase #totals, #object_showcase .block {
-    padding-top: 5px; }
-    #object_showcase #totals table, #object_showcase .block table {
-      width: 100%; }
-    #object_showcase #totals td, #object_showcase .block td {
-      padding: 4px 8px; }
-    #object_showcase #totals .top-border, #object_showcase .block .top-border {
-      border-top: 1px solid #ccc; }
-    #object_showcase #totals .bottom-border, #object_showcase .block .bottom-border {
-      border-bottom: 1px solid #ccc; }
-    #object_showcase #totals .top-strong-border, #object_showcase .block .top-strong-border {
-      border-top: 1px solid #aaa; }
-    #object_showcase #totals .bottom-strong-border, #object_showcase .block .bottom-strong-border {
-      border-bottom: 1px solid #aaa; }
-  #object_showcase #account .block {
-    min-width: 150px; }
-
 .details_data, .new_object, .presention_card, .showcase, .dashboard {
   padding: 10px 20px; }
   .details_data textarea, .new_object textarea, .presention_card textarea, .showcase textarea, .dashboard textarea {
@@ -1270,5 +1192,93 @@ table .totals td {
       text-align: center;
       cursor: pointer;
       width: 100%; }
+
+#object_showcase {
+  clear: both;
+  border-bottom: 1px solid #ccc;
+  font-size: 15px; }
+  #object_showcase .showcase {
+    padding-top: 0px; }
+  #object_showcase h1 {
+    padding: 0px;
+    margin: 0px;
+    color: #555;
+    float: left;
+    font-size: 21px;
+    font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+    font-weight: 700; }
+  #object_showcase .subject_profile {
+    padding: 20px; }
+  #object_showcase .pdf_link img {
+    height: 10px;
+    vertical-align: 0px; }
+  #object_showcase #containers {
+    padding: 20px 30px; }
+  #object_showcase .data_container {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px; }
+    #object_showcase .data_container i {
+      margin-right: 10px; }
+    #object_showcase .data_container .data_field {
+      text-align: left;
+      min-width: 300px;
+      margin-bottom: 4px; }
+  #object_showcase .order #contact_data {
+    width: 500px; }
+  #object_showcase .order #dates {
+    width: 310px; }
+  #object_showcase .invoice #dates {
+    width: 310px; }
+  #object_showcase .invoice #totals {
+    width: 310px; }
+  #object_showcase #contact_data {
+    float: left;
+    padding: 20px 20px; }
+  #object_showcase .block {
+    float: right;
+    border-left: 1px solid #ccc;
+    height: 100%; }
+  #object_showcase #dates .date_and_state {
+    width: 100%;
+    text-align: center; }
+    #object_showcase #dates .date_and_state .date {
+      padding: 3px;
+      border-bottom: 1px solid #ccc; }
+    #object_showcase #dates .date_and_state .state {
+      font-size: 80%;
+      border-bottom: 1px solid #ccc; }
+      #object_showcase #dates .date_and_state .state td {
+        padding: 3px 0px; }
+    #object_showcase #dates .date_and_state .two-columns td:first-of-type {
+      width: 50%;
+      border-right: 1px solid #ccc; }
+  #object_showcase #dates .ul_table {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px; }
+    #object_showcase #dates .ul_table .icon {
+      width: 24px;
+      text-align: right; }
+    #object_showcase #dates .ul_table .state {
+      text-align: right;
+      padding-right: 10px;
+      font-size: 80%; }
+  #object_showcase #totals, #object_showcase .block {
+    padding-top: 5px; }
+    #object_showcase #totals table, #object_showcase .block table {
+      width: 100%; }
+    #object_showcase #totals td, #object_showcase .block td {
+      padding: 4px 8px; }
+    #object_showcase #totals .top-border, #object_showcase .block .top-border {
+      border-top: 1px solid #ccc; }
+    #object_showcase #totals .bottom-border, #object_showcase .block .bottom-border {
+      border-bottom: 1px solid #ccc; }
+    #object_showcase #totals .top-strong-border, #object_showcase .block .top-strong-border {
+      border-top: 1px solid #aaa; }
+    #object_showcase #totals .bottom-strong-border, #object_showcase .block .bottom-strong-border {
+      border-bottom: 1px solid #aaa; }
+  #object_showcase #account .block {
+    min-width: 150px; }
 
 /*# sourceMappingURL=app.css.map */

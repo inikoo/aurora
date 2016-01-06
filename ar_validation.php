@@ -56,22 +56,22 @@ function check_for_duplicates($data, $db, $user) {
 
 	switch ($data['object']) {
 	case 'User':
-	switch ($field) {
+		switch ($field) {
 		case 'Staff User Handle':
 			$invalid_msg=_('Another user is using this login');
 			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`='Staff' and `User Handle`=%s",
 				prepare_mysql($data['value'])
 			);
 			break;
-		
-			
+
+
 		default:
 
 			break;
 		}
 		break;
-	
-	break;
+
+		break;
 	case 'Staff':
 
 		switch ($field) {
@@ -106,7 +106,7 @@ function check_for_duplicates($data, $db, $user) {
 
 
 		break;
-		
+
 	case 'Category':
 
 		switch ($field) {
@@ -120,7 +120,7 @@ function check_for_duplicates($data, $db, $user) {
 		}
 
 
-		break;	
+		break;
 	default:
 
 
@@ -134,15 +134,16 @@ function check_for_duplicates($data, $db, $user) {
 			break;
 		case 'category':
 			$parent_where=sprintf(' and `%s Parent Key`=%d ', $data['object'], $data['parent_key']);
-			break;	
+			break;
 		default:
 			$parent_where='';
 		}
 
 		$sql=sprintf('select `%s Key` as `key` ,`%s` as field from `%s Dimension` where `%s`=%s %s ',
-			addslashes($data['object']),
+			addslashes(preg_replace('/_/', ' ', $data['object'])),
 			addslashes($field),
-			addslashes($data['object']),
+
+			addslashes(preg_replace('/_/', ' ', $data['object'])),
 			addslashes($field),
 			prepare_mysql($data['value']),
 			$parent_where
@@ -158,14 +159,20 @@ function check_for_duplicates($data, $db, $user) {
 	$validation='valid';
 	$msg='';
 
-	//print $sql;
 
-	if ($row = $db->query($sql)->fetch()) {
-		if ($row['key']!=$data['key']) {
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
 			$validation='invalid';
 			$msg=$invalid_msg;
 		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print "$sql";
+		exit;
 	}
+
+
+
 
 	$response=array(
 		'state'=>200,

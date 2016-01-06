@@ -24,10 +24,10 @@ function get_table_parameters() {
 }
 
 
-function get_table_totals($sql_totals, $wheref='', $record_label='', $metadata='') {
+function get_table_totals($db,$sql_totals, $wheref='', $record_label='', $metadata='') {
 
 
-	global $db;
+	
 
 
 	if ($sql_totals) {
