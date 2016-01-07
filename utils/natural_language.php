@@ -47,13 +47,13 @@ function seconds_to_string($seconds, $until='seconds', $short=false) {
 				}else {
 					switch ($key) {
 					case 'weeks':
-						$string.=sprintf("%d %s", $value, ngettext("week", "weeks", $value));
+						$string.=sprintf("%d %s", $quot, ngettext("week", "weeks", $quot));
 						break;
 					case 'days':
-						$string.=' '.sprintf("%d %s", $value, ngettext("day", "days", $value));
+						$string.=' '.sprintf("%d %s", $quot, ngettext("day", "days", $quot));
 						break;
 					case 'hours':
-						$string.=' '.sprintf("%d %s", $value, ngettext("h", "hrs", $value));
+						$string.=' '.sprintf("%d %s", $quot, ngettext("h", "hrs", $quot));
 						break;
 					case 'minutes':
 						$string.=' '.sprintf(_('%sm'), $quot);
