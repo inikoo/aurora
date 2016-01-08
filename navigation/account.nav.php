@@ -15,8 +15,8 @@ function get_account_navigation($data) {
 
 
 	$sections=get_sections('account', '');
-	$sections['users']['selected']=true;
-	$title=_('Account').' <span class="id">'.$data['_object']->get('Account Name').'</span>';
+	$sections['account']['selected']=true;
+	$title=_('Account').' <span class="id">'.$data['_object']->get('Code').'</span>';
 
 	$_content=array(
 		'sections_class'=>'',
@@ -109,9 +109,31 @@ function get_settings_navigation($data) {
 	return $html;
 }
 
+function get_stationary_navigation($data,$smarty) {
+	
 
-function get_users_navigation($data) {
-	global $smarty;
+
+	$sections=get_sections('account', '');
+	$sections['stationary']['selected']=true;
+	$title=_('Stationary');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+function get_users_navigation($data,$smarty) {
+	
 
 
 	$sections=get_sections('account', '');

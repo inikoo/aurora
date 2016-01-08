@@ -1177,8 +1177,8 @@ $modules=array(
 			'profile'=>array('type'=>'object', 'label'=>'', 'title'=>'', 'icon'=>'', 'reference'=>'',
 				'tabs'=>array(
 					'profile.details'=>array('label'=>_('Details'), 'title'=>_('My details')),
-					'profile.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'profile.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
+					'profile.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+					'profile.login_history'=>array('label'=>_('Login history')),
 				)
 			),
 
@@ -1190,7 +1190,7 @@ $modules=array(
 
 
 		'sections'=>array(
-			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'icon'=>'star', 'reference'=>'account',
+			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'icon'=>'star', 'reference'=>'account', 'showcase'=>true,
 				'tabs'=>array(
 					'account.details'=>array('label'=>_('Details'), 'title'=>_('Account details')),
 				)
@@ -1206,16 +1206,21 @@ $modules=array(
 					'orders_index'=>array('label'=>_("Order's Index")),
 				)
 			),
+			'stationary'=>array('type'=>'navigation', 'label'=>_('Stationary'), 'icon'=>'calculator', 'reference'=>'account/stationary',
+				'tabs'=>array(
+					'account.stationary'=>array('label'=>_('Stationary')),
+				)
+			),
 			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
 				'tabs'=>array(
-					'account.settings'=>array('label'=>_('Settings'), 'title'=>_('Settings')),
+					'account.settings'=>array('label'=>_('Settings')),
 				)
 			),
 			'staff'=>array('type'=>'object', 'label'=>_('Staff'), 'title'=>_("Staff users"), 'icon'=>'hand-rock-o', 'reference'=>'users',
 				'tabs'=>array(
-					'users.staff.users'=>array('label'=>_('Users'), 'title'=>_('Users')),
-					'users.staff.groups'=>array('label'=>_("Groups"), 'title'=>_("Groups")),
-					'users.staff.login_history'=>array('label'=>_('Login History'), 'title'=>_('Login History')),
+					'users.staff.users'=>array('label'=>_('Users')),
+					'users.staff.groups'=>array('label'=>_("Groups")),
+					'users.staff.login_history'=>array('label'=>_('Login History')),
 
 				)
 

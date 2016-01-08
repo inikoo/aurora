@@ -1,4 +1,51 @@
-<div id="account">
+<div class="subject_profile">
+	<div  style="float:left;width:600px">
+		<div class="showcase" >
+			
+				<h1 class="Account_Name">{$account->get('Name')}</h1> 
+			
+			<table  border=0>
+				<tr>
+					<td class="label">{$account->get_field_label('Account Stores')|capitalize}/{$account->get_field_label('Account Websites')|capitalize}</td>
+					<td ><span class="Account_Stores">{$account->get('Stores')}/<span class="Account_Websites">{$account->get('Websites')}</span></td>
+				</tr>
+				<tr>
+					<td class="label">{$account->get_field_label('Account Products')|capitalize}</td>
+					<td class="Account_Stores">{$account->get('Products')}</td>
+				</tr>
+				<tr>
+					<td class="label">{$account->get_field_label('Account Customers')|capitalize}</td>
+					<td class="Account_Stores">{$account->get('Customers')}</td>
+				</tr>
+				<tr>
+					<td class="label">{$account->get_field_label('Account Invoices')|capitalize}</td>
+					<td class="Account_Stores">{$account->get('Invoices')}</td>
+				</tr>
+				
+			</table>
+		</div>
+		<div style="clear:both">
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+	
+	<div style="clear:both">
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="account" style="display:none">
 	
 	<div class="block">
 		<table border="0" id="stores" class="data_list">

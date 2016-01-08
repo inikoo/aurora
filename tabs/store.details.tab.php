@@ -13,10 +13,16 @@ include_once 'utils/invalid_messages.php';
 
 $store=$state['_object'];
 
-//'en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT'
 
 $options_Store_Locale=array(
-	'en_GB'=>'en_GB '_('British English'), 'de_DE'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
+	'en_GB'=>'en_GB '._('British English'),
+	'de_DE'=>'de_DE'._('German'),
+	'fr_FR'=>'fr_FR'._('French'),
+	'es_ES'=>'es_ES'._('Spanish'),
+	'pl_PL'=>'pl_PL'._('Polish'),
+	'it_IT'=>'it_IT'._('Italian'),
+	'sk_SK'=>'sk_SK'._('Sloavak'),
+	'pt_PT'=>'pt_PT'._('Portuguese'),
 );
 asort($options_Store_Locale);
 

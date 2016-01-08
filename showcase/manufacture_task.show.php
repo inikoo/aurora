@@ -10,9 +10,9 @@
  Version 3.0
 */
 
-function get_manufacture_task_showcase($data) {
+function get_manufacture_task_showcase($data,$smarty) {
 
-    global $smarty;
+ 
     
     $manufacture_task=$data['_object'];
     if(!$manufacture_task->id){

@@ -64,7 +64,7 @@ function get_store_navigation($data) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Store').' <span class="id">'.$store->get('Store Name').'</span>',
+		'title'=>_('Store').' <span class="id">'.$store->get('Code').'</span>',
 		'search'=>array('show'=>true, 'placeholder'=>_('Search products').' '.$store->get('Store Code'))
 
 	);
