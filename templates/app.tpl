@@ -10,29 +10,15 @@
 	<link href="/css/backgrid.css" rel="stylesheet">
 	<link href="/css/backgrid-filter.css" rel="stylesheet">
 	<link href="/css/intlTelInput.css" rel="stylesheet">
-	
-	
-	
 	<link href="/css/app.css" rel="stylesheet">
-	<script type="text/javascript" src="/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="/js/moment.min.js"></script> 
- 
-	<script type="text/javascript" src="/js/chrono.min.js"></script> 
-	<script type="text/javascript" src="/js/sha256.js"></script> 
-	<script type="text/javascript" src="/js/underscore.js"></script> 
-	<script type="text/javascript" src="/js/backbone.js"></script> 
-	<script type="text/javascript" src="/js/backbone.paginator.js"></script> 
-	<script type="text/javascript" src="/js/backgrid.js"></script> 
-	<script type="text/javascript" src="/js/backgrid-filter.js"></script> 
-	<script type="text/javascript" src="/js/app.js"></script> 
-	<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script> 
-	<script type="text/javascript" src="/js/search.js"></script> 
-	<script type="text/javascript" src="/js/table.js"></script> 
-	<script type="text/javascript" src="/js/field_validation.js"></script> 
-	<script type="text/javascript" src="/js/edit.js"></script> 
-	<script type="text/javascript" src="/js/new.js"></script> 
+	<link href="/external_libs/d3fc/dist/d3fc.css" rel="stylesheet"/>
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script> <script type="text/javascript" src="/js/jquery-ui.min.js"></script> <script type="text/javascript" src="/js/moment.min.js"></script> <script type="text/javascript" src="/js/chrono.min.js"></script> <script type="text/javascript" src="/js/sha256.js"></script> <script type="text/javascript" src="/js/underscore.js"></script> <script type="text/javascript" src="/js/backbone.js"></script> <script type="text/javascript" src="/js/backbone.paginator.js"></script> <script type="text/javascript" src="/js/backgrid.js"></script> <script type="text/javascript" src="/js/backgrid-filter.js"></script> <script type="text/javascript" src="/js/app.js"></script> <script type="text/javascript" src="/js/keyboard_shorcuts.js"></script> <script type="text/javascript" src="/js/search.js"></script> <script type="text/javascript" src="/js/table.js"></script> <script type="text/javascript" src="/js/field_validation.js"></script> <script type="text/javascript" src="/js/edit.js"></script> <script type="text/javascript" src="/js/new.js"></script> 
 	<script type="text/javascript" src="/js/intlTelInput.min.js"></script> 
+	<script src="/external_libs/d3fc/node_modules/d3/d3.js"></script>
+<script src="/external_libs/d3fc/node_modules/css-layout/dist/css-layout.js"></script>
+<script src="/external_libs/d3fc/node_modules/svg-innerhtml/svg-innerhtml.js"></script>
+<script src="/external_libs/d3fc/dist/d3fc.js"></script>
 	
 	
 	
@@ -47,20 +33,20 @@
 	<section>
 		<div id="app_leftmenu">
 			<div id="top_info">
-				<div id="aurora_logo" class="link" onclick="help()" >
+				<div id="aurora_logo" class="link" onclick="help()">
 					<img src="/art/aurora_log_v2_orange_small.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
-					{$user->get('User Alias')}
+					{$user->get('User Alias')} 
 				</div>
 			</div>
 			<div id="account_name" class="link" onclick="change_view('account')">
-				{$account->get('Account Name')}
+				{$account->get('Account Name')} 
 			</div>
 			<div id="menu">
 			</div>
 			<ul style="margin-top:20px">
-				<li onclick="logout()" ><i class="fa fa-sign-out fa-fw"></i> <span id="logout_label">{t}Logout{/t}</li>
+				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i> <span id="logout_label">{t}Logout{/t}</li>
 			</ul>
 		</div>
 		<div id="app_main">
@@ -77,11 +63,11 @@
 		</div>
 	</section>
 	<aside id="notifications">
-	<div class="top_buttons" style="padding:2px 10px;border-bottom:1px solid #eee">
-	<div onclick="change_view('/fire')"  class="square_button  " title="{t}Fire evacuation roll call{/t}" >
-		<i class="fa fa-fire fa-fw" style="color:orange"></i> 
-	</div>
-	<div>
+		<div class="top_buttons" style="padding:2px 10px;border-bottom:1px solid #eee">
+			<div onclick="change_view('/fire')" class="square_button  " title="{t}Fire evacuation roll call{/t}">
+				<i class="fa fa-fire fa-fw" style="color:orange"></i> 
+			</div>
+			<div>
 	</aside>
 </div>
 </body>

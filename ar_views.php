@@ -183,10 +183,8 @@ case 'views':
 
 	$response['tabs']=get_tabs($state, $modules);// todo only calculate when is subtabs in the section
 
-
-
-	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
-		$response['object_showcase']=get_object_showcase($state);
+	if ($state['object']!=''  and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )   ) {
+		$response['object_showcase']=get_object_showcase($state,$smarty,$user);
 	}else {
 		$response['object_showcase']='';
 	}
@@ -266,64 +264,69 @@ function get_tab($tab, $subtab, $state=false, $metadata) {
 
 
 
-function get_object_showcase($data) {
+function get_object_showcase($data,$smarty,$user) {
 
 
 
 
 	switch ($data['object']  ) {
-	case 'store':
+	
 	case 'website':
 	case 'dashboard':
 		$html='';
 		break;
+	case 'store':
+		include_once 'showcase/store.show.php';
+		$html=get_store_showcase($data,$smarty,$user);
+		break;	
 	case 'account':
 		include_once 'showcase/account.show.php';
-		$html=get_account_showcase($data);
+		$html=get_account_showcase($data,$smarty,$user);
 		break;
+		
 	case 'employee':
 		include_once 'showcase/employee.show.php';
-		$html=get_employee_showcase($data);
+		$html=get_employee_showcase($data,$smarty,$user);
 		break;
 	case 'contractor':
 		include_once 'showcase/contractor.show.php';
-		$html=get_contractor_showcase($data);
+		$html=get_contractor_showcase($data,$smarty,$user);
 		break;
 	case 'customer':
 		include_once 'showcase/customer.show.php';
-		$html=get_customer_showcase($data);
+		$html=get_customer_showcase($data,$smarty,$user);
 		break;
 	case 'order':
 		include_once 'showcase/order.show.php';
-		$html=get_order_showcase($data);
+		$html=get_order_showcase($data,$smarty,$user);
 		break;
 	case 'invoice':
 		include_once 'showcase/invoice.show.php';
-		$html=get_invoice_showcase($data);
+		$html=get_invoice_showcase($data,$smarty,$user);
 		break;
 	case 'delivery_note':
 		include_once 'showcase/delivery_note.show.php';
-		$html=get_delivery_note_showcase($data);
+		$html=get_delivery_note_showcase($data,$smarty,$user);
 		break;
 	case 'user':
 		include_once 'showcase/user.show.php';
-		$html=get_user_showcase($data);
+		$html=get_user_showcase($data,$smarty,$user);
 		break;
 	case 'warehouse':
 		include_once 'showcase/warehouse.show.php';
-		$html=get_warehouse_showcase($data);
+		$html=get_warehouse_showcase($data,$smarty,$user);
 		break;
 	case 'timesheet':
 		include_once 'showcase/timesheet.show.php';
-		$html=get_timesheet_showcase($data);
+		$html=get_timesheet_showcase($data,$smarty,$user);
 		break;
 	case 'attachment':
 		include_once 'showcase/attachment.show.php';
-		$html=get_attachment_showcase($data);
+		$html=get_attachment_showcase($data,$smarty,$user);
 		break;
 	case 'manufacture_task':
 		include_once 'showcase/manufacture_task.show.php';
-		$html=get_manufacture_task_showcase($data);
+		$html=get_manufacture_task_showcase($data,$smarty,$user);
 		break;	
 	default:
 		$html=$data['object'].' -> '.$data['key'];
@@ -847,47 +850,50 @@ function get_navigation($user, $smarty, $data, $db) {
 
 		switch ($data['section']) {
 		case ('account'):
-			return get_account_navigation($data);
+			return get_account_navigation($data, $smarty, $user, $db);
 			break;
 		case ('users'):
-			return get_users_navigation($data);
+			return get_users_navigation($data, $smarty, $user, $db);
 			break;
+		case ('stationary'):
+			return get_stationary_navigation($data, $smarty, $user, $db);
+			break;	
 		case ('orders_index'):
-			return get_orders_index_navigation($data);
+			return get_orders_index_navigation($data, $smarty, $user, $db);
 			break;
 		case ('staff'):
-			return get_staff_navigation($data);
+			return get_staff_navigation($data, $smarty, $user, $db);
 			break;
 		case ('suppliers'):
-			return get_suppliers_navigation($data);
+			return get_suppliers_navigation($data, $smarty, $user, $db);
 			break;
 		case ('warehouse'):
-			return get_warehouse_navigation($data);
+			return get_warehouse_navigation($data, $smarty, $user, $db);
 			break;
 		case ('root'):
-			return get_root_navigation($data);
+			return get_root_navigation($data, $smarty, $user, $db);
 			break;
 		case ('staff.user'):
-			return get_staff_user_navigation($data);
+			return get_staff_user_navigation($data, $smarty, $user, $db);
 			break;
 		case ('suppliers.user'):
-			return get_supplierss_user_navigation($data);
+			return get_supplierss_user_navigation($data, $smarty, $user, $db);
 			break;
 
 		case ('warehouse.user'):
-			return get_warehouse_user_navigation($data);
+			return get_warehouse_user_navigation($data, $smarty, $user, $db);
 			break;
 		case ('root.user'):
-			return get_root_user_navigation($data);
+			return get_root_user_navigation($data, $smarty, $user, $db);
 			break;
 		case ('settings'):
-			return get_settings_navigation($data);
+			return get_settings_navigation($data, $smarty, $user, $db);
 			break;
 		case ('staff.user.api_key') :
-			return get_api_key_navigation($data);
+			return get_api_key_navigation($data, $smarty, $user, $db);
 			break;
 		case ('staff.user.api_key.new') :
-			return get_new_api_key_navigation($data);
+			return get_new_api_key_navigation($data, $smarty, $user, $db);
 			break;
 
 
@@ -1897,7 +1903,7 @@ function get_help($data, $modules, $db) {
 
 
 	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
-		$response['object_showcase']=get_object_showcase($state);
+		$response['object_showcase']=get_object_showcase($state,$smarty,$user);
 	}else {
 		$response['object_showcase']='';
 	}

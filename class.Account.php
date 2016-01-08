@@ -377,6 +377,35 @@ class Account extends DB_Table{
 	}
 
 
+	function get_field_label($field) {
+
+		switch ($field) {
+		case 'Account Stores':
+			$label=_('stores');
+			break;
+		case 'Account Websites':
+			$label=_('Websites');
+			break;
+		case 'Account Products':
+			$label=_('Products');
+			break;
+		case 'Account Customers':
+			$label=_('Customers');
+			break;
+		case 'Account Invoices':
+			$label=_('Invoices');
+			break;
+		case 'Account Order Transactions':
+			$label=_("Order's Items");
+			break;			
+		default:
+			$label=$field;
+		}
+		return $label;
+
+	}
+
+
 }
 
 

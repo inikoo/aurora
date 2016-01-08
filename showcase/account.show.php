@@ -10,10 +10,8 @@
  Version 3.0
 */
 
-function get_account_showcase($data) {
-
-    global $smarty,$account;
-    
+function get_account_showcase($data,$smarty) {
+    $account=$data['_object'];
     
     
     $smarty->assign('account',$account);

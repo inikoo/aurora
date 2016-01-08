@@ -1269,6 +1269,11 @@ function parse_request($_data, $db) {
 
 
 
+				}elseif ($view_path[0]=='stationary') {
+					$section='stationary';
+
+
+
 				}
 				elseif ($view_path[0]=='orders') {
 					$section='orders_index';

@@ -2,14 +2,14 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 6 October 2015 at 21:42:53 BST, Birmingham->Malaga (Plane)
+ Created: 7 January 2016 at 11:25:52 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-$tab='family.history';
+$tab='employee.history';
 $ar_file='ar_history_tables.php';
 $tipo='object_history';
 
