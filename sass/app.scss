@@ -256,7 +256,10 @@ input{
         cursor: pointer;
         border-top: 1px solid $color_dark_darker_font;
         color: $color_dark_font;
-        &:last-of-type {
+        
+        &.jump{margin-top: $height_short_row;}
+        
+        &:last-of-type ,&.last{
             border-bottom: 1px solid $color_dark_darker_font;
         }
         .fa {

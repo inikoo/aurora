@@ -10,9 +10,9 @@
 */
 
 
-$tab='account.stationary';
+$tab='data_sets';
 $ar_file='ar_account_tables.php';
-$tipo='stationary';
+$tipo='data_sets';
 
 $default=$user->get_tab_defaults($tab);
 

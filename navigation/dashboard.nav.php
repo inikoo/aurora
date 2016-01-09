@@ -9,13 +9,10 @@
 
 */
 
-function get_dashboard_navigation($data) {
-
-	global $user,$smarty;
+function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
 
 
-
-$left_buttons=array();
+	$left_buttons=array();
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store='.$store->id);
@@ -34,11 +31,11 @@ $left_buttons=array();
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Dashboard').' <span class="id">'.'</span>',
-		'search'=>array('show'=>true,'placeholder'=>_('Search'))
+		'title'=>_('Dashboard').' <span class="id">'.$account->get('Name').'</span>',
+		'search'=>array('show'=>true, 'placeholder'=>_('Search'))
 
 	);
-	$smarty->assign('_content',$_content);
+	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;

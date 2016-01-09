@@ -1269,8 +1269,8 @@ function parse_request($_data, $db) {
 
 
 
-				}elseif ($view_path[0]=='stationary') {
-					$section='stationary';
+				}elseif ($view_path[0]=='data_sets') {
+					$section='data_sets';
 
 
 

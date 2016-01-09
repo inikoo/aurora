@@ -1206,9 +1206,9 @@ $modules=array(
 					'orders_index'=>array('label'=>_("Order's Index")),
 				)
 			),
-			'stationary'=>array('type'=>'navigation', 'label'=>_('Stationary'), 'icon'=>'calculator', 'reference'=>'account/stationary',
+			'data_sets'=>array('type'=>'navigation', 'label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets',
 				'tabs'=>array(
-					'account.stationary'=>array('label'=>_('Stationary')),
+					'data_sets'=>array('label'=>_('Data sets')),
 				)
 			),
 			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
