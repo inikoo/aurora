@@ -171,7 +171,9 @@ input {
     cursor: pointer;
     border-top: 1px solid #777;
     color: #ddd; }
-    #app_leftmenu li:last-of-type {
+    #app_leftmenu li.jump {
+      margin-top: 22px; }
+    #app_leftmenu li:last-of-type, #app_leftmenu li.last {
       border-bottom: 1px solid #777; }
     #app_leftmenu li .fa {
       margin-right: 6px;

@@ -143,7 +143,7 @@ case 'views':
 
 	) {
 
-		$response['navigation']=get_navigation($user, $smarty, $state, $db);
+		$response['navigation']=get_navigation($user, $smarty, $state, $db,$account);
 
 	}
 
@@ -352,14 +352,14 @@ function get_menu($data) {
 }
 
 
-function get_navigation($user, $smarty, $data, $db) {
+function get_navigation($user, $smarty, $data, $db,$account) {
 
 
 	switch ($data['module']) {
 
 	case ('dashboard'):
 		require_once 'navigation/dashboard.nav.php';
-		return get_dashboard_navigation($data);
+		return get_dashboard_navigation($data, $smarty, $user, $db,$account);
 		break;
 	case ('products'):
 	case ('products_server'):
@@ -855,8 +855,8 @@ function get_navigation($user, $smarty, $data, $db) {
 		case ('users'):
 			return get_users_navigation($data, $smarty, $user, $db);
 			break;
-		case ('stationary'):
-			return get_stationary_navigation($data, $smarty, $user, $db);
+		case ('data_sets'):
+			return get_data_sets_navigation($data, $smarty, $user, $db);
 			break;	
 		case ('orders_index'):
 			return get_orders_index_navigation($data, $smarty, $user, $db);

@@ -109,13 +109,13 @@ function get_settings_navigation($data) {
 	return $html;
 }
 
-function get_stationary_navigation($data,$smarty) {
+function get_data_sets_navigation($data,$smarty) {
 	
 
 
 	$sections=get_sections('account', '');
-	$sections['stationary']['selected']=true;
-	$title=_('Stationary');
+	$sections['data_sets']['selected']=true;
+	$title=_('Data sets');
 
 	$_content=array(
 		'sections_class'=>'',
