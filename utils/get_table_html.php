@@ -148,6 +148,12 @@ $smarty->assign('tipo', $tipo);
 $smarty->assign('parameters', $parameters);
 $smarty->assign('tab', $tab);
 
+if (isset($columns_parameters)){
+$smarty->assign('columns_parameters', $columns_parameters);
+
+}
+
+
 if (isset($table_views[$table_view]))
 	$table_views[$table_view]['selected']=true;
 

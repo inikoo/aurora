@@ -29,8 +29,8 @@ function parse_request($_data, $db) {
 	$tab='not_found';
 	$tab_parent='';
 	$subtab='';
-	$parent=false;
-	$parent_key=false;
+	$parent='account';
+	$parent_key=1;
 	$object='';
 	$key='';
 
@@ -1271,19 +1271,19 @@ function parse_request($_data, $db) {
 
 				}elseif ($view_path[0]=='data_sets') {
 					$section='data_sets';
-                    if (isset($view_path[1])) {
-                        if($view_path[1]=='timeseries'){
-                            $section='timeseries';
-                        }elseif($view_path[1]=='images'){
-                            $section='images';
-                        }elseif($view_path[1]=='attachments'){
-                            $section='attachments';
-                        }elseif($view_path[1]=='osf'){
-                            $section='osf';
-                        }elseif($view_path[1]=='isf'){
-                            $section='isf';
-                        }
-                    }
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='timeseries') {
+							$section='timeseries';
+						}elseif ($view_path[1]=='images') {
+							$section='images';
+						}elseif ($view_path[1]=='attachments') {
+							$section='attachments';
+						}elseif ($view_path[1]=='osf') {
+							$section='osf';
+						}elseif ($view_path[1]=='isf') {
+							$section='isf';
+						}
+					}
 
 
 				}
@@ -1589,6 +1589,20 @@ function parse_request($_data, $db) {
 
 			}
 			break;
+		case 'timeseries':
+			$module='account';
+			$section='timeserie';
+			if (isset($view_path[0])) {
+				if ( is_numeric($view_path[0])) {
+
+
+					$object='timeseries';
+					$key=$view_path[0];
+
+				}
+			}
+			break;
+
 		case 'fire':
 			$module='utils';
 			$section='fire';
@@ -1599,7 +1613,6 @@ function parse_request($_data, $db) {
 		}
 
 	}
-
 
 	list($tab, $subtab)=parse_tabs($module, $section, $_data, $modules);
 	$state=array(
