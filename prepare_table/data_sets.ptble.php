@@ -26,7 +26,7 @@ $_dir=$order_direction;
 
 if ($order=='sets')
 	$order='`Data Sets Number Sets`';
-if ($order=='items')
+elseif ($order=='items')
 	$order='`Data Sets Number Items`';
 elseif ($order=='size')
 	$order='`Data Sets Size`';

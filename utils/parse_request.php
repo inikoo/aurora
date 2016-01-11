@@ -1271,7 +1271,19 @@ function parse_request($_data, $db) {
 
 				}elseif ($view_path[0]=='data_sets') {
 					$section='data_sets';
-
+                    if (isset($view_path[1])) {
+                        if($view_path[1]=='timeseries'){
+                            $section='timeseries';
+                        }elseif($view_path[1]=='images'){
+                            $section='images';
+                        }elseif($view_path[1]=='attachments'){
+                            $section='attachments';
+                        }elseif($view_path[1]=='osf'){
+                            $section='osf';
+                        }elseif($view_path[1]=='isf'){
+                            $section='isf';
+                        }
+                    }
 
 
 				}

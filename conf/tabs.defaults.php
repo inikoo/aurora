@@ -837,7 +837,32 @@ $tab_defaults=array(
 		'f_field'=>'',
 	),
 	
+	'timeseries'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
 	
+	'data_sets.images'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
+	
+	'data_sets.attachments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
 	
 	'account.users'=>array(
 		'view'=>'overview',

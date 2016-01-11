@@ -1211,6 +1211,31 @@ $modules=array(
 					'data_sets'=>array('label'=>_('Data sets')),
 				)
 			),
+			'isf'=>array('type'=>'',
+				'tabs'=>array(
+					'data_sets.isf'=>array('label'=>_('Order transactions timeseries')),
+				)
+			),
+			'osf'=>array('type'=>'',
+				'tabs'=>array(
+					'data_sets.osf'=>array('label'=>_('Inventory transactions timeseries')),
+				)
+			),
+			'images'=>array('type'=>'',
+				'tabs'=>array(
+					'data_sets.images'=>array('label'=>_('Images')),
+				)
+			),
+			'attachments'=>array('type'=>'',
+				'tabs'=>array(
+					'data_sets.attachments'=>array('label'=>_('Attachments')),
+				)
+			),
+			'timeseries'=>array('type'=>'',
+				'tabs'=>array(
+					'timeseries'=>array('label'=>_('Timeseries')),
+				)
+			),
 			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
 				'tabs'=>array(
 					'account.settings'=>array('label'=>_('Settings')),
