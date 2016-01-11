@@ -111,8 +111,6 @@ function get_settings_navigation($data) {
 
 function get_data_sets_navigation($data,$smarty) {
 	
-
-
 	$sections=get_sections('account', '');
 	$sections['data_sets']['selected']=true;
 	$title=_('Data sets');
@@ -131,6 +129,112 @@ function get_data_sets_navigation($data,$smarty) {
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 }
+
+function get_timeseries_navigation($data,$smarty) {
+	
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Time series');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+function get_images_navigation($data,$smarty) {
+	
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Images');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+function get_attachments_navigation($data,$smarty) {
+	
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Attachments');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+function get_isf_navigation($data,$smarty) {
+	
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Inventory timeseries');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+function get_osf_navigation($data,$smarty) {
+	
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Transactions timeseries');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
 
 function get_users_navigation($data,$smarty) {
 	

@@ -1,19 +1,19 @@
 var columns = [
  {
-    name: "request",
+    name: "id",
     label: "",
     editable: false,
     renderable: false,
     cell: "string"
 },
  {
-    name: "name",
-    label: "{t}Name{/t}",
+    name: "type",
+    label: "{t}Type{/t}",
     editable: false,
      cell: Backgrid.Cell.extend({
         events: {
             "click": function() {
-                change_view( this.model.get("request") )
+                change_view( '/timeseries/'+this.model.get("id") )
             }
         },
         className: "link",
@@ -24,16 +24,17 @@ var columns = [
     })
 },
 {
-    name: "sets",
-    label: "{t}Sets{/t}",
+    name: "parent",
+    label: "{t}Parent{/t}",
     editable: false,
+     sortable: false,
     cell: Backgrid.StringCell.extend({
       className: "aright"
      }),
      headerCell: integerHeaderCell
 },
 {
-    name: "items",
+    name: "records",
     label: "{t}Records{/t}",
     editable: false,
     cell: Backgrid.StringCell.extend({
@@ -42,8 +43,26 @@ var columns = [
      headerCell: integerHeaderCell
 },
 {
-    name: "size",
-    label: "{t}Size{/t}",
+    name: "from",
+    label: "{t}From{/t}",
+    editable: false,
+    cell: Backgrid.StringCell.extend({
+      className: "aright"
+     }),
+     headerCell: integerHeaderCell
+},
+{
+    name: "to",
+    label: "{t}To{/t}",
+    editable: false,
+    cell: Backgrid.StringCell.extend({
+      className: "aright"
+     }),
+     headerCell: integerHeaderCell
+},
+{
+    name: "last_updated",
+    label: "{t}Last updated{/t}",
     editable: false,
     cell: Backgrid.StringCell.extend({
       className: "aright"

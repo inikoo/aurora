@@ -858,6 +858,21 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		case ('data_sets'):
 			return get_data_sets_navigation($data, $smarty, $user, $db);
 			break;	
+		case ('timeseries'):
+			return get_timeseries_navigation($data, $smarty, $user, $db);
+			break;
+		case ('images'):
+			return get_images_navigation($data, $smarty, $user, $db);
+			break;	
+		case ('attachments'):
+			return get_attachments_navigation($data, $smarty, $user, $db);
+			break;	
+		case ('osf'):
+			return get_osf_navigation($data, $smarty, $user, $db);
+			break;
+		case ('isf'):
+			return get_isf_navigation($data, $smarty, $user, $db);
+			break;									
 		case ('orders_index'):
 			return get_orders_index_navigation($data, $smarty, $user, $db);
 			break;
@@ -1759,8 +1774,51 @@ function get_view_position($state) {
 		}elseif ($state['section']=='payment_service_provider') {
 			$branch[]=array('label'=>_('Payment service provider').'  <span id="id">'.$state['_object']->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
 
-		}
+		}elseif ($state['section']=='data_sets') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
 
+		}elseif ($state['section']=='timeseries') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Time series'), 'icon'=>'line-chart', 'reference'=>'account/data_sets/timeseries');
+
+		}elseif ($state['section']=='images') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Images'), 'icon'=>'image', 'reference'=>'account/data_sets/images');
+
+		}elseif ($state['section']=='attachments') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Attachments'), 'icon'=>'paperclip', 'reference'=>'account/data_sets/attachments');
+
+		}elseif ($state['section']=='osf') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Transactions timeseries'), 'icon'=>'', 'reference'=>'account/data_sets/osf');
+
+		}elseif ($state['section']=='isf') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Inventory timeseries'), 'icon'=>'', 'reference'=>'account/data_sets/isf');
+
+		}
+		
+		/*
+		case ('data_sets'):
+			return get_data_sets_navigation($data, $smarty, $user, $db);
+			break;	
+		case ('timeseries'):
+			return get_timeseries_navigation($data, $smarty, $user, $db);
+			break;
+		case ('images'):
+			return get_images_navigation($data, $smarty, $user, $db);
+			break;	
+		case ('attachments'):
+			return get_attachments_navigation($data, $smarty, $user, $db);
+			break;	
+		case ('osf'):
+			return get_osf_navigation($data, $smarty, $user, $db);
+			break;
+		case ('isf'):
+			return get_isf_navigation($data, $smarty, $user, $db);
+			break;					
+*/
 
 
 		break;
