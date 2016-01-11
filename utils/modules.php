@@ -1236,6 +1236,13 @@ $modules=array(
 					'timeseries'=>array('label'=>_('Timeseries')),
 				)
 			),
+			'timeserie'=>array('type'=>'',
+				'tabs'=>array(
+					'timeserie.plot'=>array('label'=>_('Plot')),
+					'timeserie.records'=>array('label'=>_('Records')),
+
+				)
+			),
 			'settings'=>array('type'=>'navigation', 'label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings',
 				'tabs'=>array(
 					'account.settings'=>array('label'=>_('Settings')),

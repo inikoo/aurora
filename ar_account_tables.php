@@ -36,6 +36,9 @@ case 'data_sets':
 case 'timeseries':
 	timeseries(get_table_parameters(), $db, $user, $account);
 	break;
+case 'timeserie_records':
+	timeserie_records(get_table_parameters(), $db, $user, $account);
+	break;
 case 'images':
 	images(get_table_parameters(), $db, $user, $account);
 	break;
@@ -142,12 +145,13 @@ function timeseries($_data, $db, $user, $account) {
 
 			switch ($data['Timeseries Type']) {
 			case 'StoreSales':
-				$type='SS ('._('Store sales').')';
+
+				$type=_('Store sales');
 				$parent=$data['Store Code'];
 				break;
 
 			default:
-				$name=$data['Timeseries Type'];
+				$type=$data['Timeseries Type'];
 				$parent='';
 				break;
 			}
@@ -155,6 +159,7 @@ function timeseries($_data, $db, $user, $account) {
 
 			$adata[]=array(
 				'id'=>(integer) $data['Timeseries Key'],
+				'formated_id'=>sprintf('%04d', $data['Timeseries Key']),
 				'type'=>$type,
 				'parent'=>$parent,
 				'records'=>number($data['Timeseries Number Records']),
@@ -164,6 +169,70 @@ function timeseries($_data, $db, $user, $account) {
 
 			);
 
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function timeserie_records($_data, $db, $user, $account) {
+
+	$rtext_label='timeseries';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+	include_once 'class.Timeseries.php';
+
+
+	$timeseries=new Timeseries($_data['parameters']['parent_key']);
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		if ($timeseries->get('Type')=='StoreSales') {
+			foreach ($result as $data) {
+				$adata[]=array(
+					'float_a'=>money($data['Timeseries Record Float A'], $timeseries->parent->get('Currency Code')),
+					'float_b'=>money($data['Timeseries Record Float B'], $account->get('Currency')),
+					'int_a'=>number($data['Timeseries Record Integer A']),
+					'int_b'=>number($data['Timeseries Record Integer B']),
+					'date'=>strftime("%a %e %b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+
+				);
+			}
+		}else {
+
+			foreach ($result as $data) {
+				$adata[]=array(
+					'float_a'=>$data['Timeseries Record Float A'],
+					'float_b'=>$data['Timeseries Record Float B'],
+					'float_c'=>$data['Timeseries Record Float C'],
+					'float_f'=>$data['Timeseries Record Float D'],
+					'integer_a'=>$data['Timeseries Record Integer A'],
+					'integer_b'=>$data['Timeseries Record Integer B'],
+					'date'=>strftime("%e %b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+
+				);
+			}
 		}
 
 	}else {

@@ -52,7 +52,16 @@ class Timeseries extends DB_Table {
 		if ($this->data = $this->db->query($sql)->fetch()) {
 
 			$this->id=$this->data['Timeseries Key'];
+			if ($this->data['Timeseries Parent']=='Store') {
+                $this->parent=new Store($this->data['Timeseries Parent Key']);
+               
+			}else{
+			    $this->parent=new Account(1);
+			}
 		}
+
+
+
 
 	}
 
@@ -83,7 +92,21 @@ class Timeseries extends DB_Table {
 
 
 		switch ($key) {
+		case 'Name':
+			switch ($this->data['Timeseries Type']) {
+			case 'StoreSales':
 
+				$name=_('Store sales').' ('.$this->parent->get('Code').')';
+
+				break;
+
+			default:
+				$name=$this->data['Timeseries Type'].' ('.$this->parent->get('Code').')';
+
+				break;
+			}
+			return $name;
+			break;
 		default:
 			if (isset($this->data[$key]))
 				return $this->data[$key];
@@ -171,7 +194,7 @@ class Timeseries extends DB_Table {
 
 	function create($data) {
 
-        $data['Timeseries Created']=gmdate('Y-m-d H:i:s');
+		$data['Timeseries Created']=gmdate('Y-m-d H:i:s');
 
 		$this->duplicated=false;
 		$this->new=false;
@@ -183,8 +206,8 @@ class Timeseries extends DB_Table {
 		$keys='';
 		$values='';
 
-        
-        
+
+
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
 
@@ -288,16 +311,16 @@ class Timeseries extends DB_Table {
                     `Timeseries Number Records`=%d
                     where `Timeseries Key`=%d
                       ',
-					prepare_mysql($from,true),
-					prepare_mysql($to,true),
-					$num,
-					$this->id
+				prepare_mysql($from, true),
+				prepare_mysql($to, true),
+				$num,
+				$this->id
 
-				);
+			);
 
-				$this->db->exec($sql);
+			$this->db->exec($sql);
 
-			
+
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;

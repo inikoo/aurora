@@ -132,6 +132,11 @@ function get_object($object_name, $key) {
 		require_once "class.Manufacture_Task.php";
 		$object=new Manufacture_Task($key);
 		break;
+	case 'timeserie':
+	case 'timeseries':
+		require_once "class.Timeseries.php";
+		$object=new Timeseries($key);
+		break;
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

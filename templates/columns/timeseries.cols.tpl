@@ -7,8 +7,8 @@ var columns = [
     cell: "string"
 },
  {
-    name: "type",
-    label: "{t}Type{/t}",
+    name: "formated_id",
+    label: "{t}Id{/t}",
     editable: false,
      cell: Backgrid.Cell.extend({
         events: {
@@ -17,6 +17,18 @@ var columns = [
             }
         },
         className: "link",
+        
+      
+        
+        
+    })
+},
+ {
+    name: "type",
+    label: "{t}Type{/t}",
+    editable: false,
+     cell: Backgrid.Cell.extend({
+        
         
       
         
