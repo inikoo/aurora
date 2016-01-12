@@ -20,9 +20,9 @@ if (isset($_SESSION['table_state'][$tab])) {
 }
 
 foreach ($default as $key=>$value) {
-	if ($key=='rpp_options' ) {
+	if ($key=='rpp_options' or $key=='frequency' ) {
 
-
+$parameters[$key]=$value;
 	}elseif ($key=='export_fields') {
 
 

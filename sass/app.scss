@@ -988,6 +988,34 @@ right connector from last child*/
 .unchecked{background:#ddd;cursor:pointer}
 .checked{background:#71BC78;color:#FFF;cursor:pointer}
 
+.plot{
+svg {
+  display: block;
+}
+ 
+path.area {
+  fill: url(#area-gradient);
+  fill-opacity: 1;
+}
+ 
+path.line {
+  stroke: rgb(26, 154, 249);
+}
+ 
+path.ema {
+  stroke: #c00;
+  fill: none;
+}
+ 
+.x-axis text {
+  font-weight: bold;
+}
+
+.background {
+  opacity: 0.7;
+}
+}
+
 @import 'datepicker';
 @import 'working_hours';
 @import 'salary';

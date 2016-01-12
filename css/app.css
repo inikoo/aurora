@@ -829,6 +829,21 @@ input {
   color: #FFF;
   cursor: pointer; }
 
+.plot svg {
+  display: block; }
+.plot path.area {
+  fill: url(#area-gradient);
+  fill-opacity: 1; }
+.plot path.line {
+  stroke: #1a9af9; }
+.plot path.ema {
+  stroke: #c00;
+  fill: none; }
+.plot .x-axis text {
+  font-weight: bold; }
+.plot .background {
+  opacity: 0.7; }
+
 .datepicker {
   font-size: 109%; }
   .datepicker td {

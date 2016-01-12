@@ -54,7 +54,7 @@ default:
 
 function data_sets($_data, $db, $user, $account) {
 
-	$rtext_label='data sets';
+	$rtext_label='data set';
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
 
@@ -131,7 +131,7 @@ function data_sets($_data, $db, $user, $account) {
 
 function timeseries($_data, $db, $user, $account) {
 
-	$rtext_label='timeseries';
+	$rtext_label='time serie';
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
 
@@ -194,7 +194,16 @@ function timeseries($_data, $db, $user, $account) {
 
 function timeserie_records($_data, $db, $user, $account) {
 
-	$rtext_label='timeseries';
+
+	if ($_data['parameters']['frequency']=='annually') {
+		$rtext_label='year';
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$rtext_label='month';
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$rtext_label='week';
+	}elseif ($_data['parameters']['frequency']=='daily') {
+		$rtext_label='day';
+	}
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
 	include_once 'class.Timeseries.php';
@@ -202,7 +211,7 @@ function timeserie_records($_data, $db, $user, $account) {
 
 	$timeseries=new Timeseries($_data['parameters']['parent_key']);
 
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
 
@@ -216,6 +225,9 @@ function timeserie_records($_data, $db, $user, $account) {
 					'int_a'=>number($data['Timeseries Record Integer A']),
 					'int_b'=>number($data['Timeseries Record Integer B']),
 					'date'=>strftime("%a %e %b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+					'year'=>strftime("%Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+					'month_year'=>strftime("%b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+					'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Timeseries Record Date'].' +0:00')),
 
 				);
 			}
@@ -258,7 +270,7 @@ function timeserie_records($_data, $db, $user, $account) {
 
 function images($_data, $db, $user, $account) {
 
-	$rtext_label='images';
+	$rtext_label='image';
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
 
@@ -307,7 +319,7 @@ function images($_data, $db, $user, $account) {
 
 function attachments($_data, $db, $user, $account) {
 
-	$rtext_label='attachments';
+	$rtext_label='attachment';
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
 
