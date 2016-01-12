@@ -582,193 +582,207 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
 
 
 
-	if ($data['parent']) {
-
-		switch ($data['parent']) {
-		case 'account':
-			$tab='employees.timesheets';
-			$_section='timesheets';
-			break;
-		case 'employee':
-			$tab='employee.timesheets';
-			$_section='timesheets';
-			break;
-		case 'timesheet':
-			$tab='timesheet.timesheets';
-			$_section='timesheets';
-			break;
-		case 'week':
-			$tab='timesheet.timesheets';
-			$_section='timesheets';
-			break;
 
 
-		}
+	switch ($data['parent']) {
+	case 'account':
+		$tab='employees.timesheets';
+		$_section='timesheets';
+		break;
+	case 'employee':
+		$tab='employee.timesheets';
+		$_section='timesheets';
+		break;
+	case 'timesheet':
+		$tab='timesheet.timesheets';
+		$_section='timesheets';
+		break;
+	case 'week':
+		$tab='timesheet.timesheets';
+		$_section='timesheets';
+		break;
 
 
-		if (isset($_SESSION['table_state'][$tab])) {
-			$number_results=$_SESSION['table_state'][$tab]['nr'];
-			$start_from=0;
-			$order=$_SESSION['table_state'][$tab]['o'];
-			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-			$f_value=$_SESSION['table_state'][$tab]['f_value'];
-			$parameters=$_SESSION['table_state'][$tab];
-		}else {
-
-			$default=$user->get_tab_defaults($tab);
-			$number_results=$default['rpp'];
-			$start_from=0;
-			$order=$default['sort_key'];
-			$order_direction=($default['sort_order']==1 ?'desc':'');
-			$f_value='';
-			$parameters=$default;
-			$parameters['parent']=$data['parent'];
-			$parameters['parent_key']=$data['parent_key'];
-		}
+	}
 
 
-		include_once 'prepare_table/'.$tab.'.ptble.php';
+	if (isset($_SESSION['table_state'][$tab])) {
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+	}else {
 
-		$_order_field=$order;
-		$order=preg_replace('/^.*\.`/', '', $order);
-		$order=preg_replace('/^`/', '', $order);
-		$order=preg_replace('/`$/', '', $order);
-		$_order_field_value=$object->get($order);
+		$default=$user->get_tab_defaults($tab);
+		$number_results=$default['rpp'];
+		$start_from=0;
+		$order=$default['sort_key'];
+		$order_direction=($default['sort_order']==1 ?'desc':'');
+		$f_value='';
+		$parameters=$default;
+		$parameters['parent']=$data['parent'];
+		$parameters['parent_key']=$data['parent_key'];
+	}
 
 
-		$prev_title='';
-		$next_title='';
-		$prev_key=0;
-		$next_key=0;
-		$sql=trim($sql_totals." $wheref");
+	include_once 'prepare_table/'.$tab.'.ptble.php';
+
+	$_order_field=$order;
+	$order=preg_replace('/^.*\.`/', '', $order);
+	$order=preg_replace('/^`/', '', $order);
+	$order=preg_replace('/`$/', '', $order);
+	$_order_field_value=$object->get($order);
 
 
-		if ($result2=$db->query($sql)) {
-			if ($row2= $result2->fetch()  and $row2['num']>1) {
+	$prev_title='';
+	$next_title='';
+	$prev_key=0;
+	$next_key=0;
+	$sql=trim($sql_totals." $wheref");
 
 
-				$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
+	if ($result2=$db->query($sql)) {
+		if ($row2= $result2->fetch()  and $row2['num']>1) {
+
+
+			$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND TD.`Timesheet Key` < %d))  order by $_order_field desc , TD.`Timesheet Key` desc limit 1",
 
-					prepare_mysql($_order_field_value),
-					prepare_mysql($_order_field_value),
-					$object->id
-				);
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
 
 
 
-				if ($result=$db->query($sql)) {
-					if ($row = $result->fetch()) {
-						$prev_key=$row['object_key'];
-						$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
-					}
-				}else {
-					print_r($error_info=$db->errorInfo());
-					exit;
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$prev_key=$row['object_key'];
+					$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
 				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
 
 
 
 
 
-				$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
+			$sql=sprintf("select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND TD.`Timesheet Key` > %d))  order by $_order_field   , TD.`Timesheet Key`  limit 1",
-					prepare_mysql($_order_field_value),
-					prepare_mysql($_order_field_value),
-					$object->id
-				);
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
 
 
-				if ($result=$db->query($sql)) {
-					if ($row = $result->fetch()) {
-						$prev_key=$row['object_key'];
-						$prev_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
-					}
-				}else {
-					print_r($error_info=$db->errorInfo());
-					exit;
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$next_key=$row['object_key'];
+					$next_title=_("Timesheet").' '.$row['object_name'].' ('.$row['object_key'].')';
 				}
-
-
-				if ($order_direction=='desc') {
-					$_tmp1=$prev_key;
-					$_tmp2=$prev_title;
-					$prev_key=$next_key;
-					$prev_title=$next_title;
-					$next_key=$_tmp1;
-					$next_title=$_tmp2;
-				}
-
-
-
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
 			}
+
+
+			if ($order_direction=='desc') {
+				$_tmp1=$prev_key;
+				$_tmp2=$prev_title;
+				$prev_key=$next_key;
+				$prev_title=$next_title;
+				$next_key=$_tmp1;
+				$next_title=$_tmp2;
+			}
+
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	switch ($data['parent']) {
+	case 'account':
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Employees"), 'reference'=>'hr');
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'timesheet/'.$prev_key);
+
 		}else {
-			print_r($error_info=$db->errorInfo());
-			exit;
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'timesheet/'.$next_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
 		}
 
 
 
-		if ($data['parent']=='account') {
-
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Employees"), 'reference'=>'hr');
-
-			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'timesheet/'.$prev_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
-
-			}
-			$left_buttons[]=$up_button;
-
-
-			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'timesheet/'.$next_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-			}
 
 
 
 
+		break;
+	case 'employee':
 
+		include_once 'class.Staff.php';
+		$employee=new Staff($data['parent_key']);
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'employee/'.$data['parent_key'].'/timesheet/'.$prev_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
 
 		}
-		if ($data['parent']=='employee') {
-			include_once 'class.Staff.php';
-			$employee=new Staff($data['parent_key']);
-
-			$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Employee: %s'), $employee->get('Name')), 'reference'=>'employee/'.$data['parent_key']);
-
-			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'timesheet/'.$prev_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
-
-			}
-			$left_buttons[]=$up_button;
+		$left_buttons[]=$up_button;
 
 
-			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'timesheet/'.$next_key);
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'employee/'.$data['parent_key'].'/timesheet/'.$next_key);
 
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-			}
-
-
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
 		}
-	}
-	else {
-		$_section='staff';
+
+
+
+
+		break;
+	case 'timesheet':
+
+		break;
+	case 'week':
+
+		break;
+
 
 	}
+
+
+
+
+
 
 	$sections=get_sections('hr', '');
 
