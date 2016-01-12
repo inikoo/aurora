@@ -30,11 +30,12 @@ if ($user->can_view('customers')) {
 	}
 
 
-
+	/*
 	$sections=get_sections('customers', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
+	*/
 }
 
 
@@ -48,12 +49,12 @@ if ($user->can_view('orders')) {
 	else {
 		$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i> '._('Orders'), 'orders/all', 'orders', 'module', '');
 	}
-
+	/*
 	$sections=get_sections('orders', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
-
+*/
 
 	if ($user->data['User Hooked Store Key']) {
 		$nav_menu[] = array('<i class="fa fa-truck fa-flip-horizontal fa-fw"></i> '._('Delivery notes'), 'delivery_notes', 'delivery_notes', 'module', '');
@@ -61,12 +62,12 @@ if ($user->can_view('orders')) {
 	else {
 		$nav_menu[] = array('<i class="fa fa-truck fa-flip-horizontal fa-fw"></i> '._('Delivery notes'), 'delivery_notes/all', 'delivery_notes', 'module', '');
 	}
-
+	/*
 	$sections=get_sections('invoices', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
-
+*/
 
 
 
@@ -76,12 +77,12 @@ if ($user->can_view('orders')) {
 	else {
 		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i> '._('Invoices'), 'invoices/all', 'invoices', 'module', '');
 	}
-
+	/*
 	$sections=get_sections('invoices', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
-
+*/
 
 	if ($user->data['User Hooked Store Key']) {
 		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i> '._('Payments'), 'payments', 'payments', 'module', '');
@@ -89,11 +90,12 @@ if ($user->can_view('orders')) {
 	else {
 		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i> '._('Payments'), 'payments/all', 'payments', 'module', '');
 	}
-
+	/*
 	$sections=get_sections('payments', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
+	*/
 }
 
 if ($user->can_view('sites')) {
@@ -105,12 +107,12 @@ if ($user->can_view('sites')) {
 	else {
 		$nav_menu[] = array('<i class="fa fa-globe fa-fw"></i> '._('Websites'), 'websites', 'websites', 'module', '');
 	}
-
+	/*
 	$sections=get_sections('websites', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
-
+*/
 
 }
 
@@ -123,12 +125,12 @@ if ($user->can_view('marketing')) {
 		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i> '._('Marketing'), 'marketing/all', 'marketing', 'module', '');
 	}
 
-
+	/*
 	$sections=get_sections('marketing', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
-
+*/
 
 
 
@@ -144,12 +146,12 @@ if ($user->can_view('stores')) {
 		$nav_menu[] = array('<i class="fa fa-square-o fa-fw"></i> '._('Products'), 'stores', 'products', 'module', '');
 	}
 
-
+	/*
 	$sections=get_sections('products', $data['parent_key']);
 	foreach ($sections as $key=>$section ) {
 		$nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i> '.$section['label'], $section['reference'], $key, 'section', '');
 	}
-
+*/
 
 
 }
@@ -218,7 +220,7 @@ else {
 
 	$nav_menu[] = array('<i class="fa fa-user fa-fw"></i> '._('My profile'), '/profile' , 'profile', 'module', 'jump');
 	$prev_index=count($nav_menu)-2;
-	
+
 	if (isset($nav_menu[$prev_index])) {
 		$nav_menu[$prev_index][4]='last';
 	}

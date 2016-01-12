@@ -15,7 +15,15 @@ $ar_file='ar_account_tables.php';
 $tipo='timeserie_records';
 
 $default=$user->get_tab_defaults($tab);
-
+if($state['subtab']=='timeserie.records.weekly'){
+    $default['frequency']='weekly';
+}elseif($state['subtab']=='timeserie.records.daily'){
+    $default['frequency']='daily';
+}elseif($state['subtab']=='timeserie.records.monthy'){
+    $default['frequency']='monthy';
+}elseif($state['subtab']=='timeserie.records.annually'){
+    $default['frequency']='annually';
+}
 
 $table_views=array();
 
