@@ -152,13 +152,13 @@ abstract class DB_Table {
 
 
 	protected function update_field($field, $value, $options='') {
-
-		$this->update_table_field($field, $value, $options='', $this->table_name, $this->table_name.' Dimension', $this->id);
+		$this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
 	}
 
 
 	protected function update_table_field($field, $value, $options='', $table_name, $table_full_name, $table_key) {
+
 
 
 		$this->updated=false;
@@ -281,9 +281,15 @@ abstract class DB_Table {
 			$this->updated=true;
 			$this->new_value=$value;
 
-			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i', $options))
+
+
+
+			if (preg_match('/no( |\_)history|nohistory/i', $options)) {
 				$save_history=false;
+			}else {
+				$save_history=true;
+			}
+
 
 			if (
 				preg_match('/attachment bridge|site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
