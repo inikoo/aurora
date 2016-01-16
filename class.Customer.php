@@ -84,10 +84,7 @@ class Customer extends DB_Table {
 			$this->find($arg2, $arg1);
 			return;
 		}
-		elseif (preg_match('/^force_create/', $arg1)) {
-			$this->prepare_force_create($arg2, $arg1);
-			return;
-		}
+		
 
 		$this->get_data($arg1, $arg2, $arg3);
 
@@ -117,32 +114,7 @@ class Customer extends DB_Table {
 	}
 
 
-	function prepare_force_create($data) {
-
-		if (array_key_exists('Customer Main Plain Email', $data)) {
-			$sql=sprintf("select `Customer Key` from `Customer Dimension` left join `Email Bridge` EB on (`Subject Key`=`Customer Key`) left join `Email Dimension` E on (E.`Email Key`=EB.`Email Key`)  where `Subject Type`='Customer'  and `Email`=%s  ", $data['Customer Main Plain Email']);
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->error=true;
-				$this->msg='Email already in';
-				return;
-
-			}
-		}
-
-
-		if (isset($raw_data['editor'])) {
-			foreach ($raw_data['editor'] as $key=>$value) {
-
-				if (array_key_exists($key, $this->editor))
-					$this->editor[$key]=$value;
-
-			}
-		}
-
-		$this->create($data);
-
-	}
+	
 
 
 	/*
@@ -196,17 +168,7 @@ class Customer extends DB_Table {
 	}
 
 
-	/*
-
-      Method: find
-      Find Customer with similar data
-
-
-    */
-
-
-
-
+	
 
 	function find($raw_data, $options='') {
 
@@ -1212,10 +1174,52 @@ class Customer extends DB_Table {
 	}
 
 
+	function set_as_main($field, $other_key) {
+
+		switch ($field) {
+		case 'Customer Other Email':
+			$old_main_value=$this->data['Customer Main Plain Email'];
+			$new_main_value=$this->get("$field $other_key");
+
+			$this->update(array(
+					'Customer Main Plain Email'=>$new_main_value,
+					"$field $other_key"=>$old_main_value,
+				), 'no_history');
+
+
+				$this->add_changelog_record('Customer Main Email', $old_main_value, $new_main_value, '', $this->table_name, $this->id, 'set_as_main');
+
+
+			$this->other_fields_updated=array(
+				'Customer_Main_Plain_Email'=>array(
+					'field'=>'Customer_Main_Plain_Email',
+					'render'=>true,
+					'value'=>$this->get('Customer Main Plain Email'),
+					'formated_value'=>$this->get('Main Plain Email'),
+				),
+				preg_replace('/ /', '_', "$field $other_key")=>array(
+					'field'=>preg_replace('/ /', '_', "$field $other_key"),
+					'render'=>true,
+					'value'=>$this->get("$field $other_key"),
+					'formated_value'=>$this->get(preg_replace('/Customer /', '', "$field $other_key")),
+				)
+			);
+
+			$this->updated=true;
+
+			break;
+		default:
+			$this->error=true;
+			$this->msg="Set asmain $field not found";
+			break;
+		}
+
+	}
+
 
 	function update_field_switcher($field, $value, $options='') {
 
-		//print ": $field,$value";
+
 
 
 		if (is_string($value))
@@ -1229,7 +1233,191 @@ class Customer extends DB_Table {
 			return;
 		}
 
+		if (preg_match('/^Customer Other Email (\d+)/i', $field, $matches)) {
+			$customer_email_key=$matches[1];
+			$old_value=$this->get($field);
+			if ($value=='') {
+				$old_value=$this->get(preg_replace('/^Customer /', '', $field));
+				$sql=sprintf('delete from `Customer Other Email Dimension`  where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
+					$this->id,
+					$customer_email_key
+				);
+				$prep=$this->db->prepare($sql);
+				$prep->execute();
+				if ($prep->rowCount()) {
+
+					$this->deleted=true;
+					$this->deleted_value=$old_value;
+					$this->add_changelog_record('Customer Other Email', $old_value, '', $options, $this->table_name, $this->id, 'removed');
+
+				}else {
+
+				}
+			}else {
+
+
+				$sql=sprintf('update `Customer Other Email Dimension` set `Customer Other Email Email`=%s where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
+					prepare_mysql($value),
+					$this->id,
+					$customer_email_key
+				);
+				$tmp=$this->db->prepare($sql);
+				$tmp->execute();
+				if ($tmp->rowCount()) {
+					$this->add_changelog_record('Customer Other Email', $old_value, $value, $options, $this->table_name, $this->id);
+
+					$this->updated=true;
+				}else {
+
+				}
+
+			}
+
+			return;
+		}
+
+
 		switch ($field) {
+
+		case 'Customer Main Plain Email':
+			if ($value=='' and count($other_emails_data=$this->get_other_emails_data())>0 ) {
+				$old_value=$this->get($field);
+				foreach ($other_emails_data as $other_key => $other_value) { break; }
+
+
+				$this->update_field($field, $other_value['email'], 'no_history');
+
+
+
+				$sql=sprintf('delete from `Customer Other Email Dimension`  where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
+					$this->id,
+					$other_key
+				);
+				$prep=$this->db->prepare($sql);
+				$prep->execute();
+
+				$this->deleted_fields_info=array(
+
+					preg_replace('/ /', '_' , 'Customer Other Email '.$other_key)=>array('field'=>preg_replace('/ /', '_' , 'Customer Other Email '.$other_key))
+				);
+				$this->add_changelog_record('Customer Main Plain Email', $old_value, '', $options, $this->table_name, $this->id);
+
+				$this->add_changelog_record('Customer Main Email', $old_value, $other_value['email'], $options, $this->table_name, $this->id, 'set_as_main');
+
+			}else {
+
+				$this->update_field($field, $value, $options);
+			}
+
+			break;
+		case 'new email':
+
+
+			$sql=sprintf('insert into `Customer Other Email Dimension` (`Customer Other Email Store Key`,`Customer Other Email Customer Key`,`Customer Other Email Email`) values (%d,%d,%s)',
+				$this->data['Customer Store Key'],
+				$this->id,
+				prepare_mysql($value)
+			);
+			$prep=$this->db->prepare($sql);
+
+
+			try{
+				$prep->execute();
+
+				$inserted_key = $this->db->lastInsertId();
+				if ($inserted_key) {
+
+					$this->field_created=true;
+					$field_id='Customer_Other_Email_'.$inserted_key;
+					$field=preg_replace('/_/', ' ', $field_id);
+					$this->new_fields_info=array(
+						array(
+							'clone_from'=>'Customer_Other_Email',
+							'field'=>'Customer_Other_Email_'.$inserted_key,
+							'render'=>true,
+							'edit'=>'email',
+							'value'=>$this->get($field),
+							'formated_value'=>$this->get($field),
+							'label'=>ucfirst($this->get_field_label('Customer Other Email')).' <i title="'._('set as main email').'" class="fa fa-star-o very_discret"></i>',
+
+
+
+						));
+					$this->add_changelog_record('Customer Other Email', '', $value, $options, $this->table_name, $this->id, 'added');
+
+				}else {
+					$this->error=true;
+					$this->msg=_('Duplicated email');
+				}
+
+			} catch(PDOException $e) {
+				$this->error=true;
+
+				if ($e->errorInfo[0] == '23000' && $e->errorInfo[1] == '1062') {
+					$this->msg=_('Duplicated email');
+				}else {
+
+					$this->msg=$e->getMessage();
+				}
+
+			}
+
+			break;
+		case 'Customer Company Name':
+			if ($value=='' and  $this->data['Customer Main Contact Name']=='') {
+				$this->msg=_("Company name can't be emply if the contact name is empty as well");
+				$this->error=true;
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+			if ($value=='') {
+				$this->update_field('Customer Name', $this->data['Customer Main Contact Name'], 'no_history');
+
+			}else {
+				$this->update_field('Customer Name', $value, 'no_history');
+			}
+
+			$this->other_fields_updated=array(
+				'Custome_ Name'=>array(
+					'field'=>'Customer_Name',
+					'render'=>true,
+					'value'=>$this->get('Customer Name'),
+					'formated_value'=>$this->get('Name'),
+
+
+				)
+			);
+
+
+			break;
+		case 'Customer Main Contact Name':
+			if ($value=='' and  $this->data['Customer Company Name']=='') {
+				$this->msg=_("Contact name can't be emply if the company name is empty as well");
+				$this->error=true;
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+			if ($this->data['Customer Company Name']=='') {
+				$this->update_field('Customer Name', $value, 'no_history');
+
+			}
+
+			$this->other_fields_updated=array(
+				'Customer_Name'=>array(
+					'field'=>'Customer_Name',
+					'render'=>true,
+					'value'=>$this->get('Customer Name'),
+					'formated_value'=>$this->get('Name'),
+
+
+				)
+			);
+
+
+			break;
+
 		case('Customer Tax Number'):
 			$this->update_tax_number($value);
 			break;
@@ -1495,170 +1683,8 @@ class Customer extends DB_Table {
 			$value=preg_replace("/[^0-9]/", '', $value);
 			$this->add_other_telecom('Telephone', $value);
 			break;
-		case('Add Other Email'):
-
-			if ($value=='') {
-				return;
-			}
-			$email=new Email('email', $value);
-			if ($email->id) {
-				$customers_with_this_email=$email->get_customer_keys();
-
-				if (in_array($this->id, $customers_with_this_email)) {
-					$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
-					$this->error=true;
-
-					return;
-				}
-				unset($customers_with_this_email[$this->id]);
 
 
-				foreach ($customers_with_this_email as $customer_with_this_email) {
-					$other_customer_with_this_email=new Customer($customer_with_this_email);
-					if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
-						$this->msg=_('Email could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$other_customer_with_this_email->data['Customer Name'].'</a>';
-
-						$this->error=true;
-
-						return;
-					}
-
-				}
-			}
-
-			$contact=new Contact($this->data['Customer Main Contact Key']);
-			$contact-> update_field_switcher('Add Other Email', $value);
-			$this->updated=$contact->updated;
-			$this->msg=$contact->msg;
-			$this->new_value=$contact->new_value;
-
-			if ($email_key=$contact->other_email_key) {
-
-				if ($this->data['Customer Company Key']) {
-					$contact->associate_email_to_parents('Company', $this->data['Customer Company Key'], $email_key, false);
-				}
-				$contact->associate_email_to_parents('Customer', $this->id, $email_key, false);
-
-
-				$abstract=_('Email associated').' ('.$value.')';
-
-
-				$details='<table>
-				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
-				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
-
-				<tr><td>'._('Action').':</td><td>'._('Other email added').'</td></tr>
-				<tr><td>'._('New email').':</td><td>'.$value.'</td></tr>
-				<tr><td>'._('Customer').':</td><td>'.$this->get_name().'</td></tr>
-
-
-				</table>';
-
-
-
-
-
-				$history_data['History Abstract']=$abstract;
-				$history_data['History Details']=$details;
-				$history_data['Direct Object']='Customer';
-				$history_data['Action']='associated';
-				$history_data['Direct Object Key']=$this->id;
-				$history_data['Indirect Object']='Customer Other Email';
-				$history_data['Indirect Object Key']=$email->id;
-
-
-				$this->add_subject_history($history_data);
-
-			}
-			$this->new_email_key=$email_key;
-			break;
-		case('Customer Main Plain Email'):
-
-			$old_value=$this->data['Customer Main Plain Email'];
-
-			//print "old:->$old_value <- new $value\n";
-
-			if ($old_value!=$value) {
-				$this->remove_principal_email();
-				if ($value!='') {
-
-					$email = new Email('email', $value);
-
-					//print_r($email);
-
-					if ($email->id) {
-
-
-						$customers_with_this_email=$email->get_customer_keys();
-						// Check if email already in this customer an return
-						if (in_array($this->id, $customers_with_this_email)) {
-
-							$this->error=true;
-							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
-
-							return;
-
-						}
-
-
-						// Check if email already in this store an return
-						foreach ($customers_with_this_email as $customer_with_this_email) {
-							$other_customer_with_this_email=new Customer($customer_with_this_email);
-							if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
-								$error_customer_in_the_same_store=$customer_with_this_email;
-								$customer_name_with_this_email=$other_customer_with_this_email->data['Customer Name'];
-								$this->error=true;
-								$this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
-
-								return;
-							}
-						}
-
-
-					}
-
-
-
-					$contact=new Contact($this->data['Customer Main Contact Key']);
-					$contact->update_field_switcher('Add Other Email', $value);
-
-
-
-					$new_princial_key=$contact->other_email_key;
-					$email=new Email($new_princial_key);
-					$email->editor=$this->editor;
-					//print_r($email->data);
-
-					if ($email->id) {
-
-						$contact->associate_email_to_parents('Customer', $this->id, $email->id);
-						if ($this->data['Customer Company Key']) {
-							$contact->associate_email_to_parents('Company', $this->data['Customer Company Key'], $email->id, false);
-						}
-						$email->update_parents(true, $old_value);
-						$this->updated=1;
-						$this->msg=_('Email updated');
-						$this->new_value=$email->data['Email'];
-
-
-					}else {
-
-						$this->error=1;
-						$this->msg='unknown error';
-						$this->new_value='';
-
-					}
-
-				}
-				else {
-
-					$this->updated=1;
-					$this->msg=_('Email removed');
-					$this->new_value='';
-				}
-			}
-
-			break;
 		default:
 			$base_data=$this->base_data();
 			//print_r($base_data);
@@ -1671,164 +1697,6 @@ class Customer extends DB_Table {
 	}
 
 
-
-	function update_other_email_label($email_key, $label) {
-		if (!array_key_exists($email_key, $this->get_email_keys())) {
-			$this->error=true;
-			$this->msg=_('Email not associated with customer');
-			return;
-		}
-
-		$sql=sprintf('update `Email Bridge` set `Email Description`=%s where `Subject Type`="Customer" and `Email Key`=%d  and `Subject Key`=%d ',
-			prepare_mysql($label),
-			$email_key,
-			$this->id
-		);
-		//print $sql;
-		mysql_query($sql);
-
-		if (mysql_affected_rows()) {
-			$this->new_value=$label;
-			$this->updated=true;
-		}
-
-	}
-
-
-	function update_other_email($email_key, $value) {
-
-
-
-		if (!array_key_exists($email_key, $this->get_other_emails_data())) {
-			$this->error=true;
-			$this->msg=_('Email not associated with customer');
-			return;
-		}
-
-		if ($value=='') {
-			$this->remove_email($email_key);
-
-		}
-		else {
-
-
-			$email_data['Email']=$value;
-			$email_data['Email Contact Name']=$this->data['Customer Main Contact Name'];
-			$email_data['editor']=$this->editor;
-
-
-			$email=new Email('find', $email_data);
-
-
-
-			if ($email->found) {
-				$old_value=$email->display('plain');
-				$customers_with_this_email=$email->get_customer_keys();
-
-				if (array_key_exists($this->id, $customers_with_this_email)) {
-					$this->error=true;
-					$this->msg=_('Customer has already this email');
-					return;
-				}
-
-				foreach ($customers_with_this_email as $customer_with_this_email) {
-					$other_customer_with_this_email=new Customer($customer_with_this_email);
-					if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
-						$this->error=true;
-						$this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_email->id.'">'.$other_customer_with_this_email->data['Customer Name'].'</a>';
-
-						return;
-					}
-
-				}
-
-
-				$this->remove_email($email->id);
-				$contact=new Contact($this->data['Customer Main Contact Key']);
-				$contact->update(array('New Other Email'=>$value));
-				$this->updated=$contact->updated;
-				$this->msg=$contact->msg;
-				$this->new_value=$contact->new_value;
-
-				if ($email_key=$contact->other_email_key) {
-
-					if ($this->data['Customer Company Key']) {
-						$contact->associate_email_to_parents('Company', $this->data['Customer Company Key'], $email_key, false);
-
-					}
-					$contact->associate_email_to_parents('Customer', $this->id, $email_key, false);
-
-				}
-
-				$this->new_email_key=$email_key;
-
-
-
-
-
-			}
-			else {
-				// print "xxx";
-
-				// $contact=new Contact($this->data['Customer Main Contact Key']);
-				// $contact->associate_email($email->id);
-				$email=new Email($email_key);
-				$old_value=$email->display('plain');
-				$email->update_Email($value);
-				$this->new_value=$email->new_value;
-				$this->updated=$email->updated;
-				$this->msg=$email->msg;
-
-				// print_r($email)
-
-
-
-
-			}
-
-
-
-
-			$abstract=_('Email changed').' ('.$email->display('plain').')';
-			$action=_('changed');
-
-			$details='<table>
-				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
-				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
-
-				<tr><td>'._('Action').':</td><td>'.$action.'</td></tr>
-				<tr><td>'._('Old email').':</td><td>'.$old_value.'</td></tr>
-				<tr><td>'._('New email').':</td><td>'.$email->display("plain").'</td></tr>
-				<tr><td>'._('Customer').':</td><td>'.$this->get_name().'</td></tr>
-
-
-				</table>';
-
-
-
-
-
-			$history_data['History Abstract']=$abstract;
-			$history_data['History Details']=$details;
-			$history_data['Direct Object']='Customer';
-			$history_data['Action']='edited';
-			$history_data['Direct Object Key']=$this->id;
-			$history_data['Indirect Object']='Customer Other Email';
-			$history_data['Indirect Object Key']=$email->id;
-
-
-
-
-			//print_r($history_data);
-
-
-			$this->add_subject_history($history_data);
-
-		}
-
-
-
-	}
 
 
 	function update_other_fax($telecom_key, $value) {
@@ -2761,68 +2629,16 @@ class Customer extends DB_Table {
 
 
 
-	function updatex($values, $args='') {
-		$res=array();
-		foreach ($values as $data) {
-
-			$key=$data['key'];
-			$value=$data['value'];
-			$res[$key]=array('ok'=>false, 'msg'=>'');
-
-			switch ($key) {
-
-			case('tax_number_valid'):
-				if ($value)
-					$this->data['tax_number_valid']=1;
-				else
-					$this->data['tax_number_valid']=0;
-
-				break;
-
-			case('tax_number'):
-				$this->data['tax_number']=$value;
-				if ($value=='')
-					$this->update(array(array('key'=>'tax_number_valid', 'value'=>0)), 'save');
-				break;
-			case('main_email'):
-				$main_email=new email($value);
-				if (!$main_email->id) {
-					$res[$key]['msg']=_('Email not found');
-					$res[$key]['ok']=false;
-					continue;
-				}
-				$this->old['main_email']=$this->data['main']['email'];
-				$this->data['main_email']=$value;
-				$this->data['main']['email']=$main_email->data['email'];
-				$res[$key]['ok']=true;
-
-
-			}
-			if (preg_match('/save/', $args)) {
-				$this->save($key);
-			}
-
-		}
-		return $res;
-	}
-
 
 
 	function get($key, $arg1=false) {
 
-		if ($key=='Customer Tax Number' or $key=='Tax Number') {
-			return $this->get_tax_number();
-		}
-		if ($key=='Customer Registration Number' or $key=='Registration Number') {
-			return $this->get_registration_number();
-		}
-		elseif ($key=='Customer Fiscal Name' or $key=='Fiscal Name') {
-			return $this->get_fiscal_name();
-		}
-		elseif (array_key_exists($key, $this->data)) {
-			return $this->data[$key];
-		}
-		elseif (preg_match('/^contact /i', $key)) {
+
+
+
+
+
+		if (preg_match('/^contact /i', $key)) {
 			if (!$this->contact_data)
 				$this->load('contact data');
 			if (isset($this->contact_data[$key]))
@@ -2843,6 +2659,40 @@ class Customer extends DB_Table {
 
 		switch ($key) {
 
+		case 'Tax Number':
+			if ($this->data['Customer Tax Number']!='') {
+				if ($this->data['Customer Tax Number Valid']=='Yes') {
+					return sprintf('<span class="ok">%s</span>', $this->data['Customer Tax Number']);
+				}elseif ($this->data['Customer Tax Number Valid']=='Unknown') {
+					return sprintf('<span class="disabled">%s</span>', $this->data['Customer Tax Number']);
+				}else {
+					return sprintf('<span class="error">%s</span>', $this->data['Customer Tax Number']);
+				}
+			}
+
+			break;
+		case 'Customer Fiscal Name':
+		case 'Fiscal Name':
+			if ($this->data['Customer Type']=='Person') {
+				$this->data['Customer Fiscal Name']=$this->data['Customer Name'];
+				return $this->data['Customer Fiscal Name'];
+			} else {
+				$subject='Company';
+				$subject_key=$this->data['Customer Company Key'];
+			}
+
+			$sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ", $subject_key);
+			$res=mysql_query($sql);
+
+			if ($row=mysql_fetch_assoc($res)) {
+				$this->data['Customer Fiscal Name']=$row['fiscal_name'];
+
+				return $this->data['Customer Fiscal Name'];
+			} else {
+				$this->error;
+				return '';
+			}
+			break;
 		case('First Name'):
 			$contact=new Contact($this->get('Customer Main Contact Key'));
 			$first_name='';
@@ -2863,22 +2713,54 @@ class Customer extends DB_Table {
 			break;
 			break;
 		case('Tax Number Valid'):
+			if ($this->data['Customer Tax Number']!='') {
 
-			switch ($this->data['Customer '.$key]) {
-			case 'Unknown':
-				return _('Not validated');
-				break;
-			case 'Yes':
-				return _('Validated');
-				break;
-			case 'No':
-				return _('Not valid');
-			default:
-				return $this->data['Customer '.$key];
+				if ($this->data['Customer Tax Number Validation Date']!='') {
+					$_tmp=gmdate("U")-gmdate("U", strtotime($this->data['Customer Tax Number Validation Date'].' +0:00'));
+					if ( $_tmp<3600  ) {
+						$date=strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer Tax Number Validation Date'].' +0:00'));
 
-				break;
+					}elseif ($_tmp<86400   ) {
+						$date=strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Customer Tax Number Validation Date'].' +0:00'));
+
+					}else {
+						$date=strftime("%e %b %Y", strtotime($this->data['Customer Tax Number Validation Date'].' +0:00'));
+					}
+				}else {
+					$date='';
+				}
+
+				$msg=$this->data['Customer Tax Number Validation Message'];
+
+				if ($this->data['Customer Tax Number Validation Source']=='Online') {
+					$source='<i title=\''._('Validated online').'\' class=\'fa fa-globe\'></i>';
+
+
+
+				}elseif ($this->data['Customer Tax Number Validation Source']=='Manual') {
+					$source='<i title=\''._('Set up manually').'\' class=\'fa fa-hand-rock-o\'></i>';
+				}else {
+					$source='';
+				}
+
+				$validation_data=trim($date.' '.$source.' '.$msg);
+				if ($validation_data!='')$validation_data=' <span class=\'discret\'>('.$validation_data.')</span>';
+
+				switch ($this->data['Customer Tax Number Valid']) {
+				case 'Unknown':
+					return _('Not validated').$validation_data;
+					break;
+				case 'Yes':
+					return _('Validated').$validation_data;
+					break;
+				case 'No':
+					return _('Not valid').$validation_data;
+				default:
+					return $this->data['Customer Tax Number Valid'].$validation_data;
+
+					break;
+				}
 			}
-
 			break;
 		case('Tax Number Details Match'):
 			switch ($this->data['Customer '.$key]) {
@@ -2968,15 +2850,35 @@ class Customer extends DB_Table {
 			return $this->data['Customer Tax Category Code'];
 			break;
 
+		default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('Customer '.$key, $this->data))
+				return $this->data['Customer '.$key];
+
+			if (preg_match('/(Customer |)Other Email (\d+)/i', $key, $matches)) {
+
+
+				$customer_email_key=$matches[2];
+				$sql=sprintf("select `Customer Other Email Email` from `Customer Other Email Dimension` where `Customer Other Email Key`=%d ",
+					$customer_email_key
+				);
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						return $row['Customer Other Email Email'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+			}
+
 		}
 
-		$_key=ucwords($key);
-		if (isset($this->data[$_key]))
-			return $this->data[$_key];
 
-		//print "Error ->$key not found in get,* from Customer\n";
-		//exit;
-		return false;
+		return '';
 
 	}
 
@@ -3135,58 +3037,96 @@ class Customer extends DB_Table {
 	}
 
 
-	function update_tax_number_valid($value) {
-		$this->update_field('Customer Tax Number Valid', $value);
+
+
+
+	function update_tax_number($value) {
+
+		include_once 'utils/validate_tax_number.php';
+
+		$this->update_field('Customer Tax Number', $value);
+
+
+
 		if ($this->updated) {
 
-			/* delete this
-			$order_in_process_keys=$this->get_order_in_process_keys('only_process');
-			foreach ($order_in_process_keys as $order_key) {
-				$order=new Order($order_key);
-				if ($order->data['Order Tax Selection Type']!='set') {
+			$tax_validation_data=validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Billing Address 2 Alpha Country Code']);
 
-					$order->update_tax();
-				}
-			}
+			$this->update(
+				array(
+					'Customer Tax Number Valid'=>$tax_validation_data['Tax Number Valid'],
+					'Customer Tax Number Details Match'=>$tax_validation_data['Tax Number Details Match'],
+					'Customer Tax Number Validation Date'=>$tax_validation_data['Tax Number Validation Date'],
+					'Customer Tax Number Validation Source'=>'Online',
+					'Customer Tax Number Validation Message'=>$tax_validation_data['Tax Number Validation Message'],
+				)
+				, 'no_history');
 
-			*/
+
+			$this->new_value=$value;
+
+
 
 		}
+
+		$this->other_fields_updated=array(
+			'Customer_Tax_Number_Valid'=>array(
+				'field'=>'Customer_Tax_Number_Valid',
+				'render'=>($this->get('Customer Tax Number')==''?false:true),
+				'value'=>$this->get('Customer Tax Number Valid'),
+				'formated_value'=>$this->get('Tax Number Valid'),
+
+
+			)
+		);
 
 
 	}
 
 
-	function update_tax_number($value) {
+	function update_tax_number_valid($value) {
 
-		if ($value!=$this->data['Customer Tax Number']) {
+		include_once 'utils/validate_tax_number.php';
 
-			//print "->$value<-  ->".$this->data['Customer Tax Number']."<-\n";
+		if ($value=='Auto') {
 
-			$this->update_field('Customer Tax Number', $value);
-			if ($this->updated) {
-				$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
-					$this->id
-				);
-				mysql_query($sql);
+			$tax_validation_data=validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Billing Address 2 Alpha Country Code']);
 
-				$this->new_value=$value;
+			$this->update(
+				array(
+					'Customer Tax Number Valid'=>$tax_validation_data['Tax Number Valid'],
+					'Customer Tax Number Details Match'=>$tax_validation_data['Tax Number Details Match'],
+					'Customer Tax Number Validation Date'=>$tax_validation_data['Tax Number Validation Date'],
+					'Customer Tax Number Validation Source'=>'Online',
+					'Customer Tax Number Validation Message'=>$tax_validation_data['Tax Number Validation Message'],
+				)
+				, 'no_history');
 
-				/* delete this
-				$order_in_process_keys=$this->get_order_in_process_keys('only_process');
-				foreach ($order_in_process_keys as $order_key) {
-					$order=new Order($order_key);
-					if ($order->data['Order Tax Selection Type']!='set') {
-
-						$order->update_tax();
-					}
-				}
-				*/
-
-
-			}
-
+		}else {
+			$this->update_field('Customer Tax Number Valid', $value);
+			$this->update(
+				array(
+					'Customer Tax Number Details Match'=>'Unknown',
+					'Customer Tax Number Validation Date'=>$this->editor['Date'],
+					'Customer Tax Number Validation Source'=>'Manual',
+					'Customer Tax Number Validation Message'=>$this->editor['Author Name'],
+				)
+				, 'no_history');
 		}
+
+
+		$this->other_fields_updated=array(
+			'Customer_Tax_Number'=>array(
+				'field'=>'Customer_Tax_Number',
+				'render'=>true,
+				'value'=>$this->get('Customer Tax Number'),
+				'formated_value'=>$this->get('Tax Number'),
+
+
+			)
+		);
+
+
 
 	}
 
@@ -3209,41 +3149,6 @@ class Customer extends DB_Table {
 		$this->msg=$subject->msg;
 		$this->error=$subject->error;
 		$this->new_value=$subject->new_value;
-	}
-
-
-	function get_fiscal_name() {
-		if ($this->data['Customer Type']=='Person') {
-			$this->data['Customer Fiscal Name']=$this->data['Customer Name'];
-			return $this->data['Customer Fiscal Name'];
-		} else {
-			$subject='Company';
-			$subject_key=$this->data['Customer Company Key'];
-		}
-
-		$sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ", $subject_key);
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->data['Customer Fiscal Name']=$row['fiscal_name'];
-
-			return $this->data['Customer Fiscal Name'];
-		} else {
-			$this->error;
-			return '';
-		}
-
-
-	}
-
-
-	function get_tax_number($reread=false) {
-		return $this->data['Customer Tax Number'];
-	}
-
-
-	function get_registration_number($reread=false) {
-		return $this->data['Customer Registration Number'];
 	}
 
 
@@ -3742,23 +3647,6 @@ class Customer extends DB_Table {
 	}
 
 
-	function get_principal_email_comment() {
-		$comment='';
-		if ($this->data['Customer Main Email Key']) {
-
-			$sql=sprintf("select `Email Description` from `Email Bridge` B where `Email Key`=%d  and `Subject Type`='Customer' and `Subject Key`=%d ",
-				$this->data['Customer Main Email Key'],
-				$this->id
-			);
-			$result=mysql_query($sql);
-
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$comment=$row['Email Description'];
-			}
-		}
-
-		return $comment;
-	}
 
 
 	function users_last_login() {
@@ -3866,26 +3754,27 @@ class Customer extends DB_Table {
 
 	function get_other_emails_data() {
 
-		$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
-        `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
-        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )
-        where  `Subject Type`='Customer' and `Subject Key`=%d "
-			, $this->id
-			, $this->id
+		$sql=sprintf("select `Customer Other Email Key`,`Customer Other Email Email`,`Customer Other Email Label` from `Customer Other Email Dimension` where `Customer Other Email Customer Key`=%d order by `Customer Other Email Key`",
+			$this->id
 		);
 
 		$email_keys=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if ($row['Email Key']!=$this->data['Customer Main Email Key'])
-				$email_keys[$row['Email Key']]= array(
-					'email'=>$row['Email'],
-					'key'=>$row['Email Key'],
-					'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
-					'label'=>$row['Email Description'],
-					'user_key'=>$row['User Key']
+
+		if ($result=$this->db->query($sql)) {
+
+			foreach ($result as $row) {
+				$email_keys[$row['Customer Other Email Key']]= array(
+					'email'=>$row['Customer Other Email Email'],
+					'label'=>$row['Customer Other Email Label'],
 				);
+			}
+
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $email_keys;
 
 	}
@@ -3907,18 +3796,6 @@ class Customer extends DB_Table {
 	}
 
 
-	function get_email_keys() {
-		$sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
-			, $this->id );
-
-		$email_keys=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$email_keys[$row['Email Key']]= $row['Email Key'];
-		}
-		return $email_keys;
-
-	}
 
 
 	function get_ship_to_keys() {
@@ -4154,17 +4031,6 @@ class Customer extends DB_Table {
 	}
 
 
-
-	function disassociate_email($email_key) {
-
-
-		$sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d  and `Email Key`=%d ",
-			$this->id,
-			$email_key
-		);
-		mysql_query($sql);
-
-	}
 
 
 	function associate_delivery_address($address_key) {
@@ -5482,89 +5348,6 @@ class Customer extends DB_Table {
 		$this->remove_telecom('Fax', $this->data['Customer Main FAX Key'], $save_history, $swap_principal);
 	}
 
-
-	function remove_email($email_key, $save_history=true, $swap_principal=true) {
-
-		$email=new Email($email_key);
-		if (!$email->id) {
-			return;
-			$this->msg='Error, main email not found';
-		}
-
-
-		$email_to_delete_handle=$email->data['Email'];
-
-		$email_customer_keys=$email->get_parent_keys('Customer');
-		unset($email_customer_keys[$this->id]);
-		$email_contacts_keys=$email->get_parent_keys('Contact');
-		unset($email_contacts_keys[$this->data['Customer Main Contact Key']]);
-
-		$email_companies_keys=$email->get_parent_keys('Company');
-		unset($email_companies_keys[$this->data['Customer Company Key']]);
-
-
-		$email_suppliers_keys=$email->get_parent_keys('Supplier');
-
-		$email_customer_number_keys=count($email_customer_keys);
-		$email_contacts_number_keys=count($email_contacts_keys);
-		$email_suppliers_number_keys=count($email_suppliers_keys);
-		$email_companies_number_keys=count($email_companies_keys);
-
-
-
-		$email->remove_from_parent('Customer', $this->id);
-		if (($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys)==0) {
-
-
-			if ($this->data['Customer Type']=='Company') {
-				$company=new Company($this->data['Customer Company Key']);
-				$company_customers_keys=$company->get_parent_keys('Customer');
-				unset($company_customers_keys[$this->id]);
-				$company_suppliers_keys=$company->get_parent_keys('Supplier');
-				$company_customers_number_keys=count($company_customers_keys);
-				$company_suppliers_number_keys=count($company_suppliers_keys);
-				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
-					$email->remove_from_parent('Company', $company->id);
-				}
-			}
-			$contact=new Contact($this->data['Customer Main Contact Key']);
-			$contact_customers_keys=$contact->get_parent_keys('Customer');
-			//  print_r($contact_customers_keys);
-			unset($contact_customers_keys[$this->id]);
-			$contact_suppliers_keys=$contact->get_parent_keys('Supplier');
-			$contact_customers_number_keys=count($contact_customers_keys);
-			$contact_suppliers_number_keys=count($contact_suppliers_keys);
-
-
-
-			if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
-				$email->remove_from_parent('Contact', $contact->id);
-				$email->delete();
-			}
-
-
-		}
-
-		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Customer' and `User Parent Key`=%d  and `User Active`='Yes' "
-
-			, prepare_mysql($email_to_delete_handle)
-			, $this->id
-		);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$user_key=$row['User Key'];
-			$_user=new user($user_key);
-			$_user->deactivate();
-		}
-
-
-		$this->updated=true;
-		$this->msg=_('Email Removed from Customer');;
-		$this->new_value='';
-		return;
-
-
-	}
 
 
 	function remove_telecom($type, $telecom_key, $save_history=true, $swap_principal=true) {
@@ -6914,6 +6697,59 @@ class Customer extends DB_Table {
 		}
 
 		return $correlation_msg;
+
+	}
+
+
+	function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+		case 'Customer Registration Number':
+			$label=_('registration number');
+			break;
+		case 'Customer Tax Number':
+			$label=_('tax number');
+			break;
+		case 'Customer Tax Number Valid':
+			$label=_('tax number validity');
+			break;
+		case 'Customer Company Name':
+			$label=_('company name');
+			break;
+		case 'Customer Main Contact Name':
+			$label=_('contact name');
+			break;
+		case 'Customer Main Plain Email':
+			$label=_('email');
+			break;
+		case 'Customer Main Email':
+			$label=_('main email');
+			break;
+		case 'Customer Other Email':
+			$label=_('other email');
+			break;
+		case 'Customer':
+			$label=_('tax');
+			break;
+		case 'Customer':
+			$label=_('tax');
+			break;
+		case 'Customer':
+			$label=_('tax');
+			break;
+		case 'Customer':
+			$label=_('tax');
+			break;
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
 
 	}
 

@@ -843,9 +843,6 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		break;
 	case ('account'):
 
-
-
-
 		require_once 'navigation/account.nav.php';
 
 		switch ($data['section']) {
@@ -1051,10 +1048,8 @@ function get_view_position($state) {
 		break;
 	case 'customers_server':
 		if ($state['section']=='customers')
-			$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
-		elseif ($state['section']=='pending_orders')
-			$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
-
+			$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'', 'reference'=>'');
+		
 		break;
 
 
@@ -1076,7 +1071,7 @@ function get_view_position($state) {
 			if ($state['section']=='pending_orders')
 				$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
 			else
-				$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'bars', 'reference'=>'customers/all');
+				$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'customers/all');
 
 		}
 
@@ -1102,7 +1097,7 @@ function get_view_position($state) {
 
 
 					$branch[]=array('label'=>_('Customers').' '.$store->data['Store Code'], 'icon'=>'users', 'reference'=>'customers/'.$store->id);
-					$branch[]=array('label'=>_('Customer').' '.$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
+					$branch[]=array('label'=>$customer->get_formated_id(), 'icon'=>'user', 'reference'=>'customer/'.$customer->id);
 				}
 			}elseif ($state['parent']=='list') {
 				$customer=new Customer($state['key']);
