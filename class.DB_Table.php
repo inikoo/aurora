@@ -311,7 +311,7 @@ abstract class DB_Table {
 	}
 
 
-	function add_changelog_record($field, $old_value, $value, $options, $table_name, $table_key) {
+	function add_changelog_record($field, $old_value, $value, $options, $table_name, $table_key, $action='updated') {
 
 
 
@@ -319,35 +319,17 @@ abstract class DB_Table {
 		$history_data=array(
 			'Indirect Object'=>$field,
 			'old_value'=>$old_value,
-			'new_value'=>$value
+			'new_value'=>$value,
+			'Action'=>$action
 
 		);
 
-		/*
 
-		if ($table_name=='Product Family')
-			$history_data['direct_object']='Family';
-		if ($table_name=='Product Department')
-			$history_data['direct_object']='Department';
-		if ($table_name=='Page Store') {
-			$history_data['direct_object']='Page';
-			$table_name='Page';
-
-		}
-*/
 		$history_key=$this->add_history($history_data, false, false, $options);
 
 
 		if (!in_array($table_name, array())) {
 
-			/*
-			if ($table_name=='Product' or $table_name=='Supplier Product') {
-				$subject_key=$this->pid;
-
-			}else {
-				$subject_key=$this->id;
-			}
-			*/
 
 			$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key);
 
@@ -391,14 +373,9 @@ abstract class DB_Table {
 
 	function add_history($raw_data, $force=false, $post_arg1=false, $options='') {
 
-		if ($this->table_name=='Product Department')
-			$table='Department';
-		elseif ($this->table_name=='Product Family')
-			$table='Family';
-		else
-			$table=$this->table_name;
 
-		return $this->add_table_history($raw_data, $force, $post_arg1, $options, $table, $this->get_main_id());
+
+		return $this->add_table_history($raw_data, $force, $post_arg1, $options, $this->table_name, $this->get_main_id());
 	}
 
 
@@ -470,28 +447,37 @@ abstract class DB_Table {
 
 				}
 
-				switch ($table_name) {
-				case 'Staff':
-					if ($raw_data['new_value']=='')
-						$data['History Abstract']=sprintf(_("Employee's %s was deleted"), $formated_indirect_object);
-					else
-						$data['History Abstract']=sprintf(_("Employee's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^Staff /', '', $data['Indirect Object'])));
-					break;
-				case 'User':
-					if ($raw_data['new_value']=='')
-						$data['History Abstract']=sprintf(_("User's %s was deleted"), $formated_indirect_object);
-					else
-						$data['History Abstract']=sprintf(_("User's %s was changed to %s"), $formated_indirect_object, $this->get(preg_replace('/^User /', '', $data['Indirect Object'])));
-					break;
-				default:
+
+				if ($table_name=='Staff') {
+					$formated_table="Employee's";
+				}else {
 					$formated_table=$table_name."'s";
+				}
+
+
+
+
+				if ($data['Action']=='added'  ) {
+					$data['History Abstract']=sprintf(_("%s %s %s was added"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+
+				}elseif ($data['Action']=='removed'  ) {
+					$data['History Abstract']=sprintf(_("%s %s %s was removed"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+
+				}elseif ($data['Action']=='set_as_main'  ) {
+					$data['History Abstract']=sprintf(_("%s %s was set as %s"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+
+				}else {
+
+
 					if ($raw_data['new_value']=='')
-						$data['History Abstract']=sprintf(_("%s %s was deleted"), $formated_table, $formated_indirect_object);
+						$data['History Abstract']=sprintf(_("%s %s %s was deleted"), $formated_table, $formated_indirect_object, $raw_data['old_value']);
+					elseif ($raw_data['old_value']=='')
+						$data['History Abstract']=sprintf(_("%s %s %s was inputted"), $formated_table, $formated_indirect_object, $raw_data['old_value']);	
 					else
 						$data['History Abstract']=sprintf(_("%s %s was changed to %s"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
-
-
 				}
+
+
 
 
 
@@ -1150,6 +1136,24 @@ abstract class DB_Table {
 
 		if (isset($this->other_fields_updated)) {
 			return $this->other_fields_updated;
+		}else {
+			return false;
+		}
+	}
+
+
+	function get_new_fields_info() {
+		if (isset($this->new_fields_info)) {
+			return $this->new_fields_info;
+		}else {
+			return false;
+		}
+	}
+
+
+	function get_deleted_fields_info() {
+		if (isset($this->deleted_fields_info)) {
+			return $this->deleted_fields_info;
 		}else {
 			return false;
 		}

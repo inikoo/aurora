@@ -4,7 +4,7 @@
  Version 3.0*/
 
 function validate_field(field, new_value, field_type, required, server_validation_type, parent, parent_key, object, key) {
-
+console.log(key)
     var validation = client_validation(field_type, required, new_value, field)
 
     if (validation.class == 'valid' && server_validation_type) {
@@ -149,6 +149,7 @@ function client_validation(type, required, value, field) {
 
 
     case 'email':
+    case 'new_email':
 
         var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,63})?$/
 

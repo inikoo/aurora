@@ -758,6 +758,11 @@ input {
 .valid {
   color: #0EBFE9; }
 
+.deleted {
+  text-decoration: line-through;
+  opacity: .9;
+  color: #777; }
+
 .valid.save {
   color: #0EBFE9;
   cursor: pointer; }
@@ -770,6 +775,14 @@ input {
 
 .disabled {
   opacity: .5;
+  color: #777; }
+
+.discret {
+  opacity: .9;
+  color: #777; }
+
+.very_discret {
+  opacity: .6;
   color: #777; }
 
 .padding_left_10 {
@@ -1083,8 +1096,6 @@ input {
     border: none; }
   .details_data table tr.new, .new_object table tr.new, .presention_card table tr.new, .showcase table tr.new, .dashboard table tr.new, .export_dialog table tr.new {
     cursor: pointer; }
-    .details_data table tr.new:hover, .new_object table tr.new:hover, .presention_card table tr.new:hover, .showcase table tr.new:hover, .dashboard table tr.new:hover, .export_dialog table tr.new:hover {
-      color: #0EBFE9; }
   .details_data table .new_button, .new_object table .new_button, .presention_card table .new_button, .showcase table .new_button, .dashboard table .new_button, .export_dialog table .new_button {
     position: relative;
     top: 1px;

@@ -930,7 +930,7 @@ function get_customer_navigation($data) {
 	$avatar='<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
 	$avatar='';
 
-	$title= '<span class="id">'.$customer->get('Customer Name').' ('.$customer->get_formated_id().')</span>';
+	$title= '<span class="id"><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formated_id().')</span>';
 
 
 	$_content=array(
