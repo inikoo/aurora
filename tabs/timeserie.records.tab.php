@@ -15,14 +15,26 @@ $ar_file='ar_account_tables.php';
 $tipo='timeserie_records';
 
 $default=$user->get_tab_defaults($tab);
-if($state['subtab']=='timeserie.records.weekly'){
-    $default['frequency']='weekly';
-}elseif($state['subtab']=='timeserie.records.daily'){
-    $default['frequency']='daily';
-}elseif($state['subtab']=='timeserie.records.monthy'){
-    $default['frequency']='monthy';
-}elseif($state['subtab']=='timeserie.records.annually'){
-    $default['frequency']='annually';
+if ($state['subtab']=='timeserie.records.weekly') {
+	$default['frequency']='weekly';
+}elseif ($state['subtab']=='timeserie.records.daily') {
+	$default['frequency']='daily';
+}elseif ($state['subtab']=='timeserie.records.monthy') {
+	$default['frequency']='monthy';
+}elseif ($state['subtab']=='timeserie.records.annually') {
+	$default['frequency']='annually';
+}
+
+
+
+include 'conf/export_fields.php';
+$default['export_fields']=$export_fields['timeserie_records_'.$state['_object']->get('Type')];
+if ($state['_object']->get('Type')=='StoreSales') {
+	$default['export_fields'][1]['label'].=' '.$state['_object']->parent->get('Currency Code');
+	$default['export_fields'][2]['label'].=' '.$account->get('Currency');
+	if ($state['_object']->parent->get('Currency Code')==$account->get('Currency')) {
+		unset($default['export_fields'][2]);
+	}
 }
 
 $table_views=array();
@@ -39,7 +51,7 @@ $parameters=array(
 if ($state['_object']->get('Type')=='StoreSales') {
 	$columns_parameters=array(
 		'a'=>array('render'=>'true', 'label'=>_('Sales Net')),
-		'b'=>array('render'=>($state['_object']->parent->get('Currency Code')!=$account->get('Currency')?'true':'false'), 'label'=>_('Sales Net')),
+		'b'=>array('render'=>($state['_object']->parent->get('Currency Code')!=$account->get('Currency')?'true':'false'), 'label'=>_('Sales Net').' '.$account->get('Currency')),
 		'c'=>array('render'=>'false', 'label'=>''),
 		'd'=>array('render'=>'false', 'label'=>''),
 		'int_a'=>array('render'=>'true', 'label'=>_('Invoices')),

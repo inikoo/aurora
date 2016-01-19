@@ -852,6 +852,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
+		'export_fields'=>$export_fields['timeserie_records']
+
 	),
 	'data_sets.images'=>array(
 		'view'=>'overview',

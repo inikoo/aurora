@@ -35,22 +35,43 @@ $_data=prepare_values($_REQUEST, array(
 $dont_save_table_state=true;
 $_data['nr']=1000000;
 $_data['page']=1;
-include_once 'conf/export_fields.php';
+include 'conf/export_fields.php';
 
 
-if ($_data['tipo']=='billingregion_taxcategory.invoices' or $_data['tipo']=='billingregion_taxcategory.refunds')
-	$_tipo='invoices';
-else
-	$_tipo=$_data['tipo'];
+
+if ($_data['tipo']=='timeserie_records') {
+
+    include_once('class.Timeseries.php');
+	$timeseries=new Timeseries($_data['parameters']['parent_key']);
+
+	$field_set=$export_fields['timeserie_records_'.$timeseries->get('Type')];
+	
+	if ($timeseries->get('Type')=='StoreSales') {
+		$field_set[1]['label'].=' '.$timeseries->parent->get('Currency Code');
+		$field_set[2]['label'].=' '.$account->get('Currency');
+		if ($timeseries->parent->get('Currency Code')==$account->get('Currency')) {
+			unset($field_set[2]);
+		}
+	}
 
 
-if (!isset($export_fields[$_tipo])) {
-	$response=array('state'=>405, 'resp'=>'field set not found');
-	echo json_encode($response);
-	exit;
+}else {
+
+	if ($_data['tipo']=='billingregion_taxcategory.invoices' or $_data['tipo']=='billingregion_taxcategory.refunds') {
+		$_tipo='invoices';
+	}else {
+		$_tipo=$_data['tipo'];
+	}
+	if (!isset($export_fields[$_tipo])) {
+		$response=array('state'=>405, 'resp'=>'field set not found');
+		echo json_encode($response);
+		exit;
+	}
+
+	$field_set=$export_fields[$_tipo];
 }
 
-$field_set=$export_fields[$_tipo];
+
 
 include_once 'prepare_table/init.php';
 
@@ -81,7 +102,6 @@ $export_data=array(
 	'download_path'=>'downloads_aurora'
 );
 
-//print_r($export_data);
 
 list($fork_key, $msg)=new_fork('export', $export_data, $account->get('Account Code'), $db);
 

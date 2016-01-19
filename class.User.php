@@ -2129,6 +2129,8 @@ class User extends DB_Table {
 
 
 	function get_tab_defaults($tab) {
+	
+	
 		include 'conf/tabs.defaults.php';
 
 
