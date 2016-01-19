@@ -76,7 +76,15 @@ $object_fields=array(
 				'value'=>$customer->get('Customer Tax Number Valid'),
 				'formated_value'=>$customer->get('Tax Number Valid'),
 				'label'=>ucfirst($customer->get_field_label('Customer Tax Number Valid')),
-			)
+			),
+			array(
+				'id'=>'Customer_Fiscal_Name',
+				'edit'=>'string',
+				'value'=>$customer->get('Customer Fiscal Name'),
+				'formated_value'=>$customer->get('Fiscal Name'),
+				'label'=>ucfirst($customer->get_field_label('Customer Fiscal Name')),
+				'required'=>false
+			),
 
 		)
 	),

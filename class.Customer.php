@@ -16,7 +16,6 @@
 
 */
 include_once 'class.DB_Table.php';
-include_once 'class.Contact.php';
 include_once 'class.Order.php';
 include_once 'class.Address.php';
 include_once 'class.Attachment.php';
@@ -66,20 +65,14 @@ class Customer extends DB_Table {
 			$this->get_data('id', $arg1);
 			return;
 		}
-		if (preg_match('/create anonymous|create anonimous$/i', $arg1)) {
-			$this->create_anonymous();
-			return;
-		}
+
 
 
 		if ($arg1=='new') {
 			$this->find($arg2, 'create');
 			return;
 		}
-		elseif (preg_match('/^find staff/', $arg1)) {
-			$this->find_staff($arg2, $arg1);
-			return;
-		}
+
 		elseif (preg_match('/^find/', $arg1)) {
 			$this->find($arg2, $arg1);
 			return;
@@ -114,52 +107,6 @@ class Customer extends DB_Table {
 	}
 
 
-
-
-	function find_staff($staff, $options='') {
-
-		$sql=sprintf("select * from `Customer Dimension` where `Customer Staff`='Yes' and `Customer Staff Key`=%d", $staff->id);
-		//print $sql;exit;
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-			$this->id=$this->data['Customer Key'];
-		}
-
-		if (!$this->id and preg_match('/create|new/', $options)) {
-			$raw_data['Customer Type']='Person';
-
-			$raw_data['Customer Staff']='Yes';
-			if ($staff->id) {
-
-
-
-				$contact=new Contact($staff->data['Staff Contact Key']);
-				$_raw_data=$contact->data;
-				foreach ($_raw_data as $key=>$value) {
-					$raw_data[preg_replace('/Contact/', 'Customer', $key)]=$value;
-				}
-
-				$raw_data['Customer Staff Key']=$staff->id;
-				$raw_data['Customer Main Contact Key']=$staff->data['Staff Contact Key'];
-				$raw_data['Customer Name']=$staff->data['Staff Name'];
-			} else {
-				$contact=new Contact('create anonymous');
-				$_raw_data=$contact->data;
-				foreach ($raw_data as $key=>$value) {
-					$raw_data[preg_replace('/Contact/', 'Customer', $key)]=$value;
-				}
-				$raw_data['Customer Staff Key']=0;
-				$raw_data['Customer Main Contact Key']=$contact->id;
-				$raw_data['Customer Name']='';
-			}
-
-
-			$this->create($raw_data);
-		}
-
-
-	}
 
 
 
@@ -282,8 +229,7 @@ class Customer extends DB_Table {
 			$raw_data['Customer Company Name']=$myconf['unknown_contact'];
 			$raw_data['Customer Main Contact Name']=$myconf['unknown_contact'];
 			$raw_data['Customer Name']=$myconf['unknown_contact'];
-			//   $this->create_anonymous($raw_data);
-			// return;
+
 		}
 
 		//print_r($raw_data);
@@ -543,34 +489,6 @@ class Customer extends DB_Table {
 	}
 
 
-
-	function load($key='', $arg1=false) {
-		switch ($key) {
-		case('contact_data'):
-		case('contact data'):
-			$contact=new Contact($this->get('customer contact key'));
-			if ($contact->id)
-				$this->contact_data=$contact->data;
-			else
-				$this->errors[]='Error geting contact data object. Contact key:'.$this->get('customer contact key');
-			break;
-		case('ship to'):
-
-			$sql=sprintf('select * from `Ship To Dimension` where `Ship To Key`=%d ', $arg1);
-
-			//  print $sql;
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->ship_to[$row['Ship To Key']]=$row;
-
-
-			} else
-				$this->errors[]='Error loading ship to data. Ship to Key:'.$arg1;
-
-			break;
-		}
-
-	}
 
 
 	function create($raw_data, $args='') {
@@ -853,107 +771,6 @@ class Customer extends DB_Table {
 	}
 
 
-
-
-
-	private function create_anonymous($raw_data) {
-
-
-		$store_key=$raw_data['Customer Store Key'];
-		$store=new Store($this->data['Customer Store Key']);
-		$locale=$store->data['Store Locale'];
-
-		$address_data=array(
-			'Customer Address Line 1'=>'',
-			'Customer Address Town'=>'',
-			'Customer Address Line 2'=>'',
-			'Customer Address Line 3'=>'',
-			'Customer Address Postal Code'=>'',
-			'Customer Address Country Code'=>'',
-			'Customer Address Country Name'=>'',
-			'Customer Address Country First Division'=>'',
-			'Customer Address Country Second Division'=>''
-		);
-
-
-
-		foreach ($raw_data as $key=>$val) {
-			if (array_key_exists($key, $address_data))
-				$address_data[$key]=$val;
-
-		}
-		$address_data['Address Input Format']='3 Line';
-		$anon_address=new Address();
-		$anon_address->create($address_data);
-
-
-
-		$contact=new Contact('create anonymous', $raw_data, 'from customer');
-		$data=$contact->data;
-		foreach ($data as $key=>$value) {
-			$data[preg_replace('/Contact/', 'Customer', $key)]=$value;
-		}
-		$data['Customer Main Address Key']=$anon_address->id;
-		$data['Customer Billing Address Key']=$anon_address->id;
-		if (isset($raw_data['Customer First Contacted Date']))
-			$data['Customer First Contacted Date']=$raw_data['Customer First Contacted Date'];
-		else
-			$data['Customer First Contacted Date']=gmdate("Y-m-d H:i:s");
-
-		$data['Customer Main Country Code']=$anon_address->data['Address Country Code'];
-		$data['Customer Main Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
-		$data['Customer Main Location']=$anon_address->data['Address Location'];
-		$data['Customer Main Town']=$anon_address->data['Address Town'];
-		$data['Customer Main Postal Code']=$anon_address->data['Address Postal Code'];
-		$data['Customer Main Country First Division']=$anon_address->data['Address Country First Division'];
-		$data['Customer Main XHTML Address']=$anon_address->display('html', $locale);
-		$data['Customer Main Plain Address']=$anon_address->display('plain', $locale);
-
-		$data['Customer Staff Key']=0;
-		$data['Customer Main Contact Key']=$contact->id;
-		$data['Customer Name']='';
-		$data['Customer File As']='';
-		$data['Customer Store Key']=$store_key;
-
-		$this->data=$this->base_data();
-		foreach ($data as $key=>$value) {
-			if (array_key_exists($key, $this->data)) {
-				$this->data[$key]=_trim($value);
-			}
-		}
-
-		$keys='';
-		$values='';
-		foreach ($this->data as $key=>$value) {
-			$keys.=",`".$key."`";
-
-			if (preg_match('/Key$/', $key))
-				$values.=','.prepare_mysql($value);
-			else
-				$values.=','.prepare_mysql($value, false);
-		}
-		$values=preg_replace('/^,/', '', $values);
-		$keys=preg_replace('/^,/', '', $keys);
-
-		$sql="insert into `Customer Dimension` ($keys) values ($values)";
-
-		if (mysql_query($sql)) {
-
-			$this->id=mysql_insert_id();
-			$this->get_data('id', $this->id);
-			$this->fuzzy=true;
-			$history_data=array(
-				'History Abstract'=>_('Anonymous Customer Created'),
-				'History Details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' ),
-				'Action'=>'created'
-
-			);
-			$this->add_subject_history($history_data);
-			$this->new=true;
-			$this->update_location_type();
-
-		}
-	}
 
 
 	function associate_ship_to_key($ship_to_key, $date, $current_ship_to=false) {
@@ -1815,238 +1632,6 @@ class Customer extends DB_Table {
 		case('Attach'):
 			$this->add_attach($value);
 			break;
-		case('Customer Name'):
-			$this->update_child_name($value);
-			break;
-		case('Customer Main Contact Name'):
-			$this->update_child_main_contact_name($value);
-			break;
-		case('Customer Main Plain Telephone'):
-		case('Customer Main Plain FAX'):
-
-
-			$value=preg_replace("/[^0-9]/", '', $value);
-
-			$old_value=$this->data[$field];
-			//print "$old_value New $value\n";
-			if (strcmp($old_value, $value)) {
-
-
-
-				if ($field=='Customer Main Plain Telephone') {
-					$type='Telephone';
-				}else {
-					$type='FAX';
-				}
-
-
-
-				$telephone_data=array();
-				$telephone_data['editor']=$this->editor;
-				$telephone_data['Telecom Raw Number']=$value;
-				$telephone_data['Telecom Type']=$type;
-				$telephone=new Telecom("find fast create", $telephone_data);
-
-
-				if ($telephone->id) {
-					$swap_principal=false;
-					$save_history=false;
-				}else {
-					$swap_principal=true;
-					$save_history=true;
-				}
-
-				if ($field=='Customer Main Plain Telephone') {
-					$type='Telephone';
-
-					$this->remove_principal_telephone($save_history, $swap_principal);
-
-
-
-
-				}else {
-					$this->remove_principal_fax($save_history, $swap_principal);
-					$type='FAX';
-				}
-
-
-
-
-
-
-
-
-
-				if ($telephone->id) {
-					$customers_with_this_telephone=$telephone->get_customer_keys();
-					//print_r($customers_with_this_telephone);
-					//exit;
-					if (in_array($this->id, $customers_with_this_telephone)) {
-						$this->msg=_('The customer already has this number');
-						$this->error=true;
-						$this->warning_messages[]=$this->msg;
-						return;
-
-					}
-
-
-					$address=new Address($this->data['Customer Main Address Key']);
-
-					$address->editor=$this->editor;
-
-
-					$address->disassociate_telecom($this->data["Customer Main $type Key"], $type, $swap_principal=false);
-
-
-
-
-					$address->associate_telecom($telephone->id, $type, $swap_principal);
-
-
-
-					$address->update_principal_telecom($telephone->id, $type, $old_value);
-
-
-
-					$address->associate_telecom_to_parents($type, 'Customer', $this->id, $telephone->id);
-
-					$address->associate_telecom_to_parents($type, 'Contact', $this->data['Customer Main Contact Key'], $telephone->id);
-
-
-					if ($this->data['Customer Company Key']) {
-						// print "x3";
-						$address->associate_telecom_to_parents($type, 'Company', $this->data['Customer Company Key'], $telephone->id);
-
-					}
-					// print "x4";
-					$telephone->update_parents();
-
-
-					$this->updated=1;
-
-					$this->new_value=$value;
-
-
-				}
-
-
-
-
-
-
-
-
-
-			}
-			else {
-				$this->new_value=$old_value;
-			}
-
-			break;
-		case('Customer Main Plain Mobile'):
-			$value=preg_replace("/[^0-9]/", '', $value);
-
-			$old_value=$this->data['Customer Main Plain Mobile'];
-			if ($old_value!=$value) {
-				$this->remove_principal_mobile();
-				if ($value!='') {
-
-					$type='Mobile';
-					$telephone_data=array();
-					$telephone_data['editor']=$this->editor;
-					$telephone_data['Telecom Raw Number']=$value;
-					$telephone_data['Telecom Type']=$type;
-					$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'], $telephone_data);
-
-					if ($proposed_telephone->id) {
-
-
-						$customers_with_this_number=$proposed_telephone->get_customer_keys();
-						// Check if email already in this customer an return
-
-						// print_r($customers_with_this_number);
-
-
-						if (in_array($this->id, $customers_with_this_number)) {
-
-							$this->error=true;
-							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('These customer already has this number');
-
-							return;
-
-						}
-
-
-						// Check if email already in this store an return
-						foreach ($customers_with_this_number as $customer_with_this_number ) {
-							$other_customer_with_this_number=new Customer($customer_with_this_number);
-							if ($other_customer_with_this_number->data['Customer Store Key']==$this->data['Customer Store Key']) {
-								$error_customer_in_the_same_store=$other_customer_with_this_number;
-								$customer_name_with_this_number=$other_customer_with_this_number->data['Customer Name'];
-								//$this->error=true;
-
-								$this->warning=true;
-
-								$this->msg=_('Warning number also associated with customer').'
-								<a href="customer.php?id='.
-									$error_customer_in_the_same_store->id.
-									'">'.
-									$error_customer_in_the_same_store->data['Customer Name'].
-									'</a>';
-
-								//return;
-							}
-						}
-					}
-					$contact=new Contact($this->data['Customer Main Contact Key']);
-					$contact-> update_field_switcher('Add Other Mobile', $value);
-					$new_princial_key=$contact->other_mobile_key;
-					$telecom=new Telecom($new_princial_key);
-
-
-					if ($telecom->id) {
-						//print "x1";
-						$contact->associate_mobile_to_parents('Customer', $this->id, $telecom->id);
-						// print "x2";
-						if ($this->data['Customer Company Key']) {
-							// print "x3";
-							$contact->associate_mobile_to_parents('Company', $this->data['Customer Company Key'], $telecom->id, false);
-						}
-						// print "x4";
-						$telecom->update_parents();
-						//  print "x5";
-						$this->updated=1;
-						//$this->msg=_('Mo removed');
-						$this->new_value=$value;
-
-					}else {
-						$this->error=1;
-						$this->msg='unknown error';
-						$this->new_value='';
-					}
-				}
-				else {
-					$this->updated=1;
-					$this->msg=_('Mobile removed');
-					$this->new_value='';
-				}
-			}
-			break;
-
-
-		case('Add Other Mobile'):
-			$value=preg_replace("/[^0-9]/", '', $value);
-			$this->add_other_telecom('Mobile', $value);
-			break;
-
-		case('Add Other FAX'):
-			$value=preg_replace("/[^0-9]/", '', $value);
-			$this->add_other_telecom('FAX', $value);
-			break;
-		case('Add Other Telephone'):
-			$value=preg_replace("/[^0-9]/", '', $value);
-			$this->add_other_telecom('Telephone', $value);
-			break;
 
 
 		default:
@@ -2059,14 +1644,6 @@ class Customer extends DB_Table {
 			}
 		}
 	}
-
-
-
-
-
-
-
-
 
 
 
@@ -2395,24 +1972,6 @@ class Customer extends DB_Table {
 	function get($key, $arg1=false) {
 
 
-		if (preg_match('/^contact /i', $key)) {
-			if (!$this->contact_data)
-				$this->load('contact data');
-			if (isset($this->contact_data[$key]))
-				return $this->contact_data[$key];
-		}
-		elseif (preg_match('/^ship to /i', $key)) {
-			if (!$arg1)
-				$ship_to_key=$this->data['Customer Main Delivery Address Key'];
-			else
-				$ship_to_key=$arg1;
-			if (!$this->ship_to[$ship_to_key])
-				$this->load('ship to', $ship_to_key);
-			if (isset($this->ship_to[$ship_to_key])    and  array_key_exists($key, $this->ship_to[$ship_to_key]) )
-				return $this->ship_to[$ship_to_key][$key];
-		}
-
-
 
 		switch ($key) {
 		case 'Main Plain Telephone':
@@ -2435,24 +1994,24 @@ class Customer extends DB_Table {
 			break;
 
 		case('First Name'):
-			$contact=new Contact($this->get('Customer Main Contact Key'));
-			$first_name='';
-			if ($contact->id) {
-				$first_name= $contact->get('Contact First Name');
-			}
-			return $first_name;
-			break;
-
 		case('Last Name'):
 		case('Surname'):
-			$contact=new Contact($this->get('Customer Main Contact Key'));
-			$last_name='';
-			if ($contact->id) {
-				$last_name= $contact->get('Contact Surname');
+		case('Contact Name Object'):
+			include_once 'external_libs/HumanNameParser/Name.php';
+			include_once 'external_libs/HumanNameParser/Parser.php';
+			$name_parser=new HumanNameParser_Parser($this->data['Customer Main Contact Name']);
+
+			if ($key=='First Name') {
+				return $name_parser->getFirst();
+			}elseif ($key=='Contact Name Object') {
+				return $name_parser;
+			}else {
+				return $name_parser->getLast();
 			}
-			return $last_name;
+
+
 			break;
-			break;
+
 		case('Tax Number Valid'):
 			if ($this->data['Customer Tax Number']!='') {
 
@@ -5514,6 +5073,9 @@ class Customer extends DB_Table {
 		case 'Customer Preferred Contact Number':
 			$label=_('main contact number');
 			break;
+		case 'Customer Fiscal Name':
+			$label=_('fiscal name');
+			break;	
 		default:
 			$label=$field;
 

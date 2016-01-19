@@ -23,6 +23,7 @@ function get_object($object_name, $key) {
 		break;
 	case 'customer':
 	case 'Customer':
+	include_once 'class.Customer.php';
 		$object=new Customer($key);
 		break;
 	case 'store':
