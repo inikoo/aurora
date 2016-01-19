@@ -163,7 +163,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Telephone'),
 				'formated_value'=>$employee->get('Telephone'),
 				'label'=>ucfirst($employee->get_field_label('Staff Telephone')),
-				'invalid_msg'=>get_invalid_message('email'),
+				'invalid_msg'=>get_invalid_message('telephone'),
 			),
 			array(
 

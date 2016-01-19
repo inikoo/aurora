@@ -67,7 +67,7 @@
 	
 	
 	
-				{elseif $edit=='telephone' } 
+				{elseif $edit=='telephone'  or $edit=='new_telephone' } 
 	<input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
@@ -82,7 +82,9 @@
 		}
 		);
 		
-		$("#{$field.id}").intlTelInput("setNumber", "+{$field.value}");
+		
+		
+		$("#{$field.id}").intlTelInput("setNumber", "{$field.value}");
 		</script>
 		{elseif $edit=='pin' or  $edit=='password'} 
 		<input id="{$field.id}" type="password" class="input_field hide" value="{$field.value}" has_been_valid="0" />
@@ -204,28 +206,35 @@
 </table>
 </div>
  <script>
- $(document).on('input propertychange', '.input_field', function(evt) {      
-        if($('#'+$(this).attr('id')+'_container').attr('server_validation')){
-         var delay=200;
-        }else{
-         var delay=10;
-        }
-        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        delayed_on_change_field($(this),delay)
-    });
-    
-     $(".confirm_input_field").on("input propertychange", function(evt) {
-        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        on_changed_confirm_value($(this).attr('confirm_field'),$(this).val())
-    });
-   
-   $("#fields").on("click", "#show_new_email_field", function(){
+ $(document).on('input propertychange', '.input_field', function(evt) {
+     if ($('#' + $(this).attr('id') + '_container').attr('server_validation')) {
+         var delay = 200;
+     } else {
+         var delay = 10;
+     }
+     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+     delayed_on_change_field($(this), delay)
+ });
 
-    $('#new_email_field').removeClass('hide')
-    open_edit_field('{$state._object->get_object_name()}','{$state.key}','new_email')
+ $(".confirm_input_field").on("input propertychange", function(evt) {
+     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+     on_changed_confirm_value($(this).attr('confirm_field'), $(this).val())
+ });
+
+ $("#fields").on("click", "#show_new_email_field", function() {
+
+     $('#new_email_field').removeClass('hide')
+     open_edit_field('{$state._object->get_object_name()}', '{$state.key}', 'new_email')
      $('#show_new_email_field').addClass('hide')
-});
-   
+ });
+ 
+  $("#fields").on("click", "#show_new_telephone_field", function() {
+
+     $('#new_telephone_field').removeClass('hide')
+     open_edit_field('{$state._object->get_object_name()}', '{$state.key}', 'new_telephone')
+     $('#show_new_telephone_field').addClass('hide')
+ });
+
    {if isset($js_code) }
 {include file="string:$js_code" } 
 {/if}

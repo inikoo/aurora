@@ -160,7 +160,6 @@ abstract class DB_Table {
 	protected function update_table_field($field, $value, $options='', $table_name, $table_full_name, $table_key) {
 
 
-
 		$this->updated=false;
 
 		$null_if_empty=true;
@@ -472,7 +471,7 @@ abstract class DB_Table {
 					if ($raw_data['new_value']=='')
 						$data['History Abstract']=sprintf(_("%s %s %s was deleted"), $formated_table, $formated_indirect_object, $raw_data['old_value']);
 					elseif ($raw_data['old_value']=='')
-						$data['History Abstract']=sprintf(_("%s %s %s was inputted"), $formated_table, $formated_indirect_object, $raw_data['old_value']);	
+						$data['History Abstract']=sprintf(_("%s %s %s was inputted"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
 					else
 						$data['History Abstract']=sprintf(_("%s %s was changed to %s"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
 				}

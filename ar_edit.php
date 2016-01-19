@@ -147,6 +147,7 @@ function edit_field($account, $db, $user, $editor, $data) {
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
 			$formated_value=$object->get($formated_field);
+
 			$action='updated';
 		}elseif (isset($object->deleted)) {
 			$msg=sprintf('<span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted'));
@@ -161,7 +162,6 @@ function edit_field($account, $db, $user, $editor, $data) {
 			$formated_value=$object->get($formated_field);
 			$action='';
 		}
-
 
 
 
@@ -201,7 +201,27 @@ function set_as_main($account, $db, $user, $editor, $data) {
 
 	$object->editor=$editor;
 
-	if (preg_match('/(.+)(_\d+)$/', $data['field'], $matches)) {
+	if ($data['field']=='Customer_Main_Plain_Mobile') {
+		$object->update(array('Customer Preferred Contact Number'=>'Mobile'));
+		$response=array(
+			'state'=>200,
+			'other_fields'=>$object->get_other_fields_update_info(),
+			'new_fields'=>$object->get_new_fields_info(),
+			'deleted_fields'=>$object->get_deleted_fields_info(),
+			'action'=>($object->updated?'set_main_contact_number_Mobile':'')
+		);
+
+	}elseif ($data['field']=='Customer_Main_Plain_Telephone') {
+		$object->update(array('Customer Preferred Contact Number'=>'Telephone'));
+		$response=array(
+			'state'=>200,
+			'other_fields'=>$object->get_other_fields_update_info(),
+			'new_fields'=>$object->get_new_fields_info(),
+			'deleted_fields'=>$object->get_deleted_fields_info(),
+			'action'=>($object->updated?'set_main_contact_number_Telephone':'')
+		);
+
+	}elseif (preg_match('/(.+)(_\d+)$/', $data['field'], $matches)) {
 
 		$value=trim(preg_replace('/_/', ' ', $matches[2]));
 		$field=trim(preg_replace('/_/', ' ', $matches[1]));
@@ -219,7 +239,8 @@ function set_as_main($account, $db, $user, $editor, $data) {
 				'state'=>200,
 				'other_fields'=>$object->get_other_fields_update_info(),
 				'new_fields'=>$object->get_new_fields_info(),
-				'deleted_fields'=>$object->get_deleted_fields_info()
+				'deleted_fields'=>$object->get_deleted_fields_info(),
+				'action'=>''
 			);
 
 
