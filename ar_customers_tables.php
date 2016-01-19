@@ -10,6 +10,8 @@
 */
 
 require_once 'common.php';
+require_once 'class.Store.php';
+
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 

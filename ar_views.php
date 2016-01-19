@@ -74,6 +74,7 @@ case 'views':
 	switch ($state['parent']) {
 
 	case 'store':
+	    include_once('class.Store.php');
 		$_parent=new Store($state['parent_key']);
 		break;
 	case 'website':
@@ -815,7 +816,7 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		break;
 	case ('profile'):
 		require_once 'navigation/account.nav.php';
-		return get_profile_navigation($data);
+		return  get_profile_navigation($data, $smarty, $user, $db, $account);
 		break;
 
 	case ('payments'):

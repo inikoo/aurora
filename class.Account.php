@@ -10,7 +10,6 @@
  Version 2.0
 */
 include_once 'class.DB_Table.php';
-include_once 'class.Company.php';
 
 class Account extends DB_Table{
 
@@ -42,9 +41,9 @@ class Account extends DB_Table{
 	function create($data) {
 		$this->new=false;
 
-		$company=new Company('find create auto', $data);
+	
 
-		$data['Account Company Key']=$company->id;
+	
 		$data['Account Company Name']=$company->data['Company Name'];
 		$data['Account Country Code']=$company->data['Company Main Country Code'];
 
@@ -138,9 +137,7 @@ class Account extends DB_Table{
 		switch ($field) {
 		case 'Company Name':
 
-		case 'Account Name':
-			$this->update_company_name($value);
-			break;
+		
 		case('Account Currency'):
 			$this->update_currency($value);
 			break;
@@ -171,14 +168,6 @@ class Account extends DB_Table{
 
 
 
-	function update_company_name($value) {
-
-		$this->company->update_field_switcher('Company Name', $value);
-
-		$this->updated=$this->company->updated;
-		$this->new_value=$this->company->data['Company Name'];
-
-	}
 
 
 	function update_currency($value) {
