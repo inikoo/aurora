@@ -60,7 +60,7 @@ function customers($_data, $db, $user) {
 	
 	include_once 'prepare_table/init.php';
 
-	$sql="select  $fields from  $table   $where $wheref  $where_type  $group_by order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
 	$adata=array();

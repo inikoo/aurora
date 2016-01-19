@@ -246,15 +246,16 @@ var Rows = Backbone.PageableCollection.extend({
     $('#filter_container').removeClass('hide')
   }
     
- 
  if (total_pages == 1) {
-        $('#paginator').html(rows.state.currentPage + '/' + total_pages)
+        $('#paginator').html('')
         $('#first_page').addClass('disabled')
         $('#prev_page').addClass('disabled')
         $('#last_page').addClass('disabled')
         $('#next_page').addClass('disabled')
 
-    } else if (total_pages >= 1) {
+    }
+     else if (total_pages >1) {
+     
         $('#first_page').removeClass('hide')
         $('#prev_page').removeClass('hide')
         $('#last_page').removeClass('hide')

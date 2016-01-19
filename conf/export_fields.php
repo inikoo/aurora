@@ -57,6 +57,25 @@ $export_fields=array(
 		array('name'=>'`Payment Type`', 'label'=>_('Payment type'), 'checked'=>1),
 		array('name'=>'`Payment Account Name`', 'label'=>_('Payment Account'), 'checked'=>1),
 
+	),
+	'timeserie_records'=>array(
+	  		array('name'=>'`Timeseries Record Date`', 'label'=>_('Date'), 'checked'=>1),
+	  		array('name'=>'`Timeseries Record Float A`', 'label'=>'A', 'checked'=>1),
+	  		array('name'=>'`Timeseries Record Float B`', 'label'=>'B', 'checked'=>0),
+	  		array('name'=>'`Timeseries Record Float C`', 'label'=>'C', 'checked'=>0),
+	  		array('name'=>'`Timeseries Record Float D`', 'label'=>'D', 'checked'=>0),
+	  		array('name'=>'`Timeseries Record Integer A`', 'label'=>'E', 'checked'=>0),
+	  		array('name'=>'`Timeseries Record Integer B`', 'label'=>'F', 'checked'=>0),
+  
+	),
+	'timeserie_records_StoreSales'=>array(
+	  		array('name'=>'`Timeseries Record Date`', 'label'=>_('Date'), 'checked'=>1),
+	  		array('name'=>'`Timeseries Record Float A`', 'label'=>_('Sales Net'), 'checked'=>1),
+	  		array('name'=>'`Timeseries Record Float B`', 'label'=>_('Sales Net'), 'checked'=>1),
+
+	  		array('name'=>'`Timeseries Record Integer A`', 'label'=>_('Invoices'), 'checked'=>1),
+	  		array('name'=>'`Timeseries Record Integer B`', 'label'=>_('Refunds'), 'checked'=>1),
+  
 	)
 
 );
