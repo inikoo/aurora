@@ -84,7 +84,7 @@ $modules=array(
 				'type'=>'object',
 
 				'tabs'=>array(
-					'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'category.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
 					'category.customers'=>array('label'=>_('Customers')),
 					'category.categories'=>array('label'=>_('Subcategories')),
@@ -108,7 +108,7 @@ $modules=array(
 
 				),
 				'tabs'=>array(
-					'customer.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'customer.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'customer.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'customer.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders')),
 					'customer.marketing'=>array('label'=>_('Interests'), 'title'=>_("Customer's interests"),
@@ -165,7 +165,7 @@ $modules=array(
 
 
 					'order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'order.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'order.history'=>array('label'=>_('History'), 'icon'=>'history'),
 					'order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
 					'order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
@@ -178,7 +178,7 @@ $modules=array(
 
 
 					'delivery_note.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'delivery_note.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'delivery_note.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'delivery_note.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
 					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'icon'=>'usd'),
@@ -190,7 +190,7 @@ $modules=array(
 
 
 					'invoice.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'invoice.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'invoice.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'invoice.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'invoice.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
 					'invoice.delivery_notes'=>array('label'=>_('Delivery notes'), 'icon'=>'truck'),
@@ -243,7 +243,7 @@ $modules=array(
 
 
 					'order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'order.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'order.history'=>array('label'=>_('History'), 'icon'=>'history'),
 					'order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
 					'order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
@@ -256,7 +256,7 @@ $modules=array(
 
 
 					'delivery_note.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'delivery_note.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'delivery_note.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'delivery_note.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
 					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'icon'=>'usd'),
@@ -268,7 +268,7 @@ $modules=array(
 
 
 					'invoice.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'invoice.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'invoice.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'invoice.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'invoice.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
 					'invoice.delivery_notes'=>array('label'=>_('Delivery notes'), 'icon'=>'truck'),
@@ -300,7 +300,7 @@ $modules=array(
 			'category'=>array('type'=>'object',
 				'tabs'=>array(
 
-					'category.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
 					'category.invoices'=>array('label'=>_('Invoices')),
 					'category.categories'=>array('label'=>_('Subcategories')),
@@ -331,7 +331,7 @@ $modules=array(
 
 
 					'order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'order.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'order.history'=>array('label'=>_('History'), 'icon'=>'history'),
 					'order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
 					'order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
@@ -344,7 +344,7 @@ $modules=array(
 
 
 					'delivery_note.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'delivery_note.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'delivery_note.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'delivery_note.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'delivery_note.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
 					'delivery_note.invoices'=>array('label'=>_('Invoices'), 'icon'=>'usd'),
@@ -356,7 +356,7 @@ $modules=array(
 
 
 					'invoice.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
-					'invoice.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'invoice.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'invoice.history'=>array('label'=>_('History'), 'title'=>_('History'), 'icon'=>'history'),
 					'invoice.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
 					'invoice.delivery_notes'=>array('label'=>_('Delivery notes'), 'icon'=>'truck'),
@@ -424,7 +424,7 @@ $modules=array(
 
 			'payment_service_provider'=>array('type'=>'object',
 				'tabs'=>array(
-					'payment_service_provider.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'payment_service_provider.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'payment_service_provider.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'payment_service_provider.accounts'=>array('label'=>_('Accounts'), 'title'=>_('Payment accounts')),
 					'payment_service_provider.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),
@@ -433,7 +433,7 @@ $modules=array(
 			),
 			'payment_account'=>array('type'=>'object',
 				'tabs'=>array(
-					'payment_account.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'payment_account.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'payment_account.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'payment_account.payments'=>array('label'=>_('Payments'), 'title'=>_('Payments transactions')),
 
@@ -441,7 +441,7 @@ $modules=array(
 			),
 			'payment'=>array('type'=>'object',
 				'tabs'=>array(
-					'payment.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'payment.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'payment.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 
 				)
@@ -482,7 +482,7 @@ $modules=array(
 
 
 					'website.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Website dashboard'), 'icon'=>'dashboard'),
-					'website.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'website.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 
 					'website.pages'=>array('label'=>_('Pages'), 'title'=>_('Pages'), 'icon'=>'files-o'),
 					'website.pageviews'=>array('label'=>_('Pageviews'), 'title'=>_('Pageviews'), 'icon'=>'eye'),
@@ -522,14 +522,14 @@ $modules=array(
 
 
 					'page.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Page dashboard'), 'icon'=>'dashboard'),
-					'page.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'page.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'page.pageviews'=>array('label'=>_('Pageviews'), 'title'=>_('Pageviews'), 'icon'=>'eye'),
 					'page.users'=>array('label'=>_('Users'), 'title'=>_('Users'), 'icon'=>'male'),
 				)
 			),
 			'website.user'=>array('type'=>'object',
 				'tabs'=>array(
-					'website.user.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'website.user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'website.user.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'website.user.login_history'=>array('label'=>_('Sessions'), 'title'=>_('Login history') , 'icon'=>'login'),
 					'website.user.pageviews'=>array('label'=>_('Pageviews'), 'title'=>_('Pageviews') , 'icon'=>'eye'),
@@ -562,7 +562,7 @@ $modules=array(
 				'reference'=>'store/%d',
 				'tabs'=>array(
 					'store.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
-					'store.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'store.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'store.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 
 					'store.products'=>array('label'=>_('Products'), 'title'=>_('Products')),
@@ -584,7 +584,7 @@ $modules=array(
 
 				'tabs'=>array(
 					'product.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
-					'product.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'product.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'product.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'product.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
 						'subtabs'=>array(
@@ -719,7 +719,7 @@ $modules=array(
 			'manufacture_task'=>array(
 				'type'=>'object', 'label'=>_('Task'), 'icon'=>'tasks',
 				'tabs'=>array(
-					'manufacture_task.details'=>array('label'=>_('Details')),
+					'manufacture_task.details'=>array('label'=>_('Data')),
 					'manufacture_task.batches'=>array('label'=>_('Batches'))
 
 				)
@@ -805,7 +805,7 @@ $modules=array(
 				'type'=>'object',
 
 				'tabs'=>array(
-					'category.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'category.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'category.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'category.subjects'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
 					'category.categories'=>array('label'=>_('Subcategories')),
@@ -821,7 +821,7 @@ $modules=array(
 				'icon'=>'industry',
 				'reference'=>'supplier/%d',
 				'tabs'=>array(
-					'supplier.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'supplier.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'supplier.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'supplier.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders')),
 
@@ -882,7 +882,7 @@ $modules=array(
 				'tabs'=>array(
 
 
-					'part.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'part.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
 					'part.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'), 'icon'=>'money',
 						'subtabs'=>array(
@@ -938,7 +938,7 @@ $modules=array(
 
 				'type'=>'navigation', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'th-large', 'reference'=>'warehouse/%d',
 				'tabs'=>array(
-					'warehouse.details'=>array('label'=>_('Details'), 'title'=>_('Warehouse detais')),
+					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais')),
 					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
 					'warehouse.locations'=>array('label'=>_('Locations'), 'title'=>_('Locations')),
 					'warehouse.replenishments'=>array('label'=>_("Replenishments"), 'title'=>_("Replenishments")),
@@ -1066,7 +1066,7 @@ $modules=array(
 				),
 
 				'tabs'=>array(
-					'employee.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'employee.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'employee.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
@@ -1109,7 +1109,7 @@ $modules=array(
 
 			'employee.attachment'=>array('type'=>'object',
 				'tabs'=>array(
-					'employee.attachment.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'employee.attachment.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'employee.attachment.history'=>array('label'=>_('History'), 'icon'=>'clock-o'),
 
 				)
@@ -1118,7 +1118,7 @@ $modules=array(
 
 			'contractor'=>array('type'=>'object',
 				'tabs'=>array(
-					'contractor.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'contractor.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'contractor.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o')
 
 				)
@@ -1176,7 +1176,7 @@ $modules=array(
 		'sections'=>array(
 			'profile'=>array('type'=>'object', 'label'=>'', 'title'=>'', 'icon'=>'', 'reference'=>'',
 				'tabs'=>array(
-					'profile.details'=>array('label'=>_('Details'), 'title'=>_('My details')),
+					'profile.details'=>array('label'=>_('Data'), 'title'=>_('My details')),
 					'profile.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'profile.login_history'=>array('label'=>_('Login history')),
 				)
@@ -1192,7 +1192,7 @@ $modules=array(
 		'sections'=>array(
 			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'icon'=>'star', 'reference'=>'account', 'showcase'=>true,
 				'tabs'=>array(
-					'account.details'=>array('label'=>_('Details'), 'title'=>_('Account details')),
+					'account.details'=>array('label'=>_('Data'), 'title'=>_('Account details')),
 				)
 			),
 
@@ -1292,7 +1292,7 @@ $modules=array(
 			),
 			'staff.user'=>array('type'=>'object',
 				'tabs'=>array(
-					'staff.user.details'=>array('label'=>_('Details'), 'icon'=>'database', 'title'=>_('Details')),
+					'staff.user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'staff.user.history'=>array('label'=>_('History, Notes'), 'title'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
 					'staff.user.api_keys'=>array('label'=>_('API keys'), 'title'=>_('API keys')),
@@ -1307,7 +1307,7 @@ $modules=array(
 			),
 			'staff.user.api_key'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'staff.user.api_key.details'=>array('label'=>_('Details'), 'icon'=>'database'),
+					'staff.user.api_key.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'staff.user.api_key.requests'=>array('label'=>_('Requests'), 'icon'=>'arrow-circle-right'),
 
 				)

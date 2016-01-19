@@ -9,6 +9,12 @@
 
 */
 
+
+
+include_once 'utils/invalid_messages.php';
+
+
+
 $customer=$state['_object'];
 
 if ($customer->data['Customer Type']=='Company') {
@@ -125,25 +131,75 @@ $object_fields=array(
 		'show_title'=>false,
 		'fields'=>array(
 
+			array(
+					'id'=>'Customer_Main_Plain_Mobile',
+				'edit'=>'telephone',
+				'value'=>$customer->get('Customer Main Plain Mobile'),
+				'formated_value'=>$customer->get('Main Plain Mobile'),
+				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Mobile')). ($customer->get('Customer Main Plain Mobile')!=''?($customer->get('Customer Preferred Contact Number')=='Mobile'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
+				'invalid_msg'=>get_invalid_message('telephone'),
+				'required'=>false
+			),
+			array(
+
+
+
+				'id'=>'Customer_Main_Plain_Telephone',
+				'edit'=>'telephone',
+				'value'=>$customer->get('Customer Main Plain Telephone'),
+				'formated_value'=>$customer->get('Main Plain Telephone'),
+				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Telephone')).($customer->get('Customer Main Plain Telephone')!=''?($customer->get('Customer Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
+				'invalid_msg'=>get_invalid_message('telephone'),
+				'required'=>false
+
+			), array(
+				'id'=>'new_telephone',
+				'render'=>false,
+				'edit'=>'new_telephone',
+				'value'=>'',
+				'formated_value'=>'',
+				'label'=>ucfirst($customer->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
+				'required'=>false
+			),
 
 			array(
-				'class'=>'string',
-				'id'=>'Customer_Main_Plain_Telephone',
-				'value'=>$customer->get('Customer Main Plain Telephone'),
-				'label'=>_('Phone')
+				'id'=>'Customer_Other_Telephone',
+				'render'=>false,
+				'edit'=>'telephone',
+				'value'=>'',
+				'formated_value'=>'',
+				'label'=>ucfirst($customer->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
+				'required'=>false
 			),
+
 			array(
-				'class'=>'string',
-				'id'=>'Customer_Main_Plain_Mobile',
-				'value'=>$customer->get('Customer Main Plain Mobile'),
-				'label'=>_('Mobile')
+				'render'=>($customer->get('Customer Main Plain Telephone')==''?false:true),
+				'id'=>'show_new_telephone',
+				'class'=>'new',
+				'value'=>'',
+				'label'=>_('Add telephone').' <i class="fa fa-plus new_button button"></i>',
+				'required'=>false,
+				'reference'=>''
 			),
+
 			array(
-				'class'=>'string',
-				'id'=>'Customer_Main_Plain_FAX',
+					'id'=>'Customer_Main_Plain_FAX',
+				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain FAX'),
-				'label'=>_('FAX')
+				'formated_value'=>$customer->get('Main Plain FAX'),
+				'label'=>ucfirst($customer->get_field_label('Customer Main Plain FAX')),
+				'invalid_msg'=>get_invalid_message('telephone'),
+				'required'=>false
 			),
+
+		)
+	),
+	array(
+		'label'=>_('Contact Address'),
+		'show_title'=>false,
+		'fields'=>array(
+
+
 			array(
 				'class'=>'address',
 				'id'=>'Customer_Main_Plain_Adresss',
@@ -152,6 +208,7 @@ $object_fields=array(
 			)
 		)
 	),
+
 	array(
 		'label'=>_('Billing'),
 		'show_title'=>true,
@@ -182,9 +239,9 @@ $object_fields=array(
 
 $other_emails=$customer->get_other_emails_data();
 if (count($other_emails)>0) {
-	$other_emais_fields=array();
+	$other_emails_fields=array();
 	foreach ($other_emails as $other_email_data_key=>$other_email_data) {
-		$other_emais_fields[]=array(
+		$other_emails_fields[]=array(
 			'id'=>'Customer_Other_Email_'.$other_email_data_key,
 			'edit'=>'email',
 			'value'=>$other_email_data['email'],
@@ -194,7 +251,23 @@ if (count($other_emails)>0) {
 			'required'=>false
 		);
 	}
-	array_splice( $object_fields[1]['fields'], 1, 0, $other_emais_fields);
+	array_splice( $object_fields[1]['fields'], 1, 0, $other_emails_fields);
+}
+
+$other_telephones=$customer->get_other_telephones_data();
+if (count($other_telephones)>0) {
+	$other_telephones_fields=array();
+	foreach ($other_telephones as $other_telephone_data_key=>$other_telephone_data) {
+		$other_telephones_fields[]=array(
+			'id'=>'Customer_Other_Telephone_'.$other_telephone_data_key,
+			'edit'=>'telephone',
+			'value'=>$other_telephone_data['telephone'],
+			'formated_value'=>$other_telephone_data['formated_telephone'],
+			'label'=>ucfirst($customer->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
+			'required'=>false
+		);
+	}
+	array_splice( $object_fields[2]['fields'], 2, 0, $other_telephones_fields);
 }
 
 

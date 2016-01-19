@@ -44,10 +44,12 @@ function open_edit_field(object, key, field) {
         $('#' + field + '_save_button').removeClass('hide')
         break;
     case 'telephone':
+    case 'new_telephone':
+
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
-        $('.intl-tel-input .flag-container').css({
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
             'display': 'block'
         })
 
@@ -111,7 +113,6 @@ function close_edit_this_field(scope) {
 
 
 function close_edit_field(field) {
-
     var type = $('#' + field + '_container').attr('field_type')
 
     $('#' + field + '_formated_value').removeClass('hide')
@@ -148,12 +149,25 @@ function close_edit_field(field) {
     case 'telephone':
         $('#' + field).addClass('hide')
         $('#' + field + '_editor').removeClass('changed')
-        $('.intl-tel-input .flag-container').css({
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
             'display': 'none'
         })
 
+        break;
+    case 'new_telephone':
 
+        console.log(field)
 
+        $('#' + field).addClass('hide')
+        $('#' + field + '_editor').removeClass('changed')
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
+            'display': 'none'
+        })
+
+        $('#new_telephone_field').addClass('hide')
+        $('#show_new_telephone_field').removeClass('hide')
+
+        break;
     case 'pin_with_confirmation':
     case 'password_with_confirmation':
 
@@ -479,11 +493,15 @@ function set_as_main(object, key, field) {
         //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
         if (data.state == 200) {
 
+
+
             if (data.other_fields) {
                 for (var key in data.other_fields) {
                     update_field(data.other_fields[key])
                 }
             }
+
+            post_set_as_main(data)
 
         } else if (data.state == 400) {
 
@@ -492,6 +510,9 @@ function set_as_main(object, key, field) {
     })
 }
 
+function post_set_as_main(data) {
+
+}
 
 function save_this_field(scope) {
     save_field($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('tr').attr('field'))
@@ -630,9 +651,9 @@ function save_field(object, key, field) {
 
                         var clone_field = _data.field
                         var clone = $('#' + _data.clone_from + '_field').clone()
-                        clone.prop('id',  clone_field + '_field');
-                        
-                        
+                        clone.prop('id', clone_field + '_field');
+
+
                         clone.attr('field', clone_field);
 
 
@@ -727,28 +748,42 @@ function update_field(data) {
         $('#' + field + '_field').addClass('hide')
         close_edit_field(field)
     }
-
-    if (type == 'date') {
-        $('.' + field).html(data.formated_value)
-        $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
-        $("#" + field).val(data.value)
-        $("#" + field + '_formated').val(data.formated_value)
+    
+     if (data.label!=undefined) {
+        $('#' + field + '_label').html(data.label)
     }
-    if (type == 'option') {
-        //console.log(data.formated_value)
-        $("#" + field + '_formated_value').html(data.formated_value)
 
 
-        $('#' + field).val(data.value)
-        $('#' + field + '_options li').removeClass('selected').removeClass('current')
+    if (data.value != undefined) {
+
+        if (type == 'date') {
+            $('.' + field).html(data.formated_value)
+            $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
+            $("#" + field).val(data.value)
+            $("#" + field + '_formated').val(data.formated_value)
+        }
+        if (type == 'option') {
+            //console.log(data.formated_value)
+            $("#" + field + '_formated_value').html(data.formated_value)
 
 
-        $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
-    } else {
+            $('#' + field).val(data.value)
+            $('#' + field + '_options li').removeClass('selected').removeClass('current')
 
-        $('.' + field).html(data.formated_value)
-        $("#" + field).val(data.value)
+
+            $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
+        } else {
+
+            $('.' + field).html(data.formated_value)
+            $("#" + field).val(data.value)
+        }
     }
+
+    post_update_field(data)
+
+}
+
+function post_update_field(data){
 
 }
 
