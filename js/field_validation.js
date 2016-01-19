@@ -149,6 +149,7 @@ function client_validation(type, required, value, field) {
 
 
     case 'email':
+    case 'new_email':
 
         var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,63})?$/
 

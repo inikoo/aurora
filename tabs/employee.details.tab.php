@@ -163,7 +163,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Telephone'),
 				'formated_value'=>$employee->get('Telephone'),
 				'label'=>ucfirst($employee->get_field_label('Staff Telephone')),
-				'invalid_msg'=>get_invalid_message('email'),
+				'invalid_msg'=>get_invalid_message('telephone'),
 			),
 			array(
 
@@ -205,6 +205,7 @@ $object_fields=array(
 
 				'id'=>'Staff_Currently_Working',
 				'edit'=>'option',
+				
 				'value'=>$employee->get('Staff Currently Working'),
 				'formated_value'=>$employee->get('Currently Working'),
 				'options'=>$options_yn,
@@ -399,7 +400,6 @@ $smarty->assign('day_labels', $day_labels=array(
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
-
 $html=$smarty->fetch('object_fields.tpl');
 
 ?>

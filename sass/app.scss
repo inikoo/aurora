@@ -952,13 +952,15 @@ right connector from last child*/
 
 .success{color:$color_success}
 .valid{color:$color_save}
-
+.deleted{text-decoration: line-through;opacity:.9;color:#777}
 
 .valid.save{color:$color_save;cursor:pointer}
 
 .warning{color:$color_warning}
 .error,.invalid{color:$color_error}
 .disabled{opacity:.5;color:#777}
+.discret{opacity:.9;color:#777}
+.very_discret{opacity:.6;color:#777}
 
 
 .padding_left_10{padding-left:10px}
