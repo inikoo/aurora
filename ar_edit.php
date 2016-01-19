@@ -38,6 +38,18 @@ case 'edit_field':
 
 	edit_field($account, $db, $user, $editor, $data);
 	break;
+case 'set_as_main':
+
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'key'),
+			'field'=>array('type'=>'string'),
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
+
+		));
+
+	set_as_main($account, $db, $user, $editor, $data);
+	break;
 case 'upload_attachment':
 
 	$data=prepare_values($_REQUEST, array(
@@ -130,21 +142,39 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 	}else {
 
+
+
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
+			$formated_value=$object->get($formated_field);
+
+			$action='updated';
+		}elseif (isset($object->deleted)) {
+			$msg=sprintf('<span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted'));
+			$formated_value=sprintf('<span class="deleted">%s</span>', $object->deleted_value);
+			$action='deleted';
+		}elseif (isset($object->field_created)) {
+			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Created'));
+			$formated_value='';
+			$action='new_field';
 		}else {
 			$msg='';
+			$formated_value=$object->get($formated_field);
+			$action='';
 		}
-
 
 
 
 		$response=array(
 			'state'=>200,
 			'msg'=>$msg,
-			'formated_value'=>$object->get($formated_field),
+			'action'=>$action,
+			'formated_value'=>$formated_value,
 			'value'=>$object->get($field),
-			'other_fields'=>$object->get_other_fields_update_info()
+			'other_fields'=>$object->get_other_fields_update_info(),
+			'new_fields'=>$object->get_new_fields_info(),
+			'deleted_fields'=>$object->get_deleted_fields_info()
+
 		);
 
 
@@ -152,6 +182,82 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 	}
 	echo json_encode($response);
+
+}
+
+
+function set_as_main($account, $db, $user, $editor, $data) {
+
+
+	$object=get_object($data['object'], $data['key']);
+
+
+	if (!$object->id) {
+		$response=array('state'=>405, 'resp'=>'Object not found');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$object->editor=$editor;
+
+	if ($data['field']=='Customer_Main_Plain_Mobile') {
+		$object->update(array('Customer Preferred Contact Number'=>'Mobile'));
+		$response=array(
+			'state'=>200,
+			'other_fields'=>$object->get_other_fields_update_info(),
+			'new_fields'=>$object->get_new_fields_info(),
+			'deleted_fields'=>$object->get_deleted_fields_info(),
+			'action'=>($object->updated?'set_main_contact_number_Mobile':'')
+		);
+
+	}elseif ($data['field']=='Customer_Main_Plain_Telephone') {
+		$object->update(array('Customer Preferred Contact Number'=>'Telephone'));
+		$response=array(
+			'state'=>200,
+			'other_fields'=>$object->get_other_fields_update_info(),
+			'new_fields'=>$object->get_new_fields_info(),
+			'deleted_fields'=>$object->get_deleted_fields_info(),
+			'action'=>($object->updated?'set_main_contact_number_Telephone':'')
+		);
+
+	}elseif (preg_match('/(.+)(_\d+)$/', $data['field'], $matches)) {
+
+		$value=trim(preg_replace('/_/', ' ', $matches[2]));
+		$field=trim(preg_replace('/_/', ' ', $matches[1]));
+
+		$object->set_as_main($field, $value);
+
+		if ($object->error) {
+			$response=array(
+				'state'=>400,
+				'msg'=>$object->msg,
+
+			);
+		}else {
+			$response=array(
+				'state'=>200,
+				'other_fields'=>$object->get_other_fields_update_info(),
+				'new_fields'=>$object->get_new_fields_info(),
+				'deleted_fields'=>$object->get_deleted_fields_info(),
+				'action'=>''
+			);
+
+
+		}
+
+
+	}else {
+		$response=array(
+			'state'=>400,
+			'msg'=>'invalid field data',
+
+		);
+
+	}
+
+	echo json_encode($response);
+
 
 }
 

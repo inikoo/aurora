@@ -13,7 +13,6 @@
 */
 
 //require_once 'class.Name.php';
-require_once 'class.Email.php';
 require_once 'class.User.php';
 
 class Staff extends DB_Table{

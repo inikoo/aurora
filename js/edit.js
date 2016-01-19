@@ -4,6 +4,11 @@
  Version 3.0*/
 
 
+function open_edit_this_field(scope) {
+    open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('tr').attr('field'))
+}
+
+
 function open_edit_field(object, key, field) {
 
 
@@ -13,6 +18,7 @@ function open_edit_field(object, key, field) {
 
     $('#' + field + '_formated_value').addClass('hide')
     $('#' + field + '_edit_button').addClass('hide')
+
     $('#' + field + '_reset_button').removeClass('hide')
 
     // $('#' + field).val($('#' + field + '_value').html())
@@ -22,6 +28,7 @@ function open_edit_field(object, key, field) {
     case 'string':
     case 'textarea':
     case 'email':
+    case 'new_email':
     case 'numeric':
 
     case 'int_unsigned':
@@ -37,10 +44,12 @@ function open_edit_field(object, key, field) {
         $('#' + field + '_save_button').removeClass('hide')
         break;
     case 'telephone':
+    case 'new_telephone':
+
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
-        $('.intl-tel-input .flag-container').css({
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
             'display': 'block'
         })
 
@@ -98,9 +107,12 @@ function open_edit_field(object, key, field) {
     };
 }
 
+function close_edit_this_field(scope) {
+    close_edit_field($(scope).closest('tr').attr('field'))
+}
+
 
 function close_edit_field(field) {
-
     var type = $('#' + field + '_container').attr('field_type')
 
     $('#' + field + '_formated_value').removeClass('hide')
@@ -126,18 +138,36 @@ function close_edit_field(field) {
         $('#' + field).addClass('hide')
         $('#' + field + '_editor').removeClass('changed')
         break;
-
-
-
+    case 'new_email':
+        $('#new_email_formated_value').html('')
+        $('#new_email_value').html('')
+        $('#new_email').val('')
+        on_changed_value('new_email', '')
+        $('#new_email_field').addClass('hide')
+        $('#show_new_email_field').removeClass('hide')
+        break;
     case 'telephone':
         $('#' + field).addClass('hide')
         $('#' + field + '_editor').removeClass('changed')
-        $('.intl-tel-input .flag-container').css({
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
             'display': 'none'
         })
 
+        break;
+    case 'new_telephone':
 
+        console.log(field)
 
+        $('#' + field).addClass('hide')
+        $('#' + field + '_editor').removeClass('changed')
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
+            'display': 'none'
+        })
+
+        $('#new_telephone_field').addClass('hide')
+        $('#show_new_telephone_field').removeClass('hide')
+
+        break;
     case 'pin_with_confirmation':
     case 'password_with_confirmation':
 
@@ -320,17 +350,18 @@ function on_changed_value(field, new_value) {
         var parent = field_data.attr('parent')
         var parent_key = field_data.attr('parent_key')
         var _object = field_data.attr('object')
-        var key = field_data.attr('object')
+        var key = field_data.attr('key')
+
+
 
         var validation = validate_field(field, new_value, type, required, server_validation, parent, parent_key, _object, key)
-        
-      
-        
+
+
         process_validation(validation, field, true)
-        
-        
-        
-        
+
+
+
+
 
 
     } else {
@@ -341,10 +372,11 @@ function on_changed_value(field, new_value) {
         if (validation.class != 'waiting') check_if_form_is_valid()
     }
 
-if($('#inline_new_object')){
-            $('#' + $('#inline_new_object').attr('object') + '_save').addClass(validation.class)
+    if ($('#inline_new_object').attr('object') != undefined) {
 
-        }
+        $('#' + $('#inline_new_object').attr('object') + '_save').addClass(validation.class)
+
+    }
 
 
 }
@@ -358,7 +390,7 @@ function process_validation(validation, field, mark_invalid_if_previously_valid)
     $("#" + field + '_validation').addClass(validation.class)
     $("#" + field + '_msg').addClass(validation.class)
 
-   
+
 
     if (validation.class == 'waiting') {
 
@@ -443,9 +475,48 @@ function select_radio_option(field, value, label) {
 
 }
 
+function set_this_as_main(scope) {
+
+    set_as_main($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('tr').attr('field'))
+
+}
+
+function set_as_main(object, key, field) {
+    var request = '/ar_edit.php?tipo=set_as_main&object=' + object + '&key=' + key + '&field=' + field
+
+
+    $.getJSON(request, function(data) {
 
 
 
+
+        //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
+        if (data.state == 200) {
+
+
+
+            if (data.other_fields) {
+                for (var key in data.other_fields) {
+                    update_field(data.other_fields[key])
+                }
+            }
+
+            post_set_as_main(data)
+
+        } else if (data.state == 400) {
+
+
+        }
+    })
+}
+
+function post_set_as_main(data) {
+
+}
+
+function save_this_field(scope) {
+    save_field($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('tr').attr('field'))
+}
 
 
 
@@ -455,10 +526,10 @@ function save_field(object, key, field) {
 
     var type = field_data.attr('field_type')
     required = field_data.attr('_required')
-
     var field_element = $('#' + field);
-
     var value = field_element.val()
+
+
 
 
 
@@ -472,14 +543,17 @@ function save_field(object, key, field) {
     if ($("#" + field + '_editor').hasClass('waiting')) {
         return;
     }
+    $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
-    if ($("#" + field + '_editor').hasClass('potentially_valid')) {
+
+    if ($("#" + field + '_save_button').hasClass('potentially_valid')) {
 
         var server_validation = field_data.attr('server_validation')
         var parent = field_data.attr('parent')
         var parent_key = field_data.attr('parent_key')
         var _object = field_data.attr('object')
-        var key = field_data.attr('object')
+        var key = field_data.attr('key')
+
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 
@@ -509,6 +583,7 @@ function save_field(object, key, field) {
 
         $('#' + field + '_msg').html(msg)
         $('#' + field + '_editor').addClass('invalid')
+        $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
         return;
     }
@@ -534,38 +609,96 @@ function save_field(object, key, field) {
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
     $.getJSON(request, function(data) {
-        //console.log(request)
+
+
+
+
+        $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
             $('#' + field + '_value').html(data.value)
 
+            $('.' + field).html(data.formated_value)
+
             if (type == 'option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-                $('.' + field).html(data.formated_value)
+
 
             } else if (type == 'radio_option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-                $('.' + field).html(data.formated_value)
 
-            } else if (type == 'date') {
-                $('.' + field).html(data.formated_value)
 
             } else {
-                $('.' + field).html(data.formated_value)
+                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
 
             }
 
+
+            if (data.action == 'deleted') {
+
+                $('#' + field + '_edit_button').parent('.show_buttons').css('visibility', 'hidden')
+                $('#' + field + '_label').find('.button').addClass('hide')
+
+            }
+            if (data.action == 'new_field') {
+                if (data.new_fields) {
+                    for (var key in data.new_fields) {
+
+                        var _data = data.new_fields[key]
+
+                        var clone_field = _data.field
+                        var clone = $('#' + _data.clone_from + '_field').clone()
+                        clone.prop('id', clone_field + '_field');
+
+
+                        clone.attr('field', clone_field);
+
+
+                        $('#' + _data.clone_from + '_field').after(clone)
+
+
+                        clone.removeClass('hide')
+                        clone.find('.label').prop('id', clone_field + '_label')
+                        clone.find('i.reset_button').prop('id', clone_field + '_reset_button')
+                        clone.find('i.edit_button').prop('id', clone_field + '_edit_button')
+                        clone.find('td.container').prop('id', clone_field + '_container')
+
+                        clone.find('span.editor').prop('id', clone_field + '_editor')
+
+                        clone.find('span.formated_value').prop('id', clone_field + '_formated_value').removeClass(_data.clone_from).addClass(clone_field).html(_data.formated_value)
+                        clone.find('span.unformated_value').prop('id', clone_field + '__value').html(_data.value)
+
+
+                        if (_data.edit == 'string' || _data.edit == 'email' || _data.edit == 'new_email' || _data.edit == 'int_unsigned' || _data.edit == 'smallint_unsigned' || _data.edit == 'mediumint_unsigned' || _data.edit == 'int' || _data.edit == 'smallint' || _data.edit == 'mediumint' || _data.edit == 'anything' || _data.edit == 'numeric') {
+
+                            clone.find('input.input_field').prop('id', clone_field).val(_data.value)
+                            clone.find('i.save').prop('id', clone_field + '_save_button').addClass(_data.edit)
+
+                            clone.find('span.msg').prop('id', clone_field + '_msg')
+
+                        }
+
+                        if (_data.label != undefined) {
+                            $('#' + clone_field + '_label').html(_data.label)
+                        }
+                    }
+                }
+            }
 
             close_edit_field(field)
 
             if (data.other_fields) {
                 for (var key in data.other_fields) {
-                   
                     update_field(data.other_fields[key])
+                }
+            }
 
+            if (data.deleted_fields) {
+                for (var key in data.deleted_fields) {
+                    delete_field(data.deleted_fields[key])
                 }
             }
 
@@ -597,31 +730,61 @@ function post_save_actions(field, data) {
 
 }
 
+function delete_field(data) {
+    var field = data.field
+    console.log(data)
+    $('#' + field + '_field').addClass('hide')
+}
+
 function update_field(data) {
 
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
+
+
     if (data.render) {
         $('#' + field + '_field').removeClass('hide')
     } else {
         $('#' + field + '_field').addClass('hide')
         close_edit_field(field)
     }
-
-    if (type == 'date') {
-        $('.' + field).html(data.formated_value)
-        $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
-        $("#" + field).val(data.value)
-        $("#" + field + '_formated').val(data.formated_value)
+    
+     if (data.label!=undefined) {
+        $('#' + field + '_label').html(data.label)
     }
-    if (type == 'option') {
 
-    } else {
- 
-        $('.' + field).html(data.formated_value)
-        $("#" + field).val(data.value)
 
+    if (data.value != undefined) {
+
+        if (type == 'date') {
+            $('.' + field).html(data.formated_value)
+            $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
+            $("#" + field).val(data.value)
+            $("#" + field + '_formated').val(data.formated_value)
+        }
+        if (type == 'option') {
+            //console.log(data.formated_value)
+            $("#" + field + '_formated_value').html(data.formated_value)
+
+
+            $('#' + field).val(data.value)
+            $('#' + field + '_options li').removeClass('selected').removeClass('current')
+
+
+            $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
+        } else {
+
+            $('.' + field).html(data.formated_value)
+            $("#" + field).val(data.value)
+        }
     }
+
+    post_update_field(data)
+
+}
+
+function post_update_field(data){
+
 }
 
 function hide_edit_field_msg(field) {
@@ -678,7 +841,7 @@ function clean_time(value) {
         var time_components = value.split(':');
     }
 
-console.log(time_components)
+    //console.log(time_components)
     var hours = addZero2dateComponent(parseInt(time_components[0]))
     var minutes = addZero2dateComponent(parseInt(time_components[1]))
     var seconds = '00';

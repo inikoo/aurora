@@ -3343,7 +3343,9 @@ class Invoice extends DB_Table {
 
 		$customer=new Customer($customer_key);
 		if (!$customer->id) {
-			$customer= new Customer('create anonymous');
+			exit("error customer not found");
+			
+			//$customer= new Customer('create anonymous');
 		} else
 			$store_key=$customer->data['Customer Store Key'];
 
