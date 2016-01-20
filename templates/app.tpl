@@ -30,7 +30,7 @@
 	<script type="text/javascript" src="/js/field_validation.js"></script> 
 	<script type="text/javascript" src="/js/edit.js"></script> 
 	<script type="text/javascript" src="/js/new.js"></script> 
-	<script type="text/javascript" src="/js/intlTelInput.min.js"></script> 
+	<script type="text/javascript" src="/js/intlTelInput.js"></script> 
 	
 	
 	<script src="/external_libs/d3fc/d3.min.js"></script>

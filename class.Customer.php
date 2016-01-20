@@ -1974,6 +1974,10 @@ class Customer extends DB_Table {
 
 
 		switch ($key) {
+		
+		case 'Main Address':
+		    return $this->data['Customer Main XHTML Address'];
+		    break;
 		case 'Main Plain Telephone':
 		case 'Main Plain Mobile':
 		case 'Main Plain FAX':
