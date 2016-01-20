@@ -11,6 +11,7 @@
 
 
 
+
 include_once 'utils/invalid_messages.php';
 
 
@@ -140,7 +141,7 @@ $object_fields=array(
 		'fields'=>array(
 
 			array(
-					'id'=>'Customer_Main_Plain_Mobile',
+				'id'=>'Customer_Main_Plain_Mobile',
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain Mobile'),
 				'formated_value'=>$customer->get('Main Plain Mobile'),
@@ -191,7 +192,7 @@ $object_fields=array(
 			),
 
 			array(
-					'id'=>'Customer_Main_Plain_FAX',
+				'id'=>'Customer_Main_Plain_FAX',
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain FAX'),
 				'formated_value'=>$customer->get('Main Plain FAX'),
@@ -209,10 +210,14 @@ $object_fields=array(
 
 
 			array(
-				'class'=>'address',
-				'id'=>'Customer_Main_Plain_Adresss',
-				'value'=>$customer->get('Customer Main XHTML Address'),
-				'label'=>_('Address')
+				'id'=>'Customer_Main_Adresss',
+				'edit'=>'address',
+
+				'value'=>$customer->get('Customer Main Address'),
+				'formated_value'=>$customer->get('Main Address'),
+
+				'label'=>_('Address'),
+				'required'=>false
 			)
 		)
 	),

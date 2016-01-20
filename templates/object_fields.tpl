@@ -42,7 +42,7 @@
 		
 		<span id="{$field.id}_editor" class="editor" > 
 		
-		<span id="{$field.id}_formated_value" class="{$field.id} formated_value" ondblclick="open_edit_this_field(this)">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
+		<span id="{$field.id}_formated_value" class="{$field.id} formated_value hide" ondblclick="open_edit_this_field(this)">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide unformated_value" >{$field.value}</span>
 
     
@@ -64,7 +64,11 @@
 		<textarea id="{$field.id}" class="input_field hide"   has_been_valid="0">{$field.value}</textarea>
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
+	{elseif $edit=='address'  or $edit=='new_address' } 
 	
+	            <table border=1 class="address">
+	            <tr><td>{t}Country{/t}</td><td></td></tr>
+	            </table>
 	
 	
 				{elseif $edit=='telephone'  or $edit=='new_telephone' } 
