@@ -44,7 +44,7 @@ $object_fields=array(
 				'id'=>'User_Password',
 				'edit'=>'password',
 				'value'=>$system_user->get('User Password'),
-				'formated_value'=>$system_user->get('Password'),
+				'formatted_value'=>$system_user->get('Password'),
 				'label'=>_('Password'),
 				'invalid_msg'=>get_invalid_message('password'),
 			),
@@ -53,7 +53,7 @@ $object_fields=array(
 				'id'=>'User_PIN',
 				'edit'=>'pin',
 				'value'=>$system_user->get('User PIN'),
-				'formated_value'=>$system_user->get('PIN'),
+				'formatted_value'=>$system_user->get('PIN'),
 				'label'=>_('PIN'),
 				'invalid_msg'=>get_invalid_message('pin'),
 			),
@@ -70,7 +70,7 @@ $object_fields=array(
 				'id'=>'User_Preferred_Locale',
 				'edit'=>'option',
 				'value'=>$system_user->get('User Preferred Locale') ,
-				'formated_value'=>$system_user->get('Preferred Locale') ,
+				'formatted_value'=>$system_user->get('Preferred Locale') ,
 				'label'=>ucfirst($system_user->get_field_label('Preferred Locale')),
 				'options'=>$options_locales,
 
@@ -84,6 +84,6 @@ $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

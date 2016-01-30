@@ -288,14 +288,14 @@ class part extends DB_Table {
 				$last_record_date=false;
 			}
 
-			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date_formatted=gmdate('Y-m-d H:i:s');
 			$new_date=gmdate('U');
 
 			$sql=sprintf("insert into `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) values (%d,%d,%d,%s,%s) ",
 				$this->sku,
 				$user_key,
 				$this->warehouse_key,
-				prepare_mysql($new_date_formated),
+				prepare_mysql($new_date_formatted),
 				prepare_mysql($this->data['Part Available for Products'])
 
 			);
@@ -1152,7 +1152,7 @@ class part extends DB_Table {
 	}
 
 
-	function formated_sku() {
+	function formatted_sku() {
 		return $this->get_sku();
 
 	}
@@ -2372,9 +2372,9 @@ class part extends DB_Table {
 
 			$location=new Location($row['Location Key']);
 
-			$row['Formated Quantity On Hand']=number($row['Quantity On Hand']);
+			$row['Formatted Quantity On Hand']=number($row['Quantity On Hand']);
 
-			$row['Part Formated SKU']=$this->get_sku();
+			$row['Part Formatted SKU']=$this->get_sku();
 
 			$row['Location Code']=$location->data['Location Code'];
 
@@ -2441,20 +2441,20 @@ class part extends DB_Table {
 	}
 
 
-	function get_current_formated_commercial_value() {
+	function get_current_formatted_commercial_value() {
 
 		return money($this->data['Part Current On Hand Stock']*$this->get_unit_commercial_value());
 	}
 
 
-	function get_current_formated_value_at_cost() {
+	function get_current_formatted_value_at_cost() {
 		//return number($this->data['Part Current Value'],2);
 		return money( $this->data['Part Current Value']);
 	}
 
 
 
-	function get_current_formated_value_at_current_cost() {
+	function get_current_formatted_value_at_current_cost() {
 
 		$a=floatval(3.000*3.575);
 		$a=round(3.575+3.575+3.575, 3);
@@ -3002,8 +3002,8 @@ class part extends DB_Table {
 
 		if ($this->data['Part Current Stock']==0) {
 			$days=0;
-			$days_formated='0';
-			return array($days, $days_formated);
+			$days_formatted='0';
+			return array($days, $days_formatted);
 		}
 
 
@@ -3030,18 +3030,18 @@ class part extends DB_Table {
 
 				}
 
-				$days_formated=$days.' '._('days');
+				$days_formatted=$days.' '._('days');
 
 
-				return array($days, $days_formated);
+				return array($days, $days_formatted);
 
 			}
 
 
 		} else {
 			$days=0;
-			$days_formated='ND';
-			return array($days, $days_formated);
+			$days_formatted='ND';
+			return array($days, $days_formatted);
 		}
 
 		//include_once('class.TimeSeries.php');
@@ -3092,7 +3092,7 @@ class part extends DB_Table {
 	}
 
 
-	function get_formated_unit_cost($date=false) {
+	function get_formatted_unit_cost($date=false) {
 
 		return money($this->data['Part Cost'] );
 	}

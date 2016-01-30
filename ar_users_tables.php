@@ -263,7 +263,7 @@ function api_keys($_data, $db, $user) {
 			'handle'=>$data['User Handle'],
 			'scope'=>$scope,
 			'active'=>$active,
-			'formated_id'=>sprintf('%04d', $data['API Key Key']),
+			'formatted_id'=>sprintf('%04d', $data['API Key Key']),
 			'user'=>$data['User Alias'],
 			'from'=>($data['API Key Valid From']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])):''),
 			'to'=>($data['API Key Valid To']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid To'])):''),
@@ -354,7 +354,7 @@ function api_requests($_data, $db, $user) {
 				'handle'=>$data['User Handle'],
 				'scope'=>$scope,
 
-				'formated_id'=>sprintf('%04d', $data['API Key Key']),
+				'formatted_id'=>sprintf('%04d', $data['API Key Key']),
 				'user'=>$data['User Alias'],
 
 				'date'=>($data['Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])):''),

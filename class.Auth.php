@@ -498,16 +498,16 @@ class Auth {
 				$customer=new Customer($this->pass['user_parent_key']);
 				switch ($this->pass['main_reason']) {
 				case('password'):
-					$formated_reason=_('wrong password');
+					$formatted_reason=_('wrong password');
 					break;
 				case('masterkey_used'):
-					$formated_reason=_('reset password link already used');
+					$formatted_reason=_('reset password link already used');
 					break;
 				case('masterkey_expired'):
-					$formated_reason=_('reset password link expired');
+					$formatted_reason=_('reset password link expired');
 					break;
 				default:
-					$formated_reason=$this->pass['main_reason'];
+					$formatted_reason=$this->pass['main_reason'];
 				}
 
 				$details='<table>
@@ -522,7 +522,7 @@ class Auth {
 				$history_data=array(
 					'Date'=>$date,
 					'Site Key'=>$this->site_key,
-					'Note'=>_('Failed Login')." ($formated_reason) ip:".$ip,
+					'Note'=>_('Failed Login')." ($formatted_reason) ip:".$ip,
 					'Details'=>$details,
 					'Action'=>'fail_login',
 					'Preposition'=>'because',

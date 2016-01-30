@@ -107,7 +107,7 @@ $object_fields=array(
 				'edit'=>'telephone',
 				'id'=>'Store_Telephone',
 				'value'=>$store->get('Store Telephone'),
-				'formated_value'=>$store->get('Telephone'),
+				'formatted_value'=>$store->get('Telephone'),
 				'label'=>ucfirst($store->get_field_label('Store Telephone')),
 				'invalid_msg'=>get_invalid_message('telephone'),
 				'required'=>false,
@@ -117,7 +117,7 @@ $object_fields=array(
 				'edit'=>'textarea',
 				'id'=>'Store_Address',
 				'value'=>$store->get('Store Address'),
-				'formated_value'=>$store->get('Address'),
+				'formatted_value'=>$store->get('Address'),
 				'label'=>ucfirst($store->get_field_label('Store Address')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>false,
@@ -126,7 +126,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'id'=>'Store_URL',
 				'value'=>$store->get('Store URL'),
-				'formated_value'=>$store->get('Store URL'),
+				'formatted_value'=>$store->get('Store URL'),
 				'label'=>ucfirst($store->get_field_label('Store URL')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>false,
@@ -139,6 +139,6 @@ $object_fields=array(
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

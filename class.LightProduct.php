@@ -196,7 +196,7 @@ class LightProduct {
         $_SESSION['logged_in']=1;
 
         if ($this->data['Product RRP']>0)
-            $_rrp=sprintf("<span class=\"rrp\">%s</span>",$this->get_formated_rrp($this->locale));
+            $_rrp=sprintf("<span class=\"rrp\">%s</span>",$this->get_formatted_rrp($this->locale));
         else
             $_rrp='';
 
@@ -205,7 +205,7 @@ class LightProduct {
                       ,$this->data['Product Code']
                       ,$this->data['Product Units Per Case']
                       ,$this->data['Product Name']
-                      ,$this->get_formated_price($this->locale)
+                      ,$this->get_formatted_price($this->locale)
                       ,$_rrp
                       ,(isset($_SESSION['logged_in'])?$_form:'')
 
@@ -247,7 +247,7 @@ class LightProduct {
         $currency='';//$data['currency'];
         $rrp='';
         if (isset($options['show individual rrp']) and $options['show individual rrp'] )
-            $rrp=" <span class='rrp_in_list'>(".$this->get_formated_rrp($this->locale).')</span>';
+            $rrp=" <span class='rrp_in_list'>(".$this->get_formatted_rrp($this->locale).')</span>';
 
         //mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8");
 
@@ -255,7 +255,7 @@ class LightProduct {
 
         if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
             $form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
-                          // ,$this->get_formated_price($this->locale)
+                          // ,$this->get_formatted_price($this->locale)
                           ,$this->data['Product Code']
                           ,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8").' ('.money($this->data['Product Price'],$currency,$this->locale).')'.$rrp
 
@@ -386,7 +386,7 @@ class LightProduct {
     }
 
 
-    function get_formated_price($locale='') {
+    function get_formatted_price($locale='') {
 
         $data=array(
                   'Product Price'=>$this->data['Product Price'],
@@ -397,10 +397,10 @@ class LightProduct {
 
                   'locale'=>$locale);
 
-        return formated_price($data);
+        return formatted_price($data);
     }
 
-    function get_formated_rrp($locale='') {
+    function get_formatted_rrp($locale='') {
 
         $data=array(
                   'Product RRP'=>$this->data['Product RRP'],
@@ -409,7 +409,7 @@ class LightProduct {
                   'Product Unit Type'=>$this->data['Product Unit Type'],
                   'locale'=>$locale);
 
-        return formated_rrp($data);
+        return formatted_rrp($data);
     }
 }
 ?>

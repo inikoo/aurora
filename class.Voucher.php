@@ -172,7 +172,7 @@ class Voucher extends DB_Table {
 		return false;
 	}
 
-	function get_formated_status() {
+	function get_formatted_status() {
 
 		switch ($this->data['Voucher Status']) {
 		case 'Waiting':

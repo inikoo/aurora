@@ -498,8 +498,8 @@ class product extends DB_Table {
 		case('Price'):
 			return money($this->data['Product Price'],$this->get('Product Currency'));
 			break;
-		case('Formated Price'):
-			return $this->get_formated_price();
+		case('Formatted Price'):
+			return $this->get_formatted_price();
 		case('Product Price Per Unit'):
 			return $this->data['Product Price']/$this->data['Product Units Per Case'];
 			break;
@@ -515,8 +515,8 @@ class product extends DB_Table {
 		case('Product RRP Per Unit'):
 			return $this->data['Product RRP']/$this->data['Product Units Per Case'];
 			break;
-		case('Formated RRP'):
-			return get_formated_rrp();
+		case('Formatted RRP'):
+			return get_formatted_rrp();
 			break;
 
 		case('RRP Profit'):
@@ -533,7 +533,7 @@ class product extends DB_Table {
 			return $this->money($this->data['Product Cost']);
 			break;
 
-		case('Formated Cost'):
+		case('Formatted Cost'):
 			if ($this->data['Product Units Per Case']==1)
 				return $this->money($this->data['Product Cost']);
 			else
@@ -588,9 +588,9 @@ class product extends DB_Table {
 			break;
 		case('Product Total Invoiced Net Amount'):
 			return $this->data['Product Total Invoiced Gross Amount']-$this->data['Product Total Invoiced Discount Amount'];
-		case('formated total net sales'):
+		case('formatted total net sales'):
 			return money($this->data['Product Total Invoiced Gross Amount']-$this->data['Product Total Invoiced Discount Amount']);
-		case('Formated Product Total Quantity Invoiced'):
+		case('Formatted Product Total Quantity Invoiced'):
 			return number($this->data['Product Total Quantity Invoiced']);
 
 
@@ -1633,7 +1633,7 @@ class product extends DB_Table {
 			$location=new Location($row['Location Key']);
 			$part=new Part($row['Part SKU']);
 
-			$row['Part Formated SKU']=$part->get_sku();
+			$row['Part Formatted SKU']=$part->get_sku();
 			$row['Location Code']=$location->data['Location Code'];
 			if ($for_smarty) {
 				$row_for_smarty=array();
@@ -1651,17 +1651,17 @@ class product extends DB_Table {
 	}
 
 
-	function get_formated_discounts() {
-		$formated_discounts='';
+	function get_formatted_discounts() {
+		$formatted_discounts='';
 		$sql=sprintf("select `Deal Description`,`Deal Name`,`Deal Component Allowance Description` from `Deal Target Bridge`  B left join `Deal Component Dimension` DC on (DC.`Deal Component Key`=B.`Deal Component Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`) where `Subject`='Product' and `Subject Key`=%d ",$this->pid,$this->pid);
 
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$formated_discounts.=', <span title="'.$row['Deal Description'].'">'.$row['Deal Name']. ' <b>'.$row['Deal Component Allowance Description'].'</b></span>';
+			$formatted_discounts.=', <span title="'.$row['Deal Description'].'">'.$row['Deal Name']. ' <b>'.$row['Deal Component Allowance Description'].'</b></span>';
 		}
-		$formated_discounts=preg_replace('/^, /','',$formated_discounts);
-		return $formated_discounts;
+		$formatted_discounts=preg_replace('/^, /','',$formatted_discounts);
+		return $formatted_discounts;
 	}
 
 
@@ -3194,7 +3194,7 @@ class product extends DB_Table {
 				return;
 
 			}
-			$old_formated_price=$this->get('Formated Price');
+			$old_formatted_price=$this->get('Formatted Price');
 			$sql=sprintf("select `Product Key` from `Product History Dimension` where `Product ID`=%d and `Product History Price`=%.2f and `Product History Name`=%s"
 				,$this->pid
 				,$amount
@@ -3272,7 +3272,7 @@ class product extends DB_Table {
 
 				$this->updated_fields['Product Price']=array(
 					'Product Price'=>$this->data['Product Price'],
-					'Formated Price'=>$this->get('Formated Price'),
+					'Formatted Price'=>$this->get('Formatted Price'),
 					'Price Per Unit'=>$this->get('Price Per Unit'),
 					'Margin'=>$this->get('Margin'),
 					'RRP Margin'=>$this->get('RRP Margin'),
@@ -3284,7 +3284,7 @@ class product extends DB_Table {
 				$this->add_history(array(
 						'Indirect Object'=>'Product Price'
 						,'History Abstract'=>_('Product Price Changed').' ('.$this->get('Price').')'
-						,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('price changed').' '._('from')." ".$old_formated_price."  "._('to').' '. $this->get('Formated Price')
+						,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('price changed').' '._('from')." ".$old_formatted_price."  "._('to').' '. $this->get('Formatted Price')
 					));
 
 
@@ -4856,7 +4856,7 @@ class product extends DB_Table {
 
 	}
 
-	function get_formated_rrp($locale='') {
+	function get_formatted_rrp($locale='') {
 
 		$data=array(
 			'Product Price'=>$this->data['Product RRP']*$this->data['Product Units Per Case'],
@@ -4867,7 +4867,7 @@ class product extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price($data);
+		return formatted_price($data);
 		/*
 		$data=array(
 			'Product RRP'=>$this->data['Product RRP'],
@@ -4878,14 +4878,14 @@ class product extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_rrp($data);
+		return formatted_rrp($data);
 		*/
 	}
 
 
 
 
-	function get_formated_price($locale='') {
+	function get_formatted_price($locale='') {
 
 		$data=array(
 			'Product Price'=>$this->data['Product Price'],
@@ -4896,10 +4896,10 @@ class product extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price($data);
+		return formatted_price($data);
 	}
 
-	function get_formated_price_per_unit($locale='') {
+	function get_formatted_price_per_unit($locale='') {
 
 		$data=array(
 			'Product Price'=>$this->data['Product Price']/$this->data['Product Units Per Case'],
@@ -4910,7 +4910,7 @@ class product extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price($data);
+		return formatted_price($data);
 
 		/*
 		$data=array(
@@ -4923,7 +4923,7 @@ class product extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price_per_unit($data);
+		return formatted_price_per_unit($data);
 		*/
 
 	}
@@ -5554,7 +5554,7 @@ class product extends DB_Table {
 				$last_record_date=false;
 			}
 
-			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date_formatted=gmdate('Y-m-d H:i:s');
 			$new_date=gmdate('U');
 
 			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
@@ -5563,7 +5563,7 @@ class product extends DB_Table {
 				$this->data['Product Main Department Key'],
 				$this->data['Product Family Key'],
 				$user_key,
-				prepare_mysql($new_date_formated),
+				prepare_mysql($new_date_formatted),
 				prepare_mysql($web_availability),
 				prepare_mysql($web_state)
 
@@ -5684,7 +5684,7 @@ class product extends DB_Table {
 	}
 
 
-	function get_formated_sales_type() {
+	function get_formatted_sales_type() {
 		switch ($this->data['Product Sales Type']) {
 		case('Public Sale'):
 			$sales_type=_('Public Sale');
@@ -5701,7 +5701,7 @@ class product extends DB_Table {
 		return $sales_type;
 	}
 
-	function get_formated_web_state() {
+	function get_formatted_web_state() {
 
 		switch ($this->data['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
@@ -5960,24 +5960,24 @@ class product extends DB_Table {
 
 		switch ($this->data['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Out of stock');
-			$formated_web_configuration=_('Force Out of Stock');
+			$formatted_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Out of stock');
+			$formatted_web_configuration=_('Force Out of Stock');
 			break;
 		case('Online Auto'):
-			$formated_web_configuration_bis=_('Link to part');
-			$formated_web_configuration=_('Link to part');
+			$formatted_web_configuration_bis=_('Link to part');
+			$formatted_web_configuration=_('Link to part');
 			break;
 		case('Offline'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Offline');
-			$formated_web_configuration=_('Force Offline');
+			$formatted_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Offline');
+			$formatted_web_configuration=_('Force Offline');
 			break;
 		case('Online Force For Sale'):
-			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Online');
-			$formated_web_configuration=_('Force Online');
+			$formatted_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:18px;;vertical-align:top" /> '._('Online');
+			$formatted_web_configuration=_('Force Online');
 			break;
 		default:
-			$formated_web_configuration='';
-			$formated_web_configuration_bis='';
+			$formatted_web_configuration='';
+			$formatted_web_configuration_bis='';
 			break;
 
 		}
@@ -6019,10 +6019,10 @@ class product extends DB_Table {
 			$web_configuration=$this->data['Product Sales Type'];
 			switch ($this->data['Product Sales Type']) {
 			case 'Private Sale':
-				$formated_web_configuration=_('Private Sale');
+				$formatted_web_configuration=_('Private Sale');
 				break;
 			default:
-				$formated_web_configuration=_('Not For Sale');
+				$formatted_web_configuration=_('Not For Sale');
 				break;
 			}
 		} else {
@@ -6033,8 +6033,8 @@ class product extends DB_Table {
 
 		$description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
 		$this->new_data=array(
-			'formated_web_configuration'=>$formated_web_configuration,
-			'formated_web_configuration_bis'=>$formated_web_configuration_bis,
+			'formatted_web_configuration'=>$formatted_web_configuration,
+			'formatted_web_configuration_bis'=>$formatted_web_configuration_bis,
 			'web_configuration'=>$web_configuration,
 			'number_web_pages'=>$this->data['Product Number Web Pages'],
 			'description'=>$description,

@@ -159,7 +159,7 @@ function timeseries($_data, $db, $user, $account) {
 
 			$adata[]=array(
 				'id'=>(integer) $data['Timeseries Key'],
-				'formated_id'=>sprintf('%04d', $data['Timeseries Key']),
+				'formatted_id'=>sprintf('%04d', $data['Timeseries Key']),
 				'type'=>$type,
 				'parent'=>$parent,
 				'records'=>number($data['Timeseries Number Records']),
@@ -286,7 +286,7 @@ function images($_data, $db, $user, $account) {
 
 			$adata[]=array(
 				'id'=>(integer) $data['Image Key'],
-				'formated_id'=>sprintf('%06d', $data['Image Key']),
+				'formatted_id'=>sprintf('%06d', $data['Image Key']),
 				'kind'=>$data['Image File Format'],
 				'size'=>number($data['Image Width']).' x '.number($data['Image Height']),
 				'filesize'=>file_size($data['Image File Size']),
@@ -359,7 +359,7 @@ function attachments($_data, $db, $user, $account) {
 
 			$adata[]=array(
 				'id'=>(integer) $data['Attachment Key'],
-				'formated_id'=>sprintf('%04d', $data['Attachment Key']),
+				'formatted_id'=>sprintf('%04d', $data['Attachment Key']),
 				'file_type'=>$file_type,
 				'filesize'=>file_size($data['Attachment File Size']),
 				'thumbnail'=>sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $data['Attachment Thumbnail Image Key'])

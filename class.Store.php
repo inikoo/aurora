@@ -401,7 +401,7 @@ class Store extends DB_Table {
 	}
 
 
-	function get_formated_products_for_sale() {
+	function get_formatted_products_for_sale() {
 
 		return number($this->get_products_for_sale());
 	}
@@ -1129,7 +1129,7 @@ class Store extends DB_Table {
 	}
 
 
-	function get_formated_dispatch_time($interval) {
+	function get_formatted_dispatch_time($interval) {
 
 
 		$interval=addslashes($interval);
@@ -1668,17 +1668,17 @@ class Store extends DB_Table {
 	}
 
 
-	function get_formated_email_credentials($type) {
+	function get_formatted_email_credentials($type) {
 
 		$credentials=$this->get_email_credentials_data($type);
 
-		$formated_credentials='';
+		$formatted_credentials='';
 		foreach ($credentials as $credential) {
-			$formated_credentials.=','.$credential['Email Address'];
+			$formatted_credentials.=','.$credential['Email Address'];
 		}
 
-		$formated_credentials=preg_replace('/^,/', '', $formated_credentials);
-		return $formated_credentials;
+		$formatted_credentials=preg_replace('/^,/', '', $formatted_credentials);
+		return $formatted_credentials;
 
 
 	}

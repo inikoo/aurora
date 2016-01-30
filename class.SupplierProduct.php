@@ -565,9 +565,9 @@ class supplierproduct extends DB_Table {
 			return $this->data['Supplier Product Cost Per Case']/$this->data['Supplier Product Units Per Case'];
 			break;
 		case('Unit'):
-			return $this->get_formated_unit();
+			return $this->get_formatted_unit();
 			break;
-		case('Formated Cost'):
+		case('Formatted Cost'):
 
 			return money($this->data['Supplier Product Cost Per Case'],$this->data['Supplier Product Currency']);
 			break;
@@ -722,7 +722,7 @@ class supplierproduct extends DB_Table {
 		}
 
 		$this->update_sph($value,$this->data['Supplier Product Units Per Case'],$this->data['Supplier Product Currency']);
-		$this->new_value=$this->get('Formated Cost');
+		$this->new_value=$this->get('Formatted Cost');
 	}
 
 	function update_units_per_case($value) {
@@ -743,7 +743,7 @@ class supplierproduct extends DB_Table {
 		$change_at='now';
 
 
-		$old_formated_price=$this->get('Formated Price');
+		$old_formatted_price=$this->get('Formatted Price');
 		$sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product ID`=%d and `SPH Case Cost`=%.2f  and `SPH Units Per Case`=%d and `SPH Currency`=%s",
 
 
@@ -796,10 +796,10 @@ class supplierproduct extends DB_Table {
 
 
 
-			$this->new_value=$this->get('Formated Cost');
+			$this->new_value=$this->get('Formatted Cost');
 
-			$note=_('Supplier Product Cost Changed').' ('.$this->code.','.$this->get('Formated Cost').')';
-			$details=_('Supplier Product').": ".$this->code." (Supplier:".$this->data['Supplier Code'].") "._('cost changed').' '._('from')." ".$old_formated_price."  "._('to').' '. $this->get('Formated Cost') ;
+			$note=_('Supplier Product Cost Changed').' ('.$this->code.','.$this->get('Formatted Cost').')';
+			$details=_('Supplier Product').": ".$this->code." (Supplier:".$this->data['Supplier Code'].") "._('cost changed').' '._('from')." ".$old_formatted_price."  "._('to').' '. $this->get('Formatted Cost') ;
 			$action='edited';
 		}
 	}
@@ -1796,7 +1796,7 @@ class supplierproduct extends DB_Table {
 
 
 
-	function get_formated_unit() {
+	function get_formatted_unit() {
 
 		switch ($this->data['Supplier Product Unit Type']) {
 		case('ea'):
@@ -1808,7 +1808,7 @@ class supplierproduct extends DB_Table {
 		}
 
 	}
-	function get_formated_price($locale='') {
+	function get_formatted_price($locale='') {
 
 		$data=array(
 			'Product Price'=>$this->data['SPH Case Cost'],
@@ -1819,9 +1819,9 @@ class supplierproduct extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price($data);
+		return formatted_price($data);
 	}
-	function get_formated_price_per_case($locale='') {
+	function get_formatted_price_per_case($locale='') {
 
 		$data=array(
 			'Product Price'=>$this->data['SPH Case Cost'],
@@ -1834,11 +1834,11 @@ class supplierproduct extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price($data);
+		return formatted_price($data);
 	}
 
 
-	function get_formated_price_per_case_in_corporate_currency($locale='') {
+	function get_formatted_price_per_case_in_corporate_currency($locale='') {
 		global $corporate_currency;
 
 		if ($corporate_currency!=$this->data['Supplier Product Currency']) {
@@ -1862,10 +1862,10 @@ class supplierproduct extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price($data);
+		return formatted_price($data);
 	}
 
-	function get_formated_price_per_unit($locale='') {
+	function get_formatted_price_per_unit($locale='') {
 
 		$data=array(
 			'Product Price'=>$this->data['SPH Case Cost'],
@@ -1878,10 +1878,10 @@ class supplierproduct extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price_per_unit($data);
+		return formatted_price_per_unit($data);
 	}
 
-	function get_formated_price_per_unit_in_corporate_currency($locale='') {
+	function get_formatted_price_per_unit_in_corporate_currency($locale='') {
 
 		global $corporate_currency;
 
@@ -1907,7 +1907,7 @@ class supplierproduct extends DB_Table {
 
 			'locale'=>$locale);
 
-		return formated_price_per_unit($data);
+		return formatted_price_per_unit($data);
 	}
 
 

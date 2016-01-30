@@ -129,7 +129,7 @@ function employees($_data, $db, $user, $type='') {
 
 		$adata[]=array(
 			'id'=>(integer) $data['Staff Key'],
-			'formated_id'=>sprintf("%04d", $data['Staff Key']),
+			'formatted_id'=>sprintf("%04d", $data['Staff Key']),
 			'payroll_id'=>$data['Staff ID'],
 			'name'=>$data['Staff Name'],
 			'code'=>$data['Staff Alias'],
@@ -140,7 +140,7 @@ function employees($_data, $db, $user, $type='') {
 
 			'official_id'=>$data['Staff Official ID' ],
 			'email'=>$data['Staff Email'],
-			'telephone'=>$data['Staff Telephone Formated'],
+			'telephone'=>$data['Staff Telephone Formatted'],
 			'next_of_kind'=>$data['Staff Next of Kind'],
 			'from'=>(($data['Staff Valid From']=='' or $data['Staff Valid From']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Valid From'].' +0:00'))),
 
@@ -228,7 +228,7 @@ function contractors($_data, $db, $user) {
 
 		$adata[]=array(
 			'id'=>(integer) $data['Staff Key'],
-			'formated_id'=>sprintf("%04d", $data['Staff Key']),
+			'formatted_id'=>sprintf("%04d", $data['Staff Key']),
 			'payroll_id'=>$data['Staff ID'],
 			'name'=>$data['Staff Name'],
 			'code'=>$data['Staff Alias'],
@@ -239,7 +239,7 @@ function contractors($_data, $db, $user) {
 
 			'official_id'=>$data['Staff Official ID' ],
 			'email'=>$data['Staff Email'],
-			'telephone'=>$data['Staff Telephone Formated'],
+			'telephone'=>$data['Staff Telephone Formatted'],
 			'next_of_kind'=>$data['Staff Next of Kind'],
 			'from'=>(($data['Staff Valid From']=='' or $data['Staff Valid From']=='0000-00-00 00:00:00' ) ?'': strftime("%e %b %Y", strtotime($data['Staff Valid From'].' +0:00'))),
 
@@ -316,11 +316,11 @@ function timesheets($_data, $db, $user) {
 			$adata[]=array(
 				'id'=>(integer) $data['Timesheet Key'],
 				'staff_key'=>(integer) $data['Timesheet Staff Key'],
-				'formated_id'=>'<i class="fa fa-calendar"></i>',
+				'formatted_id'=>'<i class="fa fa-calendar"></i>',
 				'date_key'=>date('Ymd', $date),
 				'alert'=>$alert,
 
-				'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+				'staff_formatted_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
 				'alias'=>$data['Staff Alias'],
 				'name'=>$data['Staff Name'],
 				'payroll_id'=>$data['Staff ID'],
@@ -493,9 +493,9 @@ function timesheet_records($_data, $db, $user) {
 				'id'=>(integer) $data['Timesheet Record Key'],
 				'staff_key'=>(integer) $data['Timesheet Record Staff Key'],
 				'timesheet_key'=>(integer) $data['Timesheet Record Timesheet Key'],
-				'staff_formated_id'=>sprintf("%04d", $data['Timesheet Record Staff Key']),
-				'formated_id'=>sprintf("%06d", $data['Timesheet Record Key']),
-				'formated_timesheet_id'=>sprintf("%06d", $data['Timesheet Record Timesheet Key']),
+				'staff_formatted_id'=>sprintf("%04d", $data['Timesheet Record Staff Key']),
+				'formatted_id'=>sprintf("%06d", $data['Timesheet Record Key']),
+				'formatted_timesheet_id'=>sprintf("%06d", $data['Timesheet Record Timesheet Key']),
 				'alias'=>$data['Staff Alias'],
 				'name'=>$data['Staff Name'],
 				'type'=>$type,
@@ -586,7 +586,7 @@ function overtimes($_data, $db, $user) {
 
 			$adata[]=array(
 				'id'=>(integer) $data['Overtime Key'],
-				'formated_key'=>sprintf('%04d', $data['Overtime Key']),
+				'formatted_key'=>sprintf('%04d', $data['Overtime Key']),
 				'reference'=>$data['Overtime Reference'],
 				'status'=>$status,
 

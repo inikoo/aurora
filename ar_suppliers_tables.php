@@ -76,7 +76,7 @@ function suppliers($_data,$db,$user) {
 
 		$adata[]=array(
 			'id'=>(integer)$data['Supplier Key'],
-			'formated_id'=>sprintf('%03d',$data['Supplier Key']),
+			'formatted_id'=>sprintf('%03d',$data['Supplier Key']),
 			'name'=>$data['Supplier Name'],
 			'low'=>number($data['Supplier Low Availability Products']),
 			'high'=>number($data['Supplier Surplus Availability Products']),

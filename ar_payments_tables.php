@@ -201,7 +201,7 @@ function payments($_data, $db, $user) {
 				'currency'=>$data['Payment Currency Code'],
 				'amount'=>money($data['Payment Amount'], $data['Payment Currency Code']),
 				'date'=>money($data['Payment Amount'], $data['Payment Currency Code']),
-				'formated_id'=>sprintf("%05d", $data['Payment Key']),
+				'formatted_id'=>sprintf("%05d", $data['Payment Key']),
 				'type'=>$type,
 				'status'=>$status,
 				'notes'=>$notes,

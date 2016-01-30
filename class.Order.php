@@ -608,7 +608,7 @@ class Order extends DB_Table {
 		while ($row=mysql_fetch_assoc($res)) {
 			$orders_data.=', '.sprintf('%s (%s)',
 				sprintf('<a href="order.php?id=%d">%s</a>', $row['Order Key'], $row['Order Public ID']),
-				get_order_formated_dispatch_state($row['Order Current Dispatch State'], $row['Order Key'])
+				get_order_formatted_dispatch_state($row['Order Current Dispatch State'], $row['Order Key'])
 			);
 
 		}
@@ -853,7 +853,7 @@ class Order extends DB_Table {
 		}
 
 
-		$type_formated=$type;
+		$type_formatted=$type;
 		$title="Delivery Note for $type of ".$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>';
 
 		if ($this->data['Order For Collection']=='Yes')
@@ -2116,18 +2116,18 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	}
 
 
-	function formated_net() {
+	function formatted_net() {
 		return money($this->data['Order Total Net Amount']-$this->data['Order Out of Stock Net Amount']-$this->data['Order No Authorized Net Amount']-$this->data['Order Not Found Net Amount']-$this->data['Order Not Due Other Net Amount'], $this->data['Order Currency']);
 	}
 
 
-	function formated_tax() {
+	function formatted_tax() {
 		return money($this->data['Order Total Tax Amount']-$this->data['Order Out of Stock Tax Amount']-$this->data['Order No Authorized Tax Amount']-$this->data['Order Not Found Tax Amount']-$this->data['Order Not Due Other Tax Amount'], $this->data['Order Currency']);
 
 	}
 
 
-	function formated_total() {
+	function formatted_total() {
 		return money($this->data['Order Total Net Amount']+$this->data['Order Total Tax Amount']-$this->data['Order Out of Stock Net Amount']-$this->data['Order No Authorized Net Amount']-$this->data['Order Not Found Net Amount']-$this->data['Order Not Due Other Net Amount']-$this->data['Order Out of Stock Tax Amount']-$this->data['Order No Authorized Tax Amount']-$this->data['Order Not Found Tax Amount']-$this->data['Order Not Due Other Tax Amount'], $this->data['Order Currency']);
 
 	}
@@ -5156,8 +5156,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$insurances[$row['Insurance Key']]=array(
 					'Insurance Net Amount'=>$charge_net_amount,
 					'Insurance Tax Amount'=>$charge_tax_amount,
-					'Insurance Formated Net Amount'=>money($this->exchange*$charge_net_amount, $this->currency_code),
-					'Insurance Formated Tax Amount'=>money($this->exchange*$charge_tax_amount, $this->currency_code),
+					'Insurance Formatted Net Amount'=>money($this->exchange*$charge_net_amount, $this->currency_code),
+					'Insurance Formatted Tax Amount'=>money($this->exchange*$charge_tax_amount, $this->currency_code),
 					'Insurance Tax Code'=>$tax_category_code,
 					'Insurance Key'=>$row['Insurance Key'],
 					'Insurance Description'=>$row['Insurance Name'],
@@ -7843,9 +7843,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 				'Net_Amount'=>0,
 				'Tax_Amount'=>0,
-				'Formated_Net_Amount'=>money(0, $this->data['Order Currency']),
-				'Formated_Tax_Amount'=>money(0, $this->data['Order Currency']),
-				'Formated_Zero_Amount'=>money(0, $this->data['Order Currency']),
+				'Formatted_Net_Amount'=>money(0, $this->data['Order Currency']),
+				'Formatted_Tax_Amount'=>money(0, $this->data['Order Currency']),
+				'Formatted_Zero_Amount'=>money(0, $this->data['Order Currency']),
 
 				'Refunded_Products'=>0,
 				'Refunded_No_Products'=>0,
@@ -7853,13 +7853,13 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				'Refunded_Net_Amount'=>0,
 				'Refunded_Tax_Amount'=>0,
 				'Refunded_Total_Amount'=>0,
-				'Refunded_Formated_Net_Amount'=>money(0, $this->data['Order Currency']),
-				'Refunded_Formated_Tax_Amount'=>money(0, $this->data['Order Currency']),
-				'Refunded_Formated_Total_Amount'=>money(0, $this->data['Order Currency'])
+				'Refunded_Formatted_Net_Amount'=>money(0, $this->data['Order Currency']),
+				'Refunded_Formatted_Tax_Amount'=>money(0, $this->data['Order Currency']),
+				'Refunded_Formatted_Total_Amount'=>money(0, $this->data['Order Currency'])
 
 			),
-			'Resend'=>array('In_Process_Products'=>0, 'Distinct_Products'=>0, 'Market_Value'=>0, 'Formated_Market_Value'=>money(0, $this->data['Order Currency']), 'state'=>''),
-			// 'Saved_Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>'')
+			'Resend'=>array('In_Process_Products'=>0, 'Distinct_Products'=>0, 'Market_Value'=>0, 'Formatted_Market_Value'=>money(0, $this->data['Order Currency']), 'state'=>''),
+			// 'Saved_Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formatted_Amount'=>money(0,$this->data['Order Currency']),'State'=>'')
 
 
 
@@ -7882,8 +7882,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$data['Refund']['Net_Amount']=$row['net_value'];
 				$data['Refund']['Tax_Amount']=$row['tax_value'];
 
-				$data['Refund']['Formated_Net_Amount']=money($row['net_value'], $row['Invoice Currency Code']);
-				$data['Refund']['Formated_Tax_Amount']=money($row['tax_value'], $row['Invoice Currency Code']);
+				$data['Refund']['Formatted_Net_Amount']=money($row['net_value'], $row['Invoice Currency Code']);
+				$data['Refund']['Formatted_Tax_Amount']=money($row['tax_value'], $row['Invoice Currency Code']);
 
 			}
 		}
@@ -7937,9 +7937,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 
 		if ($data['Refund']['Refunded_Transactions']>0) {
-			$data['Refund']['Refunded_Formated_Net_Amount']=money($data['Refund']['Refunded_Net_Amount'], $currency);
-			$data['Refund']['Refunded_Formated_Tax_Amount']=money($data['Refund']['Refunded_Tax_Amount'], $currency);
-			$data['Refund']['Refunded_Formated_Total_Amount']=money($data['Refund']['Refunded_Total_Amount'], $currency);
+			$data['Refund']['Refunded_Formatted_Net_Amount']=money($data['Refund']['Refunded_Net_Amount'], $currency);
+			$data['Refund']['Refunded_Formatted_Tax_Amount']=money($data['Refund']['Refunded_Tax_Amount'], $currency);
+			$data['Refund']['Refunded_Formatted_Total_Amount']=money($data['Refund']['Refunded_Total_Amount'], $currency);
 		}
 
 		/*
@@ -7955,7 +7955,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		if ($row=mysql_fetch_assoc($res)) {
 			$data['Saved_Credit']['Distinct_Products']=$row['num'];
 			$data['Saved_Credit']['Amount']=$row['value'];
-			$data['Saved_Credit']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
+			$data['Saved_Credit']['Formatted_Amount']=money($row['value'],$row['Invoice Currency Code']);
 		}
 
 
@@ -7969,7 +7969,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		if ($row=mysql_fetch_assoc($res)) {
 			$data['Credit']['Distinct_Products']=$row['num'];
 			$data['Credit']['Amount']=$row['value'];
-			$data['Credit']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
+			$data['Credit']['Formatted_Amount']=money($row['value'],$row['Invoice Currency Code']);
 		}
 */
 		$sql=sprintf("select  `State`,`Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
@@ -7981,7 +7981,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$data['Resend']['State']=$row['State'];
 
 			$data['Resend']['Market_Value']=$row['value'];
-			$data['Resend']['Formated_Market_Value']=money($row['value'], $row['Product Currency']);
+			$data['Resend']['Formatted_Market_Value']=money($row['value'], $row['Product Currency']);
 
 		}
 
@@ -7998,7 +7998,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		$data['Refund']['Other_Items_Amount']-=$data['Refund']['Amount'];
-		$data['Refund']['Formated_Other_Items_Amount']=money($data['Refund']['Other_Items_Amount'], $this->data['Order Currency']);
+		$data['Refund']['Formatted_Other_Items_Amount']=money($data['Refund']['Other_Items_Amount'], $this->data['Order Currency']);
 
 
 		return $data;
@@ -8322,29 +8322,29 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 	}
 
 
-	function get_formated_tax_info() {
+	function get_formatted_tax_info() {
 		$selection_type=$this->data['Order Tax Selection Type'];
-		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>';
-		return $formated_tax_info;
+		$formatted_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>';
+		return $formatted_tax_info;
 	}
 
 
-	function get_formated_tax_info_with_operations() {
+	function get_formatted_tax_info_with_operations() {
 		$operations=$this->data['Order Tax Operations'];
 		$selection_type=$this->data['Order Tax Selection Type'];
-		$formated_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>'.$operations;
-		return $formated_tax_info;
+		$formatted_tax_info='<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>'.$operations;
+		return $formatted_tax_info;
 	}
 
 
-	function get_formated_dispatch_state() {
-		return get_order_formated_dispatch_state($this->data['Order Current Dispatch State'], $this->id);
+	function get_formatted_dispatch_state() {
+		return get_order_formatted_dispatch_state($this->data['Order Current Dispatch State'], $this->id);
 
 	}
 
 
-	function get_formated_payment_state() {
-		return get_order_formated_payment_state($this->data);
+	function get_formatted_payment_state() {
+		return get_order_formatted_payment_state($this->data);
 
 	}
 
@@ -8889,7 +8889,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		foreach ($this->get_payment_keys($status) as $payment_key) {
 			$payment=new Payment($payment_key);
-			$payment->formated_amount=money($payment->data['Payment Amount'], $payment->data['Payment Currency Code']);
+			$payment->formatted_amount=money($payment->data['Payment Amount'], $payment->data['Payment Currency Code']);
 
 
 			if ($load_payment_account)
@@ -9145,7 +9145,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 	}
 
 
-	function get_formated_pending_payment_amount_from_account_balance() {
+	function get_formatted_pending_payment_amount_from_account_balance() {
 		return money($this->get_pending_payment_amount_from_account_balance(), $this->data['Order Currency']);
 	}
 

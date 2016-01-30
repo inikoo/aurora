@@ -233,7 +233,7 @@ if ($order=='name')
 	$order='`Customer File As`';
 
 
-elseif ($order=='formated_id')
+elseif ($order=='formatted_id')
 	$order='C.`Customer Key`';
 elseif ($order=='location')
 	$order='`Customer Main Location`';

@@ -478,7 +478,7 @@ function get_user_navigation($data) {
 
 
 
-	$title= _('User').' <span class="id">'.$object->get('User Handle').' ('.$object->get_formated_id().')</span>';
+	$title= _('User').' <span class="id">'.$object->get('User Handle').' ('.$object->get_formatted_id().')</span>';
 
 
 	$_content=array(

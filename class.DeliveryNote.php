@@ -539,7 +539,7 @@ class DeliveryNote extends DB_Table {
 		}
 
 		if ($this->data['Delivery Note Number Parcels']!='') {
-			$info.=', '.$this->get_formated_parcels();
+			$info.=', '.$this->get_formatted_parcels();
 		}
 
 
@@ -592,7 +592,7 @@ class DeliveryNote extends DB_Table {
     
     
 
-	function get_formated_parcels() {
+	function get_formatted_parcels() {
 
 		if (!is_numeric($this->data['Delivery Note Number Parcels']))
 			return;
@@ -2289,7 +2289,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-	function get_formated_state() {
+	function get_formatted_state() {
 
 		$state=$this->get_state();
 

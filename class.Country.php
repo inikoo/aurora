@@ -155,7 +155,7 @@ class Country {
 
 	}
 
-	function get_formated_exchange_reverse($currency_code,$date=false,$display='') {
+	function get_formatted_exchange_reverse($currency_code,$date=false,$display='') {
 		switch ($display) {
 		case('tr'):
 
@@ -168,7 +168,7 @@ class Country {
 
 	}
 	
-	function get_formated_exchange($currency_code,$date=false,$display='') {
+	function get_formatted_exchange($currency_code,$date=false,$display='') {
 		switch ($display) {
 		case('tr'):
 
