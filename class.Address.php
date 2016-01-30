@@ -17,7 +17,7 @@ include_once 'class.Country.php';
 /* class: Address
    Class to manage the *Address Dimension* table
 */
-class Address extends DB_Table {
+class _Address extends DB_Table {
 	public $updated=false;
 	private $scope=false;
 	private $scope_key=false;
@@ -52,12 +52,13 @@ class Address extends DB_Table {
       (end example)
 
     */
-	function Address($arg1=false,$arg2=false) {
+	function _Address($arg1=false,$arg2=false) {
 
 		$this->table_name='Address';
 		$this->ignore_fields=array('Address Key','Address Data Last Update','Address Data Creation');
 
 
+   
 
 		if (!$arg1 and !$arg2 or is_array($arg1)) {
 			$this->error=true;
@@ -1204,7 +1205,7 @@ class Address extends DB_Table {
 
 		$this->other_telecom_key=$telephone->id;
 		$this->updated=true;
-		$this->new_value=$telephone->display('formated');
+		$this->new_value=$telephone->display('formatted');
 
 	}
 
@@ -1366,6 +1367,9 @@ class Address extends DB_Table {
 	function get($key) {
 
 
+if(!is_array($this->data)){
+print_r($this);
+}
 		if (array_key_exists($key,$this->data))
 			return $this->data[$key];
 
@@ -1431,6 +1435,22 @@ class Address extends DB_Table {
 			}
 			return $lines;
 			break;
+		case('2lines'):
+			$lines=array('','','','');
+			if ($this->data['Address Internal']!='' and $this->data['Address Building']!='') {
+				$lines[1]=trim($this->data['Address Internal'].', '.$this->data['Address Building']);
+				$lines[2]=$this->display('street');
+			}
+			elseif ($this->data['Address Internal']=='' and $this->data['Address Building']=='') {
+
+				$lines[1]=$this->display('street');
+			}
+			elseif ($this->data['Address Internal']!='' or $this->data['Address Building']!='') {
+				$lines[1]=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
+				$lines[2]=$this->display('street');
+			}
+			return $lines;
+			break;	
 		case('lines'):
 			$lines=$this->display('3lines',$locale);
 			$join_lines='';
@@ -1453,6 +1473,16 @@ class Address extends DB_Table {
 			return $town;
 
 			break;
+		case('Town Divisions'):
+
+			$town =$this->data['Address Town Second Division'];
+			if ($this->data['Address Town First Division']!='')
+				$town.=', '.$this->data['Address Town First Division'];
+			
+			$town=preg_replace('/^\,\s*/','',$town);
+			return $town;
+
+			break;	
 		case('mini'):
 			$street=$this->display('street');
 			if (strlen($street)<2)
@@ -1531,7 +1561,7 @@ class Address extends DB_Table {
 		case('label'):
 
 			$separator="\n";
-			$address=$this->get_formated_address($separator);
+			$address=$this->get_formatted_address($separator);
 			$country_name=$this->get_localized_country_name($this->data['Address Country Code'],$locale);
 
 			$address.=$country_name;
@@ -1545,7 +1575,7 @@ class Address extends DB_Table {
 			$separator="<br/>";
 		case('postal'):
 		default:
-			$address=$this->get_formated_address($separator,$locale);
+			$address=$this->get_formatted_address($separator,$locale);
 			$address.=translate_country_name($this->data['Address Country Name']);
 			return _trim($address);
 
@@ -1572,7 +1602,7 @@ class Address extends DB_Table {
 	}
 
 
-	function get_formated_address($separator,$locale='en_GB') {
+	function get_formatted_address($separator,$locale='en_GB') {
 		$address='';
 
 		if ($this->data['Military Address']=='Yes') {
@@ -5168,7 +5198,7 @@ class Address extends DB_Table {
 	}
 
 
-	function get_formated_principal_telephone() {
+	function get_formatted_principal_telephone() {
 		include_once 'class.Telecom.php';
 
 		$sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
