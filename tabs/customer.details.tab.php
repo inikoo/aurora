@@ -11,6 +11,7 @@
 
 
 
+include_once 'utils/country_functions.php';
 
 include_once 'utils/invalid_messages.php';
 
@@ -18,9 +19,6 @@ include_once 'utils/invalid_messages.php';
 
 $customer=$state['_object'];
 
-if ($customer->data['Customer Type']=='Company') {
-
-}
 
 $options_valid_tax_number=array(
 	'Yes'=>_('Valid'), 'No'=>_('Not Valid'), 'Unknown'=>_('Unknown'), 'Auto'=>_('Check online'),
@@ -37,8 +35,8 @@ $object_fields=array(
 			array(
 				'id'=>'Customer_Company_Name',
 				'edit'=>'string',
-				'value'=>$customer->get('Customer Company Name'),
-				'formated_value'=>$customer->get('Company Name'),
+				'value'=>htmlspecialchars($customer->get('Customer Company Name')),
+				'formatted_value'=>$customer->get('Company Name'),
 				'label'=>ucfirst($customer->get_field_label('Customer Company Name')),
 				'required'=>false
 			),
@@ -47,8 +45,8 @@ $object_fields=array(
 
 				'id'=>'Customer_Main_Contact_Name',
 				'edit'=>'string',
-				'value'=>$customer->get('Customer Main Contact Name'),
-				'formated_value'=>$customer->get('Main Contact Name'),
+				'value'=>htmlspecialchars($customer->get('Customer Main Contact Name')),
+				'formatted_value'=>$customer->get('Main Contact Name'),
 				'label'=>ucfirst($customer->get_field_label('Customer Main Contact Name')),
 				'required'=>true
 			),
@@ -56,7 +54,7 @@ $object_fields=array(
 				'id'=>'Customer_Registration_Number',
 				'edit'=>'string',
 				'value'=>$customer->get('Customer Registration Number'),
-				'formated_value'=>$customer->get('Registration Number'),
+				'formatted_value'=>$customer->get('Registration Number'),
 				'label'=>ucfirst($customer->get_field_label('Customer Registration Number')),
 				'required'=>false
 			),
@@ -64,7 +62,7 @@ $object_fields=array(
 				'id'=>'Customer_Tax_Number',
 				'edit'=>'string',
 				'value'=>$customer->get('Customer Tax Number'),
-				'formated_value'=>$customer->get('Tax Number'),
+				'formatted_value'=>$customer->get('Tax Number'),
 				'label'=>ucfirst($customer->get_field_label('Customer Tax Number')),
 				'required'=>false
 
@@ -75,14 +73,14 @@ $object_fields=array(
 				'edit'=>'option',
 				'options'=>$options_valid_tax_number,
 				'value'=>$customer->get('Customer Tax Number Valid'),
-				'formated_value'=>$customer->get('Tax Number Valid'),
+				'formatted_value'=>$customer->get('Tax Number Valid'),
 				'label'=>ucfirst($customer->get_field_label('Customer Tax Number Valid')),
 			),
 			array(
 				'id'=>'Customer_Fiscal_Name',
 				'edit'=>'string',
 				'value'=>$customer->get('Customer Fiscal Name'),
-				'formated_value'=>$customer->get('Fiscal Name'),
+				'formatted_value'=>$customer->get('Fiscal Name'),
 				'label'=>ucfirst($customer->get_field_label('Customer Fiscal Name')),
 				'required'=>false
 			),
@@ -98,17 +96,17 @@ $object_fields=array(
 				'id'=>'Customer_Main_Plain_Email',
 				'edit'=>'email',
 				'value'=>$customer->get('Customer Main Plain Email'),
-				'formated_value'=>$customer->get('Main Plain Email'),
+				'formatted_value'=>$customer->get('Main Plain Email'),
 				'server_validation'=>'check_for_duplicates',
 				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Email')).' <i title="'._('Main email').'" class="fa fa-star discret"></i>',
-				'required'=>false
+				'required'=>true
 			), array(
 				'id'=>'new_email',
 				'render'=>false,
 				'edit'=>'new_email',
 				'value'=>'',
 				'server_validation'=>'check_for_duplicates',
-				'formated_value'=>'',
+				'formatted_value'=>'',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Email')),
 				'required'=>false
 			),
@@ -118,7 +116,7 @@ $object_fields=array(
 				'render'=>false,
 				'edit'=>'email',
 				'value'=>'',
-				'formated_value'=>'',
+				'formatted_value'=>'',
 				'server_validation'=>'check_for_duplicates',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 				'required'=>false
@@ -135,6 +133,7 @@ $object_fields=array(
 
 		)
 	),
+
 	array(
 		'label'=>_('Telephones'),
 		'show_title'=>false,
@@ -144,7 +143,7 @@ $object_fields=array(
 				'id'=>'Customer_Main_Plain_Mobile',
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain Mobile'),
-				'formated_value'=>$customer->get('Main Plain Mobile'),
+				'formatted_value'=>$customer->get('Main Plain Mobile'),
 				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Mobile')). ($customer->get('Customer Main Plain Mobile')!=''?($customer->get('Customer Preferred Contact Number')=='Mobile'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'invalid_msg'=>get_invalid_message('telephone'),
 				'required'=>false
@@ -156,7 +155,7 @@ $object_fields=array(
 				'id'=>'Customer_Main_Plain_Telephone',
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain Telephone'),
-				'formated_value'=>$customer->get('Main Plain Telephone'),
+				'formatted_value'=>$customer->get('Main Plain Telephone'),
 				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Telephone')).($customer->get('Customer Main Plain Telephone')!=''?($customer->get('Customer Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'invalid_msg'=>get_invalid_message('telephone'),
 				'required'=>false
@@ -166,7 +165,7 @@ $object_fields=array(
 				'render'=>false,
 				'edit'=>'new_telephone',
 				'value'=>'',
-				'formated_value'=>'',
+				'formatted_value'=>'',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
 				'required'=>false
 			),
@@ -176,7 +175,7 @@ $object_fields=array(
 				'render'=>false,
 				'edit'=>'telephone',
 				'value'=>'',
-				'formated_value'=>'',
+				'formatted_value'=>'',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
 				'required'=>false
 			),
@@ -195,7 +194,7 @@ $object_fields=array(
 				'id'=>'Customer_Main_Plain_FAX',
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain FAX'),
-				'formated_value'=>$customer->get('Main Plain FAX'),
+				'formatted_value'=>$customer->get('Main Plain FAX'),
 				'label'=>ucfirst($customer->get_field_label('Customer Main Plain FAX')),
 				'invalid_msg'=>get_invalid_message('telephone'),
 				'required'=>false
@@ -203,51 +202,74 @@ $object_fields=array(
 
 		)
 	),
+
 	array(
-		'label'=>_('Contact Address'),
+		'label'=>_('Address'),
 		'show_title'=>false,
 		'fields'=>array(
 
-
 			array(
-				'id'=>'Customer_Main_Adresss',
+				'id'=>'Customer_Contact_Address',
 				'edit'=>'address',
-
-				'value'=>$customer->get('Customer Main Address'),
-				'formated_value'=>$customer->get('Main Address'),
-
-				'label'=>_('Address'),
+				'value'=>htmlspecialchars($customer->get('Customer Contact Address')),
+				'formatted_value'=>$customer->get('Contact Address'),
+				'label'=>ucfirst($customer->get_field_label('Customer Contact Address')),
+				'invalid_msg'=>get_invalid_message('address'),
 				'required'=>false
-			)
-		)
-	),
+			),
 
-	array(
-		'label'=>_('Billing'),
-		'show_title'=>true,
-		'fields'=>array(
+
 			array(
-				'class'=>'address',
-				'id'=>'Billing_Library',
-				'value'=>( $customer->get('Customer Billing Address Link')=='Contact'?_('Same as contact address') : $customer->get('Customer XHTML Billing Address') ) ,
-				'label'=>_('Billing Address')
+				'id'=>'Customer_Invoice_Address',
+				'edit'=>'address',
+				'value'=>htmlspecialchars($customer->get('Customer Invoice Address')),
+				'formatted_value'=>$customer->get('Invoice Address'),
+				'label'=>ucfirst($customer->get_field_label('Customer Invoice Address')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Customer_Delivery_Address',
+				'edit'=>'address',
+				'value'=>htmlspecialchars($customer->get('Customer Delivery Address')),
+				'formatted_value'=>$customer->get('Delivery Address'),
+				'label'=>ucfirst($customer->get_field_label('Customer Delivery Address')),
+				'invalid_msg'=>get_invalid_message('address'),
+				'required'=>false
+			),
+			array(
+				'id'=>'Customer_Other_Delivery_Address',
+				'render'=>false,
+				'edit'=>'address_to_clone',
+				'field_type'=>'other_delivery_address',
+				'value'=>'',
+				'formatted_value'=>'',
+				'invalid_msg'=>get_invalid_message('address'),
+				'label'=>'',
+				'required'=>false
+			),
+
+			array(
+				'id'=>'new_delivery_address',
+				'render'=>false,
+				'edit'=>'new_delivery_address',
+				'value'=>'',
+				'formatted_value'=>'',
+				'label'=>_('New delivery address'),
+				'required'=>false
+			),
+			array(
+				'id'=>'show_new_delivery_address',
+				'class'=>'new',
+				'value'=>'',
+				'label'=>_('Add delivery address').' <i class="fa fa-plus new_button button"></i>',
+				'reference'=>''
 			),
 
 		)
 	),
-	array(
-		'label'=>_('Delivery'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'class'=>'address_library',
-				'id'=>'Delivery_Library',
-				'value'=>( $customer->get('Customer Delivery Address Link')=='Contact'?_('Same as contact address') : $customer->get('Customer XHTML Delivery Address') ) ,
-				'label'=>_('Billing Address')
-			),
 
-		)
-	),
+
+
 );
 
 $other_emails=$customer->get_other_emails_data();
@@ -258,7 +280,7 @@ if (count($other_emails)>0) {
 			'id'=>'Customer_Other_Email_'.$other_email_data_key,
 			'edit'=>'email',
 			'value'=>$other_email_data['email'],
-			'formated_value'=>$other_email_data['email'],
+			'formatted_value'=>$other_email_data['email'],
 			'server_validation'=>'check_for_duplicates',
 			'label'=>ucfirst($customer->get_field_label('Customer Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 			'required'=>false
@@ -275,7 +297,7 @@ if (count($other_telephones)>0) {
 			'id'=>'Customer_Other_Telephone_'.$other_telephone_data_key,
 			'edit'=>'telephone',
 			'value'=>$other_telephone_data['telephone'],
-			'formated_value'=>$other_telephone_data['formated_telephone'],
+			'formatted_value'=>$other_telephone_data['formatted_telephone'],
 			'label'=>ucfirst($customer->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
 			'required'=>false
 		);
@@ -284,6 +306,46 @@ if (count($other_telephones)>0) {
 }
 
 
+$other_delivery_addresses=$customer->get_other_delivery_addresses_data();
+if (count($other_delivery_addresses)>0) {
+	$other_delivery_addresses_fields=array();
+	foreach ($other_delivery_addresses as $other_telephone_data_key=>$other_telephone_data) {
+		$other_delivery_addresses_fields[]=array(
+			'id'=>'Customer_Other_Delivery_Address_'.$other_telephone_data_key,
+			'edit'=>'address',
+			'render'=>false,
+			'value'=>htmlspecialchars($other_telephone_data['value']),
+			'field_type'=>'other_delivery_address',
+			'formatted_value'=>$other_telephone_data['formatted_value'],
+			'invalid_msg'=>get_invalid_message('address'),
+			'label'=>'',
+			'required'=>false
+		);
+	}
+
+
+
+
+}
+
+$other_delivery_addresses_fields[]=array(
+	'id'=>'other_delivery_addresses',
+	'render'=>(count($other_delivery_addresses)>0?true:false),
+	'class'=>'directory',
+	'value'=>'',
+	'label'=>_('Other delivery addresses'),
+	'formatted_value'=>$smarty->fetch('delivery_addresses_directory.tpl'),
+	'reference'=>''
+);
+
+array_splice( $object_fields[3]['fields'], 3, 0, $other_delivery_addresses_fields);
+
+
+$store=new Store($state['_object']->get('Customer Store Key'));
+
+$smarty->assign('default_country', $store->get('Store Home Country Code 2 Alpha'));
+
+$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))).'"');
 
 $smarty->assign('object', $state['_object']);
 $smarty->assign('key', $state['key']);
@@ -292,6 +354,8 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 $smarty->assign('js_code', file_get_contents('js/customer.details.js'));
 
-$html=$smarty->fetch('object_fields.tpl');
+//print_r($customer->get('Customer Contact Address'));
+
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

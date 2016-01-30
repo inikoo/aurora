@@ -41,7 +41,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Code',
 				'edit'=>'string',
 				'value'=>$manufacture_task->get('Manufacture Task Code'),
-				'formated_value'=>$manufacture_task->get('Code'),
+				'formatted_value'=>$manufacture_task->get('Code'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Code')),
 				'server_validation'=>'check_for_duplicates',
 				'type'=>'value'
@@ -52,7 +52,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Name',
 				'edit'=>'string',
 				'value'=>$manufacture_task->get('Manufacture Task Name'),
-				'formated_value'=>$manufacture_task->get('Name'),
+				'formatted_value'=>$manufacture_task->get('Name'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Name')),
 				'server_validation'=>'check_for_duplicates',
 				'type'=>'value'
@@ -78,7 +78,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Work_Cost',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Work Cost'),
-				'formated_value'=>$manufacture_task->get('Work Cost'),
+				'formatted_value'=>$manufacture_task->get('Work Cost'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Work Cost')),
 				'type'=>'value'
 
@@ -89,7 +89,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Materials_Cost',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Materials Cost'),
-				'formated_value'=>$manufacture_task->get('Materials Cost'),
+				'formatted_value'=>$manufacture_task->get('Materials Cost'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Materials Cost')),
 				'type'=>'value'
 
@@ -100,7 +100,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Energy_Cost',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Energy Cost'),
-				'formated_value'=>$manufacture_task->get('Energy Cost'),
+				'formatted_value'=>$manufacture_task->get('Energy Cost'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Energy Cost')),
 				'type'=>'value'
 
@@ -111,7 +111,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Other_Cost',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Other Cost'),
-				'formated_value'=>$manufacture_task->get('Other Cost'),
+				'formatted_value'=>$manufacture_task->get('Other Cost'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Other Cost')),
 				'type'=>'value'
 
@@ -136,7 +136,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Lower_Target',
 				'edit'=>'mediumint_unsigned',
 				'value'=>$manufacture_task->get('Manufacture Task Lower Target'),
-				'formated_value'=>$manufacture_task->get('Lower Target'),
+				'formatted_value'=>$manufacture_task->get('Lower Target'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Lower Target')),
 				'type'=>'value'
 
@@ -147,7 +147,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Upper_Target',
 				'edit'=>'mediumint_unsigned',
 				'value'=>$manufacture_task->get('Manufacture Task Upper Target'),
-				'formated_value'=>$manufacture_task->get('Upper Target'),
+				'formatted_value'=>$manufacture_task->get('Upper Target'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Upper Target')),
 				'type'=>'value'
 
@@ -160,7 +160,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Lower_Target_Per_Hour',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Lower Target Per Hour'),
-				'formated_value'=>$manufacture_task->get('Lower Target Per Hour'),
+				'formatted_value'=>$manufacture_task->get('Lower Target Per Hour'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Lower Target Per Hour')),
 				'type'=>'value'
 
@@ -171,7 +171,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Upper_Target_Per_Hour',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Upper Target Per Hour'),
-				'formated_value'=>$manufacture_task->get('Upper Target Per Hour'),
+				'formatted_value'=>$manufacture_task->get('Upper Target Per Hour'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Upper Target Per Hour')),
 				'type'=>'value'
 
@@ -183,7 +183,7 @@ $object_fields=array(
 				'required'=>true,
 				'edit'=>'option',
 				'value'=>$manufacture_task->get('Manufacture Task Operative Reward Terms'),
-				'formated_value'=>$manufacture_task->get('Operative Reward Terms'),
+				'formatted_value'=>$manufacture_task->get('Operative Reward Terms'),
 				'options'=>$options_Manufacture_Task_Operative_Reward_Terms,
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Operative Reward Terms')),
 				'type'=>'value'
@@ -195,7 +195,7 @@ $object_fields=array(
 				'required'=>true,
 				'edit'=>'option',
 				'value'=>$manufacture_task->get('Manufacture Task Operative Reward Allowance Type'),
-				'formated_value'=>$manufacture_task->get('Operative Reward Allowance Type'),
+				'formatted_value'=>$manufacture_task->get('Operative Reward Allowance Type'),
 				'options'=>$options_Manufacture_Task_Operative_Reward_Allowance_Type,
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Operative Reward Allowance Type')),
 				'type'=>'value'
@@ -206,7 +206,7 @@ $object_fields=array(
 				'id'=>'Manufacture_Task_Operative_Reward_Amount',
 				'edit'=>'numeric',
 				'value'=>$manufacture_task->get('Manufacture Task Operative Reward Amount'),
-				'formated_value'=>$manufacture_task->get('Operative Reward Amount'),
+				'formatted_value'=>$manufacture_task->get('Operative Reward Amount'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Operative Reward Amount')),
 				'type'=>'value'
 
@@ -222,6 +222,6 @@ $object_fields=array(
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

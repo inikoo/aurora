@@ -1,7 +1,22 @@
 
-.details_data, .new_object, .presention_card, .showcase ,.dashboard ,.export_dialog{
+ .new_object, .presention_card, .showcase ,.dashboard ,.export_dialog{
    
     table {
+    
+    
+    
+  
+    
+    .adr{padding:5px 0px}
+    
+    
+    &.address tr{
+    border:none;
+    .label{width:160px}
+    
+    }
+    
+    
         width: 100%;
         
         
@@ -171,30 +186,17 @@
            vertical-align:top
         }
         
+         .show_buttons {
+         
+          &.address{ vertical-align:top;padding-top:7px}
+        }
+        
+        
         .value span {
           //  padding-left: 5px;
         }
       
-        .show_buttons {
-            width:20px;
-            text-align: left;
-            .fa.edit {
-                cursor: pointer;
-                opacity: .2;
-                transition: opacity .2s ease-in-out;
-                &:hover {
-                    opacity: 1;
-                }
-            }
-            .fa.reset {
-                cursor: pointer;
-                opacity: .9;
-                transition: opacity .2s ease-in-out;
-                &:hover {
-                    opacity: 1;
-                }
-            }
-        }
+        
        
     }
     
