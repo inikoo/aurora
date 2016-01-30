@@ -224,13 +224,13 @@ class Payment extends DB_Table {
 		$this->payment_account=new Payment_Account($this->data['Payment Account Key']);
 	}
 
-	function get_formated_time_lapse($key) {
+	function get_formatted_time_lapse($key) {
 		include_once 'utils/date_functions.php';
 		return gettext_relative_time(gmdate('U')-gmdate('U',strtotime($this->data['Payment '.$key].' +0:00'))  );
 	}
 
 
-	function get_formated_info() {
+	function get_formatted_info() {
 		$info='';
 		$this->load_payment_account();
 		$this->load_payment_service_provider();
@@ -300,7 +300,7 @@ class Payment extends DB_Table {
 		return $info;
 	}
 
-	function get_formated_short_info() {
+	function get_formatted_short_info() {
 		$info='';
 		$this->load_payment_account();
 		$this->load_payment_service_provider();

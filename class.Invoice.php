@@ -2596,7 +2596,7 @@ class Invoice extends DB_Table {
 			}
 			break;
 		case('Payment State'):
-			return $this->get_formated_payment_state();
+			return $this->get_formatted_payment_state();
 		}
 
 
@@ -2607,7 +2607,7 @@ class Invoice extends DB_Table {
 	}
 
 
-	function get_formated_payment_state() {
+	function get_formatted_payment_state() {
 
 		switch ($this->data['Invoice Paid']) {
 		case 'Yes':
@@ -3537,7 +3537,7 @@ class Invoice extends DB_Table {
 				$payment->load_payment_service_provider();
 
 			$payment->amount=$row['Amount'];
-			$payment->formated_invoice_amount=money($row['Amount'], $row['Payment Currency Code']);
+			$payment->formatted_invoice_amount=money($row['Amount'], $row['Payment Currency Code']);
 
 
 

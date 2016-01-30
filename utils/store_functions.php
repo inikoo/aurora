@@ -1,5 +1,5 @@
 <?php
-function formated_rrp($data,$options=false) {
+function formatted_rrp($data,$options=false) {
 
     $prefix=true;
 	$show_units=true;
@@ -31,7 +31,7 @@ function formated_rrp($data,$options=false) {
 }
 
 
-function formated_price($data) {
+function formatted_price($data) {
 
   
 
@@ -156,7 +156,7 @@ function formated_price($data) {
 
 
 
-function formated_price_per_unit($data) {
+function formatted_price_per_unit($data) {
 
     $locale=$data['locale'];
 

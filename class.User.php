@@ -359,7 +359,7 @@ class User extends DB_Table {
 				'field'=>'User_Password',
 				'render'=>($this->get('User Active')=='Yes'?true:false),
 				'value'=>$this->get('User Password'),
-				'formated_value'=>$this->get('Password'),
+				'formatted_value'=>$this->get('Password'),
 
 
 			),
@@ -367,7 +367,7 @@ class User extends DB_Table {
 				'field'=>'User_PIN',
 				'render'=>($this->get('User Active')=='Yes'?true:false),
 				'value'=>$this->get('User PIN'),
-				'formated_value'=>$this->get('PIN'),
+				'formatted_value'=>$this->get('PIN'),
 
 
 			)
@@ -395,7 +395,7 @@ class User extends DB_Table {
 		}
 		$old_websites=preg_split('/,/', $this->get_websites());
 
-		$old_formated_websites=$this->get_websites_formated();
+		$old_formatted_websites=$this->get_websites_formatted();
 		$to_delete = array_diff($old_websites, $websites);
 		$to_add = array_diff($websites, $old_websites);
 		$changed=0;
@@ -911,7 +911,7 @@ class User extends DB_Table {
 		}
 		$old_warehouses=preg_split('/,/', $this->get_warehouses());
 
-		$old_formated_warehouses=$this->get_warehouses_formated();
+		$old_formatted_warehouses=$this->get_warehouses_formatted();
 		$to_delete = array_diff($old_warehouses, $warehouses);
 		$to_add = array_diff($warehouses, $old_warehouses);
 		$changed=0;
@@ -1011,7 +1011,7 @@ class User extends DB_Table {
 		}
 		$old_stores=preg_split('/,/', $this->get_stores());
 
-		$old_formated_stores=$this->get_stores_formated();
+		$old_formatted_stores=$this->get_stores_formatted();
 		$to_delete = array_diff($old_stores, $stores);
 		$to_add = array_diff($stores, $old_stores);
 		$changed=0;
@@ -1043,25 +1043,25 @@ class User extends DB_Table {
 			return $this->get_groups();
 			break;
 		case 'Groups':
-			return $this->get_groups_formated();
+			return $this->get_groups_formatted();
 			break;
 		case 'User Stores':
 			return $this->get_stores();
 			break;
 		case 'Stores':
-			return $this->get_stores_formated();
+			return $this->get_stores_formatted();
 			break;
 		case 'User Websites':
 			return $this->get_websites();
 			break;
 		case 'Websites':
-			return $this->get_websites_formated();
+			return $this->get_websites_formatted();
 			break;
 		case 'User Warehouses':
 			return $this->get_warehouses();
 			break;
 		case 'Warehouses':
-			return $this->get_warehouses_formated();
+			return $this->get_warehouses_formatted();
 			break;
 
 
@@ -1096,17 +1096,17 @@ class User extends DB_Table {
 
 			switch ( $this->data['User Active']) {
 			case('Yes'):
-				$formated_value=_('Yes');
+				$formatted_value=_('Yes');
 				break;
 			case('No'):
-				$formated_value=_('No');
+				$formatted_value=_('No');
 				break;
 
 			default:
-				$formated_value=$this->data['User Active'];
+				$formatted_value=$this->data['User Active'];
 			}
 
-			return $formated_value;
+			return $formatted_value;
 
 			break;
 
@@ -1341,7 +1341,7 @@ class User extends DB_Table {
 	}
 
 
-	function get_groups_formated() {
+	function get_groups_formatted() {
 
 		$number_groups=$this->get_number_groups();
 
@@ -1383,7 +1383,7 @@ class User extends DB_Table {
 	}
 
 
-	function get_stores_formated() {
+	function get_stores_formatted() {
 		global $account;
 
 		$number_stores=$this->get_number_stores();
@@ -1425,7 +1425,7 @@ class User extends DB_Table {
 	}
 
 
-	function get_websites_formated() {
+	function get_websites_formatted() {
 		global $account;
 
 		$number_websites=$this->get_number_websites();
@@ -1468,7 +1468,7 @@ class User extends DB_Table {
 	}
 
 
-	function get_warehouses_formated() {
+	function get_warehouses_formatted() {
 		global $account;
 
 		$number_warehouses=$this->get_number_warehouses();

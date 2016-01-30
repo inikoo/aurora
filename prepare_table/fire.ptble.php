@@ -44,7 +44,7 @@ if ($order=='alias') {
 	$order='`Staff ID`';
 
 
-elseif ($order=='staff_formated_id')
+elseif ($order=='staff_formatted_id')
 	$order='`Timesheet Staff Key`';
 elseif ($order=='clocking_records')
 	$order='`clocking_records`';

@@ -598,7 +598,7 @@ class Attachment extends DB_Table {
 						'field'=>'Public_Info',
 						'render'=>true,
 						'value'=>$this->get('Public_Info'),
-						'formated_value'=>$this->get('Public Info'),
+						'formatted_value'=>$this->get('Public Info'),
 
 
 					)

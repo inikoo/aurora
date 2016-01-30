@@ -38,7 +38,7 @@ elseif ($order=='birthday')
 elseif ($order=='official_id')
 	$order='`Staff Official ID`';
 elseif ($order=='telephone')
-	$order='`Staff Telephone Formated`';
+	$order='`Staff Telephone Formatted`';
 elseif ($order=='email')
 	$order='`Staff Email`';
 elseif ($order=='next_of_kind')
@@ -72,7 +72,7 @@ else
 
 $sql_totals="select count(Distinct SD.`Staff Key`) as num from $table  $where  ";
 
-$fields="`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formated`,`Staff Telephone`,`Staff Next of Kind`,
+$fields="`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formatted`,`Staff Telephone`,`Staff Next of Kind`,
 `Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,
 (select GROUP_CONCAT(`Staff Alias`  order by `Staff Alias` separator \", \")    from  `Staff Supervisor Bridge` B left join `Staff Dimension` S on (B.`Supervisor Key`=S.`Staff Key`)  where  B.`Staff Key`=SD.`Staff Key` ) as supervisors
 	

@@ -33,7 +33,7 @@ var columns = [
 
 
 {
-    name: "formated_timesheet_id",
+    name: "formatted_timesheet_id",
     label: "{t}Timesheet{/t}",
     editable: false,
     
@@ -41,7 +41,7 @@ var columns = [
 
     
      sortType: "toggle",
-    {if $sort_key=='formated_timesheet_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='formatted_timesheet_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     
     cell: Backgrid.StringCell.extend({
         events: {

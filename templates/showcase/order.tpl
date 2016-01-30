@@ -93,7 +93,7 @@
 						<td id="order_net" width="100" class="aright">{$order->get('Balance Net Amount')}</td>
 					</tr>
 					<tr id="tr_order_tax" class="top-border">
-						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="/art/icons/edit.gif" id="edit_button_tax" /> <span style="display:none" id="tax_info">{$order->get_formated_tax_info_with_operations()}</span></td>
+						<td class="aright"><img style="visibility:hidden;cursor:pointer" src="/art/icons/edit.gif" id="edit_button_tax" /> <span style="display:none" id="tax_info">{$order->get_formatted_tax_info_with_operations()}</span></td>
 						<td id="order_tax" width="100" class="aright">{$order->get('Balance Tax Amount')}</td>
 					</tr>
 					<tr class="top-strong-border {if $account->get('Account Currency')==$order->get('Order Currency')}bottom-strong-border{/if}">
@@ -263,8 +263,8 @@
 				<td colspan="2" class="date" title="{$order->get('Date')}">{$order->get_date('Order Date')}</td>
 			</tr>
 			<tr class="state two-columns" >
-				<td>{$order->get_formated_dispatch_state()}</td>
-				<td>{$order->get_formated_payment_state()}</td>
+				<td>{$order->get_formatted_dispatch_state()}</td>
+				<td>{$order->get_formatted_payment_state()}</td>
 			</tr>
 		</table>
 		<table id="delivery_notes" border="0" class="ul_table" >
@@ -298,7 +298,7 @@
 			<tr>
 				<td class="icon" ><i class="fa fa-fw fa-usd"></i> </td>
 				<td> <span class="link" onclick="change_view('order/{$order->id}/invoice/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span> <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img  src="/art/pdf.gif"></a>  </td>
-				<td style="text-align:right;padding-right:10px;font-size:80%;"> {$invoice->get_formated_payment_state()} </td>
+				<td style="text-align:right;padding-right:10px;font-size:80%;"> {$invoice->get_formatted_payment_state()} </td>
 			</tr>
 			
 			<tr>

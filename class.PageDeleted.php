@@ -110,49 +110,49 @@ class PageDeleted {
 
 
 
-	function get_formated_store_section() {
+	function get_formatted_store_section() {
 
 
 		switch ($this->data['Page Store Section']) {
 		case 'Front Page Store':
-			$formated_store_section=_('Front Page Store');
+			$formatted_store_section=_('Front Page Store');
 			break;
 		case 'Search':
-			$formated_store_section=_('Search');
+			$formatted_store_section=_('Search');
 			break;
 		case 'Product Description':
-			$formated_store_section=_('Product Description');
+			$formatted_store_section=_('Product Description');
 			break;
 		case 'Information':
-			$formated_store_section=_('Information');
+			$formatted_store_section=_('Information');
 			break;
 		case 'Category Catalogue':
-			$formated_store_section=_('Category Catalogue');
+			$formatted_store_section=_('Category Catalogue');
 			break;
 		case 'Family Catalogue':
-			$formated_store_section=_('Family Catalogue').' <a href="family.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Family Catalogue').' <a href="family.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 			break;
 		case 'Department Catalogue':
-			$formated_store_section=_('Department Catalogue').' <a href="department.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Department Catalogue').' <a href="department.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 			break;
 		case 'Store Catalogue':
-			$formated_store_section=_('Store Catalogue').' <a href="store.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Store Catalogue').' <a href="store.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 			break;
 		case 'Registration':
-			$formated_store_section=_('Registration');
+			$formatted_store_section=_('Registration');
 			break;
 		case 'Client Section':
-			$formated_store_section=_('Client Section');
+			$formatted_store_section=_('Client Section');
 			break;
 		case 'Check Out':
-			$formated_store_section=_('Check Out');
+			$formatted_store_section=_('Check Out');
 			break;
 		default:
-			$formated_store_section=$this->data['Page Store Section'];
+			$formatted_store_section=$this->data['Page Store Section'];
 			break;
 		}
 
-		return $formated_store_section;
+		return $formatted_store_section;
 	}
 
 

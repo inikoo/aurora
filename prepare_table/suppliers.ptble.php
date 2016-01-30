@@ -172,7 +172,7 @@ if ($order=='code')
 	$order='`Supplier Code`';
 elseif ($order=='name')
 	$order='`Supplier Name`';
-elseif ($order=='formated_id')
+elseif ($order=='formatted_id')
 	$order='`Supplier Key`';
 elseif ($order=='id')
 	$order='`Supplier Key`';

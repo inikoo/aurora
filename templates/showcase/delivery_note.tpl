@@ -31,17 +31,17 @@
 <table border="0" class="info_block">
 				<tr id="edit_weight_tr" >
 					<td class="aright"> {t}Weight{/t}:</td>
-					<td class="aright"><span id="formated_parcels_weight">
+					<td class="aright"><span id="formatted_parcels_weight">
 					{if $weight==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set weight{/t}</span>
 					{else}{$weight}{/if}</span></td>
 				</tr>
 				<tr id="edit_parcels_tr">
 					<td class="aright"> {t}Parcels{/t}:</td>
-					<td class="aright"><span id="formated_number_parcels">{if $parcels==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}</span>{else}{$parcels}{/if}</span></td>
+					<td class="aright"><span id="formatted_number_parcels">{if $parcels==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set parcels{/t}</span>{else}{$parcels}{/if}</span></td>
 				</tr>
 				<tr id="edit_consignment_tr">
 					<td class="aright"> {t}Courier{/t}:</td>
-					<td class="aright"><span id="formated_consignment">{if $consignment==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}</span>{else}{$consignment}{/if}</span></td>
+					<td class="aright"><span id="formatted_consignment">{if $consignment==''}<span onclick="show_dialog_set_dn_data()" style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}</span>{else}{$consignment}{/if}</span></td>
 				</tr>
 				{if $delivery_note->get('Delivery Note Date Start Picking')!='' or $delivery_note->get('Delivery Note Picker Assigned Alias')!=''} 
 				<tr>
@@ -98,7 +98,7 @@
 			<td colspan="2" class="date" title="{$delivery_note->get('Date')}">{$delivery_note->get_date('Delivery Note Date')}</td>
 		</tr>
 		<tr>
-			<td colspan="2" class="state">{$delivery_note->get_formated_state()}</td>
+			<td colspan="2" class="state">{$delivery_note->get_formatted_state()}</td>
 		</tr>
 		<tr class="state two-columns">
 			<td id="pick_aid_container{$delivery_note->id}"><span class="link" onclick="delivery_note('order/{$delivery_note->id}/pick_aid')">{t}Picking Aid{/t}</span> <a class="pdf_link" target='_blank' href="pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img src="/art/pdf.gif"></a> </td>
@@ -120,7 +120,7 @@
 		<tr>
 			<td class="icon"><i class="fa fa-fw fa-usd"></i> </td>
 			<td> <span class="link" onclick="change_view('delivery_note/{$delivery_note->id}/invoice/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span> <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img src="/art/pdf.gif"></a> </td>
-			<td style="text-align:right;padding-right:10px;font-size:80%;"> {$invoice->get_formated_payment_state()} </td>
+			<td style="text-align:right;padding-right:10px;font-size:80%;"> {$invoice->get_formatted_payment_state()} </td>
 		</tr>
 		<tr>
 			<td colspan="2" class="right" style="text-align:right" id="operations_container{$invoice->id}">{$invoice->get_operations($user,'delivery_note',$delivery_note->id)}</td>

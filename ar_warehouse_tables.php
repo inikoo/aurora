@@ -254,7 +254,7 @@ function parts($_data,$db,$user) {
 
 		$adata[]=array(
 			'id'=>(integer)$data['Part SKU'],
-			'formated_sku'=>sprintf("SKU%05d",$data['Part SKU']),
+			'formatted_sku'=>sprintf("SKU%05d",$data['Part SKU']),
 			'reference'=>$data['Part Reference'],
 			'description'=>$data['Part Unit Description'],
 			'products'=>$data['Part XHTML Currently Used In'],

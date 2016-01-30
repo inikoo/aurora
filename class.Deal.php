@@ -213,7 +213,7 @@ class Deal extends DB_Table {
 		return false;
 	}
 
-	function get_formated_status() {
+	function get_formatted_status() {
 
 		switch ($this->data['Deal Status']) {
 		case 'Waiting':
@@ -237,7 +237,7 @@ class Deal extends DB_Table {
 
 	}
 
-	function get_formated_terms() {
+	function get_formatted_terms() {
 		$terms=$this->data['Deal Terms Description'];
 
 		if (in_array($this->data['Deal Terms Type'],
@@ -307,7 +307,7 @@ class Deal extends DB_Table {
 		return $terms;
 	}
 
-	function get_formated_allowances() {
+	function get_formatted_allowances() {
 
 		$allowances='';
 		$sql=sprintf("select `Deal Component XHTML Allowance Description Label`,`Deal Component Allowance Target`,`Deal Component Allowance Type`,`Deal Component Terms Type`,`Deal Component Trigger Key`,`Deal Component Trigger`,`Deal Component Allowance Description`,`Deal Component Allowance Target XHTML Label`,`Deal Component Allowance Target`,`Deal Component Allowance Target Key` from `Deal Component Dimension` where `Deal Component Deal Key`=%d group by `Deal Component Allowance Description`",
@@ -475,7 +475,7 @@ class Deal extends DB_Table {
 		}
 		$this->update_field_switcher('Deal Term Allowances',$this->get_terms().$trigger.' &#8594; '.$this->get_allowances(),'no_history');
 
-		$this->update_field_switcher('Deal Term Allowances Label',$this->get_formated_terms().$trigger.' &#8594; '.$this->get_formated_allowances(),'no_history');
+		$this->update_field_switcher('Deal Term Allowances Label',$this->get_formatted_terms().$trigger.' &#8594; '.$this->get_formatted_allowances(),'no_history');
 	}
 
 
@@ -772,7 +772,7 @@ class Deal extends DB_Table {
 
 	}
 
-	function get_mirrow_formated_link() {
+	function get_mirrow_formatted_link() {
 		$link='';
 
 		if ($this->data['Deal Mirror Key']) {

@@ -51,7 +51,7 @@
 		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
 	<span id="{$field.id}_editor" class=""> 
 		
-		<span id="{$field.id}_formated_value" class="{$field.id} formated_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formated_value)}{$field.formated_value}{else}{$field.value}{/if}</span>
+		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
 
 		{if $edit=='string' or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
@@ -111,7 +111,7 @@
 		{elseif $edit=='option' } 
 		
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
-		<input id="{$field.id}_formated"  class="option_input_field " value="{$field.formated_value}" readonly  onClick="toggle_options('{$field.id}')"/>
+		<input id="{$field.id}_formatted"  class="option_input_field " value="{$field.formatted_value}" readonly  onClick="toggle_options('{$field.id}')"/>
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
 				<div id="{$field.id}_options" class="dropcontainer hide" >
@@ -130,7 +130,7 @@
 		
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
 		
-		<input id="{$field.id}_formated"  class="option_input_field " value="{$field.formated_value}" readonly  onClick="toggle_options('{$field.id}')"/>
+		<input id="{$field.id}_formatted"  class="option_input_field " value="{$field.formatted_value}" readonly  onClick="toggle_options('{$field.id}')"/>
 		
         <span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_options" class="dropcontainer radio_option  hide" >
@@ -145,7 +145,7 @@
 		{elseif $edit=='date' } 
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
 		<input id="{$field.id}_time" type="hidden" value="{$field.time}" />
-		<input id="{$field.id}_formated" class="option_input_field "  value="{$field.formated_value}" />
+		<input id="{$field.id}_formatted" class="option_input_field "  value="{$field.formatted_value}" />
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_datepicker" class="hide datepicker"></div>
 		<script>
@@ -159,23 +159,23 @@
 		            altFormat: "yy-mm-dd",
 		            onSelect: function() {
 		                $('#{$field.id}').change();
-		                $('#{$field.id}_formated').val('xx');
+		                $('#{$field.id}_formatted').val('xx');
 
 		                //     var date = $(this).datepicker("getDate");
-		                $('#{$field.id}_formated').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
+		                $('#{$field.id}_formatted').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
 
 		                $('#{$field.id}_datepicker').addClass('hide')
 		            }
 		        });
 		    });
 
-		    $('#{$field.id}_formated').focusin(function() {
+		    $('#{$field.id}_formatted').focusin(function() {
 		        $('#{$field.id}_datepicker').removeClass('hide')
 
 		    });
 
-		    $('#{$field.id}_formated').on('input', function() {
-		        var date = chrono.parseDate($('#{$field.id}_formated').val())
+		    $('#{$field.id}_formatted').on('input', function() {
+		        var date = chrono.parseDate($('#{$field.id}_formatted').val())
 
 		        if (date == null) {
 		            var value = '';

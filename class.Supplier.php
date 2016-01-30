@@ -279,9 +279,9 @@ class supplier extends DB_Table {
 			return number($this->data['Supplier '.$key]);
 			break;
 
-		case('Formated ID'):
+		case('Formatted ID'):
 		case("ID"):
-			return $this->get_formated_id();
+			return $this->get_formatted_id();
 		case('Total Acc Parts Sold Amount'):
 			return money($this->data['Supplier Total Acc Parts Sold Amount']);
 			break;
@@ -308,15 +308,15 @@ class supplier extends DB_Table {
 	}
 
 
-	function get_formated_number_products_to_buy() {
-		$formated_number_products_to_buy=0;
+	function get_formatted_number_products_to_buy() {
+		$formatted_number_products_to_buy=0;
 		$sql=sprintf("select count(*) as total from `Supplier Product Dimension` PD where `Supplier Key`=%d",
 			$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$formated_number_products_to_buy=$row['total'];
+			$formatted_number_products_to_buy=$row['total'];
 		}
-		return $formated_number_products_to_buy;
+		return $formatted_number_products_to_buy;
 	}
 
 	function create($raw_data) {
@@ -1134,8 +1134,8 @@ class supplier extends DB_Table {
 	}
 
 
-	function get_formated_id_link() {
-		return sprintf('<a href="supplier.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
+	function get_formatted_id_link() {
+		return sprintf('<a href="supplier.php?id=%d">%s</a>',$this->id, $this->get_formatted_id());
 
 	}
 
@@ -1239,7 +1239,7 @@ class supplier extends DB_Table {
 
 		if ($this->associated) {
 			$note=_('Company name changed');
-			$details=_('Company')." ".$company->data['Company Name']." (".$company->get_formated_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formated_id_link().")";
+			$details=_('Company')." ".$company->data['Company Name']." (".$company->get_formatted_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formatted_id_link().")";
 			$history_data=array(
 				'Indirect Object'=>'Supplier Name'
 				,'History Details'=>$details
@@ -1461,7 +1461,7 @@ class supplier extends DB_Table {
 
 		if ($this->associated) {
 			$note=_('Contact name changed');
-			$details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formated_id_link().")";
+			$details=_('Contact')." ".$contact->display('name')." (".$contact->get_formatted_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formatted_id_link().")";
 			$history_data=array(
 				'Indirect Object'=>'Supplier Name'
 				,'History Details'=>$details

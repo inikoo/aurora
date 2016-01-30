@@ -57,7 +57,7 @@ $object_fields=array(
 				'id'=>'Product_Price',
 				'edit'=>'amount',
 				'value'=>$product->get('Product Price') ,
-				'formated_value'=>$product->get('Price') ,
+				'formatted_value'=>$product->get('Price') ,
 				'label'=>ucfirst($product->get_field_label('Product Price')),
 				'invalid_msg'=>get_invalid_message('amount'),
 				'required'=>true,
@@ -67,7 +67,7 @@ $object_fields=array(
 				'id'=>'Product_Units_Per_Case',
 				'edit'=>'small_integer',
 				'value'=>$product->get('Product Units Per Case') ,
-				'formated_value'=>$product->get('Units Per Case') ,
+				'formatted_value'=>$product->get('Units Per Case') ,
 				'label'=>ucfirst($product->get_field_label('Product Units Per Case')),
 				'invalid_msg'=>get_invalid_message('small_integer'),
 				'required'=>true,
@@ -90,7 +90,7 @@ $object_fields=array(
 				'id'=>'Product_Retail_Units_Per_Unit',
 				'edit'=>'small_integer',
 				'value'=>$product->get('Product Retail Units Per Unit') ,
-				'formated_value'=>$product->get('Retail Units Per Unit') ,
+				'formatted_value'=>$product->get('Retail Units Per Unit') ,
 				'label'=>ucfirst($product->get_field_label('Product Retail Units Per Unit')),
 				'invalid_msg'=>get_invalid_message('small_integer'),
 				'required'=>true,
@@ -133,6 +133,6 @@ $object_fields=array(
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

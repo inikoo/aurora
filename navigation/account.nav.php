@@ -655,7 +655,7 @@ if ($result2=$db->query($sql)) {
 
 
 
-	$title= '<span class="id">'.$object->get('User Alias').' ('.$object->get_formated_id().')</span>';
+	$title= '<span class="id">'.$object->get('User Alias').' ('.$object->get_formatted_id().')</span>';
 
 
 	$_content=array(
@@ -852,7 +852,7 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	$title= '<span class="id">'.$object->get('API Key Code').' ('.$object->get_formated_id().')</span>';
+	$title= '<span class="id">'.$object->get('API Key Code').' ('.$object->get_formatted_id().')</span>';
 
 
 	$_content=array(

@@ -151,7 +151,7 @@
 			<td   title="{$invoice->get('Date')}">{$invoice->get_date('Invoice Date')}</td>
 		</tr>
 		<tr class="state">
-			<td >{$invoice->get_formated_payment_state()}</td>
+			<td >{$invoice->get_formatted_payment_state()}</td>
 		</tr>
 		</table>
 		
