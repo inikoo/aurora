@@ -7,7 +7,7 @@ var columns = [
     cell: "string",
 
 },{
-    name: "formated_sku",
+    name: "formatted_sku",
     label: "{t}SKU{/t}",
     editable: false,
      sortType: "toggle",

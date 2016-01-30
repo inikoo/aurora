@@ -57,9 +57,9 @@ if ($parameters['f_field']=='alias' and $f_value!=''  ) {
 /*
 	'id'=>(integer) $data['Timesheet Key'],
 			'staff_key'=>(integer) $data['Timesheet Staff Key'],
-			'formated_id'=>sprintf("%05d", $data['Timesheet Key']),
+			'formatted_id'=>sprintf("%05d", $data['Timesheet Key']),
 
-			'staff_formated_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
+			'staff_formatted_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
 			'alias'=>$data['Staff Alias'],
 			'name'=>$data['Staff Name'],
 			'payroll_id'=>$data['Staff ID'],
@@ -84,7 +84,7 @@ elseif ($order=='clocked_hours')
 	$order='`Timesheet Clocked Time`';
 elseif ($order=='clocking_records')
 	$order='`Timesheet Clocking Records`';		
-elseif ($order=='staff_formated_id')
+elseif ($order=='staff_formatted_id')
 	$order='`Timesheet Staff Key`';	
 elseif ($order=='date' or $order=='time')
 	$order='`Timesheet Date`';

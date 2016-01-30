@@ -879,7 +879,7 @@ function get_supplier_navigation($data) {
 	$avatar='<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
 	$avatar='';
 
-	$title= '<span class="id">'.$supplier->get('Supplier Name').' ('.$supplier->get_formated_id().')</span>';
+	$title= '<span class="id">'.$supplier->get('Supplier Name').' ('.$supplier->get_formatted_id().')</span>';
 
 
 	$_content=array(

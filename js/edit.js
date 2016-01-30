@@ -14,15 +14,16 @@ function open_edit_field(object, key, field) {
 
 
     var type = $('#' + field + '_container').attr('field_type')
-    var offset = $('#' + field + '_label').position();
-
-    $('#' + field + '_formated_value').addClass('hide')
+    //var offset = $('#' + field + '_label').position();
+    $('#' + field + '_formatted_value').addClass('hide')
     $('#' + field + '_edit_button').addClass('hide')
 
     $('#' + field + '_reset_button').removeClass('hide')
 
-    // $('#' + field).val($('#' + field + '_value').html())
+
     $('#' + field + '_msg').html('').removeClass('success error')
+
+
 
     switch (type) {
     case 'string':
@@ -53,9 +54,37 @@ function open_edit_field(object, key, field) {
             'display': 'block'
         })
 
+    case 'address':
+    case 'new_delivery_address':
 
+
+
+        $('#' + field).removeClass('hide')
+
+        $('#' + field + '_save_button').removeClass('hide')
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
+            'display': 'block'
+        })
 
         break;
+
+    case 'other_delivery_address':
+        $('#' + field + '_field').removeClass('hide')
+
+        $('#show_new_delivery_address_field').addClass('hide')
+        $('#other_delivery_addresses_field').addClass('hide')
+
+
+        $('#' + field).removeClass('hide')
+
+        $('#' + field + '_save_button').removeClass('hide')
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
+            'display': 'block'
+        })
+
+        break;
+
+
     case 'pin_with_confirmation':
     case 'password_with_confirmation':
         $('#' + field).removeClass('hide')
@@ -66,20 +95,20 @@ function open_edit_field(object, key, field) {
 
     case 'option':
         $('#' + field + '_options').removeClass('hide')
-        $('#' + field + '_formated').removeClass('hide')
+        $('#' + field + '_formatted').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
 
 
         break;
     case 'radio_option':
-        $('#' + field + '_formated').removeClass('hide')
+        $('#' + field + '_formatted').removeClass('hide')
         $('#' + field + '_options').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
 
         break;
     case 'date':
 
-        $('#' + field + '_formated').removeClass('hide')
+        $('#' + field + '_formatted').removeClass('hide')
         $('#' + field + '_datepicker').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
 
@@ -115,7 +144,7 @@ function close_edit_this_field(scope) {
 function close_edit_field(field) {
     var type = $('#' + field + '_container').attr('field_type')
 
-    $('#' + field + '_formated_value').removeClass('hide')
+    $('#' + field + '_formatted_value').removeClass('hide')
 
 
     $('#' + field + '_edit_button').removeClass('hide')
@@ -139,8 +168,8 @@ function close_edit_field(field) {
         $('#' + field + '_editor').removeClass('changed')
         break;
     case 'new_email':
-        $('#new_email_formated_value').html('')
-        $('#new_email_value').html('')
+        $('#new_email_formatted_value').html('')
+        $('#new_email_value').val('')
         $('#new_email').val('')
         on_changed_value('new_email', '')
         $('#new_email_field').addClass('hide')
@@ -156,7 +185,6 @@ function close_edit_field(field) {
         break;
     case 'new_telephone':
 
-        console.log(field)
 
         $('#' + field).addClass('hide')
         $('#' + field + '_editor').removeClass('changed')
@@ -168,6 +196,47 @@ function close_edit_field(field) {
         $('#show_new_telephone_field').removeClass('hide')
 
         break;
+
+    case 'address':
+
+
+
+
+        $('#' + field).addClass('hide')
+
+        $('#' + field + '_save_button').addClass('hide')
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
+            'display': 'none'
+        })
+        break;
+
+    case 'other_delivery_address':
+
+        $('#' + field + '_field').addClass('hide')
+
+        $('#show_new_delivery_address_field').removeClass('hide')
+        $('#other_delivery_addresses_field').removeClass('hide')
+
+        $('#' + field).addClass('hide')
+
+        $('#' + field + '_save_button').addClass('hide')
+        $('#' + field + '_field .intl-tel-input .flag-container').css({
+            'display': 'none'
+        })
+
+
+
+        break;
+
+    case 'new_delivery_address':
+
+        $('#new_delivery_address_field').addClass('hide')
+
+        $('#show_new_delivery_address_field').removeClass('hide')
+
+
+        break;
+
     case 'pin_with_confirmation':
     case 'password_with_confirmation':
 
@@ -185,12 +254,12 @@ function close_edit_field(field) {
 
 
         $('#' + field + '_options').addClass('hide')
-        $('#' + field + '_formated').addClass('hide')
+        $('#' + field + '_formatted').addClass('hide')
 
         $('#' + field + '_options li.selected').removeClass('selected')
-        $('#' + field + '_option_' + $('#' + field + '_value').html()).addClass('selected')
+        $('#' + field + '_option_' + $('#' + field + '_value').val()).addClass('selected')
 
-        $('#' + field + '_formated').val($('#' + field + '_formated_value').html())
+        $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
         $("#" + field + '_editor').removeClass('changed')
 
         break;
@@ -198,7 +267,7 @@ function close_edit_field(field) {
 
 
         $('#' + field + '_options').addClass('hide')
-        $('#' + field + '_formated').addClass('hide')
+        $('#' + field + '_formatted').addClass('hide')
 
 
 
@@ -206,7 +275,7 @@ function close_edit_field(field) {
         $('#' + field + '_options li').attr('is_selected', 0)
         $('#' + field + '_options li  .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
 
-        var values = $('#' + field + '_value').html().split(",");
+        var values = $('#' + field + '_value').val().split(",");
 
         for (var i = 0; i < values.length; i++) {
 
@@ -221,13 +290,13 @@ function close_edit_field(field) {
 
         break;
     case 'date':
-        $('#' + field + '_formated').addClass('hide')
+        $('#' + field + '_formatted').addClass('hide')
         $('#' + field + '_datepicker').addClass('hide')
 
 
-        $('#' + field + '_formated').val($('#' + field + '_formated_value').html())
+        $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
         $("#" + field + '_editor').removeClass('changed')
-        var date = chrono.parseDate($('#' + field + '_formated').val())
+        var date = chrono.parseDate($('#' + field + '_formatted').val())
 
         var value = date.toISOString().slice(0, 10)
         $('#' + field + '_datepicker').datepicker("setDate", date);
@@ -315,6 +384,7 @@ function on_changed_confirm_value(field, confirm_value) {
 
 function on_changed_value(field, new_value) {
 
+
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -328,7 +398,7 @@ function on_changed_value(field, new_value) {
         new_value = new_value + ' ' + $('#' + field + '_time').val()
     }
 
-    if (new_value != $('#' + field + '_value').html()) {
+    if (new_value != $('#' + field + '_value').val()) {
         $("#" + field + '_editor').addClass('changed')
         var changed = true;
     } else {
@@ -404,7 +474,7 @@ function process_validation(validation, field, mark_invalid_if_previously_valid)
 
         if (validation.class == 'invalid') {
 
-
+        console.log('#' + field + '_' + validation.type + '_invalid_msg')
 
             if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
                 var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
@@ -422,7 +492,7 @@ function process_validation(validation, field, mark_invalid_if_previously_valid)
 
 function select_option(field, value, label) {
     $('#' + field).val(value)
-    $('#' + field + '_formated').val(label)
+    $('#' + field + '_formatted').val(label)
     $('#' + field + '_options li').removeClass('selected')
 
 
@@ -453,20 +523,20 @@ function select_radio_option(field, value, label) {
 
     var count_selected = 0;
     var selected = [];
-    var selected_formated = [];
+    var selected_formatted = [];
 
 
     $('#' + field + '_options li').each(function() {
         if ($(this).attr('is_selected') == 1) {
             count_selected++;
             selected.push($(this).attr('value'))
-            selected_formated.push($(this).attr('label'))
+            selected_formatted.push($(this).attr('label'))
         }
     });
 
 
     if ($('#' + field + '_container').hasClass('new')) {
-        $('#' + field + '_formated').val(selected_formated.sort().join())
+        $('#' + field + '_formatted').val(selected_formatted.sort().join())
     }
 
     $('#' + field).val(selected.sort().join())
@@ -488,12 +558,33 @@ function set_as_main(object, key, field) {
     $.getJSON(request, function(data) {
 
 
-
-
         //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
         if (data.state == 200) {
 
 
+   if (data.action == 'new_field') {
+                if (data.new_fields) {
+
+                  for (var key in data.new_fields) {
+
+                        create_new_field(data.new_fields[key])
+
+                    }
+                }
+            }
+
+
+
+            if (data.directory_field != '') {
+                $('#' + data.directory_field + '_directory').html(data.directory)
+
+                if (data.items_in_directory == 0) {
+                    $('#' + data.directory_field + '_field').addClass('hide')
+                } else {
+                    $('#' + data.directory_field + '_field').removeClass('hide')
+
+                }
+            }
 
             if (data.other_fields) {
                 for (var key in data.other_fields) {
@@ -518,6 +609,9 @@ function save_this_field(scope) {
     save_field($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('tr').attr('field'))
 }
 
+function save_this_address(scope) {
+    save_field($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('table').attr('field'))
+}
 
 
 function save_field(object, key, field) {
@@ -534,13 +628,18 @@ function save_field(object, key, field) {
 
 
     if (!$("#" + field + '_editor').hasClass('changed')) {
+
+        console.log('no_change')
         return;
     }
 
-    if ($("#" + field + '_editor').hasClass('invalid')) {
+    if (!$("#" + field + '_save_button').hasClass('valid')) {
+        console.log('invalid')
         return;
     }
-    if ($("#" + field + '_editor').hasClass('waiting')) {
+    if (!$("#" + field + '_save_button').hasClass('fa-cloud')) {
+        console.log('waiting for validation')
+
         return;
     }
     $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
@@ -593,6 +692,8 @@ function save_field(object, key, field) {
 
     if (type == 'date') {
         value = value + ' ' + $('#' + field + '_time').val()
+    } else if (type == 'address' || type == 'new_delivery_address') {
+        value = get_address_value(field)
     } else if (type == 'password' || type == 'password_with_confirmation' || type == 'password_with_confirmation_paranoid' || type == 'pin' || type == 'pin_with_confirmation' || type == 'pin_with_confirmation_paranoid') {
         value = sha256_digest(value)
     } else if (type == 'telephone') {
@@ -600,7 +701,7 @@ function save_field(object, key, field) {
         metadata = {
 
             'extra_fields': [{
-                field: field + '_Formated',
+                field: field + '_Formatted',
                 value: fixedEncodeURIComponent($('#' + field).intlTelInput("getNumber", intlTelInputUtils.numberFormat.INTERNATIONAL))
             }]
 
@@ -608,6 +709,7 @@ function save_field(object, key, field) {
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+    //console.log(request)
     $.getJSON(request, function(data) {
 
 
@@ -617,9 +719,13 @@ function save_field(object, key, field) {
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-            $('#' + field + '_value').html(data.value)
 
-            $('.' + field).html(data.formated_value)
+
+
+
+            $('#' + field + '_value').val(data.value)
+
+            $('.' + field).html(data.formatted_value)
 
             if (type == 'option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
@@ -637,56 +743,36 @@ function save_field(object, key, field) {
             }
 
 
+
             if (data.action == 'deleted') {
 
                 $('#' + field + '_edit_button').parent('.show_buttons').css('visibility', 'hidden')
                 $('#' + field + '_label').find('.button').addClass('hide')
 
             }
+
+
+            if (data.directory_field != '') {
+                $('#' + data.directory_field + '_directory').html(data.directory)
+
+                if (data.items_in_directory == 0) {
+                    $('#' + data.directory_field + '_field').addClass('hide')
+                } else {
+                    $('#' + data.directory_field + '_field').removeClass('hide')
+                }
+
+            }
             if (data.action == 'new_field') {
                 if (data.new_fields) {
-                    for (var key in data.new_fields) {
 
-                        var _data = data.new_fields[key]
+                  for (var key in data.new_fields) {
 
-                        var clone_field = _data.field
-                        var clone = $('#' + _data.clone_from + '_field').clone()
-                        clone.prop('id', clone_field + '_field');
+                        create_new_field(data.new_fields[key])
 
-
-                        clone.attr('field', clone_field);
-
-
-                        $('#' + _data.clone_from + '_field').after(clone)
-
-
-                        clone.removeClass('hide')
-                        clone.find('.label').prop('id', clone_field + '_label')
-                        clone.find('i.reset_button').prop('id', clone_field + '_reset_button')
-                        clone.find('i.edit_button').prop('id', clone_field + '_edit_button')
-                        clone.find('td.container').prop('id', clone_field + '_container')
-
-                        clone.find('span.editor').prop('id', clone_field + '_editor')
-
-                        clone.find('span.formated_value').prop('id', clone_field + '_formated_value').removeClass(_data.clone_from).addClass(clone_field).html(_data.formated_value)
-                        clone.find('span.unformated_value').prop('id', clone_field + '__value').html(_data.value)
-
-
-                        if (_data.edit == 'string' || _data.edit == 'email' || _data.edit == 'new_email' || _data.edit == 'int_unsigned' || _data.edit == 'smallint_unsigned' || _data.edit == 'mediumint_unsigned' || _data.edit == 'int' || _data.edit == 'smallint' || _data.edit == 'mediumint' || _data.edit == 'anything' || _data.edit == 'numeric') {
-
-                            clone.find('input.input_field').prop('id', clone_field).val(_data.value)
-                            clone.find('i.save').prop('id', clone_field + '_save_button').addClass(_data.edit)
-
-                            clone.find('span.msg').prop('id', clone_field + '_msg')
-
-                        }
-
-                        if (_data.label != undefined) {
-                            $('#' + clone_field + '_label').html(_data.label)
-                        }
                     }
                 }
             }
+
 
             close_edit_field(field)
 
@@ -730,9 +816,136 @@ function post_save_actions(field, data) {
 
 }
 
+function create_new_field(_data) {
+
+
+
+
+
+
+    // console.log(_data)
+    var clone_field = _data.field
+    var clone = $('#' + _data.clone_from + '_field').clone()
+    clone.prop('id', clone_field + '_field');
+
+    clone.attr('field', clone_field);
+
+    //clone.attr('field', clone_field);
+    $('#' + _data.clone_from + '_field').after(clone)
+
+
+
+    clone.find('.label').prop('id', clone_field + '_label')
+    clone.find('i.reset_button').prop('id', clone_field + '_reset_button')
+    clone.find('i.edit_button').prop('id', clone_field + '_edit_button')
+    clone.find('td.container').prop('id', clone_field + '_container')
+
+    clone.find('span.editor').prop('id', clone_field + '_editor')
+
+    clone.find('span.formatted_value').prop('id', clone_field + '_formatted_value').removeClass(_data.clone_from).addClass(clone_field).html(_data.formatted_value)
+    clone.find('input.unformatted_value').prop('id', clone_field + '_value').val(_data.value)
+
+
+    if (_data.edit == 'string' || _data.edit == 'email' || _data.edit == 'new_email' || _data.edit == 'int_unsigned' || _data.edit == 'smallint_unsigned' || _data.edit == 'mediumint_unsigned' || _data.edit == 'int' || _data.edit == 'smallint' || _data.edit == 'mediumint' || _data.edit == 'anything' || _data.edit == 'numeric') {
+        clone.removeClass('hide')
+        clone.find('input.input_field').prop('id', clone_field).val(_data.value)
+        clone.find('i.save').prop('id', clone_field + '_save_button').addClass(_data.edit)
+
+        clone.find('span.msg').prop('id', clone_field + '_msg')
+
+    } else if (_data.edit == 'address') {
+
+
+
+        clone.find('table').prop('id', clone_field).attr('field', clone_field)
+
+
+
+        console.log(clone_field)
+
+        clone.find('tr.recipient ').prop('id', clone_field + '_recipient')
+        clone.find('tr.organization ').prop('id', clone_field + '_organization')
+        clone.find('tr.addressLine1 ').prop('id', clone_field + '_addressLine1')
+        clone.find('tr.addressLine2 ').prop('id', clone_field + '_addressLine2')
+        clone.find('tr.sortingCode ').prop('id', clone_field + '_sortingCode')
+        clone.find('tr.postalCode ').prop('id', clone_field + '_postalCode')
+        clone.find('tr.dependentLocality ').prop('id', clone_field + '_dependentLocality')
+        clone.find('tr.locality ').prop('id', clone_field + '_locality')
+        clone.find('tr.administrativeArea ').prop('id', clone_field + '_administrativeArea')
+        clone.find('tr.country ').prop('id', clone_field + '_country')
+        clone.find('input.country_select ').prop('id', clone_field + '_country_select')
+
+
+        var address_fields = jQuery.parseJSON(_data.value)
+
+        $('#' + clone_field + '_recipient  input ').val(decodeEntities(address_fields['Address Recipient']))
+        $('#' + clone_field + '_organization  input ').val(decodeEntities(address_fields['Address Organization']))
+        $('#' + clone_field + '_addressLine1  input ').val(decodeEntities(address_fields['Address Line 1']))
+        $('#' + clone_field + '_addressLine2  input ').val(decodeEntities(address_fields['Address Line 2']))
+        $('#' + clone_field + '_sortingCode  input ').val(decodeEntities(address_fields['Address Sorting Code']))
+        $('#' + clone_field + '_postalCode  input ').val(decodeEntities(address_fields['Address Postal Code']))
+        $('#' + clone_field + '_dependentLocality  input ').val(decodeEntities(address_fields['Address Dependent Locality']))
+        $('#' + clone_field + '_locality  input ').val(decodeEntities(address_fields['Address Locality']))
+        $('#' + clone_field + '_administrativeArea  input ').val(decodeEntities(address_fields['Address Administrative Area']))
+        var initial_country = address_fields['Address Country 2 Alpha Code'].toLowerCase();
+
+
+
+        $('#' + clone_field + '_country_select').intlTelInput({
+            initialCountry: initial_country,
+            preferredCountries: $('#preferred_countries').val().split(',')
+        });
+
+        $('#' + clone_field + '_country_select').on("country-change", function(event, arg) {
+
+
+            var country_name = $('#' + clone_field + '_country_select').intlTelInput("getSelectedCountryData").name
+            var country_code = $('#' + clone_field + '_country_select').intlTelInput("getSelectedCountryData").iso2.toUpperCase()
+
+
+            if (country_name.match(/\)\s+\(.+\)$/)) {
+                country_name = country_name.replace(/\)\s+\(.+\)$/, ")")
+            } else {
+                country_name = country_name.replace(/\s+\(.+\)$/, "")
+
+            }
+
+
+
+
+            $('#' + clone_field + '_country  input.address_input_field ').val(country_code)
+
+
+
+            update_address_fields(clone_field, country_code)
+            $('#' + clone_field + '_country_select').val(country_name)
+            if (arg != 'init') {
+
+                on_changed_address_value(clone_field, clone_field + '_country', country_code)
+            }
+
+        });
+
+        $('#' + clone_field + '_country_select').trigger("country-change", 'init');
+
+
+
+    }
+
+    if (_data.label != undefined) {
+        $('#' + clone_field + '_label').html(_data.label)
+    }
+
+
+
+
+
+}
+
+
 function delete_field(data) {
     var field = data.field
-    console.log(data)
+
     $('#' + field + '_field').addClass('hide')
 }
 
@@ -748,8 +961,8 @@ function update_field(data) {
         $('#' + field + '_field').addClass('hide')
         close_edit_field(field)
     }
-    
-     if (data.label!=undefined) {
+
+    if (data.label != undefined) {
         $('#' + field + '_label').html(data.label)
     }
 
@@ -757,14 +970,14 @@ function update_field(data) {
     if (data.value != undefined) {
 
         if (type == 'date') {
-            $('.' + field).html(data.formated_value)
-            $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formated_value));
+            $('.' + field).html(data.formatted_value)
+            $("#" + field + "_datepicker").datepicker("setDate", new Date(data.formatted_value));
             $("#" + field).val(data.value)
-            $("#" + field + '_formated').val(data.formated_value)
+            $("#" + field + '_formatted').val(data.formatted_value)
         }
         if (type == 'option') {
-            //console.log(data.formated_value)
-            $("#" + field + '_formated_value').html(data.formated_value)
+            //console.log(data.formatted_value)
+            $("#" + field + '_formatted_value').html(data.formatted_value)
 
 
             $('#' + field).val(data.value)
@@ -774,7 +987,7 @@ function update_field(data) {
             $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
         } else {
 
-            $('.' + field).html(data.formated_value)
+            $('.' + field).html(data.formatted_value)
             $("#" + field).val(data.value)
         }
     }
@@ -783,7 +996,7 @@ function update_field(data) {
 
 }
 
-function post_update_field(data){
+function post_update_field(data) {
 
 }
 
@@ -858,5 +1071,199 @@ function add_minutes_to_time(time, minutes) {
     var d = new Date(2000, 0, 1, time_components[0], parseInt(time_components[1]) + parseInt(minutes), time_components[2])
     time = addZero2dateComponent(d.getHours()) + ':' + addZero2dateComponent(d.getMinutes()) + ':00'
     return time;
+
+}
+
+
+function update_address_fields(field, country_code) {
+
+    var request = '/ar_address.php?tipo=fields_data&country_code=' + country_code
+    $.getJSON(request, function(data) {
+
+//console.log(field)
+        if (data.state == 200) {
+            for (var key in data.fields) {
+                var field_tr = $('#' + field + '_' + key)
+                var field_data = data.fields[key]
+
+                field_tr.find('.label').html(field_data.label)
+//console.log(field_data)
+
+                if (field_data.required) {
+                    field_tr.find('.fa-asterisk').removeClass('hide')
+                } else {
+                    field_tr.find('.fa-asterisk').addClass('hide')
+
+                }
+
+
+                if (!field_data.render) {
+                    field_tr.addClass('hide')
+                } else {
+                    field_tr.removeClass('hide')
+                }
+                field_tr.insertBefore('#' + field + '_country')
+
+
+            }
+        } else if (data.state == 400) {
+
+
+        }
+    })
+
+}
+
+function delayed_on_change_address_field(object, timeout) {
+
+    var field = object.closest('table').attr('field');
+
+    var address_field = object.closest('tr').attr('id');
+    //console.log(object)
+    var new_value = object.val()
+
+    window.clearTimeout(object.data("timeout"));
+    object.data("timeout", setTimeout(function() {
+        on_changed_address_value(field, address_field, new_value)
+    }, timeout));
+}
+
+
+function get_address_value(field) {
+    var value = {
+        "Address Recipient": null,
+        "Address Organization": null,
+        "Address Line 1": null,
+        "Address Line 2": null,
+        "Address Sorting Code": null,
+        "Address Postal Code": null,
+        "Address Dependent Locality": null,
+        "Address Locality": null,
+        "Address Administrative Area": null,
+        "Address Country 2 Alpha Code": null
+    }
+
+    $('#' + field + ' input.address_input_field').each(function(i, obj) {
+        var tmp = $(obj)
+        if (tmp.val() != '') {
+            //value[tmp.attr('field_name')] = htmlEncode(tmp.val())
+            value[tmp.attr('field_name')] = tmp.val()
+
+        }
+
+
+    });
+    //console.log(value)
+    return JSON.stringify(value);
+}
+
+
+
+function on_changed_address_value(field, address_field, new_address_field_value) {
+
+
+    var new_value = get_address_value(field);
+
+    //console.log(new_value)
+    //console.log($('#' + field + '_value').val())
+    if (new_value != $('#' + field + '_value').val()) {
+        $("#" + field + '_editor').addClass('changed')
+        //console.log("#" + field + '_editor')
+        var changed = true;
+
+
+
+
+    } else {
+        $("#" + field + '_editor').removeClass('changed')
+        var changed = false;
+    }
+
+
+
+    $('#' + field + '_save_button').removeClass('invalid valid potentially_valid')
+    $('#' + field + '_msg').removeClass('invalid valid potentially_valid')
+    $("#" + field + '_validation').removeClass('invalid valid potentially_valid')
+
+
+    if (changed) {
+
+
+        $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
+
+
+
+        var validation = validate_address(field)
+
+
+        process_validation(validation, field, true)
+
+
+
+
+
+
+    } else {
+        $('#' + field + '_msg').html('')
+    }
+
+
+
+
+}
+
+
+
+
+function set_directory_item_as_main(field) {
+    set_as_main($('#fields').attr('object'), $('#fields').attr('key'), field)
+
+}
+
+function show_directory_item_edit(field) {
+
+    open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
+}
+
+function delete_directory_item(directory_field, field) {
+
+
+    var request = '/ar_edit.php?tipo=delete_object_component&object=' + $('#fields').attr('object') + '&key=' + $('#fields').attr('key') + '&field=' + field
+
+    $.getJSON(request, function(data) {
+
+
+        //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
+        if (data.state == 200) {
+
+            if (data.directory_field != '') {
+                $('#' + data.directory_field + '_directory').html(data.directory)
+
+                if (data.items_in_directory == 0) {
+                    $('#' + data.directory_field + '_field').addClass('hide')
+                } else {
+                    $('#' + data.directory_field + '_field').removeClass('hide')
+
+                }
+            }
+
+
+
+
+
+/*
+            if (data.other_fields) {
+                for (var key in data.other_fields) {
+                    update_field(data.other_fields[key])
+                }
+            }
+
+            post_set_as_main(data)
+*/
+        } else if (data.state == 400) {
+
+
+        }
+    })
 
 }

@@ -259,7 +259,7 @@ abstract class DB_Table {
 
 
 		}
-		//print $sql;
+		//print "$sql\n";
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
 		$affected=$update_op->rowCount();
@@ -434,46 +434,46 @@ abstract class DB_Table {
 
 				switch ($data['Indirect Object']) {
 				case 'Customer Website':
-					$formated_indirect_object=_('Customer website');
+					$formatted_indirect_object=_('Customer website');
 					break;
 				case 'Customer Name':
-					$formated_indirect_object=_('Customer name');
+					$formatted_indirect_object=_('Customer name');
 					break;
 
 
 				default:
-					$formated_indirect_object=$this->get_field_label($data['Indirect Object']);
+					$formatted_indirect_object=$this->get_field_label($data['Indirect Object']);
 
 				}
 
 
 				if ($table_name=='Staff') {
-					$formated_table="Employee's";
+					$formatted_table="Employee's";
 				}else {
-					$formated_table=$table_name."'s";
+					$formatted_table=$table_name."'s";
 				}
 
 
 
 
 				if ($data['Action']=='added'  ) {
-					$data['History Abstract']=sprintf(_("%s %s %s was added"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+					$data['History Abstract']=sprintf(_("%s %s %s was added"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 
 				}elseif ($data['Action']=='removed'  ) {
-					$data['History Abstract']=sprintf(_("%s %s %s was removed"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+					$data['History Abstract']=sprintf(_("%s %s %s was removed"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 
 				}elseif ($data['Action']=='set_as_main'  ) {
-					$data['History Abstract']=sprintf(_("%s %s was set as %s"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+					$data['History Abstract']=sprintf(_("%s %s was set as %s"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 
 				}else {
 
 
 					if ($raw_data['new_value']=='')
-						$data['History Abstract']=sprintf(_("%s %s %s was deleted"), $formated_table, $formated_indirect_object, $raw_data['old_value']);
+						$data['History Abstract']=sprintf(_("%s %s %s was deleted"), $formatted_table, $formatted_indirect_object, $raw_data['old_value']);
 					elseif ($raw_data['old_value']=='')
-						$data['History Abstract']=sprintf(_("%s %s %s was inputted"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+						$data['History Abstract']=sprintf(_("%s %s %s was inputted"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 					else
-						$data['History Abstract']=sprintf(_("%s %s was changed to %s"), $formated_table, $formated_indirect_object, $raw_data['new_value']);
+						$data['History Abstract']=sprintf(_("%s %s was changed to %s"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 				}
 
 
@@ -481,7 +481,7 @@ abstract class DB_Table {
 
 
 
-				$formated_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
+				$formatted_indirect_object.' '._('changed').' ('.$raw_data['new_value'].')';
 			}else {
 				$data['History Abstract']='Unknown';
 			}
@@ -788,7 +788,7 @@ abstract class DB_Table {
 	}
 
 
-	function get_number_attachments_formated() {
+	function get_number_attachments_formatted() {
 		$attachments=0;
 
 		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
@@ -1110,7 +1110,7 @@ abstract class DB_Table {
 	}
 
 
-	function get_formated_id($prefix='') {
+	function get_formatted_id($prefix='') {
 
 		/*
         global $myconf;
@@ -1157,6 +1157,10 @@ abstract class DB_Table {
 			return false;
 		}
 	}
+
+
+	
+
 
 
 	function get_field_label($field) {

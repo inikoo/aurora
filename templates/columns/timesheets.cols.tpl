@@ -17,12 +17,12 @@ var columns = [
 },
 
 {
-    name: "formated_id",
+    name: "formatted_id",
     label: "{t}Id{/t}",
     renderable: true,
     editable: false,
      sortType: "toggle",
-    {if $sort_key=='formated_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     
     cell: Backgrid.HtmlCell.extend({
         events: {

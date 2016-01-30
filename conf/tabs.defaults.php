@@ -20,7 +20,7 @@ $tab_defaults=array(
 
 	'customers'=>array(
 		'view'=>'overview',
-		'sort_key'=>'formated_id',
+		'sort_key'=>'formatted_id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
@@ -443,7 +443,7 @@ $tab_defaults=array(
 	),
 	'website.favourites.customers'=>array(
 		'view'=>'overview',
-		'sort_key'=>'formated_id',
+		'sort_key'=>'formatted_id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
@@ -518,7 +518,7 @@ $tab_defaults=array(
 	),
 	'suppliers'=>array(
 		'view'=>'overview',
-		'sort_key'=>'formated_id',
+		'sort_key'=>'formatted_id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
@@ -995,7 +995,7 @@ $tab_defaults=array(
 	),
 	'staff.user.api_keys'=>array(
 		'view'=>'overview',
-		'sort_key'=>'formated_id',
+		'sort_key'=>'formatted_id',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,

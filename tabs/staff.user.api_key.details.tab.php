@@ -59,7 +59,7 @@ $object_fields=array(
 				'id'=>'API_Key_Active',
 				'edit'=>'option',
 				'value'=>$apy_key->get('API Key Active'),
-				'formated_value'=>$apy_key->get('Active'),
+				'formatted_value'=>$apy_key->get('Active'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($apy_key->get_field_label('API Key Active')),
 				'required'=>true
@@ -80,7 +80,7 @@ $object_fields=array(
 				'id'=>'API_Key_Allowed_Requests_per_Hour',
 				'edit'=>'mediumint_unsigned',
 				'value'=>$apy_key->get('API Key Allowed Requests per Hour'),
-				'formated_value'=>$apy_key->get('Allowed Requests per Hour'),
+				'formatted_value'=>$apy_key->get('Allowed Requests per Hour'),
 				'label'=>ucfirst($apy_key->get_field_label('API Key Allowed Requests per Hour')),
 				'invalid_msg'=>get_invalid_message('mediumint_unsigned'),
 				'required'=>true
@@ -99,6 +99,6 @@ $object_fields=array(
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

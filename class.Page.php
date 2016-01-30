@@ -1106,30 +1106,30 @@ class Page extends DB_Table {
 			if ($see_also_page->id) {
 
                 if($this->data['Page Store See Also Type']=='Manual'){
-                $formated_correlation_type=_('Manual');
-					$formated_correlation_value='';
+                $formatted_correlation_type=_('Manual');
+					$formatted_correlation_value='';
                 }else{
 
 				switch ($row['Correlation Type']) {
 				case 'Manual':
-					$formated_correlation_type=_('Manual');
-					$formated_correlation_value='';
+					$formatted_correlation_type=_('Manual');
+					$formatted_correlation_value='';
 					break;
 				case 'Sales':
-					$formated_correlation_type=_('Sales');
-					$formated_correlation_value=percentage($row['Correlation Value'],1);
+					$formatted_correlation_type=_('Sales');
+					$formatted_correlation_value=percentage($row['Correlation Value'],1);
 					break;
 				case 'Semantic':
-					$formated_correlation_type=_('Semantic');
-					$formated_correlation_value=number($row['Correlation Value']);
+					$formatted_correlation_type=_('Semantic');
+					$formatted_correlation_value=number($row['Correlation Value']);
 					break;
 				case 'New':
-					$formated_correlation_type=_('New');
-					$formated_correlation_value=number($row['Correlation Value']);
+					$formatted_correlation_type=_('New');
+					$formatted_correlation_value=number($row['Correlation Value']);
 					break;
 				default:
-					$formated_correlation_type=$row['Correlation Type'];
-					$formated_correlation_value=number($row['Correlation Value']);
+					$formatted_correlation_type=$row['Correlation Type'];
+					$formatted_correlation_value=number($row['Correlation Value']);
 					break;
 				}
 				}
@@ -1146,9 +1146,9 @@ class Page extends DB_Table {
 					'see_also_key'=>$see_also_page->id,
 					'see_also_code'=>$see_also_page->data['Page Code'],
 					'see_also_correlation_type'=>$row['Correlation Type'],
-					'see_also_correlation_formated'=>$formated_correlation_type,
+					'see_also_correlation_formatted'=>$formatted_correlation_type,
 					'see_also_correlation_value'=>$row['Correlation Value'],
-					'see_also_correlation_formated_value'=>$formated_correlation_value,
+					'see_also_correlation_formatted_value'=>$formatted_correlation_value,
 					'see_also_image_key'=>$see_also_page->data['Page Store Image Key']
 				);
 			}
@@ -1649,52 +1649,52 @@ class Page extends DB_Table {
 
 
 
-	function get_formated_store_section() {
+	function get_formatted_store_section() {
 		if ($this->data['Page Type']!='Store' )
 			return;
 
 
 		switch ($this->data['Page Store Section']) {
 		case 'Front Page Store':
-			$formated_store_section=_('Front Page Store');
+			$formatted_store_section=_('Front Page Store');
 			break;
 		case 'Search':
-			$formated_store_section=_('Search');
+			$formatted_store_section=_('Search');
 			break;
 		case 'Product Description':
-			$formated_store_section=_('Product details').' <a href="product.php?pid='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Product details').' <a href="product.php?pid='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 
 			break;
 		case 'Information':
-			$formated_store_section=_('Information');
+			$formatted_store_section=_('Information');
 			break;
 		case 'Category Catalogue':
-			$formated_store_section=_('Category Catalogue');
+			$formatted_store_section=_('Category Catalogue');
 			break;
 		case 'Family Catalogue':
-			$formated_store_section=_('Family Catalogue').' <a href="family.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Family Catalogue').' <a href="family.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 			break;
 		case 'Department Catalogue':
-			$formated_store_section=_('Department Catalogue').' <a href="department.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Department Catalogue').' <a href="department.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 			break;
 		case 'Store Catalogue':
-			$formated_store_section=_('Store Catalogue').' <a href="store.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+			$formatted_store_section=_('Store Catalogue').' <a href="store.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
 			break;
 		case 'Registration':
-			$formated_store_section=_('Registration');
+			$formatted_store_section=_('Registration');
 			break;
 		case 'Client Section':
-			$formated_store_section=_('Client Section');
+			$formatted_store_section=_('Client Section');
 			break;
 		case 'Check Out':
-			$formated_store_section=_('Check Out');
+			$formatted_store_section=_('Check Out');
 			break;
 		default:
-			$formated_store_section=$this->data['Page Store Section'];
+			$formatted_store_section=$this->data['Page Store Section'];
 			break;
 		}
 
-		return $formated_store_section;
+		return $formatted_store_section;
 	}
 
 	function display_buttom($tag) {
@@ -1822,7 +1822,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->site->data['Site Locale']);
 
-		$price= '<span class="price">'.formated_price($data).'</span><br>';
+		$price= '<span class="price">'.formatted_price($data).'</span><br>';
 
 		$data=array(
 			'Product Price'=>$product->data['Product RRP'],
@@ -1833,7 +1833,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->site->data['Site Locale']);
 
-		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+		$rrp= '<span class="rrp">'.formatted_price($data).'</span><br>';
 
 
 
@@ -1988,7 +1988,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->data['Page Locale']);
 
-		$price= '<span class="price">'.$this->get_formated_price($price_data).'</span><br>';
+		$price= '<span class="price">'.$this->get_formatted_price($price_data).'</span><br>';
 		return $price;
 	}
 	function get_button_rrp($product) {
@@ -2006,7 +2006,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->data['Page Locale']);
 
-		$rrp= '<span class="rrp">'.$this->get_formated_price($rrp_data).'</span><br>';
+		$rrp= '<span class="rrp">'.$this->get_formatted_price($rrp_data).'</span><br>';
 		return $rrp;
 
 	}
@@ -2152,7 +2152,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->site->data['Site Locale']);
 
-		$price= '<span class="price">'.formated_price($data).'</span><br>';
+		$price= '<span class="price">'.formatted_price($data).'</span><br>';
 
 		$data=array(
 			'Product Price'=>$product->data['Product RRP'],
@@ -2163,7 +2163,7 @@ class Page extends DB_Table {
 
 			'locale'=>$this->site->data['Site Locale']);
 
-		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+		$rrp= '<span class="rrp">'.formatted_price($data).'</span><br>';
 
 
 
@@ -2464,7 +2464,7 @@ class Page extends DB_Table {
 						$rrp=$row['min'];
 
 
-						$rrp= $this->get_formated_rrp(array(
+						$rrp= $this->get_formatted_rrp(array(
 								'Product RRP'=>$rrp,
 								'Product Units Per Case'=>1,
 								'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
@@ -2503,7 +2503,7 @@ class Page extends DB_Table {
 
 			if ($print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -2621,7 +2621,7 @@ class Page extends DB_Table {
 
 			if ($this->print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -2635,7 +2635,7 @@ class Page extends DB_Table {
 
 
 
-			$price= $this->get_formated_price(array(
+			$price= $this->get_formatted_price(array(
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
@@ -2829,7 +2829,7 @@ class Page extends DB_Table {
 
 			if ($this->print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -2841,7 +2841,7 @@ class Page extends DB_Table {
 
 
 
-			$price= $this->get_formated_price(array(
+			$price= $this->get_formatted_price(array(
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
@@ -2987,7 +2987,7 @@ class Page extends DB_Table {
 
 			if ($this->print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -3001,7 +3001,7 @@ class Page extends DB_Table {
 
 
 
-			$price= $this->get_formated_price(array(
+			$price= $this->get_formatted_price(array(
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
@@ -3170,7 +3170,7 @@ class Page extends DB_Table {
 
 			if ($this->print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -3184,7 +3184,7 @@ class Page extends DB_Table {
 
 
 
-			$price= $this->get_formated_price(array(
+			$price= $this->get_formatted_price(array(
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
@@ -3356,7 +3356,7 @@ class Page extends DB_Table {
 
 			if ($this->print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -3370,7 +3370,7 @@ class Page extends DB_Table {
 
 
 
-			$price= $this->get_formated_price(array(
+			$price= $this->get_formatted_price(array(
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
@@ -3533,7 +3533,7 @@ class Page extends DB_Table {
 
 			if ($this->print_rrp) {
 
-				$rrp= $this->get_formated_rrp(array(
+				$rrp= $this->get_formatted_rrp(array(
 						'Product RRP'=>$product['Product RRP'],
 						'Product Units Per Case'=>$product['Product Units Per Case'],
 						'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
@@ -3547,7 +3547,7 @@ class Page extends DB_Table {
 
 
 
-			$price= $this->get_formated_price(array(
+			$price= $this->get_formatted_price(array(
 					'Product Price'=>$product['Product Price'],
 					'Product Units Per Case'=>1,
 					'Product Unit Type'=>'',
@@ -3672,7 +3672,7 @@ class Page extends DB_Table {
 
 
 		if ($number_products_with_price and $same_units) {
-			$price= $this->get_formated_price(
+			$price= $this->get_formatted_price(
 				array(
 					'Product Price'=>$min_price,
 					'Product Units Per Case'=>$units,
@@ -3723,7 +3723,7 @@ class Page extends DB_Table {
 		}
 
 		if ($number_products_with_rrp and $same_units) {
-			$rrp= $this->get_formated_price(array(
+			$rrp= $this->get_formatted_price(array(
 					'Product Price'=>$min_rrp,
 					'Product Units Per Case'=>$units,
 					'Product Unit Type'=>'',
@@ -3742,7 +3742,7 @@ class Page extends DB_Table {
 		return $rrp_label;
 	}
 
-	function get_formated_rrp($data,$options=false) {
+	function get_formatted_rrp($data,$options=false) {
 
 		$data=array(
 			'Product RRP'=>$data['Product RRP'],
@@ -3754,10 +3754,10 @@ class Page extends DB_Table {
 		if (isset($data['price per unit text']))
 			$_data['price per unit text']=$data['price per unit text'];
 
-		return formated_rrp($data,$options);
+		return formatted_rrp($data,$options);
 	}
 
-	function get_formated_price($data,$options=false) {
+	function get_formatted_price($data,$options=false) {
 
 		$_data=array(
 			'Product Price'=>$data['Product Price'],
@@ -3772,7 +3772,7 @@ class Page extends DB_Table {
 		if (isset($data['price per unit text']))
 			$_data['price per unit text']=$data['price per unit text'];
 
-		return formated_price($_data,$options);
+		return formatted_price($_data,$options);
 	}
 
 	function display_title() {
@@ -4907,7 +4907,7 @@ class Page extends DB_Table {
 	}
 
 
-	function get_formated_state() {
+	function get_formatted_state() {
 
 		switch ($this->data['Page State']) {
 		case 'Offline':

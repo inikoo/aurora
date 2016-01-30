@@ -38,7 +38,7 @@ array(
 			'id'=>'User_Active',
 			'edit'=>'option',
 			'value'=>'Yes',
-			'formated_value'=>_('Yes'),
+			'formatted_value'=>_('Yes'),
 			'options'=>$options_yn,
 			'label'=>ucfirst($employee->get_field_label('Staff User Active')),
 			'type'=>'value'
@@ -48,7 +48,7 @@ array(
 			'id'=>'User_Handle',
 			'edit'=>'string',
 			'value'=>$employee->get('Staff User Handle'),
-			'formated_value'=>$employee->get('User Handle'),
+			'formatted_value'=>$employee->get('User Handle'),
 			'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
 			'server_validation'=>'check_for_duplicates',
 			'type'=>'value'
@@ -61,7 +61,7 @@ array(
 			'id'=>'User_Password',
 			'edit'=>'password',
 			'value'=>'',
-			'formated_value'=>'******',
+			'formatted_value'=>'******',
 			'label'=>ucfirst($employee->get_field_label('Staff User Password')),
 			'invalid_msg'=>get_invalid_message('password'),
 			'type'=>'value'
@@ -72,7 +72,7 @@ array(
 			'id'=>'User_PIN',
 			'edit'=>'pin',
 			'value'=>'',
-			'formated_value'=>'****',
+			'formatted_value'=>'****',
 			'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
 			'invalid_msg'=>get_invalid_message('pin'),
 			'type'=>'value'

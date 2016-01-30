@@ -101,7 +101,7 @@ $object_fields=array(
 				'render'=>false,
 				'class'=>'locked',
 				'id'=>'User_ID',
-				'value'=>$system_user->get_formated_id() ,
+				'value'=>$system_user->get_formatted_id() ,
 				'label'=>_('ID')
 			),
 
@@ -126,7 +126,7 @@ $object_fields=array(
 				'id'=>'User_Active',
 				'edit'=>'option',
 				'value'=>$system_user->get('User Active'),
-				'formated_value'=>$system_user->get('Active'),
+				'formatted_value'=>$system_user->get('Active'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($system_user->get_field_label('User Active')),
 
@@ -137,7 +137,7 @@ $object_fields=array(
 				'id'=>'User_Handle',
 				'edit'=>'string',
 				'value'=>$system_user->get('User Handle'),
-				'formated_value'=>$system_user->get('Handle'),
+				'formatted_value'=>$system_user->get('Handle'),
 				'label'=>_('Login'),
 				'server_validation'=>'check_for_duplicates'
 
@@ -149,7 +149,7 @@ $object_fields=array(
 				'id'=>'User_Password',
 				'edit'=>'password',
 				'value'=>$system_user->get('User Password'),
-				'formated_value'=>$system_user->get('Password'),
+				'formatted_value'=>$system_user->get('Password'),
 				'label'=>_('Password'),
 				'invalid_msg'=>get_invalid_message('password'),
 			),
@@ -158,7 +158,7 @@ $object_fields=array(
 				'id'=>'User_PIN',
 				'edit'=>'pin',
 				'value'=>$system_user->get('User PIN'),
-				'formated_value'=>$system_user->get('PIN'),
+				'formatted_value'=>$system_user->get('PIN'),
 				'label'=>_('PIN'),
 				'invalid_msg'=>get_invalid_message('pin'),
 			),
@@ -174,7 +174,7 @@ $object_fields=array(
 				'id'=>'User_Groups',
 				'edit'=>'radio_option',
 				'value'=>$system_user->get('User Groups') ,
-				'formated_value'=>$system_user->get('Groups') ,
+				'formatted_value'=>$system_user->get('Groups') ,
 				'label'=>ucfirst($system_user->get_field_label('User Groups')),
 				'options'=>$options_Groups,
 
@@ -184,7 +184,7 @@ $object_fields=array(
 				'id'=>'User_Stores',
 				'edit'=>'radio_option',
 				'value'=>$system_user->get('User Stores') ,
-				'formated_value'=>$system_user->get('Stores') ,
+				'formatted_value'=>$system_user->get('Stores') ,
 				'label'=>ucfirst($system_user->get_field_label('User Stores')),
 				'options'=>$options_Stores,
 				'required'=>false
@@ -194,7 +194,7 @@ $object_fields=array(
 				'id'=>'User_Websites',
 				'edit'=>'radio_option',
 				'value'=>$system_user->get('User Websites') ,
-				'formated_value'=>$system_user->get('Websites') ,
+				'formatted_value'=>$system_user->get('Websites') ,
 				'label'=>ucfirst($system_user->get_field_label('User Websites')),
 				'options'=>$options_Websites,
 				'required'=>false
@@ -203,7 +203,7 @@ $object_fields=array(
 				'id'=>'User_Warehouses',
 				'edit'=>'radio_option',
 				'value'=>$system_user->get('User Warehouses') ,
-				'formated_value'=>$system_user->get('Warehouses') ,
+				'formatted_value'=>$system_user->get('Warehouses') ,
 				'label'=>ucfirst($system_user->get_field_label('User Warehouses')),
 				'options'=>$options_Warehouses,
 				'required'=>false
@@ -222,7 +222,7 @@ $object_fields=array(
 				'id'=>'User_Preferred_Locale',
 				'edit'=>'option',
 				'value'=>$system_user->get('User Preferred Locale') ,
-				'formated_value'=>$system_user->get('Preferred Locale') ,
+				'formatted_value'=>$system_user->get('Preferred Locale') ,
 				'label'=>ucfirst($system_user->get_field_label('Preferred Locale')),
 				'options'=>$options_locales,
 
@@ -236,6 +236,6 @@ $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

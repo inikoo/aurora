@@ -24,7 +24,7 @@ function get_delivery_note_showcase($data) {
     
 
 
-$parcels=$delivery_note->get_formated_parcels();
+$parcels=$delivery_note->get_formatted_parcels();
 $weight=$delivery_note->data['Delivery Note Weight'];
 $consignment=$delivery_note->data['Delivery Note Shipper Consignment'];
 

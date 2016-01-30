@@ -25,7 +25,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'id'=>'Category_Code',
 				'value'=>$category->get('Category Code'),
-				'formated_value'=>$category->get('Code'),
+				'formatted_value'=>$category->get('Code'),
 				'label'=>ucfirst($category->get_field_label('Category Code')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'server_validation'=>'check_for_duplicates',
@@ -34,7 +34,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'id'=>'Category_Label',
 				'value'=>$category->get('Category Label'),
-				'formated_value'=>$category->get('Label'),
+				'formatted_value'=>$category->get('Label'),
 				'label'=>ucfirst($category->get_field_label('Category Label')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
@@ -50,6 +50,6 @@ $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

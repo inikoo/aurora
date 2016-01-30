@@ -131,7 +131,7 @@ $object_fields=array(
 				'edit'=>'date',
 				'time'=>'00:00:00',
 				'value'=>$employee->get('Staff Birthday'),
-				'formated_value'=>$employee->get('Birthday'),
+				'formatted_value'=>$employee->get('Birthday'),
 				'label'=>ucfirst($employee->get_field_label('Staff Birthday')),
 				'invalid_msg'=>get_invalid_message('date'),
 				'required'=>false
@@ -151,7 +151,7 @@ $object_fields=array(
 				'id'=>'Staff_Email',
 				'edit'=>'email',
 				'value'=>$employee->get('Staff Email'),
-				'formated_value'=>$employee->get('Email'),
+				'formatted_value'=>$employee->get('Email'),
 				'label'=>ucfirst($employee->get_field_label('Staff Email')),
 				'server_validation'=>'check_for_duplicates',
 				'invalid_msg'=>get_invalid_message('email'),
@@ -161,7 +161,7 @@ $object_fields=array(
 				'id'=>'Staff_Telephone',
 				'edit'=>'telephone',
 				'value'=>$employee->get('Staff Telephone'),
-				'formated_value'=>$employee->get('Telephone'),
+				'formatted_value'=>$employee->get('Telephone'),
 				'label'=>ucfirst($employee->get_field_label('Staff Telephone')),
 				'invalid_msg'=>get_invalid_message('telephone'),
 			),
@@ -170,7 +170,7 @@ $object_fields=array(
 				'id'=>'Staff_Address',
 				'edit'=>'textarea',
 				'value'=>$employee->get('Staff Address'),
-				'formated_value'=>$employee->get('Address'),
+				'formatted_value'=>$employee->get('Address'),
 				'label'=>ucfirst($employee->get_field_label('Staff Address')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
@@ -196,7 +196,7 @@ $object_fields=array(
 				'id'=>'Staff_Type',
 				'edit'=>'option',
 				'value'=>$employee->get('Staff Type'),
-				'formated_value'=>$employee->get('Type'),
+				'formatted_value'=>$employee->get('Type'),
 				'options'=>$options_Staff_Type,
 				'label'=>ucfirst($employee->get_field_label('Staff Type')),
 			),
@@ -207,7 +207,7 @@ $object_fields=array(
 				'edit'=>'option',
 				
 				'value'=>$employee->get('Staff Currently Working'),
-				'formated_value'=>$employee->get('Currently Working'),
+				'formatted_value'=>$employee->get('Currently Working'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($employee->get_field_label('Staff Currently Working')),
 			),
@@ -217,7 +217,7 @@ $object_fields=array(
 				'edit'=>'date',
 				'time'=>'09:00:00',
 				'value'=>$employee->get('Staff Valid From'),
-				'formated_value'=>$employee->get('Valid From'),
+				'formatted_value'=>$employee->get('Valid From'),
 				'label'=>ucfirst($employee->get_field_label('Staff Valid From')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
@@ -227,7 +227,7 @@ $object_fields=array(
 				'edit'=>'date',
 				'time'=>'17:00:00',
 				'value'=>$employee->get('Staff Valid To'),
-				'formated_value'=>$employee->get('Valid To'),
+				'formatted_value'=>$employee->get('Valid To'),
 				'label'=>ucfirst($employee->get_field_label('Staff Valid To')),
 				'invalid_msg'=>get_invalid_message('date'),
 			),
@@ -244,7 +244,7 @@ $object_fields=array(
 				'id'=>'Staff_Supervisor',
 				'edit'=>'radio_option',
 				'value'=>$employee->get('Staff Supervisor'),
-				'formated_value'=>$employee->get('Supervisor'),
+				'formatted_value'=>$employee->get('Supervisor'),
 				'options'=>$options_Staff_Supervisor,
 				'label'=>ucfirst($employee->get_field_label('Staff Supervisor')),
 				'required'=>false
@@ -264,7 +264,7 @@ $object_fields=array(
 				'id'=>'Staff_Working_Hours',
 				'edit'=>'working_hours',
 				'value'=>$employee->get('Staff Working Hours'),
-				'formated_value'=>$employee->get('Working Hours'),
+				'formatted_value'=>$employee->get('Working Hours'),
 				'options'=>$options_Staff_Type,
 				'label'=>ucfirst($employee->get_field_label('Staff Working Hours')),
 				'invalid_msg'=>get_invalid_message('working_hours'),
@@ -275,7 +275,7 @@ $object_fields=array(
 				'id'=>'Staff_Salary',
 				'edit'=>'salary',
 				'value'=>$employee->get('Staff Salary'),
-				'formated_value'=>$employee->get('Salary'),
+				'formatted_value'=>$employee->get('Salary'),
 				'label'=>ucfirst($employee->get_field_label('Staff Salary')),
 				'invalid_msg'=>get_invalid_message('salary'),
 			)
@@ -295,7 +295,7 @@ $object_fields=array(
 				'id'=>'Staff_Position',
 				'edit'=>'radio_option',
 				'value'=>$employee->get('Staff Position'),
-				'formated_value'=>$employee->get('Position'),
+				'formatted_value'=>$employee->get('Position'),
 				'options'=>$options_Staff_Position,
 				'label'=>ucfirst($employee->get_field_label('Staff Position')),
 			)
@@ -319,7 +319,7 @@ if ($employee->get('Staff User Key')) {
 				'id'=>'Staff_User_Active',
 				'edit'=>'option',
 				'value'=>$employee->get('Staff User Active'),
-				'formated_value'=>$employee->get('User Active'),
+				'formatted_value'=>$employee->get('User Active'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($employee->get_field_label('Staff Active')),
 			),
@@ -328,7 +328,7 @@ if ($employee->get('Staff User Key')) {
 				'id'=>'Staff_User_Handle',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff User Handle'),
-				'formated_value'=>$employee->get('User Handle'),
+				'formatted_value'=>$employee->get('User Handle'),
 				'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
 				'server_validation'=>'check_for_duplicates'
 			),
@@ -339,7 +339,7 @@ if ($employee->get('Staff User Key')) {
 				'id'=>'Staff_User_Password',
 				'edit'=>'password',
 				'value'=>'',
-				'formated_value'=>'******',
+				'formatted_value'=>'******',
 				'label'=>ucfirst($employee->get_field_label('Staff User Password')),
 				'invalid_msg'=>get_invalid_message('password'),
 			),
@@ -349,7 +349,7 @@ if ($employee->get('Staff User Key')) {
 				'id'=>'Staff_User_PIN',
 				'edit'=>'pin',
 				'value'=>'',
-				'formated_value'=>'****',
+				'formatted_value'=>'****',
 				'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
 				'invalid_msg'=>get_invalid_message('pin'),
 			),
@@ -400,6 +400,6 @@ $smarty->assign('day_labels', $day_labels=array(
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

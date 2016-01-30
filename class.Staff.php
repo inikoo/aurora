@@ -172,7 +172,7 @@ class Staff extends DB_Table{
 
 			$day_names=array(1=>_('Mon'), 2=>_('Tue'), 3=>_('Wed'), 4=>_('Thu'), 5=>_('Fri'), 6=>_('Sat'), 7=>_('Sun'));
 
-			$formated_working_hours='';
+			$formatted_working_hours='';
 
 
 			$working_hours=json_decode($this->data['Staff Working Hours'], true);
@@ -192,7 +192,7 @@ class Staff extends DB_Table{
 
 				$breaks=$this->get_breaks($working_hours['data'][1]['b']);
 
-				$formated_working_hours=_('Mon-Fri').' '.$start.'-'.$end.$breaks.', ';
+				$formatted_working_hours=_('Mon-Fri').' '.$start.'-'.$end.$breaks.', ';
 
 
 
@@ -203,7 +203,7 @@ class Staff extends DB_Table{
 
 					$breaks=$this->get_breaks($working_hours['data'][6]['b']);
 
-					$formated_working_hours.=_('Sat-Sun').' '.$start.'-'.$end.$breaks.', ';
+					$formatted_working_hours.=_('Sat-Sun').' '.$start.'-'.$end.$breaks.', ';
 
 
 				}else {
@@ -215,7 +215,7 @@ class Staff extends DB_Table{
 							$end=date('H:i', strtotime('2000-01-01 '.$day_working_hours['e']));
 							$breaks=$this->get_breaks($day_working_hours['b']);
 
-							$formated_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
+							$formatted_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
 						}
 					}
 				}
@@ -228,19 +228,19 @@ class Staff extends DB_Table{
 					$end=date('H:i', strtotime('2000-01-01 '.$day_working_hours['e']));
 					$breaks=$this->get_breaks($day_working_hours['b']);
 
-					$formated_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
+					$formatted_working_hours.=$day_names[$day_key].' '.$start.'-'.$end.$breaks.', ';
 
 				}
 
 			}
 
 
-			$formated_working_hours=preg_replace('/, $/', '', $formated_working_hours);
-			//print $formated_working_hours;exit;
+			$formatted_working_hours=preg_replace('/, $/', '', $formatted_working_hours);
+			//print $formatted_working_hours;exit;
 
-			$formated_working_hours.='; '.sprintf(_('%s hrs/w'), number($this->data['Staff Working Hours Per Week']));
+			$formatted_working_hours.='; '.sprintf(_('%s hrs/w'), number($this->data['Staff Working Hours Per Week']));
 
-			return $formated_working_hours;
+			return $formatted_working_hours;
 
 		case('Address'):
 			return nl2br($this->data['Staff Address']);
@@ -259,7 +259,7 @@ class Staff extends DB_Table{
 			break;
 
 		case('Telephone'):
-			return $this->data['Staff Telephone Formated'];
+			return $this->data['Staff Telephone Formatted'];
 			break;
 		case('Email'):
 			return $this->data['Staff Email']!=''?sprintf('<a href="mailto:%s" target="_top">%s</a>', $this->data['Staff Email'], $this->data['Staff Email']):'';
@@ -268,17 +268,17 @@ class Staff extends DB_Table{
 			if (array_key_exists('Staff User Active', $this->data)) {
 				switch ( $this->data['Staff User Active']) {
 				case('Yes'):
-					$formated_value=_('Yes');
+					$formatted_value=_('Yes');
 					break;
 				case('No'):
-					$formated_value=_('No');
+					$formatted_value=_('No');
 					break;
 
 				default:
-					$formated_value=$this->data['Staff User Active'];
+					$formatted_value=$this->data['Staff User Active'];
 				}
 
-				return $formated_value;
+				return $formatted_value;
 
 			}else {
 				return _('No');
@@ -295,13 +295,13 @@ class Staff extends DB_Table{
 			return $this->get_positions();
 			break;
 		case('Position'):
-			return $this->get_formated_positions();
+			return $this->get_formatted_positions();
 			break;
 		case('Staff Supervisor'):
 			return $this->get_supervisors();
 			break;
 		case('Supervisor'):
-			return $this->get_formated_supervisors();
+			return $this->get_formatted_supervisors();
 			break;
 
 		case ('Valid From'):
@@ -315,17 +315,17 @@ class Staff extends DB_Table{
 
 			switch ( $this->data['Staff Currently Working']) {
 			case('Yes'):
-				$formated_value=_('Yes');
+				$formatted_value=_('Yes');
 				break;
 			case('No'):
-				$formated_value=_('No');
+				$formatted_value=_('No');
 				break;
 
 			default:
-				$formated_value=$this->data['Staff Currently Working'];
+				$formatted_value=$this->data['Staff Currently Working'];
 			}
 
-			return $formated_value;
+			return $formatted_value;
 
 			break;
 		case('Type'):
@@ -394,7 +394,7 @@ class Staff extends DB_Table{
 			$label=_('email');
 			break;
 		case 'Staff Telephone':
-		case 'Staff Telephone Formated':
+		case 'Staff Telephone Formatted':
 			$label=_('contact number');
 			break;
 		case 'Staff Address':
@@ -860,7 +860,7 @@ class Staff extends DB_Table{
 					'field'=>'Staff_Salary',
 					'render'=>true,
 					'value'=>$this->get('Staff Salary'),
-					'formated_value'=>$this->get('Salary'),
+					'formatted_value'=>$this->get('Salary'),
 
 
 				)
@@ -1017,7 +1017,7 @@ class Staff extends DB_Table{
 				'field'=>'Staff_Valid_To',
 				'render'=>($this->get('Staff Currently Working')=='Yes'?false:true),
 				'value'=>$this->get('Staff Valid To'),
-				'formated_value'=>$this->get('Valid To'),
+				'formatted_value'=>$this->get('Valid To'),
 
 
 			)
@@ -1103,7 +1103,7 @@ class Staff extends DB_Table{
 	}
 
 
-	function get_formated_positions() {
+	function get_formatted_positions() {
 
 		$positions='';
 		$sql=sprintf('select GROUP_CONCAT(`Company Position Title`  order by `Company Position Title` separator ", ") as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  `Staff Key`=%d  ', $this->id);
@@ -1187,7 +1187,7 @@ class Staff extends DB_Table{
 	}
 
 
-	function get_formated_supervisors() {
+	function get_formatted_supervisors() {
 
 		$supervisors='';
 		$sql=sprintf('select GROUP_CONCAT(`Staff Alias`  order by `Staff Alias` separator ", ") as supervisors   from  `Staff Supervisor Bridge` B left join `Staff Dimension` S on (B.`Supervisor Key`=S.`Staff Key`)  where  B.`Staff Key`=%d ', $this->id);
@@ -1221,7 +1221,7 @@ class Staff extends DB_Table{
 	function get_breaks($data) {
 		// print_r($data);
 
-		$formated_breaks=' (<i class="fa fa-fw fa-cutlery"></i> ';
+		$formatted_breaks=' (<i class="fa fa-fw fa-cutlery"></i> ';
 		if (count($data)==0)return'';
 		foreach ($data as $break_data) {
 
@@ -1229,10 +1229,10 @@ class Staff extends DB_Table{
 
 
 
-			$formated_breaks.=$break_duration.' @'.$break_data['s'].', ';
+			$formatted_breaks.=$break_duration.' @'.$break_data['s'].', ';
 		}
-		$formated_breaks=preg_replace('/, $/', '', $formated_breaks);
-		return $formated_breaks.')';
+		$formatted_breaks=preg_replace('/, $/', '', $formatted_breaks);
+		return $formatted_breaks.')';
 	}
 
 

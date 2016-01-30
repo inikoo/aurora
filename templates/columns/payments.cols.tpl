@@ -6,7 +6,7 @@ var columns = [
     renderable: false,
     cell: "string"
 }, {
-    name: "formated_id",
+    name: "formatted_id",
     label: "{t}Id{/t}",
     editable: false,
      cell: Backgrid.Cell.extend({

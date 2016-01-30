@@ -21,7 +21,7 @@ $object_fields=array(
 			array(
 				'class'=>'locked',
 				'id'=>'Part_SKU',
-				'value'=>$part->get_formated_id() ,
+				'value'=>$part->get_formatted_id() ,
 				'label'=>_('SKU')
 			),
 
@@ -45,6 +45,6 @@ $object_fields=array(
 );
 $smarty->assign('object_fields',$object_fields);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

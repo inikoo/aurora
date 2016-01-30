@@ -79,7 +79,7 @@ function operatives($_data, $db, $user) {
 
 			$adata[]=array(
 				'id'=>(integer) $data['Staff Key'],
-				'formated_id'=>sprintf("%04d", $data['Staff Key']),
+				'formatted_id'=>sprintf("%04d", $data['Staff Key']),
 				'payroll_id'=>$data['Staff ID'],
 				'name'=>$data['Staff Name'],
 				'code'=>$data['Staff Alias'],

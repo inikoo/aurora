@@ -37,7 +37,7 @@ elseif ($order=='code' or $order=='code_link')
 
 
 elseif ($order=='telephone')
-	$order='`Staff Telephone Formated`';
+	$order='`Staff Telephone Formatted`';
 elseif ($order=='email')
 	$order='`Staff Email`';
 
@@ -76,7 +76,7 @@ else
 
 $sql_totals="select count(Distinct SD.`Staff Key`) as num from $table  $where  ";
 
-$fields="`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formated`,`Staff Telephone`,`Staff Next of Kind`,
+$fields="`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formatted`,`Staff Telephone`,`Staff Next of Kind`,
 `Staff Alias`,`Staff Key`,`Staff Name`,`Staff Type`,
 `Staff Valid To`,`Staff Valid From`,`User Login Count`,
 `User Handle`,`User Active`,`User Last Login`,
