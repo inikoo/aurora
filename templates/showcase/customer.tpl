@@ -45,7 +45,7 @@
 			<i class="fa fa-map-marker"></i>
 		</div>
 		<div style="float:left;min-width:272px">
-			{$customer->get('Customer Main XHTML Address')} 
+			{$customer->get('Contact Address')} 
 		</div>
 	</div>
 	<div class="data_container {if $customer->get('Sticky Note')==''}hide{/if} ">
@@ -71,7 +71,7 @@
 				</tr>
 				<tr style="{if $customer->get_pending_payment_amount_from_account_balance()==0}display:none{/if}">
 					<td id="account_balance_label">{t}Payments in Process{/t}</td>
-					<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get_formated_pending_payment_amount_from_account_balance()} </td>
+					<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get_formatted_pending_payment_amount_from_account_balance()} </td>
 				</tr>
 			</table>
 		</div>

@@ -24,6 +24,64 @@ function validate_field(field, new_value, field_type, required, server_validatio
 }
 
 
+function validate_address(field) {
+    var valid_state = {
+        class: 'valid',
+        type: ''
+    }
+
+    var invalid_fields = 0;
+
+    $('#' + field + ' input.address_input_field').each(function(i, obj) {
+
+
+        var tr = $(obj).closest('tr')
+
+        var asterisk = tr.find('.fa-asterisk')
+
+        if (!asterisk.hasClass('hide')) {
+            console.log($(obj).attr('field_name'))
+            if ($(obj).val() == '') {
+                invalid_fields++;
+                tr.find('.show_buttons').removeClass('super_discret success').addClass('error')
+
+
+                if ($(obj).attr('field_name') == 'Address Recipient') {
+                    valid_state_type = 'missing_recipient'
+                } else if ($(obj).attr('field_name') == 'Address Line 1') {
+                    valid_state_type = 'missing_addressLine1'
+                } else if ($(obj).attr('field_name') == 'Address Postal Code') {
+                    valid_state_type = 'missing_postalCode'
+                } else {
+                    valid_state_type = 'missing_field'
+                }
+
+                valid_state = {
+                    class: 'invalid',
+                    type: valid_state_type
+                }
+            } else {
+                tr.find('.show_buttons').addClass(' success').removeClass('super_discret error')
+
+            }
+
+        }
+
+
+    });
+
+    if (invalid_fields > 1) {
+        valid_state = {
+            class: 'invalid',
+            type: 'missing_fields'
+        }
+    }
+
+
+    return valid_state;
+}
+
+
 function client_validation(type, required, value, field) {
 
     //console.log(type+' '+required+' '+value+' '+field)
@@ -342,8 +400,8 @@ function validate_signed_integer(value, max_value) {
 
 
 function server_validation(tipo, parent, parent_key, object, key, field, value) {
-  
- 
+
+
     $("#" + field + '_editor').addClass('waiting')
     var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
 
@@ -354,7 +412,11 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
         $("#" + field + '_editor').removeClass('waiting invalid valid')
         $("#" + field + '_validation').removeClass('waiting invalid valid')
 
-        if (!$('#' + field + '_value').hasClass('hide')) {
+
+        $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
+
+        if (!$('#' + field + '_formatted_value').hasClass('hide')) {
+            console.log('#' + field + '_value')
             return;
         }
 
@@ -369,7 +431,7 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
 
         }
 
-        $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
+
 
 
 
@@ -380,7 +442,7 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
 
         }
 
-     
+
 
         $('#' + field + '_validation').addClass(validation)
 
