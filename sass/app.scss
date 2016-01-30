@@ -624,7 +624,7 @@ input{
 
 
 
-.details_data, .new_object, .presention_card, .showcase ,.dashboard{
+ .new_object, .presention_card, .showcase ,.dashboard{
     padding: 10px 20px;
    
     
@@ -750,9 +750,7 @@ input{
          }
     }
 }
-.details_data {  
-   .intl-tel-input .flag-container {display:none};
-}
+
 .result{
 
 margin-top:20px;
@@ -949,6 +947,10 @@ right connector from last child*/
 
 }
 
+.discret{opacity:.9;color:#777}
+.very_discret{opacity:.6;color:#777}
+.super_discret{opacity:.3;color:#777}
+
 
 .success{color:$color_success}
 .valid{color:$color_save}
@@ -959,8 +961,7 @@ right connector from last child*/
 .warning{color:$color_warning}
 .error,.invalid{color:$color_error}
 .disabled{opacity:.5;color:#777}
-.discret{opacity:.9;color:#777}
-.very_discret{opacity:.6;color:#777}
+
 
 
 .padding_left_10{padding-left:10px}
@@ -1024,3 +1025,25 @@ path.ema {
 @import 'date_chooser';
 @import 'table';
 @import 'showcase';
+@import 'edit_object';
+
+
+
+.adr{
+line-height:$height_short_row;
+    span{display:block}
+   // span.hide{display:none}
+}
+
+.address_directory{
+    .container {
+        float:left;margin-right:50px;
+        &:last-of-type{margin-right:0px;}
+        .show_buttons{float:left;min-height:120px;padding-top:7px}
+        .address{float:left;min-width:140px}
+    }
+}
+
+
+
+

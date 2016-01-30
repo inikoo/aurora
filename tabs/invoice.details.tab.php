@@ -90,6 +90,6 @@ $object_fields=array(
 );
 $smarty->assign('object_fields',$object_fields);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

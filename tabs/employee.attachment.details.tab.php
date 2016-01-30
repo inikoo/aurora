@@ -35,7 +35,7 @@ $object_fields=array(
 				'id'=>'Attachment_Subject_Type',
 				'edit'=>'option',
 				'value'=>$attachment->get('Attachment Subject Type'),
-				'formated_value'=>$attachment->get('Subject Type'),
+				'formatted_value'=>$attachment->get('Subject Type'),
 				'options'=>$options_Attachment_Subject_Type,
 				'label'=>ucfirst($attachment->get_field_label('Attachment Subject Type')),
 				'required'=>true,
@@ -47,7 +47,7 @@ $object_fields=array(
 				'id'=>'Attachment_Caption',
 				'edit'=>'string',
 				'value'=>$attachment->get('Attachment Caption'),
-				'formated_value'=>$attachment->get('Caption'),
+				'formatted_value'=>$attachment->get('Caption'),
 
 				'label'=>$attachment->get_field_label('Attachment Caption'),
 				'invalid_msg'=>get_invalid_message('string'),
@@ -65,7 +65,7 @@ $object_fields=array(
 				'id'=>'Attachment_Public',
 				'edit'=>'option',
 				'value'=>$attachment->get('Attachment Public'),
-				'formated_value'=>$attachment->get('Public'),
+				'formatted_value'=>$attachment->get('Public'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($attachment->get_field_label('Attachment Public')),
 				'required'=>true,
@@ -82,6 +82,6 @@ $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

@@ -38,7 +38,7 @@ function get_order_showcase($data) {
 		}
 
 		if ($dn->data['Delivery Note Number Parcels']!='') {
-			$dn_data.=', '.$dn->get_formated_parcels();
+			$dn_data.=', '.$dn->get_formatted_parcels();
 		}else {
 			$missing_dn_data=true;
 			$missing_dn_str.=', '._('parcels');
@@ -89,7 +89,7 @@ function get_order_showcase($data) {
 			'key'=>$invoice->id,
 			'operations'=>$invoice->get_operations($user,'order',$order->id),
 			'number'=>$invoice->data['Invoice Public ID'],
-			'state'=>$invoice->get_formated_payment_state(),
+			'state'=>$invoice->get_formatted_payment_state(),
 			'to_pay'=>$invoice->data['Invoice Outstanding Total Amount'],
 			'data'=>'',
 
