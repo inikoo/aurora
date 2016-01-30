@@ -169,6 +169,16 @@ function get_invalid_message($type) {
 			'invalid'=>_('Invalid email'),
 			'empty'=>_('Please provide an email'),
 		);
+		
+	case 'address':
+		$messages=array(
+			'missing_fields'=>_('Missing fields'),
+			'missing_field'=>_('Missing field'),
+			'missing_recipient'=>_('Please provide a recipient'),
+			'missing_addressLine1'=>_('Please provide the address first line'),
+			'missing_postalCode'=>_('Please provide a postal code'),
+
+		);	
 		break;
 	case 'telephone':
 		$messages=array(

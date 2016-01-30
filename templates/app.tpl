@@ -13,6 +13,10 @@
 	<link href="/css/app.css" rel="stylesheet">
     <link href="/external_libs/d3fc/d3fc.css" rel="stylesheet"/>
 
+	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
+
+
+
 	<script type="text/javascript" src="/js/jquery.min.js"></script> 
 	<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/moment.min.js"></script> 
@@ -27,10 +31,10 @@
 	<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script> 
 	<script type="text/javascript" src="/js/search.js"></script> 
 	<script type="text/javascript" src="/js/table.js"></script> 
-	<script type="text/javascript" src="/js/field_validation.js"></script> 
+	<script type="text/javascript" src="/js/validation.js"></script> 
 	<script type="text/javascript" src="/js/edit.js"></script> 
 	<script type="text/javascript" src="/js/new.js"></script> 
-	<script type="text/javascript" src="/js/intlTelInput.min.js"></script> 
+	<script type="text/javascript" src="/js/intlTelInput.js"></script> 
 	
 	
 	<script src="/external_libs/d3fc/d3.min.js"></script>

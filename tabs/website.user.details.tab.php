@@ -21,7 +21,7 @@ $object_fields=array(
 			array(
 				'class'=>'locked',
 				'id'=>'User_ID',
-				'value'=>$_user->get_formated_id() ,
+				'value'=>$_user->get_formatted_id() ,
 				'label'=>_('ID')
 			),
            
@@ -73,6 +73,6 @@ $object_fields=array(
 );
 $smarty->assign('object_fields',$object_fields);
 
-$html=$smarty->fetch('object_fields.tpl');
+$html=$smarty->fetch('edit_object.tpl');
 
 ?>

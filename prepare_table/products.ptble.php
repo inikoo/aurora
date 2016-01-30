@@ -266,7 +266,7 @@ elseif ($order=='stock_state') {
 elseif ($order=='stock_forecast') {
 	$order='`Product Available Days Forecast`';
 }
-elseif ($order=='formated_record_type') {
+elseif ($order=='formatted_record_type') {
 	$order='`Product Record Type`';
 }
 elseif ($order=='store') {

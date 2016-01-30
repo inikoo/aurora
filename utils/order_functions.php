@@ -126,7 +126,7 @@ function get_orders_operations($row,$user) {
 }
 
 
-function get_order_formated_dispatch_state($state,$order_key) {
+function get_order_formatted_dispatch_state($state,$order_key) {
 	switch ($state) {
 	case 'In Process by Customer':
 		$dispatch_state=_('In Website');
@@ -145,7 +145,7 @@ function get_order_formated_dispatch_state($state,$order_key) {
 
 }
 
-function get_order_formated_payment_state($data) {
+function get_order_formatted_payment_state($data) {
 
 
 

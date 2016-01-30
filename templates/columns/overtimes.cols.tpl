@@ -15,7 +15,7 @@ var columns = [{
      })
     
 },{
-    name: "formated_key",
+    name: "formatted_key",
     label: "{t}Id{/t}",
     editable: false,
      cell: Backgrid.StringCell.extend({

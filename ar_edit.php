@@ -36,7 +36,19 @@ case 'edit_field':
 
 		));
 
-	edit_field($account, $db, $user, $editor, $data);
+	edit_field($account, $db, $user, $editor, $data, $smarty);
+	break;
+case 'delete_object_component':
+
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'key'),
+			'field'=>array('type'=>'string'),
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
+
+		));
+
+	delete_object_component($account, $db, $user, $editor, $data, $smarty);
 	break;
 case 'set_as_main':
 
@@ -48,7 +60,7 @@ case 'set_as_main':
 
 		));
 
-	set_as_main($account, $db, $user, $editor, $data);
+	set_as_main($account, $db, $user, $editor, $data, $smarty);
 	break;
 case 'upload_attachment':
 
@@ -83,7 +95,7 @@ default:
 }
 
 
-function edit_field($account, $db, $user, $editor, $data) {
+function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	$object=get_object($data['object'], $data['key']);
@@ -101,7 +113,7 @@ function edit_field($account, $db, $user, $editor, $data) {
 	$field=preg_replace('/_/', ' ', $data['field']);
 
 
-	$formated_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
+	$formatted_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
 
 
 	if (preg_match('/ Telephone$/', $field)) {
@@ -141,27 +153,38 @@ function edit_field($account, $db, $user, $editor, $data) {
 
 
 	}else {
-
-
+		$directory_field='';
+		$directory='';
+		$items_in_directory='';
 
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
-			$formated_value=$object->get($formated_field);
+			$formatted_value=$object->get($formatted_field);
 
 			$action='updated';
 		}elseif (isset($object->deleted)) {
 			$msg=sprintf('<span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted'));
-			$formated_value=sprintf('<span class="deleted">%s</span>', $object->deleted_value);
+			$formatted_value=sprintf('<span class="deleted">%s</span>', $object->deleted_value);
 			$action='deleted';
 		}elseif (isset($object->field_created)) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Created'));
-			$formated_value='';
+			$formatted_value='';
 			$action='new_field';
+
+			if ($field=='new delivery address') {
+				$directory_field='other_delivery_addresses';
+				$smarty->assign('customer', $object);
+				$directory=$smarty->fetch('delivery_addresses_directory.tpl');
+				$items_in_directory=count($object->get_other_delivery_addresses_data());
+			}
+
+
 		}else {
 			$msg='';
-			$formated_value=$object->get($formated_field);
+			$formatted_value=$object->get($formatted_field);
 			$action='';
 		}
+
 
 
 
@@ -169,11 +192,14 @@ function edit_field($account, $db, $user, $editor, $data) {
 			'state'=>200,
 			'msg'=>$msg,
 			'action'=>$action,
-			'formated_value'=>$formated_value,
+			'formatted_value'=>$formatted_value,
 			'value'=>$object->get($field),
 			'other_fields'=>$object->get_other_fields_update_info(),
 			'new_fields'=>$object->get_new_fields_info(),
-			'deleted_fields'=>$object->get_deleted_fields_info()
+			'deleted_fields'=>$object->get_deleted_fields_info(),
+			'directory_field'=>$directory_field,
+			'directory'=>$directory,
+			'items_in_directory'=>$items_in_directory,
 
 		);
 
@@ -186,7 +212,7 @@ function edit_field($account, $db, $user, $editor, $data) {
 }
 
 
-function set_as_main($account, $db, $user, $editor, $data) {
+function set_as_main($account, $db, $user, $editor, $data, $smarty) {
 
 
 	$object=get_object($data['object'], $data['key']);
@@ -228,6 +254,23 @@ function set_as_main($account, $db, $user, $editor, $data) {
 
 		$object->set_as_main($field, $value);
 
+		if ($field=='Customer Other Delivery Address') {
+			$smarty->assign('customer', $object);
+			$directory_field='other_delivery_addresses';
+
+			$directory=$smarty->fetch('delivery_addresses_directory.tpl');
+			$items_in_directory=count($object->get_other_delivery_addresses_data());
+			$action=($object->updated?'set_main_delivery_address':'');
+			$value=$object->get('Customer Delivery Address');
+		}else {
+			$directory='';
+			$directory_field='';
+			$items_in_directory=0;
+			$action='';
+			$value='';
+		}
+
+
 		if ($object->error) {
 			$response=array(
 				'state'=>400,
@@ -240,7 +283,92 @@ function set_as_main($account, $db, $user, $editor, $data) {
 				'other_fields'=>$object->get_other_fields_update_info(),
 				'new_fields'=>$object->get_new_fields_info(),
 				'deleted_fields'=>$object->get_deleted_fields_info(),
-				'action'=>''
+				'action'=>$action,
+				'directory_field'=>$directory_field,
+				'directory'=>$directory,
+				'items_in_directory'=>$items_in_directory,
+				'value'=>$value
+			);
+
+
+		}
+
+
+	}else {
+		$response=array(
+			'state'=>400,
+			'msg'=>'invalid field data',
+
+		);
+
+	}
+
+	echo json_encode($response);
+
+
+}
+
+
+function delete_object_component($account, $db, $user, $editor, $data, $smarty) {
+
+
+	$object=get_object($data['object'], $data['key']);
+
+
+	if (!$object->id) {
+		$response=array('state'=>405, 'resp'=>'Object not found');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$object->editor=$editor;
+
+
+	if (preg_match('/(.+)(_\d+)$/', $data['field'], $matches)) {
+
+		$value=trim(preg_replace('/_/', ' ', $matches[2]));
+		$field=trim(preg_replace('/_/', ' ', $matches[1]));
+
+
+
+		$object->delete_component($field, $value);
+
+
+
+
+
+		if ($object->error) {
+			$response=array(
+				'state'=>400,
+				'msg'=>$object->msg,
+
+			);
+		}else {
+
+
+			if ($field=='Customer Other Delivery Address') {
+				$smarty->assign('customer', $object);
+				$directory_field='other_delivery_addresses';
+
+				$directory=$smarty->fetch('delivery_addresses_directory.tpl');
+				$items_in_directory=count($object->get_other_delivery_addresses_data());
+			}else {
+				$directory_field='';
+				$directory='';
+				$items_in_directory=0;
+			}
+
+
+			$response=array(
+				'state'=>200,
+				'other_fields'=>$object->get_other_fields_update_info(),
+				'new_fields'=>$object->get_new_fields_info(),
+				'deleted_fields'=>$object->get_deleted_fields_info(),
+				'action'=>'',
+				'directory_field'=>$directory_field,
+				'directory'=>$directory,
+				'items_in_directory'=>$items_in_directory,
 			);
 
 

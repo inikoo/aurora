@@ -247,7 +247,7 @@ elseif ($order=='sku')
 	$order='`Part SKU`';
 elseif ($order=='id')
 	$order='`Part SKU`';
-elseif ($order=='formated_sku')
+elseif ($order=='formatted_sku')
 	$order='`Part SKU`';
 elseif ($order=='reference')
 	$order='`Part Reference`';

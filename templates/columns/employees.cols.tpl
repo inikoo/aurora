@@ -7,7 +7,7 @@ var columns = [
     cell: "string",
 
 },{
-    name: "formated_id",
+    name: "formatted_id",
     label: "{t}ID{/t}",
     editable: false,
          renderable: false,
@@ -224,7 +224,7 @@ function change_table_view(view,save_state){
     $('#view_'+view).addClass('selected');
     
         grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", false)
-        grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'formatted_id'} ).set("renderable", false)
 
         grid.columns.findWhere({ name: 'code'} ).set("renderable", false)
          grid.columns.findWhere({ name: 'code_link'} ).set("renderable", false)
@@ -252,7 +252,7 @@ function change_table_view(view,save_state){
     
    
     if(view=='overview'){
-         grid.columns.findWhere({ name: 'formated_id'} ).set("renderable", true)
+         grid.columns.findWhere({ name: 'formatted_id'} ).set("renderable", true)
 
    grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'code'} ).set("renderable", true)

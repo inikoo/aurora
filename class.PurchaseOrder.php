@@ -817,7 +817,7 @@ class PurchaseOrder extends DB_Table{
 
 
 
-	function get_formated_estimated_delivery_date() {
+	function get_formatted_estimated_delivery_date() {
 
 		if ($this->data['Purchase Order Estimated Receiving Date']) {
 			return $this->get('Estimated Receiving Date');

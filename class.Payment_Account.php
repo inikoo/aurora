@@ -231,7 +231,7 @@ class Payment_Account extends DB_Table {
 
 
 
-	function get_formated_bank_data() {
+	function get_formatted_bank_data() {
 
 		//print_r($this->data);
 

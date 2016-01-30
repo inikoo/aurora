@@ -284,7 +284,7 @@ class LightCustomer {
         else
             $address=new Address($this->data['Customer Main Address Key']);
 
-        $tel=$address->get_formated_principal_telephone();
+        $tel=$address->get_formatted_principal_telephone();
         if ($tel!='') {
             $tel=_('Tel').': '.$tel.'</br>';
         }

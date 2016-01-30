@@ -7,7 +7,7 @@ var columns = [
     cell: "string",
 
 },{
-    name: "formated_id",
+    name: "formatted_id",
     label: "{t}ID{/t}{$data.object}",
     editable: false,
      sortType: "toggle",

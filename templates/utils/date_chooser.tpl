@@ -32,7 +32,7 @@
 	</div>
 	<div class="date_chooser_form">
 		<div class="label">{t}Date{/t}</div>
-		<input id="select_date_formated" class="" value="{$from_locale}" />
+		<input id="select_date_formatted" class="" value="{$from_locale}" />
 		<i onclick="submit_date()" id="select_date_save" class="fa button fa-play save"></i> 
 	</div>
 	<div style="clear:both"></div>
@@ -44,9 +44,9 @@
 	</div>
 	<div class="date_chooser_form">
 		<div class="label from">{t}From{/t}</div>
-		<input id="select_interval_from_formated" class="" value="{$from_locale}" readonly/>
+		<input id="select_interval_from_formatted" class="" value="{$from_locale}" readonly/>
 		<div class="label until">{t}Until{/t}</div>
-		<input id="select_interval_to_formated" class="" value="{$to_locale}" readonly/>
+		<input id="select_interval_to_formatted" class="" value="{$to_locale}" readonly/>
 		<i onclick="submit_interval()" id="select_interval_save" class="fa button fa-play save"></i> 
 	</div>
 	<div style="clear:both"></div>
@@ -83,7 +83,7 @@
             altFormat: "yy-mm-dd",
             onSelect: function() {
                 $('#select_date').change();
-                $('#select_date_formated').val($.datepicker.formatDate("dd-mm-yy", $(this).datepicker("getDate")))
+                $('#select_date_formatted').val($.datepicker.formatDate("dd-mm-yy", $(this).datepicker("getDate")))
                 validate_date()
             }
         });
@@ -106,27 +106,27 @@
                 var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_to").val());
                 var selectedDate = $.datepicker.parseDate($.datepicker._defaults.dateFormat, dateText);
 
-                date_iso_formated = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate"))
-                date_formated = $.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate"))
+                date_iso_formatted = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate"))
+                date_formatted = $.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate"))
 
                 if (!date1 || date2) {
                     $("#select_interval_from").val(dateText);
                     $("#select_interval_to").val("");
-                    $("#select_interval_from_formated").val(date_formated);
-                    $("#select_interval_to_formated").val('');
+                    $("#select_interval_from_formatted").val(date_formatted);
+                    $("#select_interval_to_formatted").val('');
 
                     $(this).datepicker();
                 } else if (selectedDate < date1) {
                     $("#select_interval_to").val($("#select_interval_from").val());
                     $("#select_interval_from").val(dateText);
 
-                    $("#select_interval_to_formated").val($("#select_interval_from_formated").val());
-                    $("#select_interval_from_formated").val(date_formated);
+                    $("#select_interval_to_formatted").val($("#select_interval_from_formatted").val());
+                    $("#select_interval_from_formatted").val(date_formatted);
 
                     $(this).datepicker();
                 } else {
                     $("#select_interval_to").val(dateText);
-                    $("#select_interval_to_formated").val(date_formated);
+                    $("#select_interval_to_formatted").val(date_formatted);
 
                     $(this).datepicker();
                 }
@@ -149,15 +149,15 @@
 
 
 
-    $('#select_date_formated').on('input', function() {
+    $('#select_date_formatted').on('input', function() {
 
-        var _moment = moment($('#select_date_formated').val(), ["DD-MM-YYYY", "MM-DD-YYYY"], 'en');
+        var _moment = moment($('#select_date_formatted').val(), ["DD-MM-YYYY", "MM-DD-YYYY"], 'en');
 
 
         if (_moment.isValid()) {
             var date = new Date(_moment)
         } else {
-            var date = chrono.parseDate($('#select_date_formated').val())
+            var date = chrono.parseDate($('#select_date_formatted').val())
         }
 
         if (date == null) {
@@ -185,7 +185,7 @@
     function validate_date() {
         $('#select_date_save').removeClass('possible_valid valid invalid')
 
-        if ($("#select_date_formated").val() == '') {
+        if ($("#select_date_formatted").val() == '') {
             validation = 'possible_valid';
         } else {
             validation = 'valid';
@@ -199,7 +199,7 @@
     function validate_interval() {
         $('#select_interval_save').removeClass('possible_valid valid invalid')
 
-        if ($("#select_interval_from_formated").val() == '' || $("#select_interval_to_formated").val() == '') {
+        if ($("#select_interval_from_formatted").val() == '' || $("#select_interval_to_formatted").val() == '') {
             validation = 'possible_valid';
         } else {
             validation = 'valid';

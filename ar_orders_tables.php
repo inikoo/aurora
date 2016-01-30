@@ -89,8 +89,8 @@ function orders($_data, $db, $user) {
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
 			'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
 			'customer'=>$data['Order Customer Name'],
-			'dispatch_state'=>get_order_formated_dispatch_state($data['Order Current Dispatch State'], $data['Order Key']), // function in: utils/order_functions.php
-			'payment_state'=>get_order_formated_payment_state($data),
+			'dispatch_state'=>get_order_formatted_dispatch_state($data['Order Current Dispatch State'], $data['Order Key']), // function in: utils/order_functions.php
+			'payment_state'=>get_order_formatted_payment_state($data),
 
 			'total_amount'=>money($data['Order Total Amount'], $data['Order Currency'])
 

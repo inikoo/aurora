@@ -86,7 +86,7 @@ class Manufacture_Task extends DB_Table {
 				'Manufacture_Task_Targets'=>array(
 					'field'=>'Manufacture_Task_Targets',
 					'value'=>$this->get('Targets'),
-					'formated_value'=>$this->get('Targets'),
+					'formatted_value'=>$this->get('Targets'),
 
 
 				)
@@ -101,7 +101,7 @@ class Manufacture_Task extends DB_Table {
 				'Manufacture_Task_Targets'=>array(
 					'field'=>'Manufacture_Task_Targets',
 					'value'=>$this->get('Targets'),
-					'formated_value'=>$this->get('Targets'),
+					'formatted_value'=>$this->get('Targets'),
 
 
 				)
@@ -118,7 +118,7 @@ class Manufacture_Task extends DB_Table {
 				'Manufacture_Task_Cost'=>array(
 					'field'=>'Manufacture_Task_Cost',
 					'value'=>$this->get('Cost'),
-					'formated_value'=>$this->get('Cost'),
+					'formatted_value'=>$this->get('Cost'),
 
 
 				),

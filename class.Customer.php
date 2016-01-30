@@ -481,11 +481,13 @@ class Customer extends DB_Table {
 		}
 		else
 			return false;
-		$result=mysql_query($sql);
 
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Customer Key'];
 		}
+
+
 	}
 
 
@@ -1006,13 +1008,13 @@ class Customer extends DB_Table {
 					'field'=>'Customer_Main_Plain_Email',
 					'render'=>true,
 					'value'=>$this->get('Customer Main Plain Email'),
-					'formated_value'=>$this->get('Main Plain Email'),
+					'formatted_value'=>$this->get('Main Plain Email'),
 				),
 				preg_replace('/ /', '_', "$field $other_key")=>array(
 					'field'=>preg_replace('/ /', '_', "$field $other_key"),
 					'render'=>true,
 					'value'=>$this->get("$field $other_key"),
-					'formated_value'=>$this->get(preg_replace('/Customer /', '', "$field $other_key")),
+					'formatted_value'=>$this->get(preg_replace('/Customer /', '', "$field $other_key")),
 				)
 			);
 
@@ -1040,7 +1042,7 @@ class Customer extends DB_Table {
 				'field'=>'Customer_Main_Plain_Telephone',
 				'render'=>true,
 				'value'=>$this->get('Customer Main Plain Telephone'),
-				'formated_value'=>$this->get('Main Plain Telephone'),
+				'formatted_value'=>$this->get('Main Plain Telephone'),
 				'label'=>ucfirst($this->get_field_label('Customer Main Plain Telephone')). ($this->get('Customer Main Plain Telephone')!=''?($this->get('Customer Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 
 			);
@@ -1049,7 +1051,159 @@ class Customer extends DB_Table {
 				'field'=>preg_replace('/ /', '_', "$field $other_key"),
 				'render'=>true,
 				'value'=>$this->get("$field $other_key"),
-				'formated_value'=>$this->get(preg_replace('/Customer /', '', "$field $other_key")),
+				'formatted_value'=>$this->get(preg_replace('/Customer /', '', "$field $other_key")),
+			);
+
+
+
+			$this->updated=true;
+
+			break;
+
+		case 'Customer Other Delivery Address':
+			//$old_main_value=$this->data['Customer Main Plain Telephone'];
+			//$new_main_value=$this->get("$field $other_key");
+			$old_main_value=$this->get('Delivery Address');
+
+
+			$type='Delivery';
+			$old_main_fields=array(
+
+				'Address Recipient'=>$this->get($type.' Address Recipient'),
+				'Address Organization'=>$this->get($type.' Address Organization'),
+				'Address Line 1'=>$this->get($type.' Address Line 1'),
+				'Address Line 2'=>$this->get($type.' Address Line 2'),
+				'Address Sorting Code'=>$this->get($type.' Address Sorting Code'),
+				'Address Postal Code'=>$this->get($type.' Address Postal Code'),
+				'Address Dependent Locality'=>$this->get($type.' Address Dependent Locality'),
+				'Address Locality'=>$this->get($type.' Address Locality'),
+				'Address Administrative Area'=>$this->get($type.' Address Administrative Area'),
+				'Address Country 2 Alpha Code'=>$this->get($type.' Address Country 2 Alpha Code'),
+
+
+			);
+
+
+
+			$new_main_fields=$this->get_other_delivery_address_fields($other_key);
+
+			if (!$new_main_fields) {
+				$this->msg='Error, please refresh and try again';
+				$this->error=true;
+				return;
+			}
+
+			//print_r($old_main_fields);
+			//print_r($new_main_fields);
+			//exit;
+
+			$this->delete_component('Customer Other Delivery Address', $other_key);
+
+			$this->update_address('Delivery', $new_main_fields, 'no_history');
+
+
+
+
+			$this->add_other_delivery_address($old_main_fields, 'no_history');
+
+
+			$this->other_fields_updated['Customer_Delivery_Address']=array(
+				'field'=>'Customer_Delivery_Address',
+				'render'=>true,
+				'value'=>$this->get('Customer Delivery Address'),
+				'formatted_value'=>$this->get('Delivery Address'),
+			);
+
+			$this->add_changelog_record('Customer Delivery Address', $old_main_value, $this->get('Delivery Address'), '', $this->table_name, $this->id, 'set_as_main');
+
+
+
+
+			$this->updated=true;
+
+			break;
+
+
+		default:
+			$this->error=true;
+			$this->msg="Set as main $field not found";
+			break;
+		}
+
+	}
+
+
+	function delete_component($field, $component_key) {
+
+		switch ($field) {
+		case 'Customer Other Delivery Address':
+			//$old_main_value=$this->data['Customer Main Plain Email'];
+			//$new_main_value=$this->get("$field $component_key");
+
+			$old_value=$this->get("Other Delivery Address $component_key");
+
+			$sql=sprintf('delete from `Customer Other Delivery Address Dimension` where `Customer Other Delivery Address Key`=%d',
+				$component_key
+			);
+			$this->db->exec($sql);
+
+
+			$this->add_changelog_record(_("delivery address"), $old_value, '', '', $this->table_name, $this->id );
+
+
+			/*
+			$this->add_changelog_record('Customer Main Email', $old_main_value, $new_main_value, '', $this->table_name, $this->id, 'set_as_main');
+
+
+			$this->other_fields_updated=array(
+				'Customer_Main_Plain_Email'=>array(
+					'field'=>'Customer_Main_Plain_Email',
+					'render'=>true,
+					'value'=>$this->get('Customer Main Plain Email'),
+					'formatted_value'=>$this->get('Main Plain Email'),
+				),
+				preg_replace('/ /', '_', "$field $component_key")=>array(
+					'field'=>preg_replace('/ /', '_', "$field $component_key"),
+					'render'=>true,
+					'value'=>$this->get("$field $component_key"),
+					'formatted_value'=>$this->get(preg_replace('/Customer /', '', "$field $component_key")),
+				)
+			);
+*/
+			$this->updated=true;
+
+			break;
+
+		case 'Customer Other Telephone':
+			$old_main_value=$this->data['Customer Main Plain Telephone'];
+			$new_main_value=$this->get("$field $component_key");
+
+			$this->update(array(
+
+					'Customer Main Plain Telephone'=>$new_main_value,
+					"$field $component_key"=>$old_main_value,
+					'Customer Preferred Contact Number'=>'Telephone',
+				), 'no_history');
+
+
+			$this->add_changelog_record('Customer Main Telephone', $old_main_value, $new_main_value, '', $this->table_name, $this->id, 'set_as_main');
+
+
+
+			$this->other_fields_updated['Customer_Main_Plain_Telephone']=array(
+				'field'=>'Customer_Main_Plain_Telephone',
+				'render'=>true,
+				'value'=>$this->get('Customer Main Plain Telephone'),
+				'formatted_value'=>$this->get('Main Plain Telephone'),
+				'label'=>ucfirst($this->get_field_label('Customer Main Plain Telephone')). ($this->get('Customer Main Plain Telephone')!=''?($this->get('Customer Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
+
+			);
+
+			$this->other_fields_updated[preg_replace('/ /', '_', "$field $component_key")]=array(
+				'field'=>preg_replace('/ /', '_', "$field $component_key"),
+				'render'=>true,
+				'value'=>$this->get("$field $component_key"),
+				'formatted_value'=>$this->get(preg_replace('/Customer /', '', "$field $component_key")),
 			);
 
 
@@ -1067,6 +1221,7 @@ class Customer extends DB_Table {
 	}
 
 
+
 	function update_field_switcher($field, $value, $options='') {
 
 
@@ -1075,126 +1230,22 @@ class Customer extends DB_Table {
 		if (is_string($value))
 			$value=_trim($value);
 
-		if (preg_match('/^custom_field_/i', $field)) {
-			//$field=preg_replace('/^custom_field_/','',$field);
-			$this->update_field($field, $value, $options);
 
-
-			return;
-		}
-
-		if (preg_match('/^Customer Other Email (\d+)/i', $field, $matches)) {
-			$customer_email_key=$matches[1];
-			$old_value=$this->get($field);
-			if ($value=='') {
-				$old_value=$this->get(preg_replace('/^Customer /', '', $field));
-				$sql=sprintf('delete from `Customer Other Email Dimension`  where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
-					$this->id,
-					$customer_email_key
-				);
-				$prep=$this->db->prepare($sql);
-				$prep->execute();
-				if ($prep->rowCount()) {
-
-					$this->deleted=true;
-					$this->deleted_value=$old_value;
-					$this->add_changelog_record('Customer Other Email', $old_value, '', $options, $this->table_name, $this->id, 'removed');
-
-				}else {
-
-				}
-			}else {
-				$sql=sprintf('update `Customer Other Email Dimension` set `Customer Other Email Email`=%s where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
-					prepare_mysql($value),
-					$this->id,
-					$customer_email_key
-				);
-				$tmp=$this->db->prepare($sql);
-				$tmp->execute();
-				if ($tmp->rowCount()) {
-					$this->add_changelog_record('Customer Other Email', $old_value, $value, $options, $this->table_name, $this->id);
-
-					$this->updated=true;
-				}else {
-
-				}
-
-			}
-
-			return;
-		}
-
-		if (preg_match('/^Customer Other Telephone (\d+)/i', $field, $matches)) {
-			$customer_telephone_key=$matches[1];
-			$old_value=$this->get($field);
-
-			$value=preg_replace('/\s/', '', $value);
-			if ($value=='+')$value='';
-
-			if ($value=='') {
-				$old_value=$this->get(preg_replace('/^Customer /', '', $field));
-				$sql=sprintf('delete from `Customer Other Telephone Dimension`  where `Customer Other Telephone Customer Key`=%d and `Customer Other Telephone Key`=%d ',
-					$this->id,
-					$customer_telephone_key
-				);
-				$prep=$this->db->prepare($sql);
-				$prep->execute();
-				if ($prep->rowCount()) {
-
-					$this->deleted=true;
-					$this->deleted_value=$old_value;
-					$this->add_changelog_record('Customer Other Telephone', $old_value, '', $options, $this->table_name, $this->id, 'removed');
-
-				}else {
-
-				}
-			}else {
-
-				include_once 'utils/get_phoneUtil.php';
-				$phoneUtil=get_phoneUtil();
-
-				try {
-					if ($this->get('Customer Main Country 2 Alpha Code')=='' or $this->get('Customer Main Country 2 Alpha Code')=='XX') {
-						$store=new Store($this->data['Customer Store Key']);
-						$country->get('Store Home Country Code 2 Alpha');
-					}else {
-						$country=$this->get('Customer Main Country 2 Alpha Code');
-					}
-					$proto_number = $phoneUtil->parse($value, $country);
-					$formated_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
-
-
-
-
-
-				} catch (\libphonenumber\NumberParseException $e) {
-
-				}
-
-				$sql=sprintf('update `Customer Other Telephone Dimension` set `Customer Other Telephone Number`=%s, `Customer Other Telephone Formated Number`=%s where `Customer Other Telephone Customer Key`=%d and `Customer Other Telephone Key`=%d ',
-					prepare_mysql($value),
-					prepare_mysql($formated_value),
-					$this->id,
-					$customer_telephone_key
-				);
-				$tmp=$this->db->prepare($sql);
-				$tmp->execute();
-				if ($tmp->rowCount()) {
-					$this->add_changelog_record('Customer Other Telephone', $old_value, $value, $options, $this->table_name, $this->id);
-
-					$this->updated=true;
-				}else {
-
-				}
-
-			}
-
-			return;
-		}
 
 		switch ($field) {
+		case 'Customer Contact Address':
+			$this->update_address('Contact', json_decode($value, true));
+			break;
+		case 'Customer Invoice Address':
+			$this->update_address('Invoice', json_decode($value, true));
+			break;
+		case 'Customer Delivery Address':
+			$this->update_address('Delivery', json_decode($value, true));
+			break;
+		case 'new delivery address':
+			$this->add_other_delivery_address(json_decode($value, true));
 
-
+			break;
 		case 'Customer Main Plain Email':
 			if ($value=='' and count($other_emails_data=$this->get_other_emails_data())>0 ) {
 				$old_value=$this->get($field);
@@ -1302,14 +1353,14 @@ class Customer extends DB_Table {
 				'render'=>true,
 				'label'=>ucfirst($this->get_field_label('Customer Main Plain Mobile')). ($this->get('Customer Main Plain Mobile')!=''?($this->get('Customer Preferred Contact Number')=='Mobile'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):''),
 				'value'=>$this->get('Customer Main Plain Mobile'),
-				'formated_value'=>$this->get('Main Plain Mobile')
+				'formatted_value'=>$this->get('Main Plain Mobile')
 			);
 			$this->other_fields_updated['Customer_Main_Plain_Telephone']=array(
 				'field'=>'Customer_Main_Plain_Telephone',
 				'render'=>true,
 				'label'=>ucfirst($this->get_field_label('Customer Main Plain Telephone')). ($this->get('Customer Main Plain Telephone')!=''?($this->get('Customer Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'value'=>$this->get('Customer Main Plain Telephone'),
-				'formated_value'=>$this->get('Main Plain Telephone')
+				'formatted_value'=>$this->get('Main Plain Telephone')
 			);
 
 			break;
@@ -1336,10 +1387,10 @@ class Customer extends DB_Table {
 						$country=$this->get('Customer Main Country 2 Alpha Code');
 					}
 					$proto_number = $phoneUtil->parse($value, $country);
-					$formated_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+					$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
 
 
-					$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formated_value);
+					$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value);
 
 
 				} catch (\libphonenumber\NumberParseException $e) {
@@ -1364,7 +1415,7 @@ class Customer extends DB_Table {
 					'render'=>true,
 					'label'=>ucfirst($this->get_field_label('Customer Main Plain Mobile')). ($this->get('Customer Main Plain Mobile')!=''?($this->get('Customer Preferred Contact Number')=='Mobile'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):''),
 					'value'=>$this->get('Customer Main Plain Mobile'),
-					'formated_value'=>$this->get('Main Plain Mobile')
+					'formatted_value'=>$this->get('Main Plain Mobile')
 				);
 				$this->other_fields_updated['Customer_Main_Plain_Telephone']=array(
 					'field'=>'Customer_Main_Plain_Telephone',
@@ -1408,7 +1459,7 @@ class Customer extends DB_Table {
 							'render'=>true,
 							'edit'=>'email',
 							'value'=>$this->get($field),
-							'formated_value'=>$this->get($field),
+							'formatted_value'=>$this->get($field),
 							'label'=>ucfirst($this->get_field_label('Customer Other Email')).' <i title="'._('set as main email').'" class="fa fa-star-o very_discret"></i>',
 
 
@@ -1447,7 +1498,7 @@ class Customer extends DB_Table {
 					$country=$this->get('Customer Main Country 2 Alpha Code');
 				}
 				$proto_number = $phoneUtil->parse($value, $country);
-				$formated_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+				$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
 
 
 
@@ -1458,11 +1509,11 @@ class Customer extends DB_Table {
 			}
 
 
-			$sql=sprintf('insert into `Customer Other Telephone Dimension` (`Customer Other Telephone Store Key`,`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`,`Customer Other Telephone Formated Number`) values (%d,%d,%s,%s)',
+			$sql=sprintf('insert into `Customer Other Telephone Dimension` (`Customer Other Telephone Store Key`,`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`,`Customer Other Telephone Formatted Number`) values (%d,%d,%s,%s)',
 				$this->data['Customer Store Key'],
 				$this->id,
 				prepare_mysql($value),
-				prepare_mysql($formated_value)
+				prepare_mysql($formatted_value)
 			);
 			$prep=$this->db->prepare($sql);
 
@@ -1483,7 +1534,7 @@ class Customer extends DB_Table {
 							'render'=>true,
 							'edit'=>'telephone',
 							'value'=>$this->get($field),
-							'formated_value'=>$this->get(preg_replace('/Customer /', '', $field)),
+							'formatted_value'=>$this->get(preg_replace('/Customer /', '', $field)),
 							'label'=>ucfirst($this->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
 
 
@@ -1509,6 +1560,7 @@ class Customer extends DB_Table {
 			}
 
 			break;
+
 		case 'Customer Preferred Contact Number':
 
 			if ($value=='') {
@@ -1545,6 +1597,9 @@ class Customer extends DB_Table {
 
 			break;
 		case 'Customer Company Name':
+
+			$old_value=$this->get('Company Name');
+
 			if ($value=='' and  $this->data['Customer Main Contact Name']=='') {
 				$this->msg=_("Company name can't be emply if the contact name is empty as well");
 				$this->error=true;
@@ -1559,12 +1614,23 @@ class Customer extends DB_Table {
 				$this->update_field('Customer Name', $value, 'no_history');
 			}
 
+			if ($old_value==$this->get('Contact Address Organization')) {
+				$this->update_field('Customer Contact Address Organization', $value, 'no_history');
+				$this->update_address_formatted_fields('Contact', 'no_history');
+
+			}
+			if ($old_value==$this->get('Invoice Address Organization')) {
+				$this->update_field('Customer Invoice Address Organization', $value, 'no_history');
+				$this->update_address_formatted_fields('Invoice', 'no_history');
+
+			}
+
 			$this->other_fields_updated=array(
 				'Custome_ Name'=>array(
 					'field'=>'Customer_Name',
 					'render'=>true,
 					'value'=>$this->get('Customer Name'),
-					'formated_value'=>$this->get('Name'),
+					'formatted_value'=>$this->get('Name'),
 
 
 				)
@@ -1573,6 +1639,9 @@ class Customer extends DB_Table {
 
 			break;
 		case 'Customer Main Contact Name':
+
+			$old_value=$this->get('Main Contact Name');
+
 			if ($value=='' and  $this->data['Customer Company Name']=='') {
 				$this->msg=_("Contact name can't be emply if the company name is empty as well");
 				$this->error=true;
@@ -1585,12 +1654,25 @@ class Customer extends DB_Table {
 
 			}
 
+
+			if ($old_value==$this->get('Contact Address Recipient')) {
+				$this->update_field('Customer Contact Address Recipient', $value, 'no_history');
+				$this->update_address_formatted_fields('Contact', 'no_history');
+
+			}
+			if ($old_value==$this->get('Invoice Address Recipient')) {
+				$this->update_field('Customer Invoice Address Recipient', $value, 'no_history');
+				$this->update_address_formatted_fields('Invoice', 'no_history');
+
+			}
+
+
 			$this->other_fields_updated=array(
 				'Customer_Name'=>array(
 					'field'=>'Customer_Name',
 					'render'=>true,
 					'value'=>$this->get('Customer Name'),
-					'formated_value'=>$this->get('Name'),
+					'formatted_value'=>$this->get('Name'),
 
 
 				)
@@ -1635,6 +1717,139 @@ class Customer extends DB_Table {
 
 
 		default:
+
+
+
+			if (preg_match('/^custom_field_/i', $field)) {
+				//$field=preg_replace('/^custom_field_/','',$field);
+				$this->update_field($field, $value, $options);
+
+
+				return;
+			}
+
+			if (preg_match('/^Customer Other Email (\d+)/i', $field, $matches)) {
+				$customer_email_key=$matches[1];
+				$old_value=$this->get($field);
+				if ($value=='') {
+					$old_value=$this->get(preg_replace('/^Customer /', '', $field));
+					$sql=sprintf('delete from `Customer Other Email Dimension`  where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
+						$this->id,
+						$customer_email_key
+					);
+					$prep=$this->db->prepare($sql);
+					$prep->execute();
+					if ($prep->rowCount()) {
+
+						$this->deleted=true;
+						$this->deleted_value=$old_value;
+						$this->add_changelog_record('Customer Other Email', $old_value, '', $options, $this->table_name, $this->id, 'removed');
+
+					}else {
+
+					}
+				}else {
+					$sql=sprintf('update `Customer Other Email Dimension` set `Customer Other Email Email`=%s where `Customer Other Email Customer Key`=%d and `Customer Other Email Key`=%d ',
+						prepare_mysql($value),
+						$this->id,
+						$customer_email_key
+					);
+					$tmp=$this->db->prepare($sql);
+					$tmp->execute();
+					if ($tmp->rowCount()) {
+						$this->add_changelog_record('Customer Other Email', $old_value, $value, $options, $this->table_name, $this->id);
+
+						$this->updated=true;
+					}else {
+
+					}
+
+				}
+
+				return;
+			}
+
+			if (preg_match('/^Customer Other Telephone (\d+)/i', $field, $matches)) {
+				$customer_telephone_key=$matches[1];
+				$old_value=$this->get($field);
+
+				$value=preg_replace('/\s/', '', $value);
+				if ($value=='+')$value='';
+
+				if ($value=='') {
+					$old_value=$this->get(preg_replace('/^Customer /', '', $field));
+					$sql=sprintf('delete from `Customer Other Telephone Dimension`  where `Customer Other Telephone Customer Key`=%d and `Customer Other Telephone Key`=%d ',
+						$this->id,
+						$customer_telephone_key
+					);
+					$prep=$this->db->prepare($sql);
+					$prep->execute();
+					if ($prep->rowCount()) {
+
+						$this->deleted=true;
+						$this->deleted_value=$old_value;
+						$this->add_changelog_record('Customer Other Telephone', $old_value, '', $options, $this->table_name, $this->id, 'removed');
+
+					}else {
+
+					}
+				}else {
+
+					include_once 'utils/get_phoneUtil.php';
+					$phoneUtil=get_phoneUtil();
+
+					try {
+						if ($this->get('Customer Main Country 2 Alpha Code')=='' or $this->get('Customer Main Country 2 Alpha Code')=='XX') {
+							$store=new Store($this->data['Customer Store Key']);
+							$country->get('Store Home Country Code 2 Alpha');
+						}else {
+							$country=$this->get('Customer Main Country 2 Alpha Code');
+						}
+						$proto_number = $phoneUtil->parse($value, $country);
+						$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+
+
+
+
+
+					} catch (\libphonenumber\NumberParseException $e) {
+
+					}
+
+					$sql=sprintf('update `Customer Other Telephone Dimension` set `Customer Other Telephone Number`=%s, `Customer Other Telephone Formatted Number`=%s where `Customer Other Telephone Customer Key`=%d and `Customer Other Telephone Key`=%d ',
+						prepare_mysql($value),
+						prepare_mysql($formatted_value),
+						$this->id,
+						$customer_telephone_key
+					);
+					$tmp=$this->db->prepare($sql);
+					$tmp->execute();
+					if ($tmp->rowCount()) {
+						$this->add_changelog_record('Customer Other Telephone', $old_value, $value, $options, $this->table_name, $this->id);
+
+						$this->updated=true;
+					}else {
+
+					}
+
+				}
+
+				return;
+			}
+
+
+			if (preg_match('/^Customer Other Delivery Address (\d+)/i', $field, $matches)) {
+
+				$customer_delivery_address_key=$matches[1];
+
+
+				$this->update_other_delivery_address($customer_delivery_address_key, $field, json_decode($value, true), $options);
+
+				return;
+			}
+
+
+
 			$base_data=$this->base_data();
 			//print_r($base_data);
 			if (array_key_exists($field, $base_data)) {
@@ -1645,6 +1860,424 @@ class Customer extends DB_Table {
 		}
 	}
 
+
+
+
+	function update_other_delivery_address($customer_delivery_address_key, $field, $fields, $options='') {
+
+
+
+		$sql=sprintf("select * from `Customer Other Delivery Address Dimension` where `Customer Other Delivery Address Key`=%d ",
+			$customer_delivery_address_key
+		);
+		if ($result=$this->db->query($sql)) {
+			if ($address_data = $result->fetch()) {
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+		//print_r($address_data);
+
+
+
+
+
+		$address_fields=array();
+		$updated_fields_number=0;
+		$updated_recipient_fields=false;
+		$updated_address_fields=false;
+		foreach ($fields as $field=>$value) {
+
+
+			$sql=sprintf('update `Customer Other Delivery Address Dimension` set `%s`=%s where `Customer Other Delivery Address Key`=%d ',
+				addslashes('Customer Other Delivery '.$field),
+				prepare_mysql($value, true),
+				$customer_delivery_address_key
+			);
+
+			$update_op=$this->db->prepare($sql);
+			$update_op->execute();
+			$affected=$update_op->rowCount();
+
+
+			// print "$sql\n";
+
+			if ($affected>0) {
+
+
+
+				$updated_fields_number++;
+				if ($field=='Address Recipient' or $field=='Address Organization') {
+					$updated_recipient_fields=true;
+				}else {
+					$updated_address_fields=true;
+				}
+			}
+		}
+
+
+		if ($updated_fields_number>0) {
+			$this->updated=true;
+		}
+
+
+		if ($this->updated or true) {
+
+			include_once 'utils/get_addressing.php';
+
+
+			$address_fields=$this->get_other_delivery_address_fields($customer_delivery_address_key);
+
+
+
+
+			$new_checksum= md5(json_encode($address_fields));
+
+			$sql=sprintf('update `Customer Other Delivery Address Dimension` set `Customer Other Delivery Address Checksum`=%s where `Customer Other Delivery Address Key`=%d ',
+				prepare_mysql($new_checksum, true),
+				$customer_delivery_address_key
+			);
+			$this->db->exec($sql);
+
+			$store=new Store($this->get('Store Key'));
+
+
+			list($address, $formatter, $postal_label_formatter)=get_address_formatter(
+				$store->get('Store Home Country Code 2 Alpha'),
+				$store->get('Store Locale')
+			);
+
+
+			$address = $address
+			->withRecipient($address_fields['Address Recipient'])
+			->withOrganization($address_fields['Address Organization'])
+			->withAddressLine1($address_fields['Address Line 1'])
+			->withAddressLine2($address_fields['Address Line 2'])
+			->withSortingCode($address_fields['Address Sorting Code'])
+			->withPostalCode($address_fields['Address Postal Code'])
+			->withDependentLocality($address_fields['Address Dependent Locality'])
+			->withLocality($address_fields['Address Locality'])
+			->withAdministrativeArea($address_fields['Address Administrative Area'])
+			->withCountryCode($address_fields['Address Country 2 Alpha Code']);
+
+			$xhtml_address=$formatter->format($address);
+			$xhtml_address=preg_replace('/<br>\s/', "\n", $xhtml_address);
+			$xhtml_address=preg_replace('/class="recipient"/', 'class="recipient fn"', $xhtml_address);
+			$xhtml_address=preg_replace('/class="organization"/', 'class="organization org"', $xhtml_address);
+			$xhtml_address=preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+			$xhtml_address=preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+			$xhtml_address=preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+			$xhtml_address=preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+
+			$sql=sprintf('update `Customer Other Delivery Address Dimension` set `Customer Other Delivery Address Formatted`=%s where `Customer Other Delivery Address Key`=%d ',
+				prepare_mysql($xhtml_address, true),
+				$customer_delivery_address_key
+			);
+			$this->db->exec($sql);
+
+			$sql=sprintf('update `Customer Other Delivery Address Dimension` set `Customer Other Delivery Address Postal Label`=%s where `Customer Other Delivery Address Key`=%d ',
+				prepare_mysql($postal_label_formatter->format($address), true),
+				$customer_delivery_address_key
+			);
+			$this->db->exec($sql);
+
+
+
+
+		}
+
+
+
+
+
+	}
+
+
+	function update_address_formatted_fields($type, $options) {
+
+		include_once 'utils/get_addressing.php';
+
+		$new_checksum= md5(json_encode(array(
+					'Address Recipient'=>$this->get($type.' Address Recipient'),
+					'Address Organization'=>$this->get($type.' Address Organization'),
+					'Address Line 1'=>$this->get($type.' Address Line 1'),
+					'Address Line 2'=>$this->get($type.' Address Line 2'),
+					'Address Sorting Code'=>$this->get($type.' Address Sorting Code'),
+					'Address Postal Code'=>$this->get($type.' Address Postal Code'),
+					'Address Dependent Locality'=>$this->get($type.' Address Dependent Locality'),
+					'Address Locality'=>$this->get($type.' Address Locality'),
+					'Address Administrative Area'=>$this->get($type.' Address Administrative Area'),
+					'Address Country 2 Alpha Code'=>$this->get($type.' Address Country 2 Alpha Code'),
+				)));
+
+
+
+		$this->update_field('Customer '.$type.' Address Checksum', $new_checksum, 'no_history');
+
+		$store=new Store($this->get('Store Key'));
+
+
+		list($address, $formatter, $postal_label_formatter)=get_address_formatter(
+			$store->get('Store Home Country Code 2 Alpha'),
+			$store->get('Store Locale')
+		);
+
+
+		$address = $address
+		->withRecipient($this->get($type.' Address Recipient'))
+		->withOrganization($this->get($type.' Address Organization'))
+		->withAddressLine1($this->get($type.' Address Line 1'))
+		->withAddressLine2($this->get($type.' Address Line 2'))
+		->withSortingCode($this->get($type.' Address Sorting Code'))
+		->withPostalCode($this->get($type.' Address Postal Code'))
+		->withDependentLocality($this->get($type.' Address Dependent Locality'))
+		->withLocality($this->get($type.' Address Locality'))
+		->withAdministrativeArea($this->get($type.' Address Administrative Area'))
+		->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
+
+		$xhtml_address=$formatter->format($address);
+		$xhtml_address=preg_replace('/<br>\s/', "\n", $xhtml_address);
+		$xhtml_address=preg_replace('/class="recipient"/', 'class="recipient fn '.($this->get($type.' Address Recipient')==$this->get('Main Contact Name')?'hide':'').'"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization')==$this->get('Company Name')?'hide':'').'"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+		$this->update_field('Customer '.$type.' Address Formatted', $xhtml_address, 'no_history');
+		$this->update_field('Customer '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history');
+
+	}
+
+
+
+	function add_other_delivery_address($fields, $options='') {
+
+
+		include_once 'utils/get_addressing.php';
+
+		$checksum= md5(json_encode($fields));
+		if ($checksum==$this->get('Customer Delivery Address Checksum')) {
+			$this->error=true;
+			$this->msg=_('Duplicated address');
+
+			return;
+		}
+
+		$sql=sprintf('select `Customer Other Delivery Address Checksum` from `Customer Other Delivery Address Dimension` where `Customer Other Delivery Address Customer Key`=%d',
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+
+
+
+			foreach ($result as $row) {
+				if ($checksum==$row['Customer Other Delivery Address Checksum']) {
+					$this->error=true;
+					$this->msg=_('Duplicated address');
+
+					return;
+				}
+
+
+			}
+
+
+		}
+
+		else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+
+		$store=new Store($this->get('Store Key'));
+
+
+		list($address, $formatter, $postal_label_formatter)=get_address_formatter(
+			$store->get('Store Home Country Code 2 Alpha'),
+			$store->get('Store Locale')
+		);
+
+
+		$address = $address
+		->withRecipient($fields['Address Recipient'])
+		->withOrganization($fields['Address Organization'])
+		->withAddressLine1($fields['Address Line 1'])
+		->withAddressLine2($fields['Address Line 2'])
+		->withSortingCode($fields['Address Sorting Code'])
+		->withPostalCode($fields['Address Postal Code'])
+		->withDependentLocality($fields['Address Dependent Locality'])
+		->withLocality($fields['Address Locality'])
+		->withAdministrativeArea($fields['Address Administrative Area'])
+		->withCountryCode($fields['Address Country 2 Alpha Code']);
+
+		$xhtml_address=$formatter->format($address);
+		$xhtml_address=preg_replace('/<br>\s/', "\n", $xhtml_address);
+		$xhtml_address=preg_replace('/class="recipient"/', 'class="recipient fn"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="organization"/', 'class="organization org"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+		$xhtml_address=preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+
+
+		$sql=sprintf('insert into `Customer Other Delivery Address Dimension` (
+        `Customer Other Delivery Address Store Key`,
+        `Customer Other Delivery Address Customer Key`,
+        `Customer Other Delivery Address Recipient`,
+        `Customer Other Delivery Address Organization`,
+        `Customer Other Delivery Address Line 1`,
+        `Customer Other Delivery Address Line 2`,
+        `Customer Other Delivery Address Sorting Code`,
+        `Customer Other Delivery Address Postal Code`,
+        `Customer Other Delivery Address Dependent Locality`,
+        `Customer Other Delivery Address Locality`,
+        `Customer Other Delivery Address Administrative Area`,
+        `Customer Other Delivery Address Country 2 Alpha Code`,
+         `Customer Other Delivery Address Checksum`,
+        `Customer Other Delivery Address Formatted`,
+        `Customer Other Delivery Address Postal Label`
+
+        ) values (%d,%d,
+        %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
+        ) ',
+			$this->get('Store Key'),
+			$this->id,
+			prepare_mysql($fields['Address Recipient'], false),
+			prepare_mysql($fields['Address Organization'], false),
+			prepare_mysql($fields['Address Line 1'], false),
+			prepare_mysql($fields['Address Line 2'], false),
+			prepare_mysql($fields['Address Sorting Code'], false),
+			prepare_mysql($fields['Address Postal Code'], false),
+			prepare_mysql($fields['Address Dependent Locality'], false),
+			prepare_mysql($fields['Address Locality'], false),
+			prepare_mysql($fields['Address Administrative Area'], false),
+			prepare_mysql($fields['Address Country 2 Alpha Code'], false),
+			prepare_mysql($checksum),
+			prepare_mysql($xhtml_address),
+			prepare_mysql($postal_label_formatter->format($address))
+		);
+
+		$prep=$this->db->prepare($sql);
+
+
+		try{
+			$prep->execute();
+
+			$inserted_key = $this->db->lastInsertId();
+
+			//print $sql;
+			if ($inserted_key) {
+
+				$this->field_created=true;
+
+
+
+				$this->add_changelog_record(_("delivery address"), '', $this->get("Other Delivery Address $inserted_key"), '', $this->table_name, $this->id , 'added');
+
+
+
+
+
+				$this->new_fields_info=array(
+					array(
+						'clone_from'=>'Customer_Other_Delivery_Address',
+						'field'=>'Customer_Other_Delivery_Address_'.$inserted_key,
+						'render'=>true,
+						'edit'=>'address',
+						'value'=>$this->get('Customer Other Delivery Address '.$inserted_key),
+						'formatted_value'=>$this->get('Other Delivery Address '.$inserted_key),
+						'label'=>'',
+
+
+
+					));
+
+			}else {
+				$this->error=true;
+
+				$this->msg=_('Duplicated address').' (1)';
+			}
+
+		} catch(PDOException $e) {
+			$this->error=true;
+
+			if ($e->errorInfo[0] == '23000' && $e->errorInfo[1] == '1062') {
+				$this->msg=_('Duplicated address').' (2)';
+			}else {
+
+				$this->msg=$e->getMessage();
+			}
+
+		}
+
+
+
+	}
+
+
+	function update_address($type, $fields, $options='') {
+
+
+		$old_value=$this->get("$type Address");
+		$old_checksum=$this->get("$type Address Checksum");
+
+
+
+		$address_fields=array();
+		$updated_fields_number=0;
+		$updated_recipient_fields=false;
+		$updated_address_fields=false;
+
+		foreach ($fields as $field=>$value) {
+			$this->update_field('Customer '.$type.' '.$field, $value, 'no_history');
+			if ($this->updated) {
+				$updated_fields_number++;
+				if ($field=='Address Recipient' or $field=='Address Organization') {
+					$updated_recipient_fields=true;
+				}else {
+					$updated_address_fields=true;
+				}
+			}
+		}
+
+
+		if ($updated_fields_number>0) {
+			$this->updated=true;
+		}
+
+
+		if ($this->updated ) {
+
+			$this->update_address_formatted_fields($type, $options);
+
+
+			$this->add_changelog_record("Customer $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id );
+
+
+			if ($type=='Contact' and $old_checksum==$this->get('Customer Invoice Address Checksum')) {
+				$this->update_address('Invoice', $fields, $options);
+			}
+
+
+
+
+		}
+
+	}
 
 
 	public function update_no_normal_data() {
@@ -1974,6 +2607,44 @@ class Customer extends DB_Table {
 
 
 		switch ($key) {
+
+		case 'Customer Contact Address':
+		case 'Customer Invoice Address':
+		case 'Customer Delivery Address':
+
+			if ($key=='Customer Contact Address') {
+				$type='Contact';
+			}elseif ($key=='Customer Delivery Address') {
+				$type='Delivery';
+			}else {
+				$type='Invoice';
+			}
+
+			$address_fields=array(
+
+				'Address Recipient'=>$this->get($type.' Address Recipient'),
+				'Address Organization'=>$this->get($type.' Address Organization'),
+				'Address Line 1'=>$this->get($type.' Address Line 1'),
+				'Address Line 2'=>$this->get($type.' Address Line 2'),
+				'Address Sorting Code'=>$this->get($type.' Address Sorting Code'),
+				'Address Postal Code'=>$this->get($type.' Address Postal Code'),
+				'Address Dependent Locality'=>$this->get($type.' Address Dependent Locality'),
+				'Address Locality'=>$this->get($type.' Address Locality'),
+				'Address Administrative Area'=>$this->get($type.' Address Administrative Area'),
+				'Address Country 2 Alpha Code'=>$this->get($type.' Address Country 2 Alpha Code'),
+
+
+			);
+			return json_encode($address_fields);
+			break;
+		case 'Contact Address':
+		case 'Invoice Address':
+		case 'Delivery Address':
+
+			return $this->data['Customer '.$key.' Formatted'];
+			break;
+
+
 		case 'Main Plain Telephone':
 		case 'Main Plain Mobile':
 		case 'Main Plain FAX':
@@ -2111,8 +2782,8 @@ class Customer extends DB_Table {
 
 			break;
 		case("ID"):
-		case("Formated ID"):
-			return $this->get_formated_id();
+		case("Formatted ID"):
+			return $this->get_formatted_id();
 		case("Sticky Note"):
 			return nl2br($this->data['Customer Sticky Note']);
 			break;
@@ -2179,7 +2850,7 @@ class Customer extends DB_Table {
 
 
 				$customer_telephone_key=$matches[1];
-				$sql=sprintf("select `Customer Other Telephone Number`,`Customer Other Telephone Formated Number` from `Customer Other Telephone Dimension` where `Customer Other Telephone Key`=%d ",
+				$sql=sprintf("select `Customer Other Telephone Number`,`Customer Other Telephone Formatted Number` from `Customer Other Telephone Dimension` where `Customer Other Telephone Key`=%d ",
 					$customer_telephone_key
 				);
 				if ($result=$this->db->query($sql)) {
@@ -2197,12 +2868,40 @@ class Customer extends DB_Table {
 
 
 				$customer_telephone_key=$matches[1];
-				$sql=sprintf("select `Customer Other Telephone Number`,`Customer Other Telephone Formated Number` from `Customer Other Telephone Dimension` where `Customer Other Telephone Key`=%d ",
+				$sql=sprintf("select `Customer Other Telephone Number`,`Customer Other Telephone Formatted Number` from `Customer Other Telephone Dimension` where `Customer Other Telephone Key`=%d ",
 					$customer_telephone_key
 				);
 				if ($result=$this->db->query($sql)) {
 					if ($row = $result->fetch()) {
-						return $row['Customer Other Telephone Formated Number'];
+						return $row['Customer Other Telephone Formatted Number'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+			}
+
+
+			if (preg_match('/^Customer Other Delivery Address (\d+)/i', $key, $matches)) {
+
+				$address_fields=$this->get_other_delivery_address_fields($matches[1]);
+
+
+				return json_encode($address_fields);
+
+			}
+
+			if (preg_match('/^Other Delivery Address (\d+)/i', $key, $matches)) {
+
+
+				$customer_delivery_key=$matches[1];
+				$sql=sprintf("select `Customer Other Delivery Address Formatted` from `Customer Other Delivery Address Dimension` where `Customer Other Delivery Address Key`=%d ",
+					$customer_delivery_key
+				);
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						return $row['Customer Other Delivery Address Formatted'];
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());
@@ -2220,6 +2919,44 @@ class Customer extends DB_Table {
 
 	}
 
+
+	function get_other_delivery_address_fields($other_delivery_address_key) {
+
+		$sql=sprintf("select * from `Customer Other Delivery Address Dimension` where `Customer Other Delivery Address Key`=%d ",
+			$other_delivery_address_key
+		);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$address_fields=array(
+
+					'Address Recipient'=>$row['Customer Other Delivery Address Recipient'],
+					'Address Organization'=>$row['Customer Other Delivery Address Organization'],
+					'Address Line 1'=>$row['Customer Other Delivery Address Line 1'],
+					'Address Line 2'=>$row['Customer Other Delivery Address Line 2'],
+					'Address Sorting Code'=>$row['Customer Other Delivery Address Sorting Code'],
+					'Address Postal Code'=>$row['Customer Other Delivery Address Postal Code'],
+					'Address Dependent Locality'=>$row['Customer Other Delivery Address Dependent Locality'],
+					'Address Locality'=>$row['Customer Other Delivery Address Locality'],
+					'Address Administrative Area'=>$row['Customer Other Delivery Address Administrative Area'],
+					'Address Country 2 Alpha Code'=>$row['Customer Other Delivery Address Country 2 Alpha Code'],
+
+
+				);
+				return $address_fields;
+
+
+			}else {
+
+				return false;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
 
 
 	function get_hello() {
@@ -2242,14 +2979,14 @@ class Customer extends DB_Table {
 
 
 
-	function get_formated_id_link($customer_id_prefix='') {
-		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>', $this->id, $this->get_formated_id($customer_id_prefix));
+	function get_formatted_id_link($customer_id_prefix='') {
+		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>', $this->id, $this->get_formatted_id($customer_id_prefix));
 
 	}
 
 
 
-	function get_formated_id($customer_id_prefix='') {
+	function get_formatted_id($customer_id_prefix='') {
 		return sprintf("%s%04d", $customer_id_prefix, $this->id);
 	}
 
@@ -2294,7 +3031,7 @@ class Customer extends DB_Table {
 				'field'=>'Customer_Tax_Number_Valid',
 				'render'=>($this->get('Customer Tax Number')==''?false:true),
 				'value'=>$this->get('Customer Tax Number Valid'),
-				'formated_value'=>$this->get('Tax Number Valid'),
+				'formatted_value'=>$this->get('Tax Number Valid'),
 
 
 			)
@@ -2340,7 +3077,7 @@ class Customer extends DB_Table {
 				'field'=>'Customer_Tax_Number',
 				'render'=>true,
 				'value'=>$this->get('Customer Tax Number'),
-				'formated_value'=>$this->get('Tax Number'),
+				'formatted_value'=>$this->get('Tax Number'),
 
 
 			)
@@ -2400,7 +3137,7 @@ class Customer extends DB_Table {
 		else
 			$address=new Address($this->data['Customer Main Address Key']);
 
-		$tel=$address->get_formated_principal_telephone();
+		$tel=$address->get_formatted_principal_telephone();
 		if ($tel!='') {
 			$tel=_('Tel').': '.$tel.'</br>';
 		}
@@ -2803,7 +3540,7 @@ class Customer extends DB_Table {
 
 	function get_other_telephones_data() {
 
-		$sql=sprintf("select `Customer Other Telephone Key`,`Customer Other Telephone Number`,`Customer Other Telephone Formated Number`,`Customer Other Telephone Label` from `Customer Other Telephone Dimension` where `Customer Other Telephone Customer Key`=%d order by `Customer Other Telephone Key`",
+		$sql=sprintf("select `Customer Other Telephone Key`,`Customer Other Telephone Number`,`Customer Other Telephone Formatted Number`,`Customer Other Telephone Label` from `Customer Other Telephone Dimension` where `Customer Other Telephone Customer Key`=%d order by `Customer Other Telephone Key`",
 			$this->id
 		);
 
@@ -2814,7 +3551,7 @@ class Customer extends DB_Table {
 			foreach ($result as $row) {
 				$telephone_keys[$row['Customer Other Telephone Key']]= array(
 					'telephone'=>$row['Customer Other Telephone Number'],
-					'formated_telephone'=>$row['Customer Other Telephone Formated Number'],
+					'formatted_telephone'=>$row['Customer Other Telephone Formatted Number'],
 					'label'=>$row['Customer Other Telephone Label'],
 				);
 			}
@@ -2826,6 +3563,35 @@ class Customer extends DB_Table {
 
 
 		return $telephone_keys;
+
+	}
+
+
+	function get_other_delivery_addresses_data() {
+		$sql=sprintf("select `Customer Other Delivery Address Key`,`Customer Other Delivery Address Formatted`,`Customer Other Delivery Address Label` from `Customer Other Delivery Address Dimension` where `Customer Other Delivery Address Customer Key`=%d order by `Customer Other Delivery Address Key`",
+			$this->id
+		);
+
+		$delivery_address_keys=array();
+
+		if ($result=$this->db->query($sql)) {
+
+			foreach ($result as $row) {
+				$delivery_address_keys[$row['Customer Other Delivery Address Key']]= array(
+					'value'=>$this->get('Customer Other Delivery Address '.$row['Customer Other Delivery Address Key']),
+					'formatted_value'=>$row['Customer Other Delivery Address Formatted'],
+					'label'=>$row['Customer Other Delivery Address Label'],
+				);
+			}
+
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		return $delivery_address_keys;
+
 
 	}
 
@@ -3449,7 +4215,7 @@ class Customer extends DB_Table {
 	}
 
 
-	function get_credits_formated() {
+	function get_credits_formatted() {
 
 		$credits=$this->get_credits();
 
@@ -3526,7 +4292,7 @@ class Customer extends DB_Table {
 
 
 
-			$card=preg_replace('/\<div class=\"contact_card\"\>/', '<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$this->get_formated_id($option).'</a>', $card);
+			$card=preg_replace('/\<div class=\"contact_card\"\>/', '<div class="contact_card"><a href="customer.php?id='.$this->id.'" style="float:left;color:SteelBlue">'.$this->get_formatted_id($option).'</a>', $card);
 			return $card;
 
 			break;
@@ -3631,9 +4397,9 @@ class Customer extends DB_Table {
 		$description='';
 
 		if ($this->data['Customer Type']=='Company') {
-			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formated_id_link().')<br/>'.$this->data['Customer Main Contact Name'];
+			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id_link().')<br/>'.$this->data['Customer Main Contact Name'];
 		} else {
-			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formated_id_link().')';
+			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id_link().')';
 
 		}
 		$name.='<br/>'._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>';
@@ -3716,18 +4482,18 @@ class Customer extends DB_Table {
 			if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
 				if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'] , $this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
+					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'] , $this->get ( 'Customer Name' ), $this->id, $this->get('Formatted ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
 				} else {
 					$details = sprintf( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
 						$this->get ( 'Customer Name' ),
-						$this->id, $this->get('Formated ID'),
+						$this->id, $this->get('Formatted ID'),
 						$tz_date
 					);
 
 				}
 			} else {
 				$details = sprintf( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s',
-					$this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'),
+					$this->get ( 'Customer Name' ), $this->id, $this->get('Formatted ID'),
 					$tz_date
 				);
 			}
@@ -3800,7 +4566,7 @@ class Customer extends DB_Table {
 					$this->editor['Author Alias'] ,
 					$this->get ( 'Customer Name' ),
 					$this->id,
-					$this->get('Formated ID'),
+					$this->get('Formatted ID'),
 					$order->data ['Order Key'],
 					$order->data ['Order Public ID'],
 					$tz_date
@@ -3809,7 +4575,7 @@ class Customer extends DB_Table {
 				$details = sprintf( '%s (<a href="customer.php?id=%d">%s</a>)  order <a href="order.php?id=%d">%s</a>  has been suspended on %s',
 
 					$this->get ( 'Customer Name' ),
-					$this->id, $this->get('Formated ID'),
+					$this->id, $this->get('Formatted ID'),
 					$order->data ['Order Key'],
 					$order->data ['Order Public ID'],
 					$tz_date
@@ -4031,18 +4797,18 @@ class Customer extends DB_Table {
 			if ($order->data['Order Original Data MIME Type']='application/inikoo') {
 
 				if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'] , $this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
+					$details = sprintf( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'] , $this->get ( 'Customer Name' ), $this->id, $this->get('Formatted ID'), strftime( "%e %b %Y %H:%M", strtotime( $order->data ['Order Date'] ) ) );
 				} else {
 					$details = sprintf( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
 						$this->get ( 'Customer Name' ),
-						$this->id, $this->get('Formated ID'),
+						$this->id, $this->get('Formatted ID'),
 						$tz_date
 					);
 
 				}
 			} else {
 				$details = sprintf( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s',
-					$this->get ( 'Customer Name' ), $this->id, $this->get('Formated ID'),
+					$this->get ( 'Customer Name' ), $this->id, $this->get('Formatted ID'),
 					$tz_date
 				);
 			}
@@ -4485,7 +5251,7 @@ class Customer extends DB_Table {
 
 
 		$history_data=array(
-			'History Abstract'=>_('Customer').' '.$customer_to_merge->get_formated_id_link($customer_id_prefix).' '._('merged'),
+			'History Abstract'=>_('Customer').' '.$customer_to_merge->get_formatted_id_link($customer_id_prefix).' '._('merged'),
 			'History Details'=>_('Orders Transfered').':'.$customer_to_merge->get('Orders').'<br/>'._('Notes Transfered').':'.$customer_to_merge->get('Notes').'<br/>',
 			'Direct Object'=>'Customer',
 			'Direct Object Key'=>$customer_to_merge->id,
@@ -4821,7 +5587,7 @@ class Customer extends DB_Table {
 	}
 
 
-	function get_formated_pending_payment_amount_from_account_balance() {
+	function get_formatted_pending_payment_amount_from_account_balance() {
 		return money($this->get_pending_payment_amount_from_account_balance(), $this->data['Customer Currency Code']);
 	}
 
@@ -5075,7 +5841,21 @@ class Customer extends DB_Table {
 			break;
 		case 'Customer Fiscal Name':
 			$label=_('fiscal name');
-			break;	
+			break;
+
+		case 'Customer Contact Address':
+			$label=_('contact address');
+			break;
+
+		case 'Customer Invoice Address':
+			$label=_('invoice address');
+			break;
+		case 'Customer Delivery Address':
+			$label=_('delivery address');
+			break;
+		case 'Customer Other Delivery Address':
+			$label=_('other delivery address');
+			break;
 		default:
 			$label=$field;
 

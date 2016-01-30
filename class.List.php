@@ -151,7 +151,7 @@ class SubjectList extends DB_Table{
 	function get($key,$data=false) {
 		switch ($key) {
 		
-		case 'Formated Type':
+		case 'Formatted Type':
 		
 		if($this->data['List Type']=='Static'){
 			return _('Static');

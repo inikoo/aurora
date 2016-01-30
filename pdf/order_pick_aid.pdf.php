@@ -84,11 +84,11 @@ $number_of_picks=$row['picks'];
 
 //print $sql;
 
-$formated_number_of_items='<b>'.number($number_of_items).'</b> '.ngettext('item', 'items', $number_of_items);
-$formated_number_of_picks='<b>'.number($number_of_picks).'</b> '.ngettext('pick', 'picks', $number_of_picks);
+$formatted_number_of_items='<b>'.number($number_of_items).'</b> '.ngettext('item', 'items', $number_of_items);
+$formatted_number_of_picks='<b>'.number($number_of_picks).'</b> '.ngettext('pick', 'picks', $number_of_picks);
 
-$smarty->assign('formated_number_of_items',$formated_number_of_items);
-$smarty->assign('formated_number_of_picks',$formated_number_of_picks);
+$smarty->assign('formatted_number_of_items',$formatted_number_of_items);
+$smarty->assign('formatted_number_of_picks',$formatted_number_of_picks);
 
 
 $html=$smarty->fetch('order_pick_aid.pdf.tpl');

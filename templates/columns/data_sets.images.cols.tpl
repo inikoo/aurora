@@ -8,7 +8,7 @@ var columns = [{
 
 }
 ,{
-    name: "formated_id",
+    name: "formatted_id",
     label: "{t}Id{/t}",
     editable: false,
      cell: Backgrid.StringCell.extend({
