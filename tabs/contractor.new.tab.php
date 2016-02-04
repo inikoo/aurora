@@ -297,12 +297,12 @@ $smarty->assign('state', $state);
 $smarty->assign('object', $employee);
 
 
-$smarty->assign('object_name', $employee->get_object_name());
+$smarty->assign('object_name','Contractor');
 
 
 $smarty->assign('object_fields', $object_fields);
-$smarty->assign('new_object_label', _('View new employee'));
-$smarty->assign('new_object_request','employee/__key__');
+$smarty->assign('new_object_label', _('View new contractor'));
+$smarty->assign('new_object_request','contractor/__key__');
 
 
 
