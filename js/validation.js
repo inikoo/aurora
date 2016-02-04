@@ -7,8 +7,14 @@ function validate_field(field, new_value, field_type, required, server_validatio
 
     var validation = client_validation(field_type, required, new_value, field)
 
+    
+    
     if (validation.class == 'valid' && server_validation_type) {
 
+
+        if (server_validation_type == 'check_for_duplicates' && new_value == '') {
+            return validation;
+        }
 
         var validation = {
             class: 'waiting',
@@ -40,7 +46,7 @@ function validate_address(field) {
         var asterisk = tr.find('.fa-asterisk')
 
         if (!asterisk.hasClass('hide')) {
-            console.log($(obj).attr('field_name'))
+            // console.log($(obj).attr('field_name'))
             if ($(obj).val() == '') {
                 invalid_fields++;
                 tr.find('.show_buttons').removeClass('super_discret success').addClass('error')
@@ -84,7 +90,7 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
-    //console.log(type+' '+required+' '+value+' '+field)
+   // console.log(required)
     var valid_state = {
         class: 'valid',
         type: ''
@@ -209,14 +215,75 @@ function client_validation(type, required, value, field) {
     case 'email':
     case 'new_email':
 
+
+
+        var tmp = value.replace(/"[^"]*"/g, '')
+        if (tmp.match(/"/g)) {
+           // console.log('has quote')
+        } else {
+          //  console.log('dont has quote')
+
+            if (tmp.match(/\s/g)) {
+
+
+                return {
+                    class: 'invalid',
+                    type: 'spaces'
+                }
+            }
+
+
+
+
+
+            if (tmp.match(/\(|\)|\,|:|;|<|>|\[|\]/g)) {
+
+
+
+
+                if (tmp.match(/,/g)) {
+
+
+                    return {
+                        class: 'invalid',
+                        type: 'comma'
+                    }
+                } else {
+
+
+                    return {
+                        class: 'invalid',
+                        type: 'invalid_character'
+                    }
+                }
+
+            }
+            if (tmp.match(/^([^@]*@){2,}[^@]*$/g)) {
+                console.log('error')
+
+                return {
+                    class: 'invalid',
+                    type: 'double_at'
+                }
+
+            }
+
+
+
+
+
+        }
+
+
+
         var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,63})?$/
+
 
 
         if (!emailReg.test(value)) {
 
             return {
                 class: 'potentially_valid',
-
                 type: 'invalid'
             }
         }
@@ -224,6 +291,17 @@ function client_validation(type, required, value, field) {
         break;
 
     case 'time':
+    
+    
+      var timelReg = /^[0-9\:]+$/
+            if (!timelReg.test(value)) {
+
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            }
+    
         if (value.length > 5) {
 
             return {
@@ -264,6 +342,16 @@ function client_validation(type, required, value, field) {
                     type: 'valid'
                 }
             }
+
+        var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5]$/
+            if (timelReg.test(value)) {
+
+                return {
+                    class: 'potentially_valid',
+                    type: 'invalid'
+                }
+            }
+
 
         }
 
@@ -346,8 +434,7 @@ function client_validation(type, required, value, field) {
 
         var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
         if (!regex.test(value)) {
-            console.log('ccc')
-
+            /// console.log('ccc')
             return {
                 class: 'invalid',
                 type: 'invalid_amount'
@@ -405,18 +492,18 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
     $("#" + field + '_editor').addClass('waiting')
     var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
 
+
     $.getJSON(request, function(data) {
 
 
 
-        $("#" + field + '_editor').removeClass('waiting invalid valid')
-        $("#" + field + '_validation').removeClass('waiting invalid valid')
+        $("#" + field + '_field').removeClass('waiting invalid valid')
 
 
         $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
 
         if (!$('#' + field + '_formatted_value').hasClass('hide')) {
-            console.log('#' + field + '_value')
+
             return;
         }
 
@@ -432,30 +519,21 @@ function server_validation(tipo, parent, parent_key, object, key, field, value) 
         }
 
 
-
-
-
-        if (validation == 'valid') {
-            var msg = '';
-        } else {
-            $('#' + object + '_save').removeClass('valid').addClass('invalid')
-
-        }
-
-
-
-        $('#' + field + '_validation').addClass(validation)
-
         $('#' + field + '_msg').html(msg)
-        $('#' + field + '_editor').addClass(validation)
+
+        $('#' + field + '_field').addClass(validation)
+
 
 
         if ($('#fields').hasClass('new_object')) {
-            check_if_form_is_valid()
+            var form_validation = get_form_validation_state()
+            process_form_validation(form_validation)
+
         }
 
 
     })
+
 
 
 }

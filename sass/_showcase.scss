@@ -1,3 +1,47 @@
+
+.sticky_note {
+    border: 1px solid #BAB84E;
+    background: #EDEB82;
+    float: left;
+    width: 300px;
+    padding: 0;
+    margin-left: 20px;
+}
+.sticky_note.pink {
+    background: #ff7dbd;
+    border: 1px solid #e52789;
+}
+.sticky_note.green {
+    background: #94db84;
+    border: 1px solid #78bf41;
+}
+
+
+ 
+
+    
+
+.full_date {
+    width: 250px;
+    text-align: right;
+}
+.contact_name {
+    width: 150px;
+    white-space: normal;
+    white-space: nowrap;
+}
+
+
+
+ .presention_card{
+    padding: 10px 20px;
+   
+}
+
+
+
+
+
 #object_showcase {
 
 .showcase{padding-top:0px;}

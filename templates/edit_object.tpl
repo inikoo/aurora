@@ -37,7 +37,7 @@
 	     <td colspan="3" id="{$field.id}_directory" class="with_vertical_padding">{$field.formatted_value}</td>
 	     </tr>
         {else}
-        <tr id="{$field.id}_field" field="{$field.id}" class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class}"  {if $class=='new' and $field.reference!=''}onClick="change_view('{$field.reference}')"{/if} >
+        <tr id="{$field.id}_field" field="{$field.id}" class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "  {if $class=='new' and $field.reference!=''}onClick="change_view('{$field.reference}')"{/if} >
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 
 		
@@ -46,15 +46,10 @@
 		<i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit==''}hide{/if} edit_button" onclick="open_edit_this_field(this)"></i> 
 		
 		</td>
-		    <td  id="{$field.id}_container" class="container value  " _required="{$required}" field_type='{$field_type}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
-			    {if isset($field.invalid_msg)} 
-	        {foreach from=$field.invalid_msg item=msg key=msg_key } 
-	            <span id="{$field.id}_{$msg_key}_invalid_msg" class="hide">{$msg}</span> 
-	        {/foreach} 
-	    {/if} 
-		<span id="{$field.id}_editor" class="editor" > 
+		<td  id="{$field.id}_container" class="container value  " _required="{$required}" field_type='{$field_type}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
 		
-		<span id="{$field.id}_formatted_value"  class="{$field.id} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
+		
+		<span id="{$field.id}_formatted_value"   class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
@@ -212,7 +207,7 @@
 
 
 	     
-	    update_address_fields('{$field.id}',country_code)
+	    update_address_fields('{$field.id}',country_code, hide_recipient_fields=false)
 	    $("#{$field.id}_country_select").val(country_name)
 	    if(arg!='init'){
 	   
@@ -357,7 +352,13 @@
         {/if} 
   	    
   
-	</span>	
+	
+	
+	{if isset($field.invalid_msg)} 
+	        {foreach from=$field.invalid_msg item=msg key=msg_key } 
+	            <span id="{$field.id}_{$msg_key}_invalid_msg" class="hide">{$msg}</span> 
+	        {/foreach} 
+	    {/if} 
 	</td>
 	    </tr>
 	    {/if}
@@ -371,7 +372,6 @@
  <script>
  $(document).on('input propertychange', '.input_field', function(evt) {
  
- console.log('caca')
  
      if ($('#' + $(this).attr('id') + '_container').attr('server_validation')) {
          var delay = 200;

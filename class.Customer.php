@@ -17,7 +17,7 @@
 */
 include_once 'class.DB_Table.php';
 include_once 'class.Order.php';
-include_once 'class.Address.php';
+//include_once 'class.Address.php';
 include_once 'class.Attachment.php';
 
 class Customer extends DB_Table {
@@ -69,12 +69,7 @@ class Customer extends DB_Table {
 
 
 		if ($arg1=='new') {
-			$this->find($arg2, 'create');
-			return;
-		}
-
-		elseif (preg_match('/^find/', $arg1)) {
-			$this->find($arg2, $arg1);
+			$this->find($arg2, $arg3 , 'create');
 			return;
 		}
 
@@ -111,12 +106,12 @@ class Customer extends DB_Table {
 
 
 
-	function find($raw_data, $options='') {
+	function find($raw_data, $address_raw_data, $options='') {
 
-		$this->found_child=false;
-		$this->found_child_key=0;
-		$this->found=false;
-		$this->found_key=0;
+
+
+
+
 
 
 		if (isset($raw_data['editor'])) {
@@ -145,210 +140,47 @@ class Customer extends DB_Table {
 			$update='update';
 		}
 
+
 		if (
 			!isset($raw_data['Customer Store Key']) or
 			!preg_match('/^\d+$/i', $raw_data['Customer Store Key']) ) {
-			$raw_data['Customer Store Key']=1;
-
-		}
-
-		if (!isset($raw_data['Customer Type']) or !preg_match('/^(Company|Person)$/i', $raw_data['Customer Type']) ) {
-
-
-			// Try to detect if is a company or a person
-			if (
-				(isset($raw_data['Customer Company Name']) and  $raw_data['Customer Company Name']!='' )
-				or (isset($raw_data['Customer Company Key']) and  $raw_data['Customer Company Key'] )
-			)$raw_data['Customer Type']='Company';
-			else
-				$raw_data['Customer Type']='Person';
-
+			$this->error=true;
+			$this->msg='missing store key';
 
 		}
 
 
 
-		$raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
-		if ($raw_data['Customer Type']=='Person') {
-			$child=new Contact ("find in customer $type_of_search", $raw_data);
-		} else {
-			$child=new Company ("find in customer $type_of_search", $raw_data);
-		}
-
-		$this->found_in_another_store=false;
-		$this->found_key_in_another_store=0;
+		if ( $raw_data['Customer Company Name']!='' )
+			$raw_data['Customer Type']='Company';
+		else
+			$raw_data['Customer Type']='Person';
 
 
-		if ($child->found) {
-			//print "Customer child found\n";
-			$this->found_child=true;
-			$this->found_child_key=$child->found_key;
-			$customer_found_keys=$child->get_customer_keys();
+		$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`=%s ',
+			$raw_data['Customer Store Key'],
+			prepare_mysql($raw_data['Customer Main Plain Email'])
+		);
 
-			if (count($customer_found_keys)>0) {
-				foreach ($customer_found_keys as $customer_found_key) {
-					$tmp_customer=new Customer($customer_found_key);
-					if ($tmp_customer->id) {
-						if ($tmp_customer->data['Customer Store Key']==$raw_data['Customer Store Key']) {
-							$this->found=true;
-							$this->found_key=$customer_found_key;
-						} else {
-							$this->found_in_another_store=true;
-							$this->found_key_in_another_store=$tmp_customer->id;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->error=true;
+				$this->found=true;
+				$this->msg=_('Another customer with same email has been found');
 
-
-						}
-					}
-				}
+				return;
 			}
-
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
-
-		$this->candidate=$child->candidate;
-
-
-
-		if ($this->found) {
-			$this->get_data('id', $this->found_key);
-		}
-
-
-
-		// $this->child=$child;
-
-		if ($create and (
-				($raw_data['Customer Main Contact Name']=='' and  $raw_data['Customer Type']=='Person')
-				or ($raw_data['Customer Company Name']=='' and  $raw_data['Customer Type']=='Company')
-			)
-		) {
-
-			global $myconf;
-			$raw_data['Customer Company Name']=$myconf['unknown_contact'];
-			$raw_data['Customer Main Contact Name']=$myconf['unknown_contact'];
-			$raw_data['Customer Name']=$myconf['unknown_contact'];
-
-		}
-
-		//print_r($raw_data);
-		//print "A".$this->found."  B".$this->found_child."\n";
-		//exit("in cust class\n");
 		if ($create) {
 
-			if ($this->found) {
-
-				if ($raw_data['Customer Type']=='Person') {
-
-
-
-					if (
-						isset($child->data['Contact Key']) and
-						$raw_data['Customer Main Plain Email']!='' and
-						$raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
-						and (levenshtein($child->data['Contact Name'], $raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
-						and !preg_match("/".str_replace( '/', '\/', $child->data['Contact Name'] )."/", $raw_data['Customer Main Contact Name'] )
-						and !preg_match("/".str_replace( '/', '\/', $raw_data['Customer Main Contact Name'] )."/", $child->data['Contact Name'] )
-					) {
-						//print "super change!!\n";
-						// exit;
-						$email=new Email($child->data['Contact Main Email Key']);
-						$email->editor=$this->editor;
-						$email->delete();
-
-						$_customer = new Customer ( 'find create  $type_of_search', $raw_data );
-
-						$this->get_data('id', $_customer->id);
-
-
-						return;
-					}
-
-
-					$child=new Contact ("find in customer $type_of_search create update", $raw_data);
-
-
-
-
-				} else {// Bussiness
-
-
-
-					$child=new Company ("find in customer $type_of_search create update", $raw_data);
-
-
-
-					//print "ssssssss";
-				}
-
-
-				$raw_data_to_update=array();
-				if (isset($raw_data['Customer Old ID']))
-					$raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
-				if (isset($raw_data['Customer Send Newsletter']))
-					$raw_data_to_update['Customer Send Newsletter']=$raw_data['Customer Send Newsletter'];
-				if (isset($raw_data['Customer Send Email Marketing']))
-					$raw_data_to_update['Customer Send Email Marketing']=$raw_data['Customer Send Email Marketing'];
-				if (isset($raw_data['Customer Send Postal Marketing']))
-					$raw_data_to_update['Customer Send Postal Marketing']=$raw_data['Customer Send Postal Marketing'];
-				if (isset($raw_data['Customer Sticky Note']))
-					$raw_data_to_update['Customer Sticky Note']=$raw_data['Customer Sticky Note'];
-				$this->update($raw_data_to_update);
-
-				$this->get_data('id', $this->id);
-
-			} else {// customer not found
-				if ($this->found_child) {
-
-					if ($raw_data['Customer Type']=='Person') {
-
-						//print_r($raw_data);
-						//print_r($child->data);
-
-						if (
-							isset($child->data['Contact Key']) and
-							$raw_data['Customer Main Plain Email']!='' and
-							$raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email'] and
-							(levenshtein($child->data['Contact Name'], $raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
-
-						) {
-							//print "super change2!\n";
-							// $child->remove_email($child->data['Contact Main Email Key']);
-							$email=new Email($child->data['Contact Main Email Key']);
-							$email->editor=$this->editor;
-							$email->delete();
-							//  print_r($child);
-							//exit;
-							$_customer = new Customer ( 'find create $type_of_search', $raw_data );
-
-							$this->get_data('id', $_customer->id);
-							return;
-
-
-						}
-
-						//$contact=new contact('id',$this->found_child_key);
-						// print_r($contact->data);
-						// print_r($raw_data);
-						// print "lets update the contact\n";
-						$contact=new contact("find in customer $type_of_search create update", $raw_data);
-						//print "updated contact\n";
-						//print_r($contact);
-						$raw_data['Customer Main Contact Key']=$contact->id;
-
-					} else {
-						$company=new company("find in customer $type_of_search create update", $raw_data);
-						$raw_data['Customer Company Key']=$company->id;
-					}
-
-
-				}
-				$this->create($raw_data);
-
-			}
-
+			$this->create($raw_data, $address_raw_data);
 		}
+
 
 
 
@@ -483,6 +315,9 @@ class Customer extends DB_Table {
 			return false;
 
 
+
+
+
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Customer Key'];
 		}
@@ -493,14 +328,8 @@ class Customer extends DB_Table {
 
 
 
-	function create($raw_data, $args='') {
+	function create($raw_data, $address_raw_data, $args='') {
 
-
-		$main_telephone_key=false;
-		$main_fax_key=false;
-		$main_email_key=false;
-
-		//print_r ($raw_data);
 
 		$this->data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
@@ -508,264 +337,72 @@ class Customer extends DB_Table {
 				$this->data[$key]=_trim($value);
 			}
 		}
+		$this->editor=$raw_data['editor'];
 
 		if ($this->data['Customer First Contacted Date']=='') {
 			$this->data['Customer First Contacted Date']=gmdate('Y-m-d H:i:s');
 		}
 
-		$this->data['Customer Active Ship To Records']=0;
-		$this->data['Customer Total Ship To Records']=0;
-		$this->data['Customer Active Billing To Records']=0;
-		$this->data['Customer Total Billing To Records']=0;
-
-		// Ok see if we have a billing address!!!
-
-		$this->data['Customer Main Email Key']=0;
-		$this->data['Customer Main XHTML Email']='';
-		$this->data['Customer Main Plain Email']='';
-		$this->data['Customer Main Telephone Key']=0;
-		$this->data['Customer Main XHTML Telephone']='';
-		$this->data['Customer Main Plain Telephone']='';
-		$this->data['Customer Main FAX Key']=0;
-		$this->data['Customer Main XHTML FAX']='';
-		$this->data['Customer Main Plain FAX']='';
-
 
 		$keys='';
 		$values='';
 		foreach ($this->data as $key=>$value) {
-			if (preg_match('/Customer Main|Customer Company/i', $key))
-				continue;
 			$keys.=",`".$key."`";
-
-			if (preg_match('/Key$/', $key))
-				$values.=','.prepare_mysql($value);
-			else
-				$values.=','.prepare_mysql($value, false);
+			//if ($key=='') {
+			// $values.=','.prepare_mysql($value, true);
+			//}else {
+			$values.=','.prepare_mysql($value, false);
+			//}
 		}
 		$values=preg_replace('/^,/', '', $values);
 		$keys=preg_replace('/^,/', '', $keys);
 
-
-
 		$sql="insert into `Customer Dimension` ($keys) values ($values)";
 
-		//   print $sql;
-		//exit;
-		if (mysql_query($sql)) {
 
-			$this->id=mysql_insert_id();
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
+			$this->get_data('id', $this->id);
 
-			if ($args!='no_history') {
-				$history_data=array(
-					'History Abstract'=>_('Customer Created'),
-					'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
-					'Action'=>'created'
-				);
-				$this->add_subject_history($history_data);
+
+
+
+
+			if ($this->data['Customer Company Name']!='') {
+				$customer_name=$this->data['Customer Company Name'];
+			}else {
+				$customer_name=$this->data['Customer Main Contact Name'];
 			}
+			$this->update_field('Customer Name', $customer_name, 'no_history');
+
+
+
+			$this->update_address('Contact', $address_raw_data);
+			$this->update_address('Invoice', $address_raw_data);
+			$this->update_address('Delivery', $address_raw_data);
+
+
+			$history_data=array(
+				'History Abstract'=>sprintf(_('%s customer record created'), $this->get('Name')),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
 			$this->new=true;
 
 
-			if ($this->data['Customer Type']=='Company') {
 
-				if (!$this->data['Customer Company Key']) {
-					//print_r($raw_data);
-					$company=new company('find in customer fast create update', $raw_data);
-				} else {
-					$company=new company('id', $this->data['Customer Company Key']);
-				}
 
-				// print_r($company);
-				$company_key=$company->id;
-				$this->data['Customer File As']=$company->data['Company File As'];
-				$this->data['Customer Name']=$company->data['Company Name'];
 
-				if ($company->last_associated_contact_key)
-					$contact=new Contact($company->last_associated_contact_key);
-				else {
-					$contact=new Contact($company->data['Company Main Contact Key']);
 
-					$contact->editor=$this->editor;
-				}
-			}
-			elseif ($this->data['Customer Type']=='Person') {
 
 
-				if (!$this->data['Customer Main Contact Key']) {
-
-					$contact=new contact('find in customer fast create update', $raw_data);
-				} else {
-					$contact=new contact('id', $this->data['Customer Main Contact Key']);
-					$contact->editor=$this->editor;
-				}
-
-
-				$this->data['Customer Name']=$contact->display('name');
-				$this->data['Customer File As']=$contact->data['Contact File As'];
-
-				$this->data['Customer Company Key']=0;
-
-
-			}
-			else {
-				$this->error=true;
-				$this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
-			}
-
-
-			if ($this->data['Customer Type']=='Company') {
-
-
-				$this->associate_company($company->id);
-				$this->associate_contact($contact->id);
-
-
-				$mobile=new Telecom($contact->data['Contact Main Mobile Key']);
-				if ($mobile->id) {
-
-					$contact->update_parents_principal_mobile_keys(($this->new?false:true));
-					$mobile->editor=$this->editor;
-					$mobile->new=true;
-					$mobile->update_parents(($this->new?false:true));
-				}
-
-
-				$address=new Address($company->data['Company Main Address Key']);
-				$address->editor=$this->editor;
-				$address->new=true;
-				//print_r($address);
-
-				$this->create_contact_address_bridge($address->id);
-
-
-				$address->update_parents_principal_telecom_keys('Telephone', ($this->new?false:true));
-				$address->update_parents_principal_telecom_keys('FAX', ($this->new?false:true));
-
-
-
-				$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-				$tel->editor=$this->editor;
-				$tel->new=true;
-
-				if ($tel->id)
-					$tel->update_parents(($this->new?false:true));
-
-
-
-				$fax=new Telecom($address->get_principal_telecom_key('FAX'));
-				$fax->editor=$this->editor;
-				$fax->new=true;
-				if ($fax->id)
-					$fax->update_parents(($this->new?false:true));
-
-
-
-
-			}
-			else {
-				$this->associate_contact($contact->id);
-
-				//$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key'],($this->new?false:true));
-
-
-
-
-				$address=new Address($contact->data['Contact Main Address Key']);
-
-
-				$address->editor=$this->editor;
-				$address->new=true;
-
-				$this->create_contact_address_bridge($address->id);
-				$address->update_parents_principal_telecom_keys('Telephone', ($this->new?false:true));
-				$address->update_parents_principal_telecom_keys('FAX', ($this->new?false:true));
-
-
-				$address->update_parents(false, ($this->new?false:true));
-
-				$this->get_data('id', $this->id);
-
-
-				//  exit;
-
-				$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-
-
-
-
-				$tel->editor=$this->editor;
-				$tel->new=true;
-				if ($tel->id)
-
-					$tel->update_parents(($this->new?false:true));
-				$fax=new Telecom($address->get_principal_telecom_key('FAX'));
-				$fax->editor=$this->editor;
-				$fax->new=true;
-				if ($fax->id)
-
-					$fax->update_parents(($this->new?false:true));
-			}
-
-
-
-
-
-			$contact->update_parents_principal_email_keys();
-
-
-			$email=new Email($contact->get_principal_email_key());
-			$email->editor=$this->editor;
-			$email->new=true;
-			if ($email->id) {
-				$email->update_parents(($this->new?false:true));
-
-			}
-
-			$this->get_data('id', $this->id);
-
-			$this->data['Customer Billing Address Link']='Contact';
-
-
-			$this->data['Customer Delivery Address Link']='Contact';
-
-
-			$this->create_billing_address_bridge($address->id);
-			$this->create_delivery_address_bridge($address->id);
-
-			$this->get_data('id', $this->id);
-
-
-
-
-
-		} else {
-			print "Error can not create customer $sql\n";
+		}else {
+			$this->error=true;
+			$this->msg='Error inserting customer record';
 		}
-
-
-
-		$keys='`Customer Key`';
-		$values=$this->id;
-		$new_subject=array();
-		$sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC))
-			$new_subject[] = array('custom_field_name'=>$row['Custom Field Name']);
-
-		//print_r ($raw_data);
-		foreach ($raw_data as $key=>$value) {
-			foreach ($new_subject as $field) {
-				if (strcmp($field['custom_field_name'], $key)==0) {
-					$keys.=",`".$key."`";
-					$values.=','.prepare_mysql($value);
-				}
-			}
-		}
-		$sql="insert into `Customer Custom Field Dimension` ($keys) values ($values)";
-		//print $sql;
-		mysql_query($sql);
-
 
 		$this->update_full_search();
 		$this->update_location_type();
@@ -1432,132 +1069,11 @@ class Customer extends DB_Table {
 
 			break;
 		case 'new email':
-
-
-
-			$sql=sprintf('insert into `Customer Other Email Dimension` (`Customer Other Email Store Key`,`Customer Other Email Customer Key`,`Customer Other Email Email`) values (%d,%d,%s)',
-				$this->data['Customer Store Key'],
-				$this->id,
-				prepare_mysql($value)
-			);
-			$prep=$this->db->prepare($sql);
-
-
-			try{
-				$prep->execute();
-
-				$inserted_key = $this->db->lastInsertId();
-				if ($inserted_key) {
-
-					$this->field_created=true;
-					$field_id='Customer_Other_Email_'.$inserted_key;
-					$field=preg_replace('/_/', ' ', $field_id);
-					$this->new_fields_info=array(
-						array(
-							'clone_from'=>'Customer_Other_Email',
-							'field'=>'Customer_Other_Email_'.$inserted_key,
-							'render'=>true,
-							'edit'=>'email',
-							'value'=>$this->get($field),
-							'formatted_value'=>$this->get($field),
-							'label'=>ucfirst($this->get_field_label('Customer Other Email')).' <i title="'._('set as main email').'" class="fa fa-star-o very_discret"></i>',
-
-
-
-						));
-					$this->add_changelog_record('Customer Other Email', '', $value, $options, $this->table_name, $this->id, 'added');
-
-				}else {
-					$this->error=true;
-					$this->msg=_('Duplicated email');
-				}
-
-			} catch(PDOException $e) {
-				$this->error=true;
-
-				if ($e->errorInfo[0] == '23000' && $e->errorInfo[1] == '1062') {
-					$this->msg=_('Duplicated email');
-				}else {
-
-					$this->msg=$e->getMessage();
-				}
-
-			}
-
+			$this->add_other_email($value, $options);
 			break;
 		case 'new telephone':
+			$this->add_other_telphone($value, $options);
 
-			include_once 'utils/get_phoneUtil.php';
-			$phoneUtil=get_phoneUtil();
-
-			try {
-				if ($this->get('Customer Main Country 2 Alpha Code')=='' or $this->get('Customer Main Country 2 Alpha Code')=='XX') {
-					$store=new Store($this->data['Customer Store Key']);
-					$country->get('Store Home Country Code 2 Alpha');
-				}else {
-					$country=$this->get('Customer Main Country 2 Alpha Code');
-				}
-				$proto_number = $phoneUtil->parse($value, $country);
-				$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
-
-
-
-
-
-			} catch (\libphonenumber\NumberParseException $e) {
-
-			}
-
-
-			$sql=sprintf('insert into `Customer Other Telephone Dimension` (`Customer Other Telephone Store Key`,`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`,`Customer Other Telephone Formatted Number`) values (%d,%d,%s,%s)',
-				$this->data['Customer Store Key'],
-				$this->id,
-				prepare_mysql($value),
-				prepare_mysql($formatted_value)
-			);
-			$prep=$this->db->prepare($sql);
-
-
-			try{
-				$prep->execute();
-
-				$inserted_key = $this->db->lastInsertId();
-				if ($inserted_key) {
-
-					$this->field_created=true;
-					$field_id='Customer_Other_Telephone_'.$inserted_key;
-					$field=preg_replace('/_/', ' ', $field_id);
-					$this->new_fields_info=array(
-						array(
-							'clone_from'=>'Customer_Other_Telephone',
-							'field'=>'Customer_Other_Telephone_'.$inserted_key,
-							'render'=>true,
-							'edit'=>'telephone',
-							'value'=>$this->get($field),
-							'formatted_value'=>$this->get(preg_replace('/Customer /', '', $field)),
-							'label'=>ucfirst($this->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
-
-
-
-						));
-					$this->add_changelog_record('Customer Other Telephone', '', $value, $options, $this->table_name, $this->id, 'added');
-
-				}else {
-					$this->error=true;
-					$this->msg=_('Duplicated telephone');
-				}
-
-			} catch(PDOException $e) {
-				$this->error=true;
-
-				if ($e->errorInfo[0] == '23000' && $e->errorInfo[1] == '1062') {
-					$this->msg=_('Duplicated telephone');
-				}else {
-
-					$this->msg=$e->getMessage();
-				}
-
-			}
 
 			break;
 
@@ -2060,6 +1576,136 @@ class Customer extends DB_Table {
 	}
 
 
+	function add_other_email($value, $options='') {
+
+		$sql=sprintf('insert into `Customer Other Email Dimension` (`Customer Other Email Store Key`,`Customer Other Email Customer Key`,`Customer Other Email Email`) values (%d,%d,%s)',
+			$this->data['Customer Store Key'],
+			$this->id,
+			prepare_mysql($value)
+		);
+		$prep=$this->db->prepare($sql);
+
+
+		try{
+			$prep->execute();
+
+			$inserted_key = $this->db->lastInsertId();
+			if ($inserted_key) {
+
+				$this->field_created=true;
+				$field_id='Customer_Other_Email_'.$inserted_key;
+				$field=preg_replace('/_/', ' ', $field_id);
+				$this->new_fields_info=array(
+					array(
+						'clone_from'=>'Customer_Other_Email',
+						'field'=>'Customer_Other_Email_'.$inserted_key,
+						'render'=>true,
+						'edit'=>'email',
+						'value'=>$this->get($field),
+						'formatted_value'=>$this->get($field),
+						'label'=>ucfirst($this->get_field_label('Customer Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
+
+
+
+					));
+				$this->add_changelog_record('Customer Other Email', '', $value, $options, $this->table_name, $this->id, 'added');
+
+			}else {
+				$this->error=true;
+				$this->msg=_('Duplicated email');
+			}
+
+		} catch(PDOException $e) {
+			$this->error=true;
+
+			if ($e->errorInfo[0] == '23000' && $e->errorInfo[1] == '1062') {
+				$this->msg=_('Duplicated email');
+			}else {
+
+				$this->msg=$e->getMessage();
+			}
+
+		}
+
+	}
+
+
+	function add_other_telephone($value, $options='') {
+
+		include_once 'utils/get_phoneUtil.php';
+		$phoneUtil=get_phoneUtil();
+
+		try {
+			if ($this->get('Customer Main Country 2 Alpha Code')=='' or $this->get('Customer Main Country 2 Alpha Code')=='XX') {
+				$store=new Store($this->data['Customer Store Key']);
+				$country->get('Store Home Country Code 2 Alpha');
+			}else {
+				$country=$this->get('Customer Main Country 2 Alpha Code');
+			}
+			$proto_number = $phoneUtil->parse($value, $country);
+			$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+
+
+
+
+
+		} catch (\libphonenumber\NumberParseException $e) {
+
+		}
+
+
+		$sql=sprintf('insert into `Customer Other Telephone Dimension` (`Customer Other Telephone Store Key`,`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`,`Customer Other Telephone Formatted Number`) values (%d,%d,%s,%s)',
+			$this->data['Customer Store Key'],
+			$this->id,
+			prepare_mysql($value),
+			prepare_mysql($formatted_value)
+		);
+		$prep=$this->db->prepare($sql);
+
+
+		try{
+			$prep->execute();
+
+			$inserted_key = $this->db->lastInsertId();
+			if ($inserted_key) {
+
+				$this->field_created=true;
+				$field_id='Customer_Other_Telephone_'.$inserted_key;
+				$field=preg_replace('/_/', ' ', $field_id);
+				$this->new_fields_info=array(
+					array(
+						'clone_from'=>'Customer_Other_Telephone',
+						'field'=>'Customer_Other_Telephone_'.$inserted_key,
+						'render'=>true,
+						'edit'=>'telephone',
+						'value'=>$this->get($field),
+						'formatted_value'=>$this->get(preg_replace('/Customer /', '', $field)),
+						'label'=>ucfirst($this->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
+
+
+
+					));
+				$this->add_changelog_record('Customer Other Telephone', '', $value, $options, $this->table_name, $this->id, 'added');
+
+			}else {
+				$this->error=true;
+				$this->msg=_('Duplicated telephone');
+			}
+
+		} catch(PDOException $e) {
+			$this->error=true;
+
+			if ($e->errorInfo[0] == '23000' && $e->errorInfo[1] == '1062') {
+				$this->msg=_('Duplicated telephone');
+			}else {
+
+				$this->msg=$e->getMessage();
+			}
+
+		}
+
+	}
+
 
 	function add_other_delivery_address($fields, $options='') {
 
@@ -2260,13 +1906,33 @@ class Customer extends DB_Table {
 		}
 
 
-		if ($this->updated ) {
+		if ($this->updated  ) {
 
 			$this->update_address_formatted_fields($type, $options);
 
 
 			$this->add_changelog_record("Customer $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id );
 
+			if ($type=='Contact') {
+
+
+                $location=$this->get('Contact Address Locality');
+                if($location==''){
+                     $location=$this->get('Contact Address Administrative Area');
+                }
+                 if($location==''){
+                     $location=$this->get('Customer Contact Address Postal Code');
+                }
+                
+
+				$this->update(array(
+						'Customer Location'=>trim(sprintf('<img src="/art/flags/%s.gif" title="%s"> %s',
+								strtolower($this->get('Contact Address Country 2 Alpha Code')),
+								$this->get('Contact Address Country 2 Alpha Code'),
+								$location))
+					), 'no_history');
+
+			}
 
 			if ($type=='Contact' and $old_checksum==$this->get('Customer Invoice Address Checksum')) {
 				$this->update_address('Invoice', $fields, $options);
@@ -2605,6 +2271,7 @@ class Customer extends DB_Table {
 	function get($key, $arg1=false) {
 
 
+		if (!$this->id)return false;
 
 		switch ($key) {
 
@@ -4383,13 +4050,9 @@ class Customer extends DB_Table {
 	function update_full_search() {
 
 		$store=new Store($this->data['Customer Store Key']);
-		$locale=$store->data['Store Locale'];
-		$address=new Address($this->data['Customer Main Address Key']);
-		$address_plain='';
-		if ($address->id) {
-			$address_plain=$address->display('Plain', $locale);
-		}
-		$address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'].' '.preg_replace('/[^a-z^A-Z^\d]/', '', $address->data['Address Postal Code']);
+
+
+		$address_plain=strip_tags($this->get('Contact Address'));
 		$first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
 		$second_full_search=$this->data['Customer Type'];
 
@@ -4423,24 +4086,24 @@ class Customer extends DB_Table {
 
 
 		$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
-                     values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key
-                     update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
-			, $this->data['Customer Store Key']
-			, $this->id
-			, prepare_mysql($first_full_search)
-			, prepare_mysql($second_full_search)
-			, prepare_mysql($this->data['Customer Name'])
-			, prepare_mysql($description)
-			, "''"
-			, prepare_mysql($first_full_search)
-			, prepare_mysql($second_full_search)
-			, prepare_mysql($this->data['Customer Name'])
-			, prepare_mysql($description)
-
-
-			, "''"
+                     values  (%s,%s,%d,%s,%s,%s,%s,%s) on duplicate key
+                     update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s",
+			$this->data['Customer Store Key'],
+			prepare_mysql('Customer'),
+			$this->id,
+			prepare_mysql($first_full_search),
+			prepare_mysql($second_full_search),
+			prepare_mysql($this->data['Customer Name']),
+			prepare_mysql($description),
+			"''",
+			prepare_mysql($first_full_search),
+			prepare_mysql($second_full_search),
+			prepare_mysql($this->data['Customer Name']),
+			prepare_mysql($description),
+			"''"
 		);
-		mysql_query($sql);
+		//print $sql;
+		$this->db->exec($sql);
 	}
 
 
@@ -5522,20 +5185,16 @@ class Customer extends DB_Table {
 	function update_location_type() {
 
 		$store=new Store($this->data['Customer Store Key']);
-		$country_code=$store->data['Store Home Country Code 2 Alpha'];
 
-		if ($this->data['Customer Main Country 2 Alpha Code']==$country_code or $this->data['Customer Main Country 2 Alpha Code']=='XX') {
-			$this->data['Customer Location Type']='Domestic';
+		if ($this->data['Customer Contact Address Country 2 Alpha Code']==$store->data['Store Home Country Code 2 Alpha'] or $this->data['Customer Contact Address Country 2 Alpha Code']=='XX') {
+			$location_type='Domestic';
 		}else {
-			$this->data['Customer Location Type']='Export';
+			$location_type='Export';
 		}
 
-		$sql=sprintf("update `Customer Dimension` set `Customer Location Type`=%s where `Customer Key`=%d",
-			prepare_mysql($this->data['Customer Location Type']),
-			$this->id
-		);
+		$this->update(array('Customer Location Type'=>$location_type));
 
-		mysql_query($sql);
+
 
 	}
 

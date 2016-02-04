@@ -36,7 +36,7 @@ require_once 'class.Address.php';
 
 
 
-$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Key`=210946 order by `Customer Key` desc ');
+$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Key`=210902 order by `Customer Key` desc ');
 $sql=sprintf('select `Customer Key` from `Customer Dimension` order by `Customer Key` desc ');
 
 if ($result=$db->query($sql)) {
@@ -54,15 +54,41 @@ if ($result=$db->query($sql)) {
 			$organization='';
 		}
 
+		if (!$customer->get('Customer Main Address Key')) {
+			continue;
+		}
+
 		$address_fields=address_fields($customer->get('Customer Main Address Key'), $recipient, $organization, $default_country);
 
 
 
 		$customer->update_address('Contact', $address_fields);
 
+		$location=$customer->get('Contact Address Locality');
+		if ($location=='') {
+			$location=$customer->get('Contact Address Administrative Area');
+		}
+		if ($location=='') {
+			$location=$customer->get('Customer Contact Address Postal Code');
+		}
+
+
+		$customer->update(array(
+				'Customer Location'=>trim(sprintf('<img src="/art/flags/%s.gif" title="%s"> %s',
+						strtolower($customer->get('Contact Address Country 2 Alpha Code')),
+						$customer->get('Contact Address Country 2 Alpha Code'),
+						$location))
+			), 'no_history');
+
+
+
 
 
 		$address=new _Address($customer->get('Customer Main Delivery Address Key'));
+
+
+
+
 		if ($address->data['Address Contact']!='') {
 			$address_contact=trim(preg_replace('/\s+/', ' ',  $address->data['Address Contact']));
 			if (strtolower($address_contact)==strtolower($recipient)) {

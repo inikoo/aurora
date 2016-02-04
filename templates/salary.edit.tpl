@@ -7,7 +7,7 @@
  	{if isset($salary.data.amount_sunday)}{assign "amount_sunday" $salary.data.amount_sunday}{else}{assign "amount_sunday" ""}{/if} 
 
 
-<input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}" has_been_valid="0" />
+<input id="{$field.id}" type="hidden" class="salary_input_field" value="{$field.value}" has_been_valid="0" />
 <div id="salary" class="salary hide">
 	<table border="0">
 		<tr>
@@ -17,11 +17,11 @@
 			<span id="salary_frequency_weekly" value="weekly" class="{if $frequency=='weekly'}selected{/if}">{t}Weekly{/t}</span> </td>
 			<td colspan="2"> <i id="{$field.id}_save_button" class="fa fa-cloud  save " onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> <span id="{$field.id}_msg" class="msg"></span> </td>
 		</tr>
-	<tr id="monthy_pay_day"  class=" pay_day monthy {if isset($frequency) and $frequency!='monthy'}hide{else}{/if}" >	
+	<tr id="monthy_pay_day"  class=" pay_day monthy {if !($frequency=='monthy' or $frequency=='')}hide{else}{/if}" >	
 		
 		<td  > {t}Pay day{/t} </td>
 		<td colspan="3"> 
-		<input id="pay_day_day_of_the_month" class="input_field day_of_the_month  {if $payday==''}potentially_valid{/if}" max="31" maxlength="2" value="{$payday}" >  {t}th of the month{/t} </td>
+		<input id="pay_day_day_of_the_month" class="salary_input_field potentially_valid day_of_the_month  " max="31" maxlength="2" value="{$payday}" >  {t}th of the month{/t} </td>
 	</tr>
 	<tr id="weekly_pay_day"   class="pay_day weekly {if isset($frequency) and $frequency!='weekly'}hide{else}hide{/if}" >
 		<td class="label"> {t}Pay day{/t} </td>
@@ -37,7 +37,7 @@
 		<tr>
 			<td> {t}Type{/t} </td>
 			<td colspan="3" id="salary_type" class="inline_options salary_type "> 
-			<span value="fixed_month" id="type_fixed_month"  class="{if $frequency!='monthy'}hide{else}{/if} {if  $type=='fixed_month' or  $type==''}selected{/if} ">{t}Fixed{/t} ({t}per month{/t})</span> 
+			<span value="fixed_month" id="type_fixed_month"  class="{if !($frequency=='monthy' or $frequency=='')  }hide{else}{/if} {if  $type=='fixed_month' or  $type==''}selected{/if} ">{t}Fixed{/t} ({t}per month{/t})</span> 
 			<span value="fixed_week" id="type_fixed_week"  class="pay_day monthy {if $type=='' or  $frequency=='monthy'}hide{/if} {if  $type=='fixed_week' }selected{/if}  ">{t}Fixed{/t} ({t}per week{/t})</span> 
 			<span value="prorata_hour" class="{if  $type=='prorata_hour' }selected{/if} "  id="type_prorata_hour">{t}Pro rata{/t} ({t}per hour{/t})</span> 
 			</td>
@@ -49,7 +49,7 @@
 				<tr id="compressed_salary_amount_components"  class="{if $amount==''}hide{/if}">
 					<td colspan="3">
 					<i  id="expand_rate_components" class="fa fa-expand fa-fw  {if isset($salary.type) and $salary.type!=prorata_hour}hide{else}hide{/if} " "></i>
-					<input id="salary_amount" class="input_field amount {if $amount==''}potentially_valid{/if}" value="{$amount}"></td>
+					<input id="salary_amount" class="salary_input_field amount potentially_valid" value="{$amount}"></td>
 				</tr>
 				<tbody id="expanded_salary_amount_components" class="{if $amount!=''}hide{/if}">
 
@@ -57,19 +57,19 @@
 					<td class="compress"><i  id="compress_rate_components" class="fa fa-compress fa-fw" o></i></td>
 					<td class="small_label">{t}Weekdays{/t}</td>
 					<td>
-					<input id="salary_amount_weekdays" class="input_field amount {if $amount_weekdays==''}potentially_valid{/if}" value="{$amount_weekdays}"></td>
+					<input id="salary_amount_weekdays" class="salary_input_field amount potentially_valid" value="{$amount_weekdays}"></td>
 				</tr>
 				<tr>
 					<td></td>
 					<td class="small_label">{t}Saturday{/t}</td>
 					<td>
-					<input id="salary_amount_saturday" class="input_field amount {if $amount_saturday==''}potentially_valid{/if}" value="{$amount_saturday}"></td>
+					<input id="salary_amount_saturday" class="salary_input_field amount potentially_valid" value="{$amount_saturday}"></td>
 				</tr>
 				<tr>
 					<td></td>
 					<td class="small_label">{t}Sunday{/t}</td>
 					<td>
-					<input id="salary_amount_sunday" class="input_field amount {if $amount_sunday==''}potentially_valid{/if}" value="{$amount_sunday}"></td>
+					<input id="salary_amount_sunday" class="salary_input_field amount potentially_valid" value="{$amount_sunday}"></td>
 					<tr>
 					</table>
 					</td>
@@ -174,18 +174,40 @@ $('#salary').on('click', '#compress_rate_components', function() {
 
 });
 
+ $('#salary  input.salary_input_field').each(function(i, obj) {
+               
+                
+                  if ($(obj).hasClass('amount')) var field_type = 'amount'
+    else var field_type = 'day_of_month'
+                
+             var component_validation = validate_field($(obj).attr('id'), $(obj).val(), field_type, true, false)
+             if(component_validation.class=='invalid' && $(obj).val()==''){
+             component_validation.class='potentially_valid'
+             }
+             
+                 $(obj).removeClass('invalid potentially_valid valid').addClass(component_validation.class)
+
+ console.log(component_validation)
+ console.log($(obj).attr('id'))
+
+            });
+
+
+
 function validate_salary() {
 
-    $('#{$field.id}_save_button').removeClass('invalid valid potentially_valid')
-    $('#{$field.id}_msg').removeClass('invalid valid potentially_valid')
-    $('#{$field.id}_validation').removeClass('invalid valid potentially_valid')
+    //$('#{$field.id}_save_button').removeClass('invalid valid potentially_valid')
+    //$('#{$field.id}_msg').removeClass('invalid valid potentially_valid')
+    //$('#{$field.id}_validation').removeClass('invalid valid potentially_valid')
 
-    var validation = validate_components();
+   $('#{$field.id}_field').removeClass('invalid valid potentially_valid')
+   
+    var validation = validate_salary_components();
     $('#{$field.id}_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
-    $('#{$field.id}_save_button').addClass(validation.class)
-    $('#{$field.id}_validation').addClass(validation.class)
-    $('#{$field.id}_msg').addClass(validation.class)
+    //$('#{$field.id}_save_button').addClass(validation.class)
+    //$('#{$field.id}_validation').addClass(validation.class)
+    $('#{$field.id}_field').addClass(validation.class)
 
    // console.log(validation)
     
@@ -203,13 +225,13 @@ function validate_salary() {
      $('#{$field.id}').val(salary)
     
     
-    console.log(salary)
+    //console.log(salary)
    //  console.log($('#{$field.id}_value').html())
       if (salary != $('#{$field.id}_value').html()) {
-        $('#{$field.id}_editor').addClass('changed')
+        $('#{$field.id}_field').addClass('changed')
         var changed = true;
     } else {
-        $('#{$field.id}_editor').removeClass('changed')
+        $('#{$field.id}_field').removeClass('changed')
         var changed = false;
     }
 
@@ -217,7 +239,7 @@ function validate_salary() {
 
 
 
-function validate_components() {
+function validate_salary_components() {
 
     var validation = {
         class: 'valid',
@@ -246,7 +268,7 @@ function validate_components() {
             //   console.log(salary_amount_extended_components[x])
             var salary_amount = $(salary_amount_extended_components[x]);
             if (salary_amount.hasClass('invalid')) {
-                xs
+                
                 return {
                     class: 'invalid',
                     type: ''
@@ -283,7 +305,7 @@ function validate_components() {
     return validation;
 }
 
-$('#salary').on('input propertychange', '.input_field', function() {
+$('#salary').on('input propertychange', '.salary_input_field', function() {
 
 
     var delay = 10;
@@ -294,14 +316,17 @@ $('#salary').on('input propertychange', '.input_field', function() {
 
 function delayed_on_change_salary_field(field_object, delay) {
     var new_value = field_object.val()
+   
     window.clearTimeout(field_object.data("timeout"));
+    
     field_object.data("timeout", setTimeout(function() {
+     
         on_changed_salary_value(field_object, new_value)
     }, delay));
 }
 
 function on_changed_salary_value(field_object, new_value) {
-
+ 
     $('#{$field.id}_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
     if (field_object.hasClass('amount')) var field_type = 'amount'
@@ -311,7 +336,7 @@ function on_changed_salary_value(field_object, new_value) {
     field_object.removeClass('invalid potentially_valid valid').addClass(component_validation.class)
 
     validate_salary()
-    //console.log(field_object)
+   
 }
 
 function process_salary() {

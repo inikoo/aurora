@@ -1,9 +1,10 @@
+	<span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
 
-<span id="fields" object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' ></span>
-<span id="inline_new_object" class="inline_new_object hide"   object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' field='{$data.field_id}' >
+<span id="fields" object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' >
+<span id="inline_new_object" class=" hide"   object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' field='{$data.field_id}' >
 <span id="{$data.field_id}_container" class="value " _required="true" field_type='{$data.field_edit}' field='{$data.field_id}'  server_validation=''> 
 {$data.field_label} 
-<span id="{$data.field_id}_editor" class=""> 
+
 <input id="{$data.field_id}" class="{$data.field_edit}_input_field " value="">
 {if $data.field_edit=='time'}
 <input type="hidden" id="{$data.field_id}_date"  value="{$data.date}">

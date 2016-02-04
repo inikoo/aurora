@@ -133,7 +133,7 @@ function customers($_data, $db, $user) {
 				'company_name'=>$data['Customer Company Name'],
 				'contact_name'=>$data['Customer Main Contact Name'],
 
-				'location'=>$data['Customer Main Location'],
+				'location'=>$data['Customer Location'],
 
 				'invoices'=>(integer) $data['Customer Orders Invoiced'],
 				'email'=>$data['Customer Main Plain Email'],

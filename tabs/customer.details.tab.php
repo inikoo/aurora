@@ -24,7 +24,6 @@ $options_valid_tax_number=array(
 	'Yes'=>_('Valid'), 'No'=>_('Not Valid'), 'Unknown'=>_('Unknown'), 'Auto'=>_('Check online'),
 );
 
-
 $company_field=array();
 
 $object_fields=array(
@@ -76,14 +75,6 @@ $object_fields=array(
 				'formatted_value'=>$customer->get('Tax Number Valid'),
 				'label'=>ucfirst($customer->get_field_label('Customer Tax Number Valid')),
 			),
-			array(
-				'id'=>'Customer_Fiscal_Name',
-				'edit'=>'string',
-				'value'=>$customer->get('Customer Fiscal Name'),
-				'formatted_value'=>$customer->get('Fiscal Name'),
-				'label'=>ucfirst($customer->get_field_label('Customer Fiscal Name')),
-				'required'=>false
-			),
 
 		)
 	),
@@ -98,7 +89,8 @@ $object_fields=array(
 				'value'=>$customer->get('Customer Main Plain Email'),
 				'formatted_value'=>$customer->get('Main Plain Email'),
 				'server_validation'=>'check_for_duplicates',
-				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Email')).' <i title="'._('Main email').'" class="fa fa-star discret"></i>',
+				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Email')),
+				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>true
 			), array(
 				'id'=>'new_email',
@@ -108,6 +100,8 @@ $object_fields=array(
 				'server_validation'=>'check_for_duplicates',
 				'formatted_value'=>'',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Email')),
+				'invalid_msg'=>get_invalid_message('email'),
+
 				'required'=>false
 			),
 
@@ -119,6 +113,7 @@ $object_fields=array(
 				'formatted_value'=>'',
 				'server_validation'=>'check_for_duplicates',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
+				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>false
 			),
 
@@ -144,7 +139,7 @@ $object_fields=array(
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain Mobile'),
 				'formatted_value'=>$customer->get('Main Plain Mobile'),
-				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Mobile')). ($customer->get('Customer Main Plain Mobile')!=''?($customer->get('Customer Preferred Contact Number')=='Mobile'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
+				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Mobile')). ($customer->get('Customer Main Plain Mobile')!=''?($customer->get('Customer Preferred Contact Number')=='Mobile'?'':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'invalid_msg'=>get_invalid_message('telephone'),
 				'required'=>false
 			),
@@ -156,7 +151,7 @@ $object_fields=array(
 				'edit'=>'telephone',
 				'value'=>$customer->get('Customer Main Plain Telephone'),
 				'formatted_value'=>$customer->get('Main Plain Telephone'),
-				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Telephone')).($customer->get('Customer Main Plain Telephone')!=''?($customer->get('Customer Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
+				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Telephone')).($customer->get('Customer Main Plain Telephone')!=''?($customer->get('Customer Preferred Contact Number')=='Telephone'?'':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'invalid_msg'=>get_invalid_message('telephone'),
 				'required'=>false
 
@@ -268,7 +263,23 @@ $object_fields=array(
 		)
 	),
 
+array(
+		'label'=>_('Operations'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			array(
 
+				'id'=>'delete_customer',
+				'class'=>'new',
+				'value'=>'',
+				'label'=>'<i class="fa fa-lock button" style="margin-right:20px"></i> <span class="disabled">'._('Delete customer').' <i class="fa fa-trash new_button link"></i></span>',
+				'reference'=>''
+			),
+
+		)
+		
+	),
 
 );
 
@@ -344,7 +355,6 @@ array_splice( $object_fields[3]['fields'], 3, 0, $other_delivery_addresses_field
 $store=new Store($state['_object']->get('Customer Store Key'));
 
 $smarty->assign('default_country', $store->get('Store Home Country Code 2 Alpha'));
-
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))).'"');
 
 $smarty->assign('object', $state['_object']);

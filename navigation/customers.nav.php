@@ -59,9 +59,6 @@ function get_customers_navigation($data) {
 
 
 	$right_buttons=array();
-	//$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store='.$store->id);
-	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customers'), 'reference'=>'customers/'.$store->id.'/edit');
-	$right_buttons[]=array('icon'=>'plus', 'title'=>_('New customer'), 'id'=>"new_customer");
 	$sections=get_sections('customers', $store->id);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
@@ -952,5 +949,45 @@ function get_customer_navigation($data) {
 
 }
 
+function get_new_customer_navigation($data, $smarty, $user, $db) {
+
+
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('customers', $data['parent_key']);
+
+	$_section='customers';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Customers"), 'reference'=>'customers/'.$data['parent_key']);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span class="id ">'._('New Customer').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
 
 ?>

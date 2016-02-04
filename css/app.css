@@ -501,161 +501,6 @@ input {
     #elements_chooser div:hover > .fa, #elements_chooser div.selected > .fa {
       color: #222; }
 
-.sticky_note {
-  border: 1px solid #BAB84E;
-  background: #EDEB82;
-  float: left;
-  width: 300px;
-  padding: 0;
-  margin-left: 20px; }
-
-.sticky_note.pink {
-  background: #ff7dbd;
-  border: 1px solid #e52789; }
-
-.sticky_note.green {
-  background: #94db84;
-  border: 1px solid #78bf41; }
-
-.full_date {
-  width: 250px;
-  text-align: right; }
-
-.contact_name {
-  width: 150px;
-  white-space: normal;
-  white-space: nowrap; }
-
-.new_object, .presention_card, .showcase, .dashboard {
-  padding: 10px 20px; }
-  .new_object textarea, .presention_card textarea, .showcase textarea, .dashboard textarea {
-    position: relative;
-    padding: 4px 6px;
-    width: 206px;
-    height: 120px;
-    font-family: inherit;
-    font-size: 100%;
-    line-height: normal;
-    outline: none;
-    font-weight: normal;
-    color: #555;
-    vertical-align: middle;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin: 0px; }
-  .new_object .fa.save, .presention_card .fa.save, .showcase .fa.save, .dashboard .fa.save {
-    margin-left: 5px;
-    opacity: .4; }
-    .new_object .fa.save.radio_option, .presention_card .fa.save.radio_option, .showcase .fa.save.radio_option, .dashboard .fa.save.radio_option {
-      margin-left: 265px; }
-  .new_object .changed .fa.save, .presention_card .changed .fa.save, .showcase .changed .fa.save, .dashboard .changed .fa.save {
-    opacity: .6;
-    transition: opacity .2s ease-in-out; }
-  .new_object .msg, .presention_card .msg, .showcase .msg, .dashboard .msg {
-    margin-left: 5px; }
-  .new_object .valid.changed .fa.save, .presention_card .valid.changed .fa.save, .showcase .valid.changed .fa.save, .dashboard .valid.changed .fa.save {
-    opacity: 1;
-    cursor: pointer; }
-  .new_object .datepicker, .presention_card .datepicker, .showcase .datepicker, .dashboard .datepicker {
-    margin-bottom: 5px;
-    margin-top: 0px; }
-    .new_object .datepicker .ui-datepicker thead tr, .presention_card .datepicker .ui-datepicker thead tr, .showcase .datepicker .ui-datepicker thead tr, .dashboard .datepicker .ui-datepicker thead tr {
-      height: 20px;
-      line-height: 20px; }
-  .new_object .dropcontainer, .presention_card .dropcontainer, .showcase .dropcontainer, .dashboard .dropcontainer {
-    margin-bottom: 5px;
-    color: #777;
-    width: 259px;
-    margin-top: -3px; }
-    .new_object .dropcontainer .checkbox, .presention_card .dropcontainer .checkbox, .showcase .dropcontainer .checkbox, .dashboard .dropcontainer .checkbox {
-      margin-right: 4px; }
-    .new_object .dropcontainer ul, .presention_card .dropcontainer ul, .showcase .dropcontainer ul, .dashboard .dropcontainer ul {
-      border: 1px solid #ccc;
-      border-top: none;
-      background: #fff;
-      list-style-type: none;
-      padding: 5px 10px 5px 10px;
-      margin: 0;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box; }
-      .new_object .dropcontainer ul li, .presention_card .dropcontainer ul li, .showcase .dropcontainer ul li, .dashboard .dropcontainer ul li {
-        height: 28px;
-        line-height: 28px;
-        padding: 0px 5px;
-        cursor: pointer; }
-        .new_object .dropcontainer ul li:hover, .presention_card .dropcontainer ul li:hover, .showcase .dropcontainer ul li:hover, .dashboard .dropcontainer ul li:hover {
-          background: #f5f5f5;
-          outline: none; }
-        .new_object .dropcontainer ul li.selected, .presention_card .dropcontainer ul li.selected, .showcase .dropcontainer ul li.selected, .dashboard .dropcontainer ul li.selected {
-          background: #e3e2e2;
-          outline: none;
-          cursor: normal; }
-        .new_object .dropcontainer ul li .current_mark, .presention_card .dropcontainer ul li .current_mark, .showcase .dropcontainer ul li .current_mark, .dashboard .dropcontainer ul li .current_mark {
-          font-size: 50%;
-          position: relative;
-          bottom: 2px;
-          margin-right: 5px;
-          visibility: hidden;
-          opacity: .5; }
-        .new_object .dropcontainer ul li .current_mark.current, .presention_card .dropcontainer ul li .current_mark.current, .showcase .dropcontainer ul li .current_mark.current, .dashboard .dropcontainer ul li .current_mark.current {
-          visibility: visible; }
-    .new_object .dropcontainer.radio_option, .presention_card .dropcontainer.radio_option, .showcase .dropcontainer.radio_option, .dashboard .dropcontainer.radio_option {
-      margin-top: -30px; }
-      .new_object .dropcontainer.radio_option ul, .presention_card .dropcontainer.radio_option ul, .showcase .dropcontainer.radio_option ul, .dashboard .dropcontainer.radio_option ul {
-        border-top: 1px solid #ccc; }
-
-.result {
-  margin-top: 20px; }
-  .result .results {
-    margin-left: 20px;
-    opacity: .9; }
-    .result .results:first-of-type {
-      margin-left: 0px; }
-    .result .results:hover {
-      opacity: 1;
-      color: #0EBFE9;
-      transition: color .2s ease-in-out; }
-
-.inline_new_object {
-  float: right;
-  margin: 0px 20px 0px 10px; }
-  .inline_new_object .valid .save {
-    opacity: 1;
-    cursor: pointer; }
-  .inline_new_object .invalid {
-    cursor: normal; }
-
-#inline_new_object_msg {
-  float: right;
-  margin-right: 10px; }
-
-.new_object .controls td {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  cursor: pointer; }
-.new_object .controls .fa {
-  margin-left: 5px; }
-.new_object .save {
-  opacity: .4; }
-  .new_object .save.invalid {
-    opacity: 1;
-    color: tomato; }
-  .new_object .save.valid {
-    opacity: 1; }
-    .new_object .save.valid:hover {
-      color: #0EBFE9; }
-.new_object .field_state {
-  opacity: 0; }
-  .new_object .field_state.required {
-    opacity: .2; }
-  .new_object .field_state.required.valid {
-    color: #26A65B;
-    opacity: .7; }
-  .new_object .field_state.invalid {
-    opacity: 1;
-    color: tomato; }
-
 .tree {
   width: auto;
   margin-left: auto;
@@ -764,22 +609,15 @@ input {
 .success {
   color: #26A65B; }
 
-.valid {
-  color: #0EBFE9; }
-
 .deleted {
   text-decoration: line-through;
   opacity: .9;
   color: #777; }
 
-.valid.save {
-  color: #0EBFE9;
-  cursor: pointer; }
-
 .warning {
   color: #ED9121; }
 
-.error, .invalid {
+.error {
   color: tomato; }
 
 .disabled {
@@ -940,21 +778,21 @@ input {
     background: #484;
     color: #FFF; }
 
-.working_hours {
+#working_hours {
   padding: 0px;
   position: relative;
   top: -10px;
   margin-top: 5px; }
-  .working_hours td.expand_days {
+  #working_hours td.expand_days {
     width: 30px; }
-    .working_hours td.expand_days .fa {
+    #working_hours td.expand_days .fa {
       cursor: pointer;
       opacity: .3; }
-      .working_hours td.expand_days .fa:hover {
+      #working_hours td.expand_days .fa:hover {
         opacity: 1; }
-  .working_hours td.day_labels {
+  #working_hours td.day_labels {
     min-width: 80px; }
-  .working_hours .breaks {
+  #working_hours .breaks {
     border: none; }
 
 .salary td.label {
@@ -1120,9 +958,6 @@ input {
   .new_object table .label, .presention_card table .label, .showcase table .label, .dashboard table .label, .export_dialog table .label {
     width: 280px;
     vertical-align: top; }
-  .new_object table .show_buttons.address, .presention_card table .show_buttons.address, .showcase table .show_buttons.address, .dashboard table .show_buttons.address, .export_dialog table .show_buttons.address {
-    vertical-align: top;
-    padding-top: 7px; }
 
 #table_buttons div:last-of-type {
   border-right: 1px solid #ccc;
@@ -1216,6 +1051,34 @@ table .totals td {
       cursor: pointer;
       width: 100%; }
 
+.sticky_note {
+  border: 1px solid #BAB84E;
+  background: #EDEB82;
+  float: left;
+  width: 300px;
+  padding: 0;
+  margin-left: 20px; }
+
+.sticky_note.pink {
+  background: #ff7dbd;
+  border: 1px solid #e52789; }
+
+.sticky_note.green {
+  background: #94db84;
+  border: 1px solid #78bf41; }
+
+.full_date {
+  width: 250px;
+  text-align: right; }
+
+.contact_name {
+  width: 150px;
+  white-space: normal;
+  white-space: nowrap; }
+
+.presention_card {
+  padding: 10px 20px; }
+
 #object_showcase {
   clear: both;
   border-bottom: 1px solid #ccc;
@@ -1304,26 +1167,78 @@ table .totals td {
   #object_showcase #account .block {
     min-width: 150px; }
 
+textarea {
+  position: relative;
+  padding: 4px 6px;
+  width: 206px;
+  height: 120px;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: normal;
+  outline: none;
+  font-weight: normal;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  margin: 0px; }
+
+.datepicker {
+  margin-bottom: 5px;
+  margin-top: 0px; }
+  .datepicker .ui-datepicker thead tr {
+    height: 20px;
+    line-height: 20px; }
+
+.dropcontainer {
+  margin-bottom: 5px;
+  color: #777;
+  width: 259px;
+  margin-top: -3px; }
+  .dropcontainer .checkbox {
+    margin-right: 4px; }
+  .dropcontainer ul {
+    border: 1px solid #ccc;
+    border-top: none;
+    background: #fff;
+    list-style-type: none;
+    padding: 5px 10px 5px 10px;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+    .dropcontainer ul li {
+      height: 28px;
+      line-height: 28px;
+      padding: 0px 5px;
+      cursor: pointer; }
+      .dropcontainer ul li:hover {
+        background: #f5f5f5;
+        outline: none; }
+      .dropcontainer ul li.selected {
+        background: #e3e2e2;
+        outline: none;
+        cursor: normal; }
+      .dropcontainer ul li .current_mark {
+        font-size: 50%;
+        position: relative;
+        bottom: 2px;
+        margin-right: 5px;
+        visibility: hidden;
+        opacity: .5; }
+      .dropcontainer ul li .current_mark.current {
+        visibility: visible; }
+  .dropcontainer.radio_option {
+    margin-top: -30px; }
+    .dropcontainer.radio_option ul {
+      border-top: 1px solid #ccc; }
+
 .edit_object {
   margin-bottom: 100px;
   padding: 10px 20px; }
   .edit_object .formatted_value, .edit_object .address_edit_fields_container {
+    margin-right: 15px; }
+  .edit_object .address_edit_fields_container, .edit_object .address.formatted_value {
     float: left; }
-  .edit_object textarea {
-    position: relative;
-    padding: 4px 6px;
-    width: 206px;
-    height: 120px;
-    font-family: inherit;
-    font-size: 100%;
-    line-height: normal;
-    outline: none;
-    font-weight: normal;
-    color: #555;
-    vertical-align: middle;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin: 0px; }
   .edit_object .fa.save {
     margin-left: 5px;
     opacity: .4; }
@@ -1337,54 +1252,6 @@ table .totals td {
   .edit_object .valid.changed .fa.save {
     opacity: 1;
     cursor: pointer; }
-  .edit_object .datepicker {
-    margin-bottom: 5px;
-    margin-top: 0px; }
-    .edit_object .datepicker .ui-datepicker thead tr {
-      height: 20px;
-      line-height: 20px; }
-  .edit_object .dropcontainer {
-    margin-bottom: 5px;
-    color: #777;
-    width: 259px;
-    margin-top: -3px; }
-    .edit_object .dropcontainer .checkbox {
-      margin-right: 4px; }
-    .edit_object .dropcontainer ul {
-      border: 1px solid #ccc;
-      border-top: none;
-      background: #fff;
-      list-style-type: none;
-      padding: 5px 10px 5px 10px;
-      margin: 0;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box; }
-      .edit_object .dropcontainer ul li {
-        height: 28px;
-        line-height: 28px;
-        padding: 0px 5px;
-        cursor: pointer; }
-        .edit_object .dropcontainer ul li:hover {
-          background: #f5f5f5;
-          outline: none; }
-        .edit_object .dropcontainer ul li.selected {
-          background: #e3e2e2;
-          outline: none;
-          cursor: normal; }
-        .edit_object .dropcontainer ul li .current_mark {
-          font-size: 50%;
-          position: relative;
-          bottom: 2px;
-          margin-right: 5px;
-          visibility: hidden;
-          opacity: .5; }
-        .edit_object .dropcontainer ul li .current_mark.current {
-          visibility: visible; }
-    .edit_object .dropcontainer.radio_option {
-      margin-top: -30px; }
-      .edit_object .dropcontainer.radio_option ul {
-        border-top: 1px solid #ccc; }
   .edit_object .intl-tel-input .flag-container {
     display: none; }
   .edit_object table {
@@ -1477,15 +1344,26 @@ table .totals td {
     .edit_object table .label {
       width: 280px;
       vertical-align: top; }
-    .edit_object table .show_buttons.address {
-      vertical-align: top;
-      padding-top: 7px; }
+  .edit_object .valid .save {
+    color: #0EBFE9;
+    cursor: pointer; }
+  .edit_object .invalid .save, .edit_object .invalid .msg {
+    color: tomato; }
+  .edit_object .invalid input {
+    background-color: #ffebeb; }
+    .edit_object .invalid input.potentially_valid {
+      background-color: #fff; }
+    .edit_object .invalid input.valid {
+      background-color: #fff; }
 
 .show_buttons {
   width: 20px;
   line-height: 20px;
   text-align: left;
   vertical-align: top; }
+  .show_buttons.address {
+    vertical-align: top;
+    padding-top: 7px; }
   .show_buttons .fa {
     margin: 0px;
     padding: 0px; }
@@ -1501,6 +1379,61 @@ table .totals td {
     transition: opacity .2s ease-in-out; }
     .show_buttons .fa.reset:hover {
       opacity: 1; }
+
+#fields {
+  margin-bottom: 100px;
+  padding: 10px 20px; }
+  #fields .field_state {
+    opacity: 0; }
+    #fields .field_state.required {
+      opacity: .2; }
+  #fields tr.valid .field_state.required {
+    opacity: .7;
+    color: #26A65B; }
+  #fields.invalid .save_form, #fields.invalid .msg {
+    color: tomato; }
+  #fields.invalid tr.valid .field_state {
+    opacity: 0; }
+    #fields.invalid tr.valid .field_state.required {
+      opacity: .7;
+      color: #26A65B; }
+  #fields.invalid .field_state {
+    opacity: 0; }
+    #fields.invalid .field_state.required {
+      opacity: 1;
+      color: tomato; }
+  #fields.valid .save_form {
+    color: #0EBFE9;
+    cursor: pointer; }
+
+.result {
+  margin-top: 20px;
+  padding: 0px 20px; }
+  .result .results {
+    margin-left: 20px;
+    opacity: .9; }
+    .result .results:first-of-type {
+      margin-left: 0px; }
+    .result .results:hover {
+      opacity: 1;
+      color: #0EBFE9;
+      transition: color .2s ease-in-out; }
+
+#inline_new_object {
+  float: right;
+  margin: 0px 20px 0px 10px; }
+  #inline_new_object.valid .save {
+    opacity: 1;
+    cursor: pointer;
+    color: #0EBFE9; }
+  #inline_new_object.invalid .save {
+    color: tomato; }
+
+#inline_new_object_msg {
+  float: right;
+  margin-right: 10px; }
+  #inline_new_object_msg.invalid {
+    color: tomato; }
 
 .adr {
   line-height: 22px; }

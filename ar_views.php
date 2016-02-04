@@ -416,6 +416,9 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		case ('pending_orders'):
 			return get_customers_pending_orders_navigation($data);
 			break;
+		case ('customer.new'):
+			return get_new_customer_navigation($data, $smarty, $user, $db,$account);
+			break;	
 		}
 
 		break;
@@ -700,6 +703,9 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		case ('dashboard'):
 			return get_suppliers_dashboard_navigation($data);
 			break;
+		case ('supplier.new'):
+			return get_new_supplier_navigation($data, $smarty, $user, $db,$account);
+			break;		
 		}
 
 		break;

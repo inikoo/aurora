@@ -134,6 +134,10 @@ class Staff extends DB_Table{
 
 				if ($salary_data['data']['frequency']=='monthy') {
 
+					if ($this->data['Staff Working Hours Per Week']==0) {
+						return sprintf(_('%s paid every %s day of the month'), $salary_amount, get_ordinal_suffix($salary_data['data']['payday']));
+					}
+
 					$average_hour_amount=$salary_data['data']['amount']/($this->data['Staff Working Hours Per Week']*4.348125);
 
 					$salary=sprintf(_('%s paid every %s day of the month (%s per year, ~%s per hour)'), $salary_amount, get_ordinal_suffix($salary_data['data']['payday']),

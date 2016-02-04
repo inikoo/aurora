@@ -2,8 +2,8 @@
 
 <div id="result" class="result hide">
 </div>
-<div  id="fields" class="new_object {if $upload_file}$upload_file{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
-    <table >
+<div  id="fields" class="new_object   {if $upload_file}$upload_file{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
+    <table border=0>
     {foreach from=$object_fields item=field_group } 
         <tr class="title" >
             <td  colspan=3>
@@ -38,19 +38,164 @@
 	{/if} 
 	<span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
 
- 
+
+    {if $edit=='address'}
+    
+    
+    	        <tr id="{$field.id}_recipient_field" class="hide" >
+	            
+	            <td class="label">{t}Recipient{/t}</td>
+	            <td class="show_buttons "><i id="{$field.id}_recipient_validation" class="fa fa-asterisk field_state"></i></td>
+	        	<td  id="{$field.id}_recipient_container" _required="" field_type='string'  class="recipient "  >
+	            <input id="{$field.id}_recipient" value="tmp" class="input_field" field_name="Address Recipient" >
+	            </td>
+	            </tr>
+	            
+	             <tr id="{$field.id}_field" class="hide">
+	           	<td class="label">{t}Organization{/t}</td>
+	             <td class="show_buttons error super_discret"><i id="{$field.id}_organization_validation" class="fa fa-asterisk field_state"></i></td>
+	            <td  id="{$field.id}_organization_container" _required="" field_type='string'  class="organization ">
+	            <input  id="{$field.id}_organization"  value="tmp" class="input_field" field_name="Address Organization" ></td>
+	            </tr>
+	            
+	            <tr  id="{$field.id}_addressLine1_field"  >
+	            <td>{t}Line 1{/t}</td>
+	            <td class="show_buttons"><i  id="{$field.id}_addressLine1_validation" class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_addressLine1_container" _required="" field_type='string'  class="addressLine1 {$field.type} address_value"  field="{$field.id}_addressLine1"  >
+	            <input  id="{$field.id}_addressLine1"  value="" class="input_field" field_name="Address Line 1" ></td>
+	            </tr>
+	            
+	            <tr  id="{$field.id}_addressLine2_field"> 
+	            <td class="label">{t}Line 2{/t}</td>
+	             <td class="show_buttons "><i id="{$field.id}_addressLine2_validation" class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_addressLine2_container"  _required="" field_type='string'  class="addressLine2 {$field.type} address_value"  field="{$field.id}_addressLine2">
+	            <input  id="{$field.id}_addressLine2"   value="" class="input_field" field_name="Address Line 2" ></td>
+	            </tr>
+	            <tr  id="{$field.id}_sortingCode_field"> 
+	            <td class="label">{t}Sorting code{/t}</td>
+	            <td class="show_buttons"><i id="{$field.id}_sortingCode_validation" class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_sortingCode_container" _required="" field_type='string'  class="sortingCode  {$field.type} address_value"  field="{$field.id}_sortingCode">
+	            <input  id="{$field.id}_sortingCode"  value="" class="input_field" field_name="Address Sorting Code" ></td>
+	            </tr>
+	           
+	            <tr id="{$field.id}_postalCode_field"> 
+	            <td class="label">{t}Postal code{/t}</td>
+	            <td class="show_buttons"><i class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_postalCode_container" _required="" field_type='string'  class="postalCode {$field.type} address_value"  field="{$field.id}_postalCode">
+	            <input  id="{$field.id}_postalCode"  value="" class="input_field" field_name="Address Postal Code" ></td>
+	            </tr>
+	            
+	             <tr id="{$field.id}_dependentLocality_field"> 
+	           
+	            <td class="label">{t}Dependent locality{/t}</td>
+	             <td class="show_buttons"><i class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_dependentLocality_container" _required="" field_type='string'  class="dependentLocality {$field.type} address_value"  field="{$field.id}_dependentLocality">
+	            <input id="{$field.id}_dependentLocality"  value="" class="input_field" field_name="Address Dependent Locality" ></td>
+	            </tr>
+	            
+	            <tr id="{$field.id}_locality_field"> 
+	            <td class="label">{t}Locality (City){/t}</td>
+	            <td class="show_buttons"><i class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_locality_container" _required="" field_type='string'  class="locality {$field.type} address_value"  field="{$field.id}_locality">
+	            <input  id="{$field.id}_locality" value="" class="input_field" field_name="Address Locality" ></td>
+	            </tr>
+	            
+	             <tr   id="{$field.id}_administrativeArea_field"> 
+	            <td class="label">{t}Administrative area{/t}</td>
+	            <td class="show_buttons"><i class="fa fa-asterisk field_state"></i></td>
+	            <td id="{$field.id}_administrativeArea_container" _required="" field_type='string' class="administrativeArea {$field.type} address_value"  field="{$field.id}_administrativeArea">
+	            <input id="{$field.id}_administrativeArea" value="" class="input_field" field_name="Address Administrative Area" ></td>
+	            </tr>
+	            
+	            <tr  id="{$field.id}_country_field" class="country"> 
+	            <td class="label">{t}Country{/t}</td>
+	            <td class="show_buttons error super_discret"><i class="fa fa-asterisk field_state"></i></td>
+	            <td  id="{$field.id}_country_container"  _required="" field_type='string'  class="locality {$field.type} address_value "  field="{$field.id}_country" >
+	            <input  id="{$field.id}_country" value="" class="input_field" type="hidden" field_name="Address Country 2 Alpha Code" >
+	            <input id="{$field.id}_country_select" value="" class="country_select"> 
+	            </td>
+	            </tr>
+	            
+	            
+	           
+	   
+	    <script>
 	
-	<tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class}"   >
+	
+	
+    
+         var initial_country='{$default_country|lower}';
+      
+	
+	
+	
+	 telInput_{$field.id} = $("#{$field.id}_country_select")
+
+	  telInput_{$field.id}.intlTelInput({
+	     initialCountry: initial_country,
+	     preferredCountries: [{$preferred_countries}]
+	 });
+	 
+	 
+
+
+
+	 telInput_{$field.id}.on("country-change", function(event,arg) {
+
+        
+	        var country_name = telInput_{$field.id}.intlTelInput("getSelectedCountryData").name
+	        var country_code = telInput_{$field.id}.intlTelInput("getSelectedCountryData").iso2.toUpperCase()
+        
+	     
+	     if (country_name.match(/\)\s+\(.+\)$/)) {
+	         country_name = country_name.replace(/\)\s+\(.+\)$/, ")")
+	     } else {
+	         country_name = country_name.replace(/\s+\(.+\)$/, "")
+
+	     }
+        
+      
+      
+      
+        $('#{$field.id}_country').val(country_code)
+
+
+	     
+	    update_new_address_fields('{$field.id}',country_code, hide_recipient_fields=true,arg)
+	    $("#{$field.id}_country_select").val(country_name)
+	    if(arg!='init'){
+	   
+        on_changed_address_value("{$field.id}", '{$field.id}_country', country_code) 
+        }
+        
+        
+        
+       
+
+        
+
+	 });
+
+	 telInput_{$field.id}.trigger("country-change",'init');
+
+	
+	
+	</script>
+	
+	
+    
+
+    {else}
+    <tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class}"   >
 		<td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
-		
-		 		<td class="show_buttons" >
+		<td class="show_buttons" >
 		 		<i id="{$field.id}_validation" class="fa fa-asterisk {if $required and !( $edit=='option' and $field.value!='' ) }required{/if} {if !$required || ($edit=='option' and $field.value!='') }valid{/if}   field_state " ></i> 
 		 		 </td>
 
 		
 		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
-	<span id="{$field.id}_editor" class=""> 
-		
+	   
+	
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
 
@@ -71,6 +216,10 @@
 	    <input id="{$field.id}" type="file"  class="input_field " has_been_valid="0" >
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
+		
+		  
+
+	
 		{elseif $edit=='telephone' } 
 	    <input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0"/>
 		<span id="{$field.id}_msg" class="msg"></span> 
@@ -204,8 +353,10 @@
         {/if} 
   	    
   
-		</span>
+		
 	</td>
+	</tr>
+	{/if}
 	{/foreach} 
 {/if}
  </div>
@@ -220,8 +371,8 @@
 <td></td>
 <td></td>
 <td>
-{*}onclick="{if $upload_file}upload_new_object('{$object_name}'){else}save_new_object('{$object_name}'){/if}" {*}
-<span class="save potentially_valid" id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$upload_file}')"  >{t}Save{/t} <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
+
+<span class="save_form save " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$upload_file}')"  ><span id="save_label">{t}Save{/t}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
 <span id="{$object_name}_msg" class="msg"></span></span> 
 <span class="hide results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
 <span class="hide results" id="{$object_name}_go_new" request="" request_template="{$new_object_request}" onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>
@@ -233,29 +384,65 @@
 </div>
  <script>
     $(".input_field").on("input propertychange", function(evt) {
-        
-        if($('#'+$(this).attr('id')+'_container').attr('server_validation')){
-       
-         var delay=200;
-        }else{
-         var delay=10;
+
+        if ($('#' + $(this).attr('id') + '_container').attr('server_validation')) {
+
+            var delay = 200;
+        } else {
+            var delay = 10;
         }
         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        delayed_on_change_field($(this),delay)
+        delayed_on_change_field($(this), delay)
     });
-    
-     $(".input_field").on("file change", function(evt) {
+
+    $(".input_field").on("file change", function(evt) {
+
+        on_changed_value($(this).attr('id'), $(this).val())
+    });
+
+     $(".value").each(function(index) {
      
-     on_changed_value($(this).attr('id'), $(this).val())
-      });
-    
-    
-    
-    
-     $(".confirm_input_field").on("input propertychange", function(evt) {
-        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        on_changed_confirm_value($(this).attr('confirm_field'),$(this).val())
+        if($(this).hasClass('address_value')){
+            return;
+        }
+     
+        var field = $(this).attr('field')
+        //console.log(field)
+        var value = $('#' + field).val()
+
+        var field_data = $('#' + field + '_container')
+        var type = field_data.attr('field_type')
+        var required = field_data.attr('_required')
+        var server_validation = field_data.attr('server_validation')
+        var parent = field_data.attr('parent')
+        var parent_key = field_data.attr('parent_key')
+        var _object = field_data.attr('object')
+        var key = field_data.attr('key')
+
+
+        var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
+
+       
+       
+            if (validation.class == 'invalid' && value == '') {
+                validation.class = 'potentially_valid'
+            }
+       
+         $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
+
+
+
     });
+
+   var form_validation = get_form_validation_state()
+           process_form_validation(form_validation)
+
+        
+    $(".confirm_input_field").on("input propertychange", function(evt) {
+        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+        on_changed_confirm_value($(this).attr('confirm_field'), $(this).val())
+    });
+
    
    {if isset($js_code)}{$js_code}{/if}
 </script> 
