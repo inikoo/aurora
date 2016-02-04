@@ -459,7 +459,19 @@ function new_object($account, $db, $user, $editor, $data) {
 		$pcard=$smarty->fetch('presentation_cards/customer.pcard.tpl');
 		$updated_data=array();
 	
-	break;	
+	break;
+	case 'Contractor':
+		include_once 'class.Staff.php';
+	
+		$data['fields_data']['Staff Type']='Contractor';
+		
+		$object=$parent->create_staff($data['fields_data']);
+		$smarty->assign('account', $account);
+		$smarty->assign('object', $object);
+
+		$pcard=$smarty->fetch('presentation_cards/contractor.pcard.tpl');
+		$updated_data=array();
+		break;	
 	case 'Staff':
 		include_once 'class.Staff.php';
 		$object=$parent->create_staff($data['fields_data']);

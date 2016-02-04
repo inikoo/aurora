@@ -77,8 +77,41 @@ function check_for_duplicates($data, $db, $user, $account) {
 		break;
 
 		break;
-	case 'Staff':
+	case 'Contractor':
+	
+		switch ($field) {
+		case 'Staff ID':
+			$invalid_msg=_('Another contractor is using this payroll Id');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff ID`=%s",
+			prepare_mysql($data['value'])
+			);
+						$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 
+			break;
+		case 'Staff Alias':
+			$invalid_msg=_('Another contractor is using this code');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff Alias`=%s",
+			prepare_mysql($data['value'])
+			);
+						$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			break;
+		case 'Staff User Handle':
+			$invalid_msg=_('Another user is using this login handle');
+			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`='Staff' and `User Handle`=%s",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+			break;
+		default:
+
+			break;
+		}
+
+
+		break;	
+		
+	case 'Staff':
 		switch ($field) {
 		case 'Staff ID':
 			$invalid_msg=_('Another employee is using this payroll Id');
