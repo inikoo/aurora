@@ -72,7 +72,7 @@ case 'upload_attachment':
 
 		));
 
-	upload_attachment($account, $db, $user, $editor, $data);
+	upload_attachment($account, $db, $user, $editor, $data, $smarty);
 	break;
 
 case 'new_object':
@@ -450,6 +450,16 @@ function new_object($account, $db, $user, $editor, $data) {
 		$pcard=$smarty->fetch('presentation_cards/system_user.pcard.tpl');
 		$updated_data=array();
 		break;
+	case 'Customer':
+		include_once 'class.Customer.php';
+		$object=$parent->create_customer($data['fields_data']);
+		$smarty->assign('account', $account);
+		$smarty->assign('object', $object);
+
+		$pcard=$smarty->fetch('presentation_cards/customer.pcard.tpl');
+		$updated_data=array();
+	
+	break;	
 	case 'Staff':
 		include_once 'class.Staff.php';
 		$object=$parent->create_staff($data['fields_data']);
@@ -512,10 +522,10 @@ function new_object($account, $db, $user, $editor, $data) {
 }
 
 
-function upload_attachment($account, $db, $user, $editor, $data) {
+function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
+	include_once 'class.Attachment.php';
 
-	global $smarty;
 
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;

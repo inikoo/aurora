@@ -236,7 +236,7 @@ if ($order=='name')
 elseif ($order=='formatted_id')
 	$order='C.`Customer Key`';
 elseif ($order=='location')
-	$order='`Customer Main Location`';
+	$order='`Customer Location`';
 elseif ($order=='orders')
 	$order='`Customer Orders`';
 elseif ($order=='email')

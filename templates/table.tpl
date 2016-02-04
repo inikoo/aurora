@@ -122,9 +122,9 @@
 
 	</div>
 	
-	
-	<span id="inline_new_object_msg" ></span>
-	
+	 {if isset($button.inline_new_object)} 
+	<span id="inline_new_object_msg" class="invalid"></span>
+		 {/if} 	
 	{/foreach}
 	  </div>
 	{/if}

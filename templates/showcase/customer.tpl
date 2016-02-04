@@ -75,7 +75,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="orders_overview" style="float:left;;margin-right:40px;width:300px">
+		<div id="orders_overview" style="float:left;;margin-right:40px;width:300px;font-size:95%">
 			<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
 				{if $customer->get('Customer Level Type')=='VIP'} 
 				<td></td>
@@ -103,11 +103,11 @@
 				</tr>
 				{/if} {if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'} 
 				<tr>
-					<td> 
+					<td colspan=2> 
 					<div>
-						{if $customer->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="/art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}</span><br />
-						{/if} {if $customer->get('Customer Send Email Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="/art/icons/exclamation.png" /> <span>{t}Don't send marketing by email{/t}</span><br />
-						{/if} {if $customer->get('Customer Send Postal Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="/art/icons/exclamation.png" /> <span>{t}Don't send marketing by post{/t}</span><br />
+						{if $customer->get('Customer Send Newsletter')=='No'}<i class="fa fa-ban"></i> <span>{t}Don't send newsletters{/t}</span><br />
+						{/if} {if $customer->get('Customer Send Email Marketing')=='No'}<i class="fa fa-ban"></i> <span>{t}Don't send marketing by email{/t}</span><br />
+						{/if} {if $customer->get('Customer Send Postal Marketing')=='No'}<i class="fa fa-ban"></i> <span>{t}Don't send marketing by post{/t}</span><br />
 						{/if} 
 					</div>
 					</td>

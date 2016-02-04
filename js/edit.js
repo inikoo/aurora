@@ -149,7 +149,12 @@ function close_edit_field(field) {
 
     $('#' + field + '_edit_button').removeClass('hide')
     $('#' + field + '_reset_button').addClass('hide')
+
+
     $('#' + field + '_save_button').addClass('hide')
+
+
+
     switch (type) {
     case 'string':
     case 'email':
@@ -165,7 +170,9 @@ function close_edit_field(field) {
     case 'numeric':
 
         $('#' + field).addClass('hide')
-        $('#' + field + '_editor').removeClass('changed')
+
+
+        //$('#' + field + '_editor').removeClass('changed')
         break;
     case 'new_email':
         $('#new_email_formatted_value').html('')
@@ -329,10 +336,12 @@ function close_edit_field(field) {
 
 function delayed_on_change_field(object, timeout) {
     var field = object.attr('id');
+    //console.log(object)
     var field_element = $('#' + field);
     var new_value = field_element.val()
 
     window.clearTimeout(object.data("timeout"));
+
     object.data("timeout", setTimeout(function() {
         on_changed_value(field, new_value)
     }, timeout));
@@ -385,6 +394,7 @@ function on_changed_confirm_value(field, confirm_value) {
 function on_changed_value(field, new_value) {
 
 
+
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -392,102 +402,153 @@ function on_changed_value(field, new_value) {
     }
     var field_data = $('#' + field + '_container')
     var type = field_data.attr('field_type')
-    required = field_data.attr('_required')
 
     if (type == 'date') {
         new_value = new_value + ' ' + $('#' + field + '_time').val()
     }
 
+
     if (new_value != $('#' + field + '_value').val()) {
-        $("#" + field + '_editor').addClass('changed')
         var changed = true;
     } else {
-        $("#" + field + '_editor').removeClass('changed')
         var changed = false;
     }
 
-    $('#' + field + '_save_button').removeClass('invalid valid potentially_valid')
-    $('#' + field + '_msg').removeClass('invalid valid potentially_valid')
-    $("#" + field + '_validation').removeClass('invalid valid potentially_valid')
 
-
-    if (changed) {
-
-
-        $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
-        var server_validation = field_data.attr('server_validation')
-        var parent = field_data.attr('parent')
-        var parent_key = field_data.attr('parent_key')
-        var _object = field_data.attr('object')
-        var key = field_data.attr('key')
+    $('#' + field + '_field').removeClass('invalid valid potentially_valid')
 
 
 
-        var validation = validate_field(field, new_value, type, required, server_validation, parent, parent_key, _object, key)
+    $('#' + field + '_field').addClass('changed')
 
-
-        process_validation(validation, field, true)
+    var validation = validate(field, new_value)
+    process_validation(validation, field, false)
 
 
 
 
 
 
+
+
+
+}
+
+
+function validate(field, value) {
+
+    var field_data = $('#' + field + '_container')
+    
+    
+    
+    $('#' + field + '_field').addClass('waiting_validation changed')
+    $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
+
+    var server_validation = field_data.attr('server_validation')
+    var parent = field_data.attr('parent')
+    var parent_key = field_data.attr('parent_key')
+    var _object = field_data.attr('object')
+    var key = field_data.attr('key')
+    var type = field_data.attr('field_type')
+    var required = field_data.attr('_required')
+
+
+    if (type == 'salary') {
+        return validate_salary_components();
     } else {
-        $('#' + field + '_msg').html('')
+
+        return validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
     }
 
+
+}
+
+
+function process_validation(validation, field, final_value) {
+
+    var field_data = $('#' + field + '_container')
+    var type = field_data.attr('field_type')
+
+
+
+    if (validation.class == 'potentially_valid' && final_value) {
+        validation.class = 'invalid';
+
+        if (type == 'salary') {
+
+            $('#salary  input.salary_input_field').each(function(i, obj) {
+               // console.log($(obj))
+                if ($(obj).hasClass('potentially_valid')) {
+                    $(obj).removeClass('potentially_valid').addClass('invalid')
+                }
+
+
+            });
+
+        }
+
+    }
+
+    if (validation.class == 'waiting') return;
+
+    $('#' + field + '_field').removeClass('waiting_validation')
+    $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
+
+
+    var msg = '';
+
+    if (validation.class == 'valid') {
+    
+        $('#' + field).attr('has_been_valid', 1)
+        $('#' + field + '_field').removeClass('invalid potentially_valid').addClass('valid')
+//console.log('#' + field + '_field')
+    } else if (validation.class == 'invalid') {
+
+        $('#' + field + '_field').removeClass('valid').addClass('invalid')
+
+        //  console.log($('#' + field + '_' + validation.type + '_invalid_msg'))
+        if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
+            msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
+        } else {
+
+            msg = $('#invalid_msg').html()
+        }
+    }
+
+    $('#' + field + '_msg').html(msg)
+
+
     if ($('#fields').hasClass('new_object')) {
-        if (validation.class != 'waiting') check_if_form_is_valid()
+
+
+        $('#' + $('#' + field + '_container').attr('object') + '_msg').html('')
+
+        var form_validation = get_form_validation_state()
+        process_form_validation(form_validation)
     }
 
     if ($('#inline_new_object').attr('object') != undefined) {
+        //console.log(validation.class)
+        $('#inline_new_object_msg').removeClass('invalid valid potentially_valid')
+        $('#inline_new_object_msg').html(msg).addClass(validation.class).removeClass('hide')
 
-        $('#' + $('#inline_new_object').attr('object') + '_save').addClass(validation.class)
+        $('#inline_new_object').removeClass('invalid valid potentially_valid')
+        $('#inline_new_object').addClass(validation.class)
 
     }
+
+
 
 
 }
 
 
-function process_validation(validation, field, mark_invalid_if_previously_valid) {
-    if (validation.class == 'potentially_valid' && $('#' + field).attr('has_been_valid') == 1 && mark_invalid_if_previously_valid) {
-        validation.class = 'invalid';
-    }
-    $('#' + field + '_save_button').addClass(validation.class)
-    $("#" + field + '_validation').addClass(validation.class)
-    $("#" + field + '_msg').addClass(validation.class)
+function show_invalid_messages(field) {
+    var validation = validate(field, $('#' + field).val(), $('#' + field + '_container'))
 
+    process_validation(validation, field, true)
 
-
-    if (validation.class == 'waiting') {
-
-    } else {
-
-        $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
-        if (validation.class == 'valid') {
-            $('#' + field).attr('has_been_valid', 1)
-        }
-
-
-        if (validation.class == 'invalid') {
-
-        console.log('#' + field + '_' + validation.type + '_invalid_msg')
-
-            if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
-                var msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
-            } else {
-                var msg = $('#invalid_msg').html()
-            }
-        } else {
-            var msg = '';
-        }
-        $('#' + field + '_msg').html(msg)
-    }
 }
-
 
 
 function select_option(field, value, label) {
@@ -562,10 +623,10 @@ function set_as_main(object, key, field) {
         if (data.state == 200) {
 
 
-   if (data.action == 'new_field') {
+            if (data.action == 'new_field') {
                 if (data.new_fields) {
 
-                  for (var key in data.new_fields) {
+                    for (var key in data.new_fields) {
 
                         create_new_field(data.new_fields[key])
 
@@ -627,14 +688,17 @@ function save_field(object, key, field) {
 
 
 
-    if (!$("#" + field + '_editor').hasClass('changed')) {
+    if (!$("#" + field + '_field').hasClass('changed')) {
 
         console.log('no_change')
         return;
     }
 
-    if (!$("#" + field + '_save_button').hasClass('valid')) {
-        console.log('invalid')
+    if (!$("#" + field + '_field').hasClass('valid')) {
+        console.log('invalid x')
+
+        show_invalid_messages(field)
+
         return;
     }
     if (!$("#" + field + '_save_button').hasClass('fa-cloud')) {
@@ -681,7 +745,7 @@ function save_field(object, key, field) {
         }
 
         $('#' + field + '_msg').html(msg)
-        $('#' + field + '_editor').addClass('invalid')
+        $('#' + field + '_field').addClass('invalid')
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
         return;
@@ -765,7 +829,7 @@ function save_field(object, key, field) {
             if (data.action == 'new_field') {
                 if (data.new_fields) {
 
-                  for (var key in data.new_fields) {
+                    for (var key in data.new_fields) {
 
                         create_new_field(data.new_fields[key])
 
@@ -861,8 +925,7 @@ function create_new_field(_data) {
 
 
 
-        console.log(clone_field)
-
+        //console.log(clone_field)
         clone.find('tr.recipient ').prop('id', clone_field + '_recipient')
         clone.find('tr.organization ').prop('id', clone_field + '_organization')
         clone.find('tr.addressLine1 ').prop('id', clone_field + '_addressLine1')
@@ -917,7 +980,7 @@ function create_new_field(_data) {
 
 
 
-            update_address_fields(clone_field, country_code)
+            update_address_fields(clone_field, country_code, hide_recipient_fields = false)
             $('#' + clone_field + '_country_select').val(country_name)
             if (arg != 'init') {
 
@@ -1075,29 +1138,36 @@ function add_minutes_to_time(time, minutes) {
 }
 
 
-function update_address_fields(field, country_code) {
+function update_address_fields(field, country_code, hide_recipient_fields) {
 
     var request = '/ar_address.php?tipo=fields_data&country_code=' + country_code
     $.getJSON(request, function(data) {
 
-//console.log(field)
+        //console.log(field)
         if (data.state == 200) {
             for (var key in data.fields) {
                 var field_tr = $('#' + field + '_' + key)
                 var field_data = data.fields[key]
 
                 field_tr.find('.label').html(field_data.label)
-//console.log(field_data)
-
+                //console.log(field_data)
                 if (field_data.required) {
+
+
+
+
                     field_tr.find('.fa-asterisk').removeClass('hide')
+
                 } else {
                     field_tr.find('.fa-asterisk').addClass('hide')
 
                 }
 
 
-                if (!field_data.render) {
+
+
+
+                if (!field_data.render || (hide_recipient_fields && (key == 'recipient' || key == 'organization'))) {
                     field_tr.addClass('hide')
                 } else {
                     field_tr.removeClass('hide')

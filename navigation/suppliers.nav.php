@@ -901,4 +901,45 @@ function get_supplier_navigation($data) {
 
 }
 
+function get_new_supplier_navigation($data, $smarty, $user, $db) {
+
+
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('suppliers', '');
+
+	$_section='suppliers';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span class="id ">'._('New Supplier').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
 ?>

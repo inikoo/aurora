@@ -200,27 +200,32 @@ function parse_request($_data, $db) {
 
 			break;
 		case 'customer':
+
 			$module='customers';
 			$section='customer';
 			$object='customer';
-			$key=$view_path[0];
-
+			$parent='account';
+			$parent_key=1;
 			if (isset($view_path[1])) {
-				if ($view_path[1]=='order') {
+
+				$key=$view_path[0];
+
+				if (isset($view_path[1])) {
+					if ($view_path[1]=='order') {
 
 
-					$module='orders';
-					$section='order';
-					$parent='customer';
-					$parent_key=$key;
-					$object='order';
-					$key=$view_path[2];
+						$module='orders';
+						$section='order';
+						$parent='customer';
+						$parent_key=$key;
+						$object='order';
+						$key=$view_path[2];
+
+					}
+
 
 				}
-
-
 			}
-
 
 
 			break;
@@ -235,7 +240,9 @@ function parse_request($_data, $db) {
 
 			break;
 		case 'customers':
+		
 			$module='customers';
+			
 			if ($count_view_path==0) {
 				$section='customers';
 				$parent='store';
@@ -248,6 +255,9 @@ function parse_request($_data, $db) {
 
 			}
 			$arg1=array_shift($view_path);
+			
+			
+			
 			if ($arg1=='all') {
 				$module='customers_server';
 				$section='customers';
@@ -336,7 +346,9 @@ function parse_request($_data, $db) {
 						$section='lists';
 					}elseif ($view_path[0]=='categories') {
 						$section='categories';
-					}elseif ($view_path[0]=='category') {
+					
+					}
+					elseif ($view_path[0]=='category') {
 
 						$section='category';
 
@@ -355,10 +367,14 @@ function parse_request($_data, $db) {
 							//}
 						}
 					}
-
+elseif ($view_path[0]=='new') {
+				$section='customer.new';
+					$object='';
+			}
 				}
 
 			}
+			
 			break;
 		case 'orders':
 			$module='orders';
@@ -1145,7 +1161,8 @@ function parse_request($_data, $db) {
 
 
 
-				}elseif ($view_path[0]=='new') {
+				}
+				elseif ($view_path[0]=='new') {
 					$section='employee.new';
 					$object='';
 

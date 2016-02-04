@@ -6,24 +6,9 @@
     padding: 10px 20px;
    
    //For displaying correctly the msg to the right of the formated value
-   .formatted_value,.address_edit_fields_container{float:left}
-    
-    textarea{
-      position: relative;
-       padding: 4px 6px;
-    width: 206px;
-    height: 120px;
-    font-family: inherit;
-        font-size: 100%;
-        line-height: normal;
-        outline: none;
-       font-weight: normal;
-        color: #555;
-        vertical-align: middle;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        margin: 0px;
-    }
+   .formatted_value,.address_edit_fields_container{margin-right:15px}
+   .address_edit_fields_container,.address.formatted_value{float:left}
+  
     
     .fa.save {
         margin-left: 5px;
@@ -61,74 +46,6 @@
     
     
 
-    
-    .datepicker{
-        margin-bottom:5px;
-        margin-top: 0px;
-        
-         .ui-datepicker thead tr{
-      
-         height: $height_calendar_th;
-        line-height: $height_calendar_th;
-    }
-        
-      
-    }
-    
-  
-     .dropcontainer{
-    
-    margin-bottom:5px;
-        .checkbox{margin-right: 4px;}
-    
-       
-        color: #777;
-        width: 259px;
-       // margin-left: 5px;
-        margin-top: -3px;
-        ul {
-            border: 1px solid #ccc;
-            border-top: none;
-            background: #fff;
-            list-style-type: none;
-            padding: 5px 10px 5px 10px;
-            margin: 0;
-          
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            li {
-                height: $height_select_option;
-                line-height: $height_select_option;
-                padding: 0px 5px;
-                cursor: pointer;
-                &:hover {
-                    background: #f5f5f5;
-                    outline: none;
-                }
-                &.selected {
-                    background: #e3e2e2;
-                    outline: none;
-                    cursor: normal;
-                }
-                .current_mark {
-                    font-size: 50%;
-                    position: relative;
-                    bottom: 2px;
-                    margin-right: 5px;
-                    visibility: hidden;
-                    opacity: .5;
-                }
-                .current_mark.current {
-                    visibility: visible;
-                }
-            }
-        }
-        &.radio_option{
-          margin-top: -30px;
-         ul{ border-top: 1px solid #ccc;}
-         }
-    }
 
     .intl-tel-input .flag-container {display:none};
    
@@ -317,12 +234,7 @@
             width: 280px;
            vertical-align:top
         }
-        
-         .show_buttons {
-         
-          &.address{ vertical-align:top;padding-top:7px}
-        }
-        
+      
         
         .value span {
           //  padding-left: 5px;
@@ -333,14 +245,25 @@
     }
     
  
+    .valid .save {color:$color_save;cursor:pointer}
+    .invalid{
+     .save,.msg {color:$color_error;}
+      input{
+      background-color : #ffebeb; 
+      &.potentially_valid{ background-color : #fff;}
+      &.valid{ background-color : #fff;}
+      } }
 
 }
 
 .show_buttons {
+
+&.address{ vertical-align:top;padding-top:7px}
+
             width:20px;
             line-height:20px;
             text-align: left;
-           
+          
              vertical-align:top;
             .fa{ 
                 margin: 0px;padding:0px;
