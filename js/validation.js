@@ -7,8 +7,8 @@ function validate_field(field, new_value, field_type, required, server_validatio
 
     var validation = client_validation(field_type, required, new_value, field)
 
-    
-    
+
+
     if (validation.class == 'valid' && server_validation_type) {
 
 
@@ -90,7 +90,7 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
-   // console.log(required)
+    console.log(type + ' ' + required)
     var valid_state = {
         class: 'valid',
         type: ''
@@ -122,6 +122,19 @@ function client_validation(type, required, value, field) {
 
     case 'string':
         break;
+
+    case 'handle':
+
+        if (value.length < 4) {
+            return {
+                class: 'potentially_valid',
+
+                type: 'short'
+            }
+        }
+
+        break;
+
     case 'pin':
 
         if (value.length < 4) {
@@ -219,10 +232,9 @@ function client_validation(type, required, value, field) {
 
         var tmp = value.replace(/"[^"]*"/g, '')
         if (tmp.match(/"/g)) {
-           // console.log('has quote')
+            // console.log('has quote')
         } else {
-          //  console.log('dont has quote')
-
+            //  console.log('dont has quote')
             if (tmp.match(/\s/g)) {
 
 
@@ -291,17 +303,17 @@ function client_validation(type, required, value, field) {
         break;
 
     case 'time':
-    
-    
-      var timelReg = /^[0-9\:]+$/
-            if (!timelReg.test(value)) {
 
-                return {
-                    class: 'invalid',
-                    type: 'invalid'
-                }
+
+        var timelReg = /^[0-9\:]+$/
+        if (!timelReg.test(value)) {
+
+            return {
+                class: 'invalid',
+                type: 'invalid'
             }
-    
+        }
+
         if (value.length > 5) {
 
             return {
@@ -343,7 +355,7 @@ function client_validation(type, required, value, field) {
                 }
             }
 
-        var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5]$/
+            var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5]$/
             if (timelReg.test(value)) {
 
                 return {

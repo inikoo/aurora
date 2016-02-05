@@ -38,8 +38,7 @@ function get_form_validation_state(submitting) {
             component_validation = 'potentially_valid'
         }
 
-    if(component_validation=='invalid' || component_validation=='potentially_valid')
-        console.log(field+' '+component_validation+' '+form_validation)
+        if (component_validation == 'invalid' || component_validation == 'potentially_valid') console.log(field + ' ' + component_validation + ' ' + form_validation)
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
         }
@@ -433,9 +432,6 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 }
 
 
-
-
-
                 if (!field_data.render || (hide_recipient_fields && (key == 'recipient' || key == 'organization'))) {
                     field_tr.addClass('hide')
                 } else {
@@ -451,7 +447,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
 
                 var field = $(this).attr('field')
-               // console.log(field)
+                // console.log(field)
                 var value = $('#' + field).val()
 
                 var field_data = $('#' + field + '_container')

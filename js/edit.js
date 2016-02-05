@@ -27,6 +27,7 @@ function open_edit_field(object, key, field) {
 
     switch (type) {
     case 'string':
+    case 'handle':
     case 'textarea':
     case 'email':
     case 'new_email':
@@ -157,6 +158,7 @@ function close_edit_field(field) {
 
     switch (type) {
     case 'string':
+    case 'handle':
     case 'email':
     case 'int_unsigned':
     case 'smallint_unsigned':
@@ -438,9 +440,9 @@ function on_changed_value(field, new_value) {
 function validate(field, value) {
 
     var field_data = $('#' + field + '_container')
-    
-    
-    
+
+
+
     $('#' + field + '_field').addClass('waiting_validation changed')
     $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
@@ -477,7 +479,7 @@ function process_validation(validation, field, final_value) {
         if (type == 'salary') {
 
             $('#salary  input.salary_input_field').each(function(i, obj) {
-               // console.log($(obj))
+                // console.log($(obj))
                 if ($(obj).hasClass('potentially_valid')) {
                     $(obj).removeClass('potentially_valid').addClass('invalid')
                 }
@@ -498,10 +500,10 @@ function process_validation(validation, field, final_value) {
     var msg = '';
 
     if (validation.class == 'valid') {
-    
+
         $('#' + field).attr('has_been_valid', 1)
         $('#' + field + '_field').removeClass('invalid potentially_valid').addClass('valid')
-//console.log('#' + field + '_field')
+        //console.log('#' + field + '_field')
     } else if (validation.class == 'invalid') {
 
         $('#' + field + '_field').removeClass('valid').addClass('invalid')

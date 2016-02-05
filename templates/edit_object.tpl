@@ -54,7 +54,7 @@
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
         
-		{if $edit=='string' or $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
+		{if $edit=='string' or  $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
 		
 	
 		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0"/>

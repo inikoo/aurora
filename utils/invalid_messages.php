@@ -157,6 +157,12 @@ function get_invalid_message($type) {
 			'short'=>sprintf(_('PIN has to be at least %d characters'), 4),
 		);
 		break;
+	case 'handle':
+		$messages=array(
+			'invalid'=>_('Invalid value'),
+			'short'=>sprintf(_('Value has to be at least %d characters'), 4),
+		);
+		break;	
 	case 'pin_paranoid':
 		$messages=array(
 			'incorrect'=>_('Incorrect password'),

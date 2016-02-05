@@ -667,7 +667,7 @@ class Staff extends DB_Table{
 		}
 		$data['User Type']='Staff';
 		$data['User Parent Key']=$this->id;
-
+		$data['User Alias']=$this->get('Name');
 		$user= new User('find', $data, 'create');
 		$this->get_user_data();
 		$this->create_user_error=$user->error;

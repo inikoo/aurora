@@ -8,6 +8,7 @@
  Version 3
 
 */
+include_once 'class.Staff.php';
 
 include_once 'utils/invalid_messages.php';
 include 'utils/available_locales.php';
@@ -91,9 +92,12 @@ asort($options_Groups);
 
 
 
+$staff=new Staff($system_user->get('User Parent Key'));
+
+
 $object_fields=array(
 	array(
-		'label'=>_('Employee'),
+		'label'=>($staff->get('Type')=='Contractor'?_('Contractor'):_('Employee')),
 		'show_title'=>true,
 		'class'=>'links',
 		'fields'=>array(
@@ -110,7 +114,7 @@ $object_fields=array(
 				'id'=>'User_Alias',
 				'value'=>'',
 				'label'=>$system_user->get('User Alias').' ('.sprintf('%35d', $system_user->get('User Parent Key')).')',
-				'reference'=>'employee/'.$system_user->get('User Parent Key')
+				'reference'=>($staff->get('Type')=='Contractor'?'contractor':'employee').'/'.$system_user->get('User Parent Key')
 			),
 
 		)
@@ -135,11 +139,12 @@ $object_fields=array(
 			array(
 
 				'id'=>'User_Handle',
-				'edit'=>'string',
+				'edit'=>'handle',
 				'value'=>$system_user->get('User Handle'),
 				'formatted_value'=>$system_user->get('Handle'),
 				'label'=>_('Login'),
-				'server_validation'=>'check_for_duplicates'
+				'server_validation'=>'check_for_duplicates',
+				'invalid_msg'=>get_invalid_message('handle'),
 
 
 
