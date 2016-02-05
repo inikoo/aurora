@@ -307,11 +307,12 @@ $object_fields[]=array(
 		array(
 			'render'=>false,
 			'id'=>'Staff_User_Handle',
-			'edit'=>'string',
+			'edit'=>'handle',
 			'value'=>$employee->get('Staff User Handle'),
 			'formatted_value'=>$employee->get('User Handle'),
 			'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
 			'server_validation'=>'check_for_duplicates',
+			'invalid_msg'=>get_invalid_message('handle'),
 			'type'=>'user_value'
 
 		),
