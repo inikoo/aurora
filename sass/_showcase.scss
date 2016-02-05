@@ -1,75 +1,12 @@
-
-.sticky_note {
-    border: 1px solid #BAB84E;
-    background: #EDEB82;
-    float: left;
-    width: 300px;
-    padding: 0;
-    margin-left: 20px;
-}
-.sticky_note.pink {
-    background: #ff7dbd;
-    border: 1px solid #e52789;
-}
-.sticky_note.green {
-    background: #94db84;
-    border: 1px solid #78bf41;
-}
-
-
- 
-
-    
-
-.full_date {
-    width: 250px;
-    text-align: right;
-}
-.contact_name {
-    width: 150px;
-    white-space: normal;
-    white-space: nowrap;
-}
-
-
-
- .presention_card{
-    padding: 10px 20px;
-   
-}
-
-
-
-
-
 #object_showcase {
-
-.showcase{padding-top:0px;}
-
-     h1{ padding:0px;margin:0px;
-           color: #555;
-                float: left;
-              
-                font-size: $height_header*.7;
-                font-family: $font_title;
-                font-weight: 700;}
-
     clear: both;
     border-bottom: 1px solid #ccc;
     font-size: 15px;
-    .subject_profile {
-        padding: 20px;
-    }
-    .pdf_link {
-        img {
-            height: 10px;
-            vertical-align: 0px;
-        }
-    }
-    #containers {
-        padding: 20px 30px;
-    }
-    .data_container {
+    
+    
+    
+  
+     .data_container {
         float: left;
         margin-right: 10px;
         margin-bottom: 10px;
@@ -82,92 +19,30 @@
             margin-bottom: 4px;
         }
     }
-    .order {
-        #contact_data {
-            width: 500px;
-        }
-        #dates {
-            width: 310px;
-        }
+    
+    
+    .sticky_note_button{min-height:80px;float:left;width:28px}
+    
+    .sticky_note {
+    font-size:90%;
+    float:left;max-width:242px;padding:7px 10px 15px 10px;
+    
+        border: 1px solid #BAB84E;
+        background: #EDEB82;
+      
     }
-    .invoice {
-        #dates {
-            width: 310px;
-        }
-        #totals {
-            width: 310px;
-        }
+    .sticky_note.pink {
+        background: #ff7dbd;
+        border: 1px solid #e52789;
     }
-    #contact_data {
-        float: left;
-        padding: 20px 20px;
+    .sticky_note.green {
+        background: #94db84;
+        border: 1px solid #78bf41;
     }
-    .block {
-        float: right;
-        border-left: 1px solid #ccc;
-        height: 100%;
-    }
-    #dates {
-        .date_and_state {
-            width: 100%;
-            text-align: center;
-            .date {
-                padding: 3px;
-                border-bottom: 1px solid #ccc;
-            }
-            .state {
-                font-size: 80%;
-                border-bottom: 1px solid #ccc;
-                td {
-                    padding: 3px 0px;
-                }
-            }
-            .two-columns {
-                td {
-                    &:first-of-type {
-                        width: 50%;
-                        border-right: 1px solid #ccc;
-                    }
-                }
-            }
-        }
-        .ul_table {
-            width: 100%;
-            padding: 5px;
-            margin-top: 10px;
-            .icon {
-                width: 24px;
-                text-align: right;
-            }
-            .state {
-                text-align: right;
-                padding-right: 10px;
-                font-size: 80%;
-            }
-        }
-    }
-    #totals, .block {
-        padding-top: 5px;
-        table {
-            width: 100%;
-        }
-        td {
-            padding: 4px 8px;
-        }
-        .top-border {
-            border-top: 1px solid #ccc;
-        }
-        .bottom-border {
-            border-bottom: 1px solid #ccc;
-        }
-        .top-strong-border {
-            border-top: 1px solid #aaa;
-        }
-        .bottom-strong-border {
-            border-bottom: 1px solid #aaa;
-        }
-    }
-    #account .block {
-        min-width: 150px;
-    }
+    
+     @import 'showcase.subject';
+    @import 'showcase.order';
+
+    
+ 
 }

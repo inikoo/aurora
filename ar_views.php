@@ -297,6 +297,10 @@ function get_object_showcase($data,$smarty,$user) {
 		include_once 'showcase/customer.show.php';
 		$html=get_customer_showcase($data,$smarty,$user);
 		break;
+	case 'supplier':
+		include_once 'showcase/supplier.show.php';
+		$html=get_supplier_showcase($data,$smarty,$user);
+		break;	
 	case 'order':
 		include_once 'showcase/order.show.php';
 		$html=get_order_showcase($data,$smarty,$user);
