@@ -9,6 +9,9 @@
 
 */
 
+require_once 'utils/date_functions.php';
+
+
 $currency='';
 $where='where true';
 $table='`Supplier Dimension` S ';

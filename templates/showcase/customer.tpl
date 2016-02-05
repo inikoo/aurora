@@ -1,5 +1,5 @@
 <div class="subject_profile">
-<div id="contact_data" style="float:left">
+<div id="contact_data" >
 	<div class="data_container">
 		<div class="data_field  {if $customer->get('Customer Type')!='Company'}hide{/if}">
 			<i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span class="Customer_Name">{$customer->get('Customer Name')}</span>
@@ -14,7 +14,7 @@
 	</div>
 	<div class="data_container">
 		<div class="data_field   {if !$customer->get('Customer Main Plain Email')}hide{/if}">
-			<i class="fa fa-fw fa-at"></i> <span class="Customer_Main_Plain_Email">{mailto address=$customer->get('Main Plain Email')}</span>
+			<i class="fa fa-fw fa-at"></i> <span id="Customer_Main_Plain_Email" class="Customer_Main_Plain_Email">{mailto address=$customer->get('Main Plain Email')}</span>
 		</div>
 		<span id="display_telephones"></span>
 		{if $customer->get('Customer Preferred Contact Number')=='Mobile'}
@@ -49,22 +49,23 @@
 		</div>
 	</div>
 	<div class="data_container {if $customer->get('Sticky Note')==''}hide{/if} ">
-		<div style="min-height:80px;float:left;width:28px">
+		<div class="sticky_note_button" >
 			<i class="fa fa-sticky-note"></i>
 		</div>
-		<div style="float:left;max-width:242px;border:1px solid #ccc;padding:5px 10px">
+		<div class="sticky_note" >
+		{$customer->get('Sticky Note')}
 		</div>
 	</div>
 	<div style="clear:both">
 	</div>
 </div>
-<div style="margin-top:3px;max-width:370px;float:left">
-	<div id="overviews" style="">
-		<div id="customer_overview" style="float:left;margin-bottom:10px;">
-			<table border="0" style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
-				<tr id="account_balance_tr">
+<div id="info" >
+	<div id="overviews" >
+		
+			<table border="0" class="overview" style="">
+				<tr id="account_balance_tr" class="main">
 					<td id="account_balance_label">{t}Account Balance{/t}</td>
-					<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"><img id="edit_account_balance_button" src="/art/icons/add_bw.png" style="visibility:hidden;cursor:pointer"> {$customer->get('Account Balance')} </td>
+					<td id="account_balance" class="aright highlight" >{$customer->get('Account Balance')} </td>
 				</tr>
 				<tr id="last_credit_note_tr" style="display:none">
 					<td colspan="2" class="aright" style="padding-right:20px">{t}Credit note{/t}: <span id="account_balance_last_credit_note"></span></td>
@@ -74,15 +75,15 @@
 					<td id="account_balance" class="aright" style="padding-right:20px;font-weight:800"> {$customer->get_formatted_pending_payment_amount_from_account_balance()} </td>
 				</tr>
 			</table>
-		</div>
-		<div id="orders_overview" style="float:left;;margin-right:40px;width:300px;font-size:95%">
-			<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+		
+		
+			<table border="0" class="overview">
 				{if $customer->get('Customer Level Type')=='VIP'} 
 				<td></td>
-				<td class="id" style="font-weight:800">{t}VIP Customer{/t}</td>
+				<td class="highlight">{t}VIP Customer{/t}</td>
 				{/if} {if $customer->get('Customer Level Type')=='Partner'} 
 				<td></td>
-				<td class="id" style="font-weight:800">{t}Partner Customer{/t}</td>
+				<td class="highlight" >{t}Partner Customer{/t}</td>
 				{/if} {if $customer->get('Customer Type by Activity')=='Losing'} 
 				<tr>
 					<td colspan="2">{t}Losing Customer{/t}</td>
@@ -101,28 +102,42 @@
 				<tr>
 					<td>{$correlation_msg}</td>
 				</tr>
-				{/if} {if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'} 
-				<tr>
-					<td colspan=2> 
-					<div>
-						{if $customer->get('Customer Send Newsletter')=='No'}<i class="fa fa-ban"></i> <span>{t}Don't send newsletters{/t}</span><br />
-						{/if} {if $customer->get('Customer Send Email Marketing')=='No'}<i class="fa fa-ban"></i> <span>{t}Don't send marketing by email{/t}</span><br />
-						{/if} {if $customer->get('Customer Send Postal Marketing')=='No'}<i class="fa fa-ban"></i> <span>{t}Don't send marketing by post{/t}</span><br />
-						{/if} 
-					</div>
-					</td>
-				</tr>
-				{/if} {foreach from=$customer->get_category_data() item=item key=key} 
+				{/if}  {foreach from=$customer->get_category_data() item=item key=key} 
 				<tr>
 					<td>{$item.root_label}:</td>
 					<td>{$item.value}</td>
 				</tr>
 				{/foreach} 
 			</table>
-		</div>
+		
+		
+		{if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'} 
+				<table border="0" class="overview compact">
+				<tr class="{if $customer->get('Customer Send Newsletter')=='Yes'}hide{/if}">
+					<td colspan=2> 
+					<i class="fa fa-ban"></i> <span>{t}Don't send newsletters{/t}</span>
+					</td>
+				</tr>	
+				<tr class="{if $customer->get('Customer Send Email Marketing')=='Yes'}hide{/if}">
+					<td colspan=2> 
+					<i class="fa fa-ban"></i> <span>{t}Don't send marketing by email{/t}</span>
+					</td>
+				</tr>	
+				<tr class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}hide{/if}">
+					<td colspan=2> 
+					<i class="fa fa-ban"></i> <span>{t}Don't send marketing by post{/t}</span>
+					</td>
+				</tr>	
+
+
+		              
+				</table>
+				{/if}
+		
+		
 		{if $customer->get('Customer Orders')>0} 
-		<div id="customer_overview" style="float:left;margin-top:10px;">
-			<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+		
+			<table class="overview">
 				{if $customer->get('Customer Type by Activity')=='Lost'} 
 				<tr>
 					<td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span></td>
@@ -133,14 +148,30 @@
 				</tr>
 				{/if} 
 				<tr>
-					<td> {if $customer->get('Customer Orders')==1} {$customer->get('Customer Name')} {t}has place one order{/t}. {elseif $customer->get('Customer Orders')>1 } {$customer->get('customer name')} {if $customer->get('Customer Type by Activity')=='Lost'}{t}placed{/t}{else}{t}has placed{/t}{/if} <b>{$customer->get('Customer Orders')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}orders{/t}{else}{t}orders so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}). {if $customer->get('Customer Orders Invoiced')}<br />
-					{if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}.{/if} {else} Customer has not place any order yet. {/if} </td>
+					<td class="text">
+					{if $customer->get('Customer Orders')==1}
+					<p>{$customer->get('Name')} {t}has place one order{/t}.</p>{elseif $customer->get('Customer Orders')>1 } {$customer->get('Name')} {if $customer->get('Customer Type by Activity')=='Lost'}{t}placed{/t}{else}{t}has placed{/t}{/if} <b>{$customer->get('Customer Orders')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}orders{/t}{else}{t}orders so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}). {if $customer->get('Customer Orders Invoiced')}</p>
+					<p>{if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}.{/if} {else} Customer has not place any order yet. {/if}</p>
+					</td>
 				</tr>
 			</table>
-		</div>
+		
 		{/if} 
 	</div>
 </div>
 <div style="clear:both">
 </div>
 </div>
+
+<script>
+function email_width_hack() {
+    var email_length = $('#Customer_Main_Plain_Email').text().length
+
+    if (email_length > 30) {
+        $('#Customer_Main_Plain_Email').css("font-size", "90%");
+    }
+}
+
+email_width_hack();
+
+</script>
