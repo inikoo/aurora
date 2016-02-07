@@ -183,5 +183,73 @@ ALTER TABLE `Customer Other Telephone Dimension` CHANGE `Customer Other Telephon
 
   ALTER TABLE `Customer Dimension` ADD `Customer Delivery Address Recipient` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Invoice Address Postal Label`, ADD `Customer Delivery Address Organization` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Recipient`, ADD `Customer Delivery Address Line 1` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Organization`, ADD `Customer Delivery Address Line 2` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Line 1`, ADD `Customer Delivery Address Sorting Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Line 2`, ADD `Customer Delivery Address Postal Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Sorting Code`, ADD `Customer Delivery Address Dependent Locality` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Postal Code`, ADD `Customer Delivery Address Locality` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Dependent Locality`, ADD `Customer Delivery Address Administrative Area` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Locality`, ADD `Customer Delivery Address Country 2 Alpha Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Delivery Address Administrative Area`, ADD `Customer Delivery Address Checksum` VARCHAR(64) NULL DEFAULT NULL AFTER `Customer Delivery Address Country 2 Alpha Code`, ADD `Customer Delivery Address Formatted` TEXT NULL DEFAULT NULL AFTER `Customer Delivery Address Checksum`, ADD `Customer Delivery Address Postal Label` TEXT NULL DEFAULT NULL AFTER `Customer Delivery Address Formatted`;
 
-  ALTER TABLE `Customer Other Delivery Address Dimension` ADD `Customer Other Delivery Address Recipient` VARCHAR(255) NULL DEFAULT NULL AFTER `	Customer Other Delivery Address Customer Key`, ADD `Customer Other Delivery Address Organization` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Recipient`, ADD `Customer Other Delivery Address Line 1` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Organization`, ADD `Customer Other Delivery Address Line 2` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Line 1`, ADD `Customer Other Delivery Address Sorting Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Line 2`, ADD `Customer Other Delivery Address Postal Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Sorting Code`, ADD `Customer Other Delivery Address Dependent Locality` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Postal Code`, ADD `Customer Other Delivery Address Locality` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Dependent Locality`, ADD `Customer Other Delivery Address Administrative Area` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Locality`, ADD `Customer Other Delivery Address Country 2 Alpha Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Administrative Area`, ADD `Customer Other Delivery Address Checksum` VARCHAR(64) NULL DEFAULT NULL AFTER `Customer Other Delivery Address Country 2 Alpha Code`, ADD `Customer Other Delivery Address Formatted` TEXT NULL DEFAULT NULL AFTER `Customer Other Delivery Address Checksum`, ADD `Customer Other Delivery Address Postal Label` TEXT NULL DEFAULT NULL AFTER `Customer Other Delivery Address Formatted`;
 ALTER TABLE `Customer Dimension` ADD `Customer Location` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Main Plain Email`;
+
+
+CREATE TABLE `Customer Other Delivery Address Dimension` (
+  `Customer Other Delivery Address Key` mediumint(8) UNSIGNED NOT NULL,
+  `Customer Other Delivery Address Store Key` mediumint(8) UNSIGNED NOT NULL,
+  `Customer Other Delivery Address Customer Key` mediumint(8) UNSIGNED NOT NULL,
+  `Customer Other Delivery Address Recipient` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Organization` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Line 1` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Line 2` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Sorting Code` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Postal Code` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Dependent Locality` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Locality` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Administrative Area` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Country 2 Alpha Code` varchar(255) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Checksum` varchar(64) NOT NULL DEFAULT '',
+  `Customer Other Delivery Address Formatted` text NOT NULL,
+  `Customer Other Delivery Address Postal Label` text NOT NULL,
+  `Customer Other Delivery Address Label` varchar(64) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `Customer Other Delivery Address Dimension`
+  ADD PRIMARY KEY (`Customer Other Delivery Address Key`),
+  ADD KEY `Customer Other Delivery Address Customer Key` (`Customer Other Delivery Address Customer Key`),
+  ADD KEY `Customer Other Delivery Address Store Key` (`Customer Other Delivery Address Store Key`);
+
+
+ALTER TABLE `Customer Other Delivery Address Dimension`
+  MODIFY `Customer Other Delivery Address Key` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+  
+  
+  
+  
+    ALTER TABLE `Supplier Dimension` ADD `Supplier Contact Address Recipient` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Main Plain Email`, ADD `Supplier Contact Address Organization` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Recipient`, ADD `Supplier Contact Address Line 1` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Organization`, ADD `Supplier Contact Address Line 2` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Line 1`, ADD `Supplier Contact Address Sorting Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Line 2`, ADD `Supplier Contact Address Postal Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Sorting Code`, ADD `Supplier Contact Address Dependent Locality` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Postal Code`, ADD `Supplier Contact Address Locality` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Dependent Locality`, ADD `Supplier Contact Address Administrative Area` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Locality`, ADD `Supplier Contact Address Country 2 Alpha Code` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Contact Address Administrative Area`, ADD `Supplier Contact Address Checksum` VARCHAR(64) NULL DEFAULT NULL AFTER `Supplier Contact Address Country 2 Alpha Code`, ADD `Supplier Contact Address Formatted` TEXT NULL DEFAULT NULL AFTER `Supplier Contact Address Checksum`;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Contact Address Postal Label` TEXT NULL DEFAULT NULL AFTER `Supplier Contact Address Formatted`;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Location` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Main Plain Email`;
+CREATE TABLE `Supplier Other Email Dimension` (
+  `Supplier Other Email Key` mediumint(8) UNSIGNED NOT NULL,
+  `Supplier Other Email Supplier Key` mediumint(8) UNSIGNED NOT NULL,
+  `Supplier Other Email Email` varchar(255) NOT NULL,
+  `Supplier Other Email Label` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Supplier Other Email Dimension`
+  ADD PRIMARY KEY (`Supplier Other Email Key`),
+  ADD KEY `Supplier Other Email Supplier Key` (`Supplier Other Email Supplier Key`,`Supplier Other Email Email`) USING BTREE,
+  ADD KEY `Supplier Other Email Email` (`Supplier Other Email Email`);
+
+ALTER TABLE `Supplier Other Email Dimension`
+  MODIFY `Supplier Other Email Key` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+  CREATE TABLE `Supplier Other Telephone Dimension` (
+  `Supplier Other Telephone Key` mediumint(8) UNSIGNED NOT NULL,
+  `Supplier Other Telephone Supplier Key` mediumint(8) UNSIGNED NOT NULL,
+  `Supplier Other Telephone Number` varchar(255) NOT NULL,
+  `Supplier Other Telephone Formatted Number` varchar(255) NOT NULL,
+  `Supplier Other Telephone Label` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Supplier Other Telephone Dimension`
+  ADD PRIMARY KEY (`Supplier Other Telephone Key`),
+  ADD KEY `Supplier Other Telephone Supplier Key` (`Supplier Other Telephone Supplier Key`,`Supplier Other Telephone Number`) USING BTREE,
+  ADD KEY `Supplier Other Telephone Number` (`Supplier Other Telephone Number`);
+
+ALTER TABLE `Supplier Other Telephone Dimension`
+  MODIFY `Supplier Other Telephone Key` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+

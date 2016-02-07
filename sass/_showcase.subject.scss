@@ -1,36 +1,39 @@
-    .subject_profile {
-        padding: 20px;
-        
-          #contact_data {
-          
+.subject_profile {
+    padding: 20px;
+    #contact_data {
         float: left;
-        padding: 20px 20px;
+        padding: 0px 20px 0px 0px;
     }
-    #info{
-    margin-top:3px;max-width:370px;float:left;
-    
-    #overviews{min-width:350px;;
-    .overview{
-    
-    
-    font-size:95%;
-    
-     float:left;margin-bottom:10px;padding:0 5px;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;width:100%;
-    .text{padding:10px 0px;
-    p {margin-bottom:0px;}
+    #info {
+        margin-top: 3px;
+        max-width: 370px;
+        float: left;
+        #overviews {
+            min-width: 350px;
+            .overview {
+                font-size: 95%;
+                float: left;
+                margin-bottom: 10px;
+                padding: 0 5px;
+                border-top: 1px solid #ccc;
+                border-bottom: 1px solid #ddd;
+                width: 100%;
+                .text {
+                    padding: 10px 0px;
+                    p {
+                        margin-bottom: 0px;
+                    }
+                }
+                &.compact tr {
+                    height: $height_short_row;
+                }
+                tr {
+                    height: $height_medium_row;
+                }
+            }
+        }
     }
-    
-   
-   &.compact tr{height:$height_short_row;}
-    tr{height:$height_medium_row;}
-    
-    }
-    }
-    
-    
-    }
-        
-    }
+}
     
     
     

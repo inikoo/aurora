@@ -36,12 +36,27 @@ require_once 'class.Address.php';
 
 
 
-$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Key`=210902 order by `Customer Key` desc ');
+$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Key`=28623 order by `Customer Key` desc ');
 $sql=sprintf('select `Customer Key` from `Customer Dimension` order by `Customer Key` desc ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$customer=new Customer($row['Customer Key']);
+
+
+
+		$other_emails=get_other_emails_data($db, $customer);
+		if (count($other_emails)>0) {
+			//print $customer->id."\n";
+
+			foreach ($other_emails as $other_email) {
+				$customer->update(array('new email'=>$other_email['email']));
+				//print_r($customer);
+			}
+
+		}
+
+
 
 		$store=new Store($customer->get('Store Key'));
 		$default_country=$store->get('Store Home Country Code 2 Alpha');
@@ -79,6 +94,7 @@ if ($result=$db->query($sql)) {
 						$customer->get('Contact Address Country 2 Alpha Code'),
 						$location))
 			), 'no_history');
+
 
 
 
@@ -184,6 +200,21 @@ if ($result=$db->query($sql)) {
 
 		}
 
+		if ($customer->data['Customer Main Plain Telephone']!='') {
+			$customer->update(array('Customer Main Plain Telephone'=>$customer->data['Customer Main Plain Telephone']), 'no_history');
+		}
+		if ($customer->data['Customer Main Plain Mobile']!='') {
+			$customer->update(array('Customer Main Plain Mobile'=>$customer->data['Customer Main Plain Mobile']), 'no_history');
+		}
+		if ($customer->data['Customer Main Plain FAX']!='') {
+			$customer->update(array('Customer Main Plain FAX'=>$customer->data['Customer Main Plain FAX']), 'no_history');
+		}
+
+
+		add_other_telephone(get_other_telecoms_data($db, 'Telephone', $customer), $customer);
+		add_other_telephone(get_other_telecoms_data($db, 'Mobile', $customer), $customer);
+		add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
+
 
 	}
 
@@ -193,6 +224,27 @@ if ($result=$db->query($sql)) {
 }
 
 
+function add_other_telephone($other_telephones, $customer) {
+	if (count($other_telephones)>0) {
+
+
+		foreach ($other_telephones as $other_telephone) {
+			$customer->update(array('new telephone'=>$other_telephone['number']));
+			if ($customer->field_created_key and $other_telephone['label']!='') {
+				$update_data=array();
+				$update_data['Customer Other Telephone Label '.$customer->field_created_key]=$other_telephone['label'];
+				$customer->update($update_data);
+
+			}
+
+
+
+
+		}
+
+	}
+
+}
 
 
 function trim_value(&$value) {
@@ -424,6 +476,80 @@ function get_delivery_address_keys($db, $customer_key, $main_address_key) {
 
 
 }
+
+
+function get_other_emails_data($db, $customer) {
+
+
+
+	$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
+        `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
+        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )
+        where  `Subject Type`='Customer' and `Subject Key`=%d "
+		, $customer->id
+		, $customer->id
+	);
+
+	$email_keys=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			if ($row['Email Key']!=$customer->data['Customer Main Email Key'])
+				$email_keys[$row['Email Key']]= array(
+					'email'=>$row['Email'],
+					'key'=>$row['Email Key'],
+					'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
+					'label'=>$row['Email Description'],
+					'user_key'=>$row['User Key']
+				);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	return $email_keys;
+
+}
+
+
+function get_other_telecoms_data($db, $type, $customer) {
+
+	$sql=sprintf("select B.`Telecom Key`,`Telecom Description`,`Telecom Plain Number` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and   `Subject Type`='Customer' and `Subject Key`=%d ",
+		prepare_mysql($type),
+		$customer->id
+	);
+	//print $sql;
+	$telecom_keys=array();
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			if ($row['Telecom Key']!=$customer->data["Customer Main $type Key"]) {
+
+
+				$telecom_keys[$row['Telecom Key']]= array(
+					'number'=>$row['Telecom Plain Number'],
+					'label'=>$row['Telecom Description']
+				);
+
+			}
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	return $telecom_keys;
+
+}
+
 
 
 ?>

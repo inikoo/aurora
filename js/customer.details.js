@@ -7,19 +7,19 @@ function post_set_as_main(data) {
 
 
     if (data.action == 'set_main_contact_number_Mobile') {
-     
+
 
         $("#Customer_Main_Plain_Mobile_display").insertAfter("#display_telephones");
     } else if (data.action == 'set_main_contact_number_Telephone') {
-       
+
 
         $("#Customer_Main_Plain_Telephone_display").insertAfter("#display_telephones");
 
-    }else if (data.action == 'set_main_delivery_address') {
-       
-      
+    } else if (data.action == 'set_main_delivery_address') {
 
-     var address_fields = jQuery.parseJSON(data.value)
+
+
+        var address_fields = jQuery.parseJSON(data.value)
 
         $('#Customer_Delivery_Address_recipient  input ').val(decodeEntities(address_fields['Address Recipient']))
         $('#Customer_Delivery_Address_organization  input ').val(decodeEntities(address_fields['Address Organization']))
@@ -30,16 +30,16 @@ function post_set_as_main(data) {
         $('#Customer_Delivery_Address_dependentLocality  input ').val(decodeEntities(address_fields['Address Dependent Locality']))
         $('#Customer_Delivery_Address_locality  input ').val(decodeEntities(address_fields['Address Locality']))
         $('#Customer_Delivery_Address_administrativeArea  input ').val(decodeEntities(address_fields['Address Administrative Area']))
- 
- $('#Customer_Delivery_Address_country_select').intlTelInput("setCountry", address_fields['Address Country 2 Alpha Code'].toLowerCase());
-      $('#Customer_Delivery_Address_country_select').trigger("country-change",'init');
+
+        $('#Customer_Delivery_Address_country_select').intlTelInput("setCountry", address_fields['Address Country 2 Alpha Code'].toLowerCase());
+        $('#Customer_Delivery_Address_country_select').trigger("country-change", 'init');
 
     }
-    
-    
-    
-    
- 
+
+
+
+
+
 }
 
 

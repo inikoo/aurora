@@ -1143,6 +1143,7 @@ function add_minutes_to_time(time, minutes) {
 function update_address_fields(field, country_code, hide_recipient_fields) {
 
     var request = '/ar_address.php?tipo=fields_data&country_code=' + country_code
+    console.log(request)
     $.getJSON(request, function(data) {
 
         //console.log(field)
