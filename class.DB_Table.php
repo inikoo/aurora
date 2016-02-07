@@ -159,7 +159,7 @@ abstract class DB_Table {
 
 	protected function update_table_field($field, $value, $options='', $table_name, $table_full_name, $table_key) {
 
-
+    //print "*** $field, $value\n";
 		$this->updated=false;
 
 		$null_if_empty=true;
@@ -259,7 +259,7 @@ abstract class DB_Table {
 
 
 		}
-		//print "$sql\n";
+		
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
 		$affected=$update_op->rowCount();

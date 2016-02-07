@@ -71,6 +71,7 @@ function get_object($object_name, $key) {
 		$object=new Part($key);
 		break;
 	case 'supplier':
+	case 'Supplier':
 		include_once 'class.Supplier.php';
 		$object=new Supplier($key);
 		break;
@@ -98,6 +99,7 @@ function get_object($object_name, $key) {
 		$object=new Payment_Account($key);
 		break;
 	case 'payment':
+	case 'Payment':
 		require_once "class.Payment.php";
 		$object=new Payment($key);
 		break;

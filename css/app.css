@@ -1089,7 +1089,7 @@ table .totals td {
     padding: 20px; }
     #object_showcase .subject_profile #contact_data {
       float: left;
-      padding: 20px 20px; }
+      padding: 0px 20px 0px 0px; }
     #object_showcase .subject_profile #info {
       margin-top: 3px;
       max-width: 370px;
@@ -1460,8 +1460,6 @@ textarea {
 
 .adr {
   line-height: 22px; }
-  .adr span {
-    display: block; }
 
 .address_directory .container {
   float: left;
