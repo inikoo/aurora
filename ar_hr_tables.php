@@ -88,7 +88,7 @@ function employees($_data, $db, $user, $type='') {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-	//print $sql;
+print $sql;
 
 	$adata=array();
 	foreach ($db->query($sql) as $data) {
