@@ -41,9 +41,9 @@ class Account extends DB_Table{
 	function create($data) {
 		$this->new=false;
 
-	
 
-	
+
+
 		$data['Account Company Name']=$company->data['Company Name'];
 		$data['Account Country Code']=$company->data['Company Main Country Code'];
 
@@ -137,7 +137,7 @@ class Account extends DB_Table{
 		switch ($field) {
 		case 'Company Name':
 
-		
+
 		case('Account Currency'):
 			$this->update_currency($value);
 			break;
@@ -285,6 +285,95 @@ class Account extends DB_Table{
 	}
 
 
+	function create_supplier($data) {
+		$this->new_employee=false;
+
+		$data['editor']=$this->editor;
+
+
+
+        if( !array_key_exists('Supplier Code',$data)  or $data['Supplier Code']==''  ){
+            $this->error=true;
+            $this->msg='error, no supplier code';
+          
+            return;
+        }
+
+
+		$address_fields=array(
+			'Address Recipient'=>$data['Supplier Main Contact Name'],
+			'Address Organization'=>$data['Supplier Company Name'],
+			'Address Line 1'=>'',
+			'Address Line 2'=>'',
+			'Address Sorting Code'=>'',
+			'Address Postal Code'=>'',
+			'Address Dependent Locality'=>'',
+			'Address Locality'=>'',
+			'Address Administrative Area'=>'',
+			'Address Country 2 Alpha Code'=>$data['Supplier Contact Address country'],
+
+		);
+		unset($data['Supplier Contact Address country']);
+
+		if (isset($data['Supplier Contact Address addressLine1'])) {
+			$address_fields['Address Line 1']=$data['Supplier Contact Address addressLine1'];
+			unset($data['Supplier Contact Address addressLine1']);
+		}
+		if (isset($data['Supplier Contact Address addressLine2'])) {
+			$address_fields['Address Line 2']=$data['Supplier Contact Address addressLine2'];
+			unset($data['Supplier Contact Address addressLine2']);
+		}
+		if (isset($data['Supplier Contact Address sortingCode'])) {
+			$address_fields['Address Sorting Code']=$data['Supplier Contact Address sortingCode'];
+			unset($data['Supplier Contact Address sortingCode']);
+		}
+		if (isset($data['Supplier Contact Address postalCode'])) {
+			$address_fields['Address Postal Code']=$data['Supplier Contact Address postalCode'];
+			unset($data['Supplier Contact Address postalCode']);
+		}
+
+		if (isset($data['Supplier Contact Address dependentLocality'])) {
+			$address_fields['Address Dependent Locality']=$data['Supplier Contact Address dependentLocality'];
+			unset($data['Supplier Contact Address dependentLocality']);
+		}
+
+		if (isset($data['Supplier Contact Address locality'])) {
+			$address_fields['Address Locality']=$data['Supplier Contact Address locality'];
+			unset($data['Supplier Contact Address locality']);
+		}
+
+		if (isset($data['Supplier Contact Address administrativeArea'])) {
+			$address_fields['Address Administrative Area']=$data['Supplier Contact Address administrativeArea'];
+			unset($data['Supplier Contact Address administrativeArea']);
+		}
+
+		//print_r($address_fields);
+		// print_r($data);
+
+		//exit;
+
+		$supplier= new Supplier('new', $data, $address_fields);
+
+		if ($supplier->id) {
+			$this->new_supplier_msg=$supplier->msg;
+
+			if ($supplier->new) {
+				$this->new_supplier=true;
+				$this->update_suppliers_data();
+			} else {
+				$this->error=true;
+				$this->msg=$supplier->msg;
+
+			}
+			return $supplier;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$supplier->msg;
+		}
+	}
+
+
 	function create_manufacture_task($data) {
 		$this->new_manufacture_task=false;
 
@@ -399,6 +488,11 @@ class Account extends DB_Table{
 
 		$data_set=new Data_Sets('find', $data, 'create');
 
+	}
+
+
+	function update_suppliers_data() {
+		// TODO
 	}
 
 

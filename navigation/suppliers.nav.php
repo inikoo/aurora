@@ -862,11 +862,11 @@ function get_supplier_navigation($data) {
     			$_section='suppliers';
 
     }
-	$right_buttons[]=array('icon'=>'edit','title'=>_('Edit supplier'),'url'=>'edit_supplier.php?id='.$supplier->id);
+	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit supplier'),'url'=>'edit_supplier.php?id='.$supplier->id);
 	$right_buttons[]=array('icon'=>'sticky-note','title'=>_('Sticky note'),'id'=>'sticky_note_button');
-	$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
-	$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
-	$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
+	//$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+	//$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
+	//$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
 	$sections=get_sections('suppliers','');
 
