@@ -42,6 +42,10 @@ $parameters=array(
 
 );
 
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"suppliers/new");
+$smarty->assign('table_buttons', $table_buttons);
+
 
 include 'utils/get_table_html.php';
 

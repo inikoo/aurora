@@ -831,8 +831,14 @@ $modules=array(
 					'supplier.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders')),
 
 				)
-			)
+			),
+	'supplier.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'supplier.new'=>array('label'=>_('New supplier')),
 
+				)
+
+			),
 
 
 

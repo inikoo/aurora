@@ -70,11 +70,23 @@ if ($result=$db->query($sql)) {
 		}
 
 		if (!$customer->get('Customer Main Address Key')) {
-			continue;
+			$address_fields=array(
+				'Address Recipient'=>$recipient,
+				'Address Organization'=>$organization,
+				'Address Line 1'=>'',
+				'Address Line 2'=>'',
+				'Address Sorting Code'=>'',
+				'Address Postal Code'=>'',
+				'Address Dependent Locality'=>'',
+				'Address Locality'=>'',
+				'Address Administrative Area'=>'',
+				'Address Country 2 Alpha Code'=>$default_country,
+
+			);
+		}else {
+
+			$address_fields=address_fields($customer->get('Customer Main Address Key'), $recipient, $organization, $default_country);
 		}
-
-		$address_fields=address_fields($customer->get('Customer Main Address Key'), $recipient, $organization, $default_country);
-
 
 
 		$customer->update_address('Contact', $address_fields);
@@ -121,7 +133,29 @@ if ($result=$db->query($sql)) {
 
 			}
 		}
-		$address_fields=address_fields($customer->get('Customer Main Delivery Address Key'), $recipient, $organization, $default_country);
+
+
+
+		if (!$customer->get('Customer Main Delivery Address Key')) {
+			$address_fields=array(
+				'Address Recipient'=>$recipient,
+				'Address Organization'=>$organization,
+				'Address Line 1'=>'',
+				'Address Line 2'=>'',
+				'Address Sorting Code'=>'',
+				'Address Postal Code'=>'',
+				'Address Dependent Locality'=>'',
+				'Address Locality'=>'',
+				'Address Administrative Area'=>'',
+				'Address Country 2 Alpha Code'=>$default_country,
+
+			);
+		}else {
+
+			$address_fields=address_fields($customer->get('Customer Main Delivery Address Key'), $recipient, $organization, $default_country);
+		}
+
+
 		$customer->update_address('Delivery', $address_fields);
 
 
@@ -160,7 +194,28 @@ if ($result=$db->query($sql)) {
 
 			}
 		}
-		$address_fields=address_fields($customer->get('Customer Billing Address Key'), $recipient, $organization, $default_country);
+
+		if (!$customer->get('Customer Billing Address Key')) {
+			$address_fields=array(
+				'Address Recipient'=>$recipient,
+				'Address Organization'=>$organization,
+				'Address Line 1'=>'',
+				'Address Line 2'=>'',
+				'Address Sorting Code'=>'',
+				'Address Postal Code'=>'',
+				'Address Dependent Locality'=>'',
+				'Address Locality'=>'',
+				'Address Administrative Area'=>'',
+				'Address Country 2 Alpha Code'=>$default_country,
+
+			);
+		}else {
+
+			$address_fields=address_fields($customer->get('Customer Billing Address Key'), $recipient, $organization, $default_country);
+		}
+
+
+
 		$customer->update_address('Invoice', $address_fields);
 
 		$other_delivery_address_keys=get_delivery_address_keys($db, $customer->id, $customer->get('Customer Billing Address Key'));
