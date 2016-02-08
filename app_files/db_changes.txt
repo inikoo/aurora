@@ -252,4 +252,10 @@ ALTER TABLE `Supplier Other Telephone Dimension`
 
 ALTER TABLE `Supplier Other Telephone Dimension`
   MODIFY `Supplier Other Telephone Key` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+//=================
+
+ALTER TABLE `Supplier Dimension` ADD `Supplier Preferred Contact Number` ENUM('Mobile','Telephone') NOT NULL DEFAULT 'Mobile' AFTER `Supplier QQ`;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Preferred Contact Number Formatted Number` VARCHAR(255) NULL DEFAULT NULL AFTER `Supplier Preferred Contact Number`;
+ALTER TABLE `Customer Dimension` ADD `Customer Preferred Contact Number Formatted Number` VARCHAR(255) NULL DEFAULT NULL AFTER `Customer Preferred Contact Number`;
+
 

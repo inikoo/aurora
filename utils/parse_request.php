@@ -240,9 +240,9 @@ function parse_request($_data, $db) {
 
 			break;
 		case 'customers':
-		
+
 			$module='customers';
-			
+
 			if ($count_view_path==0) {
 				$section='customers';
 				$parent='store';
@@ -255,9 +255,9 @@ function parse_request($_data, $db) {
 
 			}
 			$arg1=array_shift($view_path);
-			
-			
-			
+
+
+
 			if ($arg1=='all') {
 				$module='customers_server';
 				$section='customers';
@@ -346,7 +346,7 @@ function parse_request($_data, $db) {
 						$section='lists';
 					}elseif ($view_path[0]=='categories') {
 						$section='categories';
-					
+
 					}
 					elseif ($view_path[0]=='category') {
 
@@ -367,14 +367,14 @@ function parse_request($_data, $db) {
 							//}
 						}
 					}
-elseif ($view_path[0]=='new') {
-				$section='customer.new';
-					$object='';
-			}
+					elseif ($view_path[0]=='new') {
+						$section='customer.new';
+						$object='';
+					}
 				}
 
 			}
-			
+
 			break;
 		case 'orders':
 			$module='orders';
@@ -946,68 +946,74 @@ elseif ($view_path[0]=='new') {
 			$section='suppliers';
 
 
+			if ( isset($view_path[0]) ) {
 
-			if ( isset($view_path[0]) and  $view_path[0]=='list') {
-				$section='list';
-				$object='list';
-
-
-
-
-				if (isset($view_path[0]) and is_numeric($view_path[0])) {
-					$key=$view_path[0];
-					include_once 'class.List.php';
-					$list=new SubjectList($key);
-					$parent='store';
-					$parent_key=$list->get('List Parent Key');
+				if (  $view_path[0]=='list') {
+					$section='list';
+					$object='list';
 
 
-					if (isset($view_path[1]) and is_numeric($view_path[1])) {
-						$section='supplier';
 
-						$parent='list';
-						$parent_key=$list->id;
-						$object='supplier';
-						$key=$view_path[1];
 
+					if (isset($view_path[0]) and is_numeric($view_path[0])) {
+						$key=$view_path[0];
+						include_once 'class.List.php';
+						$list=new SubjectList($key);
+						$parent='store';
+						$parent_key=$list->get('List Parent Key');
+
+
+						if (isset($view_path[1]) and is_numeric($view_path[1])) {
+							$section='supplier';
+
+							$parent='list';
+							$parent_key=$list->id;
+							$object='supplier';
+							$key=$view_path[1];
+
+						}
+
+
+					}else {
+						//error
 					}
 
-
-				}else {
-					//error
 				}
-
-			}
-			elseif (isset($view_path[0]) and  $view_path[0]=='category') {
-				$section='category';
-				$object='category';
+				elseif ( $view_path[0]=='category') {
+					$section='category';
+					$object='category';
 
 
 
 
-				if (isset($view_path[0]) and is_numeric($view_path[0])) {
-					$key=$view_path[0];
-					include_once 'class.Category.php';
-					$category=new Category($key);
-					$parent='store';
-					$parent_key=$category->get('Category Store Key');
+					if (isset($view_path[0]) and is_numeric($view_path[0])) {
+						$key=$view_path[0];
+						include_once 'class.Category.php';
+						$category=new Category($key);
+						$parent='store';
+						$parent_key=$category->get('Category Store Key');
 
 
-					if (isset($view_path[1]) and is_numeric($view_path[1])) {
-						$section='supplier';
+						if (isset($view_path[1]) and is_numeric($view_path[1])) {
+							$section='supplier';
 
-						$parent='category';
-						$parent_key=$category->id;
-						$object='supplier';
-						$key=$view_path[1];
+							$parent='category';
+							$parent_key=$category->id;
+							$object='supplier';
+							$key=$view_path[1];
 
+						}
+
+
+					}else {
+						//error
 					}
 
-
-				}else {
-					//error
 				}
-
+				elseif ($view_path[0]=='new') {
+						$section='supplier.new';
+						$object='';
+					}
 			}
 			break;
 		case 'hr':
