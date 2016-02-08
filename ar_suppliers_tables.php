@@ -13,6 +13,7 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
+require_once 'utils/date_functions.php';
 
 
 if (!$user->can_view('suppliers')) {
@@ -83,7 +84,7 @@ function suppliers($_data,$db,$user) {
 			'normal'=>number($data['Supplier Optimal Availability Products']),
 			'critical'=>number($data['Supplier Critical Availability Products']),
 			'outofstock'=>number($data['Supplier Out Of Stock Products']),
-			'location'=>$data['Supplier Main Location'],
+			'location'=>$data['Supplier Location'],
 			'email'=>$data['Supplier Main Plain Email'],
 			'tel'=>$data['Supplier Main XHTML Telephone'],
 			'contact'=>$data['Supplier Main Contact Name'],

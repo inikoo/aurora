@@ -1,7 +1,7 @@
 <div class="subject_profile">
 	<div id="contact_data">
 		<div class="data_container">
-			<div class="data_field  {if $supplier->get('Supplier Type')!='Company'}hide{/if}">
+			<div class="data_field  {if $supplier->get('Supplier Company Name')==''}hide{/if}">
 				<i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span class="Supplier_Name">{$supplier->get('Supplier Name')}</span> 
 			</div>
 			<div class="data_field">
@@ -53,38 +53,22 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="info">
+	<div id="info" >
 		<div id="overviews">
-			<table border="0" class="overview" style="">
-				<tr id="account_balance_tr" class="main">
-					<td id="account_balance_label">{t}Account Balance{/t}</td>
-					<td id="account_balance" class="aright highlight">{$supplier->get('Account Balance')} </td>
-				</tr>
-				<tr id="last_credit_note_tr" style="display:none">
-					<td colspan="2" class="aright" style="padding-right:20px">{t}Credit note{/t}: <span id="account_balance_last_credit_note"></span></td>
-				</tr>
-				
-			</table>
+			
 			<table border="0" class="overview">
-				{if $supplier->get('Supplier Level Type')=='VIP'} 
-				<td></td>
-				<td class="highlight">{t}VIP Supplier{/t}</td>
-				{/if} {if $supplier->get('Supplier Level Type')=='Partner'} 
-				<td></td>
-				<td class="highlight">{t}Partner Supplier{/t}</td>
-				{/if} {if $supplier->get('Supplier Type by Activity')=='Losing'} 
+				
 				<tr>
-					<td colspan="2">{t}Losing Supplier{/t}</td>
+					<td>{t}Contact since{/t}:</td>
+					<td>{$supplier->get('Valid From')}</td>
 				</tr>
-				{elseif $supplier->get('Supplier Type by Activity')=='Lost'} 
 				<tr>
-					<td>{t}Lost Supplier{/t}</td>
-					<td>{$supplier->get('Lost Date')}</td>
+					<td>{t}Products origin{/t}:</td>
+					<td>{$supplier->get('Products Origin')}</td>
 				</tr>
-				{/if} 
 				<tr>
-					<td>{t}Contact Since{/t}:</td>
-					<td>{$supplier->get('First Contacted Date')}</td>
+					<td>{t}Delivery time{/t}:</td>
+					<td>{$supplier->get('Delivery Time')}</td>
 				</tr>
 				
 				{foreach from=$supplier->get_category_data() item=item key=key} 
@@ -94,19 +78,7 @@
 				</tr>
 				{/foreach} 
 			</table>
-			{if $supplier->get('Supplier Send Newsletter')=='No' or $supplier->get('Supplier Send Email Marketing')=='No' or $supplier->get('Supplier Send Postal Marketing')=='No'} 
-			<table border="0" class="overview compact">
-				<tr class="{if $supplier->get('Supplier Send Newsletter')=='Yes'}hide{/if}">
-					<td colspan="2"> <i class="fa fa-ban"></i> <span>{t}Don't send newsletters{/t}</span> </td>
-				</tr>
-				<tr class="{if $supplier->get('Supplier Send Email Marketing')=='Yes'}hide{/if}">
-					<td colspan="2"> <i class="fa fa-ban"></i> <span>{t}Don't send marketing by email{/t}</span> </td>
-				</tr>
-				<tr class="{if $supplier->get('Supplier Send Postal Marketing')=='Yes'}hide{/if}">
-					<td colspan="2"> <i class="fa fa-ban"></i> <span>{t}Don't send marketing by post{/t}</span> </td>
-				</tr>
-			</table>
-			{/if} {if $supplier->get('Supplier Orders')>0} 
+			 {if $supplier->get('Supplier Orders')>0} 
 			<table class="overview">
 				{if $supplier->get('Supplier Type by Activity')=='Lost'} 
 				<tr>
