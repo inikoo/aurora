@@ -20,6 +20,24 @@ class Subject extends DB_Table {
 	}
 
 
+
+	function get_hello() {
+
+
+		$unknown_name='';
+		$greeting_prefix=_('Hello');
+
+		if ($this->data[$this->table_name.' Name']=='' and $this->data[$this->table_name.' Main Contact Name']=='')
+			return $unknown_name;
+		$greeting=$greeting_prefix.' '.$this->data[$this->table_name.' Main Contact Name'];
+		if ($this->data[$this->table_name.' Company Name']!='') {
+			$greeting.=', '.$this->data['Customer Name'];
+		}
+		return $greeting;
+
+	}
+
+
 	function get_greetings($locale=false) {
 
 		if ($locale) {
@@ -38,7 +56,7 @@ class Subject extends DB_Table {
 		if ($this->data[$this->table_name.' Name']=='' and $this->data[$this->table_name.' Main Contact Name']=='')
 			return $unknown_name;
 		$greeting=$greeting_prefix.' '.$this->data[$this->table_name.' Main Contact Name'];
-		if ($this->data[$this->table_name.' Type']=='Company') {
+		if ($this->data[$this->table_name.' Company Name']!='') {
 			$greeting.=', '.$this->data[$this->table_name.' Name'];
 		}
 		return $greeting;
@@ -51,8 +69,8 @@ class Subject extends DB_Table {
 		if ($this->data[$this->table_name.' Name']=='' and $this->data[$this->table_name.' Main Contact Name']=='')
 			return '';
 		$greeting=$this->data[$this->table_name.' Main Contact Name'];
-		if ($greeting and $this->data[$this->table_name.' Type']=='Company') {
-			$greeting.=', '.$this->data[$this->table_name.' Name'];
+		if ($greeting and $this->data[$this->table_name.' Company Name']!='') {
+			$greeting.=', '.$this->data[$this->table_name.' Company Name'];
 		}
 
 
@@ -1359,6 +1377,10 @@ class Subject extends DB_Table {
 
 			$this->update_field($field, $value, $options);
 
+			$this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
+
+
+
 			$this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile']=array(
 				'field'=>$this->table_name.'_Main_Plain_Mobile',
 				'render'=>true,
@@ -1630,7 +1652,7 @@ class Subject extends DB_Table {
 	}
 
 
-	function get_subject_common($key, $arg1) {
+	function get_subject_common($key, $arg1='') {
 
 		switch ($key) {
 		case $this->table_name.' Contact Address':

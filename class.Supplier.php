@@ -228,7 +228,7 @@ class supplier extends Subject {
 
 		if (!$this->id)return false;
 
-		list($got, $result)=$this->get_subject_common($key, $arg1);
+		list($got, $result)=$this->get_subject_common($key);
 		if ($got)return $result;
 
 
@@ -244,11 +244,46 @@ class supplier extends Subject {
 				return strftime("%a, %e %b %y", strtotime($this->data['Supplier '.$key].' +0:00'));
 			}
 			break;
+		case ('Default Currency'):
+
+			if ($this->data['Supplier Default Currency']!='') {
+
+
+
+				$options_currencies=array();
+				$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Symbol` from kbase.`Currency Dimension` where `Currency Code`=%s",
+					prepare_mysql($this->data['Supplier Default Currency']));
+
+
+
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						return sprintf("%s (%s)", $row['Currency Name'], $row['Currency Code']);
+					}else {
+						return $this->data['Supplier Default Currency'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+
+			}else {
+				return '';
+			}
+
+			break;
 		case 'Average Delivery Days':
-		case 'Delivery Days':
-			include_once 'common_natural_language.php';
+			return number($this->data['Supplier Average Delivery Days']);
+			break;
+		case 'Delivery Time':
+			include_once 'utils/natural_language.php';
 			return seconds_to_string(24*3600*$this->data['Supplier Average Delivery Days']);
 			break;
+
+
 		case 'Products Origin Country Code':
 			if ($this->data['Supplier Products Origin Country Code']) {
 				include_once 'class.Country.php';
@@ -263,7 +298,7 @@ class supplier extends Subject {
 			if ($this->data['Supplier Products Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Supplier Products Origin Country Code']);
-				return sprintf('<img style="vertical-align:-1px" src="art/flags/%s.gif"/> %s', strtolower($country->data['Country 2 Alpha Code']), $country->get_country_name($this->locale));
+				return sprintf('<img  src="/art/flags/%s.gif"/> %s', strtolower($country->data['Country 2 Alpha Code']), _($country->get('Country Name')));
 			}else {
 				return '';
 			}
@@ -1076,6 +1111,9 @@ class supplier extends Subject {
 			break;
 		case('Supplier Average Delivery Days'):
 			$this->update_field($field, $value, $options);
+
+			include_once 'class.SupplierProduct.php';
+
 			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d", $this->id);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
@@ -1260,6 +1298,84 @@ class supplier extends Subject {
 
 	function get_image_src() {
 		return '';
+	}
+
+
+	function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+
+		case 'Supplier Company Name':
+			$label=_('company name');
+			break;
+		case 'Supplier Main Contact Name':
+			$label=_('contact name');
+			break;
+		case 'Supplier Main Plain Email':
+			$label=_('email');
+			break;
+		case 'Supplier Main Email':
+			$label=_('main email');
+			break;
+		case 'Supplier Other Email':
+			$label=_('other email');
+			break;
+		case 'Supplier Main Plain Telephone':
+		case 'Supplier Main XHTML Telephone':
+			$label=_('telephone');
+			break;
+		case 'Supplier Main Plain Mobile':
+		case 'Supplier Main XHTML Mobile':
+			$label=_('mobile');
+			break;
+		case 'Supplier Main Plain FAX':
+		case 'Supplier Main XHTML Fax':
+			$label=_('fax');
+			break;
+		case 'Supplier Other Telephone':
+			$label=_('other telephone');
+			break;
+		case 'Supplier Preferred Contact Number':
+			$label=_('main contact number');
+			break;
+		case 'Supplier Fiscal Name':
+			$label=_('fiscal name');
+			break;
+
+		case 'Supplier Contact Address':
+			$label=_('contact address');
+			break;
+		case 'Supplier Average Delivery Days':
+			$label=_('delivery time (days)');
+			break;
+		case 'Supplier Default Currency':
+			$label=_('currency');
+			break;
+		case 'Supplier Default Incoterm':
+			$label=_('Incoterm');
+			break;
+		case 'Supplier Default Port of Export':
+			$label=_('Port of export');
+			break;
+		case 'Supplier Default Port of Import':
+			$label=_('port of import');
+			break;
+		case 'Supplier Default PO Terms and Conditions':
+			$label=_('T&C');
+			break;
+		case 'Supplier Show Warehouse TC in PO':
+			$label=_('Include general T&C');
+			break;
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
 	}
 
 

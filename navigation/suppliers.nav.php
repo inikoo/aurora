@@ -835,7 +835,7 @@ function get_supplier_navigation($data) {
 			$up_button=array('icon'=>'arrow-up','title'=>_("Suppliers"),'reference'=>'suppliers');
 
 			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'suppliers/'.$data['parent_key'].'/'.$prev_key);
+				$left_buttons[]=array('icon'=>'arrow-left','title'=>$prev_title,'reference'=>'supplier/'.$prev_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-left disabled','title'=>'','url'=>'');
@@ -845,7 +845,7 @@ function get_supplier_navigation($data) {
 
 
 			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'suppliers/'.$data['parent_key'].'/'.$next_key);
+				$left_buttons[]=array('icon'=>'arrow-right','title'=>$next_title,'reference'=>'supplier/'.$next_key);
 
 			}else {
 				$left_buttons[]=array('icon'=>'arrow-right disabled','title'=>'','url'=>'');
@@ -915,7 +915,7 @@ function get_new_supplier_navigation($data, $smarty, $user, $db) {
 	$_section='suppliers';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
-	$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers);
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
 
 
 	$left_buttons[]=$up_button;

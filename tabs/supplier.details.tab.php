@@ -19,10 +19,52 @@ include_once 'utils/invalid_messages.php';
 
 $supplier=$state['_object'];
 
-
-$options_valid_tax_number=array(
-	'Yes'=>_('Valid'), 'No'=>_('Not Valid'), 'Unknown'=>_('Unknown'), 'Auto'=>_('Check online'),
+$options_yn=array(
+	'Yes'=>_('Yes'), 'No'=>_('No')
 );
+
+$options_incoterms=array();
+$sql="select `Incoterm Transport Type`,`Incoterm Name`,`Incoterm Code` from kbase.`Incoterm Dimension` order by `Incoterm Code` ";
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		if ($row['Incoterm Transport Type']=='Sea') {
+			$transport_method=sprintf('<img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s">', _('Maritime and inland waterways'));
+		}else {
+			$transport_method=sprintf('<img  style="height:12px" src="art/icons/transport_land.png" alt="land" title="%s"> <img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s"> <img  style="height:12px" src="art/icons/transport_air.png" alt="air" title="%s">',
+				_('Land'),
+				_('Maritime and inland waterway'),
+				_('Air')
+			);
+
+		}
+		$options_incoterms[$row['Incoterm Code']]=sprintf("%s %s", $row['Incoterm Code'], $row['Incoterm Name']);
+	}
+
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+$options_currencies=array();
+$sql="select `Currency Code`,`Currency Name`,`Currency Symbol` from kbase.`Currency Dimension` order by `Currency Code`";
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$options_currencies[$row['Currency Code']]=sprintf("%s %s (%s)", $row['Currency Code'], $row['Currency Name'], $row['Currency Symbol']);
+	}
+
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+
+
+
+asort($options_yn);
+
 
 $company_field=array();
 
@@ -32,11 +74,11 @@ $object_fields=array(
 		'show_title'=>true,
 		'fields'=>array(
 			array(
-				'id'=>'Supplier_Name',
+				'id'=>'Supplier_Company_Name',
 				'edit'=>'string',
-				'value'=>htmlspecialchars($supplier->get('Supplier Name')),
-				'formatted_value'=>$supplier->get('Name'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Name')),
+				'value'=>htmlspecialchars($supplier->get('Supplier Company Name')),
+				'formatted_value'=>$supplier->get('Company Name'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Company Name')),
 				'required'=>false
 			),
 
@@ -48,32 +90,6 @@ $object_fields=array(
 				'formatted_value'=>$supplier->get('Main Contact Name'),
 				'label'=>ucfirst($supplier->get_field_label('Supplier Main Contact Name')),
 				'required'=>true
-			),
-			array(
-				'id'=>'Supplier_Registration_Number',
-				'edit'=>'string',
-				'value'=>$supplier->get('Supplier Registration Number'),
-				'formatted_value'=>$supplier->get('Registration Number'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Registration Number')),
-				'required'=>false
-			),
-			array(
-				'id'=>'Supplier_Tax_Number',
-				'edit'=>'string',
-				'value'=>$supplier->get('Supplier Tax Number'),
-				'formatted_value'=>$supplier->get('Tax Number'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Tax Number')),
-				'required'=>false
-
-			),
-			array(
-				'render'=>($supplier->get('Supplier Tax Number')==''?false:true),
-				'id'=>'Supplier_Tax_Number_Valid',
-				'edit'=>'option',
-				'options'=>$options_valid_tax_number,
-				'value'=>$supplier->get('Supplier Tax Number Valid'),
-				'formatted_value'=>$supplier->get('Tax Number Valid'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Tax Number Valid')),
 			),
 
 		)
@@ -214,12 +230,89 @@ $object_fields=array(
 			),
 
 
-		
+
 
 		)
 	),
 
-array(
+	array(
+		'label'=>_('Purchase, reordering'),
+		'show_title'=>false,
+		'fields'=>array(
+
+			array(
+				'id'=>'Supplier_Average_Delivery_Days',
+				'edit'=>'mediumint_unsigned',
+				'value'=>$supplier->get('Supplier Average Delivery Days'),
+				'formatted_value'=>$supplier->get('Average Delivery Days'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Average Delivery Days')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Supplier_Default_Currency',
+				'edit'=>'option',
+				'options'=>$options_currencies,
+				'value'=>$supplier->get('Supplier Default Currency'),
+				'formatted_value'=>$supplier->get('Default Currency'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Default Currency')),
+				'required'=>false
+			),
+
+
+		)
+	),
+	array(
+		'label'=>_('Purchase order settings'),
+		'show_title'=>false,
+		'fields'=>array(
+
+
+			array(
+				'id'=>'Supplier_Default_Incoterm',
+				'edit'=>'option',
+				'options'=>$options_incoterms,
+				'value'=>$supplier->get('Supplier Default Incoterm'),
+				'formatted_value'=>$supplier->get('Default Incoterm'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Default Incoterm')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Supplier_Default_Port_of_Export',
+				'edit'=>'string',
+				'value'=>$supplier->get('Supplier Default Port of Export'),
+				'formatted_value'=>$supplier->get('Default Port of Export'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Default Port of Export')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Supplier_Default_Port_of_Import',
+				'edit'=>'string',
+				'value'=>$supplier->get('Supplier Default Port of Import'),
+				'formatted_value'=>$supplier->get('Default Port of Import'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Default Port of Import')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Supplier_Default_PO_Terms_and_Conditions',
+				'edit'=>'textarea',
+				'value'=>$supplier->get('Supplier Default PO Terms and Conditions'),
+				'formatted_value'=>$supplier->get('Default PO Terms and Conditions'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Default PO Terms and Conditions')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Supplier_Show_Warehouse_TC_in_PO',
+				'edit'=>'option',
+				'options'=>$options_yn,
+				'value'=>$supplier->get('Supplier Show Warehouse TC in PO'),
+				'formatted_value'=>$supplier->get('Show Warehouse TC in PO'),
+				'label'=>ucfirst($supplier->get_field_label('Supplier Show Warehouse TC in PO')),
+				'required'=>false
+			),
+
+		)
+	),
+	array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -234,10 +327,11 @@ array(
 			),
 
 		)
-		
+
 	),
 
 );
+
 
 $other_emails=$supplier->get_other_emails_data();
 if (count($other_emails)>0) {

@@ -151,10 +151,7 @@ class Customer extends Subject {
 
 
 
-		if ( $raw_data['Customer Company Name']!='' )
-			$raw_data['Customer Type']='Company';
-		else
-			$raw_data['Customer Type']='Person';
+		
 
 
 		$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`=%s ',
@@ -188,6 +185,9 @@ class Customer extends Subject {
 
 
 	function update_correlations() {
+
+        // TODO
+        return;
 
 		$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ", $this->id, $this->id);
 		mysql_query($sql);
@@ -1350,36 +1350,14 @@ class Customer extends Subject {
 	}
 
 
-	function get_hello() {
-
-
-		$unknown_name='';
-		$greeting_prefix=_('Hello');
-
-		if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
-			return $unknown_name;
-		$greeting=$greeting_prefix.' '.$this->data['Customer Main Contact Name'];
-		if ($this->data['Customer Type']=='Company') {
-			$greeting.=', '.$this->data['Customer Name'];
-		}
-		return $greeting;
-
-	}
 
 
 
 
 
-	function get_formatted_id_link($customer_id_prefix='') {
-		return sprintf('<a class="id" href="customer.php?id=%d">%s</a>', $this->id, $this->get_formatted_id($customer_id_prefix));
 
-	}
+	
 
-
-
-	function get_formatted_id($customer_id_prefix='') {
-		return sprintf("%s%04d", $customer_id_prefix, $this->id);
-	}
 
 
 	function update_custom_fields($id, $value) {
@@ -1816,15 +1794,15 @@ class Customer extends Subject {
 
 		$address_plain=strip_tags($this->get('Contact Address'));
 		$first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
-		$second_full_search=$this->data['Customer Type'];
+		$second_full_search='';
 
 
 		$description='';
 
-		if ($this->data['Customer Type']=='Company') {
-			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id_link().')<br/>'.$this->data['Customer Main Contact Name'];
+		if ($this->data['Customer Company Name']!='') {
+			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')<br/>'.$this->data['Customer Main Contact Name'];
 		} else {
-			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id_link().')';
+			$name='<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')';
 
 		}
 		$name.='<br/>'._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>';
@@ -2280,29 +2258,9 @@ class Customer extends Subject {
 	}
 
 
-	function remove_principal_address() {
+	
 
-		$this->remove_address($this->data['Customer Main Address Key']);
-
-	}
-
-
-	function remove_address($address_key) {
-
-
-		if ($this->data['Customer Type']=='Person') {
-			$contact=new Contact($this->data['Customer Company Key']);
-			$contact->remove_address($address_key);
-
-		}
-		elseif ($this->data['Customer Type']=='Company') {
-			$company=new Company($this->data['Customer Company Key']);
-
-			$company->remove_address($address_key);
-		}
-
-
-	}
+	
 
 
 	function close_account() {
@@ -2317,6 +2275,10 @@ class Customer extends Subject {
 
 
 	function delete($note='', $customer_id_prefix='') {
+	
+	
+	    //TODO
+	
 		$this->deleted=false;
 		$deleted_company_keys=array();
 

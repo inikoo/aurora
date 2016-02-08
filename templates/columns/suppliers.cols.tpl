@@ -17,7 +17,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('supplier/{if $data.object=='list'}list/{$data.key}{else}{$data.parent_key}{/if}/' + this.$el.html())
+                change_view('supplier{if $data.object=='list'}/list/{$data.key}{/if}/' + this.$el.html())
             }
         },
         className: "link"
@@ -43,8 +43,8 @@ var columns = [
     
     cell: "html"
 }, {
-    name: "last_invoice",
-    label: "{t}Last invoice{/t}",
+    name: "last_purchase_order",
+    label: "{t}Last PO{/t}",
      defautOrder:1,
     editable: false,
     sortType: "toggle",
@@ -67,7 +67,7 @@ var columns = [
     headerCell: integerHeaderCell
 }, {
     name: "pending_po",
-    label: "{t}PO{/t}",
+    label: "{t}Pending PO{/t}",
     editable: false,
     defautOrder:1,
     sortType: "toggle",
@@ -129,37 +129,31 @@ var columns = [
 ]
 
 function change_table_view(view,save_state){
-return;
+
+console.log(view)
 
     $('.view').removeClass('selected');
     $('#view_'+view).addClass('selected');
     
+//    grid.columns.findWhere({ name: 'formatted_id'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'activity'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
-
-    grid.columns.findWhere({ name: 'invoices'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'logins'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'requests'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'products'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'pending_po'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'company_name'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'contact_name'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'mobile'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'total_payments'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'account_balance'} ).set("renderable", false)
-
+ 
     
     if(view=='overview'){
-    grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'activity'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
+       
     }else if(view=='weblog'){
         grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
@@ -170,13 +164,15 @@ return;
         grid.columns.findWhere({ name: 'email'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'mobile'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'telephone'} ).set("renderable", true)
-    }else if(view=='invoices'){
-           grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
-     grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'total_payments'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'account_balance'} ).set("renderable", true)
-
+    }else if(view=='products'){
+        grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
+  
+    }else if(view=='orders'){
+        grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'pending_po'} ).set("renderable", true)
+ 
     }
     
     if(save_state){

@@ -180,7 +180,7 @@ elseif ($order=='formatted_id')
 elseif ($order=='id')
 	$order='`Supplier Key`';
 elseif ($order=='location')
-	$order='`Supplier Main Location`';
+	$order='`Supplier Location`';
 elseif ($order=='email')
 	$order='`Supplier Main XHTML Email`';
 elseif ($order=='products')

@@ -164,9 +164,6 @@ function check_for_duplicates($data, $db, $user, $account) {
 		break;
 
 	case 'Customer':
-
-
-
 		switch ($field) {
 		case 'Customer Main Plain Email':
 			$invalid_msg=_('Another customer have this email');
@@ -278,6 +275,115 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 		break;
+		
+	case 'Supplier':
+		switch ($field) {
+		case 'Supplier Main Plain Email':
+			$invalid_msg=_('Another supplier have this email');
+			$sql=sprintf("select `Supplier Key` as `key` ,`Supplier Main Plain Email` as field from `Supplier Dimension` where `Supplier Main Plain Email`=%s  ",
+				prepare_mysql($data['value'])
+				
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			$invalid_msg=_('Another supplier have this email');
+			$sql=sprintf("select `Supplier Other Email Supplier Key` as `key` ,`Supplier Other Email Email` as field from `Supplier Other Email Dimension` where `Supplier Other Email Email`=%s   and `Supplier Other Email Supplier Key`!=%d ",
+				prepare_mysql($data['value']),
+				$data['key']
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+			$invalid_msg=_('Email already set up in this supplier');
+			$sql=sprintf("select `Supplier Other Email Supplier Key` as `key` ,`Supplier Other Email Email` as field from `Supplier Other Email Dimension` where `Supplier Other Email Email`=%s and  `Supplier Other Email Supplier Key`=%d ",
+				prepare_mysql($data['value']),
+				$data['key']
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+			break;
+		case 'new email':
+			$invalid_msg=_('Another supplier have this email');
+			$sql=sprintf("select `Supplier Key` as `key` ,`Supplier Main Plain Email` as field from `Supplier Dimension` where `Supplier Main Plain Email`=%s  ",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			$invalid_msg=_('Another supplier have this email');
+			$sql=sprintf("select `Supplier Other Email Supplier Key` as `key` ,`Supplier Other Email Email` as field from `Supplier Other Email Dimension` where `Supplier Other Email Email`=%s  and `Supplier Other Email Supplier Key`!=%d ",
+				prepare_mysql($data['value']),
+				$data['key']
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			$invalid_msg=_('Email already set up in this supplier');
+			$sql=sprintf("select `Supplier Other Email Supplier Key` as `key` ,`Supplier Other Email Email` as field from `Supplier Other Email Dimension` where `Supplier Other Email Email`=%s and  `Supplier Other Email Supplier Key`=%d ",
+				prepare_mysql($data['value']),
+				$data['key']
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+			$invalid_msg=_('Email already set up in this supplier');
+			$sql=sprintf("select `Supplier Key` as `key` ,`Supplier Main Plain Email` as field from `Supplier Dimension` where `Supplier Key`=%d ",
+				prepare_mysql($data['value']),
+				$data['key']
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+
+		default:
+
+			if (preg_match('/^Supplier Other Email (\d+)/i', $field, $matches)) {
+				$supplier_email_key=$matches[1];
+
+
+
+				$invalid_msg=_('Email already set up in this supplier');
+				$sql=sprintf("select `Supplier Key` as `key` ,`Supplier Main Plain Email` as field from `Supplier Dimension` where `Supplier Main Plain Email`=%s  and `Supplier Key`=%d ",
+					prepare_mysql($data['value']),
+					$data['key']
+				);
+				$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+				$invalid_msg=_('Email already set up in this supplier');
+				$sql=sprintf("select `Supplier Other Email Supplier Key` as `key` ,`Supplier Other Email Email` as field from `Supplier Other Email Dimension` where `Supplier Other Email Email`=%s and  `Supplier Other Email Supplier Key`=%d  and  `Supplier Other Email Key`!=%d  ",
+					prepare_mysql($data['value']),
+					$data['key'],
+					$supplier_email_key
+				);
+				$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+
+				$invalid_msg=_('Another supplier have this email');
+				$sql=sprintf("select `Supplier Key` as `key` ,`Supplier Main Plain Email` as field from `Supplier Dimension` where `Supplier Main Plain Email`=%s  ",
+					prepare_mysql($data['value'])
+				);
+				$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+
+				$invalid_msg=_('Another supplier have this email');
+				$sql=sprintf("select `Supplier Other Email Supplier Key` as `key` ,`Supplier Other Email Email` as field from `Supplier Other Email Dimension` where `Supplier Other Email Email`=%s   ",
+					prepare_mysql($data['value'])
+				);
+				$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+
+
+
+
+			}
+		}
+
+
+		break;	
+		
 
 	default:
 
