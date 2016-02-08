@@ -452,52 +452,75 @@ function new_object($account, $db, $user, $editor, $data) {
 		break;
 	case 'Customer':
 		include_once 'class.Customer.php';
-		$object=$parent->create_customer($data['fields_data']);
-		$smarty->assign('account', $account);
-		$smarty->assign('object', $object);
+		if (!$parent->error) {
+			$object=$parent->create_customer($data['fields_data']);
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
 
-		$pcard=$smarty->fetch('presentation_cards/customer.pcard.tpl');
-		$updated_data=array();
-	
-	break;
+			$pcard=$smarty->fetch('presentation_cards/customer.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
+	case 'Supplier':
+		include_once 'class.Supplier.php';
+		$object=$parent->create_supplier($data['fields_data']);
+		if (!$parent->error) {
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/supplier.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
 	case 'Contractor':
 		include_once 'class.Staff.php';
-	
-		$data['fields_data']['Staff Type']='Contractor';
-		
-		$object=$parent->create_staff($data['fields_data']);
-		$smarty->assign('account', $account);
-		$smarty->assign('object', $object);
 
-		$pcard=$smarty->fetch('presentation_cards/contractor.pcard.tpl');
-		$updated_data=array();
-		break;	
+		$data['fields_data']['Staff Type']='Contractor';
+
+		$object=$parent->create_staff($data['fields_data']);
+		if (!$parent->error) {
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/contractor.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
 	case 'Staff':
 		include_once 'class.Staff.php';
-		$object=$parent->create_staff($data['fields_data']);
-		$smarty->assign('account', $account);
-		$smarty->assign('object', $object);
 
-		$pcard=$smarty->fetch('presentation_cards/employee.pcard.tpl');
-		$updated_data=array();
+		$object=$parent->create_staff($data['fields_data']);
+		if (!$parent->error) {
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/employee.pcard.tpl');
+			$updated_data=array();
+		}
+
+
 		break;
 	case 'API_Key':
 		include_once 'class.API_Key.php';
+
 		$object=$parent->create_api_key($data['fields_data']);
-		$smarty->assign('account', $account);
-		$smarty->assign('object', $object);
+		if (!$parent->error) {
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
 
-		$pcard=$smarty->fetch('presentation_cards/api_key.pcard.tpl');
-		$updated_data=array();
-
+			$pcard=$smarty->fetch('presentation_cards/api_key.pcard.tpl');
+			$updated_data=array();
+		}
 		break;
 	case 'Timesheet_Record':
 		include_once 'class.Timesheet_Record.php';
 		$object=$parent->create_timesheet_record($data['fields_data']);
-		$pcard='';
-		$updated_data=array(
-			'Timesheet_Clocked_Hours'=>$parent->get('Clocked Hours')
-		);
+		if (!$parent->error) {
+			$pcard='';
+			$updated_data=array(
+				'Timesheet_Clocked_Hours'=>$parent->get('Clocked Hours')
+			);
+		}
 		break;
 	default:
 		$response=array(
@@ -510,6 +533,9 @@ function new_object($account, $db, $user, $editor, $data) {
 		exit;
 		break;
 	}
+
+
+
 	if ($parent->error) {
 		$response=array(
 			'state'=>400,

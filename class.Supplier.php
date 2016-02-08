@@ -68,17 +68,14 @@ class supplier extends Subject {
 			$this->get_data('id', $arg1);
 			return ;
 		}
-		if (preg_match('/^find/i', $arg1)) {
 
-			$this->find($arg2, $arg3);
+		if ($arg1=='new') {
+			$this->find($arg2, $arg3 , 'create');
 			return;
 		}
 
-		if (preg_match('/create|new/i', $arg1)) {
-			ioioioi();
-			$this->find($arg2, 'create');
-			return;
-		}
+
+
 		$this->get_data($arg1, $arg2);
 
 	}
@@ -108,7 +105,7 @@ class supplier extends Subject {
 	}
 
 
-	function find($raw_data, $options) {
+	function find($raw_data, $address_raw_data, $options) {
 		// print "$options\n";
 		//print_r($raw_data);
 
@@ -125,13 +122,11 @@ class supplier extends Subject {
 
 
 		$create='';
-		$update='';
+
 		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i', $options)) {
-			$update='update';
-		}
+
 		if (isset($raw_data['name']))
 			$raw_data['Supplier Name']=$raw_data['name'];
 		if (isset($raw_data['code']))
@@ -174,15 +169,11 @@ class supplier extends Subject {
 		if ($create) {
 
 			if (!$this->found)
-				$this->create($data);
+				$this->create($data, $address_raw_data);
 		}
 
 
-		if ($update) {
 
-			if ($this->found)
-				$this->update($data);
-		}
 
 
 
@@ -353,13 +344,9 @@ class supplier extends Subject {
 	}
 
 
-	function create($raw_data) {
+	function create($raw_data, $address_raw_data) {
 
-		//print_r($raw_data);
 
-		$main_email_key=false;
-		$main_telephone_key=false;
-		$main_fax_key=false;
 		$this->data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
 			if (array_key_exists($key, $this->data)) {
@@ -369,23 +356,11 @@ class supplier extends Subject {
 
 
 
-		if ($this->data['Supplier Name']=='') {
-			$this->data['Supplier Code']=$this->create_code('UNK');
-		}
-		if ($this->data['Supplier Code']=='') {
-			$this->data['Supplier Code']=$this->create_code($this->data['Supplier Code']);
-		}
-
 
 		$this->data['Supplier ID']=$this->new_id();
 		$this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 		$this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
-		$this->data['Supplier Main Plain Telephone']='';
-		$this->data['Supplier Main Plain FAX']='';
-		$this->data['Supplier Main Plain Email']='';
-		$this->data['Supplier Main XHTML Telephone']='';
-		$this->data['Supplier Main XHTML FAX']='';
-		$this->data['Supplier Main XHTML Email']='';
+
 
 		$keys='';
 		$values='';
@@ -402,62 +377,18 @@ class supplier extends Subject {
 		if (mysql_query($sql)) {
 
 			$this->id=mysql_insert_id();
-
-			if (!$this->data['Supplier Company Key']) {
-				$raw_data['editor']=$this->editor;
-				$company=new company('find in supplier create update', $raw_data);
-				//print_r($company->data);
-
-			} else {
-				$company=new company('id', $this->data['Supplier Company Key']);
-				$company->editor=$this->editor;
-			}
-
-			$company_key=$company->id;
-
-			if ($company->last_associated_contact_key)
-				$contact=new Contact($company->last_associated_contact_key);
-			else
-				$contact=new Contact($company->data['Company Main Contact Key']);
-			$contact->editor=$this->editor;
-
-			$this->associate_company($company->id);
-			$this->associate_contact($contact->id);
-			//print_r($company->data);
-			// print "=================\n";
-
-
-			//$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
-
-
-			$address=new Address($company->data['Company Main Address Key']);
-			$address->editor=$this->editor;
-
-			$this->create_contact_address_bridge($address->id);
-
-
-			//$address->update_parents();
-			$address->update_parents_principal_telecom_keys('Telephone', ($this->new?false:true));
-			$address->update_parents_principal_telecom_keys('FAX', ($this->new?false:true));
-
-
-			$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-			$tel->editor=$this->editor;
-			if ($tel->id)
-				$tel->update_parents(($this->new?false:true));
-			$fax=new Telecom($address->get_principal_telecom_key('FAX'));
-			$fax->editor=$this->editor;
-			if ($fax->id)
-				$fax->update_parents(($this->new?false:true));
-
-			$contact->update_parents_principal_email_keys();
-			$email=new Email($contact->get_principal_email_key());
-			$email->editor=$this->editor;
-			if ($email->id)
-				$email->update_parents(($this->new?false:true));
 			$this->get_data('id', $this->id);
 
-			$this->update_company($company->id, true);
+
+			if ($this->data['Supplier Company Name']!='') {
+				$supplier_name=$this->data['Supplier Company Name'];
+			}else {
+				$supplier_name=$this->data['Supplier Main Contact Name'];
+			}
+			$this->update_field('Supplier Name', $supplier_name, 'no_history');
+
+			$this->update_address('Contact', $address_raw_data);
+
 			$history_data=array(
 				'History Abstract'=>_('Supplier Created')
 				, 'History Details'=>_trim(_('New supplier')." \"".$this->data['Supplier Name']."\"  "._('added'))
@@ -465,12 +396,6 @@ class supplier extends Subject {
 			);
 			$this->add_history($history_data);
 			$this->new=true;
-
-
-
-
-
-
 
 		} else {
 			// print "Error can not create supplier $sql\n";
@@ -1306,7 +1231,15 @@ class supplier extends Subject {
 
 		switch ($field) {
 
-
+		case 'Supplier Code':
+			$label=_('code');
+			break;
+		case 'Supplier Name':
+			$label=_('name');
+			break;
+		case 'Supplier Location':
+			$label=_('location');
+			break;
 		case 'Supplier Company Name':
 			$label=_('company name');
 			break;

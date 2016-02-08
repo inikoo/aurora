@@ -11,7 +11,7 @@
 		</div>
 		<div class="data_container">
 			<div class="data_field   {if !$supplier->get('Supplier Main Plain Email')}hide{/if}">
-				<i class="fa fa-fw fa-at"></i> <span id="Supplier_Main_Plain_Email" class="Supplier_Main_Plain_Email">{if $supplier->get('Supplier Main Plain Email')}{mailto address=$supplier->get('Main Plain Email')}{/if}</span> 
+				<i class="fa fa-fw fa-at"></i> <span id="showcase_Supplier_Main_Plain_Email" class="Supplier_Main_Plain_Email">{if $supplier->get('Supplier Main Plain Email')}{mailto address=$supplier->get('Main Plain Email')}{/if}</span> 
 			</div>
 			<span id="display_telephones"></span> {if $supplier->get('Supplier Preferred Contact Number')=='Mobile'} 
 			<div id="Supplier_Main_Plain_Mobile_display" class="data_field {if !$supplier->get('Supplier Main Plain Mobile')}hide{/if}">
@@ -110,10 +110,10 @@
 </div>
 <script>
 function email_width_hack() {
-    var email_length = $('#Supplier_Main_Plain_Email').text().length
+    var email_length = $('#showcase_Supplier_Main_Plain_Email').text().length
 
     if (email_length > 30) {
-        $('#Supplier_Main_Plain_Email').css("font-size", "90%");
+        $('#showcase_Supplier_Main_Plain_Email').css("font-size", "90%");
     }
 }
 

@@ -70,9 +70,19 @@ $company_field=array();
 
 $object_fields=array(
 	array(
-		'label'=>_('Name, Ids'),
+		'label'=>_('Code, name'),
 		'show_title'=>true,
 		'fields'=>array(
+		array(
+
+				'id'=>'Supplier_Code',
+				'edit'=>'string',
+				'value'=>$supplier->get('Supplier Code'),
+				'label'=>ucfirst($supplier->get_field_label('Code')),
+				'server_validation'=>'check_for_duplicates',
+				'invalid_msg'=>get_invalid_message('string'),
+				'type'=>'value'
+			),
 			array(
 				'id'=>'Supplier_Company_Name',
 				'edit'=>'string',

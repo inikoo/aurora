@@ -37,7 +37,7 @@ require_once 'class.Address.php';
 
 
 $sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6350 order by `Supplier Key` desc ');
-//$sql=sprintf('select `Supplier Key` from `Supplier Dimension` order by `Supplier Key` desc ');
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension` order by `Supplier Key` desc ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {

@@ -31,9 +31,19 @@ asort($options_yn);
 
 $object_fields=array(
 	array(
-		'label'=>_('Name, Ids'),
+		'label'=>_('Code, name'),
 		'show_title'=>true,
 		'fields'=>array(
+		array(
+
+				'id'=>'Supplier_Code',
+				'edit'=>'string',
+				'value'=>$supplier->get('Supplier Code'),
+				'label'=>ucfirst($supplier->get_field_label('Code')),
+				'server_validation'=>'check_for_duplicates',
+				'invalid_msg'=>get_invalid_message('string'),
+				'type'=>'value'
+			),
 			array(
 				'id'=>'Supplier_Company_Name',
 				'edit'=>'string',
@@ -53,28 +63,7 @@ $object_fields=array(
 				'label'=>ucfirst($supplier->get_field_label('Supplier Main Contact Name')),
 				'required'=>true,
 				'type'=>'value'
-			),
-			array(
-				'id'=>'Supplier_Registration_Number',
-				'edit'=>'string',
-				'value'=>$supplier->get('Supplier Registration Number'),
-				'formatted_value'=>$supplier->get('Registration Number'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Registration Number')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Supplier_Tax_Number',
-				'edit'=>'string',
-				'value'=>$supplier->get('Supplier Tax Number'),
-				'formatted_value'=>$supplier->get('Tax Number'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Tax Number')),
-				'required'=>false,
-				'type'=>'value'
-
 			)
-			
-
 		)
 	)
 	
@@ -91,7 +80,7 @@ $object_fields=array(
 				'server_validation'=>'check_for_duplicates',
 				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain Email')),
 				'invalid_msg'=>get_invalid_message('email'),
-				'required'=>true,
+				'required'=>false,
 				'type'=>'value'
 			)
 
