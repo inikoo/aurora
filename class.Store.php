@@ -2118,7 +2118,7 @@ class Store extends DB_Table {
 	}
 	
 	function create_customer($data) {
-		$this->new_employee=false;
+		$this->new_customer=false;
 
 		$data['editor']=$this->editor;
 		$data['Customer Store Key']=$this->id;

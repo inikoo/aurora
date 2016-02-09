@@ -10,9 +10,9 @@
  Version 3.0
 */
 
-function get_customers_navigation($data) {
+function get_customers_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -40,15 +40,30 @@ function get_customers_navigation($data) {
 		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_('Customers').' '.$row['Store Code'];
-		}else {$prev_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=_('Customers').' '.$row['Store Code'];
+			}else {
+				$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_('Customers').' '.$row['Store Code'];
-		}else {$next_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=_('Customers').' '.$row['Store Code'];
+			}else {
+				$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
 
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/'.$prev_key );
@@ -83,9 +98,9 @@ function get_customers_navigation($data) {
 }
 
 
-function get_customers_list_navigation($data) {
+function get_customers_list_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -110,25 +125,25 @@ function get_customers_list_navigation($data) {
 	$tab='customers.lists';
 
 
-		if (isset($_SESSION['table_state'][$tab])) {
-			$number_results=$_SESSION['table_state'][$tab]['nr'];
-			$start_from=0;
-			$order=$_SESSION['table_state'][$tab]['o'];
-			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-			$f_value=$_SESSION['table_state'][$tab]['f_value'];
-			$parameters=$_SESSION['table_state'][$tab];
-		}else {
+	if (isset($_SESSION['table_state'][$tab])) {
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+	}else {
 
-			$default=$user->get_tab_defaults($tab);
-			$number_results=$default['rpp'];
-			$start_from=0;
-			$order=$default['sort_key'];
-			$order_direction=($default['sort_order']==1 ?'desc':'');
-			$f_value='';
-			$parameters=$default;
-			$parameters['parent']=$data['parent'];
-			$parameters['parent_key']=$data['parent_key'];
-		}
+		$default=$user->get_tab_defaults($tab);
+		$number_results=$default['rpp'];
+		$start_from=0;
+		$order=$default['sort_key'];
+		$order_direction=($default['sort_order']==1 ?'desc':'');
+		$f_value='';
+		$parameters=$default;
+		$parameters['parent']=$data['parent'];
+		$parameters['parent_key']=$data['parent_key'];
+	}
 
 	include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -144,51 +159,70 @@ function get_customers_list_navigation($data) {
 	$prev_key=0;
 	$next_key=0;
 	$sql=trim($sql_totals." $wheref");
-	$res2=mysql_query($sql);
-	if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-		$sql=sprintf("select `List Name` object_name,`List Key` as object_key from $table   $where $wheref
+
+	if ($result2=$db->query($sql)) {
+		if ($row2 = $result2->fetch() and  $row2['num']>1) {
+
+
+			$sql=sprintf("select `List Name` object_name,`List Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND `List Key` < %d))  order by $_order_field desc , `List Key` desc limit 1",
 
-			prepare_mysql($_order_field_value),
-			prepare_mysql($_order_field_value),
-			$list->id
-		);
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$list->id
+			);
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_key=$row['object_key'];
-			$prev_title=_("List").' '.$row['object_name'].' ('.$row['object_key'].')';
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$prev_key=$row['object_key'];
+					$prev_title=_("List").' '.$row['object_name'].' ('.$row['object_key'].')';
 
-		}
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
 
-		$sql=sprintf("select `List Name` object_name,`List Key` as object_key from $table   $where $wheref
+
+
+			$sql=sprintf("select `List Name` object_name,`List Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND `List Key` > %d))  order by $_order_field   , `List Key`  limit 1",
-			prepare_mysql($_order_field_value),
-			prepare_mysql($_order_field_value),
-			$list->id
-		);
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$list->id
+			);
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$next_key=$row['object_key'];
+					$next_title=_("List").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
 
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_key=$row['object_key'];
-			$next_title=_("List").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+
+			if ($order_direction=='desc') {
+				$_tmp1=$prev_key;
+				$_tmp2=$prev_title;
+				$prev_key=$next_key;
+				$prev_title=$next_title;
+				$next_key=$_tmp1;
+				$next_title=$_tmp2;
+			}
+
+
 
 		}
-
-
-		if ($order_direction=='desc') {
-			$_tmp1=$prev_key;
-			$_tmp2=$prev_title;
-			$prev_key=$next_key;
-			$prev_title=$next_title;
-			$next_key=$_tmp1;
-			$next_title=$_tmp2;
-		}
-
-
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
+
 
 
 
@@ -247,9 +281,9 @@ function get_customers_list_navigation($data) {
 }
 
 
-function get_customers_categories_navigation($data) {
+function get_customers_categories_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -276,15 +310,30 @@ function get_customers_categories_navigation($data) {
 		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_("Customer's Categories").' '.$row['Store Code'];
-		}else {$prev_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=_("Customer's Categories").' '.$row['Store Code'];
+			}else {
+				$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_("Customer's Categories").' '.$row['Store Code'];
-		}else {$next_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=_("Customer's Categories").' '.$row['Store Code'];
+			}else {
+				$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
 
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/categories/'.$prev_key);
@@ -317,9 +366,9 @@ function get_customers_categories_navigation($data) {
 }
 
 
-function get_customers_category_navigation($data) {
+function get_customers_category_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Category.php';
@@ -333,7 +382,7 @@ function get_customers_category_navigation($data) {
 
 	switch ($data['parent']) {
 	case 'category':
-	
+
 		$parent_category=new Category($data['parent_key']);
 		$store=new Store($data['_object']->get('Category Store Key'));
 		break;
@@ -378,9 +427,9 @@ function get_customers_category_navigation($data) {
 }
 
 
-function get_customers_lists_navigation($data) {
+function get_customers_lists_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -406,15 +455,32 @@ function get_customers_lists_navigation($data) {
 		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_("Customer's Lists").' '.$row['Store Code'];
-		}else {$prev_title='';}
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=_("Customer's Lists").' '.$row['Store Code'];
+			}else {
+				$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_("Customer's Lists").' '.$row['Store Code'];
-		}else {$next_title='';}
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=_("Customer's Lists").' '.$row['Store Code'];
+			}else {
+				$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
 
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/'.$prev_key.'/lists');
@@ -449,9 +515,9 @@ function get_customers_lists_navigation($data) {
 }
 
 
-function get_customers_dashboard_navigation($data) {
+function get_customers_dashboard_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -478,16 +544,29 @@ function get_customers_dashboard_navigation($data) {
 		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_("Customer's Dashboard").' '.$row['Store Code'];
-		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_("Customer's Dashboard").' '.$row['Store Code'];
-		}else {$next_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=_("Customer's Dashboard").' '.$row['Store Code'];
+			}else {
+				$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
 
+
+		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=_("Customer's Dashboard").' '.$row['Store Code'];
+			}else {
+				$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/dashboard/'.$prev_key);
 		//$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
@@ -521,9 +600,9 @@ function get_customers_dashboard_navigation($data) {
 }
 
 
-function get_customers_statistics_navigation($data) {
+function get_customers_statistics_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -549,15 +628,28 @@ function get_customers_statistics_navigation($data) {
 		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_("Customer's Stats").' '.$row['Store Code'];
-		}else {$prev_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=_("Customer's Stats").' '.$row['Store Code'];
+			}else {
+				$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_("Customer's Stats").' '.$row['Store Code'];
-		}else {$next_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=_("Customer's Stats").' '.$row['Store Code'];
+			}else {
+				$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
 
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/statistics/'.$prev_key);
@@ -591,79 +683,9 @@ function get_customers_statistics_navigation($data) {
 }
 
 
-function get_customers_pending_orders_navigation($data) {
+function get_customers_server_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
-
-
-	require_once 'class.Store.php';
-
-	switch ($data['parent']) {
-	case 'store':
-		$store=new Store($data['parent_key']);
-		break;
-	default:
-
-		break;
-	}
-
-	$block_view=$data['section'];
-
-
-
-	$left_buttons=array();
-	if ($user->stores>1) {
-
-
-
-
-		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
-
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_('Pending orders').' '.$row['Store Code'];
-		}else {$prev_title='';}
-		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_('Pending orders').' '.$row['Store Code'];
-		}else {$next_title='';}
-
-
-		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'customers/pending_orders/'.$prev_key);
-		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Pending orders (All stores)').' '.$store->data['Store Code'], 'reference'=>'customers/all/pending_orders');
-
-		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'customers/pending_orders/'.$next_key);
-	}
-
-
-	$right_buttons=array();
-	$sections=get_sections('customers', $store->id);
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
-
-	$_content=array(
-
-		'sections_class'=>'',
-		'sections'=>$sections,
-		'left_buttons'=>$left_buttons,
-		'right_buttons'=>$right_buttons,
-		'title'=>_('Pending orders').' <span class="id">'.$store->get('Store Code').'</span>',
-		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
-
-	);
-	$smarty->assign('_content', $_content);
-
-
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
-
-}
-
-
-function get_customers_server_navigation($data) {
-
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Store.php';
@@ -704,9 +726,9 @@ function get_customers_server_navigation($data) {
 }
 
 
-function get_customer_navigation($data) {
+function get_customer_navigation($data, $smarty, $user, $db) {
 
-	global $user, $smarty;
+	
 
 
 	require_once 'class.Customer.php';
@@ -778,52 +800,69 @@ function get_customer_navigation($data) {
 		$prev_key=0;
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
+		if ($result2=$db->query($sql)) {
+			if ($row2 = $result2->fetch() and $row2['num']>1 ) {
+
+
+				$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Customer Key` < %d))  order by $_order_field desc , C.`Customer Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$customer->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$customer->id
+				);
+
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-			}
-
-			$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
+				$sql=sprintf("select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Customer Key` > %d))  order by $_order_field   , C.`Customer Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$customer->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$customer->id
+				);
+
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$next_key=$row['object_key'];
+						$next_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
+
+
 
 			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		if ($data['parent']=='list') {
 
@@ -864,13 +903,18 @@ function get_customer_navigation($data) {
 			array_pop($category_keys);
 			if (count($category_keys)>0) {
 				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
-				//print $sql;
-				$result=mysql_query($sql);
-				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'customer_category.php?id='.$row['Category Key']);
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+						$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'customer_category.php?id='.$row['Category Key']);
 
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
 				}
+
+
 			}
 
 
@@ -914,7 +958,7 @@ function get_customer_navigation($data) {
 	//$right_buttons[]=array('icon'=>'sticky-note-o', 'title'=>_('History note'), 'id'=>'note');
 	//$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
 	$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
-	$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button','class'=> ($customer->get('Sticky Note')==''?'':'hide'));
+	$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($customer->get('Sticky Note')==''?'':'hide'));
 
 	$sections=get_sections('customers', $customer->data['Customer Store Key']);
 
@@ -948,6 +992,7 @@ function get_customer_navigation($data) {
 	return $html;
 
 }
+
 
 function get_new_customer_navigation($data, $smarty, $user, $db) {
 
@@ -989,5 +1034,6 @@ function get_new_customer_navigation($data, $smarty, $user, $db) {
 	return $html;
 
 }
+
 
 ?>

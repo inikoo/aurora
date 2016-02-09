@@ -74,7 +74,7 @@ case 'views':
 	switch ($state['parent']) {
 
 	case 'store':
-	    include_once('class.Store.php');
+		include_once 'class.Store.php';
 		$_parent=new Store($state['parent_key']);
 		break;
 	case 'website':
@@ -88,25 +88,14 @@ case 'views':
 		$_parent=false;
 	}
 
-
-
-
-
 	if (is_object($_parent) and !$_parent->id) {
-
-
 		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'');
-
 	}
 
 	if ($state['module']=='hr') {
-
 		if (!$user->can_view('staff') ) {
-
 			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'forbidden', 'tab'=>'forbidden', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>$state['parent_key'], '_object'=>'', 'object'=>'', 'key'=>'');
-
 		}
-
 	}
 
 	$sql=sprintf('insert into `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  values (%d,%s,%s,%s,%s,%s,%s,%s,%s)',
@@ -144,7 +133,7 @@ case 'views':
 
 	) {
 
-		$response['navigation']=get_navigation($user, $smarty, $state, $db,$account);
+		$response['navigation']=get_navigation($user, $smarty, $state, $db, $account);
 
 	}
 
@@ -185,7 +174,7 @@ case 'views':
 	$response['tabs']=get_tabs($state, $modules);// todo only calculate when is subtabs in the section
 
 	if ($state['object']!=''  and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )   ) {
-		$response['object_showcase']=get_object_showcase($state,$smarty,$user);
+		$response['object_showcase']=get_object_showcase($state, $smarty, $user);
 	}else {
 		$response['object_showcase']='';
 	}
@@ -265,74 +254,74 @@ function get_tab($tab, $subtab, $state=false, $metadata) {
 
 
 
-function get_object_showcase($data,$smarty,$user) {
+function get_object_showcase($data, $smarty, $user) {
 
 
 
 
 	switch ($data['object']  ) {
-	
+
 	case 'website':
 	case 'dashboard':
 		$html='';
 		break;
 	case 'store':
 		include_once 'showcase/store.show.php';
-		$html=get_store_showcase($data,$smarty,$user);
-		break;	
+		$html=get_store_showcase($data, $smarty, $user);
+		break;
 	case 'account':
 		include_once 'showcase/account.show.php';
-		$html=get_account_showcase($data,$smarty,$user);
+		$html=get_account_showcase($data, $smarty, $user);
 		break;
-		
+
 	case 'employee':
 		include_once 'showcase/employee.show.php';
-		$html=get_employee_showcase($data,$smarty,$user);
+		$html=get_employee_showcase($data, $smarty, $user);
 		break;
 	case 'contractor':
 		include_once 'showcase/contractor.show.php';
-		$html=get_contractor_showcase($data,$smarty,$user);
+		$html=get_contractor_showcase($data, $smarty, $user);
 		break;
 	case 'customer':
 		include_once 'showcase/customer.show.php';
-		$html=get_customer_showcase($data,$smarty,$user);
+		$html=get_customer_showcase($data, $smarty, $user);
 		break;
 	case 'supplier':
 		include_once 'showcase/supplier.show.php';
-		$html=get_supplier_showcase($data,$smarty,$user);
-		break;	
+		$html=get_supplier_showcase($data, $smarty, $user);
+		break;
 	case 'order':
 		include_once 'showcase/order.show.php';
-		$html=get_order_showcase($data,$smarty,$user);
+		$html=get_order_showcase($data, $smarty, $user);
 		break;
 	case 'invoice':
 		include_once 'showcase/invoice.show.php';
-		$html=get_invoice_showcase($data,$smarty,$user);
+		$html=get_invoice_showcase($data, $smarty, $user);
 		break;
 	case 'delivery_note':
 		include_once 'showcase/delivery_note.show.php';
-		$html=get_delivery_note_showcase($data,$smarty,$user);
+		$html=get_delivery_note_showcase($data, $smarty, $user);
 		break;
 	case 'user':
 		include_once 'showcase/user.show.php';
-		$html=get_user_showcase($data,$smarty,$user);
+		$html=get_user_showcase($data, $smarty, $user);
 		break;
 	case 'warehouse':
 		include_once 'showcase/warehouse.show.php';
-		$html=get_warehouse_showcase($data,$smarty,$user);
+		$html=get_warehouse_showcase($data, $smarty, $user);
 		break;
 	case 'timesheet':
 		include_once 'showcase/timesheet.show.php';
-		$html=get_timesheet_showcase($data,$smarty,$user);
+		$html=get_timesheet_showcase($data, $smarty, $user);
 		break;
 	case 'attachment':
 		include_once 'showcase/attachment.show.php';
-		$html=get_attachment_showcase($data,$smarty,$user);
+		$html=get_attachment_showcase($data, $smarty, $user);
 		break;
 	case 'manufacture_task':
 		include_once 'showcase/manufacture_task.show.php';
-		$html=get_manufacture_task_showcase($data,$smarty,$user);
-		break;	
+		$html=get_manufacture_task_showcase($data, $smarty, $user);
+		break;
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -357,14 +346,14 @@ function get_menu($data) {
 }
 
 
-function get_navigation($user, $smarty, $data, $db,$account) {
+function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 	switch ($data['module']) {
 
 	case ('dashboard'):
 		require_once 'navigation/dashboard.nav.php';
-		return get_dashboard_navigation($data, $smarty, $user, $db,$account);
+		return get_dashboard_navigation($data, $smarty, $user, $db, $account);
 		break;
 	case ('products'):
 	case ('products_server'):
@@ -390,39 +379,39 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		switch ($data['section']) {
 
 		case ('customer'):
-			return get_customer_navigation($data);
+			return get_customer_navigation($data, $smarty, $user, $db);
 			break;
 
 		case ('customers'):
-			return get_customers_navigation($data);
+			return get_customers_navigation($data, $smarty, $user, $db);
 			break;
 		case ('categories'):
 
-			return get_customers_categories_navigation($data);
+			return get_customers_categories_navigation($data, $smarty, $user, $db);
 			break;
 		case ('category'):
 
-			return get_customers_category_navigation($data);
+			return get_customers_category_navigation($data, $smarty, $user, $db);
 			break;
 		case ('lists'):
-			return get_customers_lists_navigation($data);
+			return get_customers_lists_navigation($data, $smarty, $user, $db);
 			break;
 		case ('list'):
-			return get_customers_list_navigation($data);
+			return get_customers_list_navigation($data, $smarty, $user, $db);
 			break;
 		case ('dashboard'):
-			return get_customers_dashboard_navigation($data);
+			return get_customers_dashboard_navigation($data, $smarty, $user, $db);
 			break;
 		case ('statistics'):
 
-			return get_customers_statistics_navigation($data);
+			return get_customers_statistics_navigation($data, $smarty, $user, $db);
 			break;
 		case ('pending_orders'):
-			return get_customers_pending_orders_navigation($data);
+			return get_customers_pending_orders_navigation($data, $smarty, $user, $db);
 			break;
 		case ('customer.new'):
-			return get_new_customer_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			return get_new_customer_navigation($data, $smarty, $user, $db, $account);
+			break;
 		}
 
 		break;
@@ -431,7 +420,7 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		switch ($data['section']) {
 		case ('customers'):
 		case('pending_orders'):
-			return get_customers_server_navigation($data);
+			return get_customers_server_navigation($data, $smarty, $user, $db);
 			break;
 		}
 
@@ -653,28 +642,28 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		require_once 'navigation/production.nav.php';
 		switch ($data['section']) {
 		case ('dashboard'):
-			return get_dashboard_navigation($data, $smarty, $user, $db,$account);
+			return get_dashboard_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('manufacture_tasks'):
-			return get_manufacture_tasks_navigation($data, $smarty, $user, $db,$account);
+			return get_manufacture_tasks_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('manufacture_task.new'):
-			return get_new_manufacture_task_navigation($data, $smarty, $user, $db,$account);
+			return get_new_manufacture_task_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('operatives'):
-			return get_operatives_navigation($data, $smarty, $user, $db,$account);
+			return get_operatives_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('batches'):
-			return get_batches_navigation($data, $smarty, $user, $db,$account);
+			return get_batches_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('manufacture_task'):
-			return get_manufacture_task_navigation($data, $smarty, $user, $db,$account);
+			return get_manufacture_task_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('operative'):
-			return get_operative_navigation($data, $smarty, $user, $db,$account);
+			return get_operative_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('batch'):
-			return get_batch_navigation($data, $smarty, $user, $db,$account);
+			return get_batch_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		}
@@ -708,8 +697,8 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 			return get_suppliers_dashboard_navigation($data);
 			break;
 		case ('supplier.new'):
-			return get_new_supplier_navigation($data, $smarty, $user, $db,$account);
-			break;		
+			return get_new_supplier_navigation($data, $smarty, $user, $db, $account);
+			break;
 		}
 
 		break;
@@ -769,41 +758,41 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 		case ('employees'):
 		case ('new_timesheet_record'):
 
-			return get_employees_navigation($data, $smarty, $user, $db,$account);
+			return get_employees_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('contractors'):
-			return get_contractors_navigation($data, $smarty, $user, $db,$account);
+			return get_contractors_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('organization'):
-			return get_organization_navigation($data, $smarty, $user, $db,$account);
+			return get_organization_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee'):
 
-			return get_employee_navigation($data, $smarty, $user, $db,$account);
+			return get_employee_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee.new'):
-			return get_new_employee_navigation($data, $smarty, $user, $db,$account);
+			return get_new_employee_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('contractor'):
-			return get_contractor_navigation($data, $smarty, $user, $db,$account);
+			return get_contractor_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('contractor.new'):
-			return get_new_contractor_navigation($data, $smarty, $user, $db,$account);
+			return get_new_contractor_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('timesheet'):
-			return get_timesheet_navigation($data, $smarty, $user, $db,$account);
+			return get_timesheet_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('timesheets'):
-			return get_timesheets_navigation($data, $smarty, $user, $db,$account);
+			return get_timesheets_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee.attachment.new'):
-			return get_new_employee_attachment_navigation($data, $smarty, $user, $db,$account);
+			return get_new_employee_attachment_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee.user.new'):
-			return get_new_employee_user_navigation($data, $smarty, $user, $db,$account);
+			return get_new_employee_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee.attachment'):
-			return get_employee_attachment_navigation($data, $smarty, $user, $db,$account);
+			return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -858,68 +847,68 @@ function get_navigation($user, $smarty, $data, $db,$account) {
 
 		switch ($data['section']) {
 		case ('account'):
-			return get_account_navigation($data, $smarty, $user, $db,$account);
+			return get_account_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('users'):
-			return get_users_navigation($data, $smarty, $user, $db,$account);
+			return get_users_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('data_sets'):
-			return get_data_sets_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			return get_data_sets_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('timeseries'):
-			return get_timeseries_navigation($data, $smarty, $user, $db,$account);
+			return get_timeseries_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('timeserie'):
-			return get_timeserie_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			return get_timeserie_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('images'):
-			return get_images_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			return get_images_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('attachments'):
-			return get_attachments_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			return get_attachments_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('osf'):
-			return get_osf_navigation($data, $smarty, $user, $db,$account);
+			return get_osf_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('isf'):
-			return get_isf_navigation($data, $smarty, $user, $db,$account);
-			break;									
+			return get_isf_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('orders_index'):
-			return get_orders_index_navigation($data, $smarty, $user, $db,$account);
+			return get_orders_index_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('staff'):
-			return get_staff_navigation($data, $smarty, $user, $db,$account);
+			return get_staff_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('suppliers'):
-			return get_suppliers_navigation($data, $smarty, $user, $db,$account);
+			return get_suppliers_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('warehouse'):
-			return get_warehouse_navigation($data, $smarty, $user, $db,$account);
+			return get_warehouse_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('root'):
-			return get_root_navigation($data, $smarty, $user, $db,$account);
+			return get_root_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('staff.user'):
-			return get_staff_user_navigation($data, $smarty, $user, $db,$account);
+			return get_staff_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('suppliers.user'):
-			return get_supplierss_user_navigation($data, $smarty, $user, $db,$account);
+			return get_supplierss_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('warehouse.user'):
-			return get_warehouse_user_navigation($data, $smarty, $user, $db,$account);
+			return get_warehouse_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('root.user'):
-			return get_root_user_navigation($data, $smarty, $user, $db,$account);
+			return get_root_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('settings'):
-			return get_settings_navigation($data, $smarty, $user, $db,$account);
+			return get_settings_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('staff.user.api_key') :
-			return get_api_key_navigation($data, $smarty, $user, $db,$account);
+			return get_api_key_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('staff.user.api_key.new') :
-			return get_new_api_key_navigation($data, $smarty, $user, $db,$account);
+			return get_new_api_key_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 
@@ -1060,7 +1049,7 @@ function get_view_position($state) {
 	case 'customers_server':
 		if ($state['section']=='customers')
 			$branch[]=array('label'=>_('Customers (All stores)'), 'icon'=>'', 'reference'=>'');
-		
+
 		break;
 
 
@@ -1142,6 +1131,19 @@ function get_view_position($state) {
 		case 'pending_orders':
 			$branch[]=array('label'=>_("Pending orders").' '.$store->data['Store Code'], 'icon'=>'clock-o', 'reference'=>'customers/pending_orders/'.$store->id);
 			break;
+		}
+		break;
+	case 'suppliers':
+		if ($state['section']=='suppliers') {
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
+		}elseif ($state['section']=='supplier') {
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
+			$branch[]=array('label'=>$state['_object']->get('Code'), 'icon'=>'', 'reference'=>'supplier/'.$state['key']);
+
+		}elseif ($state['section']=='supplier.new') {
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('New supplier'), 'icon'=>'', 'reference'=>'');
+
 		}
 		break;
 	case 'orders_server':
@@ -1812,26 +1814,26 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Inventory timeseries'), 'icon'=>'', 'reference'=>'account/data_sets/isf');
 
 		}
-		
+
 		/*
 		case ('data_sets'):
 			return get_data_sets_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			break;
 		case ('timeseries'):
 			return get_timeseries_navigation($data, $smarty, $user, $db,$account);
 			break;
 		case ('images'):
 			return get_images_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			break;
 		case ('attachments'):
 			return get_attachments_navigation($data, $smarty, $user, $db,$account);
-			break;	
+			break;
 		case ('osf'):
 			return get_osf_navigation($data, $smarty, $user, $db,$account);
 			break;
 		case ('isf'):
 			return get_isf_navigation($data, $smarty, $user, $db,$account);
-			break;					
+			break;
 */
 
 
@@ -1841,7 +1843,7 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_("Manufacture Tasks"), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks');
 		}elseif ($state['section']=='manufacture_task') {
 			$branch[]=array('label'=>_("Manufacture Tasks"), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks');
-				$branch[]=array('label'=>'<span class="Manufacture_Task_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'', 'reference'=>'');
+			$branch[]=array('label'=>'<span class="Manufacture_Task_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'', 'reference'=>'');
 
 		}
 
@@ -1975,7 +1977,7 @@ function get_help($data, $modules, $db) {
 
 
 	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
-		$response['object_showcase']=get_object_showcase($state,$smarty,$user);
+		$response['object_showcase']=get_object_showcase($state, $smarty, $user);
 	}else {
 		$response['object_showcase']='';
 	}

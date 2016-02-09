@@ -96,15 +96,16 @@ class User extends DB_Table {
 			$where_site
 		);
 
-		//print $sql;
-
-		$result = mysql_query($sql);
-
-		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->found=true;
-			$this->found_key=$row['User Key'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->found=true;
+				$this->found_key=$row['User Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 
 
@@ -114,21 +115,34 @@ class User extends DB_Table {
 				prepare_mysql($data['User Handle'])
 			);
 
-			$result2 = mysql_query($sql);
-
-			if ($row2 = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-
-
-				if ($this->reactivate($row2['User Key'], $data['User Handle'], $row2['User Site Key'])) {
 
 
 
-					$this->found=true;
-					$this->found_key=$row2['User Key'];
+			if ($result2=$this->db->query($sql)) {
+				if ($row2 = $result2->fetch()) {
+
+
+
+					if ($this->reactivate($row2['User Key'], $data['User Handle'], $row2['User Site Key'])) {
+
+
+
+						$this->found=true;
+						$this->found_key=$row2['User Key'];
+
+					}
+
 
 				}
-
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
+
+
 
 		}
 
@@ -183,37 +197,47 @@ class User extends DB_Table {
 			prepare_mysql($base_data['User Handle']),
 			$where_site
 		);
-		// print $sql;
-		$result = mysql_query($sql) ;
-		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if ($row['numh']>0) {
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
 				$this->error=true;
 				$this->msg=_('Duplicate user login');
 				return;
+			}else {
+				$this->error=true;
+				$this->msg= _('Unknown error');
+				return;
 
 			}
-		} else {
-			$this->error=true;
-			$this->msg= _('Unknown error');
-			return;
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 		if ($base_data['User Type']=='Staff') {
 
 			$sql=sprintf("select `User Handle`  from `User Dimension` where `User Type`='Staff' and `User Parent Key`=%d", $data['User Parent Key']);
 
-			$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-			if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->msg=_('The staff member with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
-				return;
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->msg=_('The staff member with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
+					return;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 		}
 		if ($base_data['User Type']=='Customer') {
 			$sql=sprintf("update `Store Dimension` set `Store Total Users`=`Store Total Users`+1 where `Store Key`=%d", $base_data['User Site Key']);
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}
 		if ($base_data['User Type']=='Administrator') {
 			$base_data['User Alias']=_('Administrator');
@@ -260,7 +284,7 @@ class User extends DB_Table {
 				$sql=sprintf("insert into `User Staff Settings Dimension` (`User Key`) values (%d)  ",
 					$this->id
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 				$this->get_data('id', $this->id);
 			}
 
@@ -413,17 +437,30 @@ class User extends DB_Table {
 
 		if ($number_websites>0) {
 			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$groups_changed=$this->add_group(array($row['User Group Key']));
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$groups_changed=$this->add_group(array($row['User Group Key']));
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 		}else {
 			$this->read_groups();
 			$sql=sprintf("select `User Group Key` from `User Group Dimension` where `User Group Name`='Webmaster' ");
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$groups_changed=$this->delete_group(array($row['User Group Key']));
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$groups_changed=$this->delete_group(array($row['User Group Key']));
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
 		}
 
 
@@ -580,17 +617,28 @@ class User extends DB_Table {
 
 		$sql="select `".$field."` as value from  `User Staff Settings Dimension`  where `$key_field`=".$this->id;
 
-		//print "$sql ";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$old_value=$row['value'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$old_value=$row['value'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 		$sql="update  `User Staff Settings Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
 
-		mysql_query($sql);
-		$affected=mysql_affected_rows();
+		$update_op=$this->db->prepare($sql);
+		$update_op->execute();
+		$affected=$update_op->rowCount();
+
+
+
+
 		if ($affected==-1) {
 			$this->msg.=' '._('Record can not be updated')."\n";
 			$this->error_updated=true;
@@ -636,7 +684,7 @@ class User extends DB_Table {
 				if (
 					in_array($this->table_name, array('Customer', 'Store', 'Product Department', 'Product Family', 'Product', 'Part', 'Supplier', 'Supplier Product'))) {
 					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
-					mysql_query($sql);
+					$this->db->exec($sql);
 
 				}
 
@@ -778,8 +826,11 @@ class User extends DB_Table {
 			if (!$website->id)
 				continue;
 			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ", $this->id, $scope_id);
-			mysql_query($sql);
-			if (mysql_affected_rows()>0) {
+			$update_op=$this->db->prepare($sql);
+			$update_op->execute();
+			$affected=$update_op->rowCount();
+
+			if ($affected>0) {
 				$changed++;
 
 
@@ -840,8 +891,11 @@ class User extends DB_Table {
 			if (!$warehouse->id)
 				continue;
 			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Warehouse',%d) ", $this->id, $scope_id);
-			mysql_query($sql);
-			if (mysql_affected_rows()>0) {
+			$update_op=$this->db->prepare($sql);
+			$update_op->execute();
+			$affected=$update_op->rowCount();
+
+			if ($affected>0) {
 				$changed++;
 
 
@@ -940,8 +994,11 @@ class User extends DB_Table {
 			if (!$store->id)
 				continue;
 			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Store',%d) ", $this->id, $scope_id);
-			mysql_query($sql);
-			if (mysql_affected_rows()>0) {
+			$update_op=$this->db->prepare($sql);
+			$update_op->execute();
+			$affected=$update_op->rowCount();
+
+			if ($affected>0) {
 				$changed++;
 
 
@@ -1355,8 +1412,8 @@ class User extends DB_Table {
 			$groups=array();
 			$sql=sprintf("select `User Group Key` as `key` from `User Group User Bridge` UGUB  where UGUB.`User Key`=%d", $this->id);
 			foreach ($this->db->query($sql) as $row) {
-                if(isset($user_groups[$row['key']]))
-				$groups[]=$user_groups[$row['key']]['Name'];
+				if (isset($user_groups[$row['key']]))
+					$groups[]=$user_groups[$row['key']]['Name'];
 			}
 			return join($groups, ', ');
 		}
@@ -1500,13 +1557,18 @@ class User extends DB_Table {
 		$this->groups_key_array=array();
 
 		$sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d", $this->id);
-		//print $sql;
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
-			$this->groups_key_list.=','.$row['User Group Key'];
-			$this->groups_key_array[]=$row['User Group Key'];
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
+				$this->groups_key_list.=','.$row['User Group Key'];
+				$this->groups_key_array[]=$row['User Group Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		$this->groups_key_list=preg_replace('/^,/', '', $this->groups_key_list);
 
 		$this->groups_read=true;
@@ -1518,10 +1580,17 @@ class User extends DB_Table {
 		$this->warehouses=array();
 		$sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Warehouse'"
 			, $this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->warehouses[]=$row['Scope Key'];
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->warehouses[]=$row['Scope Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 	}
 
@@ -1531,10 +1600,18 @@ class User extends DB_Table {
 		$this->websites=array();
 		$sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website' "
 			, $this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->websites[]=$row['Scope Key'];
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->websites[]=$row['Scope Key'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 	}
@@ -1545,10 +1622,17 @@ class User extends DB_Table {
 		$this->stores=array();
 		$sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store' "
 			, $this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->stores[]=$row['Scope Key'];
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->stores[]=$row['Scope Key'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 	}
 
@@ -1558,18 +1642,35 @@ class User extends DB_Table {
 		$this->suppliers=array();
 		$sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Supplier' "
 			, $this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->suppliers[]=$row['Scope Key'];
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->suppliers[]=$row['Scope Key'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		$this->supplier_righs='none';
 		if ($this->data['User Type']=='Supplier') {
-			$sql="select count(*) as num_suppliers from `Supplier Dimension`";
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			$num_suppliers=$row['num_suppliers'];
-			$num_suppliers=count($this->suppliers);
-			if ($num_suppliers==$num_suppliers)
+			$sql="select count(*) as num from `Supplier Dimension`";
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$total_number_suppliers=$row['num'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+			$total_number_allowed_suppliers=count($this->suppliers);
+			if ($total_number_suppliers==$total_number_allowed_suppliers)
 				$this->supplier_rights='all';
 			else
 				$this->supplier_righs='some';
@@ -1593,24 +1694,58 @@ class User extends DB_Table {
 			$sql=sprintf("select * from `User Group Rights Bridge`  UGRB left join `Right Dimension` RD on (RD.`Right Key`=UGRB.`Right Key`)  where `Group Key` in (%s)"
 				, $this->groups_key_list);
 
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_array($res)) {
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Right Type']=='View') {
+						$this->rights_allow['View'][$row['Right Name']]=array(
+							'Right Name'=>$row['Right Name'],
+							//'Right Access'=>$row['Right Access'],
+							//'Right Access Keys'=>$row['Rigth Access Keys']
+						);
+						$this->rights[$row['Right Name']]['View']='View';
+					}
+					if ($row['Right Type']=='Delete') {
+						$this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
+						$this->rights[$row['Right Name']]['Delete']='Delete';
+					}
+					if ($row['Right Type']=='Edit') {
+						$this->rights_allow['Edit'][$row['Right Name']]=array('Right Name'=>$row['Right Name']
+							//,'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']
+						);
+						$this->rights[$row['Right Name']]['Edit']='Edit';
+					}
+					if ($row['Right Type']=='Create') {
+						$this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
+						$this->rights[$row['Right Name']]['Create']='Create';
+					}
+
+
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+		}
+		$sql=sprintf("select * from `User Rights Bridge`  URB left join  `Right Dimension` RD on (RD.`Right Key`=URB.`Right Key`)  where `User Key`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
 				if ($row['Right Type']=='View') {
-					$this->rights_allow['View'][$row['Right Name']]=array(
-						'Right Name'=>$row['Right Name'],
-						//'Right Access'=>$row['Right Access'],
-						//'Right Access Keys'=>$row['Rigth Access Keys']
-					);
+					$this->rights_allow['View'][$row['Right Name']]=$row['Right Name'];
 					$this->rights[$row['Right Name']]['View']='View';
 				}
 				if ($row['Right Type']=='Delete') {
 					$this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
-					$this->rights[$row['Right Name']]['Delete']='Delete';
+					$this->rights[$row['Right Name']]['`Delete']='Delete';
 				}
 				if ($row['Right Type']=='Edit') {
-					$this->rights_allow['Edit'][$row['Right Name']]=array('Right Name'=>$row['Right Name']
-						//,'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']
-					);
+					$this->rights_allow['Edit'][$row['Right Name']]=$row['Right Name'];
 					$this->rights[$row['Right Name']]['Edit']='Edit';
 				}
 				if ($row['Right Type']=='Create') {
@@ -1618,32 +1753,12 @@ class User extends DB_Table {
 					$this->rights[$row['Right Name']]['Create']='Create';
 				}
 
-
 			}
-		}
-		$sql=sprintf("select * from `User Rights Bridge`  URB left join  `Right Dimension` RD on (RD.`Right Key`=URB.`Right Key`)  where `User Key`=%d", $this->id);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Right Type']=='View') {
-				$this->rights_allow['View'][$row['Right Name']]=$row['Right Name'];
-				$this->rights[$row['Right Name']]['View']='View';
-			}
-			if ($row['Right Type']=='Delete') {
-				$this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
-				$this->rights[$row['Right Name']]['`Delete']='Delete';
-			}
-			if ($row['Right Type']=='Edit') {
-				$this->rights_allow['Edit'][$row['Right Name']]=$row['Right Name'];
-				$this->rights[$row['Right Name']]['Edit']='Edit';
-			}
-			if ($row['Right Type']=='Create') {
-				$this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
-				$this->rights[$row['Right Name']]['Create']='Create';
-			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
-		//print_r($this->rights_allow);
 
 	}
 
@@ -1659,10 +1774,17 @@ class User extends DB_Table {
 				case('stores'):
 					$sql=sprintf('select `Store Key`  from `Store Dimension`');
 
-					$res=mysql_query($sql);
-					while ($row=mysql_fetch_array($res)) {
-						$list[]=$row['Store Key'];
+					if ($result=$this->db->query($sql)) {
+						foreach ($result as $row) {
+							$list[]=$row['Store Key'];
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
 					}
+
+
+
 					break;
 				}
 
@@ -1681,11 +1803,18 @@ class User extends DB_Table {
 		//global $secret_key,$public_url;
 
 		$sql=sprintf("select `Site Secret Key`,`Site URL` from `Site Dimension` where `Site Store Key`=%s", $this->data['User Site Key']);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result)) {
-			$secret_key=$row['Site Secret Key'];
-			$url=$row['Site URL'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$secret_key=$row['Site Secret Key'];
+				$url=$row['Site URL'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 
@@ -1721,7 +1850,7 @@ class User extends DB_Table {
 				prepare_mysql(ip())
 			);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 
 
@@ -1816,34 +1945,45 @@ class User extends DB_Table {
 			prepare_mysql($this->data['User Staff Type']),
 			$this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 	}
 
 
 	function add_image($image_key) {
 
 		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Key`=%d and `Subject Type`='User Profile'", $this->id);
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
-			$image_id=$row['Image Key'];
-			if ($image_id==$image_key) {
-				continue;
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$image_id=$row['Image Key'];
+				if ($image_id==$image_key) {
+					continue;
+				}
+				else
+					$this->remove_image($image_id);
 			}
-			else
-				$this->remove_image($image_id);
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
 
 
-		///////////////////
+
+
 		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->nochange=true;
-			$this->msg=_('Image already uploaded');
-			return;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->nochange=true;
+				$this->msg=_('Image already uploaded');
+				return;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 
@@ -1857,7 +1997,7 @@ class User extends DB_Table {
 
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 		if ($principal=='Yes') {
@@ -1870,27 +2010,34 @@ class User extends DB_Table {
 			, $image_key
 		);
 
-		$res=mysql_query($sql);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
 
-		if ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			include_once 'utils/units_functions.php';
-			$this->new_value=array(
-				'name'=>$row['Image Filename'],
-				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio,
-				'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],
-				'id'=>$row['Image Key'],
-				'size'=>formatSizeUnits($row['Image File Size']
-				)
-			);
+				if ($row['Image Height']!=0)
+					$ratio=$row['Image Width']/$row['Image Height'];
+				else
+					$ratio=1;
+				include_once 'utils/units_functions.php';
+				$this->new_value=array(
+					'name'=>$row['Image Filename'],
+					'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+					'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+					'filename'=>$row['Image Filename'],
+					'ratio'=>$ratio,
+					'caption'=>$row['Image Caption'],
+					'is_principal'=>$row['Is Principal'],
+					'id'=>$row['Image Key'],
+					'size'=>formatSizeUnits($row['Image File Size']
+					)
+				);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		$this->updated=true;
 		$this->msg=_("image added");
@@ -1900,15 +2047,23 @@ class User extends DB_Table {
 	function update_main_image($image_key) {
 
 		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
-		$res=mysql_query($sql);
-		if (!mysql_num_rows($res)) {
-			$this->error=true;
-			$this->msg='image not associated';
+		if ($result=$this->db->query($sql)) {
+			if (!$row = $result->fetch()) {
+				$this->error=true;
+				$this->msg='image not associated';
+				return;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
+
+
+
 		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 		$main_image_src='image.php?id='.$image_key.'&size=small';
@@ -1921,7 +2076,7 @@ class User extends DB_Table {
 			$this->id
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$this->updated=true;
 
@@ -1929,41 +2084,58 @@ class User extends DB_Table {
 
 
 	function get_image() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d", $this->id);
-		$res=mysql_query($sql);
 		$image=array();
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			// print_r($row);
-			$image=array(
-				'name'=>$row['Image Filename'],
-				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio, 'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'], 'id'=>$row['Image Key']);
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Image Height']!=0)
+					$ratio=$row['Image Width']/$row['Image Height'];
+				else
+					$ratio=1;
+				// print_r($row);
+				$image=array(
+					'name'=>$row['Image Filename'],
+					'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+					'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+					'filename'=>$row['Image Filename'],
+					'ratio'=>$ratio, 'caption'=>$row['Image Caption'],
+					'is_principal'=>$row['Is Principal'], 'id'=>$row['Image Key']);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
-		// print_r($images_slideshow);
+
+
+
 
 		return $image;
 	}
 
 
 	function get_image_src() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d", $this->id);
-		$res=mysql_query($sql);
 		$image=false;
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Image Height']!=0)
-				$ratio=$row['Image Width']/$row['Image Height'];
-			else
-				$ratio=1;
-			// print_r($row);
-			$image='image.php?id='.$row['Image Key'].'&size=small';
+
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['Image Height']!=0) {
+					$ratio=$row['Image Width']/$row['Image Height'];
+				}else {
+					$ratio=1;
+				}
+				$image='image.php?id='.$row['Image Key'].'&size=small';
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		return $image;
 	}
@@ -1981,27 +2153,37 @@ class User extends DB_Table {
 	function remove_image($image_key) {
 
 		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
-			mysql_query($sql);
-			$this->updated=true;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
 
 
-			$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  ", $this->id);
-			$res2=mysql_query($sql);
-			if ($row2=mysql_fetch_assoc($res2)) {
-				$this->update_main_image($row2['Image Key']) ;
+				$sql=sprintf("delete from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  and `Image Key`=%d", $this->id, $image_key);
+				$this->db->exec($sql);
+				$this->updated=true;
+
+
+				$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='User Profile' and `Subject Key`=%d  ", $this->id);
+
+				if ($result2=$this->db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+						$this->update_main_image($row2['Image Key']) ;
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+			} else {
+				$this->error=true;
+				$this->msg='image not associated';
+
 			}
-
-
-
-		} else {
-			$this->error=true;
-			$this->msg='image not associated';
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 	}
 
@@ -2011,14 +2193,17 @@ class User extends DB_Table {
 
 		$num_handles=0;
 		$sql=sprintf("select count(*) as num_handles  from `User Dimension` where `User Type`='Customer' and `User Site Key`=%d and   `User Handle`=%s", $site_key, prepare_mysql($handle));
-		$res=mysql_query($sql);
 
-
-
-
-		if ($row=mysql_fetch_assoc($res)) {
-			$num_handles=$row['num_handles'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$num_handles=$row['num_handles'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 		if (!$num_handles) {
@@ -2028,7 +2213,7 @@ class User extends DB_Table {
 				prepare_mysql($handle),
 				$user_key
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 			return true;
 		}else {
@@ -2053,7 +2238,7 @@ class User extends DB_Table {
 				prepare_mysql($this->data['User Handle']),
 				$this->id
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			$this->data['User Active']='No';
 			$this->data['User Inactive Note']=$this->data['User Handle'];
 			$this->data['User Handle']=$this->id;
@@ -2072,14 +2257,19 @@ class User extends DB_Table {
 			$last_request='';
 
 			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d", $this->id);
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
 
-				$number_requests=$row['num_request'];
-				$number_sessions=$row['num_sessions'];
-				$last_request=$row['date'];
-
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$number_requests=$row['num_request'];
+					$number_sessions=$row['num_sessions'];
+					$last_request=$row['date'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 
 			$sql=sprintf("update `User Dimension` set `User Requests Count`=%d,`User Sessions Count`=%d, `User Last Request`=%s where `User Key`=%d  "     ,
@@ -2089,7 +2279,7 @@ class User extends DB_Table {
 
 				$this->id
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			break;
 		}
 
@@ -2101,36 +2291,42 @@ class User extends DB_Table {
 
 
 		$sql=sprintf("select `Table Key` from `Table User Export Fields`  where `Table Key`=%d and `User Key`=%d", $table_key, $this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("update `Table User Export Fields`   set `Fields`=%s where `Table Key`=%d and `User Key`=%d",
-				prepare_mysql($fields),
-				$table_key,
-				$this->id
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
 
 
-			);
-			//print $sql;
-			mysql_query($sql);
+				$sql=sprintf("update `Table User Export Fields`   set `Fields`=%s where `Table Key`=%d and `User Key`=%d",
+					prepare_mysql($fields),
+					$table_key,
+					$this->id
+				);
+				$this->db->exec($sql);
+
+			}else {
+				$sql=sprintf("insert into `Table User Export Fields` values (%d,%d,%s) ",
+					$table_key,
+					$this->id,
+					prepare_mysql($fields)
+				);
+				
+				$this->db->exec($sql);
+
+			}
 		}else {
-
-			$sql=sprintf("insert into `Table User Export Fields` values (%d,%d,%s) ",
-				$table_key,
-				$this->id,
-				prepare_mysql($fields)
-
-			);
-			// print $sql;
-			mysql_query($sql);
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 	}
 
 
 	function get_tab_defaults($tab) {
-	
-	
+
+
 		include 'conf/tabs.defaults.php';
 
 

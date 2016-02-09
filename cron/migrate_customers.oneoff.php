@@ -112,31 +112,16 @@ if ($result=$db->query($sql)) {
 
 
 
-		$address=new _Address($customer->get('Customer Main Delivery Address Key'));
-
-
-
-
-		if ($address->data['Address Contact']!='') {
-			$address_contact=trim(preg_replace('/\s+/', ' ',  $address->data['Address Contact']));
-			if (strtolower($address_contact)==strtolower($recipient)) {
-
-			}elseif (strtolower($address_contact)==strtolower($organization)) {
-
-			}else {
-				print $customer->id." DEL ==================\n";
-				print "->$recipient<-\n";
-				print "->$organization<-\n";
-				print "->$address_contact<-\n";
-				$recipient=$address_contact;
-				$organization='';
-
-			}
-		}
 
 
 
 		if (!$customer->get('Customer Main Delivery Address Key')) {
+
+
+
+
+
+
 			$address_fields=array(
 				'Address Recipient'=>$recipient,
 				'Address Organization'=>$organization,
@@ -151,7 +136,27 @@ if ($result=$db->query($sql)) {
 
 			);
 		}else {
+			$address=new _Address($customer->get('Customer Main Delivery Address Key'));
 
+
+
+
+			if ($address->data['Address Contact']!='') {
+				$address_contact=trim(preg_replace('/\s+/', ' ',  $address->data['Address Contact']));
+				if (strtolower($address_contact)==strtolower($recipient)) {
+
+				}elseif (strtolower($address_contact)==strtolower($organization)) {
+
+				}else {
+					print $customer->id." DEL ==================\n";
+					print "->$recipient<-\n";
+					print "->$organization<-\n";
+					print "->$address_contact<-\n";
+					$recipient=$address_contact;
+					$organization='';
+
+				}
+			}
 			$address_fields=address_fields($customer->get('Customer Main Delivery Address Key'), $recipient, $organization, $default_country);
 		}
 
@@ -177,23 +182,7 @@ if ($result=$db->query($sql)) {
 		$recipient=trim(preg_replace('/\s+/', ' ',  $recipient));
 		$organization=trim(preg_replace('/\s+/', ' ',  $organization));
 
-		$address=new _Address($customer->get('Customer Billing Address Key'));
-		if ($address->data['Address Contact']!='') {
-			$address_contact=trim(preg_replace('/\s+/', ' ',  $address->data['Address Contact']));
-			if (strtolower($address_contact)==strtolower($recipient)) {
 
-			}elseif (strtolower($address_contact)==strtolower($organization)) {
-
-			}else {
-				print $customer->id."==================\n";
-				print "->$recipient<-\n";
-				print "->$organization<-\n";
-				print "->$address_contact<-\n";
-				$recipient=$address_contact;
-				$organization='';
-
-			}
-		}
 
 		if (!$customer->get('Customer Billing Address Key')) {
 			$address_fields=array(
@@ -210,7 +199,23 @@ if ($result=$db->query($sql)) {
 
 			);
 		}else {
+			$address=new _Address($customer->get('Customer Billing Address Key'));
+			if ($address->data['Address Contact']!='') {
+				$address_contact=trim(preg_replace('/\s+/', ' ',  $address->data['Address Contact']));
+				if (strtolower($address_contact)==strtolower($recipient)) {
 
+				}elseif (strtolower($address_contact)==strtolower($organization)) {
+
+				}else {
+					print $customer->id."==================\n";
+					print "->$recipient<-\n";
+					print "->$organization<-\n";
+					print "->$address_contact<-\n";
+					$recipient=$address_contact;
+					$organization='';
+
+				}
+			}
 			$address_fields=address_fields($customer->get('Customer Billing Address Key'), $recipient, $organization, $default_country);
 		}
 
