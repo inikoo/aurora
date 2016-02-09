@@ -531,55 +531,66 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 		$sql=trim($sql_totals." $wheref");
 
 
-if ($result2=$db->query($sql)) {
+		if ($result2=$db->query($sql)) {
 			if ($row2= $result2->fetch()  and $row2['num']>1) {
-			
 
 
 
 
-			$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND U.`User Key` < %d))  order by $_order_field desc , U.`User Key` desc limit 1",
-				"$table $where $wheref",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+
+				$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND U.`User Key` < %d))  order by $_order_field desc , U.`User Key` desc limit 1",
+					"$table $where $wheref",
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+				$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND U.`User Key` > %d))  order by $_order_field   , U.`User Key`  limit 1",
+					"$table  $where $wheref",
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
+
+
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$next_key=$row['object_key'];
+						$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
+
 
 			}
-
-			$sql=sprintf("select `User Alias` object_name,U.`User Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND U.`User Key` > %d))  order by $_order_field   , U.`User Key`  limit 1",
-				"$table  $where $wheref",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
-
-
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
-		}
 		}else {
 			print_r($error_info=$db->errorInfo());
 			exit;
@@ -588,7 +599,7 @@ if ($result2=$db->query($sql)) {
 
 
 
-		
+
 
 		if ($data['parent']=='group') {
 
@@ -602,12 +613,19 @@ if ($result2=$db->query($sql)) {
 			array_pop($category_keys);
 			if (count($category_keys)>0) {
 				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
-				//print $sql;
-				$result=mysql_query($sql);
-				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+						//TODO
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
 				}
+
+
+
+
 			}
 
 
@@ -739,51 +757,67 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
+		if ($result2=$db->query($sql)) {
+			if ($row2 = $result2->fetch()  and  $row2['num']>1) {
 
-			$sql=sprintf("select `API Key Key` object_name,AKD.`API Key Key` as object_key from $table   $where $wheref
+
+				$sql=sprintf("select `API Key Key` object_name,AKD.`API Key Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND AKD.`API Key Key` < %d))  order by $_order_field desc , AKD.`API Key Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
-			}
 
-			$sql=sprintf("select `API Key Key` object_name,AKD.`API Key Key` as object_key from $table   $where $wheref
+
+				$sql=sprintf("select `API Key Key` object_name,AKD.`API Key Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND AKD.`API Key Key` > %d))  order by $_order_field   , AKD.`API Key Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
+
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$next_key=$row['object_key'];
+						$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
+
+
 
 			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		if ($data['parent']=='user') {
 

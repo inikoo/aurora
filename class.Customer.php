@@ -151,7 +151,7 @@ class Customer extends Subject {
 
 
 
-		
+
 
 
 		$sql=sprintf('select `Customer Key` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`=%s ',
@@ -186,8 +186,8 @@ class Customer extends Subject {
 
 	function update_correlations() {
 
-        // TODO
-        return;
+		// TODO
+		return;
 
 		$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ", $this->id, $this->id);
 		mysql_query($sql);
@@ -387,7 +387,7 @@ class Customer extends Subject {
 		}
 
 
-		switch ($field){
+		switch ($field) {
 
 		case 'Customer Invoice Address':
 			$this->update_address('Invoice', json_decode($value, true));
@@ -1356,7 +1356,7 @@ class Customer extends Subject {
 
 
 
-	
+
 
 
 
@@ -2258,9 +2258,9 @@ class Customer extends Subject {
 	}
 
 
-	
 
-	
+
+
 
 
 	function close_account() {
@@ -2275,10 +2275,10 @@ class Customer extends Subject {
 
 
 	function delete($note='', $customer_id_prefix='') {
-	
-	
-	    //TODO
-	
+
+
+		//TODO
+
 		$this->deleted=false;
 		$deleted_company_keys=array();
 
@@ -2323,55 +2323,41 @@ class Customer extends Subject {
 
 
 		$sql=sprintf("delete from `Customer Dimension` where `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%s", $this->id, $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Customer History Bridge` where `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `List Customer Bridge` where `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$sql=sprintf("delete from `Customer Billing To Bridge` where `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$sql=sprintf("delete from `Customer Send Post` where `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Category Bridge` where `Subject`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Customer' and `Subject Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
 		$sql=sprintf("delete from `Customer Send Post` where  `Customer Key`=%d", $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
-
-		//$sql=sprintf("select `User Key` from `User Dimension`  where `User Type`='Customer' and `User Parent Key`=%d ",$this->id);
-		//$res=mysql_query($sql);
-		//while ($row=mysql_fetch_assoc($res)) {
-		// $sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d",$row['User Key']);
-		// mysql_query($sql);
-		// $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d",$row['User Key']);
-		// mysql_query($sql);
-		// $sql=sprintf("delete from `User Rights Bridge` where `User Key`=%d",$row['User Key']);
-		// mysql_query($sql);
-		//}
-
-		//$sql=sprintf("delete from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",$this->id);
-		//mysql_query($sql);
 
 
 		$users_to_desactivate=$this->get_users_keys();
@@ -2402,123 +2388,12 @@ class Customer extends Subject {
 		);
 
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
-		if ($this->data['Customer Type']=='Company') {
-
-			//unset($company_keys[$this->data['Customer Company Key']]);
-			//     print_r($company_keys);
-
-			foreach ($company_keys as  $company_key) {
-				$company=new Company($company_key);
-				$company_customer_keys=$company->get_parent_keys('Customer');
-				$company_supplier_keys=$company->get_parent_keys('Supplier');
-				$company_account_key=$company->get_parent_keys('Account');
-				$company_telecom_keys=$company->get_telecom_keys();
-
-				$company_address_keys=$company->get_address_keys();
-				$company_contact_keys=$company->get_parent_keys('Contact');
-
-				unset($company_customer_keys[$this->id]);
-				foreach ($contact_keys as $contact_key) {
-					unset($company_contact_keys[$contact_key]);
-				}
-				//  print_r($company_contact_keys);
-				//  print_r($company_customer_keys);
-				if (count($company_customer_keys)==0 and count($company_supplier_keys)==0 and count($company_contact_keys)==0 and count($company_account_key)==0) {
-					$company->delete();
-					$deleted_company_keys[$company->id]=$company->id;
 
 
-
-					foreach ($company_address_keys as $company_address_key) {
-						$address_to_delete[$company_address_key]=$company_address_key;
-					}
-					foreach ($company_telecom_keys as $company_telecom_key) {
-						$telecom_to_delete[$company_telecom_key]=$company_telecom_key;
-					}
-
-
-				} else {
-
-				}
-			}
-
-		}
-
-		foreach ($contact_keys as $contact_key) {
-			$contact=new Contact($contact_key);
-
-			$contact_email_keys=$contact->get_email_keys();
-			$contact_telecom_keys=$contact->get_telecom_keys();
-			$contact_address_keys=$contact->get_address_keys();
-
-			$contact_customer_keys=$contact->get_parent_keys('Customer');
-			$contact_supplier_keys=$contact->get_parent_keys('Supplier');
-			$contact_company_keys=$contact->get_parent_keys('Company');
-
-
-
-			$contact_staff_keys=$contact->get_parent_keys('Staff');
-
-			foreach ($deleted_company_keys as $deleted_company_key) {
-				unset($contact_company_keys[$deleted_company_key]);
-			}
-			unset($contact_customer_keys[$this->id]);
-
-
-			if (count($contact_customer_keys)==0 and count($contact_supplier_keys)==0 and count($contact_company_keys)==0 and count($contact_staff_keys)==0) {
-
-
-
-				$contact->delete();
-
-				foreach ($contact_email_keys as $contact_email_key) {
-					$emails_to_delete[$contact_email_key]=$contact_email_key;
-				}
-				foreach ($contact_address_keys as $contact_address_key) {
-					$address_to_delete[$contact_address_key]=$contact_address_key;
-				}
-				foreach ($contact_telecom_keys as $contact_telecom_key) {
-					$telecom_to_delete[$contact_telecom_key]=$contact_telecom_key;
-				}
-
-
-			} else {
-
-			}
-
-
-		}
-
-
-
-		foreach ($emails_to_delete as $email_key) {
-			$email=new Email($email_key);
-			if ($email->id and !$email->has_parents()) {
-				$email->delete();
-			}
-		}
-
-
-
-		foreach ($address_to_delete as $address_key) {
-			$address=new Address($address_key);
-			if ($address->id and !$address->has_parents()) {
-				$address->delete();
-			}
-		}
-
-
-
-		foreach ($telecom_to_delete as $telecom_key) {
-			$telecom=new Telecom($telecom_key);
-			if ($telecom->id and !$telecom->has_parents()) {
-				$telecom->delete();
-			}
-		}
 		$store=new Store($this->data['Customer Store Key']);
 		$store->update_customers_data();
 
@@ -2694,38 +2569,21 @@ class Customer extends Subject {
 
 	function get_order_key() {
 		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Key` DESC", $this->id);
-		//print $sql;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result)) {
-			return $row['Order Key'];
-		} else
-			return -1;
-	}
 
 
-	function get_faxes() {
-		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Fax'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ", $this->id);
-		$telephones=array();
-		$result=mysql_query($sql);
-		//print $sql;
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$telephone= new Telecom($row['Telecom Key']);
-			$telephone->set_scope('Contact', $this->id);
-			$telephones[]= $telephone;
-			$telephone->data['Mobile Is Main']=$row['Is Main'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				return $row['Order Key'];
+			}else {
+				return -1;
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
-		//$this->number_mobiles=count($mobiles);
-		return $telephones;
+
+
 	}
-
-
-
-
-
-
-
-
 
 
 
@@ -2744,21 +2602,25 @@ class Customer extends Subject {
 
 
 			$image=false;
-			while ($row=mysql_fetch_array($res)) {
-				//if ($row['Image Height']!=0)
-				// $ratio=$row['Image Width']/$row['Image Height'];
-				//else
-				// $ratio=1;
-				//  print_r($row);
-				if ($row['Image Key']) {
-
-					$image='image.php?id='.$row['Image Key'].'&size=small';
 
 
-					return $image;
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['Image Key']) {
+
+						$image='image.php?id='.$row['Image Key'].'&size=small';
+
+
+						return $image;
+					}
 				}
-
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
 			}
+
+
 
 			return $image;
 		}
@@ -2777,12 +2639,21 @@ class Customer extends Subject {
 		$sql=sprintf("select sum(`User Login Count`) as logins, sum(`User Failed Login Count`) as failed_logins, sum(`User Requests Count`) as requests  from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",
 			$this->id
 		);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$failed_logins=$row['failed_logins'];
-			$logins=$row['logins'];
-			$requests=$row['requests'];
+
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$failed_logins=$row['failed_logins'];
+				$logins=$row['logins'];
+				$requests=$row['requests'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		$sql=sprintf("update `Customer Dimension` set `Customer Number Web Logins`=%d , `Customer Number Web Failed Logins`=%d, `Customer Number Web Requests`=%d where `Customer Key`=%d",
 			$logins,
@@ -2791,37 +2662,49 @@ class Customer extends Subject {
 			$this->id
 		);
 		//print "$sql\n";
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 	}
 
 
 	function get_category_data() {
-		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
 
 		$category_data=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
+
+		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
 
 
 
-			$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 
-			$res=mysql_query($sql);
-			if ($row2=mysql_fetch_assoc($res)) {
-				$root_label=$row2['Category Label'];
-				$root_code=$row2['Category Code'];
+				$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+
+
+				if ($result2=$this->db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+						$root_label=$row2['Category Label'];
+						$root_code=$row2['Category Code'];
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+				if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+					$value=$row['Other Note'];
+				}
+				else {
+					$value=$row['Category Label'];
+				}
+				$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value);
+
 			}
-
-
-			if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
-				$value=$row['Other Note'];
-			}
-			else {
-				$value=$row['Category Label'];
-			}
-			$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value);
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		return $category_data;
 	}
@@ -2960,12 +2843,17 @@ class Customer extends Subject {
 			$this->id
 
 		);
-		//print $sql;
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$pending_amount=$row['Amount'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$pending_amount=$row['Amount'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
 		return $pending_amount;
 	}
 
@@ -3154,19 +3042,37 @@ class Customer extends Subject {
 		$correlation_msg='';
 		$msg='';
 		$sql=sprintf("select * from `Customer Correlation` where `Customer A Key`=%d and `Correlation`>200", $this->id);
-		$res2=mysql_query($sql);
-		while ($row2=mysql_fetch_assoc($res2)) {
-			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer B Key'], sprintf("%05d", $row2['Customer B Key']));
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer B Key'], sprintf("%05d", $row2['Customer B Key']));
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
 		$sql=sprintf("select * from `Customer Correlation` where `Customer B Key`=%d and `Correlation`>200", $this->id);
-		$res2=mysql_query($sql);
-		while ($row2=mysql_fetch_assoc($res2)) {
-			$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer A Key'], sprintf("%05d", $row2['Customer A Key']));
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$msg.=','.sprintf("<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer A Key'], sprintf("%05d", $row2['Customer A Key']));
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
 
 		$msg=preg_replace('/^,/', '', $msg);
 		if ($msg!='') {
-			$correlation_msg='<p>'._('Potential duplicated').': '.$msg.'</p>';
+			$correlation_msg='<p>'._('Potential duplicates').': '.$msg.'</p>';
 
 		}
 
