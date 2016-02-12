@@ -362,6 +362,8 @@ var with_elements=false;
 
 </div>
 {if isset($aux_templates) }
-{include file="$aux_templates" } 
+{foreach from=$aux_templates item=aux_template } 
+{include file="$aux_template" } 
+{/foreach}
 {/if}
 

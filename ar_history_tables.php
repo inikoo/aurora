@@ -49,12 +49,51 @@ function object_history($_data, $db, $user) {
 
 
 
-
 	foreach ($db->query($sql) as $data) {
+
+
+		$data['History Details']=trim($data['History Details']);
+		//print_r($data);
+
 		if ($data['History Details']=='')
-			$note=$data['History Abstract'];
+			$note=nl2br($data['History Abstract']);
 		else
-			$note=$data['History Abstract'].' <img class="button" d="no" id="ch'.$data['History Key'].'" hid="'.$data['History Key'].'" onClick="showdetails(this)" src="/art/icons/closed.png" alt="Show details" />';
+			$note=nl2br($data['History Abstract']).' <i  class="fa fa-angle-double-down fw button" id="history_details_button_'.$data['History Key'].'" onclick="show_history_details('.$data['History Key'].')"></i> <div  id="history_details_'.$data['History Key'].'" class="history_details hide">'.nl2br($data['History Details']).'</div>';
+
+
+		if ($data['Type']=='Notes') {
+
+			if ($data['Deletable']=='Yes') {
+				$edit=sprintf('<i history_key="%d" id="history_note_edit_button_%d" class="fa fa-pencil very_discret button fw note_buttons" alt="%s" ></i>',
+					$data['History Key'],
+					$data['History Key'],
+					_('Edit')
+				);
+			}else {
+				$edit=sprintf('<i history_key="%d" id="undo_strikethrough_button_%d" class="fa strikethrough_button fa-undo very_discret button fw %s" alt="%s" ></i>',
+					$data['History Key'],
+					$data['History Key'],
+					($data['Strikethrough']=='Yes'?'':'hide'),
+					_('unstrikethrough')
+				);
+				$edit.=sprintf('<i history_key="%d" id="strikethrough_button_%d"  class="fa strikethrough_button fa-strikethrough very_discret button fw %s" alt="%s" ></i>',
+					$data['History Key'],
+					$data['History Key'],
+					($data['Strikethrough']=='Yes'?'hide':''),
+
+					_('strikethrough'));
+
+
+			}
+			$note=sprintf('<span id="history_note_%d" class="%s">%s</span> %s <span id="history_note_msg_%d"></span>',
+				$data['History Key'],
+				($data['Strikethrough']=='Yes'?'strikethrough':''),
+				$note,
+				$edit,
+				$data['History Key']
+			);
+		}
+
 
 		//$objeto=$data['Direct Object'];
 		$objeto=$data['History Details'];
@@ -65,40 +104,7 @@ function object_history($_data, $db, $user) {
 			$author=$data['Author Name'];
 
 
-		//$delete=($data['Type']=='Notes'?($data['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':($data['Strikethrough']=='Yes'?'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />':'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />')):'');
 
-
-		$delete='';
-		if ($data['Type']=='Notes') {
-			if ($data['Deletable']=='Yes') {
-				$delete='<img alt="'._('delete').'" src="/art/icons/cross.png" />';
-			}
-			else {
-				if ($data['Strikethrough']=='Yes') {
-					$delete='<img alt="'._('unstrikethrough').'" src="/art/icons/text_unstrikethrough.png" />';
-				}else {
-					$delete='<img alt="'._('strikethrough').'" src="/art/icons/text_strikethrough.png" />';
-				}
-			}
-
-		}elseif ($data['Type']=='Attachments') {
-			if ($data['Deletable']=='Yes') {
-				$delete='<img alt="'._('delete').'" src="art/icons/cross.png" />';
-			}
-		}
-
-		$edit=(($data['Deletable']=='Yes' or $data['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="/art/icons/edit.gif" />':'');
-
-
-
-		if ($data['Type']=='Attachments') {
-			$edit='';
-
-		}elseif ($data['Deletable']=='Yes' or $data['Type']=='Orders') {
-			$edit='<img style="cursor:pointer" alt="'._('edit').'" src="/art/icons/edit.gif" />';
-		}else {
-			$edit='';
-		}
 
 		$adata[]=array(
 			'id'=>(integer) $data['History Key'],
@@ -108,12 +114,7 @@ function object_history($_data, $db, $user) {
 			'objeto'=>$objeto,
 			'note'=>$note,
 			'author'=>$author,
-			'delete'=>$delete,
-			'edit'=>$edit,
-			'can_delete'=>($data['Deletable']=='Yes'?1:0),
-			'delete_type'=>_('delete'),
-			'type'=>$data['Type'],
-			'strikethrough'=>$data['Strikethrough']
+			
 
 		);
 
@@ -132,5 +133,6 @@ function object_history($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
 
 ?>

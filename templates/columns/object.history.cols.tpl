@@ -11,7 +11,7 @@ var columns = [{
     label: "{t}Date{/t}",
     editable: false,
      cell: Backgrid.StringCell.extend({
-      className: "full_date aright"
+      className: "width_250 aright "
      }),
       headerCell: integerHeaderCell
 },{
@@ -19,7 +19,7 @@ var columns = [{
     label: "{t}Author{/t}",
     editable: false,
     cell: Backgrid.StringCell.extend({
-      className: "contact_name"
+      className: "width_200 "
      })
     
 }, {

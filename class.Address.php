@@ -1076,7 +1076,7 @@ class _Address extends DB_Table {
 
 
 
-	public function update($data,$options='') {
+	public function update($data,$options='', $metadata = '') {
 
 
 
@@ -1209,7 +1209,7 @@ class _Address extends DB_Table {
 
 	}
 
-	function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 		switch ($field) {
 
 		case('Add Other Telephone'):

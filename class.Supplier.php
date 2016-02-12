@@ -981,7 +981,7 @@ class supplier extends Subject {
 	}
 
 
-	function update_field_switcher($field, $value, $options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 
 
 
@@ -989,7 +989,7 @@ class supplier extends Subject {
 			$value=_trim($value);
 
 
-		if ($this->update_subject_field_switcher($field, $value, $options)) {
+		if ($this->update_subject_field_switcher($field, $value, $options,$metadata)) {
 			return;
 		}
 

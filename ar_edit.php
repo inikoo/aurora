@@ -123,8 +123,12 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 	}
 
 
+	if (isset($data['metadata'])) {
+		$object->update(array($field=>$data['value']), $options, $data['metadata']);
+	}else {
+		$object->update(array($field=>$data['value']), $options);
+	}
 
-	$object->update(array($field=>$data['value']), $options);
 
 	if (isset($data['metadata'])) {
 		if (isset($data['metadata']['extra_fields'])) {
@@ -159,6 +163,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
+
+
 			$formatted_value=$object->get($formatted_field);
 
 			$action='updated';

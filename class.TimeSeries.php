@@ -66,7 +66,7 @@ class Timeseries extends DB_Table {
 	}
 
 
-	function update_field_switcher($field, $value, $options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 		if (is_string($value))
 			$value=_trim($value);
 

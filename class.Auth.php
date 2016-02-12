@@ -510,14 +510,13 @@ class Auth {
 					$formatted_reason=$this->pass['main_reason'];
 				}
 
-				$details='<table>
-				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c",strtotime($date.' +00:00')).'</td></tr>
-				<tr><td>'._('Handle').':</td><td>'.$this->handle.'</td></tr>
-				<tr><td>'._('IP Address').':</td><td>'.$ip.'</td></tr>
-			
-			<tr><td>'._('User Agent').':</td><td>'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'').'</td></tr>
-
-				</table>';
+				$details='
+				<div class="table">
+				<tr><td style="width:120px">'._('Time').':</div><div>'.strftime("%c",strtotime($date.' +00:00')).'</div></div>
+				<div class="field tr"><div>'._('Handle').':</div><div>'.$this->handle.'</div></div>
+				<div class="field tr"><div>'._('IP Address').':</div><div>'.$ip.'</div></div>
+			    <div class="field tr"><div>'._('User Agent').':</div><div>'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'').'</div></div>
+				</div>';
 
 				$history_data=array(
 					'Date'=>$date,
@@ -584,11 +583,12 @@ class Auth {
 		if ($this->log_page=='customer') {
 
 			$customer=new Customer($this->user_parent_key);
-			$details='<table>
-				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c %Z",strtotime($date.' +00:00')).'</td></tr>
-				<tr><td>'._('IP Address').':</td><td>'.$ip.'</td></tr>
-				<tr><td>'._('User Agent').':</td><td>'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'').'</td></tr>
-				</table>';
+			$details='
+			   <div class="table">
+				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%c %Z",strtotime($date.' +00:00')).'</div></div>
+				<div class="field tr"><div>'._('IP Address').':</div><div>'.$ip.'</div></div>
+				<div class="field tr"><div>'._('User Agent').':</div><div>'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'').'</div></div>
+				</div>';
 
 			switch ($this->authentication_type) {
 			case('masterkey'):

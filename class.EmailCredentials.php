@@ -198,7 +198,7 @@ class EmailCredentials extends DB_Table{
 	}
 
 
-	function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 
 
 		$base_data=$this->base_data();

@@ -30,7 +30,7 @@ $parameters=array(
 
 $smarty->assign('js_code', file_get_contents('js/billingregion_taxcategory.js'));
 
-$smarty->assign('aux_templates', 'table.aux/billingregion_taxcategory.tpl');
+$smarty->assign('aux_templates', array('table.aux/billingregion_taxcategory.tpl'));
 
 $stores_data=array();
 $sql=sprintf('Select `Store Key`,`Store Code`,`Store Name` from `Store Dimension`');

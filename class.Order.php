@@ -2454,7 +2454,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-	function update_field_switcher($field, $value, $options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 
 		switch ($field) {
 

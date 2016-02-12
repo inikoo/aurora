@@ -63,7 +63,7 @@ abstract class DB_Table {
 	}
 
 
-	public function update($data, $options='') {
+	public function update($data, $options='', $metadata='') {
 
 		if (!is_array($data)) {
 
@@ -90,7 +90,7 @@ abstract class DB_Table {
 				$value=_trim($value);
 
 			//print "$key,$value";
-			$this->update_field_switcher($key, $value, $options);
+			$this->update_field_switcher($key, $value, $options, $metadata);
 
 
 		}
@@ -100,7 +100,7 @@ abstract class DB_Table {
 	}
 
 
-	protected function update_field_switcher($field, $value, $options='') {
+	protected function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 		$base_data=$this->base_data();
@@ -159,7 +159,7 @@ abstract class DB_Table {
 
 	protected function update_table_field($field, $value, $options='', $table_name, $table_full_name, $table_key) {
 
-    //print "*** $field, $value\n";
+		//print "*** $field, $value\n";
 		$this->updated=false;
 
 		$null_if_empty=true;
@@ -259,7 +259,7 @@ abstract class DB_Table {
 
 
 		}
-		
+
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
 		$affected=$update_op->rowCount();
@@ -537,33 +537,29 @@ abstract class DB_Table {
 		if ($data['History Details']=='') {
 			if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
 
-				$data['History Details']='<table>
-				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
-				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
-
-				<tr><td>'._('Action').':</td><td>'._('Changed').'</td></tr>
-				<tr><td>'._('Old value').':</td><td>'.$raw_data['old_value'].'</td></tr>
-				<tr><td>'._('New value').':</td><td>'.$raw_data['new_value'].'</td></tr>
-				<tr><td>'.$label.':</td><td>'.$this->get_name().'</td></tr>
-
-
-				</table>';
+				$data['History Details']='
+				<div class="table">
+				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</div></div>
+				<div class="field tr"><div>'._('User').':</div><div>'.$this->editor['Author Alias'].'</div></div>
+				<div class="field tr"><div>'._('Action').':</div><div>'._('Changed').'</div></div>
+				<div class="field tr"><div>'._('Old value').':</div><div>'.$raw_data['old_value'].'</div></div>
+				<div class="field tr"><div>'._('New value').':</div><div>'.$raw_data['new_value'].'</div></div>
+				<div class="field tr"><div>'.$label.':</div><div>'.$this->get_name().'</div></div>
+                </div>';
 
 
 
 			}
 			elseif (  isset($raw_data['new_value']) ) {
 
-				$data['History Details']='<table>
-				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</td></tr>
-				<tr><td>'._('User').':</td><td>'.$this->editor['Author Alias'].'</td></tr>
-
-				<tr><td>'._('Action').':</td><td>'._('Associated').'</td></tr>
-				<tr><td>'._('New value').':</td><td>'.$raw_data['new_value'].'</td></tr>
-				<tr><td>'.$label.':</td><td>'.$this->get_name().'</td></tr>
-
-
-				</table>';
+				$data['History Details']='
+				<div class="table">
+				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</div></div>
+				<div class="field tr"><div>'._('User').':</div><div>'.$this->editor['Author Alias'].'</div></div>
+				<div class="field tr"><div>'._('Action').':</div><div>'._('Associated').'</div></div>
+				<div class="field tr"><div>'._('New value').':</div><div>'.$raw_data['new_value'].'</div></div>
+				<div class="field tr"><div>'.$label.':</div><div>'.$this->get_name().'</div></div>
+				</div>';
 
 			}
 		}
@@ -623,7 +619,7 @@ abstract class DB_Table {
 
 
 
-	function add_note($note, $details='', $date=false, $deleteable='No', $customer_history_type='Notes', $author=false, $subject=false, $subject_key=false) {
+	function add_note($note, $details='', $date=false, $deletable='No', $customer_history_type='Notes', $author=false, $subject=false, $subject_key=false) {
 
 
 		list($ok, $note, $details)=$this->prepare_note($note, $details);
@@ -639,7 +635,6 @@ abstract class DB_Table {
 			'Indirect Object'=>$this->table_name,
 			'Indirect Object Key'=>(($this->table_name=='Product' or $this->table_name=='Supplier Product')  ?$this->pid:$this->id)
 		);
-
 		if ($author) {
 			$history_data['Author Name']=$author;
 		}
@@ -652,14 +647,30 @@ abstract class DB_Table {
 			$history_data['Date']=$date;
 
 
-		$history_key=$this->add_subject_history($history_data, $force_save=true, $deleteable, $customer_history_type);
+		$history_key=$this->add_subject_history($history_data, $force_save=true, $deletable, $customer_history_type, $this->table_name, $this->id);
 
 		$this->updated=true;
 		$this->new_value=$history_key;
 	}
 
 
-	function add_subject_history($history_data, $force_save=true, $deleteable='No', $type='Changes', $table_name, $table_key) {
+	function edit_note_strikethrough($note_key, $value) {
+
+		$sql=sprintf("update `%s History Bridge` set  `Strikethrough`=%s    where `History Key`=%d and `%s Key`=%d",
+			addslashes($this->table_name),
+			prepare_mysql($value),
+			$note_key,
+			addslashes($this->table_name),
+			$this->id
+		);
+		
+		$this->db->exec($sql);
+		$this->updated=true;
+
+	}
+
+
+	function add_subject_history($history_data, $force_save=true, $deletable='No', $type='Changes', $table_name, $table_key) {
 
 		$history_key=$this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
 
@@ -667,7 +678,7 @@ abstract class DB_Table {
 			$table_name,
 			$table_key,
 			$history_key,
-			prepare_mysql($deleteable),
+			prepare_mysql($deletable),
 			prepare_mysql($type)
 		);
 
@@ -898,34 +909,80 @@ abstract class DB_Table {
 	}
 
 
-	function edit_note($note_key, $note, $details='', $change_date) {
-
-		list($ok, $note, $details)=$this->prepare_note($note, $details);
-		if (!$ok) {
-			return;
-		}
-		$sql=sprintf("update `History Dimension` set `History Abstract`=%s ,`History Details`=%s where `History Key`=%d and `Indirect Object`=%s and `Indirect Object Key`=%s ",
-			prepare_mysql($note),
-			prepare_mysql($details),
-
+	function get_note($note_key) {
+		$note='';
+		$sql=sprintf('select `History Abstract` from  `History Dimension`  where `History Key`=%d and `Indirect Object`=%s and `Indirect Object Key`=%s',
 			$note_key,
 			prepare_mysql($this->table_name),
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$note=$row['History Abstract'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		return $note;
+	}
 
-			(($this->table_name=='Product'  or $this->table_name=='Supplier Product')?$this->pid:$this->id));
 
+	function edit_note($note_key, $note, $details='', $change_date=false) {
 
-		mysql_query($sql);
-		if (mysql_affected_rows()) {
-			if ($change_date=='update_date') {
-				$sql=sprintf("update `History Dimension` set `History Date`=%s where `History Key`=%d  ",
-					prepare_mysql(gmdate("Y-m-d H:i:s")),
-					$note_key
-				);
-				mysql_query($sql);
+		if ($note=='') {
+
+			$old_value=$this->get_note($note_key);
+
+			$sql=sprintf("delete from `%s History Bridge` where `History Key`=%d and `Deletable`='Yes'", $this->table_name, $note_key);
+
+			$prep=$this->db->prepare($sql);
+			$prep->execute();
+			if ($prep->rowCount()) {
+
+				$this->deleted=true;
+
+				$sql=sprintf("delete from `History Dimension` where `History Key`=%d", $note_key);
+				$this->db->exec($sql);
+				$this->deleted_value=$old_value;
+				//$this->add_changelog_record($this->table_name.' Other Email', $old_value, '', $options, $this->table_name, $this->id, 'removed');
+
+			}else {
+
 			}
 
-			$this->updated=true;
-			$this->new_value=$note;
+		}else {
+
+
+			list($ok, $note, $details)=$this->prepare_note($note, $details);
+			if (!$ok) {
+				$this->error=true;
+
+				return;
+			}
+			$sql=sprintf("update `History Dimension` set `History Abstract`=%s ,`History Details`=%s where `History Key`=%d and `Indirect Object`=%s and `Indirect Object Key`=%s ",
+				prepare_mysql($note),
+				prepare_mysql($details),
+
+				$note_key,
+				prepare_mysql($this->table_name),
+				$this->id
+			);
+
+			$prep=$this->db->prepare($sql);
+			$prep->execute();
+			if ($prep->rowCount()) {
+				if ($change_date=='update_date') {
+					$sql=sprintf("update `History Dimension` set `History Date`=%s where `History Key`=%d  ",
+						prepare_mysql(gmdate("Y-m-d H:i:s")),
+						$note_key
+					);
+					$this->db->exec($sql);
+				}
+
+				$this->updated=true;
+				$this->new_value=$note;
+			}
 		}
 
 	}
@@ -1159,7 +1216,7 @@ abstract class DB_Table {
 	}
 
 
-	
+
 
 
 

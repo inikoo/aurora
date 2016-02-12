@@ -1,0 +1,16 @@
+.textarea_dialog {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    z-index: 1000;
+    .fa {
+        padding-top: 10px;
+        cursor: pointer;
+    }
+    .save {
+        float: right;
+    }
+}
+
+
