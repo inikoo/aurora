@@ -172,7 +172,7 @@ class Material extends DB_Table{
 	}
 
 
-	protected function update_field_switcher($field,$value,$options='') {
+	protected function update_field_switcher($field, $value, $options='',$metadata='') {
 
 
 		switch ($field) {

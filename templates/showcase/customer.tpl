@@ -44,14 +44,11 @@
 				{$customer->get('Contact Address')} 
 			</div>
 		</div>
-		<div class="data_container {if $customer->get('Sticky Note')==''}hide{/if} ">
-			<div class="sticky_note_button">
-				<i class="fa fa-sticky-note"></i> 
-			</div>
-			<div class="sticky_note">
-				{$customer->get('Sticky Note')} 
-			</div>
-		</div>
+		{include file='sticky_note.tpl' object='Customer'  key=$customer->id sticky_note_field='Customer_Sticky_Note' _object=$customer}
+
+	
+		
+		
 		<div style="clear:both">
 		</div>
 	</div>
@@ -144,6 +141,8 @@
 	<div style="clear:both">
 	</div>
 </div>
+
+
 <script>
 function email_width_hack() {
     var email_length = $('#showcase_Customer_Main_Plain_Email').text().length

@@ -767,7 +767,7 @@ class PurchaseOrder extends DB_Table{
 
 	}
 
-	function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 		switch ($field) {
 		case 'Purchase Order Estimated Receiving Date':
 			$this->update_estimated_receiving_date($value);

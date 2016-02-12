@@ -10,9 +10,9 @@
  Version 3.0
 */
 
-function get_customer_showcase($data) {
+function get_customer_showcase($data,$smarty) {
 
-    global $smarty;
+   
     
     $customer=$data['_object'];
     if(!$customer->id){

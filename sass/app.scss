@@ -728,7 +728,7 @@ right connector from last child*/
 .warning{color:$color_warning}
 .error{color:$color_error}
 .disabled{opacity:.5;color:#777}
-
+.strikethrough{text-decoration:line-through;opacity:.7}
 
 
 .padding_left_10{padding-left:10px}
@@ -794,8 +794,11 @@ path.ema {
 @import 'showcase';
 @import 'form_fields';
 
+@import 'dialogs';
+
 @import 'edit_object';
 @import 'new_object';
+@import 'sticky_note';
 
 
 

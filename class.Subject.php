@@ -1254,10 +1254,16 @@ class Subject extends DB_Table {
 	}
 
 
-	function update_subject_field_switcher($field, $value, $options='') {
+	function update_subject_field_switcher($field, $value, $options='',$metadata) {
 
 
 		switch ($field) {
+
+		case 'History Note':
+		
+		
+			$this->add_note($value, '', '', $metadata['deletable']);
+			break;
 		case $this->table_name.' Contact Address':
 			$this->update_address('Contact', json_decode($value, true));
 			return true;
@@ -1490,6 +1496,18 @@ class Subject extends DB_Table {
 
 
 
+			if (preg_match('/^History Note (\d+)/i', $field, $matches)) {
+				$history_key=$matches[1];
+				$this->edit_note($history_key, $value);
+				return true;
+			}
+			
+			if (preg_match('/^History Note Strikethrough (\d+)/i', $field, $matches)) {
+				$history_key=$matches[1];
+				$this->edit_note_strikethrough($history_key, $value);
+				return true;
+			}
+						
 			if (preg_match('/^'.$this->table_name.' Other Email (\d+)/i', $field, $matches)) {
 				$customer_email_key=$matches[1];
 				$old_value=$this->get($field);
@@ -1720,11 +1738,18 @@ class Subject extends DB_Table {
 
 		default:
 
-			if (array_key_exists($key, $this->data))
-				return array(true, $this->data[$key]);
+			if (preg_match('/'.$this->table_name.' History Note (\d+)/i', $key, $matches)) {
 
-			if (array_key_exists('Customer '.$key, $this->data))
-				return array(true, $this->data[$this->table_name.' '.$key]);
+
+				return array(true,$this->get_note($matches[1]));
+
+			}
+			if (preg_match('/History Note (Strikethrough )?(\d+)/i', $key, $matches)) {
+
+
+				return array(true,nl2br($this->get_note($matches[2])));
+
+			}
 
 			if (preg_match('/('.$this->table_name.' |)Other Email (\d+)/i', $key, $matches)) {
 

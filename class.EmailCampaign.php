@@ -1744,7 +1744,7 @@ class EmailCampaign extends DB_Table {
 			$this->id);
 		mysql_query($sql);
 	}
-	function update_field_switcher($field,$value,$options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 
 
 		switch ($field) {

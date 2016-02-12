@@ -750,7 +750,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-	function update_field_switcher($field, $value, $options='') {
+	function update_field_switcher($field, $value, $options='',$metadata='') {
 
 
 
